@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright (c) 2008, California Institute of Technology.
+	ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+	
+	$Id$
+	
+	Author: bfoster, mattmann
+	Description: Describes pre-conditions that should be evaluated before
+	running a particular MetExtractor.
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+
+    <!-- Precondition Comparators -->
+    <bean id="PreconditionComparator" lazy-init="true" abstract="true" class="gov.nasa.jpl.oodt.cas.metadata.preconditions.PreConditionComparator"/>
+    
+    
+    <bean id="CheckThatDataFileSizeIsGreaterThanZero" lazy-init="true" parent="PreconditionComparator" class="gov.nasa.jpl.oodt.cas.metadata.preconditions.FileSizeComparator">
+        <property name="description" value="Check if the current data file size is greater than zero"/>        
+        <property name="compareItem">
+            <value type="java.lang.Long">0</value>
+        </property>
+        <property name="type" value="greater_than"/>
+    </bean>
+    
+    <bean id="CheckThatDataFileExists" lazy-init="true" parent="PreconditionComparator" class="gov.nasa.jpl.oodt.cas.metadata.preconditions.ExistanceCheckComparator">
+        <property name="description" value="Check if the current data file exists"/>        
+        <property name="compareItem">
+            <value type="java.lang.Boolean">true</value>
+        </property>
+        <property name="type" value="equal_to"/>    
+    </bean>
+
+    <bean id="CheckDataFileMimeType" lazy-init="true" parent="PreconditionComparator" class="gov.nasa.jpl.oodt.cas.metadata.preconditions.MimeTypeComparator">
+        <property name="description" value="Check that data file mime type matches the specified mime type"/>        
+        <property name="compareItem">
+            <value type="java.lang.String">application/xml</value>
+        </property>
+        <property name="type" value="equal_to"/>   
+        <property name="mimeTypeRepo" value="./src/resources/tika-mimetypes.xml"/>
+        <property name="useMagic" value="true"/> 
+    </bean>
+
+</beans>

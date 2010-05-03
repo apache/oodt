@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright 2008 California Institute of Technology. ALL RIGHTS
+	RESERVED. U.S. Government Sponsorship acknowledged.
+	
+	$Id$
+	
+	Author: Chris A. Mattmann
+	Author: Brian M. Foster
+	Description: XML Configuration file describing external command-line metadata extractor
+	to be run through ExternMetExtractor facade.
+-->
+<cas:externextractor xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+
+	<!--  
+	    workingDir: specifies the directory that the external command line met extractor will
+	    be run in. 
+	    
+	    if workingDir is not specified, and if the external command line met extractor honors
+	    the workingDir contract (generating .met file in directory that it is called from), then 
+	    the .met file will be generated in /path/to/file's parent directory. Otherwise, if the
+	    external command let met extractor doesn't honor working dir, then all bets
+	    are off.
+	-->
+	<exec workingDir="">
+		<!--  this path can be absolute or relative -->
+		<!--  you can optionally specify envReplace tag (=true) 
+		      to turn on environment variable replacement
+		-->
+		<extractorBinPath envReplace="true">[PWD]/src/test/gov/nasa/jpl/oodt/cas/metadata/extractors/testExtractor</extractorBinPath>
+
+		<!--  make sure to use character entities if there are any weird
+			parameters here that would screw up the XML.
+			
+			args come after providing the file to this met extractor. So, in other
+			words, we assume that extractorBinPath &gt;file&lt; &lt;args...&gt;
+			
+			where the first parameter is always the file to extract metadata from,
+			and the remaining parameters are optional to provide to the underlying
+			met extractor.
+		-->
+		<args>
+			<arg isDataFile="true"/>
+			<arg isMetFile="true"/>
+			<arg>-Dtrue=always</arg>
+			<arg>foo</arg>
+			<arg>bar</arg>
+			<!--  you can optionally specify that you would like environment 
+			      variable replacement on a particular argument
+			      
+			      You can also optionally specify that the argument is a path
+			      and that you would like it to be treated as such using the
+			      isPath="true". If not specified, the path is treated as if
+			      isPath was specified as "false", and String.replaceAll("\\s", "\\\\ ")
+			      is not called. If called, all white spaces are replaced from the path
+			      (using the above regex), and replaced with the literal string
+			      "\ ".
+			-->
+			<arg envReplace="true" isPath="true">[HOME]/test boo</arg>
+		</args>
+	</exec>
+
+</cas:externextractor>

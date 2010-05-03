@@ -1,0 +1,25 @@
+<!--
+ Copyright (c) 2006, California Institute of Technology.
+ ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+ 
+ $Id$
+ 
+ A Multi-valued, generic Metadata container schema. The class uses a map of 
+ string keys pointing to vectors of strings. The data structure looks like 
+ the following: 
+
+[std:string key]=><std:vector of std:strings>
+
+The multi-valued nature of the class is handled transparently by this Metadata
+container. Since all values are stored internally as string vectors, the difference
+between a scalar value and a non-scalar is handled by determing whether the list of
+values for a particular key is greater than 1. 
+-->
+
+<!ELEMENT metadata (keyval)*>
+
+<!ELEMENT keyval (key, val+)>
+
+<!ELEMENT key (#PCDATA)>
+
+<!ELEMENT val (#PCDATA)>

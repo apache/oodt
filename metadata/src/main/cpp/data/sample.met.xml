@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+
+  <keyval type="scalar">
+    <key>key1</key>
+    <val>val1</val>
+  </keyval>
+
+  <keyval type="vector">
+    <key>key2</key>
+    <val>val1</val>
+    <val>val2</val>
+    <val>val3</val>
+  </keyval>
+
+  <keyval type="scalar">
+    <key>key3</key>
+    <val>val3</val>
+  </keyval>
+
+  <keyval type="vector">
+    <key>key5</key>
+    <val>key5_replaced_val1</val>
+    <val>key5_replaced_val2</val>
+  </keyval>
+
+  <keyval type="scalar">
+    <key>key6</key>
+    <val>key6_replaced_val1</val>
+  </keyval>
+
+</cas:metadata>

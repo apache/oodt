@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright (c) 2009, California Institute of Technology.
+  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+  
+  $Id$
+  
+  Author: Chris A. Mattmann
+  Description: The configuration file for the Filename Token Met Extractor.
+-->
+<input>
+    <group name="SubstringOffsetGroup">
+     <!--  the indices for the substring met key selection -->
+     <!--  the first element is the starting index in the string -->
+     <!--  NOTE: this assumes 1-indexed strings (and is internally converted to
+           0-indexed.
+      -->
+     <!--  the second element is the length -->
+     
+     <!--  MissionName_Date_StartOrbitNumber_StopOrbitNumber.txt -->
+     
+      <vector name="MissionName">
+        <element>1</element>
+        <element>11</element>      
+      </vector>
+      
+      <vector name="Date">
+        <element>13</element>
+        <element>4</element>
+      </vector>
+      
+      <vector name="StartOrbitNumber">
+        <element>18</element>
+        <element>16</element>
+      </vector>
+      
+      <vector name="StopOrbitNumber">
+        <element>35</element>
+        <element>15</element>
+      </vector>
+      
+   </group>
+    
+    <group name="CommonMetadata">
+        <scalar name="DataVersion">1.0</scalar>
+        <scalar name="CollectionName">Products extracted by the OODT Filename Met Extractor</scalar>
+        <scalar name="DataProvider">OODT</scalar>
+    </group>
+</input>

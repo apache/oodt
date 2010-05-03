@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+ <keyval>
+   <key>Filename</key>
+   <val>blah.txt</val>
+ </keyval>
+ <keyval>
+   <key>FileLocation</key>
+   <val>/tmp</val>
+ </keyval>
+ <keyval>
+   <key>ProductType</key>
+   <val>GenericFile</val>
+ </keyval>
+</cas:metadata>

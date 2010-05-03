@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (c) 2006, California Institute of Technology.
+ ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+ 
+ $Id$
+ 
+ A Multi-valued, generic Metadata container schema. The class uses a map of 
+ string keys pointing to vectors of strings. The data structure looks like 
+ the following: 
+
+[std:string key]=><std:vector of std:strings>
+
+The multi-valued nature of the class is handled transparently by this Metadata
+container. Since all values are stored internally as string vectors, the difference
+between a scalar value and a non-scalar is handled by determing whether the list of
+values for a particular key is greater than 1. 
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="key" type="xs:string"/>
+	<xs:complexType name="keyvalType">
+		<xs:sequence>
+			<xs:element ref="key"/>
+			<xs:element ref="val" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="metadata">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="keyval" type="keyvalType"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="val" type="xs:string"/>
+</xs:schema>

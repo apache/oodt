@@ -1,0 +1,114 @@
+CAS Metadata Framework Changelog
+
+
+Major Releases:
+===========================================
+1.7.0 Current Development (Unreleased Changes)
+
+- OODT-365 CAS-Metadata should have a user guide
+
+- OODT-364 metadata 1.7.0-dev dependency not in oodt maven repo (woollard)
+
+- OODT-323 Reusable Filename Tokenizer Met Extractor (mattmann)
+
+- OODT-292 cas-metadata PathUtils replacement functionalities should use reluctant pattern greps (bfoster)
+
+- OODT-275 Upgrade to cas-commons-1.1.1 (mattmann)
+
+1.6.0 - 11/18/2008
+
+- OODT-248 create getProperty methods in PropertyUtils that returns a single String value for a give property (bfoster)
+
+- OODT-240 DateUtils.toString(Calendar, String) doesn't exist but used in PathUtil (bfoster)
+
+- OODT-239 Update cas-metadata to use new cas-commons DateUtils (bfoster)
+
+1.5.0 - 08/01/2008
+
+- OODT-210 Move all common utilities from all CAS projects into a cas-commons project (mattmann)
+
+- OODT-211 Create a interface that requires implements classes to contain setId(String) and getId() methods (bfoster)
+
+1.4.0 - 07/02/2008
+
+- OODT-184 Upgrade to JDK5 (mattmann)
+
+- OODT-208 Allow for trim'ming of read XML string values in getSimpleElementText (mattmann)
+
+- OODT-185 Upgrade to Maven2 (mattmann)
+
+- improve logging in XMLUtils#readMany (mattmann)
+
+- OODT-206 CopyAndRewriteExtractor config should use envReplace on orig met file path (mattmann)
+
+- OODT-201 MetReaderExtractor config settings should override metFileExt but not set it (bfoster)
+
+- OODT-198 Update cas-metadata preconditions to be configured via Spring framework (bfoster, mattmann)
+
+- OODT-197 Create a MetReaderConfig so that a System level property is not used to set the metFileExt (bfoster)
+
+- OODT-193 Create method which pipes the output of a external process run to a given Java Logger (bfoster)
+
+- OODT-188 Allow for multi-valued Metadata replacement in PathUtils and updates to DateEnvReplace API (bfoster,mattmann)
+
+- fix for XMLUtils#writeXmlFile method (danyu,mattmann)
+
+- add PropertiesUtils from cas-pushpull (mattmann)
+
+- OODT-181 Integrate Tika mimetype detection into cas-metadata (mattmann,bfoster)
+
+1.3.0 - 05/14/2008
+
+- OODT-178 EnvUtilities#getEnv fails when environment variables contain \u chars (mattmann,bfoster)
+
+- OODT-177 Create MetExtractorConfig and MetExtractorConfigReader interface classes (bfoster)
+
+- OODT-85 be able to handle external metadata files (mattmann)
+
+- OODT-175 Allow external metadata extractors access to the data file and metadata file path (bfoster)
+
+- OODT-174 Add metadata extractor preconditions support (bfoster, mattmann)
+
+- OODT-160 Implement an equals(Object) method in Metadata (bfoster)
+
+- OODT-156 Allow Metadata encoding to be specified for XML conversion (bfoster)
+
+- OODT-151 Date var replacement API (mattmann)
+
+- OODT-149 Do path replacement on ExternMetExtractor extractorBinPath (mattmann)
+
+- OODT-148 Generalize ExternMetExtractor to be able to take a programmatically built ExternalMetConfiguration (mattmann)
+
+- OODT-145 Make PathUtils.replaceEnvVars(String, Metadata) have the ability to replace all met values from Vector metadata key (bfoster)
+
+- OODT-143 Add method which will merge existing metadata with metadata passed in via a hashtable (mattmann)
+
+- OODT-144 Facility to run external command line Metadata extractors via MetExtractor interface (mattmann)
+
+- move StreamGobbler to cas-metadata (mattmann)
+
+- reorg CopyAndRewriteExtractor example (mattmann)
+
+- OODT-142 Aggregate generic XML processing code into XMLUtils class in cas-metadata (mattmann)
+
+1.2.0 - 3/20/2008
+
+- OODT-138 Integration of cas-pp changes into cas-metadata (mattmann)
+
+- OODT-34 Remove all fFields and sFields etc from cas components (mattmann)
+
+- OODT-70 Augment CmdLineMetExtractor to write .met file to a given OutputStream (mattmann)
+
+1.01 - 08/01/2007
+
+- Refactor met parsing code into utility class (mattmann)
+
+- AbstractMetExtractor I/F and examples (mattmann)
+
+
+1.0.0 - 8/3/2006 - Initial Stable Release
+
+
+	
+
+
