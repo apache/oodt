@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cas:producttypemap xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+ <!--  can set the "parent" attribute on types below to allow inheritance
+       of elements between the types 
+  -->
+   <type id="urn:oodt:GenericFile">
+       <element id="urn:oodt:ProductReceivedTime"/>
+       <element id="urn:oodt:ProductName"/>
+       <element id="urn:oodt:ProductId"/>
+       <element id="urn:oodt:ProductType"/>
+       <element id="urn:oodt:ProductStructure"/>
+       <element id="urn:oodt:Filename"/>
+       <element id="urn:oodt:FileLocation"/>
+       <element id="urn:oodt:MimeType"/>
+   </type>
+ 
+   <type id="urn:oodt:TestType">
+       <element id="urn:oodt:TestElement"/>
+    </type>
+</cas:producttypemap>

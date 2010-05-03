@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+  <type id="urn:oodt:GenericFile" name="GenericFile">
+    <repository path="file://[HOME]/files"/>
+    <versioner class="gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner"/>
+    <description trim="true">
+     The default product type for any kind of file, with real metadata.
+    </description>
+    <metadata>
+      <keyval>
+	      <key>Creator</key>
+	      <val>Chris Mattmann</val>
+	      <val>Paul Ramirez</val>
+	  </keyval>
+	  <keyval>
+	      <key>Contributor</key>
+	      <val>File Manager Client</val>
+	  </keyval>
+    </metadata>
+  </type>
+  <type id="urn:oodt:GenericFileWithBlankMet" name="GenericFileWithBlankMet">
+    <repository path="file://[HOME]/files"/>
+    <versioner class="gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner"/>
+    <description>
+      The default product type for any kind of file, with blank metadata.
+    </description>
+    <metadata/>
+  </type>
+  <type id="urn:oodt:GenericFileNoTypeMetadata" name="GenericFileNoTypeMetadata">
+    <repository path="file://[HOME]/files"/>
+    <versioner class="gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner"/>
+    <description trim="false">
+      The default product type for any kind of file, without metadata.
+    </description>
+  </type>
+</cas:producttypes>

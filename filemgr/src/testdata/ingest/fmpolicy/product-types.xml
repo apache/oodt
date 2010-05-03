@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+    <type id="urn:oodt:GenericFile" name="GenericFile">
+    <repository path="file:///tmp"/>
+    <versioner class="gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner"/>
+    <description>The default product type for any kind of file.</description>
+    <metExtractors>
+      <extractor class="gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
+        <configuration>
+        <!--  you can optionally include the envReplace tag to turn on/off environment var replacement -->
+         <property name="nsAware" value="true"/>
+         <property name="elementNs" value="CAS"/>
+         <property name="elements" value="ProductReceivedTime,ProductName,ProductId"/>
+        </configuration>
+      </extractor>
+      <extractor class="gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor"/>
+    </metExtractors>
+    </type>
+    <type id="urn:oodt:TestType" name="TestType">
+        <repository path="file:///tmp/test-type"/>
+        <versioner class="gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner"/>
+        <description>The default product type for any kind of file.</description>
+    </type>
+</cas:producttypes>

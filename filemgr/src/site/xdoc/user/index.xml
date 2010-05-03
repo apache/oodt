@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2009 California Institute of Technology.
+  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+
+  $Id$
+-->
+
+<document>
+   <properties>
+      <title>CAS File Manager User Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+      <author email="woollard@jpl.nasa.gov">Dave Woollard</author>
+   </properties>
+
+   <body>
+      <link rel="StyleSheet" href="../css/guides.css" type="text/css" media="screen"/>
+   
+      <div class="warning">This document is in the process of being reorganized as
+      part of our ongoing documentation effort. Please follow the links below to find
+      information that has previously been hosted on this page.</div>
+ 
+
+      <p>We are in the process of upgrading OODT documentation. In the near
+      future, we hope to provide information for developers regarding each 
+      component, including its purpose, structure, interfaces, and 
+      configuration points in a <a href=".../development/developer.html">Developer
+      Guide.</a></p>
+      
+      <p>Information for users, including installation and basic configuration,
+      as well as example usage are provided in a 
+      <a href="../user/basic.html">Basic User Guide.</a> Advanced topics, like
+      look and feel, lessons-learned, and best practices are provided in an
+      <a href="../user/advanced.html">Advanced User Guide.</a></p>
+      
+      <p>Finally, we are planning to provide a number of case studies in the 
+      future, in which multi-component deployments are configured to handle
+      common data and computation management scenarios.</p> 
+
+   </body>
+</document> 

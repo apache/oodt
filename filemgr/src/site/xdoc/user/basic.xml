@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2009 California Institute of Technology.
+  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+
+  $Id$
+-->
+
+<document>
+   <properties>
+      <title>CAS File Manager User Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+      <author email="woollard@jpl.nasa.gov">Dave Woollard</author>
+   </properties>
+
+   <body>
+   
+      <link rel="StyleSheet" href="../css/guides.css" type="text/css" media="screen"/>
+      
+      <div class="warning">This document is in the process of being reorganized as
+      part of our ongoing documentation effort. Please check back for updates.</div>
+      
+      <section name="Introduction">
+      
+      <p>This document serves as a basic user's guide for the CAS File Manager 
+      project. The goal of the document is to allow users to check out, build, and 
+      install a base version of the CAS File Manager, as well as perform basic 
+      configuration tasks. For advanced topics, such as configuring the File 
+      Manager to Scale and other tips and tricks, please see our 
+      <a href="../user/advanced.html">Advanced Guide.</a></p>
+      
+      <p>The remainder of this guide is separated into the following sections:</p>
+      <ul>
+        <li><a href="#section1">Download and Build</a></li>
+        <li><a href="#section2">Configuration in 2 Minutes or Less</a></li>
+        <li><a href="#section3">Learn By Example</a></li>
+      </ul>  
+      </section> 
+     
+      <a name="section1"/>
+      <section name="Download and Build">
+        <p>The most recent CAS-File Manager project can be downloaded from the OODT
+        <a href="http://oodt.jpl.nasa.gov">website</a> or it can be checked out 
+        from the OODT repository using Subversion. The CAS-File Manager project is 
+        located at <code>http://oodt/repo/cas-filemgr/</code>. We recommend checking
+        out the latest released version (v1.8.0 at the time of writing), which can be 
+        found at <code>http:/oodt/repo/cas-filemgr/tags/X_X_X_release</code>. For
+        more information on using Subversion, see our 
+        <a href="../development/subversion.html">Subversion Guide.</a></p>
+      
+        <p>Maven is the build management system used for OODT projects. We currently 
+        support Maven 2.0 and later. For more information on Maven, see our 
+        <a href="../development/maven.html">Maven Guide.</a></p>
+      
+        <div class="warning">Prior to Release 1.5.0, CAS-File Manager can only be
+        built with Maven 1. Maven 1 and Maven 2 are not compatible (and very 
+        different from one another). For more information on Maven 1, see their
+        <a href="http://maven.apache.org/maven-1.x/">website.</a></div>
+        
+        <p>Assuming a *nix-like environment, with both Maven and Subversion 
+        clients installed and on your path, an example of the checkout and 
+        build process is presented below:</p>
+        
+         <source>
+> mkdir /usr/local/src
+> cd /usr/local/src
+> svn checkout http://oodt/repo/cas-filemgr/tags/1_8_0_release \
+    cas-filemgr-v1.8.0       
+      </source>
+        
+      <p>After the Subversion command completes, you will have the source
+      for the CAS-Filemgr project in the <code>/usr/local/src/cas-filemgr-v1.8.0</code>
+      directory.</p>
+      
+      <p>In order to build the projectfrom this source, issue the following 
+      commands:</p>
+      
+      <source>
+> cd /usr/local/src/cas-filemgr-v1.8.0
+> mvn package    
+      </source>   
+      
+      <p>Note that this command performs a number of tasks, including performing
+      unit tests which can take a long time depending on your system. It is not uncommon
+      for this build to last ten minutes or longer. At the end of the process,
+      you will see a Maven success banner.</p>
+      
+      <p>Once the Maven command completes successfully, you should have a 
+      <code>target</code> directory under <code>cas-filemgr-v1.8.0/</code>. 
+      The project has been built in this directory as a distribution tar ball.
+      In order to move the built project out of the source directory and unpack the
+      tar ball, issue the following commands:</p>
+      
+      <source>
+> cd /usr/local
+> mv src/cas-filemgr-v1.8.0/trunk/cas-filemgr-v1.8.0-dist.tar.gz ./
+> tar -xvzf cas-filemgr-v1.8.0-dist.tar.gz
+> export FILEMGR_HOME=/usr/local/cas-filemgr-v1.8.0
+      </source>       
+      
+      <p>The resultant directory layout from the unpacked tarball is as follows:</p>
+           
+      <source>
+bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
+      </source>
+      
+      <p>A basic description of the files and subdirectories of the deployment is 
+      presented below:</p>
+      <ul>
+         <li><strong>bin</strong> - contains scripts for running the File Manager, 
+         including the "filemgr" server script, and the "filemgr-client" client script.</li>
+         
+         <li><strong>etc</strong> - contains the logging.properties file for the 
+         File Manager, and the filemgr.properties file used to configure the server 
+         options.</li>
+         
+         <li><strong>logs</strong> - the default directory into which log files are 
+         written.</li>
+              
+         <li><strong>doc</strong> - contains Javadoc documentation, and user guides 
+         for using the File Manager.</li>
+         
+         <li><strong>lib</strong> - the required Java jar files to run the File 
+         Manager.</li>
+         
+         <li><strong>policy</strong> - the default XML-based element and product 
+         type policy in case the user is using the XML Repository Manager and/or the 
+         XML Validation Layer.</li>
+         
+         <li><strong>CHANGES.txt</strong> - contains the CHANGES present in this 
+         released version of the File Manager.</li>
+         
+         <li><strong>LICENSE.txt</strong> - the LICENSE for the File Manager 
+         project.</li>
+       </ul>
+      
+      <p>Now you have a built File Manager at <code>/usr/local/cas-filemgr-v1.8.0</code>.
+      In the next section, we will discuss how you can configure the File Manager for
+      basic operations.</p>
+      
+    </section>
+      
+    <a name="section2"/>
+    <section name="Configuration in 2 Minutes or Less">
+      
+      <p>The reason for entitling this section "in 2 Minutes or Less" is to show that
+      in it's base deployment, with vary minimal configuration, we can have the File
+      Manager in a usable state, capable of archiving products and capturing basic 
+      metadata. For the record, I haven't timed it, but its pretty fast...</p>
+      
+      <p>We are going to set up the File Mnaager to use and XML-based Validation layer,
+      and XML product policy, and a Lucene metadata Catalog. The first step is to edit
+      the filemgr script in <code>$FILEMGR_HOME/bin</code>. Make the following 
+      changes:</p>
+     
+       <ul>
+         <li>Set the <code>SERVER_PORT</code> variable to the desired port on which 
+         you'd like to run the File Manager. Our default port is 9000.</li>
+         
+         <li>Set the <code>JAVA_HOME</code> variable to point to the location of your 
+         installed JRE runtime. If you do not know where this is, type <code>&gt; which 
+         java</code> and use that path.</li>
+         
+         <li>Set the <code>RUN_HOME</code> variable to point to the location to which
+         you'd like the File Manager PID file written. Typically this should default to 
+         <code>/var/run</code>, but not all system administrators allow users to write 
+         to <code>/var/run</code>.</li>
+       </ul>
+       
+       <p>The second step in configuration is to edit 
+       <code>$FILEMGR_HOME/bin/filemgr-client</code> script, making the following 
+       change:</p>
+       
+       <ul>
+          <li>Set the <code>JAVA_HOME</code> variable to point to the location of 
+          your installed JRE runtime.</li>
+       </ul>
+           
+       <p>In the third step of this configuration, you will set the File Manager's
+       various extension points. For more information about the functionality of
+       these extension points, see our 
+       <a href="../development/developer.html">Developer Guide.</a> By default, 
+       the File Manager is built to use the XML-based repository manager and 
+       validation layer extension points, the <a href="http://lucene.apache.org/">
+       Lucene</a>-based catalog extension point, and the local data transfer 
+       interface.</p> 
+       
+       <p>Make the following changes to 
+       <code>$FILEMGR_HOME/etc/filemgr.properties</code>:</p>
+       
+       
+       <ul>     
+         <li>Specify the path to the directory where the File Manager will create the
+         Lucene index and associated files by setting the 
+         <code>gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.idxPath</code> property
+         to <code>$FILEMGR_HOME/catalog</code>. Make sure that this directory does
+         NOT exist the time you run the File Manager. If the File Manager does not find
+         a directory at thie specified location, it will create all of the necessary 
+         directory structure and ancillary files.</li>
+         
+         <li>Specify the paths to the directories where the XML policy files are stored 
+         for the validation layer and for the repository manager. These paths are set by 
+         <code>gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.dirs</code> and 
+         <code>gov.nasa.jpl.oodt.cas.filemgr.validation.dirs</code> respectively. The 
+         default location (and default policy files) are located at 
+         <code>$FILEMGR_HOME/policy</code> in the vanilla deployment of the File Manager.
+         Note that these properties need to be fully specified URLs (e.g., they should 
+         start with <code>file://</code>).</li>
+       </ul>
+
+       <div class="info">Optionally, you can change the default logging properties for
+       the CAS File Manager. This is done by editing 
+       <code>$FILEMGR_HOME/etc/logging.properties</code>. We have tried to select sensible
+       defaults for the average user, but if you would like more or less information 
+       generated in the File Manager logs, you can edit the levels of different catagories
+       of information in this proporties file. The following logging levels are available:
+       <code>INFO</code>, <code>WARNING</code>, <code>FINE</code>, <code>FINER</code>,
+       <code>FINEST</code>, and <code>ALL</code>.</div>
+   
+      <p>With this last step, you have configured the File Manager. In order to test your 
+      configuration, cd to <code>$FILEMGR_HOME/bin</code> and type:</p>
+
+      <source>
+> ./filemgr start
+      </source>
+
+
+      <p>This will startup the file manager XML-RPC server interface. Your File Manager 
+      is now ready to run! You can test out the file manager by running a simple ingest 
+      command using the filemgr-client command below. First create a simple text file 
+      called "blah.txt" and place it inside <code>$FILEMGR_HOME/bin</code> Then, create 
+      a blank metadata file for the product, using the 
+      <a href="http://oodt.jpl.nasa.gov/vc/svn/cas-metadata/trunk/src/main/conf/cas.metadata.xsd">schema</a>
+      or  <a href="http://oodt.jpl.nasa.gov/vc/svn/cas-metadata/trunk/src/main/conf/cas.metadata.dtd">DTD</a>
+      provided in the <a href="http://oodt.jpl.nasa.gov/cas-metadata">CAS-Metadata</a>
+      project. An example XML file might be:</p>
+      
+      <source>
+        &lt;cas:metadata xmlns:cas=&quot;http://oodt.jpl.nasa.gov/1.0/cas&quot;&gt;
+        &lt;/cas:metadata&gt;
+      </source>
+      
+      <p>Call this metadata file <code>blah.txt.met</code>, and place it also in 
+      <code>$FILEMGR_HOME/bin</code>. Then, run the command below, assuming that you 
+      started the File Manager on the default port of <code>9000</code>:</p>
+
+      <source>
+> ./filemgr-client --url http://localhost:9000 --operation \
+   --ingestProduct --productName Blah.txt --productStructure Flat \
+   --productTypeName GenericFile \ 
+   --metadataFile file:///usr/local/cas-filemgr-v1.8.0/bin/blah.txt.met \
+   --refs file:///usr/local/cas-filemgr-v1.8.0/bin/blah.txt
+      </source>
+
+      <p>This command triggers the ingest process. You should see a response message that 
+      concludes with a line similar to:</p>
+
+      <source>
+      ingestProduct: Result: 3a812d86-148d-11db-a25a-f388f524a371
+      </source>
+
+      <p>If you see something similar to this message, you have successfully configured
+      the CAS File Manager, hopefully in 2 minutes or less (and even if it took a little 
+      more time, you have to admit it was by and large painless).</p>
+      </section>
+      
+      <a name="section3"/>
+      <section name="Learn By Example">
+      <p>Coming Soon...</p>
+      </section>
+      
+      <section name="Conclusion">
+      <p>In this Basic User Guide, we have covered a number of topics, including File 
+      Manager installation, configuration, and a basic example of use. For more advanced 
+      topics, including the use of multiple catalogs and best practices for addressing
+      scaling issues, see our <a href="../user/advanced.html">Advanced Guide.</a></p>
+      </section>
+      
+   </body>
+</document> 

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2009 California Institute of Technology.
+  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+
+  $Id$
+-->
+
+<document>
+   <properties>
+      <title>CAS File Manager User Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+      <author email="woollard@jpl.nasa.gov">Dave Woollard</author>
+   </properties>
+
+   <body>
+      <link rel="StyleSheet" href="../css/guides.css" type="text/css" media="screen"/>
+   
+      <div class="warning">This document is in the process of being reorganized as
+      part of our ongoing documentation effort. Please check back for updates.</div>  
+   
+      <section name="Introduction">
+      
+      <p>In the CAS File Manager Advanced User Guide, we will cover a number of 
+      advanced topics related to using the CAS File Manager, including situations
+      that have arisen in the authors' experiences regarding the use of multiple
+      catalogs within a singe File Manager, address scaling issues, etc. Basic
+      concepts, such as installation and configuration, can be found in the 
+      <a href="../user/basic.html">Basic User Guide</a>.</p>
+      
+      <p>The remainder of this guide is separated into the following sections:</p>
+      <ul>
+        <li><a href="#section1">Multiple Catalog Configuration</a></li>
+        <li><a href="#section2">Scaling Issues</a></li>
+      </ul>
+      
+      </section>
+      
+      <a name="section1"/>
+      <section name="Multiple Catalog Configuration">
+      <p>Coming Soon...</p>
+      </section>
+      
+      <a name="section2"/>
+      <section name="Scaling Issues">
+      <p>Coming Soon...</p>
+      </section>
+      
+   </body>
+</document> 
