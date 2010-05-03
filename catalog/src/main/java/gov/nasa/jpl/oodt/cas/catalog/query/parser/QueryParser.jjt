@@ -1,0 +1,202 @@
+//Copyright (c) 2009, California Institute of Technology.
+//ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+//
+//$Id$
+//
+// @author bfoster
+//
+
+options {
+  JDK_VERSION = "1.5";
+  STATIC = false;
+}
+
+PARSER_BEGIN(QueryParser)
+	package gov.nasa.jpl.oodt.cas.catalog.query.parser;
+
+	import java.io.ByteArrayInputStream;
+	import java.util.Arrays;
+	import java.util.HashSet;
+	import java.util.Vector;
+	import java.util.Properties;
+	import gov.nasa.jpl.oodt.cas.catalog.query.QueryExpression;
+	import gov.nasa.jpl.oodt.cas.catalog.query.QueryLogicalGroup;
+	import gov.nasa.jpl.oodt.cas.catalog.query.StdQueryExpression;
+	import gov.nasa.jpl.oodt.cas.catalog.query.ComparisonQueryExpression;
+	import gov.nasa.jpl.oodt.cas.catalog.query.CustomQueryExpression;
+	import gov.nasa.jpl.oodt.cas.catalog.term.Term;
+	
+    public class QueryParser {
+    	
+    	public static QueryExpression parseQueryExpression(String queryExpressionString) throws ParseException, TokenMgrError {
+    		return new QueryParser(new ByteArrayInputStream(queryExpressionString.getBytes())).parseInput();
+    	}
+    	
+       	public static void main( String[] args ) throws ParseException, TokenMgrError {
+          	System.out.println(new QueryParser( System.in ).parseInput());
+       	} 
+       	
+    }
+PARSER_END(QueryParser)
+
+SKIP : { " " | "\r" | "\n" | "\r\n" }
+TOKEN: { < AND : "AND" > }
+TOKEN: { < OR : "OR" > }
+TOKEN: { < QUOTE : "'" > }
+TOKEN: { < EQUALS : "=" > }
+TOKEN: { < SEMI_COLON : ";" > }
+TOKEN: { < COMMA : "," > }
+TOKEN: { < OPEN_BRACES : "{" > }
+TOKEN: { < CLOSE_BRACES : "}" > }
+TOKEN: { < OPEN_PARENS : "(" > }
+TOKEN: { < CLOSE_PARENS : ")" > }
+TOKEN: { < BUCKET_NAME_KEY : "bucketNames" > }
+TOKEN: { < CUSTOM_NAME_KEY : "name" > }
+TOKEN: { < P_KEY : "p:" <TERM> > }
+TOKEN: { < #STRING_LITERAL: (["0"-"9","a"-"z","A"-"Z","-","_",".",":","/"]) > }
+TOKEN: { < TERM: (["a"-"z","A"-"Z"])+ (<STRING_LITERAL>)* > }
+TOKEN: { < NON_TERM: (["0"-"9"])+ (<STRING_LITERAL> | " " | "/"| "\\" | "?" | "<" | ">" | "~" | "`" | "*" | "#" | "&" | "!" | "@" | "$" | "%" | "^" | "(" | ")" | "{" | "}" | "[" | "]")* > }
+TOKEN: {
+      < EQ : "==" >
+    | < GE : ">=" >
+    | < GT : ">" >
+    | < LE : "<=" >
+    | < LT : "<" >
+}
+
+QueryExpression parseInput() : 
+{
+	QueryExpression qe = null;
+}
+{
+   	qe = Query(null) <EOF>
+   	{ return qe; }
+}
+
+QueryExpression Query(Vector<String> bucketNames) : 
+{
+	QueryExpression qe1 = null;
+	QueryExpression qe2 = null;
+	Token operator = null;
+}
+{
+    qe1 = QueryExpression(bucketNames) ( LOOKAHEAD( <AND> | <OR> ) ( operator = <AND> | operator = <OR> ) qe2 = Query(bucketNames) )*
+    { 
+    	if (qe2 == null) {
+    		return qe1;
+    	}else {
+    		QueryLogicalGroup queryLogicalGroup = new QueryLogicalGroup();
+    		if (bucketNames != null)
+    			queryLogicalGroup.setBucketNames(new HashSet<String>(bucketNames));
+    		queryLogicalGroup.setOperator(QueryLogicalGroup.Operator.valueOf(operator.image.toUpperCase()));
+    		queryLogicalGroup.addExpression(qe1);
+    		queryLogicalGroup.addExpression(qe2);
+    		return queryLogicalGroup;
+    	}
+    }
+}
+
+QueryExpression QueryExpression(Vector<String> bucketNames) :
+{
+	QueryExpression qe = null;
+}
+{
+    ( 
+    	LOOKAHEAD ( <OPEN_PARENS> ) 
+    	qe = PriorityQueryExpression(bucketNames)
+    | 
+    	LOOKAHEAD ( <OPEN_BRACES> <BUCKET_NAME_KEY> ) 
+    	qe = StdQueryExpression()
+    | 
+    	LOOKAHEAD ( <OPEN_BRACES> <CUSTOM_NAME_KEY> ) 
+    	qe = CustomQueryExpression(bucketNames)
+    | 
+        LOOKAHEAD ( <TERM> ) 
+    	qe = ComparisonQueryExpression(bucketNames) 
+    )
+    
+    { return qe; }
+}
+
+QueryExpression StdQueryExpression() : 
+{
+	QueryExpression qe = null;
+	Vector<String> bucketNames = new Vector<String>();
+}
+{
+    <OPEN_BRACES> <BUCKET_NAME_KEY> <EQUALS> <QUOTE> getValues(bucketNames) <QUOTE> [<SEMI_COLON> qe = Query(bucketNames)] <CLOSE_BRACES>
+    { 
+    	if (qe == null) {
+    		return new StdQueryExpression(new HashSet<String>(bucketNames));
+    	}else {
+    		return qe; 
+    	}
+    }
+}
+
+QueryExpression ComparisonQueryExpression(Vector<String> bucketNames) : 
+{
+	Token termName = null;
+	Token operator = null;
+	Vector<String> values = new Vector<String>();
+}
+{
+    termName = <TERM> ( operator = <EQ> | operator = <GT> | operator = <GE> | operator = <LT> | operator = <LE> ) <QUOTE> getValues(values) <QUOTE>
+    { 
+    	Term term = new Term(termName.image);
+    	term.setValues(values); //Arrays.asList(termValues.image.split(",")));
+    	ComparisonQueryExpression comparisonQueryExpression = new ComparisonQueryExpression();
+    	if (bucketNames != null)
+    		comparisonQueryExpression.setBucketNames(new HashSet<String>(bucketNames));
+    	comparisonQueryExpression.setTerm(term);
+    	comparisonQueryExpression.setOperator(ComparisonQueryExpression.Operator.getOperatorBySign(operator.image));
+    	return comparisonQueryExpression; 
+    }
+}
+
+QueryExpression PriorityQueryExpression(Vector<String> bucketNames) :
+{
+	QueryExpression qe = null;
+}
+{
+    <OPEN_PARENS> qe = Query(bucketNames) <CLOSE_PARENS>
+    { return qe; }
+}
+
+QueryExpression CustomQueryExpression(Vector<String> bucketNames) :
+{
+	Token customNameToken = null;
+	Properties p = new Properties();
+}
+{
+	<OPEN_BRACES> <CUSTOM_NAME_KEY> <EQUALS> <QUOTE> customNameToken = <TERM> <QUOTE> [ LOOKAHEAD (<SEMI_COLON>) <SEMI_COLON> getProperties(p) ] <CLOSE_BRACES>
+	{ 
+		CustomQueryExpression cqe = new CustomQueryExpression(customNameToken.image, p);
+    	if (bucketNames != null)
+    		cqe.setBucketNames(new HashSet<String>(bucketNames));
+    	return cqe;
+	}
+}
+
+void getValues(Vector<String> values) : 
+{
+	Token value = null;
+}
+{
+	(value = <TERM> | value = <NON_TERM>) ( LOOKAHEAD (<COMMA>) <COMMA> getValues(values) ) *
+	{ 
+		values.add(0, value.image);
+	}
+}
+
+void getProperties(Properties p) : 
+{
+	Token propertyKey = null;
+	Token propertyVal = null;
+}
+{
+	propertyKey = <P_KEY> <EQUALS> <QUOTE> (propertyVal = <TERM> | propertyVal = <NON_TERM>) <QUOTE> ( LOOKAHEAD (<COMMA>) <COMMA> getProperties(p) ) *
+	{ 
+		p.put(propertyKey.image.substring(2), propertyVal.image);
+	}
+}

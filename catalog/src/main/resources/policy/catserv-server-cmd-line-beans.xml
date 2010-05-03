@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2009 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: CAS-Catalog Command-line options
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean class="gov.nasa.jpl.oodt.cas.commons.spring.postprocessor.SetIdBeanPostProcessor"/>
+
+    <!-- CAS-Catalog Cmd-Line-Options -->
+    <bean id="serverFactoryBeanId" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+        <property name="shortOption" value="sfb"/>
+        <property name="longOption" value="serverFactoryBeanId"/>
+        <property name="description" value="CommunicationChannelServerFactory Bean Id"/>
+        <property name="hasArgs" value="true"/>
+        <property name="optionArgName" value="bean id"/>
+        <property name="required" value="true"/>
+    </bean>
+
+    <bean id="printSupportedServers" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+        <property name="shortOption" value="pss"/>
+        <property name="longOption" value="printSupportedServers"/>
+        <property name="description" value="Prints a list and description of all supported CommunicationChannelServerFactories"/>
+        <property name="hasArgs" value="false"/>
+        <property name="required" value="false"/>
+        <property name="performAndQuit" value="true"/>
+        <property name="handler">
+            <bean class="gov.nasa.jpl.oodt.cas.catalog.server.option.PrintSupportedServersHandler">
+                <property name="beanRepo" value="/${pcs.home}/core/catalog/policy/catserv-server-config.xml"/>
+            </bean>
+        </property>
+    </bean>
+
+</beans>
+
+

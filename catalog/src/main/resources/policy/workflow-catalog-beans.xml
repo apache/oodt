@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2009 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: Workflow Catalog
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <bean id="WorkflowManagerCatalog" factory-bean="WorkflowManagerCatalogFactory" factory-method="createCatalog"/>
+    <bean id="WorkflowManagerCatalogFactory" class="gov.nasa.jpl.oodt.cas.catalog.system.CatalogFactory">
+        <property name="catalogId" value="urn:PEATE:WorkflowInstancesCatalog"/>
+        <property name="indexFactory" ref="WorkflowManagerDataSourceIndexFactory"/>
+        <property name="dictionaryFactories">
+            <list>
+                <ref bean="WorkflowManagerDictionaryFactory"/>
+            </list>
+        </property>
+        <property name="restrictQueryPermissions" value="false"/>
+        <property name="restrictIngestPermissions" value="false"/>
+    </bean>
+    
+    <!-- WorkflowManager Indexes -->
+    <bean id="WorkflowManagerDataSourceIndexFactory" class="gov.nasa.jpl.oodt.cas.catalog.struct.impl.index.WorkflowManagerDataSourceIndexFactory">
+        <property name="jdbcUrl" value="jdbc:oracle:thin:@dew.jpl.nasa.gov:1521:npptest"/>        
+        <property name="user" value="nppint"/>
+        <property name="pass" value="Peate"/>
+        <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+    </bean>
+    
+    <!-- WorkflowManager Dictionary -->
+    <bean id="WorkflowManagerDictionaryFactory" class="gov.nasa.jpl.oodt.cas.catalog.struct.impl.dictionary.WorkflowManagerDictionaryFactory"/>
+    
+</beans>
+
+

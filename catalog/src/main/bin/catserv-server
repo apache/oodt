@@ -1,0 +1,14 @@
+#!/bin/csh
+
+set args
+
+if ( $#args > 0 ) then
+	set args = "$*"
+endif
+
+${JAVA_HOME}/bin/java \
+   -Djava.ext.dirs=../lib \
+   -Djava.util.logging.config.file=../etc/logging.properties \
+   -Dgov.nasa.jpl.oodt.cas.catalog.properties.file=../etc/catalog-service.properties \
+   gov.nasa.jpl.oodt.cas.catalog.server.CatalogServiceServerLauncher ${args}
+   
