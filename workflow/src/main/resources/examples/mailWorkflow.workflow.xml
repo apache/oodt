@@ -1,0 +1,5 @@
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="mailWorkflow" id="urn:oodt:mailWorkflow">
+ <tasks>
+   <task id="urn:oodt:mailTask"/>
+ </tasks>
+</cas:workflow>

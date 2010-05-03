@@ -1,0 +1,8 @@
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="Long Workflow" id="urn:oodt:longWorkflow">
+ <tasks>
+   <task id="urn:oodt:HelloWorld"/>
+   <task id="urn:oodt:GoodbyeWorld"/>
+   <task id="urn:oodt:IntensiveTask"/>
+   <task id="urn:oodt:IntensiveTaskWithWait"/>
+ </tasks>
+</cas:workflow>

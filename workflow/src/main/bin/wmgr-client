@@ -1,0 +1,15 @@
+#!/bin/sh
+# Copyright (c) 2005 California Institute of Technology.
+# ALL RIGHTS RESERVED. U.S. Government Sponsorship acknowledged.
+#
+# $Id$
+
+if [ -z $JAVA_HOME ] ; then
+	JAVA_HOME=/path/to/java/home
+else
+	JAVA_HOME=${JAVA_HOME}
+fi
+
+export JAVA_HOME
+
+$JAVA_HOME/bin/java -Djava.ext.dirs=../lib -Djava.util.logging.config.file=../etc/logging.properties gov.nasa.jpl.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient $*

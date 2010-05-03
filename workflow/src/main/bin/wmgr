@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# init script for XmlRpcWorkflowManager
+#
+# chkconfig: 345 88 22
+# description: CAS Workflow Manager
+#
+# Copyright (c) 2005 California Institute of Technology.
+# ALL RIGHTS RESERVED. U.S. Government Sponsorship acknowledged.
+#
+# $Id$
+
+[ -f /etc/sysconfig/java ] && . /etc/sysconfig/java
+#[ -f /etc/sysconfig/cas-filemgr] && . /etc/sysconfig/cas-filemgr
+
+SERVER_PORT=9001
+export SERVER_PORT
+
+if [ -z $JAVA_HOME ] ; then
+	JAVA_HOME=/path/to/java/home
+else
+	JAVA_HOME=${JAVA_HOME}
+fi
+
+export JAVA_HOME
+CAS_WORKFLOW_HOME=..
+export CAS_WORKFLOW_HOME
+RUN_HOME=${CAS_WORKFLOW_HOME}/../run
+export RUN_HOME
+CAS_WORKFLOW_PROPS=../etc/workflow.properties
+export CAS_WORKFLOW_PROPS
+
+PATH=${JAVA_HOME}/bin:${CAS_WORKFLOW_HOME}/bin:/usr/bin:/bin:/usr/sbin:/sbin
+export PATH
+
+# See how we were called.
+case "$1" in
+  start)
+        echo -n "Starting cas workflow manager: "
+        $JAVA_HOME/bin/java -Djava.ext.dirs=${CAS_WORKFLOW_HOME}/lib \
+        -Djava.util.logging.config.file=${CAS_WORKFLOW_HOME}/etc/logging.properties \
+        -Dgov.nasa.jpl.oodt.cas.workflow.properties=${CAS_WORKFLOW_PROPS} \
+        gov.nasa.jpl.oodt.cas.workflow.system.XmlRpcWorkflowManager --portNum $SERVER_PORT &       
+        echo $! >${RUN_HOME}/cas.workflow.pid 
+        echo "OK"
+        sleep 5
+        ;;
+  stop)
+        echo -n "Shutting down cas workflow manager: "
+        kill `cat ${RUN_HOME}/cas.workflow.pid`
+        echo "OK"
+        ;;
+  restart)
+        $0 stop
+        $0 start
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+
+exit 0

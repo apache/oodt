@@ -1,0 +1,7 @@
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas"
+	name="testMetErrorWorkflow"
+	id="urn:oodt:testMetErrorWorkflow">
+	<tasks>
+		<task id="urn:oodt:TestReqMetFieldsTask" />
+	</tasks>
+</cas:workflow>

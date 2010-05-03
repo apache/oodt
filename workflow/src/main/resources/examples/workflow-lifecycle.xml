@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2008, California Institute of Technology.
+  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+  
+  
+  $Id$
+-->
+<cas:workflowlifecycles xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+<default>
+  <stage name="setup">
+    <status>QUEUED</status>
+    <status>CREATED</status>
+  </stage>
+  <stage name="met_check">
+    <status>METMISS</status>
+  </stage>
+  <stage name="precond_check">
+    <status>PAUSED</status>  
+  </stage>
+  <stage name="workflow_start">
+    <status>RSUBMIT</status>
+    <status>STARTED</status>
+  </stage>
+  <stage name="completion">
+    <status>FINISHED</status>
+  </stage>
+</default>
+
+<!-- 
+  Lifecycles can also be specified at the 
+  Workflow Id level, by starting with a 
+  <lifecycle name="" workflowId="some_id">
+    
+    declaration, and then using the stage
+    and status tags appropriately as shown
+    above
+    
+  </lifecycle>
+ -->
+</cas:workflowlifecycles>

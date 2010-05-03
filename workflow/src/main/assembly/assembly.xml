@@ -1,0 +1,67 @@
+<!-- 
+Copyright 2008 California Institute of Technology. ALL RIGHTS
+RESERVED. U.S. Government Sponsorship acknowledged.
+
+$Id$
+-->
+<assembly>
+  <id>dist</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>true</includeBaseDirectory>
+  <baseDirectory>${project.artifactId}-${project.version}</baseDirectory>
+  <includeSiteDirectory>false</includeSiteDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${basedir}</directory>
+      <outputDirectory>.</outputDirectory>
+      <includes>
+        <include>LICENSE.txt</include>
+        <include>CHANGES.txt</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/src/main/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <includes/>
+      <fileMode>755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/src/main/resources</directory>
+      <outputDirectory>logs</outputDirectory>
+      <includes>
+        <include>REMOVE.log</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/src/main/resources</directory>
+      <outputDirectory>etc</outputDirectory>
+      <includes>
+        <include>workflow.properties</include>
+        <include>logging.properties</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/src/main/resources/examples</directory>
+      <outputDirectory>policy</outputDirectory>
+      <excludes/>
+    </fileSet>
+    <fileSet>
+      <directory>target/site/apidocs</directory>
+      <filtered>false</filtered>
+      <outputDirectory>doc</outputDirectory>
+      <excludes/>
+    </fileSet>
+  </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>lib</outputDirectory>
+      <unpack>false</unpack>
+      <useProjectArtifact>true</useProjectArtifact>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
+      <unpackOptions/>
+    </dependencySet>
+  </dependencySets>
+</assembly>

@@ -1,0 +1,5 @@
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="External Script Workflow" id="urn:oodt:externalScriptWorkflow">
+ <tasks>
+   <task id="urn:oodt:ExternalScriptTask"/>
+ </tasks>
+</cas:workflow>

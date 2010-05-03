@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2008 California Institute of Technology.
+  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+
+  $Id$
+-->
+
+<project name="cas-workflow" href="http://oodt.jpl.nasa.gov/cas-workflow/">
+
+  <body>
+    <links>
+      <item name="OODT" href="../oodt-site/"/>
+    </links>
+
+    <menu ref="reports" inherit="bottom"/>
+    <menu name="Software Documentation">
+      <item name="Developer Guide" href="development/developer.html"/>
+      <item name="Basic User Guide" href="user/basic.html"/>
+      <item name="Advanced User Guide" href="user/advanced.html"/>
+    </menu>
+  </body>
+</project>

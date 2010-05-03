@@ -1,0 +1,6 @@
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="testStatusUpdateWorkflow" id="urn:oodt:testStatusUpdateWorkflow">
+ <tasks>
+   <task id="urn:oodt:RandomStatusUpdateTask"/>
+   <task id="urn:oodt:RandomStatusUpdateTask"/>
+ </tasks>
+</cas:workflow>

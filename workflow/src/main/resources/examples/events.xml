@@ -1,0 +1,30 @@
+<cas:workflowevents xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+	<event name="test">
+		<workflow id="urn:oodt:testWorkflow" />
+	</event>
+	<event name="externalScript">
+        <workflow id="urn:oodt:externalScriptWorkflow" />
+    </event>
+	<event name="backwards">
+		<workflow id="urn:oodt:backwardsTestWorkflow" />
+	</event>
+	<event name="stuck">
+		<workflow id="urn:oodt:wontFinishWorkflow" />
+	</event>
+	<event name="long">
+		<workflow id="urn:oodt:longWorkflow" />
+		<workflow id="urn:oodt:longWorkflow" />
+	</event>
+	<event name="metUpdate">
+		<workflow id="urn:oodt:testMetadataUpdateWorkflow" />
+	</event>
+	<event name="statusUpdate">
+		<workflow id="urn:oodt:testStatusUpdateWorkflow" />
+	</event>
+	<event name="metError">
+		<workflow id="urn:oodt:testMetErrorWorkflow" />
+	</event>
+    <event name="GenericFileIngest">
+       <workflow id="urn:oodt:mailWorkflow"/>
+    </event>
+</cas:workflowevents>

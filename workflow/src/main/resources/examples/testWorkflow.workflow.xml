@@ -1,0 +1,6 @@
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="testWorkflow" id="urn:oodt:testWorkflow">
+ <tasks>
+   <task id="urn:oodt:HelloWorld"/>
+   <task id="urn:oodt:GoodbyeWorld"/>
+ </tasks>
+</cas:workflow>

@@ -1,0 +1,10 @@
+<cas:conditions xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+    <condition id="urn:oodt:TrueCondition" name="True Condition" class="gov.nasa.jpl.oodt.cas.workflow.examples.TrueCondition"/>   
+    <condition id="urn:oodt:FalseCondition" name="False Condition" class="gov.nasa.jpl.oodt.cas.workflow.examples.FalseCondition"/>
+    <condition id="urn:oodt:LongCondition" name="Long Condition" class="gov.nasa.jpl.oodt.cas.workflow.examples.LongCondition"/>
+    <condition id="urn:oodt:CheckForMetadataKeys" name="Metadata Key Check" class="gov.nasa.jpl.oodt.cas.workflow.examples.CheckForMetadataKeys">
+        <configuration>
+            <property name="reqMetKeys" value="Met1,Met2,Met3"/>
+        </configuration>
+    </condition>    
+</cas:conditions>

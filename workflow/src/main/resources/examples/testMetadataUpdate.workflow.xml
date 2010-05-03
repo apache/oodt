@@ -1,0 +1,8 @@
+<cas:workflow xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" name="testMetadataUpdateWorkflow" id="urn:oodt:testMetadataUpdateWorkflow">
+ <tasks>
+   <task id="urn:oodt:NumIncrementTask"/>
+   <task id="urn:oodt:NumIncrementTask"/>
+   <task id="urn:oodt:NumIncrementTask"/>
+   <task id="urn:oodt:NumIncrementTask"/>
+ </tasks>
+</cas:workflow>
