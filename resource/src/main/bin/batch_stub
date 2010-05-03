@@ -1,0 +1,19 @@
+#!/bin/tcsh
+# Copyright (c) 2008 California Institute of Technology.
+# ALL RIGHTS RESERVED. U.S. Government Sponsorship acknowledged.
+#
+# $Id$ 
+#
+
+set DIR = `dirname $0`
+cd $DIR
+set DIR_PATH = `pwd`
+
+if ( $#argv != 1 ) then
+        echo "Usage: $0 <port>"
+        exit 1
+else
+        java -Djava.ext.dirs=../lib \
+        gov.nasa.jpl.oodt.cas.resource.system.extern.XmlRpcBatchStub \
+        --portNum $1&
+endif

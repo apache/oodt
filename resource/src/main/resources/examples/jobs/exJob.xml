@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cas:job xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" id="abcd"
+	name="TestJob">
+	<instanceClass
+		name="gov.nasa.jpl.oodt.cas.resource.examples.HelloWorldJob" />
+	<inputClass
+		name="gov.nasa.jpl.oodt.cas.resource.structs.NameValueJobInput">
+		<properties>
+			<property name="user.name" value="Homer!" />
+		</properties>
+	</inputClass>
+	<queue>quick</queue>
+	<load>1</load>
+</cas:job>

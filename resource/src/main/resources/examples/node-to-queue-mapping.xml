@@ -1,0 +1,15 @@
+<!-- 
+Copyright 2006 California Institute of Technology. ALL RIGHTS
+RESERVED. U.S. Government Sponsorship acknowledged.
+
+$Id$
+-->
+<cas:node-to-queue-mapping xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+	<node id="localhost">
+		<queues>
+			<queue name="high"/>
+			<queue name="quick"/>
+			<queue name="long"/>
+		</queues>
+	</node>	
+</cas:node-to-queue-mapping>
