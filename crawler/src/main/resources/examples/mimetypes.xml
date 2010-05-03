@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright 2008 California Institute of Technology. ALL RIGHTS
+	RESERVED. U.S. Government Sponsorship acknowledged.
+	
+	$Id$
+-->
+<mime-info>
+	
+	<!-- mime-type declaration (one or more) -->
+	<mime-type type="some/mime-type">
+		
+		<!-- super-type, MetExtractorSpecs defined for this type and
+			it's parent types will also be used (zero or one) -->
+		<sub-class-of type="another/mime-type"/>
+		
+		<!-- any regular expression parsable by Java Pattern (one or more) -->
+		<glob pattern="regExpr"/>
+		
+	</mime-type>
+	
+</mime-info>

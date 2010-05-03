@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright 2008 California Institute of Technology. ALL RIGHTS
+	RESERVED. U.S. Government Sponsorship acknowledged.
+	
+	$Id$
+-->
+<cas:mimetypemap xmlns:cas="http://oodt.jpl.nassa.gov/1.0/cas" magic="true or false" mimeRepo="path/to/tika-mimetypes/xml/file">
+	
+	<!-- extractor specs for mime-type from mimetypes.xml (one or more) -->
+	<mime type="some/mime-type">
+		
+		<!-- extractor spec for given mime-type (one or more) -->
+		<extractor class="extractor.class">
+			
+			<!-- extractor config file (zero or one) -->
+			<config file="extractor/config/file"/>
+			
+			<!-- precondition comparators (zero or one) -->
+			<preCondComparators>
+				
+				<!-- precondition comparator id (one or more) -->
+				<preCondComparator id="id_from_application_context_bean_file"/>
+				
+			</preCondComparators>
+			
+		</extractor>
+		
+	</mime>
+	
+</cas:mimetypemap>

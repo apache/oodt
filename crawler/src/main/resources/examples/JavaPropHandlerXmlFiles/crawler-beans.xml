@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2008 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: The configuration for cas-crawler2, that uses the Spring
+    framework to configure crawlers, and crawler actions.
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">   
+    
+    <import resource="classpath:/gov/nasa/jpl/oodt/cas/crawl/config/crawler-bean-properties.xml"/>
+    
+    <!-- Product Crawlers -->
+    <bean id="ProductCrawler" abstract="true" class="gov.nasa.jpl.oodt.cas.crawl.ProductCrawler">
+        <property name="filemgrUrl" value="${gov.nasa.jpl.oodt.cas.crawl.filemgrUrl}"/>
+        <property name="clientTransferer" value="${gov.nasa.jpl.oodt.cas.crawl.clientTransferer}"/>  
+        <property name="noRecur" value="${gov.nasa.jpl.oodt.cas.crawl.noRecur}"/>
+        <property name="crawlForDirs" value="${gov.nasa.jpl.oodt.cas.crawl.crawlForDirs}"/>      
+        <property name="daemonPort" value="${gov.nasa.jpl.oodt.cas.crawl.daemonPort}"/>
+        <property name="daemonWait" value="${gov.nasa.jpl.oodt.cas.crawl.daemonWait}"/>
+        <property name="productPath" value="${gov.nasa.jpl.oodt.cas.crawl.productPath}"/>
+        <property name="requiredMetadata">
+            <bean class="gov.nasa.jpl.oodt.cas.crawl.util.CasPropertyList">
+                <property name="values" value="${gov.nasa.jpl.oodt.cas.crawl.requiredMetadata}"/>
+            </bean>
+        </property>
+        <property name="actionIds">
+            <bean class="gov.nasa.jpl.oodt.cas.crawl.util.CasPropertyList">
+                <property name="values" value="${gov.nasa.jpl.oodt.cas.crawl.actionIds}"/>
+            </bean>
+        </property>    
+    </bean>
+    
+    <bean id="StdProductCrawler" lazy-init="true" parent="ProductCrawler" class="gov.nasa.jpl.oodt.cas.crawl.StdProductCrawler">
+        <description>Ingests data files based on existing metadata files</description>
+        <property name="metFileExtension" value="${gov.nasa.jpl.oodt.cas.crawl.metFileExtension}"/>        
+    </bean>
+    
+    <bean id="MetExtractorProductCrawler" lazy-init="true" parent="ProductCrawler" class="gov.nasa.jpl.oodt.cas.crawl.MetExtractorProductCrawler">
+        <description>Ingests data files after generating a metadat file for it with a given metadata extractor</description>
+        <property name="metExtractor" value="${gov.nasa.jpl.oodt.cas.crawl.metExtractor}"/>
+        <property name="metExtractorConfig" value="${gov.nasa.jpl.oodt.cas.crawl.metExtractorConfig}"/>
+    </bean>
+    
+    <bean id="AutoDetectProductCrawler" lazy-init="true" parent="ProductCrawler" class="gov.nasa.jpl.oodt.cas.crawl.AutoDetectProductCrawler">
+        <description>Ingests data files based on existing metadata files choosing metadata extractors based on mimetypes given in specified mimetype xml file</description>
+        <property name="mimeExtractorRepo" value="${gov.nasa.jpl.oodt.cas.crawl.mimeExtractorRepo}"/>        
+    </bean>
+    
+</beans>

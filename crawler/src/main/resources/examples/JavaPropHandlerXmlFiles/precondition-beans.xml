@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2008 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: The configuration for cas-crawler2, that uses the Spring
+    framework to configure crawlers, and crawler actions.
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <import resource="classpath:/gov/nasa/jpl/oodt/cas/crawl/config/crawler-bean-properties.xml"/>    
+    
+    <!-- Precondition Comparators -->
+    <bean id="PreconditionComparator" lazy-init="true" abstract="true" class="gov.nasa.jpl.oodt.cas.metadata.preconditions.PreConditionComparator"/>
+    
+    <bean id="CheckThatPushPullMetFileExists" lazy-init="true" parent="PreconditionComparator" class="gov.nasa.jpl.oodt.cas.metadata.preconditions.ExistanceCheckComparator">
+        <property name="description" value="Checks if the push-pull metadata file exists for the current data file (default: *.${gov.nasa.jpl.oodt.cas.crawl.pushpullMetFileExtension})"/>        
+        <property name="compareItem">
+            <value type="java.lang.Boolean">true</value>    
+        </property>
+        <property name="fileExtension" value="${gov.nasa.jpl.oodt.cas.crawl.pushpullMetFileExtension}"/>
+        <property name="type" value="equal_to"/>
+    </bean>
+    
+    <bean id="CheckThatDataFileSizeIsGreaterThanZero" lazy-init="true" parent="PreconditionComparator" class="gov.nasa.jpl.oodt.cas.metadata.preconditions.FileSizeComparator">
+        <property name="description" value="Check if the current data file size is greater than zero"/>        
+        <property name="compareItem">
+            <value type="java.lang.Long">0</value>
+        </property>
+        <property name="type" value="greater_than"/>
+    </bean>
+    
+    <bean id="AprioriUniquessCheckWithFilemgr" lazy-init="true" parent="PreconditionComparator" class="gov.nasa.jpl.oodt.cas.crawl.comparator.FilemgrUniquenessCheckComparator">
+        <property name="description" value="Checks where the current data file existing in the filemgr based on its FILENAME"/>        
+        <property name="compareItem">
+            <value type="java.lang.Boolean">false</value>
+        </property>
+        <property name="type" value="equal_to"/>
+        <property name="filemgrUrl" value="${gov.nasa.jpl.oodt.cas.crawl.filemgrUrl}"/>
+    </bean>
+    
+</beans>

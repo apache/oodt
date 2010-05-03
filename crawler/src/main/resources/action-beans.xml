@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2008 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: The configuration for cas-crawler2, that uses the Spring
+    framework to configure crawlers, and crawler actions.
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <bean class="gov.nasa.jpl.oodt.cas.commons.spring.postprocessor.SetIdBeanPostProcessor"/>    
+    
+    <!-- Crawler Actions -->
+    
+    <bean id="DeleteDataFile" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.action.DeleteFile">
+        <property name="description" value="Deletes the current data file"/>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">postIngestSuccess</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="DeletePushpullMetFile" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.action.DeleteFile">
+        <property name="description" value="Deletes the push-pull metadata file for the current data file"/>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">postIngestSuccess</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="DeleteMetadataFile" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.action.DeleteFile">
+        <property name="description" value="Deletes the metadata file for the current data file"/>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">postIngestSuccess</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="MovePushpullMetFileToBackupDir" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.action.MoveFile">
+        <property name="description" value="Moves the push-pull metadata file for the current data file to success directory"/>
+        <property name="createToDir" value="true"/>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">postIngestSuccess</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="MoveMetadataToBackupDir" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.action.MoveFile">
+        <property name="description" value="Moves the metadata file for the current data file to success directory"/>        
+        <property name="createToDir" value="true"/>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">postIngestSuccess</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="UpdateWorkflowStatusToIngest" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.action.WorkflowMgrStatusUpdate">
+        <property name="description" value="Updates the current data files workflow status to Ingest"/>
+        <property name="ingestSuffix" value="Ingest"/>        
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">postIngestSuccess</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="MoveDataFileToFailureDir" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.action.MoveFile">
+        <property name="description" value="Moves the current data file to failure directory"/>
+        <property name="createToDir" value="true"/>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">postIngestFailure</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="MovePushpullMetFileToFailureDir" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.action.MoveFile">
+        <property name="description" value="Moves the push-pull metadata file for the current data file to failure directory"/>
+        <property name="createToDir" value="true"/>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">postIngestFailure</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="MoveMetadataToFailureDir" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.action.MoveFile">
+        <property name="description" value="Moves the metadata file for the current data file to failure directory"/>
+        <property name="createToDir" value="true"/>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">postIngestFailure</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="Unique" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.action.FilemgrUniquenessChecker">
+        <property name="description" value="Checks the filemgr against the PRODUCT_NAME for the current data file to make sure it has not yet been ingested"/>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">preIngest</value>
+            </list>
+        </property>
+    </bean>
+    
+</beans>

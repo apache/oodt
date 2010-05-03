@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2008 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: The configuration for cas-crawler2, that uses the Spring
+    framework to configure crawlers, and crawler actions.
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <bean id="filemgrUrl" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="fm"/>
+        <property name="longOption" value="filemgrUrl"/>
+        <property name="description" value="File Manager URL"/>        
+        <property name="hasArgs" value="true"/>
+        <property name="optionArgName" value="url"/>
+        <property name="required" value="true"/>
+        <property name="handler">
+            <bean class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOptionJavaPropHandler"/>
+        </property>
+    </bean>
+
+    <bean id="failureDir" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="fd"/>
+        <property name="longOption" value="failureDir"/>
+        <property name="description" value="Directory where files will be moved on failure"/>
+        <property name="hasArgs" value="true"/>
+        <property name="optionArgName" value="directory"/>
+        <property name="required" value="false"/>
+        <property name="handler">
+            <bean class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOptionJavaPropHandler"/>            
+        </property>
+    </bean>
+    
+    <bean id="successDir" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="sd"/>
+        <property name="longOption" value="successDir"/>
+        <property name="description" value="Directory where files will be moved on success"/>
+        <property name="hasArgs" value="true"/>
+        <property name="optionArgName" value="directory"/>
+        <property name="required" value="false"/>
+        <property name="handler">
+            <bean class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOptionJavaPropHandler"/>
+        </property>
+    </bean>
+    
+    <bean id="workflowMgrUrl" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="wm"/>
+        <property name="longOption" value="workflowMgrUrl"/>
+        <property name="description" value="Workflow Manager URL"/>
+        <property name="hasArgs" value="true"/>
+        <property name="optionArgName" value="url"/>
+        <property name="required" value="false"/>
+        <property name="handler">
+            <bean class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOptionJavaPropHandler"/>
+        </property>
+    </bean>
+    
+    <bean id="clientTransferer" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="ct"/>
+        <property name="longOption" value="clientTransferer"/>
+        <property name="description" value="File Manager data transferer factory class"/>      
+        <property name="hasArgs" value="true"/>
+        <property name="optionArgName" value="class"/>
+        <property name="required" value="true"/>
+        <property name="handler">
+            <bean class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOptionJavaPropHandler"/>
+        </property>
+    </bean>
+    
+    <bean id="requiredMetadata" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="rqm"/>
+        <property name="longOption" value="requiredMetadata"/>
+        <property name="description" value="Metadata required for ingest to take place"/>    
+        <property name="hasArgs" value="true"/>
+        <property name="optionArgName" value="class"/>
+        <property name="required" value="true"/>
+        <property name="handler">
+            <bean class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOptionJavaPropHandler"/>
+        </property>
+    </bean>
+    
+    <!--
+        
+        
+    
+    <bean id="requiredMetadata" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="rqm"/>
+        <property name="description" value="Metadata required for ingest to take place - commas separated with no spaces"/>    
+        <property name="crawlersAffected">
+            <list>
+                <value>StdProductCrawler</value>
+                <value>MetExtractorProductCrawler</value>
+                <value>AutoDetectProductCrawler</value>                
+            </list>
+        </property>
+        <property name="longOption" value="requiredMetadata"/>
+        <property name="hasArg" value="true"/>
+        <property name="optionArgName" value="metadata_elements"/>
+        <property name="required" value="false"/>  
+    </bean>  
+    
+    <bean id="actionIds" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="ais"/>
+        <property name="description" value="CrawlerActions that should be performed - commas separated with no spaces"/>      
+        <property name="crawlersAffected">
+            <list>
+                <value>StdProductCrawler</value>
+                <value>MetExtractorProductCrawler</value>
+                <value>AutoDetectProductCrawler</value>                
+            </list>
+        </property>
+        <property name="longOption" value="actionIds"/>
+        <property name="hasArg" value="true"/>
+        <property name="optionArgName" value="CrawlerAction ids"/>
+        <property name="required" value="false"/>  
+    </bean>  
+    
+    <bean id="noRecur" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="nr"/>
+        <property name="description" value="Turns off recursive crawling - will only process files in productPath directory"/>     
+        <property name="crawlersAffected">
+            <list>
+                <value>StdProductCrawler</value>
+                <value>MetExtractorProductCrawler</value>
+                <value>AutoDetectProductCrawler</value>                
+            </list>
+        </property>
+        <property name="longOption" value="noRecur"/>
+        <property name="hasArg" value="true"/>
+        <property name="required" value="false"/>  
+    </bean>      
+    
+    <bean id="crawlForDirs" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="cfd"/>
+        <property name="description" value="Will crawl for directories instead of files"/>
+        <property name="crawlersAffected">
+            <list>
+                <value>StdProductCrawler</value>
+                <value>MetExtractorProductCrawler</value>
+                <value>AutoDetectProductCrawler</value>                
+            </list>
+        </property>
+        <property name="longOption" value="crawlForDirs"/>
+        <property name="hasArg" value="false"/>        
+        <property name="required" value="false"/>  
+    </bean>  
+    
+    <bean id="daemonPort" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="dp"/>
+        <property name="description" value="Cause crawler to become a daemon with a XML-RPC webserver started on the given port number"/>   
+        <property name="crawlersAffected">
+            <list>
+                <value>StdProductCrawler</value>
+                <value>MetExtractorProductCrawler</value>
+                <value>AutoDetectProductCrawler</value>                
+            </list>
+        </property>
+        <property name="longOption" value="daemonPort"/>
+        <property name="hasArg" value="true"/>
+        <property name="optionArgName" value="portNum"/>
+        <property name="required" value="false"/>  
+    </bean>  
+    
+    <bean id="daemonWait" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="dw"/>
+        <property name="description" value="Cause crawler to become a daemon and sleep for given number of seconds between crawls"/>
+        <property name="crawlersAffected">
+            <list>
+                <value>StdProductCrawler</value>
+                <value>MetExtractorProductCrawler</value>
+                <value>AutoDetectProductCrawler</value>                
+            </list>
+        </property>
+        <property name="longOption" value="daemonWait"/>
+        <property name="hasArg" value="true"/>
+        <property name="optionArgName" value="seconds"/>
+        <property name="required" value="false"/>  
+    </bean>  
+
+    <bean id="productPath" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="pp"/>
+        <property name="description" value="Root directory to crawl"/> 
+        <property name="crawlersAffected">
+            <list>
+                <value>StdProductCrawler</value>
+                <value>MetExtractorProductCrawler</value>
+                <value>AutoDetectProductCrawler</value>                
+            </list>
+        </property>
+        <property name="longOption" value="productPath"/>
+        <property name="hasArg" value="true"/>
+        <property name="optionArgName" value="directory"/>
+        <property name="required" value="true"/>  
+    </bean>  
+    
+    <bean id="metFileExtension" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="mfx"/>
+        <property name="description" value="The file extension of existing and to be created PCS metadata files"/>  
+        <property name="crawlersAffected">
+            <list>
+                <value>StdProductCrawler</value>             
+            </list>
+        </property>
+        <property name="crawlerActionsAffected">
+            <list>
+                <value>DeleteMetadataFile</value>             
+                <value>MoveMetadataToBackupDir</value>             
+                <value>MoveMetadataToFailureDir</value>             
+            </list>
+        </property>
+        <property name="longOption" value="metFileExtension"/>
+        <property name="hasArg" value="true"/>
+        <property name="optionArgName" value="file extension"/>
+        <property name="required" value="false"/>  
+    </bean>  
+    
+    <bean id="metExtractor" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="mx"/>
+        <property name="description" value="Metadata extractor class to use"/>     
+        <property name="crawlersAffected">
+            <list>
+                <value>MetExtractorProductCrawler</value>
+            </list>
+        </property>
+        <property name="longOption" value="metExtractor"/>
+        <property name="hasArg" value="true"/>
+        <property name="optionArgName" value="class"/>
+        <property name="required" value="true"/>  
+    </bean>  
+    
+    <bean id="metExtractorConfig" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="mxc"/>
+        <property name="description" value="Config file for metadata extractor"/> 
+        <property name="crawlersAffected">
+            <list>
+                <value>MetExtractorProductCrawler</value>
+            </list>
+        </property>
+        <property name="longOption" value="metExtractorConfig"/>
+        <property name="hasArg" value="true"/>
+        <property name="optionArgName" value="file"/>
+        <property name="required" value="true"/>  
+    </bean>
+
+    <bean id="mimeExtractorRepo" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="mxr"/>
+        <property name="description" value="Mime-type to metadata extractor mapping xml file"/> 
+        <property name="crawlersAffected">
+            <list>
+                <value>AutoDetectProductCrawler</value>
+            </list>
+        </property>
+        <property name="longOption" value="mimeExtractorRepo"/>
+        <property name="hasArg" value="true"/>
+        <property name="optionArgName" value="file"/>
+        <property name="required" value="true"/>  
+    </bean>
+    
+    <bean id="pushpullMetFileExtension" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOption">
+        <property name="shortOption" value="ppmfx"/>
+        <property name="description" value="File extension of push-pull metadata files"/>  
+        <property name="crawlerActionsAffected">
+            <list>
+                <value>DeletePushpullMetFile</value>             
+                <value>MovePushpullMetFileToBackupDir</value>             
+                <value>MovePushpullMetFileToFailureDir</value>             
+            </list>
+        </property>
+        <property name="preConditionsAffected">
+            <list>
+                <value>CheckThatPushPullMetFileExists</value>             
+            </list>
+        </property>
+        <property name="longOption" value="pushpullMetFileExtension"/>
+        <property name="hasArg" value="true"/>
+        <property name="optionArgName" value="file extension"/>
+        <property name="required" value="false"/>  
+    </bean>
+    
+    <bean id="DaemonGroup" class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOptionsGroup">
+        <property name="name" value="DaemonGroup"/>        
+        <property name="description" value="Both required to make crawler a daemon"/>
+        <property name="options">
+            <list>
+                <ref bean="daemonPort"/>                
+                <ref bean="daemonWait"/>
+            </list>
+        </property>
+    </bean>-->
+
+</beans>

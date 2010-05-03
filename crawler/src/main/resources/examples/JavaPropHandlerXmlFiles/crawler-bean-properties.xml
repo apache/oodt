@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2008 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: The configuration for cas-crawler2, that uses the Spring
+    framework to configure crawlers, and crawler actions.
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <bean class="gov.nasa.jpl.oodt.cas.crawl.util.CasPropertyPlaceholderConfigurer">
+        
+        <!-- Allow for system-level properties to override all properties below -->
+        <property name="systemPropertiesMode" value="2"/>
+        
+        <!-- Default Properties -->
+        <property name="properties">
+            <props>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.failureDir">./failureDir</prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.successDir">./successDir</prop>                
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.workflowMgrUrl">http://localhost:9001</prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.filemgrUrl">http://localhost:9000</prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.clientTransferer">gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory</prop>       
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.requiredMetadata"></prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.actionIds"></prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.noRecur">false</prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.crawlForDirs">false</prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.daemonPort">-1</prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.daemonWait">-1</prop>     
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.productPath"></prop>                
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.metFileExtension">cas</prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.metExtractor"></prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.metExtractorConfig"></prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.mimeExtractorRepo"></prop>
+                <prop key="gov.nasa.jpl.oodt.cas.crawl.pushpullMetFileExtension">info.tmp</prop>                
+            </props>
+        </property>
+        
+        <!-- File Properties - overrides default properties -->
+        <property name="location" value="/gov/nasa/jpl/oodt/cas/crawl/crawler.properties"/>
+    </bean>
+    
+</beans>

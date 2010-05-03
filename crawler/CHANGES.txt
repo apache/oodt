@@ -1,0 +1,139 @@
+CAS Crawling Framework Changelog
+
+Major Releases:
+===========================================
+2.3.0 Current Development (Unreleased Changes)
+
+- OODT-319 Add the ability to skip ingest in the crawler framework. (pramirez)
+
+- OODT-309 Crawler User Manual (mattmann)
+
+- OODT-304 cas-crawler should fill Filename and FileLocation if they are not set by a Metadata Extractor (bfoster)
+
+- OODT-298 Allow cas-crawler to have global metadata (bfoster)
+
+- OODT-280 Upgrades to cas-commons-1.1.1, cas-metadata-1.6.1, cas-filemgr-1.7.2 and cas-workflow-1.5.1  (mattmann)
+
+2.2.1 - 12/13/2008
+
+- OODT-280 Upgrades to cas-commons-1.1.1, cas-metadata-1.6.1, cas-filemgr-1.7.2 and cas-workflow-1.5.1  (mattmann)
+
+2.2.0 - 11/23/2008
+
+- OODT-266 Make ProductCrawler set PRODUCT_NAME equal to filename if it is not set by the extending class (bfoster)
+
+- OODT-257 Allow CrawlerActions to be associated with a set of mime-types (bfoster)
+
+- OODT-241 cas-commons command-line options fail when setting an assumed boolean argument (mattmann)
+
+2.1.0 - 08/01/2008
+
+- OODT-234  When setting daemon port and wait there is a method invokation error (bfoster)
+
+- OODT-224 Don't throw exceptions and stacktraces in CrawlerLauncher when options aren't specified (mattmann)
+
+- OODT-199 Separate PEATE specific stuff out of OODT projects into the peate directory branch (bfoster)
+
+- OODT-218 Allow for cmd-line options to defined as "perform-and-quit" (bfoster)
+
+- OODT-213 Allows command-line options to validate option values and only be dependent on other options for being required (bfoster)
+
+- OODT-212 Allow cas-crawler to have default PreConditionComparators able to be specified from the command-line (bfoster)
+
+- OODT-211 Create a interface that requires implements classes to contain setId(String) and getId() methods (bfoster)
+
+- OODT-184 Upgrade to JDK5 (mattmann)
+
+- OODT-185 Upgrade to Maven2 (mattmann)
+
+
+2.0.0 - 06/27/08
+
+- OODT-162 When cas-crawler is seeded with a non-existant directory, it should 
+           fail rather than try and crawl its parent directory (mattmann)
+ 
+- OODT-207 Improve crawlers command-line usage and print-out options (bfoster)
+
+- OODT-21 Crawlers should have the ability to pluggably filter files (bfoster,mattmann)
+
+- OODT-182 ProductCrawler refactoring to support flexible action handling for met file 
+          generation, failover, and crawling (bfoster,mattmann)
+          
+- OODT-36 Read in crawl config file and flow down to crawlers (bfoster,mattmann)
+
+- OODT-176 Add metadata extractor preconditions support (bfoster,mattmann)
+
+- OODT-200 Make AutoDetectProductCrawler preconditions and metadata extractors be super-type aware (bfoster)
+
+- OODT-198 Update cas-metadata preconditions to be configured via Spring framework (bfoster, mattmann)
+
+- OODT-197 Support for the creation of a MetReaderConfig so that a System level property is not used to set the metFileExt (bfoster)
+
+- OODT-190 Need ability to build Crawler2 config from command line options (bfoster, mattmann)
+
+- OODT-191 Need Crawler2 equivalent Action and Precondition for doing uniqueness check (bfoster via mattmann)
+
+- formatting updates and cleanup (mattmann)
+
+1.2.0 - 06/09/08
+
+- OODT-179 Update to work with new cas-metadata 1.3.0 release (bfoster)
+
+- OODT-163 Keep crawledProducts list, and allow a user to retrieve the last set of 
+           crawled products from the ProductCrawler (mattmann)
+
+- OODT-153 Make Ingester hasProduct Method in StdIngester throw Exception on hasProduct 
+           exception (mattmann)
+
+1.01 - 03/26/08
+
+- OODT-22 MetExtractorCrawler should be able to determine which met extractor to call based upon mime type (mattmann)
+
+- OODT-150 MetExtractorProductCrawler should use new ExternMetExtractor from cas-metadata to 
+          standardize the external met extractor code (mattmann)
+
+- OODT-147 Allow config file to be specified for MetExtractors in AutoDetectCrawler (mattmann)
+
+- OODT-20 Crawler that determines met extractor by product type (mattmann)
+
+- Reorg of gov.nasa.jpl.oodt.cas.crawl.*Daemon* into its own package (mattmann)
+
+- OODT-134 Copy CHANGES.txt file to bin distribution for cas components (mattmann)
+
+- OODT-97 Allow Crawler to perform uniqueness check based on File.getName() before generating/reading a .met file (mattmann)
+
+- OODT-91 ProductCrawler met file cleanup fails when --metOutputDir is used (mattmann)
+
+- OODT-90 Crawlers run by the CrawlDaemon should crawl first before they go to sleep (mattmann)
+
+- OODT-78 CrawlForDirs property needs to be taken out of ProductCrawler and moved into MetExtractorCrawler (mattmann)
+
+- Upgrade to cas-metadata-1.2.0 to take advantage of OODT-70 (mattmann)
+ 
+- Upgrade to cas-filemgr-1.5.0-dev to take advantage of OODT-77 (mattmann)
+
+- OODT-50 Crawler hasUnique feature broke when capability was moved to StdIngester (mattmann)
+
+- OODT-46 Update cas-crawler with cas-filemgr Ingester i/f (mattmann)
+
+- OODT-42 Met Extractor Crawler is unable to handle files with spaces in their names (mattmann)
+
+- OODT-41 Met Extractor Crawler fails when met extraction fails (mattmann)
+ 
+1.00 - 1/2/2007
+
+- OODT-35 Add timeout to crawl daemons (woollard)
+ 
+- Allow override of product name with ProductName field (mattmann)
+
+- OODT-32 Generic Checksum interface for crawling framework (mattmann)
+
+- Add capability to handle crawling directories that are products (mattmann)
+
+- Add crawl daemon capability to ProductCrawlers (mattmann)
+
+- OODT-18 ProductCrawlers should be able to ensure Product uniquess when ingesting (mattmann)
+
+- OODT-17 Product Crawler should optionally be able to notify Workflow Manager on Ingest (mattmann)
+ 
+- OODT-16 MetExtractorCrawler should take an optional parameter that specifies a place to write .met files (mattmann)

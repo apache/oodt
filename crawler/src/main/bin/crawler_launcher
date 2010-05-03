@@ -1,0 +1,6 @@
+#!/bin/sh
+# Copyright 2008 California Institute of Technology. ALL RIGHTS RESERVED.
+# U.S. Government Sponsorship acknowledged.
+##########################################################################
+
+java -Djava.util.logging.config.file=../etc/logging.properties -Djava.ext.dirs=../lib gov.nasa.jpl.oodt.cas.crawl.CrawlerLauncher $*

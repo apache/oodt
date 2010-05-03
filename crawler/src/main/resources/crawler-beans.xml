@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2008 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: The configuration for cas-crawler2, that uses the Spring
+    framework to configure crawlers, and crawler actions.
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">   
+
+    <bean class="gov.nasa.jpl.oodt.cas.commons.spring.postprocessor.SetIdBeanPostProcessor"/>    
+    
+    <!-- Product Crawlers -->
+    
+    <bean id="StdProductCrawler" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.StdProductCrawler">
+        <description>Ingests data files based on existing metadata files</description>
+    </bean>
+    
+    <bean id="MetExtractorProductCrawler" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.MetExtractorProductCrawler">
+        <description>Ingests data files after generating a metadat file for it with a given metadata extractor</description>
+    </bean>
+    
+    <bean id="AutoDetectProductCrawler" lazy-init="true" class="gov.nasa.jpl.oodt.cas.crawl.AutoDetectProductCrawler">
+        <description>Ingests data files based on existing metadata files choosing metadata extractors based on mimetypes given in specified mimetype xml file</description>
+    </bean>
+    
+</beans>
