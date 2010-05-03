@@ -1,0 +1,25 @@
+CAS Maven2 Installer Plugin Changelog
+
+
+Major Releases:
+===========================================
+2.1.0 Current Development (Unreleased Changes)
+
+ - OODT-282 Upgrade to cas-metadata-1.6.1 (mattmann)
+
+
+2.0.1 - 12/13/2008
+
+ - OODT-282 Upgrade to cas-metadata-1.6.1 (mattmann)
+
+2.0.0 - 08/01/2008
+
+- add envReplce files feature (mattmann)
+
+- add custom bin scripts feature (mattmann)
+
+- add customLibs feature (mattmann)
+
+1.0.0 - 06/27/2008
+
+- Initial stable release
