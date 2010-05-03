@@ -1,0 +1,11 @@
+OODT Grid Query Service Changelog
+
+
+Major Releases:
+===========================================
+3.0.5 Unreleased Changes (Current development)
+
+- OODT-184 - Upgrade to JDK5 (mattmann)
+
+- OODT-185 - Upgrade to Maven2 (mattmann)
+

@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+  <head>
+    <title>JPL OODT Query Service
+    </title>
+  </head>
+  <body>
+    <p>OODT query service software.  The query service provides a
+      gateway into the network of profile servers and product servers.
+    </p>
+    <p>Normally, you can query profile servers and product servers
+      directly, so the query service isn't always necessary.  However,
+      the query service does provide one function that direct profile
+      queries don't: spidering.
+    </p>
+    <p>When a profile server has profiles that refer to <em>other</em>
+      profile servers, the query server will follow such links and
+      query them, too.  It thus follows a digraph of profile servers,
+      collecting results from each, and returning the mass result as a
+      single query transaction.
+    </p>
+  </body>
+</html>
