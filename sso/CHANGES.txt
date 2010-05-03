@@ -1,0 +1,18 @@
+CAS Single Sign On Changelog
+
+
+Major Releases:
+===========================================
+1.1.0 Current Development (Unreleased Changes)
+
+- OODT-382 Make SingleSignOn interface support role/group lookup (mattmann)
+
+
+1.0.0 - 11/13/2009 - Initial Stable Release
+
+- Definition of core SSO interface (mattmann)
+
+- Dummy implementation of SSO for easy webapp integration (mattmann)
+
+- Abstract base class for Web-based SSOs (mattmann)
+

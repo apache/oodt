@@ -1,0 +1,72 @@
+//Copyright (c) 2009, California Institute of Technology.
+//ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+//
+//$Id$
+
+package gov.nasa.jpl.oodt.cas.security.sso;
+
+//JDK imports
+import java.util.List;
+
+/**
+ * 
+ * The CAS java-based single sign on API.
+ * 
+ * @author mattmann
+ * @version $Revision$
+ * 
+ */
+public interface SingleSignOn {
+
+  /**
+   * Should return the current logged in Single Sign On username returned from
+   * the implementation-specific authentication API.
+   * 
+   * @return A string representation of the current SSO username.
+   */
+  public String getCurrentUsername();
+
+  /**
+   * Returns <code>true</code> when the user is logged in, or false otherwise.
+   * 
+   * @return True if the user is logged in, false otherwise.
+   */
+  public boolean isLoggedIn();
+
+  /**
+   * Logs the user with the provided <code>username</code> and
+   * <code>password</code> in to the SSO authentication mechanism.
+   * 
+   * @param username
+   *          The username credentials.
+   * @param password
+   *          The password credentials.
+   * @return True if the login was successful, false otherwise.
+   */
+  public boolean login(String username, String password);
+
+  /**
+   * Logs the current SSO user out of her session.
+   */
+  public void logout();
+
+  /**
+   * Should provide information (true or false) as to whether the last
+   * connection to the SSO authentication service was successful.
+   * 
+   * @return True if the last authentication was successful, false otherwise.
+   */
+  public boolean getLastConnectionStatus();
+
+  /**
+   * Obtains a user's groups from the security principal that this SSO object
+   * talks to.
+   * 
+   * @param username
+   *          The username to obtain the groups for.
+   * @return A {@link List} of string group names obtained from the security
+   *         principal.
+   **/
+  public List<String> retrieveGroupsForUser(String username);
+
+}
