@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright (c) 2008, California Institute of Technology.
+  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+  
+  $Id Converts cas-metadata xml output to a property equals comma segregated value pge config file$
+ -->
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+
+    <xsl:output method="text"/>    
+
+    <xsl:variable name="delimiter"><xsl:text>,</xsl:text></xsl:variable>
+    <xsl:variable name="equalTo"><xsl:text>=</xsl:text></xsl:variable>    
+    <xsl:variable name="newline"><xsl:text>&#x0A;</xsl:text></xsl:variable>
+        
+    <xsl:template match="/">
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="metadata/keyval">
+        <xsl:value-of select="key"/>
+        <xsl:value-of select="$equalTo"/>
+        <xsl:for-each select="val">
+            <xsl:value-of select="."/>
+            <xsl:if test="not(position() = last())">
+                <xsl:value-of select="$delimiter"/>
+            </xsl:if>
+        </xsl:for-each>
+        <xsl:value-of select="$newline"/>
+    </xsl:template>
+            
+</xsl:stylesheet>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (c) 2008, California Institute of Technology.
+    ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+    
+    $Id$
+-->
+<pgeConfig>
+    
+    <import namespace="optional-NS" file="absolute-or-relative-to-this-file-another-pgeConfig-import-file-path"/>
+    
+    <!-- input file for science PGE that need to be created  -->
+    <dynInputFiles>
+        
+        <!-- one or more of these -->
+        <file path="path-with-name-to-create" writerClass="class-path-to-SciPgeConfigFileWriter" args="zero-or-more-args-comma-segregated"/>
+        
+    </dynInputFiles>
+    
+    <!-- how to run science PGE -->
+    <exe dir="set-working-dir-for-script" shellType="script-type">
+        
+        <!-- one or more of these -->
+        <cmd>line-in-script-file</cmd>
+        
+    </exe>
+    
+    <!-- files to ingest -->
+    <output>
+
+        <!-- one or more of these -->
+        <dir path="path-to-an-output-dir" createBeforeExe="true-or-false">
+            
+            <!-- one or more of these ** regExp or name can be used-->
+            <files regExp="regex-of-files-to-ingest-to-filemgr" metFileWriterClass="class-path-to-PcsMetFileWriter" args="zero-or-more-args-comma-segregated">
+                
+                <!-- zero or one of these -->                
+                <renamingConv namingExpr="">
+                    
+                    <!-- zero or more of these -->                    
+                    <metadata key="name-of-metadata-field" val="metadata-value"/>
+                    
+                </renamingConv>
+                
+            </files>
+            
+        </dir>
+
+    </output>
+    
+    <!-- metadata keys you want to set -->
+    <customMetadata>
+        
+        <!-- one or more of these -->
+        <metadata key="name-of-metadata-field" val="metadata-value"/>
+        
+    </customMetadata>
+    
+</pgeConfig>
