@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE displayableTypes [
+  <!ELEMENT displayableTypes (type*)>
+  <!ELEMENT type (#PCDATA)>
+]>
+<displayableTypes>
+  <type>text/plain</type>
+  <type>text/richtext</type>
+  <type>text/enriched</type>
+  <type>text/tab-separated-values</type>
+  <type>text/html</type>
+  <type>text/xml</type>
+  <type>text/rtf</type>
+  <type>message/rfc822</type>
+  <type>message/partial</type>
+  <type>message/external-body</type>
+  <type>message/news</type>
+  <type>message/http</type>
+  <type>message/delivery-status</type>
+  <type>message/disposition-notification</type>
+  <type>message/s-http</type>
+  <type>application/rtf</type>
+  <type>application/pdf</type>
+  <type>image/jpeg</type>
+  <type>image/gif</type>
+  <type>image/tiff</type>
+  <type>image/png</type>
+  <type>audio/basic</type>
+  <type>audio/32kadpcm</type>
+  <type>audio/mpeg</type>
+  <type>video/mpeg</type>
+  <type>video/quicktime</type>
+  <type>model/vrml</type>
+</displayableTypes>

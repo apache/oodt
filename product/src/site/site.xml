@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Product Service" href="http://oodt.jpl.nasa.gov/grid-product/">
+
+  <body>
+    <links>
+      <item name="OODT" href="../oodt-site/"/>
+      <item name="Grid" href="../grid/"/>
+    </links>
+
+    <menu ref="reports" inherit="bottom"/>
+    <menu name="User's Guide">
+      <item name="Tutorials" href="tutorials/"/>
+      <item name="Product Servlet" href="servlet/"/>
+    </menu>
+  </body>
+</project>

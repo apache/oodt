@@ -1,0 +1,57 @@
+<!-- DO NOT put the XML processing instruction or DOCTYPE decl in this -->
+<!-- file!  They're added by the unit test automatically. -->
+<!-- Copyright 2000-2002 California Institute of Technology.  ALL -->
+<!-- RIGHTS RESERVED.  U.S. Government Sponsorship acknowledged. -->
+<!-- $Id: test.xml,v 1.1.1.1 2004/03/02 20:53:39 kelly Exp $ -->
+<profile>
+  <profAttributes>
+    <profId>OODT_PDS_PROFILE_SERVER</profId>
+    <profType>profile</profType>
+    <profStatusId>active</profStatusId>
+    <profSecurityType>NULL</profSecurityType>
+    <profRevisionNote>1999-09-30</profRevisionNote>
+  </profAttributes>
+  <resAttributes>
+    <Identifier>PDS_PROFILE_SERVER</Identifier>
+    <Title>Planetary Data System (PDS) - Profile Server V1.0</Title>
+    <Format>text/html</Format>
+    <resContext>PDS</resContext>
+    <resAggregation>N/A</resAggregation>
+    <resClass>system.profileServer</resClass>
+    <resLocation>iiop://oodt.jpl.nasa.gov:10000/JPL.PDS.PROFILE</resLocation>
+  </resAttributes>
+  <profElement>
+    <elemId>3.14159</elemId>
+    <elemName>TEST</elemName>
+    <elemDesc>This is a test element</elemDesc>
+    <elemType>Testing</elemType>
+    <elemUnit>fortnights-per-furlong</elemUnit>
+    <elemEnumFlag>F</elemEnumFlag>
+    <elemMinValue>0</elemMinValue>
+    <elemMaxValue>32</elemMaxValue>
+    <elemComment>Testing only.</elemComment>
+  </profElement>
+  <profElement>
+    <elemId>3.2</elemId>
+    <elemName>TEST2</elemName>
+    <elemDesc>This is another test element</elemDesc>
+    <elemType>Testing</elemType>
+    <elemUnit>fleas-per-tick</elemUnit>
+    <elemEnumFlag>F</elemEnumFlag>
+    <elemMinValue>32</elemMinValue>
+    <elemMaxValue>64</elemMaxValue>
+    <elemComment>More testing.</elemComment>
+  </profElement>
+  <profElement>
+    <elemId>3.5</elemId>
+    <elemName>TEST3</elemName>
+    <elemDesc>Yet another test element</elemDesc>
+    <elemType>Testing</elemType>
+    <elemEnumFlag>T</elemEnumFlag>
+    <elemValue>alpha</elemValue>
+    <elemValue>beta</elemValue>
+    <elemValue>gamma</elemValue>
+    <elemValue>delta</elemValue>
+    <elemComment>A bunch of greek letters, eh?</elemComment>
+  </profElement>
+</profile>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Profile Service" href="http://oodt.jpl.nasa.gov/grid-profile/">
+
+  <body>
+    <links>
+      <item name="OODT" href="../oodt-site/"/>
+      <item name="Grid" href="../grid/"/>
+    </links>
+
+    <menu ref="reports" inherit="bottom"/>
+    <menu name="User's Guide">
+      <item name="Information Captured" href="info/"/>
+      <item name="Querying Profiles" href="querying/"/>
+      <item name="Profile Repr." href="rep/"/>
+      <item name="Basic Handler" href="handler/"/>
+      <item name="Advanced Handler" href="adv/"/>
+    </menu>
+  </body>
+</project>

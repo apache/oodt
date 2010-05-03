@@ -1,0 +1,169 @@
+//Copyright (c) 2008, California Institute of Technology.
+//ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+//
+//$Id$
+
+package gov.nasa.jpl.oodt.product.handlers.ofsn.util;
+
+//OODT imports
+import gov.nasa.jpl.oodt.cas.commons.xml.XMLUtils;
+import gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNHandlerConfig;
+import gov.nasa.jpl.oodt.product.handlers.ofsn.metadata.OFSNMetKeys;
+import gov.nasa.jpl.oodt.product.handlers.ofsn.metadata.OFSNXMLMetKeys;
+import gov.nasa.jpl.oodt.product.handlers.ofsn.metadata.OODTMetKeys;
+import jpl.eda.xmlquery.QueryElement;
+import jpl.eda.xmlquery.XMLQuery;
+
+//JDK imports
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+//APACHE imports
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
+/**
+ * 
+ * 
+ * @author mattmann
+ * @version $Revision$
+ * 
+ */
+public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
+    OFSNMetKeys {
+
+  public static String extractFieldFromQuery(XMLQuery query, String name) {
+    for (Iterator<QueryElement> i = query.getWhereElementSet().iterator(); i
+        .hasNext();) {
+      QueryElement element = i.next();
+      if (element.getRole().equals(XMLQUERY_QUERYELEM_ROLE_ELEM)
+          && element.getValue().equals(name)) {
+        // get the next element and ensure that it is a LITERAL, and
+        // return that
+        QueryElement litElement = i.next();
+        return litElement.getValue();
+      }
+    }
+
+    return null;
+  }
+
+  public static Document getOFSNDoc(List<File> fileList, OFSNHandlerConfig cfg,
+      String productRoot, boolean showDirSize) {
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    factory.setNamespaceAware(true);
+    Document document = null;
+
+    try {
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      document = builder.newDocument();
+
+      Element root = (Element) document.createElement(DIR_RESULT_TAG);
+      XMLUtils.addAttribute(document, root, "xmlns", DIR_LISTING_NS);
+      document.appendChild(root);
+
+      for (File file : fileList) {
+        Element dirEntryElem = XMLUtils.addNode(document, root, DIR_ENTRY_TAG);
+        String ofsn = toOFSN(file.getAbsolutePath(), productRoot);
+        //This ensures that we get ofsn names with unix style separators.
+        //On a Windows machine, the product server would return '\'
+        //separators.
+        String unixStyleOFSN = FilenameUtils.separatorsToUnix(ofsn);
+        if (cfg.getType().equals(LISTING_CMD)) {
+          if (!Boolean.valueOf(cfg.getHandlerConf().getProperty("isSizeCmd"))) {
+            XMLUtils.addNode(document, dirEntryElem, OFSN_TAG, unixStyleOFSN);
+          }
+        }
+
+        long size = Long.MIN_VALUE;
+
+        if (file.isDirectory()) {
+          if (showDirSize) {
+            size = FileUtils.sizeOfDirectory(file);
+          }
+        } else {
+          size = file.length();
+        }
+
+        if (size != Long.MIN_VALUE) {
+          XMLUtils.addNode(document, dirEntryElem, FILE_SIZE_TAG, String
+              .valueOf(size));
+        }
+      }
+
+      return document;
+    } catch (ParserConfigurationException e) {
+      e.printStackTrace();
+      return null;
+    }
+
+  }
+
+  public static String relativeize(String path, String productRoot) {
+    return productRoot + (path.startsWith("/") ? path.substring(1) : path);
+  }
+
+  public static File buildZipFile(String zipFileFullPath, File[] files) {
+    // Create a buffer for reading the files
+    byte[] buf = new byte[1024];
+    ZipOutputStream out = null;
+
+    try {
+      // Create the ZIP file
+      out = new ZipOutputStream(new FileOutputStream(zipFileFullPath));
+
+      for (File file : files) {
+        FileInputStream in = new FileInputStream(file);
+
+        // Add ZIP entry to output stream.
+        out.putNextEntry(new ZipEntry(file.getName()));
+
+        // Transfer bytes from the file to the ZIP file
+        int len;
+        while ((len = in.read(buf)) > 0) {
+          out.write(buf, 0, len);
+        }
+
+        // Complete the entry
+        out.closeEntry();
+        in.close();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (out != null) {
+        try {
+          out.close();
+        } catch (Exception ignore) {
+        }
+
+        out = null;
+      }
+    }
+
+    return new File(zipFileFullPath);
+
+  }
+
+  private static String toOFSN(String absolutePath, String productRootPath) {
+    if (absolutePath.startsWith(productRootPath)) {
+      return absolutePath.substring(productRootPath.length());
+    } else {
+      // must have been a *.zip file, generated in some cache dir
+      // just return the file name
+      return new File(absolutePath).getName();
+    }
+  }
+
+}

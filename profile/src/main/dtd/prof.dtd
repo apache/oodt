@@ -1,0 +1,70 @@
+<?xml encoding="UTF-8"?>
+
+<!ELEMENT profiles
+  (profile*)>
+
+<!ELEMENT profile
+  (profAttributes,
+   resAttributes,
+   profElement*)>
+
+    <!ELEMENT profAttributes
+      (profId, profVersion?, profType,
+       profStatusId, profSecurityType?, profParentId?, profChildId*,
+       profRegAuthority?, profRevisionNote*)>
+
+    <!ELEMENT resAttributes
+      (Identifier, Title?, Format*, Description?, Creator*, Subject*,
+       Publisher*, Contributor*, Date*, Type*, Source*,
+       Language*, Relation*, Coverage*, Rights*,
+       resContext+, resAggregation?, resClass, resLocation*)>
+
+    <!ELEMENT profElement
+      (elemId?, elemName, elemDesc?, elemType?, elemUnit?, 
+       elemEnumFlag, (elemValue* | (elemMinValue, elemMaxValue)),
+       elemSynonym*,
+       elemObligation?, elemMaxOccurrence?, elemComment?)>
+
+    <!ELEMENT profId (#PCDATA)>
+    <!ELEMENT profVersion (#PCDATA)>
+    <!ELEMENT profType (#PCDATA)>
+    <!ELEMENT profParentId (#PCDATA)>
+    <!ELEMENT profChildId (#PCDATA)>
+    <!ELEMENT profStatusId (#PCDATA)>
+    <!ELEMENT profSecurityType (#PCDATA)>
+    <!ELEMENT profRegAuthority (#PCDATA)>
+    <!ELEMENT profRevisionNote (#PCDATA)>
+
+    <!ELEMENT Identifier (#PCDATA)>
+    <!ELEMENT Title (#PCDATA)>
+    <!ELEMENT Format (#PCDATA)>
+    <!ELEMENT Description (#PCDATA)>
+    <!ELEMENT Creator (#PCDATA)>
+    <!ELEMENT Subject (#PCDATA)>
+    <!ELEMENT Publisher (#PCDATA)>
+    <!ELEMENT Contributor (#PCDATA)>
+    <!ELEMENT Date (#PCDATA)>
+    <!ELEMENT Type (#PCDATA)>
+    <!ELEMENT Source (#PCDATA)>
+    <!ELEMENT Language (#PCDATA)>
+    <!ELEMENT Relation (#PCDATA)>
+    <!ELEMENT Coverage (#PCDATA)>
+    <!ELEMENT Rights (#PCDATA)>
+    <!ELEMENT resContext (#PCDATA)>
+    <!ELEMENT resAggregation (#PCDATA)>
+    <!ELEMENT resClass (#PCDATA)>
+    <!ELEMENT resLocation (#PCDATA)>
+
+    <!ELEMENT elemId (#PCDATA)>
+    <!ELEMENT elemName (#PCDATA)>
+    <!ELEMENT elemType (#PCDATA)>
+    <!ELEMENT elemEnumFlag (#PCDATA)>
+    <!ELEMENT elemDesc (#PCDATA)>
+    <!ELEMENT elemSynonym (#PCDATA)>
+    <!ELEMENT elemUnit (#PCDATA)>
+    <!ELEMENT elemValue (#PCDATA)>	
+    <!ELEMENT elemMinValue (#PCDATA)>	
+    <!ELEMENT elemMaxValue (#PCDATA)>	
+    <!ELEMENT elemObligation (#PCDATA)>
+    <!ELEMENT elemMaxOccurrence (#PCDATA)>
+    <!ELEMENT elemComment (#PCDATA)>

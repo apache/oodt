@@ -1,0 +1,30 @@
+// Copyright 1999-2001 California Institute of Technology.  ALL RIGHTS RESERVED.
+// U.S. Government Sponsorship acknowledged.
+//
+// $Id: ProfileService.idl,v 1.1.1.1 2004/03/02 20:53:06 kelly Exp $
+
+#include <Server.idl>
+
+module jpl {
+	module eda {
+		module profile {
+			module corba  {
+			   interface Server {
+				typedef sequence<octet> RawData;
+				exception ProfileServiceException { string errorInfo; };
+				void add(in string data_item) raises (ProfileServiceException);
+				void replace(in string data_item) raises (ProfileServiceException);
+				boolean remove(in string data_item1, in string data_item2)
+					raises (ProfileServiceException);
+				RawData query(in string data_item) raises (ProfileServiceException);
+				RawData getProfile(in string profileID) raises (ProfileServiceException);
+				oneway void destroy();
+			   };
+
+			   interface ProfileService : ::jpl::eda::Server {
+				Server createServer();
+			   };
+		   	};
+		};
+	};
+};
