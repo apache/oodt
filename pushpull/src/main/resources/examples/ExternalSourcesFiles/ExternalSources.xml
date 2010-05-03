@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sources>
+    <source host="polar.ncep.noaa.gov">
+        <login type="ftp" alias="PolarNcepNoaaFtp">
+            <username>anonymous</username>
+            <password>Brian.M.Foster@jpl.nasa.gov</password>
+        </login>
+    </source>    
+    <source host="ftp1.cloudsat.cira.colostate.edu">
+        <login type="ftp" alias="CloudSATFtp">
+            <username></username>
+            <password></password>
+            <cdTestDir>2B-CWC-RO.R04/2007/304</cdTestDir>
+        </login>
+    </source>
+    <source host="login.csupomona.edu">
+        <login type="ftp" alias="CalyPolyFtp">
+            <username>foster</username>
+            <password></password>
+        </login>
+        <login type="sftp" alias="CalPolySftp">
+            <username>foster</username>
+            <password></password>
+        </login>
+    </source>
+    <source host="dew.jpl.nasa.gov">
+        <login type="sftp" alias="DewSftp">
+            <username>bfoster</username>
+            <password></password>
+        </login>
+        <login type="ftp" alias="DewFtp">
+            <username>bfoster</username>
+            <password></password>
+        </login>
+    </source>
+    <source host="thunder.jpl.nasa.gov">
+        <login type="ftp" alias="ThunderFtp">
+            <username>bfoster</username>
+            <password></password>
+        </login>
+    </source>
+    <source host="ftp.class.noaa.gov">
+        <login type="ftp" alias="ClassFtp">
+            <username>anonymous</username>
+            <password>Brian.M.Foster@jpl.nasa.gov</password>
+        </login>
+    </source>
+    <source host="rime.jpl.nasa.gov">
+        <login type="sftp" alias="RimeSftp">
+            <username>bfoster</username>
+            <password></password>
+        </login>
+    </source>
+    <source host="weather.jpl.nasa.gov">
+        <login type="sftp" alias="WeatherSftp">
+            <username>bfoster</username>
+            <password></password>
+        </login>
+    </source>
+    <source host="peate.jpl.nasa.gov">
+        <login type="imaps" alias="PeateImaps">
+            <username>class</username>
+            <password></password>
+        </login>
+    </source>
+    <source host="localhost">
+        <login type="file" alias="localhost">
+            <username>none</username>
+            <password>none</password>
+        </login>
+    </source>
+    <source host="ftpprd.ncep.noaa.gov">
+        <login type="ftp" alias="GfsFtp">
+            <username>anonymous</username>
+            <password>Brian.M.Foster@jpl.nasa.gov</password>
+        </login>
+    </source>
+    <source host="e4ftl01u.ecs.nasa.gov">
+        <login type="ftp" alias="ModisFtp">
+            <username>anonymous</username>
+            <password>Brian.M.Foster@jpl.nasa.gov</password>
+        </login>
+    </source>
+    <source host="airscal2u.ecs.nasa.gov">
+        <login type="ftp" alias="GdaacFtp">
+            <username>anonymous</username>
+            <password>Brian.M.Foster@jpl.nasa.gov</password>
+        </login>
+    </source>
+    <source host="acdisc.gsfc.nasa.gov">
+        <login type="ftp" alias="AcdiscGsfcFtp">
+            <username>anonymous</username>
+            <password>Brian.M.Foster@jpl.nasa.gov</password>
+        </login>
+    </source>
+    <source host="www.signal42.com">
+        <login type="http" alias="Signal42ApacheMirrorHttp">
+            <username>none</username>
+            <password>none</password>
+        </login>
+    </source>
+</sources>

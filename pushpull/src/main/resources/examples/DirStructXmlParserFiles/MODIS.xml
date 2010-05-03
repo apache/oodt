@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+    <dirstruct starting_path="/MOTA/MCD43B1.005/2007.02.02">
+        <nodirs/>
+        <file name="MCD43B1\.A2007033\.h\d{2}v\d{2}\.005\.\d{13}\.hdf(\.xml){0,1}"/>
+    </dirstruct>
+</root>

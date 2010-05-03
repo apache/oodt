@@ -1,0 +1,22 @@
+#!/bin/csh
+# Copyright (c) 2008 California Institute of Technology.
+# ALL RIGHTS RESERVED. U.S. Government Sponsorship acknowledged.
+#
+# $Id$
+
+set LIB_DEPS
+foreach file (`find ../lib/*.jar`)
+     set LIB_DEPS = "${file}:${LIB_DEPS}"
+end
+
+setenv PATH ${JAVA_HOME}/bin:${CAS_PP_HOME}/bin:/usr/bin:/bin:/usr/sbin:/sbin 
+
+#execution -- do not set "java.ext.dirs" because it messes up search path for a sftp library 
+${JAVA_HOME}/bin/java \
+     -cp ${LIB_DEPS} -Dcom.sun.management.jmxremote \
+     -Djava.util.logging.config.file=../etc/logging.properties \
+     -Djavax.net.ssl.trustStore=${CAS_PP_RESOURCES}/jssecacerts \
+     gov.nasa.jpl.oodt.cas.pushpull.daemon.DaemonLauncher \
+     --rmiRegistryPort ${DAEMONLAUNCHER_PORT} \
+     --propertiesFile ${CAS_PP_RESOURCES}/push_pull_framework.properties \
+     --remoteSpecsFile ${CAS_PP_RESOURCES}/examples/RemoteSpecsFiles/RemoteSpecs.xml 

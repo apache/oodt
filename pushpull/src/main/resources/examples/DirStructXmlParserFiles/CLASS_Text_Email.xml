@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <dirstruct starting_path="/home/class/TextMail">
+        <dir name="\d{4}-\d{2}-\d{2}_\d{2}">
+            <dir name="class">
+                <nodirs/>
+            </dir>                
+        </dir>
+    </dirstruct>
+</root>

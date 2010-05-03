@@ -1,0 +1,31 @@
+//Copyright (c) 2007, California Institute of Technology.
+//ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+//
+//$Id$
+
+package gov.nasa.jpl.oodt.cas.pushpull.protocol.imaps;
+
+//OODT imports
+import gov.nasa.jpl.oodt.cas.pushpull.protocol.Protocol;
+import gov.nasa.jpl.oodt.cas.pushpull.protocol.ProtocolFactory;
+
+/**
+ * 
+ * @author bfoster
+ * @version $Revision$
+ * 
+ * <p>
+ * Describe your class here
+ * </p>.
+ */
+public class ImapsClientFactory implements ProtocolFactory {
+
+    private ImapsClient imapsClient;
+
+    public Protocol newInstance() {
+        if (this.imapsClient == null)
+            this.imapsClient = new ImapsClient();
+        return this.imapsClient;
+    }
+
+}

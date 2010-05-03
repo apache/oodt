@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <dirstruct starting_path="/pub/history/sst">
+        <nodirs/>
+        <file name="rtg_sst_grb_0\.5\.\d{8}"/>
+    </dirstruct>
+</root>
+        

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <variables>
+        <variable name="DAY">
+            <type>INT</type>
+            <value>[DATE.DAY]</value>
+            <precision>
+                <locations>2</locations>
+                <fill>0</fill>
+                <side>front</side>
+            </precision>
+        </variable>
+        <variable name="MONTH">
+            <type>INT</type>
+            <value>[DATE.MONTH]</value>
+            <precision>
+                <locations>2</locations>
+                <fill>0</fill>
+                <side>front</side>
+            </precision>
+        </variable>
+        <variable name="YEAR">
+            <type>INT</type>
+            <value>[DATE.YEAR]</value>
+        </variable>
+    </variables>
+    
+    <methods>
+        <method name="ADD">
+            <args>
+                <arg name="1">
+                    <type>INT</type>
+                </arg>
+                <arg name="2">
+                    <type>INT</type>
+                </arg>
+            </args>
+            <action>$1+$2</action>
+        </method>
+        <method name="HOW_OLD_AM_I">
+            <action>${YEAR}-#1984</action>
+        </method>
+        <method name="DATE">
+            <action>${YEAR}+"-"+${MONTH}+"-"+${DAY}</action>
+        </method>
+    </methods>
+    
+    <dirstruct starting_path=".../intranet.csupomona.edu/fs/user/foster/">
+        <dir name="%DATE()_%HOW_OLD_AM_I()">
+            <nodirs/>
+        </dir>    
+        <dir name="cs256">
+            <nodirs/>
+        </dir>
+        <dir name="CS331">
+            <nodirs/>
+        </dir>
+        <dir name="CS370"></dir>
+        <dir name="oddnends">
+            <nodirs/>
+            <file name="TryCatch"></file>
+            <file name="\w{4}Cell\.\w{3,}"></file>
+            <file name="Hmwk\d"></file>
+            <file name=".+\.java"></file>
+        </dir>
+        <dir name="testLevel1">
+            <nofiles/>
+            <dir name="testLevel2A"></dir>
+            <dir name="testLevel2B">
+                <nodirs/>
+            </dir>
+        </dir>
+        <dir name="Practice">
+            <nodirs/>
+        </dir>
+        <dir name="th.{2}th"></dir>
+    </dirstruct>
+</root>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <dirstruct starting_path="/pub/data/nccf/com/gfs/prod">
+        <nofiles/>
+        <dir name="gfs\.\d{8}((12)|(00))">
+            <nodirs/>
+            <file name="gfs\.t((00)|(12))z\.pgrb2f((03)|(06)|(09)|(12))"/>
+        </dir>
+    </dirstruct>
+</root>
+    
+    
+
+        

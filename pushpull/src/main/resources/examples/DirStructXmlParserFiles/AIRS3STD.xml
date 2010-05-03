@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <dirstruct starting_path="/data/s4pa/Aqua_AIRS_Level3/AIRS3STD.005/2007">
+        <nodirs/>
+        <file name="AIRS\.2007.\d{2}.\d{2}.L3.RetStd_IR001\.v5\.0\.14\.0\.G\d{11}\.hdf(\.xml){0,1}"/>
+    </dirstruct>
+</root>

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+$JAVA_HOME/bin/java -Djava.ext.dirs=../lib \
+        -Djava.util.logging.config.file=../etc/logging.properties \
+        gov.nasa.jpl.oodt.cas.pushpull.protocol.http.HttpClient \
+        --url $1 \
+        --downloadToDir $2

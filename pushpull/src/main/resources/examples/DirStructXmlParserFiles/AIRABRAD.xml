@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <dirstruct starting_path="/ftp/data/s4pa/Aqua_AIRS_Level1/AIRABRAD.005/2006">
+        <nofiles/>
+        <dir name="\d{3}">
+            <nodirs/>
+            <file name="AIRS\.2006\.\d{2}\.\d{2}\.\d{3}.L1B.AMSU_Rad\.v5\.0\.0\.0\.G\d{11}\.hdf(\.xml){0,1}"/>
+        </dir>
+    </dirstruct>
+</root>
