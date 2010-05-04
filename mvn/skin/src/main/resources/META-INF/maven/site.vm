@@ -1,0 +1,592 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+#macro ( link $href $name )
+  #if ( ( $href.toLowerCase().startsWith("http") || $href.toLowerCase().startsWith("https") ) )
+    <a href="$href" class="externalLink">$name</a>
+  #else
+    <a href="$href">$name</a>
+  #end
+#end
+
+#macro ( banner $banner $id )
+  #if ( $banner )
+    #if( $banner.href )
+      <a href="$banner.href" id="$id" #if( $banner.alt ) title="$banner.alt" #end >
+    #else
+        <div id="$id">
+    #end
+
+    #if( $banner.src )
+        #set ( $src = $banner.src )
+        #if ( ! ( $src.toLowerCase().startsWith("http") || $src.toLowerCase().startsWith("https") ) )
+            #set ( $src = $PathTool.calculateLink( $src, $relativePath ) )
+            #set ( $src = $src.replaceAll( "\\", "/" ) )
+        #end
+        #if ( $banner.alt )
+            #set ( $alt = $banner.alt )
+        #else
+            #set ( $alt = $banner.name )
+        #end
+        <img src="$src" alt="$alt" />
+    #else
+        $banner.name
+    #end
+
+    #if( $banner.href )
+        </a>
+    #else
+        </div>
+    #end
+  #end
+#end
+
+#macro ( links $links )
+  #set ( $counter = 0 )
+  #foreach( $item in $links )
+    #set ( $counter = $counter + 1 )
+    #set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
+    #set ( $currentItemHref = $currentItemHref.replaceAll( "\\", "/" ) )
+    #link( $currentItemHref $item.name )
+    #if ( $links.size() > $counter )
+      |
+    #end
+  #end
+#end
+
+#macro ( breadcrumbs $breadcrumbs )
+  #set ( $counter = 0 )
+  #foreach( $item in $breadcrumbs )
+    #set ( $counter = $counter + 1 )
+    #set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
+    #set ( $currentItemHref = $currentItemHref.replaceAll( "\\", "/" ) )
+
+    #if ( $currentItemHref == $alignedFileName || $currentItemHref == "" )
+      $item.name
+    #else
+      #link( $currentItemHref $item.name )
+    #end
+    #if ( $breadcrumbs.size() > $counter )
+      &gt;
+    #end
+  #end
+#end
+
+#macro ( displayTree $display $item )
+  #if ( $item && $item.items && $item.items.size() > 0 )
+    #foreach( $subitem in $item.items )
+      #set ( $subitemHref = $PathTool.calculateLink( $subitem.href, $relativePath ) )
+      #set ( $subitemHref = $subitemHref.replaceAll( "\\", "/" ) )
+      #if ( $alignedFileName == $subitemHref )
+        #set ( $display = true )
+      #end
+
+      #displayTree( $display $subitem )
+    #end
+  #end
+#end
+
+#macro ( menuItem $item )
+  #set ( $collapse = "none" )
+  #set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
+  #set ( $currentItemHref = $currentItemHref.replaceAll( "\\", "/" ) )
+
+  #if ( $item && $item.items && $item.items.size() > 0 )
+    #if ( $item.collapse == false )
+      #set ( $collapse = "expanded" )
+    #else
+      ## By default collapsed
+      #set ( $collapse = "collapsed" )
+    #end
+
+    #set ( $display = false )
+    #displayTree( $display $item )
+
+    #if ( $alignedFileName == $currentItemHref || $display )
+      #set ( $collapse = "expanded" )
+    #end
+  #end
+  <li class="$collapse">
+    #if ( $item.img )
+      #if ( ! ( $item.img.toLowerCase().startsWith("http") || $item.img.toLowerCase().startsWith("https") ) )
+        #set ( $src = $PathTool.calculateLink( $item.img, $relativePath ) )
+        #set ( $src = $src.replaceAll( "\\", "/" ) )
+        <img src="$src"/>
+      #else
+        <img src="$item.img" align="absbottom" style="border-width: 0"/>
+      #end
+    #end
+    #if ( $alignedFileName == $currentItemHref )
+      <strong>$item.name</strong>
+    #else
+      #link( $currentItemHref $item.name )
+    #end
+  #if ( $item && $item.items && $item.items.size() > 0 )
+    #if ( $collapse == "expanded" )
+      <ul>
+        #foreach( $subitem in $item.items )
+          #menuItem( $subitem )
+        #end
+      </ul>
+    #end
+  #end
+  </li>
+#end
+
+#macro ( mainMenu $menus )
+  #foreach( $menu in $menus )
+    #if ( $menu.name )
+    <h5>$menu.name</h5>
+    #end
+    #if ( $menu.items && $menu.items.size() > 0 )
+    <ul>
+      #foreach( $item in $menu.items )
+        #menuItem( $item )
+      #end
+    </ul>
+    #end
+  #end
+#end
+
+#macro ( copyright )
+  #if ( $project )
+    #set ( $currentYear = ${currentDate.year} + 1900 )
+
+    #if ( ${project.inceptionYear} && ( ${project.inceptionYear} != ${currentYear.toString()} ) )
+      ${project.inceptionYear}-${currentYear}
+    #else
+      ${currentYear}
+    #end
+
+    #if ( ${project.organization} && ${project.organization.name} )
+      ${project.organization.name}
+    #end
+  #end
+#end
+
+#macro ( publishDate $position $publishDate $version )
+  #if ( $publishDate && $publishDate.format )
+    #set ( $format = $publishDate.format )
+  #else
+    #set ( $format = "yyyy-MM-dd" )
+  #end
+
+  $dateFormat.applyPattern( $format )
+
+  #set ( $dateToday = $dateFormat.format( $currentDate ) )
+
+  #if ( $publishDate && $publishDate.position )
+    #set ( $datePosition = $publishDate.position )
+  #else
+    #set ( $datePosition = "left" )
+  #end
+
+  #if ( $version )
+    #if ( $version.position )
+      #set ( $versionPosition = $version.position )
+    #else
+      #set ( $versionPosition = "left" )
+    #end
+  #else
+    #set ( $version = "" )
+    #set ( $versionPosition = "left" )
+  #end
+
+  #set ( $breadcrumbs = $decoration.body.breadcrumbs )
+  #set ( $links = $decoration.body.links )
+
+  #if ( $datePosition.equalsIgnoreCase( "right" ) && $links && $links.size() > 0 )
+    #set ( $prefix = "&nbsp;|" )
+  #else
+    #set ( $prefix = "" )
+  #end
+
+  #if ( $datePosition.equalsIgnoreCase( $position ) )
+    #if ( ( $datePosition.equalsIgnoreCase( "right" ) ) || ( $datePosition.equalsIgnoreCase( "bottom" ) ) )
+      $prefix $i18n.getString( "site-renderer", $locale, "template.lastpublished" ): $dateToday
+      #if ( $versionPosition.equalsIgnoreCase( $position ) )
+        &nbsp;| $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+      #end
+    #elseif ( ( $datePosition.equalsIgnoreCase( "navigation-bottom" ) ) || ( $datePosition.equalsIgnoreCase( "navigation-top" ) ) )
+      <div id="lastPublished">
+        $i18n.getString( "site-renderer", $locale, "template.lastpublished" ): $dateToday
+        #if ( $versionPosition.equalsIgnoreCase( $position ) )
+          &nbsp;| $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+        #end
+      </div>
+    #elseif ( $datePosition.equalsIgnoreCase("left") )
+      <div class="xleft">
+        $i18n.getString( "site-renderer", $locale, "template.lastpublished" ): $dateToday
+        #if ( $versionPosition.equalsIgnoreCase( $position ) )
+          &nbsp;| $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+        #end
+        #if ( $breadcrumbs && $breadcrumbs.size() > 0 )
+          | #breadcrumbs( $breadcrumbs )
+        #end
+      </div>
+    #end
+  #elseif ( $versionPosition.equalsIgnoreCase( $position ) )
+    #if ( ( $versionPosition.equalsIgnoreCase( "right" ) ) || ( $versionPosition.equalsIgnoreCase( "bottom" ) ) )
+      $prefix $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+    #elseif ( ( $versionPosition.equalsIgnoreCase( "navigation-bottom" ) ) || ( $versionPosition.equalsIgnoreCase( "navigation-top" ) ) )
+      <div id="lastPublished">
+        $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+      </div>
+    #elseif ( $versionPosition.equalsIgnoreCase("left") )
+      <div class="xleft">
+        $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+        #if ( $breadcrumbs && $breadcrumbs.size() > 0 )
+          | #breadcrumbs( $breadcrumbs )
+        #end
+      </div>
+    #end
+  #elseif ( $position.equalsIgnoreCase( "left" ) )
+    #if ( $breadcrumbs && $breadcrumbs.size() > 0 )
+      <div class="xleft">
+        #breadcrumbs( $breadcrumbs )
+      </div>
+    #end
+  #end
+#end
+
+#macro ( poweredByLogo $poweredBy )
+    #if( $poweredBy )
+        #foreach ($item in $poweredBy)
+            #if( $item.href )
+                #set ( $href = $PathTool.calculateLink( $item.href, $relativePath ) )
+                #set ( $href = $href.replaceAll( "\\", "/" ) )
+            #else
+                #set ( $href="http://maven.apache.org/" )
+            #end
+
+            #if( $item.name )
+                #set ( $name = $item.name )
+            #else
+                #set ( $name = $i18n.getString( "site-renderer", $locale, "template.builtby" )  )
+                #set ( $name = "${name} Maven"  )
+            #end
+
+            #if( $item.img )
+                #set ( $img = $item.img )
+            #else
+                #set ( $img = "images/logos/maven-feather.png" )
+            #end
+
+            <a href="$href" title="$name" class="poweredBy">
+              #set ( $img = $PathTool.calculateLink( $img, $relativePath ) )
+              #set ( $img = $img.replaceAll( "\\", "/" ) )
+              <img  class="poweredBy"  
+                    alt="$name" 
+                    src="$img" 
+                    width="90"
+                    height="30"
+              />
+            </a>
+        #end
+        #if( $poweredBy.isEmpty() )
+          <a href="http://maven.apache.org/" title="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" class="poweredBy">
+            <img class="poweredBy" 
+                 alt="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" 
+                 src="$relativePath/images/logos/maven-feather.png" 
+                 width="90"
+                 height="30"
+                 border="1" />
+          </a>
+        #end
+    #else
+        <a href="http://maven.apache.org/" title="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" class="poweredBy">
+          <img class="poweredBy" 
+               alt="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" 
+               src="$relativePath/images/logos/maven-feather.png" 
+               width="90"
+               height="30"
+               border="1"
+               />
+        </a>
+    #end
+#end
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>$title</title>
+    <style type="text/css" media="all">
+      @import url("$relativePath/css/maven-theme.css");
+      @import url("$relativePath/css/oodt.css");
+    </style>
+    <link rel="stylesheet" href="$relativePath/css/print.css" type="text/css" media="print" />
+    #foreach( $author in $authors )
+      <meta name="author" content="$author" />
+    #end
+    <meta http-equiv="Content-Type" content="text/html; charset=${outputEncoding}" />
+    #if ( $decoration.body.head )
+      #foreach( $item in $decoration.body.head.getChildren() )
+        ## Workaround for DOXIA-150 due to a non-desired behaviour in p-u
+        ## @see org.codehaus.plexus.util.xml.Xpp3Dom#toString()
+        ## @see org.codehaus.plexus.util.xml.Xpp3Dom#toUnescapedString()
+        #set ( $documentHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" )
+        #set ( $documentHeader = $documentHeader.replaceAll( "\\", "" ) )
+        #if ( $item.name == "script" )
+          $StringUtils.replace( $item.toUnescapedString(), $documentHeader, "" )
+        #else
+          $StringUtils.replace( $item.toString(), $documentHeader, "" )
+        #end
+      #end
+    #end
+  </head>
+  
+    
+  <body class="composite">
+  
+  <!-- NASA style -->
+<table border="0" cellspacing="0" cellpadding="0" align="center" valign="top" bgcolor="#FFFFFF" width="750">
+<tr bgcolor="#000000">
+<td bgcolor="#000000" width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
+<td bgcolor="#000000" width="730"><img src="$relativePath/images/spacer.gif" alt="spacer" width="730" height="10"/></td>
+<td bgcolor="#000000" width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
+</tr>
+<tr>
+<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
+<td width="730"><img src="$relativePath/images/spacer.gif" alt="spacer" width="730" height="10"/></td>
+<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
+</tr>
+<tr>
+<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
+<td width="730">
+
+          <table id="nasaBanner" border="0" cellspacing="0" cellpadding="8" width="730">
+            <tr>
+              <!-- organization logo -->
+              <td bgcolor="#cccccc" width="379">
+                #set ( $logo = "${project.properties.organizationLogo}" )
+                #if ( $logo )
+                  ## set url to org or project url
+                  #set ( $url = "${project.organization.url}" )
+                    #if ( $url )
+                      #set ( $home = "${project.organization.url}" )
+                    #else
+                      #set ( $home = "${project.url}" )
+                    #end
+                    
+                   ## set image to relative or complete 
+                   
+                   #set ( $image = "${project.properties.organizationLogo}" )
+                   #if ( !$image.startsWith('http://') )
+                    #set ( $image = "$relativePath${image}" )
+                   #end
+                   
+                  <a href="$home">
+                    <img src="$image" align="left" alt="${project.organization.name}" border="0"/>
+                  </a>
+               #end
+              </td>
+
+	      <!-- NASA portal -->
+              <td bgcolor="#cccccc" valign="middle" align="left" width="171">
+                <a class="navLnkBlack" href="http://www.nasa.gov/"><span class="nasaBannerLinks">+ View the NASA Portal</span></a><br/>
+                <a class="navLnkBlack" href="http://www.nasa.gov/about/highlights/En_Espanol.html"><span class="nasaBannerLinks">+ NASA en Espa&#x00f1;ol</span></a><br/>
+                <a class="navLnkBlack" href="http://www.nasa.gov/about/contact/"><span class="nasaBannerLinks">+ Contact NASA</span></a>              </td>
+
+              <!-- Search box -->
+	      <td id="jplSearch" width="180" bgcolor="#006699" align="center" valign="middle"><center>
+                <font size="2" face="arial" color="#ffffff">Search the API&#x00a0;&#x00a0;&#x00a0;&#x00a0;</font>
+		<form method="post" action="/ashkelon/search.do">
+                  <input type="hidden" name="simple" value="true"/>
+                  <input type="hidden" name="srch_type" value="class"/>
+		  <input name="searchField" maxlength="100" size="10" type="text" value=""/>
+  		  <input height="14" border="0" name="search" width="16" type="image" alt="Search" src="$relativePath/images/arrow.gif" title="search"/>
+                </form></center>
+              </td>
+            </tr>
+          </table>
+
+	<div id="login">
+                  #set ( $logo = "${project.properties.logo}" )
+                  #if ( $logo && !$logo.equals("") )
+                  
+                    ## set image to relative or complete 
+                     #set ( $image = "${project.properties.logo}" )
+                      #if ( !$image.startsWith('http://') )
+                       #set ( $image = "$relativePath${image}" )
+                      #end
+                      
+                    <a href="${project.url}">
+                      <img src="$image" alt="${project.name}" border="0"/>
+                    </a>
+                  #end
+        </div>
+
+        <div id="breadcrumbs">
+          <table border="0" cellspacing="0" cellpadding="4" width="100%">
+            <tr>
+              #if ( $decoration.publishDate.position.equals("left") )
+                <td>
+                  #if ( $project.version ) 
+                    Version  $project.version
+                  #end
+                </td>
+              #end
+              <td>
+                <div align="right">
+                  #if ( $decoration.publishDate.position.equals("right") )
+                    #publishDate ( $decoration.publishDate.position $decoration.publishDate $project.version )
+                    #if ( $decoration.body.links )
+                     |
+                    #end
+                  #end
+                  
+                  #if ( $decoration.body.links )
+                    #links ( $decoration.body.links )
+                  #else
+                    <!-- FIXME &nbsp; -->
+                  #end
+
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <!-- Body of the page -->
+        <table border="0" cellspacing="0" cellpadding="8" width="100%"> <!--id="main" -->
+          <tr valign="top">
+            <td id="leftcol" width="20%">
+              <div id="navcolumn">
+                #if ( $decoration.publishDate.position.equals("navigation-top") )
+                
+                  <div>
+                    <small>#publishDate ( $decoration.publishDate.position $decoration.publishDate $project.version)</small>
+                  </div>
+                #end
+
+#set ( $sitemapFilename = "${project.properties.docsSrc}/sitemap.xml" )
+## Let's do some mischief and instantiate an arbitrary class
+#set ($fileclass = $sitemapFilename.Class.forName("java.io.File"))
+#set ($paramlist = ["$sitemapFilename"])
+#set ($paramarray = $paramlist.toArray())
+#set ($constructors = $fileclass.Constructors)
+
+## Call the constructor java.io.File(String)
+#foreach ($c in $constructors)
+    #if ($c.toString() == "public java.io.File(java.lang.String)")
+        #set ($file = $c.newInstance($paramarray))
+    #end
+#end
+
+
+#if ( $sitemapFilename.exists() )
+  <div>
+    <strong>
+      <a href="sitemap.html">Sitemap</a>
+    </strong>
+  </div>
+#end 
+
+#if ( $project.properties.genDownloadLinks )
+    <div>
+      <strong>Download</strong>
+      <div>
+	<strong>Binary</strong>
+	<div><small><a href="/download-guard/dg?group=${project.groupId}&amp;type=distributions&amp;artifact=${project.artifactId}-${project.version}.zip">${project.version}.zip</a></small></div>
+	<div><small><a href="/download-guard/dg?group=${project.groupId}&amp;type=distributions&amp;artifact=${project.artifactId}-${project.version}.tar.gz">${project.version}.tar.gz</a></small></div>
+	<strong>Source</strong>
+	<div><small><a href="/download-guard/dg?group=${project.groupId}&amp;type=distributions&amp;artifact=${project.artifactId}-${project.version}-src.zip">${project.version}-src.zip</a></small></div>
+	<div><small><a href="/download-guard/dg?group=${project.groupId}&amp;type=distributions&amp;artifact=${project.artifactId}-${project.version}-src.tar.gz">${project.version}-src.tar.gz</a></small></div>
+      </div>
+    </div>
+#end
+  
+  
+          #if ( $decoration.body.menus )
+			#mainMenu ( $decoration.body.menus )
+          #end
+          
+          #if ( $decoration.publishDate.position.equals("navigation-bottom") )
+                  <div>
+                    <small>#publishDate ( $decoration.publishDate.position $decoration.publishDate $project.version ) </small>
+                  </div>
+          #end
+              </div>
+            </td>
+            <td rowspan="2">
+              <div id="bodycol">
+                <!-- Insert MAIN body here -->
+                <div class="app">
+                   $bodyContent
+                </div>
+            </td>
+          </tr>
+        </table>
+  
+     <div id="footer">
+          <table style='width:100%' border="0" cellspacing="0" cellpadding="4">
+            <tr>
+              <td>
+               #if ( $project.organization.name && !$project.organization.name.equals("") )
+                #if ( $project.inceptionYear && !$project.inceptionYear.equals("") )
+                 #set ( $currYear = ${currentDate.year}+1900 )
+                    &#169; $currYear, ${project.organization.name}
+                #end
+              #end
+              
+              #if ( $deocration.publishDate.position.equals("bottom") )
+                  - #publishDate ( $decoration.publishDate.position $decoration.publishDate $project.version )
+              #end
+              
+              </td>
+              #if ( $deocration.publishDate.position.equals("bottom-right") )
+                <td style='width: auto; text-align:right'>#publishDate ( $decoration.publishDate.position $decoration.publishDate $project.version )</td>
+              #end
+          </table>
+        </div>
+
+<table cellpadding="0" cellspacing="0" border="0" bgcolor="#cccccc" width="730">
+  <tr>
+    <td valign="top" width="135">
+      <a href="http://www.firstgov.gov"><img src="$relativePath/images/logo_first_gov.gif" width="125" height="42" alt="FirstGov - Your First Click to the US Governmnet" border="0"/></a>
+    </td>
+    <td valign="top" width="330">
+      <br/><a href="http://www.hq.nasa.gov/office/pao/FOIA/" class="navLnkBlack"><span class="nasaBannerLinks">+ Freedom of Information Act</span></a>
+      <br/><a href="http://www.nasa.gov/about/highlights/HP_Privacy.html" class="navLnkBlack"><span class="nasaBannerLinks">+ NASA Privacy Statement, Disclaimer,<br/><img src="$relativePath/images/spacer.gif" width="9" height="1" alt="" border="0"/>and Accessibility Certification</span></a>
+      <br/><a href="http://f2m.nasa.gov/" class="navLnkBlack"><span class="nasaBannerLinks">+ Freedom to Manage</span></a>
+    </td>
+    <td width="60" valign="top">
+      <a href="http://www.nasa.gov/home/index.html">
+        <img src="$relativePath/images/logo_nasa.gif" width="49" height="48" alt="NASA" border="0"/>
+      </a>
+    </td>
+    <td class="light" width="205" valign="top">
+      <br/>Editor: Sean Kelly
+      <br/>NASA Official: Dan Crichton
+      <br/>#publishDate ( $decoration.publishDate.position $decoration.publishDate $project.version )
+      <br/><a href="http://www.nasa.gov/about/contact/index.html" class="navLnkBlack"><span class="nasaBannerLinks">+ Contact NASA</span></a>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4">
+      <img src="$relativePath/images/spacer.gif" width="1" height="19" alt="" border="0"/>
+    </td>
+  </tr>
+</table>
+
+</td>
+<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
+</tr>
+<tr>
+<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
+<td width="730"><img src="$relativePath/images/spacer.gif" alt="spacer" width="730" height="10"/></td>
+<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
+</tr>
+<tr bgcolor="#000000">
+<td bgcolor="#000000" width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
+<td bgcolor="#000000" width="730"><img src="$relativePath/images/spacer.gif" alt="spacer" width="730" height="10"/></td>
+<td bgcolor="#000000" width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
+</tr>
+
+
+
+</table>
+  
+  
+  
+  
+  
+  </body>
+</html>

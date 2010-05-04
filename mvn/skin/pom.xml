@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2008 California Institute of Technology. ALL RIGHTS
+RESERVED. U.S. Government Sponsorship acknowledged.
+
+$Id$
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>gov.nasa.jpl.oodt</groupId>
+    <artifactId>oodt-core</artifactId>
+    <version>2.0</version>
+  </parent>
+  <artifactId>oodt-m2-skin</artifactId>
+  <version>2.0-SNAPSHOT</version>
+  <name>OODT Maven2 Site Skin</name>
+  <description>OODT Maven2 Site Skin</description>
+</project>
