@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+Copyright 2008 California Institute of Technology. ALL RIGHTS
+RESERVED. U.S. Government Sponsorship acknowledged.
+
+$Id$
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>gov.nasa.jpl.oodt</groupId>
+  <artifactId>oodt-core</artifactId>
+  <version>2.0</version>
+  <name>OODT Core</name>
+  <packaging>pom</packaging>
+  <properties>
+    <organizationLogo>http://www.jpl.nasa.gov/art/nasa_logo.gif</organizationLogo>
+    <logo>/images/${pom.artifactId}.jpg</logo>
+    <xdocVersion>${pom.version}</xdocVersion>
+    <genDownloadLinks>true</genDownloadLinks>
+    <docsSrc>${basedir}/src/site/xdoc</docsSrc>
+  </properties>
+  
+  <url>http://oodt.jpl.nasa.gov/${pom.artifactId}</url>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://oodt.jpl.nasa.gov/jira/secure/ViewProject.jspa?pid=10000</url>
+  </issueManagement>
+  <repositories>
+    <repository>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>oodt-m2-private-repository</id>
+      <name>OODT Maven 2.x Private Repository</name>
+      <url>http://oodt.jpl.nasa.gov/download/private</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>oodt-m2-public-repository</id>
+      <name>OODT Maven 2.x Public Repository</name>
+      <url>http://oodt.jpl.nasa.gov/download/public</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>javax-transaction</id>
+      <name>Java Sun Maven2 Repository</name>
+      <url>http://download.java.net/maven/2</url>
+      <layout>default</layout>      
+    </repository> 
+    <repository>
+      <id>podaac-repo</id>
+      <name>PO.DAAC Repository</name>
+      <url>http://podaac-cm.jpl.nasa.gov/maven2</url>
+      <releases>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <ciManagement>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>Sean.Kelly@jpl.nasa.gov</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <inceptionYear>1999</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>OODT Developer List</name>
+      <subscribe>oodt-dev-subscribe@list.jpl.nasa.gov</subscribe>
+      <unsubscribe>oodt-dev-unsubscribe@list.jpl.nasa.gov</unsubscribe>
+    </mailingList>
+    <mailingList>
+      <name>OODT CVS List</name>
+      <subscribe>oodt-cvs-subscribe@list.jpl.nasa.gov</subscribe>
+      <unsubscribe>oodt-cvs-unsubscribe@list.jpl.nasa.gov</unsubscribe>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>crichton</id>
+      <name>Daniel Crichton</name>
+      <email>Dan.Crichton@jpl.nasa.gov</email>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>Project Manager</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>shardman</id>
+      <name>Sean Hardman</name>
+      <email>Sean.Hardman@jpl.nasa.gov</email>
+      <url>http://home.earthlink.net/~hardmans/</url>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>System Engineer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jshughes</id>
+      <name>Steve Hughes</name>
+      <email>Steve.Hughes@jpl.nasa.gov</email>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>Information Architect</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>kelly</id>
+      <name>Sean Kelly</name>
+      <email>Sean.Kelly@jpl.nasa.gov</email>
+      <url>http://seankelly.biz/</url>
+      <organization>Independent Consultant</organization>
+      <roles>
+        <role>Technologist</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>woollard</id>
+      <name>David Woollard</name>
+      <email>David.M.Woollard@jpl.nasa.gov</email>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>Advanced Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>ahart</id>
+      <name>Andrew Hart</name>
+      <email>Andrew.F.Hart@jpl.nasa.gov</email>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mattmann</id>
+      <name>Chris Mattmann</name>
+      <email>Chris.Mattmann@jpl.nasa.gov</email>
+      <url>http://www-scf.usc.edu/~mattmann/</url>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>Advanced Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>pramirez</id>
+      <name>Paul Ramirez</name>
+      <email>Paul.Ramirez@jpl.nasa.gov</email>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>Advanced Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>thuytran</id>
+      <name>Thuy Tran</name>
+      <email>Thuy.Tran@jpl.nasa.gov</email>
+      <organization>Chipton Ross</organization>
+      <roles>
+        <role>Service Data Management CDE</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cwong</id>
+      <name>Cynthia Wong</name>
+      <email>Cynthia.Wong@jpl.nasa.gov</email>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>Metadata Management CDE</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>danyu</id>
+      <name>Dan Yu</name>
+      <email>dan.yu@jpl.nasa.gov</email>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bfoster</id>
+      <name>Brian Foster</name>
+      <email>brian.m.foster@jpl.nasa.gov</email>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>davoodi</id>
+      <name>Faranak Davoodi</name>
+      <email>faranak.davoodi@jpl.nasa.gov</email>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cgoodale</id>
+      <name>Cameron Goodale</name>
+      <email>Cameron.E.Goodale@jpl.nasa.gov</email>
+      <organization>NASA Jet Propulsion Laboratory</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>OODT License</name>
+      <url>http://oodt.jpl.nasa.gov/oodt-site/license.html</url>
+      <distribution>manual</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:svn:http://${user.name}@oodt.jpl.nasa.gov/repo/${pom.artifactId}</connection>
+    <url>http://oodt.jpl.nasa.gov/${pom.artifactId}</url>
+  </scm>
+  <organization>
+    <name>NASA Jet Propulsion Laboratory, California Institute of Technology</name>
+    <url>http://www.jpl.nasa.gov/</url>
+  </organization>
+  <build>
+    <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+    <testSourceDirectory>${basedir}/src/test</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <index>true</index>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Test*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <phase>package</phase>
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>2.0</version>
+        <configuration>
+          <jiraUser>${user.name}</jiraUser>
+          <jiraPassword>${jira.password}</jiraPassword>
+          <component>${jira.component.ids}</component>
+          <resolutionIds>1</resolutionIds>
+          <statusIds>5,6</statusIds>
+          <fixVersionIds>${jira.fix.version.ids}</fixVersionIds>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>jira-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      
+      <!-- Produce JavaDoc -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.2</version>
+        <configuration> 
+          <aggregate>true</aggregate>
+          <source>1.5</source>
+        </configuration> 
+      </plugin>
+
+      <!-- Produce Source cross references -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.1</version>
+        <configuration> 
+          <aggregate>true</aggregate>
+        </configuration> 
+      </plugin>
+
+      <!-- Unit tests report -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+
+      <!-- "Release Audit" report (checks license headers etc.) -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rat-maven-plugin</artifactId>
+        <version>1.0-alpha-3</version>
+      </plugin>
+
+      <!-- FindBugs Report -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <configuration>
+          <threshold>Normal</threshold>
+          <effort>Default</effort>
+       </configuration>
+      </plugin>
+
+      <!-- Checkstyle report -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <!--configLocation>checkstyle.xml</configLocation-->
+          <enableRulesSummary>false</enableRulesSummary>
+        </configuration>
+      </plugin>
+
+      <!-- Project website generation -->
+      <plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>2.0-beta-7</version>
+        <configuration>
+          <outputEncoding>UTF-8</outputEncoding>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </reporting>
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>oodt-repo-loc</id>
+      <name>OODT Repository</name>
+      <url>scp://oodt.jpl.nasa.gov/usr/local/apache2/htdocs/download/private</url>
+      <layout>default</layout>
+    </repository>
+    <site>
+      <id>oodt-site-loc</id>
+      <name>OODT Component Site</name>
+      <url>scp://oodt.jpl.nasa.gov/usr/local/apache2/htdocs</url>
+    </site>
+  </distributionManagement>
+</project>
