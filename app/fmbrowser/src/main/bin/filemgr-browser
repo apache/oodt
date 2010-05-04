@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# init script for XmlRpcFileManager
+#
+# chkconfig: 345 88 22
+# description: CAS File Manager Browser
+#
+# Copyright (c) 2007 California Institute of Technology.
+# ALL RIGHTS RESERVED. U.S. Government Sponsorship acknowledged.
+#
+# $Id$
+
+[ -f /etc/sysconfig/java ] && . /etc/sysconfig/java
+#[ -f /etc/sysconfig/cas-filemgr] && . /etc/sysconfig/cas-filemgr
+
+JAVA_HOME=/path/to/java/home
+export JAVA_HOME
+FILEMGR_BROWSER_HOME=..
+export FILEMGR_BROWSER_HOME
+
+PATH=${JAVA_HOME}/bin:${FILEMGR_BROWSER_HOME}/bin:/usr/bin:/bin:/usr/sbin:/sbin
+export PATH
+
+$JAVA_HOME/bin/java -Djava.ext.dirs=${FILEMGR_BROWSER_HOME}/lib \
+  gov.nasa.jpl.oodt.cas.browser.system.XmlRpcFilemgrBrowser &

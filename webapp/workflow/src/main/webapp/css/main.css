@@ -1,0 +1,37 @@
+
+body{
+ font-family: Arial, Sans-Serif, sans-serif; color:black;
+ }
+ 
+.small { font-size: 9px; }
+.smallfooter {font-size: 9px; font-family: Verdana, Arial, Helvetica, sans-serif; }
+.smallgrey { font-size: 9px; color: #666; }
+.smallgreyfooter { font-size: 9px; color: #666666; font-family: Verdana, Arial, Helvetica, sans-serif; }
+.grey { color: #666; }
+.lightgrey { color: #aaa; }
+.warning { color: #900; font-weight:bold }
+.red-highlight, .red-highlight td {color: #FF0000; font-weight:bold }
+.green-highlight {color: #006400; font-weight:bold }
+.bright-green-highlight {color: #33CC00; font-weight:bold }
+.red-highlight-small {color: #8B0000; font-weight:bold; font-size: 9px}
+.green-highlight-small {color: #006400; font-weight:bold; font-size: 9px }
+.blue-highlight {color: #6600FF; font-weight:bold}
+
+input {font-family:Arial, Sans-Serif, sans-serif; color:black;font-size:10px;}
+select {font-family:Arial, Sans-Serif, sans-serif; color:black;font-size:10px;}
+textarea {font-family:Arial, Sans-Serif, sans-serif; color:black;font-size:10px;}
+
+td {font-family: Arial, Sans-Serif, sans-serif; color:black;}
+td.inputTitleCol{font-weight:bold;font-size:13px;}
+td.loginText {font-family: Arial, Sans-Serif, sans-serif; color:black; font-size:9px;}
+th.loginStatus {font-family: Arial, Sans-Serif, sans-serif; color:black; font-size:9px;}
+
+tr.introTableHeader{font-size:12px; font-weight:bold; font-family:Verdana, Arial, Helvetica, sans-serif;}
+ul.listOptions {font-size: 12px; font-family: Verdana, Arial, Helvetica, sans-serif;}
+
+.formButton {
+background-color: #dfd389;
+font-size: 9pt;
+font-family: arial;
+font-weight: bold;
+}

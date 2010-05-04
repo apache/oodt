@@ -1,0 +1,18 @@
+<!--
+ // Copyright (c) 2005, California Institute of Technology.
+// ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+// 
+// $Id$
+-->
+   
+ <Context path="/filemgr" docBase="/path/to/filemgr-webapp.war"
+        debug="5" reloadable="true" crossContext="true">
+
+ <Valve className="org.apache.catalina.valves.AccessLogValve"
+         prefix="filemgr_access_log." suffix=".txt"
+         pattern="common"/>
+
+  <Parameter name="gov.nasa.jpl.oodt.cas.filemgr.webapp.display.name" value="File Manager"/>
+  <Parameter name="filemgr.url" value="http://localhost:9000" override="false"/>
+
+</Context>

@@ -1,0 +1,8 @@
+CAS File Manager Browser Changelog
+
+
+Major Releases:
+===========================================
+1.00 - Current Release
+
+1.00 - 2/11/2007 - Initial Stable Release
