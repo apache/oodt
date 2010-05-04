@@ -1,0 +1,14 @@
+Apache Tika Change Log
+======================
+
+
+Release 0.1-incubating - Current Development
+-----------------------------------
+
+1. OODT-1 - Import grid product, profile, and query services into OODT SVN (mattmann, joes)
+
+2. OODT-2 - Import CAS components into OODT SVN (mattmann, joes)
+
+3. OODT-8 - grid-product/pom.xml references tika ver. 0.2-SNAPSHOT, which no longer exists (David Kale via mattmann)
+
+
