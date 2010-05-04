@@ -1,4 +1,4 @@
-Apache Tika Change Log
+Apache OODT Change Log
 ======================
 
 
@@ -10,5 +10,7 @@ Release 0.1-incubating - Current Development
 2. OODT-2 - Import CAS components into OODT SVN (mattmann, joes)
 
 3. OODT-8 - grid-product/pom.xml references tika ver. 0.2-SNAPSHOT, which no longer exists (David Kale via mattmann)
+
+4. OODT-4 - Merge cas-commons and edm-commons (mattmann)
 
 
