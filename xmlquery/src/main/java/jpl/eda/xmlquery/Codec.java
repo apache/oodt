@@ -1,0 +1,72 @@
+// Copyright 2000-2003 California Institute of Technology.  ALL RIGHTS RESERVED.
+// U.S. Government Sponsorship acknowledged.
+//
+// $Id: Codec.java,v 1.1.1.1 2004-03-02 19:37:14 kelly Exp $
+
+package jpl.eda.xmlquery;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InvalidClassException;
+import java.io.OptionalDataException;
+import java.io.StreamCorruptedException;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+/** Result encoder/decoder.
+ *
+ * Classes that implement this interface encode and decode query results to and from XML
+ * format.
+ *
+ * @author Kelly
+ */
+interface Codec {
+	/** Encode the given object into XML format.
+	 *
+	 * The encoding takes the object, encodes into a DOM structure, and returns a
+	 * &lt;resultValue&gt; element.
+	 *
+	 * @param object Object to encode.
+	 * @param doc What document will own the created XML nodes.
+	 * @return A &lt;resultValue&gt; element encoding the <var>object</var>.
+	 * @throws DOMException If an error occurs while encoding the object.
+	 */
+	Node encode(Object object, Document doc) throws DOMException;
+
+	/** Decode the given XML representation into its object.
+	 *
+	 * The decoding takes the &lt;resultValue&gt; node, and decodes it into the object
+	 * it represents.
+	 *
+	 * @param node The &lt;resultValue&gt; node.
+	 * @return The object that the <var>node</var> represents.
+	 * @throws ClassNotFoundException If the class of the object in <var>node</var> can't be found.
+	 * @throws InvalidClassException If something is wrong with the class encoded in <var>node</var>.
+	 * @throws StreamCorruptedException When control information in <var>node</var> is inconsistent.
+	 * @throws OptionalDataException If primitive datatypes instead of an object was found encoded in the <var>node</var>.
+	 */
+	Object decode(Node node) throws ClassNotFoundException, InvalidClassException, StreamCorruptedException,
+		OptionalDataException;
+
+	/**
+	 * Compute the size of the given object.
+	 *
+	 * @param object Object.
+	 * @return Size of <var>object</var> in bytes.
+	 */
+	long sizeOf(Object object);
+
+	/**
+	 * Yield the given object as a stream.
+	 *
+	 * This method takes the given object and yields a stream version of it
+	 * appropriate concrete codec type.  For example, {@link ByteArrayCodec}s may
+	 * yield simple {@link ByteArrayInputStream}s for their objects.
+	 *
+	 * @param object The object to be streamed.
+	 * @return An <code>InputStream</code> of <var>object</var>.
+	 * @throws IOException if an error occurs.
+	 */
+	InputStream getInputStream(Object object) throws IOException;
+}

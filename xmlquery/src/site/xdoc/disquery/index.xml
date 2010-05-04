@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (c) 2004, California Institute of Technology.
+ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+
+$Id: index.xml,v 1.1 2004-06-24 20:41:32 shardman Exp $
+-->
+
+<document>
+
+  <properties>
+    <title>DIS-Style Query</title>
+    <author email="Sean.Hardman@jpl.nasa.gov">Sean Hardman</author>
+  </properties>
+
+  <body>
+    <section name="DIS-Style Query">
+      <p>A DIS-Style Query is a query using triples linked in a logical expression. Each triple is in the format of (element, relation, literal). The element portion of the triple may be any named data element recognized as a queryable attribute by the target of the query. The relation portion of the triple may contain any of the relational operators from the table below. The literal portion of the triple is the element value to be compared. Mutiple sets of triples may be joined using any of the logical operators from the table below. Note that elements or literals containing spaces must be quoted. Also note that case sensitivity and support for the various operators is subject to the capabilities offered by the target of the query.
+      </p>
+
+      <p>The following table contains the supported relational operators:</p>
+
+      <table>
+      <tr>
+        <th colspan="2">Relational Operators</th>
+      </tr>
+      <tr>
+        <td>Equal</td> <td>=, EQ</td>
+      </tr>
+      <tr>
+        <td>Not Equal</td> <td>!=, NE</td>
+      </tr>
+      <tr>
+        <td>Less Than</td> <td>&lt;, LT</td>
+      </tr>
+      <tr>
+        <td>Less Than or Equal</td> <td>&lt;=, LE</td>
+      </tr>
+      <tr>
+        <td>Greater Than</td> <td>&gt;, GT</td>
+      </tr>
+      <tr>
+        <td>Greater Than or Equal</td> <td>&gt;=, GE</td>
+      </tr>
+      <tr>
+        <td>Contains</td> <td>LIKE</td>
+      </tr>
+      <tr>
+        <td>Does Not Contain</td> <td>NOTLIKE</td>
+      </tr>
+      <tr>
+        <td>Is Null</td> <td>IS</td>
+      </tr>
+      <tr>
+        <td>Is Not Null</td> <td>ISNOT</td>
+      </tr>
+      </table>
+
+      <p>The following table contains the supported logical operators:</p>
+
+      <table>
+      <tr>
+        <th colspan="2">Logical Operators</th>
+      </tr>
+      <tr>
+        <td>And</td> <td>AND, &amp;</td>
+      </tr>
+      <tr>
+        <td>Or</td> <td>OR, |</td>
+      </tr>
+      <tr>
+        <td>Not</td> <td>NOT, !</td>
+      </tr>
+      </table>
+
+      <p>The following are examples of DIS-Style queries:</p>
+
+      <ul>
+      <li>Title LIKE EDM AND Creator = "Sean Hardman"
+      <p>This query will return all objects where the <i>Title</i> element contains the text "EDM" and the <i>Creator</i> element is equal to "Sean Hardman".</p>
+      </li>
+
+      <li>Title LIKE EDM AND Creator = "Sean Hardman" OR Title LIKE OODT AND Creator = "Sean Kelly"
+      <p>This query will return all objects where either the first set of criteria matches or the second set of criteria matches.</p>
+      </li>
+
+      <li>Temperature &gt; 32 AND Temperature &lt; 212
+      <p>This query will return all objects where the <i>Temperature</i> element value is between the specified range.</p>
+      </li>
+
+      <li>Subject IS NULL
+      <p>This query will return all objects where the <i>Subject</i> element has no associated value. When using the IS and ISNOT relational operators, the literal must be "NULL" or "null".</p>
+      </li>
+      </ul>
+    </section>
+  </body>
+</document>
