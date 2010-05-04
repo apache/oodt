@@ -1,0 +1,19 @@
+<!--
+  // Copyright (c) 2008, California Institute of Technology.
+  // ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+  // 
+  // $Id$
+-->
+
+<Context path="/fmprod" docBase="/path/to/cas-product.war" debug="5"
+  reloadable="true" crossContext="true">
+
+  <Valve className="org.apache.catalina.valves.AccessLogValve"
+    prefix="fmprod_access_log." suffix=".txt" pattern="common" />
+
+  <Parameter name="filemgr.url" value="http://localhost:9000" override="false" />
+  <Parameter name="filemgr.rdfconf.file" value="/path/to/rdfconf.xml" override="false"/>
+  <Parameter name="filemgr.rssconf.file" value="/path/to/rssconf.xml" override="false"/>
+  <Parameter name="filemgr.working.dir" value="/tmp" override="false" />
+
+</Context>

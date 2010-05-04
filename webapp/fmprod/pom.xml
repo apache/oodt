@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<!-- 
+  Copyright 2008 California Institute of Technology. ALL RIGHTS
+  RESERVED. U.S. Government Sponsorship acknowledged.
+  
+  $Id$
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>gov.nasa.jpl.oodt</groupId>
+    <artifactId>oodt-core</artifactId>
+    <version>2.0</version>
+  </parent>
+  <artifactId>cas-product</artifactId>
+  <packaging>war</packaging>
+  <version>1.2.0-dev</version>
+  <name>CAS Product Server</name>
+  <description>This project builds on top of the CAS file management component and exposes its
+     underlying data delivery capabilities using the OODT ProductServer component. All-in-all,
+     this project contributes an OODT LargeProductHandler component, that can be used to deliver
+     and format a CAS product structure into an OODT XML Query Result Set.</description>
+  <ciManagement>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>chris.mattmann@jpl.nasa.gov</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webResources>
+            <resource>
+              <!-- this is relative to the pom.xml directory -->
+              <directory>.</directory>
+              <includes>
+                <include>LICENSE.txt</include>
+                <include>CHANGES.txt</include>
+              </includes>
+              <targetPath>META-INF/</targetPath>
+            </resource>          
+          </webResources>
+          <warSourceDirectory>src/main/webapp</warSourceDirectory>
+          <containerConfigXML>src/main/resources/cas-product-tomcat-5.5.9.xml</containerConfigXML>
+        </configuration>
+      </plugin>
+      <plugin>
+        <!-- NOTE: We don't need a groupId specification because the group is
+          org.apache.maven.plugins ...which is assumed by default.
+        -->
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>
+              jar-with-dependencies
+            </descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.4.3</version>
+        <configuration>
+          <forkMode>pertest</forkMode>
+          <useSystemClassLoader>false</useSystemClassLoader>
+          <systemProperties>
+             <property>
+               <name>java.util.logging.config.file</name>
+               <value>${basedir}/src/testdata/test.logging.properties</value>
+              </property>
+           </systemProperties>
+           <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
+           <redirectTestOutputToFile>true</redirectTestOutputToFile>
+            <includes>
+              <include>**/*Test*.java</include>
+            </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
+    </dependency>    
+    <dependency>
+      <groupId>gov.nasa.jpl.oodt</groupId>
+      <artifactId>cas-filemgr</artifactId>
+      <version>1.8.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>gov.nasa.jpl.oodt</groupId>
+      <artifactId>cas-metadata</artifactId>
+      <version>1.6.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>gov.nasa.jpl.oodt</groupId>
+      <artifactId>cas-commons</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>oodt</groupId>
+      <artifactId>grid-product</artifactId>
+      <version>3.0.11</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>oodt</groupId>
+      <artifactId>edm-commons</artifactId>
+      <version>2.2.10</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>gov.nasa.jpl.oodt</groupId>
+      <artifactId>edm-query</artifactId>
+      <version>2.0.8-dev</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  // Copyright (c) 2008, California Institute of Technology.
+  // ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+  // 
+  // $Id$
+-->
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+  <context-param>
+    <param-name>filemgr.url</param-name>
+    <param-value>http://localhost:9000</param-value>
+  </context-param>
+  <context-param>
+    <param-name>filemgr.ns</param-name>
+    <param-value>cas|urn:oodt:|rdf|http://www.w3.org/1999/02/22-rdf-syntax-ns#</param-value>
+  </context-param>
+  <context-param>
+    <param-name>filemgr.ns.default</param-name>
+    <param-value>cas</param-value>
+  </context-param>
+  <context-param>
+    <param-name>filemgr.working.dir</param-name>
+    <param-value>/tmp</param-value>
+  </context-param>
+
+  <servlet>
+    <servlet-name>RSSServlet</servlet-name>
+    <servlet-class>gov.nasa.jpl.oodt.cas.product.rss.RSSProductServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>RSSTransferServlet</servlet-name>
+    <servlet-class>gov.nasa.jpl.oodt.cas.product.rss.RSSProductTransferServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>RDFProductServlet</servlet-name>
+    <servlet-class>gov.nasa.jpl.oodt.cas.product.rdf.RDFProductServlet</servlet-class>
+  </servlet>
+  <servlet>
+      <servlet-name>RDFDatasetServlet</servlet-name>
+      <servlet-class>gov.nasa.jpl.oodt.cas.product.rdf.RDFDatasetServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>DataDeliveryServlet</servlet-name>
+    <servlet-class>gov.nasa.jpl.oodt.cas.product.data.DataDeliveryServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>DatasetDeliveryServlet</servlet-name>
+    <servlet-class>gov.nasa.jpl.oodt.cas.product.data.DatasetDeliveryServlet</servlet-class>
+  </servlet>
+
+
+  <servlet-mapping>
+    <servlet-name>RSSServlet</servlet-name>
+    <url-pattern>/viewRecent</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>RSSTransferServlet</servlet-name>
+    <url-pattern>/viewTransfers</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>RDFProductServlet</servlet-name>
+    <url-pattern>/rdf</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+      <servlet-name>RDFDatasetServlet</servlet-name>
+      <url-pattern>/rdf/dataset</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DataDeliveryServlet</servlet-name>
+    <url-pattern>/data</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>DatasetDeliveryServlet</servlet-name>
+    <url-pattern>/dataset</url-pattern>
+  </servlet-mapping>  
+
+</web-app>
