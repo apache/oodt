@@ -16,10 +16,10 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view.prompts;
+package org.apache.oodt.cas.filemgr.browser.view.prompts;
 
-import gov.nasa.jpl.oodt.cas.filemgr.structs.RangeQueryCriteria;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.TermQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -44,8 +44,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import gov.nasa.jpl.oodt.cas.filemgr.browser.controller.WindowListener;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.model.CasDB;
+import org.apache.oodt.cas.filemgr.browser.controller.WindowListener;
+import org.apache.oodt.cas.filemgr.browser.model.CasDB;
 
 public class QueryBuilderPrompt extends JFrame{
 	
@@ -91,7 +91,7 @@ public class QueryBuilderPrompt extends JFrame{
 	}
 	
 	
-	public gov.nasa.jpl.oodt.cas.filemgr.structs.Query getQuery(){
+	public org.apache.oodt.cas.filemgr.structs.Query getQuery(){
 		return qPanel.getCasQuery();
 	}
 	
@@ -311,9 +311,9 @@ public class QueryBuilderPrompt extends JFrame{
 			return q;
 		}
 		
-		public gov.nasa.jpl.oodt.cas.filemgr.structs.Query getCasQuery(){
-			gov.nasa.jpl.oodt.cas.filemgr.structs.Query q = 
-				new gov.nasa.jpl.oodt.cas.filemgr.structs.Query();
+		public org.apache.oodt.cas.filemgr.structs.Query getCasQuery(){
+			org.apache.oodt.cas.filemgr.structs.Query q = 
+				new org.apache.oodt.cas.filemgr.structs.Query();
 			for(int i=0;i<this.getComponentCount();i++){
 				Component c = this.getComponent(i);
 				String element;

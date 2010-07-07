@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels;
+package org.apache.oodt.cas.filemgr.browser.view.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

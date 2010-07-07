@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view.menus;
+package org.apache.oodt.cas.filemgr.browser.view.menus;
 
 import java.awt.event.ActionListener;
 

@@ -16,14 +16,38 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view;
+package org.apache.oodt.cas.filemgr.browser.view.panels;
 
-public class GuiParams{
+import java.awt.BorderLayout;
+import java.awt.Color;
+
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import org.apache.oodt.cas.filemgr.browser.controller.TableListener;
+
+public class MiddlePane extends JPanel {
+
+	public TablePane tPane;
 	
-	public static final int WINDOW_WIDTH = 600;
-	public static final int WINDOW_HEIGHT = 400;
+	public MiddlePane(){
+		this.setBackground(Color.WHITE);
+		this.setLayout(new BorderLayout());
+		
+		tPane = new TablePane();
+        
+		JPanel inset = new JPanel();
+		inset.setBackground(Color.WHITE);
+		inset.setLayout(new BorderLayout());
+		inset.add(tPane, BorderLayout.WEST);
+		
+        JScrollPane scrollPane=new JScrollPane(inset);
+        
+        this.add(scrollPane, BorderLayout.CENTER);
+	}
 	
-	public static final int DEFAULT_CELL_WIDTH = 70;
-	public static final int DEFAULT_CELL_HEIGHT = 20;
-	
+	public TableListener getListener(){
+		return tPane.getListener();
+	}
+
 }

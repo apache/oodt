@@ -16,34 +16,39 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels;
+package org.apache.oodt.cas.filemgr.browser.view.panels;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseListener;
 
-import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.GuiParams;
+import org.apache.oodt.cas.filemgr.browser.view.GuiParams;
 
-public class HeaderSpacer extends JPanel{
+public class HeaderCell extends Cell{
 	
-	private int col;
+	private int colNum;
 	
-	public HeaderSpacer(MouseListener listener,int pos){
-		//set background, size
-		this.setBackground(Color.WHITE);
-		Dimension d = new Dimension(2,GuiParams.DEFAULT_CELL_HEIGHT);
-		this.setMinimumSize(d);
-		this.setMaximumSize(d);
-		this.setPreferredSize(d);
+	public HeaderCell(MouseListener listener, int colNum){
+		super();
+		this.setBackground(Color.LIGHT_GRAY);
+		this.setBorder(null);
+		Dimension size = new Dimension(GuiParams.DEFAULT_CELL_WIDTH -2,GuiParams.DEFAULT_CELL_HEIGHT);
+		setMinimumSize(size);
+		setMaximumSize(size);
+		setPreferredSize(size);
+		Font f = new Font("san-serif",Font.BOLD,11);
+		text.setFont(f);
 		
-		col = pos;
+		this.colNum = colNum;
 		this.addMouseListener(listener);
 	}
 	
 	public int getColNum(){
-		return col;
+		return colNum;
 	}
+
 	
 }

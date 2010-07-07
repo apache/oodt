@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels;
+package org.apache.oodt.cas.filemgr.browser.view.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -27,7 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.GuiParams;
+import org.apache.oodt.cas.filemgr.browser.view.GuiParams;
 
 public class Cell extends JPanel{
 	

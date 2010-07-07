@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view;
+package org.apache.oodt.cas.filemgr.browser.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,16 +31,16 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
-import gov.nasa.jpl.oodt.cas.filemgr.browser.controller.TableListener;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.controller.WindowListener;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.model.CasDB;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels.BottomPane;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels.HeaderRow;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels.MiddlePane;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels.QueryPane;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.prompts.ConnectPrompt;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.prompts.SortPrompt;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.menus.MenuBar;
+import org.apache.oodt.cas.filemgr.browser.controller.TableListener;
+import org.apache.oodt.cas.filemgr.browser.controller.WindowListener;
+import org.apache.oodt.cas.filemgr.browser.model.CasDB;
+import org.apache.oodt.cas.filemgr.browser.view.panels.BottomPane;
+import org.apache.oodt.cas.filemgr.browser.view.panels.HeaderRow;
+import org.apache.oodt.cas.filemgr.browser.view.panels.MiddlePane;
+import org.apache.oodt.cas.filemgr.browser.view.panels.QueryPane;
+import org.apache.oodt.cas.filemgr.browser.view.prompts.ConnectPrompt;
+import org.apache.oodt.cas.filemgr.browser.view.prompts.SortPrompt;
+import org.apache.oodt.cas.filemgr.browser.view.menus.MenuBar;
 
 public class MainWindow extends JFrame{ 
 	

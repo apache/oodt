@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view.prompts;
+package org.apache.oodt.cas.filemgr.browser.view.prompts;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,7 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.MainWindow;
+import org.apache.oodt.cas.filemgr.browser.view.MainWindow;
 
 public class SortPrompt extends JFrame{
 	

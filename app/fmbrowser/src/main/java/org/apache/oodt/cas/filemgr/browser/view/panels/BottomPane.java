@@ -16,58 +16,51 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels;
+package org.apache.oodt.cas.filemgr.browser.view.panels;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionListener;
+import java.awt.Font;
 
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.GuiParams;
-
-public class QueryPane extends JPanel{
+public class BottomPane extends JPanel{
 	
-	private QueryField field;
+	public JLabel statusMessage; 
 	
-	public QueryPane(ActionListener listener){
-		super(new BorderLayout());
+	public BottomPane(){
 		
 		//set background and panel size
 		setBackground(Color.WHITE);
-		Dimension paneSize = new Dimension();
-		paneSize.width= GuiParams.WINDOW_WIDTH;
-		paneSize.height = (int)(GuiParams.WINDOW_HEIGHT*(0.1));
-		
-		//set border
-		EmptyBorder line1 = new EmptyBorder(2,10,2,2);
+		EmptyBorder line1 = new EmptyBorder(4,10,4,2);
 		LineBorder line2 = new LineBorder(Color.BLACK,1);
-		CompoundBorder cp = new CompoundBorder(line1,line2);
-		this.setBorder(cp);
+		EmptyBorder line3 = new EmptyBorder(4,10,4,10);
+		CompoundBorder cb1 = new CompoundBorder(line1,line2);
+		CompoundBorder cb2 = new CompoundBorder(cb1,line3);
+		setBorder(cb2);
 		
-		//add query field to pane
-		field = new QueryField(listener);
-		add(field,BorderLayout.EAST);
+		JLabel statusLabel = new JLabel(" Status: ");
+		statusLabel.setFont(new Font("san-serif",Font.PLAIN,10));
+		
+		statusMessage = new JLabel(" Disconnected");
+		statusMessage.setFont(new Font("san-serif",Font.PLAIN,10));
+		statusMessage.setForeground(Color.RED);
+		statusMessage.setBackground(Color.WHITE);
+		
+		//set layout
+		setLayout(new BoxLayout(this,BoxLayout.LINE_AXIS));
+		add(statusLabel);
+		add(statusMessage);
 	}
 	
-	public String getQuery(){
-		return field.getQueryString();
+	public void changeStatus(String status){
+		statusMessage.setText(status);
+		this.repaint();
 	}
 	
-	public void clearQuery(){
-		field.clearQuery();
-	}
-	
-	public String getType(){
-		return field.getProductType();
-	}
-	
-	public void updateTypes(String[] types){
-		field.updateTypes(types);
-	}
 }

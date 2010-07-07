@@ -16,23 +16,25 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels;
+package org.apache.oodt.cas.filemgr.browser.view.panels;
 
 import java.awt.Color;
+import java.awt.event.MouseListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-public class Row extends JPanel{
+public class HeaderRow extends JPanel{
 	
-	private Cell cells[];
+	private HeaderCell cells[];
+	private int numCells;
 	
-	public Row(int numCells){
-		//create cells
-		cells = new Cell[numCells];
+	public HeaderRow(MouseListener listener, int numCells){
+//		create cells
+		this.numCells = numCells;
+		cells = new HeaderCell[numCells];
 		for(int i=0;i<numCells;i++){
-			cells[i] = new Cell();
-			cells[i].setText("");
+			cells[i] = new HeaderCell(listener,i);
 		}
 		
 		//set background, etc.
@@ -41,43 +43,57 @@ public class Row extends JPanel{
 		
 		for(int i=0;i<numCells;i++){
 			this.add(cells[i]);
+			this.add(new HeaderSpacer(listener,i));
 		}
+	}
+		
+	public int getNumCols(){
+		return numCells;
 	}
 	
 	public void hideCol(int colNum){
-		Cell c = (Cell)this.getComponent(colNum);
+		int trueNum = colNum*2;
+		HeaderCell c = (HeaderCell)this.getComponent(trueNum);
 		c.setVisible(false);
+		HeaderSpacer sp = (HeaderSpacer)this.getComponent(trueNum+1);
+		sp.setVisible(false);
 	}
-	
+		
 	public void unhideCol(int colNum){
-		Cell c = (Cell)this.getComponent(colNum);
+		int trueNum = colNum*2;
+		HeaderCell c = (HeaderCell)this.getComponent(trueNum);
 		c.setVisible(true);
+		HeaderSpacer sp = (HeaderSpacer)this.getComponent(trueNum+1);
+		sp.setVisible(true);
 	}
-	
+		
 	public void setText(int colNum, String text){
-		Cell c = (Cell)this.getComponent(colNum);
+		int trueNum = colNum*2;
+		HeaderCell c = (HeaderCell)this.getComponent(trueNum);
 		c.setText(text);
 		c.repaint();
 	}
 	
 	public String getText(int colNum){
-		Cell c = (Cell)this.getComponent(colNum);
+		int trueNum = colNum*2;
+		HeaderCell c = (HeaderCell)this.getComponent(trueNum);
 		return c.getText();
 	}
 	
 	public int getWidth(int colNum){
-		Cell c = (Cell)this.getComponent(colNum);
+		int trueNum = colNum*2;
+		HeaderCell c = (HeaderCell)this.getComponent(trueNum);
 		return c.getWidth();
 	}
 	
 	public void changeWidth(int colNum, int newWidth){
-		Cell c = (Cell)this.getComponent(colNum);
+		int trueNum = colNum*2;
+		HeaderCell c = (HeaderCell)this.getComponent(trueNum);
 		int change = c.getWidth() - newWidth;
 		c.setWidth(newWidth);
-		for(int i=colNum+1;i<this.getComponentCount();i++){
+		for(int i=trueNum+1;i<this.getComponentCount();i++){
 			this.getComponent(i).setLocation(this.getComponent(i).getX()-change, this.getComponent(i).getY());
 		}
 		this.repaint();
 	}
-
 }

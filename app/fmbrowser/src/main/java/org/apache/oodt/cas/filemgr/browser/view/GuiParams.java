@@ -16,39 +16,14 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels;
+package org.apache.oodt.cas.filemgr.browser.view;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.MouseListener;
-
-import javax.swing.border.LineBorder;
-
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.GuiParams;
-
-public class HeaderCell extends Cell{
+public class GuiParams{
 	
-	private int colNum;
+	public static final int WINDOW_WIDTH = 600;
+	public static final int WINDOW_HEIGHT = 400;
 	
-	public HeaderCell(MouseListener listener, int colNum){
-		super();
-		this.setBackground(Color.LIGHT_GRAY);
-		this.setBorder(null);
-		Dimension size = new Dimension(GuiParams.DEFAULT_CELL_WIDTH -2,GuiParams.DEFAULT_CELL_HEIGHT);
-		setMinimumSize(size);
-		setMaximumSize(size);
-		setPreferredSize(size);
-		Font f = new Font("san-serif",Font.BOLD,11);
-		text.setFont(f);
-		
-		this.colNum = colNum;
-		this.addMouseListener(listener);
-	}
-	
-	public int getColNum(){
-		return colNum;
-	}
-
+	public static final int DEFAULT_CELL_WIDTH = 70;
+	public static final int DEFAULT_CELL_HEIGHT = 20;
 	
 }

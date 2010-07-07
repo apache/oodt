@@ -16,38 +16,34 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels;
+package org.apache.oodt.cas.filemgr.browser.view.panels;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
-import gov.nasa.jpl.oodt.cas.filemgr.browser.controller.TableListener;
+import org.apache.oodt.cas.filemgr.browser.view.GuiParams;
 
-public class MiddlePane extends JPanel {
-
-	public TablePane tPane;
+public class HeaderSpacer extends JPanel{
 	
-	public MiddlePane(){
+	private int col;
+	
+	public HeaderSpacer(MouseListener listener,int pos){
+		//set background, size
 		this.setBackground(Color.WHITE);
-		this.setLayout(new BorderLayout());
+		Dimension d = new Dimension(2,GuiParams.DEFAULT_CELL_HEIGHT);
+		this.setMinimumSize(d);
+		this.setMaximumSize(d);
+		this.setPreferredSize(d);
 		
-		tPane = new TablePane();
-        
-		JPanel inset = new JPanel();
-		inset.setBackground(Color.WHITE);
-		inset.setLayout(new BorderLayout());
-		inset.add(tPane, BorderLayout.WEST);
-		
-        JScrollPane scrollPane=new JScrollPane(inset);
-        
-        this.add(scrollPane, BorderLayout.CENTER);
+		col = pos;
+		this.addMouseListener(listener);
 	}
 	
-	public TableListener getListener(){
-		return tPane.getListener();
+	public int getColNum(){
+		return col;
 	}
-
+	
 }

@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels;
+package org.apache.oodt.cas.filemgr.browser.view.panels;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -42,8 +42,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import gov.nasa.jpl.oodt.cas.filemgr.browser.controller.TableListener;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.menus.RightClickMenu;
+import org.apache.oodt.cas.filemgr.browser.controller.TableListener;
+import org.apache.oodt.cas.filemgr.browser.view.menus.RightClickMenu;
 
 public class TablePane extends JPanel{ 
 	
