@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.model;
+package org.apache.oodt.cas.filemgr.browser.model;
 
 import org.apache.lucene.analysis.standard.ParseException;
 import org.apache.lucene.index.Term;
@@ -27,10 +27,10 @@ import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.TermQuery;
 
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Query;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.RangeQueryCriteria;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.TermQueryCriteria;
-import gov.nasa.jpl.oodt.cas.filemgr.tools.CASAnalyzer;
+import org.apache.oodt.cas.filemgr.structs.Query;
+import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
+import org.apache.oodt.cas.filemgr.tools.CASAnalyzer;
 
 public class QueryBuilder{
 	
@@ -45,8 +45,8 @@ public class QueryBuilder{
 		QueryParser parser = new QueryParser("__FREE__", new CASAnalyzer());
 		
 		org.apache.lucene.search.Query luceneQ = null;
-		gov.nasa.jpl.oodt.cas.filemgr.structs.Query casQ = 
-			new gov.nasa.jpl.oodt.cas.filemgr.structs.Query();
+		org.apache.oodt.cas.filemgr.structs.Query casQ = 
+			new org.apache.oodt.cas.filemgr.structs.Query();
 		
 		
 		try {
@@ -62,7 +62,7 @@ public class QueryBuilder{
 		return casQ;	
 	}
 	
-	public void GenerateCASQuery(gov.nasa.jpl.oodt.cas.filemgr.structs.Query casQ, org.apache.lucene.search.Query luceneQ){
+	public void GenerateCASQuery(org.apache.oodt.cas.filemgr.structs.Query casQ, org.apache.lucene.search.Query luceneQ){
 		if (luceneQ instanceof TermQuery){
 			Term t = ((TermQuery)luceneQ).getTerm();
 			if (t.field().equals("__FREE__")){

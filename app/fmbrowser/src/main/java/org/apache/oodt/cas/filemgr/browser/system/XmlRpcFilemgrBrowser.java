@@ -16,9 +16,9 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.system;
+package org.apache.oodt.cas.filemgr.browser.system;
 
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.MainWindow;
+import org.apache.oodt.cas.filemgr.browser.view.MainWindow;
 
 public class XmlRpcFilemgrBrowser{
 	

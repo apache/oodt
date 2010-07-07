@@ -16,15 +16,15 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.model;
+package org.apache.oodt.cas.filemgr.browser.model;
 
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Element;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
-import gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.filemgr.structs.Element;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.Metadata;
 
 import java.net.URL;
 import java.util.Collections;
@@ -131,7 +131,7 @@ public class CasDB{
 		return elementID;
 	}
 	
-	public boolean issueQuery(gov.nasa.jpl.oodt.cas.filemgr.structs.Query query, String productType){
+	public boolean issueQuery(org.apache.oodt.cas.filemgr.structs.Query query, String productType){
 		results = new Results();
 		try{
 			ProductType type = client.getProductTypeByName(productType);
@@ -177,7 +177,7 @@ public class CasDB{
 		} else {
 		
 			QueryBuilder qb = new QueryBuilder(this);
-			gov.nasa.jpl.oodt.cas.filemgr.structs.Query  casQ = qb.ParseQuery(queryText);
+			org.apache.oodt.cas.filemgr.structs.Query  casQ = qb.ParseQuery(queryText);
 			ProductType type = null;
 			try {
 				type = client.getProductTypeByName(productType);

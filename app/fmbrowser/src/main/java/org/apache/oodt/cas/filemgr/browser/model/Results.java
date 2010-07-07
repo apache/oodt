@@ -16,9 +16,9 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.model;
+package org.apache.oodt.cas.filemgr.browser.model;
 
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.Metadata;
 
 import java.util.Enumeration;
 import java.util.Hashtable;

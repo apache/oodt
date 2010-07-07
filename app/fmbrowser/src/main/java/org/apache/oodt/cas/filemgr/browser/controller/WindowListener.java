@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.controller;
+package org.apache.oodt.cas.filemgr.browser.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,11 +24,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-import gov.nasa.jpl.oodt.cas.filemgr.browser.model.CasDB;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.MainWindow;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.prompts.ConnectPrompt;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.prompts.QueryBuilderPrompt;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.prompts.SortPrompt;
+import org.apache.oodt.cas.filemgr.browser.model.CasDB;
+import org.apache.oodt.cas.filemgr.browser.view.MainWindow;
+import org.apache.oodt.cas.filemgr.browser.view.prompts.ConnectPrompt;
+import org.apache.oodt.cas.filemgr.browser.view.prompts.QueryBuilderPrompt;
+import org.apache.oodt.cas.filemgr.browser.view.prompts.SortPrompt;
 
 public class WindowListener implements ActionListener{
 

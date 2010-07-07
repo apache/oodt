@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.browser.controller;
+package org.apache.oodt.cas.filemgr.browser.controller;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -31,11 +31,11 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.menus.RightClickMenu;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels.HeaderCell;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels.HeaderSpacer;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels.Row;
-import gov.nasa.jpl.oodt.cas.filemgr.browser.view.panels.TablePane;
+import org.apache.oodt.cas.filemgr.browser.view.menus.RightClickMenu;
+import org.apache.oodt.cas.filemgr.browser.view.panels.HeaderCell;
+import org.apache.oodt.cas.filemgr.browser.view.panels.HeaderSpacer;
+import org.apache.oodt.cas.filemgr.browser.view.panels.Row;
+import org.apache.oodt.cas.filemgr.browser.view.panels.TablePane;
 
 public class TableListener implements MouseListener,ActionListener{
 	
