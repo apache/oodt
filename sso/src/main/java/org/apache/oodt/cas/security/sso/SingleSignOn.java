@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.security.sso;
+package org.apache.oodt.cas.security.sso;
 
 //JDK imports
 import java.util.List;
