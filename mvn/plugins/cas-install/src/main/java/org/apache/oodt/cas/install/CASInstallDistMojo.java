@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.install;
+package org.apache.oodt.cas.install;
 
 //APACHE imports
 import org.apache.commons.io.FileUtils;
@@ -25,13 +25,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 //JDK imports
-import gov.nasa.jpl.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 
 import java.io.File;
 import java.io.IOException;
 
 //OODT imports
-import static gov.nasa.jpl.oodt.cas.install.CASInstallDirMetKeys.*;
+import static org.apache.oodt.cas.install.CASInstallDirMetKeys.*;
 
 /**
  * Goal that unpackages a .tar.gz distribution of a CAS distro and installs it,

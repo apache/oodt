@@ -16,10 +16,10 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.install;
+package org.apache.oodt.cas.install;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 
 //JDK imports
 import java.io.File;

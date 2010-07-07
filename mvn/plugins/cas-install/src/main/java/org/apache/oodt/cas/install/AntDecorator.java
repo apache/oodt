@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.install;
+package org.apache.oodt.cas.install;
 
 //JDK imports
 import java.io.File;
