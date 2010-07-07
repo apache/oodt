@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn;
+package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
 import java.io.ByteArrayOutputStream;
@@ -34,12 +34,12 @@ import java.util.logging.Logger;
 import org.apache.tika.mime.MimeTypesFactory;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.commons.xml.XMLUtils;
-import gov.nasa.jpl.oodt.product.handlers.ofsn.metadata.OFSNMetKeys;
-import gov.nasa.jpl.oodt.product.handlers.ofsn.metadata.OFSNXMLMetKeys;
-import gov.nasa.jpl.oodt.product.handlers.ofsn.metadata.XMLQueryMetKeys;
-import gov.nasa.jpl.oodt.product.handlers.ofsn.util.OFSNObjectFactory;
-import gov.nasa.jpl.oodt.product.handlers.ofsn.util.OFSNUtils;
+import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.product.handlers.ofsn.metadata.OFSNMetKeys;
+import org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLMetKeys;
+import org.apache.oodt.product.handlers.ofsn.metadata.XMLQueryMetKeys;
+import org.apache.oodt.product.handlers.ofsn.util.OFSNObjectFactory;
+import org.apache.oodt.product.handlers.ofsn.util.OFSNUtils;
 import jpl.eda.product.LargeProductQueryHandler;
 import jpl.eda.product.ProductException;
 import jpl.eda.xmlquery.LargeResult;

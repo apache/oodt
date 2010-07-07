@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn;
+package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
 import java.io.File;
@@ -26,36 +26,38 @@ import java.util.Properties;
 import jpl.eda.product.ProductException;
 
 /**
- * <p>
- * Classes that implement this interface define how to return file listings on a
- * remote server from an <code>ofsn</code>.
- * </p>
+ * 
+ * Generates a directory listing, recursing into the OFSN path.
  * 
  * @author mattmann
  * @version $Revision$
  * 
  */
-public interface OFSNListHandler {
+public class DirListRecursiveHandler extends AbstractCrawlLister {
 
-  /**
-   * Handlers that implement this method take an <code>O</code>nline
-   * <code>F</code>ile <code>S</code>pecification <code>N</code>ame and return
-   * back a listing of files on the remote server.
+  /*
+   * (non-Javadoc)
    * 
-   * @param ofsn
-   *          The OFSN path to list files from.
-   * @return An array of {@link File} objects.
-   * @throws ProductException
-   *           If any error occurs performing the listing on the server side.
+   * @see
+   * org.apache.oodt.product.handlers.ofsn.AbstractCrawlLister#configure(java
+   * .util.Properties)
    */
-  public File[] getListing(String ofsn) throws ProductException;
+  @Override
+  public void configure(Properties conf) {
+    // no properties yet
 
-  /**
-   * Configures this handler with the provided configuration stored in a
-   * {@link Properties} object.
+  }
+
+  /*
+   * (non-Javadoc)
    * 
-   * @param conf
-   *          The configuration for this list handler.
+   * @see
+   * org.apache.oodt.product.handlers.ofsn.AbstractCrawlLister#getListing(
+   * java.lang.String)
    */
-  public void configure(Properties conf);
+  @Override
+  public File[] getListing(String ofsn) throws ProductException {
+    return crawlFiles(new File(ofsn), true, true);
+  }
+
 }

@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn;
+package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
 import java.io.ByteArrayInputStream;
@@ -58,7 +58,7 @@ public class MD5GetHandler implements OFSNGetHandler {
    * (non-Javadoc)
    * 
    * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.
+   * org.apache.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.
    * util.Properties)
    */
   public void configure(Properties conf) {
@@ -70,7 +70,7 @@ public class MD5GetHandler implements OFSNGetHandler {
    * (non-Javadoc)
    * 
    * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNGetHandler#retrieveChunk(java
+   * org.apache.oodt.product.handlers.ofsn.OFSNGetHandler#retrieveChunk(java
    * .lang.String, long, int)
    */
   public byte[] retrieveChunk(String filepath, long offset, int length)
@@ -95,7 +95,7 @@ public class MD5GetHandler implements OFSNGetHandler {
    * (non-Javadoc)
    * 
    * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNGetHandler#sizeOf(java.lang
+   * org.apache.oodt.product.handlers.ofsn.OFSNGetHandler#sizeOf(java.lang
    * .String)
    */
   public long sizeOf(String filepath) {

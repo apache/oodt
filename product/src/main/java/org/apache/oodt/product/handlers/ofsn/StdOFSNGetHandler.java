@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn;
+package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
 import java.io.File;
@@ -43,7 +43,7 @@ public class StdOFSNGetHandler implements OFSNGetHandler {
    * (non-Javadoc)
    * 
    * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNGetHandler#retrieveChunk(java
+   * org.apache.oodt.product.handlers.ofsn.OFSNGetHandler#retrieveChunk(java
    * .lang.String, long, int)
    */
   public byte[] retrieveChunk(String filepath, long offset, int length)
@@ -92,7 +92,7 @@ public class StdOFSNGetHandler implements OFSNGetHandler {
    * (non-Javadoc)
    * 
    * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNGetHandler#sizeOf(java.lang
+   * org.apache.oodt.product.handlers.ofsn.OFSNGetHandler#sizeOf(java.lang
    * .String)
    */
   public long sizeOf(String filepath) {
@@ -100,7 +100,7 @@ public class StdOFSNGetHandler implements OFSNGetHandler {
   }
 
   /* (non-Javadoc)
-   * @see gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNGetHandler#configure(java.util.Properties)
+   * @see org.apache.oodt.product.handlers.ofsn.OFSNGetHandler#configure(java.util.Properties)
    */
   public void configure(Properties conf) {
     // no properties to configure    

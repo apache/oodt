@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn.metadata;
+package org.apache.oodt.product.handlers.ofsn.metadata;
 
 /**
  * @author mattmann
@@ -24,18 +24,9 @@ package gov.nasa.jpl.oodt.product.handlers.ofsn.metadata;
  *
  * <p>Describe your class here</p>.
  */
-public interface OFSNXMLMetKeys {
+public interface XMLQueryMetKeys {
     
-    public static final String DIR_RESULT_TAG = "dirResult";
+    public static final String OFSN = "OFSN";
     
-    public static final String DIR_ENTRY_TAG = "dirEntry";
-    
-    public static final String OFSN_TAG = "OFSN";
-    
-    public static final String FILE_SIZE_TAG = "fileSize";
-    
-    public static final String XML_MIME_TYPE = "text/xml";
-    
-    public static final String DIR_LISTING_NS = "http://oodt.jpl.nasa.gov/xml/namespaces/dirlist/1.0";
-
+    public static final String RETURN_TYPE = "RT";
 }

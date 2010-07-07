@@ -16,48 +16,23 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn;
-
-//JDK imports
-import java.io.File;
-import java.util.Properties;
-
-//OODT imports
-import jpl.eda.product.ProductException;
+package org.apache.oodt.product.handlers.ofsn.metadata;
 
 /**
- * 
- * Generates a directory listing, recursing into the OFSN path.
+ * Met keys for use in OFSN handler definition.
  * 
  * @author mattmann
  * @version $Revision$
  * 
  */
-public class DirListRecursiveHandler extends AbstractCrawlLister {
+public interface OFSNMetKeys {
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.AbstractCrawlLister#configure(java
-   * .util.Properties)
-   */
-  @Override
-  public void configure(Properties conf) {
-    // no properties yet
+  public static final String LISTING_CMD = "listing";
 
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.AbstractCrawlLister#getListing(
-   * java.lang.String)
-   */
-  @Override
-  public File[] getListing(String ofsn) throws ProductException {
-    return crawlFiles(new File(ofsn), true, true);
-  }
+  public static final String GET_CMD = "get";
+  
+  public static final String OFSN_XML_CONF_FILE_KEY = "org.apache.oodt.product.handlers.ofsn.xmlConfigFilePath";
+  
+  public static final String OFSN_COMPUTE_DIR_SIZE = "org.apache.oodt.product.handlers.ofsn.computeDirSize";
 
 }

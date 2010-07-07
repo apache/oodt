@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn;
+package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
 import java.io.File;
@@ -68,7 +68,7 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
    * (non-Javadoc)
    * 
    * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.
+   * org.apache.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.
    * util.Properties)
    */
   public abstract void configure(Properties conf);
@@ -77,7 +77,7 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
    * (non-Javadoc)
    * 
    * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler#getListing(java
+   * org.apache.oodt.product.handlers.ofsn.OFSNListHandler#getListing(java
    * .lang.String)
    */
   public abstract File[] getListing(String ofsn) throws ProductException;

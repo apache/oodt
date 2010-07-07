@@ -16,11 +16,11 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn.util;
+package org.apache.oodt.product.handlers.ofsn.util;
 
 //OODT imports
-import gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNGetHandler;
-import gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler;
+import org.apache.oodt.product.handlers.ofsn.OFSNGetHandler;
+import org.apache.oodt.product.handlers.ofsn.OFSNListHandler;
 
 //JDK imports
 import java.util.logging.Level;

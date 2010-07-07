@@ -16,45 +16,16 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn;
-
-//JDK imports
-import java.io.File;
-import java.util.Properties;
-
-//OODT imports
-import jpl.eda.product.ProductException;
+package org.apache.oodt.product.handlers.ofsn.metadata;
 
 /**
- * 
- * Generates a directory listing, without recursing into the OFSN path.
- * 
  * @author mattmann
  * @version $Revision$
- * 
+ *
+ * <p>Describe your class here</p>.
  */
-public class DirListNonRecursiveHandler extends AbstractCrawlLister {
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler#getListing(java
-   * .lang.String)
-   */
-  public File[] getListing(String ofsn) throws ProductException {
-     return crawlFiles(new File(ofsn), false, true);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.
-   * util.Properties)
-   */
-  public void configure(Properties conf) {
-     // no properties defined yet
-  }
+public interface OODTMetKeys {
+    
+    public static final String XMLQUERY_QUERYELEM_ROLE_ELEM = "elemName";
 
 }

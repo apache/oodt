@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn;
+package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
 import java.io.File;
@@ -38,7 +38,7 @@ import jpl.eda.product.ProductException;
 public class RawSizeListHandler implements OFSNListHandler {
 
   /* (non-Javadoc)
-   * @see gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.util.Properties)
+   * @see org.apache.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.util.Properties)
    */
   public void configure(Properties conf) {
     // TODO Auto-generated method stub
@@ -47,7 +47,7 @@ public class RawSizeListHandler implements OFSNListHandler {
   }
 
   /* (non-Javadoc)
-   * @see gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler#getListing(java.lang.String)
+   * @see org.apache.oodt.product.handlers.ofsn.OFSNListHandler#getListing(java.lang.String)
    */
   public File[] getListing(String ofsn) throws ProductException {
     if (!new File(ofsn).exists()) {

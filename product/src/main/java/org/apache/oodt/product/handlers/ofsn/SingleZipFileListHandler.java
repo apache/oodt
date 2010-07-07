@@ -16,10 +16,10 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn;
+package org.apache.oodt.product.handlers.ofsn;
 
 //OODT imports
-import gov.nasa.jpl.oodt.product.handlers.ofsn.util.OFSNUtils;
+import org.apache.oodt.product.handlers.ofsn.util.OFSNUtils;
 import jpl.eda.product.ProductException;
 
 //JDK imports
@@ -44,7 +44,7 @@ public class SingleZipFileListHandler implements OFSNListHandler {
    * (non-Javadoc)
    * 
    * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.
+   * org.apache.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.
    * util.Properties)
    */
   public void configure(Properties conf) {
@@ -66,7 +66,7 @@ public class SingleZipFileListHandler implements OFSNListHandler {
    * (non-Javadoc)
    * 
    * @see
-   * gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler#getListing(java
+   * org.apache.oodt.product.handlers.ofsn.OFSNListHandler#getListing(java
    * .lang.String)
    */
   public File[] getListing(String ofsn) throws ProductException {

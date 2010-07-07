@@ -16,39 +16,45 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn.metadata;
+package org.apache.oodt.product.handlers.ofsn;
 
-// OODT imports
-import gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNFileHandlerConfigurationReader; //javadoc
+//JDK imports
+import java.io.File;
+import java.util.Properties;
+
+//OODT imports
+import jpl.eda.product.ProductException;
 
 /**
  * 
- * Met Keys for the {@link OFSNFileHandlerConfigurationReader}
+ * Generates a directory listing, without recursing into the OFSN path.
  * 
  * @author mattmann
  * @version $Revision$
  * 
  */
-public interface OFSNXMLConfigMetKeys {
+public class DirListNonRecursiveHandler extends AbstractCrawlLister {
 
-  public static final String OFSN_CFG_ID_ATTR = "id";
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.product.handlers.ofsn.OFSNListHandler#getListing(java
+   * .lang.String)
+   */
+  public File[] getListing(String ofsn) throws ProductException {
+     return crawlFiles(new File(ofsn), false, true);
+  }
 
-  public static final String OFSN_CFG_NAME_ATTR = "name";
-
-  public static final String OFSN_PRODUCT_ROOT_ATTR = "productRoot";
-
-  public static final String HANDLER_TAG = "handler";
-
-  public static final String HANDLER_CLASSNAME_ATTR = "class";
-
-  public static final String HANDLER_NAME_ATTR = "name";
-
-  public static final String HANDLER_TYPE_ATTR = "type";
-
-  public static final String PROPERTY_TAG = "property";
-
-  public static final String PROPERTY_NAME_ATTR = "name";
-
-  public static final String PROPERTY_VALUE_ATTR = "value";
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.
+   * util.Properties)
+   */
+  public void configure(Properties conf) {
+     // no properties defined yet
+  }
 
 }

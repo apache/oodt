@@ -16,23 +16,39 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn.metadata;
+package org.apache.oodt.product.handlers.ofsn.metadata;
+
+// OODT imports
+import org.apache.oodt.product.handlers.ofsn.OFSNFileHandlerConfigurationReader; //javadoc
 
 /**
- * Met keys for use in OFSN handler definition.
+ * 
+ * Met Keys for the {@link OFSNFileHandlerConfigurationReader}
  * 
  * @author mattmann
  * @version $Revision$
  * 
  */
-public interface OFSNMetKeys {
+public interface OFSNXMLConfigMetKeys {
 
-  public static final String LISTING_CMD = "listing";
+  public static final String OFSN_CFG_ID_ATTR = "id";
 
-  public static final String GET_CMD = "get";
-  
-  public static final String OFSN_XML_CONF_FILE_KEY = "gov.nasa.jpl.oodt.product.handlers.ofsn.xmlConfigFilePath";
-  
-  public static final String OFSN_COMPUTE_DIR_SIZE = "gov.nasa.jpl.oodt.product.handlers.ofsn.computeDirSize";
+  public static final String OFSN_CFG_NAME_ATTR = "name";
+
+  public static final String OFSN_PRODUCT_ROOT_ATTR = "productRoot";
+
+  public static final String HANDLER_TAG = "handler";
+
+  public static final String HANDLER_CLASSNAME_ATTR = "class";
+
+  public static final String HANDLER_NAME_ATTR = "name";
+
+  public static final String HANDLER_TYPE_ATTR = "type";
+
+  public static final String PROPERTY_TAG = "property";
+
+  public static final String PROPERTY_NAME_ATTR = "name";
+
+  public static final String PROPERTY_VALUE_ATTR = "value";
 
 }

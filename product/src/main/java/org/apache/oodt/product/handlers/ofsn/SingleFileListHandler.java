@@ -16,41 +16,49 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn;
+package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
 import java.io.File;
 import java.util.Properties;
 
-//OODT imports
 import jpl.eda.product.ProductException;
 
 /**
- *
- * A non recursive file listing from a given OFSN.
- *
+ * 
+ * Returns a single remote file listing of the given ofsn.
+ * 
  * @author mattmann
  * @version $Revision$
- *
+ * 
  */
-public class FileListNonRecursiveHandler extends AbstractCrawlLister {
+public class SingleFileListHandler implements OFSNListHandler {
 
-  /* (non-Javadoc)
-   * @see gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.util.Properties)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.product.handlers.ofsn.OFSNListHandler#configure(java.
+   * util.Properties)
    */
-  @Override
   public void configure(Properties conf) {
     // TODO Auto-generated method stub
     // nothing yet
 
   }
 
-  /* (non-Javadoc)
-   * @see gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler#getListing(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.product.handlers.ofsn.OFSNListHandler#getListing(java
+   * .lang.String)
    */
-  @Override
   public File[] getListing(String ofsn) throws ProductException {
-    return crawlFiles(new File(ofsn), false, false);
+    if (!new File(ofsn).exists()) {
+      throw new ProductException("file: [" + ofsn + "] does not exist!");
+    }
+    return new File[] { new File(ofsn) };
   }
 
 }

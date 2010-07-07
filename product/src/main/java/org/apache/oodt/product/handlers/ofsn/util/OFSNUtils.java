@@ -16,14 +16,14 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn.util;
+package org.apache.oodt.product.handlers.ofsn.util;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.commons.xml.XMLUtils;
-import gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNHandlerConfig;
-import gov.nasa.jpl.oodt.product.handlers.ofsn.metadata.OFSNMetKeys;
-import gov.nasa.jpl.oodt.product.handlers.ofsn.metadata.OFSNXMLMetKeys;
-import gov.nasa.jpl.oodt.product.handlers.ofsn.metadata.OODTMetKeys;
+import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.product.handlers.ofsn.OFSNHandlerConfig;
+import org.apache.oodt.product.handlers.ofsn.metadata.OFSNMetKeys;
+import org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLMetKeys;
+import org.apache.oodt.product.handlers.ofsn.metadata.OODTMetKeys;
 import jpl.eda.xmlquery.QueryElement;
 import jpl.eda.xmlquery.XMLQuery;
 

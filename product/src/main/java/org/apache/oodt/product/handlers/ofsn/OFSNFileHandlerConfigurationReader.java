@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.product.handlers.ofsn;
+package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
 import java.io.File;
@@ -28,8 +28,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.commons.xml.XMLUtils;
-import gov.nasa.jpl.oodt.product.handlers.ofsn.metadata.OFSNXMLConfigMetKeys;
+import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLConfigMetKeys;
 
 /**
  * 
