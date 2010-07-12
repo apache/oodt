@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -38,83 +38,85 @@ import org.apache.oodt.cas.catalog.struct.impl.transaction.UuidTransactionIdFact
 import org.apache.oodt.cas.catalog.term.TermBucket;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A in memory Index which is ingestable
- * <p>
+ * 
  */
 public class InMemoryIndex implements Index, IngestService {
 
-	private static final long serialVersionUID = -3978455064365343116L;
-	
-	public HashMap<TransactionId<?>, List<TermBucket>> transactionIdToBucketsMap;
-	public HashMap<TransactionId<?>, Date> transactionIdToTransactionDate;
-	
-	public InMemoryIndex() {
-		this.transactionIdToBucketsMap = new HashMap<TransactionId<?>, List<TermBucket>>();
-		this.transactionIdToTransactionDate = new HashMap<TransactionId<?>, Date>();
-	}
-	
-	public String getProperty(String key) throws CatalogIndexException {
-		return null;
-	}
-	
-	public Properties getProperties() throws CatalogIndexException {
-		return new Properties();
-	}
-	
-	public List<TransactionId<?>> getPage(IndexPager indexPage) {
-		List<TransactionId<?>> returnList = new Vector<TransactionId<?>>();
-		int skipToLocation = (int) ((int) indexPage.getPageSize() * indexPage.getPageNum());
-		List<TransactionId<?>> transactionIds = new Vector<TransactionId<?>>(this.transactionIdToBucketsMap.keySet());
-		for (int i = skipToLocation; i < transactionIds.size() && i < (skipToLocation + indexPage.getPageSize()); i++)
-			returnList.add(transactionIds.get(i));
-		if (returnList.size() > 0)
-			return returnList;
-		else 
-			return Collections.emptyList();
-	}
+  private static final long serialVersionUID = -3978455064365343116L;
 
+  public HashMap<TransactionId<?>, List<TermBucket>> transactionIdToBucketsMap;
+  public HashMap<TransactionId<?>, Date> transactionIdToTransactionDate;
 
-	public TransactionIdFactory getTransactionIdFactory() throws CatalogIndexException {
-		return new UuidTransactionIdFactory();
-	}
+  public InMemoryIndex() {
+    this.transactionIdToBucketsMap = new HashMap<TransactionId<?>, List<TermBucket>>();
+    this.transactionIdToTransactionDate = new HashMap<TransactionId<?>, Date>();
+  }
 
-	public boolean delete(TransactionId<?> transactionId)
-			throws IngestServiceException {
-		return this.transactionIdToBucketsMap.remove(transactionId) != null;
-	}
+  public String getProperty(String key) throws CatalogIndexException {
+    return null;
+  }
 
-	public IngestReceipt ingest(List<TermBucket> termBuckets) throws IngestServiceException {
-		TransactionId<?> transactionId = null;
-		try {
-			transactionId = this.getTransactionIdFactory().createNewTransactionId();
-			this.transactionIdToBucketsMap.put(transactionId, termBuckets);
-			Date transactionDate = new Date();
-			this.transactionIdToTransactionDate.put(transactionId, transactionDate);
-			return new IngestReceipt(transactionId, transactionDate);
-		}catch (Exception e) {
-			throw new IngestServiceException("Failed to ingest '" + transactionId + "' : " + e.getMessage());
-		}
-	}
+  public Properties getProperties() throws CatalogIndexException {
+    return new Properties();
+  }
 
-	public boolean reduce(TransactionId<?> transactionId,
-			List<TermBucket> termBuckets) throws IngestServiceException {
-		// TODO Auto-generated method stub
-		return false;
-	}
+  public List<TransactionId<?>> getPage(IndexPager indexPage) {
+    List<TransactionId<?>> returnList = new Vector<TransactionId<?>>();
+    int skipToLocation = (int) ((int) indexPage.getPageSize() * indexPage
+        .getPageNum());
+    List<TransactionId<?>> transactionIds = new Vector<TransactionId<?>>(
+        this.transactionIdToBucketsMap.keySet());
+    for (int i = skipToLocation; i < transactionIds.size()
+        && i < (skipToLocation + indexPage.getPageSize()); i++)
+      returnList.add(transactionIds.get(i));
+    if (returnList.size() > 0)
+      return returnList;
+    else
+      return Collections.emptyList();
+  }
 
-	public IngestReceipt update(TransactionId<?> transactionId,
-			List<TermBucket> termBuckets) throws IngestServiceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  public TransactionIdFactory getTransactionIdFactory()
+      throws CatalogIndexException {
+    return new UuidTransactionIdFactory();
+  }
 
-	public boolean hasTransactionId(TransactionId<?> catalogTransactionid)
-			throws CatalogIndexException {
-		return this.transactionIdToBucketsMap.containsKey(catalogTransactionid);
-	}
+  public boolean delete(TransactionId<?> transactionId)
+      throws IngestServiceException {
+    return this.transactionIdToBucketsMap.remove(transactionId) != null;
+  }
+
+  public IngestReceipt ingest(List<TermBucket> termBuckets)
+      throws IngestServiceException {
+    TransactionId<?> transactionId = null;
+    try {
+      transactionId = this.getTransactionIdFactory().createNewTransactionId();
+      this.transactionIdToBucketsMap.put(transactionId, termBuckets);
+      Date transactionDate = new Date();
+      this.transactionIdToTransactionDate.put(transactionId, transactionDate);
+      return new IngestReceipt(transactionId, transactionDate);
+    } catch (Exception e) {
+      throw new IngestServiceException("Failed to ingest '" + transactionId
+          + "' : " + e.getMessage());
+    }
+  }
+
+  public boolean reduce(TransactionId<?> transactionId,
+      List<TermBucket> termBuckets) throws IngestServiceException {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  public IngestReceipt update(TransactionId<?> transactionId,
+      List<TermBucket> termBuckets) throws IngestServiceException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public boolean hasTransactionId(TransactionId<?> catalogTransactionid)
+      throws CatalogIndexException {
+    return this.transactionIdToBucketsMap.containsKey(catalogTransactionid);
+  }
 
 }

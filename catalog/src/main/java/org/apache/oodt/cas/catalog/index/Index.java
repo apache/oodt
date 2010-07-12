@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -26,42 +26,43 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
- * A Interface for Communicating with an Term Index.  Should also implement
- * IngestService to allow Term ingest to this Index and/or implement 
+ * 
+ * A Interface for Communicating with an Term Index. Should also implement
+ * IngestService to allow Term ingest to this Index and/or implement
  * QueryService to allow Term query on this Index.
- * <p>
+ * 
  */
 public interface Index {
-	
-	public Properties getProperties() throws CatalogIndexException;
-	
-	public String getProperty(String key) throws CatalogIndexException;
-	
-	/**
-	 * Returns a list of TransactionIds associated with the 
-	 * given Index page.
-	 * @param indexPage The page for which TransactionIds will be returned
-	 * @return A page of TransactionIds, if page does not exist,
-	 * then returns null.
-	 */
-	public List<TransactionId<?>> getPage(IndexPager indexPage) throws CatalogIndexException;
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public TransactionIdFactory getTransactionIdFactory() throws CatalogIndexException;
-	
-	/**
-	 * 
-	 * @param catalogTransactionid
-	 * @return
-	 * @throws CatalogIndexException
-	 */
-	public boolean hasTransactionId(TransactionId<?> transactionid)  throws CatalogIndexException;
-	
+
+  public Properties getProperties() throws CatalogIndexException;
+
+  public String getProperty(String key) throws CatalogIndexException;
+
+  /**
+   * Returns a list of TransactionIds associated with the given Index page.
+   * 
+   * @param indexPage
+   *          The page for which TransactionIds will be returned
+   * @return A page of TransactionIds, if page does not exist, then returns
+   *         null.
+   */
+  public List<TransactionId<?>> getPage(IndexPager indexPage)
+      throws CatalogIndexException;
+
+  /**
+   * 
+   * @return
+   */
+  public TransactionIdFactory getTransactionIdFactory()
+      throws CatalogIndexException;
+
+  /**
+   * 
+   * @param catalogTransactionid
+   * @return
+   * @throws CatalogIndexException
+   */
+  public boolean hasTransactionId(TransactionId<?> transactionid)
+      throws CatalogIndexException;
+
 }
