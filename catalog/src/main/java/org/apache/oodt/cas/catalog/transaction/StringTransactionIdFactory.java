@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,30 +17,37 @@
 
 package org.apache.oodt.cas.catalog.struct.impl.transaction;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.struct.TransactionId;
 import org.apache.oodt.cas.catalog.struct.TransactionIdFactory;
 
+/**
+ * 
+ * Uses a String representation of the current Time in miliseconds to represent a
+ * unique ID.
+ * 
+ */
 public class StringTransactionIdFactory implements TransactionIdFactory {
 
-	public TransactionId<String> createNewTransactionId() {
-		return new StringTransactionId(Long.toString(System.currentTimeMillis()));
-	}
+  public TransactionId<String> createNewTransactionId() {
+    return new StringTransactionId(Long.toString(System.currentTimeMillis()));
+  }
 
-	public TransactionId<?> createTransactionId(String transactionIdString) {
-		return new StringTransactionId(transactionIdString);
-	}
-	
-	private class StringTransactionId extends TransactionId<String> {
+  public TransactionId<?> createTransactionId(String transactionIdString) {
+    return new StringTransactionId(transactionIdString);
+  }
 
-		public StringTransactionId(String stringValue) {
-			this.nativeId = stringValue;
-		}
-		
-		@Override
-		protected String fromString(String stringId) {
-			return stringId;
-		}
-		
-	}
+  private class StringTransactionId extends TransactionId<String> {
+
+    public StringTransactionId(String stringValue) {
+      this.nativeId = stringValue;
+    }
+
+    @Override
+    protected String fromString(String stringId) {
+      return stringId;
+    }
+
+  }
 
 }

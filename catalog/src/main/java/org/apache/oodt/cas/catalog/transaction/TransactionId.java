@@ -18,55 +18,51 @@
 package org.apache.oodt.cas.catalog.struct;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
- * A Interface for storing TransactionIds
- * <p>
+ * An abstract base class for storing identifiers associated with a Catalog
+ * transaction.
  */
 public abstract class TransactionId<NativeType> {
 
-	protected NativeType nativeId;
-	
-	public TransactionId() {}
+  protected NativeType nativeId;
 
-	public TransactionId(NativeType nativeId) {
-		this.nativeId = nativeId;
-	}
-	
-	public TransactionId(String stringId) {
-		this.nativeId = this.fromString(stringId);
-	}
-	
-	@Override
-	public int hashCode() {
-		return this.toString().hashCode();
-	}
-	
-	public NativeType getNativeId() {
-		return this.nativeId;
-	}
-		
-	/**
-	 * Should override this method if NativeType.toString()
-	 * does not properly represent the String value of the
-	 * native type.  The string value of the NativeType should
-	 * be as unique as in its native form.
-	 */
-	public String toString() {
-		return this.nativeId.toString();
-	}
-	
-	public boolean equals(Object obj) {
-		if (obj instanceof TransactionId<?>)
-			return this.toString().equals(obj.toString());
-		else if (obj instanceof String)
-			return this.toString().equals((String) obj);
-		else
-			return false;
-	}
-	
-	protected abstract NativeType fromString(String stringId);
-	
+  public TransactionId() {
+  }
+
+  public TransactionId(NativeType nativeId) {
+    this.nativeId = nativeId;
+  }
+
+  public TransactionId(String stringId) {
+    this.nativeId = this.fromString(stringId);
+  }
+
+  @Override
+  public int hashCode() {
+    return this.toString().hashCode();
+  }
+
+  public NativeType getNativeId() {
+    return this.nativeId;
+  }
+
+  /**
+   * Should override this method if NativeType.toString() does not properly
+   * represent the String value of the native type. The string value of the
+   * NativeType should be as unique as in its native form.
+   */
+  public String toString() {
+    return this.nativeId.toString();
+  }
+
+  public boolean equals(Object obj) {
+    if (obj instanceof TransactionId<?>)
+      return this.toString().equals(obj.toString());
+    else if (obj instanceof String)
+      return this.toString().equals((String) obj);
+    else
+      return false;
+  }
+
+  protected abstract NativeType fromString(String stringId);
+
 }

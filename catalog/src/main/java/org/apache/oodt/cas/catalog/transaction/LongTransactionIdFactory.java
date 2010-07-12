@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,31 +17,38 @@
 
 package org.apache.oodt.cas.catalog.struct.impl.transaction;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.struct.TransactionId;
 import org.apache.oodt.cas.catalog.struct.TransactionIdFactory;
 
+/**
+ * 
+ * Uses a Long representation of the current Time in miliseconds to represent a
+ * unique ID.
+ * 
+ */
 public class LongTransactionIdFactory implements TransactionIdFactory {
 
-	public TransactionId<?> createNewTransactionId() {
-		return new TransactionId<Long>(System.currentTimeMillis()) {
+  public TransactionId<?> createNewTransactionId() {
+    return new TransactionId<Long>(System.currentTimeMillis()) {
 
-			@Override
-			protected Long fromString(String stringId) {
-				return Long.parseLong(stringId);
-			}
-			
-		};
-	}
+      @Override
+      protected Long fromString(String stringId) {
+        return Long.parseLong(stringId);
+      }
 
-	public TransactionId<?> createTransactionId(String transactionIdString) {
-		return new TransactionId<Long>(transactionIdString) {
+    };
+  }
 
-			@Override
-			protected Long fromString(String stringId) {
-				return Long.parseLong(stringId);
-			}
-			
-		};
-	}
+  public TransactionId<?> createTransactionId(String transactionIdString) {
+    return new TransactionId<Long>(transactionIdString) {
+
+      @Override
+      protected Long fromString(String stringId) {
+        return Long.parseLong(stringId);
+      }
+
+    };
+  }
 
 }
