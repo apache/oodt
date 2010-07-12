@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,11 +17,18 @@
 
 package org.apache.oodt.cas.catalog.server.action;
 
+//Spring imports
 import org.springframework.beans.factory.annotation.Required;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
 import org.apache.oodt.cas.commons.spring.SpringSetIdInjectionType;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public abstract class CatalogServiceServerAction implements SpringSetIdInjectionType {
 	
 	protected String id;

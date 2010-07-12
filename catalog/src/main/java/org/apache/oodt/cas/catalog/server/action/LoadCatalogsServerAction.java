@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,30 +17,40 @@
 
 package org.apache.oodt.cas.catalog.server.action;
 
+//JDK imports
 import java.util.Map;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.system.Catalog;
 import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
 import org.apache.oodt.cas.catalog.util.Serializer;
 
+//Spring imports
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class LoadCatalogsServerAction extends CatalogServiceServerAction {
 
-	protected String beanRepo;
-	
-	@Override
-	public void performAction(CatalogServiceClient csClient) throws Exception {
-		FileSystemXmlApplicationContext repoAppContext = new FileSystemXmlApplicationContext(new String[] { this.beanRepo }, false);
-		repoAppContext.setClassLoader(new Serializer().getClassLoader());
-		repoAppContext.refresh();
-		Map<String, Catalog> catalogs = repoAppContext.getBeansOfType(Catalog.class);
-		for (Catalog catalog : catalogs.values())
-			csClient.addCatalog(catalog);
-	}
-	
-	public void setBeanRepo(String beanRepo) {
-		this.beanRepo = beanRepo;
-	}
+  protected String beanRepo;
+
+  @Override
+  public void performAction(CatalogServiceClient csClient) throws Exception {
+    FileSystemXmlApplicationContext repoAppContext = new FileSystemXmlApplicationContext(
+        new String[] { this.beanRepo }, false);
+    repoAppContext.setClassLoader(new Serializer().getClassLoader());
+    repoAppContext.refresh();
+    Map<String, Catalog> catalogs = repoAppContext
+        .getBeansOfType(Catalog.class);
+    for (Catalog catalog : catalogs.values())
+      csClient.addCatalog(catalog);
+  }
+
+  public void setBeanRepo(String beanRepo) {
+    this.beanRepo = beanRepo;
+  }
 
 }

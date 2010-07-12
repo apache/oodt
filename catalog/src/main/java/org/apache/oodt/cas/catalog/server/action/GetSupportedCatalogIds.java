@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,12 +17,18 @@
 
 package org.apache.oodt.cas.catalog.server.action;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class GetSupportedCatalogIds extends CatalogServiceServerAction {
-	
-	public void performAction(CatalogServiceClient csClient) throws Exception {
-		System.out.println("CatalogIDs: " + csClient.getCurrentCatalogIds());
-	}
+
+  public void performAction(CatalogServiceClient csClient) throws Exception {
+    System.out.println("CatalogIDs: " + csClient.getCurrentCatalogIds());
+  }
 
 }

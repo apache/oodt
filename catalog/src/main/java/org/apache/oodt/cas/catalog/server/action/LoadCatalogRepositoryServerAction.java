@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,46 +17,58 @@
 
 package org.apache.oodt.cas.catalog.server.action;
 
+//JDK imports
 import java.util.Set;
 
+//Spring imports
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.repository.CatalogRepository;
 import org.apache.oodt.cas.catalog.repository.CatalogRepositoryFactory;
 import org.apache.oodt.cas.catalog.system.Catalog;
 import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
 import org.apache.oodt.cas.catalog.util.Serializer;
 
-public class LoadCatalogRepositoryServerAction extends CatalogServiceServerAction {
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
+public class LoadCatalogRepositoryServerAction extends
+    CatalogServiceServerAction {
 
-	protected String beanId;
-	protected String beanRepo;
-	
-	@Override
-	public void performAction(CatalogServiceClient csClient) throws Exception {
-		FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(new String[] { this.beanRepo }, false);
-		appContext.setClassLoader(new Serializer().getClassLoader());
-		appContext.refresh();
-		CatalogRepositoryFactory factory = (CatalogRepositoryFactory) appContext.getBean(this.beanId, CatalogRepositoryFactory.class);
-		CatalogRepository catalogRepository = factory.createRepository();
-		Set<Catalog> catalogs = catalogRepository.deserializeAllCatalogs();
-		System.out.println("Deserialized Catalogs: " + catalogs.toString());
-		for (Catalog catalog : catalogs) {
-			try {
-				System.out.println("Adding Catalog: " + catalog);
-				csClient.addCatalog(catalog);
-			}catch (Exception e) {
-				e.printStackTrace();
-				System.err.println("Failed to add catalog '" + catalog + "' to server : " + e.getMessage());
-			}
-		}		
-	}
-	
-	public void setBeanId(String beanId) {
-		this.beanId = beanId;
-	}
-	
-	public void setBeanRepo(String beanRepo) {
-		this.beanRepo = beanRepo;
-	}
+  protected String beanId;
+  protected String beanRepo;
+
+  @Override
+  public void performAction(CatalogServiceClient csClient) throws Exception {
+    FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(
+        new String[] { this.beanRepo }, false);
+    appContext.setClassLoader(new Serializer().getClassLoader());
+    appContext.refresh();
+    CatalogRepositoryFactory factory = (CatalogRepositoryFactory) appContext
+        .getBean(this.beanId, CatalogRepositoryFactory.class);
+    CatalogRepository catalogRepository = factory.createRepository();
+    Set<Catalog> catalogs = catalogRepository.deserializeAllCatalogs();
+    System.out.println("Deserialized Catalogs: " + catalogs.toString());
+    for (Catalog catalog : catalogs) {
+      try {
+        System.out.println("Adding Catalog: " + catalog);
+        csClient.addCatalog(catalog);
+      } catch (Exception e) {
+        e.printStackTrace();
+        System.err.println("Failed to add catalog '" + catalog
+            + "' to server : " + e.getMessage());
+      }
+    }
+  }
+
+  public void setBeanId(String beanId) {
+    this.beanId = beanId;
+  }
+
+  public void setBeanRepo(String beanRepo) {
+    this.beanRepo = beanRepo;
+  }
 }

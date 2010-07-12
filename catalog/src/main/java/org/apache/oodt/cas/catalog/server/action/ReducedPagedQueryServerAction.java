@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,64 +17,78 @@
 
 package org.apache.oodt.cas.catalog.server.action;
 
+//JDK imports
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+//APACHE imports
 import org.apache.commons.lang.StringUtils;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
-import org.apache.oodt.cas.catalog.page.Page;
-import org.apache.oodt.cas.catalog.page.PageInfo;
+import org.apache.oodt.cas.catalog.pagination.Page;
+import org.apache.oodt.cas.catalog.pagination.PageInfo;
 import org.apache.oodt.cas.catalog.query.QueryExpression;
 import org.apache.oodt.cas.catalog.query.parser.QueryParser;
 import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class ReducedPagedQueryServerAction extends CatalogServiceServerAction {
 
-	protected int pageNum;
-	protected int pageSize;
-	protected String query;
-	protected Set<String> catalogIds;
-	protected List<String> termNames;
-	
-	public void performAction(CatalogServiceClient csClient) throws Exception {
-		QueryExpression queryExpression = QueryParser.parseQueryExpression(query);
-		System.out.println(queryExpression);
-		Page page = null;
-		if (catalogIds == null) 
-			page = csClient.getPage(new PageInfo(pageSize, pageNum), queryExpression);
-		else
-			page = csClient.getPage(new PageInfo(pageSize, pageNum), queryExpression, catalogIds);
-		List<TransactionalMetadata> transactionMetadatas = csClient.getMetadata(page);
-		for (TransactionalMetadata tMet : transactionMetadatas) {
-			StringBuffer sb = new StringBuffer("");
-			for (String termName : this.termNames) {
-				List<String> values = tMet.getMetadata().getAllMetadata((String) termName);
-				sb.append(termName + " = '" + (values == null ? "null" : StringUtils.join(values.iterator(), ",")) + "', ");
-			}
-			System.out.println(sb.substring(0, sb.length() - 2));
-		}
-	}
-	
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
-	
-	public void setPageNum(int pageNum) {
-		this.pageNum = pageNum;
-	}
-	 
-	public void setQuery(String query) {
-		this.query = query;
-	}
-	
-	public void setCatalogIds(List<String> catalogIds) {
-		this.catalogIds = new HashSet<String>(catalogIds);
-	}
-	
-	public void setReducedTerms(List<String> termNames) {
-		this.termNames = termNames;
-	}
+  protected int pageNum;
+  protected int pageSize;
+  protected String query;
+  protected Set<String> catalogIds;
+  protected List<String> termNames;
+
+  public void performAction(CatalogServiceClient csClient) throws Exception {
+    QueryExpression queryExpression = QueryParser.parseQueryExpression(query);
+    System.out.println(queryExpression);
+    Page page = null;
+    if (catalogIds == null)
+      page = csClient.getPage(new PageInfo(pageSize, pageNum), queryExpression);
+    else
+      page = csClient.getPage(new PageInfo(pageSize, pageNum), queryExpression,
+          catalogIds);
+    List<TransactionalMetadata> transactionMetadatas = csClient
+        .getMetadata(page);
+    for (TransactionalMetadata tMet : transactionMetadatas) {
+      StringBuffer sb = new StringBuffer("");
+      for (String termName : this.termNames) {
+        List<String> values = tMet.getMetadata().getAllMetadata(
+            (String) termName);
+        sb.append(termName
+            + " = '"
+            + (values == null ? "null" : StringUtils.join(values.iterator(),
+                ",")) + "', ");
+      }
+      System.out.println(sb.substring(0, sb.length() - 2));
+    }
+  }
+
+  public void setPageSize(int pageSize) {
+    this.pageSize = pageSize;
+  }
+
+  public void setPageNum(int pageNum) {
+    this.pageNum = pageNum;
+  }
+
+  public void setQuery(String query) {
+    this.query = query;
+  }
+
+  public void setCatalogIds(List<String> catalogIds) {
+    this.catalogIds = new HashSet<String>(catalogIds);
+  }
+
+  public void setReducedTerms(List<String> termNames) {
+    this.termNames = termNames;
+  }
 
 }

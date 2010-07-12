@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,57 +17,70 @@
 
 package org.apache.oodt.cas.catalog.server.action;
 
+//JDK imports
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
-import org.apache.oodt.cas.catalog.page.Page;
-import org.apache.oodt.cas.catalog.page.PageInfo;
+import org.apache.oodt.cas.catalog.pagination.Page;
+import org.apache.oodt.cas.catalog.pagination.PageInfo;
 import org.apache.oodt.cas.catalog.query.QueryExpression;
 import org.apache.oodt.cas.catalog.query.parser.QueryParser;
 import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class PagedQueryServerAction extends CatalogServiceServerAction {
 
-	protected int pageNum;
-	protected int pageSize;
-	protected String query;
-	protected Set<String> catalogIds;
-	
-	public void performAction(CatalogServiceClient csClient) throws Exception {
-		QueryExpression queryExpression = QueryParser.parseQueryExpression(query);
-		System.out.println(queryExpression);
-		Page page = null;
-		if (catalogIds == null) 
-			page = csClient.getPage(new PageInfo(pageSize, pageNum), queryExpression);
-		else
-			page = csClient.getPage(new PageInfo(pageSize, pageNum), queryExpression, catalogIds);
-		List<TransactionalMetadata> transactionMetadatas = csClient.getMetadata(page);
-		for (TransactionalMetadata tMet : transactionMetadatas) {
-			System.out.print("ID: " + tMet.getTransactionId() + " ; CatalogIDs: " + tMet.getCatalogIds() + " ; Metadata: (");
-			StringBuffer sb = new StringBuffer("");
-			for (Object metKey : tMet.getMetadata().getHashtable().keySet()) {
-				sb.append(metKey + "=" + tMet.getMetadata().getAllMetadata((String) metKey).toString().replaceAll("[\\[\\]]", "'") + ", ");
-			}
-			System.out.println(sb.substring(0, sb.length() - 2) + ")");
-		}
-	}
-	
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
-	
-	public void setPageNum(int pageNum) {
-		this.pageNum = pageNum;
-	}
-	 
-	public void setQuery(String query) {
-		this.query = query;
-	}
-	
-	public void setCatalogIds(List<String> catalogIds) {
-		this.catalogIds = new HashSet<String>(catalogIds);
-	}
+  protected int pageNum;
+  protected int pageSize;
+  protected String query;
+  protected Set<String> catalogIds;
+
+  public void performAction(CatalogServiceClient csClient) throws Exception {
+    QueryExpression queryExpression = QueryParser.parseQueryExpression(query);
+    System.out.println(queryExpression);
+    Page page = null;
+    if (catalogIds == null)
+      page = csClient.getPage(new PageInfo(pageSize, pageNum), queryExpression);
+    else
+      page = csClient.getPage(new PageInfo(pageSize, pageNum), queryExpression,
+          catalogIds);
+    List<TransactionalMetadata> transactionMetadatas = csClient
+        .getMetadata(page);
+    for (TransactionalMetadata tMet : transactionMetadatas) {
+      System.out.print("ID: " + tMet.getTransactionId() + " ; CatalogIDs: "
+          + tMet.getCatalogIds() + " ; Metadata: (");
+      StringBuffer sb = new StringBuffer("");
+      for (Object metKey : tMet.getMetadata().getHashtable().keySet()) {
+        sb.append(metKey
+            + "="
+            + tMet.getMetadata().getAllMetadata((String) metKey).toString()
+                .replaceAll("[\\[\\]]", "'") + ", ");
+      }
+      System.out.println(sb.substring(0, sb.length() - 2) + ")");
+    }
+  }
+
+  public void setPageSize(int pageSize) {
+    this.pageSize = pageSize;
+  }
+
+  public void setPageNum(int pageNum) {
+    this.pageNum = pageNum;
+  }
+
+  public void setQuery(String query) {
+    this.query = query;
+  }
+
+  public void setCatalogIds(List<String> catalogIds) {
+    this.catalogIds = new HashSet<String>(catalogIds);
+  }
 
 }
