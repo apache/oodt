@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -28,87 +28,80 @@ import org.apache.oodt.cas.catalog.struct.TransactionIdFactory;
 import java.util.Set;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A Ingest Mapper that indexes to a Lucene index
- * <p>
+ * 
  */
 public class LuceneIngestMapper implements IngestMapper {
 
-	public void deleteAllMappingsForCatalog(String catalogId)
-			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		
-	}
+  public void deleteAllMappingsForCatalog(String catalogId)
+      throws CatalogRepositoryException {
+    // TODO Auto-generated method stub
 
-	public void deleteAllMappingsForCatalogServiceTransactionId(
-			TransactionId<?> catalogServiceTransactionId)
-			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		
-	}
+  }
 
-	public void deleteTransactionIdMapping(
-			TransactionId<?> catalogTransactionId, String catalogId)
-			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		
-	}
+  public void deleteAllMappingsForCatalogServiceTransactionId(
+      TransactionId<?> catalogServiceTransactionId)
+      throws CatalogRepositoryException {
+    // TODO Auto-generated method stub
 
-	public CatalogReceipt getCatalogReceipt(
-			TransactionId<?> catalogServiceTransactionId, String catalogId)
-			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  }
 
-	public TransactionId<?> getCatalogServiceTransactionId(
-			TransactionId<?> catalogTransactionId, String catalogId)
-			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  public void deleteTransactionIdMapping(TransactionId<?> catalogTransactionId,
+      String catalogId) throws CatalogRepositoryException {
+    // TODO Auto-generated method stub
 
-	public TransactionId<?> getCatalogTransactionId(
-			TransactionId<?> catalogServiceTransactionId, String catalogId)
-			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  }
 
-	public Set<String> getCatalogIds(
-			TransactionId<?> catalogServiceTransactionId)
-			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  public CatalogReceipt getCatalogReceipt(
+      TransactionId<?> catalogServiceTransactionId, String catalogId)
+      throws CatalogRepositoryException {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	public Set<TransactionId<?>> getPageOfCatalogTransactionIds(
-			IndexPager indexPager, String catalogId)
-			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  public TransactionId<?> getCatalogServiceTransactionId(
+      TransactionId<?> catalogTransactionId, String catalogId)
+      throws CatalogRepositoryException {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	public boolean hasCatalogServiceTransactionId(
-			TransactionId<?> catalogServiceTransactionId)
-			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return false;
-	}
+  public TransactionId<?> getCatalogTransactionId(
+      TransactionId<?> catalogServiceTransactionId, String catalogId)
+      throws CatalogRepositoryException {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	public void storeTransactionIdMapping(
-			TransactionId<?> catalogServiceTransactionId,
-			TransactionIdFactory catalogServiceTransactionIdFactory,
-			CatalogReceipt catalogReceipt,
-			TransactionIdFactory catalogTransactionIdFactory)
-			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		
-	}
+  public Set<String> getCatalogIds(TransactionId<?> catalogServiceTransactionId)
+      throws CatalogRepositoryException {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
+  public Set<TransactionId<?>> getPageOfCatalogTransactionIds(
+      IndexPager indexPager, String catalogId)
+      throws CatalogRepositoryException {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
+  public boolean hasCatalogServiceTransactionId(
+      TransactionId<?> catalogServiceTransactionId)
+      throws CatalogRepositoryException {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  public void storeTransactionIdMapping(
+      TransactionId<?> catalogServiceTransactionId,
+      TransactionIdFactory catalogServiceTransactionIdFactory,
+      CatalogReceipt catalogReceipt,
+      TransactionIdFactory catalogTransactionIdFactory)
+      throws CatalogRepositoryException {
+    // TODO Auto-generated method stub
+
+  }
 
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,66 +24,63 @@ import org.springframework.beans.factory.annotation.Required;
 import org.apache.oodt.cas.commons.database.DatabaseConnectionBuilder;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A Factory for creating OracleIngestMapper
- * <p>
  */
 public class OracleIngestMapperFactory implements IngestMapperFactory {
 
-    protected String jdbcUrl;
-    protected String user;
-    protected String pass;
-    protected String driver;
-	
-	public OracleIngestMapperFactory() {}
+  protected String jdbcUrl;
+  protected String user;
+  protected String pass;
+  protected String driver;
 
-	public String getJdbcUrl() {
-		return jdbcUrl;
-	}
+  public OracleIngestMapperFactory() {
+  }
 
-	@Required
-	public void setJdbcUrl(String jdbcUrl) {
-		this.jdbcUrl = jdbcUrl;
-	}
+  public String getJdbcUrl() {
+    return jdbcUrl;
+  }
 
-	public String getUser() {
-		return user;
-	}
-	
-	@Required
-	public void setUser(String user) {
-		this.user = user;
-	}
+  @Required
+  public void setJdbcUrl(String jdbcUrl) {
+    this.jdbcUrl = jdbcUrl;
+  }
 
-	public String getPass() {
-		return pass;
-	}
+  public String getUser() {
+    return user;
+  }
 
-	@Required
-	public void setPass(String pass) {
-		this.pass = pass;
-	}
+  @Required
+  public void setUser(String user) {
+    this.user = user;
+  }
 
-	public String getDriver() {
-		return driver;
-	}
+  public String getPass() {
+    return pass;
+  }
 
-	@Required
-	public void setDriver(String driver) {
-		this.driver = driver;
-	}
-	
-	public IngestMapper createMapper() {
-		try {
-			return new OracleIngestMapper(DatabaseConnectionBuilder.buildDataSource(user, pass,
-	                driver, jdbcUrl));
-		}catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+  @Required
+  public void setPass(String pass) {
+    this.pass = pass;
+  }
+
+  public String getDriver() {
+    return driver;
+  }
+
+  @Required
+  public void setDriver(String driver) {
+    this.driver = driver;
+  }
+
+  public IngestMapper createMapper() {
+    try {
+      return new OracleIngestMapper(DatabaseConnectionBuilder.buildDataSource(
+          user, pass, driver, jdbcUrl));
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 
 }

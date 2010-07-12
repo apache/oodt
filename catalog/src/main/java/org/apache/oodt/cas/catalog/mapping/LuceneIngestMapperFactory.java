@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,18 +18,14 @@
 package org.apache.oodt.cas.catalog.mapping;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A Factory for creating LuceneIngestMapper
- * <p>
+ * 
  */
-public class LuceneIngestMapperFactory implements
-		IngestMapperFactory {
+public class LuceneIngestMapperFactory implements IngestMapperFactory {
 
-	public IngestMapper createMapper() {
-		return new LuceneIngestMapper();
-	}
+  public IngestMapper createMapper() {
+    return new LuceneIngestMapper();
+  }
 
 }
