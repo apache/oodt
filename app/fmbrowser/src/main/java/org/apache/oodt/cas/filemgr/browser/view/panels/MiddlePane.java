@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.filemgr.browser.view.panels;
 
 import java.awt.BorderLayout;
@@ -28,26 +27,26 @@ import org.apache.oodt.cas.filemgr.browser.controller.TableListener;
 
 public class MiddlePane extends JPanel {
 
-	public TablePane tPane;
-	
-	public MiddlePane(){
-		this.setBackground(Color.WHITE);
-		this.setLayout(new BorderLayout());
-		
-		tPane = new TablePane();
-        
-		JPanel inset = new JPanel();
-		inset.setBackground(Color.WHITE);
-		inset.setLayout(new BorderLayout());
-		inset.add(tPane, BorderLayout.WEST);
-		
-        JScrollPane scrollPane=new JScrollPane(inset);
-        
-        this.add(scrollPane, BorderLayout.CENTER);
-	}
-	
-	public TableListener getListener(){
-		return tPane.getListener();
-	}
+  public TablePane tPane;
+
+  public MiddlePane() {
+    this.setBackground(Color.WHITE);
+    this.setLayout(new BorderLayout());
+
+    tPane = new TablePane();
+
+    JPanel inset = new JPanel();
+    inset.setBackground(Color.WHITE);
+    inset.setLayout(new BorderLayout());
+    inset.add(tPane, BorderLayout.WEST);
+
+    JScrollPane scrollPane = new JScrollPane(inset);
+
+    this.add(scrollPane, BorderLayout.CENTER);
+  }
+
+  public TableListener getListener() {
+    return tPane.getListener();
+  }
 
 }

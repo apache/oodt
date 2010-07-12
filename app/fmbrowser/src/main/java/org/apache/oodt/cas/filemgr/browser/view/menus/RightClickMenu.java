@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.filemgr.browser.view.menus;
 
 import java.awt.event.ActionListener;
@@ -23,38 +22,38 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-public class RightClickMenu extends JPopupMenu{
-	
-	private JMenuItem hideItem;
-	private JMenuItem unhideItem;
-	//private JMenuItem resizeItem;
-	
-	
-	public RightClickMenu(ActionListener listener){
-		
-		hideItem = new JMenuItem("Hide");
-		hideItem.addActionListener(listener);
-		unhideItem = new JMenuItem("Unhide");
-		unhideItem.addActionListener(listener);
-		//resizeItem = new JMenuItem("Resize");
-		//resizeItem.addActionListener(listener);
-		
-		this.add(hideItem);
-		this.add(unhideItem);
-		//this.addSeparator();
-		//this.add(resizeItem);
-	}
-	
-	public void setUnhideMode(){
-		hideItem.setEnabled(false);
-		unhideItem.setEnabled(true);
-		//resizeItem.setEnabled(false);
-	}
-	
-	public void setHideMode(){
-		hideItem.setEnabled(true);
-		unhideItem.setEnabled(false);
-		//resizeItem.setEnabled(true);
-	}
-	
+public class RightClickMenu extends JPopupMenu {
+
+  private JMenuItem hideItem;
+  private JMenuItem unhideItem;
+
+  // private JMenuItem resizeItem;
+
+  public RightClickMenu(ActionListener listener) {
+
+    hideItem = new JMenuItem("Hide");
+    hideItem.addActionListener(listener);
+    unhideItem = new JMenuItem("Unhide");
+    unhideItem.addActionListener(listener);
+    // resizeItem = new JMenuItem("Resize");
+    // resizeItem.addActionListener(listener);
+
+    this.add(hideItem);
+    this.add(unhideItem);
+    // this.addSeparator();
+    // this.add(resizeItem);
+  }
+
+  public void setUnhideMode() {
+    hideItem.setEnabled(false);
+    unhideItem.setEnabled(true);
+    // resizeItem.setEnabled(false);
+  }
+
+  public void setHideMode() {
+    hideItem.setEnabled(true);
+    unhideItem.setEnabled(false);
+    // resizeItem.setEnabled(true);
+  }
+
 }

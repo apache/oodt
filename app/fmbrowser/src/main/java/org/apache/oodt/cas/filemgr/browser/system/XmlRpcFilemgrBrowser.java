@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,22 +15,21 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.filemgr.browser.system;
 
 import org.apache.oodt.cas.filemgr.browser.view.MainWindow;
 
-public class XmlRpcFilemgrBrowser{
-	
-	private static MainWindow window;
-	
-	public static void main(String args[]){
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-            	window = new MainWindow();
-                window.pack();
-                window.setVisible(true);
-            }
-        });
-	}
+public class XmlRpcFilemgrBrowser {
+
+  private static MainWindow window;
+
+  public static void main(String args[]) {
+    javax.swing.SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        window = new MainWindow();
+        window.pack();
+        window.setVisible(true);
+      }
+    });
+  }
 }

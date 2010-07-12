@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 package org.apache.oodt.cas.filemgr.browser.view;
 
@@ -42,45 +41,44 @@ import org.apache.oodt.cas.filemgr.browser.view.prompts.ConnectPrompt;
 import org.apache.oodt.cas.filemgr.browser.view.prompts.SortPrompt;
 import org.apache.oodt.cas.filemgr.browser.view.menus.MenuBar;
 
-public class MainWindow extends JFrame{ 
-	
-	public QueryPane qPane;
-	public MiddlePane mPane;
-	public BottomPane bPane;
-	public MenuBar bar;
-		
-	private WindowListener wListener;
-	
-	public MainWindow(){
-		wListener = new WindowListener(this);
-		//db = new CasDB();
-		setName("CAS File Manager Browser");
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		qPane = new QueryPane(wListener);
-		mPane = new MiddlePane();
-		bPane = new BottomPane();
-		Dimension d = new Dimension(GuiParams.WINDOW_WIDTH,GuiParams.WINDOW_HEIGHT);
-		Container p = this.getContentPane();
-        p.setPreferredSize(d);
-        p.setMinimumSize(d);
-        p.setMaximumSize(d);
-		p.setBackground(Color.WHITE);
-		p.setLayout(new BorderLayout());
-		p.add(qPane,BorderLayout.NORTH);
-		p.add(mPane,BorderLayout.CENTER);
-		p.add(bPane,BorderLayout.SOUTH);
-        
-    
-        bar = new MenuBar(wListener, mPane.getListener());
-        this.setJMenuBar(bar);
-	}
-	
-	public String[] getColHeaders(){
-		HeaderRow h = mPane.tPane.getHeader();
-		String[] heading = new String[h.getNumCols()];
-		for(int i=0;i<h.getNumCols();i++){
-			heading[i] = h.getText(i);
-		}
-		return heading;
-	}
+public class MainWindow extends JFrame {
+
+  public QueryPane qPane;
+  public MiddlePane mPane;
+  public BottomPane bPane;
+  public MenuBar bar;
+
+  private WindowListener wListener;
+
+  public MainWindow() {
+    wListener = new WindowListener(this);
+    // db = new CasDB();
+    setName("CAS File Manager Browser");
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    qPane = new QueryPane(wListener);
+    mPane = new MiddlePane();
+    bPane = new BottomPane();
+    Dimension d = new Dimension(GuiParams.WINDOW_WIDTH, GuiParams.WINDOW_HEIGHT);
+    Container p = this.getContentPane();
+    p.setPreferredSize(d);
+    p.setMinimumSize(d);
+    p.setMaximumSize(d);
+    p.setBackground(Color.WHITE);
+    p.setLayout(new BorderLayout());
+    p.add(qPane, BorderLayout.NORTH);
+    p.add(mPane, BorderLayout.CENTER);
+    p.add(bPane, BorderLayout.SOUTH);
+
+    bar = new MenuBar(wListener, mPane.getListener());
+    this.setJMenuBar(bar);
+  }
+
+  public String[] getColHeaders() {
+    HeaderRow h = mPane.tPane.getHeader();
+    String[] heading = new String[h.getNumCols()];
+    for (int i = 0; i < h.getNumCols(); i++) {
+      heading[i] = h.getText(i);
+    }
+    return heading;
+  }
 }

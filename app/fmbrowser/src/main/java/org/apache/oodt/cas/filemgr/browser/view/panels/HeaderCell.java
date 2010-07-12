@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.filemgr.browser.view.panels;
 
 import java.awt.Color;
@@ -27,28 +26,28 @@ import javax.swing.border.LineBorder;
 
 import org.apache.oodt.cas.filemgr.browser.view.GuiParams;
 
-public class HeaderCell extends Cell{
-	
-	private int colNum;
-	
-	public HeaderCell(MouseListener listener, int colNum){
-		super();
-		this.setBackground(Color.LIGHT_GRAY);
-		this.setBorder(null);
-		Dimension size = new Dimension(GuiParams.DEFAULT_CELL_WIDTH -2,GuiParams.DEFAULT_CELL_HEIGHT);
-		setMinimumSize(size);
-		setMaximumSize(size);
-		setPreferredSize(size);
-		Font f = new Font("san-serif",Font.BOLD,11);
-		text.setFont(f);
-		
-		this.colNum = colNum;
-		this.addMouseListener(listener);
-	}
-	
-	public int getColNum(){
-		return colNum;
-	}
+public class HeaderCell extends Cell {
 
-	
+  private int colNum;
+
+  public HeaderCell(MouseListener listener, int colNum) {
+    super();
+    this.setBackground(Color.LIGHT_GRAY);
+    this.setBorder(null);
+    Dimension size = new Dimension(GuiParams.DEFAULT_CELL_WIDTH - 2,
+        GuiParams.DEFAULT_CELL_HEIGHT);
+    setMinimumSize(size);
+    setMaximumSize(size);
+    setPreferredSize(size);
+    Font f = new Font("san-serif", Font.BOLD, 11);
+    text.setFont(f);
+
+    this.colNum = colNum;
+    this.addMouseListener(listener);
+  }
+
+  public int getColNum() {
+    return colNum;
+  }
+
 }

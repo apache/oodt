@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>gov.nasa.jpl.oodt</groupId>
+    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>2.0</version>
+    <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>cas-fm-browser</artifactId>
   <name>Catalog and Archive File Management Browser</name>
@@ -14,24 +14,24 @@
      and export results of queries to the MS Excel(c) file format.</description>
   <dependencies>
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
+      <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>1.6.0</version>
+      <version>${oodt.version}</version>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
+      <groupId>org.apache.oodt</groupId>
       <artifactId>cas-filemgr</artifactId>
-      <version>1.7.2</version>
+      <version>${oodt.version}</version>
     </dependency>
     <dependency>
       <groupId>poi</groupId>
       <artifactId>poi</artifactId>
-      <version>2.5.1-final-20040804</version>
+      <version>${poi.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.2</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

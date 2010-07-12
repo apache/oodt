@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.filemgr.browser.view.panels;
 
 import java.awt.Color;
@@ -26,24 +25,24 @@ import javax.swing.JPanel;
 
 import org.apache.oodt.cas.filemgr.browser.view.GuiParams;
 
-public class HeaderSpacer extends JPanel{
-	
-	private int col;
-	
-	public HeaderSpacer(MouseListener listener,int pos){
-		//set background, size
-		this.setBackground(Color.WHITE);
-		Dimension d = new Dimension(2,GuiParams.DEFAULT_CELL_HEIGHT);
-		this.setMinimumSize(d);
-		this.setMaximumSize(d);
-		this.setPreferredSize(d);
-		
-		col = pos;
-		this.addMouseListener(listener);
-	}
-	
-	public int getColNum(){
-		return col;
-	}
-	
+public class HeaderSpacer extends JPanel {
+
+  private int col;
+
+  public HeaderSpacer(MouseListener listener, int pos) {
+    // set background, size
+    this.setBackground(Color.WHITE);
+    Dimension d = new Dimension(2, GuiParams.DEFAULT_CELL_HEIGHT);
+    this.setMinimumSize(d);
+    this.setMaximumSize(d);
+    this.setPreferredSize(d);
+
+    col = pos;
+    this.addMouseListener(listener);
+  }
+
+  public int getColNum() {
+    return col;
+  }
+
 }

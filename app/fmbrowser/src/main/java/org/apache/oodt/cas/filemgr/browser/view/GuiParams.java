@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,15 +15,14 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.filemgr.browser.view;
 
-public class GuiParams{
-	
-	public static final int WINDOW_WIDTH = 600;
-	public static final int WINDOW_HEIGHT = 400;
-	
-	public static final int DEFAULT_CELL_WIDTH = 70;
-	public static final int DEFAULT_CELL_HEIGHT = 20;
-	
+public class GuiParams {
+
+  public static final int WINDOW_WIDTH = 600;
+  public static final int WINDOW_HEIGHT = 400;
+
+  public static final int DEFAULT_CELL_WIDTH = 70;
+  public static final int DEFAULT_CELL_HEIGHT = 20;
+
 }

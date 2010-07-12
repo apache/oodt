@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.filemgr.browser.view.panels;
 
 import java.awt.BorderLayout;
@@ -29,45 +28,46 @@ import javax.swing.border.LineBorder;
 
 import org.apache.oodt.cas.filemgr.browser.view.GuiParams;
 
-public class Cell extends JPanel{
-	
-	protected JLabel text;
-	
-	public Cell(){
-		setLayout(new BorderLayout());
-		setBackground(Color.WHITE);
-		setForeground(Color.BLACK);
-		Dimension size = new Dimension(GuiParams.DEFAULT_CELL_WIDTH,GuiParams.DEFAULT_CELL_HEIGHT);
-		setMinimumSize(size);
-		setMaximumSize(size);
-		setPreferredSize(size);
-		setBorder(new LineBorder(Color.LIGHT_GRAY,1));	
-		
-		text = new JLabel("");
-		Font f = new Font("san-sarif", Font.PLAIN, 10);
-		text.setFont(f);
-		this.add(text,BorderLayout.CENTER);
-	}
-	
-	public void setText(String newText){
-		text.setText(newText);
-	}
-	
-	public String getText(){
-		return text.getText();
-	}
-	
-	public void setWidth(int newWidth){
-		Dimension size = this.getSize();
-		size.width = newWidth;
-		this.setSize(size);
-		text.setSize(size);
-	}
-	
-	public void setHeight(int newHeight){
-		Dimension size = this.getSize();
-		size.height = newHeight;
-		this.setSize(size);
-		text.setSize(size);
-	}
+public class Cell extends JPanel {
+
+  protected JLabel text;
+
+  public Cell() {
+    setLayout(new BorderLayout());
+    setBackground(Color.WHITE);
+    setForeground(Color.BLACK);
+    Dimension size = new Dimension(GuiParams.DEFAULT_CELL_WIDTH,
+        GuiParams.DEFAULT_CELL_HEIGHT);
+    setMinimumSize(size);
+    setMaximumSize(size);
+    setPreferredSize(size);
+    setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
+
+    text = new JLabel("");
+    Font f = new Font("san-sarif", Font.PLAIN, 10);
+    text.setFont(f);
+    this.add(text, BorderLayout.CENTER);
+  }
+
+  public void setText(String newText) {
+    text.setText(newText);
+  }
+
+  public String getText() {
+    return text.getText();
+  }
+
+  public void setWidth(int newWidth) {
+    Dimension size = this.getSize();
+    size.width = newWidth;
+    this.setSize(size);
+    text.setSize(size);
+  }
+
+  public void setHeight(int newHeight) {
+    Dimension size = this.getSize();
+    size.height = newHeight;
+    this.setSize(size);
+    text.setSize(size);
+  }
 }

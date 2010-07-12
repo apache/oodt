@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.filemgr.browser.view.panels;
 
 import java.awt.BorderLayout;
@@ -31,43 +30,43 @@ import javax.swing.border.LineBorder;
 
 import org.apache.oodt.cas.filemgr.browser.view.GuiParams;
 
-public class QueryPane extends JPanel{
-	
-	private QueryField field;
-	
-	public QueryPane(ActionListener listener){
-		super(new BorderLayout());
-		
-		//set background and panel size
-		setBackground(Color.WHITE);
-		Dimension paneSize = new Dimension();
-		paneSize.width= GuiParams.WINDOW_WIDTH;
-		paneSize.height = (int)(GuiParams.WINDOW_HEIGHT*(0.1));
-		
-		//set border
-		EmptyBorder line1 = new EmptyBorder(2,10,2,2);
-		LineBorder line2 = new LineBorder(Color.BLACK,1);
-		CompoundBorder cp = new CompoundBorder(line1,line2);
-		this.setBorder(cp);
-		
-		//add query field to pane
-		field = new QueryField(listener);
-		add(field,BorderLayout.EAST);
-	}
-	
-	public String getQuery(){
-		return field.getQueryString();
-	}
-	
-	public void clearQuery(){
-		field.clearQuery();
-	}
-	
-	public String getType(){
-		return field.getProductType();
-	}
-	
-	public void updateTypes(String[] types){
-		field.updateTypes(types);
-	}
+public class QueryPane extends JPanel {
+
+  private QueryField field;
+
+  public QueryPane(ActionListener listener) {
+    super(new BorderLayout());
+
+    // set background and panel size
+    setBackground(Color.WHITE);
+    Dimension paneSize = new Dimension();
+    paneSize.width = GuiParams.WINDOW_WIDTH;
+    paneSize.height = (int) (GuiParams.WINDOW_HEIGHT * (0.1));
+
+    // set border
+    EmptyBorder line1 = new EmptyBorder(2, 10, 2, 2);
+    LineBorder line2 = new LineBorder(Color.BLACK, 1);
+    CompoundBorder cp = new CompoundBorder(line1, line2);
+    this.setBorder(cp);
+
+    // add query field to pane
+    field = new QueryField(listener);
+    add(field, BorderLayout.EAST);
+  }
+
+  public String getQuery() {
+    return field.getQueryString();
+  }
+
+  public void clearQuery() {
+    field.clearQuery();
+  }
+
+  public String getType() {
+    return field.getProductType();
+  }
+
+  public void updateTypes(String[] types) {
+    field.updateTypes(types);
+  }
 }
