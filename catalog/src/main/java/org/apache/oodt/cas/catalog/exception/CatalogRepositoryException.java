@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,24 +18,24 @@
 package org.apache.oodt.cas.catalog.exception;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * 
+ * Describe your class here.
  * 
  */
 public class CatalogRepositoryException extends Exception {
 
-	private static final long serialVersionUID = 7734987410778199955L;
+  private static final long serialVersionUID = 7734987410778199955L;
 
-	public CatalogRepositoryException() {
-		super();
-	}
-	
-	public CatalogRepositoryException(String msg) {
-		super(msg);
-	}
-	
-	public CatalogRepositoryException(String msg, Throwable throwable) {
-		super(msg, throwable);
-	}
-	
+  public CatalogRepositoryException() {
+    super();
+  }
+
+  public CatalogRepositoryException(String msg) {
+    super(msg);
+  }
+
+  public CatalogRepositoryException(String msg, Throwable throwable) {
+    super(msg, throwable);
+  }
+
 }
