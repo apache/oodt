@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright 2009 California Institute of Technology. ALL RIGHTS
-    RESERVED. U.S. Government Sponsorship acknowledged.
-    
-    $Id$
-    
-    Author: bfoster
-    Description: CatalogService Beans
-    
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+ 
+     http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -21,7 +27,7 @@
         <property name="transactionIdFactory" value="gov.nasa.jpl.oodt.cas.catalog.struct.impl.transaction.UuidTransactionIdFactory"/>
         <property name="catalogRepositoryFactory" ref="SerializedCatalogRepositoryFactory"/>
         <property name="ingestMapperFactory" ref="OracleIngestMapperFactory"/>
-        <property name="pluginStorageDir" value="${pcs.support.home}/cas-catalog/plugin-jars/"/>
+        <property name="pluginStorageDir" value="${cas.catalog.home}/plugins"/>
         <property name="restrictQueryPermissions" value="false"/>
         <property name="restrictIngestPermissions" value="false"/>
     	<property name="oneCatalogFailsAllFail" value="true"/>
@@ -34,11 +40,11 @@
     
     <!-- Communication Channels -->
     <bean id="XmlRpcServerFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelServerFactory">
-        <property name="port" value="${catalog.port}"/>
+        <property name="port" value="${cas.catalog.port}"/>
         <property name="catalogServiceFactory" ref="CatalogServiceLocalFactory"/>
     </bean> 
     <bean id="XmlRpcClientFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelClientFactory">
-        <property name="serverUrl" value="${catalog.url}"/>
+        <property name="serverUrl" value="${cas.catalog.url}"/>
         <property name="requestTimeout" value="20"/>
         <property name="connectionTimeout" value="60"/>
         <property name="chunkSize" value="1024"/>
@@ -46,20 +52,20 @@
     
     <!-- Catalog Repositories -->
     <bean id="SpringCatalogRepositoryFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.repository.SpringCatalogRepositoryFactory">
-        <property name="catalogBeanRepo" value="${pcs.home}/core/catalog/policy/filemgr-catalog-beans.xml"/>
+        <property name="catalogBeanRepo" value="${cas.catalog.home}/policy/filemgr-catalog-beans.xml"/>
     </bean>
     <bean id="WorkflowManagerRepositoryFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.repository.SpringCatalogRepositoryFactory">
-        <property name="catalogBeanRepo" value="${pcs.home}/core/catalog/policy/workflow-manager-beans.xml"/>
+        <property name="catalogBeanRepo" value="${cas.catalog.home}/policy/workflow-manager-beans.xml"/>
     </bean>
     <bean id="SerializedCatalogRepositoryFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.repository.SerializedCatalogRepositoryFactory">
-        <property name="storageDir" value="${pcs.support.home}/cas-catalog/catalog-repo"/>
+        <property name="storageDir" value="${cas.catalog.home}/repo"/>
     </bean>
     
     <!-- Mapper Indexes -->
     <bean id="OracleIngestMapperFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.mapping.OracleIngestMapperFactory">
-        <property name="jdbcUrl" value="jdbc:oracle:thin:@dew.jpl.nasa.gov:1521:npptest"/>
-        <property name="user" value="nppint"/>
-        <property name="pass" value="Peate"/>
+        <property name="jdbcUrl" value="jdbc:oracle:thin:@somehost:1521:schema"/>
+        <property name="user" value="user"/>
+        <property name="pass" value="pass"/>
         <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
     </bean>
     <bean id="MemoryBasedIngestMapperFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.mapping.MemoryBasedIngestMapperFactory"/>
