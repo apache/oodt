@@ -1,7 +1,0 @@
-CAS Catalog Service Changelog
-
-
-Major Releases:
-===========================================
-1.0.0 - Current Development (Unreleased Changes)
-
