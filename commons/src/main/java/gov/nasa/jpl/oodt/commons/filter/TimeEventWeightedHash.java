@@ -386,24 +386,4 @@ public class TimeEventWeightedHash {
       return output;
   }
 
-  public static void main(String[] args) {              
-      List<TimeEvent> events = new LinkedList<TimeEvent>();
-      events.add(new ObjectTimeEvent<String>(31, 32, 2, "Hello7"));
-      events.add(new ObjectTimeEvent<String>(20, 30, 1, "Hello8"));
-      events.add(new ObjectTimeEvent<String>(1, 8, 2, "Hello7"));
-      events.add(new ObjectTimeEvent<String>(8, 15, 1, "Hello8"));
-      events.add(new ObjectTimeEvent<String>(18, 20, 3, "Hello10"));
-      events.add(new ObjectTimeEvent<String>(10, 12, 1, "Hello1"));
-      events.add(new ObjectTimeEvent<String>(20, 30, 2, "Hello2"));
-      events.add(new ObjectTimeEvent<String>(1, 20, 1, "Hello3"));
-      events.add(new ObjectTimeEvent<String>(11, 13, 1, "Hello4"));
-      events.add(new ObjectTimeEvent<String>(15, 20, 1, "Hello5"));
-      events.add(new ObjectTimeEvent<String>(18, 20, 2, "Hello10"));
-      events.add(new ObjectTimeEvent<String>(1, 15, 1, "Hello6"));
-      events.add(new ObjectTimeEvent<String>(1, 18, 2, "Hello9"));
-      TimeEventWeightedHash timeEventHash = TimeEventWeightedHash.buildHash(events);
-      
-      System.out.println("Greatest Weighted Path: " + timeEventHash.getGreatestWeightedPathAsOrderedList());
-  }
-
 }
