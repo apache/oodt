@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -31,94 +31,89 @@ import java.util.Vector;
 
 /**
  * 
- * @author bfoster
- * @version $Revision$
+ * Memory based Repository where the CatalogService stores its TransactionId
+ * Mapping and serializes its Catalogs
  * 
- *          <p>
- *          Memory based Repository where the CatalogService stores its
- *          TransactionId Mapping and serializes its Catalogs
- *          <p>
  */
 public class MemoryBasedCatalogRepository implements CatalogRepository {
-	
-	protected HashMap<String, Catalog> catalogMap;
-	protected List<PluginURL> classLoaderUrls;
 
-	public MemoryBasedCatalogRepository() {
-		this.catalogMap = new HashMap<String, Catalog>();
-		this.classLoaderUrls = new Vector<PluginURL>();
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.apache.oodt.cas.catalog.repository.CatalogRepository#
-	 * deleteSerializedCatalog(java.lang.String)
-	 */
-	public void deleteSerializedCatalog(String catalogUrn)
-			throws CatalogRepositoryException {
-		this.catalogMap.remove(catalogUrn);
-	}
+  protected HashMap<String, Catalog> catalogMap;
+  protected List<PluginURL> classLoaderUrls;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.apache.oodt.cas.catalog.repository.CatalogRepository#
-	 * deserializeAllCatalogs()
-	 */
-	public Set<Catalog> deserializeAllCatalogs()
-			throws CatalogRepositoryException {
-		return new HashSet<Catalog>(this.catalogMap.values());
-	}
+  public MemoryBasedCatalogRepository() {
+    this.catalogMap = new HashMap<String, Catalog>();
+    this.classLoaderUrls = new Vector<PluginURL>();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.oodt.cas.catalog.repository.CatalogRepository#deserializeCatalog
-	 * (java.lang.String)
-	 */
-	public Catalog deserializeCatalog(String catalogUrn)
-			throws CatalogRepositoryException {
-		return this.catalogMap.get(catalogUrn);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.apache.oodt.cas.catalog.repository.CatalogRepository#
-	 * isCatalogSerialized(java.lang.String)
-	 */
-	public boolean isCatalogSerialized(String catalogUrn)
-			throws CatalogRepositoryException {
-		return this.catalogMap.containsKey(catalogUrn);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.oodt.cas.catalog.repository.CatalogRepository#serializeCatalog
-	 * (org.apache.oodt.cas.catalog.Catalog)
-	 */
-	public void serializeCatalog(Catalog catalog)
-			throws CatalogRepositoryException {
-		this.catalogMap.put(catalog.getId(), catalog);
-	}
-	
-	public void serializePluginURLs(List<PluginURL> urls) 
-			throws CatalogRepositoryException {
-		this.classLoaderUrls.addAll(urls);
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @seeorg.apache.oodt.cas.catalog.repository.CatalogRepository#
+   * deleteSerializedCatalog(java.lang.String)
+   */
+  public void deleteSerializedCatalog(String catalogUrn)
+      throws CatalogRepositoryException {
+    this.catalogMap.remove(catalogUrn);
+  }
 
-	public List<PluginURL> deserializePluginURLs() 
-			throws CatalogRepositoryException {
-		return new Vector<PluginURL>(this.classLoaderUrls);
-	}
-	
-	public boolean isModifiable() 
-			throws CatalogRepositoryException {
-		return true;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @seeorg.apache.oodt.cas.catalog.repository.CatalogRepository#
+   * deserializeAllCatalogs()
+   */
+  public Set<Catalog> deserializeAllCatalogs()
+      throws CatalogRepositoryException {
+    return new HashSet<Catalog>(this.catalogMap.values());
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.catalog.repository.CatalogRepository#deserializeCatalog
+   * (java.lang.String)
+   */
+  public Catalog deserializeCatalog(String catalogUrn)
+      throws CatalogRepositoryException {
+    return this.catalogMap.get(catalogUrn);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @seeorg.apache.oodt.cas.catalog.repository.CatalogRepository#
+   * isCatalogSerialized(java.lang.String)
+   */
+  public boolean isCatalogSerialized(String catalogUrn)
+      throws CatalogRepositoryException {
+    return this.catalogMap.containsKey(catalogUrn);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.catalog.repository.CatalogRepository#serializeCatalog
+   * (org.apache.oodt.cas.catalog.Catalog)
+   */
+  public void serializeCatalog(Catalog catalog)
+      throws CatalogRepositoryException {
+    this.catalogMap.put(catalog.getId(), catalog);
+  }
+
+  public void serializePluginURLs(List<PluginURL> urls)
+      throws CatalogRepositoryException {
+    this.classLoaderUrls.addAll(urls);
+  }
+
+  public List<PluginURL> deserializePluginURLs()
+      throws CatalogRepositoryException {
+    return new Vector<PluginURL>(this.classLoaderUrls);
+  }
+
+  public boolean isModifiable() throws CatalogRepositoryException {
+    return true;
+  }
 
 }

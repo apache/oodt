@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -28,81 +28,52 @@ import org.apache.oodt.cas.catalog.util.PluginURL;
 
 /**
  * 
- * @author bfoster
- * @version $Revision$
+ * Repository where the CatalogService stores its TransactionId Mapping and
+ * serializes its Catalogs
  * 
- *          <p>
- *          Repository where the CatalogService stores its TransactionId Mapping
- *          and serializes its Catalogs
- *          <p>
  */
 public interface CatalogRepository {
-//
-//	/**
-//	 * Verifies if the given Catalog URN has been serialized via {@link
-//	 * serializeCatalog(Catalog)}
-//	 * 
-//	 * @param catalogUrn
-//	 *            The URN that unique represents the Catalog
-//	 * @return True if the Catalog has been serialized, false otherwise
-//	 * @throws CatalogRepositoryException
-//	 *             Any Error
-//	 */
-//	public boolean isCatalogSerialized(String catalogUrn)
-//			throws CatalogRepositoryException;
-//
-	/**
-	 * Serializes a given Catalog to the Repository
-	 * 
-	 * @param catalog
-	 *            The Catalog to be serialized
-	 * @throws CatalogRepositoryException
-	 *             Any Error
-	 */
-	public void serializeCatalog(Catalog catalog)
-			throws CatalogRepositoryException;
-//
-//	/**
-//	 * Loads a Catalog from the Repository
-//	 * 
-//	 * @param catalogUrn
-//	 *            The URN that unique represents a Catalog
-//	 * @return The Catalog represented by the given URN
-//	 * @throws CatalogRepositoryException
-//	 *             Any Error
-//	 */
-//	public Catalog deserializeCatalog(String catalogUrn)
-//			throws CatalogRepositoryException;
-//
-	/**
-	 * Removes a Catalog from the Repository
-	 * 
-	 * @param catalogUrn
-	 *            The URN that unique represents the Catalog to be removed
-	 * @param preserveMapping
-	 *            If true, don't erase TransactionId mapping for this catalog
-	 * @throws CatalogRepositoryException
-	 *             Any Error
-	 */
-	public void deleteSerializedCatalog(String catalogUrn)
-			throws CatalogRepositoryException;
 
-	/**
-	 * Loads all Catalogs serialized in this Repository
-	 * 
-	 * @return All the Catalogs serialized in this Repository
-	 * @throws CatalogRepositoryException
-	 *             Any Error
-	 */
-	public Set<Catalog> deserializeAllCatalogs()
-			throws CatalogRepositoryException;
+  /**
+   * Serializes a given Catalog to the Repository
+   * 
+   * @param catalog
+   *          The Catalog to be serialized
+   * @throws CatalogRepositoryException
+   *           Any Error
+   */
+  public void serializeCatalog(Catalog catalog)
+      throws CatalogRepositoryException;
 
-	public void serializePluginURLs(List<PluginURL> urls) 
-			throws CatalogRepositoryException;
-	
-	public List<PluginURL> deserializePluginURLs() 
-			throws CatalogRepositoryException;
-	
-	public boolean isModifiable() throws CatalogRepositoryException;
-	
+  /**
+   * Removes a Catalog from the Repository
+   * 
+   * @param catalogUrn
+   *          The URN that unique represents the Catalog to be removed
+   * @param preserveMapping
+   *          If true, don't erase TransactionId mapping for this catalog
+   * @throws CatalogRepositoryException
+   *           Any Error
+   */
+  public void deleteSerializedCatalog(String catalogUrn)
+      throws CatalogRepositoryException;
+
+  /**
+   * Loads all Catalogs serialized in this Repository
+   * 
+   * @return All the Catalogs serialized in this Repository
+   * @throws CatalogRepositoryException
+   *           Any Error
+   */
+  public Set<Catalog> deserializeAllCatalogs()
+      throws CatalogRepositoryException;
+
+  public void serializePluginURLs(List<PluginURL> urls)
+      throws CatalogRepositoryException;
+
+  public List<PluginURL> deserializePluginURLs()
+      throws CatalogRepositoryException;
+
+  public boolean isModifiable() throws CatalogRepositoryException;
+
 }

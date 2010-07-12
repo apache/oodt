@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,15 +21,12 @@ package org.apache.oodt.cas.catalog.repository;
 import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
- * A Factory for creating CatalogRepository
- * <p>
+ * 
+ * A factory for creating CatalogRepositories.
+ * 
  */
 public interface CatalogRepositoryFactory {
 
-	public CatalogRepository createRepository() throws CatalogRepositoryException;
-	
+  public CatalogRepository createRepository() throws CatalogRepositoryException;
+
 }

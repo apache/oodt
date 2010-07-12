@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,31 +25,33 @@ import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A Factory for creating SerializedMemoryBasedCatalogRepository
- * <p>
+ * 
  */
-public class SerializedCatalogRepositoryFactory implements CatalogRepositoryFactory {
+public class SerializedCatalogRepositoryFactory implements
+    CatalogRepositoryFactory {
 
-	protected String storageDir;
+  protected String storageDir;
 
-	public SerializedCatalogRepositoryFactory() {}
-	
-	@Required
-	public void setStorageDir(String storageDir) {
-		this.storageDir = storageDir;
-	}
+  public SerializedCatalogRepositoryFactory() {
+  }
 
-	public SerializedCatalogRepository createRepository()
-			throws CatalogRepositoryException {
-		try {
-			return new SerializedCatalogRepository(PathUtils.doDynamicReplacement(this.storageDir));
-		}catch (Exception e) {
-			throw new CatalogRepositoryException("Failed to create Serialized Catalog Repository : " + e.getMessage(), e);
-		}
-	}
+  @Required
+  public void setStorageDir(String storageDir) {
+    this.storageDir = storageDir;
+  }
+
+  public SerializedCatalogRepository createRepository()
+      throws CatalogRepositoryException {
+    try {
+      return new SerializedCatalogRepository(PathUtils
+          .doDynamicReplacement(this.storageDir));
+    } catch (Exception e) {
+      throw new CatalogRepositoryException(
+          "Failed to create Serialized Catalog Repository : " + e.getMessage(),
+          e);
+    }
+  }
 
 }
