@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.catalog.server.channel.xmlrpc;
+package org.apache.oodt.cas.catalog.system;
 
 //JDK imports
 import java.io.File;
@@ -33,7 +33,6 @@ import org.apache.oodt.cas.catalog.pagination.Page;
 import org.apache.oodt.cas.catalog.pagination.PageInfo;
 import org.apache.oodt.cas.catalog.pagination.QueryPager;
 import org.apache.oodt.cas.catalog.query.QueryExpression;
-import org.apache.oodt.cas.catalog.server.channel.AbstractCommunicationChannelServer;
 import org.apache.oodt.cas.catalog.struct.Dictionary;
 import org.apache.oodt.cas.catalog.struct.Index;
 import org.apache.oodt.cas.catalog.struct.TransactionId;
