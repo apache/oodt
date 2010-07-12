@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,31 +21,28 @@ package org.apache.oodt.cas.catalog.query;
 import java.util.Set;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A Standard QueryExpression
- * <p>
+ * 
  */
 public class StdQueryExpression extends QueryExpression {
 
-	public StdQueryExpression() {
-		super();
-	}
-	
-	public StdQueryExpression(Set<String> bucketNames) {
-		super(bucketNames);
-	}
-	
-	@Override
-	public StdQueryExpression clone() {
-		return new StdQueryExpression(this.getBucketNames());
-	}
+  public StdQueryExpression() {
+    super();
+  }
 
-	@Override
-	public String toString() {
-		return "({" + this.bucketNames + "})";
-	}
+  public StdQueryExpression(Set<String> bucketNames) {
+    super(bucketNames);
+  }
+
+  @Override
+  public StdQueryExpression clone() {
+    return new StdQueryExpression(this.getBucketNames());
+  }
+
+  @Override
+  public String toString() {
+    return "({" + this.bucketNames + "})";
+  }
 
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,37 +17,37 @@
 
 package org.apache.oodt.cas.catalog.query;
 
+//JDK imports
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A Expression for querying against a CatalogServices Metadata
- * <p>
+ * 
  */
 public abstract class QueryExpression implements Cloneable {
-    
-    protected Set<String> bucketNames;
-    
-    public QueryExpression() {}
-    
-    public QueryExpression(Set<String> bucketNames) { 
-    	this.bucketNames = new HashSet<String>(bucketNames);
-    }
-    
-	public Set<String> getBucketNames() {
-		return (this.bucketNames != null) ? new HashSet<String>(this.bucketNames) : null;
-	}
 
-	public void setBucketNames(Set<String> bucketNames) {
-		this.bucketNames = bucketNames;
-	}
+  protected Set<String> bucketNames;
 
-	public abstract String toString();
+  public QueryExpression() {
+  }
 
-    public abstract QueryExpression clone();
-    
+  public QueryExpression(Set<String> bucketNames) {
+    this.bucketNames = new HashSet<String>(bucketNames);
+  }
+
+  public Set<String> getBucketNames() {
+    return (this.bucketNames != null) ? new HashSet<String>(this.bucketNames)
+        : null;
+  }
+
+  public void setBucketNames(Set<String> bucketNames) {
+    this.bucketNames = bucketNames;
+  }
+
+  public abstract String toString();
+
+  public abstract QueryExpression clone();
+
 }

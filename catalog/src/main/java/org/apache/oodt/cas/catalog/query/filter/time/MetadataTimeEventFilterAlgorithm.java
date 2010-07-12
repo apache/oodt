@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -26,33 +26,37 @@ import org.apache.oodt.cas.catalog.query.filter.FilterAlgorithm;
 import org.apache.oodt.cas.commons.filter.TimeEventWeightedHash;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * 
+ * Describe your class here.
+ * 
  */
-public class MetadataTimeEventFilterAlgorithm extends FilterAlgorithm<MetadataTimeEvent> {
-	
-    protected long epsilon;
-    
-    public MetadataTimeEventFilterAlgorithm() {
-        this.epsilon = 0;
-    }
-    
-    public MetadataTimeEventFilterAlgorithm(long epsilon) {
-        this.epsilon = epsilon;
-    }
-    
-    public void setEpsilon(long epsilon) {
-        this.epsilon = epsilon;
-    }
-    
-    public long getEpsilon() {
-        return this.epsilon;
-    }
+public class MetadataTimeEventFilterAlgorithm extends
+    FilterAlgorithm<MetadataTimeEvent> {
 
-	@Override
-	public List<MetadataTimeEvent> filter(List<MetadataTimeEvent> events) {
-		TimeEventWeightedHash timeEventHash = TimeEventWeightedHash.buildHash(events, this.epsilon);
-		return Collections.unmodifiableList((List<MetadataTimeEvent>) timeEventHash.getGreatestWeightedPathAsOrderedList());
-	}
-    
+  protected long epsilon;
+
+  public MetadataTimeEventFilterAlgorithm() {
+    this.epsilon = 0;
+  }
+
+  public MetadataTimeEventFilterAlgorithm(long epsilon) {
+    this.epsilon = epsilon;
+  }
+
+  public void setEpsilon(long epsilon) {
+    this.epsilon = epsilon;
+  }
+
+  public long getEpsilon() {
+    return this.epsilon;
+  }
+
+  @Override
+  public List<MetadataTimeEvent> filter(List<MetadataTimeEvent> events) {
+    TimeEventWeightedHash timeEventHash = TimeEventWeightedHash.buildHash(
+        events, this.epsilon);
+    return Collections.unmodifiableList((List<MetadataTimeEvent>) timeEventHash
+        .getGreatestWeightedPathAsOrderedList());
+  }
+
 }

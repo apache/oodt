@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,21 +22,20 @@ import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
 import org.apache.oodt.cas.commons.filter.ObjectTimeEvent;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A ObjectTimeEvent that holds TermBuckets
- * <p>
+ * 
  */
 public class MetadataTimeEvent extends ObjectTimeEvent<TransactionalMetadata> {
 
-    public MetadataTimeEvent(long startTime, long endTime, TransactionalMetadata timeObj) {
-		super(startTime, endTime, timeObj);
-    }
-	
-	public MetadataTimeEvent(long startTime, long endTime, double priority, TransactionalMetadata timeObj) {
-		super(startTime, endTime, priority, timeObj);
-	}
+  public MetadataTimeEvent(long startTime, long endTime,
+      TransactionalMetadata timeObj) {
+    super(startTime, endTime, timeObj);
+  }
+
+  public MetadataTimeEvent(long startTime, long endTime, double priority,
+      TransactionalMetadata timeObj) {
+    super(startTime, endTime, priority, timeObj);
+  }
 
 }

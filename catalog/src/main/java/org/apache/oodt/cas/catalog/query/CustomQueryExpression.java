@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,53 +21,52 @@ package org.apache.oodt.cas.catalog.query;
 import java.util.Properties;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A Configurable QueryExpression
- * <p>
+ * 
  */
 public class CustomQueryExpression extends QueryExpression {
 
-	protected Properties properties;
-	protected String name;
-	
-	public CustomQueryExpression(String name) {
-		this(name, new Properties());
-	}
-	
-	public CustomQueryExpression(String name, Properties properties) {
-		super();
-		this.name = name;
-		if (properties != null)
-			this.properties = properties;
-		else 
-			this.properties = new Properties();
-	}
-	
-	public String getName() {
-		return this.name;
-	}
-	
-	public void setProperty(String key, String value) {
-		this.properties.put(key, value);
-	}
-	
-	public String getProperty(String key) {
-		return this.properties.getProperty(key);
-	}
-	
-	@Override
-	public CustomQueryExpression clone() {
-		CustomQueryExpression cqe = new CustomQueryExpression(this.name, (Properties) this.properties.clone());
-		cqe.setBucketNames(this.getBucketNames());
-		return cqe;
-	}
+  protected Properties properties;
+  protected String name;
 
-	@Override
-	public String toString() {
-		return "({" + this.bucketNames + "} " + this.name + " : " + this.properties.toString() + ")";
-	}
-	
+  public CustomQueryExpression(String name) {
+    this(name, new Properties());
+  }
+
+  public CustomQueryExpression(String name, Properties properties) {
+    super();
+    this.name = name;
+    if (properties != null)
+      this.properties = properties;
+    else
+      this.properties = new Properties();
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public void setProperty(String key, String value) {
+    this.properties.put(key, value);
+  }
+
+  public String getProperty(String key) {
+    return this.properties.getProperty(key);
+  }
+
+  @Override
+  public CustomQueryExpression clone() {
+    CustomQueryExpression cqe = new CustomQueryExpression(this.name,
+        (Properties) this.properties.clone());
+    cqe.setBucketNames(this.getBucketNames());
+    return cqe;
+  }
+
+  @Override
+  public String toString() {
+    return "({" + this.bucketNames + "} " + this.name + " : "
+        + this.properties.toString() + ")";
+  }
+
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,15 +19,11 @@ package org.apache.oodt.cas.catalog.query.filter.time.conv;
 
 /**
  * 
- * @author bfoster
- * @version $Revision$
- *
- * <p>
  * An interface for converting a String version into a priority number
- * <p>
+ * 
  */
 public interface VersionConverter {
 
-    public double convertToPriority(String version) throws Exception;
-    
+  public double convertToPriority(String version) throws Exception;
+
 }

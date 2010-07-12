@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,12 +19,8 @@ package org.apache.oodt.cas.catalog.query.filter.time.conv;
 
 /**
  * 
- * @author bfoster
- * @version $Revision$
- *
- * <p>
  * Converts a ascii sortable String version into a priority number
- * <p>
+ * 
  */
 public class AsciiSortableVersionConverter implements VersionConverter {
 

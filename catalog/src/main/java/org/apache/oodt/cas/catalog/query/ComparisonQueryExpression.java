@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,67 +18,69 @@
 package org.apache.oodt.cas.catalog.query;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
- * A TermQueryExpression which allows Term comparison
- * <p>
+ * 
+ * A TermQueryExpression which allows Term comparison.
+ * 
  */
 public class ComparisonQueryExpression extends TermQueryExpression {
 
-	public static enum Operator { EQUAL_TO("=="), LESS_THAN_EQUAL_TO("<="), GREATER_THAN_EQUAL_TO(">="), LESS_THAN("<"), GREATER_THAN(">"), LIKE("LIKE"); 
-	
-		private String value;
-		
-		Operator(String value) {
-			this.value = value;
-		}
-		
-		public static Operator getOperatorBySign(String sign) {
-			if (EQUAL_TO.value.equals(sign))
-				return EQUAL_TO;
-			else if (LESS_THAN_EQUAL_TO.value.equals(sign))
-				return LESS_THAN_EQUAL_TO;
-			else if (GREATER_THAN_EQUAL_TO.value.equals(sign))
-				return GREATER_THAN_EQUAL_TO;
-			else if (LESS_THAN.value.equals(sign))
-				return LESS_THAN;
-			else if (GREATER_THAN.value.equals(sign))
-				return GREATER_THAN;
-			else if (LIKE.value.equals(sign))
-				return LIKE;
-			else
-				throw new IllegalArgumentException("Not matching operator for '" + sign + "'");
-		}
-		
-		public String toString() {
-			return this.value;
-		}
-	
-	}
-	protected Operator operator;
-	
-	public void setOperator(Operator operator) {
-		this.operator = operator;
-	}
-	
-	public Operator getOperator() {
-		return this.operator;
-	}
+  public static enum Operator {
+    EQUAL_TO("=="), LESS_THAN_EQUAL_TO("<="), GREATER_THAN_EQUAL_TO(">="), LESS_THAN(
+        "<"), GREATER_THAN(">"), LIKE("LIKE");
 
-	@Override
-	public String toString() {
-		return "({" + this.bucketNames + "} " + this.getTerm().getName() + " " + this.operator + " " + this.getTerm().getValues() + ")";
-	}
+    private String value;
 
-	@Override
-	public ComparisonQueryExpression clone() {
-		ComparisonQueryExpression newQE = new ComparisonQueryExpression();
-		newQE.operator = this.operator;
-		newQE.setTerm(this.term.clone());
-		newQE.setBucketNames(this.getBucketNames());
-		return newQE;
-	}
+    Operator(String value) {
+      this.value = value;
+    }
+
+    public static Operator getOperatorBySign(String sign) {
+      if (EQUAL_TO.value.equals(sign))
+        return EQUAL_TO;
+      else if (LESS_THAN_EQUAL_TO.value.equals(sign))
+        return LESS_THAN_EQUAL_TO;
+      else if (GREATER_THAN_EQUAL_TO.value.equals(sign))
+        return GREATER_THAN_EQUAL_TO;
+      else if (LESS_THAN.value.equals(sign))
+        return LESS_THAN;
+      else if (GREATER_THAN.value.equals(sign))
+        return GREATER_THAN;
+      else if (LIKE.value.equals(sign))
+        return LIKE;
+      else
+        throw new IllegalArgumentException("Not matching operator for '" + sign
+            + "'");
+    }
+
+    public String toString() {
+      return this.value;
+    }
+
+  }
+
+  protected Operator operator;
+
+  public void setOperator(Operator operator) {
+    this.operator = operator;
+  }
+
+  public Operator getOperator() {
+    return this.operator;
+  }
+
+  @Override
+  public String toString() {
+    return "({" + this.bucketNames + "} " + this.getTerm().getName() + " "
+        + this.operator + " " + this.getTerm().getValues() + ")";
+  }
+
+  @Override
+  public ComparisonQueryExpression clone() {
+    ComparisonQueryExpression newQE = new ComparisonQueryExpression();
+    newQE.operator = this.operator;
+    newQE.setTerm(this.term.clone());
+    newQE.setBucketNames(this.getBucketNames());
+    return newQE;
+  }
 
 }

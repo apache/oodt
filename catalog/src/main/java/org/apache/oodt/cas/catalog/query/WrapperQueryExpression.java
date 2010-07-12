@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,41 +18,38 @@
 package org.apache.oodt.cas.catalog.query;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A QueryExpression which wrappers another QueryExpression
- * <p>
+ * 
  */
 public abstract class WrapperQueryExpression extends QueryExpression {
 
-	protected QueryExpression queryExpression;
+  protected QueryExpression queryExpression;
 
-	public WrapperQueryExpression() {
-		super();
-	}
-	
-	public WrapperQueryExpression(QueryExpression queryExpression) {
-		this();
-		this.queryExpression = queryExpression;
-	}
-	
-	public QueryExpression getQueryExpression() {
-		return queryExpression;
-	}
+  public WrapperQueryExpression() {
+    super();
+  }
 
-	public void setQueryExpression(QueryExpression queryExpression) {
-		this.queryExpression = queryExpression;
-	}
+  public WrapperQueryExpression(QueryExpression queryExpression) {
+    this();
+    this.queryExpression = queryExpression;
+  }
 
-	@Override
-	public String toString() {
-		return "(" + this.queryExpression + ")";
-	}
-	
-	public abstract boolean isValidWithNoSubExpression();
+  public QueryExpression getQueryExpression() {
+    return queryExpression;
+  }
 
-	public abstract WrapperQueryExpression clone();
-	
+  public void setQueryExpression(QueryExpression queryExpression) {
+    this.queryExpression = queryExpression;
+  }
+
+  @Override
+  public String toString() {
+    return "(" + this.queryExpression + ")";
+  }
+
+  public abstract boolean isValidWithNoSubExpression();
+
+  public abstract WrapperQueryExpression clone();
+
 }

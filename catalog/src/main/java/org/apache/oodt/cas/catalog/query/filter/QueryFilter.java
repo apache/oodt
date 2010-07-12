@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,38 +24,40 @@ import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
 import java.util.List;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
- * A Filter interface for filtering queries
- * <p>
+ * 
+ * A Filter interface for filtering queries.
+ * 
  */
 public abstract class QueryFilter<FilterType> {
 
-	protected FilterAlgorithm<FilterType> filterAlgorithm;
-	
-	public QueryFilter() {}
-	
-	public QueryFilter(FilterAlgorithm<FilterType> filterAlgorithm) {
-		super();
-		this.filterAlgorithm = filterAlgorithm;
-	}
-	
-	public void setFilterAlgorithm(FilterAlgorithm<FilterType> filterAlgorithm) {
-		this.filterAlgorithm = filterAlgorithm;
-	}
-	
-	public FilterAlgorithm<FilterType> getFilterAlgorithm() {
-		return this.filterAlgorithm;
-	}
-	
-	public List<TransactionalMetadata> filterMetadataList(List<TransactionalMetadata> metadataToFilter) {
-		return this.filterTypeToMetadata(this.filterAlgorithm.filter(this.metadataToFilterType(metadataToFilter)));
-	}
-	
-	protected abstract List<FilterType> metadataToFilterType(List<TransactionalMetadata> metadataList);
-	
-	protected abstract List<TransactionalMetadata> filterTypeToMetadata(List<FilterType> filterObjects);
-	
+  protected FilterAlgorithm<FilterType> filterAlgorithm;
+
+  public QueryFilter() {
+  }
+
+  public QueryFilter(FilterAlgorithm<FilterType> filterAlgorithm) {
+    super();
+    this.filterAlgorithm = filterAlgorithm;
+  }
+
+  public void setFilterAlgorithm(FilterAlgorithm<FilterType> filterAlgorithm) {
+    this.filterAlgorithm = filterAlgorithm;
+  }
+
+  public FilterAlgorithm<FilterType> getFilterAlgorithm() {
+    return this.filterAlgorithm;
+  }
+
+  public List<TransactionalMetadata> filterMetadataList(
+      List<TransactionalMetadata> metadataToFilter) {
+    return this.filterTypeToMetadata(this.filterAlgorithm.filter(this
+        .metadataToFilterType(metadataToFilter)));
+  }
+
+  protected abstract List<FilterType> metadataToFilterType(
+      List<TransactionalMetadata> metadataList);
+
+  protected abstract List<TransactionalMetadata> filterTypeToMetadata(
+      List<FilterType> filterObjects);
+
 }

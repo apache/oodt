@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,38 +17,46 @@
 
 package org.apache.oodt.cas.catalog.query;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class CustomWrapperQueryExpression extends WrapperQueryExpression {
 
-	protected String meaning;
-	
-	public CustomWrapperQueryExpression(String meaning) {
-		this.meaning = meaning;
-	}
-	
-	public CustomWrapperQueryExpression(String meaning, QueryExpression queryExpression) {
-		super(queryExpression);
-		this.meaning = meaning;
-	}
-	
-	public String getMeaning() {
-		return this.meaning;
-	}
-	
-	@Override
-	public CustomWrapperQueryExpression clone() {
-		CustomWrapperQueryExpression cwqe = new CustomWrapperQueryExpression(this.meaning, this.queryExpression.clone());
-		cwqe.setBucketNames(this.bucketNames);
-		return cwqe;
-	}
+  protected String meaning;
 
-	@Override
-	public String toString() {
-		return "({" + this.bucketNames + "} " + this.meaning + "(" + this.queryExpression + "))";
-	}
+  public CustomWrapperQueryExpression(String meaning) {
+    this.meaning = meaning;
+  }
 
-	@Override
-	public boolean isValidWithNoSubExpression() {
-		return false;
-	}
+  public CustomWrapperQueryExpression(String meaning,
+      QueryExpression queryExpression) {
+    super(queryExpression);
+    this.meaning = meaning;
+  }
+
+  public String getMeaning() {
+    return this.meaning;
+  }
+
+  @Override
+  public CustomWrapperQueryExpression clone() {
+    CustomWrapperQueryExpression cwqe = new CustomWrapperQueryExpression(
+        this.meaning, this.queryExpression.clone());
+    cwqe.setBucketNames(this.bucketNames);
+    return cwqe;
+  }
+
+  @Override
+  public String toString() {
+    return "({" + this.bucketNames + "} " + this.meaning + "("
+        + this.queryExpression + "))";
+  }
+
+  @Override
+  public boolean isValidWithNoSubExpression() {
+    return false;
+  }
 
 }

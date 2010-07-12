@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,38 +18,36 @@
 package org.apache.oodt.cas.catalog.query;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A WrapperQueryExpression which signifies negation of wrapped QueryExpression
- * <p>
+ * 
  */
 public class NotQueryExpression extends WrapperQueryExpression {
-	
-	public NotQueryExpression() {
-		super();
-	}
-	
-	public NotQueryExpression(QueryExpression queryExpression) {
-		super(queryExpression);
-	}
 
-	@Override
-	public NotQueryExpression clone() {
-		NotQueryExpression nqe = new NotQueryExpression(this.queryExpression.clone());
-		nqe.setBucketNames(this.getBucketNames());
-		return nqe;
-	}
-	
-	@Override
-	public String toString() {
-		return "(NOT (" + this.queryExpression + "))";
-	}
+  public NotQueryExpression() {
+    super();
+  }
 
-	@Override
-	public boolean isValidWithNoSubExpression() {
-		return false;
-	}
+  public NotQueryExpression(QueryExpression queryExpression) {
+    super(queryExpression);
+  }
+
+  @Override
+  public NotQueryExpression clone() {
+    NotQueryExpression nqe = new NotQueryExpression(this.queryExpression
+        .clone());
+    nqe.setBucketNames(this.getBucketNames());
+    return nqe;
+  }
+
+  @Override
+  public String toString() {
+    return "(NOT (" + this.queryExpression + "))";
+  }
+
+  @Override
+  public boolean isValidWithNoSubExpression() {
+    return false;
+  }
 
 }

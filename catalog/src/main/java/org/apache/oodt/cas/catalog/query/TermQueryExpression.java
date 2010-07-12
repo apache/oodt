@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,25 +21,23 @@ package org.apache.oodt.cas.catalog.query;
 import org.apache.oodt.cas.catalog.term.Term;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A QueryExpression which wrappers a Term
- * <p>
+ * 
  */
-public abstract class TermQueryExpression extends QueryExpression implements Cloneable {
+public abstract class TermQueryExpression extends QueryExpression implements
+    Cloneable {
 
-	protected Term term;
+  protected Term term;
 
-    public Term getTerm() {
-		return this.term;
-	}
+  public Term getTerm() {
+    return this.term;
+  }
 
-    public void setTerm(Term term) {
-    	this.term = term;
-    }
-    	
-    public abstract TermQueryExpression clone();
-    
+  public void setTerm(Term term) {
+    this.term = term;
+  }
+
+  public abstract TermQueryExpression clone();
+
 }

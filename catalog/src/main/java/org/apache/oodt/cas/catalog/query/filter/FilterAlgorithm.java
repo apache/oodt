@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,15 +22,11 @@ import java.util.List;
 
 /**
  * 
- * @author bfoster
- * @version $Revision$
- *
- * <p>
  * An algorithm interface for defining how QueryFilter filters query results
- * <p>
+ * 
  */
 public abstract class FilterAlgorithm<FilterType> {
-    
-    public abstract List<FilterType> filter(List<FilterType> events); 
-    
+
+  public abstract List<FilterType> filter(List<FilterType> events);
+
 }

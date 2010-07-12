@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,93 +23,93 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A QueryExpression which groups other QueryExpressions
- * <p>
+ * 
  */
 public class QueryLogicalGroup extends QueryExpression {
 
-	public enum Operator { AND, OR }
-	
-    protected Operator operator;
+  public enum Operator {
+    AND, OR
+  }
 
-    protected List<QueryExpression> queryExpressions;
+  protected Operator operator;
 
-    public QueryLogicalGroup() {
-    	this(new Vector<QueryExpression>(), Operator.AND);
-    }
-    
-    public QueryLogicalGroup(List<QueryExpression> queryExpressions) {
-    	this(queryExpressions, Operator.AND);
-    }
+  protected List<QueryExpression> queryExpressions;
 
-    public QueryLogicalGroup(List<QueryExpression> queryExpressions, Operator operator) {
-    	this.setExpressions(queryExpressions);
-    	this.setOperator(operator);
-    }
-    
-    public void setExpressions(List<QueryExpression> queryExpressions) {
-        this.queryExpressions = new Vector<QueryExpression>(queryExpressions);
-    }
+  public QueryLogicalGroup() {
+    this(new Vector<QueryExpression>(), Operator.AND);
+  }
 
-    /**
-     * 
-     * @param queryCriteria
-     */
-    public void addExpression(QueryExpression queryExpression) {
-    	this.queryExpressions.add(queryExpression);
-    }
-    
-    /**
-     * 
-     * @param queryCriterias
-     */
-    public void addExpressions(List<QueryExpression> queryExpressions) {
-    	this.queryExpressions.addAll(queryExpressions);
-    }
+  public QueryLogicalGroup(List<QueryExpression> queryExpressions) {
+    this(queryExpressions, Operator.AND);
+  }
 
-    /**
-     * 
-     * @return
-     */
-    public List<QueryExpression> getExpressions() {
-        return Collections.unmodifiableList(this.queryExpressions);
-    }
+  public QueryLogicalGroup(List<QueryExpression> queryExpressions,
+      Operator operator) {
+    this.setExpressions(queryExpressions);
+    this.setOperator(operator);
+  }
 
-    /**
-     * 
-     * @param operator
-     */
-    public void setOperator(Operator operator) {
-        this.operator = operator;
-    }
+  public void setExpressions(List<QueryExpression> queryExpressions) {
+    this.queryExpressions = new Vector<QueryExpression>(queryExpressions);
+  }
 
-    /**
-     * 
-     * @return
-     */
-    public Operator getOperator() {
-        return this.operator;
-    }
+  /**
+   * 
+   * @param queryCriteria
+   */
+  public void addExpression(QueryExpression queryExpression) {
+    this.queryExpressions.add(queryExpression);
+  }
 
-    @Override
-    public String toString() {
-        String query = "({" + this.bucketNames + "} " + this.operator + " : ";
-        for (QueryExpression queryExpression : this.queryExpressions)
-            query += queryExpression.toString() + ",";
-        return query.substring(0, query.length() - 1) + ")";
-    }
-    
-    public QueryLogicalGroup clone() {
-    	QueryLogicalGroup qlGroup = new QueryLogicalGroup();
-    	qlGroup.setBucketNames(this.getBucketNames());
-    	qlGroup.setOperator(this.operator);
-    	for (QueryExpression qe : this.queryExpressions)
-    		qlGroup.addExpression(qe.clone());
-    	return qlGroup;
-    }
-    
+  /**
+   * 
+   * @param queryCriterias
+   */
+  public void addExpressions(List<QueryExpression> queryExpressions) {
+    this.queryExpressions.addAll(queryExpressions);
+  }
+
+  /**
+   * 
+   * @return
+   */
+  public List<QueryExpression> getExpressions() {
+    return Collections.unmodifiableList(this.queryExpressions);
+  }
+
+  /**
+   * 
+   * @param operator
+   */
+  public void setOperator(Operator operator) {
+    this.operator = operator;
+  }
+
+  /**
+   * 
+   * @return
+   */
+  public Operator getOperator() {
+    return this.operator;
+  }
+
+  @Override
+  public String toString() {
+    String query = "({" + this.bucketNames + "} " + this.operator + " : ";
+    for (QueryExpression queryExpression : this.queryExpressions)
+      query += queryExpression.toString() + ",";
+    return query.substring(0, query.length() - 1) + ")";
+  }
+
+  public QueryLogicalGroup clone() {
+    QueryLogicalGroup qlGroup = new QueryLogicalGroup();
+    qlGroup.setBucketNames(this.getBucketNames());
+    qlGroup.setOperator(this.operator);
+    for (QueryExpression qe : this.queryExpressions)
+      qlGroup.addExpression(qe.clone());
+    return qlGroup;
+  }
+
 }
