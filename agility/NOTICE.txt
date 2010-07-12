@@ -1,7 +1,0 @@
-Agile Object Oriented Data Technology (OODT)
-Copyright 2010 The Apache Software Foundation
-
-This product includes software developed at
-The Apache Software Foundation (http://www.apache.org/).
-
-This is licensed software; see the docs/LICENSE.txt file.
