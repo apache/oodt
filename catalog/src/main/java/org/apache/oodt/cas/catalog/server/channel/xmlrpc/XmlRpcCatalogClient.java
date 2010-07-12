@@ -51,13 +51,12 @@ import org.apache.oodt.cas.metadata.Metadata;
  * XML-RPC implementation of the Catalog Server.
  * 
  */
-public class XmlRpcCommunicationChannelClient extends
-    AbstractCommunicationChannelClient {
+public class XmlRpcCatalogClient {
 
   protected XmlRpcClient client;
   protected int chunkSize;
 
-  public XmlRpcCommunicationChannelClient(URL serverUrl, int connectionTimeout,
+  public XmlRpcCatalogClient(URL serverUrl, int connectionTimeout,
       int requestTimeout, int chunkSize) {
     super();
     CommonsXmlRpcTransportFactory transportFactory = new CommonsXmlRpcTransportFactory(
@@ -70,30 +69,29 @@ public class XmlRpcCommunicationChannelClient extends
 
   public void shutdown() throws Exception {
     Vector<Object> args = new Vector<Object>();
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_shutdown", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".shutdown", args);
   }
 
   public void addCatalog(Catalog catalog) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(catalog));
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_addCatalog", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".addCatalog",
+        args);
   }
 
   public void replaceCatalog(Catalog catalog) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(catalog));
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_replaceCatalog", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".replaceCatalog",
+        args);
   }
 
   public void addCatalog(String catalogId, Index index) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(catalogId);
     args.add(this.serializer.serializeObject(index));
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_addCatalog", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".addCatalog",
+        args);
   }
 
   public void addCatalog(String catalogId, Index index,
@@ -102,8 +100,8 @@ public class XmlRpcCommunicationChannelClient extends
     args.add(catalogId);
     args.add(this.serializer.serializeObject(index));
     args.add(this.serializer.serializeObject(dictionaries));
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_addCatalog", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".addCatalog",
+        args);
   }
 
   public void addCatalog(String catalogId, Index index,
@@ -115,8 +113,8 @@ public class XmlRpcCommunicationChannelClient extends
     args.add(this.serializer.serializeObject(dictionaries));
     args.add(restrictQueryPermission);
     args.add(restrictIngestPermission);
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_addCatalog", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".addCatalog",
+        args);
   }
 
   public void addDictionary(String catalogId, Dictionary dictionary)
@@ -124,8 +122,8 @@ public class XmlRpcCommunicationChannelClient extends
     Vector<Object> args = new Vector<Object>();
     args.add(catalogId);
     args.add(this.serializer.serializeObject(dictionary));
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_addDictionary", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".addDictionary",
+        args);
   }
 
   public void replaceDictionaries(String catalogId,
@@ -133,16 +131,16 @@ public class XmlRpcCommunicationChannelClient extends
     Vector<Object> args = new Vector<Object>();
     args.add(catalogId);
     args.add(this.serializer.serializeObject(dictionaries));
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_addDictionary", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".addDictionary",
+        args);
   }
 
   public void replaceIndex(String catalogId, Index index) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(catalogId);
     args.add(this.serializer.serializeObject(index));
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_replaceIndex", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".replaceIndex",
+        args);
   }
 
   public void modifyIngestPermission(String catalogId,
@@ -150,8 +148,8 @@ public class XmlRpcCommunicationChannelClient extends
     Vector<Object> args = new Vector<Object>();
     args.add(catalogId);
     args.add(this.serializer.serializeObject(restrictIngestPermission));
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_modifyIngestPermission", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName()
+        + ".modifyIngestPermission", args);
   }
 
   public void modifyQueryPermission(String catalogId,
@@ -159,29 +157,28 @@ public class XmlRpcCommunicationChannelClient extends
     Vector<Object> args = new Vector<Object>();
     args.add(catalogId);
     args.add(this.serializer.serializeObject(restrictQueryPermission));
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_modifyQueryPermission", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName()
+        + ".modifyQueryPermission", args);
   }
 
   public List<PluginURL> getPluginUrls() throws Exception {
     Vector<Object> args = new Vector<Object>();
     return this.serializer.deserializeObject(List.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getPluginUrls", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getPluginUrls", args));
   }
 
   public void addPluginUrls(List<PluginURL> pluginURLs) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(pluginURLs));
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_addPluginUrls", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".addPluginUrls",
+        args);
   }
 
   public URL getPluginStorageDir() throws Exception {
     Vector<Object> args = new Vector<Object>();
     return this.serializer.deserializeObject(URL.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getPluginStorageDir", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getPluginStorageDir",
+            args));
   }
 
   public void transferUrl(URL fromUrl, URL toURL) throws Exception {
@@ -212,15 +209,14 @@ public class XmlRpcCommunicationChannelClient extends
     argList.add(fileData);
     argList.add(new Integer(offset));
     argList.add(new Integer(numBytes));
-    client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_transferFile", argList);
+    client.execute(XmlRpcClient.class.getSimpleName() + ".transferFile",
+        argList);
   }
 
   public void delete(Metadata metadata) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(metadata));
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_delete", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".delete", args);
   }
 
   public List<TransactionalMetadata> getAllPages(QueryPager queryPager)
@@ -228,24 +224,21 @@ public class XmlRpcCommunicationChannelClient extends
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(queryPager));
     return this.serializer.deserializeObject(List.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getAllPages", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getAllPages", args));
   }
 
   public Properties getCalalogProperties() throws Exception {
     return this.serializer.deserializeObject(Properties.class,
-        (String) this.client.execute(XmlRpcCommunicationChannelServer.class
-            .getSimpleName()
-            + ".xmlrpc_getCalalogProperties", new Vector<Object>()));
+        (String) this.client.execute(XmlRpcClient.class.getSimpleName()
+            + ".getCalalogProperties", new Vector<Object>()));
   }
 
   public Properties getCalalogProperties(String catalogUrn) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(catalogUrn);
     return this.serializer.deserializeObject(Properties.class,
-        (String) this.client.execute(XmlRpcCommunicationChannelServer.class
-            .getSimpleName()
-            + ".xmlrpc_getCalalogProperties", args));
+        (String) this.client.execute(XmlRpcClient.class.getSimpleName()
+            + ".getCalalogProperties", args));
   }
 
   public TransactionId<?> getCatalogServiceTransactionId(
@@ -255,9 +248,8 @@ public class XmlRpcCommunicationChannelClient extends
     args.add(this.serializer.serializeObject(catalogTransactionId));
     args.add(catalogUrn);
     return this.serializer.deserializeObject(TransactionId.class,
-        (String) this.client.execute(XmlRpcCommunicationChannelServer.class
-            .getSimpleName()
-            + ".xmlrpc_getCatalogServiceTransactionId", args));
+        (String) this.client.execute(XmlRpcClient.class.getSimpleName()
+            + ".getCatalogServiceTransactionId", args));
   }
 
   public TransactionId<?> getCatalogServiceTransactionId(
@@ -266,9 +258,8 @@ public class XmlRpcCommunicationChannelClient extends
     args.add(this.serializer.serializeObject(catalogReceipt));
     args.add(this.serializer.serializeObject(new Boolean(generateNew)));
     return this.serializer.deserializeObject(TransactionId.class,
-        (String) this.client.execute(XmlRpcCommunicationChannelServer.class
-            .getSimpleName()
-            + ".xmlrpc_getCatalogServiceTransactionId2", args));
+        (String) this.client.execute(XmlRpcClient.class.getSimpleName()
+            + ".getCatalogServiceTransactionId2", args));
   }
 
   public List<TransactionId<?>> getCatalogServiceTransactionIds(
@@ -278,14 +269,14 @@ public class XmlRpcCommunicationChannelClient extends
     args.add(this.serializer.serializeObject(catalogTransactionIds));
     args.add(catalogUrn);
     return this.serializer.deserializeObject(List.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getCatalogServiceTransactionId", args));
+        .execute(XmlRpcClient.class.getSimpleName()
+            + ".getCatalogServiceTransactionId", args));
   }
 
   public Set<String> getCurrentCatalogIds() throws Exception {
     return this.serializer.deserializeObject(Set.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getCurrentCatalogIds", new Vector<Object>()));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getCurrentCatalogIds",
+            new Vector<Object>()));
   }
 
   public List<TransactionalMetadata> getMetadataFromTransactionIdStrings(
@@ -294,8 +285,8 @@ public class XmlRpcCommunicationChannelClient extends
     args.add(this.serializer
         .serializeObject(catalogServiceTransactionIdStrings));
     return this.serializer.deserializeObject(List.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getMetadataFromTransactionIdStrings", args));
+        .execute(XmlRpcClient.class.getSimpleName()
+            + ".getMetadataFromTransactionIdStrings", args));
   }
 
   public List<TransactionalMetadata> getMetadataFromTransactionIds(
@@ -303,8 +294,8 @@ public class XmlRpcCommunicationChannelClient extends
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(catalogServiceTransactionIds));
     return this.serializer.deserializeObject(List.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getMetadataFromTransactionIds", args));
+        .execute(XmlRpcClient.class.getSimpleName()
+            + ".getMetadataFromTransactionIds", args));
   }
 
   public List<TransactionalMetadata> getNextPage(QueryPager queryPager)
@@ -312,23 +303,21 @@ public class XmlRpcCommunicationChannelClient extends
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(queryPager));
     return this.serializer.deserializeObject(List.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getNextPage", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getNextPage", args));
   }
 
   public List<String> getProperty(String key) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(key);
     return this.serializer.deserializeObject(List.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getProperty", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getProperty", args));
   }
 
   public Class<? extends TransactionId<?>> getTransactionIdClass()
       throws Exception {
     return this.serializer.deserializeObject(Class.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getTransactionIdClass", new Vector<Object>()));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getTransactionIdClass",
+            new Vector<Object>()));
   }
 
   public List<TransactionId<?>> getTransactionIdsForAllPages(
@@ -336,39 +325,35 @@ public class XmlRpcCommunicationChannelClient extends
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(queryPager));
     return this.serializer.deserializeObject(List.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getTransactionIdsForAllPages", args));
+        .execute(XmlRpcClient.class.getSimpleName()
+            + ".getTransactionIdsForAllPages", args));
   }
 
   public TransactionReceipt ingest(Metadata metadata) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(metadata));
     return this.serializer.deserializeObject(TransactionReceipt.class,
-        (String) this.client.execute(XmlRpcCommunicationChannelServer.class
-            .getSimpleName()
-            + ".xmlrpc_ingest", args));
+        (String) this.client.execute(XmlRpcClient.class.getSimpleName()
+            + ".ingest", args));
   }
 
   public boolean isRestrictIngestPermissions() throws Exception {
     return this.serializer.deserializeObject(Boolean.class,
-        (String) this.client.execute(XmlRpcCommunicationChannelServer.class
-            .getSimpleName()
-            + ".xmlrpc_isRestrictIngestPermissions", new Vector<Object>()));
+        (String) this.client.execute(XmlRpcClient.class.getSimpleName()
+            + ".isRestrictIngestPermissions", new Vector<Object>()));
   }
 
   public boolean isRestrictQueryPermissions() throws Exception {
     return this.serializer.deserializeObject(Boolean.class,
-        (String) this.client.execute(XmlRpcCommunicationChannelServer.class
-            .getSimpleName()
-            + ".xmlrpc_isRestrictQueryPermissions", new Vector<Object>()));
+        (String) this.client.execute(XmlRpcClient.class.getSimpleName()
+            + ".isRestrictQueryPermissions", new Vector<Object>()));
   }
 
   public Page getFirstPage(QueryExpression queryExpression) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(queryExpression));
     return this.serializer.deserializeObject(Page.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getFirstPage", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getFirstPage", args));
   }
 
   public Page getFirstPage(QueryExpression queryExpression,
@@ -377,16 +362,14 @@ public class XmlRpcCommunicationChannelClient extends
     args.add(this.serializer.serializeObject(queryExpression));
     args.add(this.serializer.serializeObject(catalogIds));
     return this.serializer.deserializeObject(Page.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getFirstPage", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getFirstPage", args));
   }
 
   public Page getNextPage(Page page) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(page));
     return this.serializer.deserializeObject(Page.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getNextPage2", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getNextPage2", args));
   }
 
   public Page getPage(PageInfo pageInfo, QueryExpression queryExpression)
@@ -395,8 +378,7 @@ public class XmlRpcCommunicationChannelClient extends
     args.add(this.serializer.serializeObject(pageInfo));
     args.add(this.serializer.serializeObject(queryExpression));
     return this.serializer.deserializeObject(Page.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getPage", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getPage", args));
   }
 
   public Page getPage(PageInfo pageInfo, QueryExpression queryExpression,
@@ -406,16 +388,14 @@ public class XmlRpcCommunicationChannelClient extends
     args.add(this.serializer.serializeObject(queryExpression));
     args.add(this.serializer.serializeObject(catalogIds));
     return this.serializer.deserializeObject(Page.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getPage", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getPage", args));
   }
 
   public Page getLastPage(QueryExpression queryExpression) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(queryExpression));
     return this.serializer.deserializeObject(Page.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getLastPage", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getLastPage", args));
   }
 
   public Page getLastPage(QueryExpression queryExpression,
@@ -424,25 +404,22 @@ public class XmlRpcCommunicationChannelClient extends
     args.add(this.serializer.serializeObject(queryExpression));
     args.add(this.serializer.serializeObject(catalogIds));
     return this.serializer.deserializeObject(Page.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getLastPage", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getLastPage", args));
   }
 
   public List<TransactionalMetadata> getMetadata(Page page) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(page));
     return this.serializer.deserializeObject(List.class, (String) this.client
-        .execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-            + ".xmlrpc_getMetadata", args));
+        .execute(XmlRpcClient.class.getSimpleName() + ".getMetadata", args));
   }
 
   public QueryPager query(QueryExpression queryExpression) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(this.serializer.serializeObject(queryExpression));
     return this.serializer.deserializeObject(QueryPager.class,
-        (String) this.client.execute(XmlRpcCommunicationChannelServer.class
-            .getSimpleName()
-            + ".xmlrpc_query", args));
+        (String) this.client.execute(XmlRpcClient.class.getSimpleName()
+            + ".query", args));
   }
 
   public QueryPager query(QueryExpression queryExpression,
@@ -451,16 +428,15 @@ public class XmlRpcCommunicationChannelClient extends
     args.add(this.serializer.serializeObject(queryExpression));
     args.add(this.serializer.serializeObject(catalogIds));
     return this.serializer.deserializeObject(QueryPager.class,
-        (String) this.client.execute(XmlRpcCommunicationChannelServer.class
-            .getSimpleName()
-            + ".xmlrpc_query", args));
+        (String) this.client.execute(XmlRpcClient.class.getSimpleName()
+            + ".query", args));
   }
 
   public void removeCatalog(String catalogUrn) throws Exception {
     Vector<Object> args = new Vector<Object>();
     args.add(catalogUrn);
-    this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName()
-        + ".xmlrpc_removeCatalog", args);
+    this.client.execute(XmlRpcClient.class.getSimpleName() + ".removeCatalog",
+        args);
   }
 
 }
