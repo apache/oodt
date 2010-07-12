@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,44 +17,54 @@
 
 package org.apache.oodt.cas.catalog.server.option;
 
+//JDK imports
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 
+//Spring imports
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.server.action.CatalogServiceServerAction;
 import org.apache.oodt.cas.catalog.util.Serializer;
 import org.apache.oodt.cas.commons.option.CmdLineOption;
 import org.apache.oodt.cas.commons.option.handler.CmdLineOptionHandler;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class PrintSupportedActionsHandler extends CmdLineOptionHandler {
 
-	protected String beanRepo;
-	
-	@Override
-	public String getCustomOptionUsage(CmdLineOption option) {
-		return "";
-	}
+  protected String beanRepo;
 
-	@Override
-	public void handleOption(CmdLineOption option, List<String> values) {
-		FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(new String[] { this.beanRepo }, false);
-		appContext.setClassLoader(new Serializer().getClassLoader());
-		appContext.refresh();
-		PrintStream ps = new PrintStream(System.out);
-        ps.println("Actions:");
-        for (CatalogServiceServerAction action : ((Map<String, CatalogServiceServerAction>) appContext.getBeansOfType(CatalogServiceServerAction.class)).values()) {
-            ps.println("  Action:");
-            ps.println("    Id: " + action.getId());
-            ps.println("    Description: " + action.getDescription());
-            ps.println();
-        }
-        ps.close();
-	}
+  @Override
+  public String getCustomOptionUsage(CmdLineOption option) {
+    return "";
+  }
 
-	public void setBeanRepo(String beanRepo) {
-		this.beanRepo = beanRepo;
-	}
-	
+  @Override
+  public void handleOption(CmdLineOption option, List<String> values) {
+    FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(
+        new String[] { this.beanRepo }, false);
+    appContext.setClassLoader(new Serializer().getClassLoader());
+    appContext.refresh();
+    PrintStream ps = new PrintStream(System.out);
+    ps.println("Actions:");
+    for (CatalogServiceServerAction action : ((Map<String, CatalogServiceServerAction>) appContext
+        .getBeansOfType(CatalogServiceServerAction.class)).values()) {
+      ps.println("  Action:");
+      ps.println("    Id: " + action.getId());
+      ps.println("    Description: " + action.getDescription());
+      ps.println();
+    }
+    ps.close();
+  }
+
+  public void setBeanRepo(String beanRepo) {
+    this.beanRepo = beanRepo;
+  }
+
 }
