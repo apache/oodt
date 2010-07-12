@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,43 +24,45 @@ import org.apache.oodt.cas.catalog.term.TermBucket;
 import org.apache.oodt.cas.metadata.Metadata;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A Dictionary for create Catalog understandable Terms from Metadata
- * <p>
+ * 
  */
 public interface Dictionary {
 
-	/**
-	 * Given a Metadata object a lookup call to a given dictionary will
-	 * always return the same TermBucket.  However, calls to several
-	 * Dictionary's lookup method may return different TermBuckets for
-	 * a given Metadata object.
-	 * @param metadata The Metadata for which a TermBucket will be created
-	 * @return TermBucket representing the given Metadata for this Dictionary or
-	 * null if Metadata is not recognized by this Dictionary
-	 */
-	public TermBucket lookup(Metadata metadata) throws CatalogDictionaryException;
+  /**
+   * Given a Metadata object a lookup call to a given dictionary will always
+   * return the same TermBucket. However, calls to several Dictionary's lookup
+   * method may return different TermBuckets for a given Metadata object.
+   * 
+   * @param metadata
+   *          The Metadata for which a TermBucket will be created
+   * @return TermBucket representing the given Metadata for this Dictionary or
+   *         null if Metadata is not recognized by this Dictionary
+   */
+  public TermBucket lookup(Metadata metadata) throws CatalogDictionaryException;
 
-	/**
-	 * Generates Metadata for the given TermBucket.  A call to lookup(Metadata) and
-	 * then reverseLookup(TermBucket) may not give you back the original Metadata
-	 * because lookup may ignore key/values in Metadata for which it does not
-	 * understand.
-	 * @param termBucket The TermBucket for which Metadata will be created
-	 * @return Metadata for the given TermBucket.  If the TermBucket is not understood,
-	 * then an empty Metadata object should be returned.
-	 */
-	public Metadata reverseLookup(TermBucket termBucket) throws CatalogDictionaryException;
-			
-	/**
-	 * 
-	 * @param queryExpression
-	 * @return
-	 * @throws CatalogDictionaryException
-	 */
-	public boolean understands(QueryExpression queryExpression) throws CatalogDictionaryException;
-	
+  /**
+   * Generates Metadata for the given TermBucket. A call to lookup(Metadata) and
+   * then reverseLookup(TermBucket) may not give you back the original Metadata
+   * because lookup may ignore key/values in Metadata for which it does not
+   * understand.
+   * 
+   * @param termBucket
+   *          The TermBucket for which Metadata will be created
+   * @return Metadata for the given TermBucket. If the TermBucket is not
+   *         understood, then an empty Metadata object should be returned.
+   */
+  public Metadata reverseLookup(TermBucket termBucket)
+      throws CatalogDictionaryException;
+
+  /**
+   * 
+   * @param queryExpression
+   * @return
+   * @throws CatalogDictionaryException
+   */
+  public boolean understands(QueryExpression queryExpression)
+      throws CatalogDictionaryException;
+
 }

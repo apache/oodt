@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,8 +17,10 @@
 
 package org.apache.oodt.cas.catalog.struct.impl.dictionary;
 
+//JDK imports
 import java.util.Set;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.exception.CatalogDictionaryException;
 import org.apache.oodt.cas.catalog.query.ComparisonQueryExpression;
 import org.apache.oodt.cas.catalog.query.NotQueryExpression;
@@ -31,43 +33,49 @@ import org.apache.oodt.cas.catalog.term.Term;
 import org.apache.oodt.cas.catalog.term.TermBucket;
 import org.apache.oodt.cas.metadata.Metadata;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class WorkflowManagerDictionary implements Dictionary {
 
-	public TermBucket lookup(Metadata metadata)
-			throws CatalogDictionaryException {
-		if (metadata.getMetadata("ProductType") != null && metadata.getAllMetadata("ProductType").contains("Workflows")) {
-			TermBucket workflowBucket = new TermBucket("Workflows");
-			for (Object key : metadata.getHashtable().keySet()) 
-				workflowBucket.addTerm(new Term((String) key, metadata.getAllMetadata((String) key)));
-			return workflowBucket;
-		}else {
-			return null;
-		}
-	}
+  public TermBucket lookup(Metadata metadata) throws CatalogDictionaryException {
+    if (metadata.getMetadata("ProductType") != null
+        && metadata.getAllMetadata("ProductType").contains("Workflows")) {
+      TermBucket workflowBucket = new TermBucket("Workflows");
+      for (Object key : metadata.getHashtable().keySet())
+        workflowBucket.addTerm(new Term((String) key, metadata
+            .getAllMetadata((String) key)));
+      return workflowBucket;
+    } else {
+      return null;
+    }
+  }
 
-	public Metadata reverseLookup(TermBucket termBucket)
-			throws CatalogDictionaryException {
-		Metadata metadata = new Metadata();
-		if (termBucket.getName().equals("Workflows")) {
-			for (Term term : termBucket.getTerms())
-				metadata.addMetadata(term.getName(), term.getValues());
-		}
-		return metadata;
-	}
+  public Metadata reverseLookup(TermBucket termBucket)
+      throws CatalogDictionaryException {
+    Metadata metadata = new Metadata();
+    if (termBucket.getName().equals("Workflows")) {
+      for (Term term : termBucket.getTerms())
+        metadata.addMetadata(term.getName(), term.getValues());
+    }
+    return metadata;
+  }
 
-	public boolean understands(QueryExpression queryExpression)
-			throws CatalogDictionaryException {
-		Set<String> bucketNames = queryExpression.getBucketNames();
-		if (bucketNames == null || bucketNames.contains("Workflows")) {
-			if (queryExpression instanceof NotQueryExpression 
-					|| queryExpression instanceof ComparisonQueryExpression 
-					|| queryExpression instanceof StdQueryExpression 
-					|| queryExpression instanceof QueryLogicalGroup) {
-				return true;
-			} else
-				return false;	
-		}
-		return false;
-	}
+  public boolean understands(QueryExpression queryExpression)
+      throws CatalogDictionaryException {
+    Set<String> bucketNames = queryExpression.getBucketNames();
+    if (bucketNames == null || bucketNames.contains("Workflows")) {
+      if (queryExpression instanceof NotQueryExpression
+          || queryExpression instanceof ComparisonQueryExpression
+          || queryExpression instanceof StdQueryExpression
+          || queryExpression instanceof QueryLogicalGroup) {
+        return true;
+      } else
+        return false;
+    }
+    return false;
+  }
 
 }
