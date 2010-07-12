@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//JPL//DTD EDA Configuration 1.0//EN"
+                               "http://enterprise.jpl.nasa.gov/dtd/configuration.dtd">
+<!-- 
+Copyright 2004 California Institute of Technology. ALL RIGHTS
+RESERVED. U.S. Government Sponsorship acknowledged.
+
+$Id: Configuration.xml,v 1.2 2004-03-01 16:39:20 kelly Exp $
+-->
+<configuration>
+
+  <!-- WEB SERVER ====================================================
+
+  This section determines what web server to use, and constructs base
+  URLs to refer to it (http://host:port). -->
+
+  <webServer>
+    <host>velcro.jpl.nasa.gov</host>
+    <port>9000</port>
+  </webServer>
+
+  <!-- CORBA NAME SERVER =============================================
+
+  This section tells how to find the CORBA name server, and creates
+  the URL to refer to it (usually something like
+  corbaloc:iiop:host:port/NameService). -->
+
+  <nameServer stateFrequency="60000">
+    <iiop>
+      <host>velcro.jpl.nasa.gov</host>
+      <port>5990</port>
+    </iiop>
+  </nameServer>
+
+  <!-- XML LIBRARY CONFIGURATION =====================================
+
+  This section configures the XML parser and XML utilities.  The
+  <entityRef> subsection contains a list of <dir> elements.  Each
+  <dir> is a directory in which XML entites (like document type
+  definition files) may be found.  These aren't required if you have a
+  network connection, as entities may be retrieved from their master
+  sources by HTTP.  But specifying them will improve performance and
+  is required if you have not HTTP access. -->
+
+  <xml>
+    <entityRef>
+      <dir>/usr/local/eda/www/dtd</dir>
+      <dir>/usr/local/share/xml/dtd</dir>
+    </entityRef>
+  </xml>
+
+  <!-- GLOBAL SYSTEM PROPERTIES ======================================
+
+  These properties get merged into the System properties and are
+  passed to all subprograms.  But they're overridden by any properties
+  already defined in the system properties and by program-specific
+  properties. -->
+
+  <properties>
+    <!-- This is the default JDBC driver, unless overridden by -->
+    <!-- specific server or on the command-line with a -->
+    <!-- system property. -->
+    <key>jpl.eda.util.JDBC_DB.driver</key>
+    <value>oracle.jdbc.driver.OracleDriver</value>
+  </properties>
+
+  <!-- PROGRAMS ======================================================
+
+  This section lists programs.  When running the OODT framework, each
+  <execServer> is started by the jpl.eda.(console|gui).Main class.
+  Other programs need to be run separately. -->
+
+  <programs>
+
+    <!-- MAIN QUERY SERVER -->
+    <execServer>
+      <class>jpl.oodt.query_service.Query_Service_Impl</class>
+      <objectKey>JPL.Query</objectKey>
+    </execServer>
+    
+    <!-- ROOT PROFILE SERVER
+
+    Execute a Profile server under the name JPL.OODT.Profile,
+    accessing profile data from a database on DTADB under the username
+    oodt. -->
+    <execServer>
+      <class>jpl.oodt.profile_service.CORBA_Profile_Service_Impl</class>
+      <objectKey>JPL.Profile</objectKey>
+      <properties>
+        <key>jpl.oodt.profile_service.CORBA_Profile_Service_Impl.searchHandler</key>
+
+        <!-- Choose which profile server to run, either the
+        jpl.oodt.profile_service.DatabaseProfileServer or the
+        jpl.oodt.profile_service.LightweightProfileServer.  The
+        database supports modification of profiles, while the
+        lightweight is high speed. -->
+
+	<value>jpl.oodt.profile_service.WhichProfileServerWouldYouLike?</value>
+
+        <key>jpl.oodt.profile_service.LightweightProfileServer.profiles.url</key>
+        <value>http://velcro.jpl.nasa.gov:9001/xml/allProfiles.xml</value>
+	<key>jpl.eda.util.JDBC_DB.url</key>
+	<value>jdbc:oracle:thin:@eis-dta-011.jpl.nasa.gov:1526:DTADB</value>
+	<key>jpl.eda.util.JDBC_DB.user</key>
+	<value>oodt</value>
+	<key>jpl.eda.util.JDBC_DB.password</key>
+	<value>oodt</value>
+      </properties>
+    </execServer>
+
+    <!-- PTI ARCHIVE SERVER
+
+    Execute an Archive server under the name JPL.PTI.Archiver with sum
+    and spec plot scripts specified. -->
+    <execServer>
+      <class>jpl.oodt.corba_archive.CORBA_Archive_Service_Impl</class>
+      <objectKey>JPL.PTI.Archiver</objectKey>
+      <properties>
+	<key>aux.sum.plot.script</key>
+	<value>/home/pti/bin/run_sum_plots</value>
+	<key>aux.spec.plot.script</key>
+	<value>/home/pti/bin/run_spec_plots</value>
+	<key>jpl.eda.util.JDBC_DB.url</key>
+	<value>jdbc:oracle:thin:@eis-dta-011.jpl.nasa.gov:1526:DTADEV</value>
+	<key>jpl.eda.util.JDBC_DB.user</key>
+	<value>pti_p2</value>
+	<key>jpl.eda.util.JDBC_DB.password</key>
+	<value>pti_p2$dev</value>
+      </properties>
+    </execServer>
+
+    <!-- PTI PRODUCT SERVER
+
+    Execute a product server under the name JPL.PTI.Product, using the
+    class jpl.pti.server.PTIQueryHandler to handle product queries,
+    which itself accesses data from DTADEV under username pti_p2. -->
+    <execServer>
+      <class>jpl.oodt.product_service.Product_Service_Impl</class>
+      <objectKey>JPL.PTI.Product</objectKey>
+      <properties>
+	<key>jpl.oodt.product_service.InitializeQueryHandlers.classes</key>
+	<value>jpl.pti.server.PTIQueryHandler</value>
+	<key>jpl.eda.util.JDBC_DB.url</key>
+	<value>jdbc:oracle:thin:@</value>
+	<key>jpl.eda.util.JDBC_DB.user</key>
+	<value>pti_p2</value>
+	<key>jpl.eda.util.JDBC_DB.password</key>
+	<value>pti_p2$dev</value>
+        <key>jpl.eda.util.JDBC_DB.database</key>
+        <value>eis-dta-011.jpl.nasa.gov:1526:DTADEV</value>
+      </properties>
+    </execServer>
+
+    <!-- MOLA PRODUCT SERVER
+
+    Execute a product server under the name jpl.pds.mola.productserver, using the
+    class jpl.pds.mola.MolaQueryHandler to handle product queries
+    which itself accesses data from DTADB under username oodt -->
+    <execServer>
+      <class>jpl.oodt.product_service.Product_Service_Impl</class>
+      <objectKey>jpl.pds.mola.productserver</objectKey>
+      <properties>
+        <key>jpl.oodt.product_service.InitializeQueryHandlers.classes</key>
+        <value>jpl.pds.mola.MolaQueryHandler</value>
+        <key>jpl.eda.util.JDBC_DB.url</key>
+        <value>jdbc:oracle:thin:@</value>
+        <key>jpl.eda.util.JDBC_DB.user</key>
+        <value>oodt</value>
+        <key>jpl.eda.util.JDBC_DB.password</key>
+        <value>oodt</value>
+        <key>jpl.eda.util.JDBC_DB.database</key>
+        <value>eis-dta-011.jpl.nasa.gov:1526:DTADB</value>
+      </properties>
+    </execServer>
+
+  </programs>
+    
+<!-- End of the configuration -->
+</configuration>

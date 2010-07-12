@@ -1,0 +1,431 @@
+// Copyright (c) 1998-2003, California Institute of Technology.
+// ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+// 
+// $Id: JDBC_DB.java,v 1.3 2004-05-21 21:49:05 cmattmann Exp $
+
+package jpl.eda.util;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Properties;
+
+/**
+	This class is a wrapper for JDBC.
+
+	@author D. Crichton
+	@version $Revision: 1.3 $
+*/
+public class JDBC_DB
+{
+	Properties serverProps;
+	Connection connect;
+	String sql_command;
+	Statement stmt;
+	ResultSet rs;
+	ResultSetMetaData rs_meta;
+	int affected;
+	boolean more_rows;
+	boolean keep_connect_open;
+	private boolean autoCommitMode = false;
+	public final String TO_DATE_FORMAT = "DD-MM-YYYY HH24:MI:SS";
+
+	/******************************************************************
+	**
+	** JDBC_DB
+	**
+	** Constructor method will create class instance and load the
+	** Oracle DB driver
+	**
+	*******************************************************************/
+
+	public  JDBC_DB(
+			java.util.Properties sys_props) throws SQLException
+	{
+			String  classname;
+
+			serverProps = sys_props;
+			keep_connect_open = true;
+
+	}
+
+	public  JDBC_DB(
+			java.util.Properties sys_props,
+			Connection srv_connect) throws SQLException
+	{
+			String  classname;
+
+			serverProps = sys_props;
+			connect = srv_connect;
+
+			if (srv_connect == null) {
+				keep_connect_open  = false;
+			} else {
+				keep_connect_open = true;
+			}
+	}
+
+	public void setAutoCommitMode(boolean autoCommitMode) {
+		this.autoCommitMode = autoCommitMode;
+	}
+
+	/******************************************************************
+	**
+	** openConnection
+	**
+	** Open a connection to the database.
+	**
+	*******************************************************************/
+	public void openConnection() throws SQLException
+
+	{
+		openConnection(serverProps.getProperty("jpl.eda.util.JDBC_DB.user", "unknown"),
+			serverProps.getProperty("jpl.eda.util.JDBC_DB.password"),
+			serverProps.getProperty("jpl.eda.util.JDBC_DB.database"));
+	}
+
+
+	public void openConnection(
+		String username,
+		String password,
+		String database) throws SQLException
+	{
+		String url, classname;
+
+		if (stmt != null)
+			stmt.close();
+
+		if (rs != null)
+			rs.close();
+
+		if (keep_connect_open)
+			return;
+
+		if (connect != null)
+			connect.close();
+
+
+		rs_meta = null;
+		connect = null;
+		stmt = null;
+		rs = null;
+
+		Properties props = new Properties();
+		props.put("user", username);
+
+		if (password != null)
+			props.put("password", password);
+
+
+		classname = serverProps.getProperty("jpl.eda.util.JDBC_DB.driver", "oracle.jdbc.driver.OracleDriver");
+		try {
+			System.err.println("Attempting to load class " + classname);
+			Class.forName(classname);
+			System.err.println("Loaded " + classname);
+		} catch (ClassNotFoundException e) {
+			System.err.println("Can't load JDBC driver \"" + classname + "\": " + e.getMessage());
+			e.printStackTrace();
+		}
+		url = serverProps.getProperty("jpl.eda.util.JDBC_DB.url", "jdbc:oracle:@");
+		try {
+			if (database != null) {
+				System.err.println("Connecting to url+database combo: " + url + database);
+				connect = DriverManager.getConnection(url+database, props);
+			} else {
+				System.err.println("Connecting to full url: " + url);
+				connect = DriverManager.getConnection(url, props);
+			}
+		} catch (SQLException e) {
+			System.err.println("SQL Exception during connection creation: " + e.getMessage());
+			e.printStackTrace();
+			while (e != null) {
+				System.err.println(e.getMessage());
+				e = e.getNextException();
+			}
+		}
+
+		connect.setAutoCommit(autoCommitMode);
+
+	}
+
+
+	/******************************************************************
+	**
+	** closeConnection
+	**
+	** Close a connection to the database.
+	**
+	*******************************************************************/
+
+	public void closeConnection() {
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+			if (keep_connect_open) {
+				return;
+			}
+			if (connect != null) {
+				connect.close();
+			}
+			connect = null;
+			rs = null;
+			stmt = null;
+		} catch (SQLException e) {
+			System.err.println("Ignoring database close connection exception");
+			//System.err.println("Ignoring exception " + e.getClass().getName() + ": " + e.getMessage());
+			//e.printStackTrace();
+		}
+	}
+
+	/******************************************************************
+	**
+	** executeSQLCommand
+	**
+	** Send an SQL command to the DBMS to be executed.
+	**
+	*******************************************************************/
+
+	public void executeSQLCommand(String cmd) throws SQLException
+	{
+
+
+		/*
+		** Get the string, and create the statement
+		*/
+		sql_command = cmd;
+
+		if (stmt!=null)
+			stmt.close();
+
+		if (connect == null) openConnection();
+		if (connect == null) {
+			keep_connect_open = false;
+			openConnection();
+		}
+		if (connect == null)
+			throw new IllegalStateException("Connection is null!!!");
+		
+		if (connect.isClosed()) {
+			connect = null;
+			keep_connect_open = false;
+			openConnection();
+		}
+		if (connect == null)
+			throw new IllegalStateException("Connection is still null!!!");
+		if (connect.isClosed())
+			throw new IllegalStateException("Connection got closed!");
+
+		stmt = connect.createStatement();
+		affected = stmt.executeUpdate(sql_command);
+	}
+
+	/******************************************************************
+	**
+	** executeQuery
+	**
+	** Send an SQL query to the DBMS to be executed.
+	**
+	*******************************************************************/
+	public ResultSet executeQuery(String cmd) throws SQLException
+	{
+		sql_command = cmd;
+
+
+		if (stmt!=null)
+			stmt.close();
+
+		if (connect == null) openConnection();
+		if (connect == null) {
+			keep_connect_open = false;
+			openConnection();
+		}
+		if (connect == null)
+			throw new IllegalStateException("Connection is null!!!");
+		
+		if (connect.isClosed()) {
+			connect = null;
+			keep_connect_open = false;
+			openConnection();
+		}
+		if (connect == null)
+			throw new IllegalStateException("Connection is still null!!!");
+		if (connect.isClosed())
+			throw new IllegalStateException("Connection got closed!");
+
+
+		//long time0 = System.currentTimeMillis();
+		stmt = connect.createStatement();
+		//long time = System.currentTimeMillis();
+		//System.err.println("###### Creating a new statement: " + (time - time0));
+		//time0 = time;
+
+		if (rs!=null)
+			rs.close();
+
+		rs = stmt.executeQuery(sql_command);
+		//time = System.currentTimeMillis();
+		//System.err.println("###### Executing the query: " + (time - time0));
+
+		if (rs == null)
+		{
+			return(null);
+		}
+
+		return(rs);
+
+
+	}
+
+	/******************************************************************
+	**
+	** getCount
+	**
+	** Will return a count when user passes sting select count(*) from ...
+	**
+	*******************************************************************/
+	public int getCount(String cmd) throws SQLException
+	{
+		sql_command = cmd;
+		int count;
+
+
+		if (stmt!=null)
+			stmt.close();
+
+		stmt = connect.createStatement();
+
+		if (rs!=null)
+			rs.close();
+
+		rs = stmt.executeQuery(sql_command);
+
+		if (rs == null)
+		{
+			return(0);
+		}
+
+		count = 0;
+
+		while (rs.next())
+		{
+			count = rs.getInt(1);
+		}
+
+		stmt.close();
+		rs.close();
+
+
+		return(count);
+
+
+	}
+	/******************************************************************
+	**
+	** commit
+	**
+	**
+	**
+	*******************************************************************/
+	public void commit() throws SQLException
+	{
+		connect.commit();
+	}
+
+	/******************************************************************
+	**
+	** rollback
+	**
+	**
+	**
+	*******************************************************************/
+	public void rollback()
+	{
+		try
+		{
+			if (connect != null)
+				connect.rollback();
+		}
+
+		catch (SQLException e)
+		{
+
+		}
+	}
+
+	 protected void finalize() throws Throwable
+	{
+		try
+		{
+			if ((connect != null) && (!keep_connect_open))
+			{
+				connect.close();
+
+			}
+
+			if (rs != null)
+			{
+				rs.close();
+			}
+
+			if (stmt != null)
+			{
+				stmt.close();
+			}
+
+		}
+		catch (SQLException e)
+		{
+		}
+	}
+
+	/******************************************************************
+	**
+	** Convert Date to string in format for
+	** Oracle TO_DATE processing - DD-MM-YY HH24:MI:SS
+	**
+	**
+	*******************************************************************/
+
+
+	public String toDateStr(java.util.Date inDate)
+	{
+
+		String outDate;
+/*
+		outDate = Integer.toString(inDate.getDate()) + "-" +
+			   Integer.toString(inDate.getMonth() + 1) + "-" +
+			   Integer.toString(inDate.getYear()) + " " +
+			   Integer.toString(inDate.getHours()) + ":" +
+			   Integer.toString(inDate.getMinutes()) + ":" +
+			   Integer.toString(inDate.getSeconds());
+		return(outDate);
+*/
+
+		SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		String dateStr = fmt.format(inDate);
+
+		return dateStr;
+
+
+	}
+
+	public Connection getConnection() throws SQLException
+	{
+		if (connect == null) openConnection();
+		if (connect == null) {
+			keep_connect_open = false;
+			openConnection();
+		}
+		if (connect == null)
+			throw new IllegalStateException("getConnection can't get a connection pointer");
+		return(connect);
+	}
+}

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+Copyright 1999-2004 California Institute of Technology. ALL RIGHTS
+RESERVED. U.S. Government Sponsorship acknowledged.
+
+$Id: test-multiserver.xml,v 1.1 2004-04-05 16:22:09 kelly Exp $
+-->
+<multiserver xmlns="http://oodt.jpl.nasa.gov/edm-commons/xml/multiserver" id="test.app">
+  <server class="jpl.eda.MultiServerTest$Svr1" id="urn:eda:rmi:Test1" bind="true"   />
+  <server class="jpl.eda.MultiServerTest$Svr2" id="urn:eda:rmi:Test2" bind="false"  />
+  <server class="jpl.eda.MultiServerTest$Svr3" id="urn:eda:rmi:Test3" bind="rebind" />
+  <server class="jpl.eda.MultiServerTest$Svr4" id="urn:eda:rmi:Test4" bind="360000" />
+  <properties>
+    <property name="my.setting">My Value</property>
+    <property name="my.other.setting">My Other Value</property>
+  </properties>
+</multiserver>
