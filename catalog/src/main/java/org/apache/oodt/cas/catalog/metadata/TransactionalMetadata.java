@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -30,44 +30,44 @@ import org.apache.oodt.cas.catalog.system.CatalogService;
 import org.apache.oodt.cas.metadata.Metadata;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * Metadata tied to a Transaction
- * <p>
+ * 
  */
 public class TransactionalMetadata {
 
-	protected TransactionReceipt receipt;
-	protected Metadata metadata;
-	
-	public TransactionalMetadata(TransactionReceipt receipt, Metadata metadata) {
-		this.receipt = receipt;
-		this.metadata = metadata;
-		this.metadata.replaceMetadata(CatalogService.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY, this.receipt.getTransactionId().toString());
-		this.metadata.replaceMetadata(CatalogService.CATALOG_IDS_MET_KEY, StringUtils.join(this.receipt.getCatalogIds().iterator(), ","));
-	}
+  protected TransactionReceipt receipt;
+  protected Metadata metadata;
 
-	public TransactionId<?> getTransactionId() {
-		return receipt.getTransactionId();
-	}
+  public TransactionalMetadata(TransactionReceipt receipt, Metadata metadata) {
+    this.receipt = receipt;
+    this.metadata = metadata;
+    this.metadata.replaceMetadata(
+        CatalogService.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY, this.receipt
+            .getTransactionId().toString());
+    this.metadata.replaceMetadata(CatalogService.CATALOG_IDS_MET_KEY,
+        StringUtils.join(this.receipt.getCatalogIds().iterator(), ","));
+  }
 
-	public Set<String> getCatalogIds() {
-		return receipt.getCatalogIds();
-	}
-	
-	public Date getTransactionDate() {
-		return receipt.getTransactionDate();
-	}
-	
-	public Metadata getMetadata() {
-		return metadata;
-	}
-	
-	@Override
-	public int hashCode() {
-		return this.getTransactionId().hashCode();
-	}
-	
+  public TransactionId<?> getTransactionId() {
+    return receipt.getTransactionId();
+  }
+
+  public Set<String> getCatalogIds() {
+    return receipt.getCatalogIds();
+  }
+
+  public Date getTransactionDate() {
+    return receipt.getTransactionDate();
+  }
+
+  public Metadata getMetadata() {
+    return metadata;
+  }
+
+  @Override
+  public int hashCode() {
+    return this.getTransactionId().hashCode();
+  }
+
 }
