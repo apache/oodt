@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,28 +17,33 @@
 
 package org.apache.oodt.cas.catalog.page;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class PageInfo {
 
-	protected int pageSize;
-	protected int pageNum;
-	
-	public static final int LAST_PAGE = Integer.MAX_VALUE;
-	public static final int FIRST_PAGE = 1;
+  protected int pageSize;
+  protected int pageNum;
 
-	public PageInfo(int pageSize, int pageNum) {
-		this.pageSize = pageSize;
-		if (pageNum < 1)
-			this.pageNum = 1;
-		else
-			this.pageNum = pageNum;
-	}
+  public static final int LAST_PAGE = Integer.MAX_VALUE;
+  public static final int FIRST_PAGE = 1;
 
-	public int getPageSize() {
-		return pageSize;
-	}
+  public PageInfo(int pageSize, int pageNum) {
+    this.pageSize = pageSize;
+    if (pageNum < 1)
+      this.pageNum = 1;
+    else
+      this.pageNum = pageNum;
+  }
 
-	public int getPageNum() {
-		return pageNum;
-	}
-	
+  public int getPageSize() {
+    return pageSize;
+  }
+
+  public int getPageNum() {
+    return pageNum;
+  }
+
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,55 +17,63 @@
 
 package org.apache.oodt.cas.catalog.page;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.query.QueryExpression;
 
+//JDK imports
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class Page {
 
-	protected List<TransactionReceipt> receipts;
-	protected ProcessedPageInfo processedPageInfo;
-	protected QueryExpression queryExpression;
-	protected Set<String> restrictToCatalogIds;
-	
-	public Page(ProcessedPageInfo pageInfo, QueryExpression queryExpression, Set<String> restrictToCatalogIds, List<TransactionReceipt> receipts) {
-		this.processedPageInfo = pageInfo;
-		this.queryExpression = queryExpression;
-		this.restrictToCatalogIds = restrictToCatalogIds;
-		this.receipts = receipts;
-	}
-	
-	public List<TransactionReceipt> getReceipts() {
-		return this.receipts;
-	}
-	
-	public int getPageSize() {
-		return this.processedPageInfo.getPageSize();
-	}
-	
-	public int getPageNum() {
-		return this.processedPageInfo.getPageNum();
-	}
-	
-	public int getTotalPages() {
-		return this.processedPageInfo.getTotalPages();
-	}
-	
-	public int getNumOfHits() {
-		return this.processedPageInfo.getNumOfHits();
-	}
-	
-	public QueryExpression getQueryExpression() {
-		return queryExpression;
-	}
+  protected List<TransactionReceipt> receipts;
+  protected ProcessedPageInfo processedPageInfo;
+  protected QueryExpression queryExpression;
+  protected Set<String> restrictToCatalogIds;
 
-	public Set<String> getRestrictToCatalogIds() {
-		return restrictToCatalogIds;
-	}
-	
-	public boolean isLastPage() {
-		return this.processedPageInfo.isLastPage();
-	}
-	
+  public Page(ProcessedPageInfo pageInfo, QueryExpression queryExpression,
+      Set<String> restrictToCatalogIds, List<TransactionReceipt> receipts) {
+    this.processedPageInfo = pageInfo;
+    this.queryExpression = queryExpression;
+    this.restrictToCatalogIds = restrictToCatalogIds;
+    this.receipts = receipts;
+  }
+
+  public List<TransactionReceipt> getReceipts() {
+    return this.receipts;
+  }
+
+  public int getPageSize() {
+    return this.processedPageInfo.getPageSize();
+  }
+
+  public int getPageNum() {
+    return this.processedPageInfo.getPageNum();
+  }
+
+  public int getTotalPages() {
+    return this.processedPageInfo.getTotalPages();
+  }
+
+  public int getNumOfHits() {
+    return this.processedPageInfo.getNumOfHits();
+  }
+
+  public QueryExpression getQueryExpression() {
+    return queryExpression;
+  }
+
+  public Set<String> getRestrictToCatalogIds() {
+    return restrictToCatalogIds;
+  }
+
+  public boolean isLastPage() {
+    return this.processedPageInfo.isLastPage();
+  }
+
 }

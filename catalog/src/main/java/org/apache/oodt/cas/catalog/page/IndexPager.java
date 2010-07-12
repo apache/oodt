@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,60 +18,57 @@
 package org.apache.oodt.cas.catalog.page;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A pager for paging through a index
- * <p>
+ * 
  */
 public class IndexPager {
 
-	protected int pageSize;
-	protected int pageNum;
-	protected int totalPages;
-	protected int numOfHits;
-	
-	public IndexPager() {
-		this.pageSize = 20;
-		this.pageNum = 1;
-		this.totalPages = 0;
-	}
-	
-	public IndexPager(ProcessedPageInfo processedPageInfo) {
-		this.pageSize = processedPageInfo.getPageSize();
-		this.pageNum = processedPageInfo.getPageNum();
-		this.totalPages = processedPageInfo.getTotalPages();
-		this.numOfHits = processedPageInfo.getNumOfHits();
-	}
-	
-	public ProcessedPageInfo getProcessedPageInfo() {
-		return new ProcessedPageInfo(this.pageSize, this.pageNum, this.numOfHits);
-	}
-	
-	public int getPageSize() {
-		return this.pageSize;
-	}
-	
-	public int getPageNum() {
-		return this.pageNum;
-	}
-	
-	public int getTotalPages() {
-		return this.totalPages;
-	}
-	
-	public int getNumOfHits() {
-		return this.numOfHits;
-	}
+  protected int pageSize;
+  protected int pageNum;
+  protected int totalPages;
+  protected int numOfHits;
 
-	public void incrementPageNumber() {
-		if (this.pageNum + 1 <= this.totalPages)
-			this.pageNum++;
-	}
-	
-	public boolean isLastPage() {
-		return this.getProcessedPageInfo().isLastPage();
-	}
-	
+  public IndexPager() {
+    this.pageSize = 20;
+    this.pageNum = 1;
+    this.totalPages = 0;
+  }
+
+  public IndexPager(ProcessedPageInfo processedPageInfo) {
+    this.pageSize = processedPageInfo.getPageSize();
+    this.pageNum = processedPageInfo.getPageNum();
+    this.totalPages = processedPageInfo.getTotalPages();
+    this.numOfHits = processedPageInfo.getNumOfHits();
+  }
+
+  public ProcessedPageInfo getProcessedPageInfo() {
+    return new ProcessedPageInfo(this.pageSize, this.pageNum, this.numOfHits);
+  }
+
+  public int getPageSize() {
+    return this.pageSize;
+  }
+
+  public int getPageNum() {
+    return this.pageNum;
+  }
+
+  public int getTotalPages() {
+    return this.totalPages;
+  }
+
+  public int getNumOfHits() {
+    return this.numOfHits;
+  }
+
+  public void incrementPageNumber() {
+    if (this.pageNum + 1 <= this.totalPages)
+      this.pageNum++;
+  }
+
+  public boolean isLastPage() {
+    return this.getProcessedPageInfo().isLastPage();
+  }
+
 }

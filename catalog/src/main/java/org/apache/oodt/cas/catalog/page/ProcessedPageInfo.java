@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,27 +17,34 @@
 
 package org.apache.oodt.cas.catalog.page;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class ProcessedPageInfo extends PageInfo {
 
-	protected int totalPages;
-	protected int numOfHits;
-	
-	public ProcessedPageInfo(int pageSize, int pageNum, int numOfHits) {
-		super(pageSize, pageNum > ((int) Math.ceil((double) numOfHits / (double) pageSize)) ? ((int) Math.ceil((double) numOfHits / (double) pageSize)) : pageNum);
-		this.totalPages = ((int) Math.ceil((double) numOfHits / (double) pageSize));
-		this.numOfHits = numOfHits;
-	}
-	
-	public int getTotalPages() {
-		return this.totalPages;
-	}
-	
-	public int getNumOfHits() {
-		return this.numOfHits;
-	}
-	
-	public boolean isLastPage() {
-		return this.pageNum == this.totalPages;
-	}
-	
+  protected int totalPages;
+  protected int numOfHits;
+
+  public ProcessedPageInfo(int pageSize, int pageNum, int numOfHits) {
+    super(pageSize, pageNum > ((int) Math.ceil((double) numOfHits
+        / (double) pageSize)) ? ((int) Math.ceil((double) numOfHits
+        / (double) pageSize)) : pageNum);
+    this.totalPages = ((int) Math.ceil((double) numOfHits / (double) pageSize));
+    this.numOfHits = numOfHits;
+  }
+
+  public int getTotalPages() {
+    return this.totalPages;
+  }
+
+  public int getNumOfHits() {
+    return this.numOfHits;
+  }
+
+  public boolean isLastPage() {
+    return this.pageNum == this.totalPages;
+  }
+
 }

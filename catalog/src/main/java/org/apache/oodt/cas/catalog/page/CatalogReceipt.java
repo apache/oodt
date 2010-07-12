@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,49 +17,59 @@
 
 package org.apache.oodt.cas.catalog.page;
 
+//JDK imports
 import java.util.Date;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.struct.TransactionId;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class CatalogReceipt {
 
-	protected TransactionId<?> transactionId;
-	protected Date transactionDate;
-	protected String catalogId;
-	
-	public CatalogReceipt(IngestReceipt ingestReceipt, String catalogId) {
-		this.transactionId = ingestReceipt.getCatalogTransactionId();
-		this.transactionDate = ingestReceipt.getTransactionDate();
-		this.catalogId = catalogId;
-	}
-	
-	public TransactionId<?> getTransactionId() {
-		return this.transactionId;
-	}
+  protected TransactionId<?> transactionId;
+  protected Date transactionDate;
+  protected String catalogId;
 
-	public Date getTransactionDate() {
-		return this.transactionDate;
-	}
+  public CatalogReceipt(IngestReceipt ingestReceipt, String catalogId) {
+    this.transactionId = ingestReceipt.getCatalogTransactionId();
+    this.transactionDate = ingestReceipt.getTransactionDate();
+    this.catalogId = catalogId;
+  }
 
-	public String getCatalogId() {
-		return this.catalogId;
-	}
-	
-	public boolean equals(Object obj) {
-		if (obj instanceof CatalogReceipt) {
-			CatalogReceipt compareTo = (CatalogReceipt) obj;
-			return this.transactionId.equals(compareTo.transactionId) && this.transactionDate.equals(compareTo.transactionDate) && this.catalogId.equals(compareTo.catalogId);
-		}else {
-			return false;
-		}
-	}
-	
-	public int hashCode() {
-		return this.toString().hashCode();
-	}
-	
-	public String toString() {
-		return ("{CatalogReceipt(tID=" + this.transactionId + ",tDate=" + this.transactionDate + ",catID=" + this.catalogId + ")}");
-	}
-	
+  public TransactionId<?> getTransactionId() {
+    return this.transactionId;
+  }
+
+  public Date getTransactionDate() {
+    return this.transactionDate;
+  }
+
+  public String getCatalogId() {
+    return this.catalogId;
+  }
+
+  public boolean equals(Object obj) {
+    if (obj instanceof CatalogReceipt) {
+      CatalogReceipt compareTo = (CatalogReceipt) obj;
+      return this.transactionId.equals(compareTo.transactionId)
+          && this.transactionDate.equals(compareTo.transactionDate)
+          && this.catalogId.equals(compareTo.catalogId);
+    } else {
+      return false;
+    }
+  }
+
+  public int hashCode() {
+    return this.toString().hashCode();
+  }
+
+  public String toString() {
+    return ("{CatalogReceipt(tID=" + this.transactionId + ",tDate="
+        + this.transactionDate + ",catID=" + this.catalogId + ")}");
+  }
+
 }

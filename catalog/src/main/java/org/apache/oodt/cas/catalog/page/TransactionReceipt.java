@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -29,63 +29,62 @@ import java.util.Vector;
 import org.apache.oodt.cas.catalog.struct.TransactionId;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
+ * 
  * A Reciept created by performing a transaction with a CatalogService
- * <p>
+ * 
  */
 public class TransactionReceipt {
 
-	protected TransactionId<?> transactionId;
-	protected Set<String> catalogIds;
-	protected Date transactionDate;
-	protected Vector<CatalogReceipt> catalogReceipts;
-	
-	public TransactionReceipt(TransactionId<?> transactionId, List<CatalogReceipt> catalogReceipts) {
-		this.transactionId = transactionId;
-		this.catalogIds = new HashSet<String>();
-		this.catalogReceipts = new Vector<CatalogReceipt>(catalogReceipts);
-		for (CatalogReceipt catalogReceipt : catalogReceipts) {
-			this.catalogIds.add(catalogReceipt.getCatalogId());
-			if (this.transactionDate == null)
-				this.transactionDate = catalogReceipt.getTransactionDate();
-			else if (this.transactionDate.before(catalogReceipt.getTransactionDate()))
-				this.transactionDate = catalogReceipt.getTransactionDate();
-		}
-	}
+  protected TransactionId<?> transactionId;
+  protected Set<String> catalogIds;
+  protected Date transactionDate;
+  protected Vector<CatalogReceipt> catalogReceipts;
 
-	public TransactionId<?> getTransactionId() {
-		return this.transactionId;
-	}
-	
-	public Set<String> getCatalogIds() {
-		return this.catalogIds;
-	}
-	
-	public Date getTransactionDate() {
-		return this.transactionDate;
-	}
-	
-	public List<CatalogReceipt> getCatalogReceipts() {
-		return Collections.unmodifiableList(this.catalogReceipts);
-	}
-	
-	public int hashCode() {
-		return this.transactionId.hashCode();
-	}
-	
-	public boolean equals(Object obj) {
-		if (obj instanceof TransactionReceipt) {
-			return this.transactionId.equals(((TransactionReceipt) obj).transactionId);
-		}else {
-			return false;
-		}
-	}
-	
-	public String toString() {
-		return this.transactionId + ":" + this.catalogIds;
-	}
-	
+  public TransactionReceipt(TransactionId<?> transactionId,
+      List<CatalogReceipt> catalogReceipts) {
+    this.transactionId = transactionId;
+    this.catalogIds = new HashSet<String>();
+    this.catalogReceipts = new Vector<CatalogReceipt>(catalogReceipts);
+    for (CatalogReceipt catalogReceipt : catalogReceipts) {
+      this.catalogIds.add(catalogReceipt.getCatalogId());
+      if (this.transactionDate == null)
+        this.transactionDate = catalogReceipt.getTransactionDate();
+      else if (this.transactionDate.before(catalogReceipt.getTransactionDate()))
+        this.transactionDate = catalogReceipt.getTransactionDate();
+    }
+  }
+
+  public TransactionId<?> getTransactionId() {
+    return this.transactionId;
+  }
+
+  public Set<String> getCatalogIds() {
+    return this.catalogIds;
+  }
+
+  public Date getTransactionDate() {
+    return this.transactionDate;
+  }
+
+  public List<CatalogReceipt> getCatalogReceipts() {
+    return Collections.unmodifiableList(this.catalogReceipts);
+  }
+
+  public int hashCode() {
+    return this.transactionId.hashCode();
+  }
+
+  public boolean equals(Object obj) {
+    if (obj instanceof TransactionReceipt) {
+      return this.transactionId
+          .equals(((TransactionReceipt) obj).transactionId);
+    } else {
+      return false;
+    }
+  }
+
+  public String toString() {
+    return this.transactionId + ":" + this.catalogIds;
+  }
+
 }

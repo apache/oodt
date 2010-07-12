@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,34 +17,43 @@
 
 package org.apache.oodt.cas.catalog.page;
 
+//OODT imports
 import org.apache.oodt.cas.catalog.struct.TransactionId;
 
+//JDK imports
 import java.util.Date;
 
+/**
+ * 
+ * Describe your class here.
+ * 
+ */
 public class IngestReceipt {
 
-	protected TransactionId<?> catalogTransactionId;
-	protected Date transactionDate;
-	
-	public IngestReceipt(TransactionId<?> catalogTransactionId, Date transactionDate) {
-		this.catalogTransactionId = catalogTransactionId;
-		this.transactionDate = transactionDate;
-	}
-	
-	public TransactionId<?> getCatalogTransactionId() {
-		return this.catalogTransactionId;
-	}
-	
-	public Date getTransactionDate() {
-		return this.transactionDate;
-	}
-	
-	public int hashCode() {
-		return this.catalogTransactionId.hashCode();
-	}
-	
-	public String toString() {
-		return this.catalogTransactionId.toString() + " : " + this.transactionDate.toString();
-	}
-	
+  protected TransactionId<?> catalogTransactionId;
+  protected Date transactionDate;
+
+  public IngestReceipt(TransactionId<?> catalogTransactionId,
+      Date transactionDate) {
+    this.catalogTransactionId = catalogTransactionId;
+    this.transactionDate = transactionDate;
+  }
+
+  public TransactionId<?> getCatalogTransactionId() {
+    return this.catalogTransactionId;
+  }
+
+  public Date getTransactionDate() {
+    return this.transactionDate;
+  }
+
+  public int hashCode() {
+    return this.catalogTransactionId.hashCode();
+  }
+
+  public String toString() {
+    return this.catalogTransactionId.toString() + " : "
+        + this.transactionDate.toString();
+  }
+
 }

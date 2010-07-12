@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,47 +23,49 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
- * <p>
- * A pager for paging through query results
- * <p>
+ * 
+ * A pager for paging through query results.
+ * 
  */
 public class QueryPager extends IndexPager {
 
-	protected List<TransactionReceipt> receipts;
-	
-	public QueryPager(List<TransactionReceipt> receipts) {
-		super();
-		this.receipts = new Vector<TransactionReceipt>(receipts);
-		this.totalPages = this.caculateTotalPages();
-		this.numOfHits = receipts.size();
-	}
+  protected List<TransactionReceipt> receipts;
 
-	protected int caculateTotalPages() {
-		return (int) Math.ceil((double) receipts.size() / (double) this.getPageSize());
-	}
-	
-	public void setPageInfo(PageInfo pageInfo) {
-		this.pageSize = Math.max(pageInfo.getPageSize(), 0);
-		this.totalPages = this.caculateTotalPages();
-		if (this.totalPages == 0)
-			this.pageNum = 0;
-		else
-			this.pageNum = (pageInfo.getPageNum() == PageInfo.LAST_PAGE || pageInfo.getPageNum() >= this.totalPages) ? this.totalPages : pageInfo.getPageNum();
-	}
-		
-	public List<TransactionReceipt> getTransactionReceipts() {
-		return Collections.unmodifiableList(this.receipts);
-	}
-	
-	public List<TransactionReceipt> getCurrentPage() {
-		List<TransactionReceipt> currentPage = new Vector<TransactionReceipt>();
-		if (this.pageNum > 0)
-			for (int i = (this.getPageNum() - 1) * this.getPageSize(); i < receipts.size() && i < this.getPageNum() * this.getPageSize(); i++)
-				currentPage.add(receipts.get(i));
-		return currentPage;
-	}
-	
+  public QueryPager(List<TransactionReceipt> receipts) {
+    super();
+    this.receipts = new Vector<TransactionReceipt>(receipts);
+    this.totalPages = this.caculateTotalPages();
+    this.numOfHits = receipts.size();
+  }
+
+  protected int caculateTotalPages() {
+    return (int) Math.ceil((double) receipts.size()
+        / (double) this.getPageSize());
+  }
+
+  public void setPageInfo(PageInfo pageInfo) {
+    this.pageSize = Math.max(pageInfo.getPageSize(), 0);
+    this.totalPages = this.caculateTotalPages();
+    if (this.totalPages == 0)
+      this.pageNum = 0;
+    else
+      this.pageNum = (pageInfo.getPageNum() == PageInfo.LAST_PAGE || pageInfo
+          .getPageNum() >= this.totalPages) ? this.totalPages : pageInfo
+          .getPageNum();
+  }
+
+  public List<TransactionReceipt> getTransactionReceipts() {
+    return Collections.unmodifiableList(this.receipts);
+  }
+
+  public List<TransactionReceipt> getCurrentPage() {
+    List<TransactionReceipt> currentPage = new Vector<TransactionReceipt>();
+    if (this.pageNum > 0)
+      for (int i = (this.getPageNum() - 1) * this.getPageSize(); i < receipts
+          .size()
+          && i < this.getPageNum() * this.getPageSize(); i++)
+        currentPage.add(receipts.get(i));
+    return currentPage;
+  }
+
 }
