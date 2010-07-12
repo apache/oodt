@@ -1,7 +1,0 @@
-Copyright 1999-2005 California Institute of Technology. ALL RIGHTS RESERVED. U.S. Government Sponsorship acknowledged. REDISTRIBUTION AND/OR MODIFICATION AND/OR USE OF THIS SOFTWARE WITHOUT PRIOR AUTHORIZATION IS STRICTLY FORBIDDEN.
-
-Recipient, its agents, assigns, and associates may not grant rights to another or others with respect to the Software. Any such attempt or use for public or commercial purposes will automatically terminate the rights granted under this License and will be sufficient impetus for the California Institute of Technology and the United States Government to bring joint and swift legal action and/or terminal effects.
-
-THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, THAT THE SOFTWARE IS FREE OF DEFECTS, MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE, OR NON-INFRINGING. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH RECIPIENT. SHOULD ANY SOFTWARE PROVE DEFECTIVE IN ANY RESPECT, RECIPIENT ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR, OR CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
-
-This software product includes software developed by the Apache Software Foundation (http://www.apache.org/).
