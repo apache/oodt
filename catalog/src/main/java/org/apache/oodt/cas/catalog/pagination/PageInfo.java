@@ -15,36 +15,35 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.catalog.page;
+package org.apache.oodt.cas.catalog.pagination;
 
 /**
  * 
  * Describe your class here.
  * 
  */
-public class ProcessedPageInfo extends PageInfo {
+public class PageInfo {
 
-  protected int totalPages;
-  protected int numOfHits;
+  protected int pageSize;
+  protected int pageNum;
 
-  public ProcessedPageInfo(int pageSize, int pageNum, int numOfHits) {
-    super(pageSize, pageNum > ((int) Math.ceil((double) numOfHits
-        / (double) pageSize)) ? ((int) Math.ceil((double) numOfHits
-        / (double) pageSize)) : pageNum);
-    this.totalPages = ((int) Math.ceil((double) numOfHits / (double) pageSize));
-    this.numOfHits = numOfHits;
+  public static final int LAST_PAGE = Integer.MAX_VALUE;
+  public static final int FIRST_PAGE = 1;
+
+  public PageInfo(int pageSize, int pageNum) {
+    this.pageSize = pageSize;
+    if (pageNum < 1)
+      this.pageNum = 1;
+    else
+      this.pageNum = pageNum;
   }
 
-  public int getTotalPages() {
-    return this.totalPages;
+  public int getPageSize() {
+    return pageSize;
   }
 
-  public int getNumOfHits() {
-    return this.numOfHits;
-  }
-
-  public boolean isLastPage() {
-    return this.pageNum == this.totalPages;
+  public int getPageNum() {
+    return pageNum;
   }
 
 }

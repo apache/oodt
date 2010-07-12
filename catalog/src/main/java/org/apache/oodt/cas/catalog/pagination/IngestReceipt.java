@@ -15,35 +15,45 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.catalog.page;
+package org.apache.oodt.cas.catalog.pagination;
+
+//OODT imports
+import org.apache.oodt.cas.catalog.struct.TransactionId;
+
+//JDK imports
+import java.util.Date;
 
 /**
  * 
  * Describe your class here.
  * 
  */
-public class PageInfo {
+public class IngestReceipt {
 
-  protected int pageSize;
-  protected int pageNum;
+  protected TransactionId<?> catalogTransactionId;
+  protected Date transactionDate;
 
-  public static final int LAST_PAGE = Integer.MAX_VALUE;
-  public static final int FIRST_PAGE = 1;
-
-  public PageInfo(int pageSize, int pageNum) {
-    this.pageSize = pageSize;
-    if (pageNum < 1)
-      this.pageNum = 1;
-    else
-      this.pageNum = pageNum;
+  public IngestReceipt(TransactionId<?> catalogTransactionId,
+      Date transactionDate) {
+    this.catalogTransactionId = catalogTransactionId;
+    this.transactionDate = transactionDate;
   }
 
-  public int getPageSize() {
-    return pageSize;
+  public TransactionId<?> getCatalogTransactionId() {
+    return this.catalogTransactionId;
   }
 
-  public int getPageNum() {
-    return pageNum;
+  public Date getTransactionDate() {
+    return this.transactionDate;
+  }
+
+  public int hashCode() {
+    return this.catalogTransactionId.hashCode();
+  }
+
+  public String toString() {
+    return this.catalogTransactionId.toString() + " : "
+        + this.transactionDate.toString();
   }
 
 }

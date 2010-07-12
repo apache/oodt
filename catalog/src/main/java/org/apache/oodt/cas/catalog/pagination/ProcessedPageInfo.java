@@ -15,45 +15,36 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.catalog.page;
-
-//OODT imports
-import org.apache.oodt.cas.catalog.struct.TransactionId;
-
-//JDK imports
-import java.util.Date;
+package org.apache.oodt.cas.catalog.pagination;
 
 /**
  * 
  * Describe your class here.
  * 
  */
-public class IngestReceipt {
+public class ProcessedPageInfo extends PageInfo {
 
-  protected TransactionId<?> catalogTransactionId;
-  protected Date transactionDate;
+  protected int totalPages;
+  protected int numOfHits;
 
-  public IngestReceipt(TransactionId<?> catalogTransactionId,
-      Date transactionDate) {
-    this.catalogTransactionId = catalogTransactionId;
-    this.transactionDate = transactionDate;
+  public ProcessedPageInfo(int pageSize, int pageNum, int numOfHits) {
+    super(pageSize, pageNum > ((int) Math.ceil((double) numOfHits
+        / (double) pageSize)) ? ((int) Math.ceil((double) numOfHits
+        / (double) pageSize)) : pageNum);
+    this.totalPages = ((int) Math.ceil((double) numOfHits / (double) pageSize));
+    this.numOfHits = numOfHits;
   }
 
-  public TransactionId<?> getCatalogTransactionId() {
-    return this.catalogTransactionId;
+  public int getTotalPages() {
+    return this.totalPages;
   }
 
-  public Date getTransactionDate() {
-    return this.transactionDate;
+  public int getNumOfHits() {
+    return this.numOfHits;
   }
 
-  public int hashCode() {
-    return this.catalogTransactionId.hashCode();
-  }
-
-  public String toString() {
-    return this.catalogTransactionId.toString() + " : "
-        + this.transactionDate.toString();
+  public boolean isLastPage() {
+    return this.pageNum == this.totalPages;
   }
 
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.catalog.page;
+package org.apache.oodt.cas.catalog.pagination;
 
 /**
  * 
