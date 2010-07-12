@@ -22,4 +22,4 @@ PATH=${JAVA_HOME}/bin:${FILEMGR_BROWSER_HOME}/bin:/usr/bin:/bin:/usr/sbin:/sbin
 export PATH
 
 $JAVA_HOME/bin/java -Djava.ext.dirs=${FILEMGR_BROWSER_HOME}/lib \
-  gov.nasa.jpl.oodt.cas.browser.system.XmlRpcFilemgrBrowser &
+  org.apache.oodt.cas.filemgr.browser.system.XmlRpcFilemgrBrowser &
