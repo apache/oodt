@@ -39,6 +39,29 @@
      
       <a name="section1"/>
       <section name="Download and Build">
+      <div class="warning">
+        <p><b>Pre-Requisite:</b> Before you can build a copy of the CAS-File Manager you will
+        need to check out and install the oodt-core project.  Installing the oodt-core project
+        will update your Maven2 repo with several files that are required for the CAS-File Manager.
+        In order to check out and install the core follow the steps outlined below:</p>
+        <source>
+>mkdir /usr/local/src
+>cd /usr/local/src        
+>svn co http://oodt/repo/oodt-core        
+        </source>
+      <p>Once the subversion command completes you should have a directory at <code>/usr/local/src/oodt-core</code>
+      which will contain a couple files.  In order to build the project from this source, issue the following 
+      commands:</p>
+        <source>
+>cd /usr/local/src/oodt-core
+>mvn clean install        
+        </source>
+        <p>Once you get the Maven Build Successful message you can proceed with the installation 
+        of the CAS-File Manger</p>
+        </div>
+        <br/>
+        <br/>
+        
         <p>The most recent CAS-File Manager project can be downloaded from the OODT
         <a href="http://oodt.jpl.nasa.gov">website</a> or it can be checked out 
         from the OODT repository using Subversion. The CAS-File Manager project is 
@@ -72,7 +95,7 @@
       for the CAS-Filemgr project in the <code>/usr/local/src/cas-filemgr-v1.8.0</code>
       directory.</p>
       
-      <p>In order to build the projectfrom this source, issue the following 
+      <p>In order to build the project from this source, issue the following 
       commands:</p>
       
       <source>
@@ -148,7 +171,7 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
       Manager in a usable state, capable of archiving products and capturing basic 
       metadata. For the record, I haven't timed it, but its pretty fast...</p>
       
-      <p>We are going to set up the File Mnaager to use and XML-based Validation layer,
+      <p>We are going to set up the File Manager to use an XML-based Validation layer,
       and XML product policy, and a Lucene metadata Catalog. The first step is to edit
       the filemgr script in <code>$FILEMGR_HOME/bin</code>. Make the following 
       changes:</p>
@@ -194,8 +217,8 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
          Lucene index and associated files by setting the 
          <code>gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.idxPath</code> property
          to <code>$FILEMGR_HOME/catalog</code>. Make sure that this directory does
-         NOT exist the time you run the File Manager. If the File Manager does not find
-         a directory at thie specified location, it will create all of the necessary 
+         NOT exist the first time you run the File Manager. If the File Manager does not find
+         a directory at the specified location, it will create all of the necessary 
          directory structure and ancillary files.</li>
          
          <li>Specify the paths to the directories where the XML policy files are stored 
@@ -246,7 +269,7 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
 
       <source>
 > ./filemgr-client --url http://localhost:9000 --operation \
-   --ingestProduct --productName Blah.txt --productStructure Flat \
+   --ingestProduct --productName blah.txt --productStructure Flat \
    --productTypeName GenericFile \ 
    --metadataFile file:///usr/local/cas-filemgr-v1.8.0/bin/blah.txt.met \
    --refs file:///usr/local/cas-filemgr-v1.8.0/bin/blah.txt
