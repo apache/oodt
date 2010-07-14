@@ -24,6 +24,38 @@
     </notifiers>
   </ciManagement>
   <build>
+    <resources>
+        <resource>
+            <targetPath>org/apache/oodt/commons</targetPath>
+            <directory>${basedir}/src/main/resources/dtd</directory>
+            <includes>
+                <include>Configuration.dtd</include>
+            </includes>
+        </resource>
+        <resource>
+            <targetPath>org/apache/oodt/commons/util</targetPath>
+            <directory>${basedir}/src/main/resources/conf</directory>
+            <includes>
+                <include>entities.xml</include>
+            </includes>
+        </resource>
+    </resources>
+    <testResources>
+        <testResource>
+            <targetPath>org/apache/oodt/commons/util</targetPath>
+            <directory>${basedir}/src/testdata</directory>
+            <includes>
+                <include>test.xml</include>
+            </includes>
+        </testResource>
+        <testResource>
+            <targetPath>org/apache/oodt/commons</targetPath>
+            <directory>${basedir}/src/testdata</directory>
+            <includes>
+                <include>test-multiserver.xml</include>
+            </includes>
+        </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -88,10 +120,19 @@
         <version>5.1.13</version>
     </dependency>
     <dependency>
+        <groupId>xmlrpc</groupId>
+        <artifactId>xmlrpc</artifactId>
+        <version>1.1</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.2</version>
-      <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>2.9.1</version>
     </dependency>
   </dependencies>
 </project>
