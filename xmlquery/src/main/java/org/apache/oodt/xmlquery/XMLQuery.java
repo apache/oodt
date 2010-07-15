@@ -20,7 +20,7 @@
 	EDA XML Query Class
  */
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -42,9 +42,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import jpl.eda.product.Retriever;
-import jpl.eda.util.EnterpriseEntityResolver;
-import jpl.eda.util.XML;
+import org.apache.oodt.product.Retriever;
+import org.apache.oodt.commons.util.EnterpriseEntityResolver;
+import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -950,7 +950,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 	public static final String QUERY_FPI = "-//JPL//DTD OODT Query 1.0//EN";
 	
 	/** The System Identifier of the query DTD. */
-	public static final String QUERY_URL = "http://oodt.jpl.nasa.gov/edm-query/query.dtd";
+	public static final String QUERY_URL = "http://oodt.jpl.nasa.gov/edm-query/query.dtd"; // FIXME: Move to apache.org
 
 	/** A blank query document, as a string. */
 	private static String BLANK = "<?xml version='1.0' encoding='UTF-8'?>\n<!DOCTYPE query PUBLIC '" + QUERY_FPI

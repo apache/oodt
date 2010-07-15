@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>gov.nasa.jpl.oodt</groupId>
+    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
     <version>2.0</version>
   </parent>
@@ -20,7 +20,7 @@
   <build>
     <resources>
       <resource>
-        <targetPath>jpl/eda/xmlquery</targetPath>
+        <targetPath>org/apache/oodt/xmlquery</targetPath>
         <directory>${basedir}/src/main/conf</directory>
         <includes>
           <include>mime.properties</include>
@@ -35,7 +35,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude>jpl/eda/xmlquery/CodecTest.java</exclude>
+            <exclude>org/apache/oodt/xmlquery/CodecTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -43,9 +43,9 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
-      <artifactId>edm-commons</artifactId>
-      <version>2.2.11-dev</version>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>commons</artifactId>
+      <version>1.2.0-dev</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

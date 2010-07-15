@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.product;
+package org.apache.oodt.product;
 
 /**
  * Checked exception to indicate a product fault.

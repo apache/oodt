@@ -16,12 +16,12 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.*;
 import java.util.*;
-import jpl.eda.util.*;
-import jpl.eda.xmlquery.StringCodec; // Imported for javadoc
+import org.apache.oodt.commons.util.*;
+import org.apache.oodt.xmlquery.StringCodec; // Imported for javadoc
 import junit.framework.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
@@ -37,6 +37,6 @@ public class StringCodecTest extends CodecTest {
 	}
 
 	public void testIt() throws Exception {
-		runTest(CodecFactory.createCodec("jpl.eda.xmlquery.StringCodec"));
+		runTest(CodecFactory.createCodec("org.apache.oodt.xmlquery.StringCodec"));
 	}
 }

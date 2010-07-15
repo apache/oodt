@@ -16,14 +16,14 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
-import jpl.eda.util.*;
+import org.apache.oodt.commons.util.*;
 import org.w3c.dom.*;
-import jpl.eda.product.Retriever;
+import org.apache.oodt.product.Retriever;
 import java.net.URI;
 
 /** A single result.
@@ -405,7 +405,7 @@ public class Result implements Serializable, Cloneable, Documentable {
 		}
 
 		// Add our own special MIME type:
-		codecs.put("UNKNOWN",CodecFactory.createCodec("jpl.eda.xmlquery.UnsupportedMimeTypeCodec"));
+		codecs.put("UNKNOWN",CodecFactory.createCodec("org.apache.oodt.xmlquery.UnsupportedMimeTypeCodec"));
 	}
 
 	/** Serial version unique ID. */

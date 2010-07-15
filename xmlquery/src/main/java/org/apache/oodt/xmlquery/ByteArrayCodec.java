@@ -16,12 +16,12 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import jpl.eda.util.Base64;
-import jpl.eda.util.XML;
+import org.apache.oodt.commons.util.Base64;
+import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

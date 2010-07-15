@@ -16,15 +16,15 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.*;
 import java.util.*;
-import jpl.eda.util.*;
+import org.apache.oodt.commons.util.*;
 import junit.framework.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
-import jpl.eda.xmlquery.ByteArrayCodec; // Imported for javadoc
+import org.apache.oodt.xmlquery.ByteArrayCodec; // Imported for javadoc
 
 /**
  * Unit test the {@link ByteArrayCodec} class with an empty byte array.
@@ -38,7 +38,7 @@ public class EmptyByteArrayCodecTest extends CodecTest {
 	}
 
 	public void testIt() throws Exception {
-		runTest(CodecFactory.createCodec("jpl.eda.xmlquery.ByteArrayCodec"));
+		runTest(CodecFactory.createCodec("org.apache.oodt.xmlquery.ByteArrayCodec"));
 	}
 
 	protected Object getTestObject() {

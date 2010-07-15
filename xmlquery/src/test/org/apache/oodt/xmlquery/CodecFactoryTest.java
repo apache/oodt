@@ -16,11 +16,11 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.InputStream;
-import jpl.eda.io.NullInputStream;
-import jpl.eda.xmlquery.CodecFactory; // Imported solely for Javadoc
+import org.apache.oodt.commons.io.NullInputStream;
+import org.apache.oodt.xmlquery.CodecFactory; // Imported solely for Javadoc
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -43,13 +43,13 @@ public class CodecFactoryTest extends TestCase {
 	}
 
 	public void testValidCodec() {
-		Codec c1 = CodecFactory.createCodec("jpl.eda.xmlquery.CodecFactoryTest$TestCodec");
+		Codec c1 = CodecFactory.createCodec("org.apache.oodt.xmlquery.CodecFactoryTest$TestCodec");
 		assertNotNull(c1);
-		Codec c2 = CodecFactory.createCodec("jpl.eda.xmlquery.CodecFactoryTest$TestCodec");
+		Codec c2 = CodecFactory.createCodec("org.apache.oodt.xmlquery.CodecFactoryTest$TestCodec");
 		assertSame(c1, c2);
 	}
 
-	private static class TestCodec implements Codec {
+	public static class TestCodec implements Codec {
 		public TestCodec() {}
 		public Node encode(Object object, Document doc) { return null; }
 		public Object decode(Node node) { return null; }

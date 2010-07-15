@@ -16,15 +16,15 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.*;
 import java.util.*;
-import jpl.eda.util.*;
+import org.apache.oodt.commons.util.*;
 import junit.framework.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
-import jpl.eda.xmlquery.CompressedObjectCodec; // Imported for javadoc
+import org.apache.oodt.xmlquery.CompressedObjectCodec; // Imported for javadoc
 
 /** Unit test the {@link CompressedObjectCodec} class.
  *
@@ -37,7 +37,7 @@ public class CompressedObjectCodecTest extends CodecTest {
 	}
 
 	public void testIt() throws Exception {
-		runTest(CodecFactory.createCodec("jpl.eda.xmlquery.CompressedObjectCodec"));
+		runTest(CodecFactory.createCodec("org.apache.oodt.xmlquery.CompressedObjectCodec"));
 	}
 
 	public long getTestSize() {

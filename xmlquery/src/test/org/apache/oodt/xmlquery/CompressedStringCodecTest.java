@@ -16,12 +16,12 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.*;
 import java.util.*;
-import jpl.eda.xmlquery.CompressedStringCodec; // Imported for Javadoc
-import jpl.eda.util.*;
+import org.apache.oodt.xmlquery.CompressedStringCodec; // Imported for Javadoc
+import org.apache.oodt.commons.util.*;
 import junit.framework.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
@@ -37,6 +37,6 @@ public class CompressedStringCodecTest extends CodecTest {
 	}
 
 	public void testIt() throws Exception {
-		runTest(CodecFactory.createCodec("jpl.eda.xmlquery.CompressedStringCodec"));
+		runTest(CodecFactory.createCodec("org.apache.oodt.xmlquery.CompressedStringCodec"));
 	}
 }

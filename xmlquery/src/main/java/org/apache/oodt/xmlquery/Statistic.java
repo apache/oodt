@@ -19,13 +19,13 @@
  *	EDM Statistic Class
  */
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.*;
 import java.util.*;
-import jpl.eda.Configuration;
-import jpl.eda.util.DOMParser;
-import jpl.eda.util.*;
+import org.apache.oodt.commons.Configuration;
+import org.apache.oodt.commons.util.DOMParser;
+import org.apache.oodt.commons.util.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 

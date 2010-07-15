@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import jpl.eda.io.Base64DecodingInputStream;
-import jpl.eda.io.Base64EncodingOutputStream;
-import jpl.eda.util.XML;
+import org.apache.oodt.commons.io.Base64DecodingInputStream;
+import org.apache.oodt.commons.io.Base64EncodingOutputStream;
+import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

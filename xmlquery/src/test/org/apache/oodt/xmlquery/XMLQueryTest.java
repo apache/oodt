@@ -16,11 +16,11 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.*;
 import java.util.*;
-import jpl.eda.util.*;
+import org.apache.oodt.commons.util.*;
 import junit.framework.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
@@ -29,7 +29,7 @@ import org.xml.sax.*;
  *
  * @author Kelly
  */ 
-public class XMLQueryTest extends jpl.eda.ConfiguredTestCase {
+public class XMLQueryTest extends org.apache.oodt.commons.ConfiguredTestCase {
 	/** Construct the test case for the {@link XMLQuery} class. */
 	public XMLQueryTest(String name) {
 		super(name);

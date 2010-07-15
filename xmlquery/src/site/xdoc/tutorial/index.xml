@@ -2,7 +2,7 @@
 <document>
   <properties>
     <title>Understanding the XMLQuery</title>
-    <author email="Sean.Kelly@jpl.nasa.gov">Sean Kelly</author>
+    <author email="kelly@apache.org">Sean Kelly</author>
   </properties>
 
   <body>
@@ -11,7 +11,7 @@
 	  href="/grid-product/">product servers</a>, and other
 	components all use the same format for a query.  It's
 	encapsulated by the class
-	<code>jpl.eda.xmlquery.XMLQuery</code>.  In this tutorial,
+	<code>org.apache.oodt.xmlquery.XMLQuery</code>.  In this tutorial,
 	we'll look at this class and see how it represents queries.
 	You'll need this knowledge both to make queries to OODT
 	servers, as well as to understand queries coming into OODT
@@ -37,7 +37,7 @@
 	<p>While you <em>can</em> represent an XMLQuery in XML, you
 	  usually only use the Java representation, that is, you
 	  create and manipulate Java objects of the class
-	  <code>jpl.eda.xmlquery.XMLQuery</code>.
+	  <code>org.apache.oodt.xmlquery.XMLQuery</code>.
 	</p>
       </subsection>
 
@@ -154,7 +154,7 @@ surname LIKE 'Simspon%' OR numChildren &lt;= 3 AND RETURN = numEpisodes</source>
       <subsection name="Expression Stacks">
 	<p>The "where" element set is actually a
 	  <code>java.util.List</code> of
-	  <code>jpl.eda.xmlquery.QueryElement</code> objects, arranged
+	  <code>org.apache.oodt.xmlquery.QueryElement</code> objects, arranged
 	  in a boolean stack with the top of the stack as the zeroth
 	  element in the list.  <code>QueryElement</code> objects
 	  themselves have two attributes, a role and a value.
@@ -360,7 +360,7 @@ specimen = Blood AND RETURN LIKE volume</source>
 	  queries since products can come in any shape and flavor.
 	  Profile queries ignore the list; profiles are always
 	  returned as a list of Java
-	  <code>jpl.eda.profile.Profile</code> objects.
+	  <code>org.apache.oodt.profile.Profile</code> objects.
 	</p>
 
 	<p>You've probably seen MIME types before, but here are some
@@ -480,17 +480,17 @@ total 192
 	<p>Here's an example:</p>
 
 	<source>% <b>java -Djava.ext.dirs=. \
-  jpl.eda.xmlquery.XMLQuery \
+  org.apache.oodt.xmlquery.XMLQuery \
   -expr donutsEaten \&gt; 5 AND RETURN = episodeNumber</b>
 kwdQueryString: donutsEaten &gt; 5 AND RETURN = episodeNumber
 fromElementSet: []
-results: jpl.eda.xmlquery.QueryResult[list=[]]
+results: org.apache.oodt.xmlquery.QueryResult[list=[]]
 whereElementSet:
-[jpl.eda.xmlquery.QueryElement[role=elemName,value=donutsEaten],
-jpl.eda.xmlquery.QueryElement[role=LITERAL,value=5],
-jpl.eda.xmlquery.QueryElement[role=RELOP,value=GT]]
+[org.apache.oodt.xmlquery.QueryElement[role=elemName,value=donutsEaten],
+org.apache.oodt.xmlquery.QueryElement[role=LITERAL,value=5],
+org.apache.oodt.xmlquery.QueryElement[role=RELOP,value=GT]]
 selectElementSet:
-[jpl.eda.xmlquery.QueryElement[role=elemName,value=episodeNumber]]
+[org.apache.oodt.xmlquery.QueryElement[role=elemName,value=episodeNumber]]
 ======doc string=======
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;query&gt; . . .</source>
@@ -538,9 +538,9 @@ selectElementSet:
       <img src='../images/results.png' alt='Result class diagram'/>
 
       <p>As you can see, a single query has a single
-	<code>jpl.eda.xmlquery.QueryResult</code>, which contains a
+	<code>org.apache.oodt.xmlquery.QueryResult</code>, which contains a
 	<code>java.util.List</code> of
-	<code>jpl.eda.xmlquery.Result</code> objects.
+	<code>org.apache.oodt.xmlquery.Result</code> objects.
 	<code>Result</code> objects may have zero or more
 	<code>Header</code>s, and <code>Result</code> objects may
 	actually be <code>LargeResult</code> objects.

@@ -16,11 +16,11 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.*;
 import java.util.*;
-import jpl.eda.util.*;
+import org.apache.oodt.commons.util.*;
 import junit.framework.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;

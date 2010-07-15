@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.util.Vector;
-import jpl.eda.util.*;
+import org.apache.oodt.commons.util.*;
 
 /************************************************************************
 **

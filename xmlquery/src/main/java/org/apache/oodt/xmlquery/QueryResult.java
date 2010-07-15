@@ -16,14 +16,14 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import jpl.eda.product.Retriever;
-import jpl.eda.util.Documentable;
+import org.apache.oodt.product.Retriever;
+import org.apache.oodt.commons.util.Documentable;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

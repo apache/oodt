@@ -16,8 +16,8 @@
  */
 
 
-package jpl.eda.xmlquery.activity;
+package org.apache.oodt.xmlquery.activity;
 
-import jpl.eda.activity.Incident;
+import org.apache.oodt.commons.activity.Incident;
 
 public class ResultsReceived extends Incident {}

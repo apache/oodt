@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 /** Checked exception to indicate a query fault.
  *
