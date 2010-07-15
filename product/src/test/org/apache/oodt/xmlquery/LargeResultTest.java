@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import junit.framework.TestCase;
 import java.util.Collections;

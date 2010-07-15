@@ -31,7 +31,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 
 //OODT imports
-import jpl.eda.product.ProductException;
+import org.apache.oodt.product.ProductException;
 
 /**
  * 

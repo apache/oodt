@@ -22,6 +22,8 @@ Required attributes:
    name: defines a human readable name for this product server instance
    productRoot: defines the root path in which the OFSN product server should start looking for 
    paths based on a given OFSN
+
+FIXME: Change XML namespace URI for oodt prefix?
 -->
 <oodt:ofsn xmlns:oodt="http://oodt.jpl.nasa.gov/xml/namespaces/oodt/1.0"
       id="urn:oodt:prod:ofsn"
@@ -45,8 +47,8 @@ Required attributes:
      
      type: either listing, or get, depending on the desired handler type.
      
-     class: defines a class that implements either the gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNListHandler
-     interface (for "listing" handlers), or the gov.nasa.jpl.oodt.product.handlers.ofsn.OFSNGetHandler (for
+     class: defines a class that implements either the org.apache.oodt.product.handlers.ofsn.OFSNListHandler
+     interface (for "listing" handlers), or the org.apache.oodt.product.handlers.ofsn.OFSNGetHandler (for
      "get" handlers). Note that this class must be on the classpath in order for it to be referenced in
      this configuration.
   
@@ -66,7 +68,7 @@ Required attributes:
    descend into subdirectories.
    -->
   <handler name="DIRLIST1" type="listing" 
-       class="gov.nasa.jpl.oodt.product.handlers.ofsn.DirListNonRecursiveHandler"/>
+       class="org.apache.oodt.product.handlers.ofsn.DirListNonRecursiveHandler"/>
        
        
   <!-- 
@@ -75,7 +77,7 @@ Required attributes:
     the requested directory and traversing into the subdirectories. 
    -->
   <handler name="DIRLIST" type="listing"
-       class="gov.nasa.jpl.oodt.product.handlers.ofsn.DirListRecursiveHandler"/>
+       class="org.apache.oodt.product.handlers.ofsn.DirListRecursiveHandler"/>
     
 
   <!-- 
@@ -83,7 +85,7 @@ Required attributes:
     recurse into subdirectories.
    -->
   <handler name="DIRFILELIST1" type="listing"
-       class="gov.nasa.jpl.oodt.product.handlers.ofsn.FileListNonRecursiveHandler"/>
+       class="org.apache.oodt.product.handlers.ofsn.FileListNonRecursiveHandler"/>
 
   <!-- 
     The DIRFILELIST returns an XML document containing all of the filenames
@@ -91,14 +93,14 @@ Required attributes:
     subdirectories.  
    -->          
   <handler name="DIRFILELIST" type="listing"
-       class="gov.nasa.jpl.oodt.product.handlers.ofsn.FileListRecursiveHandler"/>
+       class="org.apache.oodt.product.handlers.ofsn.FileListRecursiveHandler"/>
 
   <!-- 
     The  RAW_SIZE  generates an XML document telling the size of the raw file that 
     would be returned by the corresponding RAW type.  
    -->     
   <handler name="RAW_SIZE" type="listing"
-       class="gov.nasa.jpl.oodt.product.handlers.ofsn.RawSizeListHandler">
+       class="org.apache.oodt.product.handlers.ofsn.RawSizeListHandler">
      
      <!-- 
        Required attributes:
@@ -113,7 +115,7 @@ Required attributes:
     giving its size.   
    -->
   <handler name="FILE_LIST" type="listing"
-       class="gov.nasa.jpl.oodt.product.handlers.ofsn.SingleFileListHandler"/>
+       class="org.apache.oodt.product.handlers.ofsn.SingleFileListHandler"/>
     
  
   <!-- 
@@ -121,7 +123,7 @@ Required attributes:
     of the requested file would be if compressed into a ZIP archive.  
   -->   
   <handler name="FILE_LIST_ZIP" type="listing"
-       class="gov.nasa.jpl.oodt.product.handlers.ofsn.SingleZipFileListHandler">
+       class="org.apache.oodt.product.handlers.ofsn.SingleZipFileListHandler">
        
        <!-- 
         Optional attributes:
@@ -137,7 +139,7 @@ Required attributes:
     (MIME type application/octet-stream ). 
   -->  
   <handler name="RAW" type="get"
-       class="gov.nasa.jpl.oodt.product.handlers.ofsn.StdOFSNGetHandler"/>       
+       class="org.apache.oodt.product.handlers.ofsn.StdOFSNGetHandler"/>       
        
   
   <!--  
@@ -145,6 +147,6 @@ Required attributes:
    -->
    
    <handler name="MD5" type="get"
-       class="gov.nasa.jpl.oodt.product.handlers.ofsn.MD5GetHandler"/>
+       class="org.apache.oodt.product.handlers.ofsn.MD5GetHandler"/>
 
 </oodt:ofsn>

@@ -23,7 +23,7 @@ import java.io.File;
 import java.util.Properties;
 
 //OODT imports
-import jpl.eda.product.ProductException;
+import org.apache.oodt.product.ProductException;
 
 /**
  *

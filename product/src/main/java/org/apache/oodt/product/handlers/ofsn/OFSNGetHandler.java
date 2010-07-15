@@ -22,7 +22,7 @@ package org.apache.oodt.product.handlers.ofsn;
 import java.util.Properties;
 
 //OODT imports
-import jpl.eda.product.ProductException;
+import org.apache.oodt.product.ProductException;
 
 /**
  * 

@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>gov.nasa.jpl.oodt</groupId>
+        <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-core</artifactId>
         <version>2.0</version>
     </parent>
@@ -21,7 +21,7 @@
     <build>
         <resources>
             <resource>
-                <targetPath>jpl/eda/product</targetPath>
+                <targetPath>org/apache/oodt/product</targetPath>
                 <directory>${basedir}/src/main/conf</directory>
                 <includes>
                     <include>displayableTypes.xml</include>
@@ -79,14 +79,9 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>gov.nasa.jpl.oodt</groupId>
-            <artifactId>edm-commons</artifactId>
-            <version>2.2.11-dev</version>
-        </dependency>
-        <dependency>
-            <groupId>gov.nasa.jpl.oodt</groupId>
-            <artifactId>cas-commons</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.apache.oodt</groupId>
+            <artifactId>commons</artifactId>
+            <version>1.2.0-dev</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -104,19 +99,9 @@
             <version>0.2</version>
         </dependency>
         <dependency>
-            <groupId>oodt</groupId>
-            <artifactId>edm-corba</artifactId>
-            <version>2.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>oodt</groupId>
-            <artifactId>edm-query</artifactId>
-            <version>2.0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>oodt</groupId>
-            <artifactId>edm-security</artifactId>
-            <version>1.0.2</version>
+            <groupId>org.apache.oodt</groupId>
+            <artifactId>xmlquery</artifactId>
+            <version>2.0.8-dev</version>
         </dependency>
         <dependency>
             <groupId>servletapi</groupId>

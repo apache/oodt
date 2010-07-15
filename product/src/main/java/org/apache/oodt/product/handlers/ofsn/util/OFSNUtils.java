@@ -19,13 +19,13 @@
 package org.apache.oodt.product.handlers.ofsn.util;
 
 //OODT imports
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.product.handlers.ofsn.OFSNHandlerConfig;
 import org.apache.oodt.product.handlers.ofsn.metadata.OFSNMetKeys;
 import org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLMetKeys;
 import org.apache.oodt.product.handlers.ofsn.metadata.OODTMetKeys;
-import jpl.eda.xmlquery.QueryElement;
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.xmlquery.QueryElement;
+import org.apache.oodt.xmlquery.XMLQuery;
 
 //JDK imports
 import java.io.File;

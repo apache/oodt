@@ -16,13 +16,15 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.util.List;
 import java.util.StringTokenizer;
-import jpl.eda.product.Retriever;
+import org.apache.oodt.product.Retriever;
 import java.io.InputStream;
 import java.io.IOException;
+
+// FIXME: change MIME type application/vnd.jpl.large-product?
 
 /**
  * A <em>large</em> result is a result for <em>large</em> products.

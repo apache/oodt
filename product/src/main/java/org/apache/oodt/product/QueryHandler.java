@@ -16,9 +16,9 @@
  */
 
 
-package jpl.eda.product;
+package org.apache.oodt.product;
 
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.xmlquery.XMLQuery;
 
 /**
  * Handler for queries in a product service.

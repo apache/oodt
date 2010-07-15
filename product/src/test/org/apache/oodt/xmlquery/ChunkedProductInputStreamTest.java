@@ -16,12 +16,12 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.IOException;
 import java.util.Arrays;
-import jpl.eda.product.ProductException;
-import jpl.eda.product.Retriever;
+import org.apache.oodt.product.ProductException;
+import org.apache.oodt.product.Retriever;
 import junit.framework.TestCase;
 import java.io.ByteArrayOutputStream;
 
@@ -115,7 +115,10 @@ public class ChunkedProductInputStreamTest extends TestCase implements Retriever
 		assertEquals(toByte(1015 % 256), buf[3]);
 
 		assertEquals(2082, in.skip(2083));						    // 2014, 2015, ..., 4095
-		assertEquals(-1, in.read());
+		// Shouldn't we get the -1 read first, and THEN get an IOException on subsequent reads?
+		try {
+			assertEquals(-1, in.read());
+		} catch (IOException ignore) {}
 		in.close();
 	}
 

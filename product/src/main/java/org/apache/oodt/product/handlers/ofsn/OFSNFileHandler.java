@@ -34,17 +34,17 @@ import java.util.logging.Logger;
 import org.apache.tika.mime.MimeTypesFactory;
 
 //OODT imports
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.product.handlers.ofsn.metadata.OFSNMetKeys;
 import org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLMetKeys;
 import org.apache.oodt.product.handlers.ofsn.metadata.XMLQueryMetKeys;
 import org.apache.oodt.product.handlers.ofsn.util.OFSNObjectFactory;
 import org.apache.oodt.product.handlers.ofsn.util.OFSNUtils;
-import jpl.eda.product.LargeProductQueryHandler;
-import jpl.eda.product.ProductException;
-import jpl.eda.xmlquery.LargeResult;
-import jpl.eda.xmlquery.Result;
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.product.LargeProductQueryHandler;
+import org.apache.oodt.product.ProductException;
+import org.apache.oodt.xmlquery.LargeResult;
+import org.apache.oodt.xmlquery.Result;
+import org.apache.oodt.xmlquery.XMLQuery;
 
 /**
  * 
@@ -102,7 +102,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
   /*
    * (non-Javadoc)
    * 
-   * @see jpl.eda.product.QueryHandler#query(jpl.eda.xmlquery.XMLQuery)
+   * @see org.apache.oodt.product.QueryHandler#query(org.apache.oodt.xmlquery.XMLQuery)
    */
   public XMLQuery query(XMLQuery xmlQuery) throws ProductException {
     String ofsn = OFSNUtils.extractFieldFromQuery(xmlQuery, OFSN);
@@ -142,7 +142,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
   /*
    * (non-Javadoc)
    * 
-   * @see jpl.eda.product.LargeProductQueryHandler#close(java.lang.String)
+   * @see org.apache.oodt.product.LargeProductQueryHandler#close(java.lang.String)
    */
   public void close(String id) throws ProductException {
     // nothing to do
@@ -152,7 +152,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
    * (non-Javadoc)
    * 
    * @see
-   * jpl.eda.product.LargeProductQueryHandler#retrieveChunk(java.lang.String,
+   * org.apache.oodt.product.LargeProductQueryHandler#retrieveChunk(java.lang.String,
    * long, int)
    */
   public byte[] retrieveChunk(String id, long offset, int length)

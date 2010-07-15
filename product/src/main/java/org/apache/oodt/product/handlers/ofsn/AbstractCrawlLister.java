@@ -29,7 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import jpl.eda.product.ProductException;
+import org.apache.oodt.product.ProductException;
 
 /**
  * 

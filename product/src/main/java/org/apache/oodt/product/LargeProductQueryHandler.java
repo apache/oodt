@@ -16,13 +16,13 @@
  */
 
 
-package jpl.eda.product;
+package org.apache.oodt.product;
 
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.xmlquery.XMLQuery;
 
 /**
  * Handle requests for products that are too large to fit in an {@link
- * jpl.eda.xmlquery.XMLQuery} object.
+ * org.apache.oodt.xmlquery.XMLQuery} object.
  *
  * @author Kelly
  * @version $Revision: 1.1.1.1 $

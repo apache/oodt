@@ -20,7 +20,7 @@ package org.apache.oodt.product.handlers.ofsn;
 
 //OODT imports
 import org.apache.oodt.product.handlers.ofsn.util.OFSNUtils;
-import jpl.eda.product.ProductException;
+import org.apache.oodt.product.ProductException;
 
 //JDK imports
 import java.io.File;

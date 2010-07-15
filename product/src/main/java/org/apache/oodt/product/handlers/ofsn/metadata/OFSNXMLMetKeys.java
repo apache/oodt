@@ -1,3 +1,4 @@
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -36,6 +37,7 @@ public interface OFSNXMLMetKeys {
     
     public static final String XML_MIME_TYPE = "text/xml";
     
+    // FIXME: change namespace URI?
     public static final String DIR_LISTING_NS = "http://oodt.jpl.nasa.gov/xml/namespaces/dirlist/1.0";
 
 }

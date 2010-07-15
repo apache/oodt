@@ -16,13 +16,13 @@
  */
 
 
-package jpl.eda.xmlquery;
+package org.apache.oodt.xmlquery;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
-import jpl.eda.product.ProductException;
-import jpl.eda.product.Retriever;
+import org.apache.oodt.product.ProductException;
+import org.apache.oodt.product.Retriever;
 
 /**
  * Streamer for chunked products.
@@ -200,5 +200,5 @@ final class ChunkedProductInputStream extends InputStream {
 	private boolean open;
 
 	/** Size of chunks. */
-	private static final int BLOCK_SIZE = Integer.getInteger("jpl.eda.xmlquery.blockSize", 4096).intValue();
+	private static final int BLOCK_SIZE = Integer.getInteger("org.apache.oodt.xmlquery.blockSize", 4096).intValue();
 }
