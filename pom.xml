@@ -53,7 +53,6 @@ the License.
         <module>pushpull</module>
         <module>product</module>
         <module>profile</module>
-        <!-- broken: <module>query</module> -->
         <module>webapp/filemgr</module>
         <!-- broken: <module>webapp/fmprod</module> -->
         <!-- broken: <module>webapp/workflow</module> -->
