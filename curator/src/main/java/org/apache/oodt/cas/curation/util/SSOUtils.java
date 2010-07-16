@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 //OODT imports
 import org.apache.oodt.cas.curation.service.CurationServiceConfig;
 import org.apache.oodt.cas.curation.servlet.CuratorConfMetKeys;
-import org.apache.oodt.cas.security.sso.AbstractWebBasedSingleSignOn;
-import org.apache.oodt.cas.security.sso.SingleSignOnFactory;
+import org.apache.oodt.security.sso.AbstractWebBasedSingleSignOn;
+import org.apache.oodt.security.sso.SingleSignOnFactory;
 
 /**
  * 

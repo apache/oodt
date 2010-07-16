@@ -22,7 +22,7 @@
    <servlet>
         <display-name>Curation Service</display-name>
         <servlet-name>Curation Service</servlet-name>
-        <servlet-class>gov.nasa.jpl.oodt.cas.curation.service.CurationService</servlet-class>
+        <servlet-class>org.apache.oodt.cas.curation.service.CurationService</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
    

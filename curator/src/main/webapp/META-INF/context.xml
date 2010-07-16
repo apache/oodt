@@ -1,37 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <!--
- // Copyright (c) 2008, California Institute of Technology.
-// ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
-// 
-// $Id$
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
 -->
-   
 <Context path="/cas-curator" docBase="/path/to/cas-curation-0.1.war">
 
-    <Parameter name="gov.nasa.jpl.oodt.cas.curator.projectName"
+    <Parameter name="org.apache.oodt.cas.curator.projectName"
         value="OODT"/>
 
-	<Parameter name="gov.nasa.jpl.oodt.cas.curator.metExtractorConf.uploadPath"
+	<Parameter name="org.apache.oodt.cas.curator.metExtractorConf.uploadPath"
 		value="[CAS_CURATOR_HOME]/aux/met_def/cas_curator" />
 
-	<Parameter name="gov.nasa.jpl.oodt.cas.curator.dataDefinition.uploadPath"
+	<Parameter name="org.apache.oodt.cas.curator.dataDefinition.uploadPath"
 		value="[CAS_CURATOR_HOME]/policy" />
 		
-    <Parameter name="gov.nasa.jpl.oodt.cas.curator.stagingAreaPath"
+    <Parameter name="org.apache.oodt.cas.curator.stagingAreaPath"
         value="/data/ingest"/>
     
-    <Parameter name="gov.nasa.jpl.oodt.cas.curator.metAreaPath"
+    <Parameter name="org.apache.oodt.cas.curator.metAreaPath"
     value="/data/met"/>
     
-    <Parameter name="gov.nasa.jpl.oodt.cas.curator.fmProps"
+    <Parameter name="org.apache.oodt.cas.curator.fmProps"
         value="[CAS_CURATOR_HOME]/filemgr/etc/filemgr.properties"/>
     
-    <Parameter name="gov.nasa.jpl.oodt.cas.curator.metExtension"
+    <Parameter name="org.apache.oodt.cas.curator.metExtension"
         value=".met"/>
 		
-	<Parameter name="gov.nasa.jpl.oodt.cas.fm.url"
+	<Parameter name="org.apache.oodt.cas.fm.url"
 	    value="http://localhost:9000"/>
 	    
-	<Parameter name="gov.nasa.jpl.oodt.cas.security.sso.implClass"
-	          value="gov.nasa.jpl.oodt.cas.security.sso.DummyImpl"/>
+	<Parameter name="org.apache.oodt.security.sso.implClass"
+	          value="org.apache.oodt.security.sso.DummyImpl"/>
 
 </Context>

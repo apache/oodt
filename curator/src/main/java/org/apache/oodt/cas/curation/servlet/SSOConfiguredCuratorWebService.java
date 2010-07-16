@@ -20,7 +20,7 @@ package org.apache.oodt.cas.curation.servlet;
 
 //OODT imports
 import org.apache.oodt.cas.curation.util.SSOUtils;
-import org.apache.oodt.cas.security.sso.SingleSignOn;
+import org.apache.oodt.security.sso.SingleSignOn;
 
 //JDK imports
 import javax.servlet.http.HttpServlet;

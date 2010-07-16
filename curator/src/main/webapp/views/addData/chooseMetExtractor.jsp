@@ -28,7 +28,7 @@ function makeNewFileUploadBox() {
 			  <tr><td>Selected Dataset:</td><td><%=session.getAttribute("ds") %> <a class="actionlink" href="addData.jsp">change</a></td></tr>
 			  <tr><td>Select Metadata Extractor:</td><td>
 			  	<select name="metext" style="border:solid 1px #888;padding:1px;width:100%;">
-			  		<option value="gov.nasa.jpl.oodt.cas.metadata.extractors.CopyAndRewriteExtractor">CopyAndRewriteExtractor</option>
+			  		<option value="org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor">CopyAndRewriteExtractor</option>
 			  	</select>
 			  <tr>
 			  	<td>Upload Configuration File(s): </td><td style="padding-right:9px;">

@@ -4,7 +4,7 @@
 	import="java.util.ArrayList"
 	import="java.util.Iterator"
 	import="java.util.Map"
-	import="gov.nasa.jpl.oodt.cas.curation.policymgr.CurationPolicyManager"
+	import="org.apache.oodt.cas.curation.policymgr.CurationPolicyManager"
 %>
 <%@ include file="tools/requireLogin.jsp"%>
 <%

@@ -4,7 +4,7 @@
 	import="java.util.ArrayList"
 	import="java.util.Iterator"
 	import="java.util.Map"
-	import="gov.nasa.jpl.oodt.cas.curation.policymgr.CurationPolicyManager"
+	import="org.apache.oodt.cas.curation.policymgr.CurationPolicyManager"
 %>
 <%@ include file="tools/requireLogin.jsp" %>
 <% String projectName =  application.getInitParameter(CuratorConfMetKeys.PROJECT_DISPLAY_NAME);%>
@@ -18,7 +18,7 @@ session.setAttribute("breadcrumbs",new String[] {"Add Data to "+(projectName != 
 %>
 
 
-<%@page import="gov.nasa.jpl.oodt.cas.curation.servlet.CuratorConfMetKeys"%>
+<%@page import="org.apache.oodt.cas.curation.servlet.CuratorConfMetKeys"%>
 <jsp:include page="views/common/cas-curator-header.jsp" />
 <!-- tree view css + js -->
 <link rel="stylesheet" type="text/css" href="js/jquery-treeview/jquery.treeview.css"/>

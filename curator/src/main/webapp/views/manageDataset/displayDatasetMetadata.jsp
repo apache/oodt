@@ -5,12 +5,12 @@
 	import="java.util.Iterator"
 	import="java.util.Map"
 	import="java.util.Hashtable"
-	import="gov.nasa.jpl.oodt.cas.curation.policymgr.CurationPolicyManager"
-	import="gov.nasa.jpl.oodt.cas.curation.util.HTMLEncode"
+	import="org.apache.oodt.cas.curation.policymgr.CurationPolicyManager"
+	import="org.apache.oodt.cas.curation.util.HTMLEncode"
 %>
-<%@page import="gov.nasa.jpl.oodt.cas.metadata.util.PathUtils"%>
-<%@page import="gov.nasa.jpl.oodt.cas.curation.servlet.CuratorConfMetKeys"%>
-<%@page import="gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType"%><script type="text/javascript" src="js/jquery/jquery.js"></script>
+<%@page import="org.apache.oodt.cas.metadata.util.PathUtils"%>
+<%@page import="org.apache.oodt.cas.curation.servlet.CuratorConfMetKeys"%>
+<%@page import="org.apache.oodt.cas.filemgr.structs.ProductType"%><script type="text/javascript" src="js/jquery/jquery.js"></script>
 
 <div class="wizardContent">
 	<h4>Dataset Metadata For: <%=session.getAttribute("dsCollection") %> / <%=session.getAttribute("ds") %></h4>

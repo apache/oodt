@@ -47,7 +47,7 @@ the License.
         <module>workflow</module>
         <module>crawler</module>
         <module>resource</module>
-        <!-- broken: <module>curator</module> -->
+        <module>curator</module>
         <!-- broken: <module>pge</module> -->
         <!-- broken: <module>mvn/plugins/cas-install</module> -->
         <!-- broken: <module>pushpull</module> -->

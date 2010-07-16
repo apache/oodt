@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
-  Copyright (c) 2009 California Institute of Technology.
-  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
 
-  $Id$
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
 -->
-
 <document>
   <properties>
     <title>Setting Up the CAS-Curator</title>
@@ -116,9 +124,9 @@
       
       <source><![CDATA[<Context path="/my-curator"
 docBase="/usr/local/src/cas-curator-v1.0.0/target/cas-curator-1.0.0.war">  
-  <Parameter name="gov.nasa.jpl.oodt.cas.security.sso.implClass"
-            value="gov.nasa.jpl.oodt.cas.security.sso.DummyImpl"/>
-  <Parameter name="gov.nasa.jpl.oodt.cas.curator.projectName"
+  <Parameter name="org.apache.oodt.security.sso.implClass"
+            value="org.apache.oodt.security.sso.DummyImpl"/>
+  <Parameter name="org.apache.oodt.cas.curator.projectName"
         value="My Project"/>
 </Context>    
       ]]></source>
@@ -131,7 +139,7 @@ docBase="/usr/local/src/cas-curator-v1.0.0/target/cas-curator-1.0.0.war">
       
       <img src="../images/basic_login.jpg"/>
       
-      <p>The <code>gov.nasa.jpl.oodt.cas.security.sso.implClass</code> parameter
+      <p>The <code>org.apache.oodt.security.sso.implClass</code> parameter
       that we set in the context file configures the CAS-Curator for a "dummy"
       log-in to its Single Sign On service. Because of this, we are able to 
       log into the web application with a blank user name and a blank password. 
@@ -176,20 +184,20 @@ docBase="/usr/local/src/cas-curator-v1.0.0/target/cas-curator-1.0.0.war">
       
       <p>Next, we will set the following parameters in the CAS-Curator context file:</p>
       
-<source><![CDATA[<Parameter name="gov.nasa.jpl.oodt.cas.curator.stagingAreaPath"
+<source><![CDATA[<Parameter name="org.apache.oodt.cas.curator.stagingAreaPath"
         value="/usr/local/staging/products"/>
     
-<Parameter name="gov.nasa.jpl.oodt.cas.curator.metAreaPath"
+<Parameter name="org.apache.oodt.cas.curator.metAreaPath"
         value="/usr/local/staging/metadata"/>
     
-<Parameter name="gov.nasa.jpl.oodt.cas.curator.metExtension"
+<Parameter name="org.apache.oodt.cas.curator.metExtension"
         value=".met"/>]]></source>
       
-    <p>The <code>gov.nasa.jpl.oodt.cas.curator.stagingAreaPath</code> parameter should 
+    <p>The <code>org.apache.oodt.cas.curator.stagingAreaPath</code> parameter should 
     be set to the product staging area and the 
-    <code>gov.nasa.jpl.oodt.cas.curator.metAreaPath</code> should be set to the metedata
+    <code>org.apache.oodt.cas.curator.metAreaPath</code> should be set to the metedata
     generation area. Additionally, we specified the parameter 
-    <code>gov.nasa.jpl.oodt.cas.curator.metExtension</code> to be <code>.met</code>. 
+    <code>org.apache.oodt.cas.curator.metExtension</code> to be <code>.met</code>. 
     This parameter specifies the extension for all of the metadata files produced in
     the metadata generation area.</p>
     
@@ -252,7 +260,7 @@ docBase="/usr/local/src/cas-curator-v1.0.0/target/cas-curator-1.0.0.war">
     need to add another parameter to the web application's context file. Add the
     following parameter:</p>
     
-<source><![CDATA[<Parameter name="gov.nasa.jpl.oodt.cas.curator.metExtractorConf.uploadPath"
+<source><![CDATA[<Parameter name="org.apache.oodt.cas.curator.metExtractorConf.uploadPath"
 		value="/usr/local/extractors" />    
     ]]></source>
     
@@ -424,7 +432,7 @@ f.close()
 
 <source>
 extractor.classname=
-   gov.nasa.jpl.oodt.cas.metadata.extractors.ExternMetExtractor
+   org.apache.oodt.cas.metadata.extractors.ExternMetExtractor
 extractor.config.files=
    /usr/local/extractors/mp3extractor/mp3PythonExtractor.config
 </source>
@@ -492,16 +500,16 @@ total 51448
     parameters in the <code>filemgr.properties</code> file:</p>
     
     <ul>
-      <li>Set <code>gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.idxPath</code>
+      <li>Set <code>org.apache.oodt.cas.filemgr.catalog.lucene.idxPath</code>
       to <code>/usr/local/src/cas-filemgr-1.8.0/catalog</code>. This parameter
       tells CAS-Filemgr where to create the Lucene index. The first time you start 
       the CAS-Filemgr, make sure that this file does NOT exist. The CAS-Filemgr 
       will take care of creating it and populating it with the appropriate files.
       </li>
-      <li>Set <code>gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.dirs</code> to
+      <li>Set <code>org.apache.oodt.cas.filemgr.repositorymgr.dirs</code> to
       <code>file:///usr/local/src/cas-filemgr-1.8.0/policy/mp3</code>. The value needs
       to be a URL and we are pointing to a policy folder we will create.</li>
-      <li>Set <code>gov.nasa.jpl.oodt.cas.filemgr.validation.dirs</code> to 
+      <li>Set <code>org.apache.oodt.cas.filemgr.validation.dirs</code> to 
       <code>file:///usr/local/src/cas-filemgr-1.8.0/policy/mp3</code>. Like the last 
       parameter we configured, this parameter should be a URL and point to the 
       same policy folder.</li>
@@ -532,11 +540,11 @@ total 51448
 <source><![CDATA[ 
 <type id="urn:example:MP3" name="MP3">
   <repository path="file:///usr/local/archive"/>
-  <versioner class="gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner"/>
+  <versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner"/>
   <description>A product type for mp3 audio files.</description>
   <metExtractors>
     <extractor
-   class="gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
+   class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
       <configuration>
         <property name="nsAware" value="true" />
         <property name="elementNs" value="CAS" />
@@ -625,13 +633,13 @@ total 51448
     the following parameters to the CAS-Curator context file:</p>
     
 <source><![CDATA[    
-<Parameter name="gov.nasa.jpl.oodt.cas.fm.url"
+<Parameter name="org.apache.oodt.cas.fm.url"
         value="http://localhost:9000"/>
             
-<Parameter name="gov.nasa.jpl.oodt.cas.curator.dataDefinition.uploadPath"
+<Parameter name="org.apache.oodt.cas.curator.dataDefinition.uploadPath"
         value="/usr/local/src/cas-filemgr-1.8.0/policy" />
 
-<Parameter name="gov.nasa.jpl.oodt.cas.curator.fmProps"
+<Parameter name="org.apache.oodt.cas.curator.fmProps"
         value="/usr/local/src/cas-filemgr-1.8.0/etc/filemgr.properties"/>        
 ]]></source>    
     

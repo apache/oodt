@@ -1,7 +1,7 @@
 <%@	page 
 	import="org.springframework.context.ApplicationContext"
 	import="org.springframework.context.support.FileSystemXmlApplicationContext"
-	import="gov.nasa.jpl.oodt.cas.crawl.action.CrawlerAction"
+	import="org.apache.oodt.cas.crawl.action.CrawlerAction"
 %>	
 <%
 // Obtain the explanations for the various ingest options
@@ -12,7 +12,7 @@ String deleteHint = ((CrawlerAction) appContext.getBean("DeleteDataFile")).getDe
 %>
 
 
-<%@page import="gov.nasa.jpl.oodt.cas.curation.servlet.CuratorConfMetKeys"%><div class="wizardContent">
+<%@page import="org.apache.oodt.cas.curation.servlet.CuratorConfMetKeys"%><div class="wizardContent">
 	<h4>Pre-Ingestion Summary: </h4>
 	<div>
 			<table style="margin-bottom:15px;">

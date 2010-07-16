@@ -26,7 +26,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
-import org.apache.oodt.cas.security.sso.SingleSignOn;
+import org.apache.oodt.security.sso.SingleSignOn;
 
 //JDK imports
 import java.io.File;

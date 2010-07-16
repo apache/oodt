@@ -35,7 +35,7 @@ public interface CuratorConfMetKeys {
 
   final String FM_URL = "org.apache.oodt.cas.fm.url";
 
-  final String SSO_IMPL_CLASS = "org.apache.oodt.cas.security.sso.implClass";
+  final String SSO_IMPL_CLASS = "org.apache.oodt.security.sso.implClass";
 
   final String DEFAULT_TRANSFER_FACTORY = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
 
