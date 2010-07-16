@@ -44,7 +44,7 @@ the License.
         <module>sso</module>
         <module>filemgr</module>
         <!-- broken: <module>catalog</module> -->
-        <!-- broken: <module>workflow</module> -->
+        <module>workflow</module>
         <!-- broken: <module>crawler</module>         -->
         <module>resource</module>
         <!-- broken: <module>curator</module> -->

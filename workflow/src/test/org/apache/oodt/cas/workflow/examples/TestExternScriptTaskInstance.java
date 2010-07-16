@@ -16,12 +16,12 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.workflow.examples;
+package org.apache.oodt.cas.workflow.examples;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import gov.nasa.jpl.oodt.cas.workflow.structs.exceptions.RepositoryException;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 
 //JDK imports
 import java.io.File;

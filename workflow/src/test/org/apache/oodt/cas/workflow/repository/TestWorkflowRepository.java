@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.workflow.repository;
+package org.apache.oodt.cas.workflow.repository;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -27,13 +27,13 @@ import java.util.List;
 import java.util.Vector;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
-import gov.nasa.jpl.oodt.cas.workflow.structs.Workflow;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowTask;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowCondition;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import gov.nasa.jpl.oodt.cas.workflow.structs.exceptions.RepositoryException;
-import gov.nasa.jpl.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
+import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 /**
  * @author mattmann

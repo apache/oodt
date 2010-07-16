@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.workflow.repository;
+package org.apache.oodt.cas.workflow.repository;
 
 //JDK imports
 import java.io.File;
@@ -26,13 +26,13 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.commons.database.DatabaseConnectionBuilder;
-import gov.nasa.jpl.oodt.cas.commons.database.SqlScript;
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowCondition;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowConditionInstance;
-import gov.nasa.jpl.oodt.cas.workflow.structs.exceptions.RepositoryException;
-import gov.nasa.jpl.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
+import org.apache.oodt.commons.database.SqlScript;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
+import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
+import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 //Junit imports
 import junit.framework.TestCase;

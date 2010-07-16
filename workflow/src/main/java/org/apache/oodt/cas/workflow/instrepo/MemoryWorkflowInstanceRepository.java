@@ -21,7 +21,7 @@ package org.apache.oodt.cas.workflow.instrepo;
 //OODT imports
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
-import jpl.eda.util.DateConvert;
+import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
 import java.util.Collections;

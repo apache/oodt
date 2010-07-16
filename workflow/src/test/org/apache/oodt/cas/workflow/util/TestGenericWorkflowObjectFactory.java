@@ -16,11 +16,11 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.workflow.util;
+package org.apache.oodt.cas.workflow.util;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowConditionInstance;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowTaskInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -36,7 +36,7 @@ import junit.framework.TestCase;
 public class TestGenericWorkflowObjectFactory extends TestCase {
 
 	public void testCreateTask() {
-		String taskClass = "gov.nasa.jpl.oodt.cas.workflow.examples.LongTask";
+		String taskClass = "org.apache.oodt.cas.workflow.examples.LongTask";
 
 		WorkflowTaskInstance taskInst = GenericWorkflowObjectFactory
 				.getTaskObjectFromClassName(taskClass);
@@ -47,7 +47,7 @@ public class TestGenericWorkflowObjectFactory extends TestCase {
 	}
 
 	public void testCreateCondition() {
-		String condClass = "gov.nasa.jpl.oodt.cas.workflow.examples.LongCondition";
+		String condClass = "org.apache.oodt.cas.workflow.examples.LongCondition";
 
 		WorkflowConditionInstance condInst = GenericWorkflowObjectFactory
 				.getConditionObjectFromClassName(condClass);

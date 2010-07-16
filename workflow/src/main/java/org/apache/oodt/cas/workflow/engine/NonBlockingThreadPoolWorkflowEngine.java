@@ -33,7 +33,7 @@ import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 import org.apache.oodt.cas.workflow.engine.IterativeWorkflowProcessorThread;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.engine.NonBlockingShepardThread;
-import jpl.eda.util.DateConvert;
+import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
 import java.net.URL;

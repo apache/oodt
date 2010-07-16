@@ -16,11 +16,11 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.workflow.engine;
+package org.apache.oodt.cas.workflow.engine;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowInstance;
-import jpl.eda.util.DateConvert;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
 import java.util.Date;

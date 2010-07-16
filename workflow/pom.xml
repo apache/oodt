@@ -26,7 +26,7 @@ the License.
     <version>${oodt.version}</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <artifactId>cas-workflow</artifactId>
+  <artifactId>workflow</artifactId>
   <name>Catalog and Archive Workflow Management Component</name>
   <description>The workflow management component of a Catalog and Archive Service. This component
      purposefully separates workflow repositories and workflow engines standard interfaces, and
@@ -88,10 +88,27 @@ the License.
       </plugin>    
     </plugins>
   </build>
+  <repositories>
+      <!-- FIXME: Find a better, more permanent mirror than some project's dependencies that they (inadvertently?) published -->
+      <repository>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <id>some-mirror-that-has-javamail-1.3.3</id>
+        <name>Some Mirror That Has Javamail 1.3.3</name>
+        <url>http://mirrors.ibiblio.org/pub/mirrors/maven/mule/dependencies/maven2/</url>
+        <layout>default</layout>
+      </repository>
+  </repositories>
   <dependencies>
     <dependency>
+        <groupId>concurrent</groupId>
+        <artifactId>concurrent</artifactId>
+        <version>1.3.4</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-commons</artifactId>
+      <artifactId>oodt-commons</artifactId>
       <version>${oodt.version}</version>
     </dependency>
     <dependency>
@@ -101,13 +118,8 @@ the License.
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-resource</artifactId>
-      <version>${oodt.version}1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-      <version>${oodt.version}</version>
+      <artifactId>resource</artifactId>
+      <version>1.4.0-dev</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>

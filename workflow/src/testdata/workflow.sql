@@ -1,3 +1,18 @@
+-- Licensed to the Apache Software Foundation (ASF) under one or more
+-- contributor license agreements.  See the NOTICE.txt file distributed with
+-- this work for additional information regarding copyright ownership.  The ASF
+-- licenses this file to you under the Apache License, Version 2.0 (the
+-- "License"); you may not use this file except in compliance with the License.
+-- You may obtain a copy of the License at
+--
+--     http://www.apache.org/licenses/LICENSE-2.0
+--
+-- Unless required by applicable law or agreed to in writing, software
+-- distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+-- WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+-- License for the specific language governing permissions and limitations
+-- under the License.    
+
 DROP TABLE workflows IF EXISTS;
 DROP TABLE event_workflow_map IF EXISTS;
 DROP TABLE workflow_tasks IF EXISTS;
@@ -62,7 +77,7 @@ CREATE TABLE workflow_condition_configuration
 property_name varchar(1000) NOT NULL,
 property_value varchar(1000) NOT NULL);
 
-INSERT INTO workflow_conditions VALUES ('1', 'CheckCond', 'gov.nasa.jpl.oodt.cas.workflow.examples.CheckForMetadataKeys');
+INSERT INTO workflow_conditions VALUES ('1', 'CheckCond', 'org.apache.oodt.cas.workflow.examples.CheckForMetadataKeys');
 INSERT INTO workflow_condition_configuration VALUES ('1', 'reqMetKeys', 'Met1,Met2,Met3');
-INSERT INTO workflow_conditions VALUES ('2', 'FalseCond', 'gov.nasa.jpl.oodt.cas.workflow.examples.FalseCondition');
-INSERT INTO workflow_conditions VALUES ('3', 'TrueCond', 'gov.nasa.jpl.oodt.cas.workflow.examples.TrueCondition');
+INSERT INTO workflow_conditions VALUES ('2', 'FalseCond', 'org.apache.oodt.cas.workflow.examples.FalseCondition');
+INSERT INTO workflow_conditions VALUES ('3', 'TrueCond', 'org.apache.oodt.cas.workflow.examples.TrueCondition');

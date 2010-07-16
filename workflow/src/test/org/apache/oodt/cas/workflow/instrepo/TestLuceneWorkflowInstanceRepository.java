@@ -16,17 +16,17 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.workflow.instrepo;
+package org.apache.oodt.cas.workflow.instrepo;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
-import gov.nasa.jpl.oodt.cas.workflow.structs.Workflow;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowCondition;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowInstance;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowStatus;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowTask;
-import gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import gov.nasa.jpl.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 
 //JDK imports
 import java.io.File;
