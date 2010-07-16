@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.profile.handlers.lightweight;
+package org.apache.oodt.profile.handlers.lightweight;
 
 import java.util.Set;
 import java.util.Collections;

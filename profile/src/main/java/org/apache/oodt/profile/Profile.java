@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.profile;
+package org.apache.oodt.profile;
 
 import com.hp.hpl.mesa.rdf.jena.mem.ModelMem;
 import com.hp.hpl.mesa.rdf.jena.model.Model;
@@ -32,9 +32,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import jpl.eda.Configuration;
-import jpl.eda.util.Documentable;
-import jpl.eda.util.XML;
+import org.apache.oodt.commons.Configuration;
+import org.apache.oodt.commons.util.Documentable;
+import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;

@@ -16,9 +16,9 @@
  */
 
 
-package jpl.eda.profile.activity;
+package org.apache.oodt.profile.activity;
 
-import jpl.eda.activity.Incident;
+import org.apache.oodt.commons.activity.Incident;
 
 public class QueriedHandlers extends Incident {
    /** Serial version unique ID. */

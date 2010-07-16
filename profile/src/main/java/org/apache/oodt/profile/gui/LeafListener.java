@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package jpl.eda.profile.gui;
+package org.apache.oodt.profile.gui;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -31,9 +31,9 @@ import javax.swing.JPopupMenu;
 
 import java.util.Iterator;
 
-import jpl.eda.profile.ProfileElement;
-import jpl.eda.profile.EnumeratedProfileElement;
-import jpl.eda.profile.Profile;
+import org.apache.oodt.profile.ProfileElement;
+import org.apache.oodt.profile.EnumeratedProfileElement;
+import org.apache.oodt.profile.Profile;
 
 
 

@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.profile;
+package org.apache.oodt.profile;
 
 import com.hp.hpl.mesa.rdf.jena.mem.ModelMem;
 import com.hp.hpl.mesa.rdf.jena.model.Model;
@@ -27,10 +27,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import jpl.eda.Configuration;
-import jpl.eda.xmlquery.Result;
-import jpl.eda.util.Documentable;
-import jpl.eda.util.XML;
+import org.apache.oodt.commons.Configuration;
+import org.apache.oodt.xmlquery.Result;
+import org.apache.oodt.commons.util.Documentable;
+import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

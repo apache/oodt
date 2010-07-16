@@ -16,11 +16,11 @@
  */
 
 
-package jpl.eda.profile;
+package org.apache.oodt.profile;
 
 import java.util.ArrayList;
 import java.util.List;
-import jpl.eda.util.XML;
+import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import com.hp.hpl.mesa.rdf.jena.model.Model;

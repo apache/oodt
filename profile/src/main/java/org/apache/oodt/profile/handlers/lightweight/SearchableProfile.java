@@ -16,10 +16,10 @@
  */
 
 
-package jpl.eda.profile.handlers.lightweight;
+package org.apache.oodt.profile.handlers.lightweight;
 
-import jpl.eda.profile.ObjectFactory;
-import jpl.eda.profile.Profile;
+import org.apache.oodt.profile.ObjectFactory;
+import org.apache.oodt.profile.Profile;
 import org.w3c.dom.Element;
 
 /**

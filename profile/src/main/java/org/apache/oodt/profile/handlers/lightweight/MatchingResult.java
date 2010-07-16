@@ -16,11 +16,11 @@
  */
 
 
-package jpl.eda.profile.handlers.lightweight;
+package org.apache.oodt.profile.handlers.lightweight;
 
 import java.util.Collections;
 import java.util.Set;
-import jpl.eda.profile.ProfileElement;
+import org.apache.oodt.profile.ProfileElement;
 
 /**
  * A matching result.

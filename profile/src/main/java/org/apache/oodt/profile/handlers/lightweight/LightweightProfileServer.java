@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.profile.handlers.lightweight;
+package org.apache.oodt.profile.handlers.lightweight;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -30,15 +30,15 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Stack;
-import jpl.eda.Configuration;
-import jpl.eda.ExecServerConfig;
-import jpl.eda.profile.Profile;
-import jpl.eda.profile.ProfileException;
-import jpl.eda.profile.handlers.ProfileHandler;
-import jpl.eda.util.DOMParser;
-import jpl.eda.util.XML;
-import jpl.eda.xmlquery.QueryElement;
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.commons.Configuration;
+import org.apache.oodt.commons.ExecServerConfig;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileException;
+import org.apache.oodt.profile.handlers.ProfileHandler;
+import org.apache.oodt.commons.util.DOMParser;
+import org.apache.oodt.commons.util.XML;
+import org.apache.oodt.xmlquery.QueryElement;
+import org.apache.oodt.xmlquery.XMLQuery;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.ErrorHandler;
@@ -80,10 +80,10 @@ final public class LightweightProfileServer implements ProfileHandler {
 	 * @throws MalformedURLException If the URL to the profile file is malformed.
 	 */
 	public LightweightProfileServer(Properties props) throws IOException, SAXException, MalformedURLException {
-		this(new URL(props.getProperty("jpl.eda.profile.handlers.LightweightProfileServer.profiles.url",
-                        props.getProperty("jpl.eda.profile.webServer.baseURL", "http://eda.jpl.nasa.gov")
+		this(new URL(props.getProperty("org.apache.oodt.profile.handlers.LightweightProfileServer.profiles.url",
+                        props.getProperty("org.apache.oodt.profile.webServer.baseURL", "http://eda.jpl.nasa.gov")
                         + "/profiles.xml")),
-			props.getProperty("jpl.eda.profile.handlers.LightweightProfileServer.id", "lightweight"));
+			props.getProperty("org.apache.oodt.profile.handlers.LightweightProfileServer.id", "lightweight"));
 	}
 
 	/**

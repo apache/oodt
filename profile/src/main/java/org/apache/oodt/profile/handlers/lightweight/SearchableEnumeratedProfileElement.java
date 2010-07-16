@@ -16,11 +16,11 @@
  */
 
 
-package jpl.eda.profile.handlers.lightweight;
+package org.apache.oodt.profile.handlers.lightweight;
 
 import java.rmi.RemoteException;
-import jpl.eda.xmlquery.XMLQuery;
-import jpl.eda.profile.EnumeratedProfileElement;
+import org.apache.oodt.xmlquery.XMLQuery;
+import org.apache.oodt.profile.EnumeratedProfileElement;
 import java.util.List;
 
 /**

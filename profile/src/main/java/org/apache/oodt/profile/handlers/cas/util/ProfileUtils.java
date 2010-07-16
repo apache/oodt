@@ -16,20 +16,20 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.profile.util;
+package org.apache.oodt.cas.profile.util;
 
 //CAS imports
 import java.util.Iterator;
 import java.util.List;
 
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.metadata.Metadata;
 
 //OODT imports
-import jpl.eda.profile.EnumeratedProfileElement;
-import jpl.eda.profile.Profile;
-import jpl.eda.profile.ProfileAttributes;
-import jpl.eda.profile.ResourceAttributes;
+import org.apache.oodt.profile.EnumeratedProfileElement;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileAttributes;
+import org.apache.oodt.profile.ResourceAttributes;
 
 /**
  * @author mattmann

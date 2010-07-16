@@ -16,10 +16,10 @@
  */
 
 
-package jpl.eda.profile.handlers.lightweight;
+package org.apache.oodt.profile.handlers.lightweight;
 
 import java.util.List;
-import jpl.eda.profile.RangedProfileElement;
+import org.apache.oodt.profile.RangedProfileElement;
 
 /**
  * Searchable profile element with a range of valid values.

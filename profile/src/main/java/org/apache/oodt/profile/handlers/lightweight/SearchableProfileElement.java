@@ -16,9 +16,9 @@
  */
 
 
-package jpl.eda.profile.handlers.lightweight;
+package org.apache.oodt.profile.handlers.lightweight;
 
-import jpl.eda.profile.ProfileElement;
+import org.apache.oodt.profile.ProfileElement;
 
 /**
  * A profile element that can be searched.

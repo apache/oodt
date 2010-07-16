@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.profile;
+package org.apache.oodt.profile;
 
 import java.io.Serializable;
 import java.util.Collections;

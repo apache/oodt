@@ -16,14 +16,14 @@
  */
 
 
-package jpl.eda.profile;
+package org.apache.oodt.profile;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import jpl.eda.util.Documentable;
-import jpl.eda.util.XML;
-import jpl.eda.Configuration;
+import org.apache.oodt.commons.util.Documentable;
+import org.apache.oodt.commons.util.XML;
+import org.apache.oodt.commons.Configuration;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

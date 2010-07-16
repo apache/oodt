@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.profile;
+package org.apache.oodt.profile;
 
 /**
  * A profile-related exception.

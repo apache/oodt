@@ -16,13 +16,13 @@
  */
 
 
-package jpl.eda.profile.handlers;
+package org.apache.oodt.profile.handlers;
 
 import java.util.Collection;
 import java.util.List;
-import jpl.eda.profile.Profile;
-import jpl.eda.profile.ProfileException;
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileException;
+import org.apache.oodt.xmlquery.XMLQuery;
 import org.w3c.dom.Document;
 
 /**

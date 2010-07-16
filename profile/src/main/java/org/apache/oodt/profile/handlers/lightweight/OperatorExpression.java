@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.profile.handlers.lightweight;
+package org.apache.oodt.profile.handlers.lightweight;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -122,7 +122,7 @@ class OperatorExpression implements WhereExpression {
 	 * "where" part.  These work off the resource attributes rather than the profile
 	 * elements.
 	 */
-	private static final Set FROM_TOKENS = new HashSet(Arrays.asList(jpl.eda.xmlquery.XMLQuery.FROM_TOKENS));
+	private static final Set FROM_TOKENS = new HashSet(Arrays.asList(org.apache.oodt.xmlquery.XMLQuery.FROM_TOKENS));
 
 	/**
 	 * Resource attributes that are parsed into WHERE part of the xmlquery

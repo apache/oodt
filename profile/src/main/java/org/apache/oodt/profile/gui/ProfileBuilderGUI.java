@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package jpl.eda.profile.gui;
+package org.apache.oodt.profile.gui;
 
 import javax.swing.JSeparator;
 import javax.swing.JMenuItem;
@@ -33,12 +33,12 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.JFileChooser;
 
-import jpl.eda.profile.Profile;
-import jpl.eda.profile.ProfileElement;
-import jpl.eda.profile.RangedProfileElement;
-import jpl.eda.profile.gui.profileTree;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileElement;
+import org.apache.oodt.profile.RangedProfileElement;
+import org.apache.oodt.profile.gui.profileTree;
 
-import jpl.eda.profile.gui.pstructs.ProfilePrinter;
+import org.apache.oodt.profile.gui.pstructs.ProfilePrinter;
 
 
 import java.util.Iterator;

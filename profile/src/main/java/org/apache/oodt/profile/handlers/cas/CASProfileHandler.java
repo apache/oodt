@@ -16,17 +16,17 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.profile;
+package org.apache.oodt.cas.profile;
 
 //CAS imports
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Element;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Query;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.TermQueryCriteria;
-import gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
-import gov.nasa.jpl.oodt.cas.profile.util.ProfileUtils;
+import org.apache.oodt.cas.filemgr.structs.Element;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Query;
+import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.profile.util.ProfileUtils;
 
 //JDK imports
 import java.net.URL;
@@ -37,11 +37,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import jpl.eda.profile.Profile;
-import jpl.eda.profile.ProfileException;
-import jpl.eda.profile.handlers.ProfileHandler;
-import jpl.eda.xmlquery.QueryElement;
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileException;
+import org.apache.oodt.profile.handlers.ProfileHandler;
+import org.apache.oodt.xmlquery.QueryElement;
+import org.apache.oodt.xmlquery.XMLQuery;
 
 /**
  * @author mattmann
@@ -74,7 +74,7 @@ public class CASProfileHandler implements ProfileHandler {
         // telling us which filemgr to communicate with
 
         String filemgrUrlStr = System.getProperty(
-                "gov.nasa.jpl.oodt.cas.profile.fmUrl", "http://localhost:9000");
+                "org.apache.oodt.cas.profile.fmUrl", "http://localhost:9000");
 
         try {
             fmClient = new XmlRpcFileManagerClient(new URL(filemgrUrlStr));
@@ -86,18 +86,18 @@ public class CASProfileHandler implements ProfileHandler {
 
         // read in data deliv base url
         dataDelivBaseUrlStr = System.getProperty(
-                "gov.nasa.jpl.oodt.cas.profile.dataDelivBaseUrl",
+                "org.apache.oodt.cas.profile.dataDelivBaseUrl",
                 "http://localhost:8080/filemgr/data");
 
         productTypeFilter = buildFilter(System
-                .getProperty("gov.nasa.jpl.oodt.cas.profile.product.types"));
+                .getProperty("org.apache.oodt.cas.profile.product.types"));
 
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see jpl.eda.profile.handlers.ProfileHandler#findProfiles(jpl.eda.xmlquery.XMLQuery)
+     * @see org.apache.oodt.profile.handlers.ProfileHandler#findProfiles(org.apache.oodt.xmlquery.XMLQuery)
      */
     public List findProfiles(XMLQuery query) throws ProfileException {
         List profs = new Vector();
@@ -117,7 +117,7 @@ public class CASProfileHandler implements ProfileHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see jpl.eda.profile.handlers.ProfileHandler#get(java.lang.String)
+     * @see org.apache.oodt.profile.handlers.ProfileHandler#get(java.lang.String)
      */
     public Profile get(String arg0) throws ProfileException {
         throw new ProfileException("Method not implemented yet");
@@ -126,7 +126,7 @@ public class CASProfileHandler implements ProfileHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see jpl.eda.profile.handlers.ProfileHandler#getID()
+     * @see org.apache.oodt.profile.handlers.ProfileHandler#getID()
      */
     public String getID() {
         return "CAS Filemgr Profile Handler";

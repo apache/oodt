@@ -16,16 +16,16 @@
  */
 
 
-package jpl.eda.profile.handlers.lightweight;
+package org.apache.oodt.profile.handlers.lightweight;
 
 import java.util.List;
-import jpl.eda.profile.EnumeratedProfileElement;
-import jpl.eda.profile.ObjectFactory;
-import jpl.eda.profile.Profile;
-import jpl.eda.profile.ProfileAttributes;
-import jpl.eda.profile.RangedProfileElement;
-import jpl.eda.profile.ResourceAttributes;
-import jpl.eda.profile.UnspecifiedProfileElement;
+import org.apache.oodt.profile.EnumeratedProfileElement;
+import org.apache.oodt.profile.ObjectFactory;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileAttributes;
+import org.apache.oodt.profile.RangedProfileElement;
+import org.apache.oodt.profile.ResourceAttributes;
+import org.apache.oodt.profile.UnspecifiedProfileElement;
 import org.w3c.dom.Element;
 
 /**

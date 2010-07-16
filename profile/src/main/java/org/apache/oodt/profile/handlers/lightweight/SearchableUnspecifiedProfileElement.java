@@ -16,10 +16,10 @@
  */
 
 
-package jpl.eda.profile.handlers.lightweight;
+package org.apache.oodt.profile.handlers.lightweight;
 
 import java.util.List;
-import jpl.eda.profile.UnspecifiedProfileElement;
+import org.apache.oodt.profile.UnspecifiedProfileElement;
 
 /**
  * Searchable profile element with unspecified values.

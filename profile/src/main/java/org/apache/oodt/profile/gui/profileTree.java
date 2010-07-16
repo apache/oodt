@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package jpl.eda.profile.gui;
+package org.apache.oodt.profile.gui;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;

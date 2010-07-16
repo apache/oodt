@@ -21,9 +21,9 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
-package jpl.eda.profile.gui.pstructs;
+package org.apache.oodt.profile.gui.pstructs;
 
-import jpl.eda.profile.ProfileElement;
+import org.apache.oodt.profile.ProfileElement;
 import java.util.Iterator;
 
 /**
