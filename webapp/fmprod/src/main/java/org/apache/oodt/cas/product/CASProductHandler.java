@@ -37,11 +37,11 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.product.data.DataUtils;
-import jpl.eda.product.LargeProductQueryHandler;
-import jpl.eda.product.ProductException;
-import jpl.eda.xmlquery.Header;
-import jpl.eda.xmlquery.LargeResult;
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.product.LargeProductQueryHandler;
+import org.apache.oodt.product.ProductException;
+import org.apache.oodt.xmlquery.Header;
+import org.apache.oodt.xmlquery.LargeResult;
+import org.apache.oodt.xmlquery.XMLQuery;
 import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.*;
 import static org.apache.oodt.cas.product.CASProductHandlerMetKeys.*;
 
@@ -66,7 +66,7 @@ public class CASProductHandler implements LargeProductQueryHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see jpl.eda.product.QueryHandler#query(jpl.eda.xmlquery.XMLQuery)
+     * @see org.apache.product.QueryHandler#query(org.apache.xmlquery.XMLQuery)
      */
     public XMLQuery query(XMLQuery query) throws ProductException {
         // we'll only accept queries for ProductId=some_id
@@ -106,7 +106,7 @@ public class CASProductHandler implements LargeProductQueryHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see jpl.eda.product.LargeProductQueryHandler#close(java.lang.String)
+     * @see org.apache.product.LargeProductQueryHandler#close(java.lang.String)
      */
     public void close(String id) throws ProductException {
         // doesn't really have to do anything b/c we're not going
@@ -117,7 +117,7 @@ public class CASProductHandler implements LargeProductQueryHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see jpl.eda.product.LargeProductQueryHandler#retrieveChunk(java.lang.String,
+     * @see org.apache.product.LargeProductQueryHandler#retrieveChunk(java.lang.String,
      *      long, int)
      */
     public byte[] retrieveChunk(String id, long offset, int length)

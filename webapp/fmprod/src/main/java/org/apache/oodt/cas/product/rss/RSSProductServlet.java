@@ -56,7 +56,7 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.metadata.Metadata;
-import jpl.eda.util.DateConvert;
+import org.apache.oodt.commons.util.DateConvert;
 
 /**
  * A Servlet that supports the <a
@@ -84,7 +84,7 @@ public class RSSProductServlet extends HttpServlet {
 
   private static final Map NS_MAP = new HashMap();
 
-  public static final String COPYRIGHT_BOILER_PLATE = "Copyright 2006: California Institute of Technology";
+  public static final String COPYRIGHT_BOILER_PLATE = "Copyright 2010: Apache Software Foundation";
 
   public static final String RSS_FORMAT_STR = "E, dd MMM yyyy HH:mm:ss z";
 

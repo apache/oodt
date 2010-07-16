@@ -1,9 +1,19 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
-  // Copyright (c) 2008, California Institute of Technology.
-  // ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
-  // 
-  // $Id$
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
 -->
 <!DOCTYPE web-app
     PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
@@ -29,27 +39,27 @@
 
   <servlet>
     <servlet-name>RSSServlet</servlet-name>
-    <servlet-class>gov.nasa.jpl.oodt.cas.product.rss.RSSProductServlet</servlet-class>
+    <servlet-class>org.apache.oodt.cas.product.rss.RSSProductServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>RSSTransferServlet</servlet-name>
-    <servlet-class>gov.nasa.jpl.oodt.cas.product.rss.RSSProductTransferServlet</servlet-class>
+    <servlet-class>org.apache.oodt.cas.product.rss.RSSProductTransferServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>RDFProductServlet</servlet-name>
-    <servlet-class>gov.nasa.jpl.oodt.cas.product.rdf.RDFProductServlet</servlet-class>
+    <servlet-class>org.apache.oodt.cas.product.rdf.RDFProductServlet</servlet-class>
   </servlet>
   <servlet>
       <servlet-name>RDFDatasetServlet</servlet-name>
-      <servlet-class>gov.nasa.jpl.oodt.cas.product.rdf.RDFDatasetServlet</servlet-class>
+      <servlet-class>org.apache.oodt.cas.product.rdf.RDFDatasetServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>DataDeliveryServlet</servlet-name>
-    <servlet-class>gov.nasa.jpl.oodt.cas.product.data.DataDeliveryServlet</servlet-class>
+    <servlet-class>org.apache.oodt.cas.product.data.DataDeliveryServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>DatasetDeliveryServlet</servlet-name>
-    <servlet-class>gov.nasa.jpl.oodt.cas.product.data.DatasetDeliveryServlet</servlet-class>
+    <servlet-class>org.apache.oodt.cas.product.data.DatasetDeliveryServlet</servlet-class>
   </servlet>
 
 

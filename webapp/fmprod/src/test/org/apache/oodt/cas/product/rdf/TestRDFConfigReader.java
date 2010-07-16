@@ -16,14 +16,14 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.product.rdf;
+package org.apache.oodt.cas.product.rdf;
 
 //JDK imports
 import java.io.ByteArrayInputStream;
 import org.w3c.dom.Document;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 //JUnit imports
 import junit.framework.TestCase;
