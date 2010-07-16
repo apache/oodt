@@ -49,7 +49,7 @@ the License.
         <module>resource</module>
         <module>curator</module>
         <module>pge</module>
-        <!-- broken: <module>mvn/plugins/cas-install</module> -->
+        <module>mvn/plugins/cas-install</module>
         <module>pushpull</module>
         <module>product</module>
         <module>profile</module>
