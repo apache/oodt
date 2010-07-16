@@ -16,13 +16,13 @@
  */
 
 
-package jpl.eda.profile;
+package org.apache.oodt.profile;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Map;
-import jpl.eda.util.XML;
+import org.apache.oodt.commons.util.XML;
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
 import com.hp.hpl.mesa.rdf.jena.model.Model;

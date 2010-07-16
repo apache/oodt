@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.profile;
+package org.apache.oodt.profile;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,8 +25,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import jpl.eda.io.NullOutputStream;
-import jpl.eda.util.XML;
+import org.apache.oodt.commons.io.NullOutputStream;
+import org.apache.oodt.commons.util.XML;
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

@@ -16,13 +16,13 @@
  */
 
 
-package jpl.eda.profile;
+package org.apache.oodt.profile;
 
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import jpl.eda.util.XML;
+import org.apache.oodt.commons.util.XML;
 
 /**
  * Test case for profile elements.

@@ -16,7 +16,7 @@
  */
 
 
-package jpl.eda.profile.handlers.lightweight;
+package org.apache.oodt.profile.handlers.lightweight;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -24,11 +24,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import jpl.eda.util.SAXParser;
-import jpl.eda.util.XML;
-import jpl.eda.profile.ProfileElement;
-import jpl.eda.profile.ProfileException;
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.commons.util.SAXParser;
+import org.apache.oodt.commons.util.XML;
+import org.apache.oodt.profile.ProfileElement;
+import org.apache.oodt.profile.ProfileException;
+import org.apache.oodt.xmlquery.XMLQuery;
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
