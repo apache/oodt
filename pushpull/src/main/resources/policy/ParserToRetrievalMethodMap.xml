@@ -2,13 +2,13 @@
 
 <rtvlMethods>
     
-    <rtvlMethod class="gov.nasa.jpl.oodt.cas.pushpull.retrievalmethod.RemoteCrawler">
-        <parser class="gov.nasa.jpl.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+    <rtvlMethod class="org.apache.oodt.cas.pushpull.retrievalmethod.RemoteCrawler">
+        <parser class="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
     </rtvlMethod>
     
-    <rtvlMethod class="gov.nasa.jpl.oodt.cas.pushpull.retrievalmethod.ListRetriever">
-        <parser class="gov.nasa.jpl.oodt.cas.pushpull.filerestrictions.parsers.FileListParser"/>
-        <parser class="gov.nasa.jpl.oodt.cas.pushpull.filerestrictions.parsers.ClassNoaaEmailParser"/>
+    <rtvlMethod class="org.apache.oodt.cas.pushpull.retrievalmethod.ListRetriever">
+        <parser class="org.apache.oodt.cas.pushpull.filerestrictions.parsers.FileListParser"/>
+        <parser class="org.apache.oodt.cas.pushpull.filerestrictions.parsers.ClassNoaaEmailParser"/>
     </rtvlMethod>
     
 </rtvlMethods>

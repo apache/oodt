@@ -5,11 +5,12 @@
   
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>gov.nasa.jpl.oodt</groupId>
+    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>2.0</version>
+    <version>${oodt.version}</version>
+    <relativePath>../core/pom.xml</relativePath>
   </parent> 
-  <artifactId>cas-pushpull</artifactId>
+  <artifactId>pushpull</artifactId>
   <name>CAS Push-Pull-Framework</name>
   <version>1.4.0-dev</version>
   <url>http://jpl.nasa.gov</url>
@@ -34,7 +35,7 @@
           </descriptors>
           <archive>
             <manifest>
-              <mainClass>gov.nasa.jpl.oodt.cas.pushpull.daemon.DaemonLauncher</mainClass>
+              <mainClass>org.apache.oodt.cas.pushpull.daemon.DaemonLauncher</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -81,14 +82,14 @@
       <version>0.2.2</version>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
-      <artifactId>cas-filemgr</artifactId>
-      <version>1.7.2</version>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>filemgr</artifactId>
+      <version>1.9.0-dev</version>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
+      <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>1.6.1</version>
+      <version>${oodt.version}</version>
     </dependency>
     <dependency>
       <groupId>xmlrpc</groupId>
