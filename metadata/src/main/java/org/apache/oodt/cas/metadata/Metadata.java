@@ -158,6 +158,17 @@ public class Metadata {
     }
 
     /**
+     * Replace our metadata with all metadata in the given metadata.
+     * Keys in our metadata will be overwritten by the given's.  New
+     * keys that don't yet exist in ours will get added.
+     *
+     * @param metadata Metadata from which to replace our own.
+     */
+    public void replaceMetadata(Metadata metadata) {
+        this.replaceMetadata(new Hashtable(metadata.elementMap));
+    }
+
+    /**
      * <p>
      * Replaces the internal hashtable of metadata with the specified
      * {@link Hashtable}.
