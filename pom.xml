@@ -21,7 +21,7 @@ the License.
     xsi:schemaLocation='http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd'>
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>gov.nasa.jpl.oodt</groupId> <!-- FIXME -->
+        <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-core</artifactId>
         <version>2.0</version>
         <relativePath>core/pom.xml</relativePath>
@@ -39,21 +39,21 @@ the License.
         <module>core</module>
         <module>commons</module>
         <module>pcs/input</module>
-        <!-- broken: <module>metadata</module> -->
+        <module>metadata</module>
         <module>xmlquery</module>
         <module>sso</module>
-        <!-- broken: <module>filemgr</module> -->
-        <module>catalog</module>
-        <module>workflow</module>
-        <module>crawler</module>        
-        <module>resource</module>
-        <module>curator</module>
-        <module>pge</module>
-        <module>mvn/plugins/cas-install</module>
-        <module>pushpull</module>
+        <module>filemgr</module>
+        <!-- broken: <module>catalog</module> -->
+        <!-- broken: <module>workflow</module> -->
+        <!-- broken: <module>crawler</module>         -->
+        <!-- broken: <module>resource</module> -->
+        <!-- broken: <module>curator</module> -->
+        <!-- broken: <module>pge</module> -->
+        <!-- broken: <module>mvn/plugins/cas-install</module> -->
+        <!-- broken: <module>pushpull</module> -->
         <module>product</module>
         <module>profile</module>
-        <module>query</module>
+        <!-- broken: <module>query</module> -->
         <module>webapp/filemgr</module>
         <module>webapp/fmprod</module>
         <module>webapp/workflow</module>
