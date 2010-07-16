@@ -7,11 +7,11 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>2.0</version>
+    <version>${oodt.version}</version>
+    <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <artifactId>commons</artifactId>
+  <artifactId>oodt-commons</artifactId>
   <name>Common Utilities</name>
-  <version>1.2.0-dev</version>
   <packaging>jar</packaging>
   <description>Apache OODT Common Utilities Project</description>
   <ciManagement>
