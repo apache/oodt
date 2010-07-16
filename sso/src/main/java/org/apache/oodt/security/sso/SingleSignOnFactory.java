@@ -16,7 +16,8 @@
  */
 
 
-package org.apache.oodt.cas.security.sso;
+package org.apache.oodt.security.sso;
+
 
 //JDK imports
 import java.util.logging.Level;
