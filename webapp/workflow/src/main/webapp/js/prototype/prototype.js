@@ -1,8 +1,3 @@
-//Copyright (c) 2008, California Institute of Technology.
-//ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
-//
-//$Id$
-
 /*  Prototype JavaScript framework, version 1.5.0
  *  (c) 2005-2007 Sam Stephenson
  *

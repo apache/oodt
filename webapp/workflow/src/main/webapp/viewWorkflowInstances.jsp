@@ -1,33 +1,43 @@
 <!--
-Copyright (c) 2005, California Institute of Technology.
-ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
 
-$Id$
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
 -->
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"
     import="java.util.List" import="java.util.Iterator"
     import="java.net.URL"
     import="java.text.NumberFormat"
-    	import="gov.nasa.jpl.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient"
-    	import="gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowInstance"
-    	import="gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowTask"
-    	import="gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowStatus"
-    	import="gov.nasa.jpl.oodt.cas.metadata.Metadata"
-    	import="gov.nasa.jpl.oodt.cas.workflow.structs.WorkflowInstancePage"
-    	import="gov.nasa.jpl.oodt.cas.workflow.webapp.util.WorkflowInstanceMetMap"
-    	import="gov.nasa.jpl.oodt.cas.workflow.webapp.util.WorkflowInstanceMetadataReader"
-    	import="gov.nasa.jpl.oodt.cas.workflow.webapp.util.JspUtility"
-    	import="gov.nasa.jpl.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager"%>
+    	import="org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient"
+    	import="org.apache.oodt.cas.workflow.structs.WorkflowInstance"
+    	import="org.apache.oodt.cas.workflow.structs.WorkflowTask"
+    	import="org.apache.oodt.cas.workflow.structs.WorkflowStatus"
+    	import="org.apache.oodt.cas.metadata.Metadata"
+    	import="org.apache.oodt.cas.workflow.structs.WorkflowInstancePage"
+    	import="org.apache.oodt.cas.workflow.webapp.util.WorkflowInstanceMetMap"
+    	import="org.apache.oodt.cas.workflow.webapp.util.WorkflowInstanceMetadataReader"
+    	import="org.apache.oodt.cas.workflow.webapp.util.JspUtility"
+    	import="org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager"%>
 <jsp:include page="inc/header.jsp">
 	<jsp:param name="metaRefresh" value="30"/>
 </jsp:include>
 <%
-     String workflowMgrUrl = application.getInitParameter("gov.nasa.jpl.oodt.cas.workflow.webapp.mgr.url");
+     String workflowMgrUrl = application.getInitParameter("org.apache.oodt.cas.workflow.webapp.mgr.url");
      XmlRpcWorkflowManagerClient client = new XmlRpcWorkflowManagerClient(new URL(workflowMgrUrl));
      
      WorkflowLifecycleManager lifecycleMgr = 
-         new WorkflowLifecycleManager(application.getInitParameter("gov.nasa.jpl.oodt.cas.workflow.webapp.lifecycleFilePath"));
+         new WorkflowLifecycleManager(application.getInitParameter("org.apache.oodt.cas.workflow.webapp.lifecycleFilePath"));
      
      WorkflowInstancePage instPage = null;  
      int pageSize = 20;
@@ -70,7 +80,7 @@ $Id$
     	    %>
     	    <p>Filter Workflows by Status:<br> |
     	    	     <%
-    	    	      String statusListStr = application.getInitParameter("gov.nasa.jpl.oodt.cas.workflow.inst.statuses");
+    	    	      String statusListStr = application.getInitParameter("org.apache.oodt.cas.workflow.inst.statuses");
     	    	      if(statusListStr == null){
     	    	          statusListStr = "STARTED, FINISHED, METMISS, PAUSED"; /* default statuses */
     	    	      }
@@ -90,7 +100,7 @@ $Id$
     	    <%
 
     	     if(instPage.getPageWorkflows() != null && instPage.getPageWorkflows().size() > 0){
-    	         String metMapFilePath = application.getInitParameter("gov.nasa.jpl.oodt.cas.workflow.webapp.inst.metFields.filePath");
+    	         String metMapFilePath = application.getInitParameter("org.apache.oodt.cas.workflow.webapp.inst.metFields.filePath");
     	         WorkflowInstanceMetMap wInstMetMap = WorkflowInstanceMetadataReader.parseMetMapFile(metMapFilePath);
     	           
     	    	 

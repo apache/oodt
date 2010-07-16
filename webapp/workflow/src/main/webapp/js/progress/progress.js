@@ -1,13 +1,8 @@
-//Copyright (c) 2008, California Institute of Technology.
-//ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
-//
-//$Id$
-
 /* WebAppers Progress Bar, version 0.2
 * (c) 2007 Ray Cheung
 *
 * WebAppers Progress Bar is freely distributable under the terms of an Creative Commons license.
-* For details, see the WebAppers web site: http://wwww.Webappers.com/
+* For details, see the WebAppers web site: http://www.webappers.com/progressBar/
 *
 /*--------------------------------------------------------------------------*/
 
