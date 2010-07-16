@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-    Copyright 2008 California Institute of Technology. ALL RIGHTS
-    RESERVED. U.S. Government Sponsorship acknowledged.
-    
-    $Id$
-    
-    Author: bfoster
-    Description: The configuration for cas-crawler2, that uses the Spring
-    framework to configure crawlers, and crawler actions.
-    
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:p="http://www.springframework.org/schema/p"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean class="gov.nasa.jpl.oodt.cas.commons.spring.postprocessor.SetIdBeanPostProcessor"/>    
+    <bean class="org.apache.oodt.cas.commons.spring.postprocessor.SetIdBeanPostProcessor"/>    
     
-    <bean id="crawlerId" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="crawlerId" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="cid"/>
         <property name="longOption" value="crawlerId"/>
         <property name="description" value="The ProductCrawler bean id of the crawler to use"/>        
@@ -26,7 +31,7 @@
         <property name="required" value="true"/>
     </bean>
 
-    <bean id="printSupportedActions" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="printSupportedActions" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="psa"/>
         <property name="longOption" value="printSupportedActions"/>
         <property name="description" value="Prints a list and description of all supported CrawlerActions"/>        
@@ -34,7 +39,7 @@
         <property name="required" value="false"/>
         <property name="performAndQuit" value="true"/>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOptionCrawlerActionInfoHandler">
+            <bean class="org.apache.oodt.cas.crawl.option.CmdLineOptionCrawlerActionInfoHandler">
                 <property name="applicationContext">
                     <bean class="org.springframework.context.support.ClassPathXmlApplicationContext">
                         <constructor-arg value="gov/nasa/jpl/oodt/cas/crawl/action/action-beans.xml"/>        
@@ -44,7 +49,7 @@
         </property>
     </bean>
     
-    <bean id="printSupportedCrawlers" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="printSupportedCrawlers" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="psc"/>
         <property name="longOption" value="printSupportedCrawlers"/>
         <property name="description" value="Prints a list of all supported ProductCrawlers"/>        
@@ -52,7 +57,7 @@
         <property name="required" value="false"/>
         <property name="performAndQuit" value="true"/>        
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOptionProductCrawlerInfoHandler">
+            <bean class="org.apache.oodt.cas.crawl.option.CmdLineOptionProductCrawlerInfoHandler">
                 <property name="applicationContext">
                     <bean class="org.springframework.context.support.ClassPathXmlApplicationContext">
                         <constructor-arg value="/gov/nasa/jpl/oodt/cas/crawl/crawler-beans.xml"/>        
@@ -62,7 +67,7 @@
         </property>
     </bean>
     
-    <bean id="printSupportedPreconditions" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="printSupportedPreconditions" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="psp"/>
         <property name="longOption" value="printSupportedPreconditions"/>
         <property name="description" value="Prints a list and description of all supported Preconditions"/>        
@@ -70,7 +75,7 @@
         <property name="required" value="false"/>
         <property name="performAndQuit" value="true"/>        
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.crawl.option.CmdLineOptionPreconditionInfoHandler">
+            <bean class="org.apache.oodt.cas.crawl.option.CmdLineOptionPreconditionInfoHandler">
                 <property name="applicationContext">
                     <bean class="org.springframework.context.support.ClassPathXmlApplicationContext">
                         <constructor-arg value="/gov/nasa/jpl/oodt/cas/crawl/comparator/precondition-beans.xml"/>        
@@ -80,7 +85,7 @@
         </property>
     </bean>
 
-    <bean id="filemgrUrl" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="filemgrUrl" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="fm"/>
         <property name="longOption" value="filemgrUrl"/>
         <property name="description" value="File Manager URL"/>        
@@ -88,21 +93,21 @@
         <property name="optionArgName" value="url"/>
         <property name="required" value="true"/>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="Unique"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AprioriUniquessCheckWithFilemgr"/>                 
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="Unique"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AprioriUniquessCheckWithFilemgr"/>                 
                     </list>
                 </property>
             </bean>
         </property>
         <property name="validators">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.validator.ArgRegExpCmdLineOptionValidator">
+                <bean class="org.apache.oodt.cas.commons.option.validator.ArgRegExpCmdLineOptionValidator">
                     <property name="allowedArgs">
                         <list>
                             <value>http://.*:\d*</value>
@@ -113,7 +118,7 @@
         </property>
     </bean>
 
-    <bean id="failureDir" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="failureDir" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="fd"/>
         <property name="longOption" value="failureDir"/>
         <property name="description" value="Directory where files will be moved on failure"/>
@@ -122,7 +127,7 @@
         <property name="required" value="true"/>
         <property name="requiredOptions">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.required.RequiredOption">
+                <bean class="org.apache.oodt.cas.commons.option.required.RequiredOption">
                     <property name="optionLongName" value="actionIds"/>
                     <property name="requireAllValues" value="false"/>                            
                     <property name="optionValues">
@@ -136,24 +141,24 @@
             </list>
         </property>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MoveMetadataToFailureDir" p:methodName="setToDir"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MovePushpullMetFileToFailureDir" p:methodName="setToDir"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MoveDataFileToFailureDir" p:methodName="setToDir"/>            
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MoveMetadataToFailureDir" p:methodName="setToDir"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MovePushpullMetFileToFailureDir" p:methodName="setToDir"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MoveDataFileToFailureDir" p:methodName="setToDir"/>            
                     </list>
                 </property>
             </bean>
         </property>
         <property name="validators">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.validator.FileExistCmdLineOptionValidator"/>
+                <bean class="org.apache.oodt.cas.commons.option.validator.FileExistCmdLineOptionValidator"/>
             </list>
         </property>
     </bean>
     
-    <bean id="successDir" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="successDir" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="sd"/>
         <property name="longOption" value="successDir"/>
         <property name="description" value="Directory where files will be moved on success"/>
@@ -162,7 +167,7 @@
         <property name="required" value="true"/>
         <property name="requiredOptions">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.required.RequiredOption">
+                <bean class="org.apache.oodt.cas.commons.option.required.RequiredOption">
                     <property name="optionLongName" value="actionIds"/>
                     <property name="requireAllValues" value="false"/>                            
                     <property name="optionValues">
@@ -175,23 +180,23 @@
             </list>
         </property>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MovePushpullMetFileToBackupDir" p:methodName="setToDir"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MoveMetadataToBackupDir" p:methodName="setToDir"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MovePushpullMetFileToBackupDir" p:methodName="setToDir"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MoveMetadataToBackupDir" p:methodName="setToDir"/>
                     </list>
                 </property>
             </bean>
         </property>
         <property name="validators">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.validator.FileExistCmdLineOptionValidator"/>
+                <bean class="org.apache.oodt.cas.commons.option.validator.FileExistCmdLineOptionValidator"/>
             </list>
         </property>
     </bean>
     
-    <bean id="workflowMgrUrl" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="workflowMgrUrl" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="wm"/>
         <property name="longOption" value="workflowMgrUrl"/>
         <property name="description" value="Workflow Manager URL"/>
@@ -200,7 +205,7 @@
         <property name="required" value="true"/>
         <property name="requiredOptions">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.required.RequiredOption">
+                <bean class="org.apache.oodt.cas.commons.option.required.RequiredOption">
                     <property name="optionLongName" value="actionIds"/>
                     <property name="requireAllValues" value="false"/>                            
                     <property name="optionValues">
@@ -212,17 +217,17 @@
             </list>
         </property>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="UpdateWorkflowStatusToIngest"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="UpdateWorkflowStatusToIngest"/>
                     </list>
                 </property>
             </bean>
         </property>
         <property name="validators">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.validator.ArgRegExpCmdLineOptionValidator">
+                <bean class="org.apache.oodt.cas.commons.option.validator.ArgRegExpCmdLineOptionValidator">
                     <property name="allowedArgs">
                         <list>
                             <value>http://.*:\d*</value>
@@ -233,7 +238,7 @@
         </property>
     </bean>
     
-    <bean id="clientTransferer" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="clientTransferer" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="ct"/>
         <property name="longOption" value="clientTransferer"/>
         <property name="description" value="File Manager data transferer factory class"/>      
@@ -241,24 +246,24 @@
         <property name="optionArgName" value="class"/>
         <property name="required" value="true"/>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>
                     </list>
                 </property>
             </bean>
         </property>
         <property name="validators">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.validator.ClassExistsCmdLineOptionValidator"/>
+                <bean class="org.apache.oodt.cas.commons.option.validator.ClassExistsCmdLineOptionValidator"/>
             </list>
         </property>
     </bean>
     
-    <bean id="requiredMetadata" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="requiredMetadata" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="rqm"/>
         <property name="longOption" value="requiredMetadata"/>
         <property name="description" value="Metadata required for ingest to take place"/>    
@@ -267,19 +272,19 @@
         <property name="required" value="false"/>
         <property name="type" value="java.util.List"/>        
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>         
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>         
                     </list>
                 </property>
             </bean>
         </property>
     </bean>
     
-    <bean id="actionIds" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="actionIds" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="ais"/>
         <property name="longOption" value="actionIds"/>
         <property name="description" value="CrawlerActions that should be performed"/>      
@@ -288,19 +293,19 @@
         <property name="required" value="false"/>
         <property name="type" value="java.util.List"/>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>          
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>          
                     </list>
                 </property>
             </bean>
         </property>
     </bean>
     
-    <bean id="preCondIds" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="preCondIds" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="pids"/>
         <property name="longOption" value="preCondIds"/>
         <property name="description" value="PreConditionComparator ids that must pass before any metadata extraction will run"/>      
@@ -309,74 +314,74 @@
         <property name="required" value="false"/>
         <property name="type" value="java.util.List"/>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
                     </list>
                 </property>
             </bean>
         </property>
     </bean>
     
-    <bean id="noRecur" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="noRecur" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="nr"/>
         <property name="longOption" value="noRecur"/>
         <property name="description" value="Turns off recursive crawling - will only process files in productPath directory"/>     
         <property name="hasArgs" value="false"/>
         <property name="required" value="false"/>  
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>               
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>               
                     </list>
                 </property>
             </bean>
         </property>
     </bean>
     
-    <bean id="crawlForDirs" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="crawlForDirs" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="cfd"/>
         <property name="longOption" value="crawlForDirs"/>
         <property name="description" value="Will crawl for directories instead of files"/>
         <property name="hasArgs" value="false"/>
         <property name="required" value="false"/>  
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>                  
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>                  
                     </list>
                 </property>
             </bean>
         </property>
     </bean>
     
-    <bean id="skipIngest" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="skipIngest" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="si"/>
         <property name="longOption" value="skipIngest"/>
         <property name="description" value="Will skip ingest to file manager and any post ingest actions"/>
         <property name="hasArgs" value="false"/>
         <property name="required" value="false"/>  
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>                  
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>                  
                     </list>
                 </property>
             </bean>
         </property>
     </bean>
     
-    <bean id="daemonPort" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="daemonPort" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="dp"/>
         <property name="longOption" value="daemonPort"/>
         <property name="description" value="Cause crawler to become a daemon with a XML-RPC webserver started on the given port number"/>   
@@ -385,19 +390,19 @@
         <property name="required" value="false"/>  
         <property name="type" value="int"/>        
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>            
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>            
                     </list>
                 </property>
             </bean>
         </property>
         <property name="validators">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.validator.ArgRegExpCmdLineOptionValidator">
+                <bean class="org.apache.oodt.cas.commons.option.validator.ArgRegExpCmdLineOptionValidator">
                     <property name="allowedArgs">
                         <list>
                             <value>\d*</value>
@@ -408,7 +413,7 @@
         </property>
     </bean>
     
-    <bean id="daemonWait" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="daemonWait" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="dw"/>
         <property name="longOption" value="daemonWait"/>
         <property name="description" value="Cause crawler to become a daemon and sleep for given number of seconds between crawls"/>
@@ -417,19 +422,19 @@
         <property name="required" value="false"/>
         <property name="type" value="int"/>        
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>               
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>               
                     </list>
                 </property>
             </bean>
         </property>
         <property name="validators">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.validator.ArgRegExpCmdLineOptionValidator">
+                <bean class="org.apache.oodt.cas.commons.option.validator.ArgRegExpCmdLineOptionValidator">
                     <property name="allowedArgs">
                         <list>
                             <value>\d*</value>
@@ -440,7 +445,7 @@
         </property>
     </bean>
     
-    <bean id="productPath" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="productPath" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="pp"/>
         <property name="longOption" value="productPath"/>
         <property name="description" value="Root directory to crawl"/> 
@@ -448,24 +453,24 @@
         <property name="optionArgName" value="directory"/>
         <property name="required" value="true"/>  
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>                   
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>                   
                     </list>
                 </property>
             </bean>
         </property>
         <property name="validators">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.validator.FileExistCmdLineOptionValidator"/>
+                <bean class="org.apache.oodt.cas.commons.option.validator.FileExistCmdLineOptionValidator"/>
             </list>
         </property>
     </bean>
     
-    <bean id="metFileExtension" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="metFileExtension" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="mfx"/>
         <property name="longOption" value="metFileExtension"/>
         <property name="description" value="The file extension of existing and to be created PCS metadata files"/>  
@@ -474,7 +479,7 @@
         <property name="required" value="true"/>
         <property name="requiredOptions">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.required.RequiredOption">
+                <bean class="org.apache.oodt.cas.commons.option.required.RequiredOption">
                     <property name="optionLongName" value="crawlerId"/>
                     <property name="requireAllValues" value="true"/>                            
                     <property name="optionValues">
@@ -483,7 +488,7 @@
                         </list>
                     </property>                                                  
                 </bean>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.required.RequiredOption">
+                <bean class="org.apache.oodt.cas.commons.option.required.RequiredOption">
                     <property name="optionLongName" value="actionIds"/>
                     <property name="requireAllValues" value="false"/>                            
                     <property name="optionValues">
@@ -497,20 +502,20 @@
             </list>
         </property>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="DeleteMetadataFile" p:methodName="setFileExtension"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MoveMetadataToBackupDir" p:methodName="setFileExtension"/>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MoveMetadataToFailureDir" p:methodName="setFileExtension"/> 
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="StdProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="DeleteMetadataFile" p:methodName="setFileExtension"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MoveMetadataToBackupDir" p:methodName="setFileExtension"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MoveMetadataToFailureDir" p:methodName="setFileExtension"/> 
                     </list>
                 </property>
             </bean>
         </property>
     </bean>
     
-    <bean id="metExtractor" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="metExtractor" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="mx"/>
         <property name="longOption" value="metExtractor"/>
         <property name="description" value="Metadata extractor class to use"/>     
@@ -519,7 +524,7 @@
         <property name="required" value="true"/>  
         <property name="requiredOptions">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.required.RequiredOption">
+                <bean class="org.apache.oodt.cas.commons.option.required.RequiredOption">
                     <property name="optionLongName" value="crawlerId"/>
                     <property name="requireAllValues" value="true"/>                            
                     <property name="optionValues">
@@ -531,22 +536,22 @@
             </list>
         </property>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
                     </list>
                 </property>
             </bean>
         </property>
         <property name="validators">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.validator.ClassExistsCmdLineOptionValidator"/>
+                <bean class="org.apache.oodt.cas.commons.option.validator.ClassExistsCmdLineOptionValidator"/>
             </list>
         </property>    
     </bean>
     
-    <bean id="metExtractorConfig" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="metExtractorConfig" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="mxc"/>
         <property name="longOption" value="metExtractorConfig"/>
         <property name="description" value="Config file for metadata extractor"/> 
@@ -555,7 +560,7 @@
         <property name="required" value="true"/>  
         <property name="requiredOptions">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.required.RequiredOption">
+                <bean class="org.apache.oodt.cas.commons.option.required.RequiredOption">
                     <property name="optionLongName" value="crawlerId"/>
                     <property name="requireAllValues" value="true"/>                            
                     <property name="optionValues">
@@ -567,22 +572,22 @@
             </list>
         </property>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MetExtractorProductCrawler"/>
                     </list>
                 </property>
             </bean>
         </property>
         <property name="validators">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.validator.FileExistCmdLineOptionValidator"/>
+                <bean class="org.apache.oodt.cas.commons.option.validator.FileExistCmdLineOptionValidator"/>
             </list>
         </property>
     </bean>
     
-    <bean id="mimeExtractorRepo" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="mimeExtractorRepo" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="mxr"/>
         <property name="longOption" value="mimeExtractorRepo"/>
         <property name="description" value="Mime-type to metadata extractor mapping xml file"/> 
@@ -591,7 +596,7 @@
         <property name="required" value="true"/>
         <property name="requiredOptions">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.required.RequiredOption">
+                <bean class="org.apache.oodt.cas.commons.option.required.RequiredOption">
                     <property name="optionLongName" value="crawlerId"/>
                     <property name="requireAllValues" value="true"/>                            
                     <property name="optionValues">
@@ -603,22 +608,22 @@
             </list>
         </property>
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>                   
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="AutoDetectProductCrawler"/>                   
                     </list>
                 </property>
             </bean>
         </property>
         <property name="validators">
             <list>
-                <bean class="gov.nasa.jpl.oodt.cas.commons.option.validator.FileExistCmdLineOptionValidator"/>
+                <bean class="org.apache.oodt.cas.commons.option.validator.FileExistCmdLineOptionValidator"/>
             </list>
         </property>
     </bean>
     
-    <bean id="pushpullMetFileExtension" class="gov.nasa.jpl.oodt.cas.commons.option.CmdLineOption">
+    <bean id="pushpullMetFileExtension" class="org.apache.oodt.cas.commons.option.CmdLineOption">
         <property name="shortOption" value="ppmfx"/>
         <property name="longOption" value="pushpullMetFileExtension"/>
         <property name="description" value="File extension of push-pull metadata files"/>  
@@ -626,13 +631,13 @@
         <property name="optionArgName" value="file extension"/>
         <property name="required" value="false"/>  
         <property name="handler">
-            <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
+            <bean class="org.apache.oodt.cas.commons.option.handler.CmdLineOptionBeanHandler">
                 <property name="applyToBeans">
                     <list>
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="DeletePushpullMetFile" p:methodName="setFileExtension"/>                   
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MovePushpullMetFileToBackupDir" p:methodName="setFileExtension"/>                   
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MovePushpullMetFileToFailureDir" p:methodName="setFileExtension"/>                   
-                        <bean class="gov.nasa.jpl.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="CheckThatPushPullMetFileExists" p:methodName="setFileExtension"/>
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="DeletePushpullMetFile" p:methodName="setFileExtension"/>                   
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MovePushpullMetFileToBackupDir" p:methodName="setFileExtension"/>                   
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="MovePushpullMetFileToFailureDir" p:methodName="setFileExtension"/>                   
+                        <bean class="org.apache.oodt.cas.commons.option.handler.BeanInfo" p:bean-ref="CheckThatPushPullMetFileExists" p:methodName="setFileExtension"/>
                     </list>
                 </property>
             </bean>

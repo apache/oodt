@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (c) 2009 California Institute of Technology.
-  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
 
-  $Id$
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
 -->
-
 <document>
    <properties>
       <title>CAS Crawler User Guide</title>
@@ -375,7 +384,7 @@
                --failureDir /tmp \
                --actionIds DeleteDataFile MoveDataFileToFailureDir Unique \
                --metFileExtension met \
-               --clientTransferer gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory
+               --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory
       </source>
 
       <p>You should see a response message at the end similar to:</p>
@@ -385,45 +394,45 @@
       log4j:WARN Please initialize the log4j system properly.
       http://localhost:9000
       StdProductCrawler
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.crawl.ProductCrawler crawl
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler crawl
       INFO: Crawling /data/test
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.crawl.ProductCrawler handleFile
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler handleFile
       INFO: Handling file /data/test/blah.txt
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.metadata.extractors.MetReaderExtractor extrMetadata
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.metadata.extractors.MetReaderExtractor extrMetadata
       INFO: Reading metadata from /data/test/blah.txt.met
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.crawl.ProductCrawler ingest
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler ingest
       INFO: ProductCrawler: Ready to ingest product: [/data/test/blah.txt]: ProductType: [GenericFile]
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.filemgr.ingest.StdIngester setFileManager
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.ingest.StdIngester setFileManager
       INFO: StdIngester: connected to file manager: [http://localhost:9000]
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferer setFileManagerUrl
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferer setFileManagerUrl
       INFO: Local Data Transfer to: [http://localhost:9000] enabled
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.filemgr.ingest.StdIngester ingest
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.ingest.StdIngester ingest
       INFO: StdIngester: ingesting product: ProductName: [blah.txt]: ProductType: [GenericFile]: FileLocation: [/data/test/]
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.filemgr.versioning.VersioningUtils createBasicDataStoreRefsFlat
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.versioning.VersioningUtils createBasicDataStoreRefsFlat
       FINE: VersioningUtils: Generated data store ref: file:/Users/mattmann/files/blah.txt/blah.txt from origRef: file:/data/test/blah.txt
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManager runExtractors
-      INFO: Running Met Extractor: [gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor] for product type: [GenericFile]
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManager runExtractors
-      INFO: Running Met Extractor: [gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor] for product type: [GenericFile]
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalog toDoc
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.system.XmlRpcFileManager runExtractors
+      INFO: Running Met Extractor: [org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor] for product type: [GenericFile]
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.system.XmlRpcFileManager runExtractors
+      INFO: Running Met Extractor: [org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor] for product type: [GenericFile]
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.catalog.LuceneCatalog toDoc
       WARNING: No Metadata specified for product [blah.txt] for required field [DataVersion]: Attempting to continue processing metadata
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManagerClient ingestProduct
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient ingestProduct
       FINEST: File Manager Client: clientTransfer enabled: transfering product [blah.txt]
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferer moveFile
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferer moveFile
       INFO: LocalDataTransfer: Moving File: file:/data/test/blah.txt to file:/Users/mattmann/files/blah.txt/blah.txt
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalog toDoc
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.catalog.LuceneCatalog toDoc
       WARNING: No Metadata specified for product [blah.txt] for required field [DataVersion]: Attempting to continue processing metadata
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.crawl.ProductCrawler ingest
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler ingest
       INFO: Successfully ingested product: [/data/test/blah.txt]: product id: 72db4bba-658a-11de-bedb-77f2d752c436
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.crawl.ProductCrawler handleFile
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler handleFile
       INFO: Successful ingest of product: [/data/test/blah.txt]
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.crawl.ProductCrawler performProductCrawlerActions
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler performProductCrawlerActions
       INFO: Performing action (id = DeleteDataFile : description = Deletes the current data file)
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.crawl.action.DeleteFile performAction
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.action.DeleteFile performAction
       INFO: Deleting file /data/test/blah.txt
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.crawl.ProductCrawler handleFile
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler handleFile
       INFO: Handling file /data/test/blah.txt.met
-      Jun 30, 2009 8:26:57 AM gov.nasa.jpl.oodt.cas.crawl.ProductCrawler handleFile
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler handleFile
       WARNING: Failed to pass preconditions for ingest of product: [/data/test/blah.txt.met]
       </source>
 
@@ -464,16 +473,16 @@
        <table>
          <tr>
            <td>actions</td>
-           <td>gov.nasa.jpl.oodt.cas.crawl.action.DeleteFile<br/>
-               gov.nasa.jpl.oodt.cas.crawl.action.FilemgrUniquenessChecker<br/>
-               gov.nasa.jpl.oodt.cas.crawl.action.MimeTypeCrawlerAction<br/>
-               gov.nasa.jpl.oodt.cas.crawl.action.MoveFile<br/>
-               gov.nasa.jpl.oodt.cas.crawl.action.WorkflowMgrStatusUpdate
+           <td>org.apache.oodt.cas.crawl.action.DeleteFile<br/>
+               org.apache.oodt.cas.crawl.action.FilemgrUniquenessChecker<br/>
+               org.apache.oodt.cas.crawl.action.MimeTypeCrawlerAction<br/>
+               org.apache.oodt.cas.crawl.action.MoveFile<br/>
+               org.apache.oodt.cas.crawl.action.WorkflowMgrStatusUpdate
            </td>
          </tr>
          <tr>
            <td>preconditions</td>
-           <td>gov.nasa.jpl.oodt.cas.crawl.comparator.FilemgrUniquenessCheckComparator
+           <td>org.apache.oodt.cas.crawl.comparator.FilemgrUniquenessCheckComparator
            </td>
          </tr>
        </table>

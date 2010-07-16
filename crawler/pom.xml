@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>gov.nasa.jpl.oodt</groupId>
+    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>2.0</version>
+    <version>${oodt.version}</version>
+    <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <artifactId>cas-crawler</artifactId>
+  <artifactId>crawler</artifactId>
   <name>Catalog and Archive Crawling Framework</name>
   <version>2.3.0-dev</version>
   <description>The Catalog and Archive Service Crawling Framework.</description>
@@ -53,7 +70,7 @@
           </descriptors>
           <archive>
             <manifest>
-              <mainClass>gov.nasa.jpl.oodt.cas.crawl.CrawlerLauncher</mainClass>
+              <mainClass>org.apache.oodt.cas.crawl.CrawlerLauncher</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -69,7 +86,7 @@
     </plugins>
     <resources>
       <resource>
-        <targetPath>gov/nasa/jpl/oodt/cas/crawl</targetPath>
+        <targetPath>org/apache/oodt/cas/crawl</targetPath>
         <directory>${basedir}/src/main/resources</directory>
         <includes>
           <include>crawler-beans.xml</include>
@@ -77,21 +94,21 @@
         </includes>
       </resource>
       <resource>
-        <targetPath>gov/nasa/jpl/oodt/cas/crawl/action</targetPath>
+        <targetPath>org/apache/oodt/cas/crawl/action</targetPath>
         <directory>${basedir}/src/main/resources</directory>
         <includes>
           <include>action-beans.xml</include>
         </includes>
       </resource>
       <resource>
-        <targetPath>gov/nasa/jpl/oodt/cas/crawl/option</targetPath>
+        <targetPath>org/apache/oodt/cas/crawl/option</targetPath>
         <directory>${basedir}/src/main/resources</directory>
         <includes>
           <include>cmd-line-option-beans.xml</include>
         </includes>
       </resource>
       <resource>
-        <targetPath>gov/nasa/jpl/oodt/cas/crawl/comparator</targetPath>
+        <targetPath>org/apache/oodt/cas/crawl/comparator</targetPath>
         <directory>${basedir}/src/main/resources</directory>
         <includes>
           <include>precondition-beans.xml</include>
@@ -101,29 +118,24 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
-      <artifactId>cas-commons</artifactId>
-      <version>1.1.1</version>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+      <version>${oodt.version}</version>
     </dependency>    
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
+      <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>1.6.1</version>
+      <version>${oodt.version}</version>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
-      <artifactId>cas-filemgr</artifactId>
-      <version>1.7.2</version>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>filemgr</artifactId>
+      <version>1.9.0-dev</version>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
-      <artifactId>cas-workflow</artifactId>
-      <version>1.5.1</version>
-    </dependency>
-    <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
-      <artifactId>edm-commons</artifactId>
-      <version>2.2.11-dev</version>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>workflow</artifactId>
+      <version>${oodt.version}</version>
     </dependency>
     <dependency>
       <groupId>apache</groupId>

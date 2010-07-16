@@ -45,7 +45,7 @@ the License.
         <module>filemgr</module>
         <!-- broken: <module>catalog</module> -->
         <module>workflow</module>
-        <!-- broken: <module>crawler</module>         -->
+        <module>crawler</module>
         <module>resource</module>
         <!-- broken: <module>curator</module> -->
         <!-- broken: <module>pge</module> -->
