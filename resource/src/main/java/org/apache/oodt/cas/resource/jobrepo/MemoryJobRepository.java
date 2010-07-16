@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 //OODT imports
-import jpl.eda.util.DateConvert;
+import org.apache.oodt.commons.util.DateConvert;
 import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.JobStatus;
 import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;

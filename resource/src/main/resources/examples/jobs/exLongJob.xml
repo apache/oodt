@@ -2,9 +2,9 @@
 <cas:job xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" id="abcd"
 	name="TestJob">
 	<instanceClass
-		name="gov.nasa.jpl.oodt.cas.resource.examples.LongJob" />
+		name="org.apache.oodt.cas.resource.examples.LongJob" />
 	<inputClass
-		name="gov.nasa.jpl.oodt.cas.resource.structs.NameValueJobInput">
+		name="org.apache.oodt.cas.resource.structs.NameValueJobInput">
 		<properties>
 			<property name="wait" value="60" />
 		</properties>

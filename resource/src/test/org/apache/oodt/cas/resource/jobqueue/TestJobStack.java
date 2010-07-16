@@ -16,17 +16,17 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.resource.jobqueue;
+package org.apache.oodt.cas.resource.jobqueue;
 
 //JDK imports
 import java.util.List;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.resource.jobrepo.JobRepository;
-import gov.nasa.jpl.oodt.cas.resource.jobrepo.MemoryJobRepository;
-import gov.nasa.jpl.oodt.cas.resource.structs.Job;
-import gov.nasa.jpl.oodt.cas.resource.structs.JobInput;
-import gov.nasa.jpl.oodt.cas.resource.structs.JobSpec;
+import org.apache.oodt.cas.resource.jobrepo.JobRepository;
+import org.apache.oodt.cas.resource.jobrepo.MemoryJobRepository;
+import org.apache.oodt.cas.resource.structs.Job;
+import org.apache.oodt.cas.resource.structs.JobInput;
+import org.apache.oodt.cas.resource.structs.JobSpec;
 
 //Junit imports
 import junit.framework.TestCase;

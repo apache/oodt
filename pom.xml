@@ -46,7 +46,7 @@ the License.
         <!-- broken: <module>catalog</module> -->
         <!-- broken: <module>workflow</module> -->
         <!-- broken: <module>crawler</module>         -->
-        <!-- broken: <module>resource</module> -->
+        <module>resource</module>
         <!-- broken: <module>curator</module> -->
         <!-- broken: <module>pge</module> -->
         <!-- broken: <module>mvn/plugins/cas-install</module> -->

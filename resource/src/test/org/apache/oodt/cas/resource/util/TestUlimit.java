@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.resource.util;
+package org.apache.oodt.cas.resource.util;
 
 //JDK imports
 import junit.framework.TestCase;

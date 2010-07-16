@@ -16,11 +16,11 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.resource.monitor;
+package org.apache.oodt.cas.resource.monitor;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.resource.structs.ResourceNode;
-import gov.nasa.jpl.oodt.cas.resource.structs.exceptions.MonitorException;
+import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 //JDK imports
 import java.io.File;

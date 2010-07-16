@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (c) 2008 California Institute of Technology.
-  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
 
-  $Id$
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
 -->
-
 <document>
    <properties>
       <title>CAS Resource Manager User Guide</title>
@@ -330,7 +339,7 @@
              extension points.. These defaults can be changed quite easily by changing the factory classes 
              that are pointed to for each extension point. For example, to use your own own home Scheduler 
              extension point, you would change the following property, <code>resmgr.scheduler.factory</code> to 
-             <code>gov.nasa.jpl.oodt.cas.resmgr.scheduler.YourNewSchedulerFactory</code>
+             <code>org.apache.oodt.cas.resmgr.scheduler.YourNewSchedulerFactory</code>
             </li>
             <li>You need to configure the properties for each of the extension points that you are 
             using. By default, you would at least need to configure:
@@ -369,9 +378,9 @@
       &lt;cas:job xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" id="abcd"
 	      name="TestJob"&gt;
 	      &lt;instanceClass
-		name="gov.nasa.jpl.oodt.cas.resource.examples.HelloWorldJob" /&gt;
+		name="org.apache.oodt.cas.resource.examples.HelloWorldJob" /&gt;
 	  &lt;inputClass
-		name="gov.nasa.jpl.oodt.cas.resource.structs.NameValueJobInput"&gt;
+		name="org.apache.oodt.cas.resource.structs.NameValueJobInput"&gt;
 		&lt;properties&gt;
 			&lt;property name="user.name" value="Homer!" /&gt;
 		&lt;/properties&gt;
@@ -381,7 +390,7 @@
      &lt;/cas:job&gt;
     </source>
     
-      <p>The above job definition tells the resource manager to execute the <code>gov.nasa.jpl.oodt.cas.resource.examples.HelloWorldJob</code>,
+      <p>The above job definition tells the resource manager to execute the <code>org.apache.oodt.cas.resource.examples.HelloWorldJob</code>,
       which is one of the example Jobs that is shipped with the Resource Manager. The job simply echoes the name provided in the <code>user.name</code>
       property back to the screen, saying <code>Hello ${user.name}!</code>.
       </p>
@@ -394,7 +403,7 @@
       <p>The command to run the job, assuming that you started the Resource Manager on the default port of <code>9002</code>:</p>
 
       <source>
-      java -Djava.ext.dirs=../lib gov.nasa.jpl.oodt.cas.resource.tools.JobSubmitter \
+      java -Djava.ext.dirs=../lib org.apache.oodt.cas.resource.tools.JobSubmitter \
                        --rUrl http://localhost:9002 \
                        --file /usr/local/resmgr/examples/exJob.xml
       </source>
@@ -402,16 +411,16 @@
       <p>You should see a response message at the end similar to:</p>
 
       <source>
-      Mar 5, 2008 10:45:26 AM gov.nasa.jpl.oodt.cas.resource.jobqueue.JobStack addJob<br/>
+      Mar 5, 2008 10:45:26 AM org.apache.oodt.cas.resource.jobqueue.JobStack addJob<br/>
       INFO: Added Job: [2008-03-05T10:45:26.148-08:00] to queue<br/>
-      Mar 5, 2008 10:45:26 AM gov.nasa.jpl.oodt.cas.resource.tools.JobSubmitter main<br/>
+      Mar 5, 2008 10:45:26 AM org.apache.oodt.cas.resource.tools.JobSubmitter main<br/>
       INFO: Job Submitted: id: [2008-03-05T10:45:26.148-08:00]<br/>
-      Mar 5, 2008 10:45:27 AM gov.nasa.jpl.oodt.cas.resource.scheduler.LRUScheduler run<br/>
+      Mar 5, 2008 10:45:27 AM org.apache.oodt.cas.resource.scheduler.LRUScheduler run<br/>
       INFO: Obtained Job: [2008-03-05T10:45:26.148-08:00] from Queue: Scheduling for execution<br/>
-      Mar 5, 2008 10:45:27 AM gov.nasa.jpl.oodt.cas.resource.scheduler.LRUScheduler schedule<br/>
+      Mar 5, 2008 10:45:27 AM org.apache.oodt.cas.resource.scheduler.LRUScheduler schedule<br/>
       INFO: Assigning job: [TestJob] to node: [node001] <br/>
-      Mar 5, 2008 10:45:27 AM gov.nasa.jpl.oodt.cas.resource.system.extern.XmlRpcBatchStub genericExecuteJob<br/>
-      INFO: stub attempting to execute class: [gov.nasa.jpl.oodt.cas.resource.examples.HelloWorldJob]<br/>
+      Mar 5, 2008 10:45:27 AM org.apache.oodt.cas.resource.system.extern.XmlRpcBatchStub genericExecuteJob<br/>
+      INFO: stub attempting to execute class: [org.apache.oodt.cas.resource.examples.HelloWorldJob]<br/>
       Hello world! How are you Homer!!
       </source>
 
@@ -450,27 +459,27 @@
        <table>
          <tr>
            <td>resource.batchmgr.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.resource.batchmgr.XmlRpcBatchMgrFactory
+           <td>org.apache.oodt.cas.resource.batchmgr.XmlRpcBatchMgrFactory
            </td>
          </tr>
          <tr>
            <td>resource.monitor.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.resource.monitor.XMLAssignmentMonitorFactory
+           <td>org.apache.oodt.cas.resource.monitor.XMLAssignmentMonitorFactory
            </td>
          </tr>
          <tr>
            <td>resource.scheduler.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.resource.scheduler.LRUSchedulerFactory
+           <td>org.apache.oodt.cas.resource.scheduler.LRUSchedulerFactory
            </td>
          </tr>
          <tr>
            <td>resource.jobqueue.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.resource.jobqueue.JobStackJobQueueFactory
+           <td>org.apache.oodt.cas.resource.jobqueue.JobStackJobQueueFactory
            </td>
          </tr>
          <tr>
            <td>resource.jobrepo.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.resource.jobrepo.MemoryJobRepositoryFactory</td>
+           <td>org.apache.oodt.cas.resource.jobrepo.MemoryJobRepositoryFactory</td>
          </tr>
        </table>
       
