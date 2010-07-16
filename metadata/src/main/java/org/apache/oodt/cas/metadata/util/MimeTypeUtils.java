@@ -166,7 +166,7 @@ public final class MimeTypeUtils {
 
         // if returned null, or if it's the default type then try url resolution
         if (type == null
-                || (type != null && type.getName().equals(MimeTypes.DEFAULT))) {
+                || (type != null && type.getName().equals(MimeTypes.OCTET_STREAM))) {
             // If no mime-type header, or cannot find a corresponding registered
             // mime-type, then guess a mime-type from the url pattern
             type = this.mimeTypes.getMimeType(url) != null ? this.mimeTypes
@@ -182,7 +182,7 @@ public final class MimeTypeUtils {
         if (this.mimeMagic) {
             MimeType magicType = this.mimeTypes.getMimeType(data);
             if (magicType != null
-                    && !magicType.getName().equals(MimeTypes.DEFAULT)
+                    && !magicType.getName().equals(MimeTypes.OCTET_STREAM)
                     && type != null
                     && !type.getName().equals(magicType.getName())) {
                 // If magic enabled and the current mime type differs from that
@@ -196,7 +196,7 @@ public final class MimeTypeUtils {
             // default type
             if (type == null) {
                 try {
-                    type = this.mimeTypes.forName(MimeTypes.DEFAULT);
+                    type = this.mimeTypes.forName(MimeTypes.OCTET_STREAM);
                 } catch (Exception ignore) {
                 }
             }

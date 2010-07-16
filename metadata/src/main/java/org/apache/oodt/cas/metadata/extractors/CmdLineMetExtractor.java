@@ -29,6 +29,7 @@ import java.util.logging.Level;
 //OODT imports
 import org.apache.oodt.cas.metadata.AbstractMetExtractor;
 import org.apache.oodt.cas.metadata.MetExtractorConfigReader;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.exec.EnvUtilities;
 import org.apache.oodt.commons.xml.XMLUtils;
@@ -46,81 +47,82 @@ import org.apache.oodt.commons.xml.XMLUtils;
  */
 public abstract class CmdLineMetExtractor extends AbstractMetExtractor {
 
-    public CmdLineMetExtractor(MetExtractorConfigReader reader) {
-        super(reader);
-    }
+  public CmdLineMetExtractor(MetExtractorConfigReader reader) {
+      super(reader);
+  }
 
-    protected static void processMain(String[] args,
-            CmdLineMetExtractor extractor) throws Exception {
-        String usage = "Usage: " + extractor.getClass().getName()
-                + " <file> <configfile>";
-        String extractFilePath = null, configFilePath = null;
+  protected static void processMain(String[] args,
+          CmdLineMetExtractor extractor) throws Exception {
+      String usage = "Usage: " + extractor.getClass().getName()
+              + " <file> <configfile>";
+      String extractFilePath = null, configFilePath = null;
 
-        if (args.length < 2) {
-            System.err.println(usage);
-            System.exit(1);
-        }
+      if (args.length < 2) {
+          System.err.println(usage);
+          System.exit(1);
+      }
 
-        extractFilePath = args[0].replaceAll("\\\\", "");
-        configFilePath = args[1];
+      extractFilePath = args[0].replaceAll("\\\\", "");
+      configFilePath = args[1];
 
-        Metadata met = extractor.extractMetadata(new File(extractFilePath),
-                configFilePath);
-        XMLUtils.writeXmlToStream(met.toXML(),
-                getMetFileOutputStream(extractFilePath));
-    }
+      Metadata met = extractor.extractMetadata(new File(extractFilePath),
+              configFilePath);
+      XMLUtils.writeXmlToStream(new SerializableMetadata(met).toXML(),
+              getMetFileOutputStream(extractFilePath));
+  }
 
-    protected static void processMain(String[] args,
-            CmdLineMetExtractor extractor, OutputStream os) throws Exception {
-        String usage = "Usage: " + extractor.getClass().getName()
-                + " <file> <configfile>";
-        String extractFilePath = null, configFilePath = null;
+  protected static void processMain(String[] args,
+          CmdLineMetExtractor extractor, OutputStream os) throws Exception {
+      String usage = "Usage: " + extractor.getClass().getName()
+              + " <file> <configfile>";
+      String extractFilePath = null, configFilePath = null;
 
-        if (args.length < 2) {
-            System.err.println(usage);
-            System.exit(1);
-        }
+      if (args.length < 2) {
+          System.err.println(usage);
+          System.exit(1);
+      }
 
-        extractFilePath = args[0].replaceAll("\\\\", "");
-        configFilePath = args[1];
+      extractFilePath = args[0].replaceAll("\\\\", "");
+      configFilePath = args[1];
 
-        Metadata met = extractor.extractMetadata(new File(extractFilePath),
-                configFilePath);
-        XMLUtils.writeXmlToStream(met.toXML(), os);
+      Metadata met = extractor.extractMetadata(new File(extractFilePath),
+              configFilePath);
+      XMLUtils.writeXmlToStream(new SerializableMetadata(met).toXML(), os);
 
-    }
+  }
 
-    private static FileOutputStream getMetFileOutputStream(String filePath) {
-        Properties envVars = EnvUtilities.getEnv();
-        String cwd = envVars.getProperty("PWD");
-        if (cwd == null) {
-            throw new RuntimeException(
-                    "Unable to get current working directory: failing!");
-        }
+  private static FileOutputStream getMetFileOutputStream(String filePath) {
+      Properties envVars = EnvUtilities.getEnv();
+      String cwd = envVars.getProperty("PWD");
+      if (cwd == null) {
+          throw new RuntimeException(
+                  "Unable to get current working directory: failing!");
+      }
 
-        if (!cwd.endsWith("/")) {
-            cwd += "/";
-        }
+      if (!cwd.endsWith("/")) {
+          cwd += "/";
+      }
 
-        String metFilePath = cwd
-                + new File(filePath).getName().replaceAll("\\\\", "") + ".met";
+      String metFilePath = cwd
+              + new File(filePath).getName().replaceAll("\\\\", "") + ".met";
 
-        // try and remove the met file, if it already exists
-        // for some reason below, the writeXmlFile method in
-        // XMLUtils doesn't overwrite, and throws an Exception
-        File metFile = new File(metFilePath);
-        if (!metFile.delete()) {
-            LOG.log(Level.WARNING, "Attempt to overwrite met file: ["
-                    + metFilePath + "] unsuccessful!");
-        }
+      // try and remove the met file, if it already exists
+      // for some reason below, the writeXmlFile method in
+      // XMLUtils doesn't overwrite, and throws an Exception
+      File metFile = new File(metFilePath);
+      if (!metFile.delete()) {
+          LOG.log(Level.WARNING, "Attempt to overwrite met file: ["
+                  + metFilePath + "] unsuccessful!");
+      }
 
-        try {
-            return new FileOutputStream(metFile);
-        } catch (FileNotFoundException e) {
-            LOG.log(Level.WARNING, "Could not create met file: [" + metFile
-                    + "]: Reason " + e.getMessage(), e);
-            return null;
-        }
-    }
+      try {
+          return new FileOutputStream(metFile);
+      } catch (FileNotFoundException e) {
+          LOG.log(Level.WARNING, "Could not create met file: [" + metFile
+                  + "]: Reason " + e.getMessage(), e);
+          return null;
+      }
+  }
 
 }
+

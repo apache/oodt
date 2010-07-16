@@ -20,9 +20,11 @@ package org.apache.oodt.cas.metadata.preconditions;
 
 //JDK imports
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.LinkedList;
 
+//Spring imports
+import org.springframework.beans.BeansException;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 //Junit imports
@@ -44,21 +46,22 @@ public class TestPreCondEvalUtils extends TestCase {
     
     private PreCondEvalUtils evalUtils;
     
-    private static final String MET_EXTR_TEST_FILE = "./src/main/resources/examples/met_extr_preconditions.xml";
 
-    public TestPreCondEvalUtils() throws FileNotFoundException,
-            ClassNotFoundException, InstantiationException,
-            IllegalAccessException {
+    public TestPreCondEvalUtils() throws ClassNotFoundException, InstantiationException,
+            IllegalAccessException, BeansException, IOException {
         this.preconditions = new LinkedList<String>();
         this.preconditions.add("CheckThatDataFileSizeIsGreaterThanZero");
         this.preconditions.add("CheckThatDataFileExists");
         this.preconditions.add("CheckDataFileMimeType");
-        this.evalUtils = new PreCondEvalUtils(new FileSystemXmlApplicationContext(MET_EXTR_TEST_FILE));
+        File preCondFile = new File(getClass().getResource("met_extr_preconditions.xml").getFile());
+        assertNotNull(preCondFile);
+        this.evalUtils = new PreCondEvalUtils(new FileSystemXmlApplicationContext(preCondFile.toURL().toExternalForm()));
     }
 
     public void testEval(){
-        File prodFile = new File(MET_EXTR_TEST_FILE);
+        File prodFile = null;
         try{
+            prodFile = new File(getClass().getResource("met_extr_preconditions.xml").getFile());
             assertTrue(this.evalUtils.eval(this.preconditions, prodFile));
         }
         catch(Throwable e){

@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.extractors.CmdLineMetExtractor;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -52,80 +53,81 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
  */
 public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
 
-    private final static String FILENAME = "Filename";
+  private final static String FILENAME = "Filename";
 
-    private final static String FILE_LOCATION = "FileLocation";
+  private final static String FILE_LOCATION = "FileLocation";
 
-    private static CopyAndRewriteConfigReader reader = new CopyAndRewriteConfigReader();
+  private static CopyAndRewriteConfigReader reader = new CopyAndRewriteConfigReader();
 
-    /**
-     * Default Constructor.
-     * 
-     */
-    public CopyAndRewriteExtractor() {
-        super(reader);
-    }
+  /**
+   * Default Constructor.
+   * 
+   */
+  public CopyAndRewriteExtractor() {
+      super(reader);
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.oodt.cas.metadata.AbstractMetExtractor#extractMetadata(java.io.File)
-     */
-    public Metadata extrMetadata(File file) throws MetExtractionException {
-        if (this.config == null) {
-            throw new MetExtractionException(
-                    "No config file defined: unable to copy and rewrite metadata!");
-        }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see gov.nasa.jpl.oodt.cas.metadata.AbstractMetExtractor#extractMetadata(java.io.File)
+   */
+  public Metadata extrMetadata(File file) throws MetExtractionException {
+      if (this.config == null) {
+          throw new MetExtractionException(
+                  "No config file defined: unable to copy and rewrite metadata!");
+      }
 
-        Metadata met = null;
-        
-        try {
-            met = new Metadata(new File(PathUtils
-                    .replaceEnvVariables(((CopyAndRewriteConfig) this.config)
-                            .getProperty("orig.met.file.path"))).toURL()
-                    .openStream());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new MetExtractionException(
-                    "error parsing original met file: ["
-                            + ((CopyAndRewriteConfig) this.config)
-                                    .getProperty("orig.met.file.path")
-                            + "]: Message: " + e.getMessage());
-        }
+      Metadata met = null;
+      
+      try {
+          met = new SerializableMetadata(new File(PathUtils
+                  .replaceEnvVariables(((CopyAndRewriteConfig) this.config)
+                          .getProperty("orig.met.file.path"))).toURL()
+                  .openStream());
+      } catch (Exception e) {
+          e.printStackTrace();
+          throw new MetExtractionException(
+                  "error parsing original met file: ["
+                          + ((CopyAndRewriteConfig) this.config)
+                                  .getProperty("orig.met.file.path")
+                          + "]: Message: " + e.getMessage());
+      }
 
-        addDefaultFields(file, met);
+      addDefaultFields(file, met);
 
-        // now override
-        int numOverrideFields = Integer
-                .parseInt(((CopyAndRewriteConfig) this.config)
-                        .getProperty("numRewriteFields"));
+      // now override
+      int numOverrideFields = Integer
+              .parseInt(((CopyAndRewriteConfig) this.config)
+                      .getProperty("numRewriteFields"));
 
-        LOG.log(Level.FINE, "Extracting metadata: num rewrite fields: ["
-                + numOverrideFields + "]");
+      LOG.log(Level.FINE, "Extracting metadata: num rewrite fields: ["
+              + numOverrideFields + "]");
 
-        for (int i = 0; i < numOverrideFields; i++) {
-            String rewriteFieldName = ((CopyAndRewriteConfig) this.config)
-                    .getProperty("rewriteField" + (i + 1));
-            String rewriteFieldStr = ((CopyAndRewriteConfig) this.config)
-                    .getProperty(rewriteFieldName + ".pattern");
-            LOG.log(Level.FINE, "Rewrite string: [" + rewriteFieldStr + "]");
-            rewriteFieldStr = PathUtils.replaceEnvVariables(rewriteFieldStr,
-                    met);
-            met.replaceMetadata(rewriteFieldName, rewriteFieldStr);
-        }
+      for (int i = 0; i < numOverrideFields; i++) {
+          String rewriteFieldName = ((CopyAndRewriteConfig) this.config)
+                  .getProperty("rewriteField" + (i + 1));
+          String rewriteFieldStr = ((CopyAndRewriteConfig) this.config)
+                  .getProperty(rewriteFieldName + ".pattern");
+          LOG.log(Level.FINE, "Rewrite string: [" + rewriteFieldStr + "]");
+          rewriteFieldStr = PathUtils.replaceEnvVariables(rewriteFieldStr,
+                  met);
+          met.replaceMetadata(rewriteFieldName, rewriteFieldStr);
+      }
 
-        return met;
+      return met;
 
-    }
+  }
 
-    public static void main(String[] args) throws Exception {
-        processMain(args, new CopyAndRewriteExtractor());
-    }
+  public static void main(String[] args) throws Exception {
+      processMain(args, new CopyAndRewriteExtractor());
+  }
 
-    private void addDefaultFields(File file, Metadata met) {
-        met.replaceMetadata(FILENAME, file.getName());
-        met.replaceMetadata(FILE_LOCATION, file.getParentFile()
-                .getAbsolutePath());
-    }
+  private void addDefaultFields(File file, Metadata met) {
+      met.replaceMetadata(FILENAME, file.getName());
+      met.replaceMetadata(FILE_LOCATION, file.getParentFile()
+              .getAbsolutePath());
+  }
 
 }
+

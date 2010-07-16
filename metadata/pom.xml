@@ -57,6 +57,16 @@ the License.
         </includes>
       </resource>
     </resources>
+    <testResources>
+      <testResource>
+         <targetPath>org/apache/oodt/cas/metadata/preconditions</targetPath>
+         <directory>${basedir}/src/testdata</directory>
+         <includes>
+             <include>met_extr_preconditions.xml</include>
+             <include>tika-mimetypes.xml</include>
+         </includes>
+     </testResource>       
+    </testResources>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -73,7 +83,6 @@ the License.
           </includes>
           <excludes>
               <!-- FIXME: These all assume $CWD, but should use getResourceAsStream instead. Later. -->
-              <exclude>org/apache/oodt/cas/metadata/preconditions/TestPreCondEvalUtils.java</exclude>
               <exclude>org/apache/oodt/cas/metadata/extractors/TestMetReader.java</exclude>
               <exclude>org/apache/oodt/cas/metadata/extractors/TestExternMetExtractor.java</exclude>
               <exclude>org/apache/oodt/cas/metadata/extractors/TestCopyAndRewriteExtractor.java</exclude>
@@ -109,9 +118,9 @@ the License.
       <version>1.3</version>
     </dependency>
     <dependency>
-      <groupId>apache</groupId>
+      <groupId>org.apache.tika</groupId>
       <artifactId>tika</artifactId>
-      <version>0.2-fork</version>
+      <version>0.3</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
