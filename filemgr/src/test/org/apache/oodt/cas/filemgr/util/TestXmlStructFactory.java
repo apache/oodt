@@ -16,11 +16,11 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.util;
+package org.apache.oodt.cas.filemgr.util;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import gov.nasa.jpl.oodt.cas.commons.exec.EnvUtilities;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.commons.exec.EnvUtilities;
 
 //JDK imports
 import javax.xml.parsers.DocumentBuilder;

@@ -3,7 +3,7 @@ Apache OODT Change Log
 
 
 Release 0.1-incubating - Current Development
------------------------------------
+--------------------------------------------
 
 * OODT-14 User guide pre-requisite to checkout and install oodt-core before attempting to 
    build cas-filemgr (Cameron Goodale via mattmann)
@@ -14,4 +14,4 @@ Release 0.1-incubating - Current Development
 
 * OODT-2 - Import CAS components into OODT SVN (mattmann, joes)
 
-* OODT-1 - Import grid product, profile, and query services into OODT SVN (mattmann, joes)
+* OODT-16 - Remove JPL look+feel and web references, as well as dependency on private JPL M2 repository; add relocation tags and disclaimer of Apache Incubation status; 

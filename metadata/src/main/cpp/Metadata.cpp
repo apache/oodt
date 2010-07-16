@@ -223,6 +223,7 @@ DOMDocument* Metadata::toXML(void){
            {
 	     //DOMDocumentType* pDoctype = impl->createDocumentType( NULL, NULL, NULL );
                DOMDocument* doc = impl->createDocument(
+                           // FIXME: change namespace URI?
                            X("http://oodt.jpl.nasa.gov/1.0/cas"),                    // root element namespace URI.
                            X("cas:metadata"),         // root element name
                            NULL/*pDoctype*/);                   // document type object (DTD).

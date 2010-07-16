@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.product.rdf;
 
 //OODT imports
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 import static org.apache.oodt.cas.product.rdf.RDFConfigReaderMetKeys.*;
 
 //JDK imports

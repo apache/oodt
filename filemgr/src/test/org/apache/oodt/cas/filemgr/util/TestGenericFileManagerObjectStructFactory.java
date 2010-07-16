@@ -16,18 +16,18 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.util;
+package org.apache.oodt.cas.filemgr.util;
 
 //OODT imports
 import java.io.File;
 import java.io.FileInputStream;
 
-import gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog;
-import gov.nasa.jpl.oodt.cas.filemgr.datatransfer.DataTransfer;
-import gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.FilemgrMetExtractor;
-import gov.nasa.jpl.oodt.cas.filemgr.repository.RepositoryManager;
-import gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer;
-import gov.nasa.jpl.oodt.cas.filemgr.versioning.Versioner;
+import org.apache.oodt.cas.filemgr.catalog.Catalog;
+import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
+import org.apache.oodt.cas.filemgr.metadata.extractors.FilemgrMetExtractor;
+import org.apache.oodt.cas.filemgr.repository.RepositoryManager;
+import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
+import org.apache.oodt.cas.filemgr.versioning.Versioner;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -42,17 +42,17 @@ import junit.framework.TestCase;
  */
 public class TestGenericFileManagerObjectStructFactory extends TestCase {
 
-    private static final String dataTransferServiceFactory = "gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
+    private static final String dataTransferServiceFactory = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
 
-    private static final String validationServiceFactory = "gov.nasa.jpl.oodt.cas.filemgr.validation.XMLValidationLayerFactory";
+    private static final String validationServiceFactory = "org.apache.oodt.cas.filemgr.validation.XMLValidationLayerFactory";
 
-    private static final String catalogServiceFactory = "gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalogFactory";
+    private static final String catalogServiceFactory = "org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory";
 
-    private static final String repositoryServiceFactory = "gov.nasa.jpl.oodt.cas.filemgr.repository.XMLRepositoryManagerFactory";
+    private static final String repositoryServiceFactory = "org.apache.oodt.cas.filemgr.repository.XMLRepositoryManagerFactory";
 
-    private static final String versionerClass = "gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner";
+    private static final String versionerClass = "org.apache.oodt.cas.filemgr.versioning.BasicVersioner";
 
-    private static final String extractorClass = "gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor";
+    private static final String extractorClass = "org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor";
 
     /*
      * (non-Javadoc)

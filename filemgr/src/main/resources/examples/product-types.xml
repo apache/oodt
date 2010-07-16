@@ -2,7 +2,7 @@
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
   <type id="urn:oodt:GenericFile" name="GenericFile">
     <repository path="file://[HOME]/files"/>
-    <versioner class="gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner"/>
+    <versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner"/>
     <!--  
      You can optionally specify a 'trim' tag to identify whether
      or not you want newlines trimmed from the product type description. To
@@ -12,7 +12,7 @@
     <description>The default product type for any kind of file.</description>
     <metExtractors>
       <extractor
-        class="gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
+        class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
         <configuration>
           <!--  you can optionally include the envReplace tag to turn on/off environment var replacement -->
           <property name="nsAware" value="true" />
@@ -21,7 +21,7 @@
             value="ProductReceivedTime,ProductName,ProductId" />
         </configuration>
       </extractor>
-      <extractor class="gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor" />
+      <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor" />
     </metExtractors>
   </type>
 </cas:producttypes>

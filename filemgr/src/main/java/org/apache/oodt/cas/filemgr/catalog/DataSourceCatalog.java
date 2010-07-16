@@ -31,10 +31,10 @@ import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.util.DbStructFactory;
-import org.apache.oodt.cas.commons.pagination.PaginationUtils;
+import org.apache.oodt.commons.pagination.PaginationUtils;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
-import jpl.eda.util.DateConvert;
+import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
 import java.sql.Connection;

@@ -16,17 +16,17 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.versioning;
+package org.apache.oodt.cas.filemgr.versioning;
 
 //JDK imports
 import java.io.File;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Reference;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.VersioningException;
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
+import org.apache.oodt.cas.metadata.Metadata;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -47,7 +47,7 @@ public class TestMetadataBasedFileVersioner extends TestCase {
 	 * 
 	 */
 	public TestMetadataBasedFileVersioner() {
-		System.setProperty("gov.nasa.jpl.oodt.cas.filemgr.mime.type.repository", new File("./src/main/resources/mime-types.xml").getAbsolutePath());
+		System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository", new File("./src/main/resources/mime-types.xml").getAbsolutePath());
 	}
 
 	protected void setUp() {

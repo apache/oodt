@@ -23,7 +23,7 @@ import org.apache.oodt.cas.metadata.MetExtractorConfig;
 import org.apache.oodt.cas.metadata.MetExtractorConfigReader;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractorConfigReaderException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.File;

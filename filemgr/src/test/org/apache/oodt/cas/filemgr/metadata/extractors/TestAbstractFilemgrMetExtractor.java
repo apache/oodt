@@ -16,17 +16,17 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors;
+package org.apache.oodt.cas.filemgr.metadata.extractors;
 
 //JDK imports
 import java.io.File;
 import java.io.IOException;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Reference;
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
-import gov.nasa.jpl.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 
 //Junit imports
 import junit.framework.TestCase;

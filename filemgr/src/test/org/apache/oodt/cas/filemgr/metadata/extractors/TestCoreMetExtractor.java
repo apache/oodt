@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors;
+package org.apache.oodt.cas.filemgr.metadata.extractors;
 
 //JDK imports
 import java.util.List;
@@ -24,12 +24,12 @@ import java.util.Properties;
 import java.util.Vector;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.metadata.CoreMetKeys;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Reference;
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
-import gov.nasa.jpl.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 
 //Junit imports
 import junit.framework.TestCase;

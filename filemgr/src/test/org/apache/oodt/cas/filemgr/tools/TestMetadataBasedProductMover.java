@@ -16,13 +16,13 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.tools;
+package org.apache.oodt.cas.filemgr.tools;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.ingest.StdIngester;
-import gov.nasa.jpl.oodt.cas.filemgr.metadata.CoreMetKeys;
-import gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManager;
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.filemgr.ingest.StdIngester;
+import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
+import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
 import java.io.File;
@@ -48,7 +48,7 @@ public class TestMetadataBasedProductMover extends TestCase {
 
     private String luceneCatLoc;
 
-    private static final String transferServiceFacClass = "gov.nasa.jpl.oodt.cas."
+    private static final String transferServiceFacClass = "org.apache.oodt.cas."
             + "filemgr.datatransfer.LocalDataTransferFactory";
 
     private String testPathSpec = "/tmp/[MimeType]/[ProductStructure]/[CAS.ProductName]/[Filename]";
@@ -185,15 +185,15 @@ public class TestMetadataBasedProductMover extends TestCase {
         }
 
         System.setProperty("filemgr.catalog.factory",
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory");
+                "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory");
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.idxPath",
+                "org.apache.oodt.cas.filemgr.catalog.lucene.idxPath",
                 luceneCatLoc);
 
         // now override the repo mgr policy
         try {
             System.setProperty(
-                    "gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.dirs",
+                    "org.apache.oodt.cas.filemgr.repositorymgr.dirs",
                     "file://"
                             + new File("./src/testdata/ingest/fmpolicy")
                                     .getCanonicalPath());
@@ -202,14 +202,14 @@ public class TestMetadataBasedProductMover extends TestCase {
         }
 
         // now override the val layer ones
-        System.setProperty("gov.nasa.jpl.oodt.cas.filemgr.validation.dirs",
+        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
                 "file://"
                         + new File("./src/main/resources/examples")
                                 .getAbsolutePath());
 
         // set up mime repo path
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.mime.type.repository", new File(
+                "org.apache.oodt.cas.filemgr.mime.type.repository", new File(
                         "./src/main/resources/mime-types.xml").getAbsolutePath());
 
         try {

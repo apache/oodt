@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.catalog;
+package org.apache.oodt.cas.filemgr.catalog;
 
 //JDK imports
 import java.io.File;
@@ -33,21 +33,21 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.metadata.CoreMetKeys;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductPage;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Query;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.QueryCriteria;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.RangeQueryCriteria;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.TermQueryCriteria;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import gov.nasa.jpl.oodt.cas.commons.database.DatabaseConnectionBuilder;
-import gov.nasa.jpl.oodt.cas.commons.pagination.PaginationUtils;
-import gov.nasa.jpl.oodt.cas.commons.database.SqlScript;
-import gov.nasa.jpl.oodt.cas.filemgr.util.SqlParser;
-import gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer;
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Query;
+import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
+import org.apache.oodt.commons.pagination.PaginationUtils;
+import org.apache.oodt.commons.database.SqlScript;
+import org.apache.oodt.cas.filemgr.util.SqlParser;
+import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
+import org.apache.oodt.cas.metadata.Metadata;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -104,28 +104,28 @@ public class TestDataSourceCatalog extends TestCase {
 
         // now override the catalog ones
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.url",
+                "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url",
                 "jdbc:hsqldb:file:" + tmpDirPath + "/testCat;shutdown=true");
 
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.user",
+                "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user",
                 "sa");
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.pass",
+                "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.pass",
                 "");
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.driver",
+                "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver",
                 "org.hsqldb.jdbcDriver");
 
         // now override the val layer ones
-        System.setProperty("gov.nasa.jpl.oodt.cas.filemgr.validation.dirs",
+        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
                 "file://"
                         + new File("./src/testdata/xmlrpc-struct-factory")
                                 .getAbsolutePath());
 
         // override quote fields
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.quoteFields",
+                "org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields",
                 "true");
 
         myCat = getCatalog();
@@ -450,13 +450,13 @@ public class TestDataSourceCatalog extends TestCase {
     
     private void createSchema() {
         String url = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.url");
+                .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url");
         String user = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.user");
+                .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user");
         String pass = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.pass");
+                .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.pass");
         String driver = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.driver");
+                .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver");
 
         DataSource ds = DatabaseConnectionBuilder.buildDataSource(user, pass,
                 driver, url);
@@ -495,7 +495,7 @@ public class TestDataSourceCatalog extends TestCase {
         /*
          * (non-Javadoc)
          * 
-         * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
+         * @see org.apache.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
          */
         public Catalog createCatalog() {
             return new HsqlDbFriendlyDataSourceCatalog(dataSource,
@@ -517,8 +517,8 @@ public class TestDataSourceCatalog extends TestCase {
         /*
          * (non-Javadoc)
          * 
-         * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#pagedQuery(gov.nasa.jpl.oodt.cas.filemgr.structs.Query,
-         *      gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType, int)
+         * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#pagedQuery(org.apache.oodt.cas.filemgr.structs.Query,
+         *      org.apache.oodt.cas.filemgr.structs.ProductType, int)
          */
         public ProductPage pagedQuery(Query query, ProductType type, int pageNum)
                 throws CatalogException {
@@ -559,7 +559,7 @@ public class TestDataSourceCatalog extends TestCase {
         /*
          * (non-Javadoc)
          * 
-         * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#getFirstPage(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+         * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#getFirstPage(org.apache.oodt.cas.filemgr.structs.ProductType)
          */
         public ProductPage getFirstPage(ProductType type) {
             Query query = new Query();
@@ -578,8 +578,8 @@ public class TestDataSourceCatalog extends TestCase {
         /*
          * (non-Javadoc)
          * 
-         * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#getNextPage(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType,
-         *      gov.nasa.jpl.oodt.cas.filemgr.structs.ProductPage)
+         * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#getNextPage(org.apache.oodt.cas.filemgr.structs.ProductType,
+         *      org.apache.oodt.cas.filemgr.structs.ProductPage)
          */
         public ProductPage getNextPage(ProductType type, ProductPage currentPage) {
             if (currentPage == null) {

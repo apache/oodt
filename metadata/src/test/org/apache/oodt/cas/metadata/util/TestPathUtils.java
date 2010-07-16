@@ -16,14 +16,14 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.metadata.util;
+package org.apache.oodt.cas.metadata.util;
 
 //JDK imports
 import java.util.List;
 import java.util.Vector;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.Metadata;
 
 //Junit imports
 import junit.framework.TestCase;

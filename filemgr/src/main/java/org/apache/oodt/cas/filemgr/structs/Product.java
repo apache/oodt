@@ -37,7 +37,7 @@ import org.xml.sax.InputSource;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.catalog.Catalog; //for javadoc
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 /**
  * @author mattmann

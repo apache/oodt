@@ -18,7 +18,7 @@
 package org.apache.oodt.cas.filemgr.catalog;
 
 //OODT imports
-import org.apache.oodt.cas.commons.database.DatabaseConnectionBuilder;
+import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.util.PathUtils;

@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-package gov.nasa.jpl.oodt.cas.filemgr.util;
+package org.apache.oodt.cas.filemgr.util;
 
-import gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ExtractorSpec;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.type.TypeHandler;
-import gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManager;
-import gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory;
+import org.apache.oodt.cas.filemgr.structs.ExtractorSpec;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.structs.type.TypeHandler;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -96,15 +96,15 @@ public class TestXmlRpcStructFactory extends TestCase {
         }
         
         System.setProperty("filemgr.catalog.factory",
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory");
+                "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory");
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.idxPath",
+                "org.apache.oodt.cas.filemgr.catalog.lucene.idxPath",
                 "./src/testdata/ingest/cat");
 
         // now override the repo mgr policy
         try {
             System.setProperty(
-                    "gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.dirs",
+                    "org.apache.oodt.cas.filemgr.repositorymgr.dirs",
                     "file://"
                             + new File("./src/testdata/xmlrpc-struct-factory")
                                     .getCanonicalPath());
@@ -113,14 +113,14 @@ public class TestXmlRpcStructFactory extends TestCase {
         }
 
         // now override the val layer ones
-        System.setProperty("gov.nasa.jpl.oodt.cas.filemgr.validation.dirs",
+        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
                 "file://"
                         + new File("./src/testdata/xmlrpc-struct-factory")
                                 .getAbsolutePath());
 
         // set up mime repo path
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.mime.type.repository", new File(
+                "org.apache.oodt.cas.filemgr.mime.type.repository", new File(
                         "./src/main/resources/mime-types.xml").getAbsolutePath());
 
         try {

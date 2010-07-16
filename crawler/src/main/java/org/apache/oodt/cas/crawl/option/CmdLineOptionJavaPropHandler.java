@@ -21,8 +21,8 @@ package org.apache.oodt.cas.crawl.option;
 //JDK imports
 import java.util.List;
 
-import org.apache.oodt.cas.commons.option.CmdLineOption;
-import org.apache.oodt.cas.commons.option.handler.CmdLineOptionHandler;
+import org.apache.oodt.commons.option.CmdLineOption;
+import org.apache.oodt.commons.option.handler.CmdLineOptionHandler;
 
 //Spring imports
 import org.springframework.util.StringUtils;

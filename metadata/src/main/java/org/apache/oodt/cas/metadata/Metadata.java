@@ -38,7 +38,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.InputStream;
 
 //OODT imports
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 /**
  * @author mattmann
@@ -396,6 +396,7 @@ public class Metadata {
             document = builder.newDocument();
 
             Element root = (Element) document.createElement("cas:metadata");
+	    // FIXME: change namespace URI?
             root.setAttribute("xmlns:cas", "http://oodt.jpl.nasa.gov/1.0/cas");
             document.appendChild(root);
 

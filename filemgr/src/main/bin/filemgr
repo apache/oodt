@@ -55,8 +55,8 @@ case "$1" in
         $JAVA_HOME/bin/java \
         	-Djava.ext.dirs=${CAS_FILEMGR_HOME}/lib \
         	-Djava.util.logging.config.file=${CAS_FILEMGR_HOME}/etc/logging.properties \
-    	    -Dgov.nasa.jpl.oodt.cas.filemgr.properties=${CAS_FILEMGR_PROPS} \
-        	gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManager \
+    	    -Dorg.apache.oodt.cas.filemgr.properties=${CAS_FILEMGR_PROPS} \
+        	org.apache.oodt.cas.filemgr.system.XmlRpcFileManager \
         	--portNum $SERVER_PORT &       
         echo $! > ${RUN_HOME}/cas.filemgr.pid 
         echo "OK"

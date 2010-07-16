@@ -22,7 +22,7 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
-import jpl.eda.util.DateConvert;
+import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
 import java.text.SimpleDateFormat;

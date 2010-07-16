@@ -16,10 +16,10 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.metadata.extractors;
+package org.apache.oodt.cas.metadata.extractors;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
 import java.io.File;

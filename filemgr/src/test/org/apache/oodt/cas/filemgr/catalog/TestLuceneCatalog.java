@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.catalog;
+package org.apache.oodt.cas.filemgr.catalog;
 
 //JDK imports
 import java.io.File;
@@ -24,15 +24,15 @@ import java.io.FileInputStream;
 import java.util.Vector;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalog;
-import gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory;
-import gov.nasa.jpl.oodt.cas.filemgr.metadata.CoreMetKeys;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductPage;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Reference;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.filemgr.catalog.LuceneCatalog;
+import org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory;
+import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.metadata.Metadata;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -90,28 +90,28 @@ public class TestLuceneCatalog extends TestCase {
 
         // now override the catalog ones
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.idxPath",
+                "org.apache.oodt.cas.filemgr.catalog.lucene.idxPath",
                 tmpDirPath);
 
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.pageSize", "20");
+                "org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", "20");
 
         System
                 .setProperty(
-                        "gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
+                        "org.apache.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
                         "60");
 
         System
                 .setProperty(
-                        "gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
+                        "org.apache.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
                         "60");
 
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.mergeFactor",
+                "org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor",
                 "20");
 
         // now override the val layer ones
-        System.setProperty("gov.nasa.jpl.oodt.cas.filemgr.validation.dirs",
+        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
                 "file://"
                         + new File("./src/main/resources/examples")
                                 .getAbsolutePath());

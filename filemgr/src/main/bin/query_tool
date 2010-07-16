@@ -16,4 +16,4 @@
 # * limitations under the License.
 # */
 #
-$JAVA_HOME/bin/java -Djava.ext.dirs=../lib gov.nasa.jpl.oodt.cas.filemgr.tools.QueryTool $*
+$JAVA_HOME/bin/java -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.QueryTool $*

@@ -20,7 +20,7 @@ package org.apache.oodt.cas.crawl.typedetection;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.FileInputStream;

@@ -16,13 +16,13 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.validation;
+package org.apache.oodt.cas.filemgr.validation;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Element;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import static gov.nasa.jpl.oodt.cas.filemgr.metadata.CoreMetKeys.*;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
+import org.apache.oodt.cas.filemgr.structs.Element;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.*;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 
 //JDK imports
 import java.io.File;

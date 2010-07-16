@@ -37,9 +37,25 @@ the License.
     
     <modules>
         <module>core</module>
-        <module>mvn/skin</module>
+        <!-- broken: <module>commons</module> -->
+        <module>xmlquery</module>
+        <module>sso</module>
+        <!-- broken: <module>metadata</module> -->
+        <!-- broken: <module>filemgr</module> -->
+        <module>catalog</module>
+        <module>workflow</module>
+        <module>crawler</module>        
+        <module>resource</module>
+        <module>curator</module>
+        <module>pge</module>
+        <module>mvn/plugins/cas-install</module>
+        <module>pushpull</module>
         <module>product</module>
-        <!-- TODO: Add the rest of the modules! -->
+        <module>profile</module>
+        <module>query</module>
+        <module>webapp/filemgr</module>
+        <module>webapp/fmprod</module>
+        <module>webapp/workflow</module>
+        <!-- broken: <module>app/fmbrowser</module> -->
     </modules>
-    
 </project>

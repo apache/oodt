@@ -21,7 +21,7 @@ package org.apache.oodt.cas.product.rdf;
 //OODT imports
 import static org.apache.oodt.cas.product.rdf.RDFConfigMetKeys.RDF_CONTEXT_CONF_KEY;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.File;

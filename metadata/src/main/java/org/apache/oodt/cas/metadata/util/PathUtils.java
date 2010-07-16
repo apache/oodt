@@ -33,8 +33,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 
 //OODT imports
-import org.apache.oodt.cas.commons.date.DateUtils;
-import org.apache.oodt.cas.commons.exec.EnvUtilities;
+import org.apache.oodt.commons.date.DateUtils;
+import org.apache.oodt.commons.exec.EnvUtilities;
 import org.apache.oodt.cas.metadata.Metadata;
 
 /**

@@ -30,8 +30,8 @@ import java.util.logging.Level;
 import org.apache.oodt.cas.metadata.AbstractMetExtractor;
 import org.apache.oodt.cas.metadata.MetExtractorConfigReader;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.commons.exec.EnvUtilities;
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.exec.EnvUtilities;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 /**
  * @author mattmann

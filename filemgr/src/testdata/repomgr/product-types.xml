@@ -2,7 +2,7 @@
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
   <type id="urn:oodt:GenericFile" name="GenericFile">
     <repository path="file://[HOME]/files"/>
-    <versioner class="gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner"/>
+    <versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner"/>
     <description trim="true">
      The default product type for any kind of file, with real metadata.
     </description>
@@ -20,7 +20,7 @@
   </type>
   <type id="urn:oodt:GenericFileWithBlankMet" name="GenericFileWithBlankMet">
     <repository path="file://[HOME]/files"/>
-    <versioner class="gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner"/>
+    <versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner"/>
     <description>
       The default product type for any kind of file, with blank metadata.
     </description>
@@ -28,7 +28,7 @@
   </type>
   <type id="urn:oodt:GenericFileNoTypeMetadata" name="GenericFileNoTypeMetadata">
     <repository path="file://[HOME]/files"/>
-    <versioner class="gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner"/>
+    <versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner"/>
     <description trim="false">
       The default product type for any kind of file, without metadata.
     </description>

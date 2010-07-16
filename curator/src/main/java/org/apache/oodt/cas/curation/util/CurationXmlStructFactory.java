@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 //OODT imports
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.util.XmlStructFactory;
 

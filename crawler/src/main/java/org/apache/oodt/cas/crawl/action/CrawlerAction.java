@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.commons.spring.SpringSetIdInjectionType;
+import org.apache.oodt.commons.spring.SpringSetIdInjectionType;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
 

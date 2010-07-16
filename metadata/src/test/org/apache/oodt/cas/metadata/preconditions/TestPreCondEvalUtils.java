@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.metadata.preconditions;
+package org.apache.oodt.cas.metadata.preconditions;
 
 //JDK imports
 import java.io.File;

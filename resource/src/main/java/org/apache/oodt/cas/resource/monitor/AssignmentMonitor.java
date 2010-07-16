@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 
 //OODT imports
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.resource.util.XmlStructFactory;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;

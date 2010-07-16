@@ -35,7 +35,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.extractors.CmdLineMetExtractor;
-import org.apache.oodt.cas.commons.exec.ExecUtils;
+import org.apache.oodt.commons.exec.ExecUtils;
 
 /**
  * @author mattmann

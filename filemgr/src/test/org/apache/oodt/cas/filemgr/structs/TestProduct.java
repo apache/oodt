@@ -16,10 +16,10 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.structs;
+package org.apache.oodt.cas.filemgr.structs;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.ByteArrayInputStream;
@@ -41,7 +41,7 @@ import junit.framework.TestCase;
 public class TestProduct extends TestCase {
 
   public TestProduct() {
-    System.setProperty("gov.nasa.jpl.oodt.cas.filemgr.mime.type.repository",
+    System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository",
         new File("./src/main/resources/mime-types.xml").getAbsolutePath());
   }
 

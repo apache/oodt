@@ -16,11 +16,11 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.datatransfer;
+package org.apache.oodt.cas.filemgr.datatransfer;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.Reference;
 
 //JDK imports
 import java.io.File;

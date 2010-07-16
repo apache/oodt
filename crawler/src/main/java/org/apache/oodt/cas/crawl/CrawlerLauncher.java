@@ -25,8 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.commons.option.CmdLineOptionInstance;
-import org.apache.oodt.cas.commons.option.util.CmdLineOptionUtils;
+import org.apache.oodt.commons.option.CmdLineOptionInstance;
+import org.apache.oodt.commons.option.util.CmdLineOptionUtils;
 import org.apache.oodt.cas.crawl.daemon.CrawlDaemon;
 
 //Spring import

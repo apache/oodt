@@ -16,15 +16,15 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.metadata.extractors;
+package org.apache.oodt.cas.metadata.extractors;
 
 //JDK imports
 import java.io.File;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.metadata.MetExtractor; //for javadoc
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
-import gov.nasa.jpl.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.metadata.MetExtractor; //for javadoc
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 
 //Junit imports
 import junit.framework.TestCase;

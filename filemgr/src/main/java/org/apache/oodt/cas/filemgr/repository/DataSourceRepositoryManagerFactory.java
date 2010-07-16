@@ -18,7 +18,7 @@
 package org.apache.oodt.cas.filemgr.repository;
 
 //OODT imports
-import org.apache.oodt.cas.commons.database.DatabaseConnectionBuilder;
+import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
 
 //JDK imports
 import javax.sql.DataSource;

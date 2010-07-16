@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.metadata;
 
 //JDK imports
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -166,6 +166,7 @@ public class SerializableMetadata extends Metadata implements Serializable {
             Document document = factory.newDocumentBuilder().newDocument();
 
             Element root = (Element) document.createElement("cas:metadata");
+            // FIXME: change namespace URI?
             root.setAttribute("xmlns:cas", "http://oodt.jpl.nasa.gov/1.0/cas");
             document.appendChild(root);
 

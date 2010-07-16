@@ -16,19 +16,19 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.catalog;
+package org.apache.oodt.cas.filemgr.catalog;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.commons.pagination.PaginationUtils;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductPage;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Query;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.QueryCriteria;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.RangeQueryCriteria;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.TermQueryCriteria;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer;
+import org.apache.oodt.commons.pagination.PaginationUtils;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Query;
+import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 
 //JDK imports
 import java.io.FileNotFoundException;
@@ -64,7 +64,7 @@ public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
         System
                 .getProperties()
                 .setProperty(
-                        "gov.nasa.jpl.oodt.cas.filemgr.catalog.mappeddatasource.mapFile",
+                        "org.apache.oodt.cas.filemgr.catalog.mappeddatasource.mapFile",
                         "./src/testdata/testcatalog.typemap.properties");
         setCatalog(getCatalog());
 
@@ -82,7 +82,7 @@ public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.TestDataSourceCatalog#getSchemaPath()
+     * @see org.apache.oodt.cas.filemgr.catalog.TestDataSourceCatalog#getSchemaPath()
      */
     @Override
     protected String getSchemaPath() {
@@ -104,7 +104,7 @@ public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
         /*
          * (non-Javadoc)
          * 
-         * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.MappedDataSourceCatalogFactory#createCatalog()
+         * @see org.apache.oodt.cas.filemgr.catalog.MappedDataSourceCatalogFactory#createCatalog()
          */
         @Override
         public Catalog createCatalog() {
@@ -129,8 +129,8 @@ public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
         /*
          * (non-Javadoc)
          * 
-         * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#pagedQuery(gov.nasa.jpl.oodt.cas.filemgr.structs.Query,
-         *      gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType, int)
+         * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#pagedQuery(org.apache.oodt.cas.filemgr.structs.Query,
+         *      org.apache.oodt.cas.filemgr.structs.ProductType, int)
          */
         public ProductPage pagedQuery(Query query, ProductType type, int pageNum)
                 throws CatalogException {
@@ -144,7 +144,7 @@ public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
         /*
          * (non-Javadoc)
          * 
-         * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#getFirstPage(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+         * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#getFirstPage(org.apache.oodt.cas.filemgr.structs.ProductType)
          */
         public ProductPage getFirstPage(ProductType type) {
             Query query = new Query();
@@ -163,8 +163,8 @@ public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
         /*
          * (non-Javadoc)
          * 
-         * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#getNextPage(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType,
-         *      gov.nasa.jpl.oodt.cas.filemgr.structs.ProductPage)
+         * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#getNextPage(org.apache.oodt.cas.filemgr.structs.ProductType,
+         *      org.apache.oodt.cas.filemgr.structs.ProductPage)
          */
         public ProductPage getNextPage(ProductType type, ProductPage currentPage) {
             if (currentPage == null) {

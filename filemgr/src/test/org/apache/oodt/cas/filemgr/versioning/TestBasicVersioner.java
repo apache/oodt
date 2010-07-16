@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.versioning;
+package org.apache.oodt.cas.filemgr.versioning;
 
 //JDK imports
 import java.io.File;
@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Vector;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Reference;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.VersioningException;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -48,7 +48,7 @@ public class TestBasicVersioner extends TestCase {
 	private BasicVersioner basicVersioner = new BasicVersioner();
 
 	public TestBasicVersioner() {
-		System.setProperty("gov.nasa.jpl.oodt.cas.filemgr.mime.type.repository", new File("./src/main/resources/mime-types.xml").getAbsolutePath());
+		System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository", new File("./src/main/resources/mime-types.xml").getAbsolutePath());
 	}
 
 	protected void setUp() {

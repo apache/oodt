@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.metadata;
+package org.apache.oodt.cas.metadata;
 
 //JUnit imports
 import junit.framework.TestCase;
@@ -29,7 +29,7 @@ import java.util.Vector;
 import java.util.Hashtable;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 /**
  * @author mattmann

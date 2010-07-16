@@ -16,7 +16,7 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.metadata;
+package org.apache.oodt.cas.metadata;
 
 //JDK imports
 import java.io.ByteArrayInputStream;

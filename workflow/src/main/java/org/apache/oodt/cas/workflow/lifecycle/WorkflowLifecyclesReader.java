@@ -19,8 +19,8 @@
 package org.apache.oodt.cas.workflow.lifecycle;
 
 //OODT imports
-import org.apache.oodt.cas.commons.xml.DOMUtil;
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.DOMUtil;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.File;

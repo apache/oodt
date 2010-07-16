@@ -54,7 +54,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import jpl.eda.util.DateConvert;
 

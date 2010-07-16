@@ -22,7 +22,7 @@ package org.apache.oodt.cas.pushpull.config;
 import org.apache.oodt.cas.pushpull.exceptions.ConfigException;
 import org.apache.oodt.cas.pushpull.protocol.ProtocolFactory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.File;

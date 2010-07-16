@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.workflow.webapp.util;
 
 //OODT imports
-import org.apache.oodt.cas.commons.xml.DOMUtil;
+import org.apache.oodt.commons.xml.DOMUtil;
 
 //JDK imports
 import java.io.File;

@@ -29,7 +29,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 
 //OODT imports
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.JobSpec;

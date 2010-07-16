@@ -16,7 +16,7 @@
  */
 
 
-package org.apache.oodt.commons.data;
+package org.apache.oodt.commons.date;
 
 //JDK imports
 import java.text.DecimalFormat;

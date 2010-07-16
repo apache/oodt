@@ -25,7 +25,7 @@ import org.apache.oodt.cas.pushpull.filerestrictions.renamingconventions.Renamin
 import org.apache.oodt.cas.pushpull.objectfactory.PushPullObjectFactory;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.File;

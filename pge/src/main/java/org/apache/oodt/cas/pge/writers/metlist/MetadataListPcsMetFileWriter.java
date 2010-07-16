@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
 
 /**

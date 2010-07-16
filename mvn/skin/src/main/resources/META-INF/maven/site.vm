@@ -1,4 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 #macro ( link $href $name )
   #if ( ( $href.toLowerCase().startsWith("http") || $href.toLowerCase().startsWith("https") ) )
@@ -305,12 +307,11 @@
     #end
 #end
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <title>$title</title>
     <style type="text/css" media="all">
       @import url("$relativePath/css/maven-theme.css");
-      @import url("$relativePath/css/oodt.css");
     </style>
     <link rel="stylesheet" href="$relativePath/css/print.css" type="text/css" media="print" />
     #foreach( $author in $authors )
@@ -335,68 +336,6 @@
   
     
   <body class="composite">
-  
-  <!-- NASA style -->
-<table border="0" cellspacing="0" cellpadding="0" align="center" valign="top" bgcolor="#FFFFFF" width="750">
-<tr bgcolor="#000000">
-<td bgcolor="#000000" width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
-<td bgcolor="#000000" width="730"><img src="$relativePath/images/spacer.gif" alt="spacer" width="730" height="10"/></td>
-<td bgcolor="#000000" width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
-</tr>
-<tr>
-<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
-<td width="730"><img src="$relativePath/images/spacer.gif" alt="spacer" width="730" height="10"/></td>
-<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
-</tr>
-<tr>
-<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
-<td width="730">
-
-          <table id="nasaBanner" border="0" cellspacing="0" cellpadding="8" width="730">
-            <tr>
-              <!-- organization logo -->
-              <td bgcolor="#cccccc" width="379">
-                #set ( $logo = "${project.properties.organizationLogo}" )
-                #if ( $logo )
-                  ## set url to org or project url
-                  #set ( $url = "${project.organization.url}" )
-                    #if ( $url )
-                      #set ( $home = "${project.organization.url}" )
-                    #else
-                      #set ( $home = "${project.url}" )
-                    #end
-                    
-                   ## set image to relative or complete 
-                   
-                   #set ( $image = "${project.properties.organizationLogo}" )
-                   #if ( !$image.startsWith('http://') )
-                    #set ( $image = "$relativePath${image}" )
-                   #end
-                   
-                  <a href="$home">
-                    <img src="$image" align="left" alt="${project.organization.name}" border="0"/>
-                  </a>
-               #end
-              </td>
-
-	      <!-- NASA portal -->
-              <td bgcolor="#cccccc" valign="middle" align="left" width="171">
-                <a class="navLnkBlack" href="http://www.nasa.gov/"><span class="nasaBannerLinks">+ View the NASA Portal</span></a><br/>
-                <a class="navLnkBlack" href="http://www.nasa.gov/about/highlights/En_Espanol.html"><span class="nasaBannerLinks">+ NASA en Espa&#x00f1;ol</span></a><br/>
-                <a class="navLnkBlack" href="http://www.nasa.gov/about/contact/"><span class="nasaBannerLinks">+ Contact NASA</span></a>              </td>
-
-              <!-- Search box -->
-	      <td id="jplSearch" width="180" bgcolor="#006699" align="center" valign="middle"><center>
-                <font size="2" face="arial" color="#ffffff">Search the API&#x00a0;&#x00a0;&#x00a0;&#x00a0;</font>
-		<form method="post" action="/ashkelon/search.do">
-                  <input type="hidden" name="simple" value="true"/>
-                  <input type="hidden" name="srch_type" value="class"/>
-		  <input name="searchField" maxlength="100" size="10" type="text" value=""/>
-  		  <input height="14" border="0" name="search" width="16" type="image" alt="Search" src="$relativePath/images/arrow.gif" title="search"/>
-                </form></center>
-              </td>
-            </tr>
-          </table>
 
 	<div id="login">
                   #set ( $logo = "${project.properties.logo}" )
@@ -479,20 +418,6 @@
   </div>
 #end 
 
-#if ( $project.properties.genDownloadLinks )
-    <div>
-      <strong>Download</strong>
-      <div>
-	<strong>Binary</strong>
-	<div><small><a href="/download-guard/dg?group=${project.groupId}&amp;type=distributions&amp;artifact=${project.artifactId}-${project.version}.zip">${project.version}.zip</a></small></div>
-	<div><small><a href="/download-guard/dg?group=${project.groupId}&amp;type=distributions&amp;artifact=${project.artifactId}-${project.version}.tar.gz">${project.version}.tar.gz</a></small></div>
-	<strong>Source</strong>
-	<div><small><a href="/download-guard/dg?group=${project.groupId}&amp;type=distributions&amp;artifact=${project.artifactId}-${project.version}-src.zip">${project.version}-src.zip</a></small></div>
-	<div><small><a href="/download-guard/dg?group=${project.groupId}&amp;type=distributions&amp;artifact=${project.artifactId}-${project.version}-src.tar.gz">${project.version}-src.tar.gz</a></small></div>
-      </div>
-    </div>
-#end
-  
   
           #if ( $decoration.body.menus )
 			#mainMenu ( $decoration.body.menus )
@@ -537,55 +462,7 @@
           </table>
         </div>
 
-<table cellpadding="0" cellspacing="0" border="0" bgcolor="#cccccc" width="730">
-  <tr>
-    <td valign="top" width="135">
-      <a href="http://www.firstgov.gov"><img src="$relativePath/images/logo_first_gov.gif" width="125" height="42" alt="FirstGov - Your First Click to the US Governmnet" border="0"/></a>
-    </td>
-    <td valign="top" width="330">
-      <br/><a href="http://www.hq.nasa.gov/office/pao/FOIA/" class="navLnkBlack"><span class="nasaBannerLinks">+ Freedom of Information Act</span></a>
-      <br/><a href="http://www.nasa.gov/about/highlights/HP_Privacy.html" class="navLnkBlack"><span class="nasaBannerLinks">+ NASA Privacy Statement, Disclaimer,<br/><img src="$relativePath/images/spacer.gif" width="9" height="1" alt="" border="0"/>and Accessibility Certification</span></a>
-      <br/><a href="http://f2m.nasa.gov/" class="navLnkBlack"><span class="nasaBannerLinks">+ Freedom to Manage</span></a>
-    </td>
-    <td width="60" valign="top">
-      <a href="http://www.nasa.gov/home/index.html">
-        <img src="$relativePath/images/logo_nasa.gif" width="49" height="48" alt="NASA" border="0"/>
-      </a>
-    </td>
-    <td class="light" width="205" valign="top">
-      <br/>Editor: Sean Kelly
-      <br/>NASA Official: Dan Crichton
-      <br/>#publishDate ( $decoration.publishDate.position $decoration.publishDate $project.version )
-      <br/><a href="http://www.nasa.gov/about/contact/index.html" class="navLnkBlack"><span class="nasaBannerLinks">+ Contact NASA</span></a>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="4">
-      <img src="$relativePath/images/spacer.gif" width="1" height="19" alt="" border="0"/>
-    </td>
-  </tr>
-</table>
-
-</td>
-<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
-</tr>
-<tr>
-<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
-<td width="730"><img src="$relativePath/images/spacer.gif" alt="spacer" width="730" height="10"/></td>
-<td width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
-</tr>
-<tr bgcolor="#000000">
-<td bgcolor="#000000" width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
-<td bgcolor="#000000" width="730"><img src="$relativePath/images/spacer.gif" alt="spacer" width="730" height="10"/></td>
-<td bgcolor="#000000" width="10"><img src="$relativePath/images/spacer.gif" alt="spacer" width="10" height="1"/></td>
-</tr>
-
-
-
-</table>
-  
-  
-  
+<address>#publishDate ( $decoration.publishDate.position $decoration.publishDate $project.version )</address>
   
   
   </body>

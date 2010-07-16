@@ -20,7 +20,7 @@ package org.apache.oodt.cas.product.rss;
 
 //OODT imports
 import static org.apache.oodt.cas.product.rss.RSSConfigMetKeys.RSS_CONTEXT_CONF_KEY;
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 

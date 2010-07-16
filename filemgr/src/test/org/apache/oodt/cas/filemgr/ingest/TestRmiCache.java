@@ -16,17 +16,17 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.ingest;
+package org.apache.oodt.cas.filemgr.ingest;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.metadata.CoreMetKeys;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.Product;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManager;
-import gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import gov.nasa.jpl.oodt.cas.filemgr.util.XmlRpcStructFactory;
-import gov.nasa.jpl.oodt.cas.metadata.Metadata;
-import jpl.eda.util.DateConvert;
+import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
 import java.io.File;
@@ -66,7 +66,7 @@ public class TestRmiCache extends TestCase {
 
     private StdIngester ingester = new StdIngester(transferServiceFacClass);
 
-    private static final String transferServiceFacClass = "gov.nasa.jpl.oodt.cas."
+    private static final String transferServiceFacClass = "org.apache.oodt.cas."
             + "filemgr.datatransfer.LocalDataTransferFactory";
 
     private static final String FM_URL = "http://localhost:" + FM_PORT;
@@ -258,15 +258,15 @@ public class TestRmiCache extends TestCase {
         }
 
         System.setProperty("filemgr.catalog.factory",
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory");
+                "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory");
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.idxPath",
+                "org.apache.oodt.cas.filemgr.catalog.lucene.idxPath",
                 luceneCatLoc);
 
         // now override the repo mgr policy
         try {
             System.setProperty(
-                    "gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.dirs",
+                    "org.apache.oodt.cas.filemgr.repositorymgr.dirs",
                     "file://"
                             + new File("./src/testdata/ingest/fmpolicy")
                                     .getCanonicalPath());
@@ -275,14 +275,14 @@ public class TestRmiCache extends TestCase {
         }
 
         // now override the val layer ones
-        System.setProperty("gov.nasa.jpl.oodt.cas.filemgr.validation.dirs",
+        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
                 "file://"
                         + new File("./src/main/resources/examples")
                                 .getAbsolutePath());
 
         // set up mime repo path
         System.setProperty(
-                "gov.nasa.jpl.oodt.cas.filemgr.mime.type.repository", new File(
+                "org.apache.oodt.cas.filemgr.mime.type.repository", new File(
                         "./src/main/resources/mime-types.xml").getAbsolutePath());
 
         try {

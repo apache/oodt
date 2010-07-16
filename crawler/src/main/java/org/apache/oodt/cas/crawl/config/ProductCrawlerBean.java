@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 //OODT imports
-import org.apache.oodt.cas.commons.spring.SpringSetIdInjectionType;
+import org.apache.oodt.commons.spring.SpringSetIdInjectionType;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
 

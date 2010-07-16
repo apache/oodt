@@ -22,7 +22,7 @@ package org.apache.oodt.cas.metadata.preconditions;
 import java.io.File;
 
 //OODT imports
-import org.apache.oodt.cas.commons.spring.SpringSetIdInjectionType;
+import org.apache.oodt.commons.spring.SpringSetIdInjectionType;
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;

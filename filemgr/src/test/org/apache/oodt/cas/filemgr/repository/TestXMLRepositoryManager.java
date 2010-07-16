@@ -16,12 +16,12 @@
  */
 
 
-package gov.nasa.jpl.oodt.cas.filemgr.repository;
+package org.apache.oodt.cas.filemgr.repository;
 
 //OODT imports
-import gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import gov.nasa.jpl.oodt.cas.commons.exec.EnvUtilities;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.commons.exec.EnvUtilities;
 
 //JDK imports
 import java.io.File;
@@ -55,7 +55,7 @@ public class TestXMLRepositoryManager extends TestCase {
 
     private static final String expectedGenericFileNoMetDesc = "\n      The default product type for any kind of file, without metadata.\n    ";
 
-    private static final String expectedVersionerClassName = "gov.nasa.jpl.oodt.cas.filemgr.versioning.BasicVersioner";
+    private static final String expectedVersionerClassName = "org.apache.oodt.cas.filemgr.versioning.BasicVersioner";
 
     private static final String expectedRepPath = "file://"
             + EnvUtilities.getEnv("HOME") + "/files";

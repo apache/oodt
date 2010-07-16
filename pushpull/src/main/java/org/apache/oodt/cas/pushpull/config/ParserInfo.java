@@ -33,7 +33,7 @@ import org.apache.oodt.cas.pushpull.exceptions.ConfigException;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.retrievalmethod.RetrievalMethod;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.commons.xml.XMLUtils;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 /**
  * 

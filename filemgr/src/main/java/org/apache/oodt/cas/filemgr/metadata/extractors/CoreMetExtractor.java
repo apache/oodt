@@ -22,7 +22,7 @@ import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-import jpl.eda.util.DateConvert;
+import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
 import java.io.File;

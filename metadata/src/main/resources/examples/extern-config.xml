@@ -10,6 +10,7 @@
 	Description: XML Configuration file describing external command-line metadata extractor
 	to be run through ExternMetExtractor facade.
 -->
+<!-- FIXME: change namespace URI? -->
 <cas:externextractor xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
 	<!--  

@@ -44,7 +44,7 @@ import org.apache.oodt.cas.crawl.StdProductCrawler;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.commons.exec.ExecUtils;
+import org.apache.oodt.commons.exec.ExecUtils;
 import org.apache.oodt.cas.pge.config.DynamicConfigFile;
 import org.apache.oodt.cas.pge.config.OutputDir;
 import org.apache.oodt.cas.pge.config.PgeConfig;

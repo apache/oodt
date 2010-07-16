@@ -377,26 +377,26 @@
        <table>
          <tr>
            <td>filemgr.catalog.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalogFactory<br/>
-               gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory
+           <td>org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory<br/>
+               org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory
            </td>
          </tr>
          <tr>
            <td>filemgr.repository.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.filemgr.repository.DataSourceRepositoryManagerFactory<br/>
-               gov.nasa.jpl.oodt.cas.filemgr.repository.XMLRepositoryManagerFactory
+           <td>org.apache.oodt.cas.filemgr.repository.DataSourceRepositoryManagerFactory<br/>
+               org.apache.oodt.cas.filemgr.repository.XMLRepositoryManagerFactory
            </td>
          </tr>
          <tr>
            <td>filemgr.datatransfer.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory<br/>
-               gov.nasa.jpl.oodt.cas.filemgr.datatransfer.RemoteDataTransferFactory<br/>
-               gov.nasa.jpl.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory
+           <td>org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory<br/>
+               org.apache.oodt.cas.filemgr.datatransfer.RemoteDataTransferFactory<br/>
+               org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory
            </td>
          </tr>
          <tr>
            <td>filemgr.validationLayer.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory<br/>
+           <td>org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory<br/>
                gov.nassa.jpl.oodt.cas.filemgr.validation.XMLValidationLayerFactory
            </td>
          </tr>

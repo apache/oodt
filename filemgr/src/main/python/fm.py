@@ -28,22 +28,22 @@ import sys, os, os.path
 import getopt, sha, pickle
 
 from ConfigParser import ConfigParser
-from gov.nasa.jpl.oodt.cas.filemgr.system.auth import SecureWebServer, Dispatcher, Result
-from gov.nasa.jpl.oodt.cas.filemgr.datatransfer import TransferStatusTracker
-from gov.nasa.jpl.oodt.cas.filemgr.structs import Product
-from gov.nasa.jpl.oodt.cas.filemgr.util import GenericFileManagerObjectFactory
-from gov.nasa.jpl.oodt.cas.filemgr.util import XmlRpcStructFactory as Structs
-from gov.nasa.jpl.oodt.cas.metadata import Metadata
+from org.apache.oodt.cas.filemgr.system.auth import SecureWebServer, Dispatcher, Result
+from org.apache.oodt.cas.filemgr.datatransfer import TransferStatusTracker
+from org.apache.oodt.cas.filemgr.structs import Product
+from org.apache.oodt.cas.filemgr.util import GenericFileManagerObjectFactory
+from org.apache.oodt.cas.filemgr.util import XmlRpcStructFactory as Structs
+from org.apache.oodt.cas.metadata import Metadata
 from java.lang import Boolean, Double, Integer
 from java.util import Hashtable, Vector
 
 # We choose these default factory classes because it minimizes our dependencies
 # on heavyweight external packages, like smelly old SQL databases.
 _defaultFactories = {
-	'catalog': 'gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory',
-	'repository': 'gov.nasa.jpl.oodt.cas.filemgr.repository.XMLRepositoryManagerFactory',
-	'datatransfer': 'gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory',
-	'validation': 'gov.nasa.jpl.oodt.cas.filemgr.validation.XMLValidationLayerFactory'
+	'catalog': 'org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory',
+	'repository': 'org.apache.oodt.cas.filemgr.repository.XMLRepositoryManagerFactory',
+	'datatransfer': 'org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory',
+	'validation': 'org.apache.oodt.cas.filemgr.validation.XMLValidationLayerFactory'
 }
 
 # All available permissions.  By default, the "root" user will be in the "wheel"
@@ -505,11 +505,11 @@ def _setJavaProperties(config):
 	variables!
 	'''
 	from java.lang import System
-	System.setProperty('gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.idxPath', config.get('index', 'path'))
-	System.setProperty('gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.pageSize', config.get('index', 'pageSize'))
-	System.setProperty('gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.dirs', config.get('policies', 'repo'))
-	System.setProperty('gov.nasa.jpl.oodt.cas.filemgr.validation.dirs', config.get('policies', 'validation'))
-	System.setProperty('gov.nasa.jpl.oodt.cas.filemgr.datatransfer.remote.chunkSize', '1024')
+	System.setProperty('org.apache.oodt.cas.filemgr.catalog.lucene.idxPath', config.get('index', 'path'))
+	System.setProperty('org.apache.oodt.cas.filemgr.catalog.lucene.pageSize', config.get('index', 'pageSize'))
+	System.setProperty('org.apache.oodt.cas.filemgr.repositorymgr.dirs', config.get('policies', 'repo'))
+	System.setProperty('org.apache.oodt.cas.filemgr.validation.dirs', config.get('policies', 'validation'))
+	System.setProperty('org.apache.oodt.cas.filemgr.datatransfer.remote.chunkSize', '1024')
 	System.setProperty('filemgr.repository.factory', config.get('factories', 'repository'))
 	System.setProperty('filemgr.catalog.factory', config.get('factories', 'catalog'))
 	System.setProperty('filemgr.datatransfer.factory', config.get('factories', 'datatransfer'))

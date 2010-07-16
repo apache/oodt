@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
-import org.apache.oodt.cas.commons.pagination.PaginationUtils;
+import org.apache.oodt.commons.pagination.PaginationUtils;
 
 /**
  * @author mattmann

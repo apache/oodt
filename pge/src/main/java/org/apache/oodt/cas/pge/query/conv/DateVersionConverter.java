@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.pge.query.conv;
 
 //OODT imports
-import org.apache.oodt.cas.commons.date.DateUtils;
+import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.cas.filemgr.structs.query.conv.VersionConverter;
 
 //JDK imports

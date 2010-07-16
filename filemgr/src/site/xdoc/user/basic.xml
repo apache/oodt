@@ -215,7 +215,7 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
        <ul>     
          <li>Specify the path to the directory where the File Manager will create the
          Lucene index and associated files by setting the 
-         <code>gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.idxPath</code> property
+         <code>org.apache.oodt.cas.filemgr.catalog.lucene.idxPath</code> property
          to <code>$FILEMGR_HOME/catalog</code>. Make sure that this directory does
          NOT exist the first time you run the File Manager. If the File Manager does not find
          a directory at the specified location, it will create all of the necessary 
@@ -223,8 +223,8 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
          
          <li>Specify the paths to the directories where the XML policy files are stored 
          for the validation layer and for the repository manager. These paths are set by 
-         <code>gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.dirs</code> and 
-         <code>gov.nasa.jpl.oodt.cas.filemgr.validation.dirs</code> respectively. The 
+         <code>org.apache.oodt.cas.filemgr.repositorymgr.dirs</code> and 
+         <code>org.apache.oodt.cas.filemgr.validation.dirs</code> respectively. The 
          default location (and default policy files) are located at 
          <code>$FILEMGR_HOME/policy</code> in the vanilla deployment of the File Manager.
          Note that these properties need to be fully specified URLs (e.g., they should 

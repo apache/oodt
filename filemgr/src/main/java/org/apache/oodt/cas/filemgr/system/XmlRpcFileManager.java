@@ -23,7 +23,7 @@ import org.apache.xmlrpc.WebServer;
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-import org.apache.oodt.cas.commons.date.DateUtils;
+import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.metadata.extractors.FilemgrMetExtractor;
 import org.apache.oodt.cas.filemgr.repository.RepositoryManager;
