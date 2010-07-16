@@ -969,8 +969,8 @@ TrackExpr.class</source>
       <source>#!/bin/sh
 exec java -Djava.ext.dirs=$PS_HOME/lib \
     -Dhandlers=NullHandler,MusicHandler \
-    jpl.eda.ExecServer \
-    jpl.eda.profile.rmi.ProfileServiceImpl \
+    org.apache.oodt.ExecServer \
+    org.apache.oodt.profile.rmi.ProfileServiceImpl \
     urn:eda:rmi:MyProfileService</source>
 
       <p>Now the profile server will delegate to <em>two</em>
@@ -995,7 +995,7 @@ exec java -Djava.ext.dirs=$PS_HOME/lib \
       <source>% <b>$PS_HOME/bin/pc 'artist = Delerium
  AND album != Poem OR artist = Bach'</b><![CDATA[
 Object context ready; delegating to:
-[jpl.eda.object.jndi.RMIContext@dec8b3]
+[org.apache.oodt.object.jndi.RMIContext@dec8b3]
 [<?xml version="1.0" encoding="UTF-8"?>
 <profile><profAttributes><profId>urn:sk:tr91BC.mp3</profId>...]]></source>
 

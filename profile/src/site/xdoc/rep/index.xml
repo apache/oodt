@@ -134,7 +134,7 @@
 
     <section name="Java Representation of Profiles">
       <p>The OODT source code includes a class
-	<code>jpl.eda.profile.Profile</code> for object
+	<code>org.apache.oodt.profile.Profile</code> for object
 	represenation of a profile.  You can construct a
 	<code>Profile</code> object from an RDF or XML
 	document or create a blank one to populate with metadata
@@ -224,7 +224,7 @@
 
 	  <subsection name="Common Attributes of Profile Elements">
 	    <p>The class
-	      <code>jpl.eda.profile.ProfileElement</code>
+	      <code>org.apache.oodt.profile.ProfileElement</code>
 	      contains the common parts of every profile element, such
 	      as its required name, its optional description, and so
 	      forth.  Use the value <code>null</code> for any

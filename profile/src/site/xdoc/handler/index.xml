@@ -38,7 +38,7 @@
       </p>
       <ol>
 	<li>Creating a class that implements (however indirectly)
-	  the <code>jpl.eda.profile.handlers.ProfileHandler</code> interface.
+	  the <code>org.apache.oodt.profile.handlers.ProfileHandler</code> interface.
 	</li>
 	<li>Creating a new process that runs either the RMI or
 	    CORBA <code>ProfileServiceImpl</code> class,
@@ -87,12 +87,12 @@
 	  an extension of the other):
 	</p>
 	<ul>
-	  <li><code>jpl.eda.profile.handlers.ProfileHandler</code>
+	  <li><code>org.apache.oodt.profile.handlers.ProfileHandler</code>
 	      is the basic profile handler.  It defines methods for
 	    <em>handling</em> searches for profiles.
 	  </li>
 
-	  <li><code>jpl.eda.profile.handlers.ProfileManager</code> is an
+	  <li><code>org.apache.oodt.profile.handlers.ProfileManager</code> is an
 	    extension that not just <em>handles</em> profile queries
 	    but also <em>manages</em> the set of profiles maintained
 	    by the server, by providing methods for adding to,
@@ -114,12 +114,12 @@
 	  as follows:
 	</p>
 
-	<source>package jpl.eda.profile.handlers;
+	<source>package org.apache.oodt.profile.handlers;
 
 import java.util.List;
-import jpl.eda.profile.Profile;
-import jpl.eda.profile.ProfileException;
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileException;
+import org.apache.oodt.xmlquery.XMLQuery;
 
 public interface ProfileHandler {
   List findProfiles(XMLQuery query) throws ProfileException;
@@ -161,13 +161,13 @@ public interface ProfileHandler {
 	  builds on the <code>ProfileHandler</code>, and is
 	  listed below:
 	</p>
-	<source>package jpl.eda.profile.handlers;
+	<source>package org.apache.oodt.profile.handlers;
 
 import java.util.Collection;
 import java.util.Iterator;
-import jpl.eda.profile.Profile;
-import jpl.eda.profile.ProfileException;
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileException;
+import org.apache.oodt.xmlquery.XMLQuery;
 
 public interface ProfileManager extends ProfileHandler {
   void add(Profile profile) throws ProfileException;
@@ -234,9 +234,9 @@ public interface ProfileManager extends ProfileHandler {
 	</p>
 	<source>import java.util.Collections;
 import java.util.List;
-import jpl.eda.profile.Profile;
-import jpl.eda.profile.handlers.ProfileHandler;
-import jpl.eda.xmlquery.XMLQuery;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.handlers.ProfileHandler;
+import org.apache.oodt.xmlquery.XMLQuery;
 
 public class NullHandler implements ProfileHandler {
   public List findProfiles(XMLQuery query) {
@@ -354,12 +354,12 @@ total 404
 
 	<source>#!/bin/sh
 exec java -Djava.ext.dirs=$PS_HOME/lib \
-    gov.nasa.jpl.oodt.rmi.RMIRegistry</source>
+    org.apache.oodt.rmi.RMIRegistry</source>
 
 	<p>This script tells the Java virtual machine to find
 	  extension jars in the directory <code>$PS_HOME/lib</code>.  It
 	  then says that the main class to execute is
-	  <code>gov.nasa.jpl.oodt.rmi.RMIRegistry</code>.
+	  <code>org.apache.oodt.rmi.RMIRegistry</code>.
 	</p>
 
 	<p>Go ahead and make this script executable and start the RMI
@@ -438,15 +438,15 @@ total 1580
 	<source>#!/bin/sh
 exec java -Djava.ext.dirs=$PS_HOME/lib \
     -Dhandlers=NullHandler \
-    jpl.eda.ExecServer \
-    jpl.eda.profile.rmi.ProfileServiceImpl \
+    org.apache.oodt.ExecServer \
+    org.apache.oodt.profile.rmi.ProfileServiceImpl \
     urn:eda:rmi:MyProfileService</source>
 
 	<p>Make the script executable and start the profile server:</p>
 
 	<source>% <b>chmod 755 $PS_HOME/bin/ps</b>
 % <b>$PS_HOME/bin/ps</b>
-Object context ready; delegating to: [jpl.eda.object.jndi.RMIContext@dec8b3]</source>
+Object context ready; delegating to: [org.apache.oodt.object.jndi.RMIContext@dec8b3]</source>
 
 	<p>The profile server will start, check its
 	  <code>handlers</code> property, and create an object of each
@@ -527,7 +527,7 @@ if [ $# -ne 1 ]; then
    exit 1
 fi
 exec java -Djava.ext.dirs=$PS_HOME/lib \
-     jpl.eda.profile.ProfileClient \
+     org.apache.oodt.profile.ProfileClient \
      urn:eda:rmi:MyProfileService \
      "$1"</source>
 
@@ -535,7 +535,7 @@ exec java -Djava.ext.dirs=$PS_HOME/lib \
 
 	<source>% <b>chmod 755 $PS_HOME/bin/pc</b>
 % <b>$PS_HOME/bin/pc "temperature = 37"</b>
-Object context ready; delegating to: [jpl.eda.object.jndi.RMIContext@dec8b3]
+Object context ready; delegating to: [org.apache.oodt.object.jndi.RMIContext@dec8b3]
 []</source>
 
 	<p>Although it may not look spetacular, this is a success!
