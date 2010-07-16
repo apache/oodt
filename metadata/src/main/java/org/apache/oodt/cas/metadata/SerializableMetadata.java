@@ -1,20 +1,17 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// Licensed to the Apache Software Foundation (ASF) under one or more contributor
+// license agreements.  See the NOTICE.txt file distributed with this work for
+// additional information regarding copyright ownership.  The ASF licenses this
+// file to you under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License.  You may obtain a copy of
+// the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+// License for the specific language governing permissions and limitations under
+// the License.
 
 package org.apache.oodt.cas.metadata;
 
@@ -26,8 +23,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URLEncoder;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -61,7 +56,13 @@ public class SerializableMetadata extends Metadata implements Serializable {
     private String xmlEncoding;
 
     private boolean useCDATA;
-
+    
+    public SerializableMetadata() {
+    	super();
+    	this.xmlEncoding = "UTF-8";
+    	this.useCDATA = false;
+    }
+    
     /**
      * Accepts any encoding which is supported by java.net.URLEncoder If
      * useCDATA is set true then element text will be wrapped in a CDATA tag.
@@ -83,18 +84,22 @@ public class SerializableMetadata extends Metadata implements Serializable {
         this.useCDATA = useCDATA;
     }
 
-    /**
-     * @deprecated
-     * 
-     * @see org.apache.oodt.cas.metadata.Metadata#init(java.io.InputStream)
-     */
-    public SerializableMetadata(InputStream is, String xmlEncoding,
-            boolean useCDATA) throws Exception {
-        super(is);
+    public SerializableMetadata(Metadata metadata) {
+    	this(metadata, "UTF-8", false);
+	}
+    
+    public SerializableMetadata(InputStream inputStream) throws IOException {
+    	this(inputStream, "UTF-8", false);
+    }
+    
+    public SerializableMetadata(InputStream inputStream, String xmlEncoding,
+            boolean useCDATA) throws IOException {
         this.xmlEncoding = xmlEncoding;
         this.useCDATA = useCDATA;
+    	this.loadMetadataFromXmlStream(inputStream);
     }
 
+    
     /**
      * Builds a SerializableMetadata object from a Metadata object
      * 
@@ -103,7 +108,7 @@ public class SerializableMetadata extends Metadata implements Serializable {
      */
     public SerializableMetadata(Metadata metadata, String xmlEncoding,
             boolean useCDATA) {
-        this.replaceMetadata(metadata.getHashtable());
+        this.replaceMetadata(metadata);
         this.xmlEncoding = xmlEncoding;
         this.useCDATA = useCDATA;
     }
@@ -166,48 +171,35 @@ public class SerializableMetadata extends Metadata implements Serializable {
             Document document = factory.newDocumentBuilder().newDocument();
 
             Element root = (Element) document.createElement("cas:metadata");
-            // FIXME: change namespace URI?
             root.setAttribute("xmlns:cas", "http://oodt.jpl.nasa.gov/1.0/cas");
             document.appendChild(root);
 
             // now add the set of metadata elements in the properties object
-            for (Iterator i = this.elementMap.keySet().iterator(); i.hasNext();) {
-                String elemName = null;
-
-                elemName = (String) i.next();
-                List elemValues = (List) this.elementMap.get(elemName);
-
+            for (String key : this.getAllKeys()) {
                 Element metadataElem = document.createElement("keyval");
                 Element keyElem = document.createElement("key");
                 if (this.useCDATA)
-                    keyElem.appendChild(document.createCDATASection(elemName));
+                    keyElem.appendChild(document.createCDATASection(key));
                 else
-                    keyElem.appendChild(document.createTextNode(URLEncoder
-                            .encode(elemName, this.xmlEncoding)));
+                    keyElem.appendChild(document.createTextNode(URLEncoder.encode(key, this.xmlEncoding)));
+                
                 metadataElem.appendChild(keyElem);
 
-                String type = "scalar";
+                metadataElem.setAttribute("type", "vector");
 
-                if (elemValues.size() > 1) {
-                    type = "vector";
-                }
-
-                metadataElem.setAttribute("type", type);
-
-                for (Iterator j = elemValues.iterator(); j.hasNext();) {
-                    String elemValue = (String) j.next();
+                for (String value : this.getAllMetadata(key)) {
                     Element valElem = document.createElement("val");
-                    if (elemValue == null) {
+                    if (value == null) {
                         throw new Exception("Attempt to write null value "
-                                + "for property: [" + elemName + "]: val: ["
-                                + elemValue + "]");
+                                + "for property: [" + key + "]: val: ["
+                                + value + "]");
                     }
                     if (this.useCDATA)
                         valElem.appendChild(document
-                                .createCDATASection(elemValue));
+                                .createCDATASection(value));
                     else
                         valElem.appendChild(document.createTextNode(URLEncoder
-                                .encode(elemValue, this.xmlEncoding)));
+                                .encode(value, this.xmlEncoding)));
                     metadataElem.appendChild(valElem);
                 }
                 root.appendChild(metadataElem);
@@ -236,7 +228,6 @@ public class SerializableMetadata extends Metadata implements Serializable {
                     .newInstance();
             factory.setNamespaceAware(true);
             DocumentBuilder parser = factory.newDocumentBuilder();
-            elementMap = new Hashtable();
             Element root = parser.parse(new InputSource(in))
                     .getDocumentElement();
 
@@ -247,9 +238,9 @@ public class SerializableMetadata extends Metadata implements Serializable {
 
                 String elemName = XMLUtils.read(keyValElem, "key",
                         this.xmlEncoding);
-                List elemValues = XMLUtils.readMany(keyValElem, "val",
+                List<String> elemValues = XMLUtils.readMany(keyValElem, "val",
                         this.xmlEncoding);
-                elementMap.put(elemName, elemValues);
+                this.addMetadata(elemName, elemValues);
             }
         } catch (Exception e) {
             throw new IOException(
