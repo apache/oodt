@@ -1,21 +1,31 @@
 <!--
-Copyright (c) 2005, California Institute of Technology.
-ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
 
-$Id$
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
 -->
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"
-    import="gov.nasa.jpl.oodt.cas.filemgr.structs.Product"
-    import="gov.nasa.jpl.oodt.cas.filemgr.structs.ProductPage"
-    import="gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType"
-    import="gov.nasa.jpl.oodt.cas.filemgr.structs.Element"
-    import="gov.nasa.jpl.oodt.cas.filemgr.structs.TermQueryCriteria"
-    import="gov.nasa.jpl.oodt.cas.filemgr.structs.Query"
-    import="gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.CatalogException"
-    import="gov.nasa.jpl.oodt.cas.metadata.Metadata"
-    import="gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManagerClient"
-    import="gov.nasa.jpl.oodt.cas.commons.pagination.PaginationUtils"
+    import="org.apache.oodt.cas.filemgr.structs.Product"
+    import="org.apache.oodt.cas.filemgr.structs.ProductPage"
+    import="org.apache.oodt.cas.filemgr.structs.ProductType"
+    import="org.apache.oodt.cas.filemgr.structs.Element"
+    import="org.apache.oodt.cas.filemgr.structs.TermQueryCriteria"
+    import="org.apache.oodt.cas.filemgr.structs.Query"
+    import="org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException"
+    import="org.apache.oodt.cas.metadata.Metadata"
+    import="org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient"
+    import="org.apache.oodt.cas.commons.pagination.PaginationUtils"
     import="java.net.URL"
     import="java.net.MalformedURLException"
     import="java.util.Iterator"

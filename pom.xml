@@ -55,8 +55,8 @@ the License.
         <module>profile</module>
         <!-- broken: <module>query</module> -->
         <module>webapp/filemgr</module>
-        <module>webapp/fmprod</module>
-        <module>webapp/workflow</module>
+        <!-- broken: <module>webapp/fmprod</module> -->
+        <!-- broken: <module>webapp/workflow</module> -->
         <!-- broken: <module>app/fmbrowser</module> -->
     </modules>
 </project>
