@@ -172,6 +172,20 @@ public class TestMetadata extends TestCase {
 
     }
 
+    /**
+     * Ensure that replacing a Metadata instance with a Metadata instance works.
+     */
+    public void testReplacementWithMetadata() {
+        Metadata a = new Metadata();
+        Metadata b = new Metadata();
+        a.addMetadata("a", "1");
+        b.addMetadata("a", "2");
+        b.addMetadata("b", "3");
+        a.replaceMetadata(b);
+        assertEquals("2", a.getMetadata("a"));
+        assertEquals("3", a.getMetadata("b"));
+    }
+
     public void testEquals() {
         Metadata m1 = new Metadata();
         m1.addMetadata("key1", "val1");
