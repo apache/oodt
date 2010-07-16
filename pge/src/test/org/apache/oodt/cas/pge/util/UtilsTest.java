@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-package gov.nasa.jpl.oodt.cas.pge.util;
+package org.apache.oodt.cas.pge.util;
 
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
-import gov.nasa.jpl.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 
 import java.net.MalformedURLException;
 
