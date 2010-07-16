@@ -37,10 +37,11 @@ the License.
     
     <modules>
         <module>core</module>
-        <!-- broken: <module>commons</module> -->
+        <module>commons</module>
+        <module>pcs/input</module>
+        <!-- broken: <module>metadata</module> -->
         <module>xmlquery</module>
         <module>sso</module>
-        <!-- broken: <module>metadata</module> -->
         <!-- broken: <module>filemgr</module> -->
         <module>catalog</module>
         <module>workflow</module>

@@ -23,11 +23,11 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>2.0</version>
+    <version>${oodt.version}</version>
+    <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <artifactId>metadata</artifactId>
+  <artifactId>cas-metadata</artifactId>
   <name>Catalog and Archive Service Generic Multi-valued Metadata Container</name>
-  <version>1.7.0-dev</version>
   <description>A Multi-valued, generic Metadata container class. The class uses an internal
 	Map of string keys pointing to vectors of strings. The data 
 	structure looks like the following: 
@@ -85,13 +85,13 @@ the License.
   <dependencies>
     <dependency>
       <groupId>org.apache.oodt</groupId>
-      <artifactId>commons</artifactId>
-      <version>1.2.0-dev</version>
+      <artifactId>oodt-commons</artifactId>
+      <version>${oodt.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>pcs-input</artifactId>
-      <version>1.0-dev</version>
+      <version>${oodt.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>

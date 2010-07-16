@@ -25,6 +25,8 @@ import java.util.LinkedList;
 
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 //Junit imports
 import junit.framework.TestCase;
 
@@ -57,7 +59,7 @@ public class TestPreCondEvalUtils extends TestCase {
     }
 
     public void testEval(){
-        File prodFile = new File(MET_EXTR_TEST_FILE);
+        File prodFile = new File(GetReflectionFactoryAction);
         try{
             assertTrue(this.evalUtils.eval(this.preconditions, prodFile));
         }
