@@ -2,7 +2,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>gov.nasa.jpl.oodt</groupId>
+    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
     <version>2.0</version>
   </parent>
@@ -23,7 +23,7 @@
     </resources>
     <testResources>
       <testResource>
-        <targetPath>jpl/eda/profile</targetPath>
+        <targetPath>org/apache/oodt/profile</targetPath>
         <directory>${basedir}/src/testdata</directory>
         <includes>
           <include>test.rdf</include>
@@ -31,7 +31,7 @@
         </includes>
       </testResource>
       <testResource>
-        <targetPath>jpl/eda/profile/handlers/lightweight</targetPath>
+        <targetPath>org/apache/oodt/profile/handlers/lightweight</targetPath>
         <directory>${basedir}/src/testdata</directory>
         <includes>
           <include>lightweightTest.xml</include>
@@ -44,7 +44,7 @@
         <configuration>
           <forkMode>once</forkMode>
           <excludes>
-            <exclude>jpl/eda/profile/ProfileElementTestCase.java</exclude>
+            <exclude>org/apache/oodt/profile/ProfileElementTestCase.java</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -82,18 +82,13 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
-      <artifactId>edm-commons</artifactId>
-      <version>2.2.11-dev</version>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>commons</artifactId>
+      <version>1.2.0-dev</version>
     </dependency>
     <dependency>
-      <groupId>oodt</groupId>
-      <artifactId>edm-corba</artifactId>
-      <version>2.2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
-      <artifactId>edm-query</artifactId>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>xmlquery</artifactId>
       <version>2.0.8-dev</version>
     </dependency>
     <dependency>
@@ -132,9 +127,14 @@
       <version>1.0.4</version>
     </dependency>
     <dependency>
+        <groupId>org.apache.oodt</groupId>
+        <artifactId>filemgr</artifactId>
+        <version>1.9.0-dev</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>3.8.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
