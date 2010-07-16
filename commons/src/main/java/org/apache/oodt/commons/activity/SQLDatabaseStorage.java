@@ -18,178 +18,210 @@
 package org.apache.oodt.commons.activity;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
+import javax.sql.DataSource;
+
+import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
 
 /**
-	<p>This class enables storage of activity incidents in just about
-	any database management system. It should support MySQL, PostgreSQL,
-	Oracle and Sybase.</p>
-
-	<p>This class uses the following properties:
-	<ul>
-		<li><code>org.apache.oodt.commons.activity.SQLDatabaseStorage.driver</code><br>
-		Must contain the name of the JDBC driver class. See the following
-		examples:
-		<ul>
-			<li>com.mysql.jdbc.Driver</li>
-			<li>org.postgresql.Driver</li>
-			<li>oracle.jdbc.driver.OracleDriver</li>
-			<li>com.sybase.jdbc2.jdbc.SybDriver</li>
-		</ul>
-		</li>
-
-		<li><code>org.apache.oodt.commons.activity.SQLDatabaseStorage.url</code><br>
-		Must contain the URL specification for the target database. See the
-		following examples:
-		<ul>
-			<li>jdbc:mysql://host:port/database</li>
-			<li>jdbc:postgresql://host:port/database</li>
-			<li>jdbc:oracle:thin:@host:port:database</li>
-			<li>jdbc:sybase::Tds:host:port/database</li>
-		</ul>
-		</li>
-
-		<li><code>org.apache.oodt.commons.activity.SQLDatabaseStorage.user</code><br>
-		Must contain the user name for the target database.</li>
-
-		<li><code>org.apache.oodt.commons.activity.SQLDatabaseStorage.password</code><br>
-		Must contain the password for the target database.</li>
-
-	</ul>
-	</p>
-
-	<p>This class expects the following table to exist in the target
-	database (data types will vary depending on the vendor):<br>
-		<pre>
-      create table incidents (
-         activityID varchar(32) not null,
-         className varchar(255) not null,
-         occurTime bigint not null default 0,
-         detail text null,
-         primary key (activityID, className, occurTime))
-		</pre>
-	</p>
-
-	@author S. Hardman
-	@version $Revision: 1.2 $
-*/
+ * <p>
+ * This class enables storage of activity incidents in just about any database
+ * management system. It should support MySQL, PostgreSQL, Oracle and Sybase.
+ * </p>
+ * 
+ * <p>
+ * This class uses the following properties:
+ * <ul>
+ * <li><code>org.apache.oodt.commons.activity.SQLDatabaseStorage.driver</code><br>
+ * Must contain the name of the JDBC driver class. See the following examples:
+ * <ul>
+ * <li>com.mysql.jdbc.Driver</li>
+ * <li>org.postgresql.Driver</li>
+ * <li>oracle.jdbc.driver.OracleDriver</li>
+ * <li>com.sybase.jdbc2.jdbc.SybDriver</li>
+ * </ul>
+ * </li>
+ * 
+ * <li><code>org.apache.oodt.commons.activity.SQLDatabaseStorage.url</code><br>
+ * Must contain the URL specification for the target database. See the following
+ * examples:
+ * <ul>
+ * <li>jdbc:mysql://host:port/database</li>
+ * <li>jdbc:postgresql://host:port/database</li>
+ * <li>jdbc:oracle:thin:@host:port:database</li>
+ * <li>jdbc:sybase::Tds:host:port/database</li>
+ * </ul>
+ * </li>
+ * 
+ * <li><code>org.apache.oodt.commons.activity.SQLDatabaseStorage.user</code><br>
+ * Must contain the user name for the target database.</li>
+ * 
+ * <li><code>org.apache.oodt.commons.activity.SQLDatabaseStorage.password</code>
+ * <br>
+ * Must contain the password for the target database.</li>
+ * 
+ * </ul>
+ * </p>
+ * 
+ * <p>
+ * This class expects the following table to exist in the target database (data
+ * types will vary depending on the vendor):<br>
+ * 
+ * <pre>
+ * create table incidents (
+ *          activityID varchar(32) not null,
+ *          className varchar(255) not null,
+ *          occurTime bigint not null default 0,
+ *          detail text null,
+ *          primary key (activityID, className, occurTime))
+ * </pre>
+ * 
+ * </p>
+ * 
+ * @author S. Hardman
+ * @version $Revision: 1.2 $
+ */
 public class SQLDatabaseStorage implements Storage {
 
-	/**
-		The database connection.
-	*/
-	private Connection connection;
+  /**
+   * The data source;
+   */
+  private DataSource ds;
 
+  /**
+   * Constructor given no arguments.
+   * 
+   * This constructor grabs the necessary system properties and opens the
+   * database connection based on the property values.
+   */
+  public SQLDatabaseStorage() {
 
-	/**
-		Constructor given no arguments.
+    // Grab the properties and make sure they are all there.
+    String driver = System
+        .getProperty("org.apache.oodt.commons.activity.SQLDatabaseStorage.driver");
+    String url = System
+        .getProperty("org.apache.oodt.commons.activity.SQLDatabaseStorage.url");
+    String user = System
+        .getProperty("org.apache.oodt.commons.activity.SQLDatabaseStorage.user");
+    String password = System
+        .getProperty("org.apache.oodt.commons.activity.SQLDatabaseStorage.password");
 
-		This constructor grabs the necessary system properties and opens
-		the database connection based on the property values.
-	*/
-	public SQLDatabaseStorage() {
+    if ((driver == null) || (url == null) || (user == null)
+        || (password == null)) {
+      throw new IllegalStateException(
+          "SQLDatabaseStorage(): Required system properties `org.apache.oodt.commons.activity.SQLDatabaseStorage.[driver,url,user,password]' are not completely defined.");
+    }
 
-		// Grab the properties and make sure they are all there.
-		String driver = System.getProperty("org.apache.oodt.commons.activity.SQLDatabaseStorage.driver");
-		String url = System.getProperty("org.apache.oodt.commons.activity.SQLDatabaseStorage.url");
-		String user = System.getProperty("org.apache.oodt.commons.activity.SQLDatabaseStorage.user");
-		String password = System.getProperty("org.apache.oodt.commons.activity.SQLDatabaseStorage.password");
+    this.ds = DatabaseConnectionBuilder.buildDataSource(user, password, driver,
+        url);
+  }
 
-		if ((driver == null) || (url == null) || (user == null) || (password == null)) {
-			throw new IllegalStateException("SQLDatabaseStorage(): Required system properties `org.apache.oodt.commons.activity.SQLDatabaseStorage.[driver,url,user,password]' are not completely defined.");
-		}
+  /**
+   * This method stores the list of incidents for the activity in the database
+   * table named "incidents".
+   * 
+   * @param id
+   *          The activity identifier.
+   * @param incidents
+   *          A list of {@link Incident}.
+   */
+  public void store(String id, List incidents) {
+    Statement statement = null;
+    Connection conn = null;
 
-		try {
-			// Open the database connection.
-         Class.forName(driver);
-         connection = DriverManager.getConnection(url, user, password);
-		}
-		catch (ClassNotFoundException e) {
-			throw new IllegalStateException("SQLDatabaseStorage(): An exception occurred locating the JDBC driver class. Specifically, exception '" + e.getClass().getName() + "' occurred with message '" + e.getMessage() + "'"); 
-		}
-		catch (SQLException e) {
-			throw new IllegalStateException("SQLDatabaseStorage(): An exception occurred connecting to the database. Specifically, exception '" + e.getClass().getName() + "' occurred with message '" + e.getMessage() + "'");
-		}
-	}
+    try {
+      conn = this.ds.getConnection();
+      statement = conn.createStatement();
+      for (Iterator i = incidents.iterator(); i.hasNext();) {
+        Incident incident = (Incident) i.next();
+        statement
+            .executeUpdate("insert into incidents (activityID, className, occurTime, detail) values ('"
+                + id
+                + "', '"
+                + incident.getClass().getName()
+                + "', "
+                + incident.getTime().getTime()
+                + ", '"
+                + escapeSingleQuote(incident.toString()) + "')");
+      }
+    } catch (SQLException e) {
+      System.err
+          .println("SQLDatabaseStorage.store(): Ignoring an exception that occurred while inserting a row into the database. Specifically, exception '"
+              + e.getClass().getName()
+              + "' occurred with message '"
+              + e.getMessage() + "'");
+    } finally {
+      if (statement != null) {
+        try {
+          statement.close();
+        } catch (SQLException ignore) {
+        }
+        statement = null;
+      }
 
+      if (conn != null) {
+        try {
+          conn.close();
+        } catch (SQLException ignore) {
+        }
+        conn = null;
+        conn = null;
+      }
+    }
+  }
 
-	/**
-		This method stores the list of incidents for the activity in the
-		database table named "incidents".
+  /**
+   * This method closes the database connection.
+   * 
+   * @throws Throwable
+   *           If something goes wrong.
+   */
+  public void finalize() throws Throwable {
+    this.ds = null;
+    super.finalize();
+  }
 
-		@param id The activity identifier.
-		@param incidents A list of {@link Incident}.
-	*/
-	public void store(String id, List incidents) {
-		Statement statement = null;
-		try {
-			statement = connection.createStatement();
-			for (Iterator i = incidents.iterator(); i.hasNext();) {
-				Incident incident = (Incident) i.next();
-				statement.executeUpdate("insert into incidents (activityID, className, occurTime, detail) values ('" + id + "', '" + incident.getClass().getName() + "', " + incident.getTime().getTime() + ", '" + escapeSingleQuote(incident.toString()) + "')");
-			}
-		} catch (SQLException e) {
-			System.err.println("SQLDatabaseStorage.store(): Ignoring an exception that occurred while inserting a row into the database. Specifically, exception '" + e.getClass().getName() + "' occurred with message '" + e.getMessage() + "'");
-		} finally {
-			if (statement != null) try {
-				statement.close();
-			} catch (SQLException ignore) {}
-		}
-	}
+  /**
+   * This method will escape any single quotes found in the input string and
+   * return the escaped string. This will ready the string for insertion into a
+   * database. The single quote is escaped by inserting an additional single
+   * quote in front of it in the string. If some considerate developer has
+   * already escaped the single quotes in the input string, this method will
+   * essentially do nothing.
+   * 
+   * @param inputString
+   *          The string to be escaped.
+   * @return The escaped string.
+   */
+  public static String escapeSingleQuote(String inputString) {
+    int index = inputString.indexOf('\'');
+    if (index == -1) {
+      return (inputString);
+    }
 
+    String outputString = inputString;
+    while (index != -1) {
 
-	/**
-		This method closes the database connection.
+      // If the single quote is the last character in the string or
+      // the next character is not another single quote, insert a
+      // single quote in front of the current single quote.
+      if ((index == (outputString.length() - 1))
+          || (outputString.charAt(index + 1) != '\'')) {
+        outputString = outputString.substring(0, index) + "'"
+            + outputString.substring(index);
+      }
 
-		@throws Throwable If something goes wrong.
-	*/
-	public void finalize() throws Throwable {
-		connection.close();
-		super.finalize();
-	}
-	
-	/**
-    	* This method will escape any single quotes found in the input string
-    	* and return the escaped string. This will ready the string for
-	* insertion into a database. The single quote is escaped by inserting
-	* an additional single quote in front of it in the string. If some
-	* considerate developer has already escaped the single quotes in the
-	* input string, this method will essentially do nothing.
-	*
-	* @param inputString The string to be escaped.
-	* @return The escaped string.
-	*/
-	public static String escapeSingleQuote(String inputString) {
-		int index = inputString.indexOf('\'');
-		if (index == -1) {
-			return (inputString);
-		}
-
-		String outputString = inputString;
-		while (index != -1) {
-
-			// If the single quote is the last character in the string or 
-			// the next character is not another single quote, insert a
-			// single quote in front of the current single quote.
-			if ((index == (outputString.length() - 1)) || (outputString.charAt(index + 1) != '\'')) {
-				outputString = outputString.substring(0, index) + "'" + outputString.substring(index);
-			}
-
-			// If we are not at the end of the string, check for another
-			// single quote.
-			if ((index + 2) <= (outputString.length() - 1)) {
-				index = outputString.indexOf('\'', index + 2);
-			}
-			else {
-				index = -1;
-			}
-		}
-		return (outputString);
-	}
+      // If we are not at the end of the string, check for another
+      // single quote.
+      if ((index + 2) <= (outputString.length() - 1)) {
+        index = outputString.indexOf('\'', index + 2);
+      } else {
+        index = -1;
+      }
+    }
+    return (outputString);
+  }
 }
-
-
