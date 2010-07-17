@@ -31,8 +31,8 @@ the License.
   <properties/>
   <dependencies>
     <dependency>
-      <groupId>servletapi</groupId>
-      <artifactId>servletapi</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
       <version>2.4</version>
     </dependency>
     <dependency>
