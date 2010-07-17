@@ -33,7 +33,7 @@ the License.
 		<!--  you can optionally specify envReplace tag (=true) 
 		      to turn on environment variable replacement
 		-->
-		<extractorBinPath envReplace="true">[PWD]/src/test/gov/nasa/jpl/oodt/cas/metadata/extractors/testExtractor</extractorBinPath>
+		<extractorBinPath envReplace="true">[PWD]/src/testdata/testExtractor</extractorBinPath>
 
 		<!--  make sure to use character entities if there are any weird
 			parameters here that would screw up the XML.

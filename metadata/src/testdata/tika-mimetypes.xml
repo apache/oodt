@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-  Copyright (c) 2008, California Institute of Technology.
-  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
-  
-  $Id$
- -->
 <!--
 	Licensed to the Apache Software Foundation (ASF) under one or more
 	contributor license agreements.  See the NOTICE file distributed with
@@ -25,7 +19,6 @@
 	The mime types within this file are based on the types in the mime-types.xml 
 	file available in Apache Nutch.
 -->
-
 <mime-info>
 
 	<mime-type type="text/plain">

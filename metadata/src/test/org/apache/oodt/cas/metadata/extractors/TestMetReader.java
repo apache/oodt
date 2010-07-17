@@ -47,7 +47,7 @@ public class TestMetReader extends TestCase {
 
     private static final String expectedFileLocation = ".";
 
-    private static final String testFile = "./src/test/gov/nasa/jpl/oodt/cas/metadata/extractors/testfile2.txt";
+    private static final String testFile = "testfile2.txt";
 
     private static final String FILENAME = "Filename";
 
@@ -63,7 +63,7 @@ public class TestMetReader extends TestCase {
         Metadata met = null;
 
         try {
-            met = extractor.extractMetadata(new File(testFile));
+            met = extractor.extractMetadata(getClass().getResource(testFile).getFile());
         } catch (MetExtractionException e) {
             fail(e.getMessage());
         }

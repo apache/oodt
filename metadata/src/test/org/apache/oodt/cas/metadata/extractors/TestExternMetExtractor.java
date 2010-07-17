@@ -44,9 +44,9 @@ public class TestExternMetExtractor extends TestCase {
 
     private static final String PRODUCT_TYPE = "ProductType";
 
-    private static final String configFilePath = "./src/main/resources/examples/extern-config.xml";
+    private static final String configFilePath = "extern-config.xml";
 
-    private static final String extractFilePath = "./src/test/gov/nasa/jpl/oodt/cas/metadata/extractors/testfile.txt";
+    private static final String extractFilePath = "testfile.txt";
 
     private static final String expectedFilename = "testfile.txt";
 
@@ -62,16 +62,16 @@ public class TestExternMetExtractor extends TestCase {
         }
 
         Metadata met = null;
+        
         try {
-            met = extractor.extractMetadata(new File(extractFilePath),
-                    new File(configFilePath));
+            met = extractor.extractMetadata(new File(getClass().getResource(extractFilePath).getFile()),
+                    new File(getClass().getResource(configFilePath).getFile()));
         } catch (MetExtractionException e) {
             fail(e.getMessage());
         }
 
         assertNotNull(met);
-        assertTrue(new File(
-                "./src/test/gov/nasa/jpl/oodt/cas/metadata/extractors/testfile.txt.met").exists());
+        assertTrue(new File(getClass().getResource("testfile.txt.met").getFile()).exists());
         assertTrue(met.containsKey(FILENAME));
         assertTrue(met.containsKey(FILE_LOCATION));
         assertTrue(met.containsKey(PRODUCT_TYPE));
@@ -88,8 +88,7 @@ public class TestExternMetExtractor extends TestCase {
      * @see junit.framework.TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
-        File generatedMetFile = new File(
-                "./src/test/gov/nasa/jpl/oodt/cas/metadata/extractors/testfile.txt.met");
+        File generatedMetFile = new File(getClass().getResource("testfile.txt.met").getFile());
         if (generatedMetFile.exists()) {
             generatedMetFile.delete();
         }

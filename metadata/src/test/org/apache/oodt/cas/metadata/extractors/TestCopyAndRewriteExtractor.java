@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.metadata.extractors;
 
 //OODT imports
@@ -23,93 +22,89 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
 import java.io.File;
-import java.io.FileInputStream;
 
 //Junit imports
 import junit.framework.TestCase;
 
 /**
- * @author mattmann
- * @version $Revision$
- * 
- * <p>
- * Describe your class here
- * </p>.
+ * Tests the CopyAndRewriteExtractor.
  */
 public class TestCopyAndRewriteExtractor extends TestCase {
 
-    private CopyAndRewriteExtractor extractor;
+  private CopyAndRewriteExtractor extractor;
 
-    private static final String FILENAME = "Filename";
+  private static final String FILENAME = "Filename";
 
-    private static final String FILE_LOCATION = "FileLocation";
+  private static final String FILE_LOCATION = "FileLocation";
 
-    private static final String PRODUCT_TYPE = "ProductType";
+  private static final String PRODUCT_TYPE = "ProductType";
 
-    private static final String confFilePath = "./src/test/gov/nasa/jpl/oodt/cas/metadata/extractors/copyandrewrite.test.conf";
+  private static final String confFilePath = "copyandrewrite.test.conf";
 
-    private static final String extractFilePath = "./src/test/gov/nasa/jpl/oodt/cas/metadata/extractors/testfile.txt";
+  private static final String extractFilePath = "testfile.txt";
 
-    private static final String expectedFilename = "testfile.txt";
+  private static final String expectedFilename = "testfile.txt";
 
-    private static final String expectedProductType = "NewProductTypeGenericFile";
+  private static final String expectedProductType = "NewProductTypeGenericFile";
 
-    private static String expectedFileLocation = null;
+  private static String expectedFileLocation = null;
 
-    static {
-        try {
-            expectedFileLocation = "/new/loc/"
-                    + new File(extractFilePath).getParentFile()
-                            .getCanonicalPath();
-        } catch (Exception ignore) {
-        }
+  static {
+    try {
+      expectedFileLocation = "/new/loc/"
+          + new File(TestCopyAndRewriteExtractor.class.getResource(
+              extractFilePath).getFile()).getParentFile().getCanonicalPath();
+    } catch (Exception ignore) {
+    }
+  }
+
+  public TestCopyAndRewriteExtractor() {
+    CopyAndRewriteConfig config = new CopyAndRewriteConfig();
+    try {
+      config.load(getClass().getResourceAsStream(confFilePath));
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
 
-    public TestCopyAndRewriteExtractor() {
-        CopyAndRewriteConfig config = new CopyAndRewriteConfig();
-        try {
-            config.load(new FileInputStream(confFilePath));
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    extractor = new CopyAndRewriteExtractor();
+    extractor.setConfigFile(config);
+  }
 
-        extractor = new CopyAndRewriteExtractor();
-        extractor.setConfigFile(config);
+  public void testExtractMetadata() {
+    Metadata met = null;
+
+    try {
+      met = extractor.extractMetadata(getClass().getResource(extractFilePath)
+          .getFile());
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
 
-    public void testExtractMetadata() {
-        Metadata met = null;
+    assertNotNull(met);
+    assertNotNull(met.getHashtable());
+    assertNotNull(met.getHashtable().keySet());
+    assertEquals(3, met.getHashtable().keySet().size());
+    assertTrue(met.containsKey(FILENAME));
+    assertEquals(expectedFilename, met.getMetadata(FILENAME));
+    assertTrue(met.containsKey(PRODUCT_TYPE));
+    assertEquals(expectedProductType, met.getMetadata(PRODUCT_TYPE));
+    assertTrue(met.containsKey(FILE_LOCATION));
+    assertEquals("The expected file location: [" + expectedFileLocation
+        + "] does not match " + "the obtained file location: ["
+        + met.getMetadata(FILE_LOCATION) + "]", expectedFileLocation, met
+        .getMetadata(FILE_LOCATION));
+  }
 
-        try {
-            met = extractor.extractMetadata(extractFilePath);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+  public void testReplaceOrigMetFilePath() {
+    Metadata met = null;
 
-        assertNotNull(met);
-        assertNotNull(met.getHashtable());
-        assertNotNull(met.getHashtable().keySet());
-        assertEquals(3, met.getHashtable().keySet().size());
-        assertTrue(met.containsKey(FILENAME));
-        assertEquals(expectedFilename, met.getMetadata(FILENAME));
-        assertTrue(met.containsKey(PRODUCT_TYPE));
-        assertEquals(expectedProductType, met.getMetadata(PRODUCT_TYPE));
-        assertTrue(met.containsKey(FILE_LOCATION));
-        assertEquals("The expected file location: [" + expectedFileLocation
-                + "] does not match " + "the obtained file location: ["
-                + met.getMetadata(FILE_LOCATION) + "]", expectedFileLocation,
-                met.getMetadata(FILE_LOCATION));
+    try {
+      met = extractor.extractMetadata(getClass().getResource(extractFilePath)
+          .getFile());
+    } catch (Exception e) {
+      fail(e.getMessage());
     }
 
-    public void testReplaceOrigMetFilePath() {
-        Metadata met = null;
-
-        try {
-            met = extractor.extractMetadata(extractFilePath);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-
-        assertNotNull(met);
-    }
+    assertNotNull(met);
+  }
 }
