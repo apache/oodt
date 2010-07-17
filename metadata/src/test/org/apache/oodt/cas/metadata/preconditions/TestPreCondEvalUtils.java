@@ -18,6 +18,9 @@
 
 package org.apache.oodt.cas.metadata.preconditions;
 
+// Metadata Imports
+import org.apache.oodt.cas.metadata.MetadataTestCase;
+
 //JDK imports
 import java.io.File;
 import java.io.IOException;
@@ -40,34 +43,29 @@ import junit.framework.TestCase;
  * Test suite for the {@link PreCondEvalUtils} class
  * </p>.
  */
-public class TestPreCondEvalUtils extends TestCase {
+public class TestPreCondEvalUtils extends MetadataTestCase {
 
     LinkedList<String> preconditions;
     
     private PreCondEvalUtils evalUtils;
-    
 
-    public TestPreCondEvalUtils() throws ClassNotFoundException, InstantiationException,
-            IllegalAccessException, BeansException, IOException {
+    public TestPreCondEvalUtils(String name) {
+        super(name);
+    }
+
+    public void setUp() throws Exception {
+        super.setUp();
         this.preconditions = new LinkedList<String>();
         this.preconditions.add("CheckThatDataFileSizeIsGreaterThanZero");
         this.preconditions.add("CheckThatDataFileExists");
         this.preconditions.add("CheckDataFileMimeType");
-        File preCondFile = new File(getClass().getResource("met_extr_preconditions.xml").getFile());
-        assertNotNull(preCondFile);
+        File preCondFile = getTestDataFile("met_extr_preconditions.xml");
         this.evalUtils = new PreCondEvalUtils(new FileSystemXmlApplicationContext(preCondFile.toURL().toExternalForm()));
     }
 
-    public void testEval(){
-        File prodFile = null;
-        try{
-            prodFile = new File(getClass().getResource("met_extr_preconditions.xml").getFile());
-            assertTrue(this.evalUtils.eval(this.preconditions, prodFile));
-        }
-        catch(Throwable e){
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+    public void testEval() throws Throwable {
+        // Test file is also the config file we used, neat!
+        File prodFile = getTestDataFile("met_extr_preconditions.xml");
+        assertTrue(this.evalUtils.eval(this.preconditions, prodFile));
     }
-
 }
