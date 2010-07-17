@@ -18,6 +18,9 @@
 
 package org.apache.oodt.cas.metadata.extractors;
 
+// Metadata imports
+import org.apache.oodt.cas.metadata.MetadataTestCase;
+
 //JDK imports
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,11 +37,19 @@ import junit.framework.TestCase;
  * Test suite for the {@link ExternConfigReader}
  * </p>.
  */
-public class TestExternMetExtractorConfigReader extends TestCase {
+public class TestExternMetExtractorConfigReader extends MetadataTestCase {
+    /**
+     * Construct a TestExternMetExtractorConfigReader instance.
+     *
+     * @param name Case name.
+     */
+    public TestExternMetExtractorConfigReader(String name) {
+        super(name);
+    }
 
-    private static final String configFilePath = "./src/main/resources/examples/extern-config.xml";
+    private static final String configFilePath = "extern-config.xml";
 
-    private static final String expectedBinPathEnding = "src/test/gov/nasa/jpl/oodt/cas/metadata/extractors/testExtractor";
+    private static final String expectedBinPathEnding = "testdata/testExtractor";
 
     private static final String arg1 = ExternMetExtractorMetKeys.DATA_FILE_PLACE_HOLDER;
 
@@ -55,7 +66,7 @@ public class TestExternMetExtractorConfigReader extends TestCase {
     public void testReadConfig() {
         ExternalMetExtractorConfig config = null;
         try {
-            config = (ExternalMetExtractorConfig) new ExternConfigReader().parseConfigFile(new File(configFilePath));
+            config = (ExternalMetExtractorConfig) new ExternConfigReader().parseConfigFile(getTestDataFile(configFilePath));
         } catch (Exception e) {
             fail(e.getMessage());
         }
