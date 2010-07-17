@@ -72,14 +72,6 @@ the License.
         </includes>
       </testResource>
       <testResource>
-         <targetPath>org/apache/oodt/cas/metadata/preconditions</targetPath>
-         <directory>${basedir}/src/testdata</directory>
-         <includes>
-             <include>met_extr_preconditions.xml</include>
-             <include>tika-mimetypes.xml</include>
-         </includes>
-     </testResource>       
-      <testResource>
          <targetPath>org/apache/oodt/cas/metadata/extractors</targetPath>
          <directory>${basedir}/src/testdata</directory>
          <includes>
@@ -112,7 +104,9 @@ the License.
           <includes>
             <include>**/*Test*.java</include>
           </includes>
-          <excludes/>
+          <excludes>
+            <exclude>org/apache/oodt/cas/metadata/MetadataTestCase.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
