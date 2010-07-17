@@ -50,7 +50,7 @@ the License.
   <build>
     <resources>
       <resource>
-        <targetPath>org/apache/oodt/cas/metadata/preconditions</targetPath>
+        <targetPath>org/apache/oodt/cas/metadata/util</targetPath>
         <directory>${basedir}/src/main/resources</directory>
         <includes>
           <include>tika-mimetypes.xml</include>
@@ -58,6 +58,19 @@ the License.
       </resource>
     </resources>
     <testResources>
+      <testResource>
+        <targetPath>org/apache/oodt/cas/metadata</targetPath>
+        <directory>${basedir}/src/testdata</directory>
+        <includes>
+             <include>extern-config.xml</include>
+             <include>met_extr_preconditions.xml</include>
+             <include>samplemet.xml</include>
+             <include>testfile.txt</include>
+             <include>testfile2.txt.met</include>
+             <include>testfile2.txt</include>
+             <include>tika-mimetypes.xml</include>
+        </includes>
+      </testResource>
       <testResource>
          <targetPath>org/apache/oodt/cas/metadata/preconditions</targetPath>
          <directory>${basedir}/src/testdata</directory>
