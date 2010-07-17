@@ -22,6 +22,7 @@ package org.apache.oodt.cas.filemgr.ingest;
 import org.apache.oodt.cas.filemgr.structs.exceptions.IngestException;
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
 
 //JDK imports
@@ -114,7 +115,7 @@ public class CmdLineIngester extends StdIngester {
             String productID = null;
             if (metFilePath != null) {
                 productID = ingester.ingest(new URL(fmUrlStr), new File(
-                        filePath), new Metadata(
+                        filePath), new SerializableMetadata(
                         new FileInputStream(metFilePath)));
             } else {
                 extractor = GenericMetadataObjectFactory

@@ -212,14 +212,7 @@ public class LuceneCatalog implements Catalog {
 
         for (Iterator<Element> i = metadataTypes.iterator(); i.hasNext();) {
             Element element = i.next();
-            List<String> values = m.getAllMetadata(element.getElementName());
-
-            if (values != null) {
-                for (Iterator<String> j = values.iterator(); j.hasNext();) {
-                    String value = j.next();
-                    removeMetadata(currMet, element.getElementName(), value);
-                }
-            }
+            currMet.removeMetadata(element.getElementName());
         }
 
         p.setMetadata(currMet);
@@ -1193,20 +1186,6 @@ public class LuceneCatalog implements Catalog {
                 Field.Index.TOKENIZED));
 
         return doc;
-    }
-
-    private boolean removeMetadata(Metadata m, String key, String value) {
-        List<String> currVals = m.getAllMetadata(key);
-
-        if (currVals != null) {
-            for (Iterator<String> i = currVals.iterator(); i.hasNext();) {
-                String curVal = i.next();
-                if (curVal.equals(value)) {
-                    return currVals.remove(curVal);
-                }
-            }
-        }
-        return false;
     }
 
     private boolean hasMetadataAndRefs(CompleteProduct cp) {

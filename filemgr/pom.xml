@@ -6,25 +6,16 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>2.0</version>
+    <version>${oodt.version}</version>
+    <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <artifactId>filemgr</artifactId>
+  <artifactId>cas-filemgr</artifactId>
   <name>Catalog and Archive File Management Component</name>
-  <version>1.9.0-dev</version>
   <description>The file management component of a Catalog and Archive Service. This component
      purposefully separates data stores and metadata stores as standard interfaces, and
      provides some out of the box backend implementations of them (including one based
      on the javax.sql.DataSource interface). This component provides everything that you need
      to catalog, archive and manage files, and directories, and their associated metadata.</description>
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>chris.mattmann@jpl.nasa.gov</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
   <build>
     <plugins>
       <plugin>
@@ -74,13 +65,13 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.oodt</groupId>
-      <artifactId>commons</artifactId>
-      <version>1.2.0-dev</version>    
+      <artifactId>oodt-commons</artifactId>
+      <version>${oodt.version}</version>    
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
-      <artifactId>metadata</artifactId>
-      <version>1.7.0-dev</version>
+      <artifactId>cas-metadata</artifactId>
+      <version>${oodt.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
@@ -95,7 +86,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>1.1</version>
+      <version>1.4</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -123,14 +114,15 @@
       <version>2.0.0</version>
     </dependency>
     <dependency>
-      <groupId>jug</groupId>
-      <artifactId>jug-asl</artifactId>
+      <groupId>org.safehaus.jug</groupId>
+      <artifactId>jug</artifactId>
       <version>2.0.0</version>
+      <classifier>asl</classifier>
     </dependency>
     <dependency>
       <groupId>xmlrpc</groupId>
       <artifactId>xmlrpc</artifactId>
-      <version>2.1-dev</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>hsqldb</groupId>

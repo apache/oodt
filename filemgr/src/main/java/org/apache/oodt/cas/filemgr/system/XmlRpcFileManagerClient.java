@@ -39,6 +39,7 @@ import java.io.File;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
@@ -1386,7 +1387,7 @@ public class XmlRpcFileManagerClient {
             try {
                 Metadata metadata = null;
                 URL metaUrl = new File(new URI(metadataFileName)).toURL();
-                metadata = new Metadata(metaUrl.openStream());
+                metadata = new SerializableMetadata(metaUrl.openStream());
                 System.out.println("ingestProduct: Result: "
                         + client.ingestProduct(product, metadata,
                                 clientTransfer));

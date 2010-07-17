@@ -81,17 +81,17 @@ public class QueryResult {
         if (format == null)
             return concatMetadataIntoString(metadata);
         String outputString = format;
-        for (Entry<String, List<String>> entry : (Set<Entry<String, List<String>>>) metadata
+        for (Entry<String, Object> entry : (Set<Entry<String, Object>>) metadata
                 .getHashtable().entrySet())
-            outputString = outputString.replaceAll("\\$" + entry.getKey(), StringUtils.collectionToDelimitedString(entry.getValue(), ","));
+            outputString = outputString.replaceAll("\\$" + entry.getKey(), StringUtils.collectionToDelimitedString((List<String>)entry.getValue(), ","));
         return outputString;
     }
     
     private static String concatMetadataIntoString(Metadata metadata) {
         String outputString = "";
-        for (Entry<String, List<String>> entry : (Set<Entry<String, List<String>>>) metadata
+        for (Entry<String, Object> entry : (Set<Entry<String, Object>>) metadata
                 .getHashtable().entrySet()) 
-            outputString += StringUtils.collectionToDelimitedString(entry.getValue(), ",") + ",";
+            outputString += StringUtils.collectionToDelimitedString((List<String>)entry.getValue(), ",") + ",";
         return outputString.substring(0, outputString.length() - 1);
     }
     

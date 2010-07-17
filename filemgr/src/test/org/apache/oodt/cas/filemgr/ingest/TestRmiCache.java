@@ -26,6 +26,7 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
@@ -192,7 +193,7 @@ public class TestRmiCache extends TestCase {
         Metadata prodMet = null;
 
         try {
-            prodMet = new Metadata(new FileInputStream(
+            prodMet = new SerializableMetadata(new FileInputStream(
                     "./src/testdata/ingest/test.txt.met"));
 
             // now add the right file location

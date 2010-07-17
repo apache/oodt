@@ -673,7 +673,7 @@ public class XmlRpcFileManager {
             Hashtable<String, String> metadata) throws CatalogException {
         Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
         Metadata m = new Metadata();
-        m.addMetadata(metadata);
+        m.addMetadata((Hashtable)metadata);
         return addMetadata(p, m);
     }
 
@@ -697,7 +697,7 @@ public class XmlRpcFileManager {
 
       // now add the metadata
       Metadata m = new Metadata();
-      m.addMetadata(metadata);
+      m.addMetadata((Hashtable)metadata);
       addMetadata(p, m);
 
       if (!clientTransfer) {

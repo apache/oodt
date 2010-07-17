@@ -99,7 +99,7 @@ public final class XmlStructFactory {
         Element metadataRoot = XMLUtils.getFirstElement("metadata",
                 productTypeElem);
         if (metadataRoot != null) {
-            Hashtable<String, List<String>> metHash = new Hashtable<String, List<String>>();
+            Hashtable<String, Object> metHash = new Hashtable<String, Object>();
             met = new Metadata();
             NodeList keyValElems = metadataRoot.getElementsByTagName("keyval");
 

@@ -359,7 +359,7 @@ public final class XmlRpcStructFactory {
         Metadata typeMet = new Metadata();
         if (productTypeHash.get("typeMetadata") != null) {
             typeMet
-                    .addMetadata((Hashtable<String, String>) productTypeHash.get("typeMetadata"));
+                    .addMetadata((Hashtable) productTypeHash.get("typeMetadata"));
         }
 
         if (productTypeHash.get("typeExtractors") != null) {

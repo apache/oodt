@@ -25,6 +25,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
 
 //JDK imports
 import java.io.File;
@@ -219,7 +220,7 @@ public class TestExpImpCatalog extends TestCase {
         StdIngester ingester = new StdIngester(transferServiceFacClass);
 
         try {
-            prodMet = new Metadata(new FileInputStream(
+            prodMet = new SerializableMetadata(new FileInputStream(
                     "./src/testdata/ingest/test.txt.met"));
 
             // now add the right file location

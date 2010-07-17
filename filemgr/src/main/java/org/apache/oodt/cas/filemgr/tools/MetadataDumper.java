@@ -22,6 +22,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
@@ -91,7 +92,7 @@ public final class MetadataDumper {
 
     private void writeMetFileToDir(Metadata met, String fullMetFilePath) {
         try {
-            XMLUtils.writeXmlFile(met.toXML(), fullMetFilePath);
+            XMLUtils.writeXmlFile(new SerializableMetadata(met).toXML(), fullMetFilePath);
         } catch (Exception e) {
             LOG.log(Level.WARNING, "Met file not generated: reason: "
                     + e.getMessage(), e);
