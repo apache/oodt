@@ -23,21 +23,11 @@ the License.
     <version>${oodt.version}</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <artifactId>resource</artifactId>
+  <artifactId>cas-resource</artifactId>
   <name>Catalog and Archive Resource Management Component</name>
-  <version>1.4.0-dev</version>
   <description>The resource management component of a Catalog and Archive Service. This component
      provides job management, and management of the underlying software system hardware
      and resources, such as disk space, computational resources, and shared identity.</description>
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>chris.mattmann@jpl.nasa.gov</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
   <build>
     <plugins>
       <plugin>
@@ -108,7 +98,7 @@ the License.
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>1.1</version>
+      <version>1.4</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -131,19 +121,20 @@ the License.
       <version>1.2</version>
     </dependency>
     <dependency>
-      <groupId>lucene</groupId>
+      <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
       <version>2.0.0</version>
     </dependency>
     <dependency>
-      <groupId>jug</groupId>
-      <artifactId>jug-asl</artifactId>
+      <groupId>org.safehaus.jug</groupId>
+      <artifactId>jug</artifactId>
       <version>2.0.0</version>
+      <classifier>asl</classifier>
     </dependency>
     <dependency>
       <groupId>xmlrpc</groupId>
       <artifactId>xmlrpc</artifactId>
-      <version>2.1-dev</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
