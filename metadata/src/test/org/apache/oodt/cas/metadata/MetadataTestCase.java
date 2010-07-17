@@ -92,7 +92,7 @@ public class MetadataTestCase extends TestCase {
             if (candidate.exists())                                                         // Found it?
                 return candidate;                                                           // Wootness!
         }
-        InputStream in = getClass().getResourceAsStream(name);                              // Not found? Try resource stream
+        InputStream in = MetadataTestCase.class.getResourceAsStream(name);                  // Not found? Try resource stream
         if (in == null)                                                                     // Still not found?  Bummer.
             throw new IllegalArgumentException("Unknown test data file `" + name + "`; not found in resource path");
         File fn = new File(tmpDir, name);                                                   // What the tests want: Files.
