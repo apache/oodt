@@ -56,7 +56,7 @@ public final class MimeTypeUtils {
     private boolean mimeMagic;
 
     /* static resource path for the mimeTypesFile */
-    public final static String MIME_FILE_RES_PATH = "/org.apache/oodt/cas/metadata/preconditions/tika-mimetypes.xml";
+    public final static String MIME_FILE_RES_PATH = "tika-mimetypes.xml";
 
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(MimeTypeUtils.class
