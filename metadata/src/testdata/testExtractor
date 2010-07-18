@@ -17,5 +17,5 @@ set PROD_DIR
 
 if [ $PROD_DIR = $MET_DIR ]; then
 	# just copy the sample metadata
-	cp samplemet.xml $MET_FILE
+	cp <TEST_SAMPLE_MET_PATH> $MET_FILE
 fi

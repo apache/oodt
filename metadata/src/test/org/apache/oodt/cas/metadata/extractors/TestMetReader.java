@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,24 +20,19 @@ package org.apache.oodt.cas.metadata.extractors;
 
 //JDK imports
 import java.io.File;
+import java.net.URLEncoder;
 
 //OODT imports
+import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.MetExtractor; //for javadoc
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-
-//Junit imports
-import junit.framework.TestCase;
+import org.apache.oodt.cas.metadata.MetadataTestCase;
 
 /**
- * @author mattmann
- * @version $Revision$
  * 
- * <p>
  * Test case for the {@link MetReaderExtractor} {@link MetExtractor}
- * </p>.
  */
-public class TestMetReader extends TestCase {
+public class TestMetReader extends MetadataTestCase {
 
     private MetReaderExtractor extractor;
 
@@ -45,26 +40,26 @@ public class TestMetReader extends TestCase {
 
     private static final String expectedFilename = "testfile.txt";
 
-    private static final String expectedFileLocation = ".";
-
-    private static final String testFile = "testfile2.txt";
-
     private static final String FILENAME = "Filename";
 
     private static final String FILE_LOCATION = "FileLocation";
 
     private static final String PRODUCT_TYPE = "ProductType";
-
-    public TestMetReader() {
-        extractor = new MetReaderExtractor();
+    
+    private String expectedFileLocation;
+    
+    private File extractFile;
+    
+    public TestMetReader(String name) {
+      super(name);
     }
 
     public void testExtractMetadata() {
         Metadata met = null;
 
         try {
-            met = extractor.extractMetadata(getClass().getResource(testFile).getFile());
-        } catch (MetExtractionException e) {
+            met = extractor.extractMetadata(this.extractFile.getCanonicalPath());
+        } catch (Exception e) {
             fail(e.getMessage());
         }
 
@@ -79,6 +74,37 @@ public class TestMetReader extends TestCase {
         assertTrue(met.containsKey(PRODUCT_TYPE));
         assertEquals(met.getMetadata(PRODUCT_TYPE), expectedProductType);
 
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.oodt.cas.metadata.MetadataTestCase#setUp()
+     */
+    @Override
+    public void setUp() throws Exception {
+      super.setUp();
+      String extractFilename = "testfile2.txt";      
+      String sampleMetFilename = "testfile2.txt.met";
+      this.extractFile = super.getTestDataFile(extractFilename);
+      this.expectedFileLocation = this.extractFile.getParent();
+      
+      // replace the FileLocation met field in the sample met file
+      // with the actual file location of the extractFile
+      File sampleMetFile = super.getTestDataFile(sampleMetFilename);
+      String sampleMetFileContents = FileUtils.readFileToString(sampleMetFile);
+      String extractFileLocKey = "[EXTRACT_FILE_LOC]";
+      sampleMetFileContents = sampleMetFileContents.replace(extractFileLocKey, URLEncoder.encode(extractFile.getParent(), "UTF-8"));
+      FileUtils.writeStringToFile(sampleMetFile, sampleMetFileContents, "UTF-8");
+
+      this.extractor = new MetReaderExtractor();
+
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.oodt.cas.metadata.MetadataTestCase#tearDown()
+     */
+    @Override
+    public void tearDown() throws Exception {
+      super.tearDown();
     }
 
 }

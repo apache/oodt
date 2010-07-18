@@ -7,7 +7,7 @@
  </keyval>
  <keyval>
    <key>FileLocation</key>
-   <val>.</val>
+   <val>[EXTRACT_FILE_LOC]</val>
  </keyval>
  <keyval>
    <key>ProductType</key>

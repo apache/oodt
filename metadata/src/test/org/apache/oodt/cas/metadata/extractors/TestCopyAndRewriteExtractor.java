@@ -19,17 +19,18 @@ package org.apache.oodt.cas.metadata.extractors;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.MetadataTestCase;
 
 //JDK imports
 import java.io.File;
-
-//Junit imports
-import junit.framework.TestCase;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Properties;
 
 /**
  * Tests the CopyAndRewriteExtractor.
  */
-public class TestCopyAndRewriteExtractor extends TestCase {
+public class TestCopyAndRewriteExtractor extends MetadataTestCase {
 
   private CopyAndRewriteExtractor extractor;
 
@@ -39,43 +40,29 @@ public class TestCopyAndRewriteExtractor extends TestCase {
 
   private static final String PRODUCT_TYPE = "ProductType";
 
-  private static final String confFilePath = "copyandrewrite.test.conf";
-
-  private static final String extractFilePath = "testfile.txt";
-
+  private static final String expectedProductType = "NewProductTypeGenericFile";
+  
   private static final String expectedFilename = "testfile.txt";
 
-  private static final String expectedProductType = "NewProductTypeGenericFile";
-
-  private static String expectedFileLocation = null;
-
-  static {
-    try {
-      expectedFileLocation = "/new/loc/"
-          + new File(TestCopyAndRewriteExtractor.class.getResource(
-              extractFilePath).getFile()).getParentFile().getCanonicalPath();
-    } catch (Exception ignore) {
-    }
+  private String expectedFileLocation;
+  
+  private File confFile;
+  
+  private File sampleMetFile;
+  
+  private File extractFile;
+  
+  public TestCopyAndRewriteExtractor(String name) {
+    super(name);
   }
-
-  public TestCopyAndRewriteExtractor() {
-    CopyAndRewriteConfig config = new CopyAndRewriteConfig();
-    try {
-      config.load(getClass().getResourceAsStream(confFilePath));
-    } catch (Exception e) {
-      fail(e.getMessage());
-    }
-
-    extractor = new CopyAndRewriteExtractor();
-    extractor.setConfigFile(config);
-  }
+  
+  
 
   public void testExtractMetadata() {
     Metadata met = null;
 
     try {
-      met = extractor.extractMetadata(getClass().getResource(extractFilePath)
-          .getFile());
+      met = extractor.extractMetadata(this.extractFile.getCanonicalPath());
     } catch (Exception e) {
       fail(e.getMessage());
     }
@@ -99,12 +86,74 @@ public class TestCopyAndRewriteExtractor extends TestCase {
     Metadata met = null;
 
     try {
-      met = extractor.extractMetadata(getClass().getResource(extractFilePath)
-          .getFile());
+      met = extractor.extractMetadata(this.extractFile.getCanonicalPath());
     } catch (Exception e) {
       fail(e.getMessage());
     }
 
     assertNotNull(met);
   }
+
+
+
+  /* (non-Javadoc)
+   * @see junit.framework.TestCase#setUp()
+   */
+  @Override
+  public void setUp() throws Exception {
+    super.setUp();
+    String confFilename = "copyandrewrite.test.conf";
+    String sampleMetFilename = "samplemet.xml";
+    String extractFilename = "testfile.txt";
+    String origMetFilePath = "orig.met.file.path";
+    
+    // get all the needed files staged
+    this.sampleMetFile = super.getTestDataFile(sampleMetFilename);
+    this.extractFile = super.getTestDataFile(extractFilename);
+    
+    
+    // this is a java properties file
+    this.confFile = super.getTestDataFile(confFilename);
+    
+    // we need to compute and override orig.met.file.path
+    Properties confProps = new Properties();
+    confProps.load(new FileInputStream(confFile));
+    confProps.setProperty(origMetFilePath, sampleMetFile.getAbsolutePath());
+    confProps.store(new FileOutputStream(confFile), null);
+    
+
+    try {
+      this.expectedFileLocation = "/new/loc/"
+          + this.extractFile.getParentFile().getCanonicalPath();
+    } catch (Exception ignore) {
+    }
+    
+    
+    CopyAndRewriteConfig config = new CopyAndRewriteConfig();
+    try {
+      config.load(new FileInputStream(this.confFile));
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    this.extractor = new CopyAndRewriteExtractor();
+    this.extractor.setConfigFile(config);
+    
+  }
+
+
+
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.metadata.MetadataTestCase#tearDown()
+   */
+  @Override
+  public void tearDown() throws Exception {
+    super.tearDown();
+    if(this.confFile != null) this.confFile = null;
+    if(this.sampleMetFile != null) this.sampleMetFile = null;
+    if(this.extractFile != null) this.extractFile = null;
+    this.expectedFileLocation = null;
+  }
+  
+  
 }

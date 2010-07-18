@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,83 +15,142 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.metadata.extractors;
 
 //OODT imports
+import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.MetadataTestCase;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.commons.exec.ExecUtils;
 
 //JDK imports
 import java.io.File;
-import junit.framework.TestCase;
+import java.net.URLEncoder;
 
 /**
- * @author mattmann
- * @version $Revision$
  * 
- * <p>
- * Test Suite for the {@link ExternMetExtractor}
- * </p>.
+ * Test Suite for the {@link ExternMetExtractor} 
+ *          .
  */
-public class TestExternMetExtractor extends TestCase {
+public class TestExternMetExtractor extends MetadataTestCase {
 
-    private ExternMetExtractor extractor;
+  private ExternMetExtractor extractor;
 
-    private static final String FILENAME = "Filename";
+  private static final String FILENAME = "Filename";
 
-    private static final String FILE_LOCATION = "FileLocation";
+  private static final String FILE_LOCATION = "FileLocation";
 
-    private static final String PRODUCT_TYPE = "ProductType";
+  private static final String PRODUCT_TYPE = "ProductType";
 
-    private static final String configFilePath = "extern-config.xml";
+  private static final String expectedFilename = "testfile.txt";
 
-    private static final String extractFilePath = "testfile.txt";
+  private static final String expectedProductType = "GenericFile";
+  
+  private File extractFile;
+  
+  private File confFile;
+  
+  private File metFile;
+  
+  private String expectedFileLocation;
+  
+  public TestExternMetExtractor(String name){
+    super(name);
+  }
 
-    private static final String expectedFilename = "testfile.txt";
+  public void testExtractor() {
 
-    private static final String expectedFileLocation = ".";
+    Metadata met = null;
 
-    private static final String expectedProductType = "GenericFile";
-
-    public void testExtractor() {
-        try {
-            extractor = new ExternMetExtractor();
-        } catch (InstantiationException e) {
-            fail(e.getMessage());
-        }
-
-        Metadata met = null;
-        
-        try {
-            met = extractor.extractMetadata(new File(getClass().getResource(extractFilePath).getFile()),
-                    new File(getClass().getResource(configFilePath).getFile()));
-        } catch (MetExtractionException e) {
-            fail(e.getMessage());
-        }
-
-        assertNotNull(met);
-        assertTrue(new File(getClass().getResource("testfile.txt.met").getFile()).exists());
-        assertTrue(met.containsKey(FILENAME));
-        assertTrue(met.containsKey(FILE_LOCATION));
-        assertTrue(met.containsKey(PRODUCT_TYPE));
-
-        assertEquals(expectedFilename, met.getMetadata(FILENAME));
-        assertEquals(expectedFileLocation, met.getMetadata(FILE_LOCATION));
-        assertEquals(expectedProductType, met.getMetadata(PRODUCT_TYPE));
-
+    try {
+      met = extractor.extractMetadata(this.extractFile, this.confFile);
+    } catch (MetExtractionException e) {
+      fail(e.getMessage());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        File generatedMetFile = new File(getClass().getResource("testfile.txt.met").getFile());
-        if (generatedMetFile.exists()) {
-            generatedMetFile.delete();
-        }
+    assertNotNull(met);
+    assertTrue(this.metFile.exists());
+    assertTrue(met.containsKey(FILENAME));
+    assertTrue(met.containsKey(FILE_LOCATION));
+    assertTrue(met.containsKey(PRODUCT_TYPE));
+
+    assertEquals(expectedFilename, met.getMetadata(FILENAME));
+    assertEquals("Expected: ["+this.expectedFileLocation+"]; Actual: ["+met.getMetadata(FILE_LOCATION)+"]", this.expectedFileLocation, met.getMetadata(FILE_LOCATION));
+    assertEquals(expectedProductType, met.getMetadata(PRODUCT_TYPE));
+
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.oodt.cas.metadata.MetadataTestCase#tearDown()
+   */
+  public void tearDown() throws Exception {
+    super.tearDown();
+    if (this.metFile != null && this.metFile.exists()) {
+      this.metFile.delete();
+      this.metFile = null;
     }
+    
+    if(this.confFile != null) this.confFile = null;
+    if(this.extractFile != null) this.extractFile = null;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.oodt.cas.metadata.MetadataTestCase#setUp()
+   */
+  @Override
+  public void setUp() throws Exception {
+    super.setUp();
+    String configFilename = "extern-config.xml";
+    String extractFilename = "testfile.txt";
+    String extractorFilename = "testExtractor";
+    String sampleMetFilename = "samplemet.xml";
+    
+    this.confFile = super.getTestDataFile(configFilename);
+    this.extractFile = super.getTestDataFile(extractFilename);
+    this.metFile = new File(this.extractFile.getCanonicalPath()+".met");
+    this.expectedFileLocation = this.extractFile.getParent();
+    
+    File extractorFile = super.getTestDataFile(extractorFilename);
+    
+    // make it executable
+    // yes this is ghetto
+    String chmodCmd = "chmod +x "+extractorFile.getAbsolutePath();
+    ExecUtils.callProgram(chmodCmd, extractorFile.getParentFile());
+    
+    // replace the FileLocation met field in the sample met file
+    // with the actual file location of the extractFile
+    File sampleMetFile = super.getTestDataFile(sampleMetFilename);
+    String sampleMetFileContents = FileUtils.readFileToString(sampleMetFile);
+    String extractFileLocKey = "[EXTRACT_FILE_LOC]";
+    sampleMetFileContents = sampleMetFileContents.replace(extractFileLocKey, URLEncoder.encode(extractFile.getParent(), "UTF-8"));
+    FileUtils.writeStringToFile(sampleMetFile, sampleMetFileContents, "UTF-8");
+    
+    // replace the path to the sample met file inside of testExtractor
+    String extractorFileContents = FileUtils.readFileToString(extractorFile);
+    String sampleMetFilePathKey = "<TEST_SAMPLE_MET_PATH>";
+    extractorFileContents = extractorFileContents.replace(sampleMetFilePathKey, sampleMetFile.getAbsolutePath());
+    FileUtils.writeStringToFile(extractorFile, extractorFileContents);
+    
+    // replace path in confFile named TEST_PATH
+    String testPathKey = "TEST_PATH";
+    String confFileContents = FileUtils.readFileToString(this.confFile);
+    Metadata replaceMet = new Metadata();
+    replaceMet.addMetadata(testPathKey, extractorFile.getParent());
+    confFileContents = PathUtils.replaceEnvVariables(confFileContents, replaceMet);
+    FileUtils.writeStringToFile(this.confFile, confFileContents);
+    
+
+    try {
+      extractor = new ExternMetExtractor();
+    } catch (InstantiationException e) {
+      fail(e.getMessage());
+    }
+  }
 
 }
