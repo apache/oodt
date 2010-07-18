@@ -16,7 +16,7 @@
  */
 
 
-package org.apache.oodt.cas.workflow.webapp.util;
+package org.apache.oodt.cas.workflow.instrepo;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;

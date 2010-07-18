@@ -102,11 +102,6 @@ the License.
   </repositories>
   <dependencies>
     <dependency>
-        <groupId>concurrent</groupId>
-        <artifactId>concurrent</artifactId>
-        <version>1.3.4</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-commons</artifactId>
       <version>${oodt.version}</version>
@@ -118,13 +113,18 @@ the License.
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
-      <artifactId>resource</artifactId>
-      <version>1.4.0-dev</version>
+      <artifactId>cas-resource</artifactId>
+      <version>${oodt.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>concurrent</groupId>
+        <artifactId>concurrent</artifactId>
+        <version>1.3.4</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>2.3</version>
+      <version>2.4</version>
     </dependency>
     <dependency>
       <groupId>commons-dbcp</groupId>
@@ -159,32 +159,28 @@ the License.
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>1.1</version>
+      <version>1.4</version>
     </dependency>
     <dependency>
       <groupId>xmlrpc</groupId>
       <artifactId>xmlrpc</artifactId>
-      <version>2.1-dev</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
-      <groupId>lucene</groupId>
+      <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
       <version>2.0.0</version>
     </dependency>
     <dependency>
-      <groupId>jug</groupId>
-      <artifactId>jug-asl</artifactId>
+      <groupId>org.safehaus</groupId>
+      <artifactId>jug</artifactId>
       <version>2.0.0</version>
+      <classifier>asl</classifier>
     </dependency>
     <dependency>
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.7</version>
-    </dependency>
-    <dependency>
-      <groupId>javamail</groupId>
-      <artifactId>javamail</artifactId>
-      <version>1.3.3</version>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
