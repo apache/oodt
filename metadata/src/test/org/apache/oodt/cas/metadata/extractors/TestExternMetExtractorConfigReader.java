@@ -19,7 +19,10 @@
 package org.apache.oodt.cas.metadata.extractors;
 
 // Metadata imports
+import org.apache.commons.io.FileUtils;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.MetadataTestCase;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 
 //JDK imports
 import java.io.File;
@@ -46,10 +49,10 @@ public class TestExternMetExtractorConfigReader extends MetadataTestCase {
     public TestExternMetExtractorConfigReader(String name) {
         super(name);
     }
-
+    
     private static final String configFilePath = "extern-config.xml";
 
-    private static final String expectedBinPathEnding = "testdata/testExtractor";
+    private static final String expectedBinPathEnding = "/testExtractor";
 
     private static final String arg1 = ExternMetExtractorMetKeys.DATA_FILE_PLACE_HOLDER;
 
@@ -62,11 +65,13 @@ public class TestExternMetExtractorConfigReader extends MetadataTestCase {
     private static final String arg5 = "bar";
 
     private static final String arg5ending = "/test\\ boo";
+    
+    private File confFile;
 
     public void testReadConfig() {
         ExternalMetExtractorConfig config = null;
         try {
-            config = (ExternalMetExtractorConfig) new ExternConfigReader().parseConfigFile(getTestDataFile(configFilePath));
+            config = (ExternalMetExtractorConfig) new ExternConfigReader().parseConfigFile(this.confFile);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -86,5 +91,22 @@ public class TestExternMetExtractorConfigReader extends MetadataTestCase {
         assertEquals(arg5, config.getArgList()[4]);
         assertTrue(config.getArgList()[5].endsWith(arg5ending));
 
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.oodt.cas.metadata.MetadataTestCase#setUp()
+     */
+    @Override
+    public void setUp() throws Exception {
+      super.setUp();
+      this.confFile = getTestDataFile(configFilePath);
+      
+      // replace path in confFile named TEST_PATH
+      String testPathKey = "TEST_PATH";
+      String confFileContents = FileUtils.readFileToString(this.confFile);
+      Metadata replaceMet = new Metadata();
+      replaceMet.addMetadata(testPathKey, this.confFile.getParent());
+      confFileContents = PathUtils.replaceEnvVariables(confFileContents, replaceMet);
+      FileUtils.writeStringToFile(this.confFile, confFileContents);
     }
 }

@@ -23,6 +23,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.MetadataTestCase;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.commons.exec.ExecHelper;
 import org.apache.oodt.commons.exec.ExecUtils;
 
 //JDK imports
@@ -121,7 +122,7 @@ public class TestExternMetExtractor extends MetadataTestCase {
     // make it executable
     // yes this is ghetto
     String chmodCmd = "chmod +x "+extractorFile.getAbsolutePath();
-    ExecUtils.callProgram(chmodCmd, extractorFile.getParentFile());
+    ExecHelper.execUsingShell(chmodCmd);
     
     // replace the FileLocation met field in the sample met file
     // with the actual file location of the extractFile
