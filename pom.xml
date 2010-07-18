@@ -56,6 +56,6 @@ the License.
         <module>webapp/filemgr</module>
         <module>webapp/fmprod</module>
         <module>webapp/workflow</module>
-        <!-- broken: <module>app/fmbrowser</module> -->
+        <module>app/fmbrowser</module>
     </modules>
 </project>

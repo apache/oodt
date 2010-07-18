@@ -46,8 +46,7 @@ public class WindowListener implements ActionListener {
   public void actionPerformed(ActionEvent arg0) {
     if (arg0.getActionCommand().equals("About")) {
       String aboutInfo = "OODT Catalog and Archive Server File Manger Browser.\n"
-          + "Copyright (c) 2007, California Institute of Technology.\n"
-          + "ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.";
+          + "Copyright (c) 2010, Apache Software Foundation.";
       JOptionPane.showMessageDialog(window, aboutInfo);
     } else if (arg0.getActionCommand().equals("Query Language")) {
       String aboutQueryLanguage = "The CAS File Manager Browser uses the Lucene Query Language.\n"
