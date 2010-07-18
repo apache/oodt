@@ -19,10 +19,14 @@
 package org.apache.oodt.cas.workflow.structs;
 
 //JDK imports
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Properties;
+
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
@@ -158,15 +162,28 @@ public class TaskJobInput implements JobInput {
       try {
         this.taskConfig.getProperties().load(
             new FileInputStream(new File(staticConfigFile)));
-      } catch (Exception ignore) {
+      } catch (RuntimeException ex) {
+        throw ex;
+      } catch (Exception ignore) {  
       }
     }
 
     if (dynMetadataFile != null) {
+      InputStream in = null;
       try {
-        this.dynMetadata = new Metadata(new FileInputStream(new File(
-            dynMetadataFile)));
+        this.dynMetadata = new Metadata();
+        Properties fileProps = new Properties();
+        in = new BufferedInputStream(new FileInputStream(new File(dynMetadataFile)));
+        fileProps.load(in);
+        for (String key: fileProps.stringPropertyNames())
+          this.dynMetadata.addMetadata(key, fileProps.getProperty(key));
+      } catch (RuntimeException ex) {
+        throw ex;
       } catch (Exception ignore) {
+      } finally {
+        if (in != null) try {
+          in.close();
+        } catch (IOException ignore) {}
       }
     }
 
