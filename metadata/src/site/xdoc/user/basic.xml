@@ -28,8 +28,8 @@ the License.
     behind the CAS-Metadata project, including the basics of metadata, how to write 
     metadata extractors, and explanations of existing metadata extractors. In 
     addition to this guide, some of these concepts are also covered in our
-    CAS-File Manager <a href="http://oodt.jpl.nasa.gov/cas-filemgr/user/">User Guide</a>
-    and in our CAS-Curator <a href="http://oodt.jpl.nasa.gov/cas-filemgr/user/basic.html">
+    CAS-File Manager <a href="../../filemgr/user/">User Guide</a>
+    and in our CAS-Curator <a href="../../curator/user/basic.html">
     Basic User Guide</a>. For advanced topics, including extracting techniques to allow
     for type-based matching, see our <a href="../user/advanced.html">Advanced Guide.</a>
     In the rest of this guide, we will cover the following topics:</p>
@@ -109,7 +109,7 @@ public class Metadata {
     <p>In addition to the accessor and modifier methods that work with simple Strings,
     the <code>Metadata</code> Object can work with XML Documents. An example of 
     metadata in the XML format is given below:</p>
-    
+    <!-- FIXME: change namespace URI? -->
     <source><![CDATA[<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
   <keyval>
     <key>ProductType</key>
@@ -270,7 +270,7 @@ public class Metadata {
      </ul>
      
      <p>For an example of the use of this type of metadata extractor, we our 
-     CAS-Curator <a href="http://oodt.jpl.nasa.gov/cas-curator/user/basic.html">
+     CAS-Curator <a href="../../curator/user/basic.html">
      Basic User Guide</a>.</p>
      
      </subsection>
@@ -386,7 +386,7 @@ FileLocation.pattern=/new/loc/[FileLocation]
     <p>The most common use-case of CAS-Metadata is to capture the output of a metadata
     extractor for use in the CAS-Filemgr's ingestion process.</p>
     
-    <img src="../images/metadata.jpg"/>
+    <p><img src="../images/metadata.jpg"/></p>
     
     <p>In the above diagram, a metadata object is producted by an extractor. The 
     product and its associated metadata are both ingested into the CAS-Filemgr.

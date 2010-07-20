@@ -206,21 +206,18 @@ the License.
       </section>
       <section name="Configuration and Installation">
        <p>
-       To install the Resource Manager, you need to download a <a href="http://oodt.jpl.nasa.gov/cas-resource/">release</a>
+       To install the Resource Manager, you need to download a <a href="../../">release</a>
        of the Resource Manager, available from its home web site. For bleeding-edge features, you can
-       also check out the cas-resource trunk project from the OODT subversion repository. You can browse 
-       the repository using ViewCVS, located at:
+       also check out the resource trunk project from the OODT subversion repository. You can browse 
+       the repository using ViewCVS, located at:</p>
        
-       <code>http://oodt.jpl.nasa.gov/vc/svn/</code>
+       <screen>http://svn.apache.org/viewvc/incubator/oodt/</screen>
        
-       The actual web url for the repository is located at: 
+       <p>The actual web url for the repository is located at:</p>
        
-       <code>http://oodt.jpl.nasa.gov/repo/</code>
+       <screen>https://svn.apache.org/repos/asf/incubator/oodt/trunk/resource</screen>
 
-       To check out the Resource Manager, use your favorite Subversion client. Several clients are 
-       listed a <a href="http://oodt.jpl.nasa.gov/wiki/display/oodt/Subversion">
-       http://oodt.jpl.nasa.gov/wiki/display/oodt/Subversion</a>.
-      </p>   
+       <p>To check out the Resource Manager, use your favorite Subversion client.</p>   
       
       <subsection name="Project Organization">
         <p>
@@ -373,6 +370,7 @@ the License.
       Job, defined in the XML file below (save the file to a location on your system, such as
       <code>/usr/local/resmgr/examples/exJob.xml</code>):</p>
       
+      <!-- FIXME: Change namespace URI? -->
       <source>
       &lt;?xml version="1.0" encoding="UTF-8" ?&gt;
       &lt;cas:job xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas" id="abcd"
@@ -457,6 +455,13 @@ the License.
          resource.properties file:       
        </p>
        <table>
+         <thead>
+            <tr>
+                <th>Property Name</th>
+                <th>Extension Point Class</th>
+            </tr>
+         </thead>
+         <tbody>
          <tr>
            <td>resource.batchmgr.factory</td>
            <td>org.apache.oodt.cas.resource.batchmgr.XmlRpcBatchMgrFactory
@@ -481,6 +486,7 @@ the License.
            <td>resource.jobrepo.factory</td>
            <td>org.apache.oodt.cas.resource.jobrepo.MemoryJobRepositoryFactory</td>
          </tr>
+         </tbody>
        </table>
       
       </section>

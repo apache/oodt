@@ -24,8 +24,6 @@ the License.
 
    <body>
    
-      <link rel="StyleSheet" href="../css/guides.css" type="text/css" media="screen"/>
-      
       <div class="warning">This document is in the process of being reorganized as
       part of our ongoing documentation effort. Please check back for updates.</div>
       
@@ -48,24 +46,16 @@ the License.
      
       <a name="section1"/>
       <section name="Download and Build">
-        <p>The most recent CAS-Workflow Manager project can be downloaded from the OODT
-        <a href="http://oodt.jpl.nasa.gov">website</a> or it can be checked out 
+        <p>The most recent CAS-Workflow Manager project can be downloaded from the Apache OODT
+        <a href="/">website</a> or it can be checked out 
         from the OODT repository using Subversion. The CAS-Workflow Manager project is 
-        located at <code>http://oodt/repo/cas-workflow/</code>. We recommend checking
-        out the latest released version (v1.5.1 at the time of writing), which can be 
-        found at <code>http:/oodt/repo/cas-workflow/tags/X_X_X_release</code>. For
-        more information on using Subversion, see our 
-        <a href="../development/subversion.html">Subversion Guide.</a></p>
+        located at <code>../../workflow/</code>. We recommend checking
+        out the latest released version (v1.5.1 at the time of writing).</p>
       
         <p>Maven is the build management system used for OODT projects. We currently 
         support Maven 2.0 and later. For more information on Maven, see our 
         <a href="../development/maven.html">Maven Guide.</a></p>
       
-        <div class="warning">Prior to Release 1.4.0, CAS-Workflow Manager can only be
-        built with Maven 1. Maven 1 and Maven 2 are not compatible (and very 
-        different from one another). For more information on Maven 1, see their
-        <a href="http://maven.apache.org/maven-1.x/">website.</a></div>
-        
         <p>Assuming a *nix-like environment, with both Maven and Subversion 
         clients installed and on your path, an example of the checkout and 
         build process is presented below:</p>
@@ -73,19 +63,18 @@ the License.
          <source>
 > mkdir /usr/local/src
 > cd /usr/local/src
-> svn checkout http://oodt/repo/cas-workflow/tags/1_5_1_release \
-    cas-workflow-v1.5.1       
+> svn checkout https://svn.apache.org/repos/asf/incubator/oodt/trunk/workflow workflow
       </source>
         
       <p>After the Subversion command completes, you will have the source
-      for the CAS-Workflow project in the <code>/usr/local/src/cas-workflow-v1.5.1</code>
+      for the CAS-Workflow project in the <code>/usr/local/src/workflow</code>
       directory.</p>
       
       <p>In order to build the project from this source, issue the following 
       commands:</p>
       
       <source>
-> cd /usr/local/src/cas-workflow-v1.5.1
+> cd /usr/local/src/workflow
 > mvn package    
       </source>   
       
@@ -94,16 +83,16 @@ the License.
       the process, you will see a Maven success banner.</p>
       
       <p>Once the Maven command completes successfully, you should have a 
-      <code>target</code> directory under <code>cas-workflow-v1.5.1/</code>. 
+      <code>target</code> directory under <code>-workflow</code>. 
       The project has been built in this directory as a distribution tar ball.
       In order to move the built project out of the source directory and unpack the
       tar ball, issue the following commands:</p>
       
       <source>
 > cd /usr/local
-> mv src/cas-workflow-v1.5.1/trunk/cas-workflow-v1.5.1-dist.tar.gz ./
-> tar -xvzf cas-workflow-v1.5.1-dist.tar.gz
-> export WORKFLOW_HOME=/usr/local/cas-workflow-v1.5.1
+> mv src/workflow/trunk/cas-workflow-vX.Y.Z-dist.tar.gz ./
+> tar -xvzf cas-workflow-vX.Y.Z-dist.tar.gz
+> export WORKFLOW_HOME=/usr/local/cas-workflow-vX.Y.Z
       </source>       
       
       <p>The resultant directory layout from the unpacked tarball is as follows:</p>
@@ -142,7 +131,7 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
          project.</li>
        </ul>
       
-      <p>Now you have a built Workflow Manager at <code>/usr/local/cas-workflow-v1.5.1</code>.
+      <p>Now you have a built Workflow Manager at <code>/usr/local/cas-workflow-vX.Y.Z</code>.
       In the next section, we will discuss how you can configure the Workflow Manager for
       basic operations.</p>
       </section>
@@ -195,7 +184,6 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
        <p>Make the following changes to 
        <code>$WORKFLOW_HOME/etc/workflow.properties</code>:</p>
        
-       
        <ul>     
          <li>Specify the path to the directory where the Workflow Manager will create the
          Lucene index and associated files by setting the 
@@ -243,7 +231,7 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
                               --eventName test 
       </source> 
       
-      <p>You should see a variety of info messages, in cluding the following:</p>
+      <p>You should see a variety of info messages, in including the following:</p>
       
       <source>
 INFO: WorkflowManager: Received event: test
@@ -257,7 +245,7 @@ INFO: Executing task: [Goodbye World] locally
       </source>
       
       <p>Note that we have elided some of the timestamp information for the purposes of 
-      clarity. If you see the cannonical Hellow World statement, you have succeeded in 
+      clarity. If you see the cannonical Hello World statement, you have succeeded in 
       configuring the CAS Workflow Manager, hopefully in 2 minutes or less (and even if 
       it took a little more time, you have to admit it was by and large painless).</p>
       
@@ -277,64 +265,6 @@ INFO: Executing task: [Goodbye World] locally
       <a href="../user/advanced.html">Advanced Guide.</a></p>
       
       </section>
- 
- <!--
-      <section name="Use Cases">
-        <p>
-          The Workflow Manager was built to support several of the above capabilities. In particular there 
-          were several use cases that we wanted to support, some 
-          of which are described below.        
-        </p>
-      
-         <img src="../images/wm_use_case1.jpg" alt="Workflow Manager Event-based Execution Use Case"/>
-         
-         <p>The black numbers in the above Figure correspond to a sequence of steps that occurs and a 
-         series of interactions between the different Workflow Manager extension points in order to 
-         perform the workflow execution activity. In Step 1, an event is provided to the Workflow
-         Manager event listenter (the System extension point), along with required Metadata. The
-         Workflow Manager, in step 2, looks up if ther are any associated Workflow Repository models
-         associated with the provided Event. If so, in steps 3 and 4, the returned Workflow models
-         are sent to the WorkflowEngine, to be turned into executable Workflow Instances.Each 
-         WorkflowInstance is handed off to a WorkflowProcessorThread, taken from the ThreadPoolWorkflowEngine,
-         in steps 5 and 6. The WorkflowProcessorThread, in step 7, steps through each executable WorkflowTask,
-         checking to make sure that all necessary Workflow Conditions (if any) are satisfied. If all Workflow 
-         Conditions are satisfied, then the Workflow Task is executed, either locally, or if an Resource Manager
-         is defined, then the task is sent (in step 7) to the Resource Manager (labeled <code>Process Manager</code>
-         in the figure). In steps 8-13, the WorkflowTask is executed on remote resources using the Resource Manager,
-         and eventually completed, with the final notification being sent back to the corresponding Workflow Processor
-         Thread, which is stepping through the Workflow Instance, controlling its exectuion. </p>
-         
-      </section>
-      <section name="Appendix">
-       <p>
-         Full list of Workflow Manager extension point classes and their associated property names from the 
-         workflow.properties file:       
-       </p>
-    
-       <table>
-         <tr>
-           <td>workflow.repo.factory</td>
-           <td>org.apache.oodt.cas.workflow.repository.XMLWorkflowRepositoryFactory<br/>
-               org.apache.oodt.cas.workflow.repository.DataSourceWorkflowRepositoryFactory
-           </td>
-         </tr>
-         <tr>
-           <td>workflow.engine.factory</td>
-           <td>org.apache.oodt.cas.workflow.engine.ThreadPoolWorkflowEngineFactory
-           </td>
-         </tr>
-         <tr>
-           <td>workflow.instRep.factory</td>
-           <td>org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepositoryFactory<br/>
-               org.apache.oodt.cas.workflow.instrepo.DataSourceWorkflowInstanceRepositoryFactory<br/>
-               org.apache.oodt.cas.workflow.instrepo.MemoryWorkflowInstanceRepositoryFactory
-           </td>
-         </tr>
-       </table>
-      
-      </section> -->
-      
-      
    </body>
    
 </document>

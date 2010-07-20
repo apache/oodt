@@ -94,7 +94,7 @@ the License.
     <p><strong>Date-Time</strong></p>
     
     <p>With time, consistency is key. There are multiple formats, such as 
-    <a href="http://tycho.usno.navy.mil/mjd.html">Julien Day Numbers</a>, or UTC. 
+    <a href="http://tycho.usno.navy.mil/mjd.html">Julian Day Numbers</a>, or UTC. 
     Additionally, there are different time standards such as 
     <a href="http://www.w3.org/TR/NOTE-datetime">UTC</a>, local time, and 
     <a href="http://www.bipm.org/en/scientific/tai/">TAI</a>. One also needs to be 

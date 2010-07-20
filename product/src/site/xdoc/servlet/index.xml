@@ -2,7 +2,7 @@
 <document>
   <properties>
     <title>Using the Product Servlet</title>
-    <author email="Sean.Kelly@jpl.nasa.gov">Sean Kelly</author>
+    <author email="kelly@apache.org">Sean Kelly</author>
   </properties>
 
   <body>
@@ -51,14 +51,14 @@
 
 	<thead>
 	  <tr>
-	    <th style="border-bottom: solid black thin; border-top: solid black thin">Parameter Name</th>
-	    <th style="border-bottom: solid black thin; border-top: solid black thin">Obligation</th>
-	    <th style="border-bottom: solid black thin; border-top: solid black thin">Meaning</th>
+	    <th>Parameter Name</th>
+	    <th>Obligation</th>
+	    <th>Meaning</th>
 	  </tr>
 	</thead>
 
 	<tbody>
-	  <tr bgcolor="#eeeeee">
+	  <tr>
 	    <td><code>object</code></td>
 	    <td>Once</td>
 	    <td>Names the product server to receive the query.  This
@@ -81,7 +81,7 @@
 
 	  </tr>
 
-	  <tr bgcolor="#eeeeee">
+	  <tr>
 	    <td><code>id</code></td>
 	    <td>None or Once</td>
 	    <td>Optional parameter that identifies a single product to

@@ -23,7 +23,7 @@ the License.
 
   <body>
     <section name="Using Maven">
-      <p>OODT uses <a href="http://maven.apache.org/">Maven</a> for 
+      <p>Apache OODT uses <a href="http://maven.apache.org/">Maven</a> for 
       managing our build environment. Maven is an open source product from the 
       <a href="http://www.apache.org/">Apache Software Foundation</a> that improves 
       on <a href="http://ant.apache.org/">Ant</a> in the area of build management, 

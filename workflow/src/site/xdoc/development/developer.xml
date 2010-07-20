@@ -24,8 +24,6 @@ the License.
 
    <body>
    
-      <link rel="StyleSheet" href="../css/guides.css" type="text/css" media="screen"/>
-      
       <section name="Introduction">
         <p>
           This is the developer guide for the OODT Catalog and Archive Service (CAS) 
@@ -70,7 +68,7 @@ the License.
         The relationship between all of these components are shown in the diagram 
         below:</p>
         
-        <img src="../images/wm_extension_points.png" alt="Workflow Manager Architecture"/>
+        <p><img src="../images/wm_extension_points.png" alt="Workflow Manager Architecture"/></p>
         
         <p>The Workflow Manager Server contains both a Workflow Repository that manages 
         workflow models, and Workflow Engine that processes workflow instances. The Workflow
@@ -123,7 +121,7 @@ the License.
         as does each Workflow Condition have a corresponding Workflow Condition Instance. 
         These relationships are shown in the below figure.</p>
         
-        <img src="../images/wm_object_model.png" alt="Workflow Manager Object Model"/>
+        <p><img src="../images/wm_object_model.png" alt="Workflow Manager Object Model"/></p>
         </subsection>
       
         <subsection name="Key Capabilities">
@@ -133,7 +131,7 @@ the License.
         
 		<p><strong>Explicit Modeling.</strong> The Workflow manager captures both
         identified workflow patterns (control-flow) and data-flow between Workflow Task 
-        Instances. Workflows are directed graphs, allowing for truew parallelism.</p>
+        Instances. Workflows are directed graphs, allowing for true parallelism.</p>
           
         <p><strong>Persistence.</strong> Support for persistance of Workflow Instances 
         to several backend repositories, including relational databases, and Apache 
@@ -268,7 +266,7 @@ the License.
          
         <subsection name="Workflow Engine">
           <ul>
-             <li><strong>ThreadPoolWorkflowEngine.</strong> An implementaiton of the 
+             <li><strong>ThreadPoolWorkflowEngine.</strong> An implementation of the 
              Workflow Engine that itself is meant to be an extension point for 
              WorkflowEngines that want to implement ThreadPooling. This WorkflowEngine 
              provides everything needed to manage a ThreadPool using Doug Lea's wonderful 

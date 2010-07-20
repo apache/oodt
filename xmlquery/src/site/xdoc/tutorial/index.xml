@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
 <document>
   <properties>
     <title>Understanding the XMLQuery</title>
@@ -7,8 +23,8 @@
 
   <body>
     <section name="Understanding the XMLQuery">
-      <p>OODT's <a href="/grid-profile/">profile servers</a>, <a
-	  href="/grid-product/">product servers</a>, and other
+      <p>Apache OODT's <a href="../../profile/">profile servers</a>, <a
+	  href="../../product/">product servers</a>, and other
 	components all use the same format for a query.  It's
 	encapsulated by the class
 	<code>org.apache.oodt.xmlquery.XMLQuery</code>.  In this tutorial,
@@ -79,9 +95,10 @@
       </subsection>
 
       <subsection name="XMLQuery Structure">
-	<p>The following diagram shows the XMLQuery and related classes:</p>
+	<p>The following diagram shows the XMLQuery and related classes (note the diagram is outdated; "jpl.eda.xmlquery"
+	    should read "org.apache.oodt.xmlquery"):</p>
 
-	<img src="../images/xmlquery.png" alt="Class diagram of XMLQuery"/>
+	<p><img src="../images/xmlquery.png" alt="Class diagram of XMLQuery"/></p>
 
 	<p>A single <code>XMLQuery</code> object has three separate
 	  lists of <code>QueryElement</code> objects, representing the
@@ -182,7 +199,7 @@ surname LIKE 'Simspon%' OR numChildren &lt;= 3 AND RETURN = numEpisodes</source>
 	<p>While the expression</p>
 	<source>artist = Bach AND NOT album = Poem OR track != Aria</source>
 	<p>generates the "where" stack</p>
-	<img src="../images/large-stack.png" alt="Stack of a lot of query elements"/>
+	<p><img src="../images/large-stack.png" alt="Stack of a lot of query elements"/></p>
       </subsection>
 
       <subsection name="The RETURN Element">
@@ -442,29 +459,20 @@ acceptableTypes.add("image/*");</source>
 	<p>First up, we'll need two components:</p>
 
 	<ul>
-	  <li><a href="/edm-commons/">EDM Common Components</a>.  This
+	  <li><a href="../../commons/">OODT Common Components</a>.  This
 	    is needed by all of OODT software; it contains general
 	    utilities for starting servers, parsing XML, logging, and
 	    more.
 	  </li>
-	  <li><a href="/edm-query/">EDM Query Expression</a>.  This
+	  <li><a href="../../xmlquery/">OODT Query Expression</a>.  This
 	    contains the <code>XMLQuery</code> and related classes.
 	  </li>
 	</ul>
 
 	<p>Download the binary distribution of each of these packages
 	  and extract their contents.  Then, create a single directory
-	  and collect the jar files together in one place:
+	  and collect the jar files together in one place.
 	</p>
-
-	<source>% <b>mkdir query</b>
-% <b>cd query</b>
-% <b>cp ~/edm-commons-2.2.5/*.jar .</b>
-% <b>cp ~/edm-query-2.0.2/*.jar .</b>
-% <b>ls -l</b>
-total 192
--rw-r--r--  1 kelly  kelly  149503 25 Feb 09:53 edm-commons-2.2.5.jar
--rw-r--r--  1 kelly  kelly   43879 25 Feb 09:53 edm-query-2.0.2.jar</source>
 
       </subsection>
 
@@ -533,9 +541,10 @@ selectElementSet:
 	retrieve those results.
       </p>
 
-      <p>The following class diagram demonstrates the relationship:</p>
+      <p>The following class diagram demonstrates the relationship (again, the diagram is outdated;
+          "jpl.eda.xmquery" should read "org.apache.oodt.xmlquery"):</p>
 
-      <img src='../images/results.png' alt='Result class diagram'/>
+      <p><img src='../images/results.png' alt='Result class diagram'/></p>
 
       <p>As you can see, a single query has a single
 	<code>org.apache.oodt.xmlquery.QueryResult</code>, which contains a

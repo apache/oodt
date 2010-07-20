@@ -23,8 +23,7 @@ the License.
    </properties>
 
    <body>
-      <link rel="StyleSheet" href="../css/guides.css" type="text/css" media="screen"/>
-   
+
       <div class="warning">This document is in the process of being reorganized as
       part of our ongoing documentation effort. Please follow the links below to find
       information that has previously been hosted on this page.</div>

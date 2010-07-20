@@ -46,15 +46,11 @@ the License.
     <a name="section1"/>
     <section name="Download And Build">
       <p>The most recent CAS-Curator project can be downloaded from
-      the OODT <a href="http://oodt.jpl.nasa.gov">website</a> or it can
+      the OODT <a href="http://incubator.apache.org/oodt">website</a> or it can
       be checked out from the OODT repository using Subversion. The 
-      CAS-Curator project is located at 
-      <code>http://oodt/repo/cas-curator/</code>. We recommend checking
-      out the latest released version (v1.0.0 at the time of writing), 
-      which can be found at 
-      <code>http:/oodt/repo/cas-curator/tags/X_X_X_release</code>. For
-      more information on using Subversion, see our 
-      <a href="../development/subversion.html">Subversion Guide.</a></p>
+      We recommend checking
+      out the latest released version (v1.0.0 at the time of writing).
+      </p>
       
       <p>Maven is the build management system used for OODT projects. We
       currently support Maven 2.0 and later. For more information on 
@@ -206,7 +202,7 @@ docBase="/usr/local/src/cas-curator-v1.0.0/target/cas-curator-1.0.0.war">
     <source>
 > mkdir /usr/local/staging/products/mp3
 > cd /usr/local/staging/products/mp3
-> curl http://oodt.jpl.nasa.gov/cas-curator/media/Bach-SuiteNo2.mp3 > \
+> curl http://incubator.apache.org/oodt/components/curator/media/Bach-SuiteNo2.mp3 > \
         Bach-SuiteNo2.mp3
     </source>
     
@@ -246,7 +242,7 @@ docBase="/usr/local/src/cas-curator-v1.0.0/target/cas-curator-1.0.0.war">
     <p>The CAS-Curator uses ancillary programs called metadata extractors to produce
     the metadata that it associates with products. More information about metadata 
     extractors can be found in the 
-    <a href="http://oodt.jpl.nasa.gov/cas-metadata/user/extractorBasics.html">
+    <a href="../../metadata/user/extractorBasics.html">
     Extractor Basics</a> User's Guide.</p>
     
     <p>Like the staging area, we first need to set up an area in the file system for
@@ -302,7 +298,7 @@ title: Bach Cello Suite No 2
     
     <p>With a little AWK magic, we can convert this output to the Cas-Metadata xml
     format:</p>
-    
+    <!-- FIXME: change namespace URI? -->
 <source><![CDATA[
 > java -jar tika-app-0.5-SNAPSHOT.jar -m \
   /usr/local/staging/products/mp3/Bach-SuiteNo2.mp3 | awk -F:\
@@ -475,7 +471,7 @@ total 51448
     <p>The final step in our basic configuration of CAS-Curator is to configure a 
     CAS-Filemgr instance into which we will ingest our mp3s. There is a lot of
     information on configuring the CAS-Filemgr in its
-    <a href="http://oodt.jpl.nasa.gov/cas-filemgr/user/">User's Guide</a>. We will 
+    <a href="../../filemgr/user/">User's Guide</a>. We will 
     assume familiarity with the CAS-Filemgr for the remainder of this guide.</p>
     
     <p>In this guide, we will focus on the basic configuration necessary to tailor

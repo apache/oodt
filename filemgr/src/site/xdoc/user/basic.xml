@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (c) 2009 California Institute of Technology.
-  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
 
-  $Id$
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
 -->
-
 <document>
    <properties>
       <title>CAS File Manager User Guide</title>
@@ -14,9 +23,6 @@
    </properties>
 
    <body>
-   
-      <link rel="StyleSheet" href="../css/guides.css" type="text/css" media="screen"/>
-      
       <div class="warning">This document is in the process of being reorganized as
       part of our ongoing documentation effort. Please check back for updates.</div>
       
@@ -47,7 +53,7 @@
         <source>
 >mkdir /usr/local/src
 >cd /usr/local/src        
->svn co http://oodt/repo/oodt-core        
+>svn co https://svn.apache.org/repos/asf/incubator/oodt/trunk/core oodt-core
         </source>
       <p>Once the subversion command completes you should have a directory at <code>/usr/local/src/oodt-core</code>
       which will contain a couple files.  In order to build the project from this source, issue the following 
@@ -62,24 +68,15 @@
         <br/>
         <br/>
         
-        <p>The most recent CAS-File Manager project can be downloaded from the OODT
-        <a href="http://oodt.jpl.nasa.gov">website</a> or it can be checked out 
+        <p>The most recent CAS-File Manager project can be downloaded from the Apache OODT
+        <a href="/">website</a> or it can be checked out 
         from the OODT repository using Subversion. The CAS-File Manager project is 
-        located at <code>http://oodt/repo/cas-filemgr/</code>. We recommend checking
-        out the latest released version (v1.8.0 at the time of writing), which can be 
-        found at <code>http:/oodt/repo/cas-filemgr/tags/X_X_X_release</code>. For
-        more information on using Subversion, see our 
-        <a href="../development/subversion.html">Subversion Guide.</a></p>
+        located at <code>https://svn.apache.org/repos/asf/incubator/oodt/trunk/filemgr/</code>.</p>
       
         <p>Maven is the build management system used for OODT projects. We currently 
         support Maven 2.0 and later. For more information on Maven, see our 
         <a href="../development/maven.html">Maven Guide.</a></p>
       
-        <div class="warning">Prior to Release 1.5.0, CAS-File Manager can only be
-        built with Maven 1. Maven 1 and Maven 2 are not compatible (and very 
-        different from one another). For more information on Maven 1, see their
-        <a href="http://maven.apache.org/maven-1.x/">website.</a></div>
-        
         <p>Assuming a *nix-like environment, with both Maven and Subversion 
         clients installed and on your path, an example of the checkout and 
         build process is presented below:</p>
@@ -87,19 +84,18 @@
          <source>
 > mkdir /usr/local/src
 > cd /usr/local/src
-> svn checkout http://oodt/repo/cas-filemgr/tags/1_8_0_release \
-    cas-filemgr-v1.8.0       
+> svn checkout https://svn.apache.org/repos/asf/incubator/oodt/trunk/filemgr
       </source>
         
       <p>After the Subversion command completes, you will have the source
-      for the CAS-Filemgr project in the <code>/usr/local/src/cas-filemgr-v1.8.0</code>
+      for the CAS-Filemgr project in the <code>/usr/local/src/filemgr</code>
       directory.</p>
       
       <p>In order to build the project from this source, issue the following 
       commands:</p>
       
       <source>
-> cd /usr/local/src/cas-filemgr-v1.8.0
+> cd /usr/local/src/filemgr
 > mvn package    
       </source>   
       
@@ -109,16 +105,16 @@
       you will see a Maven success banner.</p>
       
       <p>Once the Maven command completes successfully, you should have a 
-      <code>target</code> directory under <code>cas-filemgr-v1.8.0/</code>. 
+      <code>target</code> directory under <code>cas-filemgr-vX.Y.Z/</code>. 
       The project has been built in this directory as a distribution tar ball.
       In order to move the built project out of the source directory and unpack the
       tar ball, issue the following commands:</p>
       
       <source>
 > cd /usr/local
-> mv src/cas-filemgr-v1.8.0/trunk/cas-filemgr-v1.8.0-dist.tar.gz ./
-> tar -xvzf cas-filemgr-v1.8.0-dist.tar.gz
-> export FILEMGR_HOME=/usr/local/cas-filemgr-v1.8.0
+> mv src/filemgr/trunk/cas-filemgr-vX.Y.Z-dist.tar.gz ./
+> tar -xvzf cas-filemgr-vX.Y.Z-dist.tar.gz
+> export FILEMGR_HOME=/usr/local/cas-filemgr-vX.Y.Z
       </source>       
       
       <p>The resultant directory layout from the unpacked tarball is as follows:</p>
@@ -157,7 +153,7 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
          project.</li>
        </ul>
       
-      <p>Now you have a built File Manager at <code>/usr/local/cas-filemgr-v1.8.0</code>.
+      <p>Now you have a built File Manager at <code>/usr/local/cas-filemgr-vX.Y.Z</code>.
       In the next section, we will discuss how you can configure the File Manager for
       basic operations.</p>
       
@@ -253,11 +249,12 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
       command using the filemgr-client command below. First create a simple text file 
       called "blah.txt" and place it inside <code>$FILEMGR_HOME/bin</code> Then, create 
       a blank metadata file for the product, using the 
-      <a href="http://oodt.jpl.nasa.gov/vc/svn/cas-metadata/trunk/src/main/conf/cas.metadata.xsd">schema</a>
-      or  <a href="http://oodt.jpl.nasa.gov/vc/svn/cas-metadata/trunk/src/main/conf/cas.metadata.dtd">DTD</a>
-      provided in the <a href="http://oodt.jpl.nasa.gov/cas-metadata">CAS-Metadata</a>
+      <a href="https://svn.apache.org/repos/asf/incubator/oodt/trunk/metadata/src/main/conf/cas.metadata.xsd">schema</a>
+      or  <a href="https://svn.apache.org/repos/asf/incubator/oodt/trunk/metadata/src/main/conf/cas.metadata.dtd">DTD</a>
+      provided in the <a href="../../metadata">CAS-Metadata</a>
       project. An example XML file might be:</p>
       
+      <!-- FIXME: change namespace URI? -->
       <source>
         &lt;cas:metadata xmlns:cas=&quot;http://oodt.jpl.nasa.gov/1.0/cas&quot;&gt;
         &lt;/cas:metadata&gt;
