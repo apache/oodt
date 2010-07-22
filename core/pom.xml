@@ -29,6 +29,8 @@ the License.
         <xdocVersion>${pom.version}</xdocVersion>
         <genDownloadLinks>false</genDownloadLinks>
         <docsSrc>${basedir}/src/site/xdoc</docsSrc>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     <url>http://incubator.apache.org/oodt/${pom.artifactId}</url>
     <issueManagement>
@@ -232,6 +234,13 @@ the License.
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                    <encoding>UTF-8</encoding>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -267,10 +276,13 @@ the License.
             </plugin> -->
             <!-- Produce JavaDoc -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.2</version>
+                <version>2.7</version>
                 <configuration>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                    <encoding>UTF-8</encoding>
                     <aggregate>true</aggregate>
                     <source>1.5</source>
                 </configuration>

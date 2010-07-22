@@ -94,10 +94,14 @@ You can then open the OODT Documentation in a web browser:
 
     ./target/site/index.html
 
-Note: generating the documentation requires enormous amounts of memory.  More
-than likely you'll need to set the MAVEN_OPTS environment variable to
-"-Xmx512m" or larger before attempting to run "mvn site".
+Note: all OODT source files are encoded with UTF-8.  You must set your
+MAVEN_OPTS environment variable to include "-Dfile.encoding=UTF-8" in order to
+properly generate the web site and other artifacts from source.
 
+Note: generating the documentation requires enormous amounts of memory.  More
+than likely you'll need to add to the MAVEN_OPTS environment variable in order
+to set the Java heap maximum size with "-Xmx512m" or larger before attempting
+to run "mvn site".
 
 Mailing Lists
 =============
