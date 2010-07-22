@@ -129,8 +129,8 @@ the License.
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
-      <artifactId>filemgr</artifactId>
-      <version>1.9.0-dev</version>
+      <artifactId>cas-filemgr</artifactId>
+      <version>${oodt.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
