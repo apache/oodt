@@ -20,3 +20,55 @@ is included in this software distribution under the MIT license. For details,
 see the jQuery web site: 
     http://jquery.com/
 
+This product includes the jQuery UI, versions 1.2.2b2 and 1.5.3, written by 
+Paul Bakaus. The jQuery UI is dually licensed under the MIT and GPL licenses, 
+and is included in this software distribution under the MIT license. For 
+details, see the jQuery UI web site:
+    http://docs.jquery.com/UI
+
+This product includes the jQuery UI CSS Framework. The jQuery UI CSS 
+Framework is dually licensed under the MIT and GPL licenses, and is included 
+in this software distribution under the MIT license. For details, see the 
+jQuery UI web site:
+    http://jqueryui.com/about
+
+This product includes the jQuery Alert Dialogs Plugin, version 1.1, written
+by Cory S.N. LaViska for A Beautiful Site, LLC. The jQuery Alert Dialogs 
+Plugin is dually licensed under the MIT and GPL licenses, and is included in 
+this software distribution under the MIT license. For details, see the A
+Beautiful Site web site:
+    http://abeautifulsite.net/
+
+This product includes the jQuery PeriodicalUpdater Plugin, version 2.0, 
+written by Robert Fischer for Smokejumper IT and 360innovate. The jQuery
+PeriodicalUpdater Plugin is dually licensed under the MIT and GPL licenses, 
+and is included in this software distribution under the MIT license. For 
+details, see the following websites:
+     Robert Fischer (http://smokejumperit.com)
+     360innovate (http://www.360innovate.co.uk)
+
+This product includes the jQuery blockUI Plugin, version 2.15, written by
+M. Alsup. The jQuery blockUI Plugin is dually licensed under the MIT and 
+GPL licenses, and is included in this software distribution under the MIT 
+license. For details, see:
+     http://malsup.com/jquery/block/
+
+This product includes the jQuery Cookie Plugin, written by Klaus Hartl.
+The jQuery Cookie Plugin is dually licensed under the MIT and GPL licenses, 
+and is included in this software distribution under the MIT license.
+
+This product includes the jQuery Treeview Plugin, version 1.4, and the
+Async Treeview extension, version 0.1, written by Jörn Zaefferer. The 
+jQuery Treeview Plugin and Async Treeview are dually licensed under the MIT 
+and GPL licenses, and is included in this software distribution under the 
+MIT license. For details, see:
+     http://bassistance.de/jquery-plugins/jquery-plugin-treeview/
+     http://docs.jquery.com/Plugins/Treeview
+ 
+This product includes the Dynamic Tree View Control, version 0.4.0, written
+by Martin Wendt. The Dynamic Tree View COntrol is licensed under the MIT
+license. For details, see:
+     http://dynatree.googlecode.com/
+
+
+
