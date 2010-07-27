@@ -23,9 +23,9 @@
         <version>${oodt.version}</version>
         <relativePath>../core/pom.xml</relativePath>
     </parent>
-    <artifactId>grid-product</artifactId>
+    <artifactId>oodt-product</artifactId>
     <name>Product Service</name>
-    <version>3.0.12-dev</version>
+    <version>${oodt.version}</version>
     <description>
         The Product Service provides access to data products.  Products can be
         scientific datasets, images, documents, or anything with an electronic
@@ -87,13 +87,25 @@
                     </descriptorRefs>
                 </configuration>
             </plugin>
+            <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rat-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
         </plugins>
     </build>
     <dependencies>
         <dependency>
             <groupId>org.apache.oodt</groupId>
-            <artifactId>commons</artifactId>
-            <version>1.2.0-dev</version>
+            <artifactId>oodt-commons</artifactId>
+            <version>${oodt.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -112,8 +124,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.oodt</groupId>
-            <artifactId>xmlquery</artifactId>
-            <version>2.0.8-dev</version>
+            <artifactId>oodt-xmlquery</artifactId>
+            <version>${oodt.version}</version>
         </dependency>
         <dependency>
             <groupId>servletapi</groupId>
