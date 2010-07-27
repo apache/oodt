@@ -20,13 +20,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>gov.nasa.jpl.oodt</groupId>
+    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>2.0</version>
+    <version>${oodt.version}</version>
+    <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-catalog</artifactId>
   <name>Catalog Component</name>
-  <version>1.0.0-dev</version>
+  <version>${oodt.version}</version>
   <description></description>
   <build>
     <plugins>
@@ -45,6 +46,18 @@
             <phase>package</phase>
             <goals>
               <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rat-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>
@@ -77,20 +90,15 @@
   </ciManagement>
   <dependencies>
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
-      <artifactId>cas-commons</artifactId>
-      <version>1.2.0-dev</version>    
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+      <version>${oodt.version}</version>    
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
+      <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>2.0.0-dev</version>
+      <version>${oodt.version}</version>
     </dependency>  
-    <dependency>
-      <groupId>gov.nasa.jpl.oodt</groupId>
-      <artifactId>edm-commons</artifactId>
-      <version>2.2.11-dev</version>
-    </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
