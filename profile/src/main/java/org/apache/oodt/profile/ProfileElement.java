@@ -18,9 +18,8 @@
 
 package org.apache.oodt.profile;
 
-import com.hp.hpl.mesa.rdf.jena.model.Model;
-import com.hp.hpl.mesa.rdf.jena.model.RDFException;
-import com.hp.hpl.mesa.rdf.jena.model.Resource;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
@@ -446,9 +445,8 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 * @param model The model to which we're being added.
 	 * @param resource The profile as an RDF resource description.
 	 * @param profAttr The profile's attributes.
-	 * @throws RDFException if an error occurs.
 	 */
-	void addToModel(Model model, Resource resource, ProfileAttributes profAttr) throws RDFException {
+	void addToModel(Model model, Resource resource, ProfileAttributes profAttr) {
 		URI profileURI = profile.getURI();
 		URI myURI = URI.create(profileURI.toString() + "#" + name);
 
@@ -476,10 +474,8 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 * @param model The model.
 	 * @param element This element, as an RDF resource.
 	 * @param profAttr The attributes of the element's profile.
-	 * @throws RDFException if an error occurs.
 	 */
-	protected abstract void addElementSpecificProperties(Model model, Resource element, ProfileAttributes profAttr, URI uri)
-		throws RDFException;
+	protected abstract void addElementSpecificProperties(Model model, Resource element, ProfileAttributes profAttr, URI uri);
 
 	/** My profile. */
 	protected Profile profile;

@@ -23,9 +23,8 @@ import java.util.List;
 import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
-import com.hp.hpl.mesa.rdf.jena.model.Model;
-import com.hp.hpl.mesa.rdf.jena.model.Resource;
-import com.hp.hpl.mesa.rdf.jena.model.RDFException;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 import java.net.URI;
 import java.util.Iterator;
 import org.w3c.dom.Element;
@@ -94,8 +93,7 @@ public class EnumeratedProfileElement extends ProfileElement {
 		return values;
 	}
 
-	protected void addElementSpecificProperties(Model model, Resource element, ProfileAttributes profAttr, URI uri)
-		throws RDFException {
+	protected void addElementSpecificProperties(Model model, Resource element, ProfileAttributes profAttr, URI uri) {
 		Utility.addProperty(model, element, Utility.edmValue, values, profAttr, uri);
 	}
 

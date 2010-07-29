@@ -18,11 +18,9 @@
 
 package org.apache.oodt.profile;
 
-import com.hp.hpl.mesa.rdf.jena.mem.ModelMem;
-import com.hp.hpl.mesa.rdf.jena.model.Model;
-import com.hp.hpl.mesa.rdf.jena.model.Property;
-import com.hp.hpl.mesa.rdf.jena.model.RDFException;
-import com.hp.hpl.mesa.rdf.jena.model.Resource;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -209,9 +207,8 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 * @param model Model to which the profile belongs.
 	 * @param resource Resource description of the profile.
 	 * @param profAttr Profile's attributes.
-	 * @throws RDFException if an error occurs.
 	 */
-	void addToModel(Model model, Resource resource, ProfileAttributes profAttr) throws RDFException {
+	void addToModel(Model model, Resource resource, ProfileAttributes profAttr) {
 		URI myURI = getURI();
 
 		Utility.addProperty(model, resource, Utility.dcTitle,        title,        profAttr, myURI);

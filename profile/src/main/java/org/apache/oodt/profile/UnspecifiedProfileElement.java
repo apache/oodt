@@ -22,8 +22,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import org.w3c.dom.Node;
-import com.hp.hpl.mesa.rdf.jena.model.Model;
-import com.hp.hpl.mesa.rdf.jena.model.Resource;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 import java.net.URI;
 
 /**

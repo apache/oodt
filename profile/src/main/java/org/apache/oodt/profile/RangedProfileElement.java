@@ -24,9 +24,8 @@ import java.util.List;
 import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
-import com.hp.hpl.mesa.rdf.jena.model.RDFException;
-import com.hp.hpl.mesa.rdf.jena.model.Model;
-import com.hp.hpl.mesa.rdf.jena.model.Resource;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 import java.net.URI;
 
 /**
@@ -100,8 +99,7 @@ public class RangedProfileElement extends ProfileElement {
 		return Collections.EMPTY_LIST;
 	}
 
-	protected void addElementSpecificProperties(Model model, Resource element, ProfileAttributes profAttr, URI uri)
-		throws RDFException {
+	protected void addElementSpecificProperties(Model model, Resource element, ProfileAttributes profAttr, URI uri) {
 		Utility.addProperty(model, element, Utility.edmMinValue, min, profAttr, uri);
 		Utility.addProperty(model, element, Utility.edmMaxValue, max, profAttr, uri);
 	}

@@ -19,16 +19,16 @@
 package org.apache.oodt.profile;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Map;
 import org.apache.oodt.commons.util.XML;
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
-import com.hp.hpl.mesa.rdf.jena.model.Model;
-import com.hp.hpl.mesa.rdf.jena.mem.ModelMem;
-import com.hp.hpl.mesa.rdf.jena.model.RDFException;
-import com.hp.hpl.mesa.rdf.jena.model.Resource;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -118,16 +118,6 @@ public class ProfileTest extends TestCase {
 		assertEquals("iiop://oodt.jpl.nasa.gov:10000/JPL.PDS.PROFILE", profile2.getResourceAttributes().getResLocations()
 			.get(0));
 		assertEquals("system.profileServer", profile2.getResourceAttributes().getResClass());
-	}
-
-	public void testRDF() throws RDFException, IOException {
-		InputStreamReader in = new InputStreamReader(getClass().getResourceAsStream("test.rdf"));
-		Model std = new ModelMem().read(in, /*base*/"", "RDF/XML");
-		in.close();
-
-		Model model = new ModelMem();
-		profile1.addToModel(model);
-		assertEquals(std, model);
 	}
 
 	/** A test profile, built from a string. */

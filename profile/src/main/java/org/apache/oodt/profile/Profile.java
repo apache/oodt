@@ -18,11 +18,10 @@
 
 package org.apache.oodt.profile;
 
-import com.hp.hpl.mesa.rdf.jena.mem.ModelMem;
-import com.hp.hpl.mesa.rdf.jena.model.Model;
-import com.hp.hpl.mesa.rdf.jena.model.Property;
-import com.hp.hpl.mesa.rdf.jena.model.RDFException;
-import com.hp.hpl.mesa.rdf.jena.model.Resource;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
@@ -268,9 +267,8 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	 * and adds them all to the given model.
 	 *
 	 * @param model Model to which to add the profile and its related descriptions.
-	 * @throws RDFException if an error occurs.
 	 */
-	public void addToModel(Model model) throws RDFException {
+	public void addToModel(Model model) {
 		Resource resource = model.createResource(getURI().toString());
 		resAttr.addToModel(model, resource, profAttr);
 		for (Iterator i = elements.values().iterator(); i.hasNext();) {
@@ -383,7 +381,7 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 		reader.close();
 		Profile p = new Profile(b.toString());
 
-		Model model = new ModelMem();
+		Model model = ModelFactory.createDefaultModel();
 		p.addToModel(model);
 		OutputStreamWriter writer = new OutputStreamWriter(System.out);
 		model.write(writer);

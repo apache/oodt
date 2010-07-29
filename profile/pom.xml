@@ -109,9 +109,9 @@
       <version>${oodt.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.hp.hpl</groupId>
+      <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
-      <version>1.6.1</version>
+      <version>2.6.3</version>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>

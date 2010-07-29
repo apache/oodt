@@ -19,15 +19,14 @@ import org.apache.oodt.commons.Configuration;
 import java.io.IOException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import com.hp.hpl.mesa.rdf.jena.mem.ModelMem;
-import com.hp.hpl.mesa.rdf.jena.model.Model;
-import com.hp.hpl.mesa.rdf.jena.model.Resource;
-import com.hp.hpl.mesa.rdf.jena.model.Property;
-import com.hp.hpl.mesa.rdf.jena.model.RDFException;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Property;
 import java.util.Iterator;
 import java.util.Collection;
-import com.hp.hpl.mesa.rdf.jena.model.Bag;
-import com.hp.hpl.mesa.rdf.jena.model.Seq;
+import com.hp.hpl.jena.rdf.model.Bag;
+import com.hp.hpl.jena.rdf.model.Seq;
 import java.util.List;
 import java.net.URI;
 
@@ -47,7 +46,7 @@ class Utility {
 	}
 
 	static void addProperty(Model model, Resource resource, Property property, Object value, ProfileAttributes profAttr,
-		URI uri) throws RDFException {
+		URI uri) {
 
 		if (value == null || value.toString().length() == 0) return;
 
@@ -61,7 +60,7 @@ class Utility {
 			resource.addProperty(property, bag);
 			obj = bag;
 		} else {
-			resource.addProperty(property, value);
+			resource.addProperty(property, value.toString());
 			obj = value;
 		}
 
@@ -69,7 +68,7 @@ class Utility {
 
 		reification.addProperty(rdfSubject, resource);
 		reification.addProperty(rdfPredicate, property);
-		reification.addProperty(rdfObject, obj);
+		reification.addProperty(rdfObject, obj.toString());
 		reification.addProperty(rdfType, rdfStatement);
 
 		addPotentiallyNullReifiedStatement(reification, edmID, profAttr.getVersion());
@@ -97,10 +96,9 @@ class Utility {
 		}
 	}
 
-	private static void addPotentiallyNullReifiedStatement(Resource reification, Property property, Object value)
-		throws RDFException {
+	private static void addPotentiallyNullReifiedStatement(Resource reification, Property property, Object value) {
 		if (value == null || value.toString().length() == 0) return;
-		reification.addProperty(property, value);
+		reification.addProperty(property, value.toString());
 	}
 
 
@@ -173,7 +171,7 @@ class Utility {
 		try {
 			Configuration config = Configuration.getConfiguration();
 			String profNS = System.getProperty("jpl.rdf.ns", "http://oodt.jpl.nasa.gov/grid-profile/rdfs/prof.rdf");
-			Model model = new ModelMem();
+			Model model = ModelFactory.createDefaultModel();
 
 			rdfStatement     = model.createResource(RDF_SYNTAX_NS + "Statement");
 
@@ -236,9 +234,6 @@ class Utility {
 			System.err.println("Fatal SAX exception: " + ex.getMessage() + (ex.getException() == null? ""
 				: " (embedded exception " + ex.getException().getClass().getName() + ": "
 				+ ex.getException().getMessage() + ")"));
-			System.exit(1);
-		} catch (RDFException ex) {
-			System.err.println("Fatal RDF exception " + ex.getClass().getName() + ": " + ex.getMessage());
 			System.exit(1);
 		}
 	}
