@@ -26,7 +26,7 @@ the License.
     <version>${oodt.version}</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <artifactId>pge</artifactId>
+  <artifactId>cas-pge</artifactId>
   <name>CAS PGE Adaptor Framework</name>
   <version>${oodt.version}</version>
   <description>Allows data processing jobs not written in comformance with the
