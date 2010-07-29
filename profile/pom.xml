@@ -114,11 +114,6 @@
       <version>1.6.1</version>
     </dependency>
     <dependency>
-      <groupId>com.oracle</groupId>
-      <artifactId>ojdbc</artifactId>
-      <version>14</version>
-    </dependency>
-    <dependency>
       <groupId>xerces</groupId>
       <artifactId>xerces</artifactId>
       <version>1.4.4</version>
