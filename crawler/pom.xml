@@ -150,9 +150,9 @@ the License.
       <version>${oodt.version}</version>
     </dependency>
     <dependency>
-      <groupId>apache</groupId>
+      <groupId>org.apache.tika</groupId>
       <artifactId>tika</artifactId>
-      <version>0.2-fork</version>
+      <version>0.3</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -187,7 +187,7 @@ the License.
     <dependency>
       <groupId>xmlrpc</groupId>
       <artifactId>xmlrpc</artifactId>
-      <version>2.1-dev</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

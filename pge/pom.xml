@@ -111,9 +111,9 @@ the License.
       <version>${oodt.version}</version>
     </dependency>
     <dependency>
-      <groupId>apache</groupId>
+      <groupId>org.apache.tika</groupId>
       <artifactId>tika</artifactId>
-      <version>0.2-fork</version>
+      <version>0.3</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
