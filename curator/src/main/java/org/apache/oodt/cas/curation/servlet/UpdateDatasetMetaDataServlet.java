@@ -25,7 +25,6 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -33,10 +32,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+//COMMONS imports
+import org.apache.commons.lang.StringEscapeUtils;
+
 // OODT imports
 import org.apache.oodt.cas.curation.policymgr.CurationPolicyManager;
 import org.apache.oodt.cas.curation.util.CurationXmlStructFactory;
-import org.apache.oodt.cas.curation.util.HTMLEncode;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -128,7 +129,7 @@ public class UpdateDatasetMetaDataServlet extends
 
         if (keyName.equals("PubMedID")) {
           cpt.getTypeMetadata().replaceMetadata(keyName,
-              HTMLEncode.encode(formValues[0]));
+              StringEscapeUtils.escapeHtml(formValues[0]));
         } else
           cpt.getTypeMetadata().replaceMetadata(keyName, formValues[0]);
       }
