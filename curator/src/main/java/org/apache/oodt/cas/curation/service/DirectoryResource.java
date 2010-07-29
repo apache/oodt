@@ -18,11 +18,12 @@
 
 package org.apache.oodt.cas.curation.service;
 
-//JAX-RS imports
+//JDK imports
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//JAX-RS imports
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -31,10 +32,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-import com.sun.jersey.spi.resource.Singleton;
+
 
 @Path("directory")
-@Singleton
 /**
  * 
  * A web service endpoint to a service providing views of the staging area, the

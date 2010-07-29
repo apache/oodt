@@ -50,7 +50,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import com.sun.jersey.spi.resource.Singleton;
 
 //JSON imports
 import net.sf.json.JSONObject;
@@ -65,7 +64,6 @@ import net.sf.json.JSONObject;
  * 
  */
 @Path("ingest")
-@Singleton
 public class IngestionResource extends CurationService {
 
   private static final long serialVersionUID = -7514150767897700936L;

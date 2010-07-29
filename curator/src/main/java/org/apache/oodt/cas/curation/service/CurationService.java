@@ -21,18 +21,10 @@ package org.apache.oodt.cas.curation.service;
 //OODT imports
 import org.apache.oodt.cas.curation.servlet.CuratorConfMetKeys;
 import org.apache.oodt.cas.curation.util.SSOUtils;
-import org.apache.oodt.cas.filemgr.catalog.Catalog;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.security.sso.SingleSignOn;
 
 //JDK imports
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -41,8 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -54,7 +44,6 @@ import javax.ws.rs.core.UriInfo;
 //JAX-RS imports
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
 
 //APACHE imports
 import org.apache.commons.lang.StringUtils;

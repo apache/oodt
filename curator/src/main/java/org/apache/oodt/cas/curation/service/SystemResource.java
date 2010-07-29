@@ -25,10 +25,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-import com.sun.jersey.spi.resource.Singleton;
-
 @Path("system")
-@Singleton
 public class SystemResource extends CurationService {
 
   @Context

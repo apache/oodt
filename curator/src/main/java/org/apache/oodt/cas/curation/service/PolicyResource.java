@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.curation.service;
 
 //OODT imports
-import org.apache.oodt.cas.curation.util.HTMLEncode;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
@@ -51,13 +51,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import com.sun.jersey.spi.resource.Singleton;
 
 //JSON imports
 import net.sf.json.JSONObject;
 
 @Path("policy")
-@Singleton
 public class PolicyResource extends CurationService {
 
   @Context
@@ -216,9 +214,9 @@ public class PolicyResource extends CurationService {
     out.append("<ul class=\"fileTree\" >");
     for (String policy : policyDirs) {
       out.append("<li class=\"directory collapsed\"><a href=\"#\" rel=\"/");
-      out.append(HTMLEncode.encode(policy));
+      out.append(StringEscapeUtils.escapeHtml(policy));
       out.append("/\">");
-      out.append(HTMLEncode.encode(policy));
+      out.append(StringEscapeUtils.escapeHtml(policy));
       out.append("</a></li>");
     }
     out.append("</ul>");
@@ -242,11 +240,11 @@ public class PolicyResource extends CurationService {
     for (String type : typeNames) {
       out
           .append("<li class=\"directory collapsed productType\"><a href=\"#\" rel=\"/");
-      out.append(HTMLEncode.encode(policy));
+      out.append(StringEscapeUtils.escapeHtml(policy));
       out.append("/");
-      out.append(HTMLEncode.encode(type));
+      out.append(StringEscapeUtils.escapeHtml(type));
       out.append("/\">");
-      out.append(HTMLEncode.encode(type));
+      out.append(StringEscapeUtils.escapeHtml(type));
       out.append("</a></li>");
     }
 

@@ -5,6 +5,8 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-21 Remove jersey dependency from curator and replace with Apache CXF (mattmann)
+
 * OODT-18 Convert curator to use Apache commons rather than jTidy (mattmann)
 
 * OODT-16 - Remove JPL look+feel and web references, as well as dependency on private JPL M2 

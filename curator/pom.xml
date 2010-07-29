@@ -109,11 +109,12 @@ the License.
       <version>2.3</version>
       <classifier>jdk15</classifier>
     </dependency>
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-server</artifactId>
-      <version>1.1.2-ea</version>
-    </dependency>
+   <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <!-- 2.2.x where x in the 0-7 range or 2.3-SNAPSHOT-->
+      <version>2.2.7</version>
+   </dependency>
   </dependencies>
 
 </project>
