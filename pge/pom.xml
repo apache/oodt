@@ -102,7 +102,7 @@ the License.
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
-      <artifactId>workflow</artifactId>
+      <artifactId>cas-workflow</artifactId>
       <version>${oodt.version}</version>
     </dependency>
     <dependency>
