@@ -28,7 +28,7 @@ the License.
   </parent>
   <artifactId>pge</artifactId>
   <name>CAS PGE Adaptor Framework</name>
-  <version>1.2.0-dev</version>
+  <version>${oodt.version}</version>
   <description>Allows data processing jobs not written in comformance with the
         PCS PGE interface to be run within the PCS.</description>
   <ciManagement>
@@ -97,8 +97,8 @@ the License.
     </dependency>    
     <dependency>
       <groupId>org.apache.oodt</groupId>
-      <artifactId>filemgr</artifactId>
-      <version>1.9.0-dev</version>
+      <artifactId>cas-filemgr</artifactId>
+      <version>${oodt.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
@@ -108,7 +108,7 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>crawler</artifactId>
-      <version>2.3.0-dev</version>
+      <version>${oodt.version}</version>
     </dependency>
     <dependency>
       <groupId>apache</groupId>

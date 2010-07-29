@@ -28,7 +28,7 @@ the License.
   </parent>
   <artifactId>crawler</artifactId>
   <name>Catalog and Archive Crawling Framework</name>
-  <version>2.3.0-dev</version>
+  <version>${oodt.version}</version>
   <description>The Catalog and Archive Service Crawling Framework.</description>
   <ciManagement>
     <notifiers>
