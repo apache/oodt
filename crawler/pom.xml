@@ -26,7 +26,7 @@ the License.
     <version>${oodt.version}</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <artifactId>crawler</artifactId>
+  <artifactId>cas-crawler</artifactId>
   <name>Catalog and Archive Crawling Framework</name>
   <version>${oodt.version}</version>
   <description>The Catalog and Archive Service Crawling Framework.</description>
