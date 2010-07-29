@@ -23,6 +23,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
@@ -204,7 +205,8 @@ public final class DataUtils implements DataDeliveryKeys {
 
     // get the product metadata, and add its met file to the stream
     ByteArrayOutputStream metOut = new ByteArrayOutputStream();
-    XMLUtils.writeXmlToStream(productMet.toXML(), metOut);
+    SerializableMetadata serialMet = new SerializableMetadata(productMet);
+    serialMet.writeMetadataToXmlStream(metOut);
     ByteArrayInputStream metIn = new ByteArrayInputStream(metOut.toByteArray());
     String metFileName = metFileBaseName + ".met";
     addZipEntryFromStream(metIn, out, metFileName);
