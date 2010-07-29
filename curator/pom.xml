@@ -26,7 +26,7 @@ the License.
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <groupId>org.apache.oodt</groupId>
-  <artifactId>curator</artifactId>
+  <artifactId>cas-curator</artifactId>
   <packaging>war</packaging>
   <version>${oodt.version}</version>
   <name>CAS Curation Interface</name>
