@@ -23,7 +23,7 @@
     <version>${oodt.version}</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <artifactId>grid-profile</artifactId>
+  <artifactId>oodt-profile</artifactId>
   <name>Profile Service</name>
   <version>${oodt.version}</version>
   <description>The Profile Service describes and locates resources using metadata
