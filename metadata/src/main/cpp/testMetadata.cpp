@@ -22,7 +22,6 @@
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/dom/DOMImplementationLS.hpp>
-#include <xercesc/dom/DOMWriter.hpp>
 #include <xercesc/framework/StdOutFormatTarget.hpp>
 #include<xercesc/parsers/XercesDOMParser.hpp>
 
@@ -138,15 +137,22 @@ int main(void){
 	cout << "XML is: " << endl;
     DOMDocument* doc = metadata.toXML();
 	XMLCh tempStr[100];
+ 
+
 	XMLString::transcode("LS", tempStr, 99);
 	DOMImplementation *impl          = DOMImplementationRegistry::getDOMImplementation(tempStr);
-	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
-	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true))
-	  theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+    DOMLSSerializer* theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+
+
+	if (theSerializer->getDomConfig()->canSetParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true))
+	  theSerializer->getDomConfig()->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 
 	XMLFormatTarget *myFormTarget;
         myFormTarget = new StdOutFormatTarget();
-	theSerializer->writeNode(myFormTarget, *doc);
+    DOMLSOutput* theOutput = ((DOMImplementationLS*)impl)->createLSOutput();
+    theOutput->setByteStream(myFormTarget);
+
+	theSerializer->write((DOMNode*)doc, theOutput);
 	
 	cout << "Now attempting to parse cas xml document: data/sample.met.xml" << endl;
 	
@@ -170,7 +176,7 @@ int main(void){
     cout << "Outputting XML from CAS Metadata " << endl;
         
     DOMDocument *newDoc = newMetadata.toXML();
-    theSerializer->writeNode(myFormTarget, *doc);
+    theSerializer->write((DOMNode*)doc, theOutput);
     
 	return 1;
 		

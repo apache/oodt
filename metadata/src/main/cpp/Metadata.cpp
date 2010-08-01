@@ -20,7 +20,6 @@
 
 #include "Metadata.h"
 #include "XStr.h"
-#include "./util/xml/XMLUtils.h"
 #include <vector>
 #include <map>
 #include <string>
@@ -41,11 +40,6 @@ XERCES_CPP_NAMESPACE_USE
 
 //STD imports
 using namespace std;
-
-//XML Utils imports
-using namespace xmlutils;
-
-
 
 namespace cas
 {
@@ -71,7 +65,6 @@ Metadata::Metadata(DOMDocument *doc)
    }
    
    XMLCh *keyValStr = XMLString::transcode("keyval");
-   
    DOMNodeList *keyValElems = metadataRootElem->getElementsByTagName(keyValStr);
    
    const XMLSize_t nodeCount = keyValElems->getLength();
@@ -121,7 +114,7 @@ void Metadata::read(DOMElement *elem, const string& key, string& value){
 	DOMNodeList *valueNodes = elem->getElementsByTagName(tagName);
 	
 	DOMNode* valElem = valueNodes->item(0);
-	value = getNodeText(valElem);
+	value = getSimpleNodeText(valElem);
 }
  
 
@@ -131,7 +124,7 @@ void Metadata::readMany(DOMElement *elem, const string& key, vector<string>& val
 	
     for(int i=0; i < valueNodes->getLength(); i++){
     	  DOMNode *valElem = valueNodes->item(i);
-    	  string value = getNodeText(valElem);
+    	  string value = getSimpleNodeText(valElem);
     	  values.push_back(value);
     }
 }
@@ -206,6 +199,20 @@ const vector<string>& Metadata::getAllMetadata(const string& key){
     		
 }
 
+string Metadata::getSimpleNodeText(DOMNode* node){
+    string nodeTxt = "";
+    DOMNodeList *children = node->getChildNodes();
+    for(int i=0; i < children->getLength(); i++){
+      DOMNode *n = children->item(i);
+      if(n->getNodeType() == DOMNode::TEXT_NODE){
+         const XMLCh *xmlText = n->getNodeValue();
+         nodeTxt+=XMLString::transcode(xmlText);
+      }    
+    }
+
+   return nodeTxt;
+}
+
 DOMDocument* Metadata::toXML(void){
     // Initialize the XML4C2 system.
     try
@@ -231,7 +238,6 @@ DOMDocument* Metadata::toXML(void){
        {
            try
            {
-	     //DOMDocumentType* pDoctype = impl->createDocumentType( NULL, NULL, NULL );
                DOMDocument* doc = impl->createDocument(
                            // FIXME: change namespace URI?
                            X("http://oodt.jpl.nasa.gov/1.0/cas"),                    // root element namespace URI.

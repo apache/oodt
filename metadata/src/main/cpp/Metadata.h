@@ -168,6 +168,7 @@ private:
     
     void read(DOMElement *elem, const string& key, string& value);
     void readMany(DOMElement *elem, const string& key, vector<string>& values);
+    string getSimpleNodeText(DOMNode *node);
     
 };
 

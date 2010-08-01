@@ -5,6 +5,8 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-19 Metadata should not use a GPL-licensed XML parser (mattmann)
+
 * OODT-7 Curator adds escaped sequenced spaces when reading extractorBinPath 
   tag from extractor config files (joshuaga via mattmann)
 
