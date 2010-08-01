@@ -5,6 +5,8 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-16 OODT website (kelly)
+
 * OODT-24 Fmprod webapp currently depended on the toXML method of the Metadata object 
   in cas-metadata, which has been removed... (woollard)
 
