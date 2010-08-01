@@ -5,6 +5,9 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-24 Fmprod webapp currently depended on the toXML method of the Metadata object 
+  in cas-metadata, which has been removed... (woollard)
+
 * OODT-23 remove pushpull's javamail dependency (mattmann)
 
 * OODT-20 Upgrade oodt-profile's jena dependency to more recent version (kelly)
