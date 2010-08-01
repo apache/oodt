@@ -109,6 +109,11 @@
       <version>${oodt.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-filemgr</artifactId>
+      <version>${oodt.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
       <version>2.6.3</version>
@@ -137,11 +142,6 @@
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.oodt</groupId>
-        <artifactId>cas-filemgr</artifactId>
-        <version>${oodt.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

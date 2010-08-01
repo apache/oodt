@@ -30,15 +30,6 @@
   <name>Common Utilities</name>
   <packaging>jar</packaging>
   <description>Apache OODT Common Utilities Project</description>
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>chris.mattmann@jpl.nasa.gov</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
   <build>
     <resources>
         <resource>

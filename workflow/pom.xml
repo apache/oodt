@@ -33,15 +33,6 @@ the License.
      provides some out of the box backend implementations of them (including one based
      on the javax.sql.DataSource interface). This component provides everything that you need
      to execute workflows, and science processing pipelines.</description>
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>chris.mattmann@jpl.nasa.gov</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
   <build>
     <plugins>
       <plugin>

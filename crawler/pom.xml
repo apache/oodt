@@ -30,15 +30,6 @@ the License.
   <name>Catalog and Archive Crawling Framework</name>
   <version>${oodt.version}</version>
   <description>The Catalog and Archive Service Crawling Framework.</description>
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>chris.mattmann@jpl.nasa.gov</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
   <build>
     <plugins>
       <plugin>

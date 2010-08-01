@@ -29,15 +29,6 @@ the License.
   <version>1.1.0-dev</version>
   <description>A webapp for monitoring workflows being executed and managed from the
     Workflow Manager.</description>
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>Chris.Mattmann@jpl.nasa.gov</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
   <build>
     <plugins>
       <plugin>

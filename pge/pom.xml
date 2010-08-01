@@ -31,15 +31,6 @@ the License.
   <version>${oodt.version}</version>
   <description>Allows data processing jobs not written in comformance with the
         PCS PGE interface to be run within the PCS.</description>
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration >
-          <address>chris.mattmann@jpl.nasa.gov</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
  <build>
     <plugins>
       <plugin>

@@ -38,15 +38,6 @@ the License.
 	container. Since all values are stored internally as string vectors, the difference
 	between a scalar value and a non-scalar is handled by determining whether the list of
 	values for a particular key is greater than 1.</description>
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>chris.mattmann@jpl.nasa.gov</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
   <build>
     <resources>
       <resource>

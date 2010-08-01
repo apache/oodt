@@ -33,15 +33,6 @@ the License.
      underlying data delivery capabilities using the OODT ProductServer component. All-in-all,
      this project contributes an OODT LargeProductHandler component, that can be used to deliver
      and format a CAS product structure into an OODT XML Query Result Set.</description>
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>chris.mattmann@jpl.nasa.gov</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
   <build>
     <plugins>
       <plugin>

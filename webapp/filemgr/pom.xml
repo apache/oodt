@@ -29,15 +29,6 @@ the License.
   <version>${oodt.version}</version>
   <description>A webapp for managing products and files and metadata that have been
     ingested via the CAS File Manager component.</description>
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>chris.mattmann@jpl.nasa.gov</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
   <build>
     <plugins>
       <plugin>
