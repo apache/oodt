@@ -76,7 +76,7 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
             // going
             // to be
             // a path
-            binPath = binPath.replaceAll("\\s", "\\\\ ");
+            binPath = binPath.replaceAll("^\\s+", "").replaceAll("\\s+$", "").replaceAll("\\s", "\\\\ ");
 
             config.setExtractorBinPath(binPath);
 

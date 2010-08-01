@@ -5,6 +5,9 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-7 Curator adds escaped sequenced spaces when reading extractorBinPath 
+  tag from extractor config files (joshuaga via mattmann)
+
 * OODT-21 Remove jersey dependency from curator and replace with Apache CXF (mattmann)
 
 * OODT-18 Convert curator to use Apache commons rather than jTidy (mattmann)
