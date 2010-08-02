@@ -31,7 +31,37 @@ the License.
   <version>${oodt.version}</version>
   <name>CAS Curation Interface</name>
   <description>A web application for managing policy for products and files and metadata that have been ingested via the CAS component.</description>
-  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rat-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/jquery*</exclude>
+            <exclude>**/jquery/*</exclude>
+            <exclude>**/src/jquery*</exclude>
+            <exclude>**/jquery-treeview/*</exclude>
+            <exclude>**/jquery-treeview/demo/*</exclude>
+            <exclude>**/jquery-treeview/lib/*</exclude>
+            <exclude>**/jquery-ui/*</exclude>
+            <exclude>**/jquery-ui/css/smoothness/jquery-ui-1.7.2.custom.css</exclude>
+            <exclude>**/src/MIT-License.txt</exclude>
+            <exclude>**/media/Bach-SuiteNo2.mp3</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+ 
   <repositories>
     <repository>
       <id>ibiblio</id>
