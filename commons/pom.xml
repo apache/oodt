@@ -82,7 +82,25 @@
               <include>**/*Test*.java</include>
             </includes>
         </configuration>
-      </plugin> 
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rat-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/testdata/*</exclude>
+            <exclude>**/package.html</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins> 
   </build>
   <dependencies>
