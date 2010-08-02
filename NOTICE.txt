@@ -70,5 +70,5 @@ by Martin Wendt. The Dynamic Tree View COntrol is licensed under the MIT
 license. For details, see:
      http://dynatree.googlecode.com/
 
-
+This product utilizes using v1.3.4 of Doug Lea's java.util.concurrent.
 

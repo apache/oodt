@@ -49,6 +49,24 @@ the License.
           <containerConfigXML>src/main/resources/workflow-webapp-tomcat-5.5.9.xml</containerConfigXML>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rat-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/js/progress/progress.js</exclude>
+            <exclude>**/js/prototype/prototype.js</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
