@@ -112,7 +112,7 @@ the License.
       
       <source>
 > cd /usr/local
-> mv src/filemgr/trunk/cas-filemgr-vX.Y.Z-dist.tar.gz ./
+> mv src/filemgr/target/cas-filemgr-vX.Y.Z-dist.tar.gz ./
 > tar -xvzf cas-filemgr-vX.Y.Z-dist.tar.gz
 > export FILEMGR_HOME=/usr/local/cas-filemgr-vX.Y.Z
       </source>       
