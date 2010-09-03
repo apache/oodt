@@ -5,6 +5,8 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-27 Import Web Grid component (David Kale, mattmann)
+
 * OODT-26 Typo identified in basic user's guide (Rishi Verma via mattmann)
 
 * OODT-16 OODT website (kelly)

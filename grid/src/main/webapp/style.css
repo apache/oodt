@@ -1,0 +1,161 @@
+/*
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+*/
+body {
+        font-family: "Lucida Grande", Helvetica, sans;
+	background-color: white;
+	color: black;
+	margin: 2em;
+	padding: 0;
+	vertical-align: top;
+}
+
+h1 {
+        font-size: 160%;
+}
+
+h2 {
+        font-size: 150%;
+}
+
+h3 {
+        font-size: 140%;
+	border-bottom: none;
+	font-weight: bold;
+}
+
+fieldset {
+        border: 1 solid #336699;
+	margin: 1em 0em 1em 0em;
+	padding: 0em 1em 1em 1em;
+	line-height: 1.5em;
+	width: auto;
+}
+
+legend {
+        background: white;
+	padding: 0.5em;
+	font-size: 90%;
+}
+
+form {
+        border: none;
+	margin: 0;
+}
+
+textarea {
+        font: 110% "American Typewriter", Courier, monospace; 
+        border: 1 solid #369;
+	color: black;
+	background-color: white;
+	width: 100%;
+}
+
+input {
+        font-family: <dtml-var fontFamily>;
+	visibility: visible;
+	border: 1 solid #369;
+	color: black;
+	background-color: white;
+	vertical-align: middle;
+}
+
+select {
+        border: 1 solid #369;
+	color: black;
+	vertical-align: top;
+}
+
+.field {
+        top: 0;
+	left: 0;
+	margin: 0 1em 1em 0; 
+}
+
+.field .field {
+        margin: 1em 0 0 0;
+}
+
+.field label {
+        font-size: 100%;
+        font-weight: bold;
+}
+
+.fieldRequired {
+        background: url(required.gif) center left no-repeat;
+        padding: 0 0 0 8px;
+        color: black;
+} 
+
+.fieldHelp {
+        font-size: 90%;
+        color: #666;
+        margin: 0 0 0.2em 0;
+}
+
+.formHelp:hover {
+        color: black;
+	cursor: default;
+}
+
+.formControls {
+        margin: 1em 0 0 0; 
+}
+
+.error {
+        /* Class for error indication in forms */
+	color: #ff6633;
+	border: 1 solid #ff6633;
+	padding: 1em;
+	margin: 0 0 1em 0;
+	width: 68% !important;
+}
+
+.evenRow {
+        background: #eee;
+}
+
+.newRow {
+	border-top: solid;
+	border-width: 1;
+	background: #ffe;
+}
+
+th {
+        border-bottom: solid;
+	border-width: 1px;
+        vertical-align: top;
+}
+
+tr {
+        vertical-align: top;
+}
+
+td {
+        vertical-align: top;
+}
+
+tbody {
+        vertical-align: top;
+}
+
+table {
+        vertical-align: top;
+}
+
+caption {
+	font-size: 150%
+}
