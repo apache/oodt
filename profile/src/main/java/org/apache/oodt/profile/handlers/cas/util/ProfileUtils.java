@@ -16,7 +16,7 @@
  */
 
 
-package org.apache.oodt.cas.profile.util;
+package org.apache.oodt.profile.handlers.cas.util;
 
 //CAS imports
 import java.util.Iterator;

@@ -16,7 +16,7 @@
  */
 
 
-package org.apache.oodt.cas.profile;
+package org.apache.oodt.profile.handlers.cas;
 
 //CAS imports
 import org.apache.oodt.cas.filemgr.structs.Element;
@@ -26,7 +26,7 @@ import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.profile.util.ProfileUtils;
+import org.apache.oodt.profile.handlers.cas.util.ProfileUtils;
 
 //JDK imports
 import java.net.URL;
