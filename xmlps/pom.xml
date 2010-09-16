@@ -30,7 +30,9 @@
 	<name>XML-configured, DBMS-based Product and Profile Server</name>
 	<version>${oodt.version}</version>
 	<description>
-	  Chris Mattmann can write this.
+	  An XML-configured DBMS-based Product and Profile meant to easily 
+	  sit on top of Web-Grid and other Product and Profile server contexts
+	  for rapid deployment and integration.
 	</description>
 	<build>
 		<resources>
