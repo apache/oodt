@@ -1,0 +1,70 @@
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!-- Example XML mapping configuration file -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<namespace:ps xmlns:erne="URL"
+	name="Example Query Handler" id="project:subproject:exampleps">
+	<tables default="Table1">
+		<table name="Table1" join="join_key" tofld="base_table_join_key" />
+		<table name="Table2" join="join_key" tofld="base_table_join_key" />
+	</tables>
+	<!-- 
+		field:
+		
+		type (required):   dyanmic or constant. If you choose dynamic, then the field
+		value is read from the row in the ResultSet returned
+		from the database. If constant, then each returned row
+		from the ResultSet is annotated with the value specified
+		in the 'value' attribute.
+		
+	    name (required):   the name of the attribute that you want returned
+		in the product server.
+		
+		string (optional): whether or not the internal db representation at the local
+		site for this field is a STRING, or something else (e.g., a number, etc.). Possible 
+		values for this attribute are "true", to indicate that the field is a string, or
+		"false", to indicate that it is something else. If this attribute is ommited, a value
+		of "false" is assumed, and the attribute will not be quoted in the where clause of
+		the underlying SQL statement generated.
+		
+		dbname (optional): the name of the field within the underlying db. If not
+		specified, then assumed to be name
+		
+		table (optional):  if provided, then the attribute a is selected as
+		'table'.'a',and then returned. If omitted, the attribute
+		is assumed to come from the default table returned from the
+		PS query.
+		
+		value (optional):  is necessary to provide if type='constant' is selected.
+		
+		scope (optional):  limits the scope of a field's existance: acceptable values
+		are &quot;query&quot;, which signifies that the field is only applicable when
+		translating queries: and &quot;return&quot;, which signifies the field is only
+		applicable as a return field when converting database results into CDEResults.
+		
+		appendTableName (optional): if specified and set to true, during conversion of 
+		CDEs to SDEs, the table name associated with the field will be prefixed to the field 
+		name, and concatenated with a &quot;.&quot; if not specified (or set to false), then 
+		table name is omitted during translation. 
+		
+	-->
+	<field type="dynamic" name="CDE_NAME1" dbname="site_specific_name1" table="Table1" />
+	<field type="dynamic" name="CDE_NAME2" dbname="site_specific_name2" table="Table2" />
+	<field type="dynamic" name="CDE_NAME3" dbname="site_specific_name3" table="Table2" />
+	<field type="constant" name="CDE_NAME4" value="constant_value" />
+</namespace:ps>
