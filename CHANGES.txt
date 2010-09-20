@@ -5,6 +5,8 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-15 One trunk for all OODT components with top level build (mattmann, bfoster, kelly, woollard)
+
 * OODT-30 updated "grid" svn:ignore property to ignore target folder (David Kale via mattmann)
 
 * OODT-29 Import (ERNE) XMLPS component (David Kale, ahart, woollard, mattmann)
