@@ -69,7 +69,7 @@ public class LuceneCatalogFactory implements CatalogFactory {
 		
 		String validationLayerFactoryClass = System
 				.getProperty("filemgr.validationLayer.factory",
-						"org.apache.oodt.cas.validation.DataSourceValidationLayerFactory");
+						"org.apache.oodt.cas.filemgr.validation.XMLValidationLayerFactory");
 		validationLayer = GenericFileManagerObjectFactory
 				.getValidationLayerFromFactory(validationLayerFactoryClass);
 		
