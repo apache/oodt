@@ -35,6 +35,7 @@
 	  for rapid deployment and integration.
 	</description>
 	<build>
+	 <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
 		<resources>
 			<resource>
 				<targetPath>org/apache/oodt/xmlps</targetPath>
