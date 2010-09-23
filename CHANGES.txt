@@ -5,6 +5,8 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-40 DataSourceCatalogFactory default validation layer class is incorrect (pramirez via mattmann)
+
 * OODT-39 LuceneCatalogFactory default validation layer class is incorrect (pramirez via mattmann)
 
 * OODT-15 One trunk for all OODT components with top level build (mattmann, bfoster, kelly, woollard)

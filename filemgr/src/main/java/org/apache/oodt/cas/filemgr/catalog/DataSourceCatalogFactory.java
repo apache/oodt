@@ -107,8 +107,8 @@ public class DataSourceCatalogFactory implements CatalogFactory {
     public DataSourceCatalogFactory(DataSource ds) {
         this.dataSource = ds;
         String validationLayerFactoryClass = System
-                .getProperty("filemgr.validationLayer.factory",
-                        "org.apache.oodt.cas.validation.DataSourceValidationLayerFactory");
+        .getProperty("filemgr.validationLayer.factory",
+                "org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory");
         validationLayer = GenericFileManagerObjectFactory
                 .getValidationLayerFromFactory(validationLayerFactoryClass);
     }
