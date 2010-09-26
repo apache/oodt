@@ -30,20 +30,7 @@ the License.
   <packaging>jar</packaging>
   <properties/>
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>rat-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+    <plugins/>
   </build>
   <dependencies>
     <dependency>

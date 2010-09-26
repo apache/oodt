@@ -5,6 +5,8 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-38 Removed RAT from default build process. Use "mvn -P audit ..." to run RAT (pramirez)
+
 * OODT-40 DataSourceCatalogFactory default validation layer class is incorrect (pramirez via mattmann)
 
 * OODT-39 LuceneCatalogFactory default validation layer class is incorrect (pramirez via mattmann)
