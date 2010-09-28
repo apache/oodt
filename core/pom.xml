@@ -112,6 +112,20 @@ the License.
             </roles>
         </developer>
         <developer>
+            <id>goodale</id>
+            <name>Cameron Goodale</name>
+            <email>goodale@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+            <properties>
+                <aim>nonflyt</aim>
+                <gtalk>sigep311@gmail.com</gtalk>
+            </properties>
+        </developer>
+        <developer>
             <id>joshuaga</id>
             <name>Joshua Garcia</name>
             <email>joshuaga@apache.org</email>
