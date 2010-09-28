@@ -102,6 +102,16 @@ the License.
             </roles>
         </developer>
         <developer>
+            <id>davekale</id>
+            <name>Dave Kale</name>
+            <email>davekale@apache.org</email>
+            <organization>Childrens Hospital Los Angeles</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
+        <developer>
             <id>joshuaga</id>
             <name>Joshua Garcia</name>
             <email>joshuaga@apache.org</email>
