@@ -5,6 +5,9 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-3 Update source code to use ASL headers and add NOTICE, etc. 
+  (smcclees, ahart, woollard, mattmann, kelly, pramirez)
+
 * OODT-38 Removed RAT from default build process. Use "mvn -P audit ..." to run RAT (pramirez)
 
 * OODT-40 DataSourceCatalogFactory default validation layer class is incorrect (pramirez via mattmann)
