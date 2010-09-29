@@ -5,6 +5,9 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-42 Fix CAS-Catalog to work in apache and pull over new changes 
+  since apache port (bfoster)
+
 * OODT-3 Update source code to use ASL headers and add NOTICE, etc. 
   (smcclees, ahart, woollard, mattmann, kelly, pramirez)
 
