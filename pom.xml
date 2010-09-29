@@ -43,7 +43,7 @@ the License.
         <module>xmlquery</module>
         <module>sso</module>
         <module>filemgr</module>
-        <!-- broken: <module>catalog</module> -->
+        <module>catalog</module> 
         <module>workflow</module>
         <module>crawler</module>
         <module>resource</module>
