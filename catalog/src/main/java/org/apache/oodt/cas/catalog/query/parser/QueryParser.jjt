@@ -1,0 +1,214 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+options {
+  JDK_VERSION = "1.5";
+  STATIC = false;
+}
+
+PARSER_BEGIN(QueryParser)
+	package org.apache.oodt.cas.catalog.query.parser;
+
+	import java.io.ByteArrayInputStream;
+	import java.util.Arrays;
+	import java.util.HashSet;
+	import java.util.Vector;
+	import java.util.Properties;
+	import org.apache.oodt.cas.catalog.query.QueryExpression;
+	import org.apache.oodt.cas.catalog.query.QueryLogicalGroup;
+	import org.apache.oodt.cas.catalog.query.StdQueryExpression;
+	import org.apache.oodt.cas.catalog.query.ComparisonQueryExpression;
+	import org.apache.oodt.cas.catalog.query.CustomQueryExpression;
+	import org.apache.oodt.cas.catalog.term.Term;
+	
+    public class QueryParser {
+    	
+    	public static QueryExpression parseQueryExpression(String queryExpressionString) throws ParseException, TokenMgrError {
+    		return new QueryParser(new ByteArrayInputStream(queryExpressionString.getBytes())).parseInput();
+    	}
+    	
+       	public static void main( String[] args ) throws ParseException, TokenMgrError {
+          	System.out.println(new QueryParser( System.in ).parseInput());
+       	} 
+       	
+    }
+PARSER_END(QueryParser)
+
+SKIP : { "\r" | "\n" | "\r\n" }
+TOKEN: { < SPACE : " " > }
+TOKEN: { < AND : " AND " > }
+TOKEN: { < OR : " OR " > }
+TOKEN: { < QUOTE : "'" > }
+TOKEN: { < EQUALS : "=" > }
+TOKEN: { < SEMI_COLON : ";" > }
+TOKEN: { < COMMA : "," > }
+TOKEN: { < OPEN_BRACES : "{" > }
+TOKEN: { < CLOSE_BRACES : "}" > }
+TOKEN: { < OPEN_PARENS : "(" > }
+TOKEN: { < CLOSE_PARENS : ")" > }
+TOKEN: { < BUCKET_NAME_KEY : "bucketNames" > }
+TOKEN: { < CUSTOM_NAME_KEY : "name" > }
+TOKEN: { < P_KEY : "p:" <TERM> > }
+TOKEN: {
+      < EQ : "==" >
+    | < GE : ">=" >
+    | < GT : ">" >
+    | < LE : "<=" >
+    | < LT : "<" >
+}
+TOKEN: { < TERM: (["a"-"z","A"-"Z"])+ (<STRING_LITERAL>)* > }
+TOKEN: { < VALUE : "'" ( <TERM> | <NON_TERM> ) "'" > }
+TOKEN: { < #NON_TERM: (<STRING_LITERAL> | <SPECIAL_CHARS>)+ (<STRING_LITERAL> | " "<STRING_LITERAL> | " "<SPECIAL_CHARS> | <SPECIAL_CHARS>)* > }
+TOKEN: { < #STRING_LITERAL: (["0"-"9","a"-"z","A"-"Z","-","_",".",":","/"]) > }
+TOKEN: { < #SPECIAL_CHARS: (["/","\\","?","<",">","~","`","*","#","&","!","@","$","%","^","(",")","{","}","[","]"]) > }
+
+QueryExpression parseInput() : 
+{
+	QueryExpression qe = null;
+}
+{
+   	qe = Query(null) <EOF>
+   	{ return qe; }
+}
+
+QueryExpression Query(Vector<String> bucketNames) : 
+{
+	QueryExpression qe1 = null;
+	QueryExpression qe2 = null;
+	Token operator = null;
+}
+{
+    qe1 = QueryExpression(bucketNames) ( LOOKAHEAD( <AND> | <OR> ) ( operator = <AND> | operator = <OR> ) qe2 = Query(bucketNames) )*
+    { 
+    	if (qe2 == null) {
+    		return qe1;
+    	}else {
+    		QueryLogicalGroup queryLogicalGroup = new QueryLogicalGroup();
+    		if (bucketNames != null)
+    			queryLogicalGroup.setBucketNames(new HashSet<String>(bucketNames));
+    		queryLogicalGroup.setOperator(QueryLogicalGroup.Operator.valueOf(operator.image.trim().toUpperCase()));
+    		queryLogicalGroup.addExpression(qe1);
+    		queryLogicalGroup.addExpression(qe2);
+    		return queryLogicalGroup;
+    	}
+    }
+}
+
+QueryExpression QueryExpression(Vector<String> bucketNames) :
+{
+	QueryExpression qe = null;
+}
+{
+    ( 
+    	LOOKAHEAD ( <OPEN_PARENS> ) 
+    	qe = PriorityQueryExpression(bucketNames)
+    | 
+    	LOOKAHEAD ( <OPEN_BRACES> <BUCKET_NAME_KEY> ) 
+    	qe = StdQueryExpression()
+    | 
+    	LOOKAHEAD ( <OPEN_BRACES> <CUSTOM_NAME_KEY> ) 
+    	qe = CustomQueryExpression(bucketNames)
+    | 
+        LOOKAHEAD ( <TERM> ) 
+    	qe = ComparisonQueryExpression(bucketNames) 
+    )
+    
+    { return qe; }
+}
+
+QueryExpression StdQueryExpression() : 
+{
+	QueryExpression qe = null;
+	Vector<String> bucketNames = new Vector<String>();
+}
+{
+    <OPEN_BRACES> (<SPACE>)* <BUCKET_NAME_KEY> (<SPACE>)* <EQUALS> (<SPACE>)* <QUOTE> getValues(bucketNames) <QUOTE> (<SPACE>)* [<SEMI_COLON> qe = Query(bucketNames)] <CLOSE_BRACES>
+    { 
+    	if (qe == null) {
+    		return new StdQueryExpression(new HashSet<String>(bucketNames));
+    	}else {
+    		return qe; 
+    	}
+    }
+}
+
+QueryExpression ComparisonQueryExpression(Vector<String> bucketNames) : 
+{
+	Token termName = null;
+	Token operator = null;
+	Vector<String> values = new Vector<String>();
+}
+{
+    termName = <TERM> (<SPACE>)* ( operator = <EQ> | operator = <GT> | operator = <GE> | operator = <LT> | operator = <LE> ) (<SPACE>)* getValues(values)
+    { 
+    	Term term = new Term(termName.image);
+    	term.setValues(values); //Arrays.asList(termValues.image.split(",")));
+    	ComparisonQueryExpression comparisonQueryExpression = new ComparisonQueryExpression();
+    	if (bucketNames != null)
+    		comparisonQueryExpression.setBucketNames(new HashSet<String>(bucketNames));
+    	comparisonQueryExpression.setTerm(term);
+    	comparisonQueryExpression.setOperator(ComparisonQueryExpression.Operator.getOperatorBySign(operator.image));
+    	return comparisonQueryExpression; 
+    }
+}
+
+QueryExpression PriorityQueryExpression(Vector<String> bucketNames) :
+{
+	QueryExpression qe = null;
+}
+{
+    <OPEN_PARENS> qe = Query(bucketNames) <CLOSE_PARENS>
+    { return qe; }
+}
+
+QueryExpression CustomQueryExpression(Vector<String> bucketNames) :
+{
+	Token customNameToken = null;
+	Properties p = new Properties();
+}
+{
+	<OPEN_BRACES> (<SPACE>)* <CUSTOM_NAME_KEY> (<SPACE>)+ <EQUALS> (<SPACE>)+ <QUOTE> customNameToken = <TERM> <QUOTE> [ LOOKAHEAD (<SEMI_COLON>) <SEMI_COLON> getProperties(p) ] <CLOSE_BRACES>
+	{ 
+		CustomQueryExpression cqe = new CustomQueryExpression(customNameToken.image, p);
+    	if (bucketNames != null)
+    		cqe.setBucketNames(new HashSet<String>(bucketNames));
+    	return cqe;
+	}
+}
+
+void getValues(Vector<String> values) : 
+{
+	Token value = null;
+}
+{
+	value = <VALUE> ( LOOKAHEAD (<COMMA>) <COMMA> getValues(values) ) *
+	{ 
+		values.add(0, value.image.replaceAll("'", ""));
+	}
+}
+
+void getProperties(Properties p) : 
+{
+	Token propertyKey = null;
+	Token propertyVal = null;
+}
+{
+	propertyKey = <P_KEY> (<SPACE>)+ <EQUALS> (<SPACE>)+ propertyVal = <VALUE> ( LOOKAHEAD (<COMMA>) <COMMA> getProperties(p) ) *
+	{ 
+		p.put(propertyKey.image.substring(2), propertyVal.image.replaceAll("'", ""));
+	}
+}
