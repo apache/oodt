@@ -29,6 +29,35 @@
   <name>Catalog Component</name>
   <version>${oodt.version}</version>
   <description></description>
+  <profiles>
+    <profile>
+      <id>audit</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>rat-maven-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/src/main/java/org/apache/oodt/cas/catalog/query/parser/*.java</exclude>
+              </excludes>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
   <build>
     <plugins>
       <plugin>
