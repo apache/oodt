@@ -26,9 +26,13 @@
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-catalog</artifactId>
-  <name>Catalog Component</name>
+  <name>OODT CAS Virtual Catalog and Integration Service.</name>
   <version>${oodt.version}</version>
-  <description></description>
+  <description>CAS Catalog is an effort to virtualize underlying 
+  catalogs for use in the CAS system. Heterogeneous catalog models 
+  are mapped to a common dictionary, and then integrated locally so that
+  they may be queried across and ingested into.
+  </description>
   <profiles>
     <profile>
       <id>audit</id>
@@ -119,7 +123,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>1.1</version>
+      <version>1.4</version>
     </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>
@@ -134,7 +138,7 @@
     <dependency>
       <groupId>xmlrpc</groupId>
       <artifactId>xmlrpc</artifactId>
-      <version>2.1-dev</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
