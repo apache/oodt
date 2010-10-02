@@ -5,6 +5,9 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-44 doesn't build in JDK5 because of stringPropertyNames() in 
+  cas/workflow/structs/TaskJobInput.java (mattmann, davekale)
+
 * OODT-42 Fix CAS-Catalog to work in apache and pull over new changes 
   since apache port (bfoster)
 

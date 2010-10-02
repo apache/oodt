@@ -175,8 +175,10 @@ public class TaskJobInput implements JobInput {
         Properties fileProps = new Properties();
         in = new BufferedInputStream(new FileInputStream(new File(dynMetadataFile)));
         fileProps.load(in);
-        for (String key: fileProps.stringPropertyNames())
-          this.dynMetadata.addMetadata(key, fileProps.getProperty(key));
+        for (Object key: fileProps.keySet()){
+          String keyStr = (String)key;
+          this.dynMetadata.addMetadata(keyStr, fileProps.getProperty(keyStr));
+        }
       } catch (RuntimeException ex) {
         throw ex;
       } catch (Exception ignore) {
