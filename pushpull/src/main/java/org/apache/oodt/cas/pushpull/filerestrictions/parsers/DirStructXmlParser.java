@@ -26,11 +26,11 @@ import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 import org.apache.oodt.cas.pushpull.expressions.GlobalVariables;
 import org.apache.oodt.cas.pushpull.expressions.Method;
-import org.apache.oodt.cas.pushpull.expressions.MethodRepo;
 import org.apache.oodt.cas.pushpull.expressions.Variable;
 
 //JDK imports
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,6 +55,8 @@ public class DirStructXmlParser implements Parser {
 
     private static final Logger LOG = Logger.getLogger(DirStructXmlParser.class
             .getName());
+    
+    private static final HashMap<String, Method> methodRepo = new HashMap<String, Method>();
 
     public DirStructXmlParser() {}
 
@@ -171,7 +173,7 @@ public class DirStructXmlParser implements Parser {
                     }
 
                     if (input.substring(j, j + 1).charAt(0) == '(') {
-                        Method m = MethodRepo.hashMap.get(method.toString());
+                        Method m = methodRepo.get(method.toString());
                         StringTokenizer st = new StringTokenizer(input
                                 .substring(j, input.substring(j).indexOf(")")
                                         + j), "#\", ()");
@@ -326,7 +328,7 @@ public class DirStructXmlParser implements Parser {
                 }
 
                 // store Method in list of Methods
-                MethodRepo.hashMap.put(method.getName(), method);
+                methodRepo.put(method.getName(), method);
             }
         }
     }
