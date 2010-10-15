@@ -5,6 +5,8 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-46 XMLPS mapping file doesn't declare XML at top of conf file (mattmann)
+
 * OODT-48 WildcardExpression in XMLPS generates incorrect SQL (mattmann)
 
 * OODT-44 doesn't build in JDK5 because of stringPropertyNames() in 

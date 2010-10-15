@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 Licensed to the Apache Software Foundation (ASF) under one or more
 contributor license agreements.  See the NOTICE file distributed with
@@ -15,9 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <!-- Example XML mapping configuration file -->
-
-<?xml version="1.0" encoding="UTF-8"?>
-<namespace:ps xmlns:erne="URL"
+<oodt:xmlps xmlns:oodt="http://incubator.apache.org/oodt/0.1-incubating"
 	name="Example Query Handler" id="project:subproject:exampleps">
 	<tables default="Table1">
 		<table name="Table1" join="join_key" tofld="base_table_join_key" />
@@ -67,4 +66,4 @@ limitations under the License.
 	<field type="dynamic" name="CDE_NAME2" dbname="site_specific_name2" table="Table2" />
 	<field type="dynamic" name="CDE_NAME3" dbname="site_specific_name3" table="Table2" />
 	<field type="constant" name="CDE_NAME4" value="constant_value" />
-</namespace:ps>
+</oodt:xmlps>
