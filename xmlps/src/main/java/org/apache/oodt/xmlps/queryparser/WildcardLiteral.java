@@ -37,7 +37,10 @@ public class WildcardLiteral extends Literal {
      */
     @Override
     public String evaluate() {
-        return "%" + val + "%";
+        if(val.startsWith("'")){
+          return "'%"+val.substring(1, val.length()-1)+"%'";
+        }
+        else return "%" + val + "%";
     }
 
 }

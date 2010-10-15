@@ -5,6 +5,8 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-48 WildcardExpression in XMLPS generates incorrect SQL (mattmann)
+
 * OODT-44 doesn't build in JDK5 because of stringPropertyNames() in 
   cas/workflow/structs/TaskJobInput.java (mattmann, davekale)
 

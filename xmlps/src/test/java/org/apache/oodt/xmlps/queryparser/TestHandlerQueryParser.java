@@ -18,6 +18,8 @@
 package org.apache.oodt.xmlps.queryparser;
 
 //APACHE imports
+import org.apache.oodt.xmlps.mapping.Mapping;
+import org.apache.oodt.xmlps.mapping.MappingField;
 import org.apache.oodt.xmlps.queryparser.Expression;
 import org.apache.oodt.xmlps.queryparser.HandlerQueryParser;
 import org.apache.oodt.xmlps.util.XMLQueryHelper;
@@ -50,6 +52,26 @@ public class TestHandlerQueryParser extends TestCase {
     Expression parsedQuery = HandlerQueryParser.parse(queryStack);
     assertNotNull(parsedQuery);
     assertEquals(expected, parsedQuery.evaluate());
+  }
+  
+  public void testParseWildcardWithMapping(){
+    String queryStr = "bar LIKE 'FOO'";
+    String expected = "bar LIKE '%FOO%'";
+    Mapping mapping = new Mapping();
+    MappingField mf = new MappingField();
+    mf.setDbName("bar");
+    mf.setName("foo");
+    mf.setString(true);
+    mapping.addField("foo", mf);
+    
+    XMLQuery query = XMLQueryHelper.getDefaultQueryFromQueryString(queryStr);
+    assertNotNull(query);
+    Stack<QueryElement> queryStack = HandlerQueryParser.createQueryStack(query
+        .getWhereElementSet());
+    assertNotNull(queryStack);
+    Expression parsedQuery = HandlerQueryParser.parse(queryStack, mapping);
+    assertNotNull(parsedQuery);
+    assertEquals(expected, parsedQuery.evaluate());    
   }
 
 }
