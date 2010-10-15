@@ -127,7 +127,7 @@ $Id: config.jsp,v 1.4 2005/06/14 20:00:40 kelly Exp $
 		<div class='field'>
 		  <div class='fieldHelp'>Specify the class name for each
 		    product query handler; the class must implement the
-		    <code>jpl.eda.product.QueryHandler</code> interface.</div>
+		    <code>org.apache.oodt.product.QueryHandler</code> interface.</div>
 		  <table>
 		    <thead><tr><th>#</th><th>Class Name</th><th>Delete?</th></tr></thead>
 		    <tbody>
@@ -157,7 +157,7 @@ $Id: config.jsp,v 1.4 2005/06/14 20:00:40 kelly Exp $
 		<div class='field'>
 		  <div class='fieldHelp'>Specify the class name for each
 		    profile query handler; the class must implement the
-		    <code>jpl.eda.profile.handlers.ProfileHandler</code> interface.</div>
+		    <code>org.apache.oodt.profile.handlers.ProfileHandler</code> interface.</div>
 		  <table>
 		    <thead><tr><th>#</th><th>Class Name</th><th>Delete?</th></tr></thead>
 		    <tbody>
