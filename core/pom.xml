@@ -47,6 +47,17 @@ the License.
             <url>http://download.java.net/maven/2</url>
             <layout>default</layout>
         </repository>
+	   <repository>
+	     <id>globus-repo</id>
+	     <name>Globus Toolkit Internal Maven2 Repository</name>
+	     <url>http://projects.iplantcollaborative.org/archiva/repository/internal</url>
+	     <releases>
+	       <enabled>true</enabled>
+	     </releases>
+	     <snapshots>
+	       <enabled>true</enabled>
+	     </snapshots>
+	  </repository> 
     </repositories>
     <inceptionYear>1999</inceptionYear>
     <mailingLists>
