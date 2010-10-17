@@ -157,8 +157,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.tika</groupId>
-      <artifactId>tika</artifactId>
-      <version>0.3</version>
+      <artifactId>tika-core</artifactId>
+      <version>0.8-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>nekohtml</groupId>
