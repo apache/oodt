@@ -27,7 +27,7 @@
     </protocol>
     
     <protocol type="sftp">
-        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.sftp.jsch.SftpClientFactory_jsch"/>
+        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.sftp.JschSftpClientFactory"/>
     </protocol>
     
     <protocol type="imaps">
