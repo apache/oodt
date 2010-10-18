@@ -5,6 +5,8 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-49 Basic user guide for PushPull (mattmann)
+
 * OODT-22 remove pushpull's jvftp dependency (mattmann)
 
 * OODT-47 Web-grid admin pages reference jpl.eda instead of org.apache.oodt (mattmann)
