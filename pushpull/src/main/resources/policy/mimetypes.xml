@@ -33,26 +33,26 @@
 	<mime-type type="product/iasi_xxx_1c">
 		<sub-class-of type="metop_a/noaa"/>
 		<_comment>MOA_IASI_L1C</_comment>
-		<glob pattern="(?:L\d{1,}\.){0,1}IASI_xxx_1C_\w{3}_\w{15}_\w{15}_\w_\w_\w{15}__\w{14}"/>
+		<glob pattern="(?:L\d{1,}\.){0,1}IASI_xxx_1C_\w{3}_\w{15}_\w{15}_\w_\w_\w{15}__\w{14}" isregex="true"/>
 	</mime-type>
 	
 	<mime-type type="product/mhsx">
 		<sub-class-of type="metop_a/noaa"/>
 		<_comment>MOA_MHS_L1B</_comment>
-		<glob pattern="(?:L\d{1,}\.){0,1}NSS\.MHSX\.\w{2}\.D\d{5}\.S\d{4}\.E\d{4}\.B\d{7}\.\w{2}"/>
+		<glob pattern="(?:L\d{1,}\.){0,1}NSS\.MHSX\.\w{2}\.D\d{5}\.S\d{4}\.E\d{4}\.B\d{7}\.\w{2}" isregex="true"/>
 	</mime-type>
 	
 	<mime-type type="product/amsu_a">
 		<sub-class-of type="metop_a/noaa"/>
 		<_comment>MOA_AMSUA_L1B</_comment>
-		<glob pattern="(?:L\d{1,}\.){0,1}NSS\.AMAX\.\w{2}\.D\d{5}\.S\d{4}\.E\d{4}\.B\d{7}\.\w{2}"/>
+		<glob pattern="(?:L\d{1,}\.){0,1}NSS\.AMAX\.\w{2}\.D\d{5}\.S\d{4}\.E\d{4}\.B\d{7}\.\w{2}" isregex="true"/>
 	</mime-type>
 	
 	<mime-type type="product/rtg_sst">
 		<sub-class-of type="ncep/model"/>
 		<_comment>RTG_SST</_comment>
-		<glob pattern="rtg_sst_grb_0\.5\.\d{8}"/>
-      <glob pattern="sst\.\d{8}_rtgssthr_grb_0\.5\.grib2"/>
+		<glob pattern="rtg_sst_grb_0\.5\.\d{8}" isregex="true"/>
+        <glob pattern="sst\.\d{8}_rtgssthr_grb_0\.5\.grib2" isregex="true"/>
 	</mime-type>
 	
 </mime-info>

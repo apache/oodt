@@ -18,10 +18,8 @@
 <protocols>
     
     <protocol type="ftp">
-        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.ftp.jvftp.FtpClientFactory_jvftp"/>
-        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.ftp.apache.FtpClientFactory_apache"/>
-        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.ftp.ftp4che.FtpClientFactory_ftp4che"/>
-        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.ftp.cog.FtpClientFactory_cog"/>
+        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.ftp.CogJGlobusFtpClientFactory"/>
+        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.ftp.CommonsNetFtpClientFactory"/>
     </protocol>
     
     <protocol type="http">
