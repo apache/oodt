@@ -92,7 +92,7 @@ the License.
             <artifactId>rat-maven-plugin</artifactId>
             <configuration>
               <excludes>
-                <exclude>**/src/testdata/myScript-Output.txt</exclude>
+                <exclude>**/src/testdata/*</exclude>
               </excludes>
             </configuration>
             <executions>

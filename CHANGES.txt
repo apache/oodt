@@ -5,6 +5,8 @@ Apache OODT Change Log
 Release 0.1-incubating - Current Development
 --------------------------------------------
 
+* OODT-51 Workflow unit test fails due to hsql not parsing the apache header correctly (woollard)
+
 * OODT-49 Basic user guide for PushPull (mattmann)
 
 * OODT-22 remove pushpull's jvftp dependency (mattmann)
