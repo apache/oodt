@@ -50,7 +50,7 @@ the License.
         <module>curator</module>
         <module>pge</module>
         <module>mvn/plugins/cas-install</module>
-        <!-- broken: <module>pushpull</module> -->
+        <module>pushpull</module>
         <module>product</module>
         <module>profile</module>
         <module>grid</module>
