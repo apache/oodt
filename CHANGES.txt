@@ -2,8 +2,9 @@ Apache OODT Change Log
 ======================
 
 
-Release 0.1-incubating - Current Development
+Release 0.1-incubating 
 --------------------------------------------
+Release Date: 0ct 21, 2010
 
 * OODT-51 Workflow unit test fails due to hsql not parsing the apache header correctly (woollard)
 
