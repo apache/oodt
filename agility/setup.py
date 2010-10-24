@@ -72,7 +72,7 @@ _longDescription = '\n\n'.join([
     _header,
     _read('README.txt'),
     _read('docs', 'INSTALL.txt'),
-    _read('docs', 'HISTORY.txt')
+    _read('docs', 'RELEASE_NOTES.txt')
 ])
 open('doc.txt', 'w').write(_longDescription)
 
