@@ -27,6 +27,7 @@ import org.apache.oodt.cas.metadata.util.MimeTypeUtils;
 //TIKA imports
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.html.HtmlParser;
+import org.apache.tika.sax.Link;
 import org.apache.tika.sax.LinkContentHandler;
 
 //JDK imports
@@ -221,10 +222,11 @@ public class HttpClient extends Protocol {
 
         parser.parse(new ByteArrayInputStream(sb.toString().getBytes()),
             handler, met);
-        Map<String, String> links = handler.getLinks();
+        List<Link> links = handler.getLinks();
         children = new LinkedList<ProtocolFile>();
-        for (String href : links.keySet()) {
-          String linkName = links.get(href);
+        for (Link link : links) {
+          String href = link.getUri();
+          String linkName = link.getTitle();
           String curPath = this.pwd().getProtocolPath().getPathString();
           String linkPath = curPath + (curPath.endsWith("/") ? "" : "/")
               + linkName;

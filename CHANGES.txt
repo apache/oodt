@@ -4,7 +4,9 @@ Apache OODT Change Log
 
 Release 0.1-incubating 
 --------------------------------------------
-Release Date: 0ct 21, 2010
+Release Date: 0ct 29, 2010
+
+* OODT-55 Latest Tika 0.8-SNAPSHOT broke pushpull (mattmann)
 
 * OODT-51 Workflow unit test fails due to hsql not parsing the apache header correctly (woollard)
 
