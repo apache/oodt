@@ -4,7 +4,9 @@ Apache OODT Change Log
 
 Release 0.1-incubating 
 --------------------------------------------
-Release Date: 0ct 29, 2010
+Release Date: 0ct 31, 2010
+
+* OODT-56 Web Grid config contains old caltech licensing header (woollard)
 
 * OODT-55 Latest Tika 0.8-SNAPSHOT broke pushpull (mattmann)
 
