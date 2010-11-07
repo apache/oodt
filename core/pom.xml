@@ -23,7 +23,7 @@ the License.
     <name>OODT Core</name>
     <packaging>pom</packaging>
     <properties>
-        <oodt.version>0.1-incubating</oodt.version>
+        <oodt.version>0.2-incubating</oodt.version>
         <organizationLogo>http://www.apache.org/images/feather.gif</organizationLogo>
         <logo>/images/${pom.artifactId}.jpg</logo>
         <xdocVersion>${pom.version}</xdocVersion>
