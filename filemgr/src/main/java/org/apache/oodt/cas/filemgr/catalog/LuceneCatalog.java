@@ -1226,47 +1226,9 @@ public class LuceneCatalog implements Catalog {
                     "product_type_id", type.getProductTypeId()));
             booleanQuery.add(prodTypeTermQuery, BooleanClause.Occur.MUST);
 
-            for (Iterator<QueryCriteria> i = query.getCriteria().iterator(); i.hasNext();) {
-                // add a new query for each of the query criteria
-                QueryCriteria crit = i.next();
-                Element termElem = null;
-
-                try {
-                    termElem = valLayer.getElementByName(crit.getElementName());
-                } catch (ValidationLayerException e) {
-                    LOG.log(Level.WARNING,
-                            "ValidationLayer exception when looking up element definition for: ["
-                                    + crit.getElementName() + "]: Message: "
-                                    + e.getMessage());
-                    continue;
-                }
-
-                if (crit instanceof TermQueryCriteria) {
-                    String val = ((TermQueryCriteria) crit).getValue();
-                    TermQuery tq = new TermQuery(new Term(termElem
-                            .getElementName(), val));
-                    booleanQuery.add(tq, BooleanClause.Occur.MUST);
-                } else if (crit instanceof RangeQueryCriteria) {
-                    String startVal = ((RangeQueryCriteria) crit)
-                            .getStartValue();
-                    String endVal = ((RangeQueryCriteria) crit).getEndValue();
-                    boolean inclusive = ((RangeQueryCriteria) crit)
-                            .getInclusive();
-                    Term startTerm = null, endTerm = null;
-                    if (!startVal.equals("")) {
-                        startTerm = new Term(termElem.getElementName(),
-                                startVal);
-                    }
-
-                    if (!endVal.equals("")) {
-                        endTerm = new Term(termElem.getElementName(), endVal);
-                    }
-
-                    RangeQuery rq = new RangeQuery(startTerm, endTerm,
-                            inclusive);
-                    booleanQuery.add(rq, BooleanClause.Occur.MUST);
-                }
-            }
+            //convert filemgr query into a lucene query
+            for (QueryCriteria queryCriteria : query.getCriteria()) 
+                booleanQuery.add(this.getQuery(queryCriteria), BooleanClause.Occur.MUST);
 
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
                     SortField.STRING, true));
