@@ -27,7 +27,7 @@ the License.
   </parent>
   <artifactId>cas-product</artifactId>
   <packaging>war</packaging>
-  <version>1.2.0-dev</version>
+  <version>${oodt.version}</version>
   <name>CAS Product Server</name>
   <description>This project builds on top of the CAS file management component and exposes its
      underlying data delivery capabilities using the OODT ProductServer component. All-in-all,
