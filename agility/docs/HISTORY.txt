@@ -1,0 +1,18 @@
+Changelog
+=========
+
+What follows is a history of changes to this software.
+
+0.2-incubating - Current Development
+------------------------------------
+
+
+0.1-incubating - Initial Apache Release
+---------------------------------------
+
+This release marks the induction of Agile OODT into the Apache Software
+Foundation's Incubator_.
+
+
+.. References:
+.. _Incubator: http://incubator.apache.org/

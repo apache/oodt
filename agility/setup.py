@@ -25,7 +25,7 @@ from setuptools import find_packages, setup
 # ------------
 
 _name         = 'oodt'
-_version      = '1.0.0'
+_version      = '0.2-incubating'
 _description  = 'Agile OODT'
 _url          = 'http://incubator.apache.org/projects/oodt.html'
 _downloadURL  = 'http://pypi.python.org/pypi/oodt/'
@@ -72,7 +72,7 @@ _longDescription = '\n\n'.join([
     _header,
     _read('README.txt'),
     _read('docs', 'INSTALL.txt'),
-    _read('docs', 'RELEASE_NOTES.txt')
+    _read('docs', 'HISTORY.txt')
 ])
 open('doc.txt', 'w').write(_longDescription)
 
