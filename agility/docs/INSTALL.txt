@@ -76,7 +76,7 @@ Visit any of the following links for additional information, to ask questions,
 report bugs, and so forth:
 
 OODT Home Page
-    http://incubator.apache.org/projects/oodt.html
+    http://incubator.apache.org/oodt/
 Mailing List for OODT Development
     mailto:oodt-dev@incubator.apache.org
 Package Page (Cheese Shop)
