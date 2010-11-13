@@ -2,6 +2,7 @@ Apache OODT Change Log
 ======================
 
 Release 0.2 (Current Development)
+--------------------------------------------
 
 * OODT-57 LuceneCatalog.getNumHits() doesn't properly translate the 
   given Query object into the equivalent Lucene query (Gabe Resneck via mattmann)
