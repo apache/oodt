@@ -131,9 +131,9 @@ public class DateConvert {
 			}
 
 			// Determine the sign of the offset.
-			String sign = "-";
-			if (String.valueOf(tzOffsetMS).indexOf("+") != -1) {
-				sign = "+";
+			String sign = "+";
+			if (String.valueOf(tzOffsetMS).indexOf("-") != -1) {
+				sign = "-";
 			}
 
 			dateString = dateString.concat(sign + hourString + ":" + minuteString);

@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-62 DateTimeVersioner fails on + side of the GMT line (Thomas Bennett via mattmann)
+
 * OODT-57 LuceneCatalog.getNumHits() doesn't properly translate the 
   given Query object into the equivalent Lucene query (Gabe Resneck via mattmann)
 
