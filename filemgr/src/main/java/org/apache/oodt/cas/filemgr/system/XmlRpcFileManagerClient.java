@@ -18,9 +18,13 @@
 package org.apache.oodt.cas.filemgr.system;
 
 //APACHE imports
+import org.apache.xmlrpc.CommonsXmlRpcTransport;
 import org.apache.xmlrpc.CommonsXmlRpcTransportFactory;
 import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.XmlRpcClientException;
 import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.XmlRpcTransport;
+import org.apache.xmlrpc.XmlRpcTransportFactory;
 
 //JDK imports
 import java.net.URL;
@@ -38,6 +42,10 @@ import java.io.IOException;
 import java.io.File;
 
 //OODT imports
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpMethodRetryHandler;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
@@ -95,7 +103,7 @@ public class XmlRpcFileManagerClient {
      * @param url
      *            The url pointer to the xml rpc file manager service.
      */
-    public XmlRpcFileManagerClient(URL url) throws ConnectionException {
+    public XmlRpcFileManagerClient(final URL url) throws ConnectionException {
         // set up the configuration, if there is any
         if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
             String configFile = System
@@ -114,20 +122,55 @@ public class XmlRpcFileManagerClient {
 
         }
 
-        CommonsXmlRpcTransportFactory transportFactory = new CommonsXmlRpcTransportFactory(
-                url);
-        int connectionTimeoutMins = Integer
-                .getInteger(
-                        "org.apache.oodt.cas.filemgr.system.xmlrpc.connectionTimeout.minutes",
-                        20).intValue();
-        int connectionTimeout = connectionTimeoutMins * 60 * 1000;
-        int requestTimeoutMins = Integer
-                .getInteger(
-                        "org.apache.oodt.cas.filemgr.system.xmlrpc.requestTimeout.minutes",
-                        60).intValue();
-        int requestTimeout = requestTimeoutMins * 60 * 1000;
-        transportFactory.setConnectionTimeout(connectionTimeout);
-        transportFactory.setTimeout(requestTimeout);
+        XmlRpcTransportFactory transportFactory = new XmlRpcTransportFactory() {
+
+            public XmlRpcTransport createTransport()
+                    throws XmlRpcClientException {
+                HttpClient client = new HttpClient();
+                client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                        new HttpMethodRetryHandler() {
+
+                            public boolean retryMethod(HttpMethod method,
+                                    IOException e, int count) {
+                                if (count < Integer
+                                        .getInteger(
+                                                "org.apache.oodt.cas.filemgr.system.xmlrpc.connection.retries",
+                                                3).intValue()) {
+                                    try {
+                                        Thread
+                                                .sleep(Integer
+                                                        .getInteger(
+                                                                "org.apache.oodt.cas.filemgr.system.xmlrpc.connection.retry.interval.seconds",
+                                                                0).intValue() * 1000);
+                                        return true;
+                                    } catch (Exception e1) {
+                                    }
+                                }
+                                return false;
+                            }
+
+                        });
+                CommonsXmlRpcTransport transport = new CommonsXmlRpcTransport(
+                        url, client);
+                transport
+                        .setConnectionTimeout(Integer
+                                .getInteger(
+                                        "org.apache.oodt.cas.filemgr.system.xmlrpc.connectionTimeout.minutes",
+                                        20).intValue() * 60 * 1000);
+                transport
+                        .setTimeout(Integer
+                                .getInteger(
+                                        "org.apache.oodt.cas.filemgr.system.xmlrpc.requestTimeout.minutes",
+                                        60).intValue() * 60 * 1000);
+
+                return transport;
+            }
+
+            public void setProperty(String arg0, Object arg1) {
+            }
+
+        };
+
         client = new XmlRpcClient(url, transportFactory);
         fileManagerUrl = url;
 
