@@ -51,7 +51,7 @@ import java.util.Vector;
 public class DeleteProduct {
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(DeleteProduct.class.getName());
+    private static final Logger LOG = Logger.getLogger(DeleteProduct.class.getName());
 
     /* our File Manager client */
     private static XmlRpcFileManagerClient client = null;

@@ -41,7 +41,7 @@ public class XMLRepositoryManagerFactory implements RepositoryManagerFactory {
     private List<String> productTypeDirList = null;
 
     /* our log stream */
-    private static Logger LOG = Logger
+    private static final Logger LOG = Logger
             .getLogger(XMLRepositoryManagerFactory.class.getName());
 
     /**

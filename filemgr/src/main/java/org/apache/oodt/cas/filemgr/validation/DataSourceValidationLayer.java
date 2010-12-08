@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 public class DataSourceValidationLayer implements ValidationLayer {
 
     /* our log stream */
-    private static Logger LOG = Logger
+    private static final Logger LOG = Logger
             .getLogger(DataSourceValidationLayer.class.getName());
 
     /* our data source */

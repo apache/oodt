@@ -69,7 +69,7 @@ public final class QueryTool {
     private static enum QueryType { LUCENE, SQL }; 
     
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(QueryTool.class.getName());
+    private static final Logger LOG = Logger.getLogger(QueryTool.class.getName());
 
     public QueryTool(URL fmUrl) throws InstantiationException {
         try {

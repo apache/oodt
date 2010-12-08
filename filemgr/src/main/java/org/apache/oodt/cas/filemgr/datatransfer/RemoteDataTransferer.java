@@ -64,7 +64,7 @@ public class RemoteDataTransferer implements DataTransfer {
     private XmlRpcFileManagerClient client = null;
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(RemoteDataTransferer.class
+    private static final Logger LOG = Logger.getLogger(RemoteDataTransferer.class
             .getName());
 
     /**

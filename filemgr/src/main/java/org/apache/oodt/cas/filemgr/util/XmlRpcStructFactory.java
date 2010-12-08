@@ -61,7 +61,7 @@ import java.util.logging.Logger;
 public final class XmlRpcStructFactory {
 
     /* our log stream */
-    private static Logger LOG = Logger
+    private static final Logger LOG = Logger
             .getLogger(XmlRpcStructFactory.class.getName());
     
     private XmlRpcStructFactory() throws InstantiationException {

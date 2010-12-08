@@ -46,7 +46,7 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 public class BasicVersioner implements Versioner {
 
     /* our log stream */
-    private Logger LOG = Logger.getLogger(BasicVersioner.class.getName());
+    private static final Logger LOG = Logger.getLogger(BasicVersioner.class.getName());
 
     /**
      * 

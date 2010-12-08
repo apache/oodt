@@ -95,7 +95,7 @@ public class LuceneCatalog implements Catalog {
     private static UUIDGenerator generator = UUIDGenerator.getInstance();
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(LuceneCatalog.class.getName());
+    private static final Logger LOG = Logger.getLogger(LuceneCatalog.class.getName());
 
     /* page size for pagination */
     private int pageSize = -1;

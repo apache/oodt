@@ -64,7 +64,7 @@ public final class RangeQueryTester {
     private String indexPath = null;
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(RangeQueryTester.class
+    private static final Logger LOG = Logger.getLogger(RangeQueryTester.class
             .getName());
 
     /**

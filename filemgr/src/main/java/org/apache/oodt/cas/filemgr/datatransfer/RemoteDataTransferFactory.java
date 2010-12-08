@@ -36,7 +36,7 @@ public class RemoteDataTransferFactory implements DataTransferFactory {
     private int chunkSize = 0;
 
     /* our log stream */
-    private static Logger LOG = Logger
+    private static final Logger LOG = Logger
             .getLogger(RemoteDataTransferFactory.class.getName());
 
     /**

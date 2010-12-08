@@ -97,7 +97,7 @@ public class XmlRpcFileManager {
     private DataTransfer dataTransfer = null;
 
     /* our log stream */
-    private Logger LOG = Logger.getLogger(XmlRpcFileManager.class.getName());
+    private static final Logger LOG = Logger.getLogger(XmlRpcFileManager.class.getName());
 
     /* our xml rpc web server */
     private WebServer webServer = null;

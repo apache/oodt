@@ -67,7 +67,7 @@ public class DataSourceCatalog implements Catalog {
     protected DataSource dataSource = null;
 
     /* our log stream */
-    private Logger LOG = Logger.getLogger(DataSourceCatalog.class.getName());
+    private static final Logger LOG = Logger.getLogger(DataSourceCatalog.class.getName());
 
     /* our validation layer */
     private ValidationLayer validationLayer = null;

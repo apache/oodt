@@ -57,7 +57,7 @@ import java.net.URISyntaxException;
 public class LocalDataTransferer implements DataTransfer {
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(LocalDataTransferer.class
+    private static final Logger LOG = Logger.getLogger(LocalDataTransferer.class
             .getName());
 
     /* file manager client */

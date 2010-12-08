@@ -55,7 +55,7 @@ import org.apache.oodt.commons.xml.XMLUtils;
 public final class XmlStructFactory {
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(XmlStructFactory.class
+    private static final Logger LOG = Logger.getLogger(XmlStructFactory.class
             .getName());
 
     private XmlStructFactory() throws InstantiationException {

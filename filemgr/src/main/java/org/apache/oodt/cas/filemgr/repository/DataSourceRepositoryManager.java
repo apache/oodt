@@ -51,7 +51,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
     private DataSource dataSource = null;
 
     /* our log stream */
-    private Logger LOG = Logger.getLogger(DataSourceRepositoryManager.class
+    private static final Logger LOG = Logger.getLogger(DataSourceRepositoryManager.class
             .getName());
 
     /**

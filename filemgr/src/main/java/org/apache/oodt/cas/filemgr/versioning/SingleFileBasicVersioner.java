@@ -44,7 +44,7 @@ public class SingleFileBasicVersioner implements Versioner {
     public static final String FILENAME_FIELD = "Filename";
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(SingleFileBasicVersioner.class
+    private static final Logger LOG = Logger.getLogger(SingleFileBasicVersioner.class
             .getName());
 
     /**

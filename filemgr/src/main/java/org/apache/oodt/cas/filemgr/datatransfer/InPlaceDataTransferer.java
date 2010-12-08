@@ -42,7 +42,7 @@ import java.net.URL;
 public class InPlaceDataTransferer implements DataTransfer {
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(InPlaceDataTransferer.class
+    private static final Logger LOG = Logger.getLogger(InPlaceDataTransferer.class
             .getName());
 
     /* file manager client */

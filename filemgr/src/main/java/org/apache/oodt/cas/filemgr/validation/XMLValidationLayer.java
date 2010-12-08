@@ -57,7 +57,7 @@ import org.xml.sax.InputSource;
 public class XMLValidationLayer implements ValidationLayer {
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(XMLValidationLayer.class
+    private static final Logger LOG = Logger.getLogger(XMLValidationLayer.class
             .getName());
 
     /* product type ID to element map */
