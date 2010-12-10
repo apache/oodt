@@ -55,6 +55,7 @@ the License.
         <module>profile</module>
         <module>grid</module>
         <module>xmlps</module>
+        <module>opendapps</module>
         <module>webapp/filemgr</module>
         <module>webapp/fmprod</module>
         <module>webapp/workflow</module>

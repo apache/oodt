@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-9 Create a generic OpenDAP profile server (mattmann, Victor Hwang, smcclees)
+
 * OODT-67 All Loggers should be "static final" (bfoster)
 
 * OODT-66 Allow Filemgr XML-RPC connection retries and retry interval to be configurable (bfoster)
