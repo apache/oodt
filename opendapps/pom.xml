@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+Copyright 2010 California Institute of Technology. ALL RIGHTS
+RESERVED. U.S. Government Sponsorship acknowledged.
+
+$Id$
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>opendapps</artifactId>
+  <version>1.0</version>
+  <name>Apache OODT Configurable OPeNDAP Profile Server</name>
+  <description>A generic, configurable Apache OODT profile server
+  implementation that easily connects to OPeNDAP data sources. Connections 
+  are configured via an XML configuration file, providing information on how 
+  to extract and translate datasets from OPeNDAP and THREDDS into OODT profiles.
+  </description> 
+  <parent>
+    <groupId>org.apache.oodt</groupId>
+    <artifactId>oodt-core</artifactId>
+    <version>0.1-incubating</version>
+  </parent>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+   <dependency>
+     <groupId>edu.ucar</groupId>
+     <artifactId>netcdf</artifactId>
+     <version>4.2</version>
+   </dependency>
+   <dependency>
+    <groupId>org.apache.oodt</groupId>
+    <artifactId>oodt-profile</artifactId>
+    <version>0.1-incubating</version>
+   </dependency>
+   <dependency>
+    <groupId>org.apache.oodt</groupId>
+    <artifactId>oodt-xmlquery</artifactId>
+    <version>0.1-incubating</version>
+   </dependency>
+  </dependencies>
+</project>
