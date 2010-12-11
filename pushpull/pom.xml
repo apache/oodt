@@ -26,7 +26,7 @@
     <version>${oodt.version}</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent> 
-  <artifactId>pushpull</artifactId>
+  <artifactId>cas-pushpull</artifactId>
   <name>CAS Push-Pull-Framework</name>
  <build>
     <plugins>

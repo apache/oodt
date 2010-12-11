@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-83 the artifactid for pushpull should change to cas-pushpull (Faranak Davoodi via mattmann)
+
 * OODT-76 Commons TimeEventWeightedHash throws a StackOverthrow Error when epsilon is large and event duration is small (bfoster)
 
 * OODT-9 Create a generic OpenDAP profile server (mattmann, Victor Hwang, smcclees)
