@@ -17,4 +17,7 @@ the License.
 -->
 <cas:resourcenodes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 	<node nodeId="localhost" ip="http://localhost:2001" capacity="8"/>
+	<!-- EnvReplace Example 
+	<node nodeId="somehost" ip="http://somehost:[BATCH_STUB_PORT]" capacity="8" envReplace="true"/>
+	-->
 </cas:resourcenodes>
