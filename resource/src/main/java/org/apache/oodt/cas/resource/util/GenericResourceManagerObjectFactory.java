@@ -31,6 +31,8 @@ import org.apache.oodt.cas.resource.jobrepo.JobRepository;
 import org.apache.oodt.cas.resource.jobrepo.JobRepositoryFactory;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.monitor.MonitorFactory;
+import org.apache.oodt.cas.resource.queuerepo.QueueRepository;
+import org.apache.oodt.cas.resource.queuerepo.QueueRepositoryFactory;
 import org.apache.oodt.cas.resource.scheduler.Scheduler;
 import org.apache.oodt.cas.resource.scheduler.SchedulerFactory;
 import org.apache.oodt.cas.resource.structs.JobInput;
@@ -38,6 +40,7 @@ import org.apache.oodt.cas.resource.structs.JobInstance;
 
 /**
  * @author mattmann
+ * @author bfoster
  * @version $Revision$
  * 
  * <p>
@@ -119,6 +122,43 @@ public final class GenericResourceManagerObjectFactory {
     return null;
   }
 
+  /**
+   * Creates a new {@link QueueRepository} implementation from the given
+   * {@link QueueRepositoryFactory} class name.
+   * 
+   * @param serviceFactory
+   *          The class name of the {@link QueueRepositoryFactory} to use to create new
+   *          {@link QueueRepository}s.
+   * @return A new implementation of a {@link QueueRepository}.
+   */
+  public static QueueRepository getQueueRepositoryFromFactory(String queueRepositoryFactory) {
+    Class clazz = null;
+    QueueRepositoryFactory factory = null;
+
+    try {
+      clazz = Class.forName(queueRepositoryFactory);
+      factory = (QueueRepositoryFactory) clazz.newInstance();
+      return factory.createQueueRepository();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "ClassNotFoundException when loading queue repository factory class "
+              + queueRepositoryFactory + " Message: " + e.getMessage());
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "InstantiationException when loading queue repository factory class "
+              + queueRepositoryFactory + " Message: " + e.getMessage());
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "IllegalAccessException when loading queue repository factory class "
+              + queueRepositoryFactory + " Message: " + e.getMessage());
+    }
+
+    return null;
+  }
+  
   /**
    * Creates a new {@link JobQueue} implementation from the given
    * {@link JobQueueFactory} class name.

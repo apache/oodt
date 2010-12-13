@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-77 Make resource manager Queue aware (bfoster)
+
 * OODT-80 Create Cached JobRepository for cas-resource (bfoster)
 
 * OODT-82 Make resource manager's node ip addresses envReplace-able (bfoster)

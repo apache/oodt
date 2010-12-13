@@ -22,12 +22,14 @@ package org.apache.oodt.cas.resource.scheduler;
 import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
 import org.apache.oodt.cas.resource.jobqueue.JobQueue;
 import org.apache.oodt.cas.resource.monitor.Monitor;
+import org.apache.oodt.cas.resource.scheduler.QueueManager;
 import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
 
 /**
  * @author woollard
+ * @author bfoster
  * @version $Revision$
  * 
  * <p>
@@ -80,4 +82,11 @@ public interface Scheduler extends Runnable{
   */
  public JobQueue getJobQueue();
 
+ /**
+  * 
+  * @return The underlying {@link QueueManager} used by this
+  * Scheduler.
+  */
+ public QueueManager getQueueManager();
+ 
 }
