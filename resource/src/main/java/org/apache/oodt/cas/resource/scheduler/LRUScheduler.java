@@ -112,7 +112,7 @@ public class LRUScheduler implements Scheduler {
                             + e.getMessage());
                     // place the job spec back on the queue
                     try {
-                        myJobQueue.addJob(exec);
+                        myJobQueue.requeueJob(exec);
                     } catch (Exception ignore) {
                     }
                 }
@@ -153,7 +153,7 @@ public class LRUScheduler implements Scheduler {
                         // queue the job back up
                         LOG.log(Level.INFO, "Requeueing job: ["
                                 + spec.getJob().getId() + "]");
-                        myJobQueue.addJob(spec);
+                        myJobQueue.requeueJob(spec);
 
                         // make sure to decrement the load
                         myMonitor.reduceLoad(node, load);
@@ -169,7 +169,7 @@ public class LRUScheduler implements Scheduler {
         } else {
             // could not find resource, push onto JobQueue
             try {
-                myJobQueue.addJob(spec);
+                myJobQueue.requeueJob(spec);
             } catch (Exception ignore) {
             }
         }
