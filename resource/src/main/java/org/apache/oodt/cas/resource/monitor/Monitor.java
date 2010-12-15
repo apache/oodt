@@ -29,6 +29,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 /**
  * 
  * @author woollard
+ * @author bfoster
  * @version $Revision$
  * 
  * <p>
@@ -104,4 +105,22 @@ public interface Monitor {
    */
   public boolean assignLoad(ResourceNode node, int loadValue)
       throws MonitorException;
+  
+	/**
+     * Adds a new {@link ResourceNode} for this {@link Monitor} to manage (if
+     * node already exist, then should perform update)
+     * 
+     * @param node
+     *            The new {@link ResourceNode} to manage
+     */
+    public void addNode(ResourceNode node) throws MonitorException;
+
+    /**
+     * Remove {@link ResourceNode} from this {@link Monitor}
+     * 
+     * @param nodeId
+     *            The id of the {@link ResourceNode} to remove
+     */
+    public void removeNodeById(String nodeId) throws MonitorException;
+	
 }

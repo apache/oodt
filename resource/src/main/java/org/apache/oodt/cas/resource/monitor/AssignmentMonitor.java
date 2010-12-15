@@ -19,34 +19,20 @@
 package org.apache.oodt.cas.resource.monitor;
 
 //JDK imports
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
 
 //OODT imports
-import org.apache.oodt.commons.xml.XMLUtils;
-import org.apache.oodt.cas.resource.util.XmlStructFactory;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 /**
  * 
  * @author woollard
+ * @author bfoster
  * @version $Revision$
  * 
  * <p>
@@ -58,49 +44,34 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
  */
 public class AssignmentMonitor implements Monitor {
 
-    private List nodesHomeUris = null;
-
     /* our log stream */
     private static Logger LOG = Logger.getLogger(AssignmentMonitor.class
             .getName());
 
     /* our nodes map */
-    private static HashMap nodesMap = new HashMap();
+    private static HashMap<String, ResourceNode> nodesMap;
 
     /* our load map */
-    private static HashMap loadMap = new HashMap();
+    private static HashMap<String, Integer> loadMap;
 
-    private static FileFilter nodesXmlFilter = new FileFilter() {
-        public boolean accept(File pathname) {
-            return pathname.isFile()
-                    && pathname.toString().endsWith("nodes.xml");
-        }
-    };
-
-    public AssignmentMonitor(List uris) {
-        nodesHomeUris = uris;
-        nodesMap = loadNodeInfo(nodesHomeUris);
-
-        loadMap = new HashMap();
-
-        Set nodeIds = nodesMap.keySet();
-        Iterator It = nodeIds.iterator();
-        while (It.hasNext()) {
-            String node = (String) It.next();
-            loadMap.put(node, new Integer(0));
+    public AssignmentMonitor(List<ResourceNode> nodes) {
+        nodesMap = new HashMap<String, ResourceNode>();
+        loadMap = new HashMap<String, Integer>();
+        
+        for (ResourceNode node : nodes) {
+            nodesMap.put(node.getNodeId(), node);
+            loadMap.put(node.getNodeId(), new Integer(0));
         }
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.oodt.cas.resource.monitor.Monitor#assignLoad(
-     *      org.apache.oodt.cas.resource.structs.ResourceNode, int)
+     * @see gov.nasa.jpl.oodt.cas.resource.monitor.Monitor#assignLoad(
+     *      gov.nasa.jpl.oodt.cas.resource.structs.ResourceNode, int)
      */
     public boolean assignLoad(ResourceNode node, int loadValue)
             throws MonitorException {
-        // ResourceNode resource = (ResourceNode)
-        // nodesMap.get(node.getNodeId());
         int loadCap = node.getCapacity();
         int curLoad = ((Integer) loadMap.get(node.getNodeId())).intValue();
 
@@ -111,7 +82,6 @@ public class AssignmentMonitor implements Monitor {
         } else {
             return false;
         }
-
     }
 
     public boolean reduceLoad(ResourceNode node, int loadValue)
@@ -128,7 +98,7 @@ public class AssignmentMonitor implements Monitor {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.oodt.cas.resource.monitor.Monitor#getLoad(org.apache.oodt.cas.resource.structs.ResourceNode)
+     * @see gov.nasa.jpl.oodt.cas.resource.monitor.Monitor#getLoad(gov.nasa.jpl.oodt.cas.resource.structs.ResourceNode)
      */
     public int getLoad(ResourceNode node) throws MonitorException {
         ResourceNode resource = (ResourceNode) nodesMap.get(node.getNodeId());
@@ -139,16 +109,16 @@ public class AssignmentMonitor implements Monitor {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.oodt.cas.resource.monitor.Monitor#getNodes()
+     * @see gov.nasa.jpl.oodt.cas.resource.monitor.Monitor#getNodes()
      */
-    public List getNodes() throws MonitorException {
-        return Arrays.asList(nodesMap.values().toArray());
+    public List<ResourceNode> getNodes() throws MonitorException {
+        return new Vector<ResourceNode>(nodesMap.values());
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.oodt.cas.resource.monitor.Monitor#getNodeById(java.lang.String)
+     * @see gov.nasa.jpl.oodt.cas.resource.monitor.Monitor#getNodeById(java.lang.String)
      */
     public ResourceNode getNodeById(String nodeId) throws MonitorException {
         return (ResourceNode) nodesMap.get(nodeId);
@@ -157,11 +127,11 @@ public class AssignmentMonitor implements Monitor {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.oodt.cas.resource.monitor.Monitor#getNodeByURL(java.net.URL)
+     * @see gov.nasa.jpl.oodt.cas.resource.monitor.Monitor#getNodeByURL(java.net.URL)
      */
     public ResourceNode getNodeByURL(URL ipAddr) throws MonitorException {
         ResourceNode targetResource = null;
-        Vector nodes = (Vector) this.getNodes();
+        List<ResourceNode> nodes = this.getNodes();
         for (int i = 0; i < nodes.size(); i++) {
             if (((ResourceNode) nodes.get(i)).getIpAddr() == ipAddr) {
                 targetResource = (ResourceNode) nodes.get(i);
@@ -171,68 +141,15 @@ public class AssignmentMonitor implements Monitor {
         return targetResource;
     }
 
-    private HashMap loadNodeInfo(List dirUris) {
+    public void addNode(ResourceNode node) throws MonitorException {
+        nodesMap.put(node.getNodeId(), node);
+        if (!loadMap.containsKey(node.getNodeId()))
+            loadMap.put(node.getNodeId(), new Integer(0));
+    }
 
-        HashMap resources = new HashMap();
-
-        if (dirUris != null && dirUris.size() > 0) {
-            for (Iterator i = dirUris.iterator(); i.hasNext();) {
-                String dirUri = (String) i.next();
-
-                try {
-                    File nodesDir = new File(new URI(dirUri));
-                    if (nodesDir.isDirectory()) {
-
-                        String nodesDirStr = nodesDir.getAbsolutePath();
-
-                        if (!nodesDirStr.endsWith("/")) {
-                            nodesDirStr += "/";
-                        }
-
-                        // get all the workflow xml files
-                        File[] nodesFiles = nodesDir.listFiles(nodesXmlFilter);
-
-                        for (int j = 0; j < nodesFiles.length; j++) {
-
-                            String nodesXmlFile = nodesFiles[j]
-                                    .getAbsolutePath();
-                            Document nodesRoot = null;
-                            try {
-                                nodesRoot = XMLUtils
-                                        .getDocumentRoot(new FileInputStream(
-                                                nodesFiles[j]));
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                                return null;
-                            }
-
-                            NodeList nodeList = nodesRoot
-                                    .getElementsByTagName("node");
-
-                            if (nodeList != null && nodeList.getLength() > 0) {
-                                for (int k = 0; k < nodeList.getLength(); k++) {
-                                    ResourceNode resource = XmlStructFactory
-                                            .getNodes((Element) nodeList
-                                                    .item(k));
-                                    resources.put(resource.getNodeId(),
-                                            resource);
-                                }
-                            }
-                        }
-                    }
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                    LOG
-                            .log(
-                                    Level.WARNING,
-                                    "DirUri: "
-                                            + dirUri
-                                            + " is not a directory: skipping node loading for it.");
-                }
-            }
-        }
-
-        return resources;
+    public void removeNodeById(String nodeId) throws MonitorException {
+        nodesMap.remove(nodeId);    
+        loadMap.remove(nodeId);
     }
 
 }

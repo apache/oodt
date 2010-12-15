@@ -24,6 +24,8 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 //JDK imports
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -33,6 +35,7 @@ import junit.framework.TestCase;
 
 /**
  * @author mattmann
+ * @author bfoster
  * @version $Revision$
  * 
  * <p>
@@ -44,9 +47,11 @@ public class TestAssignmentMonitor extends TestCase {
     private AssignmentMonitor assgnMon = null;
 
     protected void setUp() {
-        List uris = new Vector();
-        uris.add(new File("./src/main/resources/examples").toURI().toString());
-        assgnMon = new AssignmentMonitor(uris);
+        System.setProperty("gov.nasa.jpl.oodt.cas.resource.nodes.dirs",
+                "file:"
+                        + new File("./src/main/resources/examples")
+                                .getAbsolutePath());
+        assgnMon = new AssignmentMonitorFactory().createMonitor();
     }
 
     public void testGetNodes() {
@@ -100,6 +105,33 @@ public class TestAssignmentMonitor extends TestCase {
         }
 
         assertTrue(hasNode1);
+    }
+
+    public void testNodeModification() throws MonitorException,
+            MalformedURLException {
+        List<ResourceNode> nodes = new Vector<ResourceNode>(this.assgnMon
+                .getNodes());
+        ResourceNode test1 = new ResourceNode("Test1", new URL(
+                "http://localhost:1111"), 9);
+        ResourceNode test2 = new ResourceNode("Test2", new URL(
+                "http://localhost:2222"), 9);
+        ResourceNode test3 = new ResourceNode("Test3", new URL(
+                "http://localhost:3333"), 9);
+        this.assgnMon.addNode(test1);
+        nodes.add(test1);
+        this.assgnMon.addNode(test2);
+        nodes.add(test2);
+        this.assgnMon.addNode(test3);
+        nodes.add(test3);
+
+        assertTrue(nodes.containsAll(this.assgnMon.getNodes())
+                && this.assgnMon.getNodes().containsAll(nodes));
+        
+        this.assgnMon.removeNodeById(test1.getNodeId());
+        nodes.remove(test1);
+        
+        assertTrue(nodes.containsAll(this.assgnMon.getNodes())
+                && this.assgnMon.getNodes().containsAll(nodes));
     }
 
 }

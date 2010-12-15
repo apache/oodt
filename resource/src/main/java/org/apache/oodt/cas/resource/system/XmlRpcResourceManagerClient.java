@@ -31,6 +31,7 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
+import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 
 //JDK imports
@@ -116,6 +117,15 @@ public class XmlRpcResourceManagerClient {
 
         String getNodeByIdOperation = "--getNodeById --nodeId <node id>\n";
         String getNodesOperation = "--getNodes\n";
+        String getQueuesOperation = "--getQueues\n";
+        String addNodeOperation = "--addNode --nodeId <node id> --ipAddr <url> --capacity <max load>\n";
+        String removeNodeOperation = "--removeNode --nodeId <node id>\n";
+        String addQueueOperation = "--addQueue --queueName <queue name>\n";
+        String removeQueueOperation = "--removeQueue --queueName <queue name>\n";
+        String addNodeToQueueOperation = "--addNodeToQueue --nodeId <node id> --queueName <queue name>\n";
+        String getNodesInQueueOperation = "--getNodesInQueue --queueName <queue name>\n";
+        String getQueuesWithNodeOperation = "--getQueuesWithNode --nodeId <node id>\n";
+        String removeNodeFromQueueOperation = "--removeNodeFromQueue --nodeId <node id> --queueName <queue name>\n";
         String submitJobOperation = "--submitJob --def <job def file> --input <job input constructor>\n";
         String submitJobRemoteOperation = "--submitJob --def <job def file> --input <job input constructor> --url <url>\n";
         String getJobInfoOperation = "--getJobInfo --id <job id>\n";
@@ -164,6 +174,167 @@ public class XmlRpcResourceManagerClient {
                 }
             }
 
+        }else if (operation.equals("--getQueues")) {
+            List<String> queueNames = client.getQueues();
+            System.out.println("Queues:");
+            for (String queueName : queueNames) 
+                System.out.println(" - " + queueName);
+            System.out.println();
+            
+        }else if (operation.equals("--addNode")) {
+            String nodeId = null;
+            String nodeUrl = null;
+            String capacity = null;
+            
+            for (int i = 4; i < args.length; i++) {
+                if (args[i].equals("--nodeId")) {
+                    nodeId = args[++i];
+                }else if (args[i].equals("--ipAddr")) {
+                    nodeUrl = args[++i];
+                }else if (args[i].equals("--capacity")) {
+                    capacity = args[++i];
+                }
+            }
+            
+            if (nodeId == null || nodeUrl == null || capacity == null) {
+                System.err.println(addNodeOperation);
+                System.exit(1);
+            }
+                
+            client.addNode(new ResourceNode(nodeId, new URL(nodeUrl), Integer.parseInt(capacity)));
+            System.out.println("Successfully added node!");
+            
+        }else if (operation.equals("--removeNode")) {
+            String nodeId = null;
+            
+            for (int i = 4; i < args.length; i++) {
+                if (args[i].equals("--nodeId")) {
+                    nodeId = args[++i];
+                }
+            }
+            
+            if (nodeId == null) {
+                System.err.println(removeNodeOperation);
+                System.exit(1);
+            }
+                
+            client.removeNode(nodeId);
+            System.out.println("Successfully removed node!");
+            
+        }else if (operation.equals("--addQueue")) {
+            String queueName = null;
+            
+            for (int i = 4; i < args.length; i++) {
+                if (args[i].equals("--queueName")) {
+                    queueName = args[++i];
+                }
+            }
+            
+            if (queueName == null) {
+                System.err.println(addQueueOperation);
+                System.exit(1);
+            }
+                
+            client.addQueue(queueName);
+            System.out.println("Successfully added queue!");
+            
+        }else if (operation.equals("--removeQueue")) {
+            String queueName = null;
+            
+            for (int i = 4; i < args.length; i++) {
+                if (args[i].equals("--queueName")) {
+                    queueName = args[++i];
+                }
+            }
+            
+            if (queueName == null) {
+                System.err.println(removeQueueOperation);
+                System.exit(1);
+            }
+                
+            client.removeQueue(queueName);
+            System.out.println("Successfully removed queue!");
+            
+        }else if (operation.equals("--addNodeToQueue")) {
+            String nodeId = null;
+            String queueName = null;
+            
+            for (int i = 4; i < args.length; i++) {
+                if (args[i].equals("--nodeId")) {
+                    nodeId = args[++i];
+                }else if (args[i].equals("--queueName")) {
+                    queueName = args[++i];
+                }
+            }
+            
+            if (nodeId == null || queueName == null) {
+                System.err.println(addNodeToQueueOperation);
+                System.exit(1);
+            }
+                
+            client.addNodeToQueue(nodeId, queueName);
+            System.out.println("Successfully added node to queue!");
+            
+        }else if (operation.equals("--removeNodeFromQueue")) {
+            String nodeId = null;
+            String queueName = null;
+            
+            for (int i = 4; i < args.length; i++) {
+                if (args[i].equals("--nodeId")) {
+                    nodeId = args[++i];
+                }else if (args[i].equals("--queueName")) {
+                    queueName = args[++i];
+                }
+            }
+            
+            if (nodeId == null || queueName == null) {
+                System.err.println(removeNodeFromQueueOperation);
+                System.exit(1);
+            }
+                
+            client.removeNodeFromQueue(nodeId, queueName);
+            System.out.println("Successfully removed node from queue!");
+            
+        }else if (operation.equals("--getNodesInQueue")) {
+            String queueName = null;
+            
+            for (int i = 4; i < args.length; i++) {
+                if (args[i].equals("--queueName")) {
+                    queueName = args[++i];
+                }
+            }
+            
+            if (queueName == null) {
+                System.err.println(getNodesInQueueOperation);
+                System.exit(1);
+            }
+                
+            List<String> nodeIds = client.getNodesInQueue(queueName);
+            System.out.println("Nodes in Queue '" + queueName + "':");
+            for (String nodeId : nodeIds) 
+                System.out.println(" - " + nodeId);
+            System.out.println();
+            
+        }else if (operation.equals("--getQueuesWithNode")) {
+            String nodeId = null;
+            
+            for (int i = 4; i < args.length; i++) {
+                if (args[i].equals("--nodeId")) {
+                    nodeId = args[++i];
+                }
+            }
+            
+            if (nodeId == null) {
+                System.err.println(getQueuesWithNodeOperation);
+                System.exit(1);
+            }
+                
+            List<String> queueNames = client.getQueuesWithNode(nodeId);
+            System.out.println("Queues with node '" + nodeId + "':");
+            for (String queueName : queueNames) 
+                System.out.println(" - " + queueName);
+            System.out.println();
+            
         } else if (operation.equals("--getExecNode")) {
             String jobId = null;
 
@@ -454,6 +625,146 @@ public class XmlRpcResourceManagerClient {
         this.resMgrUrl = resMgrUrl;
     }
 
+    /**
+     * Creates a queue with the given name
+     * @param queueName The name of the queue to be created
+     * @throws QueueManagerException on any error
+     */
+    public void addQueue(String queueName) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(queueName);
+            client.execute("resourcemgr.addQueue", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Removes the queue with the given name
+     * @param queueName The name of the queue to be removed
+     * @throws QueueManagerException on any error
+     */
+    public void removeQueue(String queueName) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(queueName);
+            client.execute("resourcemgr.removeQueue", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Adds a node
+     * @param node The node to be added
+     * @throws MonitorException on any error
+     */
+    public void addNode(ResourceNode node) throws MonitorException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(XmlRpcStructFactory.getXmlRpcResourceNode(node));
+            client.execute("resourcemgr.addNode", argList);
+        }catch (Exception e) {
+            throw new MonitorException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Removes the node with the given id
+     * @param nodeId The id of the node to be removed
+     * @throws MonitorException on any error
+     */
+    public void removeNode(String nodeId) throws MonitorException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(nodeId);
+            client.execute("resourcemgr.removeNode", argList);
+        }catch (Exception e) {
+            throw new MonitorException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Addes the node with given id to the queue with the given name
+     * @param nodeId The id of the node to be added to the given queueName
+     * @param queueName The name of the queue to add the given node
+     * @throws QueueManagerException on any error
+     */
+    public void addNodeToQueue(String nodeId, String queueName) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(nodeId);
+            argList.add(queueName);
+            client.execute("resourcemgr.addNodeToQueue", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Remove the node with the given id from the queue with the given name
+     * @param nodeId The id of the node to be remove from the given queueName
+     * @param queueName The name of the queue from which to remove the given node
+     * @throws QueueManagerException on any error
+     */
+    public void removeNodeFromQueue(String nodeId, String queueName) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(nodeId);
+            argList.add(queueName);
+            client.execute("resourcemgr.removeNodeFromQueue", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Gets a list of currently supported queue names
+     * @return A list of currently supported queue names
+     * @throws QueueManagerException on any error
+     */
+    public List<String> getQueues() throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            return (List<String>) client.execute("resourcemgr.getQueues", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Gets a list of ids of the nodes in the given queue
+     * @param queueName The name of the queue to get node ids from
+     * @return List of node ids in the given queueName
+     * @throws QueueManagerException on any error
+     */
+    public List<String> getNodesInQueue(String queueName) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(queueName);
+            return (List<String>) client.execute("resourcemgr.getNodesInQueue", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Gets a list of queues which contain the node with the given nodeId
+     * @param nodeId The id of the node to get queues it belongs to
+     * @return List of queues which contain the give node
+     * @throws QueueManagerException on any error
+     */
+    public List<String> getQueuesWithNode(String nodeId) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(nodeId);
+            return (List<String>) client.execute("resourcemgr.getQueuesWithNode", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
     private static String getReadableJobStatus(String status) {
         if (status.equals(JobStatus.COMPLETE)) {
             return "COMPLETE";

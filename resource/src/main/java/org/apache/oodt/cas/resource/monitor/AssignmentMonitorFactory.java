@@ -19,14 +19,16 @@
 package org.apache.oodt.cas.resource.monitor;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.cas.resource.noderepo.XmlNodeRepositoryFactory;
+import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 
 //JDK imports
-import java.util.Arrays;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author woollard
+ * @author bfoster
  * @version $Revision$
  * 
  * <p>
@@ -36,29 +38,28 @@ import java.util.List;
  */
 public class AssignmentMonitorFactory implements MonitorFactory {
 
-	private List nodesDirList;
+    private static final Logger LOG = Logger
+            .getLogger(AssignmentMonitorFactory.class.getName());
 
-	public AssignmentMonitorFactory() {
-		String nodesDirUris = System
-				.getProperty("org.apache.oodt.cas.resource.monitor.nodes.dirs");
-
-		if (nodesDirUris != null) {
-			/* do env var replacement */
-			nodesDirUris = PathUtils.replaceEnvVariables(nodesDirUris);
-			String[] dirUris = nodesDirUris.split(",");
-			nodesDirList = Arrays.asList(dirUris);
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.apache.oodt.cas.resource.monitor.MonitorFactory#createMonitor()
-	 */
-	public Monitor createMonitor() {
-		if (nodesDirList != null) {
-			return new AssignmentMonitor(nodesDirList);
-		} else {
-			return null;
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * gov.nasa.jpl.oodt.cas.resource.monitor.MonitorFactory#createMonitor()
+     */
+    public AssignmentMonitor createMonitor() {
+        try {
+            String nodeRepoFactoryStr = System.getProperty(
+                    "gov.nasa.jpl.oodt.cas.resource.nodes.repo.factory",
+                    XmlNodeRepositoryFactory.class.getCanonicalName());
+            return new AssignmentMonitor(GenericResourceManagerObjectFactory
+                    .getNodeRepositoryFromFactory(nodeRepoFactoryStr)
+                    .loadNodes());
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Failed to create Assignment Monitor : "
+                    + e.getMessage(), e);
+            return null;
+        }
+    }
 
 }

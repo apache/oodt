@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-78 Ability for Resource Manager to dynamically add/remove nodes and modify queues at run-time (bfoster)
+
 * OODT-79 LRUScheduler removes a job from the JobQueue, but adds it back if can't schedule it, which (in the 
   JobStack impl) causes JobRepo to create duplicate copies of the same JobSpec with different JobIds (bfoster)
 

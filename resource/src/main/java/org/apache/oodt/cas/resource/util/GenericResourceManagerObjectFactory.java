@@ -31,6 +31,8 @@ import org.apache.oodt.cas.resource.jobrepo.JobRepository;
 import org.apache.oodt.cas.resource.jobrepo.JobRepositoryFactory;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.monitor.MonitorFactory;
+import org.apache.oodt.cas.resource.noderepo.NodeRepository;
+import org.apache.oodt.cas.resource.noderepo.NodeRepositoryFactory;
 import org.apache.oodt.cas.resource.queuerepo.QueueRepository;
 import org.apache.oodt.cas.resource.queuerepo.QueueRepositoryFactory;
 import org.apache.oodt.cas.resource.scheduler.Scheduler;
@@ -154,6 +156,43 @@ public final class GenericResourceManagerObjectFactory {
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading queue repository factory class "
               + queueRepositoryFactory + " Message: " + e.getMessage());
+    }
+
+    return null;
+  }
+  
+  /**
+   * Creates a new {@link NodeRepository} implementation from the given
+   * {@link QueueRepositoryFactory} class name.
+   * 
+   * @param serviceFactory
+   *          The class name of the {@link NodeRepositoryFactory} to use to create new
+   *          {@link QueueRepository}s.
+   * @return A new implementation of a {@link NodeRepository}.
+   */
+  public static NodeRepository getNodeRepositoryFromFactory(String nodeRepositoryFactory) {
+    Class clazz = null;
+    NodeRepositoryFactory factory = null;
+
+    try {
+      clazz = Class.forName(nodeRepositoryFactory);
+      factory = (NodeRepositoryFactory) clazz.newInstance();
+      return factory.createNodeRepository();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "ClassNotFoundException when loading node repository factory class "
+              + nodeRepositoryFactory + " Message: " + e.getMessage());
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "InstantiationException when loading node repository factory class "
+              + nodeRepositoryFactory + " Message: " + e.getMessage());
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "IllegalAccessException when loading node repository factory class "
+              + nodeRepositoryFactory + " Message: " + e.getMessage());
     }
 
     return null;
