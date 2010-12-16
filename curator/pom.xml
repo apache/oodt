@@ -22,13 +22,12 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>${oodt.version}</version>
+    <version>0.2-incubating</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <groupId>org.apache.oodt</groupId>
   <artifactId>cas-curator</artifactId>
   <packaging>war</packaging>
-  <version>${oodt.version}</version>
   <name>CAS Curation Interface</name>
   <description>A web application for managing policy for products and files and metadata that have been ingested via the CAS component.</description>
   <build>
@@ -125,22 +124,22 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-filemgr</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-sso</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-crawler</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>

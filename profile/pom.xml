@@ -20,12 +20,11 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>${oodt.version}</version>
+    <version>0.2-incubating</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-profile</artifactId>
   <name>Profile Service</name>
-  <version>${oodt.version}</version>
   <description>The Profile Service describes and locates resources using metadata
     descriptions.  These descriptions, called profiles, tell of a
     resource's inception, composition, and location using a mix of
@@ -101,17 +100,17 @@
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-commons</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-xmlquery</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-filemgr</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>

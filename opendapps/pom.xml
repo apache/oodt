@@ -10,7 +10,6 @@ $Id$
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>opendapps</artifactId>
-  <version>1.0</version>
   <name>Apache OODT Configurable OPeNDAP Profile Server</name>
   <description>A generic, configurable Apache OODT profile server
   implementation that easily connects to OPeNDAP data sources. Connections 
@@ -20,7 +19,7 @@ $Id$
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.1-incubating</version>
+    <version>0.2-incubating</version>
   </parent>
   <build>
     <plugins>
@@ -43,12 +42,12 @@ $Id$
    <dependency>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-profile</artifactId>
-    <version>0.1-incubating</version>
+    <version>${project.parent.version}</version>
    </dependency>
    <dependency>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-xmlquery</artifactId>
-    <version>0.1-incubating</version>
+    <version>${project.parent.version}</version>
    </dependency>
   </dependencies>
 </project>

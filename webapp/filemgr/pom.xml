@@ -22,13 +22,12 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>${oodt.version}</version>
+    <version>0.2-incubating</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
   <packaging>war</packaging>
   <artifactId>cas-fm-webapp</artifactId>
   <name>CAS File Manager Webapp Application</name>
-  <version>${oodt.version}</version>
   <description>A webapp for managing products and files and metadata that have been
     ingested via the CAS File Manager component.</description>
   <build>
@@ -51,17 +50,17 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-commons</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>    
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-filemgr</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>xmlrpc</groupId>

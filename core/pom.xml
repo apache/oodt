@@ -19,20 +19,19 @@ the License.
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>${oodt.version}</version>
+    <version>0.2-incubating</version>
     <name>OODT Core</name>
     <packaging>pom</packaging>
     <properties>
-        <oodt.version>0.2-incubating</oodt.version>
         <organizationLogo>http://www.apache.org/images/feather.gif</organizationLogo>
-        <logo>/images/${pom.artifactId}.jpg</logo>
-        <xdocVersion>${pom.version}</xdocVersion>
+        <logo>/images/${project.artifactId}.jpg</logo>
+        <xdocVersion>${project.version}</xdocVersion>
         <genDownloadLinks>false</genDownloadLinks>
         <docsSrc>${basedir}/src/site/xdoc</docsSrc>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-    <url>http://incubator.apache.org/oodt/${pom.artifactId}</url>
+    <url>http://incubator.apache.org/oodt/${project.artifactId}</url>
     <issueManagement>
         <system>JIRA</system>
         <url>https://issues.apache.org/jira/browse/OODT</url>
@@ -242,9 +241,9 @@ the License.
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/oodt/trunk/${pom.artifactId}</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/oodt/trunk/${pom.artifactId}</developerConnection>
-        <url>http://svn.apache.org/viewvc/incubator/oodt/trunk/${pom.artifactId}/</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/oodt/trunk/${project.artifactId}</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/oodt/trunk/${project.artifactId}</developerConnection>
+        <url>http://svn.apache.org/viewvc/incubator/oodt/trunk/${project.artifactId}/</url>
         <tag>HEAD</tag>
     </scm>
     <organization>
