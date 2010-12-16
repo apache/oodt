@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-88 mvn eclipse:eclipse fails to merge resources (bfoster)
+
 * OODT-89 (cas-metadata patch) Synchonize OODT-CAS components, which depend on one another, on a particular Apache-Tika version (bfoster)
 
 * OODT-87 Add date roll dynamic replacement fuction to PathUtils (bfoster)
