@@ -58,6 +58,7 @@ public class TestPathUtils extends TestCase {
         assertEquals("475000201.000",
             PathUtils.doDynamicReplacement(
                 "[DATE_TO_SECS([UTC_TO_TAI(2008-01-20T16:29:55.000Z)], TAI_FORMAT, 1993-01-01)]"));
+        assertEquals("2010-01-01", PathUtils.doDynamicReplacement("[DATE_ADD(2009-12-31, yyyy-MM-dd, 1, day)]"));
     }
 
     private void singleValueTest() {

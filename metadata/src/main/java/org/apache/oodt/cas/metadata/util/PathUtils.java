@@ -94,15 +94,17 @@ public final class PathUtils {
     public static String doDynamicReplacement(String string, Metadata metadata)
             throws Exception {
         return PathUtils.replaceEnvVariables(doDynamicDateReplacement(
-                   doDynamicDateFormatReplacement(
-                       doDynamicUtcToTaiDateReplacement(
-                           doDynamicDateToSecsReplacement(
-                               doDynamicDateToMillisReplacement(
-                                   string, metadata),
+        		   doDynamicDateRollReplacement(
+        			   doDynamicDateFormatReplacement(
+                           doDynamicUtcToTaiDateReplacement(
+                               doDynamicDateToSecsReplacement(
+                                   doDynamicDateToMillisReplacement(
+                                       string, metadata),
+                                   metadata),
                                metadata),
-                           metadata),
-                       metadata), 
-                   metadata), 
+                           metadata), 
+                       metadata),
+                   metadata),
                metadata, true);
     }
 
@@ -166,6 +168,64 @@ public final class PathUtils {
         return string;
     }
 
+    /**
+     * usage format: [DATE_ADD(<date>,<date-format>,<add-amount>,<hr | min | sec | day | mo | yr>)]
+     * example: [DATE_ADD(2009-12-31, yyyy-MM-dd, 1, day)] . . . output will be: 2010-01-01
+     * - dynamic replacement is allowed for the <date> as well, for example: 
+     *  [DATE_ADD([DATE.UTC], yyyy-MM-dd'T'HH:mm:ss.SSS'Z', 1, day)] will add one day to the 
+     *  current UTC time
+     */
+    public static String doDynamicDateRollReplacement(String string,
+            Metadata metadata) throws Exception {
+        Pattern dateFormatPattern = Pattern
+                .compile("\\[\\s*DATE_ADD\\s*\\(.{1,}?,.{1,}?,.{1,}?,.{1,}?\\)\\s*\\]");
+        Matcher dateFormatMatcher = dateFormatPattern.matcher(string);
+        while (dateFormatMatcher.find()) {
+            String dateFormatString = string.substring(dateFormatMatcher
+                    .start(), dateFormatMatcher.end());
+
+            // get arguments
+            Matcher argMatcher = Pattern.compile("\\(.*\\)").matcher(
+                    dateFormatString);
+            argMatcher.find();
+            String argsString = dateFormatString.substring(argMatcher.start() + 1,
+                    argMatcher.end() - 1); 
+            argsString = doDynamicReplacement(argsString, metadata);
+            String[] args = argsString.split(",");
+            String dateString = args[0].trim();
+            dateString = doDynamicReplacement(dateString, metadata);
+            String dateFormat = args[1].trim();
+            int addAmount = Integer.parseInt(args[2].trim());
+            String addUnits = args[3].trim().toLowerCase();
+
+            // reformat date
+            Date date = new SimpleDateFormat(dateFormat).parse(dateString);
+            Calendar calendar = (Calendar) Calendar.getInstance().clone();
+            calendar.setTime(date);
+            if (addUnits.equals("hr") || addUnits.equals("hour"))
+            	calendar.add(Calendar.HOUR_OF_DAY, addAmount);
+            else if (addUnits.equals("min") || addUnits.equals("minute"))
+            	calendar.add(Calendar.MINUTE, addAmount);
+            else if (addUnits.equals("sec") || addUnits.equals("second"))
+            	calendar.add(Calendar.SECOND, addAmount);
+            else if (addUnits.equals("day"))
+            	calendar.add(Calendar.DAY_OF_YEAR, addAmount);
+            else if (addUnits.equals("mo") || addUnits.equals("month"))
+            	calendar.add(Calendar.MONTH, addAmount);
+            else if (addUnits.equals("yr") || addUnits.equals("year"))
+            	calendar.add(Calendar.YEAR, addAmount);
+            
+            String newDateString = new SimpleDateFormat(dateFormat).format(calendar.getTime());
+            
+            // swap in date string
+            string = StringUtils.replace(string, dateFormatString,
+                    newDateString);
+            dateFormatMatcher = dateFormatPattern.matcher(string);
+        }
+
+        return string;
+    }
+    
     public static String doDynamicDateFormatReplacement(String string,
             Metadata metadata) throws Exception {
         Pattern dateFormatPattern = Pattern

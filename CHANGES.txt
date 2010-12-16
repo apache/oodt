@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-87 Add date roll dynamic replacement fuction to PathUtils (bfoster)
+
 * OODT-63 Use hard coded version numbers in shared component POMs so that MVN install works (bfoster)
 
 * OODT-85 XML configurator for opendap crashes on null pointer exceptions for some datasets (Victor Hwang via mattmann)
