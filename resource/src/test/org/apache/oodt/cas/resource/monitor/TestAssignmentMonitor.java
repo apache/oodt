@@ -47,7 +47,7 @@ public class TestAssignmentMonitor extends TestCase {
     private AssignmentMonitor assgnMon = null;
 
     protected void setUp() {
-        System.setProperty("gov.nasa.jpl.oodt.cas.resource.nodes.dirs",
+        System.setProperty("org.apache.oodt.cas.resource.nodes.dirs",
                 "file:"
                         + new File("./src/main/resources/examples")
                                 .getAbsolutePath());
