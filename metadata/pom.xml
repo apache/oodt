@@ -134,6 +134,11 @@ the License.
       <version>2.3</version>
     </dependency>
     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.0.3</version>
@@ -145,8 +150,8 @@ the License.
     </dependency>
     <dependency>
       <groupId>org.apache.tika</groupId>
-      <artifactId>tika</artifactId>
-      <version>0.3</version>
+      <artifactId>tika-core</artifactId>
+      <version>0.8</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
