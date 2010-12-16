@@ -152,9 +152,15 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
       }
     }
 
-    this.addIfNotNull(met, "DataFormatType", dataset.getDataFormatType()
-        .toString());
-    this.addIfNotNull(met, "DataType", dataset.getDataType().toString());
+    if (dataset.getDataFormatType() != null){
+    	this.addIfNotNull(met, "DataFormatType", dataset.getDataFormatType()
+    			.toString());
+    }
+    
+    if (dataset.getDataType() != null){
+    	this.addIfNotNull(met, "DataType", dataset.getDataType().toString());
+    }
+    
     if (dataset.getDates() != null) {
       for (DateType dateType : dataset.getDates()) {
         String dateString = null;
@@ -267,7 +273,7 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
       this.addIfNotNull(met, "EndDateTime", endDateTimeStr);
     }
 
-    if (dataset.getTimeCoverage().getResolution() != null) {
+    if (dataset.getTimeCoverage() != null && dataset.getTimeCoverage().getResolution() != null) {
       this.addIfNotNull(met, "TimeCoverageResolution", dataset
           .getTimeCoverage().getResolution().getText());
     }

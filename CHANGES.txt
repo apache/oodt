@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-85 XML configurator for opendap crashes on null pointer exceptions for some datasets (Victor Hwang via mattmann)
+
 * OODT-78 Ability for Resource Manager to dynamically add/remove nodes and modify queues at run-time (bfoster)
 
 * OODT-79 LRUScheduler removes a job from the JobQueue, but adds it back if can't schedule it, which (in the 
