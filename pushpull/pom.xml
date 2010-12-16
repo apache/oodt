@@ -161,6 +161,11 @@
       <version>0.8</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-parsers</artifactId>
+      <version>0.8</version>
+    </dependency>
+    <dependency>
       <groupId>nekohtml</groupId>
       <artifactId>nekohtml</artifactId>
       <version>0.9.5</version>
