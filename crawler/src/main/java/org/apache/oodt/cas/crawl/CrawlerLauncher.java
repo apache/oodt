@@ -51,7 +51,7 @@ public class CrawlerLauncher {
 
     public CrawlerLauncher() {
         this(System.getProperty("org.apache.oodt.cas.crawl.bean.repo",
-                "classpath:/org.apache/oodt/cas/crawl/crawler-config.xml"));
+                "classpath:/org/apache/oodt/cas/crawl/crawler-config.xml"));
     }
 
     public CrawlerLauncher(String beanRepo) {

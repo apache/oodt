@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-93 Spring XML resource classpaths are still set to /gov/nasa/jpl... and commons classpaths were not updates to remove 'cas' (bfoster)
+
 * OODT-91 cas-commons command-line help for a given arguments (bfoster)
 
 * OODT-89 (cas-pushpull patch) Synchonize OODT-CAS components, which depend on one another, on a particular Apache-Tika version (bfoster)

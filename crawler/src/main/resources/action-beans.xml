@@ -19,7 +19,7 @@ the License.
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     
-    <bean class="org.apache.oodt.cas.commons.spring.postprocessor.SetIdBeanPostProcessor"/>    
+    <bean class="org.apache.oodt.commons.spring.postprocessor.SetIdBeanPostProcessor"/>    
     
     <!-- Crawler Actions -->
     
