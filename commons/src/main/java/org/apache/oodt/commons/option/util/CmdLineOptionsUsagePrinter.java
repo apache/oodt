@@ -22,9 +22,12 @@ package org.apache.oodt.commons.option.util;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 
 //OODT imports
 import org.apache.oodt.commons.option.CmdLineOption;
+import org.apache.oodt.commons.option.CmdLineOptionInstance;
+import org.apache.oodt.commons.option.required.RequiredOption;
 
 //Spring imports
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +47,27 @@ public class CmdLineOptionsUsagePrinter {
     public static void printUsage(PrintStream ps, List<CmdLineOption> options) {
         ps.println(createPrintableHeader(options));
     }
+    
+    public static void printUsage(PrintStream ps, List<CmdLineOption> options, CmdLineOptionInstance optionHelp) {
+    	ps.println("Option Help when option '--" + optionHelp.getOption().getLongOption() + "' is specified with values " + optionHelp.getValues());
+    	ps.println(" - Required:");
+    	Vector<CmdLineOption> required = new Vector<CmdLineOption>();
+    	for (CmdLineOption option : options) {
+    		for (RequiredOption reqOption : option.getRequiredOptions()) {
+    			if (reqOption.getOptionLongName().equals(optionHelp.getOption().getLongOption()) && reqOption.getOptionValues().containsAll(optionHelp.getValues())) {
+    				required.add(option);
+    				ps.println("    -" + option.getShortOption() + " [--" + option.getLongOption() + "] " + (option.hasArgs() ? "<" + option.getOptionArgName() + ">" : ""));
+    				break;
+    			}
+    		}
+    	}
+    	ps.println(" - Optional:");
+    	for (CmdLineOption option : options) {
+    		if (!required.contains(option) && option.getHandler().affectsOption(optionHelp))
+				ps.println("    -" + option.getShortOption() + " [--" + option.getLongOption() + "] " + (option.hasArgs() ? "<" + option.getOptionArgName() + ">" : ""));
+    	}
+    } 
+
 
     private static String createPrintableHeader(List<CmdLineOption> options) {
         sortOptions(options);

@@ -30,6 +30,7 @@ import java.util.Set;
 
 //OODT imports
 import org.apache.oodt.commons.option.CmdLineOption;
+import org.apache.oodt.commons.option.CmdLineOptionInstance;
 import org.apache.oodt.commons.spring.SpringSetIdInjectionType;
 
 //Spring imports
@@ -144,4 +145,13 @@ public class CmdLineOptionBeanHandler extends CmdLineOptionHandler {
         }
     }
 
+	@Override
+	public boolean affectsOption(CmdLineOptionInstance optionInstance) {
+		for (BeanInfo beanInfo : this.applyToBeans) 
+            if (beanInfo.getBean() instanceof SpringSetIdInjectionType)
+            	if (((SpringSetIdInjectionType) beanInfo.getBean()).getId().equals(optionInstance.getValues().get(0)))
+            		return true;
+		return false;
+	}
+	
 }

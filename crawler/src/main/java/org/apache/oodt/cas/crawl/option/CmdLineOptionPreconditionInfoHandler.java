@@ -24,6 +24,7 @@ import java.util.List;
 
 //OODT imports
 import org.apache.oodt.commons.option.CmdLineOption;
+import org.apache.oodt.commons.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.metadata.preconditions.PreConditionComparator;
 
 /**
@@ -57,5 +58,10 @@ public class CmdLineOptionPreconditionInfoHandler extends
         }
         ps.close();
     }
+    
+	@Override
+	public boolean affectsOption(CmdLineOptionInstance arg0) {
+		return false;
+	}
 
 }

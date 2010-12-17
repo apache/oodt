@@ -65,9 +65,9 @@ public class PrintSupportedServersHandler extends CmdLineOptionHandler {
 		this.beanRepo = beanRepo;
 	}
 
-//	@Override
-//	public boolean affectsOption(CmdLineOptionInstance arg0) {
-//		return false;
-//	}
+	@Override
+	public boolean affectsOption(CmdLineOptionInstance arg0) {
+		return false;
+	}
 	
 }

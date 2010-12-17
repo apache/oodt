@@ -60,10 +60,18 @@ public class CmdLineOptionParser {
 
             // print usage and quit if -h or --help is given
             if (curArg.equals("-h") || curArg.equals("--help")) {
-                CmdLineOptionsUsagePrinter.printUsage(new PrintStream(
+            	if (args.length > j+1) {
+            		String[] helpArgs = new String[args.length - j - 1];
+            		System.arraycopy(args, j + 1, helpArgs, 0, helpArgs.length);
+            		CmdLineOptionsUsagePrinter.printUsage(new PrintStream(
+                            System.out), this.validOptions, this.parse(helpArgs).get(0));
+            	}else { 
+            		CmdLineOptionsUsagePrinter.printUsage(new PrintStream(
                         System.out), this.validOptions);
+            	}
                 System.exit(0);
             }
+
 
             if (curArg.startsWith("-")) {
                 // check if long or short version was used

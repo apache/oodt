@@ -24,6 +24,7 @@ import java.util.List;
 
 //OODT imports
 import org.apache.oodt.commons.option.CmdLineOption;
+import org.apache.oodt.commons.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.crawl.ProductCrawler;
 
 /**
@@ -55,5 +56,10 @@ public class CmdLineOptionProductCrawlerInfoHandler extends
         ps.println();
         ps.close();
     }
+
+	@Override
+	public boolean affectsOption(CmdLineOptionInstance arg0) {
+		return false;
+	}
 
 }

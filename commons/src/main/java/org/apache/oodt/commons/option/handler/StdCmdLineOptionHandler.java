@@ -21,7 +21,9 @@ package org.apache.oodt.commons.option.handler;
 //JDK imports
 import java.util.List;
 
+//OODT imports
 import org.apache.oodt.commons.option.CmdLineOption;
+import org.apache.oodt.commons.option.CmdLineOptionInstance;
 
 /**
  * 
@@ -41,5 +43,10 @@ public class StdCmdLineOptionHandler extends CmdLineOptionHandler {
     public void handleOption(CmdLineOption option, List<String> values) {
         // do nothing
     }
+    
+	@Override
+	public boolean affectsOption(CmdLineOptionInstance optionInstance) {
+		return false;
+	}
 
 }

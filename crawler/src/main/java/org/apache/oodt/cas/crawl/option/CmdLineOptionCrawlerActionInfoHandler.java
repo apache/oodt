@@ -23,9 +23,10 @@ import java.io.PrintStream;
 import java.util.List;
 
 //OODT imports
-import org.apache.oodt.commons.option.CmdLineOption;
 import org.apache.oodt.cas.crawl.action.CrawlerAction;
 import org.apache.oodt.cas.crawl.action.MimeTypeCrawlerAction;
+import org.apache.oodt.commons.option.CmdLineOption;
+import org.apache.oodt.commons.option.CmdLineOptionInstance;
 
 /**
  * 
@@ -62,5 +63,10 @@ public class CmdLineOptionCrawlerActionInfoHandler extends
         }
         ps.close();
     }
+
+	@Override
+	public boolean affectsOption(CmdLineOptionInstance arg0) {
+		return false;
+	}
 
 }

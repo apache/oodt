@@ -23,6 +23,7 @@ import java.util.List;
 
 //OODT imports
 import org.apache.oodt.commons.option.CmdLineOption;
+import org.apache.oodt.commons.option.CmdLineOptionInstance;
 
 //Spring imports
 import org.apache.commons.lang.StringUtils;
@@ -54,4 +55,6 @@ public abstract class CmdLineOptionHandler {
 
     public abstract String getCustomOptionUsage(CmdLineOption option);
 
+    public abstract boolean affectsOption(CmdLineOptionInstance optionInstance);
+    
 }

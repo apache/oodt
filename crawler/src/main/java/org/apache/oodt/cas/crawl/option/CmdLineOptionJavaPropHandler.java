@@ -21,7 +21,9 @@ package org.apache.oodt.cas.crawl.option;
 //JDK imports
 import java.util.List;
 
+//OODT imports
 import org.apache.oodt.commons.option.CmdLineOption;
+import org.apache.oodt.commons.option.CmdLineOptionInstance;
 import org.apache.oodt.commons.option.handler.CmdLineOptionHandler;
 
 //Spring imports
@@ -49,5 +51,10 @@ public class CmdLineOptionJavaPropHandler extends CmdLineOptionHandler {
         return "Sets the java system property: org.apache.oodt.cas.crawl."
                 + option.getLongOption();
     }
+
+	@Override
+	public boolean affectsOption(CmdLineOptionInstance arg0) {
+		return false;
+	}
 
 }
