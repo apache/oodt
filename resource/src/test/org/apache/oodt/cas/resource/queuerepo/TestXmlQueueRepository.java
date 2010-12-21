@@ -53,7 +53,7 @@ public class TestXmlQueueRepository extends TestCase {
 		assertEquals(this.queueManager.getNodes("quick"), Arrays.asList("localhost"));
 		assertEquals(this.queueManager.getNodes("high"), Arrays.asList("localhost"));
 		assertEquals(this.queueManager.getNodes("long"), Arrays.asList("localhost"));
-		assertEquals(this.queueManager.getQueues("localhost"), Arrays.asList("quick", "high", "long"));
+		assertTrue(this.queueManager.getQueues("localhost").containsAll(Arrays.asList("quick", "high", "long")));
 		
 		this.queueManager.addQueue("test-queue-1");
 		this.queueManager.addNodeToQueue("test-node-1", "test-queue-1");
