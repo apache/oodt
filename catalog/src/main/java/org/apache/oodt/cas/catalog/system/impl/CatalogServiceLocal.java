@@ -23,11 +23,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
+import java.util.Map.Entry;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
@@ -83,8 +85,10 @@ public class CatalogServiceLocal implements CatalogService {
 	protected File pluginStorageDir;
 	protected boolean oneCatalogFailsAllFail;
 	protected boolean simplifyQueries;
+	protected boolean disableIntersectingCrossCatalogQueries;
+	protected int crossCatalogResultSortingThreshold;
 	
-	public CatalogServiceLocal(CatalogRepository catalogRepository, IngestMapper ingestMapper, File pluginStorageDir, TransactionIdFactory transactionIdFactory, boolean restrictQueryPermissions, boolean restrictIngestPermissions, boolean oneCatalogFailsAllFail, boolean simplifyQueries) throws InstantiationException {
+	public CatalogServiceLocal(CatalogRepository catalogRepository, IngestMapper ingestMapper, File pluginStorageDir, TransactionIdFactory transactionIdFactory, boolean restrictQueryPermissions, boolean restrictIngestPermissions, boolean oneCatalogFailsAllFail, boolean simplifyQueries, boolean disableIntersectingCrossCatalogQueries, int crossCatalogResultSortingThreshold) throws InstantiationException {
 		try {
 			this.catalogs = new HashSet<Catalog>();
 			this.catalogsLock = new ReentrantReadWriteLock();
@@ -97,6 +101,8 @@ public class CatalogServiceLocal implements CatalogService {
 			this.setCatalogRepository(catalogRepository);	
 			this.oneCatalogFailsAllFail = oneCatalogFailsAllFail;
 			this.simplifyQueries = simplifyQueries;
+			this.disableIntersectingCrossCatalogQueries = disableIntersectingCrossCatalogQueries;
+			this.crossCatalogResultSortingThreshold = crossCatalogResultSortingThreshold;
 		}catch (Exception e) {
 			e.printStackTrace();
 			throw new InstantiationException(e.getMessage());
@@ -664,9 +670,68 @@ public class CatalogServiceLocal implements CatalogService {
 	}
 	
 	public Page getPage(PageInfo pageInfo, QueryExpression queryExpression, Set<String> catalogIds) throws CatalogServiceException {
-		QueryPager queryPager = new QueryPager(this._query(queryExpression, catalogIds)); 
-		queryPager.setPageInfo(pageInfo);
-		return this.getPage(queryExpression, catalogIds, queryPager);	
+		if (this.disableIntersectingCrossCatalogQueries) {
+			try {
+				int totalResults = 0;
+				LinkedHashMap<String, Integer> catalogToSizeOfMap = new LinkedHashMap<String, Integer>();
+				for (String catalogId : catalogIds) {
+					Catalog catalog = this.getCatalog(catalogId);
+					QueryExpression qe = this.reduceToUnderstoodExpressions(catalog, queryExpression);
+					if (qe != null) {
+						int catalogResultSize = catalog.sizeOf(qe);
+						totalResults += catalogResultSize;
+						catalogToSizeOfMap.put(catalogId, catalogResultSize);
+					}
+				}
+				
+				LOG.log(Level.INFO, "Routing query to catalogs as non-cross catalog intersecting queries . . .");
+				if (totalResults <= this.crossCatalogResultSortingThreshold) {
+					List<CatalogReceipt> catalogReceipts = new Vector<CatalogReceipt>();
+					for (String catalogId : catalogToSizeOfMap.keySet()) {
+						Catalog catalog = this.getCatalog(catalogId);
+						QueryExpression qe = this.reduceToUnderstoodExpressions(catalog, queryExpression);
+						if (qe != null)
+							catalogReceipts.addAll(catalog.query(qe));
+					}
+					List<TransactionReceipt> transactionReceipts = this.getPossiblyUnindexedTransactionReceipts(catalogReceipts);
+					LOG.log(Level.INFO, "Sorting Query Results . . . ");
+					Collections.sort(transactionReceipts, new Comparator<TransactionReceipt>() {
+						public int compare(TransactionReceipt o1,
+								TransactionReceipt o2) {
+							return o2.getTransactionDate().compareTo(o1.getTransactionDate());
+						}
+					});
+					QueryPager queryPager = new QueryPager(transactionReceipts);
+					queryPager.setPageInfo(pageInfo);
+					return this.getPage(queryExpression, catalogIds, queryPager);
+				}else {
+					int currentIndex = 0;
+					int desiredStartingIndex = pageInfo.getPageNum() * pageInfo.getPageSize();
+					List<CatalogReceipt> pageOfReceipts = new Vector<CatalogReceipt>();
+					for (Entry<String, Integer> entry : catalogToSizeOfMap.entrySet()) {
+						if (desiredStartingIndex - currentIndex <= entry.getValue()) {
+							Catalog catalog = this.getCatalog(entry.getKey());
+							QueryExpression qe = this.reduceToUnderstoodExpressions(catalog, queryExpression);
+							if (qe != null) {
+								List<CatalogReceipt> receipts = catalog.query(qe, desiredStartingIndex - currentIndex, Math.min((desiredStartingIndex - currentIndex) + pageInfo.getPageSize(), entry.getValue()));
+								pageOfReceipts.addAll(receipts);
+								if (pageOfReceipts.size() >= pageInfo.getPageSize())
+									break;
+							}
+						}else {
+							currentIndex += entry.getValue();
+						}
+					}
+					return new Page(new ProcessedPageInfo(pageInfo.getPageSize(), pageInfo.getPageNum(), totalResults), queryExpression, catalogIds, this.indexReceipts(this.getPossiblyUnindexedTransactionReceipts(pageOfReceipts)));
+				}
+			}catch (Exception e) {
+				throw new CatalogServiceException(e.getMessage(), e);
+			}
+		}else {
+			QueryPager queryPager = new QueryPager(this._query(queryExpression, catalogIds)); 
+			queryPager.setPageInfo(pageInfo);
+			return this.getPage(queryExpression, catalogIds, queryPager);
+		}
 	}
 	
 	public QueryPager query(QueryExpression queryExpression) throws CatalogServiceException {
@@ -1061,6 +1126,10 @@ TR:				for (CatalogReceipt catalogReceipt : qr.getCatalogReceipts()) {
         	List<QueryExpression> restrictedExpressions = new Vector<QueryExpression>();
         	for (QueryExpression qe : queryLogicalGroup.getExpressions()) {
         		QueryExpression restrictedQE = this.reduceToUnderstoodExpressions(catalog, qe);
+        		if (restrictedQE == null && queryLogicalGroup.getOperator().equals(QueryLogicalGroup.Operator.AND) && this.disableIntersectingCrossCatalogQueries) {
+        			restrictedExpressions.clear();
+        			break;
+        		}
         		if (restrictedQE != null)
         			restrictedExpressions.add(restrictedQE);
         	}

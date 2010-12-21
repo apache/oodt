@@ -4,6 +4,12 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-97 Allow for unsorted paging across all catalogs to give option of lowering heap footprint (bfoster)
+
+* OODT-96 cas-catalog query parser fails when bucketNames are given (bfoster)
+
+* OODT-94 DataSourceIndex doesn't filter it's query to the bucket names provided in the QueryExpression (bfoster)
+
 * OODT-93 Spring XML resource classpaths are still set to /gov/nasa/jpl... and commons classpaths were not updates to remove 'cas' (bfoster)
 
 * OODT-91 cas-commons command-line help for a given arguments (bfoster)

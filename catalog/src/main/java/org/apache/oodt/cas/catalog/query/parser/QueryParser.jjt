@@ -117,10 +117,10 @@ QueryExpression QueryExpression(Vector<String> bucketNames) :
     	LOOKAHEAD ( <OPEN_PARENS> ) 
     	qe = PriorityQueryExpression(bucketNames)
     | 
-    	LOOKAHEAD ( <OPEN_BRACES> <BUCKET_NAME_KEY> ) 
+    	LOOKAHEAD ( <OPEN_BRACES> (<SPACE>)* <BUCKET_NAME_KEY> ) 
     	qe = StdQueryExpression()
     | 
-    	LOOKAHEAD ( <OPEN_BRACES> <CUSTOM_NAME_KEY> ) 
+    	LOOKAHEAD ( <OPEN_BRACES> (<SPACE>)* <CUSTOM_NAME_KEY> ) 
     	qe = CustomQueryExpression(bucketNames)
     | 
         LOOKAHEAD ( <TERM> ) 
@@ -136,7 +136,7 @@ QueryExpression StdQueryExpression() :
 	Vector<String> bucketNames = new Vector<String>();
 }
 {
-    <OPEN_BRACES> (<SPACE>)* <BUCKET_NAME_KEY> (<SPACE>)* <EQUALS> (<SPACE>)* <QUOTE> getValues(bucketNames) <QUOTE> (<SPACE>)* [<SEMI_COLON> qe = Query(bucketNames)] <CLOSE_BRACES>
+    <OPEN_BRACES> (<SPACE>)* <BUCKET_NAME_KEY> (<SPACE>)* <EQUALS> (<SPACE>)* getValues(bucketNames) (<SPACE>)* [<SEMI_COLON> (<SPACE>)* qe = Query(bucketNames)] (<SPACE>)* <CLOSE_BRACES>
     { 
     	if (qe == null) {
     		return new StdQueryExpression(new HashSet<String>(bucketNames));
@@ -181,7 +181,7 @@ QueryExpression CustomQueryExpression(Vector<String> bucketNames) :
 	Properties p = new Properties();
 }
 {
-	<OPEN_BRACES> (<SPACE>)* <CUSTOM_NAME_KEY> (<SPACE>)+ <EQUALS> (<SPACE>)+ <QUOTE> customNameToken = <TERM> <QUOTE> [ LOOKAHEAD (<SEMI_COLON>) <SEMI_COLON> getProperties(p) ] <CLOSE_BRACES>
+	<OPEN_BRACES> (<SPACE>)* <CUSTOM_NAME_KEY> (<SPACE>)* <EQUALS> (<SPACE>)* <QUOTE> customNameToken = <TERM> <QUOTE> [ LOOKAHEAD ((<SPACE>)* <SEMI_COLON>) (<SPACE>)* <SEMI_COLON> getProperties(p) ] (<SPACE>)* <CLOSE_BRACES>
 	{ 
 		CustomQueryExpression cqe = new CustomQueryExpression(customNameToken.image, p);
     	if (bucketNames != null)
@@ -207,7 +207,7 @@ void getProperties(Properties p) :
 	Token propertyVal = null;
 }
 {
-	propertyKey = <P_KEY> (<SPACE>)+ <EQUALS> (<SPACE>)+ propertyVal = <VALUE> ( LOOKAHEAD (<COMMA>) <COMMA> getProperties(p) ) *
+	propertyKey = <P_KEY> (<SPACE>)* <EQUALS> (<SPACE>)* propertyVal = <VALUE> ( LOOKAHEAD (<COMMA>) <COMMA> getProperties(p) ) *
 	{ 
 		p.put(propertyKey.image.substring(2), propertyVal.image.replaceAll("'", ""));
 	}

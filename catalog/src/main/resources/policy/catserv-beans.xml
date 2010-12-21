@@ -32,6 +32,8 @@
         <property name="restrictIngestPermissions" value="false"/>
     	<property name="oneCatalogFailsAllFail" value="true"/>
     	<property name="simplifyQueries" value="true"/>
+        <property name="disableIntersectingCrossCatalogQueries" value="false"/>
+        <property name="crossCatalogResultSortingThreshold" value="200"/>
     </bean>    
     <bean id="CatalogServiceClientFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.system.impl.CatalogServiceClientFactory">
         <property name="communicationChannelClientFactory" ref="XmlRpcClientFactory"/>
