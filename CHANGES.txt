@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-95 cas-catalog throws exceptions with blank messages (bfoster)
+
 * OODT-98 Resource Manager TestXmlQueueRepository test fails on some computers because <hashmap>.keySet() order is undefined (bfoster)
 
 * OODT-97 Allow for unsorted paging across all catalogs to give option of lowering heap footprint (bfoster)

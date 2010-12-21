@@ -169,7 +169,7 @@ public class Catalog {
 				return null;
 			}
 		}catch (Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -193,7 +193,7 @@ public class Catalog {
 				return null;
 			}
 		}catch (Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -207,7 +207,7 @@ public class Catalog {
 				return false;
 			}
 		}catch (Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -227,7 +227,7 @@ public class Catalog {
 				return false;
 			}
 		}catch(Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 		
@@ -244,7 +244,7 @@ public class Catalog {
 				return Collections.emptyList();
 			}
 		}catch (Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -290,7 +290,7 @@ public class Catalog {
 				return new Metadata();
 			}
 		}catch(Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -307,7 +307,7 @@ public class Catalog {
 			}
 			return metadataMap;
 		}catch(Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -322,7 +322,7 @@ public class Catalog {
 				return true;
 			}
 		}catch(Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	

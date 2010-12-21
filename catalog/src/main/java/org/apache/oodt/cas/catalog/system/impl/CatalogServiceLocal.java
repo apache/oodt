@@ -426,7 +426,7 @@ public class CatalogServiceLocal implements CatalogService {
 		try {
 			return this.catalogRepository.deserializePluginURLs();
 		}catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -436,7 +436,7 @@ public class CatalogServiceLocal implements CatalogService {
 			currentUrls.addAll(urls);
 			this.catalogRepository.serializePluginURLs(currentUrls);
 		}catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -822,7 +822,7 @@ public class CatalogServiceLocal implements CatalogService {
  				returnList.add(new TransactionReceipt(transactionId, existing.get(transactionId)));
  			return returnList;
 		}catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -836,7 +836,7 @@ public class CatalogServiceLocal implements CatalogService {
 //				}
 				indexedReceipts.add(transactionReceipt);
 			}catch(Exception e) {
-				throw new CatalogServiceException("", e);
+				throw new CatalogServiceException(e.getMessage(), e);
 			}
 		}
 		return indexedReceipts;
@@ -927,7 +927,7 @@ public class CatalogServiceLocal implements CatalogService {
 		try {
 			return this.ingestMapper.getCatalogServiceTransactionId(catalogTransactionId, catalogUrn);
 		}catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}finally {
 			this.ingestMapperLock.readLock().unlock();
 		}
