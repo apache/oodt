@@ -504,6 +504,8 @@ public class CatalogServiceLocal implements CatalogService {
 					try {
 						// perform update
 						if (performUpdate) {
+							if (!Boolean.parseBoolean(metadata.getMetadata(ENABLE_UPDATE_MET_KEY)))
+								throw new CatalogServiceException("TransactionId '" + catalogServiceTransactionId + "' already exists -- enable update by setting metadata key '" + ENABLE_UPDATE_MET_KEY + "'=true");
 							TransactionId<?> catalogTransactionId = this.ingestMapper.getCatalogTransactionId(catalogServiceTransactionId, catalog.getId());
 							if (catalogTransactionId != null) {
 								CatalogReceipt catalogReceipt = catalog.update(catalogTransactionId, metadata);

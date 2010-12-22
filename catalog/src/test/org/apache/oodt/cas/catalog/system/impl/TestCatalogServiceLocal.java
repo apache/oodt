@@ -102,6 +102,7 @@ public class TestCatalogServiceLocal extends TestCase {
 
 		//test ingest update
 		m.replaceMetadata(CatalogServiceLocal.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY.toString(), tr.getTransactionId().toString());
+		m.replaceMetadata(CatalogServiceLocal.ENABLE_UPDATE_MET_KEY, "true");
 		tr = cs.ingest(m);
 		receipts = new Vector<TransactionReceipt>();
 		receipts.add(tr);
