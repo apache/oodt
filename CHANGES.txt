@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-90 (cas-crawler patch) CAS-PGE returns success even if product file(s) failed to ingest (bfoster)
+
 * OODT-103 modify cas-common's cmd-line parser to throw a special OptionHelpException if no args 
   are specified so it can be specifically trapped (bfoster)
 

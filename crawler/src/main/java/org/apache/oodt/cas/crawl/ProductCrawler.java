@@ -22,6 +22,7 @@ package org.apache.oodt.cas.crawl;
 import org.apache.oodt.cas.crawl.action.CrawlerAction;
 import org.apache.oodt.cas.crawl.action.CrawlerActionRepo;
 import org.apache.oodt.cas.crawl.config.ProductCrawlerBean;
+import org.apache.oodt.cas.crawl.status.IngestStatus;
 import org.apache.oodt.cas.filemgr.ingest.Ingester;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
@@ -31,8 +32,10 @@ import org.apache.oodt.cas.metadata.Metadata;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,7 +72,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
     };
 
     private CrawlerActionRepo actionRepo;
-
+    private List<IngestStatus> ingestStatus;
     private Ingester ingester;
 
     public void crawl() {
@@ -77,6 +80,8 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
     }
 
     public void crawl(File dirRoot) {
+    	this.ingestStatus = new Vector<IngestStatus>();
+
         // Load actions
         if (this.getApplicationContext() != null)
             (this.actionRepo = new CrawlerActionRepo())
@@ -121,6 +126,10 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
         }
     }
 
+    public List<IngestStatus> getIngestStatus() {
+    	return Collections.unmodifiableList(this.ingestStatus);
+    }
+    
     private synchronized boolean containsRequiredMetadata(
             Metadata productMetadata) {
         for (int i = 0; i < this.getRequiredMetadata().size(); i++) {
@@ -146,8 +155,10 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
 					.getAbsoluteFile().getParentFile().getAbsolutePath());
     }
 
-    private void handleFile(File product) {
+    private void handleFile(final File product) {
         LOG.log(Level.INFO, "Handling file " + product);
+    	final IngestStatus.Result ingestResult;
+    	final String message;
         if (this.passesPreconditions(product)) {
             Metadata productMetadata = new Metadata();
             productMetadata.addMetadata(this.getGlobalMetadata().getHashtable());
@@ -158,18 +169,29 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
             boolean isPreIngestActionsComplete = this.performPreIngestActions(product, productMetadata);
             
             if (this.isSkipIngest()) {
+            	ingestResult = IngestStatus.Result.SKIPPED;
+            	message = "Crawler ingest turned OFF";
                 LOG.log(Level.INFO, "Skipping ingest of product: ["
                     + product.getAbsolutePath() + "]");
             } else {
                 if (isRequiredMetadataPresent
                         && isPreIngestActionsComplete
                         && this.ingest(product, productMetadata)) {
+                	ingestResult = IngestStatus.Result.SUCCESS;
+                	message = "Ingest was successful";
                     LOG.log(Level.INFO, "Successful ingest of product: ["
                             + product.getAbsolutePath() + "]");
                     this
                             .performPostIngestOnSuccessActions(product,
                                     productMetadata);
                 } else {
+                	ingestResult = IngestStatus.Result.FAILURE;
+                	if (!isRequiredMetadataPresent)
+                		message = "Missing required metadata";
+                	else if (!isPreIngestActionsComplete)
+                		message = "PreIngest actions failed to complete";
+                	else
+                		message = "Failed to ingest product";
                     LOG.log(Level.WARNING, "Failed to ingest product: ["
                             + product.getAbsolutePath()
                             + "]: performing postIngestFail actions");
@@ -177,10 +199,23 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
                 }
             }
         } else {
+        	ingestResult = IngestStatus.Result.PRECONDS_FAILED;
+        	message = "Failed to pass preconditions";
             LOG.log(Level.WARNING,
                     "Failed to pass preconditions for ingest of product: ["
                             + product.getAbsolutePath() + "]");
         }
+        this.ingestStatus.add(new IngestStatus() {
+			public File getProduct() {
+				return product;
+			}
+			public Result getResult() {
+				return ingestResult;
+			}
+			public String getMessage() {
+				return message;
+			}
+        });
     }
 
     private boolean ingest(File product, Metadata productMetdata) {
