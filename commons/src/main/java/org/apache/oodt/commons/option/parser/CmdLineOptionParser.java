@@ -27,6 +27,7 @@ import java.util.List;
 //OODT imports
 import org.apache.oodt.commons.option.CmdLineOption;
 import org.apache.oodt.commons.option.CmdLineOptionInstance;
+import org.apache.oodt.commons.option.OptionHelpException;
 import org.apache.oodt.commons.option.util.CmdLineOptionUtils;
 import org.apache.oodt.commons.option.util.CmdLineOptionsUsagePrinter;
 
@@ -52,7 +53,7 @@ public class CmdLineOptionParser {
     public List<CmdLineOptionInstance> parse(String[] args) throws IOException {
         List<CmdLineOptionInstance> optionInstances = new LinkedList<CmdLineOptionInstance>();
         if (args.length < 1)
-            throw new IOException(
+            throw new OptionHelpException(
                     "Must specify options : type -h or --help for info");
 
         for (int j = 0; j < args.length; j++) {
