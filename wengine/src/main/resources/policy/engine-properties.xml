@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2009 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: CatalogService Properties
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <bean class="org.apache.oodt.cas.workflow.util.CasPropertyPlaceholderConfigurer">
+        
+        <!-- Allow for system-level properties to override all properties below -->
+        <property name="systemPropertiesMode" value="2"/>
+        
+        <!-- Properties -->
+        <property name="properties">
+            <props>
+                <prop key="workflowmgr.url">[WORKFLOWMGR_URL];http://localhost:10000</prop>           
+                <prop key="workflowmgr.port">[WORKFLOWMGR_PORT];10000</prop>           
+            	<prop key="resourcemgr.url">[RESOURCEMGR_URL];http://localhost:10001</prop>           
+            	<prop key="pcs.support.home">[PCS_SUPPORT_HOME];/tmp</prop>       
+                <prop key="pcs.home">[PCS_HOME];/tmp</prop>                           
+                <prop key="workflowmgr.home">[WORKFLOWMGR_HOME];/tmp</prop>           
+                <prop key="filemgr.home">[FILEMGR_HOME];/tmp</prop>
+                
+                <prop key="default.page.size">10</prop>           
+            </props>
+        </property>
+        
+    </bean>
+    
+</beans>
+

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2009 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: CatalogService Beans
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <bean class="org.apache.oodt.cas.commons.spring.postprocessor.SetIdBeanPostProcessor"/>    
+    
+    <!-- Workflow Engines -->
+        <!-- Abstract -->
+    <bean id="WorkflowEngineLocalFactory" lazy-init="true" abstract="true" class="org.apache.oodt.cas.workflow.engine.WorkflowEngineLocalFactory">
+        <property name="modelRepoFactory" ref="XmlWorkflowModelRepositoryFactory"/>
+        <property name="processorRepoFactory" ref="XStreamWorkflowProcessorRepositoryFactory"/>
+        <property name="instanceRepoFactory" ref="LocalCatalogServiceInstanceRepositoryFactory"/>
+        <property name="eventRepoFactory" ref="SpringBasedEngineEventRepositoryFactory"/>
+        <property name="processorMapFactory" ref="XmlBasedProcessorMapFactory"/>
+        <property name="priorityManagerFactory" ref="HighestPriorityFIFOManagerFactory"/>
+        <property name="runnerFactory" ref="LocalRunnerFactory"/>
+        <property name="metadataKeysToCache">
+            <list>
+                <value>CollectionLabel</value>
+            </list>
+        </property>
+        <property name="debug" value="false"/>
+    </bean>    
+    <bean id="WorkflowEngineClientFactory" lazy-init="true" abstract="true" class="org.apache.oodt.cas.workflow.engine.WorkflowEngineClientFactory">
+        <property name="autoPagerSize" value="1000"/>
+    </bean>
+        <!-- XML-RPC -->
+    <bean id="XmlRpcServerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.server.channel.xmlrpc.XmlRpcCommunicationChannelServerFactory">
+        <property name="port" value="${workflowmgr.port}"/>
+        <property name="workflowEngineFactory" ref="XmlRpcEngineFactory"/>
+    </bean> 
+    <bean id="XmlRpcEngineClientFactory" lazy-init="true" parent="WorkflowEngineClientFactory" class="org.apache.oodt.cas.workflow.engine.WorkflowEngineClientFactory">
+        <property name="communicationChannelClientFactory" ref="XmlRpcClientFactory"/>
+    </bean>
+    <bean id="XmlRpcEngineFactory" lazy-init="true" parent="WorkflowEngineLocalFactory" class="org.apache.oodt.cas.workflow.engine.WorkflowEngineLocalFactory">
+        <property name="communicationChannelClientFactory" ref="XmlRpcClientFactory"/>
+    </bean>    
+    <bean id="XmlRpcClientFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.server.channel.xmlrpc.XmlRpcCommunicationChannelClientFactory">
+        <property name="serverUrl" value="${workflowmgr.url}"/>
+        <property name="requestTimeout" value="20"/>
+        <property name="connectionTimeout" value="60"/>
+        <property name="chunkSize" value="1024"/>
+        <property name="connectionRetries" value="20"/>
+        <property name="connectionRetryIntervalSecs" value="30"/>
+    </bean> 
+        <!-- RMI -->
+    <bean id="RmiServerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.server.channel.rmi.RmiCommunicationChannelServerFactory">
+        <property name="port" value="${workflowmgr.port}"/>
+        <property name="name" value="WorkflowEngine"/>
+        <property name="workflowEngineFactory" ref="RmiEngineFactory"/>
+    </bean> 
+    <bean id="RmiEngineClientFactory" lazy-init="true" parent="WorkflowEngineClientFactory" class="org.apache.oodt.cas.workflow.engine.WorkflowEngineClientFactory">
+        <property name="communicationChannelClientFactory" ref="RmiClientFactory"/>
+    </bean>
+    <bean id="RmiEngineFactory" lazy-init="true" parent="WorkflowEngineLocalFactory" class="org.apache.oodt.cas.workflow.engine.WorkflowEngineLocalFactory">
+        <property name="communicationChannelClientFactory" ref="RmiClientFactory"/>
+    </bean>    
+    <bean id="RmiClientFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.server.channel.rmi.RmiCommunicationChannelClientFactory">
+        <property name="serverUrl" value="${workflowmgr.url}"/>
+        <property name="name" value="WorkflowEngine"/>
+    </bean> 
+        <!-- MULTI XML-RPC -->
+    <bean id="MultiXmlRpcServerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.server.channel.MultiCommunicationChannelServerFactory">
+        <property name="port" value="${workflowmgr.port}"/>
+        <property name="workflowEngineFactory" ref="XmlRpcEngineFactory"/>
+        <property name="serverFactories">
+            <list>
+                <ref bean="XmlRpcServerFactory"/>
+                <ref bean="XmlRpcServerFactory"/>
+            </list>
+        </property>        
+    </bean>
+    <bean id="MultiXmlRpcEngineClientFactory" lazy-init="true" parent="WorkflowEngineClientFactory" class="org.apache.oodt.cas.workflow.engine.WorkflowEngineClientFactory">
+        <property name="communicationChannelClientFactory" ref="MultiXmlRpcClientFactory"/>
+    </bean>
+    <bean id="MultiXmlRpcClientFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.server.channel.MultiCommunicationChannelClientFactory">
+        <property name="serverUrl" value="${workflowmgr.url}"/>
+        <property name="useClientFactory" ref="XmlRpcClientFactory"/>
+        <property name="clientFactories">
+            <list>
+                <ref bean="XmlRpcClientFactory"/>
+                <ref bean="XmlRpcClientFactory"/>
+            </list>
+        </property>  
+    </bean> 
+        <!-- MULTI MIXED -->    
+    <bean id="MultiMixedServerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.server.channel.MultiCommunicationChannelServerFactory">
+        <property name="port" value="${workflowmgr.port}"/>
+        <property name="workflowEngineFactory" ref="XmlRpcEngineFactory"/>
+        <property name="serverFactories">
+            <list>
+                <ref bean="XmlRpcServerFactory"/>
+                <ref bean="RmiServerFactory"/>
+            </list>
+        </property>        
+    </bean> 
+    <bean id="MultiMixedEngineClientFactory" lazy-init="true" parent="WorkflowEngineClientFactory" class="org.apache.oodt.cas.workflow.engine.WorkflowEngineClientFactory">
+        <property name="communicationChannelClientFactory" ref="MultiMixedClientFactory"/>
+    </bean>
+    <bean id="MultiMixedClientFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.server.channel.MultiCommunicationChannelClientFactory">
+        <property name="serverUrl" value="${workflowmgr.url}"/>
+        <property name="useClientFactory" ref="XmlRpcClientFactory"/>
+        <property name="clientFactories">
+            <list>
+                <ref bean="XmlRpcClientFactory"/>
+                <ref bean="RmiClientFactory"/>
+            </list>
+        </property>  
+    </bean> 
+        <!-- Default -->
+    <bean id="DefaultWorkflowEngineClientFactory" lazy-init="true" parent="XmlRpcEngineClientFactory"/>
+    <bean id="DefaultServerFactory" lazy-init="true" parent="XmlRpcServerFactory"/>
+    
+    <!-- Runner Factories -->
+    <bean id="LocalRunnerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.engine.runner.LocalEngineRunnerFactory"/>
+    <bean id="ResourceRunnerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.engine.runner.ResourceRunnerFactory">
+        <property name="resourceManagerUrl" value="${resourcemgr.url}"/>
+    </bean>
+    
+    <!-- Event Repositories -->
+    <bean id="SpringBasedEngineEventRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.event.repo.SpringBasedEngineEventRepositoryFactory">
+        <property name="beanRepo" value="/${pcs.home}/core/workflow/policy/event-beans.xml"/>
+    </bean>
+    
+    <!-- Model Repositories -->
+    <bean id="XmlWorkflowModelRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.model.repo.XmlWorkflowModelRepositoryFactory">
+        <property name="modelFiles">
+            <list>
+                <value>/${pcs.home}/core/workflow/policy/workflows</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- Processor Repositories -->
+    <bean id="XStreamWorkflowProcessorRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.processor.repo.XStreamWorkflowProcessorRepositoryFactory">
+        <property name="repoDirectory" value="/${pcs.support.home}/processorRepo"/>
+    </bean>
+    
+    <!-- Workflow Instance Repositories -->
+    <bean id="LocalCatalogServiceInstanceRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.instance.repo.WorkflowInstanceRepositoryFactory">
+        <property name="catalogServiceFactory" ref="CatalogServiceLocalFactory"/>
+    </bean>
+    <bean id="ClientCatalogServiceInstanceRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.instance.repo.WorkflowInstanceRepositoryFactory">
+        <property name="catalogServiceFactory" ref="CatalogServiceClientFactory"/>
+    </bean>
+    
+    <!-- Processor Maps -->
+    <bean id="XmlBasedProcessorMapFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.processor.map.XmlBasedProcessorMapFactory">
+        <property name="xmlFile" value="/${pcs.home}/core/workflow/policy/workflows/proc-mapping/WorkflowProcessorMapping.xml"/>
+    </bean>
+    
+    <!-- Priority Managers -->
+    <bean id="FILOPriorityManagerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.priority.FILOPriorityManagerFactory"/>
+    <bean id="HighestPriorityFirstManagerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.priority.HighestPriorityFirstManagerFactory"/>
+    <bean id="HighestPriorityFIFOManagerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.priority.HighestPriorityFIFOManagerFactory">
+        <property name="secondsBetweenBoosts" value="60"/>
+        <property name="boostAmount" value="0.001"/>
+        <property name="boostCap" value="7.0"/>
+    </bean>
+    
+</beans>

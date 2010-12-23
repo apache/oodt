@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2006 California Institute of Technology.
+  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+
+  $Id$
+-->
+
+<document>
+  <properties>
+    <title>CAS Workflow Manager Technical Guide</title>
+    <author email="Brian.M.Foster@jpl.nasa.gov">Brian Foster</author>
+  </properties>
+
+  <body>
+    <section name="Introduction">
+      <p>Historically data processing systems have been primarily controlled by file-based
+        triggering mechanisms. These types of systems function like a chain-reaction: one file would
+        trigger a process, which would generate another file, which would then trigger another
+        process, and so forth. These systems, while easy to add and remove processes from the
+        system, require the user to extensively understand how these processes are related to each
+        other, so to avoid creating unwanted 'chain-reactions'. Recently, efforts have been made to
+        move towards more controlled processing system models, which utilize the concept of
+        workflows. Workflows are more-or-less a tightly grouped set of processes. A workflow
+        explicitly tells the processing system which set of processes should be run and in what
+        order. Workflows run processes based off successful completion of previous processes in its
+        mapping, thereby making file generation a criteria for successful completion of a process
+        instead of being the triggering mechanism for the next process. This concept separates the
+        workflow from the files it may generate, thereby allowing the processing system to perform
+        more tasks than just file processing. In this paper you will learn how to use, configure,
+        and understand design decisions of a workflow processing system, specifically CAS-Workflow2.
+      </p>
+    </section>
+    <section name="Workflows Structure">
+      <p>Workflows consist of three parts: pre-conditions, a list of tasks (or processes) to
+        perform, and post-conditions.</p>
+      <subsection name="Pre-Conditions">
+        <p>A pre-condition is a task whose purpose is to return a true/false answer to some
+          question. Pre-conditions are requirements that must be meet before a workflow can run its
+          tasks. An example of a pre-condition might be: checking for the existences of a particular
+          file. After all pre-conditions have been meet, a workflow will execute its tasks.</p>
+      </subsection>
+      <subsection name="Tasks">
+        <p>A Task is an activity or piece of work that needs to be done. Tasks are the atomic level
+          of a workflow. The goal of any workflow is to run its tasks to successful completion. An
+          example of a task might be: creating a visual map for a data file. After all tasks have
+          completed, the workflow will then run its post-conditions.</p>
+      </subsection>
+      <subsection name="Post-Conditions">
+        <p>Post-conditions give the workflow the ability to evaluate whether or not its task
+          successfully perform all their required duties. An example of a post-condition might be:
+          checking for the existence of a file that a task was responsible for generating.</p>
+      </subsection>
+    </section>
+    <section name="Workflow Lifecycle">
+      <p>Each workflow must go through a well-defined set of states or a lifecycle. We can easily
+        deduce a few of the states from what we know already. A workflow starts by evaluating its
+        pre-conditions, so we can call this state: PreConditionEval. Then it must execute its tasks,
+        we'll call this state: Executing. Then of course we have: PostConditionEval. Now, what if
+        any of the three steps fail, we need a failure state, so hence the state: Failure. And, if
+        everything goes as planed, we have the state: Success. Figure 1 further describes this
+        workflow lifecycle. There are other states, however, for simplicity sake, these are the only
+        states we will introduce for now, the other states will be introduced later, as more
+        workflow knowledge is required to understand them.</p>
+      <center>
+        <img src="../images/simplified-lifecycle.png" alt="Workflow Manager Lifecycle"/>
+      </center>
+      <subsection name="PreConditionEval">
+        <p>Workflow is executing its pre-conditions.</p>
+      </subsection>
+      <subsection name="Executing">
+        <p>Workflow is executing its tasks.</p>
+      </subsection>
+      <subsection name="PostConditionEval">
+        <p>Workflow is executing its post-conditions.</p>
+      </subsection>
+      <subsection name="Success">
+        <p>Workflow has successfully passed all pre-conditions, executed all tasks, and passed all
+          post-conditions.</p>
+      </subsection>
+      <subsection name="Failure">
+        <p>At least one of the workflow's pre-conditions, tasks, or post-conditions have failed.</p>
+      </subsection>
+    </section>
+    <section name="Workflow Context">
+      <p>Workflows can have context, which is kind of like their knowledge base. This context is
+        also referred to as metadata. Metadata is a bucket of key/value(s) information that
+        workflows have access to. An example of a metadata field might be: RunDate='2009-01-20'. At
+        times, tasks needs to talk to other tasks, or conditions would like to communicate something
+        to the tasks that run after them. Workflows not only control the flow of conditions and
+        tasks, they also control communication between them. Workflows accomplish this by the use of
+        metadata. Conditions and tasks can also have their own metadata, which they don't share with
+        anyone else. A workflow has three categories of metadata: 1) static, 2) dynamic, and 3)
+        local.</p>
+      <subsection name="Static">
+        <p>This is metadata that is the same for every run of a workflow. A task can always assume
+          this metadata will exist.</p>
+      </subsection>
+      <subsection name="Dynamic">
+        <p>This is metadata that is passed into the workflow when it is run and/or set by other task
+          and conditions when communicating with each other.</p>
+      </subsection>
+      <subsection name="Local">
+        <p>This is dynamic metadata that is local to a task or condition.</p>
+      </subsection>
+    </section>
+    <section name="Everything is a Workflow">
+      <p>In order to simplify how process control is configured, tasks and conditions were also
+        designed to be workflows. This means that almost anywhere we used the word workflow up until
+        now, we could have replaced it with the word task and vise versa. However, there are a few
+        exceptions, a task differs from a workflow in that it wraps an executable class, which
+        performs some activity, and it cannot have any children workflows. Conditions are just
+        specialized tasks, so the same applies to them as well. Yet, conditions differ from tasks in
+        that they cannot have pre-conditions or post-conditions, since that would mean you could
+        have a pre-condition for a pre-condition. So, in other words, a workflow is really just a
+        workflow of workflows with pre and post-condition workflows.</p>
+    </section>
+    <section name="Workflow Listeners">
+      <p>We now know that workflows have three different parts (or buckets) into which other
+        workflows can be placed: pre-conditions, children workflows, and post-conditions. Workflows
+        placed into these buckets are treated like black boxes. A workflow has no idea what types of
+        workflows have been placed into these buckets. The workflow just knows that first the
+        workflows in the pre-conditions bucket must pass before running the workflows in the
+        children bucket, followed then by the workflows in the post-conditions bucket. The way a
+        workflow knows what is going on with the workflows in its buckets is by registering itself
+        as a listener for state changes in those workflows. When a workflow changes state, it will
+        notify its listeners about the change. The listening workflow will then adjust its state
+        depending on which bucket the state change notification came from. Earlier we learned about
+        the lifecycle which each workflow goes through. This lifecycle is not only followed by the
+        top workflow or root workflow, it is followed by every workflow in all of the different
+        buckets as well. Workflows will change states in their lifecycle when one of the workflows
+        in their buckets change state. For example, if that a workflow has a pre-condition workflow
+        which changes state to Executing, upon notification, it will change its state to
+        PreConditionEval. This notion of workflow lifecycle changes affecting other workflow
+        lifecycles will be explained in greater detail later.</p>
+    </section>
+    <section name="Workflow Types">
+      <p>There are two categories to workflows, there are workflows which control the run order of
+        other workflows, and then there are workflows which track the execution of some process or
+        activity. There are currently two workflows implemented which control run order of
+        workflows:</p>
+      <subsection name="Parallel">
+        <p>A workflow that runs all the workflows in its children bucket at the same time. Its
+          metadata (or context) becomes the merge of all metadata of workflows in its children
+          bucket.</p>
+      </subsection>
+      <subsection name="Sequential">
+        <p>A workflow that runs the workflows in its children bucket one at a time, only running the
+          next child workflow after its previous child workflow has finished. Its metadata (or
+          context) is updated after each workflow from its children bucket is run, then passed to
+          the next workflow to run from its children bucket.</p>
+      </subsection>
+      <p>The second category of workflows, which track the running of some process, we have already
+        been introduced to, these are tasks and conditions:</p>
+      <subsection name="Task">
+        <p>Tracks some executing activity. Its metadata is synched with this process
+          periodically.</p>
+      </subsection>
+      <subsection name="Condition">
+        <p>Tracks some executing condition activity. Its metadata is synched with this executing
+          condition periodically.</p>
+      </subsection>
+    </section>
+    <section name="Workflows in Workflows">
+      <p>Now that we understand the make up of a workflow, let look at an example. Let's say we want
+        a workflow that models going to the store to buy groceries. So the first step is to make
+        sure we have our keys and wallet. These would be considered pre-conditions, because we can't
+        drive without our keys, and we can't buy the groceries without our wallet. However, these
+        pre-conditions can be performed at the same time. I can check if I have my keys while I am
+        checking for my wallet, since checking for my keys does not depend on me checking for my
+        wallet. So these pre-conditions would happen in 'parallel'. After we've determined that we
+        have our keys and wallet, we can now perform the tasks we have set out to do: drive to the
+        store; buy our groceries; drive home. Since we can't do one of these tasks without doing the
+        one before it (that is, we can't buy our groceries without driving to the store), these
+        tasks are 'sequential'. So our workflow model graph would look something like:</p>
+      <pre>
+        [id='BuyGroceries' execution='sequential'] 
+          {PreCond: [id='FindWalletAndKeys' execution='parallel']
+            [id='FindWallet' exectuion='condition']
+            [id='FindKeys' execution='condition']}
+          [id='DriveToStore' execution='task']
+            [id='PurchaseGroceries' execution='task']
+            [id='DriveHome' execution='task'] 
+      </pre>
+      <p>Let's take this one step further now. Let's say we brought a friend along to help with the
+        shopping and we split up our list, so to cut the time in half. Now we have two people
+        shopping at the same time:</p>
+      <pre>
+        [id='BuyGroceries' execution='sequential']
+          {PreCond: [id='FindWalletAndKeys' execution='parallel']
+            [id='FindWallet' exectuion='condition'] 
+            [id='FindKeys' execution='condition']}
+          [id='DriveToStore' execution='task']
+          <strong>[id='PurchaseGroceries' execution='parallel']
+            [id='YouPurchaseGroceries' execution='task']
+            [id='FriendPurchaseGroceries' execution='task']</strong>
+          [id='DriveHome' execution='task'] 
+      </pre>
+      <p>Figure 2 shows the task mapping of this workflow. Usually, when you go to implement a
+        workflow in the system, you will have a task diagram, which you will have to convert to a
+        workflow model graph similar to the grocery store example above. So being able to look at
+        one and realize the other is essential.</p>
+      <center>
+        <img src="../images/grocery-store-workflow-1.png" alt="Grocery Store Workflow 1"/>
+      </center>
+      <p>The following figures enumerates the recommended thought process which one should follow to
+        identify workflows from a task graph:</p>
+      <center>
+        <img src="../images/grocery-store-workflow-2.png" alt="Grocery Store Workflow 2"/>
+      </center>
+      <center>
+        <img src="../images/grocery-store-workflow-3.png" alt="Grocery Store Workflow 3"/>
+      </center>
+      <center>
+        <img src="../images/grocery-store-workflow-4.png" alt="Grocery Store Workflow 4"/>
+      </center>
+    </section>
+    <section name="Workflow Patterns">
+      <p>There are many complex workflow patterns out there. However, most patterns should be
+        implementable with careful usage of different combinations of parallel and sequential
+        workflows. In the unusual case where parallel and sequential won't cut it, custom workflows
+        can be written and plugged in (this is an advanced topic that will be discussed later). Here
+        we will cover how to create the most common workflow patterns. More advanced patterns will
+        be discussed later.</p>
+      <subsection name="Parallel Split">
+        <subsection name="- Description:">
+          <p>The divergence of a branch into two or more parallel branches each of which execute
+            concurrently.</p>
+        </subsection>
+        <subsection name="- Diagram:">
+          <center>
+            <img src="../images/parallel-split-diagram.png" alt="Parallel Split Diagram"/>
+          </center>
+        </subsection>
+        <subsection name="- Model Graph:">
+          <pre>
+            [id='S1' execution='sequential']
+              [id='T1' execution='task']
+              [id='P1' execution='parallel']
+                [id='T2' execution='task']
+                [id='T3' execution='task']            
+          </pre>
+        </subsection>
+      </subsection>
+      <subsection name="Synchronization">
+        <subsection name="- Description:">
+          <p>The convergence of two or more branches into a single subsequent branch such that the
+            thread of control is passed to the subsequent branch when all input branches have been
+            enabled.</p>
+        </subsection>
+        <subsection name="- Diagram:">
+          <center>
+            <img src="../images/synchronization-diagram.png" alt="Synchronization Diagram"/>
+          </center>
+        </subsection>
+        <subsection name="- Model Graph:">
+          <pre>
+            [id='S1' execution='sequential']
+              [id='P1' execution='parallel']
+                [id='T1' execution='task']
+                [id='T2' execution='task']
+              [id='T3' execution='task']            
+           </pre>
+        </subsection>
+      </subsection>
+      <subsection name="Combination of a Parallel Split into a Synchronization">
+        <subsection name="- Description:">
+          <p>(See <strong>Parallel Split</strong> and <strong>Synchronization</strong>)</p>
+        </subsection>
+        <subsection name="- Diagram:">
+          <center>
+            <img src="../images/parallel-split-into-synchronization-diagram.png"
+              alt="Combination of a Parallel Split into a Synchronization Diagram"/>
+          </center>
+        </subsection>
+        <subsection name="- Model Graph:">
+          <pre>
+            [id='S1' execution='sequential']
+              [id='T1' execution='task']
+              [id='P1' execution='parallel']
+                [id='T2' execution='task']
+                [id='T3' execution='task']
+              [id='T4' execution='task']            
+          </pre>
+        </subsection>
+      </subsection>
+    </section>
+    <section name="Lifecycles in Lifecycles">
+      <p>We learned above how each workflow goes through its own lifecycle, which depends on is
+        pre-condition, children, and post-conditions workflows’ lifecycles. Here we will learn how
+        this actually works. First we are going to introduce a few more states: Queued,
+        PreConditionSuccess, WaitingOnResources, and ExecutionComplete. Figure 9 is an updated
+        lifecycle diagram.</p>
+      <center>
+        <img src="../images/almost-complete-lifecycle.png" alt="Almost Complete Lifecycle Diagram"/>
+      </center>
+      <subsection name="Queued">
+        <p>Workflow has been put on the main queue (assume this to be initial state for now).</p>
+      </subsection>
+      <subsection name="PreConditionSuccess">
+        <p>Workflow has been put on the main queue (assume this to be initial state for now).</p>
+      </subsection>
+      <subsection name="WaitingOnResources">
+        <p>Workflow (or its pre-condition, children, post-condition workflows) are ready to run but
+          can’t because of resources.</p>
+      </subsection>
+      <subsection name="ExecutionComplete">
+        <p>A workflow has completed executing or all workflows in its children bucket have completed
+          successfully.</p>
+      </subsection>
+      <p>Let’s bring back the buying groceries example but this time we will add in the states (with everything starting in Queued state):</p>
+      <pre>
+        [id=’BuyGroceries’ execution=’sequential’ state=‘Queued’]
+          {PreCond:
+            [id=’FindWalletAndKeys’ execution=’parallel state=‘Queued’’]
+              [id=’FindWallet’ exectuion=’condition’ state=‘Queued’]
+               [id=’FindKeys’ execution=’condition’ state=‘Queued’]}
+          [id=’DriveToStore’ execution=’task’ state=‘Queued’]
+          [id=’ PurchaseGroceries’ execution=’parallel’ state=‘Queued’]
+            [id=’YouPurchaseGroceries’ execution=’task’ state=‘Queued’]
+            [id=’FriendPurchaseGroceries’ execution=’task’ state=‘Queued’]
+          [id=’DriveHome’ execution=’task’ state=‘Queued’]
+      </pre>
+    </section>
+  </body>
+
+</document>

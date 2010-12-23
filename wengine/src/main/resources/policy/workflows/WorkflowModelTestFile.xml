@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cas:workflows 
+	xmlns="http://oodt.jpl.nasa.gov/2.0/cas"
+	xmlns:cas="http://oodt.jpl.nasa.gov/2.0/cas"
+	xmlns:p="http://oodt.jpl.nasa.gov/2.0/cas/property">
+	
+	<workflow id="TestWorkflow" execution="sequential">
+		<configuration extends="test"/>
+		<task id-ref="Orbit"/>
+		<workflow id="tester" execution="sequential">
+			<conditions execution="parallel">
+				<condition id-ref="cond1" p:validateKey="test-key1,test-key2,Orbit_key"/>
+				<condition id-ref="cond2" p:validateKey="test-key1,test-key2,Orbit_key"/>
+			</conditions>
+			
+			<parallel>
+				<workflow id="L0" execution="sequential">
+					<task id-ref="L0a" p:validateKey="test-key1,test-key2,Orbit_key,cond1_key,cond2_key"/>
+					<task id-ref="L0b" p:validateKey="test-key1,test-key2,Orbit_key,cond1_key,cond2_key,L0a_key"/>
+					<task id-ref="L0c" p:validateKey="test-key1,test-key2,Orbit_key,cond1_key,cond2_key,L0a_key,L0b_key"/>
+					<task id-ref="L0d" p:validateKey="test-key1,test-key2,Orbit_key,cond1_key,cond2_key,L0a_key,L0b_key,L0c_key"/>
+				</workflow> 
+				<workflow id-ref="L1a" p:validateKey="test-key1,test-key2,Orbit_key,cond1_key,cond2_key"/>
+			</parallel>
+			<sequential>
+				<task id-ref="Ane" p:validateKey="test-key1,test-key2,Orbit_key,cond1_key,cond2_key,L0a_key,L0b_key,L0c_key,L0d_key"/>
+				<parallel p:validateKey="test-key1,test-key2,Orbit_key,Ane_key,cond1_key,cond2_key,L0b_key,L0c_key,L0d_key">
+					<workflow id-ref="GeoCal"/>
+					<workflow id-ref="Geo"/>             
+				</parallel>
+			</sequential>
+			
+			<conditions execution="sequential">
+				<condition id-ref="cond3" p:validateKey="test-key1,test-key2,L0a_key,L0b_key,L0c_key,L0d_key,L1aTask_key,Ane_key,GeoCalTask_key,GeoTask_key,cond1_key,cond2_key"/>
+			</conditions>
+		</workflow>
+		<task id="final" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"
+			p:validateKey="test-key1,test-key2,L0a_key,L0b_key,L0c_key,L0d_key,L1aTask_key,Ane_key,GeoCalTask_key,GeoTask_key,cond1_key,cond2_key,cond3_key"/>
+	</workflow>
+	
+	<task id="Orbit" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	<task id="L0a" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	<task id="L0b" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	<task id="L0c" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	<task id="L0d" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	<task id="Ane" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	
+	<condition id="cond1" p:timeout="200" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	<condition id="cond2" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	<condition id="cond3" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	
+	<sequential id="L1a">
+		<task id="L1aTask" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	</sequential>
+	
+	<workflow id="GeoCal" execution="sequential">
+		<task id="GeoCalTask" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	</workflow>
+	
+	<workflow id="Geo" execution="sequential">
+		<task id="GeoTask" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	</workflow>
+
+	<configuration name="test">
+		<property name="test-key1" value="test-value1"/>
+		<property name="test-key2" value="test-value2"/>
+	</configuration>
+
+</cas:workflows>

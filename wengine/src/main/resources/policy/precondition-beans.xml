@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2009 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: CatalogService Server Actions
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <bean class="org.apache.oodt.commons.spring.postprocessor.SetIdBeanPostProcessor"/>    
+    
+    <bean id="EnsureServerFullyLoaded" lazy-init="true" class="org.apache.oodt.cas.workflow.precondition.EnsureServerFullyLoaded">
+		<property name="description" value="Ensures the Workflow Engine Server cache is completely loaded"/>
+	</bean>
+    
+</beans>
+

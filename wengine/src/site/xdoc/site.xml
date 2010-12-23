@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2006 California Institute of Technology.
+  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+
+  $Id$
+-->
+
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+  
+  <body>
+    <links>
+      <item name="OODT" href="../oodt-site/"/>
+    </links>
+
+    <menu ref="reports" inherit="bottom"/>
+    
+    <menu name="Software Documentation">
+      <item name="Technical Documentation" href="tech/index.html"/>
+      <item name="User Guide" href="user/index.html"/>
+      <item name="Advanced User Guide" href="advanced/index.html"/>
+    </menu>
+    
+  </body>
+</project>

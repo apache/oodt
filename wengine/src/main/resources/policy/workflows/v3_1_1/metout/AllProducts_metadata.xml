@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (c) 2008, California Institute of Technology.
+    ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+-->
+<metadataList>
+    
+    <!-- Any File -->
+    <metadata key="ProductName" val="[Filename]"/>
+    <metadata key="Filename"/> 
+    <metadata key="FileLocation"/>
+    <metadata key="ProductionLocation" val="[ProdMet/ProductionLocation]"/> 
+    <metadata key="ProductionDateTime" val="[ProdMet/ProductionDateTime]"/> 
+    <metadata key="DataProvider" val="[ProdMet/DataProvider]"/> 
+    <metadata key="DataVersion" val="[ProdMet/DataVersion]"/> 
+    <metadata key="FileSize"/> 
+    <metadata key="Group" val="[ProdMet/Group]"/> 
+    <metadata key="Collection" val="[ProdMet/Collection]"/> 
+    <metadata key="SubCollection" val="[ProdMet/SubCollection]"/> 
+    <metadata key="CollectionLabel" val="[ProdMet/CollectionLabel]"/> 
+    <metadata key="Comments" val="[ProdMet/Comments]"/> 
+    
+    <!-- PEATE Processed File -->
+    <metadata key="JobType" val="[ProdMet/JobType]"/> 
+    <metadata key="InputFiles" val="[ProdMet/InputFiles]"/> 
+    <metadata key="JobId" val="[ProdMet/JobId]"/> 
+    <metadata key="TaskId" val="[ProdMet/TaskId]"/> 
+    <metadata key="RequestId" val="[ProdMet/RequestId]"/> 
+    <metadata key="ProductionLocationCode" val="[ProdMet/ProductionLocationCode]"/> 
+    
+    <!-- Any PEATE Product Data File -->
+    <metadata key="Mission" val="[ProdMet/Mission]"/> 
+    <metadata key="Instrument" val="[ProdMet/Instrument]"/>
+    <metadata key="ProcessingLevel" val="[ProdMet/ProcessingLevel]"/> 
+    <metadata key="DataDuration" val="[ProdMet/DataDuration]"/>
+
+    <!-- PGE Log File -->
+    <metadata key="ProcessingNode" val="[ProdMet/ProcessingNode]"/> 
+    <metadata key="ExecutionTime" val="[PGETask/Runtime]"/> 
+    
+</metadataList>
+
