@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright (c) 2008, California Institute of Technology.
+	ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+-->
+<pgeConfig>
+	
+	<!-- files to ingest -->
+	<output>
+		<dir path="[LogDir]" createBeforeExe="true">
+			<files regExp="SNDR\..*\.cas\.log" metFileWriterClass="[MetListWriter]" args="[CAS_PGE_LOG_Metout]"/>
+			<files regExp="SNDR\..*\.sci\.log" metFileWriterClass="[MetListWriter]" args="[SCI_PGE_LOG_Metout]"/>
+		</dir>
+		<dir path="[ConfigDir]" createBeforeExe="true">
+			<files regExp="SNDR\..*\.config\.[^\\.]{2,6}" metFileWriterClass="[MetListWriter]" args="[SCI_PGE_CONF_Metout]"/>
+		</dir>
+	</output>
+	
+	<customMetadata>
+		
+		<!-- Default Metadata -->
+		<metadata key="ProductionDateTime" val="[DATE.UTC]"/>
+		<metadata key="DataVersion" key-ref="[PGETask/Name]/SPSS_Version"/>
+		<metadata key="JobType" val="PGE"/>    	
+		<metadata key="DataProvider" val="[USER]"/>
+		
+		<!-- PGE directories -->
+		<metadata key="RunInDir" val="[PGE_EXE_ROOT_DIR]/[PGETask/Name]/[DATE_TO_MILLIS([ProductionDateTime],UTC_FORMAT,1970-01-01)]"/>
+		<metadata key="ConfigDir" val="[RunInDir]/ConfigFiles"/>
+		<metadata key="LogDir" val="[RunInDir]/LogFiles"/>
+		
+		<!-- SPSS info -->
+		<metadata key="SpssHome" val="[SPSS_VERSION_HOME]/[DataVersion]"/>
+		<metadata key="SpssConfigPath" val="[SpssHome]/config"/>
+		
+		<!-- CAS-PGE files stored in SPSS path info -->
+		<metadata key="PathToCasFileInSpss" val="[SPSS_CONFIG_HOME]/[DataVersion]"/>
+		<metadata key="SpssPgetaskXsltPath" val="[PathToCasFileInSpss]/xslt"/>
+		<metadata key="SpssPgetaskMetoutPath" val="[PathToCasFileInSpss]/metout"/>
+		<metadata key="SpssPgetaskConfigPath" val="[PathToCasFileInSpss]/config"/>
+		
+		<!-- Xslt info -->
+		<metadata key="ConfigXsltFile" val="[SpssPgetaskXsltPath]/Xslt_[PGETask/Name].xsl"/>
+		<metadata key="TransformWriter" val="gov.nasa.jpl.oodt.cas.pge.writers.xslt.XslTransformWriter"/>
+		<metadata key="XsltUseCDATA" val="true"/>
+		
+		<!-- PCS metadata file info for data file output -->
+		<metadata key="MetListWriter" val="gov.nasa.jpl.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter"/>
+		<metadata key="CAS_PGE_LOG_Metout" val="[Runtime/Condition/SharedMetout],[SpssPgetaskMetoutPath]/CAS_PGE_LOG_metadata.xml"/>
+		<metadata key="SCI_PGE_LOG_Metout" val="[Runtime/Condition/SharedMetout],[SpssPgetaskMetoutPath]/SCI_PGE_LOG_metadata.xml"/>
+		<metadata key="SCI_PGE_CONF_Metout" val="[Runtime/Condition/SharedMetout],[SpssPgetaskMetoutPath]/SCI_PGE_CONF_metadata.xml"/>
+		
+		<!-- helpful keys -->
+		<metadata key="LessThan" val="&#x3C;"/>
+		<metadata key="GreaterThan" val="&#x3E;"/>
+		<metadata key="Exclamation" val="&#33;"/>
+		<metadata key="Ampersand" val="&#38;"/>
+		<metadata key="LogicalAnd" val="[Ampersand][Ampersand]"/>
+		<metadata key="CshPipeToStdOutAndError" val="[GreaterThan][Ampersand][Exclamation]"/>
+		
+	</customMetadata>
+	
+</pgeConfig>
+

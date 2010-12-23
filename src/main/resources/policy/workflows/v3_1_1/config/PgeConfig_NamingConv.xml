@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (c) 2008, California Institute of Technology.
+    ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+-->
+<pgeConfig>
+
+    <customMetadata>
+
+        <!-- PGE Variant Static File Naming Convention -->
+        <metadata key="PgeVariantKey" key-ref="[PGETask/Name]/Variant"/>
+        <metadata key="PgeVariantFileName" val="SNDR.[PGETask/Name].[PgeVariantKey].CAS.xml"/>
+
+        <!-- Granule Map Pges Log And Conf Files Naming Conventions -->
+        <metadata key="GranuleMap/LogConf" val="SNDR.[ProdMet/Mission].[ProdMet/Instrument].[FORMAT(yyyy-MM-dd,[ProdMet/NominalDate],yyyyMMdd)].[ProdMet/DataDuration].[ProdMet/ProcessingLevel].[PGETask/Name].[ProdMet/CollectionLabel].[ProdMet/DataVersion].[ProdMet/ProductionLocationCode].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/ProductionDateTime],yyMMddHHmmss)]" envReplace="false" split="false"/>
+        <metadata key="GranuleMap/SciLog" val="[GranuleMap/LogConf].sci.log" envReplace-NoRecur="true" split="false"/>
+    	<metadata key="GranuleMap/SciConf/WithoutTypeExt" val="[GranuleMap/LogConf].config" envReplace-NoRecur="true" split="false"/>
+    	<metadata key="GranuleMap/SciConf/Text" val="[GranuleMap/SciConf/WithoutTypeExt].txt" envReplace-NoRecur="true" split="false"/>
+        <metadata key="GranuleMap/CasLog" val="[GranuleMap/LogConf].cas.log" envReplace-NoRecur="true" split="false"/>
+
+        <!-- Orbits Naming Conventions -->
+        <metadata key="MoaOrbits/Product" val="SNDR.[ProdMet/Mission].[ProdMet/Instrument].[FORMAT(yyyy-MM-dd,[ProdMet/NominalDate],yyyyMMdd)].[ProdMet/DataDuration].[ProdMet/ProcessingLevel].Orbits.[ProdMet/CollectionLabel].[ProdMet/DataVersion].[ProdMet/ProductionLocationCode].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/ProductionDateTime],yyMMddHHmmss)].txt" envReplace="false" split="false"/>
+        <metadata key="MoaOrbits/SciLog" key-ref="GranuleMap/SciLog"/>
+    	<metadata key="MoaOrbits/SciConf" key-ref="GranuleMap/SciConf/Text"/>
+        <metadata key="MoaOrbits/CasLog" key-ref="GranuleMap/CasLog"/>
+
+        <!-- GPolygon Naming Conventions -->
+        <metadata key="MoaGPolygon/Product" val="SNDR.[ProdMet/Mission].[ProdMet/Instrument].[FORMAT(yyyy-MM-dd,[ProdMet/NominalDate],yyyyMMdd)].[ProdMet/DataDuration].[ProdMet/ProcessingLevel].Polygons.[ProdMet/CollectionLabel].[ProdMet/DataVersion].[ProdMet/ProductionLocationCode].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/ProductionDateTime],yyMMddHHmmss)].txt" envReplace="false" split="false"/>
+        <!-- IASI -->
+        <metadata key="MoaIasiGPolygon/Product" key-ref="MoaGPolygon/Product"/>
+        <metadata key="MoaIasiGPolygon/SciLog" key-ref="GranuleMap/SciLog"/>
+    	<metadata key="MoaIasiGPolygon/SciConf" key-ref="GranuleMap/SciConf/Text"/>
+        <metadata key="MoaIasiGPolygon/CasLog" key-ref="GranuleMap/CasLog"/>
+        <!-- AMSUA --> 
+        <metadata key="MoaAmsuaGPolygon/Product" key-ref="MoaGPolygon/Product"/>
+        <metadata key="MoaAmsuaGPolygon/SciLog" key-ref="GranuleMap/SciLog"/>
+    	<metadata key="MoaAmsuaGPolygon/SciConf" key-ref="GranuleMap/SciConf/Text"/>
+        <metadata key="MoaAmsuaGPolygon/CasLog" key-ref="GranuleMap/CasLog"/>
+        <!-- MHS -->
+        <metadata key="MoaMhsGPolygon/Product" key-ref="MoaGPolygon/Product"/>
+        <metadata key="MoaMhsGPolygon/SciLog" key-ref="GranuleMap/SciLog"/>
+    	<metadata key="MoaMhsGPolygon/SciConf" key-ref="GranuleMap/SciConf/Text"/>
+        <metadata key="MoaMhsGPolygon/CasLog" key-ref="GranuleMap/CasLog"/>
+
+        <!-- Polygon Map Naming Conventions -->
+        <metadata key="MoaMap/Product" val="SNDR.[ProdMet/Mission].[ProdMet/Instrument].[FORMAT(yyyy-MM-dd,[ProdMet/NominalDate],yyyyMMdd)].[ProdMet/DataDuration].[ProdMet/ProcessingLevel].PolygonMap.[ProdMet/CollectionLabel].[ProdMet/DataVersion].[ProdMet/ProductionLocationCode].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/ProductionDateTime],yyMMddHHmmss)].pdf" envReplace="false" split="false"/>
+        <!-- IASI -->
+        <metadata key="MoaIasiMap/Product" key-ref="MoaMap/Product"/>
+        <metadata key="MoaIasiMap/SciLog" key-ref="GranuleMap/SciLog"/>
+        <metadata key="MoaIasiMap/SciConf" key-ref="GranuleMap/SciConf/Text"/>
+        <metadata key="MoaIasiMap/CasLog" key-ref="GranuleMap/CasLog"/>
+        <!-- AMSUA --> 
+        <metadata key="MoaAmsuaMap/Product" key-ref="MoaMap/Product"/>
+        <metadata key="MoaAmsuaMap/SciLog" key-ref="GranuleMap/SciLog"/>
+        <metadata key="MoaAmsuaMap/SciConf" key-ref="GranuleMap/SciConf/Text"/>
+        <metadata key="MoaAmsuaMap/CasLog" key-ref="GranuleMap/CasLog"/>
+        <!-- MHS -->
+        <metadata key="MoaMhsMap/Product" key-ref="MoaMap/Product"/>
+        <metadata key="MoaMhsMap/SciLog" key-ref="GranuleMap/SciLog"/>
+        <metadata key="MoaMhsMap/SciConf" key-ref="GranuleMap/SciConf/Text"/>
+        <metadata key="MoaMhsMap/CasLog" key-ref="GranuleMap/CasLog"/>
+
+        <!-- CalSub Naming Conventions -->
+        <metadata key="MoaIasiCalsub/Product" val="SNDR.[ProdMet/Mission].[ProdMet/Instrument].[FORMAT(yyyy-MM-dd,[ProdMet/NominalDate],yyyyMMdd)].[ProdMet/DataDuration].[ProdMet/ProcessingLevel].CalSub.[ProdMet/CollectionLabel].[ProdMet/DataVersion].[ProdMet/ProductionLocationCode].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/ProductionDateTime],yyMMddHHmmss)].mat" envReplace="false" split="false"/>
+        <metadata key="MoaIasiCalsub/LogConf" val="SNDR.[ProdMet/Mission].[ProdMet/Instrument].[FORMAT(yyyy-MM-dd,[ProdMet/NominalDate],yyyyMMdd)].[ProdMet/DataDuration].[ProdMet/ProcessingLevel].[PGETask/Name].[ProdMet/CollectionLabel].[ProdMet/DataVersion].[ProdMet/ProductionLocationCode].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/ProductionDateTime],yyMMddHHmmss)]" envReplace="false" split="false"/>
+		<metadata key="MoaIasiCalsub/SciLog" val="[MoaIasiCalsub/LogConf].sci.log" envReplace-NoRecur="true" split="false"/>
+        <metadata key="MoaIasiCalsub/SciConf" val="[MoaIasiCalsub/LogConf].config.xml" envReplace-NoRecur="true" split="false"/>
+		<metadata key="MoaIasiCalsub/CasLog" val="[MoaIasiCalsub/LogConf].cas.log" envReplace-NoRecur="true" split="false"/>
+
+        <!-- Analysis Naming Conventions -->
+        <metadata key="MoaAnalysis/Product" val="SNDR.[ProdMet/Mission].[ProdMet/Instrument].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/StartDateTime],yyyyMMddHHmmss)].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/EndDateTime],yyyyMMddHHmmss)].RTP3.[ProdMet/ContentMask].[ProdMet/ContentSource].[ProdMet/Sampling].[ProdMet/CollectionLabel].[ProdMet/DataVersion].[ProdMet/ProductionLocationCode].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/ProductionDateTime],yyMMddHHmmss)].nc" envReplace="false" split="false"/>
+        <metadata key="MoaAnalysis/LogConf" val="SNDR.[ProdMet/Mission].[ProdMet/Instrument].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/StartDateTime],yyyyMMddHHmmss)].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/EndDateTime],yyyyMMddHHmmss)].[PGETask/Name].[ProdMet/ContentMask].[ProdMet/ContentSource].[ProdMet/Sampling].[ProdMet/CollectionLabel].[ProdMet/DataVersion].[ProdMet/ProductionLocationCode].[FORMAT(yyyy-MM-dd'T'HH:mm:ss.SSS'Z',[ProdMet/ProductionDateTime],yyMMddHHmmss)]" envReplace="false" split="false"/>
+    	<metadata key="MoaIasiAnalysis/SciConf/WithoutTypeExt" val="[MoaAnalysis/LogConf].config" envReplace-NoRecur="true" split="false"/>
+    	<metadata key="MoaIasiAnalysis/SciConf/Text" val="[MoaAnalysis/SciConf/WithoutTypeExt].txt" envReplace-NoRecur="true" split="false"/>    	
+        <!-- IASI -->
+        <metadata key="MoaIasiAnalysis/Product" key-ref="MoaAnalysis/Product"/>
+		<metadata key="MoaIasiAnalysis/SciLog" val="[MoaAnalysis/LogConf].sci.log" envReplace-NoRecur="true" split="false"/>
+    	<metadata key="MoaIasiAnalysis/SciConf" key-ref="MoaIasiAnalysis/SciConf/Text" envReplace-NoRecur="true" split="false"/>
+		<metadata key="MoaIasiAnalysis/CasLog" val="[MoaAnalysis/LogConf].cas.log" envReplace-NoRecur="true" split="false"/>
+        <!-- AMSUA -->
+        <metadata key="MoaAmsuaAnalysis/Product" key-ref="MoaAnalysis/Product"/>
+		<metadata key="MoaAmsuaAnalysis/SciLog" val="[MoaAnalysis/LogConf].sci.log" envReplace-NoRecur="true" split="false"/>
+    	<metadata key="MoaAmsuaAnalysis/SciConf" key-ref="MoaAnalysis/LogConf/Text" envReplace-NoRecur="true" split="false"/>
+		<metadata key="MoaAmsuaAnalysis/CasLog" val="[MoaAnalysis_LogConf_NamingConv].cas.log" envReplace-NoRecur="true" split="false"/>
+        <!-- MHS -->
+        <metadata key="MoaMhsAnalysis/Product" key-ref="MoaAnalysis/Product"/>
+		<metadata key="MoaMhsAnalysis/SciLog" val="[MoaAnalysis/LogConf].sci.log" envReplace-NoRecur="true" split="false"/>
+    	<metadata key="MoaMhsAnalysis/SciConf" key-ref="MoaAnalysis/LogConf/Text" envReplace-NoRecur="true" split="false"/>
+		<metadata key="MoaMhsAnalysis/CasLog" val="[MoaAnalysis/LogConf].cas.log" envReplace-NoRecur="true" split="false"/>
+
+        <!-- KEYS TO USE -->
+        <metadata key="SciPgeLogFileNameKey" key-ref="[PGETask/Name]/SciLog"/>
+        <metadata key="SciPgeConfFileNameKey" key-ref="[PGETask/Name]/SciConf"/>
+        <metadata key="CasPgeLogFileNameKey" key-ref="[PGETask/Name]/CasLog"/>
+        <metadata key="OutputProductKey" key-ref="[PGETask/Name]/Product"/>
+
+    </customMetadata>
+
+</pgeConfig>
+

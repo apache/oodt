@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2009 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: CAS-Catalog Command-line options
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <bean class="org.apache.oodt.commons.spring.postprocessor.SetIdBeanPostProcessor"/>
+    
+    <!-- CAS-Workflow Server Cmd-Line-Options -->
+    <bean id="serverFactoryBeanId" lazy-init="true" class="org.apache.oodt.commons.option.CmdLineOption">
+        <property name="shortOption" value="sfb"/>
+        <property name="longOption" value="serverFactoryBeanId"/>
+        <property name="description" value="CommunicationChannelServerFactory Bean Id"/>
+        <property name="hasArgs" value="true"/>
+        <property name="optionArgName" value="bean id"/>
+        <property name="required" value="true"/>
+    </bean>
+    
+    <bean id="printSupportedServers" lazy-init="true" class="org.apache.oodt.commons.option.CmdLineOption">
+        <property name="shortOption" value="pss"/>
+        <property name="longOption" value="printSupportedServers"/>
+        <property name="description" value="Prints a list and description of all supported CommunicationChannelServerFactories"/>
+        <property name="hasArgs" value="false"/>
+        <property name="required" value="false"/>
+        <property name="performAndQuit" value="true"/>
+        <property name="handler">
+            <bean class="org.apache.oodt.workflow.server.option.PrintSupportedServersHandler">
+                <property name="beanRepo" value="/${pcs.home}/core/workflow/policy/engine-server-config.xml"/>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="debug" lazy-init="true" class="org.apache.oodt.commons.option.CmdLineOption">
+        <property name="shortOption" value="d"/>
+        <property name="longOption" value="debug"/>
+        <property name="description" value="Brings up server in debug mode"/>
+        <property name="hasArgs" value="false"/>
+        <property name="required" value="false"/>        
+        <property name="handler">
+            <bean class="org.apache.oodt.commons.option.handler.CmdLineOptionBeanHandler">
+                <property name="applyToBeans">
+                    <list>
+                        <bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="XmlRpcEngineFactory"/>
+                        <bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="RmiEngineFactory"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="port" lazy-init="true" class="org.apache.oodt.commons.option.CmdLineOption">
+        <property name="shortOption" value="prt"/>
+        <property name="longOption" value="port"/>
+        <property name="description" value="Port Number"/>
+        <property name="hasArgs" value="true"/>
+        <property name="optionArgName" value="port"/>
+        <property name="required" value="false"/>
+        <property name="handler">
+            <bean class="org.apache.oodt.commons.option.handler.CmdLineOptionBeanHandler">
+                <property name="applyToBeans">
+                    <list>
+                        <bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="RmiServerFactory"/>
+                        <bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="XmlRpcServerFactory"/>
+                        <bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="MultiXmlRpcServerFactory"/>
+                        <bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="MultiMixedServerFactory"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    
+</beans>
+

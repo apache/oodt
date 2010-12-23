@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright 2009 California Institute of Technology. ALL RIGHTS
+	RESERVED. U.S. Government Sponsorship acknowledged.
+	
+	$Id$
+	
+	Author: bfoster
+	Description: CatalogService Beans
+	
+-->
+<processors default="sequential">
+	
+	<!-- don't change ids -->
+	<processor id="condition" class="org.apache.oodt.cas.workflow.processor.ConditionProcessor"/>
+	<processor id="task" class="org.apache.oodt.cas.workflow.processor.TaskProcessor"/>	
+	
+	<!-- custom --> 
+	<processor id="sequential" class="org.apache.oodt.cas.workflow.processor.SequentialProcessor"/>
+	<processor id="parallel" class="org.apache.oodt.cas.workflow.processor.ParallelProcessor"/>
+
+	
+</processors>
+

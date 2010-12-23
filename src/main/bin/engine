@@ -1,0 +1,28 @@
+#!/bin/csh
+# Copyright (c) 2009 California Institute of Technology.
+# ALL RIGHTS RESERVED. U.S. Government Sponsorship acknowledged.
+
+set operation
+
+if ( $#argv < 1 ) then
+   echo "Usage: $0 {start|debug|stop|restart}"
+        exit 1;
+else
+        set operation = "$1"
+endif
+
+if ( ${operation} == "start" ) then
+        ./engine-server &
+else if ( ${operation} == "debug" ) then
+        ./engine-server -d &
+else if ( ${operation} == "stop" ) then
+        ./engine-client -a Shutdown
+else if ( ${operation} == "restart" ) then
+        ./engine-client -a Shutdown
+        sleep 7
+        ./engine-server &
+else
+        echo "Usage: $0 {start|debug|stop|restart}"
+        exit 1;
+endif
+

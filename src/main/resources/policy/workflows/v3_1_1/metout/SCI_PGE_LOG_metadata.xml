@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (c) 2008, California Institute of Technology.
+    ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+-->
+<metadataList>
+    
+    <!-- Any File -->
+    <metadata key="ProductType" val="SCI_PGE_LOG"/> 
+    <metadata key="FileFormat" val="log"/>  
+
+    <!-- Versioner Metadata -->
+    <metadata key="PCS_VersioningType" val="FileBased"/>  
+    <metadata key="AggregateDir" val="sci_pge_log"/>
+    
+</metadataList>

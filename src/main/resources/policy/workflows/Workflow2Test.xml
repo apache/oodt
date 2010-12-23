@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cas:workflows 
+    xmlns="http://oodt.jpl.nasa.gov/2.0/cas"
+    xmlns:cas="http://oodt.jpl.nasa.gov/2.0/cas"
+    xmlns:p="http://oodt.jpl.nasa.gov/2.0/cas/property">
+    
+    <workflow id="Space" execution="sequential">
+        <task id-ref="Orbit"/>
+        <workflow id="" execution="parallel" p:transIn="23,1" p:transOut="3,9,12">
+            <workflow id="" execution="sequential">
+                <workflow id="" execution="parallel">
+                    <task id-ref="L0a"/>
+                    <task id-ref="L0b"/>
+                    <task id-ref="L0c"/>
+                    <task id-ref="L0d"/>
+                </workflow> 
+                <workflow id-ref="L1a"/>
+            </workflow>
+            <workflow id="" execution="sequential">
+                <task id-ref="Ane"/>
+                <workflow id="" execution="subset-parallel" p:min="int(1)">
+                    <workflow id-ref="GeoCal"/>
+                    <workflow id-ref="Geo"/>             
+                </workflow>
+            </workflow>
+        </workflow>
+    </workflow>
+    
+    <workflow id="L1a" execution="sequential">
+        <task id-ref="L1a"/>
+        <workflow id="" execution="Ntimes" p:min="int(1)" p:creation-rule="class(org.apache.some.class)">            
+            <workflow id="" execution="parallel">
+                <workflow id="" execution="subset-parallel" p:finally="id-ref(TrendDbIn)" p:min="int(1)">
+                    <task id-ref="CalCalcPixDark"/>
+                    <workflow id="" execution="sequential">
+                        <task id-ref="RicaPix"/>
+                        <task id-ref="CalCalcPixLamp"/>
+                    </workflow>
+                    <workflow id="" execution="sequential">
+                        <task id-ref="RicaPix"/>
+                        <task id-ref="CalCalcPix"/>
+                    </workflow>
+                    <task id-ref="SampDark"/>
+                    <workflow id="" execution="sequential">
+                        <task id-ref="RicaSamp"/>
+                        <task id-ref="CalCalcSamp"/>
+                    </workflow>
+                </workflow>
+                <workflow id="" execution="subset-parallel" p:min="int(1)">
+                    <workflow id-ref="GeoCal"/>
+                    <workflow id-ref="Geo"/>
+                </workflow>
+            </workflow>
+        </workflow>            
+    </workflow>
+    
+    <workflow id="Geo" execution="sequential">
+        <task id-ref="RicaSamp"/>                
+        <task id-ref="Geo"/>
+        <task id-ref="CalApp"/>
+        <task id-ref="MetResamp"/>
+        <workflow id="" execution="parallel" p:finally="id-ref(SoundingSelection)">
+            <task id-ref="L2a"/>
+            <task id-ref="L2a"/>                        
+        </workflow>
+    </workflow>
+    
+    <workflow id="SoundingSelection" execution="parallel">
+        <workflow id="" execution="sequential">
+            <task id-ref="SndDbEx"/>
+            <task id-ref="SndDbIn"/>
+        </workflow>
+        <task id-ref="L2aGranPlot"/>                                
+    </workflow>
+    
+    <workflow id="GeoCal" execution="sequential">
+        <task id-ref="RicaSamp"/>                
+        <task id-ref="GeoCal"/>
+        <task id-ref="CalAppC"/>
+    </workflow>
+    
+    <task id="GeoCal" class="" trans-in="1,7" trans-out="5">
+        <conditions>
+            <condition id-ref="4"/>
+            <condition id="2" class="">
+                <properties>
+                    <property name="" value=""/>
+                    <property name="" value=""/>
+                </properties>
+            </condition>        
+        </conditions>
+        <properties>
+            <property name="" value=""/>
+            <property name="" value=""/>
+        </properties>
+    </task>
+    
+    <condition id="1" class="">
+        <properties>
+            <property name="" value=""/>
+            <property name="" value=""/>
+        </properties>
+    </condition>
+    
+</cas:workflows>

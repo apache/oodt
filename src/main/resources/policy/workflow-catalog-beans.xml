@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2009 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: Workflow Catalog
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <import resource="engine-properties.xml"/>    
+    
+    <bean id="WorkflowManagerCatalog" lazy-init="true" factory-bean="WorkflowManagerCatalogFactory" factory-method="createCatalog"/>
+    <bean id="WorkflowManagerCatalogFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.system.CatalogFactory">
+        <property name="catalogId" value="urn:PEATE:WorkflowInstancesCatalog"/>
+        <property name="indexFactory" ref="InMemoryIndexFactory"/>
+        <property name="dictionaryFactories">
+            <list>
+                <ref bean="WorkflowManagerDictionaryFactory"/>
+            </list>
+        </property>
+        <property name="restrictQueryPermissions" value="false"/>
+        <property name="restrictIngestPermissions" value="false"/>
+    </bean>
+    
+    <!-- WorkflowManager Indexes -->
+    <bean id="WorkflowManagerDataSourceIndexFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.instance.repo.WorkflowManagerDataSourceIndexFactory">
+        <property name="jdbcUrl" value="jdbc:oracle:thin:@dew.jpl.nasa.gov:1521:npptest"/>        
+        <property name="user" value="nppint"/>
+        <property name="pass" value="Peate"/>
+        <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+	</bean>
+    <bean id="DataSourceIndexFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.struct.impl.index.DataSourceIndexFactory">
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@dew.jpl.nasa.gov:1521:npptest"/>        
+		<property name="user" value="nppint"/>
+		<property name="pass" value="Peate"/>
+		<property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="useUTF8" value="true"/>
+	</bean>
+    <bean id="InMemoryIndexFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.struct.impl.index.InMemoryIndexFactory">
+        <property name="jdbcUrl" value="jdbc:hsqldb:file:${pcs.support.home}/hsqldb;shutdown=true"/>        
+        <property name="user" value="sa"/>
+        <property name="pass" value=""/>
+        <property name="driver" value="org.hsqldb.jdbcDriver"/>
+        <property name="tablesFile" value="${workflowmgr.home}/policy/in-memory-index-cat.sql"/>
+    </bean>
+    
+    <!-- WorkflowManager Dictionary -->
+    <bean id="WorkflowManagerDictionaryFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.instance.repo.WorkflowManagerDictionaryFactory"/>
+    
+</beans>
+
+

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (c) 2008, California Institute of Technology.
+    ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+-->
+<pgeConfig>
+    
+    <import file="PgeConfig_PGETaskMetadata.xml"/>                                      
+
+    <!-- input file for science PGE that need to be created  -->
+    <dynInputFiles>
+    	<file path="[Defaults/ConfigDir]/[SciPgeConfFileName]" writerClass="[Defaults/TransformWriter]" args="[ConfigXsltFile],[Defaults/XsltUseCDATA]"/>
+    </dynInputFiles>
+        
+    <!-- how to run science PGE -->
+	<exe dir="[Defaults/RunInDir]" shellType="/bin/csh">
+        <cmd>setenv PATH /bin:/usr/bin:/usr/local/bin</cmd>
+        <cmd>setenv LD_LIBRARY_PATH /usr/lib:/usr/local/lib</cmd>
+		<cmd>setenv IDL_DLM_PATH [PEATE_3RD_PARTY_DEPOT]/packages/beat-4.2.0_64/lib/beat/idl</cmd>
+		<cmd>setenv SrcDir [Defaults/SpssHome]</cmd>
+		<cmd>setenv IDL_STARTUP [Defaults/SpssHome]/idl/pge/common/src/idl_startup</cmd>
+        <cmd>setenv HOSTTYPE `arch`</cmd>
+        <cmd>setenv HOST `hostname`</cmd>
+        <cmd>setenv IDL_DIR [PEATE_3RD_PARTY_DEPOT]/idl/idl</cmd>
+        <cmd>setenv IDL [PEATE_3RD_PARTY_DEPOT]/idl/idl/bin/idl</cmd>
+		<cmd>setenv NPP_IDL_DIR [Defaults/SpssHome]/idl/pge/common/src</cmd>
+		<cmd>setenv NPP_IDL_SHARED_LIB_DIR [Defaults/SpssHome]/lib</cmd>
+		<cmd>$IDL -e "[ExecutableName], '[Defaults/ConfigDir]/[SciPgeConfFileName]'" [Defaults/CshPipeToStdOutAndError] [Defaults/LogDir]/[CasPgeLogFileName]</cmd>
+        <cmd>set return_value = $?</cmd>
+		<cmd>if ( ${return_value} == 0 [Defaults/LogicalAnd] -e '[GranMap/OUTPUTFILE]' [Defaults/LogicalAnd] ! -z '[GranMap/OUTPUTFILE]' ) then</cmd>
+        <cmd>   exit 0</cmd> 
+        <cmd>else</cmd> 
+        <cmd>   exit 1</cmd> 
+        <cmd>endif</cmd> 
+    </exe>
+    
+    <!-- files to ingest -->
+    <output>
+    	<dir path="[Defaults/RunInDir]" createBeforeExe="true">
+        	<files name="[GranMap/OUTPUTFILE]" metFileWriterClass="[Defaults/MetListWriter]" args="[MoaGPolygonProduct_Metout]"/>
+        </dir>
+    </output>
+    
+    <customMetadata>
+
+        <!-- ProductType Metadata for MoaMap WorkflowCondition -->
+        <metadata key-gen="MOA_[ProdMet/Instrument]_POLY/JobId/Term" val="[ProdMet/JobId]" workflowMet="true"/>
+
+        <!-- Executable Name Mapping -->
+    	<metadata key="ExecutableName/IASI" val="create_gpolygon_iasi"/>
+    	<metadata key="ExecutableName/AMSUA" val="create_gpolygon_amsua"/>
+    	<metadata key="ExecutableName/MHS" val="create_gpolygon_mhs"/>
+    	<metadata key="ExecutableName" key-ref="ExecutableName/[ProdMet/Instrument]"/>
+
+        <!-- custom metadata -->
+    	<metadata key="ProdMet/ExecutablePathnames" val="[Defaults/SpssHome]"/> 
+    	<metadata key="ProdMet/ExecutableVersions" val="[ProdMet/DataVersion]"/> 
+        <metadata key="ProdMet/Mission" val="MetOpA"/>
+        <metadata key="ProdMet/ProcessingLevel" val="L1"/>
+        <metadata key="ProdMet/DataDuration" val="D1" />
+
+        <!-- Config File Metadata -->
+    	<metadata key="ConfigXsltFile" val="[Defaults/SpssPgetaskXsltPath]/Xslt_MoaGPolygonOrbits.xsl"/>
+        
+        <!-- File Naming -->
+        <metadata key="SciPgeLogFileName" val="[NamingConv/SciPgeLogFileNameKey]"/>
+    	<metadata key="SciPgeConfFileName" val="[NamingConv/SciPgeConfFileNameKey]"/>
+    	<metadata key="CasPgeLogFileName" val="[NamingConv/CasPgeLogFileNameKey]"/>
+    	<metadata key="OutputFileName" val="[NamingConv/OutputProductKey]"/>
+
+        <!-- data files -->
+        <metadata key="L1FormattedMetadata" val="[Runtime/Condition/L1FormattedQuery]"/>
+    	<metadata key="L1Filenames" val="[Runtime/Condition/L1FilenamesQuery]"/>
+        <metadata key="ProdMet/InputFiles" key-ref="L1Filenames"/>
+        
+        <!-- PGE metadata -->
+        <metadata key="GranMap/L1FileTypeName" key-ref="ProdMet/Instrument"/>
+        <metadata key="GranMap/NOMINALDAY" key-ref="ProdMet/NominalDate"/>
+        <metadata key="GranMap/OUTPUTPATH" val="[Defaults/RunInDir]/"/>
+        <metadata key="GranMap/OUTPUTFILE" key-ref="OutputFileName"/>
+        <metadata key="GranMap/LOGFILE" val="[Defaults/LogDir]/[SciPgeLogFileName]"/>
+        <metadata key="GranMap/LOGLEVEL" val="0"/>
+        <metadata key="GranMap/DEBUG" val="0"/>
+        
+        <!-- PCS metadata file info for CalSub data file output -->
+    	<metadata key="MoaGPolygonProduct_Metout" val="[Runtime/Condition/SharedMetout],[Defaults/SpssPgetaskMetoutPath]/MoaGPolygonProduct_metadata.xml"/>   
+        
+    </customMetadata>
+    
+</pgeConfig>
