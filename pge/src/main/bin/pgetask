@@ -1,0 +1,8 @@
+#!/bin/sh
+
+$JAVA_HOME/bin/java -Djava.ext.dirs=../lib \
+        -Djava.util.logging.config.file=../etc/logging.properties \
+        -Djavax.xml.transform.TransformerFactory=net.sf.saxon.TransformerFactoryImpl \
+        org.apache.oodt.cas.pge.PGETask --metadata ../etc/examples/WorkflowMgrInput/pcs-pge-dyn-metadata.met \
+        --config ../etc/examples/WorkflowMgrInput/pcs-pge-task-workflow.properties \
+        --instanceClass org.apache.oodt.cas.pge.StdPGETaskInstance
