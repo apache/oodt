@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2008 California Institute of Technology. ALL RIGHTS
+    RESERVED. U.S. Government Sponsorship acknowledged.
+    
+    $Id$
+    
+    Author: bfoster
+    Description: The configuration for cas-crawler2, that uses the Spring
+    framework to configure crawlers, and crawler actions.
+    
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="TestLuceneCatalogBuilder1" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.catalogservice.CatalogBuilder">
+        <property name="catalogId" value="LuceneCatalog1"/>
+        <property name="catalogName" value="LuceneCatalog1"/>
+        <property name="catalogNamespace" value="TEST"/>
+        <property name="fmCatalogFactory" ref="LuceneCatalogFactory1"/>
+        <property name="transactionIdClass" value="gov.nasa.jpl.oodt.cas.catalog.struct.impl.transaction.UuidTransactionId"/>
+        <property name="ingestable" value="true"/>
+        <property name="queriable" value="true"/>
+        <property name="supportedProductTypeIds">
+            <list>
+                <value type="java.lang.String">urn:oodt:GenericFile</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="TestLuceneCatalogBuilder2" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.catalogservice.CatalogBuilder">
+        <property name="catalogId" value="LuceneCatalog2"/>
+        <property name="catalogName" value="LuceneCatalog2"/>
+        <property name="catalogNamespace" value="TEST"/>
+        <property name="fmCatalogFactory" ref="LuceneCatalogFactory2"/>
+        <property name="transactionIdClass" value="gov.nasa.jpl.oodt.cas.catalog.struct.impl.transaction.UuidTransactionId"/>
+        <property name="ingestable" value="true"/>
+        <property name="queriable" value="true"/>
+        <property name="supportedProductTypeIds">
+            <list>
+                <value type="java.lang.String">urn:test:TestType</value>
+            </list>
+        </property>
+    </bean>
+        
+    <bean id="AbstractPeateCatalogBuilder" abstract="true" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.catalogservice.CatalogBuilder">
+        <property name="supportedProductTypeIds">
+            <list>
+                <value type="java.lang.String">urn:npp:MOA_IASI_L1C</value>
+                <value type="java.lang.String">urn:npp:MOA_MHS_L1B</value>
+                <value type="java.lang.String">urn:npp:MOA_AMSUA_L1B</value>
+                <value type="java.lang.String">urn:npp:MOA_IASI_L1C_MATCH</value>
+                <value type="java.lang.String">urn:npp:MOA_ORBITS</value>
+                <value type="java.lang.String">urn:npp:MOA_IASI_MAP</value>
+                <value type="java.lang.String">urn:npp:MOA_IASI_POLY</value>
+                <value type="java.lang.String">urn:npp:MOA_METOPS_CALSUB</value>
+                <value type="java.lang.String">urn:npp:RTG_SST_G1</value>
+                <value type="java.lang.String">urn:npp:RTG_SST_G2</value>
+                <value type="java.lang.String">urn:npp:CAS_PGE_LOG</value>
+                <value type="java.lang.String">urn:npp:SCI_PGE_LOG</value>
+                <value type="java.lang.String">urn:npp:SCI_PGE_CONF</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="IntDataSourceCatalogBuilder" parent="AbstractPeateCatalogBuilder" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.catalogservice.CatalogBuilder">
+        <property name="catalogId" value="PeateIntegrationCatalog"/>
+        <property name="catalogName" value="IntegrationDataSource"/>
+        <property name="catalogNamespace" value="PEATE"/>
+        <property name="fmCatalogFactory" ref="IntDataSourceCatalogFactory"/>
+        <property name="transactionIdClass" value="gov.nasa.jpl.oodt.cas.catalog.struct.impl.transaction.LongTransactionId"/>
+        <property name="ingestable" value="true"/>
+        <property name="queriable" value="true"/>
+    </bean>
+
+    <bean id="OpsDataSourceCatalogBuilder" parent="AbstractPeateCatalogBuilder" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.catalogservice.CatalogBuilder">
+        <property name="catalogId" value="PeateOperationsCatalog"/>
+        <property name="catalogName" value="OperationsDataSource"/>
+        <property name="catalogNamespace" value="PEATE"/>
+        <property name="fmCatalogFactory" ref="OpsDataSourceCatalogFactory"/>
+        <property name="transactionIdClass" value="gov.nasa.jpl.oodt.cas.catalog.struct.impl.transaction.LongTransactionId"/>
+        <property name="ingestable" value="false"/>
+        <property name="queriable" value="true"/>
+    </bean>
+
+    <bean id="AirsDomCatalogBuilder" parent="AbstractPeateCatalogBuilder" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.catalogservice.CatalogBuilder">
+        <property name="catalogId" value="AirsDomCatalog"/>
+        <property name="catalogName" value="OperationsDom"/>
+        <property name="catalogNamespace" value="AIRS"/>
+        <property name="fmCatalogFactory" ref="DomCatalogFactory"/>
+        <property name="transactionIdClass" value="gov.nasa.jpl.oodt.cas.catalog.struct.impl.transaction.StringTransactionId"/>
+        <property name="ingestable" value="false"/>
+        <property name="queriable" value="true"/>
+        <property name="supportedProductTypeIds">
+				<ref bean="AirsDomSupportedProductTypeIds"/>
+        </property>
+    </bean>
+
+    <bean id="AbstractDataSourceCatalogFactory" abstract="true" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalogFactory">
+
+        <!-- set to true to quote field values -->
+        <property name="fieldIdStr">
+            <value type="boolean">true</value>
+        </property>
+        
+        <!-- page size for pagination -->
+        <property name="pageSize">
+            <value type="int">20</value>
+        </property>
+        
+        <!-- number of minutes to refresh cache -->
+        <property name="cacheUpdateMinutes">
+            <value type="long">5</value>  
+        </property>
+
+    </bean>
+
+    <bean id="IntDataSourceCatalogFactory" parent="AbstractDataSourceCatalogFactory" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalogFactory">
+        <!-- SQL datasource config -->
+        <property name="jdbcUrl" value="jdbc:oracle:thin:@dew.jpl.nasa.gov:1521:npptest"/>        
+        <property name="user" value="nppint"/>
+        <property name="pass" value="Peate"/>
+        <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+    </bean>
+        
+    <bean id="OpsDataSourceCatalogFactory" parent="AbstractDataSourceCatalogFactory" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalogFactory">
+        <!-- SQL datasource config -->
+        <property name="jdbcUrl" value="jdbc:oracle:thin:@dew.jpl.nasa.gov:1521:nppops"/>        
+        <property name="user" value="nppops"/>
+        <property name="pass" value="Peate"/>
+        <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+    </bean>
+
+    <bean id="AbstractLuceneCatalogFactory" abstract="true" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory">
+
+        <!-- Path to index file -->
+        <property name="indexFilePath">
+            <value type="java.lang.String">/home/bfoster/Peate_V3.0.0_Build/build/lucene</value>
+        </property>
+
+        <!-- write lock timeout for writing to the index -->
+        <property name="writeLockTimeOut">
+            <value type="long">60</value>
+        </property>
+        
+        <!-- commit lock timeout for writing/reading to the index -->
+        <property name="commitLockTimeOut">
+            <value type="long">60</value>  
+        </property>
+        
+        <!-- page size for pagination -->
+        <property name="pageSize">
+            <value type="int">20</value>
+        </property>
+        
+        <!-- lucene index merge factor -->
+        <property name="mergeFactor">
+            <value type="int">20</value>
+        </property>
+        
+    </bean>
+
+    <bean id="LuceneCatalogFactory1" parent="AbstractLuceneCatalogFactory" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory">
+        
+        <!-- Path to index file -->
+        <property name="indexFilePath">
+            <value type="java.lang.String">/home/bfoster/Peate_V3.0.0_Build/build/lucene</value>
+        </property>
+        
+    </bean>
+    
+    <bean id="LuceneCatalogFactory2" parent="AbstractLuceneCatalogFactory" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory">
+        
+        <!-- Path to index file -->
+        <property name="indexFilePath">
+            <value type="java.lang.String">/home/bfoster/Peate_V3.0.0_Build/build/lucene2</value>
+        </property>
+        
+    </bean>
+ 
+    <bean id="DomCatalogFactory" class="gov.nasa.jpl.oodt.cas.filemgr.catalog.DomCatalogFactory">
+        
+        <!-- DOM server -->
+        <property name="serverUrl" value="http://airs-dom:0"/>
+        
+        <!-- page size for pagination -->
+        <property name="pageSize" value="20"/>
+
+        <!-- OBJECT_NAME to TYPE_NAME mime-type file -->
+        <property name="mimeTypeRepo" value="../policy/airs-dom/dom-airs-mime-types.xml"/>
+
+        <property name="supportedProductTypeIds">
+				<ref bean="AirsDomSupportedProductTypeIds"/>
+		  </property>
+    </bean>
+
+    <bean id="AirsDomSupportedProductTypeIds" class="java.util.Vector">
+        <constructor-arg>
+            <list>
+                <value type="java.lang.String">ECMWF_3Hr_Forecast_T</value>
+                <value type="java.lang.String">ECMWF_9Hr_Forecast_T</value>
+                <value type="java.lang.String">ECMWF_Analysis_T</value>
+            </list>
+        </constructor-arg>
+    </bean>
+
+</beans>

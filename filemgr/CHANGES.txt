@@ -1,0 +1,220 @@
+CAS File Manager Changelog
+
+
+Major Releases:
+===========================================
+1.8.0 Current Development (Unreleased Changes)
+
+- OODT-276 Upgrade to cas-commons-1.1.1 and cas-metadata.1-6.1 (mattmann)
+
+- OODT-271 DataSourceCatalog sql query metadata_value value should be enclosed within quotes (bfoster)
+
+1.7.2 - 12/13/2008
+
+- OODT-276 Upgrade to cas-commons-1.1.1 and cas-metadata.1-6.1 (mattmann)
+
+- OODT-271 DataSourceCatalog sql query metadata_value value should be enclosed within quotes (bfoster)
+
+1.7.1 - 11/18/2008
+
+ - OODT-269 getElementByName was not added back into XmlRpcFileManagerClient (mattmann)
+
+1.7.0 - 11/18/2008
+
+- OODT-265 AbstractFilemgrMetExtractor getProdFile does not work for Hierarchical products (mattmann)
+
+- OODT-253 Make MappedDataSourceCatalog allowing flexible ProductType to DBMS table name mapping (mattmann)
+
+- OODT-265 ComplexQuery and SqlParser for the File Manager (bfoster)
+
+- OODT-262 The XmlRpcStructFactory#getProductTypeMapXmlDocument and associated methods 
+  broke since xml structure changed (jtran via mattmann)
+
+- OODT-263 Python based CAS filemgr API with authenticated XML-RPC (mattmann)
+
+- OODT-261 PHP client side API for the filemgr (mattmann)
+
+- additions to OODT-245 -- methods which return the catalog and original values of type-handled Metadata and catalog value of type-handled Query (bfoster)
+
+- OODT-258 'public void addCriterion(QueryCriteria qc)' method in Query could cause a NullPointerException (bfoster)
+
+- added MIME_TYPE to CoreMetKeys (bfoster)
+
+- OODT-254 Allow FileManager to store String comparable element values, while keeping it invisible to the user (bfoster)
+
+- OODT-250 add back getElementByName method in ValidationLayer interface (mattmann)
+
+- added generics (bfoster)
+
+- OODT-249 Code that uses the cas-filemgr should only have to be aware of an Element's name (bfoster)
+
+- OODT-247 Move file versioning above addMetadata in filemgr server and client ingest methods (bfoster)
+
+1.06 - 08/01/2008
+
+- OODT-210 Move all common utilities from all CAS projects into a cas-commons project (mattmann)
+
+- OODT-214 fixing name inconsistency by changing all gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.indexPath to gov..oodt...lucene.idxPath (davoodi)
+
+- OODT-219 Make versioner class spec an xml attribute in XMLRepositoryManager (mattmann)
+
+- OODT-220 Use XMLUtils trim functionality to read in element definitions (mattmann)
+
+- OODT-49 Build product server capability into the new CAS (mattmann)
+
+- OODT-209 Static #productTypeMap in XMLRepositoryManager prevents multi-VM usage (mattmann)
+
+- OODT-184 Upgrade to JDK5 (mattmann)
+
+- OODT-185 Upgrade to Maven2 (mattmann)
+
+- rely on cas-metadata:XMLUtils in XmlStructFactory (mattmann)
+
+- create run directory (to be on the safe side) (jtran)
+
+- fix dependency to cas-metadata-1.3.0 (mattmann,jtran)
+
+- fix to XMLRepositoryManager#removeProductType (danyu,mattmann)
+
+- fix to XMLValidationLayer#getElements (danyu,mattmann)
+
+- fix to XMLValidationLayer#removeElementFromProductType (danyu,mattmann)
+
+- fix to XMLValidationLayer#addElementToProductType (danyu,mattmann)
+
+- fix to XMLValidationLayer#removeElement (danyu,mattmann)
+
+- OODT-161 Change all List methods in XmlRpcFileManagerClient to use Vector.addAll(List elements) (mattmann)
+
+- OODT-155 Add a remove metadata capability (woollard,mattmann)
+
+- OODT-153 Make Ingester hasProduct Method in StdIngester throw Exception on hasProduct exception (mattmann)
+
+- OODT-154 RmiCacheServerFactory should use new Date var replace API from cas-metadata 1.3.0-dev (mattmann)
+
+- OODT-152 hasProduct method should throw Exception on UNKNOWN answer cases (mattmann)
+
+
+1.05 - 3/20/2008
+
+- OODT-133 Pagination API grabs the first product on every page (mattmann)
+
+- OODT-139 Integration of PushPull filemgr updates: CachedIngester and Cache interface (mattmann, bfoster)
+
+- OODT-40 User Guide/Deployment Guide/Operations Guide for CAS components (mattmann)
+
+- OODT-34 Remove all fFields and sFields etc from cas components (mattmann)
+
+- OODT-27 More code in the File Manager should be unit tested (mattmann)
+
+- OODT-134 Copy CHANGES.txt file to bin distribution for cas components (mattmann)
+
+- OODT-114 Tool to output HTML documentation for Product Type XML documents (mattmann)
+
+- OODT-113 Metadata extraction on the server side (mattmann)
+
+- OODT-93 getReducedMetadata in Filemgr client uses a Vector to specify its reduced Metadata list (mattmann)
+
+- OODT-79 OODT-69 made cas-filemgr-1.5.x incompatible with 1.4.x (mattmann)
+
+- OODT-77 Misspelling of product structure Heirarchical (mattmann)
+
+- OODT-76 XmlRpcFileManager pagination API and pagedQuery method does not obey File Manager contract for returned Products (mattmann)
+
+- OODT-75 DataSourceCatalog returns null ProductPage on pagedQuery (mattmann)
+
+- OODT-69 ProductType object in filemgr should have metadata associated with it (mattmann)
+
+- OODT-68 Improve mime-type code to be case-independent on lookups (ahart)
+
+- fix NPE in LuceneCatalog where mimeType is null: store "" instead (mattmann)
+
+- OODT-63 New RangeQueryCriteria constructor allowing for both inclusive and exclusive ranges (woollard)
+
+- OODT-67 Implemented metadata subsetting at the server side (woollard)
+
+1.04 - 07/15/2007
+
+- OODT-37 Export/Import Catalog tool in CAS filemgr is not able to export all product types (mattmann)
+
+- OODT-62 DataSourceCatalog paginateQuery method (for browsing) does not return all products when size < pageSize (mattmann)
+
+- OODT-61 Environment variable replacement for DataSourceCatalogFactory JDBC props (mattmann)
+
+- OODT-60 DataSourceCatalog should set a full ProductType in getProductById and getProductByName (mattmann)
+
+- OODT-59 RangeQuery API in DataSourceCatalog generates a SQL error (mattmann)
+
+- OODT-58 A tool to query for product ids in the catalog and print them to STDOUT (mattmann)
+
+- OODT-57 Adapt delete product tool to read a list of product ids from STDIN and to have commit flag (mattmann)
+
+- OODT-24 The Reference class should store mimeType per file as well (ahart via mattmann)
+
+- OODT-50 Crawler hasUnique feature broke when capability was moved to StdIngester (mattmann)
+
+- Tool to delete products from File Manager by Product ID (woollard via mattmann)
+
+- OODT-45 Ingester interface within File Manager (mattmann)
+
+- Metadata Dumper tool (mattmann)
+
+- Product XML Dumper tool (mattmann)
+
+- Product (de-)serialization from and to XML (mattmann)
+
+- OODT-43 Expose filemgr update and delete APIs via XML-RPC (mattmann)
+
+1.03 - 02/11/2007
+
+ - Flow down of commit lock, write lock timeout and merge factor spec to LuceneCatalog from filemgr.properties (mattmann)
+ 
+ - Metadata-based Tool to move products and move product API in file manager server and client (mattmann)
+
+ - Optimizations to Data Source catalog for pagination (mattmann)
+
+ - Tool to optimize Lucene catalog index (mattmann)
+ 
+ - Tool to allow for export/import of a source file manager into a dest file manager (mattmann)
+ 
+ - Optimizations to Lucene catalog for product type retrieval, pagination, and getting total number of hits (mattmann)
+
+ - OODT-39 XmlRpc-based client checks for liveness of filemgr server and throws ConnectionException (woollard)
+
+1.02 - 10/16/2006
+
+- InPlaceDataTransferer (woollard)
+
+- allow open ended range queries (where either start in range or end in range is null) for range query criteria (mattmann)
+
+- OODT-13 Allow environment variable replacement within policy xml files and filemgr.properties (mattmann)
+
+- OODT-11 Support range and free-text queries in the catalog (woollard via mattmann)
+
+- OODT-10 Product Type inheritance (woollard via mattmann)
+
+- Command line Catalog Search program (woollard via mattmann)
+
+- Range query tester command line tool (mattmann)
+
+- SingleFileBasicVersioner (mattmann)
+
+- MetadataBasedFileVersioner (mattmann)
+
+- User Guide and xdoc updates (mattmann & kelly)
+
+1.01 - 8/17/2006
+
+- Data Transfer Status Tracking (mattmann)
+
+- Lucene based File Catalog (mattmann)
+
+- Product Pagination query and browse (mattmann)
+
+- Rename daemon and client scripts (mattmann)
+
+- Remote Data Transfer (mattmann)
+
+- Move to use OODT default maven scripts (kelly & mattmann)
+
+1.00 - 7/7/2006 - Initial Stable Release

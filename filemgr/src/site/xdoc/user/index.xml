@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2006 California Institute of Technology.
+  ALL RIGHTS RESERVED. U.S. Government sponsorship acknowledged.
+
+  $Id$
+-->
+
+<document>
+   <properties>
+      <title>CAS File Manager User Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+   </properties>
+
+   <body>
+      <section name="User Guide">
+        <p>
+          This is the user guide for the OODT Catalog and Archive Service (CAS) File Manager 
+          component, or File Manager for short. This guide explains the File Manager architecture 
+          including its extension points. The guide also discusses available services provided 
+          by the File Manager, how to utilize them, and the different APIs that exist. The guide 
+          concludes with a description of File Manager use cases.
+        </p>     
+      </section>
+      <section name="Architecture">
+        <p>The File Manager component is responsible for tracking, ingesting and moving file 
+        data and metadata between a client system and a server system. The File Manager is an 
+        extensible software component that provides an XML-RPC external interface, and a fully 
+        tailorable Java-based API for file management. The critical objects managed by the File 
+        Manager include:</p>
+        
+        <ul>
+         <li>Products - Collections of one or more files, and their associated Metadata.</li>
+         <li>Metadata - A map of key->multiple values of descriptive information about a Product.</li>
+         <li>Reference - A pointer to a Product file's original location, and to its final resting 
+         location within the archive constructed by the File Manager.</li>
+         <li>Product Type - Descriptive information about a Product that includes what type of file 
+         URI generation scheme to use, the root repository location for a particular Product, and a 
+         description of the Product.</li>
+         <li>Element - A singular Metadata element, such as "Author", or "Creator". Elements may 
+         have additional metadata, in the form of the associated definition and even a corresponding 
+         Dublin Core attribute.
+         </li>
+         <li>Versioner - A URI generation scheme for Product Types that defines the location within 
+         the archive (built by the File Manager) where a file belonging to a Product (that belongs to 
+         the associated Product Type) should be placed.
+         </li>
+        </ul>
+
+        <p>Each Product contains 1 or more References, and one Metadata object. Each Product is a member 
+        of a single Product Type. The Metadata collected for each Product is defined by a mapping of 
+        Product Type->1...* Elements. Each Product Type has an associated Versioner. These relationships 
+        are shown in the below figure.</p>
+        
+        <img src="../images/fm_object_model.png" alt="File Manager Object Model"/> 
+      
+        <subsection name="Extension Points">
+          <p>
+          There are several extension points for the File Manager. An extension point is an interface 
+          within the file manager that can have many implementations. This is particularly useful when 
+          it comes to software component configuration because it allows different implementations of an 
+          existing interface to be selected at deployment time. So, the File Manager component may 
+          communicate with a Database-based Catalog, and an XML-based Element Store (called a Validation 
+          Layer), or it may use a Lucene-based  Catalog and a Database-based Validation Layer. The selection 
+          of the actual component implementations is handled entirely by the extension point mechanism. 
+          Using extension points, it is fairly simple to support many different types of what are typically 
+          referred to as “plug-in architectures” Each of the core extension points for the File Manager is 
+          described below:</p>
+          
+          <table>
+            <tr>
+              <td>Catalog</td>
+              <td>The Catalog extension point is responsible for storing all the instance data for 
+              Products, Metadata, and for file References. Additionally, the Catalog provides a query 
+              capability for Products.
+              </td>
+            </tr>
+            <tr>
+              <td>Data Transfer</td>
+              <td>The Data Transfer extension point allows for the movement of a Product to and from 
+              the archive managed by the File Manager component. Different protocols for Data Transfer 
+              may include local (disk-based) copy, or remote XML-RPC based transfer across networked
+              machines.
+              </td>
+            </tr>
+            <tr>
+              <td>Repository Manager</td>
+              <td>The Repository Manager extension point provides a means for managing all of the 
+              policy information (i.e., the Product Types and their associated information) for 
+              Products managed by the File Manager. 
+              </td>
+            </tr>
+            <tr>
+              <td>Validation Layer</td>
+              <td>The Validation Layer extension point allows for the querying of element definitions 
+              associated with a particular Product Type. The extension point also maps Product Type to 
+              Elements.
+              </td>
+            </tr>
+             <tr>
+              <td>Versioning</td>
+              <td>The Versioning extension point allows for the definition of different URI generation 
+              schemes that define the final resting location of files for a particular Product.
+              </td>
+            </tr>
+             <tr>
+              <td>System</td>
+              <td>The extension point that provides the external interface to the File Manager 
+              services. This includes the File Manager server interface, as well as the associated 
+              File Manager client interface, that communicates with the server.
+              </td>
+            </tr>          
+          
+          </table>
+          
+          <p>The relationships between the extension points for the File Manager are shown in the below
+          Figure.
+          </p>
+          
+          <img src="../images/fm_extension_points.png" alt="File Manager Extension Points"/>
+        
+        </subsection>
+        <subsection name="Key Capabilities">
+        <p>The File Manager is responsible for providing the necessary key capabilities for managing 
+        files and metadata. Each high level capability provided by the File Manager is detailed below:</p>
+        
+        <ol>
+          <li>Easy Management of different types of Products – The Repository Manager extension point
+          is responsible for managing Product Types, and their associated information. Management of 
+          Product Types includes adding new ones, deleting and updating existing ones, and retrieving 
+          Product Types, by their ID or by their name.</li>
+          <li>Support for different kinds of back end catalogs – The Catalog extension point allows 
+          Product instance metadata and file location information to be stored in different types of 
+          back end data stores quite easily. Existing implementations of the Catalog interface include 
+          a JDBC based backend database, along with a flat-file based, Lucene index.</li>
+          <li>Management of Product instance information – The management includes adding, deleting and 
+          updating product instance information, including file locations (References), along with Product 
+          Metadata. It also includes getting Metadata, and getting References associated with existing 
+          Products. It also includes obtaining the Products themselves.</li>
+          <li>Separating out the Element management layer for Metadata – The File Manager Validation Layer 
+          extension points allows for the management of Element policy information in different types of 
+          back end stores. For instance, Element policy could be stored in XML files, a Database, or even a 
+          Metadata Registry.</li>
+          <li>Supporting different Data Transfer Mechanisms – By having an extension point for Data Transfer, 
+          the File Manager can support different Data Transfer protocols, both local and remote.</li>
+          <li>Allowing for different Back End File Repository Layouts – The Versioner extension points allows 
+          for different File Repository Layouts based on Product Types.</li>
+          <li>Allowing for Hierarchical collections of files and directories making up a Product – The File 
+          Manager Client allows for Products to be Flat, or Hierarchical-based. Flat products are collections 
+          of singular files that are aggregated together to make a Product. Hierarchical Products are Products 
+          that contain collections of directories, and sub-directories, and files.</li>
+          <li>Scalability – The File Manager uses the popular client-server paradigm, allowing new File Manager 
+          servers to be instantiated, as needed, without affecting the File Manager clients, and vice-versa. </li>
+          <li>Communication over lightweight, standard protocols – The File Manager uses XML-RPC, as its main 
+          external interface, between File Manager client and server. XML-RPC, the little brother of SOAP, is 
+          fast, extensible, and uses the underlying HTTP protocol for data transfer.</li>
+          <li>RSS based Product Syndication – The File Manager web interface allows for the RSS-based syndication 
+          of Product feeds based on Product Type.</li>
+          <li>Data Transfer Status Tracking – The File Manager tracks all current Product and File transfers and 
+          even publishes an RSS-feed of existing transfers.</li>
+         </ol>
+          
+          <p>This capability set is not exhaustive, and is meant to give the user a “feel” for what 
+          general features are provided by the File Manager. Most likely the user will find that the 
+          File Manager provides many other capabilities besides those described here.</p>
+          
+        </subsection>
+        <subsection name="Current Extension Point Implementations">
+        
+         <p>There are at least two implementations of all of the aforementioned extension points for 
+         the File Manager. Each extension point implementation is detailed below:</p>
+
+         <ul>
+           <li><b>Catalog</b><br/>
+            <ol>
+             <li>Data Source based Catalog – an implementation of the Catalog extension point interface 
+             that uses a JDBC accessible database backend.</li>
+             <li>Lucene based Catalog – an implementation of the Catalog extension point interface that 
+             uses the Lucene free text index system to store Product instance information.</li>
+           </ol>
+           </li>
+           <li><b>Data Transfer</b><br/>
+             <ol>
+               <li>Local Data Transfer – an implementation of the Data Transfer interface that uses 
+               Apache’s <a href="http://jakarta.apache.org/commons-io/">commons-io</a> to perform local, 
+               disk based filesystem data transfer. This implementation also supports locally accessible 
+               Network File System (NFS) disks.
+               </li>
+               <li>Remote Data Transfer – an implementation of the Data Transfer interface that uses the 
+               XML-RPC File Manager client to transfer files to a remote XML-RPC File Manager server.
+               </li>
+               <li>InPlace Data Transfer - an implementation of the Data Transfer interface that avoids
+               transfering any products -- this can be used in the situation where metadata about a 
+               particular product should be recorded, but no physical transfer needs to occur.
+               </li>
+             </ol>
+           </li>
+           <li><b>Repository Manager</b><br/>
+             <ol>
+               <li>Data Source based Repository Manager – an implementation of the Repository Manager 
+               extension point that stores Product Type policy information in a JDBC accessible database.
+               </li>
+               <li>XML based Repository Manager – an implementation of the Repository Manager extension 
+               point that stores Product Type policy information in an XML file called <code>product-types.xml</code>
+               </li>
+             </ol>
+           </li>
+           <li><b>Validation Layer</b><br/>
+             <ol>
+               <li>Data Source based Validation Layer – an implementation of the Validation Layer 
+               extension point that stores Element policy information in a JDBC accessible database.
+               </li>
+               <li>XML based Validation Layer – an implementation of the Validation Layer extension 
+               point that stores Element policy information in 2 XML files called <code>elements.xml</code> and 
+               <code>product-type-element-map.xml</code>
+               </li>
+             </ol>
+           </li>           
+           <li><b>System (File Manager client and File Manager server)</b><br/>
+             <ol>
+               <li>XML-RPC based File Manager server – an implementation of the external server interface
+               for the File Manager that uses XML-RPC as the transportation medium.
+               </li>
+               <li>XML-RPC based File Manager client – an implementation of the client interface for the 
+               XML-RPC File Manager server that uses XML-RPC as the transportation medium.
+               </li>
+             </ol>
+           </li>            	
+           </ul>  
+        
+        </subsection>
+      
+      </section>
+      <section name="Configuration and Installation">
+       <p>
+       To install the File Manager, you need to download a <a href="http://oodt.jpl.nasa.gov/cas-filemgr/">release</a>
+       of the file manager, available from its home web site. For bleeding-edge features, you can
+       also check out the cas-filemgr trunk project from the OODT subversion repository. You can browse 
+       the repository using ViewCVS, located at:
+       
+       <code>http://oodt.jpl.nasa.gov/vc/svn/</code>
+       
+       The actual web url for the repository is located at: 
+       
+       <code>http://oodt.jpl.nasa.gov/repo/</code>
+
+       To check out the File Manager, use your favorite Subversion client. Several clients are 
+       listed a <a href="http://oodt.jpl.nasa.gov/wiki/display/oodt/Subversion">
+       http://oodt.jpl.nasa.gov/wiki/display/oodt/Subversion</a>.
+      </p>   
+      
+      <subsection name="Project Organization">
+        <p>
+       The cas-filemgr project follows the traditional Subversion-style <code>trunk</code>, <code>tag</code>
+       and <code>branches</code> format. Trunk corresponds to the latest and greatest development on the
+       cas-filemgr. Tags are official release versions of the project. Branches correspond to deviations 
+       from the trunk large enough to warrant a separate development tree. </p>
+
+       <p>For the purposes of this the User Guide, we'll assume you already have downloaded a built release
+       of the file manager, from its web site. If you were building cas-filemgr from the trunk, a tagged release 
+       (or branch) the process would be quite similar. To build cas-filemgr, you would need the Apache Maven 
+       software. Maven is an XML-based, project management system similar to Apache Ant, but with many extra 
+       bells and whistles. Maven makes cross-platform project development a snap. You can download Maven from:
+
+       <a href="http://maven.apache.org">http://maven.apache.org</a>
+
+       All cas-filemgr releases post 1.5.0 are now <b>Maven 2 compatible</b>. This is <b>very</b> important. 
+       That means that if you have any cas-filemgr release > 1.5.0, you will need Maven 2 to compile the software, 
+       and Maven 1 will no longer work.</p>
+       
+       <p>Follow the procedures in the below Sections to build a fresh copy of the File Manager. These procedures
+       are specifically targeted on using Maven 2 to build the software: 
+        </p>      
+      
+      </subsection>
+      
+      <subsection name="Building the File Manager">
+        <p>
+          <ol>
+            <li>cd to cas-filemgr, and then type:
+           <source># mvn package</source>
+           This will perform several tasks, including compiling the source code, downloading 
+           required jar files, running unit tests, and so on. When the command completes, cd 
+           to the <code>target</code> directory within cas-filemgr. This will contain the build of the 
+           File Manager component, of the following form:
+           
+           <source>
+            cas-filemgr-${version}-dist.tar.gz
+           </source>
+           
+           This is a distribution tar ball, that you would copy to a deployment directory, such as
+           <code>/usr/local/</code>, and then unpack using <code># tar xvzf </code>. The resultant directory 
+           layout from the unpacked tarball is as follows:
+           
+           <source>
+            bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
+           </source>
+            <ul>
+              <li>bin - contains the "filemgr" server script, and the "filemgr-client" client script.</li>
+              <li>etc - contains the logging.properties file for the File Manager, and the filemgr.properties 
+              file used to configure the server options.</li>
+              <li>logs - the default directory for log files to be written to.</li>
+              <li>doc - contains Javadoc documentation, and user guides for using the particular CAS component.</li>
+              <li>lib - the required Java jar files to run the File Manager.</li>
+              <li>policy – the default XML-based element and product type policy in 
+              case the user is using the XML Repository Manager and/or the XML Validation 
+              Layer.</li>
+              <li>CHANGES.txt - contains the CHANGES present in this released version of the CAS component.</li>
+              <li>LICENSE.txt - the LICENSE for the File Manager project.</li>
+            </ul>
+          </li>
+         </ol>        
+        </p>
+      
+      </subsection>
+      <subsection name="Deploying the File Manager">
+      <p>To deploy the file manager, you'll need to create an installation directory. Typically this 
+      would be somewhere in /usr/local (on *nix style systems), or C:\Program Files\ (on windows 
+      style systems). We'll assume that you're installing on a *nix style system though the Windows 
+      instructions are quite similar.</p>
+
+      <p>Follow the process below to deploy the File Manager:</p>
+
+        <ol>
+         <li>Copy the binary distribution to the deployment directory
+         <source># cp -R cas-filemgr/trunk/target/cas-filemgr-${version}-dist.tar.gz /usr/local/</source>
+         </li>
+         <li>Untar the distribution
+         <source># cd /usr/local ; tar xvzf cas-filemgr-${version}-dist.tar.gz</source>
+         </li>
+         <li>Set up a symlink
+         <source># ln -s /usr/local/cas-filemgr-${version} /usr/local/filemgr</source>
+         </li>
+         <li>edit /usr/local/filemgr/bin/filemgr
+          <ul>
+           <li>Set the <code>SERVER_PORT</code> variable to the desired port you'd like to run the 
+           File Manager server on.
+           </li>
+           <li>Set the <code>JAVA_HOME</code> variable to point to the location of your installed 
+           JRE runtime.
+           </li>
+           <li>Set the <code>RUN_HOME</code> variable to point to the location you'd like the File 
+           Manager PID file written to. Typically this should default to <code>/var/run</code>, but not all 
+           system administrators allow users to write to <code>/var/run</code>.
+           </li>
+          </ul>
+          </li>
+           <li>edit <code>/usr/local/filemgr/bin/filemgr-client</code>
+             <ul>
+               <li>Set the <code>JAVA_HOME</code> variable to point to the location of your installed JRE runtime.
+               </li>
+             </ul>
+           </li>
+           <li>(optional) edit <code>/usr/local/filemgr/etc/logging.properties</code>
+            <ul>
+             <li>Set the logging levels for each subsystem to the desired level. The system 
+             defaults are fairly considerate and prevent much of the logging at levels below <code>INFO</code>
+             to the console. </li>
+            </ul>
+           </li>
+           <li>edit <code>/usr/local/filemgr/etc/filemgr.properties</code>
+            <ul>
+             <li>This java properties file contains all of the default information properties to 
+             configure the File Manager. By default, the File Manager is built to use the XML-based 
+             repository manager and validation layer extension points, the DataSource based catalog 
+             extension point, and the local data transfer interface. These defaults can be changed 
+             quite easily by changing the factory classes that are pointed to for each extension 
+             point. For example, to use the Lucene-based cataog extension point, you would change 
+             the following property, <code>filemgr.catalog.factory</code> to <code>gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory</code>
+            </li>
+            <li>You need to configure the properties for each of the extension points that you are 
+            using. By default, you would at least need to configure:
+              <ul>
+                <li>The JDBC connection information for the data source catalog.</li>
+                <li>The paths to the directories where the XML policy files are stored for the 
+                validation layer and for the repository manager. A good default location is to 
+                place these files within /usr/local/filemgr/policy.</li>
+              </ul>
+            </li>
+           </ul>
+          </li>
+       </ol>
+   
+     <p>Other configuration options are possible: check the <a href="../apidocs">API documentation</a>, 
+     as well as the comments within the filemgr.properties file to find out the rest of the configurable 
+     properties for the extension points you choose. A full listing of all the extension point factory 
+     class names are provided in the Appendix. After step 7, you are officially done configuring the File 
+     Manager for deployment.</p>   
+      
+      </subsection>
+      <subsection name="Running the File Manager">
+      <p>To run the filemgr, cd to <code>/usr/local/filemgr/bin</code> and type:</p>
+
+      <source># ./filemgr start</source>
+
+      <p>This will startup the file manager XML-RPC server interface. Your File Manager 
+      is now ready to run! You can test out the file manager by running a simple ingest 
+      command using the filemgr-client command below. First create a simple text file 
+      called "blah.txt" and place it inside /usr/local/filemgr/bin. Then, create a blank 
+      metadata file for the product, using the <a href="http://oodt.jpl.nasa.gov/vc/svn/cas-metadata/trunk/src/conf/cas.metadata.xsd">schema</a>
+      or  <a href="http://oodt.jpl.nasa.gov/vc/svn/cas-metadata/trunk/src/conf/cas.metadata.dtd">DTD</a>
+      provided in the cas-metadata project. An example XML file might be:</p>
+      
+      <source>
+        &lt;cas:metadata xmlns:cas=&quot;http://oodt.jpl.nasa.gov/1.0/cas&quot;&gt;
+        &lt;/cas:metadata&gt;
+      </source>
+      
+      <p>Call this metadata file <code>blah.txt.met</code>, and place it also in <code>/usr/local/filemgr/bin</code>. 
+      Then, run the below command, assuming that you started the File Manager on the default port of <code>9000</code>:</p>
+
+      <source># ./filemgr-client --url http://localhost:9000 --operation --ingestProduct --productName Blah.txt \
+      --productStructure Flat --productTypeName GenericFile --metadataFile file:/usr/local/filemgr/bin/blah.txt.met \
+      --clientTransfer --dataTransfer gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory \
+      --refs file:/usr/local/filemgr/bin/blah.txt
+      </source>
+
+      <p>You should see a response message at the end similar to:</p>
+
+      <source>
+      Jul 15, 2006 10:37:53 PM gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManagerClient &lt;init&gt;<br/>
+      INFO: Loading File Manager Configuration Properties from: [../etc/filemgr.properties]<br/>
+      Jul 15, 2006 10:37:54 PM gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManagerClient ingestProduct<br/>
+      FINEST: File Manager Client: clientTransfer enabled: transfering product [Blah.txt]<br/>
+      Jul 15, 2006 10:37:54 PM gov.nasa.jpl.oodt.cas.filemgr.versioning.VersioningUtils <br/>
+      createBasicDataStoreRefsFlat<br/>
+      FINE: VersioningUtils: Generated data store ref: file:/tmp/files/Blah.txt/blah.txt from<br/> 
+      origRef: file:/usr/local/filemgr/bin/blah.txt<br/>
+      Jul 15, 2006 10:37:54 PM gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferer <br/>
+      moveFilesToProductRepo<br/>
+      INFO: LocalDataTransfer: Moving File: file:/usr/local/filemgr/bin/blah.txt to <br/>
+      file:/tmp/files/Blah.txt/blah.txt<br/>
+      ingestProduct: Result: 3a812d86-148d-11db-a25a-f388f524a371
+      </source>
+
+    <p>which means that everything installed okay!</p>
+
+   
+      
+      </subsection>
+      
+      </section>
+      <section name="Use Cases">
+        <p>
+          The File Manager was built to support several of the above capabilities outlined in 
+          Section 3. In particular there were several use cases that we wanted to support, some 
+          of which are described below.        
+        </p>
+      
+         <img src="../images/fm_use_case1.png" alt="File Manager Ingest Use Case"/>
+         
+         <p>The red numbers in the above Figure correspond to a sequence of steps that occurs and a 
+         series of interactions between the different File Manager extension points in order to 
+         perform the file ingestion activity. In Step 1, a File Manager client is invoked for the 
+         ingest operation, which sends Metadata and References for a particular Product to ingest 
+         to the File Manager server’s System Interface extension point. The System Interface uses 
+         the information about Product Type policy made available by the Repository Manager in order 
+         to understand whether or not the product should be transferred, where it’s root repository 
+         path should be, and so on. The System Interface then catalogs the file References and Metadata 
+         using the Catalog extension point. During this catalog process, the Catalog extension point 
+         uses the Validation Layer to determine which Elements should be extracted for the particular 
+         Product, based upon its Product Type. After that, Data Transfer is initiated either at the 
+         client or server end, and the first step to Data Transfer is using the Product’s associated 
+         Versioner to generate final file References. After final file References have been determined, 
+         the file data is transferred by the server or by the client, using the Data Transfer extension 
+         point.</p>
+         
+      </section>
+      <section name="Appendix">
+       <p>
+         Full list of File Manager extension point classes and their associated property names from the 
+         filemgr.properties file:       
+       </p>
+    
+       <table>
+         <tr>
+           <td>filemgr.catalog.factory</td>
+           <td>gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalogFactory<br/>
+               gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory
+           </td>
+         </tr>
+         <tr>
+           <td>filemgr.repository.factory</td>
+           <td>gov.nasa.jpl.oodt.cas.filemgr.repository.DataSourceRepositoryManagerFactory<br/>
+               gov.nasa.jpl.oodt.cas.filemgr.repository.XMLRepositoryManagerFactory
+           </td>
+         </tr>
+         <tr>
+           <td>filemgr.datatransfer.factory</td>
+           <td>gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory<br/>
+               gov.nasa.jpl.oodt.cas.filemgr.datatransfer.RemoteDataTransferFactory<br/>
+               gov.nasa.jpl.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory
+           </td>
+         </tr>
+         <tr>
+           <td>filemgr.validationLayer.factory</td>
+           <td>gov.nasa.jpl.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory<br/>
+               gov.nassa.jpl.oodt.cas.filemgr.validation.XMLValidationLayerFactory
+           </td>
+         </tr>
+       </table>
+      
+      </section>
+   </body>
+   
+</document>

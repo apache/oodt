@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mime-info>
+	
+	<mime-type type="product/ecfa_an">
+		<glob pattern="ECMWF\.\d{4}\.\d{2}\.\d{2}\.T\d{2}Z\.uad_HGrbF00\.A\d{11}"/>
+		<_comment>ECMWF_Analysis_T</_comment>		
+	</mime-type>
+	
+	<mime-type type="product/ecf3_an">
+		<glob pattern="ECMWF\.\d{4}\.\d{2}\.\d{2}\.T\d{2}Z\.uad_HGrbF03\.A\d{11}"/>
+		<_comment>ECMWF_3Hr_Forecast_T</_comment>		
+	</mime-type>
+	
+	<mime-type type="product/ecf9_an">
+		<glob pattern="ECMWF\.\d{4}\.\d{2}\.\d{2}\.T\d{2}Z\.uad_HGrbF09\.A\d{11}"/>
+		<_comment>ECMWF_9Hr_Forecast_T</_comment>		
+	</mime-type>
+	
+</mime-info>
+

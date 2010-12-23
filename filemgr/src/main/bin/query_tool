@@ -1,0 +1,3 @@
+#!/bin/sh
+
+$JAVA_HOME/bin/java -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.QueryTool $1

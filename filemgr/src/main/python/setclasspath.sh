@@ -1,0 +1,2 @@
+
+setenv CLASSPATH ${HOME}/.m2/repository/gov/nasa/jpl/oodt/cas-filemgr/1.7.0-dev/cas-filemgr-1.7.0-dev.jar:${HOME}/.m2/repository/xmlrpc/xmlrpc/2.1-dev/xmlrpc-2.1-dev.jar:${HOME}/.m2/repository/gov/nasa/jpl/oodt/cas-metadata/1.5.0/cas-metadata-1.5.0.jar:${HOME}/.m2/repository/org/apache/lucene/lucene-core/2.0.0/lucene-core-2.0.0.jar:${HOME}/.m2/repository/jug/jug-asl/2.0.0/jug-asl-2.0.0.jar

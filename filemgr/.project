@@ -1,0 +1,17 @@
+<projectDescription>
+  <name>cas-filemgr</name>
+  <comment>The file management component of a Catalog and Archive Service. This component
+     purposefully separates data stores and metadata stores as standard interfaces, and
+     provides some out of the box backend implementations of them (including one based
+     on the javax.sql.DataSource interface). This component provides everything that you need
+     to catalog, archive and manage files, and directories, and their associated metadata.</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
