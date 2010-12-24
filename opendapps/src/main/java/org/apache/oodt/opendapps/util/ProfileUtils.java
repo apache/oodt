@@ -146,6 +146,24 @@ public class ProfileUtils {
         profElements.put(datasetSpec.getProfileElementName(), epe);
       }
     }
+    
+    // now add const prof elems
+    for (ConstantSpec spec : conf.getConstSpecs()) {
+      if (spec.getType().equals(PROF_ELEM_SPEC_TYPE)) {
+        try {
+          EnumeratedProfileElement epe = getEnumeratedProfileElement(spec.getName(), profile);  
+          String replaceVal = PathUtils.replaceEnvVariables(spec.getValue(), datasetMet);
+          List<String> epeVals = Arrays.asList(replaceVal.split(PathUtils.DELIMITER));
+          if (epeVals != null && epeVals.size() > 0)
+            epe.getValues().addAll(epeVals);
+          profElements.put(spec.getName(), epe);
+        } catch (Exception e) {
+          e.printStackTrace();
+          LOG.log(Level.WARNING, "Error setting field: [" + spec.getName()
+              + "] in resource attributes: Message: " + e.getMessage());
+        }
+      }
+    }
 
     return profElements;
 

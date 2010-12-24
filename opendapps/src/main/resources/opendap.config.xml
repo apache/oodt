@@ -75,12 +75,12 @@ configurable in Java code, but is now configurable via this file.
 	<datasetMetadata>
 	   <elem name="short_name" value="Name"/>
 	   <elem name="long_name" value="FullName"/>
-	   <elem name="mission_name" value="Projects"/>
+	   <!-- <elem name="mission_name" value="Projects"/>-->
 	   <elem name="mission_description" value="Documentation"/>
 	   <elem name="parameter" value="Variables"/>
 	   <elem name="startdate" value="StartDateTime"/>
 	   <elem name="enddate" value="EndDateTime"/>
-	   <elem name="spatial_resolution" value="GeospatialCoverage"/>
+	   <!-- <elem name="spatial_resolution" value="GeospatialCoverage"/>-->
 	   <elem name="description" value="Documentation"/>
 	   <elem name="spatial_coverage" value="GeospatialCoverage"/>
 	   <elem name="processing_level" value="Processing"/>
@@ -99,8 +99,9 @@ configurable in Java code, but is now configurable via this file.
 	    Note: the value tag can use CAS/OODT based environment variable replacement, by specifying 
 	    values within the '[' and ']' delimiters, e.g., [PROFILE_REG_AUTHORITY].
 	    
-	    type: either profAttr or resAttr to indicate what section in the profile the information 
-	    should be part of.
+	    type: either profAttr, resAttr, or profElem to indicate what section in the profile the information 
+	    should be part of. If profElem is selected, then an EnumeratedProfileElement with the provided 
+	    values will be created and added to the profile.
 	    name: the name of the profileAttribute or resourceAttribute field.
 	    value: the value to be set.
 	    
@@ -146,7 +147,9 @@ configurable in Java code, but is now configurable via this file.
 		<const type="resAttr" name="resContext" value="[Authority]"/>
 		<const type="resAttr" name="Type" value="[DataFormatType]"/>
 		<const type="resAttr" name="Date" value="[StartDateTime],[EndDateTime]"/>
-		<const type="resAttr" name="resLocation" value="http://thredds1.pfeg.noaa.gov/thredds/dodsC/[ID].dods,http://thredds1.pfeg.noaa.gov/thredds/dodsC/[ID].html"/>
+		<const type="resAttr" name="resLocation" value="http://thredds1.pfeg.noaa.gov/thredds/dodsC/[ID].html,http://thredds1.pfeg.noaa.gov/thredds/dodsC/[ID].dods"/>
+		<const type="profElem" name="spatial_coverage" value="Global"/>
+		<const type="profElem" name="mission_name" value="Coastwatch"/>
 	</constants>
 
 </oodt:opendap>

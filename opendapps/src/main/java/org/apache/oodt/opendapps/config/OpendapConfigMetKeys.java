@@ -28,6 +28,8 @@ public interface OpendapConfigMetKeys {
 
   public static final String PROF_ATTR_SPEC_TYPE = "profAttr";
 
+  public static final String PROF_ELEM_SPEC_TYPE = "profElem";
+
   public static final String ENUM_ELEMENT_TYPE = "EnumeratedProfileElement";
 
   public static final String RANGED_ELEMENT_TYPE = "RangedProfileElement";
