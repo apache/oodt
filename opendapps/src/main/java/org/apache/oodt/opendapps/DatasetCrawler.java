@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 
 //APACHE imports
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.commons.util.DateConvert;
 
 //OPeNDAP/THREDDS imports
 import thredds.catalog.InvAccess;
@@ -222,8 +221,13 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
           .valueOf(dataset.getGeospatialCoverage().getLatResolution()));
       this.addIfNotNull(met, "GeospatialCoverageLongitudeResolution", String
           .valueOf(dataset.getGeospatialCoverage().getLonResolution()));
-      this.addIfNotNull(met, "GeospatialCoverage", dataset
-          .getGeospatialCoverage().toString());
+      
+      if(dataset.getGeospatialCoverage().getNames() != null){
+        for(Vocab gName: dataset.getGeospatialCoverage().getNames()){
+           this.addIfNotNull(met, "GeospatialCoverage", gName.getText());
+        }
+      }
+      
     }
 
     this.addIfNotNull(met, "History", dataset.getHistory());
