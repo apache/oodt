@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-106 Logging properties for OPeNDAP ps doesn't include required .level suffix (mattmann)
+
 * OODT-105 Fix GeospatialCoverage in OPeNDAP ps (mattmann)
 
 * OODT-104 Allow const section to plumb information into profile elements (mattmann)
