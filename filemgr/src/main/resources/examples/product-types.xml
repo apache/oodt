@@ -38,6 +38,15 @@
         </configuration>
       </extractor>
       <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor" />
+      <extractor class="org.apache.oodt.cas.filemgr.metadata.extractors.examples.FinalFileLocationExtractor">
+        <configuration>
+          <!-- this property specifies whether you want the FILE_LOCATION field
+               computed by this extractor to replace any other FILE_LOCATION met 
+               attribute.
+           -->
+           <property name="replace" value="true"/>
+        </configuration>
+      </extractor>
     </metExtractors>
   </type>
 </cas:producttypes>
