@@ -1284,7 +1284,7 @@ public class XmlRpcFileManagerClient {
             CatalogException, RepositoryManagerException, URISyntaxException {
 
         String addProductTypeOperation = "--addProductType --typeName <name> --typeDesc <description> --repository <path> --versionClass <classname of versioning impl>\n";
-        String ingestProductOperation = "--ingestProduct --productName <name> --productStructure <Hierarchical|Flat> --productTypeName <name of product type> --metadataFile <file> [--clienTransfer --dataTransfer <java class name of data transfer factory>] --refs <ref1>...<refn>\n";
+        String ingestProductOperation = "--ingestProduct --productName <name> --productStructure <Hierarchical|Flat> --productTypeName <name of product type> --metadataFile <file> [--clientTransfer --dataTransfer <java class name of data transfer factory>] --refs <ref1>...<refn>\n";
         String hasProductOperation = "--hasProduct --productName <name>\n";
         String getProductTypeByNameOperation = "--getProductTypeByName --productTypeName <name>\n";
         String getNumProductsOperation = "--getNumProducts --productTypeName <name>\n";
