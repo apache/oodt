@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-68 Add Number of Product Hits to ProductPage (bfoster, mattmann)
+
 * OODT-107 Typo identified in filemgr-client usage statement (Rishi Verma via mattmann)
 
 * OODT-58 update file manager to use Tika for mime-type detection (mattmann)
