@@ -25,9 +25,11 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.structs.mime.MimeTypes;
 import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
+import org.apache.tika.mime.MimeTypesFactory;
 
 //JDK imports
 import java.io.IOException;
@@ -129,9 +131,14 @@ public class LocalDataTransferer implements DataTransfer {
             IOException, URISyntaxException {
         String usage = "LocalFileTransfer --productName <name> --productRepo <repo> [--dir <dirRef>] [--files <origRef 1>...<origRef N>]\n";
 
-        MimeTypes mimeTypeRepo = MimeTypes
-                .buildRepository(System
-                        .getProperty("org.apache.oodt.cas.filemgr.mime.type.repository"));
+        MimeTypes mimeTypeRepo;
+        try {
+          mimeTypeRepo = MimeTypesFactory.create(System
+                          .getProperty("org.apache.oodt.cas.filemgr.mime.type.repository"));
+        } catch (MimeTypeException e) {
+          e.printStackTrace();
+          throw new IOException(e.getMessage());
+        }
 
         String productName = null;
         String productRepo = null;

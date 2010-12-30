@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,32 +15,38 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.filemgr.structs.mime;
+package org.apache.oodt.cas.filemgr.structs;
+
+//JDK imports
+import java.io.File;
+
+//Junit imports
+import junit.framework.TestCase;
 
 /**
- * A class to encapsulate MimeType related exceptions. Based on original 
- * class written by J. Charron and H. Kodungallur with the 
- * <a href="http://lucene.apache.org/nutch">Apache Nutch</a> project
  * 
- * @author ahart
- * @author bfoster
+ * Test harness for the Product {@link Reference} class. Currently 
+ * exercises that MIME type detection properly occurs.
+ * 
+ * @since OODT-58
+ * 
  */
-public class MimeTypeException extends Exception {
+public class TestReference extends TestCase {
 
-    private static final long serialVersionUID = -9041812649674899544L;
+  public TestReference() {
+    System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository",
+        new File("./src/main/resources/mime-types.xml").getAbsolutePath());
+  }
 
-    /**
-     * Constructs a MimeTypeException with no specified detail message.
-     */
-    public MimeTypeException() {
-        super();
-    }
-    
-    /**
-     * Constructs a MimeTypeException with the specified detail message.
-     * @param msg the detail message.
-     */
-    public MimeTypeException(String msg) {
-        super(msg);
-    }
+  /**
+   * @since OODT-58
+   */
+  public void testMimeType() {
+    Reference r = new Reference("file:///tmp/test.he5",
+        "file:///archive/test.he5/test.he5", 0L);
+    assertNotNull(r);
+    assertNotNull(r.getMimeType());
+    assertEquals("application/x-hdf", r.getMimeType().getName());
+  }
+
 }

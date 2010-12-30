@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-58 update file manager to use Tika for mime-type detection (mattmann)
+
 * OODT-106 Logging properties for OPeNDAP ps doesn't include required .level suffix (mattmann)
 
 * OODT-105 Fix GeospatialCoverage in OPeNDAP ps (mattmann)
