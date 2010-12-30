@@ -25,6 +25,7 @@ import java.net.URL;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
@@ -66,7 +67,7 @@ public class Reference {
                           "mime-types.xml")))));
         } catch (Exception e){
           e.printStackTrace();
-          throw new RuntimeException("Cannot instantiate MIME repository! Message: "+e.getMessage());
+          mimeTypeRepository = TikaConfig.getDefaultConfig().getMimeRepository();
         }
     }
 
