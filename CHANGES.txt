@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-72 Unable to set Metadata based off Product Versioning during 
+  Product ingestion (mattmann, bfoster)
+
 * OODT-68 Add Number of Product Hits to ProductPage (bfoster, mattmann)
 
 * OODT-107 Typo identified in filemgr-client usage statement (Rishi Verma via mattmann)
