@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-41 Product Constructor does not set transfer status (mattmann)
+
 * OODT-72 Unable to set Metadata based off Product Versioning during 
   Product ingestion (mattmann, bfoster)
 
