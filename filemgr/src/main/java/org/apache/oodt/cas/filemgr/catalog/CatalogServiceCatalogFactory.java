@@ -49,18 +49,18 @@ public class CatalogServiceCatalogFactory implements CatalogFactory {
 	public CatalogServiceCatalogFactory() {
 		this.validationLayerFactoryClass = System
         	.getProperty("filemgr.validationLayer.factory",
-                "gov.nasa.jpl.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory");
+                "org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory");
         
 		this.repositoryManagerFactoryClass = System
         	.getProperty("filemgr.repository.factory",
-        		"gov.nasa.jpl.oodt.cas.filemgr.repository.DataSourceRepositoryManagerFactory");
+        		"org.apache.oodt.cas.filemgr.repository.DataSourceRepositoryManagerFactory");
 		
-        this.pageSize = Integer.getInteger("gov.nasa.jpl.oodt.cas.filemgr.catalog.catalogservice.pageSize", 50);
+        this.pageSize = Integer.getInteger("org.apache.oodt.cas.filemgr.catalog.catalogservice.pageSize", 50);
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.CatalogFactory#setValidationLayer(gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer)
+	 * @see org.apache.oodt.cas.filemgr.catalog.CatalogFactory#setValidationLayer(org.apache.oodt.cas.filemgr.validation.ValidationLayer)
 	 */
 	public void setValidationLayer(ValidationLayer validationLayer) {
 		this.validationLayer = validationLayer;
@@ -68,23 +68,23 @@ public class CatalogServiceCatalogFactory implements CatalogFactory {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
+	 * @see org.apache.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
 	 */
 	public Catalog createCatalog() {
 		try {
 			if (validationLayer == null)
 		        validationLayer = GenericFileManagerObjectFactory.getValidationLayerFromFactory(validationLayerFactoryClass);
 			RepositoryManager repositoryManager = GenericFileManagerObjectFactory.getRepositoryManagerServiceFromFactory(System.getProperty("filemgr.repository.factory"));
-	        String configFile = System.getProperty("gov.nasa.jpl.oodt.cas.filemgr.catalog.catalogservice.config");
+	        String configFile = System.getProperty("org.apache.oodt.cas.filemgr.catalog.catalogservice.config");
 			if (configFile != null) {
 		        FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(configFile);
-		        CatalogService catalogService = ((CatalogServiceFactory) appContext.getBean(System.getProperty("gov.nasa.jpl.oodt.cas.filemgr.catalog.catalogservice.factory.bean.id"), CatalogServiceFactory.class)).createCatalogService();
+		        CatalogService catalogService = ((CatalogServiceFactory) appContext.getBean(System.getProperty("org.apache.oodt.cas.filemgr.catalog.catalogservice.factory.bean.id"), CatalogServiceFactory.class)).createCatalogService();
 //		        Map<String, CatalogBuilder> catalogBuilders = appContext.getBeansOfType(CatalogBuilder.class);
 //				Set<String> hitList = catalogService.getCurrentCatalogIds();
 //				for (CatalogBuilder catalogBuilder : catalogBuilders.values()) {
 //					catalogBuilder.setValidationLayer(this.validationLayer);
 //					catalogBuilder.setRepositoryManager(this.repositoryManager);
-//					gov.nasa.jpl.oodt.cas.catalog.system.Catalog catalog = catalogBuilder.buildCatalogServiceCatalog();
+//					org.apache.oodt.cas.catalog.system.Catalog catalog = catalogBuilder.buildCatalogServiceCatalog();
 //					hitList.remove(catalog.getUrnId());
 //					if (catalogBuilder.getCatalogClassLoaderUrls() != null && catalogBuilder.getCatalogClassLoaderUrls().size() > 0)
 //						catalogService.addCustomClassLoaderUrls(catalogBuilder.getCatalogClassLoaderUrls());
@@ -101,7 +101,7 @@ public class CatalogServiceCatalogFactory implements CatalogFactory {
 			
 				return new CatalogServiceCatalog(catalogService, repositoryManager, this.validationLayer, this.pageSize);
 			}else {
-				throw new Exception("Must specify property 'gov.nasa.jpl.oodt.cas.filemgr.catalog.catalogservice.config'");
+				throw new Exception("Must specify property 'org.apache.oodt.cas.filemgr.catalog.catalogservice.config'");
 			}
 		}catch (Exception e) {
 			LOG.log(Level.SEVERE, "Failed to create CatalogServiceCatalog : " + e.getMessage(), e);

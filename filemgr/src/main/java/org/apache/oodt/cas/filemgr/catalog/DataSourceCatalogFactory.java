@@ -69,30 +69,30 @@ public class DataSourceCatalogFactory implements CatalogFactory {
     public DataSourceCatalogFactory() {
         jdbcUrl = PathUtils
                 .replaceEnvVariables(System
-                        .getProperty("gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.url", "some_datasource_url"));
+                        .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url", "some_datasource_url"));
         user = PathUtils
                 .replaceEnvVariables(System
-                        .getProperty("gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.user", "user"));
+                        .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user", "user"));
         pass = PathUtils
                 .replaceEnvVariables(System
-                        .getProperty("gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.pass", "pass"));
+                        .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.pass", "pass"));
         driver = PathUtils
                 .replaceEnvVariables(System
-                        .getProperty("gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.jdbc.driver", "some_driver_class"));
+                        .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver", "some_driver_class"));
 
         validationLayerFactoryClass = System
                 .getProperty("filemgr.validationLayer.factory",
-                        "gov.nasa.jpl.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory");
+                        "org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory");
         fieldIdStr = Boolean
-                .getBoolean("gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.quoteFields");
+                .getBoolean("org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields");
 
         pageSize = Integer
                 .getInteger(
-                        "gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.pageSize",
+                        "org.apache.oodt.cas.filemgr.catalog.datasource.pageSize",
                         20).intValue();
         cacheUpdateMinutes = Long
                 .getLong(
-                        "gov.nasa.jpl.oodt.cas.filemgr.catalog.datasource.cacheUpdateMinutes",
+                        "org.apache.oodt.cas.filemgr.catalog.datasource.cacheUpdateMinutes",
                         5L).longValue();
     }
 
@@ -108,7 +108,7 @@ public class DataSourceCatalogFactory implements CatalogFactory {
         this.dataSource = ds;
         this.validationLayerFactoryClass = System
                 .getProperty("filemgr.validationLayer.factory",
-                        "gov.nasa.jpl.oodt.cas.validation.DataSourceValidationLayerFactory");
+                        "org.apache.oodt.cas.validation.DataSourceValidationLayerFactory");
     }
 
     
@@ -176,7 +176,7 @@ public class DataSourceCatalogFactory implements CatalogFactory {
 	/*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
+     * @see org.apache.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
      */
     public Catalog createCatalog() {
 		if (validationLayer == null)

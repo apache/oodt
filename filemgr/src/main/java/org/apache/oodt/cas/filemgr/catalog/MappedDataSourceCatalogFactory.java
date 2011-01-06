@@ -41,7 +41,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
  */
 public class MappedDataSourceCatalogFactory extends DataSourceCatalogFactory {
 
-    private static final String TYPE_MAP_KEY = "gov.nasa.jpl.oodt.cas.filemgr."
+    private static final String TYPE_MAP_KEY = "org.apache.oodt.cas.filemgr."
             + "catalog.mappeddatasource.mapFile";
 
     protected String mapFilePath;
@@ -64,7 +64,7 @@ public class MappedDataSourceCatalogFactory extends DataSourceCatalogFactory {
 	/*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalogFactory#createCatalog()
+     * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory#createCatalog()
      */
     @Override
     public Catalog createCatalog() {

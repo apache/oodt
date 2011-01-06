@@ -57,11 +57,11 @@ public class LuceneCatalogFactory implements CatalogFactory {
 	 */
 	public LuceneCatalogFactory() throws IllegalArgumentException {
 		indexFilePath = System
-				.getProperty("gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.idxPath");
+				.getProperty("org.apache.oodt.cas.filemgr.catalog.lucene.idxPath");
 		if (indexFilePath == null) {
 			throw new IllegalArgumentException(
 					"error initializing lucene catalog: "
-							+ "[gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.idxPath="
+							+ "[org.apache.oodt.cas.filemgr.catalog.lucene.idxPath="
 							+ indexFilePath);
 		}
 
@@ -70,20 +70,20 @@ public class LuceneCatalogFactory implements CatalogFactory {
 		
 		validationLayerFactoryClass = System
 				.getProperty("filemgr.validationLayer.factory",
-						"gov.nasa.jpl.oodt.cas.validation.DataSourceValidationLayerFactory");
+						"org.apache.oodt.cas.validation.DataSourceValidationLayerFactory");
 		
-		pageSize = Integer.getInteger("gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.pageSize", 20).intValue();
+		pageSize = Integer.getInteger("org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", 20).intValue();
 		
 		commitLockTimeOut = Long
 				.getLong(
-						"gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
+						"org.apache.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
 						60).longValue();
 		writeLockTimeOut = Long
 				.getLong(
-						"gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
+						"org.apache.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
 						60).longValue();
 		mergeFactor = Integer.getInteger(
-				"gov.nasa.jpl.oodt.cas.filemgr.catalog.lucene.mergeFactor", 20)
+				"org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor", 20)
 				.intValue();
 	}
 	
@@ -134,7 +134,7 @@ public class LuceneCatalogFactory implements CatalogFactory {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
+	 * @see org.apache.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
 	 */
 	public Catalog createCatalog() {
 		if (validationLayer == null)
