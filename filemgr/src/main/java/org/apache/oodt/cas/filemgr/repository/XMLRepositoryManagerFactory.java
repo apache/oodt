@@ -51,7 +51,7 @@ public class XMLRepositoryManagerFactory implements RepositoryManagerFactory {
      */
     public XMLRepositoryManagerFactory() {
         String productTypeDirUris = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.dirs");
+                .getProperty("org.apache.oodt.cas.filemgr.repositorymgr.dirs");
 
         if (productTypeDirUris != null) {
             productTypeDirUris = PathUtils
@@ -64,7 +64,7 @@ public class XMLRepositoryManagerFactory implements RepositoryManagerFactory {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.repository.RepositoryManagerFactory#createRepositoryManager()
+     * @see org.apache.oodt.cas.filemgr.repository.RepositoryManagerFactory#createRepositoryManager()
      */
     public RepositoryManager createRepositoryManager() {
         if (productTypeDirList != null) {
@@ -81,7 +81,7 @@ public class XMLRepositoryManagerFactory implements RepositoryManagerFactory {
                             Level.WARNING,
                             "Cannot create XML Repository Manager: no product type dir uris specified: value: "
                                     + System
-                                            .getProperty("gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.dirs"));
+                                            .getProperty("org.apache.oodt.cas.filemgr.repositorymgr.dirs"));
             return null;
         }
     }

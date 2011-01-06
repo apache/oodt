@@ -78,7 +78,7 @@ public class RemoteDataTransferer implements DataTransfer {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.datatransfer.DataTransfer#setFileManagerUrl(java.net.URL)
+     * @see org.apache.oodt.cas.filemgr.datatransfer.DataTransfer#setFileManagerUrl(java.net.URL)
      */
     public void setFileManagerUrl(URL url) {
         try {
@@ -95,7 +95,7 @@ public class RemoteDataTransferer implements DataTransfer {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.datatransfer.DataTransfer#transferProduct(gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.datatransfer.DataTransfer#transferProduct(org.apache.oodt.cas.filemgr.structs.Product)
      */
     public void transferProduct(Product product) throws DataTransferException,
             IOException {
@@ -147,7 +147,7 @@ public class RemoteDataTransferer implements DataTransfer {
     
     /*
      * (non-Javadoc)
-     * @see gov.nasa.jpl.oodt.cas.filemgr.datatransfer.DataTransfer#copyProduct(gov.nasa.jpl.oodt.cas.filemgr.structs.Product, java.io.File)
+     * @see org.apache.oodt.cas.filemgr.datatransfer.DataTransfer#copyProduct(org.apache.oodt.cas.filemgr.structs.Product, java.io.File)
      */
 	public void copyProduct(Product product, File directory) throws DataTransferException, IOException {
 		for (Reference reference : product.getProductReferences()) {

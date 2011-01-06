@@ -56,7 +56,7 @@ public class Reference {
     static {
         mimeTypeRepository = MimeTypes.buildRepository(PathUtils
                 .replaceEnvVariables(System.getProperty(
-                        "gov.nasa.jpl.oodt.cas.filemgr.mime.type.repository",
+                        "org.apache.oodt.cas.filemgr.mime.type.repository",
                         "mime-types.xml")));
     }
 

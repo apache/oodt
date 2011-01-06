@@ -43,7 +43,7 @@ public class RemoteDataTransferFactory implements DataTransferFactory {
      */
     public RemoteDataTransferFactory() throws InstantiationException {
         chunkSize = Integer.getInteger(
-                "gov.nasa.jpl.oodt.cas.filemgr.datatransfer.remote.chunkSize",
+                "org.apache.oodt.cas.filemgr.datatransfer.remote.chunkSize",
                 1024).intValue();
 
         LOG.log(Level.INFO, "RemoteDataTransfer enabled: using chunk size: ["
@@ -53,7 +53,7 @@ public class RemoteDataTransferFactory implements DataTransferFactory {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.datatransfer.DataTransferFactory#createDataTransfer()
+     * @see org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory#createDataTransfer()
      */
     public RemoteDataTransferer createDataTransfer() {
         return new RemoteDataTransferer(chunkSize);

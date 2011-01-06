@@ -119,8 +119,8 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#addMetadata(gov.nasa.jpl.oodt.cas.metadata.Metadata,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#addMetadata(org.apache.oodt.cas.metadata.Metadata,
+     *      org.apache.oodt.cas.filemgr.structs.Product)
      */
     public synchronized void addMetadata(Metadata m, Product product)
             throws CatalogException {
@@ -177,8 +177,8 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#addMetadata(gov.nasa.jpl.oodt.cas.metadata.Metadata,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#addMetadata(org.apache.oodt.cas.metadata.Metadata,
+     *      org.apache.oodt.cas.filemgr.structs.Product)
      */
     public synchronized void removeMetadata(Metadata m, Product product)
             throws CatalogException {
@@ -228,7 +228,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#addProduct(gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#addProduct(org.apache.oodt.cas.filemgr.structs.Product)
      */
     public synchronized void addProduct(Product product)
             throws CatalogException {
@@ -326,7 +326,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#modifyProduct(gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#modifyProduct(org.apache.oodt.cas.filemgr.structs.Product)
      */
     public synchronized void modifyProduct(Product product)
             throws CatalogException {
@@ -393,7 +393,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#removeProduct(gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#removeProduct(org.apache.oodt.cas.filemgr.structs.Product)
      */
     public synchronized void removeProduct(Product product)
             throws CatalogException {
@@ -466,7 +466,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#setProductTransferStatus(gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#setProductTransferStatus(org.apache.oodt.cas.filemgr.structs.Product)
      */
     public synchronized void setProductTransferStatus(Product product)
             throws CatalogException {
@@ -527,7 +527,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#addProductReferences(gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#addProductReferences(org.apache.oodt.cas.filemgr.structs.Product)
      */
     public synchronized void addProductReferences(Product product)
             throws CatalogException {
@@ -619,7 +619,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#getProductById(java.lang.String)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getProductById(java.lang.String)
      */
     public Product getProductById(String productId) throws CatalogException {
         Connection conn = null;
@@ -691,7 +691,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#getProductByName(java.lang.String)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getProductByName(java.lang.String)
      */
     public Product getProductByName(String productName) throws CatalogException {
         Connection conn = null;
@@ -765,7 +765,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#getProductReferences(gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getProductReferences(org.apache.oodt.cas.filemgr.structs.Product)
      */
     public List<Reference> getProductReferences(Product product) throws CatalogException {
         Connection conn = null;
@@ -841,7 +841,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#getProducts()
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getProducts()
      */
     public List<Product> getProducts() throws CatalogException {
         Connection conn = null;
@@ -919,7 +919,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#getProductsByProductType(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getProductsByProductType(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public List<Product> getProductsByProductType(ProductType type)
             throws CatalogException {
@@ -1257,8 +1257,8 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#query(gov.nasa.jpl.oodt.cas.filemgr.structs.Query
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#query(org.apache.oodt.cas.filemgr.structs.Query
+     *      org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public List<String> query(Query query, ProductType type) throws CatalogException {
         Connection conn = null;
@@ -1309,7 +1309,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#getTopNProducts(int)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getTopNProducts(int)
      */
     public List<Product> getTopNProducts(int n) throws CatalogException {
         return getTopNProducts(n, null);
@@ -1318,8 +1318,8 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#getTopNProducts(int,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getTopNProducts(int,
+     *      org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public List<Product> getTopNProducts(int n, ProductType type)
             throws CatalogException {
@@ -1414,7 +1414,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#getValidationLayer()
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getValidationLayer()
      */
     public ValidationLayer getValidationLayer() throws CatalogException {
         if (validationLayer == null) {
@@ -1566,7 +1566,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#getNumProducts(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getNumProducts(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public int getNumProducts(ProductType type) throws CatalogException {
         Connection conn = null;
@@ -1648,7 +1648,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.util.Pagination#getFirstPage(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+     * @see org.apache.oodt.cas.filemgr.util.Pagination#getFirstPage(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public ProductPage getFirstPage(ProductType type) {
         Query query = new Query();
@@ -1666,7 +1666,7 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.util.Pagination#getLastProductPage(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+     * @see org.apache.oodt.cas.filemgr.util.Pagination#getLastProductPage(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public ProductPage getLastProductPage(ProductType type) {
         ProductPage lastPage = null;
@@ -1685,8 +1685,8 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.util.Pagination#getNextPage(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.ProductPage)
+     * @see org.apache.oodt.cas.filemgr.util.Pagination#getNextPage(org.apache.oodt.cas.filemgr.structs.ProductType,
+     *      org.apache.oodt.cas.filemgr.structs.ProductPage)
      */
     public ProductPage getNextPage(ProductType type, ProductPage currentPage) {
         if (currentPage == null) {
@@ -1713,8 +1713,8 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.util.Pagination#getPrevPage(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.ProductPage)
+     * @see org.apache.oodt.cas.filemgr.util.Pagination#getPrevPage(org.apache.oodt.cas.filemgr.structs.ProductType,
+     *      org.apache.oodt.cas.filemgr.structs.ProductPage)
      */
     public ProductPage getPrevPage(ProductType type, ProductPage currentPage) {
         if (currentPage == null) {
@@ -1740,8 +1740,8 @@ public class DataSourceCatalog extends AbstractCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.Catalog#pagedQuery(gov.nasa.jpl.oodt.cas.filemgr.structs.Query,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType, int)
+     * @see org.apache.oodt.cas.filemgr.catalog.Catalog#pagedQuery(org.apache.oodt.cas.filemgr.structs.Query,
+     *      org.apache.oodt.cas.filemgr.structs.ProductType, int)
      */
     public ProductPage pagedQuery(Query query, ProductType type, int pageNum)
             throws CatalogException {

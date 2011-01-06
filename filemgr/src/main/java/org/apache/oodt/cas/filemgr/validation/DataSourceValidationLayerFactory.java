@@ -47,24 +47,24 @@ public class DataSourceValidationLayerFactory implements ValidationLayerFactory 
         String jdbcUrl = null, user = null, pass = null, driver = null;
 
         jdbcUrl = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.validation.datasource.jdbc.url");
+                .getProperty("org.apache.oodt.cas.filemgr.validation.datasource.jdbc.url");
         user = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.validation.datasource.jdbc.user");
+                .getProperty("org.apache.oodt.cas.filemgr.validation.datasource.jdbc.user");
         pass = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.validation.datasource.jdbc.pass");
+                .getProperty("org.apache.oodt.cas.filemgr.validation.datasource.jdbc.pass");
         driver = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.validation.datasource.jdbc.driver");
+                .getProperty("org.apache.oodt.cas.filemgr.validation.datasource.jdbc.driver");
 
         dataSource = DatabaseConnectionBuilder.buildDataSource(user, pass,
                 driver, jdbcUrl);
         quoteFields = Boolean
-                .getBoolean("gov.nasa.jpl.oodt.cas.filemgr.validation.datasource.quoteFields");
+                .getBoolean("org.apache.oodt.cas.filemgr.validation.datasource.quoteFields");
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayerFactory#createValidationLayer()
+     * @see org.apache.oodt.cas.filemgr.validation.ValidationLayerFactory#createValidationLayer()
      */
     public ValidationLayer createValidationLayer() {
         return new DataSourceValidationLayer(dataSource, quoteFields);

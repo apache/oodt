@@ -46,9 +46,9 @@ public abstract class AbstractFilemgrMetExtractor implements
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.
-     *      FilemgrMetExtractor#extractMetadata(gov.nasa.jpl.oodt.cas.filemgr.structs.Product,
-     *      gov.nasa.jpl.oodt.cas.metadata.Metadata)
+     * @see org.apache.oodt.cas.filemgr.metadata.extractors.
+     *      FilemgrMetExtractor#extractMetadata(org.apache.oodt.cas.filemgr.structs.Product,
+     *      org.apache.oodt.cas.metadata.Metadata)
      */
     public Metadata extractMetadata(Product product, Metadata met)
             throws MetExtractionException {
@@ -59,7 +59,7 @@ public abstract class AbstractFilemgrMetExtractor implements
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.FilemgrMetExtractor#configure(java.util.Properties)
+     * @see org.apache.oodt.cas.filemgr.metadata.extractors.FilemgrMetExtractor#configure(java.util.Properties)
      */
     public void configure(Properties props) {
         this.configuration = props;

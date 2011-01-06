@@ -33,7 +33,7 @@ public class LocalCacheFactory extends AbstractCacheServerFactory {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.AbstractCacheServerFactory#createCache()
+     * @see org.apache.oodt.cas.filemgr.ingest.AbstractCacheServerFactory#createCache()
      */
     public Cache createCache() throws InstantiationException {
         return new LocalCache(fmUrl, uniqueElementName, productTypeNames,

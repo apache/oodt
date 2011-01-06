@@ -107,9 +107,9 @@ public class XmlRpcFileManagerClient {
      */
     public XmlRpcFileManagerClient(final URL url) throws ConnectionException {
         // set up the configuration, if there is any
-        if (System.getProperty("gov.nasa.jpl.oodt.cas.filemgr.properties") != null) {
+        if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
             String configFile = System
-                    .getProperty("gov.nasa.jpl.oodt.cas.filemgr.properties");
+                    .getProperty("org.apache.oodt.cas.filemgr.properties");
             LOG.log(Level.INFO,
                     "Loading File Manager Configuration Properties from: ["
                             + configFile + "]");
@@ -136,12 +136,12 @@ public class XmlRpcFileManagerClient {
 							int count) {
 			    		if (count < Integer
 				                .getInteger(
-				                        "gov.nasa.jpl.oodt.cas.filemgr.system.xmlrpc.connection.retries",
+				                        "org.apache.oodt.cas.filemgr.system.xmlrpc.connection.retries",
 				                        3).intValue()) {
 			    			try {
 			    				Thread.sleep(Integer
 						                .getInteger(
-						                        "gov.nasa.jpl.oodt.cas.filemgr.system.xmlrpc.connection.retry.interval.seconds",
+						                        "org.apache.oodt.cas.filemgr.system.xmlrpc.connection.retry.interval.seconds",
 						                        0).intValue() * 1000);
 			    				return true;
 			    			}catch (Exception e1) {}
@@ -153,11 +153,11 @@ public class XmlRpcFileManagerClient {
 				CommonsXmlRpcTransport transport = new CommonsXmlRpcTransport(url, client);
 				transport.setConnectionTimeout(Integer
 		                .getInteger(
-		                        "gov.nasa.jpl.oodt.cas.filemgr.system.xmlrpc.connectionTimeout.minutes",
+		                        "org.apache.oodt.cas.filemgr.system.xmlrpc.connectionTimeout.minutes",
 		                        20).intValue() * 60 * 1000);
 				transport.setTimeout(Integer
 		                .getInteger(
-		                        "gov.nasa.jpl.oodt.cas.filemgr.system.xmlrpc.requestTimeout.minutes",
+		                        "org.apache.oodt.cas.filemgr.system.xmlrpc.requestTimeout.minutes",
 		                        60).intValue() * 60 * 1000);
 
 				return transport;

@@ -46,13 +46,13 @@ public class DataSourceRepositoryManagerFactory implements
         String jdbcUrl = null, user = null, pass = null, driver = null;
 
         jdbcUrl = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.datasource.jdbc.url");
+                .getProperty("org.apache.oodt.cas.filemgr.repositorymgr.datasource.jdbc.url");
         user = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.datasource.jdbc.user");
+                .getProperty("org.apache.oodt.cas.filemgr.repositorymgr.datasource.jdbc.user");
         pass = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.datasource.jdbc.pass");
+                .getProperty("org.apache.oodt.cas.filemgr.repositorymgr.datasource.jdbc.pass");
         driver = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.repositorymgr.datasource.jdbc.driver");
+                .getProperty("org.apache.oodt.cas.filemgr.repositorymgr.datasource.jdbc.driver");
 
         dataSource = DatabaseConnectionBuilder.buildDataSource(user, pass,
                 driver, jdbcUrl);
@@ -73,7 +73,7 @@ public class DataSourceRepositoryManagerFactory implements
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.repository.RepositoryManagerFactory#createRepositoryManager()
+     * @see org.apache.oodt.cas.filemgr.repository.RepositoryManagerFactory#createRepositoryManager()
      */
     public RepositoryManager createRepositoryManager() {
         return new DataSourceRepositoryManager(dataSource);

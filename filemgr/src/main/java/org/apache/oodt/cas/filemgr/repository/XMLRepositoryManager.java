@@ -81,7 +81,7 @@ public class XMLRepositoryManager implements RepositoryManager {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.repository.RepositoryManager#addProductType(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+     * @see org.apache.oodt.cas.filemgr.repository.RepositoryManager#addProductType(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public void addProductType(ProductType productType)
             throws RepositoryManagerException {
@@ -93,7 +93,7 @@ public class XMLRepositoryManager implements RepositoryManager {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.repository.RepositoryManager#modifyProductType(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+     * @see org.apache.oodt.cas.filemgr.repository.RepositoryManager#modifyProductType(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public void modifyProductType(ProductType productType)
             throws RepositoryManagerException {
@@ -105,7 +105,7 @@ public class XMLRepositoryManager implements RepositoryManager {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.repository.RepositoryManager#removeProductType(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+     * @see org.apache.oodt.cas.filemgr.repository.RepositoryManager#removeProductType(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public void removeProductType(ProductType productType)
             throws RepositoryManagerException {
@@ -116,7 +116,7 @@ public class XMLRepositoryManager implements RepositoryManager {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.repository.RepositoryManager#getProductTypeById(java.lang.String)
+     * @see org.apache.oodt.cas.filemgr.repository.RepositoryManager#getProductTypeById(java.lang.String)
      */
     public ProductType getProductTypeById(String productTypeId)
             throws RepositoryManagerException {
@@ -126,7 +126,7 @@ public class XMLRepositoryManager implements RepositoryManager {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.repository.RepositoryManager#getProductTypeByName(java.lang.String)
+     * @see org.apache.oodt.cas.filemgr.repository.RepositoryManager#getProductTypeByName(java.lang.String)
      */
     public ProductType getProductTypeByName(String productTypeName)
             throws RepositoryManagerException {
@@ -148,7 +148,7 @@ public class XMLRepositoryManager implements RepositoryManager {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.repository.RepositoryManager#getProductTypes()
+     * @see org.apache.oodt.cas.filemgr.repository.RepositoryManager#getProductTypes()
      */
     public List<ProductType> getProductTypes() throws RepositoryManagerException {
         return Arrays.asList(productTypeMap.values().toArray(new ProductType[productTypeMap.values().size()]));

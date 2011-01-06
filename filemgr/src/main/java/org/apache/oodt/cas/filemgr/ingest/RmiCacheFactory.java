@@ -34,13 +34,13 @@ public class RmiCacheFactory implements CacheFactory {
     public RmiCacheFactory() {
         rmiCacheServerUrn = PathUtils
                 .replaceEnvVariables(System
-                        .getProperty("gov.nasa.jpl.oodt.cas.filemgr.ingest.cache.rmi.serverUrn"));
+                        .getProperty("org.apache.oodt.cas.filemgr.ingest.cache.rmi.serverUrn"));
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.CacheFactory#createCache()
+     * @see org.apache.oodt.cas.filemgr.ingest.CacheFactory#createCache()
      */
     public Cache createCache() throws InstantiationException {
         return new RmiCache(rmiCacheServerUrn);

@@ -57,9 +57,9 @@ public class SingleFileBasicVersioner implements Versioner {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.versioning.Versioner#createDataStoreReferences(gov.nasa.
+     * @see org.apache.oodt.cas.filemgr.versioning.Versioner#createDataStoreReferences(gov.nasa.
      *      jpl.oodt.cas.filemgr.structs.Product,
-     *      gov.nasa.jpl.oodt.cas.metadata.Metadata)
+     *      org.apache.oodt.cas.metadata.Metadata)
      */
     public void createDataStoreReferences(Product product, Metadata metadata)
             throws VersioningException {

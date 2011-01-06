@@ -89,8 +89,8 @@ public class StdIngester implements Ingester, CoreMetKeys {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Ingester#ingest(java.net.URL,
-     *      java.io.File, gov.nasa.jpl.oodt.cas.metadata.MetExtractor,
+     * @see org.apache.oodt.cas.filemgr.ingest.Ingester#ingest(java.net.URL,
+     *      java.io.File, org.apache.oodt.cas.metadata.MetExtractor,
      *      java.io.File)
      */
     public String ingest(URL fmUrl, File prodFile, MetExtractor extractor,
@@ -110,8 +110,8 @@ public class StdIngester implements Ingester, CoreMetKeys {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Ingester#ingest(java.net.URL,
-     *      java.util.List, gov.nasa.jpl.oodt.cas.metadata.MetExtractor,
+     * @see org.apache.oodt.cas.filemgr.ingest.Ingester#ingest(java.net.URL,
+     *      java.util.List, org.apache.oodt.cas.metadata.MetExtractor,
      *      java.io.File)
      */
     public void ingest(URL fmUrl, List<String> prodFiles, MetExtractor extractor,
@@ -131,8 +131,8 @@ public class StdIngester implements Ingester, CoreMetKeys {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Ingester#ingest(java.net.URL,
-     *      java.io.File, gov.nasa.jpl.oodt.cas.metadata.Metadata)
+     * @see org.apache.oodt.cas.filemgr.ingest.Ingester#ingest(java.net.URL,
+     *      java.io.File, org.apache.oodt.cas.metadata.Metadata)
      */
     public String ingest(URL fmUrl, File prodFile, Metadata met)
             throws IngestException {
@@ -211,7 +211,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Ingester#hasProduct(java.net.URL,
+     * @see org.apache.oodt.cas.filemgr.ingest.Ingester#hasProduct(java.net.URL,
      *      java.io.File)
      */
     public boolean hasProduct(URL fmUrl, File prodFile) throws CatalogException{
@@ -274,7 +274,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Ingester#hasProduct(java.net.URL,
+     * @see org.apache.oodt.cas.filemgr.ingest.Ingester#hasProduct(java.net.URL,
      *      java.lang.String)
      */
     public boolean hasProduct(URL fmUrl, String productName) throws CatalogException{

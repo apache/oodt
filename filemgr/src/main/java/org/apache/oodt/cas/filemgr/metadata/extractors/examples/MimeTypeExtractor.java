@@ -40,7 +40,7 @@ public class MimeTypeExtractor extends AbstractFilemgrMetExtractor {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.AbstractFilemgrMetExtractor#doConfigure()
+     * @see org.apache.oodt.cas.filemgr.metadata.extractors.AbstractFilemgrMetExtractor#doConfigure()
      */
     public void doConfigure() {
         // TODO Auto-generated method stub
@@ -50,8 +50,8 @@ public class MimeTypeExtractor extends AbstractFilemgrMetExtractor {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.metadata.extractors.AbstractFilemgrMetExtractor#doExtract(gov.nasa.jpl.oodt.cas.filemgr.structs.Product,
-     *      gov.nasa.jpl.oodt.cas.metadata.Metadata)
+     * @see org.apache.oodt.cas.filemgr.metadata.extractors.AbstractFilemgrMetExtractor#doExtract(org.apache.oodt.cas.filemgr.structs.Product,
+     *      org.apache.oodt.cas.metadata.Metadata)
      */
     public Metadata doExtract(Product product, Metadata met)
             throws MetExtractionException {

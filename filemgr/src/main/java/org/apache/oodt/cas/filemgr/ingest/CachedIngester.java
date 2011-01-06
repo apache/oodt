@@ -96,7 +96,7 @@ public class CachedIngester extends StdIngester {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.StdIngester#hasProduct(java.net.URL,
+     * @see org.apache.oodt.cas.filemgr.ingest.StdIngester#hasProduct(java.net.URL,
      *      java.io.File)
      */
     public boolean hasProduct(URL fmUrl, File prodFile) throws CatalogException {
@@ -106,7 +106,7 @@ public class CachedIngester extends StdIngester {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.StdIngester#hasProduct(java.net.URL,
+     * @see org.apache.oodt.cas.filemgr.ingest.StdIngester#hasProduct(java.net.URL,
      *      java.lang.String)
      */
     public boolean hasProduct(URL fmUrl, String productName)

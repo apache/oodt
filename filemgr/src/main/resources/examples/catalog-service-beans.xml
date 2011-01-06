@@ -15,7 +15,7 @@
     xmlns:p="http://www.springframework.org/schema/p"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean class="gov.nasa.jpl.oodt.cas.catalog.util.CasPropertyPlaceholderConfigurer">
+    <bean class="org.apache.oodt.cas.catalog.util.CasPropertyPlaceholderConfigurer">
         
         <!-- Allow for system-level properties to override all properties below -->
         <property name="systemPropertiesMode" value="2"/>
@@ -34,50 +34,50 @@
     </bean>
 
     <!-- Catalog Services -->
-    <bean id="CatalogServiceLocalFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.system.impl.CatalogServiceLocalFactory"/>
-    <bean id="DevCatalogServiceLocalFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.system.impl.CatalogServiceLocalFactory">
+    <bean id="CatalogServiceLocalFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.system.impl.CatalogServiceLocalFactory"/>
+    <bean id="DevCatalogServiceLocalFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.system.impl.CatalogServiceLocalFactory">
         <property name="catalogRepositoryFactory" ref="SerializedCatalogRepositoryFactory"/>
         <property name="ingestMapperFactory" ref="OracleIngestMapperFactory"/>
         <property name="restrictQueryPermissions" value="false"/>
         <property name="restrictIngestPermissions" value="false"/>
-        <property name="transactionIdClass" value="gov.nasa.jpl.oodt.cas.catalog.struct.impl.transaction.UuidTransactionId"/>
+        <property name="transactionIdClass" value="org.apache.oodt.cas.catalog.struct.impl.transaction.UuidTransactionId"/>
     </bean>    
-    <bean id="CatalogServiceClientFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.system.impl.CatalogServiceClientFactory">
+    <bean id="CatalogServiceClientFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.system.impl.CatalogServiceClientFactory">
         <property name="communicationChannelClient" ref="XmlRpcClientFactory"/>
     </bean>
-    <bean id="CatalogServiceProxyClientFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.system.impl.CatalogServiceClientFactory">
+    <bean id="CatalogServiceProxyClientFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.system.impl.CatalogServiceClientFactory">
         <property name="communicationChannelClient" ref="XmlRpcProxyClientFactory"/>
     </bean>
     
     <!-- Communication Channels -->
-    <bean id="XmlRpcServerFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelServerFactory">
+    <bean id="XmlRpcServerFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelServerFactory">
         <property name="port" value="${filemgr.port}"/>
         <property name="catalogServiceFactory" ref="CatalogServiceLocalFactory"/>
     </bean> 
-    <bean id="XmlRpcClientFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelClientFactory">
+    <bean id="XmlRpcClientFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelClientFactory">
         <property name="serverUrl" value="${filemgr.url}"/>
     </bean> 
-    <bean id="XmlRpcProxyServerFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelServerFactory">
+    <bean id="XmlRpcProxyServerFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelServerFactory">
         <property name="port" value="${filemgr.proxy.port}"/>
         <property name="catalogServiceFactory" ref="CatalogServiceClientFactory"/>
     </bean> 
-    <bean id="XmlRpcProxyClientFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelClientFactory">
+    <bean id="XmlRpcProxyClientFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelClientFactory">
         <property name="serverUrl" value="${filemgr.proxy.url}"/>
     </bean> 
     
     <!-- Catalog Repositories -->
-    <bean id="SerializedCatalogRepositoryFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.repository.SerializedCatalogRepositoryFactory">
+    <bean id="SerializedCatalogRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.repository.SerializedCatalogRepositoryFactory">
         <property name="storageFile" value="${pcs.support.home}/cas-catalog/catalog-repo.ser"/>
     </bean>
-    <bean id="MemoryBasedCatalogRepositoryFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.repository.MemoryBasedCatalogRepositoryFactory"/>
+    <bean id="MemoryBasedCatalogRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.repository.MemoryBasedCatalogRepositoryFactory"/>
         
     <!-- Mapper Indexes -->
-    <bean id="OracleIngestMapperFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.mapping.OracleIngestMapperFactory">
+    <bean id="OracleIngestMapperFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.mapping.OracleIngestMapperFactory">
         <property name="jdbcUrl" value="jdbc:oracle:thin:@dew.jpl.nasa.gov:1521:npptest"/>
         <property name="user" value="user"/>
         <property name="pass" value="pass"/>
         <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
     </bean>
-    <bean id="MemoryBasedIngestMapperFactory" lazy-init="true" class="gov.nasa.jpl.oodt.cas.catalog.mapping.MemoryBasedIngestMapperFactory"/>
+    <bean id="MemoryBasedIngestMapperFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.mapping.MemoryBasedIngestMapperFactory"/>
     
 </beans>

@@ -118,9 +118,9 @@ public class XmlRpcFileManager {
      */
     public XmlRpcFileManager(int port) throws Exception {
         // set up the configuration, if there is any
-        if (System.getProperty("gov.nasa.jpl.oodt.cas.filemgr.properties") != null) {
+        if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
             String configFile = System
-                    .getProperty("gov.nasa.jpl.oodt.cas.filemgr.properties");
+                    .getProperty("org.apache.oodt.cas.filemgr.properties");
             LOG.log(Level.INFO,
                     "Loading File Manager Configuration Properties from: ["
                             + configFile + "]");
@@ -132,13 +132,13 @@ public class XmlRpcFileManager {
 
         metaFactory = System
                 .getProperty("filemgr.catalog.factory",
-                        "gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalogFactory");
+                        "org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory");
         dataFactory = System
                 .getProperty("filemgr.repository.factory",
-                        "gov.nasa.jpl.oodt.cas.filemgr.repository.DataSourceRepositoryManagerFactory");
+                        "org.apache.oodt.cas.filemgr.repository.DataSourceRepositoryManagerFactory");
         transferFactory = System
                 .getProperty("filemgr.datatransfer.factory",
-                        "gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory");
+                        "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory");
 
         catalog = GenericFileManagerObjectFactory
                 .getCatalogServiceFromFactory(metaFactory);

@@ -73,9 +73,9 @@ public class MappedDataSourceCatalog extends DataSourceCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#addMetadata(
-     *      gov.nasa.jpl.oodt.cas.metadata.Metadata,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#addMetadata(
+     *      org.apache.oodt.cas.metadata.Metadata,
+     *      org.apache.oodt.cas.filemgr.structs.Product)
      */
     @Override
     public synchronized void addMetadata(Metadata metadata, Product product)
@@ -90,8 +90,8 @@ public class MappedDataSourceCatalog extends DataSourceCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#addProductReferences(
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#addProductReferences(
+     *      org.apache.oodt.cas.filemgr.structs.Product)
      */
     @Override
     public synchronized void addProductReferences(Product product)
@@ -106,8 +106,8 @@ public class MappedDataSourceCatalog extends DataSourceCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#getMetadata(
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#getMetadata(
+     *      org.apache.oodt.cas.filemgr.structs.Product)
      */
     @Override
     public Metadata getMetadata(Product product) throws CatalogException {
@@ -122,8 +122,8 @@ public class MappedDataSourceCatalog extends DataSourceCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#getProductReferences(
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#getProductReferences(
+     *      org.apache.oodt.cas.filemgr.structs.Product)
      */
     @Override
     public List<Reference> getProductReferences(Product product) throws CatalogException {
@@ -138,8 +138,8 @@ public class MappedDataSourceCatalog extends DataSourceCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#modifyProduct(
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#modifyProduct(
+     *      org.apache.oodt.cas.filemgr.structs.Product)
      */
     @Override
     public synchronized void modifyProduct(Product product)
@@ -154,9 +154,9 @@ public class MappedDataSourceCatalog extends DataSourceCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#removeMetadata(
-     *      gov.nasa.jpl.oodt.cas.metadata.Metadata,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#removeMetadata(
+     *      org.apache.oodt.cas.metadata.Metadata,
+     *      org.apache.oodt.cas.filemgr.structs.Product)
      */
     @Override
     public synchronized void removeMetadata(Metadata metadata, Product product)
@@ -171,8 +171,8 @@ public class MappedDataSourceCatalog extends DataSourceCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#removeProduct(
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.Product)
+     * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#removeProduct(
+     *      org.apache.oodt.cas.filemgr.structs.Product)
      */
     @Override
     public synchronized void removeProduct(Product product)
@@ -187,8 +187,8 @@ public class MappedDataSourceCatalog extends DataSourceCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#pagedQuery(gov.nasa.jpl.oodt.cas.filemgr.structs.Query,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType, int)
+     * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#pagedQuery(org.apache.oodt.cas.filemgr.structs.Query,
+     *      org.apache.oodt.cas.filemgr.structs.ProductType, int)
      */
     @Override
     public ProductPage pagedQuery(Query query, ProductType type, int pageNum)
@@ -203,8 +203,8 @@ public class MappedDataSourceCatalog extends DataSourceCatalog {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalog#query(gov.nasa.jpl.oodt.cas.filemgr.structs.Query,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+     * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#query(org.apache.oodt.cas.filemgr.structs.Query,
+     *      org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     @Override
     public List<String> query(Query query, ProductType type) throws CatalogException {

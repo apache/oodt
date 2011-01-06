@@ -88,7 +88,7 @@ public class XMLValidationLayer implements ValidationLayer {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer#addElement(gov.nasa.jpl.oodt.cas.filemgr.structs.Element)
+     * @see org.apache.oodt.cas.filemgr.validation.ValidationLayer#addElement(org.apache.oodt.cas.filemgr.structs.Element)
      */
     public void addElement(Element element) throws ValidationLayerException {
         elementMap.put(element.getElementId(), element);
@@ -99,7 +99,7 @@ public class XMLValidationLayer implements ValidationLayer {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer#modifyElement(gov.nasa.jpl.oodt.cas.filemgr.structs.Element)
+     * @see org.apache.oodt.cas.filemgr.validation.ValidationLayer#modifyElement(org.apache.oodt.cas.filemgr.structs.Element)
      */
     public void modifyElement(Element element) throws ValidationLayerException {
         elementMap.put(element.getElementId(), element);
@@ -110,7 +110,7 @@ public class XMLValidationLayer implements ValidationLayer {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer#removeElement(gov.nasa.jpl.oodt.cas.filemgr.structs.Element)
+     * @see org.apache.oodt.cas.filemgr.validation.ValidationLayer#removeElement(org.apache.oodt.cas.filemgr.structs.Element)
      */
     public void removeElement(Element element) throws ValidationLayerException {
         elementMap.remove(element.getElementId());
@@ -121,8 +121,8 @@ public class XMLValidationLayer implements ValidationLayer {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer#addElementToProductType(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.Element)
+     * @see org.apache.oodt.cas.filemgr.validation.ValidationLayer#addElementToProductType(org.apache.oodt.cas.filemgr.structs.ProductType,
+     *      org.apache.oodt.cas.filemgr.structs.Element)
      */
     public void addElementToProductType(ProductType type, Element element)
             throws ValidationLayerException {
@@ -140,8 +140,8 @@ public class XMLValidationLayer implements ValidationLayer {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer#removeElementFromProductType(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType,
-     *      gov.nasa.jpl.oodt.cas.filemgr.structs.Element)
+     * @see org.apache.oodt.cas.filemgr.validation.ValidationLayer#removeElementFromProductType(org.apache.oodt.cas.filemgr.structs.ProductType,
+     *      org.apache.oodt.cas.filemgr.structs.Element)
      */
     public void removeElementFromProductType(ProductType type, Element element)
             throws ValidationLayerException {
@@ -162,7 +162,7 @@ public class XMLValidationLayer implements ValidationLayer {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer#getElements(gov.nasa.jpl.oodt.cas.filemgr.structs.ProductType)
+     * @see org.apache.oodt.cas.filemgr.validation.ValidationLayer#getElements(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public List<Element> getElements(ProductType type)
             throws ValidationLayerException {
@@ -185,7 +185,7 @@ public class XMLValidationLayer implements ValidationLayer {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer#getElements()
+     * @see org.apache.oodt.cas.filemgr.validation.ValidationLayer#getElements()
      */
     public List<Element> getElements() throws ValidationLayerException {
         return Arrays.asList(elementMap.values().toArray(
@@ -195,7 +195,7 @@ public class XMLValidationLayer implements ValidationLayer {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer#getElementById(java.lang.String)
+     * @see org.apache.oodt.cas.filemgr.validation.ValidationLayer#getElementById(java.lang.String)
      */
     public Element getElementById(String elementId)
             throws ValidationLayerException {
@@ -205,7 +205,7 @@ public class XMLValidationLayer implements ValidationLayer {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayer#getElementByName(java.lang.String)
+     * @see org.apache.oodt.cas.filemgr.validation.ValidationLayer#getElementByName(java.lang.String)
      */
     public Element getElementByName(String elementName)
             throws ValidationLayerException {

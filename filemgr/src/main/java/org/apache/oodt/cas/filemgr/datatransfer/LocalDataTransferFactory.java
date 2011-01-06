@@ -33,7 +33,7 @@ public class LocalDataTransferFactory implements DataTransferFactory {
     }
 
     /* (non-Javadoc)
-     * @see gov.nasa.jpl.oodt.cas.datatransfer.DataTransferFactory#createDataTransfer()
+     * @see org.apache.oodt.cas.datatransfer.DataTransferFactory#createDataTransfer()
      */
     public DataTransfer createDataTransfer() {
         return new LocalDataTransferer();

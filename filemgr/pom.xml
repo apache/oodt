@@ -56,7 +56,7 @@
           </descriptors>
           <archive>
             <manifest>
-              <mainClass>gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManagerClient</mainClass>
+              <mainClass>org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient</mainClass>
             </manifest>
           </archive>
         </configuration>

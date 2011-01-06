@@ -53,7 +53,7 @@ public class RmiCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#clear()
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#clear()
      */
     public void clear() {
         try {
@@ -66,7 +66,7 @@ public class RmiCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#contains(java.lang.String)
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#contains(java.lang.String)
      */
     public boolean contains(String productName) {
         try {
@@ -79,7 +79,7 @@ public class RmiCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#setFileManager(java.net.URL)
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#setFileManager(java.net.URL)
      */
     public void setFileManager(URL fmUrl) {
         try {
@@ -93,7 +93,7 @@ public class RmiCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#size()
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#size()
      */
     public int size() {
         try {
@@ -106,7 +106,7 @@ public class RmiCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#sync(java.util.List)
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#sync(java.util.List)
      */
     public void sync(List<String> uniqueElementProductTypeNames) throws CacheException {
         try {
@@ -120,7 +120,7 @@ public class RmiCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#sync(java.lang.String,
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#sync(java.lang.String,
      *      java.util.List)
      */
     public void sync(String uniqueElementName,
@@ -136,7 +136,7 @@ public class RmiCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#setUniqueElementProductTypeName(java.util.List)
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#setUniqueElementProductTypeName(java.util.List)
      */
     public void setUniqueElementProductTypeNames(
             List<String> uniqueElementProductTypeNames) {
@@ -151,7 +151,7 @@ public class RmiCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#sync()
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#sync()
      */
     public void sync() throws CacheException {
         try {
@@ -164,7 +164,7 @@ public class RmiCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#setUniqueElementName(java.lang.String)
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#setUniqueElementName(java.lang.String)
      */
     public void setUniqueElementName(String uniqueElementName) {
         try {
@@ -174,7 +174,7 @@ public class RmiCache implements Cache {
     }
 
     /* (non-Javadoc)
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#getFileManagerUrl()
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#getFileManagerUrl()
      */
     public URL getFileManagerUrl() {
         try {

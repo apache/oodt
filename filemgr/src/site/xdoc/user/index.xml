@@ -366,7 +366,7 @@
              extension point, and the local data transfer interface. These defaults can be changed 
              quite easily by changing the factory classes that are pointed to for each extension 
              point. For example, to use the Lucene-based cataog extension point, you would change 
-             the following property, <code>filemgr.catalog.factory</code> to <code>gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory</code>
+             the following property, <code>filemgr.catalog.factory</code> to <code>org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory</code>
             </li>
             <li>You need to configure the properties for each of the extension points that you are 
             using. By default, you would at least need to configure:
@@ -411,22 +411,22 @@
 
       <source># ./filemgr-client --url http://localhost:9000 --operation --ingestProduct --productName Blah.txt \
       --productStructure Flat --productTypeName GenericFile --metadataFile file:/usr/local/filemgr/bin/blah.txt.met \
-      --clientTransfer --dataTransfer gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory \
+      --clientTransfer --dataTransfer org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory \
       --refs file:/usr/local/filemgr/bin/blah.txt
       </source>
 
       <p>You should see a response message at the end similar to:</p>
 
       <source>
-      Jul 15, 2006 10:37:53 PM gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManagerClient &lt;init&gt;<br/>
+      Jul 15, 2006 10:37:53 PM org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient &lt;init&gt;<br/>
       INFO: Loading File Manager Configuration Properties from: [../etc/filemgr.properties]<br/>
-      Jul 15, 2006 10:37:54 PM gov.nasa.jpl.oodt.cas.filemgr.system.XmlRpcFileManagerClient ingestProduct<br/>
+      Jul 15, 2006 10:37:54 PM org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient ingestProduct<br/>
       FINEST: File Manager Client: clientTransfer enabled: transfering product [Blah.txt]<br/>
-      Jul 15, 2006 10:37:54 PM gov.nasa.jpl.oodt.cas.filemgr.versioning.VersioningUtils <br/>
+      Jul 15, 2006 10:37:54 PM org.apache.oodt.cas.filemgr.versioning.VersioningUtils <br/>
       createBasicDataStoreRefsFlat<br/>
       FINE: VersioningUtils: Generated data store ref: file:/tmp/files/Blah.txt/blah.txt from<br/> 
       origRef: file:/usr/local/filemgr/bin/blah.txt<br/>
-      Jul 15, 2006 10:37:54 PM gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferer <br/>
+      Jul 15, 2006 10:37:54 PM org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferer <br/>
       moveFilesToProductRepo<br/>
       INFO: LocalDataTransfer: Moving File: file:/usr/local/filemgr/bin/blah.txt to <br/>
       file:/tmp/files/Blah.txt/blah.txt<br/>
@@ -475,26 +475,26 @@
        <table>
          <tr>
            <td>filemgr.catalog.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.filemgr.catalog.DataSourceCatalogFactory<br/>
-               gov.nasa.jpl.oodt.cas.filemgr.catalog.LuceneCatalogFactory
+           <td>org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory<br/>
+               org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory
            </td>
          </tr>
          <tr>
            <td>filemgr.repository.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.filemgr.repository.DataSourceRepositoryManagerFactory<br/>
-               gov.nasa.jpl.oodt.cas.filemgr.repository.XMLRepositoryManagerFactory
+           <td>org.apache.oodt.cas.filemgr.repository.DataSourceRepositoryManagerFactory<br/>
+               org.apache.oodt.cas.filemgr.repository.XMLRepositoryManagerFactory
            </td>
          </tr>
          <tr>
            <td>filemgr.datatransfer.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory<br/>
-               gov.nasa.jpl.oodt.cas.filemgr.datatransfer.RemoteDataTransferFactory<br/>
-               gov.nasa.jpl.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory
+           <td>org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory<br/>
+               org.apache.oodt.cas.filemgr.datatransfer.RemoteDataTransferFactory<br/>
+               org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory
            </td>
          </tr>
          <tr>
            <td>filemgr.validationLayer.factory</td>
-           <td>gov.nasa.jpl.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory<br/>
+           <td>org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory<br/>
                gov.nassa.jpl.oodt.cas.filemgr.validation.XMLValidationLayerFactory
            </td>
          </tr>

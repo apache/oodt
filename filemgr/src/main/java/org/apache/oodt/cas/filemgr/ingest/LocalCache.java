@@ -101,7 +101,7 @@ public class LocalCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#sync(java.util.List)
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#sync(java.util.List)
      */
     public void sync(List<String> uniqueElementProductTypeNames) throws CacheException {
         sync(DEFAULT_UNIQUE_MET_KEY, uniqueElementProductTypeNames);
@@ -110,7 +110,7 @@ public class LocalCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#sync(java.lang.String,
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#sync(java.lang.String,
      *      java.util.List)
      */
     public void sync(String uniqueElementName,
@@ -139,7 +139,7 @@ public class LocalCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#clear()
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#clear()
      */
     public void clear() {
         this.uniqueElements.clear();
@@ -148,7 +148,7 @@ public class LocalCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#size()
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#size()
      */
     public int size() {
         return this.uniqueElements.size();
@@ -157,7 +157,7 @@ public class LocalCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#contains(java.lang.String)
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#contains(java.lang.String)
      */
     public boolean contains(String productName) {
         return this.uniqueElements.contains(productName);
@@ -166,7 +166,7 @@ public class LocalCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#setFileManager(java.net.URL)
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#setFileManager(java.net.URL)
      */
     public void setFileManager(URL fmUrl) {
         try {
@@ -181,7 +181,7 @@ public class LocalCache implements Cache {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#sync()
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#sync()
      */
     public void sync() throws CacheException {
         if (this.uniqueElementName == null
@@ -197,7 +197,7 @@ public class LocalCache implements Cache {
     }
     
     /* (non-Javadoc)
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.Cache#getFileManagerUrl()
+     * @see org.apache.oodt.cas.filemgr.ingest.Cache#getFileManagerUrl()
      */
     public URL getFileManagerUrl() {
         return this.fm.getFileManagerUrl();

@@ -57,7 +57,7 @@ public class BasicVersioner implements Versioner {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.versioning.Versioner#createDataStoreReferences(gov.nasa.jpl.oodt.cas.data.structs.Product)
+     * @see org.apache.oodt.cas.versioning.Versioner#createDataStoreReferences(org.apache.oodt.cas.data.structs.Product)
      */
     public void createDataStoreReferences(Product product, Metadata metadata)
             throws VersioningException {

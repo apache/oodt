@@ -57,7 +57,7 @@ public class ProductDictionary implements Dictionary {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see gov.nasa.jpl.oodt.cas.catalog.struct.Dictionary#understands(gov.nasa.jpl.oodt.cas.catalog.query.QueryExpression)
+	 * @see org.apache.oodt.cas.catalog.struct.Dictionary#understands(org.apache.oodt.cas.catalog.query.QueryExpression)
 	 */
 	public boolean understands(QueryExpression queryExpression) throws CatalogDictionaryException {
 		try {
@@ -84,7 +84,7 @@ public class ProductDictionary implements Dictionary {
 
 	/*
 	 * (non-Javadoc)
-	 * @see gov.nasa.jpl.oodt.cas.catalog.struct.Dictionary#lookup(gov.nasa.jpl.oodt.cas.metadata.Metadata)
+	 * @see org.apache.oodt.cas.catalog.struct.Dictionary#lookup(org.apache.oodt.cas.metadata.Metadata)
 	 */
 	public TermBucket lookup(Metadata metadata) throws CatalogDictionaryException {
 		try {
@@ -100,7 +100,7 @@ public class ProductDictionary implements Dictionary {
 
 	/*
 	 * (non-Javadoc)
-	 * @see gov.nasa.jpl.oodt.cas.catalog.struct.Dictionary#reverseLookup(gov.nasa.jpl.oodt.cas.catalog.term.TermBucket)
+	 * @see org.apache.oodt.cas.catalog.struct.Dictionary#reverseLookup(org.apache.oodt.cas.catalog.term.TermBucket)
 	 */
 	public Metadata reverseLookup(TermBucket termBucket) throws CatalogDictionaryException {
 		try {

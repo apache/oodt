@@ -48,7 +48,7 @@ public class XMLValidationLayerFactory implements ValidationLayerFactory {
      */
     public XMLValidationLayerFactory() {
         String dirUris = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.validation.dirs");
+                .getProperty("org.apache.oodt.cas.filemgr.validation.dirs");
 
         if (dirUris != null) {
             dirUris = PathUtils.replaceEnvVariables(dirUris);
@@ -60,7 +60,7 @@ public class XMLValidationLayerFactory implements ValidationLayerFactory {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.validation.ValidationLayerFactory#createValidationLayer()
+     * @see org.apache.oodt.cas.filemgr.validation.ValidationLayerFactory#createValidationLayer()
      */
     public ValidationLayer createValidationLayer() {
         return new XMLValidationLayer(dirList);

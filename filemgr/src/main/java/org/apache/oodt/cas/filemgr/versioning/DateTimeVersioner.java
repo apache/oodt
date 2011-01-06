@@ -67,7 +67,7 @@ public class DateTimeVersioner implements Versioner {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.versioning.Versioner#createDataStoreReferences(gov.nasa.jpl.
+     * @see org.apache.oodt.cas.versioning.Versioner#createDataStoreReferences(gov.nasa.jpl.
      *      oodt.cas.data.structs.Product)
      */
     public void createDataStoreReferences(Product product, Metadata metadata)

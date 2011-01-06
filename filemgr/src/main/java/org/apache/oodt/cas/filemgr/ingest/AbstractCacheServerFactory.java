@@ -50,13 +50,13 @@ public abstract class AbstractCacheServerFactory implements CacheFactory {
 
     public AbstractCacheServerFactory() throws InstantiationException {
         rangeQueryElementName = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.ingest.cache.rangeQueryElementName");
+                .getProperty("org.apache.oodt.cas.filemgr.ingest.cache.rangeQueryElementName");
 
         // before we replace env vars, try to replace date vars
         rangeStartDateTime = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.ingest.cache.range.start");
+                .getProperty("org.apache.oodt.cas.filemgr.ingest.cache.range.start");
         rangeEndDateTime = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.ingest.cache.range.end");
+                .getProperty("org.apache.oodt.cas.filemgr.ingest.cache.range.end");
 
         try {
             rangeStartDateTime = PathUtils
@@ -67,20 +67,20 @@ public abstract class AbstractCacheServerFactory implements CacheFactory {
         }
 
         uniqueElementName = System
-                .getProperty("gov.nasa.jpl.oodt.cas.filemgr.ingest.cache.uniqueElementName");
+                .getProperty("org.apache.oodt.cas.filemgr.ingest.cache.uniqueElementName");
         productTypeNames = Arrays.asList(PathUtils.replaceEnvVariables(
-                System.getProperty("gov.nasa.jpl.oodt.cas.filemgr.ingest."
+                System.getProperty("org.apache.oodt.cas.filemgr.ingest."
                         + "cache.productType")).split(","));
 
         try {
             fmUrl = new URL(
                     System
-                            .getProperty("gov.nasa.jpl.oodt.cas.filemgr.ingest.cache.filemgr.url"));
+                            .getProperty("org.apache.oodt.cas.filemgr.ingest.cache.filemgr.url"));
         } catch (MalformedURLException e) {
             throw new InstantiationException(
                     "Unable to construct file manager url for: ["
                             + System
-                                    .getProperty("gov.nasa.jpl.oodt.cas.filemgr.ingest.cache.filemgr.url")
+                                    .getProperty("org.apache.oodt.cas.filemgr.ingest.cache.filemgr.url")
                             + "]: malformed URL exception.");
         }
     }
@@ -88,7 +88,7 @@ public abstract class AbstractCacheServerFactory implements CacheFactory {
     /*
      * (non-Javadoc)
      * 
-     * @see gov.nasa.jpl.oodt.cas.filemgr.ingest.CacheFactory#createCache()
+     * @see org.apache.oodt.cas.filemgr.ingest.CacheFactory#createCache()
      */
     public abstract Cache createCache() throws InstantiationException;
 
