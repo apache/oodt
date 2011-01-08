@@ -66,6 +66,9 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
 
   // by default return dir size on listing commands
   private boolean computeDirSize = true;
+  
+  // by default return file size on listing commands
+  private boolean computeFileSize = true;
 
   private OFSNFileHandlerConfiguration conf;
 
@@ -75,6 +78,8 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     // init conf here
     String xmlConfigFilePath = System.getProperty(OFSN_XML_CONF_FILE_KEY);
     this.computeDirSize = Boolean.getBoolean(OFSN_COMPUTE_DIR_SIZE);
+    this.computeFileSize = Boolean.getBoolean(OFSN_COMPUTE_FILE_SIZE);
+
 
     if (xmlConfigFilePath == null) {
       throw new InstantiationException(
@@ -170,7 +175,8 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
   private void generateOFSNXml(File[] mlsFileList, OFSNHandlerConfig cfg,
       OutputStream outStream) {
     XMLUtils.writeXmlToStream(OFSNUtils.getOFSNDoc(Arrays.asList(mlsFileList),
-        cfg, this.conf.getProductRoot(), this.computeDirSize), outStream);
+        cfg, this.conf.getProductRoot(), this.computeDirSize, this.computeFileSize),
+        outStream);
   }
 
   private void validate(String ofsn, String cmd) throws ProductException {

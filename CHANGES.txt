@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-86 The Product Server Should Have the Capability to Turn Off 
+  Reporting of File Sizes For File Listing Functions (Michael Cayanan via mattmann)
+
 * OODT-41 Product Constructor does not set transfer status (mattmann)
 
 * OODT-72 Unable to set Metadata based off Product Versioning during 

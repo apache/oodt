@@ -73,7 +73,7 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
   }
 
   public static Document getOFSNDoc(List<File> fileList, OFSNHandlerConfig cfg,
-      String productRoot, boolean showDirSize) {
+      String productRoot, boolean showDirSize, boolean showFileSize) {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware(true);
     Document document = null;
@@ -106,7 +106,9 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
             size = FileUtils.sizeOfDirectory(file);
           }
         } else {
-          size = file.length();
+          if (showFileSize) {
+            size = file.length();
+          }
         }
 
         if (size != Long.MIN_VALUE) {

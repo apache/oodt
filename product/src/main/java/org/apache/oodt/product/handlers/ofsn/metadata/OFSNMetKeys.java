@@ -34,5 +34,8 @@ public interface OFSNMetKeys {
   public static final String OFSN_XML_CONF_FILE_KEY = "org.apache.oodt.product.handlers.ofsn.xmlConfigFilePath";
   
   public static final String OFSN_COMPUTE_DIR_SIZE = "org.apache.oodt.product.handlers.ofsn.computeDirSize";
+  
+  public static final String OFSN_COMPUTE_FILE_SIZE = "org.apache.oodt.product.handlers.ofsn.computeFileSize";
+
 
 }
