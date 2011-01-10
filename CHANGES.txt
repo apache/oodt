@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-73 Update the OODT website @ http://oodt.apache.org  (goodale, kelly) 
+
 * OODT-86 The Product Server Should Have the Capability to Turn Off 
   Reporting of File Sizes For File Listing Functions (Michael Cayanan via mattmann)
 
