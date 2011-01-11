@@ -57,9 +57,6 @@ public class InPlaceVersioner implements Versioner {
    */
   public void createDataStoreReferences(Product product, Metadata metadata)
       throws VersioningException {
-
-    if (product.getProductStructure().equals(Product.STRUCTURE_FLAT)) {
-
       for (Reference r : product.getProductReferences()) {
         r.setDataStoreReference(r.getOrigReference());
         LOG.log(Level.INFO, "in-place ingestion at datastore path: "
@@ -67,10 +64,6 @@ public class InPlaceVersioner implements Versioner {
             + ".which is the same as the product's origin: "
             + r.getOrigReference());
       }
-    } else {
-      throw new VersioningException("Unsupported product structure: "
-          + product.getProductStructure());
-    }
 
   }
 

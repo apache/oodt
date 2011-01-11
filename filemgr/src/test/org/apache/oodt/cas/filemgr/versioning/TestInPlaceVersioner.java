@@ -38,7 +38,7 @@ public class TestInPlaceVersioner extends TestCase {
   /**
    * @since OODT-108
    */
-  public void testVersioner() {
+  public void testVersionerFlat() {
     Product p = Product.getDefaultFlatProduct("test", "urn:oodt:GenericFile");
     Reference r = new Reference("file:///tmp/test.txt", null, 0L);
     p.getProductReferences().add(r);
@@ -50,5 +50,30 @@ public class TestInPlaceVersioner extends TestCase {
       fail(e.getMessage());
     }
     assertTrue(r.getDataStoreReference().equals(r.getOrigReference()));
+  }
+
+  /**
+   * @since OODT-108
+   */
+  public void testVersionerHierarchical() {
+    Product p = Product.getDefaultFlatProduct("test", "urn:oodt:GenericFile");
+    p.setProductStructure(Product.STRUCTURE_HIERARCHICAL);
+    Reference r = new Reference("file:///tmp", null, 0L);
+    Reference r2 = new Reference("file:///tmp/file1.txt", null, 4096L);
+    Reference r3 = new Reference("file:///tmp/file2.txt", null, 4096L);
+    p.getProductReferences().add(r);
+    p.getProductReferences().add(r2);
+    p.getProductReferences().add(r3);
+    InPlaceVersioner versioner = new InPlaceVersioner();
+    Metadata met = new Metadata();
+    try {
+      versioner.createDataStoreReferences(p, met);
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    for (Reference ref : p.getProductReferences()) {
+      assertEquals(ref.getDataStoreReference(), ref.getOrigReference());
+    }
   }
 }
