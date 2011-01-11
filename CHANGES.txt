@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-108 Ability for the file manager to ingest a file in 
+  place (Faranak Davoodi via mattmann)
+
 * OODT-73 Update the OODT website @ http://oodt.apache.org  (goodale, kelly) 
 
 * OODT-86 The Product Server Should Have the Capability to Turn Off 
