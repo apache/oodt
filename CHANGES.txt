@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.2 (Current Development)
 --------------------------------------------
 
+* OODT-111 Allow a file to be specified in the URL for the 
+  opendapp configurator (Victor Hwang via mattmann)
+
 * OODT-108 Ability for the file manager to ingest a file in 
   place (Faranak Davoodi via mattmann)
 

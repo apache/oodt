@@ -76,11 +76,11 @@ public class DatasetExtractor {
   public List<String> getDapUrls() {
     List<String> urls = null;
 
-    if (this.q.startsWith(FINDALL))
+    if (this.q.contains(FINDALL))
       urls = this.allUrls;
-    else if (this.q.startsWith(FINDSOME))
+    else if (this.q.contains(FINDSOME))
       urls = this.getFindSome();
-    else if (this.q.startsWith(FINDQUERY))
+    else if (this.q.contains(FINDQUERY))
       urls = this.getFindQuery();
 
     return urls;

@@ -50,6 +50,10 @@ public class OpendapProfileElementExtractor {
     AttributeTable attTable = null;
     try {
       attTable = das.getAttributeTable(varname);
+      
+      // make variable names case insensitive
+      if(attTable == null) attTable = das.getAttributeTable(varname.toLowerCase());
+      if(attTable == null) attTable = das.getAttributeTable(varname.toUpperCase());
       if(attTable == null) throw new NoSuchAttributeException("Att table for ["+varname+"] is null!");
     } catch (NoSuchAttributeException e) {
       e.printStackTrace();

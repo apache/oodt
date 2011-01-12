@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //OPeNDAP/THREDDS imports
 import opendap.dap.DConnect;
@@ -55,20 +57,38 @@ public class OpendapProfileHandler implements ProfileHandler {
 
   private OpendapConfig conf;
 
-  public OpendapProfileHandler() throws InstantiationException,
-      FileNotFoundException, MalformedURLException {
-    String configFileLoc = System
-        .getProperty("org.apache.oodt.opendap.config.filePath");
-    if (configFileLoc == null)
-      throw new InstantiationException(
-          "Must specify System property opendap.config.filePath!");
-    this.conf = OpendapConfigReader.read(configFileLoc);
+  public OpendapProfileHandler(){
   }
 
   public List<Profile> findProfiles(XMLQuery xmlQuery) throws ProfileException {
+    String configFileLoc = null;
+    String q = xmlQuery.getKwdQueryString();
+    if (q.contains("ConfigUrl=")){
+    	Pattern parameterPattern = Pattern.compile("ConfigUrl=(.+?)( .*)?$");
+    	Matcher fileMatch = parameterPattern.matcher(q);
+    	while (fileMatch.find()) {
+    		configFileLoc = fileMatch.group(1);
+    	}
+    } else {
+    	configFileLoc = System.getProperty("org.apache.oodt.opendap.config.filePath");
+    }
+    
+    if (configFileLoc.isEmpty()){
+    	throw new ProfileException(
+    		"Configuration file not found. Please specify in System property opendap.config.filePath or as URL parameter ConfigUrl");
+    } else {
+    	try {
+    		this.conf = OpendapConfigReader.read(configFileLoc);
+    	} catch (FileNotFoundException e) {
+    		throw new ProfileException("FileNotFoundException: File not found!");
+    	} catch (MalformedURLException e) {
+    		throw new ProfileException("MalformedURLException: please fix file URL");
+    	}
+    }
+    
     List<Profile> profiles = new Vector<Profile>();
     List<DapRoot> roots = this.conf.getRoots();
-
+	  
     for (DapRoot root : roots) {
       DatasetExtractor d = new DatasetExtractor(xmlQuery, root.getCatalogUrl()
           .toExternalForm(), root.getDatasetUrl().toExternalForm());
