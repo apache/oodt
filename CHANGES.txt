@@ -1,9 +1,12 @@
 Apache OODT Change Log
 ======================
 
-Release 0.2 (Current Development)
+Release 0.3 (Current Development)
 --------------------------------------------
 
+Release 0.2 
+--------------------------------------------
+Release Date: January 17th, 2011
 * OODT-112 Link to slides on web-grid Maven page is broke (mattmann, kelly)
 
 * OODT-111 Allow a file to be specified in the URL for the 
