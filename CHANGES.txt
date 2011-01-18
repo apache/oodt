@@ -8,7 +8,7 @@ Release 0.2
 --------------------------------------------
 Release Date: January 17th, 2011
 
-* OODT-65 Release process now includes publishing to PyPi
+* OODT-65 Release process now includes publishing to PyPi (pramirez, kelly, mattmann)
 
 * OODT-112 Link to slides on web-grid Maven page is broke (mattmann, kelly)
 
