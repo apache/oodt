@@ -27,8 +27,14 @@ package org.apache.oodt.cas.workflow.engine.runner;
  */
 public class LocalEngineRunnerFactory implements EngineRunnerFactory {
 
+	private int numOfSlots = 6;
+	
 	public LocalEngineRunner createRunner() {
-		return new LocalEngineRunner();
+		return new LocalEngineRunner(this.numOfSlots);
+	}
+	
+	public void setNumOfSlots(int numOfSlots) {
+		this.numOfSlots = numOfSlots;
 	}
 
 }

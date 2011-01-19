@@ -30,8 +30,12 @@ import org.apache.oodt.cas.workflow.instance.TaskInstance;
  */
 public class LocalEngineRunner extends EngineRunner {
 	
-	private static final int NUM_OF_SLOTS = 6;
+	private int numOfSlots;
 	private int usedSlots = 0;
+	
+	public LocalEngineRunner(int numOfSlots) {
+		this.numOfSlots = numOfSlots;
+	}
 	
 	public void execute(final TaskInstance workflowInstance) throws Exception {
 		incrSlots();
@@ -47,13 +51,13 @@ public class LocalEngineRunner extends EngineRunner {
 	}
 
 	@Override
-	public synchronized int getOpenSlots() throws Exception {
-		return NUM_OF_SLOTS - usedSlots;
+	public synchronized int getOpenSlots(TaskInstance workflowInstance) throws Exception {
+		return numOfSlots - usedSlots;
 	}
 
 	@Override
-	public boolean hasOpenSlots() throws Exception {
-		return this.getOpenSlots() > 0;
+	public boolean hasOpenSlots(TaskInstance workflowInstance) throws Exception {
+		return this.getOpenSlots(workflowInstance) > 0;
 	}
 	
 	private synchronized void incrSlots() {

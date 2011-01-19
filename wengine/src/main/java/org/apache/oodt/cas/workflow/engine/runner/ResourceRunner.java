@@ -65,13 +65,13 @@ public class ResourceRunner extends EngineRunner {
 	/**
 	 * Additional '-1' is a workaround of a bug in resource manager
 	 */
-	public int getOpenSlots() throws Exception {
+	public int getOpenSlots(TaskInstance workflowInstance) throws Exception {
 		return this.rsManagerClient.getJobQueueCapacity() - this.rsManagerClient.getJobQueueSize() - 1;
 	}
 
 	@Override
-	public boolean hasOpenSlots() throws Exception {
-		return this.getOpenSlots() > 0;
+	public boolean hasOpenSlots(TaskInstance workflowInstance) throws Exception {
+		return this.getOpenSlots(workflowInstance) > 0;
 	}
 
 }

@@ -29,9 +29,9 @@ import org.apache.oodt.cas.workflow.instance.TaskInstance;
  */
 public abstract class EngineRunner {
 	
-	public abstract int getOpenSlots() throws Exception;
+	public abstract int getOpenSlots(TaskInstance workflowInstance) throws Exception;
 	
-	public abstract boolean hasOpenSlots() throws Exception;
+	public abstract boolean hasOpenSlots(TaskInstance workflowInstance) throws Exception;
 	
 	public abstract void execute(TaskInstance workflowInstance) throws Exception;
 	

@@ -124,9 +124,25 @@
     <bean id="DefaultServerFactory" lazy-init="true" parent="XmlRpcServerFactory"/>
     
     <!-- Runner Factories -->
-    <bean id="LocalRunnerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.engine.runner.LocalEngineRunnerFactory"/>
+    <bean id="LocalRunnerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.engine.runner.LocalEngineRunnerFactory">
+        <property name="numOfSlots" value="32"/>        
+    </bean>
     <bean id="ResourceRunnerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.engine.runner.ResourceRunnerFactory">
         <property name="resourceManagerUrl" value="${resourcemgr.url}"/>
+    </bean>
+    <bean id="MappedMultiRunnerFactory" lazy-init="true" class="org.apache.oodt.cas.workflow.engine.runner.MappedMultiRunnerFactory">
+        <property name="runnerMap">
+            <map>
+                <entry key="default" value-ref="ResourceRunnerFactory"/>
+                <entry key="local" value-ref="LocalRunnerFactory"/>
+            </map>
+        </property>
+        <property name="executionTypeToRunnerMap">
+            <map>
+                <entry key="condition" value="local"/>
+                <entry key="simpleTask" value="local"/>
+            </map>
+        </property>            
     </bean>
     
     <!-- Event Repositories -->

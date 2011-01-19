@@ -16,6 +16,7 @@
 	<processor id="task" class="org.apache.oodt.cas.workflow.processor.TaskProcessor"/>	
 	
 	<!-- custom --> 
+	<processor id="simpleTask" class="org.apache.oodt.cas.workflow.processor.TaskProcessor"/>	
 	<processor id="sequential" class="org.apache.oodt.cas.workflow.processor.SequentialProcessor"/>
 	<processor id="parallel" class="org.apache.oodt.cas.workflow.processor.ParallelProcessor"/>
 

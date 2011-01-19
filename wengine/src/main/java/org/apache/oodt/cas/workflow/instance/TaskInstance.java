@@ -57,6 +57,7 @@ public abstract class TaskInstance {
 	private String jobId;
 	private String instanceId;
 	private String modelId;
+	private String executionType;
 	private WorkflowEngineClient weClient;
 	private Metadata dynamicMetadata;
 	private Metadata staticMetadata;
@@ -84,6 +85,14 @@ public abstract class TaskInstance {
 	
 	public String getModelId() {
 		return this.modelId;
+	}
+	
+	public void setExecutionType(String executionType) {
+		this.executionType = executionType;
+	}
+	
+	public String getExecutionType(){
+		return this.executionType;
 	}
 	
 	public ProcessorInfo getProcessorInfo() throws EngineException {
@@ -153,6 +162,7 @@ public abstract class TaskInstance {
     	ctrlMetadata.replaceLocalMetadata(WorkflowMetKeys.JOB_ID, this.jobId);
     	ctrlMetadata.replaceLocalMetadata(WorkflowMetKeys.INSTANCE_ID, this.instanceId);
     	ctrlMetadata.replaceLocalMetadata(WorkflowMetKeys.MODEL_ID, this.modelId);
+    	ctrlMetadata.replaceLocalMetadata(WorkflowMetKeys.EXECUTION_TYPE, this.executionType);
     	ctrlMetadata.replaceLocalMetadata(WorkflowMetKeys.STATE, workflowState.getName());
     	ctrlMetadata.replaceLocalMetadata(WorkflowMetKeys.HOST, WorkflowUtils.getHostName());
     	ProcessorInfo processorInfo = this.getProcessorInfo();

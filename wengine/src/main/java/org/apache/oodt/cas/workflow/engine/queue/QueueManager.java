@@ -215,6 +215,7 @@ public class QueueManager {
 		ti.setDynamicMetadata(taskProcessor.getDynamicMetadata());
 		ti.setStaticMetadata(taskProcessor.getStaticMetadata());
 		ti.setModelId(taskProcessor.getModelId());
+		ti.setExecutionType(taskProcessor.getExecutionType());
 		if (taskProcessor.getJobId() == null) {
 			ti.setJobId(UUID.randomUUID().toString());
 			taskProcessor.setJobId(ti.getJobId());
