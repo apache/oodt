@@ -3,8 +3,11 @@ Changelog
 
 What follows is a history of changes to this software.
 
-0.2-incubating - Current Development
-------------------------------------
+0.2 - Current
+-------------
+
+This is the current release of Agile OODT, representing its migration from the
+Apache Incubator to a full-fledged top-level Apache project.
 
 
 0.1-incubating - Initial Apache Release
