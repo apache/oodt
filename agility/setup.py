@@ -25,9 +25,9 @@ from setuptools import find_packages, setup
 # ------------
 
 _name         = 'oodt'
-_version      = '0.2-incubating'
+_version      = '0.2'
 _description  = 'Agile OODT'
-_url          = 'http://incubator.apache.org/projects/oodt.html'
+_url          = 'http://oodt.apache.org/'
 _downloadURL  = 'http://pypi.python.org/pypi/oodt/'
 _author       = 'Sean Kelly'
 _authorEmail  = 'kelly@apache.org'
