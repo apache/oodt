@@ -124,13 +124,16 @@ public class WorkflowEngineLocal implements WorkflowEngine {
 		// Task RUNNER thread
 		runnerThread = new Thread(new Runnable() {
 			public void run() {
+				TaskInstance nextTask = null;
 				while(allowRunnerToWork) {
-					TaskInstance nextTask = null;
 					try {
-						while (!pauseRunner && allowRunnerToWork && WorkflowEngineLocal.this.runner.hasOpenSlots() && (nextTask = WorkflowEngineLocal.this.queueManager.getNext()) != null) {
+						if (nextTask == null)
+							nextTask = WorkflowEngineLocal.this.queueManager.getNext();
+						while (!pauseRunner && allowRunnerToWork && nextTask != null && WorkflowEngineLocal.this.runner.hasOpenSlots(nextTask)) {
 							nextTask.setNotifyEngine(WorkflowEngineLocal.this.weClient);
 							WorkflowEngineLocal.this.runner.execute(nextTask);
-							
+							nextTask = WorkflowEngineLocal.this.queueManager.getNext();
+
 							//take a breather
 							try {
 								synchronized(this) {
@@ -154,7 +157,6 @@ public class WorkflowEngineLocal implements WorkflowEngine {
 					}catch (Exception e){}
 				}
 			}
-			
 		});
 		if (!debug)
 			runnerThread.start();
