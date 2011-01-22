@@ -135,6 +135,12 @@ the License.
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-crawler</artifactId>
       <version>${project.parent.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>tika</artifactId>
+          <groupId>org.apache.tika</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>

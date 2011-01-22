@@ -5,6 +5,8 @@ Release 0.2
 --------------------------------------------
 Release Date: January 17th, 2011
 
+* OODT-116 Cas Curator doesn't ingest (mattmann)
+
 * OODT-117 Final File Location Extractor fails in actual use despite unit test 
   passing (mattmann)
 
