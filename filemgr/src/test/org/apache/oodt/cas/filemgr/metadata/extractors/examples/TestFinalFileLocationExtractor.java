@@ -72,6 +72,9 @@ public class TestFinalFileLocationExtractor extends TestCase {
         expectedFinalLocation, extractMet.getAllMetadata(
             CoreMetKeys.FILE_LOCATION).get(1));
 
+    // ensure that the data store ref is blank
+    assertEquals("", p.getProductReferences().get(0).getDataStoreReference());
+
     // reconfigure to replace
     config.setProperty("replace", "true");
     extractor.configure(config);
@@ -87,6 +90,9 @@ public class TestFinalFileLocationExtractor extends TestCase {
     assertEquals(1, extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
     assertEquals(expectedFinalLocation, extractMet
         .getMetadata(CoreMetKeys.FILE_LOCATION));
+
+    // ensure that the data store ref is blank
+    assertEquals("", p.getProductReferences().get(0).getDataStoreReference());
 
   }
 
