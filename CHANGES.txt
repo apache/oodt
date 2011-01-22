@@ -1,12 +1,11 @@
 Apache OODT Change Log
 ======================
 
-Release 0.3 (Current Development)
---------------------------------------------
-
 Release 0.2 
 --------------------------------------------
 Release Date: January 17th, 2011
+
+* OODT-115 TestCatalogServiceLocal fails (mattmann, pramirez)
 
 * OODT-65 Release process now includes publishing to PyPi (pramirez, kelly, mattmann)
 
