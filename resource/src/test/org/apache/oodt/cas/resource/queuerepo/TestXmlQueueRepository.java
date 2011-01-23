@@ -49,7 +49,7 @@ public class TestXmlQueueRepository extends TestCase {
 	}
 	
 	public void testMapping() throws QueueManagerException {
-		assertEquals(this.queueManager.getQueues(), Arrays.asList("quick", "high", "long"));
+	  assertTrue(this.queueManager.getQueues().containsAll(Arrays.asList("quick", "high", "long")));
 		assertEquals(this.queueManager.getNodes("quick"), Arrays.asList("localhost"));
 		assertEquals(this.queueManager.getNodes("high"), Arrays.asList("localhost"));
 		assertEquals(this.queueManager.getNodes("long"), Arrays.asList("localhost"));
