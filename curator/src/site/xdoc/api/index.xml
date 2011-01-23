@@ -18,7 +18,8 @@ the License.
 <document>
   <properties>
     <title>How to use the REST API of the CAS Curator</title>
-    <author email="joshuaga@jpl.nasa.gov">Joshua Garcia</author>
+    <author email="joshuaga@apache.org">Joshua Garcia</author>
+    <author email="mattmann@apache.org">Chris Mattmann</author>
   </properties>
 
   <body>
