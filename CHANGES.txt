@@ -5,6 +5,9 @@ Release 0.2
 --------------------------------------------
 Release Date: January 17th, 2011
 
+* OODT-118 CAS Curator doesn't allow metadata update on file 
+  manager browser (mattmann)
+
 * OODT-116 Cas Curator doesn't ingest (mattmann)
 
 * OODT-117 Final File Location Extractor fails in actual use despite unit test 
