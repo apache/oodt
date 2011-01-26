@@ -135,6 +135,12 @@ the License.
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-crawler</artifactId>
       <version>${project.parent.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>tika</artifactId>
+          <groupId>org.apache.tika</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
@@ -151,8 +157,7 @@ the License.
    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <!-- 2.2.x where x in the 0-7 range or 2.3-SNAPSHOT-->
-      <version>2.2.7</version>
+      <version>2.3.1</version>
    </dependency>
   </dependencies>
 

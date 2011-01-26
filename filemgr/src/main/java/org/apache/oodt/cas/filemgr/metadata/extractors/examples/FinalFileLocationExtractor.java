@@ -99,9 +99,19 @@ public class FinalFileLocationExtractor extends AbstractFilemgrMetExtractor
       throw new MetExtractionException(
           "Unable to extract final file location from "
               + Product.STRUCTURE_HIERARCHICAL + " products!");
-
+    
+    this.scrubRefs(product);
+    
     return extractMet;
 
+  }
+  
+  private void scrubRefs(Product p){
+    if(p.getProductReferences() == null) return;
+    
+    for(Reference r: p.getProductReferences()){
+      r.setDataStoreReference("");
+    }
   }
 
 }

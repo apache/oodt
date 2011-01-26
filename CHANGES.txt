@@ -1,12 +1,21 @@
 Apache OODT Change Log
 ======================
 
-Release 0.3 (Current Development)
---------------------------------------------
-
 Release 0.2 
 --------------------------------------------
 Release Date: January 17th, 2011
+
+* OODT-119 Curator REST API documentation (mattmann, joshuaga)
+
+* OODT-118 CAS Curator doesn't allow metadata update on file 
+  manager browser (mattmann)
+
+* OODT-116 Cas Curator doesn't ingest (mattmann)
+
+* OODT-117 Final File Location Extractor fails in actual use despite unit test 
+  passing (mattmann)
+
+* OODT-115 TestCatalogServiceLocal fails (mattmann, pramirez)
 
 * OODT-65 Release process now includes publishing to PyPi (pramirez, kelly, mattmann)
 
@@ -49,7 +58,8 @@ Release Date: January 17th, 2011
 
 * OODT-95 cas-catalog throws exceptions with blank messages (bfoster)
 
-* OODT-98 Resource Manager TestXmlQueueRepository test fails on some computers because <hashmap>.keySet() order is undefined (bfoster)
+* OODT-98 Resource Manager TestXmlQueueRepository test fails on some computers because 
+ <hashmap>.keySet() order is undefined (bfoster, mattmann)
 
 * OODT-97 Allow for unsorted paging across all catalogs to give option of lowering heap footprint (bfoster)
 

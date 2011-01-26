@@ -60,6 +60,30 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>tmpdir</id>
+      <activation>
+        <property>
+           <name>test.tmpdir</name>
+        </property>
+      </activation>
+       <build>
+        <plugins>
+         <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.4.3</version>
+          <configuration>
+          <systemProperties>
+             <property>
+               <name>java.io.tmpdir</name>
+               <value>${test.tmpdir}</value>
+              </property>
+           </systemProperties>
+           </configuration>
+         </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
   <build>
     <plugins>
