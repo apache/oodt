@@ -52,10 +52,7 @@ public class HadoopRunner extends EngineRunner {
 			job.setMapperClass(HadoopTaskInstance.class);
 			job.setNumReduceTasks(0);
 			XStream xstream = new XStream();
-			String xstreamTask = "/temp/job-input/xstream/" + workflowInstance.getInstanceId() + "/" + workflowInstance.getModelId() + ".xstream";
-			String xmlTask = xstream.toXML(workflowInstance);
-			//write xmlTask to xstreamTask;
-	    	FileInputFormat.addInputPath(job, new Path(xstreamTask));
+			conf.set(HadoopTaskInstance.XSTREAM_TASK, xstream.toXML(workflowInstance));
 		}
 		
 		job.submit();
