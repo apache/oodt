@@ -28,7 +28,7 @@
 	</parent>
 	<artifactId>oodt-xmlps</artifactId>
 	<name>XML-configured, DBMS-based Product and Profile Server</name>
-	<version>${oodt.version}</version>
+	<version>0.2</version>
 	<description>
 	  An XML-configured DBMS-based Product and Profile meant to easily 
 	  sit on top of Web-Grid and other Product and Profile server contexts
