@@ -1,6 +1,10 @@
 Apache OODT Change Log
 ======================
 
+Release 0.3-SNAPSHOT (in progress)
+--------------------------------------------
+
+
 Release 0.2 
 --------------------------------------------
 Release Date: January 17th, 2011

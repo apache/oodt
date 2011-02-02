@@ -19,7 +19,7 @@ the License.
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
     <name>OODT Core</name>
     <packaging>pom</packaging>
     <properties>
@@ -241,9 +241,9 @@ the License.
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/oodt/trunk/${project.artifactId}</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/oodt/trunk/${project.artifactId}</developerConnection>
-        <url>http://svn.apache.org/viewvc/incubator/oodt/trunk/${project.artifactId}/</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/oodt/trunk/${project.artifactId}</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/${project.artifactId}</developerConnection>
+        <url>http://svn.apache.org/viewvc/oodt/trunk/${project.artifactId}/</url>
         <tag>HEAD</tag>
     </scm>
     <organization>
@@ -421,7 +421,7 @@ the License.
             <uniqueVersion>false</uniqueVersion>
             <id>incubator-oodt-repo-loc</id>
             <name>Apache OODT Incubating Repository</name>
-            <url>scp://minotaur.apache.org/www/www.apache.org/dist/incubator/oodt</url>
+            <url>scp://minotaur.apache.org/www/www.apache.org/dist/oodt</url>
             <layout>default</layout>
         </repository>
         <site>
