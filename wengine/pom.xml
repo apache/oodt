@@ -170,9 +170,9 @@
 			<version>2.6.2</version>
 		</dependency>
 		<dependency>
-    		<groupId>org.apache.hadoop</groupId>
-    		<artifactId>hadoop-mapred</artifactId>
-    		<version>0.21.1-SNAPSHOT</version>
+    			<groupId>org.apache.hadoop</groupId>
+    			<artifactId>hadoop-mapred</artifactId>
+    			<version>0.21.0</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
