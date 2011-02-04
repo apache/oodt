@@ -11,7 +11,7 @@
 	<groupId>org.apache.oodt</groupId>
 	<artifactId>cas-wengine</artifactId>
 	<name>Catalog and Archive Workflow Management Engine</name>
-	<version>0.2-branch</version>
+	<version>wengine-branch</version>
 	<description>The workflow management engine of a Catalog and Archive Service. This component
 		purposefully separates workflow repositories and workflow engines standard interfaces, and
 		provides some out of the box backend implementations of them (including one based on the
@@ -76,22 +76,22 @@
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>oodt-commons</artifactId>
-			<version>0.2-incubating</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>cas-catalog</artifactId>
-			<version>0.2-incubating</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>cas-metadata</artifactId>
-			<version>0.2-incubating</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>cas-resource</artifactId>
-			<version>0.2-incubating</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>concurrent</groupId>

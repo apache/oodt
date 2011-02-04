@@ -10,7 +10,7 @@
   </parent>
   <artifactId>cas-filemgr</artifactId>
   <name>Catalog and Archive File Management Component</name>
-  <version>0.2-branch</version>
+  <version>wengine-branch</version>
   <description>The file management component of a Catalog and Archive Service. This component
      purposefully separates data stores and metadata stores as standard interfaces, and
      provides some out of the box backend implementations of them (including one based
@@ -75,17 +75,17 @@
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-commons</artifactId>
-      <version>0.2-incubating</version>    
+      <version>${project.parent.version}</version>    
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>0.2-incubating</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-catalog</artifactId>
-      <version>0.2-incubating</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
