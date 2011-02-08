@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-128 CAS workflow monitor webapp fails to load due to unparsable 
+  character in JSP file (Rishi Verma via mattmann)
 
 Release 0.2 
 --------------------------------------------
