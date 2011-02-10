@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-136 Lack of cataloged mime type causes recoverable exception in 
+  Reference core class (mattmann)
+
 * OODT-134 Update website with News of Release 0.2 and links for download (goodale)
 
 * OODT-128 CAS workflow monitor webapp fails to load due to unparsable 

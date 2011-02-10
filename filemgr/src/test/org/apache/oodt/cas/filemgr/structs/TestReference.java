@@ -48,5 +48,22 @@ public class TestReference extends TestCase {
     assertNotNull(r.getMimeType());
     assertEquals("application/x-hdf", r.getMimeType().getName());
   }
+  
+  /**
+   * @since OODT-136
+   */
+  public void testSetNullMimeType(){
+    Reference r = new Reference("file:///tmp/test.he5",
+        "file:///archive/test.he5/test.he5", 0L);
+    
+    String nullType = null;
+    try{
+      r.setMimeType("");
+      r.setMimeType(nullType);
+    }
+    catch(Exception e){
+      fail(e.getMessage());
+    }
+  }
 
 }

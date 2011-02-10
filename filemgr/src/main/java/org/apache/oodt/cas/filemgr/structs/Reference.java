@@ -210,6 +210,9 @@ public class Reference {
      *            the String name of the mimetype of this reference
      */
     public void setMimeType(String name) {
+        if(name == null || (name != null && 
+            name.equals(""))) return;
+        
         try {
           this.mimeType = mimeTypeRepository.forName(name);
         } catch (MimeTypeException e) {
