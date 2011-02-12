@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-138 Reference class prints stack trace when mime type repo 
+  cannot be found (mattmann)
+
 * OODT-136 Lack of cataloged mime type causes recoverable exception in 
   Reference core class (mattmann)
 

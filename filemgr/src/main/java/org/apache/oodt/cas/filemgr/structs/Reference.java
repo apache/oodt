@@ -66,7 +66,6 @@ public class Reference {
                           "org.apache.oodt.cas.filemgr.mime.type.repository",
                           "mime-types.xml")))));
         } catch (Exception e){
-          e.printStackTrace();
           mimeTypeRepository = TikaConfig.getDefaultConfig().getMimeRepository();
         }
     }
