@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-135 Process Control System Package (mattmann)
+
 * OODT-138 Reference class prints stack trace when mime type repo 
   cannot be found (mattmann)
 
