@@ -413,8 +413,10 @@ public final class XmlRpcStructFactory {
     
     public static Hashtable<String, Object> getXmlRpcTypeHandler(TypeHandler typeHandler) {
         Hashtable<String, Object> handlerHash = new Hashtable<String, Object>();
-        handlerHash.put("className", typeHandler.getClass().getCanonicalName());
-        handlerHash.put("elementName", typeHandler.getElementName());
+        handlerHash.put("className", typeHandler != null ? 
+            typeHandler.getClass().getCanonicalName():"");
+        handlerHash.put("elementName", typeHandler != null ? 
+            typeHandler.getElementName():"");
         return handlerHash;
     }
 
@@ -458,7 +460,8 @@ public final class XmlRpcStructFactory {
             Hashtable<String, Object> typeHandlerHash) {
         TypeHandler typeHandler = GenericFileManagerObjectFactory
             .getTypeHandlerFromClassName((String) typeHandlerHash.get("className"));
-        typeHandler.setElementName((String) typeHandlerHash.get("elementName"));
+        if(typeHandler != null)
+          typeHandler.setElementName((String) typeHandlerHash.get("elementName"));
         return typeHandler;
     }
 

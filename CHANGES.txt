@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-142 TypeHandler SerDe is backwards incompat with older 
+  versions of FM (mattmann)
+
 * OODT-141 LuceneCatalog pagination throws LuceneException when 
   grabbing out of bounds hitNum
 
