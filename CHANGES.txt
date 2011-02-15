@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-141 LuceneCatalog pagination throws LuceneException when 
+  grabbing out of bounds hitNum
+
 * OODT-140 commons-lang version should be standardized on 
   (2.1. vs 2.3) (bfoster)
 

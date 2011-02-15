@@ -675,7 +675,7 @@ public class LuceneCatalog implements Catalog {
             if (hits.length() > 0) {
                 products = new Vector<Product>(n);
                 int i = 0;
-                while (products.size() < n) {
+                while (products.size() < Math.min(n, hits.length())) {
                     Document productDoc = hits.doc(i);
                     CompleteProduct prod = toCompleteProduct(productDoc, false,
                             false);

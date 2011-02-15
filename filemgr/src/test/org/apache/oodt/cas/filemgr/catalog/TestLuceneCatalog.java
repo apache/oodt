@@ -285,6 +285,22 @@ public class TestLuceneCatalog extends TestCase {
         Product retProd = ((Product) page.getPageProducts().get(0));
         assertEquals("ShouldBeFirstForPage.txt", retProd.getProductName());
     }
+    
+    /**
+     * @since OODT-141
+     */
+    public void testTopResults(){
+      Product testProduct = getTestProduct();
+      try{
+        myCat.addProduct(testProduct);
+        myCat.addMetadata(getTestMetadata("tempProduct"), testProduct);
+        myCat.getTopNProducts(20);
+      }
+      catch(Exception e){
+        e.printStackTrace();
+        fail(e.getMessage());
+      }
+    }
 
     public void testAddProduct() {
 
