@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-140 commons-lang version should be standardized on 
+  (2.1. vs 2.3) (bfoster)
+
 * OODT-135 Process Control System Package (mattmann)
 
 * OODT-138 Reference class prints stack trace when mime type repo 
