@@ -18,22 +18,22 @@ the License.
 <Context path="/pcs" docBase="/path/to/pcs-services-X.Y.war">
 		
 	<Parameter name="org.apache.oodt.cas.fm.url"
-	    value="http://localhost:9000"/>
+	    value="[FILEMGR_URL]"/>
 
 	<Parameter name="org.apache.oodt.cas.wm.url"
-	    value="http://localhost:9001"/>
+	    value="[WORKFLOW_URL]"/>
 
 	<Parameter name="org.apache.oodt.cas.rm.url"
-	    value="http://localhost:9002"/>
+	    value="[RESMGR_URL]"/>
 	    
 	<Parameter name="org.apache.oodt.pcs.ll.conf.filePath"
-	    value="/path/to/pcs-ll-conf.xmnl"/>
+	    value="[PCS_HOME]/aux/pcs/pcs-ll-conf.xmnl"/>
 	    
 	<Parameter name="org.apache.oodt.pcs.health.crawler.conf.filePath"
-	    value="/Users/mattmann/src/oodt/trunk/pcs/core/src/main/resources/pcs-crawlers.xml"/>
+	    value="[PCS_HOME]/aux/pcs/pcs-crawlers.xml"/>
 	    
 	<Parameter name="org.apache.oodt.pcs.health.workflow.statuses.filePath"
-	    value="/Users/mattmann/src/oodt/trunk/pcs/core/src/main/resources/pcs-workflow-statuses.xml"/>
+	    value="[PCS_HOME]/aux/pcs-workflow-statuses.xml"/>
 	    
 	<Parameter name="org.apache.oodt.pcs.trace.enableNonCat"
 	    value="true"/>
