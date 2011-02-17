@@ -286,11 +286,10 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    Map<String, Object> crawlerOutput = new HashMap<String, Object>();
+    List<Object> crawlerOutput = new Vector<Object>();
     for (CrawlerStatus cs : (List<CrawlerStatus>) (List<?>) report
         .getCrawlerStatus()) {
-      crawlerOutput.put(cs.getInfo().getCrawlerName(), this
-          .encodeCrawlerStatus(cs));
+      crawlerOutput.add(this.encodeCrawlerStatus(cs));
     }
 
     output.put("crawlerStatus", crawlerOutput);
