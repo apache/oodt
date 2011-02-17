@@ -100,10 +100,10 @@ public class HealthResource extends PCSService {
       }
       daemonOutput.put("stubs", stubs);
     }
-    Map<String, Object> crawlerOutput = new HashMap<String, Object>();
+    List<Object> crawlerOutput = new Vector<Object>();
     for (CrawlerStatus cs : (List<CrawlerStatus>) (List<?>) report
         .getCrawlerStatus()) {
-      crawlerOutput.put(cs.getInfo().getCrawlerName(), this
+      crawlerOutput.add(this
           .encodeCrawlerStatus(cs));
     }
     Map<String, Object> latestFilesOutput = new HashMap<String, Object>();
@@ -304,12 +304,12 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    Map<String, Object> crawlerOutput = new HashMap<String, Object>();
+    List<Object> crawlerOutput = new Vector<Object>();
     boolean found = false;
     for (CrawlerStatus cs : (List<CrawlerStatus>) (List<?>) report
         .getCrawlerStatus()) {
       if (cs.getInfo().getCrawlerName().equals(crawlerName)) {
-        crawlerOutput.put(cs.getInfo().getCrawlerName(), this
+        crawlerOutput.add(this
             .encodeCrawlerStatus(cs));
         found = true;
         break;
