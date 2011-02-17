@@ -17,6 +17,10 @@
 package org.apache.oodt.cas.workflow.engine.runner;
 
 //OODT imports
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.oodt.cas.workflow.instance.TaskInstance;
 
 /**
@@ -30,15 +34,43 @@ import org.apache.oodt.cas.workflow.instance.TaskInstance;
  */
 public class LocalEngineRunner extends EngineRunner {
 	
+	private static final Logger LOG = Logger.getLogger(LocalEngineRunner.class.getName());
+	
+	private int cacheSize;
 	private int numOfSlots;
 	private int usedSlots = 0;
+	private List<TaskInstance> cache;
 	
-	public LocalEngineRunner(int numOfSlots) {
+	public LocalEngineRunner(int numOfSlots, int cacheSize) {
 		this.numOfSlots = numOfSlots;
+		this.cacheSize = cacheSize;
+		if (this.cacheSize > 0) {
+			new Thread(new Runnable() {
+				public void run() {
+					while (true) {
+						try {
+							if (LocalEngineRunner.this.numOfSlots > LocalEngineRunner.this.usedSlots && LocalEngineRunner.this.cache.size() > 0)
+								LocalEngineRunner.this.execute(LocalEngineRunner.this.cache.remove(0));
+						}catch (Exception e) {
+							LOG.log(Level.SEVERE, "Failed to submit job from cache : " + e.getMessage(), e);
+						}
+						try {
+							synchronized(this) {
+								this.wait(2000);
+							}
+						}catch (Exception e) {
+							LOG.log(Level.WARNING, "Local Runner cache submitter thread wait terminated : " + e.getMessage(), e);
+						}
+					}
+				}
+			}).start();
+		}
 	}
 	
 	public void execute(final TaskInstance workflowInstance) throws Exception {
 		incrSlots();
+		if (this.cache.size() > 0)
+			cache.add(workflowInstance);
 		new Thread(new Runnable() {
 			public void run() {
 				try {
@@ -52,7 +84,7 @@ public class LocalEngineRunner extends EngineRunner {
 
 	@Override
 	public synchronized int getOpenSlots(TaskInstance workflowInstance) throws Exception {
-		return numOfSlots - usedSlots;
+		return (numOfSlots - usedSlots) + this.cacheSize;
 	}
 
 	@Override
