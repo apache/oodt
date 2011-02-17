@@ -56,6 +56,7 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.util.DateConvert;
 
 /**
@@ -107,8 +108,13 @@ public class RSSProductServlet extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
 
-    String fileManagerUrl = config.getServletContext().getInitParameter(
-        "filemgr.url");
+    String fileManagerUrl;
+	try {
+		fileManagerUrl = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
+		    "filemgr.url") );
+	} catch (Exception e) {
+		throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
+	}
     if (fileManagerUrl == null) {
       // try the default port
       fileManagerUrl = "http://localhost:9000";

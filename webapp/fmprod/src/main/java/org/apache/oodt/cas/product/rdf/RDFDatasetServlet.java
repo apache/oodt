@@ -48,6 +48,7 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
 
 /**
@@ -96,8 +97,14 @@ public class RDFDatasetServlet extends HttpServlet {
       throw new ServletException(e.getMessage());
     }
 
-    String fileManagerUrl = config.getServletContext().getInitParameter(
-        "filemgr.url");
+    String fileManagerUrl = null;
+    try {
+      fileManagerUrl = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
+          "filemgr.url") );
+    } catch (Exception e) {
+      throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
+    }    
+    
     if (fileManagerUrl == null) {
       // try the default port
       fileManagerUrl = "http://localhost:9000";

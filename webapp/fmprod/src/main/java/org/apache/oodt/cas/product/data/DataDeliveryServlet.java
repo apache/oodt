@@ -25,6 +25,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 
 //JDK imports
 import java.io.File;
@@ -58,8 +59,13 @@ public class DataDeliveryServlet extends HttpServlet implements
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
-      String fileMgrURL = config.getServletContext().getInitParameter(
-          "filemgr.url");
+      String fileMgrURL = null;
+      try {
+        fileMgrURL = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
+            "filemgr.url") );
+      } catch (Exception e) {
+        throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
+      }
       if (fileMgrURL == null)
         fileMgrURL = "http://localhost:9000";
       client = new XmlRpcFileManagerClient(new URL(fileMgrURL));
