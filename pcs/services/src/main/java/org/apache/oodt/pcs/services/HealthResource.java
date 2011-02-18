@@ -86,56 +86,11 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    Map<String, Object> daemonOutput = new HashMap<String, Object>();
-    daemonOutput.put("fm", this.encodeDaemonStatus(report.getFmStatus()));
-    daemonOutput.put("wm", this.encodeDaemonStatus(report.getWmStatus()));
-    daemonOutput.put("rm", this.encodeDaemonStatus(report.getRmStatus()));
-    if (report.getRmStatus().getStatus().equals(
-        PCSHealthMonitorMetKeys.STATUS_UP)) {
-      // print out the batch stubs
-      List<Object> stubs = new Vector<Object>();
-      for (PCSDaemonStatus bStatus : (List<PCSDaemonStatus>) (List<?>) report
-          .getBatchStubStatus()) {
-        stubs.add(this.encodeDaemonStatus(bStatus));
-      }
-      daemonOutput.put("stubs", stubs);
-    }
-    List<Object> crawlerOutput = new Vector<Object>();
-    for (CrawlerStatus cs : (List<CrawlerStatus>) (List<?>) report
-        .getCrawlerStatus()) {
-      crawlerOutput.add(this
-          .encodeCrawlerStatus(cs));
-    }
-    Map<String, Object> latestFilesOutput = new HashMap<String, Object>();
-    latestFilesOutput.put("topN", PCSHealthMonitor.TOP_N_PRODUCTS);
-    List<Object> latestFilesList = new Vector<Object>();
-    for (Product prod : (List<Product>) (List<?>) report
-        .getLatestProductsIngested()) {
-      try {
-        this.encodeLatestFile(latestFilesList, prod);
-      } catch (MalformedURLException e) {
-        LOG.log(Level.WARNING, "Unable to encode latest file: ["
-            + prod.getProductName() + "]: error: Message: " + e.getMessage());
-      }
-    }
-    latestFilesOutput.put("files", latestFilesList);
-    List<Object> jobStatusList = new Vector<Object>();
-    for (JobHealthStatus js : (List<JobHealthStatus>) (List<?>) report
-        .getJobHealthStatus()) {
-      jobStatusList.add(this.encodeJobStatus(js));
-    }
-
-    List<Object> crawlerHealthList = new Vector<Object>();
-    for (CrawlerHealth ch : (List<CrawlerHealth>) (List<?>) report
-        .getCrawlerHealthStatus()) {
-      crawlerHealthList.add(this.encodeCrawlerHealth(ch));
-    }
-
-    output.put("daemonStatus", daemonOutput);
-    output.put("crawlerStatus", crawlerOutput);
-    output.put("latestFiles", latestFilesOutput);
-    output.put("jobHealth", jobStatusList);
-    output.put("ingestHealth", crawlerHealthList);
+    output.put("daemonStatus", this.encodeDaemonOutput(report));
+    output.put("crawlerStatus", this.encodeCrawlerHealthReportOutput(report));
+    output.put("latestFiles", this.encodeLatestFilesOutput(report));
+    output.put("jobHealth", this.encodeJobHealthStatusList(report));
+    output.put("ingestHealth", this.encodeIngestHealthList(report));
     return this.encodeReportAsJson(output);
   }
 
@@ -146,12 +101,7 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    List<Object> crawlerHealthList = new Vector<Object>();
-    for (CrawlerHealth ch : (List<CrawlerHealth>) (List<?>) report
-        .getCrawlerHealthStatus()) {
-      crawlerHealthList.add(this.encodeCrawlerHealth(ch));
-    }
-    output.put("ingestHealth", crawlerHealthList);
+    output.put("ingestHealth", this.encodeIngestHealthList(report));
     return this.encodeReportAsJson(output);
   }
 
@@ -162,20 +112,8 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    List<Object> crawlerHealthList = new Vector<Object>();
-    boolean found = false;
-    for (CrawlerHealth ch : (List<CrawlerHealth>) (List<?>) report
-        .getCrawlerHealthStatus()) {
-      if (ch.getCrawlerName().equals(crawlerName)) {
-        crawlerHealthList.add(this.encodeCrawlerHealth(ch));
-        found = true;
-        break;
-      }
-    }
-    if (!found)
-      throw new ResourceNotFoundException(
-          "No ingest crawler found with name: [" + crawlerName + "]");
-    output.put("ingestHealth", crawlerHealthList);
+    output.put("ingestHealth", this
+        .encodeIngestHealthList(report, crawlerName));
     return this.encodeReportAsJson(output);
   }
 
@@ -186,12 +124,7 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    List<Object> jobStatusList = new Vector<Object>();
-    for (JobHealthStatus js : (List<JobHealthStatus>) (List<?>) report
-        .getJobHealthStatus()) {
-      jobStatusList.add(this.encodeJobStatus(js));
-    }
-    output.put("jobHealth", jobStatusList);
+    output.put("jobHealth", this.encodeJobHealthStatusList(report));
     return this.encodeReportAsJson(output);
   }
 
@@ -202,20 +135,7 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    List<Object> jobStatusList = new Vector<Object>();
-    boolean found = false;
-    for (JobHealthStatus js : (List<JobHealthStatus>) (List<?>) report
-        .getJobHealthStatus()) {
-      if (js.getStatus().equals(jobState)) {
-        jobStatusList.add(this.encodeJobStatus(js));
-        found = true;
-        break;
-      }
-    }
-    if (!found)
-      throw new ResourceNotFoundException(
-          "Unable to find any jobs with associated state: [" + jobState + "]");
-    output.put("jobHealth", jobStatusList);
+    output.put("jobHealth", this.encodeJobHealthStatusList(report, jobState));
     return this.encodeReportAsJson(output);
   }
 
@@ -226,21 +146,7 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    Map<String, Object> daemonOutput = new HashMap<String, Object>();
-    daemonOutput.put("fm", this.encodeDaemonStatus(report.getFmStatus()));
-    daemonOutput.put("wm", this.encodeDaemonStatus(report.getWmStatus()));
-    daemonOutput.put("rm", this.encodeDaemonStatus(report.getRmStatus()));
-    if (report.getRmStatus().getStatus().equals(
-        PCSHealthMonitorMetKeys.STATUS_UP)) {
-      // print out the batch stubs
-      List<Object> stubs = new Vector<Object>();
-      for (PCSDaemonStatus bStatus : (List<PCSDaemonStatus>) (List<?>) report
-          .getBatchStubStatus()) {
-        stubs.add(this.encodeDaemonStatus(bStatus));
-      }
-      daemonOutput.put("stubs", stubs);
-    }
-    output.put("daemonStatus", daemonOutput);
+    output.put("daemonStatus", this.encodeDaemonOutput(report));
     return this.encodeReportAsJson(output);
   }
 
@@ -251,30 +157,7 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    Map<String, Object> daemonOutput = new HashMap<String, Object>();
-    if (daemonName.equals("fm")) {
-      daemonOutput.put("fm", this.encodeDaemonStatus(report.getFmStatus()));
-    } else if (daemonName.equals("wm")) {
-      daemonOutput.put("wm", this.encodeDaemonStatus(report.getWmStatus()));
-    } else if (daemonName.equals("rm")) {
-      daemonOutput.put("rm", this.encodeDaemonStatus(report.getRmStatus()));
-    } else if (daemonName.equals("stubs")) {
-      if (report.getRmStatus().getStatus().equals(
-          PCSHealthMonitorMetKeys.STATUS_UP)) {
-        // print out the batch stubs
-        List<Object> stubs = new Vector<Object>();
-        for (PCSDaemonStatus bStatus : (List<PCSDaemonStatus>) (List<?>) report
-            .getBatchStubStatus()) {
-          stubs.add(this.encodeDaemonStatus(bStatus));
-        }
-        daemonOutput.put("stubs", stubs);
-      } else
-        throw new ResourceNotFoundException(
-            "Resource Manager not running so no batch stubs to check.");
-    } else
-      throw new ResourceNotFoundException("Daemon not found");
-
-    output.put("daemonStatus", daemonOutput);
+    output.put("daemonStatus", this.encodeDaemonOutput(report, daemonName));
     return this.encodeReportAsJson(output);
 
   }
@@ -286,13 +169,7 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    List<Object> crawlerOutput = new Vector<Object>();
-    for (CrawlerStatus cs : (List<CrawlerStatus>) (List<?>) report
-        .getCrawlerStatus()) {
-      crawlerOutput.add(this.encodeCrawlerStatus(cs));
-    }
-
-    output.put("crawlerStatus", crawlerOutput);
+    output.put("crawlerStatus", this.encodeCrawlerHealthReportOutput(report));
     return this.encodeReportAsJson(output);
   }
 
@@ -304,22 +181,8 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    List<Object> crawlerOutput = new Vector<Object>();
-    boolean found = false;
-    for (CrawlerStatus cs : (List<CrawlerStatus>) (List<?>) report
-        .getCrawlerStatus()) {
-      if (cs.getInfo().getCrawlerName().equals(crawlerName)) {
-        crawlerOutput.add(this
-            .encodeCrawlerStatus(cs));
-        found = true;
-        break;
-      }
-    }
-    if (!found)
-      throw new ResourceNotFoundException(
-          "Unable to find any crawlers with name: [" + crawlerName + "]");
-
-    output.put("crawlerStatus", crawlerOutput);
+    output.put("crawlerStatus", this.encodeCrawlerHealthReportOutput(report,
+        crawlerName));
     return this.encodeReportAsJson(output);
   }
 
@@ -330,21 +193,7 @@ public class HealthResource extends PCSService {
     PCSHealthMonitorReport report = mon.getReport();
     Map<String, Object> output = new HashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
-    Map<String, Object> latestFilesOutput = new HashMap<String, Object>();
-    latestFilesOutput.put("topN", PCSHealthMonitor.TOP_N_PRODUCTS);
-    List<Object> latestFilesList = new Vector<Object>();
-    for (Product prod : (List<Product>) (List<?>) report
-        .getLatestProductsIngested()) {
-      try {
-        this.encodeLatestFile(latestFilesList, prod);
-      } catch (MalformedURLException e) {
-        LOG.log(Level.WARNING, "Unable to encode latest file: ["
-            + prod.getProductName() + "]: error: Message: " + e.getMessage());
-      }
-    }
-
-    latestFilesOutput.put("files", latestFilesList);
-    output.put("latestFiles", latestFilesOutput);
+    output.put("latestFiles", this.encodeLatestFilesOutput(report));
     return this.encodeReportAsJson(output);
   }
 
@@ -376,13 +225,13 @@ public class HealthResource extends PCSService {
         .getProductTypeId()));
     p.setProductReferences(fm.safeGetProductReferences(p));
     Metadata prodMet = fm.safeGetMetadata(p);
-    if(prodMet == null) prodMet = new Metadata();
+    if (prodMet == null)
+      prodMet = new Metadata();
     Map<String, Object> fileOutput = new HashMap<String, Object>();
     fileOutput.put("filepath", fm.getFilePath(p));
     fileOutput.put("receivedTime", prodMet.getMetadata("CAS."
-        + CoreMetKeys.PRODUCT_RECEVIED_TIME) != null ? 
-            prodMet.getMetadata("CAS."
-                + CoreMetKeys.PRODUCT_RECEVIED_TIME):"UNKNOWN");
+        + CoreMetKeys.PRODUCT_RECEVIED_TIME) != null ? prodMet
+        .getMetadata("CAS." + CoreMetKeys.PRODUCT_RECEVIED_TIME) : "UNKNOWN");
     latestFilesOutput.add(fileOutput);
   }
 
@@ -393,6 +242,144 @@ public class HealthResource extends PCSService {
     output.put("url", status.getCrawlHost());
     output.put("status", status.getStatus());
     return output;
+  }
+
+  private List<Object> encodeIngestHealthList(PCSHealthMonitorReport report,
+      String... crawlerName) {
+    List<Object> crawlerHealthList = new Vector<Object>();
+    if (crawlerName.length > 0) {
+      boolean found = false;
+      for (CrawlerHealth ch : (List<CrawlerHealth>) (List<?>) report
+          .getCrawlerHealthStatus()) {
+        if (ch.getCrawlerName().equals(crawlerName[0])) {
+          crawlerHealthList.add(this.encodeCrawlerHealth(ch));
+          found = true;
+          break;
+        }
+      }
+      if (!found)
+        throw new ResourceNotFoundException(
+            "No ingest crawler found with name: [" + crawlerName + "]");
+    } else {
+      for (CrawlerHealth ch : (List<CrawlerHealth>) (List<?>) report
+          .getCrawlerHealthStatus()) {
+        crawlerHealthList.add(this.encodeCrawlerHealth(ch));
+      }
+    }
+    return crawlerHealthList;
+  }
+
+  private List<Object> encodeJobHealthStatusList(PCSHealthMonitorReport report,
+      String... jobState) {
+    List<Object> jobStatusList = new Vector<Object>();
+    if (jobState.length > 0) {
+      boolean found = false;
+      for (JobHealthStatus js : (List<JobHealthStatus>) (List<?>) report
+          .getJobHealthStatus()) {
+        if (js.getStatus().equals(jobState[0])) {
+          jobStatusList.add(this.encodeJobStatus(js));
+          found = true;
+          break;
+        }
+      }
+      if (!found)
+        throw new ResourceNotFoundException(
+            "Unable to find any jobs with associated state: [" + jobState[0]
+                + "]");
+    } else {
+      for (JobHealthStatus js : (List<JobHealthStatus>) (List<?>) report
+          .getJobHealthStatus()) {
+        jobStatusList.add(this.encodeJobStatus(js));
+      }
+    }
+    return jobStatusList;
+  }
+
+  private Map<String, Object> encodeLatestFilesOutput(
+      PCSHealthMonitorReport report) {
+    Map<String, Object> latestFilesOutput = new HashMap<String, Object>();
+    latestFilesOutput.put("topN", PCSHealthMonitor.TOP_N_PRODUCTS);
+    List<Object> latestFilesList = new Vector<Object>();
+    for (Product prod : (List<Product>) (List<?>) report
+        .getLatestProductsIngested()) {
+      try {
+        this.encodeLatestFile(latestFilesList, prod);
+      } catch (MalformedURLException e) {
+        LOG.log(Level.WARNING, "Unable to encode latest file: ["
+            + prod.getProductName() + "]: error: Message: " + e.getMessage());
+      }
+    }
+    latestFilesOutput.put("files", latestFilesList);
+    return latestFilesOutput;
+  }
+
+  private List<Object> encodeCrawlerHealthReportOutput(
+      PCSHealthMonitorReport report, String... crawlerName) {
+    List<Object> crawlerOutput = new Vector<Object>();
+    if (crawlerName.length > 0) {
+      boolean found = false;
+      for (CrawlerStatus cs : (List<CrawlerStatus>) (List<?>) report
+          .getCrawlerStatus()) {
+        if (cs.getInfo().getCrawlerName().equals(crawlerName[0])) {
+          crawlerOutput.add(this.encodeCrawlerStatus(cs));
+          found = true;
+          break;
+        }
+      }
+      if (!found)
+        throw new ResourceNotFoundException(
+            "Unable to find any crawlers with name: [" + crawlerName + "]");
+    } else {
+      for (CrawlerStatus cs : (List<CrawlerStatus>) (List<?>) report
+          .getCrawlerStatus()) {
+        crawlerOutput.add(this.encodeCrawlerStatus(cs));
+      }
+    }
+
+    return crawlerOutput;
+  }
+
+  private Map<String, Object> encodeDaemonOutput(PCSHealthMonitorReport report,
+      String... daemonName) {
+    Map<String, Object> daemonOutput = new HashMap<String, Object>();
+    if (daemonName.length > 0) {
+      if (daemonName.equals("fm")) {
+        daemonOutput.put("fm", this.encodeDaemonStatus(report.getFmStatus()));
+      } else if (daemonName[0].equals("wm")) {
+        daemonOutput.put("wm", this.encodeDaemonStatus(report.getWmStatus()));
+      } else if (daemonName[0].equals("rm")) {
+        daemonOutput.put("rm", this.encodeDaemonStatus(report.getRmStatus()));
+      } else if (daemonName[0].equals("stubs")) {
+        if (report.getRmStatus().getStatus().equals(
+            PCSHealthMonitorMetKeys.STATUS_UP)) {
+          // print out the batch stubs
+          List<Object> stubs = new Vector<Object>();
+          for (PCSDaemonStatus bStatus : (List<PCSDaemonStatus>) (List<?>) report
+              .getBatchStubStatus()) {
+            stubs.add(this.encodeDaemonStatus(bStatus));
+          }
+          daemonOutput.put("stubs", stubs);
+        } else
+          throw new ResourceNotFoundException(
+              "Resource Manager not running so no batch stubs to check.");
+      } else
+        throw new ResourceNotFoundException("Daemon not found");
+    } else {
+      daemonOutput.put("fm", this.encodeDaemonStatus(report.getFmStatus()));
+      daemonOutput.put("wm", this.encodeDaemonStatus(report.getWmStatus()));
+      daemonOutput.put("rm", this.encodeDaemonStatus(report.getRmStatus()));
+      if (report.getRmStatus().getStatus().equals(
+          PCSHealthMonitorMetKeys.STATUS_UP)) {
+        // print out the batch stubs
+        List<Object> stubs = new Vector<Object>();
+        for (PCSDaemonStatus bStatus : (List<PCSDaemonStatus>) (List<?>) report
+            .getBatchStubStatus()) {
+          stubs.add(this.encodeDaemonStatus(bStatus));
+        }
+        daemonOutput.put("stubs", stubs);
+      }
+    }
+    return daemonOutput;
   }
 
   private Map<String, String> encodeDaemonStatus(PCSDaemonStatus status) {
