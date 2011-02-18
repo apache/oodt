@@ -119,4 +119,14 @@ the License.
         </property>
     </bean>
     
+    <bean id="CheckMetFileExists" lazy-init="true" class="org.apache.oodt.cas.crawl.action.ExternAction">
+        <property name="description" value="Checks if metadata file was created -- make sure check-exists.sh is on your PATH"/>
+        <property name="executeCommand" value="./check-exists.sh [Filename].met"/>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">preIngest</value>
+            </list>
+        </property>
+    </bean>
+    
 </beans>

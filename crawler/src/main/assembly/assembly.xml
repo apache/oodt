@@ -67,6 +67,11 @@ the License.
         <include>*.xml</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>${basedir}/src/main/resources/extern-scripts</directory>
+      <outputDirectory>policy/extern-scripts</outputDirectory>
+      <includes/>
+    </fileSet>
   </fileSets>
   <dependencySets>
     <dependencySet>
