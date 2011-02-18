@@ -259,7 +259,7 @@ public class HealthResource extends PCSService {
       }
       if (!found)
         throw new ResourceNotFoundException(
-            "No ingest crawler found with name: [" + crawlerName + "]");
+            "No ingest crawler found with name: [" + crawlerName[0] + "]");
     } else {
       for (CrawlerHealth ch : (List<CrawlerHealth>) (List<?>) report
           .getCrawlerHealthStatus()) {
@@ -328,7 +328,7 @@ public class HealthResource extends PCSService {
       }
       if (!found)
         throw new ResourceNotFoundException(
-            "Unable to find any crawlers with name: [" + crawlerName + "]");
+            "Unable to find any crawlers with name: [" + crawlerName[0] + "]");
     } else {
       for (CrawlerStatus cs : (List<CrawlerStatus>) (List<?>) report
           .getCrawlerStatus()) {
