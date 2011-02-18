@@ -118,24 +118,32 @@ public abstract class TaskInstance {
 	public Metadata getMetadata() {
 		return new ControlMetadata(this.staticMetadata, this.dynamicMetadata).asMetadata();
 	}
-    
-    private void syncWorkflowMetadata(ControlMetadata ctrlMetadata) {
-    	try {
-			this.weClient.updateWorkflowMetadata(this.instanceId, this.modelId, ctrlMetadata.asMetadata(ControlMetadata.DYN));
-		}catch (Exception e) {
-			LOG.log(Level.SEVERE, "Failed to update workflow metadata for jobId = " + this.jobId + " ; modelId = " + this.modelId + " : " + e.getMessage(), e);
-		}
+
+    protected void update(ExecutingState workflowState, ControlMetadata ctrlMetadata) {
+    	this.synchWithEngine(workflowState, ctrlMetadata);
     }
-	
-    private void syncInstanceMetadata(ControlMetadata ctrlMetadata) {
+    
+    protected void syncState(ExecutingState workflowState) throws EngineException {
+		this.weClient.setWorkflowState(this.instanceId, this.modelId, workflowState);
+    }
+    
+    protected void syncInstanceMetadata(ControlMetadata ctrlMetadata) {
     	try {
     		this.weClient.updateInstanceMetadata(this.jobId, ctrlMetadata.asMetadata());
     	}catch (Exception e) {
     		LOG.log(Level.SEVERE, "Failed to update instance metadata for jobId = " + this.jobId + " ; modelId = " + this.modelId + " : " + e.getMessage(), e);
     	}
     }
-
-    private void syncWorkflowAndInstanceMetadata(Metadata metadata, Metadata instanceMetadata) {
+    
+    protected void syncWorkflowMetadata(ControlMetadata ctrlMetadata) {
+    	try {
+			this.weClient.updateWorkflowMetadata(this.instanceId, this.modelId, ctrlMetadata.asMetadata(ControlMetadata.DYN));
+		}catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to update workflow metadata for jobId = " + this.jobId + " ; modelId = " + this.modelId + " : " + e.getMessage(), e);
+		}
+    }
+    
+    protected void syncWorkflowAndInstanceMetadata(Metadata metadata, Metadata instanceMetadata) {
     	try {
 			this.weClient.updateWorkflowAndInstance(this.instanceId, this.modelId, this.state, metadata, this.jobId, instanceMetadata);
 		}catch (Exception e) {
@@ -143,11 +151,7 @@ public abstract class TaskInstance {
 		}
     }
     
-    private void syncState(WorkflowState workflowState) throws EngineException {
-		this.weClient.setWorkflowState(this.instanceId, this.modelId, workflowState);
-    }
-    
-    private void synchWithEngine(WorkflowState workflowState, ControlMetadata ctrlMetadata) {
+	private void synchWithEngine(WorkflowState workflowState, ControlMetadata ctrlMetadata) {
     	try {
     		Metadata metadata = ctrlMetadata.asMetadata(ControlMetadata.DYN);
 	    	this.addStandardInstanceMetadata(workflowState, ctrlMetadata);
@@ -179,10 +183,6 @@ public abstract class TaskInstance {
     		calendar.setTime(processorInfo.getCompletionDate());
     		ctrlMetadata.replaceLocalMetadata(WorkflowMetKeys.COMPLETION_DATE, DateUtils.toString(DateUtils.toUtc(calendar)));
     	}
-    }
-    
-    protected void update(ExecutingState workflowState, ControlMetadata ctrlMetadata) {
-    	this.synchWithEngine(workflowState, ctrlMetadata);
     }
     
     public void execute() {
