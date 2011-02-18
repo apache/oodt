@@ -343,7 +343,7 @@ public class HealthResource extends PCSService {
       String... daemonName) {
     Map<String, Object> daemonOutput = new HashMap<String, Object>();
     if (daemonName.length > 0) {
-      if (daemonName.equals("fm")) {
+      if (daemonName[0].equals("fm")) {
         daemonOutput.put("fm", this.encodeDaemonStatus(report.getFmStatus()));
       } else if (daemonName[0].equals("wm")) {
         daemonOutput.put("wm", this.encodeDaemonStatus(report.getWmStatus()));
