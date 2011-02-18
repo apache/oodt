@@ -58,9 +58,11 @@ import org.apache.oodt.commons.xml.XMLUtils;
 //JPL OODT imports
 import org.apache.oodt.cas.workflow.instance.TaskInstance;
 import org.apache.oodt.cas.workflow.metadata.ControlMetadata;
+import org.apache.oodt.cas.workflow.metadata.WorkflowMetKeys;
 import org.apache.oodt.cas.workflow.state.results.ResultsFailureState;
 import org.apache.oodt.cas.workflow.state.results.ResultsState;
 import org.apache.oodt.cas.workflow.state.results.ResultsSuccessState;
+import org.apache.oodt.cas.workflow.state.running.ExecutingState;
 import org.apache.oodt.cas.workflow.util.ScriptFile;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
@@ -94,6 +96,14 @@ public class PGETaskInstance extends TaskInstance {
     		return ((PgeConfigBuilder) Class.forName(pgeConfigBuilderClass).newInstance()).build(ctrlMetadata);
     	else
     		return new XmlFilePgeConfigBuilder().build(ctrlMetadata);
+    }
+    
+    protected void updateStateWithExeDirectory(PgeConfig pgeConfig, ControlMetadata ctrlMetadata) {
+    	try {
+    		this.syncState(new ExecutingState("Starting execution on " + ctrlMetadata.getMetadata(WorkflowMetKeys.HOST) + " in directory '" + pgeConfig.getExeDir()));
+    	}catch (Exception e) {
+    		LOG.log(Level.SEVERE, "Failed to update state with exe directory : " + e.getMessage(), e);
+    	}
     }
     
     protected void runPropertyAdders(PgeConfig pgeConfig, ControlMetadata ctrlMetadata) throws Exception {
@@ -432,6 +442,7 @@ public class PGETaskInstance extends TaskInstance {
         try {
         	//Initialization
         	PgeConfig pgeConfig = this.createPgeConfig(ctrlMetadata);
+        	this.updateStateWithExeDirectory(pgeConfig, ctrlMetadata);
         	this.runPropertyAdders(pgeConfig, ctrlMetadata);
         	
         	//PGE Setup
