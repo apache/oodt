@@ -56,6 +56,12 @@ public class MappedMultiRunner extends EngineRunner {
 		return this.getRunner(workflowInstance).hasOpenSlots(workflowInstance);
 	}
 	
+	@Override
+	public void shutdown() throws Exception {
+		for (EngineRunner runner : this.runnerMap.values())
+			try { runner.shutdown(); }catch (Exception e) {}
+	}
+	
 	private EngineRunner getRunner(TaskInstance workflowInstance) {
 		String runnerId = this.executionTypeToRunnerMap.get(workflowInstance.getExecutionType());
 		if (runnerId == null)

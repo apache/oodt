@@ -35,4 +35,6 @@ public abstract class EngineRunner {
 	
 	public abstract void execute(TaskInstance workflowInstance) throws Exception;
 	
+	public abstract void shutdown() throws Exception;
+
 }

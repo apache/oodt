@@ -168,6 +168,9 @@ public class WorkflowEngineLocal implements WorkflowEngine {
 			runnerThread.join(5000);
 		}catch(Exception e) {}
 		this.queueManager.shutdown();
+		try {
+			this.runner.shutdown();
+		}catch (Exception e) {}
 	}
 	
 	public void pauseRunner() throws EngineException {

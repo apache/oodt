@@ -40,6 +40,7 @@ public class LocalEngineRunner extends EngineRunner {
 	private int numOfSlots;
 	private int usedSlots = 0;
 	private List<TaskInstance> cache;
+	private boolean running = true;
 	
 	public LocalEngineRunner(int numOfSlots, int cacheSize) {
 		this.numOfSlots = numOfSlots;
@@ -47,7 +48,7 @@ public class LocalEngineRunner extends EngineRunner {
 		if (this.cacheSize > 0) {
 			new Thread(new Runnable() {
 				public void run() {
-					while (true) {
+					while (running) {
 						try {
 							if (LocalEngineRunner.this.numOfSlots > LocalEngineRunner.this.usedSlots && LocalEngineRunner.this.cache.size() > 0)
 								LocalEngineRunner.this.execute(LocalEngineRunner.this.cache.remove(0));
@@ -90,6 +91,11 @@ public class LocalEngineRunner extends EngineRunner {
 	@Override
 	public boolean hasOpenSlots(TaskInstance workflowInstance) throws Exception {
 		return this.getOpenSlots(workflowInstance) > 0;
+	}
+	
+	@Override
+	public void shutdown() throws Exception {
+		this.running = false;
 	}
 	
 	private synchronized void incrSlots() {

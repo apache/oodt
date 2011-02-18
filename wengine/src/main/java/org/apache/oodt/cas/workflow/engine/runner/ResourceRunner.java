@@ -73,5 +73,10 @@ public class ResourceRunner extends EngineRunner {
 	public boolean hasOpenSlots(TaskInstance workflowInstance) throws Exception {
 		return this.getOpenSlots(workflowInstance) > 0;
 	}
+	
+	@Override
+	public void shutdown() throws Exception {
+		//do nothing
+	}
 
 }

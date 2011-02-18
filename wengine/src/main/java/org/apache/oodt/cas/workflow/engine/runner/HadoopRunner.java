@@ -81,6 +81,11 @@ public class HadoopRunner extends EngineRunner {
 	public boolean hasOpenSlots(TaskInstance workflowInstance) throws Exception {
 		return true;
 	}
+	
+	@Override
+	public void shutdown() throws Exception {
+		
+	}
 
 //	public static class MapperTask extends Mapper<Object, Text, Text, File> {
 //		private Text outputFilesText = new Text("OutputFiles");
