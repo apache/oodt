@@ -390,6 +390,14 @@ public class RmiCommunicationChannelServer extends AbstractCommunicationChannelS
 			throw new RemoteException(e.getMessage(), e);
 		}
     }
+    
+    public String rmi_getPage_WithFilterAndComparator(String pageInfo, String filter, String comparator) throws RemoteException {
+		try {
+			return this.serializer.serializeObject(this.getPage(this.serializer.deserializeObject(PageInfo.class, pageInfo), this.serializer.deserializeObject(PageFilter.class, filter), this.serializer.deserializeObject(Comparator.class, comparator)));
+		}catch (Exception e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
+    }
      
     public String rmi_getPage_WithState(String pageInfo, String state) throws RemoteException {
 		try {

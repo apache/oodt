@@ -92,6 +92,10 @@ public interface XmlRpcCommunicationServerInterface {
 
     public String xmlrpc_getPage(String pageInfo) throws Exception;
 
+    public String xmlrpc_getPage_filtered(String pageInfo, String pageFilter) throws Exception;
+
+    public String xmlrpc_getPageWithFilterAndComparator(String pageInfo, String pageFilter, String comparator) throws Exception;
+
     public String xmlrpc_getPage2(String pageInfo, String comparator) throws Exception;
          
     public String xmlrpc_getPage3(String pageInfo, String state) throws Exception;

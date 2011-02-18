@@ -130,6 +130,8 @@ public interface WorkflowEngine {
     public QueuePage getPage(PageInfo pageInfo, PageFilter filter) throws EngineException;
 
     public QueuePage getPage(PageInfo pageInfo, Comparator<ProcessorStub> comparator) throws EngineException;
+
+    public QueuePage getPage(PageInfo pageInfo, PageFilter filter, Comparator<ProcessorStub> comparator) throws EngineException;
      
     public QueuePage getPage(PageInfo pageInfo, WorkflowState state) throws EngineException;
 

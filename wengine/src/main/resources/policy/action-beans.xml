@@ -43,7 +43,7 @@
 		</property>
 	</bean>
 	<bean id="GetPage" parent="PagedAction" lazy-init="true" class="org.apache.oodt.cas.workflow.server.action.GetPage">
-		<property name="description" value="Gets a page of workflows that match filter criteria"/>
+		<property name="description" value="Gets a page of workflows that match filter criteria and sort by given comparator"/>
 		<property name="preConditions">
 			<list>
 				<ref bean="EnsureServerFullyLoaded"/>
@@ -73,14 +73,6 @@
 	</bean>
 	<bean id="GetExecutingPage" parent="PagedAction" lazy-init="true" class="org.apache.oodt.cas.workflow.server.action.GetExecutingPage">
 		<property name="description" value="Returns a page of executing Workflow Task Processors"/>
-	</bean>
-	<bean id="GetSortedPage" parent="PagedAction" lazy-init="true" class="org.apache.oodt.cas.workflow.server.action.GetSortedPage">
-		<property name="description" value="Returns a sorted results page of Workflow Processors"/>
-		<property name="preConditions">
-			<list>
-				<ref bean="EnsureServerFullyLoaded"/>
-			</list>
-		</property>
 	</bean>
 	<bean id="GetPercentLoaded" lazy-init="true" class="org.apache.oodt.cas.workflow.server.action.GetPercentLoaded">
 		<property name="description" value="Returns percent of loaded Workflow Processors"/>

@@ -39,6 +39,7 @@ import org.apache.oodt.cas.workflow.state.waiting.WaitingOnResourcesState;
 import org.apache.oodt.cas.workflow.util.WorkflowUtils;
 
 //JDK imports
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -392,6 +393,28 @@ public class QueueManager {
 			});
 		}
 		return new QueuePage(this.getProcessedPageInfo(pageInfo, sortedCachedWPs.size()), this.getPage(pageInfo, sortedCachedWPs), comparator);
+    }
+    
+    public QueuePage getPage(PageInfo pageInfo, PageFilter filter, Comparator<ProcessorStub> comparator) {
+    	Vector<CachedWorkflowProcessor> acceptedWPs = new Vector<CachedWorkflowProcessor>();
+    	Vector<CachedWorkflowProcessor> cachedWPs = null;
+    	synchronized(processorQueue) {
+    		cachedWPs = new Vector<CachedWorkflowProcessor>(this.processorQueue.values());
+    	}
+		if (filter != null) 
+			for (CachedWorkflowProcessor cachedWP : cachedWPs) 
+				if (filter.accept(cachedWP.getStub(), cachedWP.getCachedMetadata()))
+					acceptedWPs.add(cachedWP);
+		if (comparator != null) {
+			final Comparator<ProcessorStub> comparatorFinal = comparator;
+			Collections.sort(cachedWPs, new Comparator<CachedWorkflowProcessor>() {
+				public int compare(CachedWorkflowProcessor o1,
+						CachedWorkflowProcessor o2) {
+					return comparatorFinal.compare(o1.getStub(), o2.getStub());
+				}
+			});
+		}
+		return new QueuePage(this.getProcessedPageInfo(pageInfo, acceptedWPs.size()), this.getPage(pageInfo, acceptedWPs), Arrays.asList(filter, comparator));
     }
 	
 	public QueuePage getPage(PageInfo pageInfo, WorkflowState state) {

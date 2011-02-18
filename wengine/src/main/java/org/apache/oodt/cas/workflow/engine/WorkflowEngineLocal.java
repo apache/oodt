@@ -412,6 +412,10 @@ public class WorkflowEngineLocal implements WorkflowEngine {
     	return this.queueManager.getPage(pageInfo, comparator);
     }
     
+    public QueuePage getPage(PageInfo pageInfo, PageFilter filter, Comparator<ProcessorStub> comparator) throws EngineException {
+    	return this.queueManager.getPage(pageInfo, filter, comparator);
+    }
+    
     public QueuePage getPage(PageInfo pageInfo, WorkflowState state) throws EngineException {
     	return this.queueManager.getPage(pageInfo, state);
     }
@@ -439,6 +443,8 @@ public class WorkflowEngineLocal implements WorkflowEngine {
 			return this.getPage(new PageInfo(page.getPageInfo().getPageSize(), page.getPageInfo().getPageNum() + 1), (WorkflowState.Category) page.getFilter());
 		else if (page.getFilter() instanceof String)
 			return this.getPage(new PageInfo(page.getPageInfo().getPageSize(), page.getPageInfo().getPageNum() + 1), (String) page.getFilter());
+		else if (page.getFilter() instanceof List)
+			return this.getPage(new PageInfo(page.getPageInfo().getPageSize(), page.getPageInfo().getPageNum() + 1), (PageFilter) ((List) page.getFilter()).get(0), (Comparator<ProcessorStub>) ((List) page.getFilter()).get(1));
 		else
 			return this.getPage(new PageInfo(page.getPageInfo().getPageSize(), page.getPageInfo().getPageNum() + 1));
 	}

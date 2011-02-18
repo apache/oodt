@@ -132,6 +132,8 @@ public interface CommunicationChannelServer {
     
     public QueuePage getPage(PageInfo pageInfo, Comparator<ProcessorStub> comparator) throws Exception;
      
+    public QueuePage getPage(PageInfo pageInfo, PageFilter filter, Comparator<ProcessorStub> comparator) throws Exception;
+
     public QueuePage getPage(PageInfo pageInfo, WorkflowState state) throws Exception;
 
     public QueuePage getPage(PageInfo pageInfo, WorkflowState.Category category) throws Exception;

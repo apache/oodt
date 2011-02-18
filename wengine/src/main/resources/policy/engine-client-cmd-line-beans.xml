@@ -262,7 +262,6 @@
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="PagedQuery"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetRunnablesPage"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetExecutingPage"/>
-						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetSortedPage"/>
 					</list>
 				</property>
 			</bean>
@@ -285,7 +284,6 @@
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="PagedQuery"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetRunnablesPage"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetExecutingPage"/>
-						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetSortedPage"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetStatusByState"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetStatusByCategory"/>
 					</list>
@@ -377,7 +375,7 @@
 			<bean class="org.apache.oodt.commons.option.handler.CmdLineOptionBeanHandler">
 				<property name="applyToBeans">
 					<list>
-						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetSortedPage"/>
+						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetPage"/>
 					</list>
 				</property>
 			</bean>
@@ -417,7 +415,7 @@
 					<property name="requireAllValues" value="false"/>
 					<property name="optionValues">
 						<list>
-							<value>GetSortedPage</value>                        
+							<value>GetPage</value>                        
 						</list>
 					</property>
 				</bean>
@@ -427,7 +425,7 @@
 			<bean class="org.apache.oodt.commons.option.handler.CmdLineOptionBeanHandler">
 				<property name="applyToBeans">
 					<list>
-						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetSortedPage"/>
+						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetPage"/>
 					</list>
 				</property>
 			</bean>

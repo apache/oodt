@@ -381,6 +381,14 @@ public class WorkflowEngineClient implements WorkflowEngine {
 		}
     }
 
+    public QueuePage getPage(PageInfo pageInfo, PageFilter filter, Comparator<ProcessorStub> comparator) throws EngineException {
+		try {
+			return this.client.getPage(pageInfo, filter, comparator);
+		}catch (Exception e) {
+			throw new EngineException(e);
+		}
+    }
+    
     public QueuePage getPage(PageInfo pageInfo, WorkflowState state) throws EngineException {
 		try {
 			return this.client.getPage(pageInfo, state);

@@ -132,6 +132,11 @@ public class MultiCommunicationChannelClient extends
 			Comparator<ProcessorStub> comparator) throws Exception {
 		return useClient.getPage(pageInfo, comparator);
 	}
+	
+	public QueuePage getPage(PageInfo pageInfo, PageFilter filter,
+			Comparator<ProcessorStub> comparator) throws Exception {
+		return useClient.getPage(pageInfo, filter, comparator);
+	}
 
 	public QueuePage getPage(PageInfo pageInfo, WorkflowState state)
 			throws Exception {

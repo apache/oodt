@@ -350,6 +350,14 @@ public class XmlRpcCommunicationChannelClient extends
 		args.add(this.serializer.serializeObject(comparator));
 		return this.serializer.deserializeObject(QueuePage.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getPage2", args));
     }
+    
+    public QueuePage getPage(PageInfo pageInfo, PageFilter filter, Comparator<ProcessorStub> comparator) throws Exception {
+		Vector<Object> args = new Vector<Object>();
+		args.add(this.serializer.serializeObject(pageInfo));
+		args.add(this.serializer.serializeObject(filter));
+		args.add(this.serializer.serializeObject(comparator));
+		return this.serializer.deserializeObject(QueuePage.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getPageWithFilterAndComparator", args));
+    }
      
     public QueuePage getPage(PageInfo pageInfo, WorkflowState state) throws Exception {
 		Vector<Object> args = new Vector<Object>();

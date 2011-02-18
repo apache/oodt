@@ -215,6 +215,10 @@ public class XmlRpcCommunicationChannelServer extends
     	return this.serializer.serializeObject(this.getPage(this.serializer.deserializeObject(PageInfo.class, pageInfo)));
     }
 
+    public String xmlrpc_getPageWithFilterAndComparator(String pageInfo, String pageFilter, String comparator) throws Exception {
+    	return this.serializer.serializeObject(this.getPage(this.serializer.deserializeObject(PageInfo.class, pageInfo), this.serializer.deserializeObject(PageFilter.class, pageFilter), this.serializer.deserializeObject(Comparator.class, comparator)));
+    }
+    
     public String xmlrpc_getPage_filtered(String pageInfo, String pageFilter) throws Exception {
     	return this.serializer.serializeObject(this.getPage(this.serializer.deserializeObject(PageInfo.class, pageInfo), this.serializer.deserializeObject(PageFilter.class, pageFilter)));
     }

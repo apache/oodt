@@ -210,6 +210,10 @@ public class RmiCommunicationChannelClient extends
     public QueuePage getPage(PageInfo pageInfo, Comparator<ProcessorStub> comparator) throws Exception {
 		return this.serializer.deserializeObject(QueuePage.class, this.getRmiServer().rmi_getPage_WithComparator(this.serializer.serializeObject(pageInfo), this.serializer.serializeObject(comparator)));
     }
+    
+    public QueuePage getPage(PageInfo pageInfo, PageFilter filter, Comparator<ProcessorStub> comparator) throws Exception {
+		return this.serializer.deserializeObject(QueuePage.class, this.getRmiServer().rmi_getPage_WithFilterAndComparator(this.serializer.serializeObject(pageInfo), this.serializer.serializeObject(filter), this.serializer.serializeObject(comparator)));
+    }
      
     public QueuePage getPage(PageInfo pageInfo, WorkflowState state) throws Exception {
 		return this.serializer.deserializeObject(QueuePage.class, this.getRmiServer().rmi_getPage_WithState(this.serializer.serializeObject(pageInfo), this.serializer.serializeObject(state)));

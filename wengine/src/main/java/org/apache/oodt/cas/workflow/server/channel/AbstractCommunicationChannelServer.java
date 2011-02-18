@@ -416,6 +416,15 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 			throw new Exception("Failed to get page '" + pageInfo + "' with comparator '" + comparator + "' from engine : " + e.getMessage(), e);
 		}
     }
+    
+    public QueuePage getPage(PageInfo pageInfo, PageFilter filter, Comparator<ProcessorStub> comparator) throws Exception {
+    	try {
+    		return this.workflowEngine.getPage(pageInfo, filter, comparator);
+		}catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to get page '" + pageInfo + "' with filter '" + filter + "' and comparator '" + comparator + "' from engine : " + e.getMessage(), e);
+			throw new Exception("Failed to get page '" + pageInfo + "' with filter '" + filter + "' and comparator '" + comparator + "' from engine : " + e.getMessage(), e);
+		}	
+    }
      
     public QueuePage getPage(PageInfo pageInfo, WorkflowState state) throws Exception {
     	try {

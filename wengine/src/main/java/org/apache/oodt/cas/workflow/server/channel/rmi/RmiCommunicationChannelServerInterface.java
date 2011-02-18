@@ -100,7 +100,9 @@ public interface RmiCommunicationChannelServerInterface extends Remote {
     public String rmi_getPage_WithFilter(String pageInfo, String filter) throws RemoteException;
     
     public String rmi_getPage_WithComparator(String pageInfo, String comparator) throws RemoteException;
-     
+
+    public String rmi_getPage_WithFilterAndComparator(String pageInfo, String filter, String comparator) throws RemoteException;
+
     public String rmi_getPage_WithState(String pageInfo, String state) throws RemoteException ;
 
     public String rmi_getPage_WithCategory(String pageInfo, String category) throws RemoteException;
