@@ -30,7 +30,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngineLocal;
 import org.apache.oodt.cas.workflow.page.QueuePage;
 import org.apache.oodt.cas.workflow.processor.ProcessorStub;
-import org.apache.oodt.cas.workflow.server.action.GetSortedPage;
+import org.apache.oodt.cas.workflow.server.action.GetPage;
 import org.apache.oodt.cas.workflow.state.done.SuccessState;
 
 /**
@@ -49,7 +49,7 @@ public class GeneratePerformanceReport extends WorkflowEngineEvent {
 			throws Exception {
 		Report overallReport = new Report();
 		HashMap<String, Report> workflowBasedReports = new HashMap<String, Report>();
-		QueuePage firstWorkflow = engine.getPage(new PageInfo(1, PageInfo.FIRST_PAGE), GetSortedPage.COMPARATOR.CreationDate.getComparator());
+		QueuePage firstWorkflow = engine.getPage(new PageInfo(1, PageInfo.FIRST_PAGE), GetPage.COMPARATOR.CreationDate.getComparator());
 		QueuePage page = engine.getPage(new PageInfo(Integer.MAX_VALUE, PageInfo.FIRST_PAGE), new SuccessState(""));
 		for (ProcessorStub stub : page.getStubs()) {
 			long runtime = (stub.getProcessorInfo().getCompletionDate().getTime() - stub.getProcessorInfo().getCreationDate().getTime()) / 1000 / 60;

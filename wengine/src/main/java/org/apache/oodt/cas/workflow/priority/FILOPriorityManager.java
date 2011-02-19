@@ -22,7 +22,7 @@ import java.util.List;
 
 //OODT imports
 import org.apache.oodt.cas.workflow.processor.ProcessorStub;
-import org.apache.oodt.cas.workflow.server.action.GetSortedPage;
+import org.apache.oodt.cas.workflow.server.action.GetPage;
 
 /**
  * 
@@ -36,7 +36,7 @@ import org.apache.oodt.cas.workflow.server.action.GetSortedPage;
 public class FILOPriorityManager implements PriorityManager {
 
 	public void sort(List<ProcessorStub> canadates) {
-		Collections.sort(canadates, GetSortedPage.COMPARATOR.CreationDate.getComparator());
+		Collections.sort(canadates, GetPage.COMPARATOR.CreationDate.getComparator());
 	}
 
 }
