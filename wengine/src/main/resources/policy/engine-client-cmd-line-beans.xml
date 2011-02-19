@@ -552,7 +552,7 @@
         <property name="required" value="false"/>
         <property name="performAndQuit" value="true"/>
         <property name="handler">
-        	<bean class="org.apache.oodt.workflow.server.option.PrintSupportedActionsHandler">
+        	<bean class="org.apache.oodt.cas.workflow.server.option.PrintSupportedActionsHandler">
             	<property name="beanRepo" value="/${pcs.home}/core/workflow/policy/engine-client-config.xml"/>
             </bean>
         </property>
@@ -566,7 +566,7 @@
         <property name="required" value="false"/>
         <property name="performAndQuit" value="true"/>
         <property name="handler">
-        	<bean class="org.apache.oodt.workflow.server.option.PrintSupportedClientsHandler">
+        	<bean class="org.apache.oodt.cas.workflow.server.option.PrintSupportedClientsHandler">
                 <property name="beanRepo" value="/${pcs.home}/core/workflow/policy/engine-client-config.xml"/>
             </bean>
         </property>
