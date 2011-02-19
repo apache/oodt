@@ -73,8 +73,6 @@ public class PedigreeResource extends PCSService {
         .safeGetProductByName(filename), true);
     PedigreeTree downstreamTree = this.trace.doPedigree(this.fm
         .safeGetProductByName(filename), false);
-    upstreamTree.printPedigreeTree();
-    downstreamTree.printPedigreeTree();
     return this.encodePedigreeAsJson(upstreamTree, downstreamTree);
   }
 
