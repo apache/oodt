@@ -159,7 +159,13 @@ public class Pedigree implements PCSMetadata, PCSConfigMetadata {
    *         {@link Product}.
    */
   public List getUpstreamPedigreedProducts(Product orig) {
-    if (orig.getProductType().getName().equals(UNKNOWN)) {
+    if (orig == null
+        || (orig != null && orig.getProductType() == null)
+        || (orig != null && orig.getProductType() != null 
+            && orig.getProductType().getName() == null)
+        || (orig != null && orig.getProductType() != null
+            && orig.getProductType().getName() != null && 
+            orig.getProductType().getName().equals(UNKNOWN))) {
       return new Vector();
     }
     Metadata pMet = fm.safeGetMetadata(orig);
