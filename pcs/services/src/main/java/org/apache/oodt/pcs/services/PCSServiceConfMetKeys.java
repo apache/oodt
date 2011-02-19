@@ -40,5 +40,7 @@ public interface PCSServiceConfMetKeys {
   public static final String PCS_HEALTH_WORKFLOW_STATUS_PATH = "org.apache.oodt.pcs.health.workflow.statuses.filePath";
 
   public static final String PCS_TRACE_ENABLE_NON_CAT = "org.apache.oodt.pcs.trace.enableNonCat";
+  
+  public static final String PCS_TRACE_PTYPE_EXCLUDE_LIST = "org.apache.oodt.pcs.trace.productTypeExcludeList";
 
 }

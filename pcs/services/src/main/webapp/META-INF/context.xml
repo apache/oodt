@@ -37,5 +37,8 @@ the License.
 	    
 	<Parameter name="org.apache.oodt.pcs.trace.enableNonCat"
 	    value="true"/>
+	    
+	<Parameter name="org.apache.oodt.pcs.trace.productTypeExcludeList"
+	    value="TypeName1,TypeName2"/>
 
 </Context>

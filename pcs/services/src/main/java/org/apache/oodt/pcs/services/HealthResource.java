@@ -31,10 +31,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 //JSON imports
 import net.sf.json.JSONObject;
@@ -388,18 +384,5 @@ public class HealthResource extends PCSService {
     output.put("url", status.getUrlStr());
     output.put("status", status.getStatus());
     return output;
-  }
-
-  private class ResourceNotFoundException extends WebApplicationException {
-
-    public ResourceNotFoundException() {
-      super(Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN)
-          .build());
-    }
-
-    public ResourceNotFoundException(String msg) {
-      super(Response.status(Status.NOT_FOUND).entity(msg).type(
-          MediaType.TEXT_PLAIN).build());
-    }
   }
 }

@@ -17,9 +17,16 @@
 
 package org.apache.oodt.pcs.services;
 
+//JDK imports
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+
+//JAX-RS imports
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 /**
  *
@@ -45,6 +52,20 @@ public class PCSService extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     conf = new PCSServiceConfig(config);
+  }
+  
+
+  protected class ResourceNotFoundException extends WebApplicationException {
+
+    public ResourceNotFoundException() {
+      super(Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+
+    public ResourceNotFoundException(String msg) {
+      super(Response.status(Status.NOT_FOUND).entity(msg).type(
+          MediaType.TEXT_PLAIN).build());
+    }
   }
 
 }

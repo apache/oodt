@@ -57,7 +57,6 @@ public class XMLTest extends TestCase {
 		assertEquals("log", doc.getDocumentElement().getTagName());
 		java.util.zip.CRC32 crc = new java.util.zip.CRC32();
 		String result = XML.serialize(doc);
-		System.err.println("FUCK YOU: " + result);
 		crc.update(result.getBytes());
 		long value = crc.getValue();
 		assertTrue("Stringified DOM document CRC mismatch, got value = " + value, 3880488030L == value || 2435419114L == value || /* added by Chris Mattmann: pretty print fix */3688328384L == value || /* other newline treatment */ 750262163L == value || 3738296466L == value /* Apache incubator warmed up the file, so it suffered thermal expansion */);

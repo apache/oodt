@@ -104,6 +104,14 @@ public class PCSServiceConfig implements PCSServiceConfMetKeys {
   public boolean isTraceNotCatalogedFiles() {
     return Boolean.valueOf(this.parameters.get(PCS_TRACE_ENABLE_NON_CAT));
   }
+  
+  /**
+   * @return The comma-separated list of product types to exclude from
+   * pedigree tracking.
+   */
+  public String getTraceProductTypeExcludeList(){
+    return PathUtils.replaceEnvVariables(this.parameters.get(PCS_TRACE_PTYPE_EXCLUDE_LIST));
+  }
 
   @SuppressWarnings("unchecked")
   private void readContextParams(ServletConfig config) {
