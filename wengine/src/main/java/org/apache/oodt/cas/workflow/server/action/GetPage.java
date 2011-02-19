@@ -52,7 +52,8 @@ public class GetPage extends FilteredAction {
 	@Override
 	public void performAction(WorkflowEngineClient weClient) throws Exception {
 		PageInfo pageInfo = new PageInfo(pageSize, pageNum);
-		QueuePage page = weClient.getPage(pageInfo, this.createFilter(weClient), this.reverse ? Collections.reverseOrder(this.comparator.getComparator()) : this.comparator.getComparator());
+		Comparator<ProcessorStub> cmpr = this.comparator != null ? (this.reverse ? Collections.reverseOrder(this.comparator.getComparator()) : this.comparator.getComparator()) : null;
+		QueuePage page = weClient.getPage(pageInfo, this.createFilter(weClient), cmpr);
 		System.out.println("Workflows " + getFilterAsString() + " (Page: " + page.getPageInfo().getPageNum() + "/" + page.getPageInfo().getTotalPages() +  "; Total: " + page.getPageInfo().getNumOfHits() + "):");
 		for (ProcessorStub stub : page.getStubs()) {
 			System.out.print("  - InstanceId = '" + stub.getInstanceId() + "', ModelId = '" + stub.getModelId() +"', State = '" + stub.getState().getName() + "'");
