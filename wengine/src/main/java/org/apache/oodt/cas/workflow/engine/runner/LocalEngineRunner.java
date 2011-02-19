@@ -18,6 +18,7 @@ package org.apache.oodt.cas.workflow.engine.runner;
 
 //OODT imports
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,6 +47,7 @@ public class LocalEngineRunner extends EngineRunner {
 		this.numOfSlots = numOfSlots;
 		this.cacheSize = cacheSize;
 		if (this.cacheSize > 0) {
+			cache = new Vector<TaskInstance>();
 			new Thread(new Runnable() {
 				public void run() {
 					while (running) {
