@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.pcs.services;
+package org.apache.oodt.pcs.services.config;
 
 //JDK imports
 import java.net.MalformedURLException;

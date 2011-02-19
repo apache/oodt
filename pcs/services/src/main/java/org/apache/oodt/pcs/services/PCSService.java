@@ -28,6 +28,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+//OODT imports
+import org.apache.oodt.pcs.services.config.PCSServiceConfig;
+
+
 /**
  *
  * Base class for PCS JAX-RS services. Loads up 
