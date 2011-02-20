@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-130 Fixed mailing list links for CAS Components maven generated site pages (goodale)
+
 * OODT-144 ExternAction for crawler which executes some external command (bfoster)
 
 * OODT-143 addition of fmprod context.xml and maven servlet-api 
