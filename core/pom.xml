@@ -31,7 +31,7 @@ the License.
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-    <url>http://incubator.apache.org/oodt/${project.artifactId}</url>
+    <url>http://oodt.apache.org/</url>
     <issueManagement>
         <system>JIRA</system>
         <url>https://issues.apache.org/jira/browse/OODT</url>
@@ -73,22 +73,22 @@ the License.
     <mailingLists>
         <mailingList>
               <name>dev</name>
-              <subscribe>oodt-dev-subscribe@incubator.apache.org</subscribe>
-              <unsubscribe>oodt-dev-unsubscribe@incubator.apache.org</unsubscribe>
-              <post>oodt-dev@incubator.apache.org</post>
-              <archive>http://mail-archives.apache.org/mod_mbox/incubator-oodt-dev/</archive>
+              <subscribe>dev-subscribe@oodt.apache.org</subscribe>
+              <unsubscribe>dev-unsubscribe@oodt.apache.org</unsubscribe>
+              <post>dev@oodt.apache.org</post>
+              <archive>http://mail-archives.apache.org/mod_mbox/oodt-dev/</archive>
         </mailingList>
         <mailingList>
               <name>commits</name>
-              <subscribe>oodt-commits-subscribe@incubator.apache.org</subscribe>
-              <unsubscribe>oodt-commits-unsubscribe@incubator.apache.org</unsubscribe>
-              <archive>http://mail-archives.apache.org/mod_mbox/incubator-oodt-commits/</archive>
+              <subscribe>commits-subscribe@oodt.apache.org</subscribe>
+              <unsubscribe>commits-unsubscribe@oodt.apache.org</unsubscribe>
+              <archive>http://mail-archives.apache.org/mod_mbox/oodt-commits/</archive>
         </mailingList>
         <mailingList>
               <name>private</name>
-              <subscribe>oodt-private-subscribe@incubator.apache.org</subscribe>
-              <unsubscribe>oodt-private-unsubscribe@incubator.apache.org</unsubscribe>
-              <post>oodt-private@incubator.apache.org</post>
+              <subscribe>private-subscribe@oodt.apache.org</subscribe>
+              <unsubscribe>private-unsubscribe@oodt.apache.org</unsubscribe>
+              <post>private@oodt.apache.org</post>
         </mailingList>
     </mailingLists>
     <developers>
@@ -241,14 +241,14 @@ the License.
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/oodt/trunk/${project.artifactId}</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/${project.artifactId}</developerConnection>
-        <url>http://svn.apache.org/viewvc/oodt/trunk/${project.artifactId}/</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/oodt/trunk/</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/</developerConnection>
+        <url>http://svn.apache.org/viewvc/oodt/trunk/</url>
         <tag>HEAD</tag>
     </scm>
     <organization>
-        <name>Apache Incubator</name>
-        <url>http://incubator.apache.org/</url>
+        <name>Apache OODT</name>
+        <url>http://oodt.apache.org/</url>
     </organization>
     <build>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
