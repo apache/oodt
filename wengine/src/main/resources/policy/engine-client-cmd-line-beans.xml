@@ -407,20 +407,7 @@
 		<property name="description" value="Comparator Name"/>
 		<property name="hasArgs" value="true"/>
 		<property name="optionArgName" value="CreationDate|ExecutionDate|CompletionDate|AliveTime"/>
-		<property name="required" value="false"/>				
-		<property name="requiredOptions">
-			<list>
-				<bean class="org.apache.oodt.commons.option.required.RequiredOption">
-					<property name="optionLongName" value="action"/>
-					<property name="requireAllValues" value="false"/>
-					<property name="optionValues">
-						<list>
-							<value>GetPage</value>                        
-						</list>
-					</property>
-				</bean>
-			</list>
-		</property>	
+		<property name="required" value="false"/>
 		<property name="handler">
 			<bean class="org.apache.oodt.commons.option.handler.CmdLineOptionBeanHandler">
 				<property name="applyToBeans">
