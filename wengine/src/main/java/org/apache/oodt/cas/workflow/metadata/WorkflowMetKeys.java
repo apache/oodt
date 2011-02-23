@@ -36,6 +36,8 @@ public interface WorkflowMetKeys {
 
 	public static final String STATE = "State";
 
+	public static final String CATEGORY = "Category";
+
 	public static final String PRIORITY = "Priority";
 
 	public static final String HOST = "Host";
