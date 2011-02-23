@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-145 StreamGobbler stopGobblingAndDie() method doesn't wait 
+  until gobble is really dead (bfoster)
+
 * OODT-112 Link to slides on web-grid Maven page is broke (mattmann, goodale)
 
 * OODT-130 Fixed mailing list links for CAS Components maven generated site pages (goodale)
