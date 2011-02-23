@@ -50,8 +50,7 @@
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="TriggerEvent" p:methodName="replaceInputMetadata"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="StartWorkflow" p:methodName="replaceInputMetadata"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="MultiStartWorkflowByDate" p:methodName="replaceInputMetadata"/>
-						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetPage" p:methodName="replaceFilterMetadata"/>		
-										
+						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetPage" p:methodName="replaceFilterMetadata"/>			
 					</list>
 				</property>
 			</bean>

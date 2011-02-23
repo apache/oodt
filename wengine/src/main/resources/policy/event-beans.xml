@@ -55,6 +55,15 @@
 		</property>
 	</bean>
 	
+	<bean id="DeleteWorkflowsByFilter" lazy-init="true" class="org.apache.oodt.cas.workflow.event.DeleteWorkflowsByFilter">
+		<property name="description" value="Delete workflows by filter -- State, Category, ModelId, and any other cached workflow metadata field can be specified"/>
+		<property name="preConditions">
+			<list>
+				<ref bean="EnsureServerFullyLoaded"/>
+			</list>
+		</property>
+	</bean>
+	
 	<bean id="GeneratePerformanceReport" lazy-init="true" class="org.apache.oodt.cas.workflow.event.GeneratePerformanceReport">
 		<property name="description" value="Generates Workflow Performace Report"/>
 		<property name="reportFile" value="${pcs.support.home}/performance/report.txt"/>
