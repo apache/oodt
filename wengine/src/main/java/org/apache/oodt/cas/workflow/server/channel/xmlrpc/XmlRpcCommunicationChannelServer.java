@@ -250,6 +250,10 @@ public class XmlRpcCommunicationChannelServer extends
 	public String xmlrpc_getWorkflow(String instanceId) throws Exception {
 		return this.serializer.serializeObject(this.getWorkflow(instanceId));
 	}
+	
+	public String xmlrpc_getWorkflowState(String instanceId) throws Exception {
+		return this.serializer.serializeObject(this.getWorkflowState(instanceId));
+	}
 
 	public String xmlrpc_getMetadata(String page) throws Exception {
 		return this.serializer.serializeObject(this.getMetadata(this.serializer.deserializeObject(QueryPage.class, page)));

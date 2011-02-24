@@ -191,6 +191,15 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 		}
     }
     
+    public WorkflowState getWorkflowState(String instanceId) throws Exception {
+		try {
+			return this.workflowEngine.getWorkflowState(instanceId);
+		}catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to get workflow state [instanceid='" + instanceId  + "'] from engine : " + e.getMessage(), e);
+			throw new Exception("Failed to get workflow state [instanceid='" + instanceId  + "'] from engine : " + e.getMessage(), e);
+		}
+    }
+    
 	public Metadata getWorkflowMetadata(String instanceId,
 			String modelId) throws Exception {
 		try {

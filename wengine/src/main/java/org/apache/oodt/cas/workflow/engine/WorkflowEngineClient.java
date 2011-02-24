@@ -167,9 +167,16 @@ public class WorkflowEngineClient implements WorkflowEngine {
 		try {
 			return this.client.getProcessorInfo(instanceId, modelId);
 		}catch (Exception e) {
-			e.printStackTrace();
-			return null;
+			throw new EngineException(e);
 		}
+    }
+    
+    public WorkflowState getWorkflowState(String instanceId) throws EngineException {
+    	try {
+    		return this.client.getWorkflowState(instanceId);
+    	}catch (Exception e) {
+			throw new EngineException(e);
+    	}
     }
 	
 	public Metadata getWorkflowMetadata(String instanceId,

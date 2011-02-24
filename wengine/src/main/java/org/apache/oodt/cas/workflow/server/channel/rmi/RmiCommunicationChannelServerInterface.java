@@ -121,4 +121,6 @@ public interface RmiCommunicationChannelServerInterface extends Remote {
 	
 	public String rmi_getMetadata(String page) throws RemoteException;
 	
+	public String rmi_getWorkflowState(String instanceId) throws RemoteException;
+	
 }

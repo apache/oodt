@@ -239,6 +239,14 @@ public class RmiCommunicationChannelServer extends AbstractCommunicationChannelS
 		}
     }
 
+    public String rmi_getWorkflowState(String instanceId) throws RemoteException {
+		try {
+			return this.serializer.serializeObject(this.rmi_getWorkflowState(instanceId));
+		}catch (Exception e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
+    }
+    
     public String rmi_getInstanceRepository() throws RemoteException {
 		try {
 			return this.serializer.serializeObject(this.getInstanceRepository());

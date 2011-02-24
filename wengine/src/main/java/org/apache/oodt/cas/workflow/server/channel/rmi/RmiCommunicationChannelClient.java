@@ -163,6 +163,10 @@ public class RmiCommunicationChannelClient extends
 		return this.serializer.deserializeObject(Metadata.class, this.getRmiServer().rmi_getWorkflowMetadata(instanceId, modelId));
     }
     
+    public WorkflowState getWorkflowState(String instanceId) throws Exception {
+		return this.serializer.deserializeObject(WorkflowState.class, this.getRmiServer().rmi_getWorkflowState(instanceId));
+    }
+    
     public Metadata getInstanceMetadata(String jobId) throws Exception {
 		return this.serializer.deserializeObject(Metadata.class, this.getRmiServer().rmi_getInstanceMetadata(jobId));
     }

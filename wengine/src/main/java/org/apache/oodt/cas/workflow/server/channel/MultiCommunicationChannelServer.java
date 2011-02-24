@@ -37,10 +37,5 @@ public class MultiCommunicationChannelServer extends
 		for (CommunicationChannelServer server : servers) 
 			server.startup();
 	}
-	
-//	public void shutdown() throws Exception {
-//		for (CommunicationChannelServer server : servers)
-//			server.shutdown();
-//	}
 
 }

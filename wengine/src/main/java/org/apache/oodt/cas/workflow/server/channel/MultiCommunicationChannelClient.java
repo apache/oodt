@@ -192,6 +192,10 @@ public class MultiCommunicationChannelClient extends
 		return useClient.getWorkflowGraph(modelId);
 	}
 
+    public WorkflowState getWorkflowState(String instanceId) throws Exception {
+    	return useClient.getWorkflowState(instanceId);
+	}
+	
 	public List<WorkflowGraph> getWorkflowGraphs() throws Exception {
 		return useClient.getWorkflowGraphs();
 	}

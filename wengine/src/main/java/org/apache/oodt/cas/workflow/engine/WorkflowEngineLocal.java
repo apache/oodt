@@ -456,6 +456,10 @@ public class WorkflowEngineLocal implements WorkflowEngine {
     	return this.queueManager.getWorkflowProcessor(instanceId).getSkeleton();
     }
 
+    public WorkflowState getWorkflowState(String instanceId) throws EngineException {
+    	return this.queueManager.getWorkflowProcessor(instanceId).getState();
+    }
+    
 	public QueryPage getNextPage(QueryPage page) throws EngineException {
 		try {
 			return this.instanceRepo.getNextPage(page);

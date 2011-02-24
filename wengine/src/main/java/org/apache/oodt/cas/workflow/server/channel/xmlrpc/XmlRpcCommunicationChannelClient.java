@@ -186,6 +186,12 @@ public class XmlRpcCommunicationChannelClient extends
 		return this.serializer.deserializeObject(Metadata.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getWorkflowMetadata", args));
 	}
 
+    public WorkflowState getWorkflowState(String instanceId) throws Exception {
+		Vector<Object> args = new Vector<Object>();
+		args.add(instanceId);
+		return this.serializer.deserializeObject(WorkflowState.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getWorkflowState", args));
+    }
+    
 	public void pauseWorkflow(String instanceId)
 			throws Exception {
 		Vector<Object> args = new Vector<Object>();

@@ -146,6 +146,8 @@ public interface CommunicationChannelServer {
 
     public ProcessorSkeleton getWorkflow(String instanceId) throws Exception;
  
+    public WorkflowState getWorkflowState(String instanceId) throws Exception;
+
 	public QueryPage getNextPage(QueryPage page) throws Exception;
 	
 	public QueryPage getPage(PageInfo pageInfo, QueryExpression queryExpression) throws Exception;

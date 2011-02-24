@@ -50,6 +50,8 @@ public interface XmlRpcCommunicationServerInterface {
 
     public String xmlrpc_getProcessorInfo(String instanceId, String modelId) throws Exception;
 	
+	public String xmlrpc_getWorkflowState(String instanceId) throws Exception;
+	
 	public String xmlrpc_getWorkflowMetadata(String instanceId, String modelId) throws Exception;
 
 	public String xmlrpc_pauseWorkflow(String instanceId) throws Exception;

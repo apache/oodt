@@ -145,6 +145,8 @@ public interface WorkflowEngine {
 
     public ProcessorSkeleton getWorkflow(String instanceId) throws EngineException;
 
+    public WorkflowState getWorkflowState(String instanceId) throws EngineException;
+    
 	public QueryPage getNextPage(QueryPage page) throws EngineException;
 	
 	public QueryPage getPage(PageInfo pageInfo, QueryExpression queryExpression) throws EngineException;
