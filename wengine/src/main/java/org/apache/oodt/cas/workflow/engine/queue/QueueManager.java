@@ -217,12 +217,8 @@ public class QueueManager {
 		ti.setStaticMetadata(taskProcessor.getStaticMetadata());
 		ti.setModelId(taskProcessor.getModelId());
 		ti.setExecutionType(taskProcessor.getExecutionType());
-		if (taskProcessor.getJobId() == null) {
-			ti.setJobId(UUID.randomUUID().toString());
-			taskProcessor.setJobId(ti.getJobId());
-		}else {
-			ti.setJobId(taskProcessor.getJobId());
-		}
+		ti.setJobId(UUID.randomUUID().toString());
+		taskProcessor.setJobId(ti.getJobId());
 		return ti;
 	}
 	
@@ -242,6 +238,23 @@ public class QueueManager {
 			}
 		}catch (Exception e) {
 			LOG.log(Level.SEVERE, "Failed to revert state for workflow [InstanceId = '" + instanceId + "', ModelId = '" + modelId + "'] : " + e.getMessage(), e);
+		}
+	}
+	
+	public void setJobId(String instanceId, String modelId, String jobId) {
+		try {
+			CachedWorkflowProcessor cachedWP = this.processorQueue.get(instanceId);
+			if (cachedWP != null) {
+				cachedWP.uncache();
+				processorLock.lock(cachedWP.getInstanceId());
+				WorkflowProcessor wp = (modelId == null) ? cachedWP.getWorkflowProcessor() : WorkflowUtils.findProcessor(cachedWP.getWorkflowProcessor(), modelId);
+				if (wp instanceof TaskProcessor)
+					((TaskProcessor) wp).setJobId(jobId);
+				processorLock.unlock(cachedWP.getInstanceId());
+				cachedWP.cache();
+			}
+		}catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to set state for workflow [InstanceId = '" + instanceId + "', ModelId = '" + modelId + "'] : " + e.getMessage(), e);
 		}
 	}
 	
@@ -395,7 +408,7 @@ public class QueueManager {
 		return new QueuePage(this.getProcessedPageInfo(pageInfo, sortedCachedWPs.size()), this.getPage(pageInfo, sortedCachedWPs), comparator);
     }
     
-    public QueuePage getPage(PageInfo pageInfo, PageFilter filter, Comparator<ProcessorStub> comparator) {
+    public QueuePage getPage(PageInfo pageInfo, PageFilter filter, final Comparator<ProcessorStub> comparator) {
     	Vector<CachedWorkflowProcessor> acceptedWPs = new Vector<CachedWorkflowProcessor>();
     	Vector<CachedWorkflowProcessor> cachedWPs = null;
     	synchronized(processorQueue) {
@@ -406,11 +419,10 @@ public class QueueManager {
 				if (filter.accept(cachedWP.getStub(), cachedWP.getCachedMetadata()))
 					acceptedWPs.add(cachedWP);
 		if (comparator != null) {
-			final Comparator<ProcessorStub> comparatorFinal = comparator;
-			Collections.sort(cachedWPs, new Comparator<CachedWorkflowProcessor>() {
+			Collections.sort(acceptedWPs, new Comparator<CachedWorkflowProcessor>() {
 				public int compare(CachedWorkflowProcessor o1,
 						CachedWorkflowProcessor o2) {
-					return comparatorFinal.compare(o1.getStub(), o2.getStub());
+					return comparator.compare(o1.getStub(), o2.getStub());
 				}
 			});
 		}

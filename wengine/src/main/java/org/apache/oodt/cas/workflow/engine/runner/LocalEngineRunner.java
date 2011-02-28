@@ -46,8 +46,8 @@ public class LocalEngineRunner extends EngineRunner {
 	public LocalEngineRunner(int numOfSlots, int cacheSize) {
 		this.numOfSlots = numOfSlots;
 		this.cacheSize = cacheSize;
+		this.cache = new Vector<TaskInstance>();
 		if (this.cacheSize > 0) {
-			cache = new Vector<TaskInstance>();
 			new Thread(new Runnable() {
 				public void run() {
 					while (running) {

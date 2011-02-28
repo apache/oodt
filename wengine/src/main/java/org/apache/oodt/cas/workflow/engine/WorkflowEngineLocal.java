@@ -131,7 +131,10 @@ public class WorkflowEngineLocal implements WorkflowEngine {
 							nextTask = WorkflowEngineLocal.this.queueManager.getNext();
 						while (!pauseRunner && allowRunnerToWork && nextTask != null && WorkflowEngineLocal.this.runner.hasOpenSlots(nextTask)) {
 							nextTask.setNotifyEngine(WorkflowEngineLocal.this.weClient);
+							String jobId = nextTask.getJobId();
 							WorkflowEngineLocal.this.runner.execute(nextTask);
+							if (!jobId.equals(nextTask.getJobId()))
+								WorkflowEngineLocal.this.queueManager.setJobId(nextTask.getInstanceId(), nextTask.getModelId(), nextTask.getJobId());
 							nextTask = WorkflowEngineLocal.this.queueManager.getNext();
 
 							//take a breather

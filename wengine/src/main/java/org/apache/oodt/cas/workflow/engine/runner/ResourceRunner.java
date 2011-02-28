@@ -45,8 +45,8 @@ public class ResourceRunner extends EngineRunner {
 		ResourceJobInput input = new ResourceJobInput();
 		input.workflowInstance = workflowInstance;
 		Job job = new Job();
-		job.setId(workflowInstance.getJobId());
-		job.setName(workflowInstance.getModelId());
+//		job.setId(workflowInstance.getJobId());
+		job.setName(workflowInstance.getInstanceId() + ":" + workflowInstance.getModelId());
 		job.setJobInputClassName(ResourceJobInput.class.getCanonicalName());
 		job.setJobInstanceClassName(ResourceJobInstance.class.getCanonicalName());
 		Metadata m = workflowInstance.getMetadata();
@@ -58,7 +58,7 @@ public class ResourceRunner extends EngineRunner {
 			job.setQueueName(m.getMetadata(QUEUE_NAME));
 		else
 			throw new Exception("Must specify 'QueueName' for task [instanceId = '" + workflowInstance.getInstanceId() + "', modelId = '" + workflowInstance.getModelId() + "']");
-		this.rsManagerClient.submitJob(job, input);
+		workflowInstance.setJobId(this.rsManagerClient.submitJob(job, input));
 	}
 
 	@Override
