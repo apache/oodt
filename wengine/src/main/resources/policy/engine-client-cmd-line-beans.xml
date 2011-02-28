@@ -341,6 +341,7 @@
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetPage" p:methodName="showMessage"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetStatusByCategory" p:methodName="showMessage"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetStatusByState" p:methodName="showMessage"/>
+						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetExecutingPage" p:methodName="showMessage"/>						
 					</list>
 				</property>
 			</bean>

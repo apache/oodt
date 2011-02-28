@@ -34,14 +34,22 @@ public class GetExecutingPage extends WorkflowEngineServerAction {
 
 	private int pageNum;
 	private int pageSize;
+	private boolean showMessage;
+	
+	public GetExecutingPage() {
+		this.showMessage = false;
+	}
 	
 	@Override
 	public void performAction(WorkflowEngineClient weClient) throws Exception {
 		PageInfo pageInfo = new PageInfo(pageSize, pageNum);
 		RunnablesPage page = weClient.getExecutingPage(pageInfo);
 		System.out.println("Workflows (Page: " + page.getPageInfo().getPageNum() + "/" + (int) page.getPageInfo().getTotalPages() +  "; Total: " + page.getPageInfo().getNumOfHits() + "):");
-		for (ProcessorStub stub : page.getStubs()) 
+		for (ProcessorStub stub : page.getStubs()) { 
 			System.out.println("  - InstanceId = '" + stub.getInstanceId() + "', ModelId = '" + stub.getModelId() +"', State = '" + stub.getState().getName() + "'");
+			if (this.showMessage)
+				System.out.println("      (Message = '" + stub.getState().getMessage() + "')");
+		}
 		System.out.println();
 	}
 	
@@ -51,6 +59,10 @@ public class GetExecutingPage extends WorkflowEngineServerAction {
 	
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
+	}
+	
+	public void showMessage(boolean showMessage) {
+		this.showMessage = showMessage;
 	}
 	
 }
