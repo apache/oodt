@@ -156,6 +156,7 @@
 							<value>DeleteWorkflow</value>        
 							<value>ChangeWorkflowState</value>        
 							<value>ChangeWorkflowPriority</value>						
+							<value>TraceWorkflow</value>						
 						</list>
 					</property>
 				</bean>
@@ -170,6 +171,7 @@
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="DeleteWorkflow"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="ChangeWorkflowState"/>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="ChangeWorkflowPriority"/>
+						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="TraceWorkflow"/>
 					</list>
 				</property>
 			</bean>
@@ -413,6 +415,36 @@
 				<property name="applyToBeans">
 					<list>
 						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="GetPage"/>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="mode" lazy-init="true" class="org.apache.oodt.commons.option.CmdLineOption">
+		<property name="shortOption" value="md"/>
+		<property name="longOption" value="mode"/>
+		<property name="description" value="Mode Name"/>
+		<property name="hasArgs" value="true"/>
+		<property name="optionArgName" value="Complete|Relatives|Children"/>
+		<property name="requiredOptions">
+			<list>
+				<bean class="org.apache.oodt.commons.option.required.RequiredOption">
+					<property name="optionLongName" value="action"/>
+					<property name="requireAllValues" value="false"/>
+					<property name="optionValues">
+						<list>
+							<value>TraceWorkflow</value>                        
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>	
+		<property name="handler">
+			<bean class="org.apache.oodt.commons.option.handler.CmdLineOptionBeanHandler">
+				<property name="applyToBeans">
+					<list>
+						<bean class="org.apache.oodt.commons.option.handler.BeanInfo" p:bean-ref="TraceWorkflow"/>
 					</list>
 				</property>
 			</bean>

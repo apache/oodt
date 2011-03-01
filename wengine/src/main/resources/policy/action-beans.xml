@@ -62,6 +62,9 @@
 	<bean id="DescribeWorkflow" lazy-init="true" class="org.apache.oodt.cas.workflow.server.action.DescribeWorkflow">
 		<property name="description" value="Prints out no-recur processor skeleton descripting info"/>
 	</bean>
+	<bean id="TraceWorkflow" lazy-init="true" class="org.apache.oodt.cas.workflow.server.action.TraceWorkflow">
+		<property name="description" value="Trace workflows connected to workflow with given InstanceId"/>
+	</bean>
 	<bean id="DeleteWorkflow" lazy-init="true" class="org.apache.oodt.cas.workflow.server.action.DeleteWorkflow">
 		<property name="description" value="Deletes Workflow and Task Instances"/>
 	</bean>
