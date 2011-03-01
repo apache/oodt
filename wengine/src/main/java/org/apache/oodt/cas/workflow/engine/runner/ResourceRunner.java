@@ -45,7 +45,7 @@ public class ResourceRunner extends EngineRunner {
 		ResourceJobInput input = new ResourceJobInput();
 		input.workflowInstance = workflowInstance;
 		Job job = new Job();
-//		job.setId(workflowInstance.getJobId());
+		job.setId(workflowInstance.getJobId());
 		job.setName(workflowInstance.getInstanceId() + ":" + workflowInstance.getModelId());
 		job.setJobInputClassName(ResourceJobInput.class.getCanonicalName());
 		job.setJobInstanceClassName(ResourceJobInstance.class.getCanonicalName());
