@@ -85,6 +85,8 @@ public interface CommunicationChannelClient {
     
     public List<WorkflowGraph> getWorkflowGraphs() throws Exception;
     
+    public ProcessorInfo getProcessorInfo(String instanceId) throws Exception;
+    
     public ProcessorInfo getProcessorInfo(String instanceId, String modelId) throws Exception;
 
     public WorkflowInstanceRepository getInstanceRepository() throws Exception;
@@ -99,6 +101,8 @@ public interface CommunicationChannelClient {
 
     public void setWorkflowPriority(String instanceId, String modelId, Priority priority) throws Exception;
     
+    public Metadata getWorkflowMetadata(String instanceId) throws Exception;
+
     public Metadata getWorkflowMetadata(String instanceId, String modelId) throws Exception;
     
     public Metadata getInstanceMetadata(String jobId) throws Exception;

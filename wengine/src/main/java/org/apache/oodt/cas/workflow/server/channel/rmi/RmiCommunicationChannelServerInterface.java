@@ -60,7 +60,9 @@ public interface RmiCommunicationChannelServerInterface extends Remote {
     public String rmi_getModels() throws RemoteException;
     
     public String rmi_getWorkflowGraphs() throws RemoteException;
-    
+
+    public String rmi_getProcessorInfo(String instanceId) throws RemoteException;
+
     public String rmi_getProcessorInfo(String instanceId, String modelId) throws RemoteException;
 
     public String rmi_getInstanceRepository() throws RemoteException;
@@ -74,7 +76,9 @@ public interface RmiCommunicationChannelServerInterface extends Remote {
     public void rmi_setWorkflowState(String instanceId, String modelId, String state) throws RemoteException;
 
     public void rmi_setWorkflowPriority(String instanceId, String modelId, String priority) throws RemoteException;
-    
+
+    public String rmi_getWorkflowMetadata(String instanceId) throws RemoteException;
+
     public String rmi_getWorkflowMetadata(String instanceId, String modelId) throws RemoteException;
     
     public String rmi_getInstanceMetadata(String jobId) throws RemoteException;

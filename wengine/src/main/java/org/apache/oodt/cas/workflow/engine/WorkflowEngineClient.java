@@ -163,6 +163,14 @@ public class WorkflowEngineClient implements WorkflowEngine {
 		}
     }
     
+    public ProcessorInfo getProcessorInfo(String instanceId) throws EngineException {
+		try {
+			return this.client.getProcessorInfo(instanceId);
+		}catch (Exception e) {
+			throw new EngineException(e);
+		}
+    }
+    
     public ProcessorInfo getProcessorInfo(String instanceId, String modelId) throws EngineException {
 		try {
 			return this.client.getProcessorInfo(instanceId, modelId);
@@ -178,6 +186,14 @@ public class WorkflowEngineClient implements WorkflowEngine {
 			throw new EngineException(e);
     	}
     }
+	
+	public Metadata getWorkflowMetadata(String instanceId) throws EngineException {
+		try {
+			return this.client.getWorkflowMetadata(instanceId);
+		}catch (Exception e) {
+			throw new EngineException(e);
+		}
+	}
 	
 	public Metadata getWorkflowMetadata(String instanceId,
 			String modelId) throws EngineException {

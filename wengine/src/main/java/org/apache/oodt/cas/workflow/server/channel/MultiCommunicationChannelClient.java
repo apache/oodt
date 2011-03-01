@@ -163,6 +163,10 @@ public class MultiCommunicationChannelClient extends
 		return useClient.getPage(pageInfo, queryExpression);
 	}
 
+	public ProcessorInfo getProcessorInfo(String instanceId) throws Exception {
+		return useClient.getProcessorInfo(instanceId);
+	}
+	
 	public ProcessorInfo getProcessorInfo(String instanceId, String modelId)
 			throws Exception {
 		return useClient.getProcessorInfo(instanceId, modelId);
@@ -200,6 +204,10 @@ public class MultiCommunicationChannelClient extends
 		return useClient.getWorkflowGraphs();
 	}
 
+	public Metadata getWorkflowMetadata(String instanceId) throws Exception {
+		return useClient.getWorkflowMetadata(instanceId);
+	}
+	
 	public Metadata getWorkflowMetadata(String instanceId, String modelId)
 			throws Exception {
 		return useClient.getWorkflowMetadata(instanceId, modelId);

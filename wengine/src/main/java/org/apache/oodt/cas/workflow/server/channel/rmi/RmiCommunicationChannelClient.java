@@ -131,6 +131,10 @@ public class RmiCommunicationChannelClient extends
 		return (List<WorkflowGraph>) this.serializer.deserializeObject(List.class, this.getRmiServer().rmi_getWorkflowGraphs());
     }
     
+    public ProcessorInfo getProcessorInfo(String instanceId) throws Exception {
+		return this.serializer.deserializeObject(ProcessorInfo.class, this.getRmiServer().rmi_getProcessorInfo(instanceId));
+    }
+    
     public ProcessorInfo getProcessorInfo(String instanceId, String modelId) throws Exception {
 		return this.serializer.deserializeObject(ProcessorInfo.class, this.getRmiServer().rmi_getProcessorInfo(instanceId, modelId));
     }
@@ -157,6 +161,10 @@ public class RmiCommunicationChannelClient extends
 
     public void setWorkflowPriority(String instanceId, String modelId, Priority priority) throws Exception {
 		this.getRmiServer().rmi_setWorkflowPriority(instanceId, modelId, this.serializer.serializeObject(priority));
+    }
+    
+    public Metadata getWorkflowMetadata(String instanceId) throws Exception {
+		return this.serializer.deserializeObject(Metadata.class, this.getRmiServer().rmi_getWorkflowMetadata(instanceId));
     }
     
     public Metadata getWorkflowMetadata(String instanceId, String modelId) throws Exception {

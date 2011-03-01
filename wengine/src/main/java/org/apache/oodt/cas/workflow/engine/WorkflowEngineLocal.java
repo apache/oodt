@@ -306,11 +306,19 @@ public class WorkflowEngineLocal implements WorkflowEngine {
 		return new Vector<WorkflowGraph>(this.workflowGraphs.values());
     }
     
+    public ProcessorInfo getProcessorInfo(String instanceId) throws EngineException {
+    	return this.queueManager.getWorkflowProcessor(instanceId).getProcessorInfo();
+    }
+
     public ProcessorInfo getProcessorInfo(String instanceId, String modelId) throws EngineException {
     	WorkflowProcessor wp = WorkflowUtils.findProcessor(this.queueManager.getWorkflowProcessor(instanceId), modelId);
     	return wp.getProcessorInfo();
     }
 
+	public Metadata getWorkflowMetadata(String instanceId) throws EngineException {
+		return this.queueManager.getWorkflowProcessor(instanceId).getDynamicMetadata();
+	}
+	
 	public Metadata getWorkflowMetadata(String instanceId,
 			String modelId) throws EngineException {
 		return WorkflowUtils.findProcessor(this.queueManager.getWorkflowProcessor(instanceId), modelId).getDynamicMetadata();

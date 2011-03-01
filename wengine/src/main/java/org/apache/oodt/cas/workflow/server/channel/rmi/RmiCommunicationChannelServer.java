@@ -231,6 +231,14 @@ public class RmiCommunicationChannelServer extends AbstractCommunicationChannelS
 		}
     }
     
+    public String rmi_getProcessorInfo(String instanceId) throws RemoteException {
+		try {
+			return this.serializer.serializeObject(this.getProcessorInfo(instanceId));
+		}catch (Exception e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
+    }
+    
     public String rmi_getProcessorInfo(String instanceId, String modelId) throws RemoteException {
 		try {
 			return this.serializer.serializeObject(this.getProcessorInfo(instanceId, modelId));
@@ -290,6 +298,14 @@ public class RmiCommunicationChannelServer extends AbstractCommunicationChannelS
     public void rmi_setWorkflowPriority(String instanceId, String modelId, String priority) throws RemoteException {
 		try {
 			this.setWorkflowPriority(instanceId, modelId, this.serializer.deserializeObject(Priority.class, priority));
+		}catch (Exception e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
+    }
+    
+    public String rmi_getWorkflowMetadata(String instanceId) throws RemoteException {
+		try {
+			return this.serializer.serializeObject(this.getWorkflowMetadata(instanceId));
 		}catch (Exception e) {
 			throw new RemoteException(e.getMessage(), e);
 		}

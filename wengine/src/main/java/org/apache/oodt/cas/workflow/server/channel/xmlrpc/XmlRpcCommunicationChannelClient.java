@@ -171,6 +171,12 @@ public class XmlRpcCommunicationChannelClient extends
 		return this.serializer.deserializeObject(List.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getWorkflowGraphs", args));
 	}
 	
+    public ProcessorInfo getProcessorInfo(String instanceId) throws Exception {
+		Vector<Object> args = new Vector<Object>();
+		args.add(instanceId);
+		return this.serializer.deserializeObject(ProcessorInfo.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getProcessorInfo", args));
+    }
+	
     public ProcessorInfo getProcessorInfo(String instanceId, String modelId) throws Exception {
 		Vector<Object> args = new Vector<Object>();
 		args.add(instanceId);
@@ -178,6 +184,12 @@ public class XmlRpcCommunicationChannelClient extends
 		return this.serializer.deserializeObject(ProcessorInfo.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getProcessorInfo", args));
     }
 
+	public Metadata getWorkflowMetadata(String instanceId) throws Exception {
+		Vector<Object> args = new Vector<Object>();
+		args.add(instanceId);
+		return this.serializer.deserializeObject(Metadata.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getWorkflowMetadata", args));
+	}
+    
 	public Metadata getWorkflowMetadata(String instanceId,
 			String modelId) throws Exception {
 		Vector<Object> args = new Vector<Object>();

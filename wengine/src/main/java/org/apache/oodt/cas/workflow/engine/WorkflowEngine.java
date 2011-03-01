@@ -93,6 +93,8 @@ public interface WorkflowEngine {
     
     public WorkflowInstanceRepository getInstanceRepository() throws EngineException;
 
+    public ProcessorInfo getProcessorInfo(String instanceId) throws EngineException;
+
     public ProcessorInfo getProcessorInfo(String instanceId, String modelId) throws EngineException;
     
     public void updateWorkflowMetadata(String instanceId, String modelId, Metadata metadata) throws EngineException;
@@ -105,6 +107,8 @@ public interface WorkflowEngine {
 
     public void setWorkflowPriority(String instanceId, String modelId, Priority priority) throws EngineException;
     
+    public Metadata getWorkflowMetadata(String instanceId) throws EngineException;
+
     public Metadata getWorkflowMetadata(String instanceId, String modelId) throws EngineException;
     
     public Metadata getInstanceMetadata(String jobId) throws EngineException;

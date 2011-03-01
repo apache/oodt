@@ -84,6 +84,8 @@ public interface RmiCommunicationChannelServerMBean {
     
     public WorkflowInstanceRepository getInstanceRepository() throws Exception;
 
+    public ProcessorInfo getProcessorInfo(String instanceId) throws Exception;
+
     public ProcessorInfo getProcessorInfo(String instanceId, String modelId) throws Exception;
     
     public WorkflowState getWorkflowState(String instanceId) throws Exception;
@@ -95,7 +97,9 @@ public interface RmiCommunicationChannelServerMBean {
     public void setWorkflowState(String instanceId, String modelId, WorkflowState state) throws Exception;
 
     public void setWorkflowPriority(String instanceId, String modelId, Priority priority) throws Exception;
-    
+
+    public Metadata getWorkflowMetadata(String instanceId) throws Exception;
+
     public Metadata getWorkflowMetadata(String instanceId, String modelId) throws Exception;
     
     public Metadata getInstanceMetadata(String jobId) throws Exception;

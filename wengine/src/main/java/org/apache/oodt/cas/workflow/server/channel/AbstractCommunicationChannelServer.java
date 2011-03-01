@@ -181,6 +181,15 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 			throw new Exception("Failed to get supported processor ids from engine : " + e.getMessage(), e);
 		}
     }
+
+    public ProcessorInfo getProcessorInfo(String instanceId) throws Exception {
+    	try {
+    		return this.workflowEngine.getProcessorInfo(instanceId);
+		}catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to get processor info for workflow [instanceid='" + instanceId  + "'] from engine : " + e.getMessage(), e);
+			throw new Exception("Failed to get processor info for workflow [instanceid='" + instanceId  + "'] from engine : " + e.getMessage(), e);
+		}
+    }
     
     public ProcessorInfo getProcessorInfo(String instanceId, String modelId) throws Exception {
     	try {
@@ -200,7 +209,16 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 		}
     }
     
-	public Metadata getWorkflowMetadata(String instanceId,
+	public Metadata getWorkflowMetadata(String instanceId) throws Exception {
+		try {
+			return this.workflowEngine.getWorkflowMetadata(instanceId);
+		}catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to get workflow metadata [instanceid='" + instanceId  + "'] from engine : " + e.getMessage(), e);
+			throw new Exception("Failed to get workflow metadata [instanceid='" + instanceId  + "'] from engine : " + e.getMessage(), e);
+		}
+	}
+
+    public Metadata getWorkflowMetadata(String instanceId,
 			String modelId) throws Exception {
 		try {
 			return this.workflowEngine.getWorkflowMetadata(instanceId, modelId);
