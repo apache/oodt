@@ -11,6 +11,7 @@
 			<configuration>
 				<property name="WorkflowConnect/ModelId" value="TestConnectTask"/>
 				<property name="WorkflowConnect/NCalculator/Class" value="org.apache.oodt.cas.workflow.instance.SimpleNCalculator"/>
+				<property name="WorkflowConnect/NMetadataModifier/Class" value="org.apache.oodt.cas.workflow.instance.SimpleNMetadataModification"/>
 				<property name="SimpleNCalculator/N" value="3"/>
 			</configuration>
 		</task>

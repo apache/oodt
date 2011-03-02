@@ -76,7 +76,7 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 			for (int i = 0; i < n; i++) {
 				Metadata curWorkflowMet = new Metadata(spawnWorkflowMet);
 				if (nMetMod != null)
-					nMetMod.prepare(n, curWorkflowMet);
+					nMetMod.prepare(i, n, curWorkflowMet);
 				try {
 					curWorkflowMet.replaceMetadata(SPAWNED_BY_WORKFLOW, this.getInstanceId());
 					spawnedInstanceId.add(this.weClient.startWorkflow(spawnModelId, curWorkflowMet));
@@ -131,7 +131,7 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 	
 	public interface NMetadataModification {
 		
-		public void prepare(int n, Metadata metadata);
+		public void prepare(int i, int n, Metadata metadata);
 		
 	}
 	
