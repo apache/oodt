@@ -15,6 +15,7 @@ import org.apache.oodt.cas.workflow.state.results.ResultsBailState;
 import org.apache.oodt.cas.workflow.state.results.ResultsFailureState;
 import org.apache.oodt.cas.workflow.state.results.ResultsState;
 import org.apache.oodt.cas.workflow.state.results.ResultsSuccessState;
+import org.apache.oodt.cas.workflow.util.WorkflowUtils;
 
 public class WorkflowConnectTaskInstance extends TaskInstance {
 	
@@ -103,10 +104,21 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 					return new ResultsFailureState("Failed to get state of spawned workflow [InstanceId='" + spawnedInstanceId + "']");
 				}
 			}
-			if (nDone == spawnedInstanceIds.size())
+			if (nDone == spawnedInstanceIds.size()) {
+				Metadata dynMet = new Metadata();
+				for (String spawnedInstanceId : spawnedInstanceIds) {
+					try {
+						dynMet = WorkflowUtils.mergeMetadata(dynMet, this.weClient.getWorkflowMetadata(spawnedInstanceId));
+					}catch (Exception e) {
+						return new ResultsFailureState("Failed to get metadata of spawned workflow [InstanceId='" + spawnedInstanceId + "']");
+					}
+				}
+				ctrlMetadata.replaceLocalMetadata(dynMet);
+				ctrlMetadata.setAsWorkflowMetadataKey((String[]) dynMet.getAllKeys().toArray());
 				return new ResultsSuccessState("All spawned workflow completed successfully");
-			else
+			}else {
 				return new ResultsBailState("Waiting on " + (spawnedInstanceIds.size() - nDone) + " of " + spawnedInstanceIds.size() + " spawned workflows to finish");
+			}
 		}
 	}
 	

@@ -4,6 +4,21 @@
 	xmlns:cas="http://oodt.jpl.nasa.gov/2.0/cas"
 	xmlns:p="http://oodt.jpl.nasa.gov/2.0/cas/property">
 	
+	<!-- Connection Workflow Test -->
+	<workflow id="ConnectWorkflowTest" execution="sequential">
+		<configuration extends="test"/>
+		<task id-ref="Orbit"/>
+		<task id="MultiRun" class="org.apache.oodt.cas.workflow.instance.WorkflowConnectTaskInstance">
+			<configuration>
+				<property name="WorkflowConnect/ModelId" value="TestConnectTask"/>
+				<property name="WorkflowConnect/NCalculator/Class" value="org.apache.oodt.cas.workflow.instance.SimpleNCalculator"/>
+				<property name="SimpleNCalculator/N" value="3"/>
+			</configuration>
+		</task>
+	</workflow> 
+	<task id="TestConnectTask" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+
+	<!-- Workflow Metadata Flow Test -->
 	<workflow id="TestWorkflow" execution="sequential">
 		<configuration extends="test"/>
 		<task id-ref="Orbit"/>
