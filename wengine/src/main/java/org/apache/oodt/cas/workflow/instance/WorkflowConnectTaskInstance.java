@@ -114,7 +114,8 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 					}
 				}
 				ctrlMetadata.replaceLocalMetadata(dynMet);
-				ctrlMetadata.setAsWorkflowMetadataKey((String[]) dynMet.getAllKeys().toArray());
+				List<String> keys = dynMet.getAllKeys();
+				ctrlMetadata.setAsWorkflowMetadataKey(keys.toArray(new String[keys.size()]));
 				return new ResultsSuccessState("All spawned workflow completed successfully");
 			}else {
 				return new ResultsBailState("Waiting on " + (spawnedInstanceIds.size() - nDone) + " of " + spawnedInstanceIds.size() + " spawned workflows to finish");

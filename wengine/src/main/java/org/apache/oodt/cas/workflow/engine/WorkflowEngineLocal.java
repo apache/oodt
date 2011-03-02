@@ -147,8 +147,10 @@ public class WorkflowEngineLocal implements WorkflowEngine {
 						}
 					}catch (Exception e) {
 						LOG.log(Level.SEVERE, "Engine failed while submitting jobs to its runner : " + e.getMessage(), e);
-						if (nextTask != null)
+						if (nextTask != null) {
 							WorkflowEngineLocal.this.queueManager.setState(nextTask.getInstanceId(), nextTask.getModelId(), new FailureState("Failed while submitting job to Runner : " + e.getMessage()));
+							nextTask = null;
+						}
 					}
 					
 					try {
