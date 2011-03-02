@@ -131,6 +131,14 @@ public class RmiCommunicationChannelClient extends
 		return (List<WorkflowGraph>) this.serializer.deserializeObject(List.class, this.getRmiServer().rmi_getWorkflowGraphs());
     }
     
+    public ProcessorStub getWorkflowStub(String instanceId) throws Exception {
+		return this.serializer.deserializeObject(ProcessorStub.class, this.getRmiServer().rmi_getWorkflowStub(instanceId));
+    }
+
+    public ProcessorStub getWorkflowStub(String instanceId, String modelId) throws Exception {
+		return this.serializer.deserializeObject(ProcessorStub.class, this.getRmiServer().rmi_getWorkflowStub(instanceId, modelId));
+    }
+    
     public ProcessorInfo getProcessorInfo(String instanceId) throws Exception {
 		return this.serializer.deserializeObject(ProcessorInfo.class, this.getRmiServer().rmi_getProcessorInfo(instanceId));
     }

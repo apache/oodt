@@ -251,6 +251,14 @@ public class WorkflowEngineLocal implements WorkflowEngine {
 		}
     }
     
+    public ProcessorStub getWorkflowStub(String instanceId) throws EngineException {
+    	return this.queueManager.getWorkflowProcessor(instanceId).getStub();
+    }
+    
+    public ProcessorStub getWorkflowStub(String instanceId, String modelId) throws EngineException {
+    	return WorkflowUtils.findProcessor(this.queueManager.getWorkflowProcessor(instanceId), modelId).getStub();
+    }
+    
 	public void setWorkflowState(String instanceId, String modelId, WorkflowState state) throws EngineException {
 		this.queueManager.setState(instanceId, modelId, state);
 	}

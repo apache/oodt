@@ -230,6 +230,22 @@ public class RmiCommunicationChannelServer extends AbstractCommunicationChannelS
 			throw new RemoteException(e.getMessage(), e);
 		}
     }
+
+    public String rmi_getWorkflowStub(String instanceId) throws RemoteException {
+		try {
+			return this.serializer.serializeObject(this.getWorkflowStub(instanceId));
+		}catch (Exception e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
+    }
+    
+    public String rmi_getWorkflowStub(String instanceId, String modelId) throws RemoteException {
+		try {
+			return this.serializer.serializeObject(this.getWorkflowStub(instanceId, modelId));
+		}catch (Exception e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
+    }
     
     public String rmi_getProcessorInfo(String instanceId) throws RemoteException {
 		try {

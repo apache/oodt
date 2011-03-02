@@ -90,6 +90,14 @@ public class MultiCommunicationChannelClient extends
 	public Date getLaunchDate() throws Exception {
 		return useClient.getLaunchDate();
 	}
+	
+    public ProcessorStub getWorkflowStub(String instanceId) throws Exception {
+    	return useClient.getWorkflowStub(instanceId);
+    }
+    
+    public ProcessorStub getWorkflowStub(String instanceId, String modelId) throws Exception {
+    	return useClient.getWorkflowStub(instanceId, modelId);
+    }
 
 	public List<Metadata> getMetadata(QueryPage page) throws Exception {
 		return useClient.getMetadata(page);

@@ -48,6 +48,10 @@ public interface XmlRpcCommunicationServerInterface {
 
 	public String xmlrpc_getWorkflowGraphs() throws Exception;
 
+	public String xmlrpc_getWorkflowStub(String instanceId) throws Exception;
+
+    public String xmlrpc_getWorkflowStub(String instanceId, String modelId) throws Exception;
+    
 	public String xmlrpc_getProcessorInfo(String instanceId) throws Exception;
 
     public String xmlrpc_getProcessorInfo(String instanceId, String modelId) throws Exception;

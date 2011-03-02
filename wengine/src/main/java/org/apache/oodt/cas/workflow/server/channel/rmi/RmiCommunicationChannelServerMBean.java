@@ -35,6 +35,7 @@ import org.apache.oodt.cas.workflow.processor.ProcessorStub;
 import org.apache.oodt.cas.workflow.state.WorkflowState;
 
 //JDK imports
+import java.rmi.RemoteException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -98,6 +99,10 @@ public interface RmiCommunicationChannelServerMBean {
 
     public void setWorkflowPriority(String instanceId, String modelId, Priority priority) throws Exception;
 
+    public String rmi_getWorkflowStub(String instanceId) throws RemoteException;
+    
+    public String rmi_getWorkflowStub(String instanceId, String modelId) throws RemoteException;
+    
     public Metadata getWorkflowMetadata(String instanceId) throws Exception;
 
     public Metadata getWorkflowMetadata(String instanceId, String modelId) throws Exception;

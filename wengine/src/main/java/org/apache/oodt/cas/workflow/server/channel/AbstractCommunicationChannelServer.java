@@ -191,6 +191,24 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 		}
     }
     
+    public ProcessorStub getWorkflowStub(String instanceId) throws Exception {
+    	try {
+    		return this.workflowEngine.getWorkflowStub(instanceId);
+		}catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to get processor stub for workflow [instanceid='" + instanceId  + "'] from engine : " + e.getMessage(), e);
+			throw new Exception("Failed to get processor stub for workflow [instanceid='" + instanceId  + "'] from engine : " + e.getMessage(), e);
+		}
+    }
+    
+    public ProcessorStub getWorkflowStub(String instanceId, String modelId) throws Exception {
+    	try {
+    		return this.workflowEngine.getWorkflowStub(instanceId);
+		}catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to get processor stub for workflow [instanceid='" + instanceId  + "',modelId='" + modelId + "'] from engine : " + e.getMessage(), e);
+			throw new Exception("Failed to get processor stub for workflow [instanceid='" + instanceId  + "',modelId='" + modelId + "'] from engine : " + e.getMessage(), e);
+		}
+    }
+    
     public ProcessorInfo getProcessorInfo(String instanceId, String modelId) throws Exception {
     	try {
     		return this.workflowEngine.getProcessorInfo(instanceId, modelId);

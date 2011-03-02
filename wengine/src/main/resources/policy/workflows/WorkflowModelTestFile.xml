@@ -6,7 +6,6 @@
 	
 	<!-- Connection Workflow Test -->
 	<workflow id="ConnectWorkflowTest" execution="sequential">
-		<configuration extends="test"/>
 		<task id-ref="Orbit"/>
 		<task id="MultiRun" class="org.apache.oodt.cas.workflow.instance.WorkflowConnectTaskInstance">
 			<configuration>
@@ -15,9 +14,10 @@
 				<property name="SimpleNCalculator/N" value="3"/>
 			</configuration>
 		</task>
-	</workflow> 
+		<task id-ref="TestConnectTask" alias="FinalCheck" p:validateKey="Orbit_key,TestConnectTask"/>
+	</workflow>
 	<task id="TestConnectTask" class="org.apache.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
-
+	
 	<!-- Workflow Metadata Flow Test -->
 	<workflow id="TestWorkflow" execution="sequential">
 		<configuration extends="test"/>

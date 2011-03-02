@@ -97,6 +97,10 @@ public interface CommunicationChannelClient {
 
     public void updateWorkflowAndInstance(String instanceId, String modelId, WorkflowState state, Metadata metadata, String jobId, Metadata instanceMetadata) throws Exception;
     
+    public ProcessorStub getWorkflowStub(String instanceId) throws Exception;
+
+    public ProcessorStub getWorkflowStub(String instanceId, String modelId) throws Exception;
+
     public void setWorkflowState(String instanceId, String modelId, WorkflowState state) throws Exception;
 
     public void setWorkflowPriority(String instanceId, String modelId, Priority priority) throws Exception;

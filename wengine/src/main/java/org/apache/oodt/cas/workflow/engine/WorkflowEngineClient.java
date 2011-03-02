@@ -186,6 +186,22 @@ public class WorkflowEngineClient implements WorkflowEngine {
 			throw new EngineException(e);
     	}
     }
+    
+    public ProcessorStub getWorkflowStub(String instanceId) throws EngineException {
+    	try {
+    		return this.client.getWorkflowStub(instanceId);
+    	}catch (Exception e) {
+			throw new EngineException(e);
+    	}
+    }
+    
+    public ProcessorStub getWorkflowStub(String instanceId, String modelId) throws EngineException {
+    	try {
+    		return this.client.getWorkflowStub(instanceId, modelId);
+    	}catch (Exception e) {
+			throw new EngineException(e);
+    	}
+    }
 	
 	public Metadata getWorkflowMetadata(String instanceId) throws EngineException {
 		try {

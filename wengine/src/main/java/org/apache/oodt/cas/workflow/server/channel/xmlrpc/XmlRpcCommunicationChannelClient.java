@@ -170,6 +170,19 @@ public class XmlRpcCommunicationChannelClient extends
 		Vector<Object> args = new Vector<Object>();
 		return this.serializer.deserializeObject(List.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getWorkflowGraphs", args));
 	}
+
+    public ProcessorStub getWorkflowStub(String instanceId) throws Exception {
+		Vector<Object> args = new Vector<Object>();
+		args.add(instanceId);
+		return this.serializer.deserializeObject(ProcessorStub.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getWorkflowStub", args));
+    }
+	
+    public ProcessorStub getWorkflowStub(String instanceId, String modelId) throws Exception {
+		Vector<Object> args = new Vector<Object>();
+		args.add(instanceId);
+		args.add(modelId);
+		return this.serializer.deserializeObject(ProcessorStub.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getWorkflowStub", args));
+    }
 	
     public ProcessorInfo getProcessorInfo(String instanceId) throws Exception {
 		Vector<Object> args = new Vector<Object>();

@@ -17,6 +17,7 @@
 package org.apache.oodt.cas.workflow.server.action;
 
 //JDK imports
+import java.util.List;
 import java.util.Vector;
 
 //OODT imports
@@ -24,6 +25,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngineClient;
 import org.apache.oodt.cas.workflow.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.instance.WorkflowConnectTaskInstance;
+import org.apache.oodt.cas.workflow.processor.ProcessorStub;
 
 /**
  * @author bfoster
@@ -54,12 +56,13 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 				parentWorkflowInstanceId = weClient.getWorkflowMetadata(currentInstanceId).getMetadata(WorkflowConnectTaskInstance.SPAWNED_BY_WORKFLOW);
 			}while(parentWorkflowInstanceId != null);
 			if (this.mode.equals(Mode.RELATIVES)) {
-				String index = "";
+				String indent = "";
 				for (String parent : parents) {
-					System.out.println(index + " - InstanceId = '" + parent + " : State = '" + weClient.getWorkflowState(parent).getName() + "'");
-					index += "  ";
+					ProcessorStub stub = weClient.getWorkflowStub(parent);
+					System.out.println(indent + " - InstanceId = '" + parent + " : ModelId = '" + stub.getModelId() + "' : State = '" + stub.getState().getName() + "'");
+					indent += "  ";
 				}
-				this.printTree(weClient, currentInstanceId, index);
+				this.printTree(weClient, currentInstanceId, indent);
 			}else if (this.mode.equals(Mode.COMPLETE)) {
 				this.printTree(weClient, currentInstanceId, "");
 			}			
@@ -69,10 +72,13 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 	}
 	
 	private void printTree(WorkflowEngineClient weClient, String instanceId, String indent) throws EngineException {
-		System.out.println(indent + " - InstanceId = '" + instanceId + "' : State = '" + weClient.getWorkflowState(instanceId).getName() + "'");
+		ProcessorStub stub = weClient.getWorkflowStub(instanceId);
+		System.out.println(indent + " - InstanceId = '" + instanceId + " : ModelId = '" + stub.getModelId() + "' : State = '" + stub.getState().getName() + "'");
 		Metadata metadata = weClient.getWorkflowMetadata(instanceId);
-		for (String child : metadata.getAllMetadata(WorkflowConnectTaskInstance.SPAWNED_WORKFLOWS))
-			this.printTree(weClient, child, indent + "  ");
+		List<String> spawnedWorkflows = metadata.getAllMetadata(WorkflowConnectTaskInstance.SPAWNED_WORKFLOWS);
+		if (spawnedWorkflows != null)
+			for (String child : spawnedWorkflows)
+				this.printTree(weClient, child, indent + "  ");
 	}
 	
 	public void setInstanceId(String instanceId) {
@@ -80,7 +86,7 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 	}
 	
 	public void setMode(String mode) {
-		this.mode = Mode.valueOf(mode);
+		this.mode = Mode.valueOf(mode.toUpperCase());
 	}
 
 }
