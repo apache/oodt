@@ -59,7 +59,7 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 				String indent = "";
 				for (String parent : parents) {
 					ProcessorStub stub = weClient.getWorkflowStub(parent);
-					System.out.println(indent + " - InstanceId = '" + parent + " : ModelId = '" + stub.getModelId() + "' : State = '" + stub.getState().getName() + "'");
+					System.out.println(indent + " - InstanceId = '" + parent + "' : ModelId = '" + stub.getModelId() + "' : State = '" + stub.getState().getName() + "'");
 					indent += "  ";
 				}
 				this.printTree(weClient, currentInstanceId, indent);
@@ -73,7 +73,7 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 	
 	private void printTree(WorkflowEngineClient weClient, String instanceId, String indent) throws EngineException {
 		ProcessorStub stub = weClient.getWorkflowStub(instanceId);
-		System.out.println(indent + " - InstanceId = '" + instanceId + " : ModelId = '" + stub.getModelId() + "' : State = '" + stub.getState().getName() + "'");
+		System.out.println(indent + " - InstanceId = '" + instanceId + "' : ModelId = '" + stub.getModelId() + "' : State = '" + stub.getState().getName() + "'");
 		Metadata metadata = weClient.getWorkflowMetadata(instanceId);
 		List<String> spawnedWorkflows = metadata.getAllMetadata(WorkflowConnectTaskInstance.SPAWNED_WORKFLOWS);
 		if (spawnedWorkflows != null)
