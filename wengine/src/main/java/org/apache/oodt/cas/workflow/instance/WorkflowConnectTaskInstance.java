@@ -113,6 +113,7 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 						return new ResultsFailureState("Failed to get metadata of spawned workflow [InstanceId='" + spawnedInstanceId + "']");
 					}
 				}
+				this.clearReserveKeys(dynMet);
 				ctrlMetadata.replaceLocalMetadata(dynMet);
 				List<String> keys = dynMet.getAllKeys();
 				ctrlMetadata.setAsWorkflowMetadataKey(keys.toArray(new String[keys.size()]));
@@ -121,6 +122,14 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 				return new ResultsBailState("Waiting on " + (spawnedInstanceIds.size() - nDone) + " of " + spawnedInstanceIds.size() + " spawned workflows to finish");
 			}
 		}
+	}
+	
+	private void clearReserveKeys(Metadata metadata) {
+		metadata.removeMetadata(N_CALCULATOR_CLASS);
+		metadata.removeMetadata(N_MET_MOD_CLASS);
+		metadata.removeMetadata(SPAWN_MODEL_ID);
+		metadata.removeMetadata(SPAWNED_WORKFLOWS);
+		metadata.removeMetadata(SPAWNED_BY_WORKFLOW);
 	}
 	
 	public interface NCalculator {
