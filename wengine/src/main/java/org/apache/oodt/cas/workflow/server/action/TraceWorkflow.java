@@ -26,6 +26,7 @@ import org.apache.oodt.cas.workflow.engine.WorkflowEngineClient;
 import org.apache.oodt.cas.workflow.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.instance.WorkflowConnectTaskInstance;
 import org.apache.oodt.cas.workflow.processor.ProcessorSkeleton;
+import org.apache.oodt.cas.workflow.util.WorkflowUtils;
 
 /**
  * @author bfoster
@@ -38,13 +39,13 @@ import org.apache.oodt.cas.workflow.processor.ProcessorSkeleton;
 public class TraceWorkflow extends WorkflowEngineServerAction {
 
 	private String instanceId;
-	public enum Mode { COMPLETE, RELATIVES, CHILDREN };
+	public enum Mode { COMBINED, COMPLETE, RELATIVES, CHILDREN };
 	private Mode mode;
 	
 	@Override
 	public void performAction(WorkflowEngineClient weClient) throws Exception {
 		System.out.println("Workflow Trace [InstanceId='" + this.instanceId + "']");
-		if (this.mode.equals(Mode.COMPLETE) || this.mode.equals(Mode.RELATIVES)) {
+		if (this.mode.equals(Mode.COMPLETE) || this.mode.equals(Mode.RELATIVES) || this.mode.equals(Mode.COMBINED)) {
 			Vector<String> parentInstanceIds = new Vector<String>();
 			String currentInstanceId = this.instanceId;
 			String parentWorkflowInstanceId = null;
@@ -67,12 +68,29 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 				this.printTree(weClient, currentInstanceId, (parentSkeleton != null ? parentSkeleton.getModelId() : null), indent);
 			}else if (this.mode.equals(Mode.COMPLETE)) {
 				this.printTree(weClient, currentInstanceId, null, "");
-			}			
+			}else if (this.mode.equals(Mode.COMBINED)) {
+				ProcessorSkeleton skeleton = weClient.getWorkflow(currentInstanceId);
+				buildMasterWorkflow(weClient, skeleton);
+				System.out.println(WorkflowUtils.toString(skeleton));
+			}
 		}else if (this.mode.equals(Mode.CHILDREN)){
 			this.printTree(weClient, this.instanceId, null, "");
 		}
 	}
 	
+	private void buildMasterWorkflow(WorkflowEngineClient weClient, ProcessorSkeleton skeleton) throws EngineException {
+		for (ProcessorSkeleton task : WorkflowUtils.getTasks(skeleton)) {
+			List<String> spawnedWorkflows = task.getDynamicMetadata().getAllMetadata(WorkflowConnectTaskInstance.SPAWNED_WORKFLOWS);
+			List<ProcessorSkeleton> subProcessors = new Vector<ProcessorSkeleton>();
+			for (String spawedWorkflow : spawnedWorkflows) {
+				ProcessorSkeleton workflow = weClient.getWorkflow(spawedWorkflow);
+				buildMasterWorkflow(weClient, workflow);
+				subProcessors.add(workflow);
+			}
+			task.setSubProcessors(subProcessors);
+		}
+	}
+		
 	private void printTree(WorkflowEngineClient weClient, String instanceId, String parentModelId, String indent) throws EngineException {
 		ProcessorSkeleton skeleton = weClient.getWorkflow(instanceId);
 		System.out.println(indent + " - InstanceId = '" + instanceId + "' : ModelId = '" + skeleton.getModelId() + "' : State = '" + skeleton.getState().getName() + "'" + (parentModelId != null ? " : SpawnedBy = '" + parentModelId + "'" : ""));

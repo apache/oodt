@@ -221,6 +221,26 @@ public class WorkflowUtils {
 		}
 		return null;
 	}
+	
+	public static List<ProcessorSkeleton> getTasks(ProcessorSkeleton skeleton) {
+		List<ProcessorSkeleton> options = new Vector<ProcessorSkeleton>();
+		options.add(skeleton);
+		List<ProcessorSkeleton> tasks = new Vector<ProcessorSkeleton>();
+		while (!options.isEmpty()) {
+			ProcessorSkeleton currentOption = options.remove(0);
+			if (currentOption.getSubProcessors().isEmpty()) {
+				tasks.add(currentOption);
+			}else {
+				if (currentOption.getPreConditions() != null)
+					options.add(currentOption.getPreConditions());
+				if (currentOption.getPostConditions() != null)
+					options.add(currentOption.getPostConditions());
+				for (ProcessorSkeleton ps : currentOption.getSubProcessors())
+					options.add(ps);
+			}
+		}
+		return tasks;
+	}
 
 	public static void validateWorkflowProcessor(WorkflowProcessor wp) {
 		if (wp instanceof TaskProcessor) {
