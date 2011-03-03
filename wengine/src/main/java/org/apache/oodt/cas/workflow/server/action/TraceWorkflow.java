@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Vector;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngineClient;
 import org.apache.oodt.cas.workflow.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.instance.WorkflowConnectTaskInstance;
@@ -65,7 +64,7 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 					parentSkeleton = skeleton;
 					indent += "  ";
 				}
-				this.printTree(weClient, currentInstanceId, (parentSkeleton != null ? parentSkeleton.getModelId() : null), indent);
+				this.printTree(weClient, this.instanceId, (parentSkeleton != null ? parentSkeleton.getModelId() : null), indent);
 			}else if (this.mode.equals(Mode.COMPLETE)) {
 				this.printTree(weClient, currentInstanceId, null, "");
 			}else if (this.mode.equals(Mode.COMBINED)) {
