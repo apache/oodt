@@ -81,6 +81,8 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 	private void buildMasterWorkflow(WorkflowEngineClient weClient, ProcessorSkeleton skeleton) throws EngineException {
 		for (ProcessorSkeleton task : WorkflowUtils.getTasks(skeleton)) {
 			List<String> spawnedWorkflows = task.getDynamicMetadata().getAllMetadata(WorkflowConnectTaskInstance.SPAWNED_WORKFLOWS);
+			if (spawnedWorkflows == null)
+				continue;
 			List<ProcessorSkeleton> subProcessors = new Vector<ProcessorSkeleton>();
 			for (String spawedWorkflow : spawnedWorkflows) {
 				ProcessorSkeleton workflow = weClient.getWorkflow(spawedWorkflow);
