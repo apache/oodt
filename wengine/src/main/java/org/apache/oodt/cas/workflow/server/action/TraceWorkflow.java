@@ -25,7 +25,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngineClient;
 import org.apache.oodt.cas.workflow.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.instance.WorkflowConnectTaskInstance;
-import org.apache.oodt.cas.workflow.processor.ProcessorStub;
+import org.apache.oodt.cas.workflow.processor.ProcessorSkeleton;
 
 /**
  * @author bfoster
@@ -45,40 +45,63 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 	public void performAction(WorkflowEngineClient weClient) throws Exception {
 		System.out.println("Workflow Trace [InstanceId='" + this.instanceId + "']");
 		if (this.mode.equals(Mode.COMPLETE) || this.mode.equals(Mode.RELATIVES)) {
-			Vector<String> parents = new Vector<String>();
+			Vector<String> parentInstanceIds = new Vector<String>();
 			String currentInstanceId = this.instanceId;
 			String parentWorkflowInstanceId = null;
 			do {
 				if (parentWorkflowInstanceId != null) {
 					currentInstanceId = parentWorkflowInstanceId;
-					parents.add(parentWorkflowInstanceId);
+					parentInstanceIds.add(parentWorkflowInstanceId);
 				}
 				parentWorkflowInstanceId = weClient.getWorkflowMetadata(currentInstanceId).getMetadata(WorkflowConnectTaskInstance.SPAWNED_BY_WORKFLOW);
 			}while(parentWorkflowInstanceId != null);
 			if (this.mode.equals(Mode.RELATIVES)) {
+				ProcessorSkeleton parentSkeleton = null;
 				String indent = "";
-				for (String parent : parents) {
-					ProcessorStub stub = weClient.getWorkflowStub(parent);
-					System.out.println(indent + " - InstanceId = '" + parent + "' : ModelId = '" + stub.getModelId() + "' : State = '" + stub.getState().getName() + "'");
+				for (String parentInstanceId : parentInstanceIds) {
+					ProcessorSkeleton skeleton = weClient.getWorkflow(parentInstanceId);
+					System.out.println(indent + " - InstanceId = '" + instanceId + "' : ModelId = '" + skeleton.getModelId() + "' : State = '" + skeleton.getState().getName() + "'" + (parentSkeleton != null ? " : SpawnedBy = '" + this.findSpawnedBy(parentSkeleton, parentInstanceId) + "'" : ""));
+					parentSkeleton = skeleton;
 					indent += "  ";
 				}
-				this.printTree(weClient, currentInstanceId, indent);
+				this.printTree(weClient, currentInstanceId, (parentSkeleton != null ? parentSkeleton.getModelId() : null), indent);
 			}else if (this.mode.equals(Mode.COMPLETE)) {
-				this.printTree(weClient, currentInstanceId, "");
+				this.printTree(weClient, currentInstanceId, null, "");
 			}			
 		}else if (this.mode.equals(Mode.CHILDREN)){
-			this.printTree(weClient, this.instanceId, "");
+			this.printTree(weClient, this.instanceId, null, "");
 		}
 	}
 	
-	private void printTree(WorkflowEngineClient weClient, String instanceId, String indent) throws EngineException {
-		ProcessorStub stub = weClient.getWorkflowStub(instanceId);
-		System.out.println(indent + " - InstanceId = '" + instanceId + "' : ModelId = '" + stub.getModelId() + "' : State = '" + stub.getState().getName() + "'");
+	private void printTree(WorkflowEngineClient weClient, String instanceId, String parentModelId, String indent) throws EngineException {
+		ProcessorSkeleton skeleton = weClient.getWorkflow(instanceId);
+		System.out.println(indent + " - InstanceId = '" + instanceId + "' : ModelId = '" + skeleton.getModelId() + "' : State = '" + skeleton.getState().getName() + "'" + (parentModelId != null ? " : SpawnedBy = '" + parentModelId + "'" : ""));
 		Metadata metadata = weClient.getWorkflowMetadata(instanceId);
 		List<String> spawnedWorkflows = metadata.getAllMetadata(WorkflowConnectTaskInstance.SPAWNED_WORKFLOWS);
-		if (spawnedWorkflows != null)
-			for (String child : spawnedWorkflows)
-				this.printTree(weClient, child, indent + "  ");
+		if (spawnedWorkflows != null) 
+			for (String child : spawnedWorkflows) 
+				this.printTree(weClient, child, this.findSpawnedBy(skeleton, child).getModelId(), indent + "  ");
+	}
+	
+	private ProcessorSkeleton findSpawnedBy(ProcessorSkeleton skeleton, String spawnedInstanceId) {
+		List<String> spawnedWorkflows = skeleton.getDynamicMetadata().getAllMetadata(WorkflowConnectTaskInstance.SPAWNED_WORKFLOWS);
+		if (skeleton.getSubProcessors().isEmpty() && spawnedWorkflows.contains(spawnedInstanceId)) {
+			return skeleton;
+		}else {
+			ProcessorSkeleton result = null;
+			if (skeleton.getPreConditions() != null)
+				result = findSpawnedBy(skeleton.getPreConditions(), spawnedInstanceId);
+			if (result == null && skeleton.getPostConditions() != null)
+				result = findSpawnedBy(skeleton.getPostConditions(), spawnedInstanceId);
+			if (result == null) {
+				for (ProcessorSkeleton ps : skeleton.getSubProcessors()) {
+					result = findSpawnedBy(ps, spawnedInstanceId);
+					if (result != null)
+						break;
+				}
+			}
+			return result;
+		}
 	}
 	
 	public void setInstanceId(String instanceId) {
