@@ -85,7 +85,7 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 	
 	private ProcessorSkeleton findSpawnedBy(ProcessorSkeleton skeleton, String spawnedInstanceId) {
 		List<String> spawnedWorkflows = skeleton.getDynamicMetadata().getAllMetadata(WorkflowConnectTaskInstance.SPAWNED_WORKFLOWS);
-		if (skeleton.getSubProcessors().isEmpty() && spawnedWorkflows.contains(spawnedInstanceId)) {
+		if (skeleton.getSubProcessors().isEmpty() && spawnedWorkflows != null && spawnedWorkflows.contains(spawnedInstanceId)) {
 			return skeleton;
 		}else {
 			ProcessorSkeleton result = null;
