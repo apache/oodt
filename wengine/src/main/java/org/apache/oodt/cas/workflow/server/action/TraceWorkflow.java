@@ -60,7 +60,7 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 				String indent = "";
 				for (String parentInstanceId : parentInstanceIds) {
 					ProcessorSkeleton skeleton = weClient.getWorkflow(parentInstanceId);
-					System.out.println(indent + " - InstanceId = '" + instanceId + "' : ModelId = '" + skeleton.getModelId() + "' : State = '" + skeleton.getState().getName() + "'" + (parentSkeleton != null ? " : SpawnedBy = '" + this.findSpawnedBy(parentSkeleton, parentInstanceId) + "'" : ""));
+					System.out.println(indent + "[InstanceId = '" + instanceId + "' : ModelId = '" + skeleton.getModelId() + "' : State = '" + skeleton.getState().getName() + "'" + (parentSkeleton != null ? " : SpawnedBy = '" + this.findSpawnedBy(parentSkeleton, parentInstanceId) + "']" : "]"));
 					parentSkeleton = skeleton;
 					indent += "  ";
 				}
@@ -94,7 +94,7 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 		
 	private void printTree(WorkflowEngineClient weClient, String instanceId, String parentModelId, String indent) throws EngineException {
 		ProcessorSkeleton skeleton = weClient.getWorkflow(instanceId);
-		System.out.println(indent + " - InstanceId = '" + instanceId + "' : ModelId = '" + skeleton.getModelId() + "' : State = '" + skeleton.getState().getName() + "'" + (parentModelId != null ? " : SpawnedBy = '" + parentModelId + "'" : ""));
+		System.out.println(indent + (this.instanceId.equals(instanceId) ? "*" : "[") + "InstanceId = '" + instanceId + "' : ModelId = '" + skeleton.getModelId() + "' : State = '" + skeleton.getState().getName() + "'" + (parentModelId != null ? " : SpawnedBy = '" + parentModelId + "'" : "") + (this.instanceId.equals(instanceId) ? "*" : "]"));
 		for (ProcessorSkeleton task : WorkflowUtils.getTasks(skeleton)) {
 			List<String> spawnedWorkflows = task.getDynamicMetadata().getAllMetadata(WorkflowConnectTaskInstance.SPAWNED_WORKFLOWS);
 			if (spawnedWorkflows != null) 
