@@ -38,7 +38,7 @@ public class ParallelProcessor extends WorkflowProcessor {
 	}
 
 	public void handleSubProcessorMetadata(WorkflowProcessor workflowProcessor) {
-		this.setDynamicMetadata(WorkflowUtils.mergeMetadata(this.getDynamicMetadata(), workflowProcessor.getDynamicMetadata()));
+		this.setDynamicMetadata(WorkflowUtils.mergeMetadata(this.getDynamicMetadata(), workflowProcessor.getPassThroughDynamicMetadata()));
 	}
 
 }

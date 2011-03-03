@@ -45,7 +45,6 @@ import org.apache.oodt.cas.workflow.state.transition.PreConditionSuccessState;
 import org.apache.oodt.cas.workflow.state.waiting.BlockedState;
 import org.apache.oodt.cas.workflow.state.waiting.QueuedState;
 import org.apache.oodt.cas.workflow.state.waiting.WaitingOnResourcesState;
-import org.apache.oodt.cas.workflow.util.WorkflowUtils;
 	
 /**
  * 
@@ -58,6 +57,8 @@ import org.apache.oodt.cas.workflow.util.WorkflowUtils;
  */
 public abstract class WorkflowProcessor implements WorkflowProcessorListener, Comparable<WorkflowProcessor> {
 
+	public static final String LOCAL_KEYS_GROUP = "WorkflowProcessor/Local";
+	
 	private String instanceId;
 	private String modelId;
 	private String modelName;
@@ -235,6 +236,12 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener, Co
 	
 	public synchronized Metadata getDynamicMetadata() {
 		return this.dynamicMetadata;
+	}
+	
+	public synchronized Metadata getPassThroughDynamicMetadata() {
+		Metadata passThroughMet = new Metadata(this.dynamicMetadata);
+		passThroughMet.removeMetadataGroup(LOCAL_KEYS_GROUP);
+		return passThroughMet;
 	}
 	
 	public void setProcessorInfo(ProcessorInfo processorInfo) {

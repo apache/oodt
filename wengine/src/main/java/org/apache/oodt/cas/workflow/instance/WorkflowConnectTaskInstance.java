@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngineClient;
 import org.apache.oodt.cas.workflow.metadata.ControlMetadata;
+import org.apache.oodt.cas.workflow.processor.WorkflowProcessor;
 import org.apache.oodt.cas.workflow.state.WorkflowState;
 import org.apache.oodt.cas.workflow.state.done.FailureState;
 import org.apache.oodt.cas.workflow.state.done.SuccessState;
@@ -24,8 +25,9 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 	public static final String N_CALCULATOR_CLASS = "WorkflowConnect/NCalculator/Class"; 
 	public static final String N_MET_MOD_CLASS = "WorkflowConnect/NMetadataModifier/Class"; 
 	public static final String SPAWN_MODEL_ID = "WorkflowConnect/ModelId"; 
-	public static final String SPAWNED_WORKFLOWS = "WorkflowConnect/SpawnedWorkflows/InstanceIds";
-	public static final String SPAWNED_BY_WORKFLOW = "WorkflowConnect/SpawnedByWorkflow/InstanceId";
+	
+	public static final String SPAWNED_WORKFLOWS = WorkflowProcessor.LOCAL_KEYS_GROUP + "/WorkflowConnect/SpawnedWorkflows/InstanceIds";
+	public static final String SPAWNED_BY_WORKFLOW = WorkflowProcessor.LOCAL_KEYS_GROUP + "/WorkflowConnect/SpawnedByWorkflow/InstanceId";
 
 	private WorkflowEngineClient weClient;
 	

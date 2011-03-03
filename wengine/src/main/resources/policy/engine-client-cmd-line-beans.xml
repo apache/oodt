@@ -426,7 +426,7 @@
 		<property name="longOption" value="mode"/>
 		<property name="description" value="Mode Name"/>
 		<property name="hasArgs" value="true"/>
-		<property name="optionArgName" value="Complete|Relatives|Children"/>
+		<property name="optionArgName" value="Combined|Complete|Relatives|Children"/>
 		<property name="requiredOptions">
 			<list>
 				<bean class="org.apache.oodt.commons.option.required.RequiredOption">

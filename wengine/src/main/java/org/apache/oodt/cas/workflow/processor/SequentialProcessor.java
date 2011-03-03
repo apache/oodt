@@ -46,10 +46,10 @@ public class SequentialProcessor extends WorkflowProcessor {
 
 	@Override
 	public void handleSubProcessorMetadata(WorkflowProcessor workflowProcessor) {
-		this.setDynamicMetadata(workflowProcessor.getDynamicMetadata());
+		this.setDynamicMetadata(workflowProcessor.getPassThroughDynamicMetadata());
 		WorkflowProcessor nextWP = this.getNext();
 		if (nextWP != null)
-			nextWP.setDynamicMetadataRecur(workflowProcessor.getDynamicMetadata());
+			nextWP.setDynamicMetadataRecur(workflowProcessor.getPassThroughDynamicMetadata());
 	}
 
 	private WorkflowProcessor getNext() {

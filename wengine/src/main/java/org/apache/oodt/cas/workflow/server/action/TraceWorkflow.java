@@ -96,11 +96,12 @@ public class TraceWorkflow extends WorkflowEngineServerAction {
 	private void printTree(WorkflowEngineClient weClient, String instanceId, String parentModelId, String indent) throws EngineException {
 		ProcessorSkeleton skeleton = weClient.getWorkflow(instanceId);
 		System.out.println(indent + " - InstanceId = '" + instanceId + "' : ModelId = '" + skeleton.getModelId() + "' : State = '" + skeleton.getState().getName() + "'" + (parentModelId != null ? " : SpawnedBy = '" + parentModelId + "'" : ""));
-		Metadata metadata = weClient.getWorkflowMetadata(instanceId);
-		List<String> spawnedWorkflows = metadata.getAllMetadata(WorkflowConnectTaskInstance.SPAWNED_WORKFLOWS);
-		if (spawnedWorkflows != null) 
-			for (String child : spawnedWorkflows) 
-				this.printTree(weClient, child, this.findSpawnedBy(skeleton, child).getModelId(), indent + "  ");
+		for (ProcessorSkeleton task : WorkflowUtils.getTasks(skeleton)) {
+			List<String> spawnedWorkflows = task.getDynamicMetadata().getAllMetadata(WorkflowConnectTaskInstance.SPAWNED_WORKFLOWS);
+			if (spawnedWorkflows != null) 
+				for (String child : spawnedWorkflows) 
+					this.printTree(weClient, child, task.getModelId(), indent + "  ");
+		}
 	}
 	
 	private ProcessorSkeleton findSpawnedBy(ProcessorSkeleton skeleton, String spawnedInstanceId) {
