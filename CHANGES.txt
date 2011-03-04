@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-110 TestExternMetExtractor fails if temp directory is mounted noexec (pramirez, smclees)
+
 * OODT-145 StreamGobbler stopGobblingAndDie() method doesn't wait 
   until gobble is really dead (bfoster)
 
