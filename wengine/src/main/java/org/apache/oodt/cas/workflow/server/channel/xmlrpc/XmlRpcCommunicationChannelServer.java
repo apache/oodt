@@ -110,7 +110,7 @@ public class XmlRpcCommunicationChannelServer extends
 	}
 	
 	public String xmlrpc_getSupportedProcessorIds() throws Exception {
-		return this.serializer.serializeObject(this.xmlrpc_getSupportedProcessorIds());
+		return this.serializer.serializeObject(this.getSupportedProcessorIds());
 	}
 
     public String xmlrpc_getWorkflowStub(String instanceId) throws Exception {
