@@ -164,7 +164,7 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 				for (String spawnedInstanceId : spawnedInstanceIds) {
 					try {
 						if (Boolean.parseBoolean(ctrlMetadata.getMetadata(JOIN_METADATA))) {
-							if (ctrlMetadata.getMetadata(JOIN_ONLY_METADATA_KEYS) != null) {
+							if (ctrlMetadata.getMetadata(JOIN_ONLY_METADATA_KEYS) == null) {
 								dynMet = WorkflowUtils.mergeMetadata(dynMet, this.weClient.getWorkflowMetadata(spawnedInstanceId));
 							}else { 
 								Metadata spawnedMetadata = this.weClient.getWorkflowMetadata(spawnedInstanceId);
