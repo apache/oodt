@@ -130,15 +130,14 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 					spawnedInstanceIds.add(this.weClient.startWorkflow(spawnModelId, curWorkflowMet));
 				}catch (Exception e) {
 					LOG.log(Level.SEVERE, "Failed to start workflow ModelId '" + spawnModelId + "' [i = '" + i + "'] : " + e.getMessage(), e);
-					return new ResultsFailureState("Failed to start workflow ModelId '" + spawnModelId + "' [i = '" + i + "'] : " + e.getMessage());
-				}finally {
 					for (String spawenedInstanceId : spawnedInstanceIds) {
 						try {
 							this.weClient.setWorkflowState(spawenedInstanceId, new StoppedState("Spawing workflow failed to spawn sibling workflow [i = '" + i + "']"));
-						}catch (Exception e) {
-							LOG.log(Level.SEVERE, "Failed to stop workflow InstanceId = '" + spawenedInstanceId + "' : " + e.getMessage(), e);
+						}catch (Exception e2) {
+							LOG.log(Level.SEVERE, "Failed to stop workflow InstanceId = '" + spawenedInstanceId + "' : " + e2.getMessage(), e2);
 						}
 					}
+					return new ResultsFailureState("Failed to start workflow ModelId '" + spawnModelId + "' [i = '" + i + "'] : " + e.getMessage());
 				}
 			}
 			ctrlMetadata.replaceLocalMetadata(SPAWNED_WORKFLOWS, spawnedInstanceIds);
