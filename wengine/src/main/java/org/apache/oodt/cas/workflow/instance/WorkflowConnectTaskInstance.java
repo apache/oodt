@@ -119,7 +119,7 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 				LOG.log(Level.SEVERE, "Failed to determine N : " + e.getMessage(), e);
 				return new ResultsFailureState("Failed to determine N : " + e.getMessage());
 			}
-			Metadata spawnWorkflowMet = ctrlMetadata.asMetadata();
+			Metadata spawnWorkflowMet = ctrlMetadata.asMetadata(ControlMetadata.DYN);
 			Vector<String> spawnedInstanceIds = new Vector<String>();
 			for (int i = 0; i < n; i++) {
 				Metadata curWorkflowMet = new Metadata(spawnWorkflowMet);
