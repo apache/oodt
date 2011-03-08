@@ -67,13 +67,19 @@ public interface RmiCommunicationChannelServerInterface extends Remote {
 
     public String rmi_getInstanceRepository() throws RemoteException;
 
+    public void rmi_updateWorkflowMetadata(String instanceId, String metadata) throws RemoteException;
+
     public void rmi_updateWorkflowMetadata(String instanceId, String modelId, String metadata) throws RemoteException;
     
     public void rmi_updateInstanceMetadata(String jobId, String metadata) throws RemoteException;
 
     public void rmi_updateWorkflowAndInstance(String instanceId, String modelId, String state, String metadata, String jobId, String instanceMetadata) throws RemoteException;
 
+    public void rmi_setWorkflowState(String instanceId, String state) throws RemoteException;
+
     public void rmi_setWorkflowState(String instanceId, String modelId, String state) throws RemoteException;
+
+    public void rmi_setWorkflowPriority(String instanceId, String priority) throws RemoteException;
 
     public void rmi_setWorkflowPriority(String instanceId, String modelId, String priority) throws RemoteException;
 

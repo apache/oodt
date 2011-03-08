@@ -147,10 +147,20 @@ public class XmlRpcCommunicationChannelServer extends
 		return this.serializer.serializeObject(Boolean.TRUE);
 	}
 
+	public String xmlrpc_setWorkflowState(String instanceId, String state) throws Exception {
+		this.setWorkflowState(instanceId, this.serializer.deserializeObject(WorkflowState.class, state));
+		return this.serializer.serializeObject(Boolean.TRUE);
+	}
+	
 	public String xmlrpc_setWorkflowState(String instanceId, String modelId, String state) throws Exception {
 		this.setWorkflowState(instanceId, modelId, this.serializer.deserializeObject(WorkflowState.class, state));
 		return this.serializer.serializeObject(Boolean.TRUE);
 	}
+	
+    public String xmlrpc_setWorkflowPriority(String instanceId, String priority) throws Exception {
+    	this.setWorkflowPriority(instanceId, this.serializer.deserializeObject(Priority.class, priority));
+		return this.serializer.serializeObject(Boolean.TRUE);
+    }
 	
     public String xmlrpc_setWorkflowPriority(String instanceId, String modelId, String priority) throws Exception {
     	this.setWorkflowPriority(instanceId, modelId, this.serializer.deserializeObject(Priority.class, priority));
@@ -180,6 +190,11 @@ public class XmlRpcCommunicationChannelServer extends
 
 	public String xmlrpc_updateInstanceMetadata(String jobId, String metadata) throws Exception {
 		this.updateInstanceMetadata(jobId, this.serializer.deserializeObject(Metadata.class, metadata));
+		return this.serializer.serializeObject(Boolean.TRUE);
+	}
+	
+	public String xmlrpc_updateWorkflowMetadata(String instanceId, String metadata)  throws Exception {
+		this.updateWorkflowMetadata(instanceId, this.serializer.deserializeObject(Metadata.class, metadata));
 		return this.serializer.serializeObject(Boolean.TRUE);
 	}
 	

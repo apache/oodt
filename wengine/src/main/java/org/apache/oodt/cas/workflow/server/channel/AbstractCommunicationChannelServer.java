@@ -266,6 +266,15 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 		}
 	}
 
+	public void setWorkflowState(String instanceId, WorkflowState state) throws Exception {
+		try {
+			this.workflowEngine.setWorkflowState(instanceId, state);
+		}catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to set state '" + state + "' for workflow [instanceid='" + instanceId  + "'] in engine : " + e.getMessage(), e);
+			throw new Exception("Failed to set state '" + state + "' for workflow [instanceid='" + instanceId  + "'] in engine : " + e.getMessage(), e);
+		}
+	}
+	
 	public void setWorkflowState(String instanceId,
 			String modelId, WorkflowState state) throws Exception {
 		try {
@@ -276,6 +285,15 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 		}
 	}
 
+    public void setWorkflowPriority(String instanceId, Priority priority) throws Exception {
+    	try {
+    		this.workflowEngine.setWorkflowPriority(instanceId, priority);
+		}catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to set priority '" + priority + "' for workflow [instanceid='" + instanceId  + "'] in engine : " + e.getMessage(), e);
+			throw new Exception("Failed to set priority '" + priority + "' for workflow [instanceid='" + instanceId  + "'] in engine : " + e.getMessage(), e);
+		}
+    }
+	
     public void setWorkflowPriority(String instanceId, String modelId, Priority priority) throws Exception {
     	try {
     		this.workflowEngine.setWorkflowPriority(instanceId, modelId, priority);
@@ -344,6 +362,15 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 		}
 	}
 
+	public void updateWorkflowMetadata(String instanceId, Metadata metadata) throws Exception {
+		try {
+			this.workflowEngine.updateWorkflowMetadata(instanceId, metadata);
+		}catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to update workflow metadata [InstanceId='" + instanceId + "'] in engine : " + e.getMessage(), e);
+			throw new Exception("Failed to update workflow metadata [InstanceId='" + instanceId + "'] in engine : " + e.getMessage(), e);
+		}
+	}
+	
 	public void updateWorkflowMetadata(String instanceId,
 			String modelId, Metadata metadata) throws Exception {
 		try {

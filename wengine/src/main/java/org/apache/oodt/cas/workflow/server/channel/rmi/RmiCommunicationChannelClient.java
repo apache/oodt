@@ -151,6 +151,10 @@ public class RmiCommunicationChannelClient extends
 		return this.serializer.deserializeObject(WorkflowInstanceRepository.class, this.getRmiServer().rmi_getInstanceRepository());
     }
 
+    public void updateWorkflowMetadata(String instanceId, Metadata metadata) throws Exception {
+		this.getRmiServer().rmi_updateWorkflowMetadata(instanceId, this.serializer.serializeObject(metadata));
+    }
+    
     public void updateWorkflowMetadata(String instanceId, String modelId, Metadata metadata) throws Exception {
 		this.getRmiServer().rmi_updateWorkflowMetadata(instanceId, modelId, this.serializer.serializeObject(metadata));
     }
@@ -163,10 +167,18 @@ public class RmiCommunicationChannelClient extends
 		this.getRmiServer().rmi_updateWorkflowAndInstance(instanceId, modelId, this.serializer.serializeObject(state), this.serializer.serializeObject(metadata), jobId, this.serializer.serializeObject(instanceMetadata));
     }
     
+    public void setWorkflowState(String instanceId, WorkflowState state) throws Exception {
+		this.getRmiServer().rmi_setWorkflowState(instanceId, this.serializer.serializeObject(state));
+    }
+    
     public void setWorkflowState(String instanceId, String modelId, WorkflowState state) throws Exception {
 		this.getRmiServer().rmi_setWorkflowState(instanceId, modelId, this.serializer.serializeObject(state));
     }
 
+    public void setWorkflowPriority(String instanceId, Priority priority) throws Exception {
+		this.getRmiServer().rmi_setWorkflowPriority(instanceId, this.serializer.serializeObject(priority));
+    }
+    
     public void setWorkflowPriority(String instanceId, String modelId, Priority priority) throws Exception {
 		this.getRmiServer().rmi_setWorkflowPriority(instanceId, modelId, this.serializer.serializeObject(priority));
     }

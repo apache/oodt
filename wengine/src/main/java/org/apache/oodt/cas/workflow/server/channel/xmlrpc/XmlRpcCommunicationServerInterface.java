@@ -66,7 +66,11 @@ public interface XmlRpcCommunicationServerInterface {
 
 	public String xmlrpc_resumeWorkflow(String instanceId) throws Exception;
 
+	public String xmlrpc_setWorkflowState(String instanceId, String state) throws Exception;
+
 	public String xmlrpc_setWorkflowState(String instanceId, String modelId, String state) throws Exception;
+
+    public String xmlrpc_setWorkflowPriority(String instanceId, String priority) throws Exception;
 
     public String xmlrpc_setWorkflowPriority(String instanceId, String modelId, String priority) throws Exception;
 	
@@ -82,6 +86,8 @@ public interface XmlRpcCommunicationServerInterface {
 
 	public String xmlrpc_updateInstanceMetadata(String jobId, String metadata) throws Exception;
 	
+	public String xmlrpc_updateWorkflowMetadata(String instanceId, String metadata)  throws Exception;
+
 	public String xmlrpc_updateWorkflowMetadata(String instanceId, String modelId, String metadata)  throws Exception;
 
     public String xmlrpc_registerEvent(String event) throws Exception;

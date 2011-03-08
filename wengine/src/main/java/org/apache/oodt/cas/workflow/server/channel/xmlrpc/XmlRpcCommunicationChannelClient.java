@@ -231,6 +231,13 @@ public class XmlRpcCommunicationChannelClient extends
 		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_resumeWorkflow", args);
 	}
 
+	public void setWorkflowState(String instanceId, WorkflowState state) throws Exception {
+		Vector<Object> args = new Vector<Object>();
+		args.add(instanceId);
+		args.add(this.serializer.serializeObject(state));
+		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_setWorkflowState", args);
+	}
+	
 	public void setWorkflowState(String instanceId,
 			String modelId, WorkflowState state) throws Exception {
 		Vector<Object> args = new Vector<Object>();
@@ -238,6 +245,13 @@ public class XmlRpcCommunicationChannelClient extends
 		args.add(modelId);
 		args.add(this.serializer.serializeObject(state));
 		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_setWorkflowState", args);
+	}
+	
+	public void setWorkflowPriority(String instanceId, Priority priority) throws Exception {
+		Vector<Object> args = new Vector<Object>();
+		args.add(instanceId);
+		args.add(this.serializer.serializeObject(priority));
+		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_setWorkflowPriority", args);
 	}
 	
 	public void setWorkflowPriority(String instanceId,
@@ -296,6 +310,13 @@ public class XmlRpcCommunicationChannelClient extends
 		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_updateInstanceMetadata", args);
 	}
 
+	public void updateWorkflowMetadata(String instanceId, Metadata metadata) throws Exception {
+		Vector<Object> args = new Vector<Object>();
+		args.add(instanceId);
+		args.add(this.serializer.serializeObject(metadata));
+		this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_updateWorkflowMetadata", args);
+	}
+	
 	public void updateWorkflowMetadata(String instanceId,
 			String modelId, Metadata metadata) throws Exception {
 		Vector<Object> args = new Vector<Object>();

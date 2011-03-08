@@ -233,11 +233,19 @@ public class MultiCommunicationChannelClient extends
 		useClient.resumeWorkflow(instanceId);
 	}
 
+	public void setWorkflowPriority(String instanceId, Priority priority) throws Exception {
+		useClient.setWorkflowPriority(instanceId, priority);
+	}
+	
 	public void setWorkflowPriority(String instanceId, String modelId,
 			Priority priority) throws Exception {
 		useClient.setWorkflowPriority(instanceId, modelId, priority);
 	}
 
+	public void setWorkflowState(String instanceId, WorkflowState state) throws Exception {
+		useClient.setWorkflowState(instanceId, state);
+	}
+	
 	public void setWorkflowState(String instanceId, String modelId,
 			WorkflowState state) throws Exception {
 		useClient.setWorkflowState(instanceId, modelId, state);
@@ -277,6 +285,10 @@ public class MultiCommunicationChannelClient extends
 		useClient.updateInstanceMetadata(jobId, metadata);
 	}
 
+	public void updateWorkflowMetadata(String instanceId, Metadata metadata) throws Exception {
+		useClient.updateWorkflowMetadata(instanceId, metadata);
+	}
+	
 	public void updateWorkflowMetadata(String instanceId, String modelId,
 			Metadata metadata) throws Exception {
 		useClient.updateWorkflowMetadata(instanceId, modelId, metadata);

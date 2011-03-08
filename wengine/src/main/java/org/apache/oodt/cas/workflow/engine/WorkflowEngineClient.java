@@ -238,6 +238,14 @@ public class WorkflowEngineClient implements WorkflowEngine {
 		}
 	}
 
+	public void setWorkflowState(String instanceId, WorkflowState state) throws EngineException {
+		try {
+			this.client.setWorkflowState(instanceId, state);
+		}catch (Exception e) {
+			throw new EngineException("Failed to update workflow state : " + e.getMessage(), e);
+		}
+	}
+	
 	public void setWorkflowState(String instanceId,
 			String modelId, WorkflowState state) throws EngineException {
 		try {
@@ -247,6 +255,14 @@ public class WorkflowEngineClient implements WorkflowEngine {
 		}
 	}
 
+    public void setWorkflowPriority(String instanceId, Priority priority) throws EngineException {
+		try {
+			this.client.setWorkflowPriority(instanceId, priority);
+		}catch (Exception e) {
+			throw new EngineException("Failed to update workflow priority : " + e.getMessage(), e);
+		}
+    }
+    
     public void setWorkflowPriority(String instanceId, String modelId, Priority priority) throws EngineException {
 		try {
 			this.client.setWorkflowPriority(instanceId, modelId, priority);
@@ -307,6 +323,14 @@ public class WorkflowEngineClient implements WorkflowEngine {
 		}
 	}
 
+	public void updateWorkflowMetadata(String instanceId, Metadata metadata) throws EngineException {
+		try {
+			this.client.updateWorkflowMetadata(instanceId, metadata);
+		}catch (Exception e) {
+			throw new EngineException(e);
+		}
+	}
+	
 	public void updateWorkflowMetadata(String instanceId,
 			String modelId, Metadata metadata) throws EngineException {
 		try {

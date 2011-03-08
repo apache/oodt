@@ -57,7 +57,7 @@ import org.apache.oodt.cas.workflow.state.waiting.WaitingOnResourcesState;
  */
 public abstract class WorkflowProcessor implements WorkflowProcessorListener, Comparable<WorkflowProcessor> {
 
-	public static final String LOCAL_KEYS_GROUP = "WorkflowProcessor/Local";
+	public static final String LOCAL_KEYS = "WorkflowProcessor/Local/Keys";
 	
 	private String instanceId;
 	private String modelId;
@@ -240,7 +240,11 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener, Co
 	
 	public synchronized Metadata getPassThroughDynamicMetadata() {
 		Metadata passThroughMet = new Metadata(this.dynamicMetadata);
-		passThroughMet.removeMetadataGroup(LOCAL_KEYS_GROUP);
+		passThroughMet.removeMetadata(LOCAL_KEYS);
+		for (String key : this.dynamicMetadata.getAllMetadata(LOCAL_KEYS))
+			passThroughMet.removeMetadata(key);
+		for (String key : this.staticMetadata.getAllMetadata(LOCAL_KEYS))
+			passThroughMet.removeMetadata(key);
 		return passThroughMet;
 	}
 	

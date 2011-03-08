@@ -279,6 +279,14 @@ public class RmiCommunicationChannelServer extends AbstractCommunicationChannelS
 		}
     }
 
+    public void rmi_updateWorkflowMetadata(String instanceId, String metadata) throws RemoteException {
+		try {
+			this.updateWorkflowMetadata(instanceId, this.serializer.deserializeObject(Metadata.class, metadata));
+		}catch (Exception e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
+    }
+    
     public void rmi_updateWorkflowMetadata(String instanceId, String modelId, String metadata) throws RemoteException {
 		try {
 			this.updateWorkflowMetadata(instanceId, modelId, this.serializer.deserializeObject(Metadata.class, metadata));
@@ -303,6 +311,14 @@ public class RmiCommunicationChannelServer extends AbstractCommunicationChannelS
 		}
     }
     
+    public void rmi_setWorkflowState(String instanceId, String state) throws RemoteException {
+		try {
+			this.setWorkflowState(instanceId, this.serializer.deserializeObject(WorkflowState.class, state));
+		}catch (Exception e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
+    }
+    
     public void rmi_setWorkflowState(String instanceId, String modelId, String state) throws RemoteException {
 		try {
 			this.setWorkflowState(instanceId, modelId, this.serializer.deserializeObject(WorkflowState.class, state));
@@ -311,6 +327,14 @@ public class RmiCommunicationChannelServer extends AbstractCommunicationChannelS
 		}
     }
 
+    public void rmi_setWorkflowPriority(String instanceId, String priority) throws RemoteException {
+		try {
+			this.setWorkflowPriority(instanceId, this.serializer.deserializeObject(Priority.class, priority));
+		}catch (Exception e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
+    }
+    
     public void rmi_setWorkflowPriority(String instanceId, String modelId, String priority) throws RemoteException {
 		try {
 			this.setWorkflowPriority(instanceId, modelId, this.serializer.deserializeObject(Priority.class, priority));

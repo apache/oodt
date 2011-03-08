@@ -97,13 +97,19 @@ public interface WorkflowEngine {
 
     public ProcessorInfo getProcessorInfo(String instanceId, String modelId) throws EngineException;
     
+    public void updateWorkflowMetadata(String instanceId, Metadata metadata) throws EngineException;
+
     public void updateWorkflowMetadata(String instanceId, String modelId, Metadata metadata) throws EngineException;
     
     public void updateInstanceMetadata(String jobId, Metadata metadata) throws EngineException;
 
     public void updateWorkflowAndInstance(String instanceId, String modelId, WorkflowState state, Metadata metadata, String jobId, Metadata instanceMetadata) throws EngineException;
     
+    public void setWorkflowState(String instanceId, WorkflowState state) throws EngineException;
+
     public void setWorkflowState(String instanceId, String modelId, WorkflowState state) throws EngineException;
+
+    public void setWorkflowPriority(String instanceId, Priority priority) throws EngineException;
 
     public void setWorkflowPriority(String instanceId, String modelId, Priority priority) throws EngineException;
     

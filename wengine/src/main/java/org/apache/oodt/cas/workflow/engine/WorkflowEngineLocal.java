@@ -259,10 +259,18 @@ public class WorkflowEngineLocal implements WorkflowEngine {
     	return WorkflowUtils.findProcessor(this.queueManager.getWorkflowProcessor(instanceId), modelId).getStub();
     }
     
+	public void setWorkflowState(String instanceId, WorkflowState state) throws EngineException {
+		this.queueManager.setState(instanceId, null, state);
+	}
+	
 	public void setWorkflowState(String instanceId, String modelId, WorkflowState state) throws EngineException {
 		this.queueManager.setState(instanceId, modelId, state);
 	}
 	
+    public void setWorkflowPriority(String instanceId, Priority priority) throws EngineException {
+		this.queueManager.setPriority(instanceId, null, priority);
+    }
+
     public void setWorkflowPriority(String instanceId, String modelId, Priority priority) throws EngineException {
 		this.queueManager.setPriority(instanceId, modelId, priority);
     }
@@ -356,6 +364,10 @@ public class WorkflowEngineLocal implements WorkflowEngine {
 		}
 	}
 
+	public void updateWorkflowMetadata(String instanceId, Metadata metadata) throws EngineException {
+		this.queueManager.setMetadata(instanceId, null, metadata);
+	}
+	
 	public void updateWorkflowMetadata(String instanceId,
 			String modelId, Metadata metadata) throws EngineException {
 		this.queueManager.setMetadata(instanceId, modelId, metadata);
