@@ -241,10 +241,12 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener, Co
 	public synchronized Metadata getPassThroughDynamicMetadata() {
 		Metadata passThroughMet = new Metadata(this.dynamicMetadata);
 		passThroughMet.removeMetadata(LOCAL_KEYS);
-		for (String key : this.dynamicMetadata.getAllMetadata(LOCAL_KEYS))
-			passThroughMet.removeMetadata(key);
-		for (String key : this.staticMetadata.getAllMetadata(LOCAL_KEYS))
-			passThroughMet.removeMetadata(key);
+		if (this.dynamicMetadata.getAllMetadata(LOCAL_KEYS) != null)
+			for (String key : this.dynamicMetadata.getAllMetadata(LOCAL_KEYS))
+				passThroughMet.removeMetadata(key);
+		if (this.staticMetadata.getAllMetadata(LOCAL_KEYS) != null)
+			for (String key : this.staticMetadata.getAllMetadata(LOCAL_KEYS))
+				passThroughMet.removeMetadata(key);
 		return passThroughMet;
 	}
 	
