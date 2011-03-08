@@ -25,6 +25,7 @@ the License.
 
     <menu ref="reports" inherit="bottom"/>
     <menu name="User's Guide">
+      <item name="Tutorials" href="tutorials/"/>
       <item name="Product Servlet" href="servlet/"/>
     </menu>
   </body>
