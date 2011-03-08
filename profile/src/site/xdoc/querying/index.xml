@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+  <properties>
+    <title>Querying Profile Elements</title>
+    <author email="Sean.Kelly@jpl.nasa.gov">Sean Kelly</author>
+  </properties>
+  <!-- Four Carry Nuts - Hexagon -->
+  <body>
+    <section name="Querying Profile Elements">
+
+      <p>As desribed in <a href="../info/">Information Captured in a
+	Profile</a>, profile elements describe the composition of a
+	resource using metadata descriptions taken from the <a
+	href="http://metadata-standards.org/11179/">ISO/IEC 11179
+	standards</a>.  The profile elements catalog lists of valid
+	values, minimum and maximum values, data types, and so forth.
+      </p>
+
+      <p>As you develop a profile handler to perform queries and
+	generate profiles, you'll encounter three cases when querying
+	profile elements or the data sources they describe:
+      </p>
+
+      <ul>
+	<li>Querying ranges of values</li>
+	<li>Querying enumerated values</li>
+	<li>Querying unspecified profile lements</li>
+      </ul>
+    </section>
+
+    <section name="Queries Against Ranges">
+      <p>Ranged profile elements are those that describe an attribute
+	of a resource's composition in terms of a continuous space of
+	valid values.  In the Java implementation, there's a subclass
+	of <code>ProfileElement</code> to represent such ranges:
+	<code>RangedProfileElement</code>.  In the XML representation,
+	the <code>&lt;elemEnumFlag&gt;</code> is <code>F</code> and
+	there are values listed for <code>&lt;elemMinValue&gt;</code>
+	and <code>&lt;elemMaxValue&gt;</code>.
+      </p>
+
+      <p>An example of a ranged profile element might be:</p>
+      <table>
+	<tbody>
+	  <tr><td>Name:</td><td>temperature</td></tr>
+	  <tr><td>Description:</td><td>Temperatures measured using
+	  oral, medical-use, alcohol-based thermometer.</td></tr>
+	  <tr><td>Type:</td><td>real</td></tr>
+	  <tr><td>Unit:</td><td>kelvin</td></tr>
+	  <tr><td>Enumeration flag:</td><td>false</td></tr>
+	  <tr><td>Min value:</td><td>282.31</td></tr>
+	  <tr><td>Max value:</td><td>301.45</td></tr>
+	</tbody>
+      </table>
+
+      <p>When you're generating a profile (or querying a similar
+	metadata model) with a ranged element, queries should match if
+	the sought value occurs within the given, inclusive range.  If
+	it's a negative query, then it should match if the sought
+	value <em>doesn't</em> occur within the range.
+      </p>
+
+      <p>Here's an example.  Suppose you have a ranged profile element
+	called <code>lumens</code> and its minimum value is 10 and its
+	maximum value is 20.  Here's a table that shows queries and
+	whether they match:
+      </p>
+
+      <table>
+	<thead>
+	  <tr><th>Query</th><th>Match?</th></tr>
+	</thead>
+	<tbody>
+	  <tr><td>lumens = 12</td><td>Yes, since 12 is between 10 and 20</td></tr>
+	  <tr><td>lumens = 45</td><td>No, since 45 is above 20</td></tr>
+	  <tr><td>lumens != 12</td><td>Yes, since there are <em>other values</em> in the range 10..20 that match, such as 13, 14, 12.1, etc.</td></tr>
+	  <tr><td>lumens != 45</td><td>Yes, since are an infinite number of values in the range 10..22 that are not 45</td></tr>
+	  <tr><td>lumens != 10</td><td>Yes</td></tr>
+	  <tr><td>lumens &lt; 45</td><td>Yes</td></tr>
+	  <tr><td>lumens &gt; 15</td><td>Yes</td></tr>
+	  <tr><td>lumens &gt; 35</td><td>No; the highest lumen value is 20</td></tr>
+	  <tr><td>lumens LIKE 12</td><td>Maybe</td></tr>
+	</tbody>
+      </table>
+
+      <p>The "LIKE" relational operator defined by the XMLQuery query
+	langauge was meant for string comparisons, yet there's nothing
+	in the software that prevents it from being presented for
+	ranged queries.  The choice of whether to match it is up to you.
+      </p>
+    </section>
+
+    <section name="Queries Against Enumerated Values">
+      <p>Enumerated profile elements are those that describe an
+	attribute of a resource's composition in terms of a discrete
+	list of valid values.  In the Java implementation, there's a
+	subclass of <code>ProfileElement</code> to represent such
+	ranges: <code>EnumeratedProfileElement</code>.  In the XML
+	representation, the <code>&lt;elemEnumFlag&gt;</code> is
+	<code>T</code> and there are one or more
+	<code>&lt;elemValue&gt;</code> elements.
+      </p>
+
+      <p>An example of an enumerated profile element might be:</p>
+      <table>
+	<tbody>
+	  <tr><td>Name:</td><td>zone</td></tr>
+	  <tr><td>Description:</td><td>City Planning Commission zoning code for permitted land use.</td></tr>
+	  <tr><td>Type:</td><td>string</td></tr>
+	  <tr><td>Unit:</td><td>code</td></tr>
+	  <tr><td>Enumeration flag:</td><td>true</td></tr>
+	  <tr><td>Value:</td><td>A</td></tr>
+	  <tr><td>Value:</td><td>B1</td></tr>
+	  <tr><td>Value:</td><td>B2</td></tr>
+	  <tr><td>Value:</td><td>B4</td></tr>
+	  <tr><td>Value:</td><td>C</td></tr>
+	  <tr><td>Value:</td><td>H</td></tr>
+	  <tr><td>Value:</td><td>PDD</td></tr>
+	  <tr><td>Value:</td><td>R2</td></tr>
+	  <tr><td>Value:</td><td>R3</td></tr>
+	  <tr><td>Value:</td><td>R4</td></tr>
+	  <tr><td>Value:</td><td>R5</td></tr>
+	</tbody>
+      </table>
+
+      <p>When you're generating a profile (or querying a similar
+	metadata model) with an enumerated element, queries should
+	match if the sought value appears as one of the listed
+	elements.
+      </p>
+
+      <p>Here's an example.  Suppose you have an profile element
+	called <code>planet</code> that has as valid values
+	<code>Mercury</code>, <code>Venus</code>, <code>Earth</code>,
+	and <code>Mars</code>.  Here's a table that shows queries and
+	whether they match:
+      </p>
+
+      <table>
+	<thead>
+	  <tr><th>Query</th><th>Match?</th></tr>
+	</thead>
+	<tbody>
+	  <tr><td>planet = Mercury</td><td>Yes</td></tr>
+	  <tr><td>planet = Jupiter</td><td>No</td></tr>
+	  <tr><td>planet != Mercury</td><td>Yes since Earth, Venus, and Mars are all not Mercury</td></tr>
+	  <tr><td>planet != Jupiter</td><td>Yes since there are 4 planets which are all not Jupiter</td></tr>
+	  <tr><td>planet &lt; Earth</td><td>Maybe</td></tr>
+	  <tr><td>planet LIKE %E%</td><td>Yes, since all four planets have an E in them (without regard to case)</td></tr>
+	  <tr><td>planet NOTLIKE %E%</td><td>No, since all four planets have an E in them</td></tr>
+	</tbody>
+      </table>
+
+      <p>Relational ordering is not specified by the profile model, so whether
+	a query like <code>planet &lt; Earth</code> matches is up to you.
+      </p>
+    </section>
+
+    <section name="Querying Against Unspecified Values">
+      <p>An unspecific profile element indicates only the
+	<em>presence</em> of an attribute in the composition of a
+	resource, and nothing else.  In the Java implementation,
+	there's a subclass of <code>ProfileElement</code> to represent
+	this, <code>UnspecifiedProfileElement</code>.  In the XML
+	representation, the <code>&lt;elemEnumFlag&gt;</code> is
+	<code>T</code> and there are zero
+	<code>&lt;elemValue&gt;</code> elements.
+      </p>
+
+      <p>Unspecified profile elements can be useful where you have
+	profiles not describing single resources, but entire
+	collections of resources.  For example, you may have ranged
+	profile elements called <code>temperature</code> for each
+	temperature resource.  But if there are a billion resources,
+	then determining the minimum and maximum temperature for the
+	profile of the entire collection might be painful, in which
+	case you can say that the collection has a
+	<code>temperature</code> attribute by using an unspecified
+	profile for the element for the collection.
+      </p>
+
+      <p>Queries against unspecified elements always match, regardless
+	what the query is.
+      </p>
+    </section>
+  </body>
+</document>

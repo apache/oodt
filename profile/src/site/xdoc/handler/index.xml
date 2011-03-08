@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+  <properties>
+    <title>Developing a Profile Handler</title>
+    <author email="Sean.Kelly@jpl.nasa.gov">Sean Kelly</author>
+  </properties>
+  <!-- Shift - Nexus Overload -->
+  <body>
+    <section name="Developing a Profile Handler">
+      <p>Profiles describe resources. But where do profiles come from?
+	From profile handlers. Profile handlers are interchangeable
+	components of a profile server that accept queries for
+	profiles and return matching profiles. Profile handlers take a
+	static or a dynamic collection of information and serve an
+	equivalent set of profiles. Developing a new profile handler
+	is as simple as writing a Java class that implements a
+	specific interface or two.
+      </p>
+
+      <p>If you're not already familiar with the <code>XMLQuery</code>
+	class, go ahead and <a href="/edm-query/tutorial/">take its
+	  tutorial now</a>.  We'll wait!
+      </p>
+    </section>
+
+    <section name="Introduction">
+      <p>Profile handlers handle queries for profiles.  They're the
+	interchangeable part of a profile server that you can develop
+	for special needs.  Profile servers delegate all incoming
+	requests to zero or more profile handlers, as shown in the
+	following class diagram:
+      </p>
+
+      <img src="../images/delegation.png" alt="Delegation model" />
+
+      <p>Developing, testing, and deploying a new profile handler
+	involves:
+      </p>
+      <ol>
+	<li>Creating a class that implements (however indirectly)
+	  the <code>jpl.eda.profile.handlers.ProfileHandler</code> interface.
+	</li>
+	<li>Creating a new process that runs either the RMI or
+	    CORBA <code>ProfileServiceImpl</code> class,
+	    specifying the name of your handler class.
+	</li>
+	<li>Starting the server and sending in queries.
+	</li>
+      </ol>
+      <p>This document describes each of these steps in detail.</p>
+    </section>
+
+    <section name="Writing the Handler Class">
+      <p>Writing the class that handles profile queries and delivers
+	profile results is easily the hardest part in developing a new
+	kind of profile server.  Profile servers' handlers can serve
+	profiles describing static resources, can synthesize profile
+	on the fly to describe resources, and can create profile
+	metadata for resources that change all the time.
+      </p>
+      
+      <p>Understanding the resources you're trying to describe with
+	profiles is the most important thing you can do before
+	beginning to write your profile handler:
+      </p>
+
+      <ul>
+	<li>Do you always have the same set of static resources?
+	  If so, you can write a static profile document to describe
+	  them and use the
+	  <code>LightweightProfileHandler</code>, thus
+	  avoiding having to write a new handler at all.
+	</li>
+	<li>Do you have resources that never change, but may add to or
+	  remove from that set?  If so, you can use the
+	  <code>OracleProfileImpl</code> handler which uses an Oracle
+	  database to store a set of profiles that you can update.
+	</li>
+	<li>Do you have resources that do change, or that come
+	  from a dynamic set of data?  If so, you'll have to write a
+	  handler.
+	</li>
+      </ul>
+
+      <subsection name="Choosing the Handler Interface to Implement">
+	<p>The OODT Framework provides two handler interfaces (one is
+	  an extension of the other):
+	</p>
+	<ul>
+	  <li><code>jpl.eda.profile.handlers.ProfileHandler</code>
+	      is the basic profile handler.  It defines methods for
+	    <em>handling</em> searches for profiles.
+	  </li>
+
+	  <li><code>jpl.eda.profile.handlers.ProfileManager</code> is an
+	    extension that not just <em>handles</em> profile queries
+	    but also <em>manages</em> the set of profiles maintained
+	    by the server, by providing methods for adding to,
+	    removing from, and updating the set of managed profiles.
+	  </li>
+	</ul>
+      
+	<p>For nearly all applications, the <code>ProfileHandler</code>
+	  interface is sufficient.  If you need to provide profile
+	  management capabilities, it still may be handy to start with
+	  the <code>ProfileHandler</code> interface, implement and test
+	  its methods, and <em>then</em> change to the
+	  <code>ProfileManager</code>.
+	</p>
+      </subsection>
+
+      <subsection name="The ProfileHandler Interface">
+	<p>The <code>ProfileHandler</code> interface is
+	  as follows:
+	</p>
+
+	<source>package jpl.eda.profile.handlers;
+
+import java.util.List;
+import jpl.eda.profile.Profile;
+import jpl.eda.profile.ProfileException;
+import jpl.eda.xmlquery.XMLQuery;
+
+public interface ProfileHandler {
+  List findProfiles(XMLQuery query) throws ProfileException;
+  Profile get(String profID) throws ProfileException;
+}</source>
+
+	<p>The two methods are described in detail below.</p>
+
+	<dl>
+	  <dt><code>findProfiles</code></dt>
+	  <dd>This method accepts a query in the form of an
+	    <code>XMLQuery</code> object and returns a
+	    Java <code>List</code> of
+	    <code>Profile</code> objects that match.  If
+	    there are no matches, this method must return an empty
+	    list.  If an error occurs, it should throw the
+	      <code>ProfileException</code>.
+
+	    <p>This is by far the most used and most important
+	      method, and really is the <i>raison
+	      d'etre</i> for profile servers.  It's
+	      what the OODT Framework uses to allow clients to ask
+	      your server for resources based on metadata .
+	    </p>
+	  </dd>
+	  <dt><code>get</code></dt>
+	  <dd>This method accepts the ID of a profile in the form
+	    of a Java <code>String</code> and returns
+	    either a <code>Profile</code> object with that
+	    ID or null if the ID is unknown.  This method enables a
+	    client to retrieve a profile using a priori knowledge of
+	    the profile's ID (perhaps from a previous search).
+	  </dd>
+	</dl>
+      </subsection>
+
+      <subsection name="The ProfileManager Interface">
+	<p>The <code>ProfileManager</code> interface
+	  builds on the <code>ProfileHandler</code>, and is
+	  listed below:
+	</p>
+	<source>package jpl.eda.profile.handlers;
+
+import java.util.Collection;
+import java.util.Iterator;
+import jpl.eda.profile.Profile;
+import jpl.eda.profile.ProfileException;
+import jpl.eda.xmlquery.XMLQuery;
+
+public interface ProfileManager extends ProfileHandler {
+  void add(Profile profile) throws ProfileException;
+  void addAll(Collection collection) throws ProfileException;
+  void clear() throws ProfileException;
+  boolean contains(Profile profile) throws ProfileException;
+  boolean containsAll(Collection collection) throws ProfileException;
+  Collection getAll() throws ProfileException;
+  boolean isEmpty() throws ProfileException;
+  Iterator iterator() throws ProfileException;
+  boolean remove(String profID, String version) throws ProfileException;
+  boolean remove(String profID) throws ProfileException;
+  int size() throws ProfileException;
+  void replace(Profile profile) throws ProfileException;
+}</source>
+
+	<p>If you choose to implement a profile manager, please see
+	  the API documentation for the
+	  <code>ProfileManager</code> class for the
+	  expectations of each method.
+	</p>
+      </subsection>
+    </section>
+
+    <section name="Our First Profile Handler">
+      <p>Although not terribly useful, a &#8220;null&#8221; profile
+	handler is a good example to start with because it is small and
+	will make sure your environment is in good working order before
+	proceeding to a real profile handler.
+      </p>
+      
+      <p>What's a &#8220;null&#8221; profile handler?  It's one that
+	serves no profiles.  That is, for any query with
+	<code>findProfiles</code> and any retrieval with
+	<code>get</code> it never returns any profiles.
+      </p>
+
+      <subsection name="Directory Layout">
+	<p>For these examples, we'll work on a kind of Unix system
+	  with a <code>csh</code> shell.  Other shell users or Windows
+	  users will need to adjust.  We'll also use the J2SDK
+	  command-line tools.  If you're using an Integrated
+	  Development Environment of some sort, please adjust
+	  accordingly.
+	</p>
+
+	<p>We'll create a "home" directory for our profile servers
+	  with subdirectories to hold specific components like source
+	  code, jar files, and scripts.  We'll call this home
+	  directory by an environment variable, <code>PS_HOME</code>
+	  (PS for Profile Server), so that scripts won't have to refer
+	  to things by relative paths:
+	</p>
+
+	<source>% <b>mkdir ps</b>
+% <b>cd ps</b>
+% <b>setenv PS_HOME `pwd`</b>
+% <b>mkdir bin classes lib src</b></source>
+      </subsection>
+
+      <subsection name="Source File">
+	<p>One of the easier parts is the source itself for the
+	  &#8216;null&#8217; profile handler.  Here it is:
+	</p>
+	<source>import java.util.Collections;
+import java.util.List;
+import jpl.eda.profile.Profile;
+import jpl.eda.profile.handlers.ProfileHandler;
+import jpl.eda.xmlquery.XMLQuery;
+
+public class NullHandler implements ProfileHandler {
+  public List findProfiles(XMLQuery query) {
+    return Collections.EMPTY_LIST;
+  }
+  public Profile get(String id) {
+    return null;
+  }
+}</source>
+
+	<p>Note that for every query, the
+	  <code>findProfiles</code> method returns an empty list
+	  (meaning that no profiles matched), and that for any retrieval
+	  the <code>get</code> method returns null, meaning that
+	  the handler believes there's no such profile.
+	</p>
+	<p>This class should be compiled into a file named
+	  <code>$PS_HOME/src/NullHandler.java</code>
+	  since it is a public class.
+	</p>
+
+	<p><em>Note:</em> Profile handler classes <em>must</em> be
+	  public <em>and</em> provide a no-arguments
+	  constructor.  You should retrieve any initialization
+	  settings through the System Properties or by other means
+	  specific to your profile handler.
+	</p>
+      </subsection>
+      
+      <subsection name="Compiling the Handler">
+	<p>Compiling this profile handler requires the following
+	  dependent components:
+	</p>
+
+	<ul>
+	  <li><a href="/grid-profile/">Profile Service</a>.  This
+	    defines the entire profile model, handler interfaces,
+	    servers, clients, and so forth.
+	  </li>
+	  <li><a href="/edm-query/">Query Expression</a>.  This
+	    defines the <code>XMLQuery</code> and related classes.
+	  </li>
+	</ul>
+
+	<p>Download the binary distributions of the above two packages
+	  and copy the jar file from each into the
+	  <code>$PS_HOME/lib</code> directory.  Then you can compile
+	  the <code>NullHandler.java</code> file.
+	</p>
+
+	<source>% <b>ls</b>
+bin   classes   lib    src
+% <b>ls -l lib</b>
+total 244
+-rw-r--r--  1 kelly  kelly   43879 28 Feb 07:05 edm-query-2.0.2.jar
+-rw-r--r--  1 kelly  kelly  201453 28 Feb 07:01 grid-profile-3.0.2.jar
+% <b>javac -extdirs lib -d classes src/NullHandler.java</b>
+% <b>ls -l classes</b>
+total 4
+-rw-r--r--  1 kelly  kelly  511 28 Feb 07:07 NullHandler.class
+% <b>jar -cf lib/my-handler.jar -C classes NullHandler.class</b>
+% <b>jar -tf lib/my-handler.jar</b>
+META-INF/
+META-INF/MANIFEST.MF
+NullHandler.class</source>
+
+	<p>We now have a new jar file, <code>my-handler.jar</code>
+	  which contains our &#8216;null&#8217; profile handler,
+	  compiled and ready to go.
+	</p>
+      </subsection>
+
+      <subsection name="Starting an RMI Registry">
+	<p>Clients access profile servers with an open-ended set of
+	  network protocols.  We currently have implementations for
+	  RMI and CORBA.  For this tutorial, we'll use RMI, since it's
+	  enormously less complex.  Clients of RMI systems first
+	  contact an RMI registry and look up a server object's
+	  network address.  The registry maintains mappings from a
+	  server object's name to its network address.  When servers
+	  start up, they register with the RMI registry so clients can
+	  later find them.
+	</p>
+
+	<p>To start an RMI Registry, you'll need the following components:</p>
+
+	<ul>
+	  <li><a href="/edm-commons/">EDM Common Components</a>.
+	    These are common utilities used by every OODT
+	    service.
+	  </li>
+	  <li><a href="/rmi-registry/">OODT RMI Registry</a>.  This is the
+	    actual RMI registry.</li>
+	</ul>
+
+	<p>Download each component's binary distribution, unpack each
+	  one, and take collect the jar files into the
+	  <code>lib</code> directory.  The RMI Registry will also need
+	  the <code>grid-profile</code> jar file, which we've already
+	  got.
+	</p>
+
+	<source>% <b>ls -l $PS_HOME/lib</b>
+total 404
+-rw-r--r--  1 kelly  kelly  149503 28 Feb 07:28 edm-commons-2.2.5.jar
+-rw-r--r--  1 kelly  kelly   43879 28 Feb 07:05 edm-query-2.0.2.jar
+-rw-r--r--  1 kelly  kelly  201453 28 Feb 07:01 grid-profile-3.0.2.jar
+-rw-r--r--  1 kelly  kelly     796 28 Feb 07:07 my-handler.jar
+-rw-r--r--  1 kelly  kelly    8055 28 Feb 07:28 rmi-registry-1.0.0.jar</source>
+
+	<p>Now all we need is a convenient script to start the RMI
+	  registry.  We'll call it <code>rmi-reg</code> and stick it
+	  in the <code>bin</code> directory.  Here's the
+	  <code>rmi-reg</code> script:</p>
+
+	<source>#!/bin/sh
+exec java -Djava.ext.dirs=$PS_HOME/lib \
+    gov.nasa.jpl.oodt.rmi.RMIRegistry</source>
+
+	<p>This script tells the Java virtual machine to find
+	  extension jars in the directory <code>$PS_HOME/lib</code>.  It
+	  then says that the main class to execute is
+	  <code>gov.nasa.jpl.oodt.rmi.RMIRegistry</code>.
+	</p>
+
+	<p>Go ahead and make this script executable and start the RMI
+	  Registry. In another window (with the appropriate setting of
+	  <code>PS_HOME</code>), run
+	  <code>$PS_HOME/bin/rmi-reg</code>.  You should see output
+	  similar to the following:
+	</p>
+
+	<source>% <b>chmod 755 $PS_HOME/bin/rmi-reg</b>
+% <b>$PS_HOME/bin/rmi-reg</b>
+Mon Feb 28 07:30:13 CST 2005: no objects registered</source>
+
+	<p>The RMI Registry is now running.  Every two minutes it will
+	  display an update of all registered objects.  Naturally, we
+	  don't have any profile service running right now, so it will
+	  say <code>no objects registered</code>.  Go ahead and ignore
+	  this window for now.  It's time to start our profile server.
+	</p>
+      </subsection>
+
+      <subsection name="Starting the Profile Server">
+	<p>With our handler compiled and our RMI registry running,
+	  we're ready to start our profile server.  As said before,
+	  profile servers delegate to zero or more profile handlers to
+	  actually handle all incoming requests.  You tell the profile
+	  server what handlers to instantiate by naming their classes
+	  in a system property.  That property is called
+	  <code>handlers</code>, and its value is a comma-separated
+	  list of fully qualified class names, including the package
+	  name prefixes.  Since our <code>NullHandler</code> is just
+	  in the default package, <code>NullHandler</code> <em>is</em>
+	  its fully-qualified class name.
+	</p>
+
+	<p>Profile server processes require the following components
+	  in addition to the ones we've downloaded so far:</p>
+
+	<ul>
+	  <li><a href="http://ws.apache.org/xmlrpc">Apache
+	      XML-RPC</a>.  This is used internally by OODT services.
+	    Download version 1.1, not a later version!  If you prefer,
+	    you can <a
+	      href="http://ibiblio.org/maven/xmlrpc/jars/xmlrpc-1.1.jar">fetch
+	      the jar file directly</a>.
+	  </li>
+
+	  <li><a href="http://jena.sourceforge.net/">Jena Semantic Web
+	      Framework for Java</a>.  This is used by the classes
+	      that represent profiles.  You'll need version 1.6.1 You
+	      can also <a
+	      href="http://oodt.jpl.nasa.gov/download/public/Jena/jars/jena-1.6.1.jar">fetch
+	      the jar file directly</a>.
+	  </li>
+	</ul>
+
+	<p>Copy these two other jars to the <code>$PS_HOME/lib</code>
+	  directory.  You should now have seven jars there:
+	</p>
+
+	<source>% <b>ls -l $PS_HOME/lib</b>
+total 1580
+-rw-r--r--  1 kelly  kelly   149503 28 Feb 07:28 edm-commons-2.2.5.jar
+-rw-r--r--  1 kelly  kelly    43879 28 Feb 07:05 edm-query-2.0.2.jar
+-rw-r--r--  1 kelly  kelly   201453 28 Feb 07:01 grid-profile-3.0.2.jar
+-rw-r--r--  1 kelly  kelly  1144107 28 Feb 09:23 jena-1.6.1.jar
+-rw-r--r--  1 kelly  kelly      796 28 Feb 07:07 my-handler.jar
+-rw-r--r--  1 kelly  kelly     8055 28 Feb 07:28 rmi-registry-1.0.0.jar
+-rw-r--r--  1 kelly  kelly    53978 28 Feb 09:20 xmlrpc-1.1.jar</source>
+
+	<p>Now, create a second shell script to make starting the
+	  profile server convenient and call it
+	  <code>$PS_HOME/bin/ps</code>.  It should look like this:
+	</p>
+
+	<source>#!/bin/sh
+exec java -Djava.ext.dirs=$PS_HOME/lib \
+    -Dhandlers=NullHandler \
+    jpl.eda.ExecServer \
+    jpl.eda.profile.rmi.ProfileServiceImpl \
+    urn:eda:rmi:MyProfileService</source>
+
+	<p>Make the script executable and start the profile server:</p>
+
+	<source>% <b>chmod 755 $PS_HOME/bin/ps</b>
+% <b>$PS_HOME/bin/ps</b>
+Object context ready; delegating to: [jpl.eda.object.jndi.RMIContext@dec8b3]</source>
+
+	<p>The profile server will start, check its
+	  <code>handlers</code> property, and create an object of each
+	  class named by it.  Then it'll register itself with the RMI
+	  registry and wait for requests to come in from profile clients.
+	</p>
+
+      </subsection>
+
+      <subsection name="What's in a Name?">
+	<p>The profile server registers itself using a name provided
+	  on the command-line, in this case,
+	  <code>urn:eda:rmi:MyProfileService</code>.  Let's take apart
+	  the name and see how it works.
+	</p>
+
+	<p>If you're familiar with web standards, you can see that the
+	  name is a Uniform Resource Name (URN), since it starts with
+	  <code>urn:</code>.  The OODT Framework uses URNs to identify
+	  services and other objects.  The <code>eda:</code> tells
+	  that the name is part of the Enterprise Data Architecture
+	  (EDA) namespace.  (EDA was the name of a project related to
+	  OODT that was merged with OODT.  For now, just always use
+	  <code>eda:</code> in your URNs.)
+	</p>
+	
+	<p>Next comes <code>rmi:</code>.  This is a special flag for
+	  the OODT services that tells that we're using a name of an
+	  RMI-accessible object.  The OODT framework will know to use
+	  an RMI registry to register the server. 
+	</p>
+
+	<p>Finally is <code>MyProfileService</code>.  This is the
+	  actual name used in the RMI registry.  You can call your
+	  profile server anything you want.  For example, suppose you
+	  have three profile servers; one in the US, one in Canada,
+	  and one in Australia.  You might name them:
+	</p>
+
+	<ul>
+	  <li><code>urn:eda:rmi:US</code></li>
+	  <li><code>urn:eda:rmi:Canada</code></li>
+	  <li><code>urn:eda:rmi:Australia</code></li>
+	</ul>
+
+	<p>Or you might prefer to use ISO country codes.  Or you might
+	  name them according to the kinds of profiles they serve,
+	  such as <code>urn:eda:rmi:BiomarkerMetadata</code> or
+	  <code>urn:eda:rmi:BusniessForecastMetadata</code>.
+	</p>
+
+	<p>The RMI registry will happily re-assign a name if one's
+	  already in use, so when deploying your own profile (and
+	  other) servers, be sure to give each one a unique name.
+	</p>
+      </subsection>
+
+      <subsection name="Querying the Profile Server">
+	<p>To query a profile server, you use the
+	  <code>ProfileClient</code> class.  It provides methods to
+	  contact a named profile server, performing the lookup in the
+	  RMI registry, contacting the profile server, and passing in
+	  queries and profile retrievals.  The
+	  <code>ProfileClient</code> class is also an
+	  <em>executable</em> class, making it perfect for testing a
+	  new profile server from the command-line.
+	</p>
+
+	<p>Still, we'll make a script, called
+	  <code>$PS_HOME/bin/pc</code> (for "profile client") to
+	  execute it, though, to save from having to type hugely long
+	  Java command-lines:
+	</p>
+
+	<source>#!/bin/sh
+if [ $# -ne 1 ]; then
+   echo "Usage: `basename $0` &lt;query-expression&gt;" 1&gt;&amp;2
+   exit 1
+fi
+exec java -Djava.ext.dirs=$PS_HOME/lib \
+     jpl.eda.profile.ProfileClient \
+     urn:eda:rmi:MyProfileService \
+     "$1"</source>
+
+	<p>Make this script executable and then run it:</p>
+
+	<source>% <b>chmod 755 $PS_HOME/bin/pc</b>
+% <b>$PS_HOME/bin/pc "temperature = 37"</b>
+Object context ready; delegating to: [jpl.eda.object.jndi.RMIContext@dec8b3]
+[]</source>
+
+	<p>Although it may not look spetacular, this is a success!
+	  The two square brackets, <code>[]</code>, indicates the list
+	  of matching profiles to our query expression,
+	  <code>temperature = 37</code>.  In this case, there were no
+	  matches, which is exactly what we wanted.
+	</p>
+      </subsection>
+    </section>
+
+    <section name="Conclusion">
+      <p>The Null Profile Server made sure our development
+	environment worked from end to end for creating, deploying, and
+	testing a profile handler.  Now you're ready to implement a real
+	profile handler:
+      </p>
+
+      <ul>
+	<li>Instead of returning an empty list, create a
+	    <code>Profile</code> object and return it as a
+	    singleton list.  See the API documentation for
+	    <code>Profile</code> as well as other articles
+	    for manipulating this class.
+	</li>
+	<li>Analyze the methods of the
+	  <code>XMLQuery</code> class to determine the
+	  query passed in from the user.  Use that information to
+	  synthesize the correct <code>Profile</code>
+	  object.  See the API documentation for class
+	  <code>XMLQuery</code> for more information.
+	</li>
+	<li>Connecting to an external data source (such as the
+	    local filesystem or a database), synthesize appropriate
+	  profiles in response to queries and profile retrieval with
+	  the <code>get</code> method.
+	</li>
+      </ul>
+    </section>
+  </body>
+</document>
