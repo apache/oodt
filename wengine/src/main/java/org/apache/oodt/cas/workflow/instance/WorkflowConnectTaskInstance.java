@@ -73,14 +73,6 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 	protected ResultsState performExecution(ControlMetadata ctrlMetadata) {
 		if (ctrlMetadata.getMetadata(SPAWNED_WORKFLOWS) == null) {
 			
-			//Add spawning keys to localized workflow metadata keys
-			Vector<String> localKeys = new Vector<String>();
-			if (ctrlMetadata.getMetadata(WorkflowProcessor.LOCAL_KEYS) != null)
-				localKeys.addAll(ctrlMetadata.getAllMetadata(WorkflowProcessor.LOCAL_KEYS));
-			localKeys.addAll(Arrays.asList(SPAWNED_WORKFLOWS, SPAWNED_BY_WORKFLOW));
-			ctrlMetadata.replaceLocalMetadata(WorkflowProcessor.LOCAL_KEYS, localKeys);
-			ctrlMetadata.setAsWorkflowMetadataKey(WorkflowProcessor.LOCAL_KEYS);
-			
 			//Get Spawn ModelId
 			String spawnModelId = ctrlMetadata.getMetadata(SPAWN_MODEL_ID);
 			if (spawnModelId == null)
@@ -119,7 +111,7 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 				LOG.log(Level.SEVERE, "Failed to determine N : " + e.getMessage(), e);
 				return new ResultsFailureState("Failed to determine N : " + e.getMessage());
 			}
-			Metadata spawnWorkflowMet = ctrlMetadata.asMetadata(ControlMetadata.DYN);
+			Metadata spawnWorkflowMet = ctrlMetadata.asMetadata(ControlMetadata.LOCAL, ControlMetadata.DYN);
 			Vector<String> spawnedInstanceIds = new Vector<String>();
 			for (int i = 0; i < n; i++) {
 				Metadata curWorkflowMet = new Metadata(spawnWorkflowMet);
@@ -142,6 +134,14 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 			}
 			ctrlMetadata.replaceLocalMetadata(SPAWNED_WORKFLOWS, spawnedInstanceIds);
 			ctrlMetadata.setAsWorkflowMetadataKey(SPAWNED_WORKFLOWS);
+			
+			//Add spawning keys to localized workflow metadata keys
+			Vector<String> localKeys = new Vector<String>();
+			if (ctrlMetadata.getMetadata(WorkflowProcessor.LOCAL_KEYS) != null)
+				localKeys.addAll(ctrlMetadata.getAllMetadata(WorkflowProcessor.LOCAL_KEYS));
+			localKeys.addAll(Arrays.asList(SPAWNED_WORKFLOWS, SPAWNED_BY_WORKFLOW));
+			ctrlMetadata.replaceLocalMetadata(WorkflowProcessor.LOCAL_KEYS, localKeys);
+			ctrlMetadata.setAsWorkflowMetadataKey(WorkflowProcessor.LOCAL_KEYS);
 			
 			return new ResultsBailState("Waiting for " + n + " of " + n + " spawned workflows to complete");
 		}else {
