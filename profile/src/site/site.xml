@@ -25,5 +25,13 @@ the License.
     </links>
 
     <menu ref="reports" inherit="bottom"/>
+    <menu name="User's Guide">
+      <item name="Information Captured" href="info/"/>
+      <item name="Querying Profiles" href="querying/"/>
+      <item name="Profile Repr." href="rep/"/>
+      <item name="Basic Handler" href="handler/"/>
+      <item name="Advanced Handler" href="adv/"/>
+    </menu>
+    
   </body>
 </project>
