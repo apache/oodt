@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-139 PCS JAX-RS services (mattmann, pramirez, bfoster, ahart)
+
 * OODT-151 Add xdocs for modules from old JPL site (mattmann)
 
 * OODT-110 TestExternMetExtractor fails if temp directory is mounted noexec (pramirez, smclees)
