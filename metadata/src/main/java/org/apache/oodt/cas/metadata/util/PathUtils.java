@@ -146,11 +146,11 @@ public final class PathUtils {
             if (dateType.equals("DAY")) {
                 replacement = StringUtils.leftPad(gc
                         .get(GregorianCalendar.DAY_OF_MONTH)
-                        + "", 2);
+                        + "", 2, "0");
             } else if (dateType.equals("MONTH")) {
                 replacement = StringUtils.leftPad((gc
                         .get(GregorianCalendar.MONTH) + 1)
-                        + "", 2);
+                        + "", 2, "0");
             } else if (dateType.equals("YEAR")) {
                 replacement = gc.get(GregorianCalendar.YEAR) + "";
             } else if (dateType.equals("UTC")) {

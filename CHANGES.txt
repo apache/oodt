@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-153 PathUtils [DATE.MONTH] and [DATE.DAY] should pad with 
+  a "0" not a " " (empty space) (bfoster via mattmann)
+
 * OODT-139 PCS JAX-RS services (mattmann, pramirez, bfoster, ahart)
 
 * OODT-151 Add xdocs for modules from old JPL site (mattmann)
