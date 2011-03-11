@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-152 Fixed website and download page.  Reverted back
+  to the same site from OODT-134. (goodale)
+
 * OODT-153 PathUtils [DATE.MONTH] and [DATE.DAY] should pad with 
   a "0" not a " " (empty space) (bfoster via mattmann)
 
