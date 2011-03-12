@@ -61,5 +61,6 @@ the License.
         <module>webapp/workflow</module>
         <module>app/fmbrowser</module>
         <module>pcs/core</module>
+        <module>pcs/services</module>
     </modules>
 </project>
