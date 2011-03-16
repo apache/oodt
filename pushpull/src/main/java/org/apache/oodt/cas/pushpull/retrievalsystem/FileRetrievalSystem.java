@@ -604,11 +604,14 @@ public class FileRetrievalSystem {
     synchronized Protocol getSession(ProtocolFile file) throws CrawlerException {
         try {
             Protocol session = null;
-            if (avaliableSessions.size() > 0) {
-                session = modifyAvailableSessionForPath(file);
-            } else if (numberOfSessions < max_sessions) {
-                session = createNewSessionForPath(file);
-                incrementSessions();
+			if (file.getRemoteSite().getMaxConnections() < 0
+					|| file.getRemoteSite().getMaxConnections() > this.getCurrentlyDownloadingFiles().size()) {
+	            if (avaliableSessions.size() > 0) {
+	                session = modifyAvailableSessionForPath(file);
+	            } else if (numberOfSessions < max_sessions) {
+	                session = createNewSessionForPath(file);
+	                incrementSessions();
+	            }
             }
             return session;
         } catch (Exception e) {

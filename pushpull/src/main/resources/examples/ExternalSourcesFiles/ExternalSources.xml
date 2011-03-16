@@ -27,6 +27,7 @@
             <username></username>
             <password></password>
             <cdTestDir>2B-CWC-RO.R04/2007/304</cdTestDir>
+            <maxConn>5</maxConn>
         </login>
     </source>
     <source host="ftp.class.noaa.gov">

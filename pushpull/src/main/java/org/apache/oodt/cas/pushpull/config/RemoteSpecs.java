@@ -301,6 +301,7 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                             .replaceEnvVariables(((Element) loginNode)
                                     .getAttribute(ALIAS_ATTR));
                     String username = null, password = null, cdTestDir = null;
+                    int maxConnections = -1;
 
                     // parse this login info
                     NodeList loginInfo = loginNode.getChildNodes();
@@ -319,11 +320,14 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                         } else if (node.getNodeName().equals(CD_TEST_DIR_TAG)) {
                             cdTestDir = PathUtils.replaceEnvVariables(
                                     XMLUtils.getSimpleElementText((Element) node, true));
+                        } else if (node.getNodeName().equals(MAX_CONN_TAG)) {
+                            maxConnections = Integer.parseInt(PathUtils.replaceEnvVariables(
+                                    XMLUtils.getSimpleElementText((Element) node, true)));
                         }
                     }
 
                     this.siteInfo.addSite(new RemoteSite(alias, new URL(type
-                            + "://" + host), username, password, cdTestDir));
+                            + "://" + host), username, password, cdTestDir, maxConnections));
                 }
             }
         } catch (Exception e) {
