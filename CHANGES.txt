@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-159 Dynamic Queue/Node was not added to command-line usage printout (bfoster)
+
 * OODT-152 Fixed website and download page.  Reverted back
   to the same site from OODT-134. (goodale)
 

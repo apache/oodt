@@ -137,6 +137,15 @@ public class XmlRpcResourceManagerClient {
                 + "operations:\n"
                 + getNodeByIdOperation
                 + getNodesOperation
+                + getQueuesOperation
+                + addNodeOperation
+                + removeNodeOperation
+                + addQueueOperation
+                + removeQueueOperation
+                + addNodeToQueueOperation
+                + getNodesInQueueOperation
+                + getQueuesWithNodeOperation
+                + removeNodeFromQueueOperation
                 + submitJobOperation
                 + submitJobRemoteOperation
                 + getJobInfoOperation
