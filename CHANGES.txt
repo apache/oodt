@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-161 PushPull getTextContext()/getNode() value still poses an issue for some JVMs (bfoster)
+
 * OODT-159 Dynamic Queue/Node was not added to command-line usage printout (bfoster)
 
 * OODT-152 Fixed website and download page.  Reverted back

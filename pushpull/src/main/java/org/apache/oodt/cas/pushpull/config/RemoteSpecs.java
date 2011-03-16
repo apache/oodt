@@ -311,14 +311,14 @@ public class RemoteSpecs implements ConfigParserMetKeys {
 
                         // determine what element type it is
                         if (node.getNodeName().equals(USERNAME_TAG)) {
-                            username = PathUtils.replaceEnvVariables(node
-                                    .getTextContent());
+                            username = PathUtils.replaceEnvVariables(
+                                    XMLUtils.getSimpleElementText((Element) node, true));
                         } else if (node.getNodeName().equals(PASSWORD_TAG)) {
-                            password = PathUtils.replaceEnvVariables(node
-                                    .getTextContent());
+                            password = PathUtils.replaceEnvVariables(
+                                    XMLUtils.getSimpleElementText((Element) node, true));
                         } else if (node.getNodeName().equals(CD_TEST_DIR_TAG)) {
-                            cdTestDir = PathUtils.replaceEnvVariables(node
-                                    .getTextContent());
+                            cdTestDir = PathUtils.replaceEnvVariables(
+                                    XMLUtils.getSimpleElementText((Element) node, true));
                         }
                     }
 

@@ -27,6 +27,7 @@ import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 import org.apache.oodt.cas.pushpull.expressions.GlobalVariables;
 import org.apache.oodt.cas.pushpull.expressions.Method;
 import org.apache.oodt.cas.pushpull.expressions.Variable;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.FileInputStream;
@@ -222,12 +223,13 @@ public class DirStructXmlParser implements Parser {
 
                     // get the Variable's name
                     if (child.getNodeName().equals("type")) {
-                        type = child.getTextContent().toLowerCase();
+                        type = XMLUtils.getSimpleElementText((Element) child,
+                                true).toLowerCase();
 
                         // get the Variable's value
                     } else if (child.getNodeName().equals("value")) {
-                        value = PathUtils.doDynamicReplacement(child
-                                .getTextContent());
+                        value = PathUtils.doDynamicReplacement(XMLUtils
+                                .getSimpleElementText((Element) child, false));
 
                         // get the Variable's value's precision infomation
                     } else if (child.getNodeName().equals("precision")) {
@@ -236,20 +238,21 @@ public class DirStructXmlParser implements Parser {
                             Node grandChild = grandChildren.item(k);
                             // get the precision
                             if (grandChild.getNodeName().equals("locations")) {
-                                variable.setPrecision(Integer
-                                        .parseInt(grandChild.getTextContent()));
+                                variable.setPrecision(Integer.parseInt(XMLUtils
+                                        .getSimpleElementText((Element) grandChild, true)));
                                 // get the fill character to meet the precision
                                 // [optional]
                             } else if (grandChild.getNodeName().equals("fill")) {
-                                variable.setFillString(grandChild
-                                        .getTextContent());
+                                variable.setFillString(
+                                    XMLUtils.getSimpleElementText((Element) grandChild, false));
                                 // get the side for which the fill character
                                 // will be applied [optional]
                             } else if (grandChild.getNodeName().equals("side")) {
-                                variable.setFillSide((grandChild
-                                        .getTextContent().toLowerCase()
-                                        .equals("front")) ? variable.FILL_FRONT
-                                        : variable.FILL_BACK);
+                                variable.setFillSide(
+                                        (XMLUtils.getSimpleElementText((Element) grandChild, true)
+                                            .toLowerCase().equals("front")) 
+                                                ? variable.FILL_FRONT
+                                                : variable.FILL_BACK);
                             }
                         }
                     }
@@ -285,7 +288,8 @@ public class DirStructXmlParser implements Parser {
 
                     // get the Method's behavoir
                     if (child.getNodeName().equals("action")) {
-                        method.setBehavoir(child.getTextContent());
+                        method.setBehavoir(XMLUtils.getSimpleElementText(
+                                (Element) child, false));
 
                         // get the Method's arguments
                     } else if (child.getNodeName().equals("args")) {
@@ -310,8 +314,9 @@ public class DirStructXmlParser implements Parser {
                                             .item(l);
                                     if (greatGrandChild.getNodeName().equals(
                                             "type")) {
-                                        argType = greatGrandChild
-                                                .getTextContent();
+                                        argType = XMLUtils.getSimpleElementText(
+                                                (Element) greatGrandChild,
+                                                true);
                                     }
                                 }
 
