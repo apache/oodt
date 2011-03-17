@@ -119,7 +119,7 @@ public final class XmlRpcStructFactory {
 
     public static Hashtable<String, Object> getXmlRpcProductPage(ProductPage page) {
         Hashtable<String, Object>productPageHash = new Hashtable<String, Object>();
-//        productPageHash.put("totalPages", new Integer(page.getTotalPages()));
+        productPageHash.put("totalPages", new Integer(page.getTotalPages()));
         productPageHash.put("pageNum", new Integer(page.getPageNum()));
         productPageHash.put("pageSize", new Integer(page.getPageSize()));
         productPageHash.put("numOfHits", new Integer(page.getNumOfHits()));
