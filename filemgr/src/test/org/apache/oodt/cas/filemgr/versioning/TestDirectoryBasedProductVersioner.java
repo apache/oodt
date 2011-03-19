@@ -47,6 +47,7 @@ public class TestDirectoryBasedProductVersioner extends TestCase {
   public void testVersioner() {
     DirectoryProductVersioner versioner = new DirectoryProductVersioner();
     Product p = Product.getDefaultFlatProduct("test", "urn:oodt:GenericFile");
+    p.setProductStructure(Product.STRUCTURE_HIERARCHICAL);
     p.getProductType().setProductRepositoryPath("file:///home/files");
     Reference r = new Reference("file:///tmp/dir1", null, 4L);
     Reference r2 = new Reference("file:///tmp/dir1/file1.txt", null, 20L);
