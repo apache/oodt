@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-164 AcqusitionDate Versioner (mattmann)
+
 * OODT-163 DirectoryProduct Versioner for the File Manager (mattmann)
 
 * OODT-160 Allow number of session protocol connections in 
