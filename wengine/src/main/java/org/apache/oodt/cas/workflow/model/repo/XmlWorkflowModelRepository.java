@@ -89,10 +89,8 @@ public class XmlWorkflowModelRepository implements WorkflowModelRepository {
 			loadConfiguration(rootElements, root, new Metadata(), globalConfGroups);
 			NodeList rootChildren = root.getChildNodes();
 			for (int i = 0; i < rootChildren.getLength(); i++)
-				if (rootChildren.item(i).getNodeType() == Node.ELEMENT_NODE && !rootChildren.item(i).getNodeName().equals("configuration")) {
-					WorkflowGraph graph = this.loadGraph(rootElements, rootChildren.item(i), new Metadata(), globalConfGroups, graphs, Priority.getDefault(), supportedProcessorIds);
-					graphs.put(graph.getId(), graph);
-				}
+				if (rootChildren.item(i).getNodeType() == Node.ELEMENT_NODE && !rootChildren.item(i).getNodeName().equals("configuration"))
+					this.loadGraph(rootElements, rootChildren.item(i), new Metadata(), globalConfGroups, graphs, Priority.getDefault(), supportedProcessorIds, true);
 		}
 		insureUniqueIds(graphs);
 		return graphs;
@@ -123,6 +121,10 @@ public class XmlWorkflowModelRepository implements WorkflowModelRepository {
 	}
 
 	private WorkflowGraph loadGraph(List<Element> rootElements, Node workflowNode, Metadata staticMetadata, HashMap<String, Metadata> globalConfGroups, HashMap<String, WorkflowGraph> graphs, Priority priority, Set<String> supportedProcessorIds) throws Exception {
+		return this.loadGraph(rootElements, workflowNode, staticMetadata, globalConfGroups, graphs, priority, supportedProcessorIds, false);
+	}
+	
+	private WorkflowGraph loadGraph(List<Element> rootElements, Node workflowNode, Metadata staticMetadata, HashMap<String, Metadata> globalConfGroups, HashMap<String, WorkflowGraph> graphs, Priority priority, Set<String> supportedProcessorIds, boolean entryPoint) throws Exception {
 		String modelIdRef = null;
 		String modelId = null;
 		String modelName = null;
@@ -131,7 +133,6 @@ public class XmlWorkflowModelRepository implements WorkflowModelRepository {
 		String minReqSuccessfulSubProcessors = null;
 		List<String> excused = new Vector<String>();
 		String clazz = null;
-		boolean entryPoint = false;
 		
 		NamedNodeMap attributes = workflowNode.getAttributes();
 		for (int i = 0; attributes != null && i < attributes.getLength(); i++) {
