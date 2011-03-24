@@ -408,16 +408,28 @@ public class FileRetrievalSystem {
                     + "' because it is already on the download queue");
             return false;
         }
-        String productType = this.mimeTypeDetection.getMimeType(file.getName());
-        String superType = null;
-        if (productType != null
-                && !productType.equals("application/octet-stream")) {
-            superType = this.mimeTypeDetection
-                    .getSuperTypeForMimeType(productType);
+        
+        RemoteFile remoteFile = new RemoteFile(file);
+        remoteFile.addMetadata(RemoteFile.RENAMING_STRING, renamingString);
+        remoteFile.addMetadata(RemoteFile.DELETE_AFTER_DOWNLOAD,
+                deleteAfterDownload + "");
+        
+        String mimeType = this.mimeTypeDetection.getMimeType(file.getName());
+        if (mimeType != null
+                && !mimeType.equals("application/octet-stream")) {
+        	remoteFile.addMetadata(RemoteFile.MIME_TYPE, mimeType);
+            remoteFile.addMetadata(RemoteFile.SUPER_TYPE, this.mimeTypeDetection
+                    .getSuperTypeForMimeType(mimeType));
             String description = this.mimeTypeDetection
-                    .getDescriptionForMimeType(productType);
-            if (description != null)
-                productType = description;
+                    .getDescriptionForMimeType(mimeType);
+            if (description != null) {
+            	for (String field : description.split("\\&\\&")) {
+            		String[] keyval = field.split("\\=");
+            		remoteFile.addMetadata(keyval[0].trim(), keyval[1].trim());
+            	}   
+            	if (remoteFile.getMetadata(RemoteFile.UNIQUE_ELEMENT) != null)
+            		uniqueMetadataElement = remoteFile.getMetadata(RemoteFile.UNIQUE_ELEMENT);
+            }
         } else if (config.onlyDownloadDefinedTypes()) {
             throw new UndefinedTypeException("File '" + file
                     + "' is not a defined type");
@@ -428,22 +440,15 @@ public class FileRetrievalSystem {
                 + downloadToDir.getPath());
         if (!this.isStagingAreaInitialized(downloadToDir))
             this.initializeStagingArea(downloadToDir);
-
-        RemoteFile remoteFile = new RemoteFile(file);
-        remoteFile
-                .addMetadata(
-                        RemoteFile.PRODUCT_NAME,
-                        remoteFile
-                                .getMetadata(uniqueMetadataElement == null ? RemoteFile.FILENAME
-                                        : uniqueMetadataElement));
-        remoteFile.addMetadata(RemoteFile.RENAMING_STRING, renamingString);
-        remoteFile.addMetadata(RemoteFile.DOWNLOAD_TO_DIR, downloadToDir
-                .getAbsolutePath());
-        remoteFile.addMetadata(RemoteFile.PRODUCT_TYPE, productType);
-        remoteFile.addMetadata(RemoteFile.SUPER_TYPE, superType);
-        remoteFile.addMetadata(RemoteFile.DELETE_AFTER_DOWNLOAD,
-                deleteAfterDownload + "");
-
+        
+        remoteFile.addMetadata(RemoteFile.DOWNLOAD_TO_DIR, downloadToDir.getAbsolutePath());
+        
+    	if (remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR) != null) {
+    		remoteFile.addMetadata(RemoteFile.PRODUCT_NAME, RenamingConvention.rename(remoteFile.getProtocolFile(), remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR)));
+    	}else {
+    		remoteFile.setUniqueMetadataElement(uniqueMetadataElement == null ? RemoteFile.FILENAME : uniqueMetadataElement);
+    	}
+        
         if (!isAlreadyInDatabase(remoteFile)) {
 
             // get download location
