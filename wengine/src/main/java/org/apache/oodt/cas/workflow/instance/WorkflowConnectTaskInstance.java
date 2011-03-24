@@ -55,6 +55,7 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 	public static final String N_MET_MOD_CLASS = "WorkflowConnect/NMetadataModifier/Class"; 
 	public static final String SPAWN_MODEL_ID = "WorkflowConnect/ModelId"; 
 	
+	public static final String PERFORMED_SPAWNING = "WorkflowConnect/PerformedSpawning";
 	public static final String SPAWNED_WORKFLOWS = "WorkflowConnect/SpawnedWorkflows/InstanceIds";
 	public static final String SPAWNED_BY_WORKFLOW = "WorkflowConnect/SpawnedByWorkflow/InstanceId";
 
@@ -71,7 +72,7 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 	
 	@Override
 	protected ResultsState performExecution(ControlMetadata ctrlMetadata) {
-		if (ctrlMetadata.getMetadata(SPAWNED_WORKFLOWS) == null) {
+		if (ctrlMetadata.getMetadata(PERFORMED_SPAWNING) == null) {
 			
 			//Get Spawn ModelId
 			String spawnModelId = ctrlMetadata.getMetadata(SPAWN_MODEL_ID);
@@ -134,8 +135,9 @@ public class WorkflowConnectTaskInstance extends TaskInstance {
 					return new ResultsFailureState("Failed to start workflow ModelId '" + spawnModelId + "' [i = '" + i + "'] : " + e.getMessage());
 				}
 			}
+			ctrlMetadata.replaceLocalMetadata(PERFORMED_SPAWNING, "true");
 			ctrlMetadata.replaceLocalMetadata(SPAWNED_WORKFLOWS, spawnedInstanceIds);
-			ctrlMetadata.setAsWorkflowMetadataKey(SPAWNED_WORKFLOWS);
+			ctrlMetadata.setAsWorkflowMetadataKey(PERFORMED_SPAWNING, SPAWNED_WORKFLOWS);
 			
 			//Add spawning keys to localized workflow metadata keys
 			Vector<String> localKeys = new Vector<String>();
