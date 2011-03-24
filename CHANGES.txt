@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-167 ProcessedPageInfo isLastPage fails for case PageNum = 1 and totalPages = 0 (bfoster)
+
 * OODT-164 AcqusitionDate Versioner (mattmann)
 
 * OODT-163 DirectoryProduct Versioner for the File Manager (mattmann)
