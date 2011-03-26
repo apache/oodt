@@ -115,14 +115,14 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         	DatabaseMetaData metaData = conn.getMetaData();
         	
         	if (this.isVector(element))
-        		tables = metaData.getTables(null, null, element.getElementName(), new String[] { "TABLE" });
+        		tables = metaData.getTables(null, null, element.getElementName().toUpperCase() + "_XREF", new String[] { "TABLE" });
         	else 
-        		tables = metaData.getTables(null, null, productType.getName() + "_metadata", new String[] { "TABLE" });
+        		tables = metaData.getTables(null, null, productType.getName().toUpperCase() + "_METADATA", new String[] { "TABLE" });
         	
 	    	if (tables.next()) {
 	    		columns = metaData.getColumns(null, null, tables.getString("TABLE_NAME"), null);
 	        	while (columns.next())
-	        		if (columns.getString("COLUMN_NAME").equals(element.getElementName()))
+	        		if (columns.getString("COLUMN_NAME").equalsIgnoreCase(element.getElementName()))
 	        			return !dbIntegerTypes.contains(columns.getString("TYPE_NAME").toLowerCase());
 	    	}
 	    	throw new Exception("Failed to determine type for element '" + element.getElementName() + "'");
@@ -154,12 +154,18 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             List<String> scalarElementNames = new Vector<String>();
             List<String> scalarElementValues = new Vector<String>();
             
+            scalarElementNames.add("ProductId");
+            scalarElementValues.add(product.getProductId());
+            
             List<Element> elements = this.validationLayer.getElements(product.getProductType());
             for (Element element : elements) {
             	if (metadata.getMetadata(element.getElementName()) != null) {
 	            	if (!this.isVector(element)) {
 	            		scalarElementNames.add(element.getElementName());
-	            		scalarElementValues.add(metadata.getMetadata(element.getElementName()));
+	            		if (this.isString(element, product.getProductType()))
+	            			scalarElementValues.add("'" + metadata.getMetadata(element.getElementName()) + "'");
+	            		else
+	            			scalarElementValues.add(metadata.getMetadata(element.getElementName()));	            			
 	            	}else {
 	            		for (String value : metadata.getAllMetadata(element.getElementName())) {
 	            			String sqlInsert = String.format("INSERT INTO %s (ProductId, %s) VALUES (%s , %s)", 
@@ -167,6 +173,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 	            					element.getElementName(), 
 	            					product.getProductId(),
 	            					(this.isString(element, product.getProductType()) ? "'" + value + "'" : value));
+	                        LOG.log(Level.FINE, "addMetadata Executing: " + sqlInsert);
 	            			statement.execute(sqlInsert);
 	            		}
 	            	}
@@ -176,6 +183,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             String scalarInsert = "INSERT INTO " + product.getProductType().getName() + "_metadata" 
             	+ "(" + StringUtils.join(scalarElementNames, ",") + ")"
             	+ " VALUES (" + StringUtils.join(scalarElementValues, ",") + ")";
+            LOG.log(Level.FINE, "addMetadata Executing: " + scalarInsert);
             statement.execute(scalarInsert);
 
             conn.commit();
@@ -251,30 +259,37 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             conn.setAutoCommit(false);
             statement = this.setDateFormats(conn.createStatement());
 
-            String insertSql = "INSERT INTO products (ProductName, ProductStructure, ProductTransferStatus, ProductType, ProductRecievedTime) "
-                    + "VALUES ('"
+			String getProductIdSql = "SELECT MAX(ProductId) AS max_id FROM products";
+			rs = statement.executeQuery(getProductIdSql);
+			String productId = rs.next() ? Integer.toString(rs.getInt("max_id") + 1) : "1";
+			
+            String insertSql = "INSERT INTO products (ProductId, ProductName, ProductStructure, ProductTransferStatus, ProductType, ProductReceivedTime) "
+                    + "VALUES ("
+                    + productId
+                    + ", '"
                     + product.getProductName()
                     + "', '"
                     + product.getProductStructure()
                     + "', '"
                     + product.getTransferStatus()
-                    + "', "
+                    + "', '"
                     + product.getProductType().getName()
-                    + "', "
+                    + "', '"
                     + DateUtils.toString(DateUtils.getCurrentLocalTime())
-                    + ")";
+                    + "')";
 
+            LOG.log(Level.FINE, "addProduct Executing: " + insertSql);
             statement.execute(insertSql);
 
-            String productId = new String();
-
-            String getProductIdSql = "SELECT MAX(product_id) AS max_id FROM products";
-
-            rs = statement.executeQuery(getProductIdSql);
-
-            while (rs.next()) {
-                productId = String.valueOf(rs.getInt("max_id"));
-            }
+//            String productId = new String();
+//
+//            String getProductIdSql = "SELECT MAX(ProductId) AS max_id FROM products";
+//
+//            rs = statement.executeQuery(getProductIdSql);
+//
+//            while (rs.next()) {
+//                productId = String.valueOf(rs.getInt("max_id"));
+//            }
 
             product.setProductId(productId);
             conn.commit();
@@ -1022,7 +1037,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             statement = this.setDateFormats(conn.createStatement());
             statement.setMaxRows(n);
 
-            String getProductSql = "SELECT * FROM products WHERE ProductType = '" + type.getName() + "' ORDER BY ProductRecievedTime DESC";
+            String getProductSql = "SELECT * FROM products WHERE ProductType = '" + type.getName() + "' ORDER BY ProductReceivedTime DESC";
 
             LOG.log(Level.FINE, "getTopNProducts: executing: " + getProductSql);
             rs = statement.executeQuery(getProductSql);
@@ -1210,7 +1225,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             
         	String getProductSql = "SELECT ProductId FROM " + type.getName() + "_vm" 
         		+ (query.getCriteria() != null ? " WHERE " + SqlParser.getInfixCriteriaString(query.getCriteria()) : "") 
-        		+ " ORDER BY ProductRecievedTime DESC";
+        		+ " ORDER BY ProductReceivedTime DESC";
             rs = statement.executeQuery(getProductSql);
 
             int rsSize = -1;
