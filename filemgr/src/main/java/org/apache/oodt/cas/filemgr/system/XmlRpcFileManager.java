@@ -472,16 +472,14 @@ public class XmlRpcFileManager {
             // set the ProductType
             // to obey the contract of the File Manager, we need to make
             // sure its set here
-            product.setProductType(this.repositoryManager
-                    .getProductTypeById(product.getProductType()
-                            .getProductTypeId()));
+            this.setProductType(product);
             return XmlRpcStructFactory.getXmlRpcProduct(product);
         } catch (CatalogException e) {
             e.printStackTrace();
             LOG.log(Level.SEVERE, "Unable to obtain product by id: ["
                     + productId + "]: Message: " + e.getMessage(), e);
             throw new CatalogException(e.getMessage(), e);
-        } catch (RepositoryManagerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             LOG.log(Level.SEVERE, "Unable to obtain product type by id: ["
                     + product.getProductType().getProductTypeId()
@@ -1157,9 +1155,7 @@ public class XmlRpcFileManager {
                     // set the ProductType
                     // to obey the contract of the File Manager, we need to make
                     // sure its set here
-                    product.setProductType(this.repositoryManager
-                            .getProductTypeById(product.getProductType()
-                                    .getProductTypeId()));
+                    this.setProductType(product);
                     productList.add(product);
                 }
                 return productList;

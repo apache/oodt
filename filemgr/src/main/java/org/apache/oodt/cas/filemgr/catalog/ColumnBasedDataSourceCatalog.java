@@ -85,27 +85,20 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         this.pageSize = pageSize;
         this.dbIntegerTypes = dbIntegerTypes;
         this.dbVectorElements = dbVectorElements;
-        
-        Connection conn = null;
-        Statement statement = null;
-        try {
-        	conn = ds.getConnection();
-        	statement = conn.createStatement();
-        	statement.execute("alter session set NLS_DATE_FORMAT = 'YYYY-MM-DD'");
-        	statement.execute("alter session set NLS_TIME_FORMAT = 'HH24:MI:SS.FF3'");
-        	statement.execute("alter session set NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD\"T\"HH24:MI:SS.FF3'");
-        	statement.execute("alter session set NLS_TIME_TZ_FORMAT = 'HH24:MI:SS.FF3TZH:TZM'");
-        	statement.execute("alter session set NLS_TIMESTAMP_FORMAT='YYYY-MM-DD\"T\"HH24:MI:SS.FF3\"Z\"'");
-        	statement.execute("alter session set NLS_TIMESTAMP_TZ_FORMAT='YYYY-MM-DD\"T\"HH24:MI:SS.FF3TZH:TZM'");
-        }catch (Exception e) {
-        }finally {
-        	try { conn.close(); }catch (Exception e) {}
-        	try { statement.close(); }catch (Exception e) {}
-        }
     }
     
     public int getPageSize() {
     	return this.pageSize;
+    }
+    
+    protected Statement setDateFormats(Statement statement) throws Exception {
+    	statement.execute("alter session set NLS_DATE_FORMAT = 'YYYY-MM-DD'");
+    	statement.execute("alter session set NLS_TIME_FORMAT = 'HH24:MI:SS.FF3'");
+    	statement.execute("alter session set NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD\"T\"HH24:MI:SS.FF3'");
+    	statement.execute("alter session set NLS_TIME_TZ_FORMAT = 'HH24:MI:SS.FF3TZH:TZM'");
+    	statement.execute("alter session set NLS_TIMESTAMP_FORMAT='YYYY-MM-DD\"T\"HH24:MI:SS.FF3\"Z\"'");
+    	statement.execute("alter session set NLS_TIMESTAMP_TZ_FORMAT='YYYY-MM-DD\"T\"HH24:MI:SS.FF3TZH:TZM'");
+    	return statement;
     }
     
     protected boolean isVector(Element element) {
@@ -156,8 +149,8 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         try {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-            statement = conn.createStatement();
-
+            statement = this.setDateFormats(conn.createStatement());
+            
             List<String> scalarElementNames = new Vector<String>();
             List<String> scalarElementValues = new Vector<String>();
             
@@ -218,7 +211,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         try {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
             
             String removeSql = "DELETE FROM " + product.getProductType().getName() + "_vw WHERE ProductId = " + product.getProductId();
             statement.execute(removeSql);
@@ -256,7 +249,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         try {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             String insertSql = "INSERT INTO products (ProductName, ProductStructure, ProductTransferStatus, ProductType, ProductRecievedTime) "
                     + "VALUES ('"
@@ -318,7 +311,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         try {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             String modifyProductSql = "UPDATE products SET "
             		+ "ProductName = '" + product.getProductName() 
@@ -363,7 +356,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 		try {
 			conn = dataSource.getConnection();
 			conn.setAutoCommit(false);
-			statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
 			// first remove the refs
 			String deleteProductSql = "DELETE FROM "
@@ -431,7 +424,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         try {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             String deleteProductSql = "DELETE FROM products WHERE ProductId = "
                     + product.getProductId();
@@ -484,7 +477,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         try {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             String modifyProductSql = "UPDATE products SET ProductTransferStatus = '"
                     + product.getTransferStatus()
@@ -527,7 +520,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         try {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             for (Reference reference : product.getProductReferences()) {
 
@@ -584,7 +577,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 
         try {
             conn = dataSource.getConnection();
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             String getProductSql = "SELECT * " + "FROM products "
                     + "WHERE ProductId = " + productId;
@@ -637,7 +630,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 
         try {
             conn = dataSource.getConnection();
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             String getProductSql = "SELECT * " + "FROM products "
                     + "WHERE ProductName = '" + productName + "'";
@@ -690,7 +683,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 
         try {
             conn = dataSource.getConnection();
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             String getProductRefSql = "SELECT * FROM "
                     + product.getProductType().getName() + "_reference"
@@ -743,7 +736,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 
         try {
             conn = dataSource.getConnection();
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             String getProductSql = "SELECT * FROM products ORDER BY ProductId DESC";
 
@@ -795,7 +788,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 
         try {
             conn = dataSource.getConnection();
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             String getProductSql = "SELECT * FROM products WHERE ProductType = '" + type.getName() + "'";
 
@@ -842,9 +835,8 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 
         try {
             conn = dataSource.getConnection();
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
-            System.out.println(product.getProductType());
             String metadataSql = "SELECT * FROM "
                     + product.getProductType().getName() + "_vw "
                     + " WHERE ProductId = " + product.getProductId();
@@ -885,7 +877,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 
         try {
             conn = dataSource.getConnection();
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             String metadataSql = "SELECT * FROM "
                     + product.getProductType().getName() + "_vw "
@@ -920,8 +912,8 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         ResultSet rs = null;
         try {
             conn = dataSource.getConnection();
-            statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
+            statement = this.setDateFormats(conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY));
             
         	String getProductSql = "SELECT * FROM " + type.getName();
         	if (query.getCriteria() != null)
@@ -970,8 +962,8 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         ResultSet rs = null;
         try {
             conn = dataSource.getConnection();
-            statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
+            statement = this.setDateFormats(conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY));
             
         	String getProductSql = "SELECT ProductId FROM " + type.getName() + "_vw";
         	if (query.getCriteria() != null && query.getCriteria().size() > 0)
@@ -1027,7 +1019,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         try {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
             statement.setMaxRows(n);
 
             String getProductSql = "SELECT * FROM products WHERE ProductType = '" + type.getName() + "' ORDER BY ProductRecievedTime DESC";
@@ -1095,7 +1087,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         try {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-            statement = conn.createStatement();
+            statement = this.setDateFormats(conn.createStatement());
 
             String getProductSql = "SELECT COUNT(ProductId) AS numProducts FROM products WHERE ProductType = '" + type.getName() + "'";
             
@@ -1213,8 +1205,8 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         ResultSet rs = null;
         try {
             conn = dataSource.getConnection();
-            statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
+            statement = this.setDateFormats(conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY));
             
         	String getProductSql = "SELECT ProductId FROM " + type.getName() + "_vm" 
         		+ (query.getCriteria() != null ? " WHERE " + SqlParser.getInfixCriteriaString(query.getCriteria()) : "") 
