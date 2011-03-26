@@ -37,6 +37,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -66,12 +67,16 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 
     /* our validation layer */
     private ValidationLayer validationLayer = null;
-
-    private Set<String> dbVectorElements;
-    private Set<String> dbIntegerTypes;
     
     /* size of pages of products within the catalog */
     protected int pageSize = -1;
+        
+    public static final String VECTOR = "VECTOR";
+    public static final String STRING = "STRING";
+    public static final String NUMBER = "NUMBER";
+    public static final String DATE = "DATE";
+    public static final String TIMESTAMP = "TIMESTAMP";
+    public static final String TIMESTAMP_TZ = "TIMESTAMP_TZ";
     
     /**
      * <p>
@@ -79,12 +84,10 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
      * </p>.
      * @throws  
      */
-    public ColumnBasedDataSourceCatalog(DataSource ds, ValidationLayer valLayer, int pageSize, Set<String> dbIntegerTypes, Set<String> dbVectorElements) {
+    public ColumnBasedDataSourceCatalog(DataSource ds, ValidationLayer valLayer, int pageSize) {
     	this.dataSource = ds;
         this.validationLayer = valLayer;
         this.pageSize = pageSize;
-        this.dbIntegerTypes = dbIntegerTypes;
-        this.dbVectorElements = dbVectorElements;
     }
     
     public int getPageSize() {
@@ -93,46 +96,40 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
     
     protected Statement setDateFormats(Statement statement) throws Exception {
     	statement.execute("alter session set NLS_DATE_FORMAT = 'YYYY-MM-DD'");
-    	statement.execute("alter session set NLS_TIME_FORMAT = 'HH24:MI:SS.FF3'");
-    	statement.execute("alter session set NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD\"T\"HH24:MI:SS.FF3'");
-    	statement.execute("alter session set NLS_TIME_TZ_FORMAT = 'HH24:MI:SS.FF3TZH:TZM'");
     	statement.execute("alter session set NLS_TIMESTAMP_FORMAT='YYYY-MM-DD\"T\"HH24:MI:SS.FF3\"Z\"'");
     	statement.execute("alter session set NLS_TIMESTAMP_TZ_FORMAT='YYYY-MM-DD\"T\"HH24:MI:SS.FF3TZH:TZM'");
     	return statement;
     }
     
     protected boolean isVector(Element element) {
-    	return this.dbVectorElements.contains(element.getElementId());
+    	return element.getDCElement() != null ? element.getDCElement().toUpperCase().contains(VECTOR) : false;
+    }
+
+    protected String getType(Element element) {
+    	if (this.isVector(element))
+    		return element.getDCElement().replaceFirst(VECTOR + "\\<", "").replaceAll("\\>", "");
+    	else
+    		return element.getDCElement() != null ? element.getDCElement().toUpperCase() : STRING;
     }
     
-    protected boolean isString(Element element, ProductType productType) throws Exception {
-        Connection conn = null;
-    	ResultSet tables = null;
-    	ResultSet columns = null;
-
-        try {
-        	conn = this.dataSource.getConnection();
-        	DatabaseMetaData metaData = conn.getMetaData();
-        	
-        	if (this.isVector(element))
-        		tables = metaData.getTables(null, null, element.getElementName().toUpperCase() + "_XREF", new String[] { "TABLE" });
-        	else 
-        		tables = metaData.getTables(null, null, productType.getName().toUpperCase() + "_METADATA", new String[] { "TABLE" });
-        	
-	    	if (tables.next()) {
-	    		columns = metaData.getColumns(null, null, tables.getString("TABLE_NAME"), null);
-	        	while (columns.next())
-	        		if (columns.getString("COLUMN_NAME").equalsIgnoreCase(element.getElementName()))
-	        			return !dbIntegerTypes.contains(columns.getString("TYPE_NAME").toLowerCase());
-	    	}
-	    	throw new Exception("Failed to determine type for element '" + element.getElementName() + "'");
-    	}catch (Exception e) {
-    		throw new Exception("Failed to determine if element is string for element '" + element.getElementName() + "' : " + e.getMessage(),e);
-    	}finally {
-    		try { conn.close(); } catch (Exception e) {}
-    		try { tables.close(); } catch (Exception e) {}
-    		try { columns.close(); } catch (Exception e) {}
-    	}
+    protected String getDateFormat(String type) {
+    	if (type.equalsIgnoreCase(DATE)) {
+    		return "YYYY-MM-DD";
+    	}else if (type.equalsIgnoreCase(TIMESTAMP)) {
+    		return "YYYY-MM-DD\"T\"HH24:MI:SS.FF3\"Z\"";
+    	}else if (type.equalsIgnoreCase(TIMESTAMP_TZ)) {
+    		return "YYYY-MM-DD\"T\"HH24:MI:SS.FF3TZH:TZM";
+    	}else {
+    		return null;
+    	}    	
+    }
+    
+    protected boolean isDate(String type) {
+    	return type.equalsIgnoreCase(DATE) || type.equalsIgnoreCase(TIMESTAMP) || type.equalsIgnoreCase(TIMESTAMP_TZ);
+    }
+    
+    protected boolean isString(String type) {
+    	return type.equalsIgnoreCase(STRING);
     }
 
     /*
@@ -162,7 +159,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             	if (metadata.getMetadata(element.getElementName()) != null) {
 	            	if (!this.isVector(element)) {
 	            		scalarElementNames.add(element.getElementName());
-	            		if (this.isString(element, product.getProductType()))
+	            		if (this.isString(this.getType(element)))
 	            			scalarElementValues.add("'" + metadata.getMetadata(element.getElementName()) + "'");
 	            		else
 	            			scalarElementValues.add(metadata.getMetadata(element.getElementName()));	            			
@@ -172,7 +169,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 	            					element.getElementName(), 
 	            					element.getElementName(), 
 	            					product.getProductId(),
-	            					(this.isString(element, product.getProductType()) ? "'" + value + "'" : value));
+	            					(this.isString(this.getType(element)) ? "'" + value + "'" : value));
 	                        LOG.log(Level.FINE, "addMetadata Executing: " + sqlInsert);
 	            			statement.execute(sqlInsert);
 	            		}
@@ -852,8 +849,20 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             conn = dataSource.getConnection();
             statement = this.setDateFormats(conn.createStatement());
 
-            String metadataSql = "SELECT * FROM "
-                    + product.getProductType().getName() + "_vw "
+            Vector<String> selectElements = new Vector<String>();
+            for (Element element : this.validationLayer.getElements(product.getProductType())) {
+            	try {
+	            	String type = this.getType(element);
+	            	if (this.isDate(type))
+	            		selectElements.add("to_char(" + element.getElementName() + ", '" + this.getDateFormat(type) + "') as " + element.getElementName());
+	            	else
+	            		selectElements.add(element.getElementName());
+            	}catch (Exception e) {
+                    LOG.log(Level.WARNING, "Element '" + element.getElementName() + "' not found : " + e.getMessage());
+            	}
+            }
+            String metadataSql = "SELECT " + StringUtils.join(selectElements, ",") + " FROM "
+                    + product.getProductType().getName() + "_VW"
                     + " WHERE ProductId = " + product.getProductId();
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
@@ -862,7 +871,8 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             Metadata metadata = new Metadata();
             List<Element> elements = this.validationLayer.getElements(product.getProductType());
             if (rs.next()) { 
-                for (Element element : elements) {
+
+            	for (Element element : elements) {
                 	try {
                 		String value =  rs.getString(element.getElementName());
                 		if (value == null)
@@ -893,9 +903,24 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         try {
             conn = dataSource.getConnection();
             statement = this.setDateFormats(conn.createStatement());
-
-            String metadataSql = "SELECT * FROM "
-                    + product.getProductType().getName() + "_vw "
+            
+            Vector<String> selectElements = new Vector<String>();
+            for (Element element : this.validationLayer.getElements(product.getProductType())) {
+            	try {
+            		if (elems.contains(element.getElementName())) {
+		            	String type = this.getType(element);
+		            	if (this.isDate(type))
+		            		selectElements.add("to_char(" + element.getElementName() + ", '" + this.getDateFormat(type) + "') as " + element.getElementName());
+		            	else
+		            		selectElements.add(element.getElementName());
+	            	}
+            	}catch (Exception e) {
+                    LOG.log(Level.WARNING, "Element '" + element.getElementName() + "' not found : " + e.getMessage());
+            	}
+            }
+            
+            String metadataSql = "SELECT " + StringUtils.join(selectElements, ",") + " FROM "
+                    + product.getProductType().getName() + "_VW"
                     + " WHERE ProductId = " + product.getProductId();
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
@@ -920,7 +945,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         }
     }
     
-    public List<Metadata> getReducedMetadata(Query query, ProductType type,
+    public List<Metadata> getReducedMetadata(Query query, ProductType productType,
 			List<String> elementNames) throws CatalogException {
         Connection conn = null;
         Statement statement = null;
@@ -930,14 +955,29 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             statement = this.setDateFormats(conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY));
             
-        	String getProductSql = "SELECT * FROM " + type.getName();
+            Vector<String> selectElements = new Vector<String>();
+            for (Element element : this.validationLayer.getElements(productType)) {
+            	try {
+            		if (elementNames.contains(element.getElementName())) {
+		            	String type = this.getType(element);
+		            	if (this.isDate(type))
+		            		selectElements.add("to_char(" + element.getElementName() + ", '" + this.getDateFormat(type) + "') as " + element.getElementName());
+		            	else
+		            		selectElements.add(element.getElementName());
+	            	}
+            	}catch (Exception e) {
+                    LOG.log(Level.WARNING, "Element '" + element.getElementName() + "' not found : " + e.getMessage());
+            	}
+            }
+            
+            String getProductSql = "SELECT " + StringUtils.join(selectElements, ",") + " FROM " + productType.getName() + "_VW";
         	if (query.getCriteria() != null)
         		getProductSql += " WHERE " + SqlParser.getInfixCriteriaString(query.getCriteria()).replaceAll("==", "=");;
 
             rs = statement.executeQuery(getProductSql);
 
             Vector<Metadata> metadatas = new Vector<Metadata>();
-            List<Element> elements = this.validationLayer.getElements(type);
+            List<Element> elements = this.validationLayer.getElements(productType);
             while (rs.next()) {
                 Metadata metadata = new Metadata();
                 for (Element element : elements) 

@@ -55,9 +55,6 @@ public class ColumnBasedDataSourceCatalogFactory implements CatalogFactory {
     protected String user;
     protected String pass;
     protected String driver;
-
-    protected Set<String> dbIntegerTypes;
-    protected Set<String> dbVectorElements;
     
     protected String validationLayerFactoryClass;
     
@@ -84,16 +81,6 @@ public class ColumnBasedDataSourceCatalogFactory implements CatalogFactory {
 		String dbIntTypes = PathUtils
 				.replaceEnvVariables(System
 						.getProperty("org.apache.oodt.cas.filemgr.catalog.column.based.datasource.db.int.types"));
-		if (dbIntTypes != null)
-			this.dbIntegerTypes = new HashSet<String>(Arrays.asList(dbIntTypes.toLowerCase()
-					.split(",")));
-        
-		String dbVecElems = PathUtils
-				.replaceEnvVariables(System
-						.getProperty("org.apache.oodt.cas.filemgr.catalog.column.based.datasource.db.vector.elements"));
-		if (dbVecElems != null)
-			this.dbVectorElements = new HashSet<String>(Arrays.asList(dbVecElems
-					.split(",")));
         
         validationLayerFactoryClass = System
                 .getProperty("filemgr.validationLayer.factory",
@@ -163,22 +150,6 @@ public class ColumnBasedDataSourceCatalogFactory implements CatalogFactory {
 	public void setValidationLayer(ValidationLayer validationLayer) {
 		this.validationLayer = validationLayer;
 	}
-	
-	public Set<String> getDbIntegerTypes() {
-		return dbIntegerTypes;
-	}
-
-	public void setDbIntegerTypes(Set<String> dbIntegerTypes) {
-		this.dbIntegerTypes = dbIntegerTypes;
-	}
-
-	public Set<String> getDbVectorElements() {
-		return dbVectorElements;
-	}
-
-	public void setDbVectorElements(Set<String> dbVectorElements) {
-		this.dbVectorElements = dbVectorElements;
-	}
 
 	/*
      * (non-Javadoc)
@@ -190,7 +161,7 @@ public class ColumnBasedDataSourceCatalogFactory implements CatalogFactory {
 	        this.validationLayer = GenericFileManagerObjectFactory.getValidationLayerFromFactory(validationLayerFactoryClass);
 		if (this.ds == null)
 			this.ds = DatabaseConnectionBuilder.buildDataSource(user, pass,driver, jdbcUrl);
-        return new ColumnBasedDataSourceCatalog(this.ds, validationLayer, pageSize, this.dbIntegerTypes, this.dbVectorElements);
+        return new ColumnBasedDataSourceCatalog(this.ds, validationLayer, pageSize);
     }
 
 }
