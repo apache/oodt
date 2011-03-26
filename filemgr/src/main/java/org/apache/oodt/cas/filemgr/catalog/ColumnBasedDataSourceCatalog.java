@@ -85,6 +85,23 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         this.pageSize = pageSize;
         this.dbIntegerTypes = dbIntegerTypes;
         this.dbVectorElements = dbVectorElements;
+        
+        Connection conn = null;
+        Statement statement = null;
+        try {
+        	conn = ds.getConnection();
+        	statement = conn.createStatement();
+        	statement.execute("alter session set NLS_DATE_FORMAT = 'YYYY-MM-DD'");
+        	statement.execute("alter session set NLS_TIME_FORMAT = 'HH24:MI:SS.FF3'");
+        	statement.execute("alter session set NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD\"T\"HH24:MI:SS.FF3'");
+        	statement.execute("alter session set NLS_TIME_TZ_FORMAT = 'HH24:MI:SS.FF3TZH:TZM'");
+        	statement.execute("alter session set NLS_TIMESTAMP_FORMAT='YYYY-MM-DD\"T\"HH24:MI:SS.FF3\"Z\"'");
+        	statement.execute("alter session set NLS_TIMESTAMP_TZ_FORMAT='YYYY-MM-DD\"T\"HH24:MI:SS.FF3TZH:TZM'");
+        }catch (Exception e) {
+        }finally {
+        	try { conn.close(); }catch (Exception e) {}
+        	try { statement.close(); }catch (Exception e) {}
+        }
     }
     
     public int getPageSize() {
@@ -507,36 +524,30 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         Connection conn = null;
         Statement statement = null;
 
-        String productRefTable = product.getProductType().getName()
-                + "_reference";
-
         try {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
             statement = conn.createStatement();
 
-            for (Iterator<Reference> i = product.getProductReferences().iterator(); i
-                    .hasNext();) {
-                Reference r = i.next();
+            for (Reference reference : product.getProductReferences()) {
 
                 String addRefSql = "INSERT INTO "
-                        + productRefTable
+                        + product.getProductType().getName() + "_reference"
                         + " "
                         + "(ProductId, OriginalReference, DataStoreReference, FileSize, MimeType) "
                         + "VALUES ("
                         + product.getProductId()
                         + ", '"
-                        + r.getOrigReference()
+                        + reference.getOrigReference()
                         + "', '"
-                        + r.getDataStoreReference()
+                        + reference.getDataStoreReference()
                         + "', "
-                        + r.getFileSize()
+                        + reference.getFileSize()
                         + ",'"
-                        + ((r.getMimeType() == null) ? "" : r.getMimeType()
+                        + ((reference.getMimeType() == null) ? "" : reference.getMimeType()
                                 .getName()) + "')";
 
-                LOG.log(Level.FINE, "addProductReferences: Executing: "
-                        + addRefSql);
+                LOG.log(Level.FINE, "addProductReferences: Executing: " + addRefSql);
                 statement.execute(addRefSql);
             }
 
@@ -589,7 +600,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             	ProductType productType = new ProductType();
             	productType.setName(rs.getString("ProductType"));
             	product.setProductType(productType);
-            	product.setTransferStatus(rs.getString("TransferStatus"));
+            	product.setTransferStatus(rs.getString("ProductTransferStatus"));
                 return product;
             }else {
             	throw new Exception("Failed to load product for product id = '" + productId + "'");
@@ -833,6 +844,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             conn = dataSource.getConnection();
             statement = conn.createStatement();
 
+            System.out.println(product.getProductType());
             String metadataSql = "SELECT * FROM "
                     + product.getProductType().getName() + "_vw "
                     + " WHERE ProductId = " + product.getProductId();
@@ -842,10 +854,18 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             
             Metadata metadata = new Metadata();
             List<Element> elements = this.validationLayer.getElements(product.getProductType());
-            if (rs.next()) 
-                for (Element element : elements) 
-                    metadata.addMetadata(element.getElementName(), rs.getString(element.getElementName()));
-            
+            if (rs.next()) { 
+                for (Element element : elements) {
+                	try {
+                		String value =  rs.getString(element.getElementName());
+                		if (value == null)
+                			throw new Exception("value null");
+                		metadata.addMetadata(element.getElementName(), value);
+                	}catch (Exception e) {
+                        LOG.log(Level.WARNING, "Element '" + element.getElementName() + "' not found : " + e.getMessage());
+                	}
+                }
+            }
             return metadata;
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Exception getting metadata. Message: "
@@ -905,7 +925,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             
         	String getProductSql = "SELECT * FROM " + type.getName();
         	if (query.getCriteria() != null)
-        		getProductSql += " WHERE " + SqlParser.getInfixCriteriaString(query.getCriteria());
+        		getProductSql += " WHERE " + SqlParser.getInfixCriteriaString(query.getCriteria()).replaceAll("==", "=");;
 
             rs = statement.executeQuery(getProductSql);
 
@@ -954,9 +974,10 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
                     ResultSet.CONCUR_READ_ONLY);
             
         	String getProductSql = "SELECT ProductId FROM " + type.getName() + "_vw";
-        	if (query.getCriteria() != null)
-        		getProductSql += " WHERE " + SqlParser.getInfixCriteriaString(query.getCriteria());
+        	if (query.getCriteria() != null && query.getCriteria().size() > 0)
+        		getProductSql += " WHERE " + SqlParser.getInfixCriteriaString(query.getCriteria()).replaceAll("==", "=");
 
+        	LOG.log(Level.FINE, "performing getProductSql '" + getProductSql + "'");
             rs = statement.executeQuery(getProductSql);
 
             Vector<String> productIds = new Vector<String>();

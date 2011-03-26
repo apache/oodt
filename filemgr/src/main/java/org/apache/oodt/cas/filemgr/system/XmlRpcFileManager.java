@@ -633,7 +633,7 @@ public class XmlRpcFileManager {
            	List<String> productIds = catalog.query(catalogQuery, productTypes);
             for (String productId : productIds) {
                 Product product = catalog.getProductById(productId);
-                product.setProductType(this.repositoryManager.getProductTypeById(product.getProductType().getProductTypeId()));
+                this.setProductType(product);
                 QueryResult qr = new QueryResult(product, this
                         .getReducedMetadata(product, complexQuery
                                 .getReducedMetadata()));
@@ -1127,17 +1127,18 @@ public class XmlRpcFileManager {
     }
 
     private void setProductType(List<Product> products) throws Exception {
-        if (products != null && products.size() > 0) {
-            for (Iterator<Product> i = products.iterator(); i.hasNext();) {
-                Product p = i.next();
-                try {
-                    p.setProductType(repositoryManager.getProductTypeById(p
-                            .getProductType().getProductTypeId()));
-                } catch (RepositoryManagerException e) {
-                    throw new Exception(e.getMessage(), e);
-                }
-            }
-        }
+        if (products != null && products.size() > 0) 
+            for (Product product : products) 
+                this.setProductType(product);
+    }
+    
+    private void setProductType(Product product) throws Exception {
+    	if (product.getProductType().getProductTypeId() != null)
+    		product.setProductType(repositoryManager.getProductTypeById(product
+                .getProductType().getProductTypeId()));
+    	else
+    		product.setProductType(repositoryManager.getProductTypeByName(product
+                    .getProductType().getName()));
     }
     
     private List<Product> query(Query query, ProductType productType) throws CatalogException {
