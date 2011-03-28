@@ -31,14 +31,12 @@ import org.apache.oodt.commons.date.DateUtils;
 
 //JDK imports
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -107,7 +105,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
 
     protected String getType(Element element) {
     	if (this.isVector(element))
-    		return element.getDCElement().replaceFirst(VECTOR + "\\<", "").replaceAll("\\>", "");
+    		return element.getDCElement().toUpperCase().replaceFirst(VECTOR + "\\<", "").replaceAll("\\>", "");
     	else
     		return element.getDCElement() != null ? element.getDCElement().toUpperCase() : STRING;
     }
@@ -218,7 +216,14 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             conn.setAutoCommit(false);
             statement = this.setDateFormats(conn.createStatement());
             
-            String removeSql = "DELETE FROM " + product.getProductType().getName() + "_vw WHERE ProductId = " + product.getProductId();
+            Vector<String> queryTables = new Vector<String>();
+            queryTables.add(product.getProductType().getName() + "_METADATA");
+            for (Element element : this.validationLayer.getElements(product.getProductType()))
+            	if (this.isVector(element))
+            		queryTables.add(element.getElementName() + "_XREF");
+            
+//            String removeSql = "DELETE FROM " + product.getProductType().getName() + "_vw WHERE ProductId = " + product.getProductId();
+            String removeSql = "DELETE FROM " + StringUtils.join(queryTables, ",") + " WHERE ProductId = " + product.getProductId();
             statement.execute(removeSql);
             
             conn.commit();
@@ -849,37 +854,59 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             conn = dataSource.getConnection();
             statement = this.setDateFormats(conn.createStatement());
 
-            Vector<String> selectElements = new Vector<String>();
-            for (Element element : this.validationLayer.getElements(product.getProductType())) {
-            	try {
-	            	String type = this.getType(element);
-	            	if (this.isDate(type))
-	            		selectElements.add("to_char(" + element.getElementName() + ", '" + this.getDateFormat(type) + "') as " + element.getElementName());
-	            	else
-	            		selectElements.add(element.getElementName());
-            	}catch (Exception e) {
-                    LOG.log(Level.WARNING, "Element '" + element.getElementName() + "' not found : " + e.getMessage());
+            Metadata metadata = new Metadata();
+            
+            List<String> scalarElementNames = new Vector<String>();
+            
+            List<Element> elements = this.validationLayer.getElements(product.getProductType());
+            for (Element element : elements) {
+            	if (!this.isVector(element)) {
+            		scalarElementNames.add(this.isDate(this.getType(element)) 
+    						? "to_char(" + element.getElementName() 
+    								+ ", '" + this.getDateFormat(this.getType(element)) 
+    								+ "') as " + element.getElementName() 
+    						: element.getElementName());            			
+            	}else {
+            		try {
+	        			String getVectorValuesSql = 
+	        				"SELECT " + (this.isDate(this.getType(element)) 
+	        						? "to_char(" + element.getElementName() 
+	        								+ ", '" + this.getDateFormat(this.getType(element)) 
+	        								+ "') as " + element.getElementName() 
+	        						: element.getElementName()) 
+	        				+ " FROM " + element.getElementName() + "_XREF"
+	        				+ " WHERE ProductId = " + product.getProductId(); 
+	                    LOG.log(Level.FINE, "getMetadata Executing: " + getVectorValuesSql);
+	                    rs = statement.executeQuery(getVectorValuesSql);
+	                    Vector<String> values = new Vector<String>();
+	                    while(rs.next()) 
+	                    	values.add(rs.getString(element.getElementName()));
+	                    metadata.addMetadata(element.getElementName(), values);
+            		}catch (Exception e) {
+                        LOG.log(Level.SEVERE, "Failed to get metadata for product '" + product.getProductId() + "' for element '" + element.getElementName() + "' : " + e.getMessage(), e);
+                        throw new CatalogException("Failed to get metadata for product '" + product.getProductId() + "' for element '" + element.getElementName() + "' : " + e.getMessage(), e);
+            		}finally {
+            			try { rs.close(); } catch (Exception e) {}
+            		}
             	}
             }
-            String metadataSql = "SELECT " + StringUtils.join(selectElements, ",") + " FROM "
-                    + product.getProductType().getName() + "_VW"
+
+            String metadataSql = "SELECT " + StringUtils.join(scalarElementNames, ",") + " FROM "
+                    + product.getProductType().getName() + "_METADATA"
                     + " WHERE ProductId = " + product.getProductId();
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
             
-            Metadata metadata = new Metadata();
-            List<Element> elements = this.validationLayer.getElements(product.getProductType());
-            if (rs.next()) { 
-
-            	for (Element element : elements) {
+            if (rs.next()) {
+            	for (String elementName : scalarElementNames) {
                 	try {
-                		String value =  rs.getString(element.getElementName());
+                		String value =  rs.getString(elementName);
                 		if (value == null)
                 			throw new Exception("value null");
-                		metadata.addMetadata(element.getElementName(), value);
+                		metadata.addMetadata(elementName, value);
                 	}catch (Exception e) {
-                        LOG.log(Level.WARNING, "Element '" + element.getElementName() + "' not found : " + e.getMessage());
+                        LOG.log(Level.WARNING, "Element '" + elementName + "' not found : " + e.getMessage());
                 	}
                 }
             }
@@ -903,36 +930,65 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
         try {
             conn = dataSource.getConnection();
             statement = this.setDateFormats(conn.createStatement());
+
+            Metadata metadata = new Metadata();
             
-            Vector<String> selectElements = new Vector<String>();
-            for (Element element : this.validationLayer.getElements(product.getProductType())) {
-            	try {
-            		if (elems.contains(element.getElementName())) {
-		            	String type = this.getType(element);
-		            	if (this.isDate(type))
-		            		selectElements.add("to_char(" + element.getElementName() + ", '" + this.getDateFormat(type) + "') as " + element.getElementName());
-		            	else
-		            		selectElements.add(element.getElementName());
-	            	}
-            	}catch (Exception e) {
-                    LOG.log(Level.WARNING, "Element '" + element.getElementName() + "' not found : " + e.getMessage());
+            List<String> scalarElementNames = new Vector<String>();
+            
+            List<Element> elements = this.validationLayer.getElements(product.getProductType());
+            for (Element element : elements) {
+            	if (!elems.contains(element.getElementName()))
+            		continue;
+            	if (!this.isVector(element)) {
+            		scalarElementNames.add(this.isDate(this.getType(element)) 
+    						? "to_char(" + element.getElementName() 
+    								+ ", '" + this.getDateFormat(this.getType(element)) 
+    								+ "') as " + element.getElementName() 
+    						: element.getElementName());            			
+            	}else {
+            		try {
+	        			String getVectorValuesSql = 
+	        				"SELECT " + (this.isDate(this.getType(element)) 
+	        						? "to_char(" + element.getElementName() 
+	        								+ ", '" + this.getDateFormat(this.getType(element)) 
+	        								+ "') as " + element.getElementName() 
+	        						: element.getElementName()) 
+	        				+ " FROM " + element.getElementName() + "_XREF"
+	        				+ " WHERE ProductId = " + product.getProductId(); 
+	                    LOG.log(Level.FINE, "getMetadata Executing: " + getVectorValuesSql);
+	                    rs = statement.executeQuery(getVectorValuesSql);
+	                    Vector<String> values = new Vector<String>();
+	                    while(rs.next()) 
+	                    	values.add(rs.getString(element.getElementName()));
+	                    metadata.addMetadata(element.getElementName(), values);
+            		}catch (Exception e) {
+                        LOG.log(Level.SEVERE, "Failed to get metadata for product '" + product.getProductId() + "' for element '" + element.getElementName() + "' : " + e.getMessage(), e);
+                        throw new CatalogException("Failed to get metadata for product '" + product.getProductId() + "' for element '" + element.getElementName() + "' : " + e.getMessage(), e);
+            		}finally {
+            			try { rs.close(); } catch (Exception e) {}
+            		}
             	}
             }
-            
-            String metadataSql = "SELECT " + StringUtils.join(selectElements, ",") + " FROM "
-                    + product.getProductType().getName() + "_VW"
+
+            String metadataSql = "SELECT " + StringUtils.join(scalarElementNames, ",") + " FROM "
+                    + product.getProductType().getName() + "_METADATA"
                     + " WHERE ProductId = " + product.getProductId();
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
             
-            Metadata metadata = new Metadata();
-            List<Element> elements = this.validationLayer.getElements(product.getProductType());
-            if (rs.next()) 
-                for (Element element : elements) 
-                	if (elems.contains(element.getElementName()))
-                		metadata.addMetadata(element.getElementName(), rs.getString(element.getElementName()));
-            
+            if (rs.next()) {
+            	for (String elementName : scalarElementNames) {
+                	try {
+                		String value =  rs.getString(elementName);
+                		if (value == null)
+                			throw new Exception("value null");
+                		metadata.addMetadata(elementName, value);
+                	}catch (Exception e) {
+                        LOG.log(Level.WARNING, "Element '" + elementName + "' not found : " + e.getMessage());
+                	}
+                }
+            }
             return metadata;
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Exception getting metadata. Message: "
@@ -956,6 +1012,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
                     ResultSet.CONCUR_READ_ONLY));
             
             Vector<String> selectElements = new Vector<String>();
+            selectElements.add("ProductId");
             for (Element element : this.validationLayer.getElements(productType)) {
             	try {
             		if (elementNames.contains(element.getElementName())) {
@@ -969,21 +1026,30 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
                     LOG.log(Level.WARNING, "Element '" + element.getElementName() + "' not found : " + e.getMessage());
             	}
             }
+//            
+//            Vector<String> queryTables = new Vector<String>();
+//            queryTables.add(productType.getName() + "_METADATA");
+//            for (Element element : this.validationLayer.getElements(productType))
+//            	if (this.isVector(element))
+//            		queryTables.add(element.getElementName() + "_XREF");
             
-            String getProductSql = "SELECT " + StringUtils.join(selectElements, ",") + " FROM " + productType.getName() + "_VW";
-        	if (query.getCriteria() != null)
-        		getProductSql += " WHERE " + SqlParser.getInfixCriteriaString(query.getCriteria()).replaceAll("==", "=");;
+            String getMetadataSql = "SELECT DISTINCT(ProductId) AS ProductId,ProductType FROM " + productType.getName() + "_VW";
 
-            rs = statement.executeQuery(getProductSql);
+//            String getMetadataSql = "SELECT " + StringUtils.join(selectElements, ",") + " FROM " + StringUtils.join(queryTables, ",");
+        	if (query.getCriteria() != null)
+        		getMetadataSql += " WHERE " + SqlParser.getInfixCriteriaString(query.getCriteria()).replaceAll("==", "=");;
+        	getMetadataSql += " ORDER BY ProductId DESC";
+        		
+            rs = statement.executeQuery(getMetadataSql);
 
             Vector<Metadata> metadatas = new Vector<Metadata>();
-            List<Element> elements = this.validationLayer.getElements(productType);
             while (rs.next()) {
-                Metadata metadata = new Metadata();
-                for (Element element : elements) 
-                	if (elementNames.contains(element.getElementName()))
-                		metadata.addMetadata(element.getElementName(), rs.getString(element.getElementName()));
-                metadatas.add(metadata);
+            	Product p = new Product();
+            	p.setProductId(rs.getString("ProductId"));
+            	ProductType pt = new ProductType();
+            	pt.setName(rs.getString("ProductType"));
+            	p.setProductType(pt);
+            	metadatas.add(this.getMetadata(p));
             }
             
             return metadatas;
@@ -1020,9 +1086,10 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             statement = this.setDateFormats(conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY));
             
-        	String getProductSql = "SELECT ProductId FROM " + type.getName() + "_vw";
+        	String getProductSql = "SELECT DISTINCT(ProductId) AS ProductId FROM " + type.getName() + "_VW";
         	if (query.getCriteria() != null && query.getCriteria().size() > 0)
         		getProductSql += " WHERE " + SqlParser.getInfixCriteriaString(query.getCriteria()).replaceAll("==", "=");
+        	getProductSql += " ORDER BY ProductId DESC";
 
         	LOG.log(Level.FINE, "performing getProductSql '" + getProductSql + "'");
             rs = statement.executeQuery(getProductSql);
@@ -1263,9 +1330,9 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             statement = this.setDateFormats(conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY));
             
-        	String getProductSql = "SELECT ProductId FROM " + type.getName() + "_vm" 
+        	String getProductSql = "SELECT DISTINCT(ProductId) AS ProductId FROM " + type.getName() + "_VW" 
         		+ (query.getCriteria() != null ? " WHERE " + SqlParser.getInfixCriteriaString(query.getCriteria()) : "") 
-        		+ " ORDER BY ProductReceivedTime DESC";
+        		+ " ORDER BY ProductId DESC";
             rs = statement.executeQuery(getProductSql);
 
             int rsSize = -1;
