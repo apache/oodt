@@ -26,6 +26,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngineClient;
 import org.apache.oodt.cas.workflow.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.page.PageFilter;
+import org.apache.oodt.cas.workflow.page.StdPageFilter;
 import org.apache.oodt.cas.workflow.processor.ProcessorStub;
 import org.apache.oodt.cas.workflow.state.StateUtils;
 import org.apache.oodt.cas.workflow.state.WorkflowState;
@@ -48,34 +49,13 @@ public abstract class FilteredAction extends WorkflowEngineServerAction {
 		final List<WorkflowState> supportedStates = weClient.getSupportedStates();
 		if (this.filterKeys.size() > 0) 
 			(metadata = new Metadata()).addMetadata(filterKeys);
-		return new PageFilter() {
-			
-			private String modelId = FilteredAction.this.modelId;
-			private WorkflowState state = FilteredAction.this.stateName != null ? StateUtils.getStateByName(supportedStates, FilteredAction.this.stateName) : null;
-			private WorkflowState.Category category = FilteredAction.this.categoryName != null ? StateUtils.getCategoryByName(supportedStates, FilteredAction.this.categoryName) : null;
-			private Metadata metadata = FilteredAction.this.metadata;
-			
-			public boolean accept(ProcessorStub stub,
-					Metadata cachedMetadata) {
-				if (modelId != null) 
-					if (!stub.getModelId().equals(modelId))
-						return false;
-				if (state != null) 
-					if (!stub.getState().equals(state))
-						return false;
-				if (category != null) 
-					if (!stub.getState().getCategory().equals(category))
-						return false;
-				if (metadata != null) {
-					for (String key : metadata.getAllKeys()) {
-						List<String> values = cachedMetadata.getAllMetadata(key);
-						if (values == null || Collections.disjoint(metadata.getAllMetadata(key), values))
-							return false;
-					}
-				}
-				return true;
-			}
-		};
+		
+		StdPageFilter pageFilter = new StdPageFilter();
+		pageFilter.setCategory(FilteredAction.this.categoryName != null ? StateUtils.getCategoryByName(supportedStates, FilteredAction.this.categoryName) : null);
+		pageFilter.setState(FilteredAction.this.stateName != null ? StateUtils.getStateByName(supportedStates, FilteredAction.this.stateName) : null);
+		pageFilter.setMetadata(this.metadata);
+		pageFilter.setModelId(this.modelId);
+		return pageFilter;
 	}
 	
 	public void setModelId(String modelId) {
