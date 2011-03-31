@@ -136,27 +136,31 @@ public class DirStructXmlParser implements Parser {
 
     private String replaceVariablesAndMethods(String input) {
         for (int i = 0; i < input.length(); i++) {
-            char c = input.substring(i, i + 1).charAt(0);
+            char c = input.charAt(i);
             switch (c) {
             case '$':
                 try {
-                    if (input.substring(i + 1, i + 2).charAt(0) == '{') {
+                    if (input.charAt(i + 1) == '{') {
                         StringBuffer variable = new StringBuffer("");
-                        for (int j = i + 1; j < input.length(); j++) {
-                            char ch = input.substring(j, j + 1).charAt(0);
+                        for (int j = i + 2; j < input.length(); j++) {
+                            char ch = input.charAt(j);
                             if ((ch <= 'Z' && ch >= 'A')
-                                    || (ch <= '9' && ch >= '0') || ch == '_')
+                                    || (ch <= 'z' && ch >= 'a')
+                                    || (ch <= '9' && ch >= '0') 
+                                    || ch == '_')
                                 variable.append(ch);
                             else
                                 break;
                         }
                         Variable v = GlobalVariables.hashMap.get(variable
                                 .toString());
-                        input = input.replaceFirst("${" + variable + "}", v
-                                .toString());
+                        if (v == null)
+                        	throw new Exception("No variable defined with name '" + variable.toString() + "'");
+                        input = input.replaceFirst("\\$\\{" + variable + "\\}", v.toString());
                         i = i + v.toString().length();
                     }
                 } catch (Exception e) {
+                	LOG.log(Level.WARNING, "Failed to replace variable in '" + input + " for i = '" + i + "' : " + e.getMessage(), e);
                 }
                 break;
             case '%':

@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-169 Pushpull dirstruct xml files fail to replace global 
+  variables in name attribute for dir and file elements (bfoster)
+
 * OODT-166 Ability for puspull to dynamically generate ProductName for a given mime-type (bfoster)
 
 * OODT-167 ProcessedPageInfo isLastPage fails for case PageNum = 1 and totalPages = 0 (bfoster)
