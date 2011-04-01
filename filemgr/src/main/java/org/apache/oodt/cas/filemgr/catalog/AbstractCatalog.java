@@ -40,11 +40,11 @@ public abstract class AbstractCatalog implements Catalog {
 		return productIds;
 	}
 	
-	public List<Metadata> getReducedMetadata(Query query, List<ProductType> types, List<String> elements) throws CatalogException {
-		List<Metadata> metadatas = new Vector<Metadata>();
-		for (ProductType type : types)
-			metadatas.addAll(this.getReducedMetadata(query, type, elements));
-		return metadatas;
-	}
+//	public List<Metadata> getReducedMetadata(Query query, List<ProductType> types, List<String> elements) throws CatalogException {
+//		List<Metadata> metadatas = new Vector<Metadata>();
+//		for (ProductType type : types)
+//			metadatas.addAll(this.getReducedMetadata(query, type, elements));
+//		return metadatas;
+//	}
 	
 }

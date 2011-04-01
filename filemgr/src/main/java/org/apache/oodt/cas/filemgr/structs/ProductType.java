@@ -192,6 +192,17 @@ public class ProductType {
     public void setHandlers(List<TypeHandler> handlers) {
         this.handlers = handlers;
     }
+    
+    public boolean equals(Object obj) {
+    	if (obj instanceof ProductType) {
+    		ProductType type = (ProductType) obj;
+    		if (type.getProductTypeId() != null && this.getProductTypeId() != null)
+    			return type.getProductTypeId().equals(this.getProductTypeId());
+    		else if (type.getName() != null && this.getName() != null)
+    			return type.getName().equals(this.getName());
+    	}
+    	return false;
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()

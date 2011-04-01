@@ -17,10 +17,7 @@
 package org.apache.oodt.cas.filemgr.catalog;
 
 //OODT imports
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
+import org.apache.oodt.cas.filemgr.repository.RepositoryManager;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -44,7 +41,8 @@ public class ColumnBasedDataSourceCatalogFactory implements CatalogFactory {
 	
     /* our validation layer */
     protected ValidationLayer validationLayer = null;
-
+    protected RepositoryManager repositoryManager = null;
+    
     /*
      * page size: size of the pages used by the catalog to paginate products
      * back to the user
@@ -57,6 +55,7 @@ public class ColumnBasedDataSourceCatalogFactory implements CatalogFactory {
     protected String driver;
     
     protected String validationLayerFactoryClass;
+    protected String repositoryManagerFactoryClass;
     
     /**
      * 
@@ -78,13 +77,13 @@ public class ColumnBasedDataSourceCatalogFactory implements CatalogFactory {
                 .replaceEnvVariables(System
                         .getProperty("org.apache.oodt.cas.filemgr.catalog.column.based.datasource.jdbc.driver", "some_driver_class"));
         
-		String dbIntTypes = PathUtils
-				.replaceEnvVariables(System
-						.getProperty("org.apache.oodt.cas.filemgr.catalog.column.based.datasource.db.int.types"));
-        
         validationLayerFactoryClass = System
                 .getProperty("filemgr.validationLayer.factory",
                         "org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory");
+        
+        repositoryManagerFactoryClass = System
+                .getProperty("filemgr.repository.factory",
+                        "org.apache.oodt.cas.filemgr.repository.DataSourceRepositoryManagerFactory");
 
         pageSize = Integer
                 .getInteger(
@@ -151,6 +150,10 @@ public class ColumnBasedDataSourceCatalogFactory implements CatalogFactory {
 		this.validationLayer = validationLayer;
 	}
 
+	public void setRepositoryManager(RepositoryManager repositoryManager) {
+		this.repositoryManager = repositoryManager;
+	}
+	
 	/*
      * (non-Javadoc)
      * 
@@ -159,9 +162,11 @@ public class ColumnBasedDataSourceCatalogFactory implements CatalogFactory {
     public Catalog createCatalog() {
 		if (this.validationLayer == null)
 	        this.validationLayer = GenericFileManagerObjectFactory.getValidationLayerFromFactory(validationLayerFactoryClass);
+		if (this.repositoryManager == null)
+        	this.repositoryManager = GenericFileManagerObjectFactory.getRepositoryManagerServiceFromFactory(repositoryManagerFactoryClass);
 		if (this.ds == null)
 			this.ds = DatabaseConnectionBuilder.buildDataSource(user, pass,driver, jdbcUrl);
-        return new ColumnBasedDataSourceCatalog(this.ds, validationLayer, pageSize);
+        return new ColumnBasedDataSourceCatalog(this.ds, validationLayer, this.repositoryManager, pageSize);
     }
 
 }

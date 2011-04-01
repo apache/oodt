@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -63,6 +64,8 @@ public class Product {
     /* our product structure: can be Heirarchical, or Flat */
     private String productStructure = null;
 
+    private Date productReceivedTime = null;
+    
     /* a set of {@link References} to the items that make up this product */
     private List<Reference> references = null;
 
@@ -139,11 +142,12 @@ public class Product {
      *            A {@link List} of {@link Reference}s pointing to the items
      *            that make up this product.
      */
-    public Product(String name, ProductType pType, String structure,
+    public Product(String name, ProductType pType, String structure, Date productReceivedTime,
             String transferStatus, List<Reference> refs) {
         productName = name;
         productType = pType;
         productStructure = structure;
+        this.productReceivedTime = productReceivedTime;
         references = refs;
     }
 
@@ -177,7 +181,15 @@ public class Product {
         this.productStructure = productStructure;
     }
 
-    /**
+    public Date getProductReceivedTime() {
+		return productReceivedTime;
+	}
+
+	public void setProductReceivedTime(Date productReceivedTime) {
+		this.productReceivedTime = productReceivedTime;
+	}
+
+	/**
      * @return Returns the references.
      */
     public List<Reference> getProductReferences() {

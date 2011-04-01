@@ -17,10 +17,8 @@
 package org.apache.oodt.cas.filemgr.catalog.catalogservice;
 
 //JDK imports
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -38,7 +36,6 @@ import org.apache.oodt.cas.catalog.exception.IngestServiceException;
 import org.apache.oodt.cas.catalog.exception.QueryServiceException;
 import org.apache.oodt.cas.catalog.page.IndexPager;
 import org.apache.oodt.cas.catalog.page.IngestReceipt;
-import org.apache.oodt.cas.catalog.page.TransactionReceipt;
 import org.apache.oodt.cas.catalog.query.CustomQueryExpression;
 import org.apache.oodt.cas.catalog.query.CustomWrapperQueryExpression;
 import org.apache.oodt.cas.catalog.query.QueryExpression;
@@ -56,9 +53,7 @@ import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.commons.util.DateConvert;
 
 /**
  * @author bfoster
@@ -264,7 +259,7 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 	public boolean hasTransactionId(TransactionId<?> catalogTransactionId) throws CatalogIndexException {
 		try {
 			Product product = this.fmCatalog.getProductById(catalogTransactionId.toString());
-			return product != null && this.isSupportedProductTypeId(product.getProductType().getProductTypeId());
+			return product != null && this.isSupportedProductType(product.getProductType());
 		}catch(Exception e) {
 			throw new CatalogIndexException("", e);
 		}
@@ -273,7 +268,7 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 	public boolean delete(TransactionId<?> transactionId) throws IngestServiceException {
 		try {
 			Product product = this.fmCatalog.getProductById(transactionId.toString());
-			product.setProductType(this.getProductTypeById(product.getProductType().getProductTypeId()));
+			product.setProductType(this.getCompleteProductType(product.getProductType()));
 			if (product != null) {
 				LOG.log(Level.INFO, "Deleting Product for TransactionId: " + transactionId);
 				this.fmCatalog.removeProduct(product);
@@ -292,7 +287,7 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 		try {
 			transactionId = this.getTransactionIdFactory().createNewTransactionId();
 			Product product = CatalogServiceUtils.asProduct(termBuckets.get(0), new Vector<ProductType>(this.supportedProductTypes));
-			product.setProductType(this.getProductTypeById(product.getProductType().getProductTypeId()));
+			product.setProductType(this.getCompleteProductType(product.getProductType()));
 			Metadata metadata = CatalogServiceUtils.asMetadata(termBuckets.get(0));
 			String catalogAction = metadata.getMetadata(CatalogActions.CATALOG_ACTION_KEY);
 			if (catalogAction.equals(CatalogActions.INGEST_PRODUCT)) {
@@ -304,8 +299,8 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 //			String productReceivedTime = metadata.getMetadata(CoreMetKeys.PRODUCT_RECEVIED_TIME);
 //			if (productReceivedTime == null)
 //				metadata.replaceMetadata(CoreMetKeys.PRODUCT_RECEVIED_TIME, DateConvert.isoFormat(new Date()));
-			metadata.replaceMetadata(CoreMetKeys.PRODUCT_ID, product.getProductId());
-			return this.generateReceipt(metadata);
+//			metadata.replaceMetadata(CoreMetKeys.PRODUCT_ID, product.getProductId());
+			return new IngestReceipt(this.generateTransactionId(product.getProductId()), product.getProductReceivedTime());
 		}catch (Exception e) {
 			throw new IngestServiceException("Failed to Ingest Product for TransactionId: " + transactionId, e);
 		}
@@ -315,7 +310,7 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 			List<TermBucket> termBuckets) throws IngestServiceException {
 		try {
 			Product product = this.fmCatalog.getProductById(transactionId.toString());
-			product.setProductType(this.getProductTypeById(product.getProductType().getProductTypeId()));
+			product.setProductType(this.getCompleteProductType(product.getProductType()));
 			Metadata metadata = CatalogServiceUtils.asMetadata(termBuckets.get(0));
 			String catalogAction = metadata.getMetadata(CatalogActions.CATALOG_ACTION_KEY);
 			if (catalogAction.equals(CatalogActions.REMOVE_PRODUCT)) {
@@ -336,7 +331,7 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 		try {
 			Product product = CatalogServiceUtils.asProduct(termBuckets.get(0), new Vector<ProductType>(this.supportedProductTypes));
 			product.setProductId(transactionId.toString());
-			product.setProductType(this.getProductTypeById(product.getProductType().getProductTypeId()));
+			product.setProductType(this.getCompleteProductType(product.getProductType()));
 			Metadata metadata = CatalogServiceUtils.asMetadata(termBuckets.get(0));
 			metadata.replaceMetadata(CoreMetKeys.PRODUCT_ID, product.getProductId());
 			String catalogAction = metadata.getMetadata(CatalogActions.CATALOG_ACTION_KEY);
@@ -363,7 +358,7 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 		try {
 			Product product = this.fmCatalog.getProductById(transactionId.toString());
 			if (product != null) {
-				product.setProductType(this.getProductTypeById(product.getProductType().getProductTypeId()));
+				product.setProductType(this.getCompleteProductType(product.getProductType()));
 				product.setProductReferences(this.fmCatalog.getProductReferences(product));
 				return Collections.singletonList(CatalogServiceUtils.asTermBucket(product, this.fmCatalog.getMetadata(product), this.fmCatalog.getValidationLayer().getElements(product.getProductType())));
 			}else {
@@ -385,10 +380,10 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 	public List<IngestReceipt> query(QueryExpression queryExpression)
 			throws QueryServiceException {
 		try {
-			List<String> elements = new Vector<String>(); 
-			Collections.addAll(elements, CoreMetKeys.PRODUCT_ID,CoreMetKeys.PRODUCT_RECEVIED_TIME);
+//			List<String> elements = new Vector<String>(); 
+//			Collections.addAll(elements, CoreMetKeys.PRODUCT_ID,CoreMetKeys.PRODUCT_RECEVIED_TIME);
 			
-			List<Metadata> metadatas = new Vector<Metadata>();
+			List<Product> products = new Vector<Product>();
 
 			if (queryExpression instanceof CustomWrapperQueryExpression) {
 				CustomWrapperQueryExpression cwqe = (CustomWrapperQueryExpression) queryExpression;
@@ -402,21 +397,24 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 				CustomQueryExpression customQE = (CustomQueryExpression) queryExpression;
 				if (customQE.getName().equals(CatalogServiceMetKeys.PRODUCT_NAME_QUERY_EXPRESSION)) {
 					Product product = this.fmCatalog.getProductByName(customQE.getProperty(CatalogServiceMetKeys.PRODUCT_NAME_CUSTOM_KEY));
-					if (product != null && product.getProductType() != null && this.isSupportedProductTypeId(product.getProductType().getProductTypeId())) {
-						product.setProductType(this.getProductTypeById(product.getProductType().getProductTypeId()));
-						metadatas = Collections.singletonList(this.fmCatalog.getReducedMetadata(product, elements));
-					}else {
-						metadatas = Collections.emptyList();
-					}
+					if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) 
+						products.add(product);
+//					if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) {
+//						product.setProductType(this.getCompleteProductType(product.getProductType()));
+//						metadatas = Collections.singletonList(this.fmCatalog.getReducedMetadata(product, elements));
+//					}else {
+//						metadatas = Collections.emptyList();
+//					}
 				}else if (customQE.getName().equals(CatalogServiceMetKeys.TOP_N_QUERY_EXPRESSION)) {
 					List<Product> topNProducts = this.fmCatalog.getTopNProducts(Integer.parseInt(customQE.getProperty(CatalogServiceMetKeys.N_CUSTOM_KEY)));
 					if (topNProducts != null) {
 						for (Product product : topNProducts) {
-							if (product != null && product.getProductType() != null && this.isSupportedProductTypeId(product.getProductType().getProductTypeId())) { 
-								product.setProductType(this.getProductTypeById(product.getProductType().getProductTypeId()));
-								Metadata m = this.fmCatalog.getMetadata(product);
-								m.replaceMetadata(CoreMetKeys.PRODUCT_ID, product.getProductId());
-								metadatas.add(m);
+							if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) { 
+								product.setProductType(this.getCompleteProductType(product.getProductType()));
+								products.add(product);
+//								Metadata m = this.fmCatalog.getMetadata(product);
+//								m.replaceMetadata(CoreMetKeys.PRODUCT_ID, product.getProductId());
+//								metadatas.add(m);
 							}
 						}
 					}
@@ -438,12 +436,17 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 					if (type != null)
 						supportedSubsetOfTypes.add(type);
 				}
-				metadatas = this.fmCatalog.getReducedMetadata(fmQuery, supportedSubsetOfTypes, elements);
+				List<String> productIds = this.fmCatalog.query(fmQuery, supportedSubsetOfTypes);
+				for (String productId : productIds)
+					products.add(this.fmCatalog.getProductById(productId));
+//				metadatas = this.fmCatalog.getReducedMetadata(fmQuery, supportedSubsetOfTypes, elements);
 			}
 
 			List<IngestReceipt> ingestReceipts = new Vector<IngestReceipt>();
-			for (Metadata metadata : metadatas) 
-				ingestReceipts.add(generateReceipt(metadata));
+//			for (Metadata metadata : metadatas) 
+//				ingestReceipts.add(generateReceipt(metadata));
+			for (Product product : products)
+				ingestReceipts.add(new IngestReceipt(this.generateTransactionId(product.getProductId()), product.getProductReceivedTime()));
 			return ingestReceipts;
 		}catch (Exception e) {
 			throw new QueryServiceException("Failed to perform CatalogQuery '" + queryExpression + "' : " + e.getMessage(), e);
@@ -453,10 +456,10 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 	public List<IngestReceipt> query(QueryExpression queryExpression, int startIndex, int endIndex)
 			throws QueryServiceException {
 		try {
-			List<String> elements = new Vector<String>(); 
-			Collections.addAll(elements, CoreMetKeys.PRODUCT_ID,CoreMetKeys.PRODUCT_RECEVIED_TIME);
+//			List<String> elements = new Vector<String>(); 
+//			Collections.addAll(elements, CoreMetKeys.PRODUCT_ID,CoreMetKeys.PRODUCT_RECEVIED_TIME);
 			
-			List<Metadata> metadatas = new Vector<Metadata>();
+			List<Product> products = new Vector<Product>();
 
 			if (queryExpression instanceof CustomWrapperQueryExpression) {
 				CustomWrapperQueryExpression cwqe = (CustomWrapperQueryExpression) queryExpression;
@@ -470,21 +473,24 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 				CustomQueryExpression customQE = (CustomQueryExpression) queryExpression;
 				if (customQE.getName().equals(CatalogServiceMetKeys.PRODUCT_NAME_QUERY_EXPRESSION)) {
 					Product product = this.fmCatalog.getProductByName(customQE.getProperty(CatalogServiceMetKeys.PRODUCT_NAME_CUSTOM_KEY));
-					if (product != null && product.getProductType() != null && this.isSupportedProductTypeId(product.getProductType().getProductTypeId())) {
-						product.setProductType(this.getProductTypeById(product.getProductType().getProductTypeId()));
-						metadatas = Collections.singletonList(this.fmCatalog.getReducedMetadata(product, elements));
-					}else {
-						metadatas = Collections.emptyList();
-					}
+					if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) 
+						products.add(product);
+//					if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) {
+//						product.setProductType(this.getCompleteProductType(product.getProductType()));
+//						metadatas = Collections.singletonList(this.fmCatalog.getReducedMetadata(product, elements));
+//					}else {
+//						metadatas = Collections.emptyList();
+//					}
 				}else if (customQE.getName().equals(CatalogServiceMetKeys.TOP_N_QUERY_EXPRESSION)) {
 					List<Product> topNProducts = this.fmCatalog.getTopNProducts(Integer.parseInt(customQE.getProperty(CatalogServiceMetKeys.N_CUSTOM_KEY)));
 					if (topNProducts != null) {
 						for (Product product : topNProducts) {
-							if (product != null && product.getProductType() != null && this.isSupportedProductTypeId(product.getProductType().getProductTypeId())) { 
-								product.setProductType(this.getProductTypeById(product.getProductType().getProductTypeId()));
-								Metadata m = this.fmCatalog.getMetadata(product);
-								m.replaceMetadata(CoreMetKeys.PRODUCT_ID, product.getProductId());
-								metadatas.add(m);
+							if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) { 
+								products.add(product);
+//								product.setProductType(this.getCompleteProductType(product.getProductType()));
+//								Metadata m = this.fmCatalog.getMetadata(product);
+//								m.replaceMetadata(CoreMetKeys.PRODUCT_ID, product.getProductId());
+//								metadatas.add(m);
 							}
 						}
 					}
@@ -506,31 +512,35 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 					if (type != null)
 						supportedSubsetOfTypes.add(type);
 				}
-				int currentIndex = 0;
+//				int currentIndex = 0;
 				for (ProductType type : supportedSubsetOfTypes) {
-					ProductPage page = this.fmCatalog.pagedQuery(fmQuery, type, 1);
+//					ProductPage page = this.fmCatalog.pagedQuery(fmQuery, type, 1);
+					int currentIndex = products.size();
 					if (endIndex <= currentIndex)
 						break;
-					if (startIndex >= currentIndex && startIndex <= currentIndex + page.getNumOfHits()) {
+//					if (startIndex >= currentIndex && startIndex <= currentIndex + page.getNumOfHits()) {
 						int localIndex = startIndex - currentIndex;
 						int pageNum = (int) Math.ceil((double) localIndex / (double) this.fmCatalog.getPageSize());
 						int numOfPages = (int) Math.ceil((double) (endIndex - startIndex) / (double) this.fmCatalog.getPageSize());
 						for (int i = 0; i < numOfPages; i++, pageNum++) {
-							page = this.fmCatalog.pagedQuery(fmQuery, type, pageNum);
+							ProductPage page = this.fmCatalog.pagedQuery(fmQuery, type, pageNum);
 							for (int k = 0, j = localIndex; k < page.getPageProducts().size() && j < (localIndex + this.fmCatalog.getPageSize()) && j < endIndex - currentIndex; k++, j++) {
 								Product product = page.getPageProducts().get(k);
 								product.setProductType(type);
-								metadatas.add(this.fmCatalog.getReducedMetadata(product, elements));
+								products.add(product);
+//								metadatas.add(this.fmCatalog.getReducedMetadata(product, elements));
 							}
 						}
-					}
-					currentIndex += page.getNumOfHits();
+//					}
+//					currentIndex += page.getNumOfHits();
 				}
 			}
 
 			List<IngestReceipt> ingestReceipts = new Vector<IngestReceipt>();
-			for (Metadata metadata : metadatas) 
-				ingestReceipts.add(generateReceipt(metadata));
+//			for (Metadata metadata : metadatas) 
+//				ingestReceipts.add(generateReceipt(metadata));
+			for (Product product : products)
+				ingestReceipts.add(new IngestReceipt(this.generateTransactionId(product.getProductId()), product.getProductReceivedTime()));
 			return ingestReceipts;
 		}catch (Exception e) {
 			throw new QueryServiceException("Failed to perform CatalogQuery '" + queryExpression + "' : " + e.getMessage(), e);
@@ -551,7 +561,7 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 				CustomQueryExpression customQE = (CustomQueryExpression) queryExpression;
 				if (customQE.getName().equals(CatalogServiceMetKeys.PRODUCT_NAME_QUERY_EXPRESSION)) {
 					Product product = this.fmCatalog.getProductByName(customQE.getProperty(CatalogServiceMetKeys.PRODUCT_NAME_CUSTOM_KEY));
-					if (product != null && product.getProductType() != null && this.isSupportedProductTypeId(product.getProductType().getProductTypeId())) {
+					if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) {
 						return 1;
 					}else {
 						return 0;
@@ -608,14 +618,14 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 		}
 	}
 	
-	protected IngestReceipt generateReceipt(Metadata metadata) throws ParseException {
-		String reveivedTimeString = metadata.getMetadata(CoreMetKeys.PRODUCT_RECEVIED_TIME);
-		Date receivedDate = new GregorianCalendar(2000, 01, 01).getTime();
-		if (reveivedTimeString != null)
-			receivedDate = DateConvert.isoParse(reveivedTimeString);
-//		System.out.println("generating receipt for product_id : " + metadata.getMetadata(CoreMetKeys.PRODUCT_ID));
-		return new IngestReceipt(this.generateTransactionId(metadata.getMetadata(CoreMetKeys.PRODUCT_ID)), receivedDate);
-	}
+//	protected IngestReceipt generateReceipt(Metadata metadata) throws ParseException {
+//		String reveivedTimeString = metadata.getMetadata(CoreMetKeys.PRODUCT_RECEVIED_TIME);
+//		Date receivedDate = new GregorianCalendar(2000, 01, 01).getTime();
+//		if (reveivedTimeString != null)
+//			receivedDate = DateConvert.isoParse(reveivedTimeString);
+////		System.out.println("generating receipt for product_id : " + metadata.getMetadata(CoreMetKeys.PRODUCT_ID));
+//		return new IngestReceipt(this.generateTransactionId(metadata.getMetadata(CoreMetKeys.PRODUCT_ID)), receivedDate);
+//	}
 	
 //	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 //		try {
@@ -642,13 +652,13 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 //		}
 //	}
 
-	protected boolean isSupportedProductTypeName(String name) {
-		return this.getProductTypeByName(name) != null;
-	}
-	
-	protected boolean isSupportedProductTypeId(String id) {
-		return this.getProductTypeById(id) != null;
-	}
+//	protected boolean isSupportedProductTypeName(String name) {
+//		return this.getProductTypeByName(name) != null;
+//	}
+//	
+//	protected boolean isSupportedProductTypeId(String id) {
+//		return this.getProductTypeById(id) != null;
+//	}
 	
 	protected ProductType getProductTypeByName(String name) {
 		for (ProductType type : this.supportedProductTypes)
@@ -656,13 +666,27 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 				return type;
 		return null;
 	}
+//	
+//	protected ProductType getProductTypeById(String id) {
+//		for (ProductType type : this.supportedProductTypes)
+//			if (type.getProductTypeId().equals(id))
+//				return type;
+//		return null;
+//	}
 	
-	protected ProductType getProductTypeById(String id) {
+	protected boolean isSupportedProductType(ProductType productType) {
 		for (ProductType type : this.supportedProductTypes)
-			if (type.getProductTypeId().equals(id))
+			if (type.equals(productType))
+				return true;
+		return false;
+	}
+	
+    protected ProductType getCompleteProductType(ProductType productType) throws Exception {
+		for (ProductType type : this.supportedProductTypes) 
+			if (type.equals(productType)) 
 				return type;
 		return null;
-	}
+    }
 	
 	protected Set<String> getSupportedProductTypeNames() {
 		Set<String> productTypeNames = new HashSet<String>();

@@ -44,8 +44,10 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.mime.MimeType;
 import org.apache.oodt.cas.filemgr.structs.mime.MimeTypeException;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -88,14 +90,14 @@ public class CatalogServiceUtils {
 		return comparisonQueryExpression;
 	}
 	
-	public static List<Product> asProducts(List<TransactionalMetadata> transactionalMetadataList, List<ProductType> supportedProductTypes) throws NumberFormatException, MimeTypeException {
+	public static List<Product> asProducts(List<TransactionalMetadata> transactionalMetadataList, List<ProductType> supportedProductTypes) throws NumberFormatException, MimeTypeException, ParseException {
 		List<Product> products = new Vector<Product>();
 		for (TransactionalMetadata transactionalMetadata : transactionalMetadataList)
 			products.add(asProduct(transactionalMetadata, supportedProductTypes));
 		return products;
 	}
 	
-	public static Product asProduct(TransactionalMetadata transactionalMetadata, List<ProductType> supportedProductTypes) throws NumberFormatException, MimeTypeException {
+	public static Product asProduct(TransactionalMetadata transactionalMetadata, List<ProductType> supportedProductTypes) throws NumberFormatException, MimeTypeException, ParseException {
 		HashSet<Term> terms = getProductTerms(transactionalMetadata.getMetadata());
 		terms.add(new Term(CatalogService.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY, Collections.singletonList(transactionalMetadata.getTransactionId().toString())));
 		TermBucket termBucket = new TermBucket(transactionalMetadata.getMetadata().getMetadata(CoreMetKeys.PRODUCT_TYPE));
@@ -103,11 +105,12 @@ public class CatalogServiceUtils {
 		return asProduct(termBucket, supportedProductTypes);
 	}
 	
-	public static Product asProduct(TermBucket termBucket, List<ProductType> supportedProductTypes) throws NumberFormatException, MimeTypeException {
+	public static Product asProduct(TermBucket termBucket, List<ProductType> supportedProductTypes) throws NumberFormatException, MimeTypeException, ParseException {
 		String productId = safeReadTermValue(termBucket, CatalogService.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY);
 		String productName = safeReadTermValue(termBucket, CoreMetKeys.PRODUCT_NAME);
 		String status = safeReadTermValue(termBucket, CoreMetKeys.PRODUCT_STATUS);
 		String structure = safeReadTermValue(termBucket, CoreMetKeys.PRODUCT_STRUCTURE);
+		String receivedTime = safeReadTermValue(termBucket, CoreMetKeys.PRODUCT_RECEVIED_TIME);
 		ProductType productType = null;
 		for (ProductType type : supportedProductTypes)
 			if (type.getName().equals(termBucket.getName()))
@@ -140,6 +143,8 @@ public class CatalogServiceUtils {
 		product.setProductId(productId);
 		product.setProductReferences(refs);
 		product.setTransferStatus(status);
+		if (receivedTime != null)
+			product.setProductReceivedTime(DateConvert.isoParse(receivedTime));
 		if (structure != null)
 			product.setProductStructure(structure);
 		return product;
@@ -177,7 +182,7 @@ public class CatalogServiceUtils {
 //			return ProductPage.blankPage();
 //	}
 	
-	public static ProductPage getProductPage(Page page, CatalogService catalogService, List<ProductType> supportedProductTypes) throws CatalogServiceException, NumberFormatException, MimeTypeException {
+	public static ProductPage getProductPage(Page page, CatalogService catalogService, List<ProductType> supportedProductTypes) throws CatalogServiceException, NumberFormatException, MimeTypeException, ParseException {
 		List<TransactionalMetadata> metadatas = null;
 		if (page.getPageNum() >= 1) {
 			metadatas = catalogService.getMetadata(page);
@@ -196,6 +201,8 @@ public class CatalogServiceUtils {
 			metadata.replaceMetadata(CoreMetKeys.PRODUCT_STRUCTURE, product.getProductStructure());
 		if (product.getTransferStatus() != null)
 			metadata.replaceMetadata(CoreMetKeys.PRODUCT_STATUS, product.getTransferStatus());
+		if (product.getProductReceivedTime() != null)
+			metadata.replaceMetadata(CoreMetKeys.PRODUCT_RECEVIED_TIME, DateConvert.isoFormat(product.getProductReceivedTime()));
 		metadata.replaceMetadata(CoreMetKeys.PRODUCT_TYPE, product.getProductType().getName());
 		if (product.getRootRef() != null) {
 			metadata.replaceMetadata(CoreMetKeys.PRODUCT_ROOT_REF_ORIG, product.getRootRef().getOrigReference());

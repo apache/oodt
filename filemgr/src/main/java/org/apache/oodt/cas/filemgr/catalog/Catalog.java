@@ -250,11 +250,11 @@ public interface Catalog extends Pagination {
     public Metadata getReducedMetadata(Product product, List<String> elements)
             throws CatalogException;
     
-    public List<Metadata> getReducedMetadata(Query query, ProductType type, List<String> elements)
-    		throws CatalogException;
-
-	public List<Metadata> getReducedMetadata(Query query, List<ProductType> types, List<String> elements) throws CatalogException;
-    	
+//    public List<Metadata> getReducedMetadata(Query query, ProductType type, List<String> elements)
+//    		throws CatalogException;
+//
+//	public List<Metadata> getReducedMetadata(Query query, List<ProductType> types, List<String> elements) throws CatalogException;
+//    	
     /**
      * <p>
      * Queries the Catalog with the specified {@link Query}
