@@ -456,9 +456,6 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 	public List<IngestReceipt> query(QueryExpression queryExpression, int startIndex, int endIndex)
 			throws QueryServiceException {
 		try {
-//			List<String> elements = new Vector<String>(); 
-//			Collections.addAll(elements, CoreMetKeys.PRODUCT_ID,CoreMetKeys.PRODUCT_RECEVIED_TIME);
-			
 			List<Product> products = new Vector<Product>();
 
 			if (queryExpression instanceof CustomWrapperQueryExpression) {
@@ -475,24 +472,12 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 					Product product = this.fmCatalog.getProductByName(customQE.getProperty(CatalogServiceMetKeys.PRODUCT_NAME_CUSTOM_KEY));
 					if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) 
 						products.add(product);
-//					if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) {
-//						product.setProductType(this.getCompleteProductType(product.getProductType()));
-//						metadatas = Collections.singletonList(this.fmCatalog.getReducedMetadata(product, elements));
-//					}else {
-//						metadatas = Collections.emptyList();
-//					}
 				}else if (customQE.getName().equals(CatalogServiceMetKeys.TOP_N_QUERY_EXPRESSION)) {
 					List<Product> topNProducts = this.fmCatalog.getTopNProducts(Integer.parseInt(customQE.getProperty(CatalogServiceMetKeys.N_CUSTOM_KEY)));
 					if (topNProducts != null) {
-						for (Product product : topNProducts) {
-							if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) { 
+						for (Product product : topNProducts) 
+							if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType()))
 								products.add(product);
-//								product.setProductType(this.getCompleteProductType(product.getProductType()));
-//								Metadata m = this.fmCatalog.getMetadata(product);
-//								m.replaceMetadata(CoreMetKeys.PRODUCT_ID, product.getProductId());
-//								metadatas.add(m);
-							}
-						}
 					}
 				}else {
 					throw new QueryServiceException("Unknown Custom Query type '" + (queryExpression != null ? queryExpression.getClass().getCanonicalName() : queryExpression) + "'");
@@ -512,33 +497,31 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 					if (type != null)
 						supportedSubsetOfTypes.add(type);
 				}
-//				int currentIndex = 0;
-				for (ProductType type : supportedSubsetOfTypes) {
-//					ProductPage page = this.fmCatalog.pagedQuery(fmQuery, type, 1);
-					int currentIndex = products.size();
+
+				int localIndex = startIndex;
+				int currentIndex = startIndex;
+				TOP: for (ProductType type : supportedSubsetOfTypes) {
 					if (endIndex <= currentIndex)
 						break;
-//					if (startIndex >= currentIndex && startIndex <= currentIndex + page.getNumOfHits()) {
-						int localIndex = startIndex - currentIndex;
-						int pageNum = (int) Math.ceil((double) localIndex / (double) this.fmCatalog.getPageSize());
-						int numOfPages = (int) Math.ceil((double) (endIndex - startIndex) / (double) this.fmCatalog.getPageSize());
-						for (int i = 0; i < numOfPages; i++, pageNum++) {
-							ProductPage page = this.fmCatalog.pagedQuery(fmQuery, type, pageNum);
-							for (int k = 0, j = localIndex; k < page.getPageProducts().size() && j < (localIndex + this.fmCatalog.getPageSize()) && j < endIndex - currentIndex; k++, j++) {
-								Product product = page.getPageProducts().get(k);
-								product.setProductType(type);
-								products.add(product);
-//								metadatas.add(this.fmCatalog.getReducedMetadata(product, elements));
-							}
+					int pageNum = (int) Math.ceil((double) localIndex / (double) this.fmCatalog.getPageSize());
+					ProductPage page = this.fmCatalog.pagedQuery(fmQuery, type, pageNum);
+					while (page.getPageProducts().size() > 0 && pageNum <= (int) Math.ceil((double) page.getNumOfHits() / (double) this.fmCatalog.getPageSize())) {
+						for (int i = 0; i < page.getPageProducts().size(); i++) {
+							Product product = page.getPageProducts().get(i);
+							product.setProductType(type);
+							products.add(product);
+							if (i + currentIndex + 1 >= endIndex)
+								break TOP;
 						}
-//					}
-//					currentIndex += page.getNumOfHits();
+						page = this.fmCatalog.pagedQuery(fmQuery, type, ++pageNum);
+					}
+					currentIndex = startIndex + products.size();
+					if (products.size() > 0)
+						localIndex = 0;
 				}
 			}
 
 			List<IngestReceipt> ingestReceipts = new Vector<IngestReceipt>();
-//			for (Metadata metadata : metadatas) 
-//				ingestReceipts.add(generateReceipt(metadata));
 			for (Product product : products)
 				ingestReceipts.add(new IngestReceipt(this.generateTransactionId(product.getProductId()), product.getProductReceivedTime()));
 			return ingestReceipts;
@@ -561,18 +544,10 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 				CustomQueryExpression customQE = (CustomQueryExpression) queryExpression;
 				if (customQE.getName().equals(CatalogServiceMetKeys.PRODUCT_NAME_QUERY_EXPRESSION)) {
 					Product product = this.fmCatalog.getProductByName(customQE.getProperty(CatalogServiceMetKeys.PRODUCT_NAME_CUSTOM_KEY));
-					if (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) {
-						return 1;
-					}else {
-						return 0;
-					}
+					return (product != null && product.getProductType() != null && this.isSupportedProductType(product.getProductType())) ? 1 : 0;
 				}else if (customQE.getName().equals(CatalogServiceMetKeys.TOP_N_QUERY_EXPRESSION)) {
 					List<Product> topNProducts = this.fmCatalog.getTopNProducts(Integer.parseInt(customQE.getProperty(CatalogServiceMetKeys.N_CUSTOM_KEY)));
-					if (topNProducts != null) {
-						return topNProducts.size();
-					}else {
-						return 0;
-					}
+					return (topNProducts != null) ? topNProducts.size() : 0;
 				}else {
 					throw new QueryServiceException("Unknown Custom Query type '" + (queryExpression != null ? queryExpression.getClass().getCanonicalName() : queryExpression) + "'");
 				}
