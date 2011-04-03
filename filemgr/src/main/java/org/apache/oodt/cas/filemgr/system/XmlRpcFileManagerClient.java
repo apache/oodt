@@ -1586,11 +1586,11 @@ public class XmlRpcFileManagerClient {
 
             try {
                 ProductType type = client.getProductTypeByName(typeName);
-                ProductPage firstPage = client.getFirstPage(type);
+//                ProductPage firstPage = client.getFirstPage(type);
                 ProductPage currentPage = new ProductPage();
                 currentPage.setPageNum(currentPageNum);
-                currentPage.setPageSize(firstPage.getPageSize());
-                currentPage.setNumOfHits(firstPage.getNumOfHits());
+//                currentPage.setPageSize(firstPage.getPageSize());
+//                currentPage.setNumOfHits(firstPage.getNumOfHits());
 //                currentPage.setTotalPages(firstPage.getTotalPages());
                 ProductPage nextPage = client.getNextPage(type, currentPage);
 
