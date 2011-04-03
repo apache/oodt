@@ -807,7 +807,7 @@ public class CatalogServiceLocal implements CatalogService {
 	protected List<TransactionReceipt> getPossiblyUnindexedTransactionReceipts(List<CatalogReceipt> catalogReceipts) throws CatalogServiceException {
 		try {
 			List<TransactionReceipt> returnList = new Vector<TransactionReceipt>();
-			HashMap<TransactionId<?>, List<CatalogReceipt>> existing = new HashMap<TransactionId<?>, List<CatalogReceipt>>();
+			LinkedHashMap<TransactionId<?>, List<CatalogReceipt>> existing = new LinkedHashMap<TransactionId<?>, List<CatalogReceipt>>();
  			for (CatalogReceipt catalogReceipt : catalogReceipts) {
  				TransactionId<?> catalogServiceTransactionId = this.getCatalogServiceTransactionId(catalogReceipt.getTransactionId(), catalogReceipt.getCatalogId());
  				if (catalogServiceTransactionId != null) {
