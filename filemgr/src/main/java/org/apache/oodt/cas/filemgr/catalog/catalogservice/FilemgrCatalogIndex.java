@@ -49,6 +49,7 @@ import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.catalog.CatalogFactory;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.TemporalProduct;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
@@ -300,7 +301,7 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 //			if (productReceivedTime == null)
 //				metadata.replaceMetadata(CoreMetKeys.PRODUCT_RECEVIED_TIME, DateConvert.isoFormat(new Date()));
 //			metadata.replaceMetadata(CoreMetKeys.PRODUCT_ID, product.getProductId());
-			return new IngestReceipt(this.generateTransactionId(product.getProductId()), product.getProductReceivedTime());
+			return new IngestReceipt(this.generateTransactionId(product.getProductId()), (product instanceof TemporalProduct ? ((TemporalProduct) product).getProductReceivedTime() : new Date()));
 		}catch (Exception e) {
 			throw new IngestServiceException("Failed to Ingest Product for TransactionId: " + transactionId, e);
 		}
@@ -446,7 +447,7 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 //			for (Metadata metadata : metadatas) 
 //				ingestReceipts.add(generateReceipt(metadata));
 			for (Product product : products)
-				ingestReceipts.add(new IngestReceipt(this.generateTransactionId(product.getProductId()), product.getProductReceivedTime()));
+				ingestReceipts.add(new IngestReceipt(this.generateTransactionId(product.getProductId()), (product instanceof TemporalProduct ? ((TemporalProduct) product).getProductReceivedTime() : new Date())));
 			return ingestReceipts;
 		}catch (Exception e) {
 			throw new QueryServiceException("Failed to perform CatalogQuery '" + queryExpression + "' : " + e.getMessage(), e);
@@ -523,7 +524,7 @@ public class FilemgrCatalogIndex implements Index, QueryService, IngestService {
 
 			List<IngestReceipt> ingestReceipts = new Vector<IngestReceipt>();
 			for (Product product : products)
-				ingestReceipts.add(new IngestReceipt(this.generateTransactionId(product.getProductId()), product.getProductReceivedTime()));
+				ingestReceipts.add(new IngestReceipt(this.generateTransactionId(product.getProductId()), (product instanceof TemporalProduct ? ((TemporalProduct) product).getProductReceivedTime() : new Date())));
 			return ingestReceipts;
 		}catch (Exception e) {
 			throw new QueryServiceException("Failed to perform CatalogQuery '" + queryExpression + "' : " + e.getMessage(), e);

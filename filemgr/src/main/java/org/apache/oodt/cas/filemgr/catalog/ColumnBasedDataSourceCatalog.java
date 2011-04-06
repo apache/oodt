@@ -24,6 +24,7 @@ import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.TemporalProduct;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
@@ -614,7 +615,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             rs = statement.executeQuery(getProductSql);
 
             if (rs.next()) {
-            	Product product = new Product();
+            	TemporalProduct product = new TemporalProduct();
             	product.setProductId(rs.getString("ProductId"));
             	product.setProductName(rs.getString("ProductName"));
             	product.setProductStructure(rs.getString("ProductStructure"));
@@ -670,7 +671,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             rs = statement.executeQuery(getProductSql);
 
             if (rs.next()) {
-            	Product product = new Product();
+            	TemporalProduct product = new TemporalProduct();
             	product.setProductId(rs.getString("ProductId"));
             	product.setProductName(rs.getString("ProductName"));
             	product.setProductStructure(rs.getString("ProductStructure"));
@@ -778,7 +779,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             products = new Vector<Product>();
 
             while (rs.next()) {
-            	Product product = new Product();
+            	TemporalProduct product = new TemporalProduct();
             	product.setProductId(rs.getString("ProductId"));
             	product.setProductName(rs.getString("ProductName"));
             	product.setProductStructure(rs.getString("ProductStructure"));
@@ -833,7 +834,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             
             Vector<Product> products = new Vector<Product>();
             while (rs.next()) {
-            	Product product = new Product();
+            	TemporalProduct product = new TemporalProduct();
             	product.setProductId(rs.getString("ProductId"));
             	product.setProductName(rs.getString("ProductName"));
             	product.setProductStructure(rs.getString("ProductStructure"));
@@ -1171,7 +1172,7 @@ public class ColumnBasedDataSourceCatalog extends AbstractCatalog {
             
             Vector<Product> products = new Vector<Product>();
             while (rs.next()) {
-            	Product product = new Product();
+            	TemporalProduct product = new TemporalProduct();
             	product.setProductId(rs.getString("ProductId"));
             	product.setProductName(rs.getString("ProductName"));
             	product.setProductStructure(rs.getString("ProductStructure"));

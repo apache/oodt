@@ -39,6 +39,7 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.TemporalProduct;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.mime.MimeType;
@@ -137,7 +138,7 @@ public class CatalogServiceUtils {
 				rootRef.setFileSize(Long.parseLong(termBucket.getTermByName(CoreMetKeys.PRODUCT_ROOT_REF_FILE_SIZE).getFirstValue()));
 			rootRef.setMimeType(safeReadTermValue(termBucket, CoreMetKeys.PRODUCT_ROOT_REF_MIME_TYPE));
 		}
-		Product product = new Product();
+		TemporalProduct product = new TemporalProduct();
 		product.setProductName(productName);
 		product.setProductType(productType);
 		product.setProductId(productId);
@@ -201,8 +202,8 @@ public class CatalogServiceUtils {
 			metadata.replaceMetadata(CoreMetKeys.PRODUCT_STRUCTURE, product.getProductStructure());
 		if (product.getTransferStatus() != null)
 			metadata.replaceMetadata(CoreMetKeys.PRODUCT_STATUS, product.getTransferStatus());
-		if (product.getProductReceivedTime() != null)
-			metadata.replaceMetadata(CoreMetKeys.PRODUCT_RECEVIED_TIME, DateConvert.isoFormat(product.getProductReceivedTime()));
+		if (product instanceof TemporalProduct && ((TemporalProduct) product).getProductReceivedTime() != null)
+			metadata.replaceMetadata(CoreMetKeys.PRODUCT_RECEVIED_TIME, DateConvert.isoFormat(((TemporalProduct) product).getProductReceivedTime()));
 		metadata.replaceMetadata(CoreMetKeys.PRODUCT_TYPE, product.getProductType().getName());
 		if (product.getRootRef() != null) {
 			metadata.replaceMetadata(CoreMetKeys.PRODUCT_ROOT_REF_ORIG, product.getRootRef().getOrigReference());
