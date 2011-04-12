@@ -15,23 +15,22 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.metadata.extractors;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.extractors.CmdLineMetExtractor;
-import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.pcs.input.PGEConfigurationFile;
-import org.apache.oodt.pcs.input.PGEGroup;
-import org.apache.oodt.pcs.input.PGEScalar;
-import org.apache.oodt.pcs.input.PGEVector;
+import org.apache.oodt.commons.date.DateUtils;
+
 
 /**
  * 
@@ -45,8 +44,9 @@ import org.apache.oodt.pcs.input.PGEVector;
  */
 public class FilenameTokenMetExtractor extends CmdLineMetExtractor implements
     FilenameTokenExtractorMetKeys {
-  
-  private static final Logger LOG = Logger.getLogger(FilenameTokenMetExtractor.class.getName());
+
+  private static final Logger LOG = Logger
+      .getLogger(FilenameTokenMetExtractor.class.getName());
 
   /**
    * Default constructor.
@@ -59,51 +59,45 @@ public class FilenameTokenMetExtractor extends CmdLineMetExtractor implements
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.oodt.cas.metadata.AbstractMetExtractor#extrMetadata(java.io
+   * @see org.apache.oodt.cas.metadata.AbstractMetExtractor#extrMetadata(java.io
    * .File)
    */
   @Override
   protected Metadata extrMetadata(File file) throws MetExtractionException {
-    Metadata met = getCoreMet(file);
-    addCommonMetadata(met);
-    return met;
-  }
-  
-  public static void main(String [] args) throws Exception{
-    processMain(args, new FilenameTokenMetExtractor());
-  }
-
-  private Metadata getCoreMet(File file) {
-    PGEGroup substrOffsetGroup = getConf().getPgeSpecificGroups().get(
-        SUBSTRING_OFFSET_GROUP);
     Metadata met = new Metadata();
     String filename = file.getName();
+    List<String> metKeyTokens = ((FilenameTokenConfig) this.config)
+        .getTokenMetKeyNames();
+    String[] filenameToks = filename.split("\\.")[0]
+        .split(((FilenameTokenConfig) this.config).getTokenDelimeterScalar());
+    for (int i = 0; i < filenameToks.length; i++) {
+      String keyName = metKeyTokens.get(i);
+      String keyVal = filenameToks[i];
+      if (keyName.equals("ProductionDateTime")) {
+        Calendar cal = GregorianCalendar.getInstance();
+        try {
+          cal.setTime(((FilenameTokenConfig) this.config).getDateFormatter()
+              .parse(keyVal));
+        } catch (ParseException e) {
+          throw new MetExtractionException(e.getMessage());
+        }
+        keyVal = DateUtils.toString(cal);
+      }
 
-    for (PGEVector vec : substrOffsetGroup.getVectors().values()) {
-      String metKeyName = vec.getName();
-      LOG.log(Level.FINE, "Extracting key: ["+metKeyName+"]");
-      int offset = Integer.valueOf((String) vec.getElements().get(0)) - 1;
-      int length = Integer.valueOf((String) vec.getElements().get(1));
-      String metVal = filename.substring(offset, offset + length).trim();
-      met.addMetadata(metKeyName, metVal);
+      met.addMetadata(keyName, keyVal);
     }
 
+    Metadata commonMet = ((FilenameTokenConfig) this.config).getCommonMet();
+    met.addMetadata(commonMet.getHashtable());
+    met.addMetadata(((FilenameTokenConfig)this.config).getSubstringOffsetMet(file));
+
+    met.addMetadata("Filename", file.getName());
+    met.addMetadata("FileLocation", file.getParentFile().getAbsolutePath());
     return met;
   }
 
-  private void addCommonMetadata(Metadata met) {
-    PGEGroup commonMetGroup = this.getConf().getPgeSpecificGroups().get(
-        COMMON_METADATA_GROUP);
-
-    for (PGEScalar metScalar : commonMetGroup.getScalars().values()) {
-      met.addMetadata(metScalar.getName(), PathUtils.replaceEnvVariables(
-          metScalar.getValue(), met));
-    }
-  }
-
-  private PGEConfigurationFile getConf() {
-    return ((FilenameTokenConfig) this.config).getConf();
+  public static void main(String[] args) throws Exception {
+    processMain(args, new FilenameTokenMetExtractor());
   }
 
 }

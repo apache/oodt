@@ -16,6 +16,24 @@ License for the specific language governing permissions and limitations under
 the License.
 -->
 <input>
+
+   <group name="TokenNameListGroup">
+     <scalar name="Delimeter">_</scalar>
+     <vector name="TokenMetKeys">
+    
+     <!-- 
+     [sourcename]_[tablename]_[productiondatetime].[ext]
+     
+     ex file name: datasource_tablename_20101129122700.txt
+     -->
+       <element>SourceName</element>
+       <element>TableName</element>
+       <element>ProductionDateTime</element>
+     </vector>
+  
+   </group>
+
+
     <group name="SubstringOffsetGroup">
      <!--  the indices for the substring met key selection -->
      <!--  the first element is the starting index in the string -->
@@ -47,8 +65,17 @@ the License.
       </vector>
       
    </group>
+   
+   <group name="ProductionDateTimeGroup">
+     <scalar name="DateTimeFormat">yyyyMMddHHmmss</scalar>
+   </group>   
     
     <group name="CommonMetadata">
+       <!--  can now use environment variable replacement in any of the values for 
+             scalars or vectors, just use CAS bracket style [ENV VAR NAME]
+         
+             Also can use vector to indicate multiple values for a particular met field.
+        -->
         <scalar name="DataVersion">1.0</scalar>
         <scalar name="CollectionName">Products extracted by the OODT Filename Met Extractor</scalar>
         <scalar name="DataProvider">OODT</scalar>

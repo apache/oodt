@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-172 Improvements to the Filename Extractor (mattmann)
+
 * OODT-170 cas-catalog shuffles query results . . . order is lost (bfoster)
 
 * OODT-169 Pushpull dirstruct xml files fail to replace global 
