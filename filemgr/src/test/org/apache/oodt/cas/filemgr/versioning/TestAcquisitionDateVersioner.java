@@ -21,6 +21,7 @@ package org.apache.oodt.cas.filemgr.versioning;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
@@ -54,8 +55,10 @@ public class TestAcquisitionDateVersioner extends TestCase {
     p.getProductReferences().add(r);
     Metadata met = new Metadata();
     met.addMetadata(CoreMetKeys.FILENAME, "file1.txt");
-    String expectedDateTimeStr = new SimpleDateFormat(
-        AcquisitionDateVersioner.ACQ_DATE_FORMAT).format(new Date());
+    SimpleDateFormat acqDateFormatter = new SimpleDateFormat(
+        AcquisitionDateVersioner.ACQ_DATE_FORMAT);
+    acqDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    String expectedDateTimeStr = acqDateFormatter.format(new Date());
     String expectedPath = "file:/home/files/" + expectedDateTimeStr
         + "/file1.txt";
     try {
