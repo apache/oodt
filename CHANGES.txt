@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-176 Baked in file manager policy should include example of product type metadata (mattmann)
+
 * OODT-174 TestAcquisitionDateVersioner fails in the later evening (bfoster via mattmann)
 
 * OODT-172 Improvements to the Filename Extractor (mattmann)
