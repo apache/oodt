@@ -67,6 +67,10 @@ public class FilenameTokenConfig implements MetExtractorConfig {
         PRODUCTION_DATE_TIME_GROUP).getScalar(DATETIME_SCALAR).getValue());
   }
 
+  public boolean hasTokenNameList() {
+    return this.conf.getPgeSpecificGroups().get(TOKEN_LIST_GROUP) != null;
+  }
+
   public String getTokenDelimeterScalar() {
     return this.conf.getPgeSpecificGroups().get(TOKEN_LIST_GROUP).getScalar(
         TOKEN_DELIMETER_SCALAR).getValue();
@@ -81,6 +85,8 @@ public class FilenameTokenConfig implements MetExtractorConfig {
     PGEGroup substrOffsetGroup = this.conf.getPgeSpecificGroups().get(
         SUBSTRING_OFFSET_GROUP);
     Metadata met = new Metadata();
+    if (substrOffsetGroup == null)
+      return met;
     String filename = file.getName();
 
     for (PGEVector vec : substrOffsetGroup.getVectors().values()) {

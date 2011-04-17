@@ -31,7 +31,6 @@ import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.extractors.CmdLineMetExtractor;
 import org.apache.oodt.commons.date.DateUtils;
 
-
 /**
  * 
  * Extracts out {@link Metadata} using the {@link File#getName()} and a
@@ -66,30 +65,33 @@ public class FilenameTokenMetExtractor extends CmdLineMetExtractor implements
   protected Metadata extrMetadata(File file) throws MetExtractionException {
     Metadata met = new Metadata();
     String filename = file.getName();
-    List<String> metKeyTokens = ((FilenameTokenConfig) this.config)
-        .getTokenMetKeyNames();
-    String[] filenameToks = filename.split("\\.")[0]
-        .split(((FilenameTokenConfig) this.config).getTokenDelimeterScalar());
-    for (int i = 0; i < filenameToks.length; i++) {
-      String keyName = metKeyTokens.get(i);
-      String keyVal = filenameToks[i];
-      if (keyName.equals("ProductionDateTime")) {
-        Calendar cal = GregorianCalendar.getInstance();
-        try {
-          cal.setTime(((FilenameTokenConfig) this.config).getDateFormatter()
-              .parse(keyVal));
-        } catch (ParseException e) {
-          throw new MetExtractionException(e.getMessage());
+    if (((FilenameTokenConfig) this.config).hasTokenNameList()) {
+      List<String> metKeyTokens = ((FilenameTokenConfig) this.config)
+          .getTokenMetKeyNames();
+      String[] filenameToks = filename.split("\\.")[0]
+          .split(((FilenameTokenConfig) this.config).getTokenDelimeterScalar());
+      for (int i = 0; i < filenameToks.length; i++) {
+        String keyName = metKeyTokens.get(i);
+        String keyVal = filenameToks[i];
+        if (keyName.equals("ProductionDateTime")) {
+          Calendar cal = GregorianCalendar.getInstance();
+          try {
+            cal.setTime(((FilenameTokenConfig) this.config).getDateFormatter()
+                .parse(keyVal));
+          } catch (ParseException e) {
+            throw new MetExtractionException(e.getMessage());
+          }
+          keyVal = DateUtils.toString(cal);
         }
-        keyVal = DateUtils.toString(cal);
-      }
 
-      met.addMetadata(keyName, keyVal);
+        met.addMetadata(keyName, keyVal);
+      }
     }
 
     Metadata commonMet = ((FilenameTokenConfig) this.config).getCommonMet();
     met.addMetadata(commonMet.getHashtable());
-    met.addMetadata(((FilenameTokenConfig)this.config).getSubstringOffsetMet(file));
+    met.addMetadata(((FilenameTokenConfig) this.config)
+        .getSubstringOffsetMet(file));
 
     met.addMetadata("Filename", file.getName());
     met.addMetadata("FileLocation", file.getParentFile().getAbsolutePath());
