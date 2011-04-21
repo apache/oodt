@@ -203,8 +203,7 @@ the License.
         <developer>
             <id>shardman</id>
             <name>Sean Hardman</name>
-            <email>hardman@apache.org</email>
-            <url>http://home.earthlink.net/~hardmans/</url>
+            <email>shardman@apache.org</email>
             <organization>NASA Jet Propulsion Laboratory</organization>
             <timezone>-8</timezone>
             <roles>
