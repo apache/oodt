@@ -1,0 +1,27 @@
+#criteria_form_add_element_value{
+	font-weight:bold;
+}
+
+#product_table{
+	border:1px;
+	border-spacing:2px;
+	border: 1px solid #000000;
+	width:800px;
+}
+
+#product_table td{
+  border: 1px solid #000000;
+  margin: 0; 
+  padding: 2px;
+}
+
+#pagination_table{
+	border-spacing:3px;
+	width:100%;
+}
+
+#pagination_table_result_hdr{
+	width:100px;
+	white-space: nowrap;
+	font-weight:bold;
+}

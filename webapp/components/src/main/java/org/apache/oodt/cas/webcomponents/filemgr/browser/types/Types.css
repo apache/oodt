@@ -1,0 +1,12 @@
+#cas_fm_browser_ptype_table{
+  padding:2px;
+  border-spacing:2px;
+  width:800px;
+  border: 1px solid #000000;
+}
+
+#cas_fm_browser_ptype_table td{
+  border: 1px solid #000000;
+  margin: 0; 
+  padding: 2px;
+}

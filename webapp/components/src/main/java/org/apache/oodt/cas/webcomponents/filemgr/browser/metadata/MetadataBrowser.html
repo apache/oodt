@@ -1,0 +1,23 @@
+<wicket:panel>
+<wicket:link>
+  <link rel="stylesheet" type="text/css" href="MetadataBrowser.css"/>
+</wicket:link>
+
+<h3>Metadata</h3>
+  <table id="met_table">
+    <tr wicket:id="met_elem">
+      <td wicket:id="met_elem_name" id="met_elem_name">CAS.ProductName</td>
+      <td>
+         <table id="met_values_table">
+          <tr wicket:id="met_values_list">
+             <td wicket:id="met_value">foo.txt</td>
+          </tr>
+         </table>
+      </td>
+     </tr>
+   </table>
+   
+   <h3 wicket:id="no_prod_met_display" class="nada">No Product Metadata!</h3>
+   <p>&nbsp;</p>
+   <p>&nbsp;</p>
+</wicket:panel>

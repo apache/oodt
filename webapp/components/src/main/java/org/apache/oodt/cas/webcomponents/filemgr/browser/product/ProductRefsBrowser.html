@@ -1,0 +1,23 @@
+<wicket:panel>
+<wicket:link>
+  <link rel="stylesheet" type="text/css" href="ProductRefsBrowser.css"/>
+</wicket:link>
+
+
+<a name="References"></a>
+<h3>References</h3>
+  <table id="ref_table">
+    <tr id="ref_table_hdr">
+      <td>File Location</td>
+      <td>File Size</td>
+      <td>Percent Transferred</td>
+    </tr>
+    <tr wicket:id="ref_list">
+      <td wicket:id="ref_file_path">/home/files/foo.txt/foo.txt</td>
+      <td wicket:id="ref_file_size">4028</td>
+      <td wicket:id="ref_pct_transferred">100%</td>
+    </tr>
+  </table>
+
+  <h3 wicket:id="no_prod_ref_display" class="nada">No Product References!</h3>
+</wicket:panel>
