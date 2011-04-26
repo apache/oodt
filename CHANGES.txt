@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-54 Xml Rpc Serde Casts Longs to Ints (pramirez via mattmann)
+
 * OODT-155 Rewrite File Manager Browser webapp using Apache Wicket (mattmann)
 
 * OODT-181 Add documentation for metFileExt attribute on exec element in

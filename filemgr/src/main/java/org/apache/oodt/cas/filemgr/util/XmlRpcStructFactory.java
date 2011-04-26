@@ -72,7 +72,7 @@ public final class XmlRpcStructFactory {
     public static Hashtable<String, Object> getXmlRpcFileTransferStatus(
             FileTransferStatus status) {
         Hashtable<String, Object> statusHash = new Hashtable<String, Object>();
-        statusHash.put("bytesTransferred", new Integer((int) status
+        statusHash.put("bytesTransferred",Long.toBinaryString(status
                 .getBytesTransferred()));
         statusHash.put("parentProduct", getXmlRpcProduct(status
                 .getParentProduct()));
@@ -83,8 +83,8 @@ public final class XmlRpcStructFactory {
     public static FileTransferStatus getFileTransferStatusFromXmlRpc(
             Hashtable<String, Object> statusHash) {
         FileTransferStatus status = new FileTransferStatus();
-        status.setBytesTransferred((long) ((Integer) statusHash
-                .get("bytesTransferred")).intValue());
+        status.setBytesTransferred(Long.parseLong(statusHash
+                .get("bytesTransferred").toString()));
         status.setParentProduct(getProductFromXmlRpc((Hashtable<String, Object>) statusHash.get("parentProduct")));
         status.setFileRef(getReferenceFromXmlRpc((Hashtable<String, Object>) statusHash.get("fileRef")));
         return status;
@@ -524,7 +524,7 @@ public final class XmlRpcStructFactory {
                 .getDataStoreReference() != null ? reference
                 .getDataStoreReference() : "");
         referenceHash.put("fileSize",
-                new Integer((int) reference.getFileSize()));
+                Long.toString(reference.getFileSize()));
         referenceHash.put("mimeType", (reference.getMimeType() == null) ? ""
                 : reference.getMimeType().getName());
         return referenceHash;
@@ -535,8 +535,7 @@ public final class XmlRpcStructFactory {
         reference.setDataStoreReference((String) referenceHash
                 .get("dataStoreReference"));
         reference.setOrigReference((String) referenceHash.get("origReference"));
-        reference.setFileSize(((Integer) referenceHash.get("fileSize"))
-                .longValue());
+        reference.setFileSize(Long.parseLong(referenceHash.get("fileSize").toString()));
         reference.setMimeType((String) referenceHash.get("mimeType"));
         return reference;
     }
