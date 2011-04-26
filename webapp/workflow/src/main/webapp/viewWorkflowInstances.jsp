@@ -25,9 +25,9 @@ the License.
     	import="org.apache.oodt.cas.workflow.structs.WorkflowStatus"
     	import="org.apache.oodt.cas.metadata.Metadata"
     	import="org.apache.oodt.cas.workflow.structs.WorkflowInstancePage"
-    	import="org.apache.oodt.cas.workflow.webapp.util.WorkflowInstanceMetMap"
-    	import="org.apache.oodt.cas.workflow.webapp.util.WorkflowInstanceMetadataReader"
-    	import="org.apache.oodt.cas.workflow.webapp.util.JspUtility"
+    	import="org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceMetMap"
+    	import="org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceMetadataReader"
+    	import="org.apache.oodt.cas.workflow.webapp.JspUtility"
     	import="org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager"%>
 <jsp:include page="inc/header.jsp">
 	<jsp:param name="metaRefresh" value="30"/>
