@@ -21,7 +21,7 @@ the License.
     	import="org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient"
     	import="org.apache.oodt.cas.workflow.structs.Workflow"
     	import="org.apache.oodt.cas.workflow.structs.WorkflowTask"
-    	import="org.apache.oodt.cas.workflow.webapp.util.JspUtility"
+    	import="org.apache.oodt.cas.workflow.webapp.JspUtility"
 %>
     	
 <jsp:include page="inc/header.jsp"/>
