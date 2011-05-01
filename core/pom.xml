@@ -17,12 +17,6 @@ the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>  
-      <groupId>org.apache</groupId>
-      <artifactId>apache</artifactId>
-      <version>6</version>
-      <relativePath/>
-    </parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
     <version>0.2</version>
@@ -247,9 +241,9 @@ the License.
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/oodt/tags/0.2</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/oodt/tags/0.2</developerConnection>
-        <url>http://svn.apache.org/viewvc/incubator/oodt/tags/0.2</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/oodt/trunk/${project.artifactId}</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/oodt/trunk/${project.artifactId}</developerConnection>
+        <url>http://svn.apache.org/viewvc/incubator/oodt/trunk/${project.artifactId}/</url>
         <tag>HEAD</tag>
     </scm>
     <organization>
@@ -418,4 +412,22 @@ the License.
             </plugin>
         </plugins>
     </reporting>
+    <distributionManagement>
+        <relocation>
+            <groupId>org.apache.oodt</groupId>
+            <message>Apache OODT is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by Justin Erenkrantz. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF. &lt;http://www.apache.org/&gt;.</message>
+        </relocation>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>incubator-oodt-repo-loc</id>
+            <name>Apache OODT Incubating Repository</name>
+            <url>scp://minotaur.apache.org/www/www.apache.org/dist/incubator/oodt</url>
+            <layout>default</layout>
+        </repository>
+        <site>
+            <id>incubator-oodt-site-loc</id>
+            <name>Apache OODT Incubating Component Site</name>
+            <url>${sitePublicationDir}</url>
+        </site>
+    </distributionManagement>
 </project>
