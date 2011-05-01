@@ -418,22 +418,4 @@ the License.
             </plugin>
         </plugins>
     </reporting>
-    <distributionManagement>
-        <relocation>
-            <groupId>org.apache.oodt</groupId>
-            <message>Apache OODT is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by Justin Erenkrantz. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF. &lt;http://www.apache.org/&gt;.</message>
-        </relocation>
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>incubator-oodt-repo-loc</id>
-            <name>Apache OODT Incubating Repository</name>
-            <url>scp://minotaur.apache.org/www/www.apache.org/dist/incubator/oodt</url>
-            <layout>default</layout>
-        </repository>
-        <site>
-            <id>incubator-oodt-site-loc</id>
-            <name>Apache OODT Incubating Component Site</name>
-            <url>${sitePublicationDir}</url>
-        </site>
-    </distributionManagement>
 </project>
