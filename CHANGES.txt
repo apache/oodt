@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-129 Integrate with Maven Central (mattmann)
+
 * OODT-177 PHP implementation of sso (ahart)
 
 * OODT-175 cas-wm-webapp javadoc fails maven build (mattmann, bfoster)
