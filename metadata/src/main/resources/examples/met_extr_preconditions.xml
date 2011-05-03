@@ -24,6 +24,14 @@ the License.
     <!-- Precondition Comparators -->
     <bean id="PreconditionComparator" lazy-init="true" abstract="true" class="org.apache.oodt.cas.metadata.preconditions.PreConditionComparator"/>
     
+    <bean id="OnlyExtractFileType" lazy-init="true" class="org.apache.oodt.cas.metadata.preconditions.EndsWithComparator">
+        <property name="description" value="Checks the file extension and only extracts met from those files."/>        
+        <property name="compareItem">
+            <value type="java.lang.String">file_ext</value>    
+        </property>
+        <property name="type" value="equal_to"/>
+    </bean>    
+    
     
     <bean id="CheckThatDataFileSizeIsGreaterThanZero" lazy-init="true" parent="PreconditionComparator" class="org.apache.oodt.cas.metadata.preconditions.FileSizeComparator">
         <property name="description" value="Check if the current data file size is greater than zero"/>        

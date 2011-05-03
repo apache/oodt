@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-188 Precondition Comparator to ignore files with 
+  a particular extension (mattmann)
+
 * OODT-129 Integrate with Maven Central (mattmann)
 
 * OODT-177 PHP implementation of sso (ahart)
