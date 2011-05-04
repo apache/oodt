@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-189 Refactor and clean up WorkflowCondition 
+  Configuration (mattmann)
+
 * OODT-188 Precondition Comparator to ignore files with 
   a particular extension (mattmann)
 

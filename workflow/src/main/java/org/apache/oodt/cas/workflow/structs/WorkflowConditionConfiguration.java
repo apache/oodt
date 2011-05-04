@@ -17,12 +17,18 @@
 
 package org.apache.oodt.cas.workflow.structs;
 
+//JDK imports
 import java.util.Properties;
 
+/**
+ * 
+ * Configuration for a {@link WorkflowCondition}.
+ *
+ */
 public class WorkflowConditionConfiguration {
    
-    /* the task configuration properties */
-    private Properties taskProperties = null;
+    /* the condition configuration properties */
+    private Properties condProperties = null;
     
     /**
      * <p>
@@ -30,7 +36,7 @@ public class WorkflowConditionConfiguration {
      * </p>.
      */
     public WorkflowConditionConfiguration() {
-        taskProperties = new Properties();
+        condProperties = new Properties();
     }
 
     /**
@@ -42,7 +48,7 @@ public class WorkflowConditionConfiguration {
      *            The task configuration properties.
      */
     public WorkflowConditionConfiguration(Properties properties) {
-        taskProperties = properties;
+        condProperties = properties;
     }
 
     /**
@@ -57,7 +63,7 @@ public class WorkflowConditionConfiguration {
      *            The property value.
      */
     public void addConfigProperty(String name, String value) {
-        taskProperties.setProperty(name, value);
+        condProperties.setProperty(name, value);
     }
 
     /**
@@ -67,7 +73,7 @@ public class WorkflowConditionConfiguration {
      * @return The String property value for the specified propName.
      */
     public String getProperty(String propName) {
-        return taskProperties.getProperty(propName);
+        return condProperties.getProperty(propName);
     }
 
     /**
@@ -75,7 +81,7 @@ public class WorkflowConditionConfiguration {
      * @return The {@link Properties} for configuring this WorkflowTask.
      */
     public Properties getProperties() {
-        return taskProperties;
+        return condProperties;
     }
 
 }
