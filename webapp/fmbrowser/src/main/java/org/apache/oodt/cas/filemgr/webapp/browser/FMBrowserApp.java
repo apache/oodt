@@ -20,12 +20,10 @@ package org.apache.oodt.cas.filemgr.webapp.browser;
 //JDK imports
 import java.util.logging.Logger;
 
+//OODT imports
+import org.apache.oodt.cas.webcomponents.filemgr.FMBrowserAppBase;
+
 //Wicket imports
-import org.apache.oodt.cas.webcomponents.filemgr.FMBrowserSession;
-import org.apache.wicket.Request;
-import org.apache.wicket.Response;
-import org.apache.wicket.Session;
-import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
 
 /**
@@ -34,7 +32,7 @@ import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
  * 
  * @see org.apache.oodt.cas.filemgr.webapp.browser.Start#main(String[])
  */
-public class FMBrowserApp extends WebApplication {
+public class FMBrowserApp extends FMBrowserAppBase {
 
   private static final Logger LOG = Logger.getLogger(FMBrowserApp.class
       .getName());
@@ -64,23 +62,6 @@ public class FMBrowserApp extends WebApplication {
    */
   public Class<Home> getHomePage() {
     return Home.class;
-  }
-
- 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.wicket.protocol.http.WebApplication#newSession(org.apache.wicket
-   * .Request, org.apache.wicket.Response)
-   */
-  @Override
-  public Session newSession(Request request, Response response) {
-    return new FMBrowserSession(request);
-  }
-  
-  public String getFmUrlStr() {
-    return getServletContext().getInitParameter("filemgr.url");
   }
 
 

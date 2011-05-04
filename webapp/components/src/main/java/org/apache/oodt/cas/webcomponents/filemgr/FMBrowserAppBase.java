@@ -32,7 +32,7 @@ import org.apache.wicket.protocol.http.WebApplication;
  * @version $Revision$
  * 
  */
-public abstract class FMBrowserApp extends WebApplication {
+public abstract class FMBrowserAppBase extends WebApplication {
 
   /*
    * (non-Javadoc)
