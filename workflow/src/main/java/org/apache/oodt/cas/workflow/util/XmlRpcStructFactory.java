@@ -22,11 +22,13 @@ package org.apache.oodt.cas.workflow.util;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Hashtable;
+import java.util.Set;
 import java.util.Vector;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
@@ -365,8 +367,23 @@ public final class XmlRpcStructFactory {
         condition.put("id", c.getConditionId());
         condition.put("name", c.getConditionName());
         condition.put("order", String.valueOf(c.getOrder()));
+        condition.put("configuration", getXmlRpcWorkflowConditionConfig(c.getCondConfig()));
         return condition;
 
+    }
+    
+    /**
+     * Bulids an XML-RPC friendly version of a {@link WorkflowConditionConfiguration}.
+     * 
+     * @param conf The {@link WorkflowConditionConfiguration} to transform into an XML-RPC {@link Hashtable}.
+     * @return an XML-RPC friendly version of a {@link WorkflowConditionConfiguration}.
+     */
+    public static Hashtable getXmlRpcWorkflowConditionConfig(WorkflowConditionConfiguration conf){
+        Hashtable confHash = new Hashtable();
+        for(String propName: (Set<String>)(Set<?>)conf.getProperties().keySet()){
+          confHash.put(propName, conf.getProperty(propName));
+        }
+        return confHash;   
     }
 
     /**
@@ -464,8 +481,27 @@ public final class XmlRpcStructFactory {
         condition.setConditionName((String) cond.get("name"));
         condition.setOrder(Integer.valueOf((String) cond.get("order"))
                 .intValue());
+        condition.setCondConfig(getWorkflowConditionConfigurationFromXmlRpc((Hashtable)cond.get("configuration")));
         return condition;
     }
+
+  /**
+   * Unravels a {@link WorkflowConditionConfiguration} from XML-RPC.
+   * 
+   * @param conf
+   *          XML-RPC friendly Hashtable representing a
+   *          {@link WorkflowConditionConfiguration}.
+   * @return A {@link WorkflowConditionConfiguration} from XML-RPC.
+   */
+  public static WorkflowConditionConfiguration getWorkflowConditionConfigurationFromXmlRpc(
+      Hashtable conf) {
+    WorkflowConditionConfiguration config = new WorkflowConditionConfiguration();
+    for (String key : (Set<String>) (Set<?>) conf.keySet()) {
+      config.addConfigProperty(key, (String) conf.get(key));
+    }
+
+    return config;
+  }
 
     /**
      * <p>

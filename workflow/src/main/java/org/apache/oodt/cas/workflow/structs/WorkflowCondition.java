@@ -72,7 +72,6 @@ public class WorkflowCondition {
    */
   public WorkflowCondition(String conditionName, String conditionId,
       String instanceClass, int order) {
-    // TODO Auto-generated constructor stub
     this.conditionName = conditionName;
     this.conditionId = conditionId;
     this.conditionInstanceClassName = instanceClass;
@@ -85,7 +84,7 @@ public class WorkflowCondition {
    */
   @Deprecated
   public WorkflowConditionConfiguration getTaskConfig() {
-    return condConfig;
+    return this.condConfig;
   }
 
   /**

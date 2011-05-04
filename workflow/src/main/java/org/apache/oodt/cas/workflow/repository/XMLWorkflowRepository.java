@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.Iterator;
 import java.util.Arrays;
@@ -320,6 +321,13 @@ public class XMLWorkflowRepository implements WorkflowRepository {
                                 + condition.getConditionId() + ", name="
                                 + condition.getConditionName() + ", order="
                                 + condition.getOrder() + "]");
+                        
+                        System.out.println("Configuration: ");
+                        for (String cKeyName : (Set<String>) (Set<?>) condition
+                          .getCondConfig().getProperties().keySet()) {
+                         System.out.println("[name=" + cKeyName + ", value="
+                         + condition.getCondConfig().getProperty(cKeyName) + "]");
+                        }
                     }
 
                 }
