@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-192 PGE FilenameExtractorMetWriter (mattmann)
+
 * OODT-156 Rewrite Workflow Monitor webapp using Apache Wicket (mattmann)
 
 * OODT-190 WorkflowCondition configuration isn't read (mattmann)
