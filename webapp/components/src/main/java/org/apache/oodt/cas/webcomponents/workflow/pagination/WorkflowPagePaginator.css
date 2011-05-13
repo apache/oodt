@@ -1,0 +1,33 @@
+#paginator-break{
+  border:2;
+  width:100%;
+}
+
+#container-div{
+  width:100%;
+}
+
+#paginator-table{
+  border-spacing:3;
+  width:100;
+}
+
+#paginator-table-header{
+  width:100%;
+  white-space:nowrap;
+  font-weight:bold;
+}
+
+
+#page_repeater{
+
+}
+
+a, a:hover, a:focus, a:active{
+	text-decoration: none;
+}
+
+.selected{
+  font-weight:bold;
+  color:red;
+}

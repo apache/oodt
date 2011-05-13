@@ -1,0 +1,67 @@
+<wicket:panel>
+<wicket:link>
+ <link rel="stylesheet" type="text/css" href="WorkflowInstancesViewer.css"/>
+ <link rel="stylesheet" type="text/css" href="progress_wicket.css"/>
+ <wicket:remove>
+  <link rel="stylesheet" type="text/css" href="progress.css"/> 
+ </wicket:remove>
+ <script type="text/javascript" language="Javascript" src="prototype.js"></script>
+ <script type="text/javascript" language="Javascript" src="progress.js"></script>
+</wicket:link>
+
+<div id="instance_filter_header">Filter Workflows by Status:<br> |
+  <wicket:container wicket:id="workflow_statuses">
+    <a class="workflow_status" wicket:id="wstatus_link" href="#"><span wicket:id="wstatus">STARTED</span></a>&nbsp;|
+  </wicket:container> 
+    <wicket:remove>
+    <a class="workflow_status" href="#">FINISHED</a>&nbsp;|
+    <a class="workflow_status" href="#">METMISS</a>&nbsp;|            
+    <a class="workflow_status" href="#">PAUSED</a>&nbsp;|
+    <a class="workflow_status" href="#">ALL</a>&nbsp;|
+    </wicket:remove>
+</div>
+
+   <p>Workflows <b wicket:id="start_idx">1</b>-<b wicket:id="end_idx">20</b> of <b wicket:id="num_insts">20</b> total</p>
+     <table id="workflow_inst_tbl">
+       <tr class="centered">
+         <td>Workflow</td>
+         <td>Progress</td>
+         <td>Status</td>
+         <td>Execution Time (min)</td>
+         <td>Current Task Execution Time (min)</td>
+         <td>Current Task</td>
+       </tr>
+
+       <tr wicket:id="workflow_insts">
+         <td><a href="#" wicket:id="workflow_link"><span wicket:id="workflow_name">Test Workflow</span></a>
+         <br/>
+         <p class="smaller" wicket:id="inst_met_display">ProcessingNode:localhost,WorkflowInstanceId:1</p>
+         </td>
+         <td class="centered"><script wicket:id="winst_display">display('./percentImage.png', 'winst_1_progress', 66, 1);</script></td>
+         <td class="centered" wicket:id="winst_status">RSUBMIT</td>
+         <td class="centered" wicket:id="winst_wallclock_mins">5.22</td>
+         <td class="centered" wicket:id="winst_task_wallclock_mins">2.5</td>
+         <td class="centered"><a href="#" wicket:id="task_link"><span wicket:id="task_name">Hello World</span></a></td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <span wicket:id="paginator"/>
+    
+    <wicket:remove>
+    <hr width="*">
+    <div align="center">
+      <table id="pagination_table">
+         <tr>
+           <td id="pagination_table_result_hdr">Result Page</td>
+         </tr>
+      </table>
+    </div>
+    </wicket:remove>
+
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</wicket:panel>
+

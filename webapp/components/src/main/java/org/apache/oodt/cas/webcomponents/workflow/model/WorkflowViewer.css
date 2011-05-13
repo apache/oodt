@@ -1,0 +1,23 @@
+#workflow_modeL_tbl{
+	
+}
+
+#workflow_model_tbl tr{
+ vertical-align:top;
+}
+
+#workflow_model_tbl td.task_bubble{
+  width:82;
+  height:82;
+  background:url(task_circle.jpg) no-repeat;
+  text-align:center;
+  white-space:wrap;
+  vertical-align:middle;
+}
+
+#workflow_model_tbl td.arrow{
+  width:115;
+  height:16;
+  text-align:center;
+  vertical-align:middle;
+}

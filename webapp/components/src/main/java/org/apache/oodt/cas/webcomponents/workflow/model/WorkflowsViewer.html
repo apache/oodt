@@ -1,0 +1,26 @@
+<wicket:panel>
+<wicket:link>
+  <link rel="stylesheet" type="text/css" href="WorkflowsViewer.css"/>
+</wicket:link>
+
+<table id="workflows_tbl">
+     <tr class="header">
+       <td>Workflow ID</td>
+       <td>Name</td>
+       <td>View</td>
+     </tr>
+     <tr wicket:id="workflow_list" class="workflow_data">
+       <td wicket:id="workflow_id">urn:oodt:TestWorkflow</td>
+       <td wicket:id="workflow_name">Test Workflow</td>
+       <td><a wicket:id="workflow_link" href="#">Click here</a></td>
+      </tr> 
+   <wicket:remove>
+     <tr class="workflow_data">
+       <td>urn:oodt:TestWorkflow</td>
+       <td>Test Workflow</td>
+       <td><a href="#">Click here</a></td>
+      </tr>
+   </wicket:remove> 	     
+</table>
+
+</wicket:panel>

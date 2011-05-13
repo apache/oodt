@@ -1,0 +1,25 @@
+#instance_filter_header{
+
+}
+
+a.workflow_status{
+
+}
+
+#workflow_display{
+
+}
+
+#workflow_inst_tbl{
+	border:0px;
+	border-spacing:3px;
+	border: 4px #000000;
+}
+
+.centered{
+   text-align:center;
+}
+
+.smaller{
+	font-size:9px;
+}

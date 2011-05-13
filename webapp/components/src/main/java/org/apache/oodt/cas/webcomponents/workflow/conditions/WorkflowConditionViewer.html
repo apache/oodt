@@ -1,0 +1,35 @@
+<wicket:panel>
+<wicket:link>
+  <link rel="stylesheet" type="text/css" href="WorkflowConditionViewer.css"/>
+</wicket:link>
+
+<table id="condition_tbl">
+   <tr>
+     <td class="header">Condition ID</td>
+     <td class="value"><span wicket:id="condition_id">urn:oodt:TrueCondition</span></td>
+   </tr>
+   <tr>       	    	          
+     <td class="header">Name</td>
+     <td class="value"><span wicket:id="condition_name">True Condition</span></td>
+   </tr>
+   <tr>
+     <td class="header">Implementation Class</td>
+     <td class="value"><span wicket:id="condition_class">org.apache.oodt.cas.workflow.examples.TrueCondition</span></td>
+   </tr>
+  <tr>
+    <td class="header">Configuration</td>
+    <td>
+      <table id="workflow_cond_config_tbl">
+       <tr class="header">
+         <td>Property</td>
+         <td>Value</td>
+       </tr>
+       <tr wicket:id="cond_config" id="cond_config">
+  	     <td><span wicket:id="cond_pname">numSeconds</span></td>
+  	     <td><span wicket:id="cond_pvalue">60</span></td>
+       </tr>
+      </table>
+     </td>
+    </tr>   
+</table>
+</wicket:panel>
