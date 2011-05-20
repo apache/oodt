@@ -236,6 +236,16 @@ the License.
                 <role>committer</role>
             </roles>
         </developer>
+        <developer>
+            <id>thomas</id>
+            <name>Thomas Bennett</name>
+            <email>thomas@apache.org</email>
+            <organization>SKA South Africa</organization>
+            <timezone>+2</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>        
     </developers>
     <licenses>
         <license>
