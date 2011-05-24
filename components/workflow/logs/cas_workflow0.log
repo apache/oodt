@@ -1,0 +1,18 @@
+May 4, 2011 6:37:56 AM org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager <init>
+INFO: Loading Workflow Manager Configuration Properties from: [../conf/workflow.properties]
+May 4, 2011 6:37:57 AM org.apache.oodt.cas.workflow.repository.XMLWorkflowRepository loadConditions
+WARNING: DirUri: ${RADIX_HOME}/workflow/policy is not a directory: skipping condition loading for it.
+May 4, 2011 6:37:57 AM org.apache.oodt.cas.workflow.repository.XMLWorkflowRepository loadTasks
+WARNING: DirUri: ${RADIX_HOME}/workflow/policy is not a directory: skipping task loading for it.
+May 4, 2011 6:37:57 AM org.apache.oodt.cas.workflow.repository.XMLWorkflowRepository loadWorkflows
+WARNING: DirUri: ${RADIX_HOME}/workflow/policy is not a directory: skipping workflow loading for it.
+May 4, 2011 6:37:57 AM org.apache.oodt.cas.workflow.repository.XMLWorkflowRepository loadEvents
+WARNING: DirUri: ${RADIX_HOME}/workflow/policy is not a directory: skipping event loading for it.
+May 4, 2011 6:37:57 AM org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager <init>
+INFO: Workflow Manager started by cgoodale
+May 4, 2011 6:48:26 AM org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager <init>
+INFO: Loading Workflow Manager Configuration Properties from: [../conf/workflow.properties]
+May 4, 2011 6:51:27 AM org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager <init>
+INFO: Loading Workflow Manager Configuration Properties from: [../conf/workflow.properties]
+May 4, 2011 6:51:28 AM org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager <init>
+INFO: Workflow Manager started by cgoodale

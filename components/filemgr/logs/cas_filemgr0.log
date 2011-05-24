@@ -1,0 +1,10 @@
+May 3, 2011 7:42:04 AM org.apache.oodt.cas.filemgr.system.XmlRpcFileManager loadConfiguration
+INFO: Loading File Manager Configuration Properties from: [../conf/filemgr.properties]
+May 3, 2011 7:42:04 AM org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager loadProductTypes
+FINE: XMLRepositoryManager: found product type: [GenericFile]
+May 3, 2011 7:42:04 AM org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient <init>
+INFO: Loading File Manager Configuration Properties from: [../conf/filemgr.properties]
+May 3, 2011 7:42:05 AM org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferer setFileManagerUrl
+INFO: Local Data Transfer to: [http://localhost:9102] enabled
+May 3, 2011 7:42:05 AM org.apache.oodt.cas.filemgr.system.XmlRpcFileManager <init>
+INFO: File Manager started by cgoodale
