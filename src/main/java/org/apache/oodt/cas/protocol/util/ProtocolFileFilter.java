@@ -16,6 +16,7 @@
  */
 package org.apache.oodt.cas.protocol.util;
 
+//OODT imports
 import org.apache.oodt.cas.protocol.ProtocolFile;
 
 /**

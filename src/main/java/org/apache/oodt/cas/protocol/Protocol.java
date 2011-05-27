@@ -36,20 +36,18 @@ public interface Protocol {
     
     public void close() throws ProtocolException;
 
-    public boolean isConnected();
+    public boolean connected();
     
     public void cd(ProtocolFile file) throws ProtocolException;
 
-    public void getFile(ProtocolFile fromFile, File toFile) throws ProtocolException;
+    public void get(ProtocolFile fromFile, File toFile) throws ProtocolException;
 
-    public void putFile(File fromFile, ProtocolFile toFile) throws ProtocolException;
+    public void put(File fromFile, ProtocolFile toFile) throws ProtocolException;
     
-    public void abortTransfer() throws ProtocolException;
-
     public ProtocolFile pwd() throws ProtocolException;
 
     public List<ProtocolFile> ls() throws ProtocolException;
 
-    public void deleteFile(ProtocolFile file) throws ProtocolException;
+    public void delete(ProtocolFile file) throws ProtocolException;
 
 }

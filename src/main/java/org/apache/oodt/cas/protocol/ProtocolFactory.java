@@ -14,21 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.protocol;
 
 /**
+ * Factory for creating {@link Protocol}s
  * 
  * @author bfoster
  * @version $Revision$
- * 
- * <p>
- * Describe your class here
- * </p>.
  */
 public interface ProtocolFactory {
 
     public Protocol newInstance();
 
+    public String getSchema();
+    
 }

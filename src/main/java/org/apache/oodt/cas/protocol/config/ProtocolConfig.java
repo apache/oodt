@@ -14,22 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.verify;
+package org.apache.oodt.cas.protocol.config;
 
 //JDK imports
 import java.net.URI;
+import java.util.List;
 
 //OODT imports
-import org.apache.oodt.cas.protocol.Protocol;
-import org.apache.oodt.cas.protocol.auth.Authentication;
+import org.apache.oodt.cas.protocol.ProtocolFactory;
+import org.apache.oodt.cas.protocol.system.ProtocolManager;
 
 /**
- * Interface for verifying {@link Protocol}s can connect to sites.
- * 
+ * Protocol configuration for configuring {@link ProtocolManager}.
+ *
  * @author bfoster
  */
-public interface ProtocolVerifier {
+public interface ProtocolConfig {
+
+	public List<ProtocolFactory> getFactoriesBySite(URI site);
 	
-    public boolean verify(Protocol protocol, URI site, Authentication auth);
-    
 }

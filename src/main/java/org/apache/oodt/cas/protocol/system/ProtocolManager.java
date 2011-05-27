@@ -14,34 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.protocol.system;
 
 //OODT imports
 import org.apache.oodt.cas.protocol.auth.Authentication;
-import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
-import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
+import org.apache.oodt.cas.protocol.config.ProtocolConfig;
 import org.apache.oodt.cas.protocol.verify.ProtocolVerifier;
 import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFactory;
-import org.apache.oodt.cas.protocol.ProtocolFile;
 
 //JDK imports
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * A Manager responsible for managing site to {@link ProtocolFactory} mapping
+ *
  * @author bfoster
  */
 public class ProtocolManager {

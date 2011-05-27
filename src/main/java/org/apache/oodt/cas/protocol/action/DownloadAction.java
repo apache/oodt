@@ -14,22 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.verify;
+package org.apache.oodt.cas.protocol.action;
 
 //JDK imports
-import java.net.URI;
+import java.io.File;
 
 //OODT imports
 import org.apache.oodt.cas.protocol.Protocol;
-import org.apache.oodt.cas.protocol.auth.Authentication;
+import org.apache.oodt.cas.protocol.ProtocolFile;
+import org.apache.oodt.cas.protocol.system.ProtocolManager;
 
 /**
- * Interface for verifying {@link Protocol}s can connect to sites.
- * 
+ * A {@link ProtocolAction} which will downlaod a file from a given site
+ *
  * @author bfoster
  */
-public interface ProtocolVerifier {
+public class DownloadAction extends ProtocolAction {
 	
-    public boolean verify(Protocol protocol, URI site, Authentication auth);
-    
+	private String file;
+	
+	public void performAction(ProtocolManager protocolManager) throws Exception {
+		Protocol protocol = protocolManager.getProtocolBySite(getSite(), getAuthentication(), null);
+		protocol.get(new ProtocolFile(file, false), new File(""));
+	}
+	
+	public void setFile(String file) {
+		this.file = file;
+	}
+
 }

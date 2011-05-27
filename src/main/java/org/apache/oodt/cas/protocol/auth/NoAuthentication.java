@@ -14,22 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.verify;
-
-//JDK imports
-import java.net.URI;
-
-//OODT imports
-import org.apache.oodt.cas.protocol.Protocol;
-import org.apache.oodt.cas.protocol.auth.Authentication;
+package org.apache.oodt.cas.protocol.auth;
 
 /**
- * Interface for verifying {@link Protocol}s can connect to sites.
+ * Use when {@link Protocol} requires no {@link Authentication} 
  * 
  * @author bfoster
  */
-public interface ProtocolVerifier {
-	
-    public boolean verify(Protocol protocol, URI site, Authentication auth);
-    
+public class NoAuthentication implements Authentication {
+
+	public String user() {
+		return null;
+	}
+
+	public String pass() {
+		return null;
+	}
 }
