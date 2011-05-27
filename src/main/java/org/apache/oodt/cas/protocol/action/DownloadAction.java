@@ -18,6 +18,7 @@ package org.apache.oodt.cas.protocol.action;
 
 //JDK imports
 import java.io.File;
+import java.net.URI;
 
 //OODT imports
 import org.apache.oodt.cas.protocol.Protocol;
@@ -25,21 +26,32 @@ import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.system.ProtocolManager;
 
 /**
- * A {@link ProtocolAction} which will downlaod a file from a given site
+ * A {@link ProtocolAction} which will downlaod a url
  *
  * @author bfoster
  */
 public class DownloadAction extends ProtocolAction {
 	
-	private String file;
+	private String urlString;
+	private String toDir;
 	
 	public void performAction(ProtocolManager protocolManager) throws Exception {
-		Protocol protocol = protocolManager.getProtocolBySite(getSite(), getAuthentication(), null);
-		protocol.get(new ProtocolFile(file, false), new File(""));
+		URI uri = new URI(urlString);
+		Protocol protocol = protocolManager.getProtocolBySite(
+				new URI(uri.getScheme(), uri.getHost(), null, null),
+				getAuthentication(),
+				null);
+		protocol.get(new ProtocolFile(uri.getPath(), false),
+				(toDir != null ? new File(toDir).getAbsoluteFile() : new File(
+						".").getAbsoluteFile()));
 	}
 	
-	public void setFile(String file) {
-		this.file = file;
+	public void setUrl(String urlString) {
+		this.urlString = urlString;
+	}
+	
+	public void setToDir(String toDir) {
+		this.toDir = toDir;
 	}
 
 }

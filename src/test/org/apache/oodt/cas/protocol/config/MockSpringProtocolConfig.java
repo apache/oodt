@@ -14,17 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.auth;
+package org.apache.oodt.cas.protocol.config;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.oodt.cas.protocol.ProtocolFactory;
 
 /**
- * Authentication interface for {@link Protocol} connections
+ * Mock {@link SpringProtocolConfig}
  * 
  * @author bfoster
  */
-public interface Authentication {
+public class MockSpringProtocolConfig extends SpringProtocolConfig {
 
-	public String getUser();
-	
-	public String getPass();
-	
+	private static final String CONFIG_FILE = "src/testdata/test-protocol-config.xml";
+
+	public MockSpringProtocolConfig() {
+		super(CONFIG_FILE);
+	}
+
+	public String getConfigFile() {
+		return CONFIG_FILE;
+	}
+
+	public Map<String, List<ProtocolFactory>> getFactoryMap() {
+		return factoryMap;
+	}
 }

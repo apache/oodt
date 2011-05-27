@@ -14,17 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.auth;
+package org.apache.oodt.cas.protocol;
+
+//OODT imports
+import org.apache.oodt.commons.spring.SpringSetIdInjectionType;
 
 /**
- * Authentication interface for {@link Protocol} connections
+ * Mock {@link ProtocolFactory} for testing
  * 
  * @author bfoster
  */
-public interface Authentication {
+public class MockProtocolFactory implements ProtocolFactory, SpringSetIdInjectionType {
 
-	public String getUser();
+	private String schema;
+	private String id;
 	
-	public String getPass();
+	public MockProtocol newInstance() {
+		return new MockProtocol(id);
+	}
+
+	public String getSchema() {
+		return schema;
+	}
 	
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 }

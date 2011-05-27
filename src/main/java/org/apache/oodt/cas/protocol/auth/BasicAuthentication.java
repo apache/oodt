@@ -32,11 +32,11 @@ public class BasicAuthentication implements Authentication {
 		this.pass = pass;
 	}
 	
-	public String user() {
+	public String getUser() {
 		return user;
 	}
 
-	public String pass() {
+	public String getPass() {
 		return pass;
 	}
 

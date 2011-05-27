@@ -30,14 +30,15 @@ import org.apache.commons.lang.StringUtils;
 public class ProtocolFile {
 
     public static final ProtocolFile ROOT = new ProtocolFile(File.separator, true);
-    public static final ProtocolFile HOME = new ProtocolFile("~", true);
+    public static final ProtocolFile HOME = new ProtocolFile(new File("").getAbsolutePath(), true);
 
     private String path;
     private boolean isDir;
 
     public ProtocolFile(String path, boolean isDir) {
         this.isDir = isDir;
-    	this.path = path.length() > 0 ? StringUtils.chomp(path, File.separator) : path;
+		this.path = path.length() > 0 && !path.equals(File.separator) ? StringUtils
+				.chomp(path, File.separator) : path;
     }
 
     /**
@@ -64,7 +65,11 @@ public class ProtocolFile {
      * @return The name of the file this path represents
      */
     public String getName() {
-        return path.substring(path.lastIndexOf(File.separator) + 1);
+    	if (this.equals(ROOT) || !path.contains(File.separator)) {
+    		return path;
+    	} else {
+    		return path.substring(path.lastIndexOf(File.separator) + 1);
+    	}
     }
 
     /**
@@ -82,7 +87,11 @@ public class ProtocolFile {
      * @return The parent {@link ProtocolFile}
      */
     public ProtocolFile getParent() {
-        return new ProtocolFile(path.substring(0, path.lastIndexOf(File.separator)), true);
+    	if (this.equals(ROOT) || !path.contains(File.separator)) {
+    		return null;
+    	} else {
+    		return new ProtocolFile(path.substring(0, path.lastIndexOf(File.separator)), true);
+    	}
     }
 
     /**

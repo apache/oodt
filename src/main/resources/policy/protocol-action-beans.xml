@@ -10,12 +10,8 @@
 	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <import resource="protocol-action-beans.xml"/>
-    <import resource="protocol-cmd-line-beans.xml"/>
+	<bean class="org.apache.oodt.commons.spring.postprocessor.SetIdBeanPostProcessor"/>
 
-	<!-- list ProtocolFactories here -->
-	<bean class="org.apache.oodt.cas.protocol.some.factory">
-		
-	</bean>
+	<bean id="download" class="org.apache.oodt.cas.protocol.action.DownloadAction"/>
 	
 </beans>

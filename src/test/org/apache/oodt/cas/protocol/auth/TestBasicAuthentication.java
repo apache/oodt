@@ -16,15 +16,20 @@
  */
 package org.apache.oodt.cas.protocol.auth;
 
+//JUnit imports
+import junit.framework.TestCase;
+
 /**
- * Authentication interface for {@link Protocol} connections
+ * Test class for {@link BasicAuthentication}
  * 
  * @author bfoster
  */
-public interface Authentication {
+public class TestBasicAuthentication extends TestCase {
 
-	public String getUser();
-	
-	public String getPass();
+	public void testInitialState() {
+		BasicAuthentication auth = new BasicAuthentication("user", "pass");
+		assertEquals("user", auth.getUser());
+		assertEquals("pass", auth.getPass());
+	}
 	
 }

@@ -36,7 +36,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
  */
 public class SpringProtocolConfig implements ProtocolConfig {
 
-	private Map<String, List<ProtocolFactory>> factoryMap;
+	protected Map<String, List<ProtocolFactory>> factoryMap;
 	
 	public SpringProtocolConfig(String configFile) {
 		factoryMap = new HashMap<String, List<ProtocolFactory>>();
@@ -48,11 +48,16 @@ public class SpringProtocolConfig implements ProtocolConfig {
 				factories = new ArrayList<ProtocolFactory>();
 			}
 			factories.add(factory);
+			factoryMap.put(factory.getSchema(), factories);
 		}
 	}
 	
 	public List<ProtocolFactory> getFactoriesBySite(URI site) {
-		return factoryMap.get(site.getScheme());
+		List<ProtocolFactory> factories = factoryMap.get(site.getScheme());
+		if (factories == null) {
+			factories = new ArrayList<ProtocolFactory>();
+		}
+		return factories;
 	}
 
 }

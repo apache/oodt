@@ -47,15 +47,10 @@ public class CLProtocolManager extends ProtocolManager {
 				.doDynamicReplacement(System
 						.getProperty(
 								"org.apache.oodt.cas.protocol.manager.config.file",
-								"classpath:/org/apache/oodt/cas/protocol/actions/protocol-manager-config.xml"));
-		String cmdLineConfig = PathUtils
-				.doDynamicReplacement(System
-						.getProperty(
-								"org.apache.oodt.cas.protocol.cmdline.config.file",
-								"classpath:/org/apache/oodt/cas/protocol/actions/protocol-cmdline-beans.xml"));
+								"classpath:/org/apache/oodt/cas/protocol/actions/protocol-config.xml"));
 
 		FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(
-				cmdLineConfig);
+				protocolConfig);
 		List<CmdLineOptionInstance> optionInstances = CmdLineOptionUtils
 				.loadValidateAndHandleInstances(appContext, args);
 		CmdLineOptionInstance actionInstance = CmdLineOptionUtils
