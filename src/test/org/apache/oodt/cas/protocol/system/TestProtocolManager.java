@@ -68,6 +68,7 @@ public class TestProtocolManager extends TestCase {
 				}
 			}
 		});
+		assertNotNull(protocol);
 		assertTrue(protocol instanceof MockProtocol);
 		mockProtocol = (MockProtocol) protocol;
 		assertEquals("ftp1", mockProtocol.getFactoryId());

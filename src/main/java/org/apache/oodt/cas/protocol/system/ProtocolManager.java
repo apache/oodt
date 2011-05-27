@@ -54,7 +54,6 @@ public class ProtocolManager {
     	if (verifiedMap.containsKey(site)) {
     		return verifiedMap.get(site).newInstance();
     	} else {
-    		System.out.println(protocolConfig);
     		for (ProtocolFactory factory : protocolConfig.getFactoriesBySite(site)) {
     			try {
     				Protocol protocol = factory.newInstance();
