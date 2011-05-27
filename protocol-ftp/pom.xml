@@ -75,7 +75,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
-			<artifactId>protocol-api</artifactId>
+			<artifactId>cas-protocol-api</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
