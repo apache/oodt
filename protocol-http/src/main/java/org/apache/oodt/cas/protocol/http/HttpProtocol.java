@@ -14,15 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.oodt.cas.pushpull.protocol.http;
+package org.apache.oodt.cas.protocol.http;
 
 //OODT imports
-import org.apache.oodt.cas.pushpull.exceptions.ProtocolException;
-import org.apache.oodt.cas.pushpull.protocol.Protocol;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFile;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolPath;
 import org.apache.oodt.cas.metadata.util.MimeTypeUtils;
+import org.apache.oodt.cas.protocol.Protocol;
+import org.apache.oodt.cas.protocol.ProtocolFile;
+import org.apache.oodt.cas.protocol.auth.Authentication;
+import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 
 //TIKA imports
 import org.apache.tika.metadata.Metadata;
@@ -58,7 +57,7 @@ import java.util.regex.Pattern;
  * @version $Revision$
  * 
  */
-public class HttpClient extends Protocol {
+public class HttpProtocol implements Protocol {
 
   static String DIR = "dir";
 
@@ -70,18 +69,19 @@ public class HttpClient extends Protocol {
 
   static boolean takeAllFiles = true;
 
-  HttpPath parentPath;
+  HttpFile parentFile;
 
   boolean abort;
 
-  HttpPath currentPath;
+  HttpFile currentFile;
 
   boolean isConnected;
 
   MimeTypeUtils mimeTypes;
 
-  public HttpClient() throws InstantiationException {
-    super("http");
+  URL currentURL;
+  
+  public HttpProtocol() throws InstantiationException {
     try {
       mimeTypes = new MimeTypeUtils();
     } catch (Exception e) {
@@ -92,34 +92,30 @@ public class HttpClient extends Protocol {
     isConnected = false;
   }
 
-  protected void chDir(ProtocolPath path) throws ProtocolException {
-    if (!(path instanceof HttpPath))
+  public void cd(ProtocolFile file) throws ProtocolException {
+    if (!(file instanceof HttpFile))
       throw new ProtocolException(
           "HttpClient must receive a HttpPath - failed to cd");
 
-    HttpPath httpPath = (HttpPath) path;
+    HttpFile httpFile = (HttpFile) file;
     try {
       if (!this
-          .isDirectory(httpPath.getLink().toString(), path.getPathString()))
-        throw new ProtocolException(path
+          .isDirectory(httpFile.getLink().toString(), file.getPath()))
+        throw new ProtocolException(file
             + " is not a directory (mime type must be text/html)");
-      this.currentPath = httpPath;
+      this.currentFile = httpFile;
     } catch (Exception e) {
-      throw new ProtocolException("Failed to cd to " + path + " : "
+      throw new ProtocolException("Failed to cd to " + file + " : "
           + e.getMessage());
     }
   }
 
-  public void cdToRoot() {
-    this.currentPath = this.parentPath;
-  }
-
-  public void connect(String host, String username, String password)
+  public void connect(String host, Authentication auth)
       throws ProtocolException {
     try {
-      URL newURL = new URL("http://" + host + "/");
-      newURL.openStream().close();
-      currentPath = parentPath = new HttpPath("/", true, newURL, null);
+      currentURL = new URL("http://" + host + "/");
+      currentURL.openStream().close();
+      currentFile = parentFile = new HttpFile("/", true, currentURL, null);
       isConnected = true;
     } catch (Exception e) {
       throw new ProtocolException("Failed to connect to http://" + host + " : "
@@ -127,11 +123,11 @@ public class HttpClient extends Protocol {
     }
   }
 
-  public void disconnectFromServer() throws ProtocolException {
-    currentPath = parentPath = null;
+  public void close() throws ProtocolException {
+    currentFile = parentFile = null;
   }
 
-  public void getFile(ProtocolFile file, File toLocalFile)
+  public void get(ProtocolFile file, File toLocalFile)
       throws ProtocolException {
 
     OutputStream out = null;
@@ -139,7 +135,7 @@ public class HttpClient extends Protocol {
     try {
       this.abort = false;
       out = new BufferedOutputStream(new FileOutputStream(toLocalFile));
-      in = ((HttpPath) file.getProtocolPath()).getLink().openStream();
+      in = ((HttpFile) file).getLink().openStream();
 
       byte[] buffer = new byte[1024];
       int numRead;
@@ -168,45 +164,45 @@ public class HttpClient extends Protocol {
         }
     }
   }
-
-  public void abortCurFileTransfer() {
-    this.abort = true;
+  
+  public void put(File fromFile, ProtocolFile toFile) {
+	  //do nothing
   }
 
-  public List<ProtocolFile> listFiles() throws ProtocolException {
-    return parseLink(currentPath);
+  public List<ProtocolFile> ls() throws ProtocolException {
+    return parseLink(currentFile);
   }
 
-  public ProtocolFile getCurrentWorkingDir() throws ProtocolException {
+  public ProtocolFile pwd() throws ProtocolException {
     try {
-      return new ProtocolFile(this.getRemoteSite(), currentPath);
+      return currentFile;
     } catch (Exception e) {
       throw new ProtocolException("Failed to get current working directory : "
           + e.getMessage());
     }
   }
 
-  public boolean isConnected() throws ProtocolException {
+  public boolean connected() {
     return this.isConnected;
   }
 
-  public LinkedList<ProtocolFile> parseLink(HttpPath path)
+  public LinkedList<ProtocolFile> parseLink(HttpFile file)
       throws ProtocolException {
-    LinkedList<ProtocolFile> children = linkChildren.get(path.getLink()
+    LinkedList<ProtocolFile> children = linkChildren.get(file.getLink()
         .toString());
-    if (path.isDirectory() && children == null) {
+    if (file.isDir() && children == null) {
       try {
 
         // Open link
-        HttpURLConnection con = (HttpURLConnection) path.getLink()
+        HttpURLConnection con = (HttpURLConnection) file.getLink()
             .openConnection();
         con.connect();
         con.getResponseMessage();
 
         // if redirection took place, then change the ProtocolFile's URL
-        if (!path.getLink().toString().equals(con.getURL().toString()))
-          path = new HttpPath(path.getPathString(), path.isDirectory(), con
-              .getURL(), path);
+        if (!file.getLink().toString().equals(con.getURL().toString()))
+          file = new HttpFile(file.getPath(), file.isDir(), con
+              .getURL(), file);
 
         // create URL source reader
         Scanner scanner = new Scanner(con.getInputStream());
@@ -227,17 +223,16 @@ public class HttpClient extends Protocol {
         for (Link link : links) {
           String href = link.getUri();
           String linkName = link.getTitle();
-          String curPath = this.pwd().getProtocolPath().getPathString();
+          String curPath = this.pwd().getPath();
           String linkPath = curPath + (curPath.endsWith("/") ? "" : "/")
               + linkName;
-          children.add(new ProtocolFile(this.getRemoteSite(), new HttpPath(
-              linkPath, isDirectory(href, linkPath), new URL(href), path)));
+          children.add(new HttpFile(linkPath, isDirectory(href, linkPath), new URL(href), file));
         }
-        linkChildren.put(path.getLink().toString(), children);
+        linkChildren.put(file.getLink().toString(), children);
 
       } catch (Exception e) {
         e.printStackTrace();
-        throw new ProtocolException("Failed to get children links for " + path
+        throw new ProtocolException("Failed to get children links for " + file
             + " : " + e.getMessage());
       }
     }
@@ -293,7 +288,7 @@ public class HttpClient extends Protocol {
     }
   }
 
-  public static String createLinkFromHref(HttpPath parent, String href) {
+  public static String createLinkFromHref(HttpFile parent, String href) {
     if (!href.startsWith("http")) {
       String link = parent.getLink().toExternalForm();
       if (href.startsWith("..")) {
@@ -331,7 +326,7 @@ public class HttpClient extends Protocol {
       throws ProtocolException {
     try {
       StringTokenizer st = new StringTokenizer(path, "/ ");
-      HttpPath curPath = this.parentPath;
+      HttpFile curPath = this.parentFile;
       // System.out.println(parentPath);
       if (st.hasMoreTokens()) {
         do {
@@ -341,27 +336,27 @@ public class HttpClient extends Protocol {
             if (pFile.getName().equals(token)) {
               // System.out.println("token " + token + " " +
               // pFile);
-              curPath = (HttpPath) pFile.getProtocolPath();
+              curPath = (HttpFile) pFile;
               continue;
             }
           }
         } while (st.hasMoreTokens());
-        if (curPath.equals(this.parentPath))
-          return new ProtocolFile(this.getRemoteSite(), new HttpPath(path,
-              isDir, new URL("http://"
-                  + this.getRemoteSite().getURL().getHost() + path), curPath));
+        if (curPath.equals(this.parentFile))
+          return new HttpFile(path, isDir, new URL("http://"
+                  + this.getSite().getHost() + path), curPath);
       }
-      return new ProtocolFile(this.getRemoteSite(), curPath);
+      return curPath;
     } catch (Exception e) {
       throw new ProtocolException("Failed to get ProtocolPath for " + path);
     }
   }
 
-  @Override
-  public boolean deleteFile(ProtocolFile file) {
-    return false;
-  }
+  public void delete(ProtocolFile file) {}
 
+  private URL getSite() {
+	return currentURL;  
+  }
+  
   public static void main(String[] args) throws Exception {
     String urlString = null, downloadToDir = null;
     for (int i = 0; i < args.length; i++) {
@@ -375,12 +370,12 @@ public class HttpClient extends Protocol {
       throw new Exception("Must specify a url to download: --url <url>");
 
     URL url = new URL(urlString);
-    ProtocolFile urlFile = new ProtocolFile(null, new HttpPath(url.getPath(),
-        false, url, null));
+    ProtocolFile urlFile = new HttpFile(url.getPath(),
+        false, url, null);
     File toFile = new File(downloadToDir, urlFile.getName());
     toFile = toFile.getAbsoluteFile();
     toFile.createNewFile();
-    new HttpClient().getFile(urlFile, toFile);
+    new HttpProtocol().get(urlFile, toFile);
   }
 
 }

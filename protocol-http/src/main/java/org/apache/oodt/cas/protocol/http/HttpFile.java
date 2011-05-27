@@ -14,34 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-package org.apache.oodt.cas.pushpull.protocol.http;
+package org.apache.oodt.cas.protocol.http;
 
 //OODT imports
-import org.apache.oodt.cas.pushpull.protocol.Protocol;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFactory;
-import org.apache.oodt.cas.pushpull.protocol.http.HttpClient;
+import org.apache.oodt.cas.protocol.ProtocolFile;
+
+//JDK imports
+import java.net.URL;
 
 /**
+ * HTTP extension of {@link ProtocolFile}
  * 
  * @author bfoster
  * @version $Revision$
- * 
- * <p>
- * Describe your class here
- * </p>.
  */
-public class HttpClientFactory implements ProtocolFactory {
+public class HttpFile extends ProtocolFile {
 
-    public Protocol newInstance() {
-        try {
-            return new HttpClient();
-        } catch (Exception e) {
-            System.out
-                    .println("ERROR: creating HttpClient - check httpclient.properties");
-            return null;
-        }
+    private static final long serialVersionUID = -7780059889413081800L;
+
+    private URL link;
+    private HttpFile parent;
+
+    protected HttpFile(String virtualPath, boolean isDir, URL link, HttpFile parent) {
+        super(virtualPath, isDir);
+        this.link = link;
+        this.parent = parent;
     }
 
+    protected URL getLink() {
+        return this.link;
+    }
+
+    public ProtocolFile getParent() {
+        return this.parent;
+    }
 }
