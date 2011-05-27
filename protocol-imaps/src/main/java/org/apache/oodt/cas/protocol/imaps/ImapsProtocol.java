@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.oodt.cas.pushpull.protocol.imaps;
+package org.apache.oodt.cas.protocol.imaps;
 
 //JDK imports
 import java.io.ByteArrayInputStream;
@@ -43,6 +42,12 @@ import org.xml.sax.SAXException;
 //APACHE imports
 import org.apache.commons.codec.DecoderException;
 
+//OODT imports
+import org.apache.oodt.cas.protocol.Protocol;
+import org.apache.oodt.cas.protocol.ProtocolFile;
+import org.apache.oodt.cas.protocol.auth.Authentication;
+import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
+
 //TIKA imports
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -50,19 +55,13 @@ import org.apache.tika.parser.html.HtmlParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.apache.tika.sax.TextContentHandler;
 
-//OODT imports
-import org.apache.oodt.cas.pushpull.exceptions.ProtocolException;
-import org.apache.oodt.cas.pushpull.protocol.Protocol;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFile;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolPath;
-
 /**
  * 
  * @author bfoster
  * @version $Revision$
  * 
  */
-public class ImapsClient extends Protocol {
+public class ImapsProtocol implements Protocol {
 
   static Store store;
 
@@ -76,22 +75,9 @@ public class ImapsClient extends Protocol {
 
   static int connectCalls = 0;
 
-  // static LinkedList<ProtocolFile> currentFilesForCurrentFolder;
-  // static boolean changedDir = true;
-
-  public ImapsClient() {
-    super("imaps");
-  }
-
-  @Override
-  public synchronized void abortCurFileTransfer() throws ProtocolException {
-    // do nothing
-  }
-
-  @Override
-  public synchronized void chDir(ProtocolPath path) throws ProtocolException {
+  public synchronized void cd(ProtocolFile file) throws ProtocolException {
     try {
-      String remotePath = path.getPathString();
+      String remotePath = file.getPath();
       // System.out.println("cd to " + remotePath);
       if (remotePath.startsWith("/"))
         remotePath = remotePath.substring(1);
@@ -106,35 +92,24 @@ public class ImapsClient extends Protocol {
     // changedDir = true;
   }
 
-  @Override
-  public synchronized void cdToRoot() throws ProtocolException {
-    try {
-      chDir(new ProtocolPath("/", true));
-    } catch (Exception e) {
-      throw new ProtocolException("Failed to cd to root : " + e.getMessage());
-    }
-  }
-
-  @Override
-  public synchronized void connect(String host, String username, String password)
+  public synchronized void connect(String host, Authentication auth)
       throws ProtocolException {
     try {
       if (store == null) {
         store = (session = Session.getInstance(System.getProperties()))
             .getStore("imaps");
-        store.connect(host, port, username, password);
+        store.connect(host, port, auth.getUser(), auth.getPass());
         currentFolder = store.getDefaultFolder();
       }
       this.incrementConnections();
     } catch (Exception e) {
       e.printStackTrace();
       throw new ProtocolException("Failed to connected to IMAPS server " + host
-          + " with username " + username + " : " + e.getMessage());
+          + " with username " + auth.getUser() + " : " + e.getMessage());
     }
   }
 
-  @Override
-  public synchronized void disconnectFromServer() throws ProtocolException {
+  public synchronized void close() throws ProtocolException {
     decrementConnections();
     if (connectCalls <= 0) {
       // changedDir = true;
@@ -168,23 +143,22 @@ public class ImapsClient extends Protocol {
       connectCalls--;
   }
 
-  @Override
-  public synchronized void getFile(ProtocolFile file, File toLocalFile)
+  public synchronized void get(ProtocolFile fromFile, File toFile)
       throws ProtocolException {
     try {
       openFolder(currentFolder);
       Message[] messages = currentFolder.getMessages();
       for (Message message : messages) {
-        if (this.getMessageName(message).equals(file.getName())) {
-          writeMessageToLocalFile(message, toLocalFile);
+        if (this.getMessageName(message).equals(fromFile.getName())) {
+          writeMessageToLocalFile(message, toFile);
           // message.setFlag(Flags.Flag.DELETED, true);
           break;
         }
       }
     } catch (Exception e) {
       e.printStackTrace();
-      throw new ProtocolException("Failed to download " + file + " to "
-          + toLocalFile + " : " + e.getMessage());
+      throw new ProtocolException("Failed to download " + fromFile + " to "
+          + toFile + " : " + e.getMessage());
     } finally {
       try {
         closeFolder(currentFolder);
@@ -193,6 +167,10 @@ public class ImapsClient extends Protocol {
     }
   }
 
+  public synchronized void put(File fromFile, ProtocolFile toFile) {
+	  //do nothing;
+  }
+  
   private void writeMessageToLocalFile(Message message, File toLocalFile)
       throws MessagingException, IOException, DecoderException, SAXException,
       TikaException {
@@ -219,13 +197,11 @@ public class ImapsClient extends Protocol {
     ps.close();
   }
 
-  @Override
-  public synchronized boolean isConnected() throws ProtocolException {
+  public synchronized boolean connected() {
     return store.isConnected();
   }
 
-  @Override
-  public List<ProtocolFile> listFiles() throws ProtocolException {
+  public List<ProtocolFile> ls() throws ProtocolException {
     // if (changedDir) {
     // System.out.println("Refreshed LS");
     // currentFilesForCurrentFolder = new LinkedList<ProtocolFile>();
@@ -236,10 +212,8 @@ public class ImapsClient extends Protocol {
           store.getDefaultFolder().getFullName())) {
         Message[] messages = currentFolder.getMessages();
         for (Message message : messages) {
-          currentFilesForCurrentFolder.add(new ProtocolFile(this
-              .getRemoteSite(), new ProtocolPath(this.pwd().getProtocolPath()
-              .getPathString()
-              + "/" + this.getMessageName(message), false)));
+          currentFilesForCurrentFolder.add(new ProtocolFile(this.pwd().getPath()
+              + "/" + this.getMessageName(message), false));
         }
       }
       // changedDir = false;
@@ -256,14 +230,13 @@ public class ImapsClient extends Protocol {
     return currentFilesForCurrentFolder;
   }
 
-  @Override
-  public synchronized ProtocolFile getCurrentWorkingDir()
+  public synchronized ProtocolFile pwd()
       throws ProtocolException {
     try {
       String pwd = this.currentFolder.getFullName();
       if (!pwd.equals("") && !pwd.startsWith("/"))
         pwd = "/" + pwd;
-      return new ProtocolFile(this.getRemoteSite(), new ProtocolPath(pwd, true));
+      return new ProtocolFile(pwd, true);
     } catch (Exception e) {
       throw new ProtocolException("Failed to pwd : " + e.getMessage());
     }
@@ -353,25 +326,21 @@ public class ImapsClient extends Protocol {
     }
   }
 
-  @Override
-  public synchronized boolean deleteFile(ProtocolFile file) {
-    boolean found = false;
+  public synchronized void delete(ProtocolFile file) throws ProtocolException {
     try {
       openFolder(currentFolder);
       Message[] messages = currentFolder.getMessages();
       for (Message message : messages) {
         if (this.getMessageName(message).equals(file.getName())) {
           message.setFlag(Flags.Flag.DELETED, true);
-          found = true;
           break;
         }
       }
     } catch (Exception e) {
-      e.printStackTrace();
+    	throw new ProtocolException("Failed to delete file '" + file + "' : " + e.getMessage(), e);
     } finally {
       closeFolder(currentFolder);
     }
-    return found;
   }
 
 }

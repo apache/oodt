@@ -14,31 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-package org.apache.oodt.cas.pushpull.protocol.imaps;
+package org.apache.oodt.cas.protocol.imaps;
 
 //OODT imports
-import org.apache.oodt.cas.pushpull.protocol.Protocol;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFactory;
+import org.apache.oodt.cas.protocol.ProtocolFactory;
 
 /**
+ * Factory for creating {@link ImapsProtocol}s.
  * 
  * @author bfoster
  * @version $Revision$
- * 
- * <p>
- * Describe your class here
- * </p>.
  */
-public class ImapsClientFactory implements ProtocolFactory {
+public class ImapsProtocolFactory implements ProtocolFactory {
 
-    private ImapsClient imapsClient;
+    private ImapsProtocol imapsClient;
 
-    public Protocol newInstance() {
+    public ImapsProtocol newInstance() {
         if (this.imapsClient == null)
-            this.imapsClient = new ImapsClient();
+            this.imapsClient = new ImapsProtocol();
         return this.imapsClient;
     }
+
+	public String getSchema() {
+		return "imaps";
+	}
 
 }
