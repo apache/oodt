@@ -19,8 +19,8 @@
 		<version>0.3-SNAPSHOT</version>
 		<relativePath>../core/pom.xml</relativePath>
 	</parent>
-	<artifactId>cas-protocol-http</artifactId>
-	<name>CAS Protocol HTTP Implementation</name>
+	<artifactId>cas-protocol-sftp</artifactId>
+	<name>CAS Protocol IMAPS Implementation</name>
 	<profiles>
 		<profile>
 			<id>audit</id>
@@ -79,24 +79,9 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>nekohtml</groupId>
-			<artifactId>nekohtml</artifactId>
-			<version>1.9.6.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-core</artifactId>
-			<version>0.8</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-parsers</artifactId>
-			<version>0.8</version>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.42</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
