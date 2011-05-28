@@ -14,14 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.oodt.cas.pushpull.protocol.sftp;
+package org.apache.oodt.cas.protocol.sftp;
 
 //OODT imports
-import org.apache.oodt.cas.pushpull.exceptions.ProtocolException;
-import org.apache.oodt.cas.pushpull.protocol.Protocol;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFile;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolPath;
+import org.apache.oodt.cas.protocol.auth.Authentication;
+import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
+import org.apache.oodt.cas.protocol.Protocol;
+import org.apache.oodt.cas.protocol.ProtocolFile;
 
 //JSCH imports
 import com.jcraft.jsch.ChannelSftp;
@@ -43,7 +42,7 @@ import java.util.Vector;
  * @author bfoster
  * @version $Revision$
  */
-public class JschSftpClient extends Protocol {
+public class JschSftpProtocol implements Protocol {
 
   private Session session;
 
@@ -51,42 +50,26 @@ public class JschSftpClient extends Protocol {
 
   private static final JSch jsch = new JSch();
 
-  private String host;
-
-  private boolean abort;
-
-  public JschSftpClient() {
-    super("sftp");
+  public JschSftpProtocol() {
     session = null;
     sftpChannel = null;
-    host = null;
   }
 
-  protected void chDir(ProtocolPath path) throws ProtocolException {
+  public void cd(ProtocolFile file) throws ProtocolException {
     try {
-      sftpChannel.cd(path.getPathString());
+      sftpChannel.cd(file.getPath());
     } catch (Exception e) {
-      throw new ProtocolException("Failed to cd to " + path + " : "
+      throw new ProtocolException("Failed to cd to " + file + " : "
           + e.getMessage());
     }
   }
 
-  public void cdToRoot() throws ProtocolException {
-    try {
-      chDir(new ProtocolPath("/", true));
-    } catch (Exception e) {
-      throw new ProtocolException("Failed to cd to root : " + e.getMessage());
-    }
-  }
-
-  protected void connect(String host, final String username,
-      final String password) throws ProtocolException {
+  public void connect(String host, Authentication auth) throws ProtocolException {
     try {
       System.out.println(System.getProperty("user.home") + "/.ssh/known_hosts");
       jsch.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
-      session = jsch.getSession(username, this.getRemoteSite().getURL()
-          .getHost(), 22);
-      session.setPassword(password);
+      session = jsch.getSession(auth.getUser(), host, 22);
+      session.setPassword(auth.getPass());
       session.connect();
       sftpChannel = (ChannelSftp) session.openChannel("sftp");
       sftpChannel.connect();
@@ -96,49 +79,38 @@ public class JschSftpClient extends Protocol {
     }
   }
 
-  public void disconnectFromServer() throws ProtocolException {
+  public void close() throws ProtocolException {
     session.disconnect();
   }
 
-  public void getFile(ProtocolFile file, File toLocalFile)
+  public void get(ProtocolFile fromFile, File toFile)
       throws ProtocolException {
     try {
-      this.abort = false;
-      SftpProgressMonitor monitor = new SftpProgressMonitor() {
-        public boolean count(long arg0) {
-          return JschSftpClient.this.abort;
-        }
-
-        public void end() {
-
-        }
-
-        public void init(int arg0, String arg1, String arg2, long arg3) {
-
-        }
-      };
-      sftpChannel.get(file.getProtocolPath().getPathString(), toLocalFile
+      sftpChannel.get(fromFile.getPath(), toFile
           .getAbsolutePath());
     } catch (Exception e) {
-      throw new ProtocolException("Failed to download " + file + " : "
+      throw new ProtocolException("Failed to download " + fromFile + " : "
           + e.getMessage());
     }
   }
-
-  public void abortCurFileTransfer() {
-    this.abort = true;
+  
+  public void put(File fromFile, ProtocolFile toFile) throws ProtocolException {
+	  try {
+		  sftpChannel.put(fromFile.getAbsolutePath(), toFile.getPath());
+	  } catch (Exception e) {
+		  throw new ProtocolException("Failed to put file '" + fromFile + "' : " + e.getMessage(), e);
+	  }
   }
-
-  public List<ProtocolFile> listFiles() throws ProtocolException {
+  
+  public List<ProtocolFile> ls() throws ProtocolException {
     try {
       Vector<ChannelSftp.LsEntry> sftpFiles = (Vector<ChannelSftp.LsEntry>) sftpChannel
           .ls(sftpChannel.pwd());
       Vector<ProtocolFile> returnFiles = new Vector<ProtocolFile>();
       for (ChannelSftp.LsEntry sftpFile : sftpFiles) {
-        String path = this.pwd().getProtocolPath().getPathString();
-        returnFiles.add(new ProtocolFile(this.getRemoteSite(),
-            new ProtocolPath(path + "/" + sftpFile.getFilename(), sftpFile
-                .getAttrs().isDir())));
+        String path = this.pwd().getPath();
+        returnFiles.add(new ProtocolFile(path + "/" + sftpFile.getFilename(), sftpFile
+                .getAttrs().isDir()));
       }
       return returnFiles;
     } catch (Exception e) {
@@ -146,26 +118,23 @@ public class JschSftpClient extends Protocol {
     }
   }
 
-  public ProtocolFile getCurrentWorkingDir() throws ProtocolException {
+  public ProtocolFile pwd() throws ProtocolException {
     try {
-      return new ProtocolFile(this.getRemoteSite(), new ProtocolPath(
-          sftpChannel.pwd(), true));
+      return new ProtocolFile(sftpChannel.pwd(), true);
     } catch (Exception e) {
       throw new ProtocolException("Failed to pwd : " + e.getMessage());
     }
   }
 
-  public boolean isConnected() throws ProtocolException {
+  public boolean connected() {
     return session.isConnected();
   }
 
-  @Override
-  protected boolean deleteFile(ProtocolFile file) {
+  public void delete(ProtocolFile file) throws ProtocolException {
     try {
-      sftpChannel.rm(file.getProtocolPath().getPathString());
-      return true;
+      sftpChannel.rm(file.getPath());
     } catch (Exception e) {
-      return false;
+      throw new ProtocolException("Failed to download file '" + file + "' : " + e.getMessage(), e);
     }
   }
 

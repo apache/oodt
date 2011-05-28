@@ -14,31 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.oodt.cas.pushpull.protocol.sftp;
+package org.apache.oodt.cas.protocol.sftp;
 
 //OODT imports
-import org.apache.oodt.cas.pushpull.protocol.Protocol;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFactory;
+import org.apache.oodt.cas.protocol.ProtocolFactory;
 
 /**
  * 
- * Creates new {@link JschSftpClient}s.
+ * Creates new {@link JschSftpProtocol}s.
  * 
  * @author bfoster
  * @author mattmann
  * @version $Revision$
  * 
  */
-public class JschSftpClientFactory implements ProtocolFactory {
+public class JschSftpProtocolFactory implements ProtocolFactory {
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.oodt.cas.pushpull.protocol.ProtocolFactory#newInstance()
-   */
-  public Protocol newInstance() {
-    return new JschSftpClient();
+  public JschSftpProtocol newInstance() {
+    return new JschSftpProtocol();
+  }
+
+  public String getSchema() {
+	return "sftp";
   }
 
 }
