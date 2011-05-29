@@ -290,17 +290,17 @@ public final class XmlStructFactory {
             for (Iterator<org.apache.oodt.cas.filemgr.structs.Element> i = elements.iterator(); i.hasNext();) {
                 org.apache.oodt.cas.filemgr.structs.Element element = i.next();
                 Element elementElem = document.createElement("element");
-                elementElem.setAttribute("id", element.getElementId());
-                elementElem.setAttribute("name", element.getElementName());
+                elementElem.setAttribute("id", friendlyXml(element.getElementId()));
+                elementElem.setAttribute("name", friendlyXml(element.getElementName()));
 
                 Element descriptionElem = document.createElement("description");
-                descriptionElem.appendChild(document.createTextNode(element
-                        .getDescription()));
+                descriptionElem.appendChild(document.createTextNode(friendlyXml(element
+                        .getDescription())));
                 elementElem.appendChild(descriptionElem);
 
                 Element dcElementElem = document.createElement("dcElement");
-                dcElementElem.appendChild(document.createTextNode(element
-                        .getDCElement() != null ? element.getDCElement() : ""));
+                dcElementElem.appendChild(document.createTextNode(friendlyXml(element
+                        .getDCElement())));
                 elementElem.appendChild(dcElementElem);
                 
                 root.appendChild(elementElem);
@@ -422,6 +422,10 @@ public final class XmlStructFactory {
 
         productTypeElementMap.put(typeId, elementList);
         return productTypeElementMap;
+    }
+    
+    private static String friendlyXml(String value){
+      return value != null ? value:"";
     }
 
 }

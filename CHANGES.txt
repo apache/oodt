@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-197 Null descriptions from elements.xml cause NPE when writing 
+  elements.xml file back out (mattmann, Michael Starch)
+
 * OODT-193 PGE ExternMetExtractor MetWriter (bfoster, mattmann)
 
 * OODT-192 PGE FilenameExtractorMetWriter (mattmann)
