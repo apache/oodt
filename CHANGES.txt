@@ -34,6 +34,8 @@ Release 0.3-SNAPSHOT (in progress)
 
 * OODT-155 Rewrite File Manager Browser webapp using Apache Wicket (mattmann)
 
+* OODT-185 The File Manager's query_tool script does not handle quoted parameter values. (shardman)
+
 * OODT-181 Add documentation for metFileExt attribute on exec element in
   ExternMetExtractor (mattmann)
 
