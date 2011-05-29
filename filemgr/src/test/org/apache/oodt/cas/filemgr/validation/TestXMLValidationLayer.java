@@ -82,7 +82,7 @@ public class TestXMLValidationLayer extends TestCase {
       }
   
       ProductType type = new ProductType();
-      type.setName("urn:oodt:GenericFile");
+      type.setProductTypeId("urn:oodt:GenericFile");
       List<Element> retrievedElems = null;
       try {
         retrievedElems = validationLayer.getElements(type);

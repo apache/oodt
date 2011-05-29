@@ -101,7 +101,13 @@ public class XMLValidationLayer implements ValidationLayer {
      * @see org.apache.oodt.cas.filemgr.validation.ValidationLayer#modifyElement(org.apache.oodt.cas.filemgr.structs.Element)
      */
     public void modifyElement(Element element) throws ValidationLayerException {
-        elementMap.put(element.getElementId(), element);
+        for(Element elem: elementMap.values()){
+           if(elem.getElementId().equals(element.getElementId())){
+             elem.setElementName(element.getElementName());
+             elem.setDescription(elem.getDescription());
+             elem.setDCElement(element.getDCElement());
+           }
+        }
         saveElementsAndMappings();
 
     }

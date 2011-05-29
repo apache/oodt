@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-195 XMLValidationLayer: Elements Map and ProductType to Element 
+  Map can become inconsistent (Michael Starch, mattmann, bfoster)
+
 * OODT-197 Null descriptions from elements.xml cause NPE when writing 
   elements.xml file back out (mattmann, Michael Starch)
 
