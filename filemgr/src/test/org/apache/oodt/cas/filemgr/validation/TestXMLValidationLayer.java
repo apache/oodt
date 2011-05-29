@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.filemgr.validation;
 
 //OODT imports
+import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.*;
@@ -26,6 +27,9 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 
 //JDK imports
 import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -60,13 +64,42 @@ public class TestXMLValidationLayer extends TestCase {
 
     private static final String CAS_NS = "CAS";
 
-    /**
-     * 
-     */
     public TestXMLValidationLayer() {
-        testDirUris.add(new File("./src/testdata/vallayer").toURI().toString());
-        validationLayer = new XMLValidationLayer(testDirUris);
     }
+
+    /**
+     * @since OODT-195
+     */
+    public void testModifyElement() {
+      Element elem = new Element();
+      String elemName = "TestFilename";
+      elem.setElementName(elemName);
+      elem.setElementId("urn:oodt:Filename");
+      try {
+        validationLayer.modifyElement(elem);
+      } catch (Exception e) {
+        fail(e.getMessage());
+      }
+  
+      ProductType type = new ProductType();
+      type.setName("urn:oodt:GenericFile");
+      List<Element> retrievedElems = null;
+      try {
+        retrievedElems = validationLayer.getElements(type);
+      } catch (Exception e) {
+        fail(e.getMessage());
+      }
+      assertNotNull(retrievedElems);
+      boolean found = false;
+      for (Element e : retrievedElems) {
+        if (e.getElementName().equals(elemName)) {
+          found = true;
+        }
+      }
+      assertTrue(
+          "Unable to find updated element: ["+elemName+"]: Set contains : ["
+              + retrievedElems + "]", found);
+  }    
 
     /**
      * @since OODT-220
@@ -189,4 +222,60 @@ public class TestXMLValidationLayer extends TestCase {
                 4, elementList.size());
     }
 
+
+
+
+    /*
+   * (non-Javadoc)
+   * 
+   * @see junit.framework.TestCase#setUp()
+   */
+  @Override
+  protected void setUp() throws Exception {
+    try {
+      File tempDir = File.createTempFile("ignore", "txt").getParentFile();
+      // copy the val layer policy into the temp dir
+      for (File f : new File("./src/testdata/vallayer")
+          .listFiles(new FileFilter() {
+
+            public boolean accept(File pathname) {
+              return pathname.isFile();
+            }
+          })) {
+        FileUtils.copyFileToDirectory(f, tempDir);
+      }
+
+      testDirUris.add(tempDir.toURI().toString());
+      validationLayer = new XMLValidationLayer(testDirUris);
+
+    } catch (IOException e) {
+      fail(e.getMessage());
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see junit.framework.TestCase#tearDown()
+   */
+  @Override
+  protected void tearDown() throws Exception {
+    deleteAllFiles(new File(new URI((String) testDirUris.get(0)))
+        .getAbsolutePath());
+    testDirUris.clear();
+  }
+
+  private void deleteAllFiles(String startDir) {
+    File startDirFile = new File(startDir);
+    File[] delFiles = startDirFile.listFiles();
+
+    if (delFiles != null && delFiles.length > 0) {
+      for (int i = 0; i < delFiles.length; i++) {
+        delFiles[i].delete();
+      }
+    }
+
+    startDirFile.delete();
+
+  }    
 }
