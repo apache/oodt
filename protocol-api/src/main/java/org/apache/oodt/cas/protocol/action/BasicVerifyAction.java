@@ -34,18 +34,20 @@ public class BasicVerifyAction extends ProtocolAction {
 	private ProtocolVerifier verifier;
 	private ProtocolFactory factory;
 	
+	private boolean lastVerificationResult;
+	
 	@Override
 	public void performAction(ProtocolManager protocolManager) throws Exception {
 		if (factory != null) {
 			Protocol protocol = factory.newInstance();
-			if (verifier.verify(protocol, getSite(), getAuthentication())) {
+			if (lastVerificationResult = verifier.verify(protocol, getSite(), getAuthentication())) {
 				LOG.info("Protocol '" + protocol.getClass().getCanonicalName() + "' PASSED verification!");
 			} else {
 				LOG.severe("Protocol '" + protocol.getClass().getCanonicalName() + "' FAILED verification!");
 			}
 		} else {
 			Protocol protocol = protocolManager.getProtocolBySite(getSite(), getAuthentication(), verifier);
-			if (protocol != null) {
+			if (lastVerificationResult = protocol != null) {
 				LOG.info("Protocol '" + protocol.getClass().getCanonicalName() + "' PASSED verification!");
 			} else {
 				LOG.info("No Protocol determined, FAILED verification!");				
@@ -61,4 +63,7 @@ public class BasicVerifyAction extends ProtocolAction {
 		this.factory = factory;
 	}
 	
+	protected boolean getLastVerificationResults() {
+		return lastVerificationResult;
+	}
 }

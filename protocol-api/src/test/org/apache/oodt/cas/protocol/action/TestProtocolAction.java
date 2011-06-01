@@ -14,36 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.auth;
+package org.apache.oodt.cas.protocol.action;
 
 //JUnit imports
+import java.net.URISyntaxException;
+
 import junit.framework.TestCase;
 
 /**
- * Test class for {@link BasicAuthentication}
+ * Test class for {@link ProtocolAction}.
  * 
  * @author bfoster
  */
-public class TestBasicAuthentication extends TestCase {
+public class TestProtocolAction extends TestCase {
 
-	public void testInitialState() {
-		BasicAuthentication auth = new BasicAuthentication("user", "pass");
-		assertEquals("user", auth.getUser());
-		assertEquals("pass", auth.getPass());
-	}
-	
-	public void testNullCase() {
-		try {
-			new BasicAuthentication(null, "pass");
-			fail("Should have thrown IllegalArgumentException");
-		}catch (IllegalArgumentException e) {}
-		try {
-			new BasicAuthentication("user", null);
-			fail("Should have thrown IllegalArgumentException");
-		}catch (IllegalArgumentException e) {}
-		try {
-			new BasicAuthentication(null, null);
-			fail("Should have thrown IllegalArgumentException");
-		}catch (IllegalArgumentException e) {}
+	public void testInitialState() throws URISyntaxException {
+		MockProtocolAction action = new MockProtocolAction();
+		action.setId("id");
+		action.setUser("user");
+		action.setPass("pass");
+		action.setSite("http://some-site");
+		assertEquals("id", action.getId());
+		assertEquals("user", action.getAuthentication().getUser());
+		assertEquals("pass", action.getAuthentication().getPass());
+		assertEquals("http://some-site", action.getSite().toString());
 	}
 }

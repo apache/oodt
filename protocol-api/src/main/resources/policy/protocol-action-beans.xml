@@ -12,6 +12,6 @@
 
 	<bean class="org.apache.oodt.commons.spring.postprocessor.SetIdBeanPostProcessor"/>
 
-	<bean id="download" class="org.apache.oodt.cas.protocol.action.DownloadAction"/>
+	<bean id="Download" class="org.apache.oodt.cas.protocol.action.DownloadAction"/>
 	
 </beans>

@@ -19,6 +19,7 @@ package org.apache.oodt.cas.protocol.action;
 //JDK imports
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 //OODT imports
 import org.apache.oodt.cas.protocol.Protocol;
@@ -32,26 +33,40 @@ import org.apache.oodt.cas.protocol.system.ProtocolManager;
  */
 public class DownloadAction extends ProtocolAction {
 	
-	private String urlString;
-	private String toDir;
+	protected URI uri;
+	protected String toDir;
+	protected Protocol usedProtocol;
 	
 	public void performAction(ProtocolManager protocolManager) throws Exception {
-		URI uri = new URI(urlString);
-		Protocol protocol = protocolManager.getProtocolBySite(
-				new URI(uri.getScheme(), uri.getHost(), null, null),
-				getAuthentication(),
-				null);
-		protocol.get(new ProtocolFile(uri.getPath(), false),
-				(toDir != null ? new File(toDir).getAbsoluteFile() : new File(
-						".").getAbsoluteFile()));
+		usedProtocol = createProtocol(protocolManager);
+		ProtocolFile fromFile = createProtocolFile();
+		String toFilename = fromFile.equals(ProtocolFile.ROOT)
+				|| fromFile.getName().isEmpty() ? uri.getHost() : fromFile
+				.getName();
+		File toFile = (toDir != null) ? new File(toDir, toFilename) : new File(toFilename);
+		usedProtocol.get(fromFile, toFile.getAbsoluteFile());
 	}
 	
-	public void setUrl(String urlString) {
-		this.urlString = urlString;
+	public void setUrl(String urlString) throws URISyntaxException {
+		uri = new URI(urlString);
 	}
 	
 	public void setToDir(String toDir) {
 		this.toDir = toDir;
 	}
 
+	protected Protocol getUsedProtocol() {
+		return usedProtocol;
+	}
+	
+	protected ProtocolFile createProtocolFile() throws URISyntaxException {
+		return new ProtocolFile(uri.getPath(), false);
+	}
+	
+	protected Protocol createProtocol(ProtocolManager protocolManager) throws URISyntaxException {
+		return protocolManager.getProtocolBySite(
+				new URI(uri.getScheme(), uri.getHost(), null, null),
+				getAuthentication(),
+				null);
+	}
 }

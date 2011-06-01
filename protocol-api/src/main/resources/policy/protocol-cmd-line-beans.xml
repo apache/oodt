@@ -58,7 +58,7 @@
 	</bean>
 	
 	<bean id="url" lazy-init="true" class="org.apache.oodt.commons.option.CmdLineOption">
-		<property name="shortOption" value="u"/>
+		<property name="shortOption" value="url"/>
 		<property name="longOption" value="url"/>
 		<property name="description" value="URL to download"/>
 		<property name="hasArgs" value="true"/>

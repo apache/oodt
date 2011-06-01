@@ -14,25 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.config;
+package org.apache.oodt.cas.protocol.action;
 
-//JDK imports
+//JUnit imports
 import java.net.URI;
-import java.util.List;
 
-//OODT imports
-import org.apache.oodt.cas.protocol.ProtocolFactory;
+import org.apache.oodt.cas.protocol.Protocol;
+import org.apache.oodt.cas.protocol.auth.Authentication;
+import org.apache.oodt.cas.protocol.config.MockSpringProtocolConfig;
 import org.apache.oodt.cas.protocol.system.ProtocolManager;
+import org.apache.oodt.cas.protocol.verify.ProtocolVerifier;
+
+import junit.framework.TestCase;
 
 /**
- * Protocol configuration for configuring {@link ProtocolManager}.
- *
+ * Test class for {@link BasicVerifyAction}
+ * 
  * @author bfoster
  */
-public interface ProtocolConfig {
+public class TestBasicVerifyAction extends TestCase {
 
-	public List<ProtocolFactory> getAllFactories();
-	
-	public List<ProtocolFactory> getFactoriesBySite(URI site);
+	public void testVerification() throws Exception {
+		BasicVerifyAction bva = new BasicVerifyAction();
+		bva.setSite("http://localhost");
+		bva.setVerifier(new ProtocolVerifier() {
+			public boolean verify(Protocol protocol, URI site,
+					Authentication auth) {
+				return auth != null && site.toString().equals("http://localhost");
+			}
+		});
+		bva.performAction(new ProtocolManager(new MockSpringProtocolConfig()));
+		assertTrue(bva.getLastVerificationResults());
+	}
 	
 }

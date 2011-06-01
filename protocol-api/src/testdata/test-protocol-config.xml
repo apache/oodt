@@ -30,7 +30,7 @@
 		<property name="schema" value="sftp"/>
 	</bean>
 	
-	<bean id="http" class="org.apache.oodt.cas.protocol.MockProtocolFactory">
+	<bean id="http1" class="org.apache.oodt.cas.protocol.MockProtocolFactory">
 		<property name="schema" value="http"/>
 	</bean>
 	

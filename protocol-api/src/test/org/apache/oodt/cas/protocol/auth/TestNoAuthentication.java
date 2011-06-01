@@ -28,8 +28,8 @@ public class TestNoAuthentication extends TestCase {
 
 	public void testInitialState() {
 		NoAuthentication auth = new NoAuthentication();
-		assertNull(auth.getUser());
-		assertNull(auth.getPass());
+		assertEquals("", auth.getUser());
+		assertEquals("", auth.getPass());
 	}
 	
 }

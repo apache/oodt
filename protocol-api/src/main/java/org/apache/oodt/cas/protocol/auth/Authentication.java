@@ -26,5 +26,5 @@ public interface Authentication {
 	public String getUser();
 	
 	public String getPass();
-	
+
 }

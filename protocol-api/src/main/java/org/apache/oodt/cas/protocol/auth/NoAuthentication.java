@@ -24,10 +24,11 @@ package org.apache.oodt.cas.protocol.auth;
 public class NoAuthentication implements Authentication {
 
 	public String getUser() {
-		return null;
+		return "";
 	}
 
 	public String getPass() {
-		return null;
+		return "";
 	}
+
 }

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 //Spring imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.protocol.ProtocolFactory;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -39,6 +40,7 @@ public class SpringProtocolConfig implements ProtocolConfig {
 	protected Map<String, List<ProtocolFactory>> factoryMap;
 	
 	public SpringProtocolConfig(String configFile) {
+		Validate.notNull(configFile, "SpringProtocolConfig configFile cannnot be NULL");
 		factoryMap = new HashMap<String, List<ProtocolFactory>>();
 		FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(configFile);
 		Collection<ProtocolFactory> protocolFactories = appContext.getBeansOfType(ProtocolFactory.class).values();
@@ -52,7 +54,16 @@ public class SpringProtocolConfig implements ProtocolConfig {
 		}
 	}
 	
+	public List<ProtocolFactory> getAllFactories() {
+		ArrayList<ProtocolFactory> factories = new ArrayList<ProtocolFactory>();
+		for (List<ProtocolFactory> groupOfFactories : factoryMap.values()) {
+			factories.addAll(groupOfFactories);
+		}
+		return factories;
+	}
+	
 	public List<ProtocolFactory> getFactoriesBySite(URI site) {
+		Validate.notNull(site, "URI site cannot be NULL");
 		List<ProtocolFactory> factories = factoryMap.get(site.getScheme());
 		if (factories == null) {
 			factories = new ArrayList<ProtocolFactory>();

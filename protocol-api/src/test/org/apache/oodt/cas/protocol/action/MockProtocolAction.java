@@ -14,33 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.auth;
+package org.apache.oodt.cas.protocol.action;
 
-import org.apache.commons.lang.Validate;
+//OODT imports
+import org.apache.oodt.cas.protocol.system.ProtocolManager;
 
 /**
- * Basic username and password {@link Authentication}
+ * Mock class for {@ProtocolAction}.
  * 
  * @author bfoster
- * @version $Revision$
  */
-public class BasicAuthentication implements Authentication {
+public class MockProtocolAction extends ProtocolAction {
 
-	private String user;
-	private String pass;
-	
-	public BasicAuthentication(String user, String pass) {
-		Validate.notNull(user, "NULL user not allowed");
-		Validate.notNull(pass, "NULL pass not allowed");
-		this.user = user;
-		this.pass = pass;
-	}
-	
-	public String getUser() {
-		return user;
-	}
+	@Override
+	public void performAction(ProtocolManager protocolManager) throws Exception {}
 
-	public String getPass() {
-		return pass;
-	}
 }

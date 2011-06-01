@@ -18,6 +18,7 @@ package org.apache.oodt.cas.protocol;
 
 //JDK imports
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,9 +37,18 @@ public class MockProtocol implements Protocol {
 	private ProtocolFile cwd;
 	private String factoryId;
 	
+	private List<ProtocolFile> deletedFiles;
+	private List<ProtocolFile> putFiles;
+	private List<ProtocolFile> getFiles;
+	private int timesConnected;
+	
 	public MockProtocol(String factoryId) {
 		connected = false;
 		this.factoryId = factoryId;
+		deletedFiles = new ArrayList<ProtocolFile>();
+		putFiles = new ArrayList<ProtocolFile>();
+		getFiles = new ArrayList<ProtocolFile>();
+		timesConnected = 0;
 	}
 	
 	public String getFactoryId() {
@@ -48,6 +58,14 @@ public class MockProtocol implements Protocol {
 	public void connect(String host, Authentication authentication)
 			throws ProtocolException {
 		connected = true;
+		deletedFiles.clear();
+		putFiles.clear();
+		getFiles.clear();
+		timesConnected++;
+	}
+	
+	public int getTimesConnected() {
+		return timesConnected;
 	}
 
 	public void close() throws ProtocolException {
@@ -64,12 +82,20 @@ public class MockProtocol implements Protocol {
 
 	public void get(ProtocolFile fromFile, File toFile)
 			throws ProtocolException {
-		//do nothing
+		getFiles.add(fromFile);
 	}
 
+	public List<ProtocolFile> getGetFiles() {
+		return getFiles;
+	}
+	
 	public void put(File fromFile, ProtocolFile toFile)
 			throws ProtocolException {
-		//do nothing
+		putFiles.add(toFile);
+	}
+	
+	public List<ProtocolFile> getPutFiles() {
+		return putFiles;
 	}
 
 	public ProtocolFile pwd() throws ProtocolException {
@@ -81,7 +107,11 @@ public class MockProtocol implements Protocol {
 	}
 
 	public void delete(ProtocolFile file) throws ProtocolException {
-		//do nothing
+		deletedFiles.add(file);
+	}
+	
+	public List<ProtocolFile> getDeletedFiles() {
+		return deletedFiles;
 	}
 
 }
