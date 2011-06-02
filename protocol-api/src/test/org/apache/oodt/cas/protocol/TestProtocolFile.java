@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 public class TestProtocolFile extends TestCase {
 
 	public void testInitialState() {
-		String filePath = File.separator + "path" + File.separator + "to" + File.separator + "file";
+		String filePath = ProtocolFile.SEPARATOR + "path" + ProtocolFile.SEPARATOR + "to" + ProtocolFile.SEPARATOR + "file";
 		ProtocolFile pFile = new ProtocolFile(filePath, false);
 		assertEquals(filePath, pFile.getPath());
 		assertEquals(pFile.getPath(), pFile.toString());
@@ -39,7 +39,7 @@ public class TestProtocolFile extends TestCase {
 		assertFalse(pFile.isRelative());
 		
 		// Test Parent file
-		String parentPath = File.separator + "path" + File.separator + "to";
+		String parentPath = ProtocolFile.SEPARATOR + "path" + ProtocolFile.SEPARATOR + "to";
 		assertEquals(parentPath, pFile.getParent().getPath());
 		assertEquals(pFile.getParent().getPath(), pFile.getParent().toString());
 		assertEquals("to", pFile.getParent().getName());
@@ -48,7 +48,7 @@ public class TestProtocolFile extends TestCase {
 	}
 	
 	public void testRoot() {
-		assertEquals(File.separator, ProtocolFile.ROOT.getPath());
+		assertEquals(ProtocolFile.SEPARATOR, ProtocolFile.ROOT.getPath());
 		assertNull(ProtocolFile.ROOT.getParent());
 		assertEquals(ProtocolFile.ROOT.getPath(), ProtocolFile.ROOT.getName());
 		assertEquals(ProtocolFile.ROOT.getPath(), ProtocolFile.ROOT.toString());

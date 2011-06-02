@@ -21,101 +21,109 @@ import java.io.File;
 
 //APACHE imports
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 
 /**
- * A path representing a file/directory over some {@link Protocol} 
+ * A path representing a file/directory over some {@link Protocol}
  * 
  * @author bfoster
  */
 public class ProtocolFile {
 
-    public static final ProtocolFile ROOT = new ProtocolFile(File.separator, true);
-    public static final ProtocolFile HOME = new ProtocolFile(new File("").getAbsolutePath(), true);
+	public static final String SEPARATOR = "/";
+	
+	public static final ProtocolFile ROOT = new ProtocolFile(SEPARATOR, true);
+	public static final ProtocolFile HOME = new ProtocolFile(
+			new File("").getAbsolutePath(), true);
 
-    private String path;
-    private boolean isDir;
+	private String path;
+	private boolean isDir;
 
-    public ProtocolFile(String path, boolean isDir) {
-        this.isDir = isDir;
-		this.path = path.length() > 0 && !path.equals(File.separator) ? StringUtils
-				.chomp(path, File.separator) : path;
-    }
+	public ProtocolFile(String path, boolean isDir) {
+		this.isDir = isDir;
+		Validate.notNull(path, "ProtocolFile's path cannot be NULL");
+		this.path = path.length() > 0 && !path.equals(SEPARATOR) ? StringUtils
+				.chomp(path, SEPARATOR) : path;
+	}
 
-    /**
-     * True is this path is a directory.
-     * 
-     * @return True if directory, false otherwise
-     */
-    public boolean isDir() {
-        return isDir;
-    }
-    
-    /**
-     * Gets the {@link String} representation of this path.
-     * 
-     * @return The {@link String} representation of this path
-     */
-    public String getPath() {
-        return path;
-    }
+	/**
+	 * True is this path is a directory.
+	 * 
+	 * @return True if directory, false otherwise
+	 */
+	public boolean isDir() {
+		return isDir;
+	}
 
-    /**
-     * Gets the name of this file this path represents (i.e. '/path/to/file' will return 'file')
-     * 
-     * @return The name of the file this path represents
-     */
-    public String getName() {
-    	if (this.equals(ROOT) || !path.contains(File.separator)) {
-    		return path;
-    	} else {
-    		return path.substring(path.lastIndexOf(File.separator) + 1);
-    	}
-    }
+	/**
+	 * Gets the {@link String} representation of this path.
+	 * 
+	 * @return The {@link String} representation of this path
+	 */
+	public String getPath() {
+		return path;
+	}
 
-    /**
-     * True if this path is a relative path (i.e. does not start with {@link File.separator}).
-     * 
-     * @return True is this a relative path, false otherwise
-     */
-    public boolean isRelative() {
-        return !path.startsWith(File.separator);
-    }
-    
-    /**
-     * Gets the parent {@link ProtocolFile} for this path.
-     * 
-     * @return The parent {@link ProtocolFile}
-     */
-    public ProtocolFile getParent() {
-    	if (this.equals(ROOT) || !path.contains(File.separator)) {
-    		return null;
-    	} else {
-    		return new ProtocolFile(path.substring(0, path.lastIndexOf(File.separator)), true);
-    	}
-    }
+	/**
+	 * Gets the name of this file this path represents (i.e. '/path/to/file' will
+	 * return 'file')
+	 * 
+	 * @return The name of the file this path represents
+	 */
+	public String getName() {
+		if (this.equals(ROOT) || !path.contains(SEPARATOR)) {
+			return path;
+		} else {
+			return path.substring(path.lastIndexOf(SEPARATOR) + 1);
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public int hashCode() {
-    	return this.getPath().hashCode();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public boolean equals(Object path) {
-        if (path instanceof ProtocolFile) {
-        	ProtocolFile p = (ProtocolFile) path;
-            return (p.getPath().equals(this.getPath()) && p.isDir() == this.isDir());
-        }
-        return false;
-    }
+	/**
+	 * True if this path is a relative path (i.e. does not start with
+	 * {@link SEPARATOR}).
+	 * 
+	 * @return True is this a relative path, false otherwise
+	 */
+	public boolean isRelative() {
+		return !path.startsWith(SEPARATOR);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-    	return path;
-    }
+	/**
+	 * Gets the parent {@link ProtocolFile} for this path.
+	 * 
+	 * @return The parent {@link ProtocolFile}
+	 */
+	public ProtocolFile getParent() {
+		if (this.equals(ROOT) || !path.contains(SEPARATOR)) {
+			return null;
+		} else {
+			return new ProtocolFile(path.substring(0,
+					path.lastIndexOf(SEPARATOR)), true);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int hashCode() {
+		return this.getPath().hashCode();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean equals(Object path) {
+		if (path instanceof ProtocolFile) {
+			ProtocolFile p = (ProtocolFile) path;
+			return (p.getPath().equals(this.getPath()) && p.isDir() == this.isDir());
+		}
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		return path;
+	}
 }
