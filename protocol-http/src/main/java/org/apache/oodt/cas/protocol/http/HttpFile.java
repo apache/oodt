@@ -17,6 +17,7 @@
 package org.apache.oodt.cas.protocol.http;
 
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 
 //JDK imports
@@ -35,13 +36,14 @@ public class HttpFile extends ProtocolFile {
     private URL link;
     private HttpFile parent;
 
-    protected HttpFile(String virtualPath, boolean isDir, URL link, HttpFile parent) {
+    public HttpFile(String virtualPath, boolean isDir, URL link, HttpFile parent) {
         super(virtualPath, isDir);
+        Validate.notNull(link, "URL link must not be NULL");
         this.link = link;
         this.parent = parent;
     }
 
-    protected URL getLink() {
+    public URL getLink() {
         return this.link;
     }
 
