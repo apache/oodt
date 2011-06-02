@@ -19,12 +19,16 @@ package org.apache.oodt.cas.protocol.http.util;
 //JDK imports
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //APACHE imports
 import org.apache.commons.lang.Validate;
@@ -36,6 +40,7 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.html.HtmlParser;
 import org.apache.tika.sax.Link;
 import org.apache.tika.sax.LinkContentHandler;
+import org.apache.tika.sax.XHTMLContentHandler;
 import org.xml.sax.SAXException;
 
 /**
@@ -62,7 +67,9 @@ public class HttpUtils {
 	public static URI resolveUri(URI base, String path) throws URISyntaxException {
 		Validate.notNull(base, "base URI must not be NULL");
 		Validate.notNull(path, "resolve path must not be NULL");
-		if (path.startsWith("/")) {
+		if (path.startsWith("http://")) {
+			return new URI(path);
+		} else if (path.startsWith("/")) {
 			return new URI(base.getScheme() + "://" + base.getHost() + path);
 		} else {
 			if (base.toString().endsWith("/")) {
@@ -96,13 +103,18 @@ public class HttpUtils {
     return sb.toString();
   }
 
-	public static List<Link> findLinks(HttpURLConnection conn) throws IOException, SAXException, TikaException {
-    LinkContentHandler handler = new LinkContentHandler();
-    
-    new HtmlParser().parse(new ByteArrayInputStream(HttpUtils.readUrl(conn).getBytes()),
-        handler, new Metadata(), new ParseContext());
-    
-    return handler.getLinks();
+	public static List<HttpFile> findLinks(HttpFile file) throws IOException, URISyntaxException {
+		// Pattern looking for <a href="(group-1)"/>(group-2)</a>
+		Pattern linkPattern = Pattern.compile("<\\s*a\\s+href\\s*=\\s*\"(.+?)\"\\s*>(.+?)<\\s*/\\s*a\\s*>"); 
+		Matcher matcher = linkPattern.matcher(HttpUtils.readUrl(connect(file.getLink())));
+		List<HttpFile> httpFiles = new ArrayList<HttpFile>();
+		while (matcher.find()) {
+			String link = matcher.group(1);
+			String virtualPath = matcher.group(2);
+			URL url = resolveUri(file.getLink().toURI(), link).toURL();
+			httpFiles.add(new HttpFile(link, isDirectory(url, virtualPath), url, file));
+		}
+		return httpFiles;
 	}
 	
 	public static HttpFile toHttpFile(Link link, HttpFile parent) throws IOException {

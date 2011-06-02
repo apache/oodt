@@ -42,9 +42,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -67,7 +69,7 @@ public class HttpProtocol implements Protocol {
 
   static String IGNORE = "ignore";
 
-  static HashMap<String, LinkedList<ProtocolFile>> linkChildren = new HashMap<String, LinkedList<ProtocolFile>>();
+  static Map<String, List<HttpFile>> linkChildren = new HashMap<String, List<HttpFile>>();
 
   static boolean takeAllFiles = true;
 
@@ -170,7 +172,11 @@ public class HttpProtocol implements Protocol {
   }
 
   public List<ProtocolFile> ls() throws ProtocolException {
-    return parseLink(currentFile);
+  	List<ProtocolFile> lsResults = new ArrayList<ProtocolFile>();
+  	for (HttpFile file : parseLink(currentFile)) {
+  		lsResults.add(file);
+  	}
+    return lsResults;
   }
 
   public ProtocolFile pwd() throws ProtocolException {
@@ -186,9 +192,9 @@ public class HttpProtocol implements Protocol {
     return this.isConnected;
   }
 
-  public LinkedList<ProtocolFile> parseLink(HttpFile file)
+  public List<HttpFile> parseLink(HttpFile file)
       throws ProtocolException {
-    LinkedList<ProtocolFile> children = linkChildren.get(file.getLink()
+    List<HttpFile> children = linkChildren.get(file.getLink()
         .toString());
     if (file.isDir() && children == null) {
       try {
@@ -202,13 +208,8 @@ public class HttpProtocol implements Protocol {
         }
 
         // Find links in URL.
-        List<Link> links = HttpUtils.findLinks(conn);
-        
-        // Convert links to HttpFiles.
-        children = new LinkedList<ProtocolFile>();
-        for (Link link : links) {
-          children.add(HttpUtils.toHttpFile(link, file));
-        }
+        children = new LinkedList<HttpFile>();
+        children.addAll(HttpUtils.findLinks(file));
         
         // Save children links found.
         linkChildren.put(file.getLink().toString(), children);
@@ -301,12 +302,12 @@ public class HttpProtocol implements Protocol {
       if (st.hasMoreTokens()) {
         do {
           String token = st.nextToken();
-          LinkedList<ProtocolFile> children = this.parseLink(curPath);
-          for (ProtocolFile pFile : children) {
+          List<HttpFile> children = this.parseLink(curPath);
+          for (HttpFile pFile : children) {
             if (pFile.getName().equals(token)) {
               // System.out.println("token " + token + " " +
               // pFile);
-              curPath = (HttpFile) pFile;
+              curPath = pFile;
               continue;
             }
           }
