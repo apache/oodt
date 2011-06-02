@@ -25,10 +25,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
+//OODT imports
 import org.apache.oodt.cas.protocol.http.HttpFile;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.sax.Link;
-import org.xml.sax.SAXException;
 
 //JUnits imports
 import junit.framework.TestCase;

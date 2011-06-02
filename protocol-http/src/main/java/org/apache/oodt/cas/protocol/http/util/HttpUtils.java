@@ -17,9 +17,7 @@
 package org.apache.oodt.cas.protocol.http.util;
 
 //JDK imports
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,16 +30,10 @@ import java.util.regex.Pattern;
 
 //APACHE imports
 import org.apache.commons.lang.Validate;
+
+//OODT imports
 import org.apache.oodt.cas.metadata.util.MimeTypeUtils;
 import org.apache.oodt.cas.protocol.http.HttpFile;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.html.HtmlParser;
-import org.apache.tika.sax.Link;
-import org.apache.tika.sax.LinkContentHandler;
-import org.apache.tika.sax.XHTMLContentHandler;
-import org.xml.sax.SAXException;
 
 /**
  * Utility methods for HTTP Protocol related tasks.
@@ -115,12 +107,6 @@ public class HttpUtils {
 			httpFiles.add(new HttpFile(link, isDirectory(url, virtualPath), url, file));
 		}
 		return httpFiles;
-	}
-	
-	public static HttpFile toHttpFile(Link link, HttpFile parent) throws IOException {
-    URL href = new URL(link.getUri());
-    String linkPath = parent.getPath() + "/" + link.getTitle();
-    return new HttpFile(linkPath, isDirectory(href, linkPath), href, parent);
 	}
 	
 	public static boolean isDirectory(URL url, String virtualPath) throws IOException {
