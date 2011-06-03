@@ -16,10 +16,6 @@
  */
 package org.apache.oodt.cas.protocol.http;
 
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 //OODT imports
 import org.apache.oodt.cas.protocol.ProtocolFactory;
 
@@ -31,16 +27,9 @@ import org.apache.oodt.cas.protocol.ProtocolFactory;
  */
 public class HttpProtocolFactory implements ProtocolFactory {
 
-	private static final Logger LOG = Logger.getLogger(HttpProtocolFactory.class.getName());
-	
-    public HttpProtocol newInstance() {
-        try {
-            return new HttpProtocol();
-        } catch (Exception e) {
-        	LOG.log(Level.SEVERE, "Failed to create HttpProtocol : " + e.getMessage(), e);
-            return null;
-        }
-    }
+	public HttpProtocol newInstance() {
+		return new HttpProtocol();
+	}
 
 	public String getSchema() {
 		return "http";

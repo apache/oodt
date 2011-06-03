@@ -30,7 +30,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +53,6 @@ public class HttpProtocol implements Protocol {
   private HttpFile parentFile;
   private HttpFile currentFile;
   private boolean isConnected;
-  private URL currentURL;
   
   public HttpProtocol() {
     isConnected = false;
@@ -64,7 +62,7 @@ public class HttpProtocol implements Protocol {
     try {
     	HttpFile httpFile = null;
     	if (!(file instanceof HttpFile)) {
-    		URL link = HttpUtils.resolveUri(currentURL.toURI(), file.getPath()).toURL();
+    		URL link = HttpUtils.resolveUri(currentFile.getLink().toURI(), file.getPath()).toURL();
   			httpFile = new HttpFile(file.getPath(), file.isDir(), link, null);
       } else {
         httpFile = (HttpFile) file;
@@ -84,9 +82,9 @@ public class HttpProtocol implements Protocol {
   public void connect(String host, Authentication auth)
       throws ProtocolException {
     try {
-      currentURL = new URL("http://" + host + "/");
-      currentURL.openStream().close();
-      currentFile = parentFile = new HttpFile("/", true, currentURL, null);
+      URL url = new URL("http://" + host + "/");
+      url.openStream().close();
+      currentFile = parentFile = new HttpFile("/", true, url, null);
       isConnected = true;
     } catch (Exception e) {
       throw new ProtocolException("Failed to connect to http://" + host + " : "
@@ -108,7 +106,7 @@ public class HttpProtocol implements Protocol {
       if (fromFile instanceof HttpFile) {
     	  in = ((HttpFile) fromFile).getLink().openStream();
       } else {
-    	  in = currentURL.toURI().relativize(new URI(fromFile.getPath())).toURL().openStream();
+    	  in = HttpUtils.resolveUri(currentFile.getLink().toURI(), fromFile.getPath()).toURL().openStream();
       }
 
       byte[] buffer = new byte[1024];

@@ -153,7 +153,6 @@ public class TestHttpUtils extends TestCase {
 		URL url = new URL(APACHE_SVN_SITE + PARENT_URL_OF_THIS_TEST);
 		HttpFile parent = new HttpFile(PARENT_URL_OF_THIS_TEST, true, url, null);
 		HttpURLConnection conn = HttpUtils.connect(url);
-		System.out.println(HttpUtils.readUrl(conn));
 		List<HttpFile> httpFiles = HttpUtils.findLinks(parent);
 		boolean foundThisTest = false;
 		for (HttpFile httpFile : httpFiles) {
