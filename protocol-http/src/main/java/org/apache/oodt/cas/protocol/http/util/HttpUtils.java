@@ -42,7 +42,11 @@ import org.apache.oodt.cas.protocol.http.HttpFile;
  */
 public class HttpUtils {
 
-  private static MimeTypeUtils mimeTypes = new MimeTypeUtils();
+  static final MimeTypeUtils MIME_TYPES = new MimeTypeUtils();
+  
+	// Pattern looking for <a href="(group-2)"/>(group-3)</a> . . . group-1 is for either " or '
+	static final Pattern XHTML_LINK_PATTERN = Pattern.compile("<\\s*a\\s+href\\s*=\\s*(['\"])(.+?)\\1\\s*>(.+?)<\\s*/\\s*a\\s*>"); 
+	static final Pattern LAZY_LINK_PATTERN = Pattern.compile("<\\s*a\\s+href\\s*=\\s*(['\"])(.+?)\\1\\s*/\\s*>"); 
 
 	private HttpUtils() {}
 	
@@ -96,22 +100,26 @@ public class HttpUtils {
   }
 
 	public static List<HttpFile> findLinks(HttpFile file) throws IOException, URISyntaxException {
-		// Pattern looking for <a href="(group-1)"/>(group-2)</a>
-		Pattern linkPattern = Pattern.compile("<\\s*a\\s+href\\s*=\\s*\"(.+?)\"\\s*>(.+?)<\\s*/\\s*a\\s*>"); 
-		Matcher matcher = linkPattern.matcher(HttpUtils.readUrl(connect(file.getLink())));
+		Matcher matcher = XHTML_LINK_PATTERN.matcher(HttpUtils.readUrl(connect(file.getLink())));
 		List<HttpFile> httpFiles = new ArrayList<HttpFile>();
 		while (matcher.find()) {
-			String link = matcher.group(1);
-			String virtualPath = matcher.group(2);
+			String link = matcher.group(2).trim();
+			String virtualPath = matcher.group(3).trim();
 			URL url = resolveUri(file.getLink().toURI(), link).toURL();
 			httpFiles.add(new HttpFile(link, isDirectory(url, virtualPath), url, file));
 		}
+		matcher = LAZY_LINK_PATTERN.matcher(HttpUtils.readUrl(connect(file.getLink())));
+		while (matcher.find()) {
+			String link = matcher.group(2).trim();
+			URL url = resolveUri(file.getLink().toURI(), link).toURL();
+			httpFiles.add(new HttpFile(link, isDirectory(url, link), url, file));
+		}
 		return httpFiles;
 	}
-	
+		
 	public static boolean isDirectory(URL url, String virtualPath) throws IOException {
 		try {
-			String mime = mimeTypes.autoResolveContentType(url.toString(),
+			String mime = MIME_TYPES.autoResolveContentType(url.toString(),
 					MimeTypeUtils.readMagicHeader(url.openStream()));
 			return (mime.equals("text/html") && !virtualPath.endsWith(".html"));
 		} catch (Exception e) {

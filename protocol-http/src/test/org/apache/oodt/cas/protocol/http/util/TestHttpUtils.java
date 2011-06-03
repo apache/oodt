@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.regex.Matcher;
 
 //OODT imports
 import org.apache.oodt.cas.protocol.http.HttpFile;
@@ -75,6 +76,79 @@ public class TestHttpUtils extends TestCase {
 		assertTrue(HttpUtils.checkForRedirection(url, redirectedURL));
 	}
 
+	public void testXhtmlLinkPattern() {
+		// SUCCESS cases
+		Matcher matcher = HttpUtils.XHTML_LINK_PATTERN.matcher("<a href=\"http://localhost\">localhost</a>");
+		assertTrue(matcher.find());
+		assertEquals("\"", matcher.group(1).trim());
+		assertEquals("http://localhost", matcher.group(2).trim());
+		assertEquals("localhost", matcher.group(3).trim());
+		
+		matcher = HttpUtils.XHTML_LINK_PATTERN.matcher("<a href='http://localhost'>localhost</a>");
+		assertTrue(matcher.find());
+		assertEquals("'", matcher.group(1).trim());
+		assertEquals("http://localhost", matcher.group(2).trim());
+		assertEquals("localhost", matcher.group(3).trim());
+		
+		matcher = HttpUtils.XHTML_LINK_PATTERN.matcher("< a href = \" http://localhost \" >  localhost < / a >");
+		assertTrue(matcher.find());
+		assertEquals("\"", matcher.group(1).trim());
+		assertEquals("http://localhost", matcher.group(2).trim());
+		assertEquals("localhost", matcher.group(3).trim());
+		
+		matcher = HttpUtils.XHTML_LINK_PATTERN.matcher("< a href = ' http://localhost ' >  localhost < / a >");
+		assertTrue(matcher.find());
+		assertEquals("'", matcher.group(1).trim());
+		assertEquals("http://localhost", matcher.group(2).trim());
+		assertEquals("localhost", matcher.group(3).trim());
+		
+		//Should not find case: open with " end with '
+		matcher = HttpUtils.XHTML_LINK_PATTERN.matcher("<a href=\"http://localhost\'>localhost</a>");
+		assertFalse(matcher.find());
+		
+		//Should not find case: open with ' end with "
+		matcher = HttpUtils.XHTML_LINK_PATTERN.matcher("<a href=\'http://localhost\">localhost</a>");
+		assertFalse(matcher.find());
+		
+		//Should not find case: lazy link pattern
+		matcher = HttpUtils.XHTML_LINK_PATTERN.matcher("<a href=\"http://localhost\"/>");
+		assertFalse(matcher.find());
+	}
+	
+	public void testLazyLinkPattern() {
+		Matcher matcher = HttpUtils.LAZY_LINK_PATTERN.matcher("<a href=\"http://localhost\"/>");
+		assertTrue(matcher.find());
+		assertEquals("\"", matcher.group(1).trim());
+		assertEquals("http://localhost", matcher.group(2).trim());
+		
+		matcher = HttpUtils.LAZY_LINK_PATTERN.matcher("<a href='http://localhost'/>");
+		assertTrue(matcher.find());
+		assertEquals("'", matcher.group(1).trim());
+		assertEquals("http://localhost", matcher.group(2).trim());
+		
+		matcher = HttpUtils.LAZY_LINK_PATTERN.matcher("< a href = \" http://localhost \" / >");
+		assertTrue(matcher.find());
+		assertEquals("\"", matcher.group(1).trim());
+		assertEquals("http://localhost", matcher.group(2).trim());
+		
+		matcher = HttpUtils.LAZY_LINK_PATTERN.matcher("< a href = ' http://localhost ' / >");
+		assertTrue(matcher.find());
+		assertEquals("'", matcher.group(1).trim());
+		assertEquals("http://localhost", matcher.group(2).trim());
+		
+		//Should not find case: open with " end with '
+		matcher = HttpUtils.LAZY_LINK_PATTERN.matcher("<a href=\"http://localhost\'/>");
+		assertFalse(matcher.find());
+		
+		//Should not find case: open with ' end with "
+		matcher = HttpUtils.LAZY_LINK_PATTERN.matcher("<a href=\'http://localhost\"/>");
+		assertFalse(matcher.find());
+		
+		//Should not find case: xhtml link pattern
+		matcher = HttpUtils.LAZY_LINK_PATTERN.matcher("<a href='http://localhost'>localhost</a>");
+		assertFalse(matcher.find());
+	}
+	
 	public void testFindLinks() throws MalformedURLException, IOException, URISyntaxException {
 		URL url = new URL(APACHE_SVN_SITE + PARENT_URL_OF_THIS_TEST);
 		HttpFile parent = new HttpFile(PARENT_URL_OF_THIS_TEST, true, url, null);
@@ -89,5 +163,11 @@ public class TestHttpUtils extends TestCase {
 			}
 		}
 		assertTrue(foundThisTest);
+	}
+	
+	public void testIsDirectory() throws MalformedURLException, IOException {
+		assertTrue(HttpUtils.isDirectory(new URL(APACHE_SVN_SITE + PARENT_URL_OF_THIS_TEST), ""));
+		assertFalse(HttpUtils.isDirectory(new URL(APACHE_SVN_SITE + URL_OF_THIS_TEST), ""));
+		assertTrue(HttpUtils.isDirectory(new URL(APACHE_SVN_SITE), ""));
 	}
 }
