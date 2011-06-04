@@ -37,8 +37,17 @@ import org.globus.ftp.FileInfo;
 public class CogJGlobusFtpProtocol implements Protocol {
 
   private FTPClient ftp;
-
   private boolean isConnected;
+  private int port;
+  private String homeDir;
+  
+  public CogJGlobusFtpProtocol() {
+  	this(21);
+  }
+  
+  public CogJGlobusFtpProtocol(int port) {
+  	this.port = port;
+  }
   
   public void cd(ProtocolFile file) throws ProtocolException {
       try {
@@ -48,22 +57,31 @@ public class CogJGlobusFtpProtocol implements Protocol {
                   + e.getMessage());
       }
   }
+  
+  public void cdRoot() throws ProtocolException {
+  	cd(new ProtocolFile(ProtocolFile.SEPARATOR, true));
+  }
+  
+  public void cdHome() throws ProtocolException {
+  	cd(new ProtocolFile(homeDir, true));
+  }
 
   public void connect(String host, Authentication auth) throws ProtocolException {
       try {
-          ftp = new FTPClient(host, 21);
+          ftp = new FTPClient(host, port);
       } catch (Exception e) {
           throw new ProtocolException("Failed to connect to: " + host + " : "
-                  + e.getMessage());
+                  + e.getMessage(), e);
       }
       isConnected = true;
 
       try {
           ftp.authorize(auth.getUser(), auth.getPass());
           ftp.setActive(ftp.setLocalPassive());
+          homeDir = ftp.getCurrentDir();
       } catch (Exception e) {
           throw new ProtocolException("Failed to login to: " + host + " : "
-                  + e.getMessage());
+                  + e.getMessage(), e);
       }
   }
 
@@ -101,10 +119,8 @@ public class CogJGlobusFtpProtocol implements Protocol {
           ftp.setActive(ftp.setLocalPassive());
           Vector<FileInfo> fileList = (Vector<FileInfo>) ftp.list("*", null);
           Vector<ProtocolFile> returnList = new Vector<ProtocolFile>();
-          String path = this.pwd().getPath();
           for (FileInfo file : fileList) {
-              returnList.add(new ProtocolFile(path + File.separator 
-            		  + file.getName(), file.isDirectory()));
+              returnList.add(new ProtocolFile(this.pwd(), file.getName(), file.isDirectory()));
           }
           return returnList;
       } catch (Exception e) {

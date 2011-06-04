@@ -43,7 +43,8 @@ import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 public class CommonsNetFtpProtocol implements Protocol {
 
     private FTPClient ftp;
-
+    private String homeDir; 
+    
     /**
      * Creates a new FtpClient
      */
@@ -78,6 +79,7 @@ public class CommonsNetFtpProtocol implements Protocol {
             // set file type to binary
             ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
 
+            homeDir = ftp.printWorkingDirectory();
         } catch (Exception e) {
             // login failed
             throw new ProtocolException(
@@ -175,6 +177,14 @@ public class CommonsNetFtpProtocol implements Protocol {
             throw new ProtocolException("Failed to cd to " + file.getPath() + " : "
                     + e.getMessage());
         }
+    }
+    
+    public void cdRoot() throws ProtocolException {
+    	cd(new ProtocolFile(ProtocolFile.SEPARATOR, true));
+    }
+    
+    public void cdHome() throws ProtocolException {
+    	cd(new ProtocolFile(homeDir, true));
     }
 
     /**
