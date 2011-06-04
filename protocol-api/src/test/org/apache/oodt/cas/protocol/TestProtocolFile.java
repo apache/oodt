@@ -33,7 +33,6 @@ public class TestProtocolFile extends TestCase {
 		String filePath = ProtocolFile.SEPARATOR + "path" + ProtocolFile.SEPARATOR + "to" + ProtocolFile.SEPARATOR + "file";
 		ProtocolFile pFile = new ProtocolFile(filePath, false);
 		assertEquals(filePath, pFile.getPath());
-		assertEquals(pFile.getPath(), pFile.toString());
 		assertEquals("file", pFile.getName());
 		assertFalse(pFile.isDir());
 		assertFalse(pFile.isRelative());
@@ -41,25 +40,15 @@ public class TestProtocolFile extends TestCase {
 		// Test Parent file
 		String parentPath = ProtocolFile.SEPARATOR + "path" + ProtocolFile.SEPARATOR + "to";
 		assertEquals(parentPath, pFile.getParent().getPath());
-		assertEquals(pFile.getParent().getPath(), pFile.getParent().toString());
 		assertEquals("to", pFile.getParent().getName());
 		assertTrue(pFile.getParent().isDir());
 		assertFalse(pFile.getParent().isRelative());
 	}
 	
-	public void testRoot() {
-		assertEquals(ProtocolFile.SEPARATOR, ProtocolFile.ROOT.getPath());
-		assertNull(ProtocolFile.ROOT.getParent());
-		assertEquals(ProtocolFile.ROOT.getPath(), ProtocolFile.ROOT.getName());
-		assertEquals(ProtocolFile.ROOT.getPath(), ProtocolFile.ROOT.toString());
-		assertTrue(ProtocolFile.ROOT.isDir());
-		assertFalse(ProtocolFile.ROOT.isRelative());
-	}
-	
-	public void testHome() {
-		assertEquals(new File("").getAbsolutePath(), ProtocolFile.HOME.getPath());
-		assertEquals(ProtocolFile.HOME.getPath(), ProtocolFile.HOME.toString());
-		assertFalse(ProtocolFile.HOME.isRelative());
-		assertTrue(ProtocolFile.HOME.isDir());
+	public void testEquals() {
+		assertEquals(new ProtocolFile("/test/directory", true), new ProtocolFile(
+				new ProtocolFile("/test", true), "directory", true));
+		assertEquals(new ProtocolFile(new ProtocolFile("/", true), "repo", true), new ProtocolFile("/repo", true));
+		assertEquals(new ProtocolFile(new ProtocolFile("/", true), "", true), new ProtocolFile("/", true));
 	}
 }

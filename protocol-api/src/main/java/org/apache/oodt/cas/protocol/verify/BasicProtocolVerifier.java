@@ -55,15 +55,15 @@ public class BasicProtocolVerifier implements ProtocolVerifier {
             protocol.connect(site.getHost(), auth);
             
             // Test ls, cd, and pwd
-            protocol.cd(ProtocolFile.HOME);
+            protocol.cdHome();
             ProtocolFile home = protocol.pwd();
             protocol.ls();
             if (uriTestCdMap.containsKey(site)) {
             	protocol.cd(uriTestCdMap.get(site));
             } else {
-            	protocol.cd(ProtocolFile.ROOT);
+            	protocol.cdHome();
             }
-            protocol.cd(ProtocolFile.HOME);
+            protocol.cdHome();
             
             // Verify again at home directory
             if (home == null || !home.equals(protocol.pwd()))

@@ -40,7 +40,7 @@ public class DownloadAction extends ProtocolAction {
 	public void performAction(ProtocolManager protocolManager) throws Exception {
 		usedProtocol = createProtocol(protocolManager);
 		ProtocolFile fromFile = createProtocolFile();
-		String toFilename = fromFile.equals(ProtocolFile.ROOT)
+		String toFilename = fromFile.equals(ProtocolFile.SEPARATOR)
 				|| fromFile.getName().isEmpty() ? uri.getHost() : fromFile
 				.getName();
 		File toFile = (toDir != null) ? new File(toDir, toFilename) : new File(toFilename);

@@ -40,6 +40,10 @@ public interface Protocol {
     
     public void cd(ProtocolFile file) throws ProtocolException;
 
+    public void cdRoot() throws ProtocolException;
+
+    public void cdHome() throws ProtocolException;
+
     public void get(ProtocolFile fromFile, File toFile) throws ProtocolException;
 
     public void put(File fromFile, ProtocolFile toFile) throws ProtocolException;

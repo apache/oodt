@@ -79,6 +79,14 @@ public class MockProtocol implements Protocol {
 	public void cd(ProtocolFile file) throws ProtocolException {
 		cwd = file;
 	}
+	
+	public void cdHome() throws ProtocolException {
+		cwd = new ProtocolFile("", true);
+	}
+	
+	public void cdRoot() throws ProtocolException {
+		cwd = new ProtocolFile("/", true);
+	}
 
 	public void get(ProtocolFile fromFile, File toFile)
 			throws ProtocolException {

@@ -16,9 +16,6 @@
  */
 package org.apache.oodt.cas.protocol;
 
-//JDK imports
-import java.io.File;
-
 //APACHE imports
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -32,14 +29,16 @@ public class ProtocolFile {
 
 	public static final String SEPARATOR = "/";
 	
-	public static final ProtocolFile ROOT = new ProtocolFile(SEPARATOR, true);
-	public static final ProtocolFile HOME = new ProtocolFile(
-			new File("").getAbsolutePath(), true);
-
 	private String path;
 	private boolean isDir;
-
+	private ProtocolFile parent;
+	
 	public ProtocolFile(String path, boolean isDir) {
+		this(null, path, isDir);
+	}
+	
+	public ProtocolFile(ProtocolFile parent, String path, boolean isDir) {
+		this.parent = parent;
 		this.isDir = isDir;
 		Validate.notNull(path, "ProtocolFile's path cannot be NULL");
 		this.path = path.length() > 0 && !path.equals(SEPARATOR) ? StringUtils
@@ -71,11 +70,7 @@ public class ProtocolFile {
 	 * @return The name of the file this path represents
 	 */
 	public String getName() {
-		if (this.equals(ROOT) || !path.contains(SEPARATOR)) {
-			return path;
-		} else {
-			return path.substring(path.lastIndexOf(SEPARATOR) + 1);
-		}
+		return path.substring(path.lastIndexOf(SEPARATOR) + 1);
 	}
 
 	/**
@@ -94,12 +89,28 @@ public class ProtocolFile {
 	 * @return The parent {@link ProtocolFile}
 	 */
 	public ProtocolFile getParent() {
-		if (this.equals(ROOT) || !path.contains(SEPARATOR)) {
-			return null;
+		if (parent != null) {
+			return parent;
 		} else {
-			return new ProtocolFile(path.substring(0,
-					path.lastIndexOf(SEPARATOR)), true);
+			int index = StringUtils.lastIndexOf(path, SEPARATOR);
+			return (index > 0) ? new ProtocolFile(StringUtils.substring(path, 0, index), true) : null;
 		}
+	}
+
+	/**
+	 * Get Absolute pathed {@link ProtocolFile} version of this {@link ProtocolFile}.
+	 * 
+	 * @return the absolute pathed version of this {@link ProtocolFile}
+	 */
+	public ProtocolFile getAbsoluteFile() {
+		if (this.isRelative()) {
+			ProtocolFile parent = this.getParent();
+			if (parent != null) {
+				return new ProtocolFile(StringUtils.chomp(parent.getPath(), SEPARATOR)
+						+ SEPARATOR + this.getPath(), this.isDir());
+			}
+		}
+		return this;
 	}
 
 	/**
@@ -115,7 +126,9 @@ public class ProtocolFile {
 	public boolean equals(Object path) {
 		if (path instanceof ProtocolFile) {
 			ProtocolFile p = (ProtocolFile) path;
-			return (p.getPath().equals(this.getPath()) && p.isDir() == this.isDir());
+			return (p.getAbsoluteFile().getPath()
+					.equals(this.getAbsoluteFile().getPath()) && p.isDir() == this
+					.isDir());
 		}
 		return false;
 	}
@@ -124,6 +137,6 @@ public class ProtocolFile {
 	 * {@inheritDoc}
 	 */
 	public String toString() {
-		return path;
+		return "{parent = '" + this.parent + "', path = '" + path + "', isDir = '" + isDir + "'}";
 	}
 }
