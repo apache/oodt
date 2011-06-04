@@ -30,8 +30,8 @@ import junit.framework.TestCase;
 public class TestHttpFile extends TestCase {
 
 	public void testInitialState() throws MalformedURLException {
-		HttpFile parent = new HttpFile("/path/to", false, new URL("http://some-site"), null);
-		HttpFile file = new HttpFile("/path/to/file", false, new URL("http://some-site"), parent);
+		HttpFile parent = new HttpFile("/path/to", false, new URL("http://some-site"));
+		HttpFile file = new HttpFile(parent, "/path/to/file", false, new URL("http://some-site"));
 		assertNotNull(file.getLink());
 		assertEquals("http://some-site", file.getLink().toString());
 		assertFalse(file.isDir());
@@ -42,11 +42,11 @@ public class TestHttpFile extends TestCase {
 	
 	public void testNullCase() throws MalformedURLException {
 		try {
-			 new HttpFile(null, false, new URL("http://some-site"), null);
+			 new HttpFile(null, false, new URL("http://some-site"));
 			fail("Should have thrown an IllegalArgumentException");
 		} catch (IllegalArgumentException e) {}
 		try {
-			 new HttpFile("/path/to/file", false, null, null);
+			 new HttpFile("/path/to/file", false, null);
 			fail("Should have thrown an IllegalArgumentException");
 		} catch (IllegalArgumentException e) {}
 	}

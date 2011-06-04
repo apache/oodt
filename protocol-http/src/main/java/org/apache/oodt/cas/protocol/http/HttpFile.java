@@ -34,20 +34,18 @@ public class HttpFile extends ProtocolFile {
 	private static final long serialVersionUID = -7780059889413081800L;
 
 	private URL link;
-	private HttpFile parent;
 
-	public HttpFile(String virtualPath, boolean isDir, URL link, HttpFile parent) {
-		super(virtualPath, isDir);
+	public HttpFile(String virtualPath, boolean isDir, URL link) {
+		this(null, virtualPath, isDir, link);
+	}
+	
+	public HttpFile(HttpFile parent, String virtualPath, boolean isDir, URL link) {
+		super(parent, virtualPath, isDir);
 		Validate.notNull(link, "URL link must not be NULL");
 		this.link = link;
-		this.parent = parent;
 	}
 
 	public URL getLink() {
 		return this.link;
-	}
-
-	public ProtocolFile getParent() {
-		return this.parent;
 	}
 }

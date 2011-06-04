@@ -65,9 +65,11 @@ public class TestHttpProtocol extends TestCase {
 		HttpProtocol httpProtocol = new HttpProtocol();
 		httpProtocol.connect("svn.apache.org", new NoAuthentication());
 		assertTrue(httpProtocol.connected());
-		ProtocolFile gotoDir = new ProtocolFile("repos/asf/oodt/branches/protocol/protocol-http/src/test/org/apache/oodt/cas/protocol/http", true);
+		ProtocolFile gotoDir = new ProtocolFile(httpProtocol.pwd(), "repos/asf/oodt/branches/protocol/protocol-http/src/test/org/apache/oodt/cas/protocol/http", true);
 		httpProtocol.cd(gotoDir);
 		ProtocolFile currentDir = httpProtocol.pwd();
+		System.out.println(gotoDir.getAbsoluteFile());
+		System.out.println(currentDir.getAbsoluteFile());
 		assertEquals(gotoDir, currentDir);
 	}
 	

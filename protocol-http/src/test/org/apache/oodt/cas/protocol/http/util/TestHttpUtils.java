@@ -151,7 +151,7 @@ public class TestHttpUtils extends TestCase {
 	
 	public void testFindLinks() throws MalformedURLException, IOException, URISyntaxException {
 		URL url = new URL(APACHE_SVN_SITE + PARENT_URL_OF_THIS_TEST);
-		HttpFile parent = new HttpFile(PARENT_URL_OF_THIS_TEST, true, url, null);
+		HttpFile parent = new HttpFile(PARENT_URL_OF_THIS_TEST, true, url);
 		HttpURLConnection conn = HttpUtils.connect(url);
 		List<HttpFile> httpFiles = HttpUtils.findLinks(parent);
 		boolean foundThisTest = false;

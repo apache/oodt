@@ -63,7 +63,7 @@ public class HttpProtocol implements Protocol {
     	HttpFile httpFile = null;
     	if (!(file instanceof HttpFile)) {
     		URL link = HttpUtils.resolveUri(currentFile.getLink().toURI(), file.getPath()).toURL();
-  			httpFile = new HttpFile(file.getPath(), file.isDir(), link, null);
+  			httpFile = new HttpFile(link.getPath(), file.isDir(), link);
       } else {
         httpFile = (HttpFile) file;
       }
@@ -78,13 +78,21 @@ public class HttpProtocol implements Protocol {
           + e.getMessage(), e);
     }
   }
+  
+  public void cdRoot() {
+  	currentFile = parentFile;
+  }
+  
+  public void cdHome() {
+  	cdRoot();
+  }
 
   public void connect(String host, Authentication auth)
       throws ProtocolException {
     try {
       URL url = new URL("http://" + host + "/");
       url.openStream().close();
-      currentFile = parentFile = new HttpFile("/", true, url, null);
+      currentFile = parentFile = new HttpFile("/", true, url);
       isConnected = true;
     } catch (Exception e) {
       throw new ProtocolException("Failed to connect to http://" + host + " : "
@@ -174,7 +182,7 @@ public class HttpProtocol implements Protocol {
 
         // If redirection took place, then change the ProtocolFile's URL.
         if (HttpUtils.checkForRedirection(file.getLink(), conn.getURL())) {
-          file = new HttpFile(file.getPath(), file.isDir(), conn.getURL(), file);
+          file = new HttpFile(file, file.getPath(), file.isDir(), conn.getURL());
         }
 
         // Find links in URL.
@@ -311,8 +319,7 @@ public class HttpProtocol implements Protocol {
       throw new Exception("Must specify a url to download: --url <url>");
 
     URL url = new URL(urlString);
-    ProtocolFile urlFile = new HttpFile(url.getPath(),
-        false, url, null);
+    ProtocolFile urlFile = new HttpFile(url.getPath(), false, url);
     File toFile = new File(downloadToDir, urlFile.getName());
     toFile = toFile.getAbsoluteFile();
     toFile.createNewFile();

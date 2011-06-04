@@ -106,13 +106,13 @@ public class HttpUtils {
 			String link = matcher.group(2).trim();
 			String virtualPath = matcher.group(3).trim();
 			URL url = resolveUri(file.getLink().toURI(), link).toURL();
-			httpFiles.add(new HttpFile(link, isDirectory(url, virtualPath), url, file));
+			httpFiles.add(new HttpFile(file, link, isDirectory(url, virtualPath), url));
 		}
 		matcher = LAZY_LINK_PATTERN.matcher(HttpUtils.readUrl(connect(file.getLink())));
 		while (matcher.find()) {
 			String link = matcher.group(2).trim();
 			URL url = resolveUri(file.getLink().toURI(), link).toURL();
-			httpFiles.add(new HttpFile(link, isDirectory(url, link), url, file));
+			httpFiles.add(new HttpFile(file, link, isDirectory(url, link), url));
 		}
 		return httpFiles;
 	}
