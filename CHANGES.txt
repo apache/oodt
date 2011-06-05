@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-162 Parametric Data Model File Manager Catalog (mattmann, ahart, cgoodale)
+
 * OODT-195 XMLValidationLayer: Elements Map and ProductType to Element 
   Map can become inconsistent (Michael Starch, mattmann, bfoster)
 
