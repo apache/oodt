@@ -97,8 +97,8 @@ the License.
       <version>2.6.3</version>
     </dependency>
     <dependency>
-       <groupId>servletapi</groupId>
-       <artifactId>servletapi</artifactId>
+       <groupId>javax.servlet</groupId>
+       <artifactId>servlet-api</artifactId>
        <version>2.4</version>
        <scope>provided</scope>
     </dependency>
@@ -110,7 +110,7 @@ the License.
     </dependency>
     <dependency>
         <groupId>xerces</groupId>
-        <artifactId>xerces</artifactId>
+        <artifactId>xercesImpl</artifactId>
         <version>2.4.0</version>
     </dependency>
     <dependency>

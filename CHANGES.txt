@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-60 Annoying build warnings about dependencies that 
+  have "been relocated" (mattmann, davidkale)
+
 * OODT-198 Add test harness for XmlRpcResourceManager (mattmann)
 
 * OODT-182 Add ability to change node capacity during execution (Gabe Resneck via mattmann)
