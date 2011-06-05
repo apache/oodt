@@ -314,6 +314,15 @@ public class XmlRpcResourceManager {
     	return new Vector<String>(this.scheduler.getQueueManager().getQueues(nodeId));
     }
     
+    public boolean shutdown(){
+      if (this.webServer != null) {
+        this.webServer.shutdown();
+        this.webServer = null;
+        return true;
+    } else
+        return false;      
+    }
+    
     public static void main(String[] args) throws Exception {
         int portNum = -1;
         String usage = "XmlRpcResourceManager --portNum <port number for xml rpc service>\n";

@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-198 Add test harness for XmlRpcResourceManager (mattmann)
+
 * OODT-182 Add ability to change node capacity during execution (Gabe Resneck via mattmann)
 
 * OODT-162 Parametric Data Model File Manager Catalog (mattmann, ahart, cgoodale)
