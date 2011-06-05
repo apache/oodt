@@ -423,10 +423,16 @@ public class FileRetrievalSystem {
             String description = this.mimeTypeDetection
                     .getDescriptionForMimeType(mimeType);
             if (description != null) {
-            	for (String field : description.split("\\&\\&")) {
-            		String[] keyval = field.split("\\=");
-            		remoteFile.addMetadata(keyval[0].trim(), keyval[1].trim());
-            	}   
+              if(description.indexOf("&") != -1){
+                for (String field : description.split("\\&\\&")) {
+                  String[] keyval = field.split("\\=");
+                  remoteFile.addMetadata(keyval[0].trim(), keyval[1].trim());
+                }                   
+              }
+              else{
+                // it's the ProductType
+                remoteFile.addMetadata(RemoteFile.PRODUCT_TYPE, description);
+              }
             	if (remoteFile.getMetadata(RemoteFile.UNIQUE_ELEMENT) != null)
             		uniqueMetadataElement = remoteFile.getMetadata(RemoteFile.UNIQUE_ELEMENT);
             }

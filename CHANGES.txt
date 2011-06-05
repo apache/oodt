@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-191 PushPull FileRetrievalSystem NPE if mime comment for type doesn't 
+  include ampersand (mattmann, bfoster) 
+
 * OODT-184 Add ability to poll the load of any particular node (Gabe Resneck via mattmann)
 
 * OODT-60 Annoying build warnings about dependencies that 
