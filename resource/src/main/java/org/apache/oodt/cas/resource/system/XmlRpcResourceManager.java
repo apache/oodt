@@ -337,6 +337,17 @@ public class XmlRpcResourceManager {
             } catch (InterruptedException ignore) {
             }
     }
+    
+    public boolean setNodeCapacity(String nodeId, int capacity){
+    	try{
+    		this.scheduler.getMonitor().getNodeById(nodeId).setCapacity(capacity);
+    	}catch (MonitorException e){
+    		LOG.log(Level.WARNING, "Exception setting capacity on node "
+    				+ nodeId + ": " + e.getMessage());
+    		return false;
+    	}
+    	return true;
+    }
 
     private String genericHandleJob(Hashtable jobHash, Object jobIn)
             throws SchedulerException {

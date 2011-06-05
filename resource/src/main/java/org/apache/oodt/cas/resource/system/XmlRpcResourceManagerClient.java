@@ -120,6 +120,7 @@ public class XmlRpcResourceManagerClient {
         String getQueuesOperation = "--getQueues\n";
         String addNodeOperation = "--addNode --nodeId <node id> --ipAddr <url> --capacity <max load>\n";
         String removeNodeOperation = "--removeNode --nodeId <node id>\n";
+        String setNodeCapacityOperation = "--setNodeCapacity --nodeId <node id> --capacity <max load>\n";
         String addQueueOperation = "--addQueue --queueName <queue name>\n";
         String removeQueueOperation = "--removeQueue --queueName <queue name>\n";
         String addNodeToQueueOperation = "--addNodeToQueue --nodeId <node id> --queueName <queue name>\n";
@@ -230,6 +231,26 @@ public class XmlRpcResourceManagerClient {
             client.removeNode(nodeId);
             System.out.println("Successfully removed node!");
             
+        }else if (operation.equals("--setNodeCapacity")){
+            String nodeId = null;
+            String capacity = null;
+            
+            for (int i = 4; i < args.length; i++) {
+                if (args[i].equals("--nodeId")) {
+                    nodeId = args[++i];
+                }else if (args[i].equals("--capacity")) {
+                    capacity = args[++i];
+                }
+            }
+            
+            if (nodeId == null || capacity == null) {
+                System.err.println(setNodeCapacityOperation);
+                System.exit(1);
+            }
+            
+            client.setNodeCapacity(nodeId, Integer.parseInt(capacity));
+            System.out.println("Successfully set node capacity!");
+        	
         }else if (operation.equals("--addQueue")) {
             String queueName = null;
             
@@ -692,6 +713,17 @@ public class XmlRpcResourceManagerClient {
         }catch (Exception e) {
             throw new MonitorException(e.getMessage(), e);
         }
+    }
+    
+    public void setNodeCapacity(String nodeId, int capacity) throws MonitorException{
+    	try{
+    		Vector<Object> argList = new Vector<Object>();
+            argList.add(nodeId);
+            argList.add(new Integer(capacity));
+            client.execute("resourcemgr.setNodeCapacity", argList);
+    	}catch (Exception e){
+    		throw new MonitorException(e.getMessage(), e);
+    	}
     }
     
     /**

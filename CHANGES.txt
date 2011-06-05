@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-182 Add ability to change node capacity during execution (Gabe Resneck via mattmann)
+
 * OODT-162 Parametric Data Model File Manager Catalog (mattmann, ahart, cgoodale)
 
 * OODT-195 XMLValidationLayer: Elements Map and ProductType to Element 
