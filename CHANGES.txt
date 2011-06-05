@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-184 Add ability to poll the load of any particular node (Gabe Resneck via mattmann)
+
 * OODT-60 Annoying build warnings about dependencies that 
   have "been relocated" (mattmann, davidkale)
 

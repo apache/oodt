@@ -323,6 +323,13 @@ public class XmlRpcResourceManager {
         return false;      
     }
     
+    public String getNodeLoad(String nodeId) throws MonitorException{
+    	ResourceNode node = this.scheduler.getMonitor().getNodeById(nodeId);
+    	int capacity = node.getCapacity();
+    	int load = (this.scheduler.getMonitor().getLoad(node)) * -1 + capacity;
+    	return load + "/" + capacity;
+    }
+    
     public static void main(String[] args) throws Exception {
         int portNum = -1;
         String usage = "XmlRpcResourceManager --portNum <port number for xml rpc service>\n";

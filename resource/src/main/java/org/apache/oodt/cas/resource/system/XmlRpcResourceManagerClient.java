@@ -127,6 +127,7 @@ public class XmlRpcResourceManagerClient {
         String getNodesInQueueOperation = "--getNodesInQueue --queueName <queue name>\n";
         String getQueuesWithNodeOperation = "--getQueuesWithNode --nodeId <node id>\n";
         String removeNodeFromQueueOperation = "--removeNodeFromQueue --nodeId <node id> --queueName <queue name>\n";
+        String getNodeLoadOperation = "--getNodeLoad --nodeId <node id>\n";
         String submitJobOperation = "--submitJob --def <job def file> --input <job input constructor>\n";
         String submitJobRemoteOperation = "--submitJob --def <job def file> --input <job input constructor> --url <url>\n";
         String getJobInfoOperation = "--getJobInfo --id <job id>\n";
@@ -324,6 +325,23 @@ public class XmlRpcResourceManagerClient {
                 
             client.removeNodeFromQueue(nodeId, queueName);
             System.out.println("Successfully removed node from queue!");
+        
+        }else if (operation.equals("--getNodeLoad")){
+            String nodeId = null;
+            
+            for (int i = 4; i < args.length; i++) {
+                if (args[i].equals("--nodeId")) {
+                	nodeId = args[++i];
+                }
+            }
+            
+            if(nodeId == null){
+            	System.err.println(getNodeLoadOperation);
+                System.exit(1);
+            }
+            
+            String result = client.getNodeLoad(nodeId);
+            System.out.println("Load for " + nodeId + ": " + result);
             
         }else if (operation.equals("--getNodesInQueue")) {
             String queueName = null;
@@ -804,6 +822,22 @@ public class XmlRpcResourceManagerClient {
         }catch (Exception e) {
             throw new QueueManagerException(e.getMessage(), e);
         }
+    }
+    
+    /**
+     * Report on the load of the requested node
+     * @param nodeId The id of the node to be polled
+     * @return A String showing a fraction of the loads node over its capacity
+     * @throws MonitorException on any error
+     */
+    public String getNodeLoad(String nodeId) throws MonitorException{
+    	try{
+	    	Vector<Object> argList = new Vector<Object>();
+	    	argList.add(nodeId);
+	    	return (String)client.execute("resourcemgr.getNodeLoad", argList);
+    	}catch(Exception e){
+    		throw new MonitorException(e.getMessage(), e);
+    	}
     }
     
     private static String getReadableJobStatus(String status) {
