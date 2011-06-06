@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-186 Common base library for modular OODT web applications built 
+  using PHP (ahart, Gabe Resneck, Shakeh Khudikyan)
+
 * OODT-191 PushPull FileRetrievalSystem NPE if mime comment for type doesn't 
   include ampersand (mattmann, bfoster) 
 
