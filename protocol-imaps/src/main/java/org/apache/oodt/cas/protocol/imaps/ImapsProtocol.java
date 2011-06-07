@@ -56,17 +56,19 @@ import org.apache.tika.sax.BodyContentHandler;
 import org.apache.tika.sax.TextContentHandler;
 
 /**
+ * IMAP Secure {@link Protocol} implementation
  * 
  * @author bfoster
  * @version $Revision$
- * 
  */
 public class ImapsProtocol implements Protocol {
 
   static Store store;
 
   static Folder currentFolder;
-
+  
+  static Folder homeFolder;
+  
   static int port = 993;
 
   static Session session;
@@ -74,24 +76,35 @@ public class ImapsProtocol implements Protocol {
   static int openCalls = 0;
 
   static int connectCalls = 0;
-
+  
   public synchronized void cd(ProtocolFile file) throws ProtocolException {
     try {
       String remotePath = file.getPath();
-      // System.out.println("cd to " + remotePath);
       if (remotePath.startsWith("/"))
         remotePath = remotePath.substring(1);
       if (remotePath.trim().equals(""))
-        currentFolder = store.getDefaultFolder();
+        homeFolder = currentFolder = store.getDefaultFolder();
       else {
-        currentFolder = store.getFolder(remotePath);
+        homeFolder = currentFolder = store.getFolder(remotePath);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new ProtocolException("Failed to change directory to '" 
+      		+ file + "' : " + e.getMessage(), e);
     }
-    // changedDir = true;
   }
 
+  public synchronized void cdRoot() throws ProtocolException {
+    try {
+      cd(new ProtocolFile("/", true));
+    } catch (Exception e) {
+      throw new ProtocolException("Failed to cd to root : " + e.getMessage(), e);
+    }
+  }
+  
+  public synchronized void cdHome() throws ProtocolException {
+  	currentFolder = homeFolder;
+  }
+  
   public synchronized void connect(String host, Authentication auth)
       throws ProtocolException {
     try {
@@ -103,31 +116,30 @@ public class ImapsProtocol implements Protocol {
       }
       this.incrementConnections();
     } catch (Exception e) {
-      e.printStackTrace();
       throw new ProtocolException("Failed to connected to IMAPS server " + host
-          + " with username " + auth.getUser() + " : " + e.getMessage());
+          + " with username " + auth.getUser() + " : " + e.getMessage(), e);
     }
   }
 
   public synchronized void close() throws ProtocolException {
     decrementConnections();
     if (connectCalls <= 0) {
-      // changedDir = true;
       try {
-        if (!currentFolder.isOpen()) {
-          try {
-            currentFolder.open(Folder.READ_WRITE);
-          } catch (Exception e) {
-            try {
-              currentFolder.open(Folder.READ_ONLY);
-            } catch (Exception e2) {
-            }
-          }
-        }
-        currentFolder.close(true);
+//        if (!currentFolder.isOpen()) {
+//          try {
+//            currentFolder.open(Folder.READ_WRITE);
+//          } catch (Exception e) {
+//            try {
+//              currentFolder.open(Folder.READ_ONLY);
+//            } catch (Exception e2) {
+//            }
+//          }
+//        }
+//        currentFolder.close(true);
         store.close();
       } catch (Exception e) {
-        e.printStackTrace();
+      	e.printStackTrace();
+        throw new ProtocolException("Failed to close connection : " + e.getMessage(), e);
       } finally {
         store = null;
       }
@@ -156,9 +168,8 @@ public class ImapsProtocol implements Protocol {
         }
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new ProtocolException("Failed to download " + fromFile + " to "
-          + toFile + " : " + e.getMessage());
+          + toFile + " : " + e.getMessage(), e);
     } finally {
       try {
         closeFolder(currentFolder);
@@ -219,7 +230,7 @@ public class ImapsProtocol implements Protocol {
       // changedDir = false;
     } catch (Exception e) {
       if (!currentFolder.getFullName().equals(""))
-        throw new ProtocolException("Failed to ls");
+        throw new ProtocolException("Failed to ls : " + e.getMessage(), e);
     } finally {
       try {
         closeFolder(currentFolder);
@@ -233,12 +244,12 @@ public class ImapsProtocol implements Protocol {
   public synchronized ProtocolFile pwd()
       throws ProtocolException {
     try {
-      String pwd = this.currentFolder.getFullName();
+      String pwd = currentFolder.getFullName();
       if (!pwd.equals("") && !pwd.startsWith("/"))
         pwd = "/" + pwd;
       return new ProtocolFile(pwd, true);
     } catch (Exception e) {
-      throw new ProtocolException("Failed to pwd : " + e.getMessage());
+      throw new ProtocolException("Failed to pwd : " + e.getMessage(), e);
     }
   }
 
