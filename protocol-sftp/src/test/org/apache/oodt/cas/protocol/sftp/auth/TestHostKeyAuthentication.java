@@ -14,35 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.sftp;
+package org.apache.oodt.cas.protocol.sftp.auth;
 
-//OODT imports
-import org.apache.oodt.cas.protocol.ProtocolFactory;
+//JUnit imports
+import junit.framework.TestCase;
 
 /**
- * Creates new {@link JschSftpProtocol}s.
- *
+ * Test class for {@link HostKeyAuthentication}.
+ * 
  * @author bfoster
- * @author mattmann
- * @version $Revision$
  */
-public class JschSftpProtocolFactory implements ProtocolFactory {
+public class TestHostKeyAuthentication extends TestCase {
 
-	private int port = -1;
+	public void testInitialState() {
+		HostKeyAuthentication auth = new HostKeyAuthentication("user", "pass", "file");
+		assertEquals("user", auth.getUser());
+		assertEquals("pass", auth.getPass());
+		assertEquals("file", auth.getHostKeyFile());
+	}
 	
-  public JschSftpProtocol newInstance() {
-  	if (port > 0) {
-  		return new JschSftpProtocol(port);
-  	} else {
-  		return new JschSftpProtocol();
-  	}
-  }
-
-  public String getSchema() {
-  	return "sftp";
-  }
-
-  public void setPort(int port) {
-  	this.port = port;
-  }
 }

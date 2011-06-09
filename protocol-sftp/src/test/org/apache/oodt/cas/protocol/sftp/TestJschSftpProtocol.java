@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.sftp.auth.HostKeyAuthentication;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 
 //SshTools imports
 import com.sshtools.daemon.SshDaemon;
@@ -86,7 +87,11 @@ public class TestJschSftpProtocol extends TestCase {
 		ProtocolFile testDir = new ProtocolFile(homeDir, "sshTestDir", true);
 		sftpProtocol.cd(testDir);
 		assertEquals(testDir, sftpProtocol.pwd());
-		List<ProtocolFile> lsResults = new ArrayList<ProtocolFile>(sftpProtocol.ls());
+		List<ProtocolFile> lsResults = new ArrayList<ProtocolFile>(sftpProtocol.ls(new ProtocolFileFilter() {
+			public boolean accept(ProtocolFile file) {
+				return file.getName().equals("sshTestFile");
+			}
+		}));
 		assertEquals(1, lsResults.size());
 		ProtocolFile testFile = lsResults.get(0);
 		assertEquals(new ProtocolFile(testDir, "sshTestFile", false), testFile);

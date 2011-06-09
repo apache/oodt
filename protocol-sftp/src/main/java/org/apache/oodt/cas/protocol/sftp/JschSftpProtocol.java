@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,6 +20,7 @@ package org.apache.oodt.cas.protocol.sftp;
 import org.apache.oodt.cas.protocol.auth.Authentication;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.sftp.auth.HostKeyAuthentication;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 
@@ -157,6 +158,26 @@ public class JschSftpProtocol implements Protocol {
     }
   }
 
+	public List<ProtocolFile> ls(ProtocolFileFilter filter)
+			throws ProtocolException {
+    try {
+      Vector<ChannelSftp.LsEntry> sftpFiles = (Vector<ChannelSftp.LsEntry>) sftpChannel
+          .ls(sftpChannel.pwd());
+      Vector<ProtocolFile> returnFiles = new Vector<ProtocolFile>();
+      for (ChannelSftp.LsEntry sftpFile : sftpFiles) {
+        String path = this.pwd().getPath();
+        ProtocolFile pFile = new ProtocolFile(path + "/" + sftpFile.getFilename(), sftpFile
+            .getAttrs().isDir());
+        if (filter.accept(pFile)) {
+        	returnFiles.add(pFile);
+        }
+      }
+      return returnFiles;
+    } catch (Exception e) {
+      throw new ProtocolException("Failed to get file list : " + e.getMessage());
+    }
+	}
+	
   public ProtocolFile pwd() throws ProtocolException {
     try {
       return new ProtocolFile(sftpChannel.pwd(), true);
