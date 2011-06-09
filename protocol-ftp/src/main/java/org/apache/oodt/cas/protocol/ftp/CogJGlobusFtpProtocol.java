@@ -26,6 +26,7 @@ import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.auth.Authentication;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 import org.globus.ftp.FTPClient;
 import org.globus.ftp.FileInfo;
 
@@ -128,7 +129,25 @@ public class CogJGlobusFtpProtocol implements Protocol {
                   + e.getMessage());
       }
   }
-
+  
+	public List<ProtocolFile> ls(ProtocolFileFilter filter) throws ProtocolException {
+    try {
+      ftp.setActive(ftp.setLocalPassive());
+      Vector<FileInfo> fileList = (Vector<FileInfo>) ftp.list("*", null);
+      Vector<ProtocolFile> returnList = new Vector<ProtocolFile>();
+      for (FileInfo file : fileList) {
+      	ProtocolFile pFile = new ProtocolFile(this.pwd(), file.getName(), file.isDirectory());
+      	if (filter.accept(pFile)) {
+      		returnList.add(pFile);
+      	}
+      }
+      return returnList;
+	  } catch (Exception e) {
+	      throw new ProtocolException("Failed to get list of files : "
+	              + e.getMessage());
+	  }
+  }
+	
   public ProtocolFile pwd() throws ProtocolException {
       try {
           return new ProtocolFile(ftp.getCurrentDir(), true);
@@ -143,11 +162,11 @@ public class CogJGlobusFtpProtocol implements Protocol {
 
   public void delete(ProtocolFile file) throws ProtocolException {
 	  try {
-		ftp.deleteFile(file.getPath());
-	} catch (Exception e) {
-		throw new ProtocolException("Failed to download file '" 
-				+ file.getPath() + "' : " + e.getMessage(), e);
-	}
+	  	ftp.deleteFile(file.getPath());
+		} catch (Exception e) {
+			throw new ProtocolException("Failed to download file '" 
+					+ file.getPath() + "' : " + e.getMessage(), e);
+		}
   }
 
 }

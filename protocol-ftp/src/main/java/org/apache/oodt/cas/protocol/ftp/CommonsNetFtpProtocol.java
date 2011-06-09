@@ -31,6 +31,7 @@ import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.auth.Authentication;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 
 /**
  * This class is responsible for FTP transfers. It is built as a wrapper around
@@ -42,177 +43,202 @@ import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
  */
 public class CommonsNetFtpProtocol implements Protocol {
 
-    private FTPClient ftp;
-    private String homeDir; 
-    
-    /**
-     * Creates a new FtpClient
-     */
-    public CommonsNetFtpProtocol() {
-        ftp = new FTPClient();
-    }
+	private FTPClient ftp;
+	private String homeDir;
 
-    /**
-     * {@inheritDoc}
-     */
-    public void connect(String host, Authentication auth) throws ProtocolException {
-        // server cannot be null
-        if (host == null) {
-            throw new ProtocolException("Tried to connect to server == NULL");
-        }
+	/**
+	 * Creates a new FtpClient
+	 */
+	public CommonsNetFtpProtocol() {
+		ftp = new FTPClient();
+	}
 
-        try {
-            ftp.connect(host);
-            ftp.enterLocalPassiveMode();
-        } catch (Exception e) {
-            throw new ProtocolException("Failed to connect to server : "
-                    + e.getMessage());
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public void connect(String host, Authentication auth)
+			throws ProtocolException {
+		// server cannot be null
+		if (host == null) {
+			throw new ProtocolException("Tried to connect to server == NULL");
+		}
 
-        try {
-            // try logging in
-            if (!ftp.login(auth.getUser(), auth.getPass())) {
-                throw new ProtocolException("Failed logging into host " + host
-                        + " as user " + auth.getUser());
-            }
+		try {
+			ftp.connect(host);
+			ftp.enterLocalPassiveMode();
+		} catch (Exception e) {
+			throw new ProtocolException("Failed to connect to server : "
+					+ e.getMessage());
+		}
 
-            // set file type to binary
-            ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
+		try {
+			// try logging in
+			if (!ftp.login(auth.getUser(), auth.getPass())) {
+				throw new ProtocolException("Failed logging into host " + host
+						+ " as user " + auth.getUser());
+			}
 
-            homeDir = ftp.printWorkingDirectory();
-        } catch (Exception e) {
-            // login failed
-            throw new ProtocolException(
-                    "Exception thrown while logging into host " + host
-                            + " as user " + auth.getUser());
-        }
-    }
+			// set file type to binary
+			ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
 
-    /**
-     * {@inheritDoc}
-     */
-    public ProtocolFile pwd() throws ProtocolException {
-        try {
-            return new ProtocolFile(ftp.printWorkingDirectory(), true);
-        } catch (Exception e) {
-            throw new ProtocolException("Failed to pwd : " + e.getMessage());
-        }
-    }
+			homeDir = ftp.printWorkingDirectory();
+		} catch (Exception e) {
+			// login failed
+			throw new ProtocolException("Exception thrown while logging into host "
+					+ host + " as user " + auth.getUser());
+		}
+	}
 
-    public List<ProtocolFile> ls() throws ProtocolException {
-        try {
-            FTPFile[] files = ftp.listFiles();
-            List<ProtocolFile> returnFiles = new LinkedList<ProtocolFile>();
-            for (int i = 0; i < files.length; i++) {
-                FTPFile file = files[i];
-                if (file == null)
-                    continue;
-                String path = this.pwd().getPath();
-                returnFiles.add(new ProtocolFile(path + "/" + file.getName(), file.isDirectory()));
-            }
-            // System.out.println("RETURN FILES: " + returnFiles);
-            return returnFiles;
-        } catch (Exception e) {
-            throw new ProtocolException("Failed to get file list : "
-                    + e.getMessage());
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public ProtocolFile pwd() throws ProtocolException {
+		try {
+			return new ProtocolFile(ftp.printWorkingDirectory(), true);
+		} catch (Exception e) {
+			throw new ProtocolException("Failed to pwd : " + e.getMessage());
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public void get(ProtocolFile fromFile, File toFile)
-            throws ProtocolException {
-        // file or toLocalFile cannot be null
-        if (fromFile == null || toFile == null) {
-            throw new ProtocolException(
-                    "Can't download file -> ProtocolFile == null || toLocalFile == null");
-        }
+	public List<ProtocolFile> ls() throws ProtocolException {
+		try {
+			FTPFile[] files = ftp.listFiles();
+			List<ProtocolFile> returnFiles = new LinkedList<ProtocolFile>();
+			for (int i = 0; i < files.length; i++) {
+				FTPFile file = files[i];
+				if (file == null)
+					continue;
+				String path = this.pwd().getPath();
+				returnFiles.add(new ProtocolFile(path + "/" + file.getName(), file
+						.isDirectory()));
+			}
+			return returnFiles;
+		} catch (Exception e) {
+			throw new ProtocolException("Failed to get file list : " + e.getMessage());
+		}
+	}
 
-        // download file
-        OutputStream os = null;
-        try {
-            os = new FileOutputStream(toFile);
-            if (ftp.retrieveFile(fromFile.getName(), os))// {
-                throw new ProtocolException("Failed to download file "
-                        + fromFile.getName());
-            // }
-        } catch (Exception e) {
-            // download failed
-        	toFile.delete();
-            throw new ProtocolException("FAILED to download: " + fromFile.getName()
-                    + " : " + e.getMessage());
-        } finally {
-            // close output stream
-            if (os != null)
-                try {
-                    os.close();
-                } catch (Exception e) {
-                	toFile.delete();
-                    throw new ProtocolException(
-                            "Failed to close outputstream : " + e.getMessage());
-                }
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void put(File fromFile, ProtocolFile toFile) throws ProtocolException {
-    	try {
-    		ftp.storeFile(toFile.getPath(), new FileInputStream(fromFile));
-    	}catch (Exception e) {
-    		throw new ProtocolException("Failed to put file '" + fromFile + "' : " + e.getMessage(), e);
-    	}
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<ProtocolFile> ls(ProtocolFileFilter filter)
+			throws ProtocolException {
+		try {
+			FTPFile[] files = ftp.listFiles();
+			List<ProtocolFile> returnFiles = new LinkedList<ProtocolFile>();
+			for (int i = 0; i < files.length; i++) {
+				FTPFile file = files[i];
+				if (file == null)
+					continue;
+				String path = this.pwd().getPath();
+				ProtocolFile pFile = new ProtocolFile(path + "/" + file.getName(), file
+						.isDirectory());
+				if (filter.accept(pFile)) {
+					returnFiles.add(pFile);
+				}
+			}
+			return returnFiles;
+		} catch (Exception e) {
+			throw new ProtocolException("Failed to get file list : " + e.getMessage());
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public void cd(ProtocolFile file) throws ProtocolException {
-        try {
-            if (!ftp.changeWorkingDirectory(file.getPath()))
-                throw new Exception("Directory change method returned false");
-        } catch (Exception e) {
-            throw new ProtocolException("Failed to cd to " + file.getPath() + " : "
-                    + e.getMessage());
-        }
-    }
-    
-    public void cdRoot() throws ProtocolException {
-    	cd(new ProtocolFile(ProtocolFile.SEPARATOR, true));
-    }
-    
-    public void cdHome() throws ProtocolException {
-    	cd(new ProtocolFile(homeDir, true));
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public void get(ProtocolFile fromFile, File toFile) throws ProtocolException {
+		// file or toLocalFile cannot be null
+		if (fromFile == null || toFile == null) {
+			throw new ProtocolException(
+					"Can't download file -> ProtocolFile == null || toLocalFile == null");
+		}
 
-    /**
-     * {@inheritDoc}
-     */
-    public void close() throws ProtocolException {
-        try {
-            ftp.disconnect();
-        } catch (Exception e) {
-            throw new ProtocolException("Failed to disconnect from server");
-        }
-    }
+		// download file
+		OutputStream os = null;
+		try {
+			os = new FileOutputStream(toFile);
+			if (ftp.retrieveFile(fromFile.getName(), os))// {
+				throw new ProtocolException("Failed to download file "
+						+ fromFile.getName());
+			// }
+		} catch (Exception e) {
+			// download failed
+			toFile.delete();
+			throw new ProtocolException("FAILED to download: " + fromFile.getName()
+					+ " : " + e.getMessage());
+		} finally {
+			// close output stream
+			if (os != null)
+				try {
+					os.close();
+				} catch (Exception e) {
+					toFile.delete();
+					throw new ProtocolException("Failed to close outputstream : "
+							+ e.getMessage());
+				}
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean connected() {
-        return ftp.isConnected();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void delete(ProtocolFile file) throws ProtocolException {
-        try {
-            ftp.deleteFile(file.getPath());
-        } catch (Exception e) {
-            throw new ProtocolException("Failed to delete file '" + file.getPath() + "' : " + e.getMessage(), e);
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public void put(File fromFile, ProtocolFile toFile) throws ProtocolException {
+		try {
+			ftp.storeFile(toFile.getPath(), new FileInputStream(fromFile));
+		} catch (Exception e) {
+			throw new ProtocolException("Failed to put file '" + fromFile + "' : "
+					+ e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void cd(ProtocolFile file) throws ProtocolException {
+		try {
+			if (!ftp.changeWorkingDirectory(file.getPath()))
+				throw new Exception("Directory change method returned false");
+		} catch (Exception e) {
+			throw new ProtocolException("Failed to cd to " + file.getPath() + " : "
+					+ e.getMessage());
+		}
+	}
+
+	public void cdRoot() throws ProtocolException {
+		cd(new ProtocolFile(ProtocolFile.SEPARATOR, true));
+	}
+
+	public void cdHome() throws ProtocolException {
+		cd(new ProtocolFile(homeDir, true));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void close() throws ProtocolException {
+		try {
+			ftp.disconnect();
+		} catch (Exception e) {
+			throw new ProtocolException("Failed to disconnect from server");
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean connected() {
+		return ftp.isConnected();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void delete(ProtocolFile file) throws ProtocolException {
+		try {
+			ftp.deleteFile(file.getPath());
+		} catch (Exception e) {
+			throw new ProtocolException("Failed to delete file '" + file.getPath()
+					+ "' : " + e.getMessage(), e);
+		}
+	}
 }
