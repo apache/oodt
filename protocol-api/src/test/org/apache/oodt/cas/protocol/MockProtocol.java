@@ -25,6 +25,7 @@ import java.util.List;
 //OODT imports
 import org.apache.oodt.cas.protocol.auth.Authentication;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 
 /**
  * Mock {@link Protocol} for testing
@@ -111,6 +112,10 @@ public class MockProtocol implements Protocol {
 	}
 
 	public List<ProtocolFile> ls() throws ProtocolException {
+		return Collections.emptyList();
+	}
+
+	public List<ProtocolFile> ls(ProtocolFileFilter filter) throws ProtocolException {
 		return Collections.emptyList();
 	}
 

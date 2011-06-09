@@ -19,6 +19,7 @@ package org.apache.oodt.cas.protocol;
 //OODT imports
 import org.apache.oodt.cas.protocol.auth.Authentication;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 
 //JDK imports
 import java.io.File;
@@ -51,6 +52,8 @@ public interface Protocol {
     public ProtocolFile pwd() throws ProtocolException;
 
     public List<ProtocolFile> ls() throws ProtocolException;
+
+    public List<ProtocolFile> ls(ProtocolFileFilter filter) throws ProtocolException;
 
     public void delete(ProtocolFile file) throws ProtocolException;
 
