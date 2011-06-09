@@ -80,7 +80,8 @@ public class TestJschSftpProtocol extends TestCase {
 	
 	public void testCDandPWDandLS() throws IOException, ProtocolException {
 		JschSftpProtocol sftpProtocol = new JschSftpProtocol(2022);
-		sftpProtocol.connect("localhost", new HostKeyAuthentication("bfoster", "", new File("src/testdata/sample-dsa.pub").getAbsoluteFile().getAbsolutePath()));
+		sftpProtocol.connect("localhost", new HostKeyAuthentication("bfoster", "",
+				new File("src/testdata/sample-dsa.pub").getAbsoluteFile().getAbsolutePath()));
 		ProtocolFile homeDir = sftpProtocol.pwd();
 		ProtocolFile testDir = new ProtocolFile(homeDir, "sshTestDir", true);
 		sftpProtocol.cd(testDir);
