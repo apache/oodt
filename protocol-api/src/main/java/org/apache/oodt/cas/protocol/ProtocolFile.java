@@ -104,7 +104,7 @@ public class ProtocolFile {
 	 */
 	public ProtocolFile getAbsoluteFile() {
 		if (this.isRelative()) {
-			ProtocolFile parent = this.getParent();
+			ProtocolFile parent = this.getParent().getAbsoluteFile();
 			if (parent != null) {
 				return new ProtocolFile(StringUtils.chomp(parent.getPath(), SEPARATOR)
 						+ SEPARATOR + this.getPath(), this.isDir());
