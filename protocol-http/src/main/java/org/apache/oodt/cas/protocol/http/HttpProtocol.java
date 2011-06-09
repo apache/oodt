@@ -22,6 +22,7 @@ import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.auth.Authentication;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.http.util.HttpUtils;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 
 //JDK imports
 import java.io.BufferedOutputStream;
@@ -157,6 +158,17 @@ public class HttpProtocol implements Protocol {
     return lsResults;
   }
 
+	public List<ProtocolFile> ls(ProtocolFileFilter filter)
+			throws ProtocolException {
+  	List<ProtocolFile> lsResults = new ArrayList<ProtocolFile>();
+  	for (HttpFile file : parseLink(currentFile)) {
+  		if (filter.accept(file)) {
+  			lsResults.add(file);
+  		}
+  	}
+    return lsResults;
+	}
+	
   public ProtocolFile pwd() throws ProtocolException {
     try {
       return currentFile;
