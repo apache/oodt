@@ -47,6 +47,7 @@ import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.auth.Authentication;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 
 //TIKA imports
 import org.apache.tika.exception.TikaException;
@@ -240,6 +241,34 @@ public class ImapsProtocol implements Protocol {
     // }
     return currentFilesForCurrentFolder;
   }
+
+	public List<ProtocolFile> ls(ProtocolFileFilter filter)
+			throws ProtocolException {
+    LinkedList<ProtocolFile> currentFilesForCurrentFolder = new LinkedList<ProtocolFile>();
+    try {
+      openFolder(currentFolder);
+      if (!currentFolder.getFullName().equals(
+          store.getDefaultFolder().getFullName())) {
+        Message[] messages = currentFolder.getMessages();
+        for (Message message : messages) {
+        	ProtocolFile pFile = new ProtocolFile(this.pwd().getPath()
+              + "/" + this.getMessageName(message), false);
+        	if (filter.accept(pFile)) {
+        		currentFilesForCurrentFolder.add(pFile);
+        	}
+        }
+      }
+    } catch (Exception e) {
+      if (!currentFolder.getFullName().equals(""))
+        throw new ProtocolException("Failed to ls : " + e.getMessage(), e);
+    } finally {
+      try {
+        closeFolder(currentFolder);
+      } catch (Exception e) {
+      }
+    }
+    return currentFilesForCurrentFolder;
+	}
 
   public synchronized ProtocolFile pwd()
       throws ProtocolException {
