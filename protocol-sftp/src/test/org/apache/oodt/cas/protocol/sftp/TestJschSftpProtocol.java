@@ -23,15 +23,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+//OODT imports
 import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.sftp.auth.HostKeyAuthentication;
 
+//SshTools imports
 import com.sshtools.daemon.SshDaemon;
 import com.sshtools.daemon.configuration.XmlServerConfigurationContext;
 import com.sshtools.j2ssh.configuration.ConfigurationException;
 import com.sshtools.j2ssh.configuration.ConfigurationLoader;
 
+//JUnit imports
 import junit.framework.TestCase;
 
 /**
