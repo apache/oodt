@@ -27,13 +27,23 @@ import org.apache.oodt.cas.protocol.auth.BasicAuthentication;
 public class HostKeyAuthentication extends BasicAuthentication {
 
 	private String hostKeyFile;
+	private String passphrase;
 	
 	public HostKeyAuthentication(String user, String pass, String hostKeyFile) {
+		this(user, pass, hostKeyFile, null);
+	}
+	
+	public HostKeyAuthentication(String user, String pass, String hostKeyFile, String passphrase) {
 		super(user, pass);
 		this.hostKeyFile = hostKeyFile;
+		this.passphrase = passphrase;
 	}
 
 	public String getHostKeyFile() {
 		return hostKeyFile;
+	}
+	
+	public String getPassphrase() {
+		return passphrase;
 	}
 }

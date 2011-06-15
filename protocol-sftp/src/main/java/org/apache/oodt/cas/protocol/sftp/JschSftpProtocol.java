@@ -93,13 +93,15 @@ public class JschSftpProtocol implements Protocol {
       session = jsch.getSession(auth.getUser(), host, this.port);
       session.setUserInfo(new UserInfo() {
 				public String getPassphrase() {
-					return "";
+					return (auth instanceof HostKeyAuthentication) ? ((HostKeyAuthentication) auth)
+							.getPassphrase() : null;
 				}
 				public String getPassword() {
 					return auth.getPass();
 				}
 				public boolean promptPassphrase(String arg0) {
-					return false;
+					return (auth instanceof HostKeyAuthentication && ((HostKeyAuthentication) auth)
+							.getPassphrase() != null);
 				}
 				public boolean promptPassword(String arg0) {
 					return true;

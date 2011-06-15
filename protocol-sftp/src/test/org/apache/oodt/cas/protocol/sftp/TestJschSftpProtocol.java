@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 //OODT imports
+import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.sftp.auth.HostKeyAuthentication;
@@ -45,6 +46,8 @@ import junit.framework.TestCase;
  */
 public class TestJschSftpProtocol extends TestCase {
 
+	private static final int PORT = 2022;
+	
 	@Override
 	public void setUp() {
     XmlServerConfigurationContext context = new XmlServerConfigurationContext();
@@ -80,7 +83,7 @@ public class TestJschSftpProtocol extends TestCase {
 	}
 	
 	public void testCDandPWDandLS() throws IOException, ProtocolException {
-		JschSftpProtocol sftpProtocol = new JschSftpProtocol(2022);
+		JschSftpProtocol sftpProtocol = new JschSftpProtocol(PORT);
 		sftpProtocol.connect("localhost", new HostKeyAuthentication("bfoster", "",
 				new File("src/testdata/sample-dsa.pub").getAbsoluteFile().getAbsolutePath()));
 		ProtocolFile homeDir = sftpProtocol.pwd();
@@ -97,4 +100,18 @@ public class TestJschSftpProtocol extends TestCase {
 		assertEquals(new ProtocolFile(testDir, "sshTestFile", false), testFile);
 	}
 	
+	public void testGET() throws ProtocolException, IOException {
+		JschSftpProtocol sftpProtocol = new JschSftpProtocol(PORT);
+		sftpProtocol.connect("localhost", new HostKeyAuthentication("bfoster", "",
+				new File("src/testdata/sample-dsa.pub").getAbsoluteFile().getAbsolutePath()));
+		File bogusFile = File.createTempFile("bogus", "bogus");
+		File tmpFile = new File(bogusFile.getParentFile(), "TestJschSftpProtocol");
+		bogusFile.delete();
+		tmpFile.mkdirs();
+		sftpProtocol.cd(new ProtocolFile("sshTestDir", true));
+		File testDownloadFile = new File(tmpFile, "testDownloadFile");
+		sftpProtocol.get(new ProtocolFile("sshTestFile", false), testDownloadFile);
+		assertTrue(FileUtils.contentEquals(new File("src/testdata/sshTestDir/sshTestFile"), testDownloadFile));
+		FileUtils.forceDelete(tmpFile);
+	}
 }
