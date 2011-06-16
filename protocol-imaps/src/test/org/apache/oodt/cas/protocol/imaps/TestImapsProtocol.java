@@ -16,12 +16,15 @@
  */
 package org.apache.oodt.cas.protocol.imaps;
 
-//OODT imports
+//JDK imports
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+//Apache imports
 import org.apache.commons.io.FileUtils;
+
+//OODT imports
 import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.auth.BasicAuthentication;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
@@ -66,9 +69,7 @@ public class TestImapsProtocol extends TestCase {
 		gMail.stop();
 		try {
 			imapsProtocol.close();
-		} catch (ProtocolException e) {
-			fail("Failed to disconnect from GreenMail IMAPS server : " + e.getMessage());
-		}
+		} catch (Exception e) {}
 		assertEquals(0, ImapsProtocol.connectCalls);
 	}
 	
@@ -96,6 +97,7 @@ public class TestImapsProtocol extends TestCase {
 		assertEquals("Subject: Test Subject", splitEmail[2]);
 		// 3 is divider text (i.e. ----- ~ Message ~ -----)
 		assertEquals("Test Body", splitEmail[4]);
+		tmpDir.delete();
 	}
 	
 	public void testDelete() throws ProtocolException {

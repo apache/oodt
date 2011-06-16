@@ -22,9 +22,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 //Javamail imports
 import javax.mail.Address;
@@ -139,7 +142,6 @@ public class ImapsProtocol implements Protocol {
 //        currentFolder.close(true);
         store.close();
       } catch (Exception e) {
-      	e.printStackTrace();
         throw new ProtocolException("Failed to close connection : " + e.getMessage(), e);
       } finally {
         store = null;
@@ -194,7 +196,8 @@ public class ImapsProtocol implements Protocol {
       ps.print(" " + address.toString());
 
     ps.print("\nTo:");
-    Address[] recipients = message.getAllRecipients();
+		Set<Address> recipients = new LinkedHashSet<Address>(Arrays.asList(message
+				.getAllRecipients()));
     for (Address address : recipients)
       ps.print(" " + address.toString());
 
