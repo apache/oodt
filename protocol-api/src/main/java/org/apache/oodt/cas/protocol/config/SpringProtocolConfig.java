@@ -42,7 +42,10 @@ public class SpringProtocolConfig implements ProtocolConfig {
 	public SpringProtocolConfig(String configFile) {
 		Validate.notNull(configFile, "SpringProtocolConfig configFile cannnot be NULL");
 		factoryMap = new HashMap<String, List<ProtocolFactory>>();
-		FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(configFile);
+		loadFactories(new FileSystemXmlApplicationContext(configFile));
+	}
+	
+	private void loadFactories(FileSystemXmlApplicationContext appContext) {
 		Collection<ProtocolFactory> protocolFactories = appContext.getBeansOfType(ProtocolFactory.class).values();
 		for (ProtocolFactory factory : protocolFactories) {
 			List<ProtocolFactory> factories = factoryMap.get(factory.getSchema());

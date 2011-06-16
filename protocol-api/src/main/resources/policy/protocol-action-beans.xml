@@ -12,6 +12,7 @@
 
 	<bean class="org.apache.oodt.commons.spring.postprocessor.SetIdBeanPostProcessor"/>
 
-	<bean id="Download" class="org.apache.oodt.cas.protocol.action.DownloadAction"/>
+  <bean id="Download" class="org.apache.oodt.cas.protocol.action.DownloadAction"/>
+	<bean id="GetSupportedFactories" class="org.apache.oodt.cas.protocol.action.GetSupportedFactoriesAction"/>
 	
 </beans>
