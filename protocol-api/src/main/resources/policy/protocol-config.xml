@@ -12,6 +12,6 @@
 
   <import resource="protocol-action-beans.xml"/>
   <import resource="protocol-cmd-line-beans.xml"/>
-	<import resource="classpath*:**/*-protocol-config.xml"/>
+	<import resource="classpath*:/org/apache/oodt/cas/protocol/**/*-protocol-config.xml"/>
 	
 </beans>

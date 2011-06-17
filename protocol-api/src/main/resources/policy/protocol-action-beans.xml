@@ -13,6 +13,11 @@
 	<bean class="org.apache.oodt.commons.spring.postprocessor.SetIdBeanPostProcessor"/>
 
   <bean id="Download" class="org.apache.oodt.cas.protocol.action.DownloadAction"/>
-	<bean id="GetSupportedFactories" class="org.apache.oodt.cas.protocol.action.GetSupportedFactoriesAction"/>
+  <bean id="GetSupportedFactories" class="org.apache.oodt.cas.protocol.action.GetSupportedFactoriesAction"/>
+	<bean id="CrossProtocolTransfer" class="org.apache.oodt.cas.protocol.action.CrossProtocolTransferAction">
+	 <property name="verifierFactory" ref="BasicVerifier"/>
+	</bean>
+
+  <bean id="BasicVerifier" class="org.apache.oodt.cas.protocol.verify.BasicProtocolVerifierFactory"/>
 	
 </beans>
