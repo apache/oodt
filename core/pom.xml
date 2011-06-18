@@ -112,7 +112,7 @@ the License.
             <id>bfoster</id>
             <name>Brian Foster</name>
             <email>bfoster@apache.org</email>
-            <organization>NASA Jet Propulsion Laboratory</organization>
+            <organization>Google</organization>
             <timezone>-8</timezone>
             <roles>
                 <role>committer</role>
@@ -156,7 +156,7 @@ the License.
             <id>joshuaga</id>
             <name>Joshua Garcia</name>
             <email>joshuaga@apache.org</email>
-            <organization>NASA Jet Propulsion Laboratory</organization>
+            <organization>University of Southern California</organization>
             <timezone>-8</timezone>
             <roles>
                 <role>committer</role>
@@ -230,7 +230,7 @@ the License.
             <id>woollard</id>
             <name>David Woollard</name>
             <email>woollard@apache.org</email>
-            <organization>NASA Jet Propulsion Laboratory</organization>
+            <organization>Project WBS</organization>
             <timezone>-8</timezone>
             <roles>
                 <role>committer</role>
