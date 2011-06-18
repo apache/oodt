@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-199 CoreMetExtractor chokes on Hierarchical Products (mattmann)
+
 * OODT-200 FinalFileLocationExtractor chokes on Hierarchical products
   (mattmann)
 

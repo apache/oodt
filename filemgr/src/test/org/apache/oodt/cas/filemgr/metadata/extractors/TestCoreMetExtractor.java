@@ -96,4 +96,46 @@ public class TestCoreMetExtractor extends TestCase implements CoreMetKeys {
         assertEquals(met.getMetadata(PRODUCT_NAME), "foo");
 
     }
+    
+    public void testExtractDirectoryProduct(){
+      Product p = Product.getDefaultFlatProduct("test", "urn:oodt:GenericFile");
+      p.setProductId("1");
+      p.setProductStructure(Product.STRUCTURE_HIERARCHICAL);
+      p.setProductName("somedir");
+      p.getProductType().setProductRepositoryPath("file:///archive/dirs");
+      p.getProductType().setName("GenericFile");
+      p.getProductType().setVersioner(
+          "org.apache.oodt.cas.filemgr.versioning.DirectoryProductVersioner");
+      p.getProductReferences()
+          .add(new Reference("file:///tmp/somedir", null, 4L));
+      p.getProductReferences().add(
+          new Reference("file:///tmp/somedir/file1.txt", null, 8L));
+      p.getProductReferences().add(
+          new Reference("file:///tmp/somedir/file2.txt", null, 8L));
+
+      Metadata met = new Metadata();
+      try {
+          met = extractor.doExtract(p, met);
+      } catch (MetExtractionException e) {
+          fail(e.getMessage());
+      }
+
+      assertNotNull(met);
+      assertTrue(met.containsKey(FILENAME));
+      assertTrue(met.containsKey(FILE_LOCATION));
+      assertTrue(met.containsKey(PRODUCT_TYPE));
+      assertTrue(met.containsKey(PRODUCT_STRUCTURE));
+      assertTrue(met.containsKey(PRODUCT_ID));
+      assertTrue(met.containsKey(PRODUCT_NAME));
+      assertTrue(met.containsKey(PRODUCT_RECEVIED_TIME));
+
+      assertEquals(met.getMetadata(FILENAME), "somedir");
+      assertEquals(met.getMetadata(FILE_LOCATION), "/tmp");
+      assertEquals(met.getMetadata(PRODUCT_TYPE), "GenericFile");
+      assertEquals(met.getMetadata(PRODUCT_STRUCTURE), Product.STRUCTURE_HIERARCHICAL);
+      assertEquals(met.getMetadata(PRODUCT_ID), "1");
+      assertEquals(met.getMetadata(PRODUCT_NAME), "somedir");
+      
+      
+    }
 }
