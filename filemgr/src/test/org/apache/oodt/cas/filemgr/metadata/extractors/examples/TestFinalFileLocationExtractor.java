@@ -69,8 +69,8 @@ public class TestFinalFileLocationExtractor extends TestCase {
     assertEquals("expected final location: [" + expectedFinalLocation
         + "] is not equal to generated location: ["
         + extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).get(1) + "]",
-        expectedFinalLocation, extractMet.getAllMetadata(
-            CoreMetKeys.FILE_LOCATION).get(1));
+        expectedFinalLocation,
+        extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).get(1));
 
     // ensure that the data store ref is blank
     assertEquals("", p.getProductReferences().get(0).getDataStoreReference());
@@ -88,8 +88,73 @@ public class TestFinalFileLocationExtractor extends TestCase {
     assertNotNull(extractMet);
     assertTrue(extractMet.containsKey(CoreMetKeys.FILE_LOCATION));
     assertEquals(1, extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
-    assertEquals(expectedFinalLocation, extractMet
-        .getMetadata(CoreMetKeys.FILE_LOCATION));
+    assertEquals(expectedFinalLocation,
+        extractMet.getMetadata(CoreMetKeys.FILE_LOCATION));
+
+    // ensure that the data store ref is blank
+    assertEquals("", p.getProductReferences().get(0).getDataStoreReference());
+
+  }
+
+  /**
+   * @since OODT-200
+   */
+  public void testExtractHierarchical() {
+    String expectedFinalLocation = "/archive/dirs";
+    Product p = Product.getDefaultFlatProduct("test", "urn:oodt:GenericFile");
+    p.setProductStructure(Product.STRUCTURE_HIERARCHICAL);
+    p.setProductName("somedir");
+    p.getProductType().setProductRepositoryPath("file:///archive/dirs");
+    p.getProductType().setVersioner(
+        "org.apache.oodt.cas.filemgr.versioning.DirectoryProductVersioner");
+    p.getProductReferences()
+        .add(new Reference("file:///tmp/somedir", null, 4L));
+    p.getProductReferences().add(
+        new Reference("file:///tmp/somedir/file1.txt", null, 8L));
+    p.getProductReferences().add(
+        new Reference("file:///tmp/somedir/file2.txt", null, 8L));
+    Properties config = new Properties();
+    config.setProperty("replace", "false");
+    Metadata met = new Metadata();
+    met.addMetadata(CoreMetKeys.FILE_LOCATION, "/tmp");
+    FinalFileLocationExtractor extractor = new FinalFileLocationExtractor();
+    extractor.configure(config);
+    Metadata extractMet = new Metadata();
+
+    try {
+      extractMet = extractor.doExtract(p, met);
+    } catch (MetExtractionException e) {
+      fail(e.getMessage());
+    }
+
+    assertNotNull(extractMet);
+    assertTrue(extractMet.containsKey(CoreMetKeys.FILE_LOCATION));
+    assertEquals(2, extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
+    assertEquals("/tmp", extractMet.getMetadata(CoreMetKeys.FILE_LOCATION));
+    assertEquals("expected final location: [" + expectedFinalLocation
+        + "] is not equal to generated location: ["
+        + extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).get(1) + "]",
+        expectedFinalLocation,
+        extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).get(1));
+
+    // ensure that the data store ref is blank
+    assertEquals("", p.getProductReferences().get(0).getDataStoreReference());
+
+    // reconfigure to replace
+    config.setProperty("replace", "true");
+    extractor.configure(config);
+
+    try {
+      extractMet = extractor.doExtract(p, met);
+    } catch (MetExtractionException e) {
+      fail(e.getMessage());
+    }
+
+    assertNotNull(extractMet);
+    assertTrue(extractMet.containsKey(CoreMetKeys.FILE_LOCATION));
+    assertEquals(1, extractMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
+    assertEquals(expectedFinalLocation,
+        extractMet.getMetadata(CoreMetKeys.FILE_LOCATION));
 
     // ensure that the data store ref is blank
     assertEquals("", p.getProductReferences().get(0).getDataStoreReference());

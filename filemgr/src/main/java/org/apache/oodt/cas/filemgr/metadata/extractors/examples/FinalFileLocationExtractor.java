@@ -83,33 +83,28 @@ public class FinalFileLocationExtractor extends AbstractFilemgrMetExtractor
           "Unable to generate final FileLocation: Reason: " + e.getMessage());
     }
 
-    if (product.getProductStructure().equals(Product.STRUCTURE_FLAT)) {
-      Reference r = product.getProductReferences().get(0);
-      String finalLocation = VersioningUtils.getAbsolutePathFromUri(r
-          .getDataStoreReference());
-      if (this.replaceLocation) {
-        extractMet.replaceMetadata(FILE_LOCATION, new File(finalLocation)
-            .getParent());
-      } else {
-        extractMet.addMetadata(FILE_LOCATION, new File(finalLocation)
-            .getParent());
-      }
+    Reference r = product.getProductReferences().get(0);
+    String finalLocation = VersioningUtils.getAbsolutePathFromUri(r
+        .getDataStoreReference());
+    if (this.replaceLocation) {
+      extractMet.replaceMetadata(FILE_LOCATION,
+          new File(finalLocation).getParent());
+    } else {
+      extractMet
+          .addMetadata(FILE_LOCATION, new File(finalLocation).getParent());
+    }
 
-    } else
-      throw new MetExtractionException(
-          "Unable to extract final file location from "
-              + Product.STRUCTURE_HIERARCHICAL + " products!");
-    
     this.scrubRefs(product);
-    
+
     return extractMet;
 
   }
-  
-  private void scrubRefs(Product p){
-    if(p.getProductReferences() == null) return;
-    
-    for(Reference r: p.getProductReferences()){
+
+  private void scrubRefs(Product p) {
+    if (p.getProductReferences() == null)
+      return;
+
+    for (Reference r : p.getProductReferences()) {
       r.setDataStoreReference("");
     }
   }

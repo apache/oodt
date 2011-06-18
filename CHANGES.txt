@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
+* OODT-200 FinalFileLocationExtractor chokes on Hierarchical products
+  (mattmann)
+
 * OODT-186 Common base library for modular OODT web applications built 
   using PHP (ahart, Gabe Resneck, Shakeh Khudikyan)
 
