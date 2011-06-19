@@ -42,6 +42,9 @@ public interface PgeTaskMetadataKeys {
     public static final String PROPERTY_ADDER_CLASSPATH = "PGETask_PropertyAdderClasspath";
 
     public static final String PGE_RUNTIME = "PGETask_Runtime";
+
+    public static final String ATTEMPT_INGEST_ALL = "PGETask_AttemptIngestAll";
+
     
     /* PGE task statuses */
     public static final String STAGING_INPUT = "PGETask_Staging_Input";

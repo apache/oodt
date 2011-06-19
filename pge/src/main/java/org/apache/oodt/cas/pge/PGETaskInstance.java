@@ -40,7 +40,9 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.cas.workflow.util.ScriptFile;
+import org.apache.oodt.cas.crawl.ProductCrawler;
 import org.apache.oodt.cas.crawl.StdProductCrawler;
+import org.apache.oodt.cas.crawl.status.IngestStatus;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -390,19 +392,51 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 
     protected void runIngestCrawler(StdProductCrawler crawler,
             List<File> crawlDirs) {
-        try {
-            this.updateStatus(PgeTaskMetadataKeys.CRAWLING);
-            for (File crawlDir : crawlDirs) {
-                LOG.log(Level.INFO,
-                        "Executing StdProductCrawler in productPath: ["
-                                + crawlDir + "]");
-                crawler.crawl(crawlDir);
-            }
-        } catch (Exception e) {
-            LOG.log(Level.WARNING,
-                    "Failed to create StdProductCrawler - Products won't be crawled : "
-                            + e.getMessage());
-        }
+    	File currentDir = null;
+		try {
+			this.updateStatus(PgeTaskMetadataKeys.CRAWLING);
+			boolean attemptIngestAll = Boolean.parseBoolean(this.pgeMetadata
+					.getMetadataValue(PgeTaskMetadataKeys.ATTEMPT_INGEST_ALL));
+			for (File crawlDir : crawlDirs) {
+				currentDir = crawlDir;
+				LOG.log(Level.INFO,
+						"Executing StdProductCrawler in productPath: ["
+								+ crawlDir + "]");
+				crawler.crawl(crawlDir);
+				if (!attemptIngestAll)
+					this.verifyIngests(crawler);
+			}
+			if (attemptIngestAll)
+				this.verifyIngests(crawler);
+		} catch (Exception e) {
+			LOG.log(Level.WARNING,
+					"Failed while attempting to ingest products while crawling directory '"
+							+ currentDir
+							+ "' (all products may not have been ingested) : "
+							+ e.getMessage(), e);
+		}
+    }
+    
+    protected void verifyIngests(ProductCrawler crawler) throws Exception {
+    	boolean ingestsSuccess = true;
+    	String exceptionMsg = "";
+    	for (IngestStatus status : crawler.getIngestStatus()) {
+    		if (status.getResult().equals(IngestStatus.Result.FAILURE)) {
+    			exceptionMsg += (exceptionMsg.equals("") ? "" : " : ")
+						+ "Failed to ingest product [file='"
+						+ status.getProduct().getAbsolutePath() + "',result='"
+						+ status.getResult() + "',msg='" + status.getMessage()
+						+ "']";
+    			ingestsSuccess = false;
+    		}else if (!status.getResult().equals(IngestStatus.Result.SUCCESS)) {
+                LOG.log(Level.WARNING, "Product was not ingested [file='"
+						+ status.getProduct().getAbsolutePath() + "',result='"
+						+ status.getResult() + "',msg='" + status.getMessage()
+						+ "']");
+    		}
+    	}
+    	if (!ingestsSuccess)
+    		throw new Exception(exceptionMsg);
     }
     
     protected void updateDynamicMetadata() {
