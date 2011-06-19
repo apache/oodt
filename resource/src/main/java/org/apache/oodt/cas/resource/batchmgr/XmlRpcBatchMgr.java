@@ -149,8 +149,29 @@ public class XmlRpcBatchMgr implements Batchmgr {
         }
     }
 
-    protected void jobComplete(JobSpec spec) {
-        spec.getJob().setStatus(JobStatus.COMPLETE);
+    protected void jobSuccess(JobSpec spec) {
+        spec.getJob().setStatus(JobStatus.SUCCESS);
+        synchronized (this.nodeToJobMap) {
+            this.nodeToJobMap.remove(spec.getJob().getId());
+        }
+        synchronized (this.specToProxyMap) {
+            XmlRpcBatchMgrProxy proxy = (XmlRpcBatchMgrProxy) this.specToProxyMap
+                    .remove(spec.getJob().getId());
+            if (proxy != null) {
+                proxy = null;
+            }
+        }
+
+        try {
+            repo.updateJob(spec);
+        } catch (JobRepositoryException e) {
+            LOG.log(Level.WARNING, "Error set job completion status for job: ["
+                    + spec.getJob().getId() + "]: Message: " + e.getMessage());
+        }
+    }
+    
+    protected void jobFailure(JobSpec spec) {
+        spec.getJob().setStatus(JobStatus.FAILURE);
         synchronized (this.nodeToJobMap) {
             this.nodeToJobMap.remove(spec.getJob().getId());
         }

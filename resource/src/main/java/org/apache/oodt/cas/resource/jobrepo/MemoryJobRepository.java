@@ -80,7 +80,8 @@ public class MemoryJobRepository implements JobRepository {
    */
   public boolean jobFinished(JobSpec spec) throws JobRepositoryException {
     JobSpec persistedSpec = (JobSpec) jobMap.get(spec.getJob().getId());
-    return persistedSpec.getJob().getStatus().equals(JobStatus.COMPLETE);
+    return persistedSpec.getJob().getStatus().equals(JobStatus.SUCCESS) 
+    	||  persistedSpec.getJob().getStatus().equals(JobStatus.FAILURE);
   }
 
   /*

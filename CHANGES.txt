@@ -4,7 +4,11 @@ Apache OODT Change Log
 Release 0.3-SNAPSHOT (in progress)
 --------------------------------------------
 
-* OODT-278 CAS-PGE returns success even if product file(s) fail to ingest (mattmann, bfoster)
+* OODT-279 Make Resource Manager FAILURE and SUCCESS aware instead of just 
+  COMPLETE aware (mattmann, bfoster)
+
+* OODT-278 CAS-PGE returns success even if product file(s) fail to 
+  ingest (mattmann, bfoster)
 
 * OODT-243 Add method is called on already existing jobspec (mattmann, bfoster)
 

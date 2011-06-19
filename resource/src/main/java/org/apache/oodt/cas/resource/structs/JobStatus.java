@@ -32,7 +32,9 @@ public interface JobStatus {
   
   public static final String SCHEDULED = "__Scheduled__";
   
-  public static final String COMPLETE = "__Complete__";
+  public static final String SUCCESS = "__Success__";
+  
+  public static final String FAILURE = "__Failure__";
   
   public static final String KILLED = "__Killed__";
 

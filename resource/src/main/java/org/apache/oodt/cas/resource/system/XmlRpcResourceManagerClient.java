@@ -483,9 +483,9 @@ public class XmlRpcResourceManagerClient {
             complete = ((Boolean) client.execute("resourcemgr.isJobComplete",
                     argList)).booleanValue();
         } catch (XmlRpcException e) {
-            throw new JobRepositoryException(e.getMessage());
+            throw new JobRepositoryException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new JobRepositoryException(e.getMessage());
+            throw new JobRepositoryException(e.getMessage(), e);
         }
 
         return complete;
@@ -501,9 +501,9 @@ public class XmlRpcResourceManagerClient {
             jobHash = (Hashtable) client.execute("resourcemgr.getJobInfo",
                     argList);
         } catch (XmlRpcException e) {
-            throw new JobRepositoryException(e.getMessage());
+            throw new JobRepositoryException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new JobRepositoryException(e.getMessage());
+            throw new JobRepositoryException(e.getMessage(), e);
         }
 
         return XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
@@ -590,9 +590,9 @@ public class XmlRpcResourceManagerClient {
         try {
             jobId = (String) client.execute("resourcemgr.handleJob", argList);
         } catch (XmlRpcException e) {
-            throw new JobExecutionException(e.getMessage());
+            throw new JobExecutionException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new JobExecutionException(e.getMessage());
+            throw new JobExecutionException(e.getMessage(), e);
         }
 
         return jobId;
@@ -612,9 +612,9 @@ public class XmlRpcResourceManagerClient {
             success = ((Boolean) client.execute("resourcemgr.handleJob",
                     argList)).booleanValue();
         } catch (XmlRpcException e) {
-            throw new JobExecutionException(e.getMessage());
+            throw new JobExecutionException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new JobExecutionException(e.getMessage());
+            throw new JobExecutionException(e.getMessage(), e);
         }
 
         return success;
@@ -630,9 +630,9 @@ public class XmlRpcResourceManagerClient {
             nodeVector = (Vector) client.execute("resourcemgr.getNodes",
                     argList);
         } catch (XmlRpcException e) {
-            throw new MonitorException(e.getMessage());
+            throw new MonitorException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new MonitorException(e.getMessage());
+            throw new MonitorException(e.getMessage(), e);
         }
 
         return XmlRpcStructFactory.getResourceNodeListFromXmlRpc(nodeVector);
@@ -649,9 +649,9 @@ public class XmlRpcResourceManagerClient {
             resNodeHash = (Hashtable) client.execute("resourcemgr.getNodeById",
                     argList);
         } catch (XmlRpcException e) {
-            throw new MonitorException(e.getMessage());
+            throw new MonitorException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new MonitorException(e.getMessage());
+            throw new MonitorException(e.getMessage(), e);
         }
 
         return XmlRpcStructFactory.getResourceNodeFromXmlRpc(resNodeHash);
@@ -839,19 +839,21 @@ public class XmlRpcResourceManagerClient {
     		throw new MonitorException(e.getMessage(), e);
     	}
     }
-    
-    private static String getReadableJobStatus(String status) {
-        if (status.equals(JobStatus.COMPLETE)) {
-            return "COMPLETE";
-        } else if (status.equals(JobStatus.EXECUTED)) {
-            return "EXECUTED";
-        } else if (status.equals(JobStatus.QUEUED)) {
-            return "QUEUED";
-        } else if (status.equals(JobStatus.SCHEDULED)) {
-            return "SCHEDULED";
-        } else if (status.equals(JobStatus.KILLED)) {
-            return "KILLED";
-        } else
-            return null;
-    }
+
+  private static String getReadableJobStatus(String status) {
+    if (status.equals(JobStatus.SUCCESS)) {
+      return "SUCCESS";
+    } else if (status.equals(JobStatus.FAILURE)) {
+      return "FAILURE";
+    } else if (status.equals(JobStatus.EXECUTED)) {
+      return "EXECUTED";
+    } else if (status.equals(JobStatus.QUEUED)) {
+      return "QUEUED";
+    } else if (status.equals(JobStatus.SCHEDULED)) {
+      return "SCHEDULED";
+    } else if (status.equals(JobStatus.KILLED)) {
+      return "KILLED";
+    } else
+      return null;
+  }
 }

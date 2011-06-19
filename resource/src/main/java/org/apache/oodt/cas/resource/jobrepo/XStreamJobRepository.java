@@ -107,7 +107,7 @@ public class XStreamJobRepository implements JobRepository {
 
 	public boolean jobFinished(JobSpec spec) throws JobRepositoryException {
 		String status = this.getStatus(spec);
-	    return status.equals(JobStatus.COMPLETE);
+	    return status.equals(JobStatus.SUCCESS);
 	}
 
 	public synchronized void removeJob(JobSpec spec) throws JobRepositoryException {
