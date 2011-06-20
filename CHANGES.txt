@@ -1,8 +1,9 @@
 Apache OODT Change Log
 ======================
 
-Release 0.3-SNAPSHOT (in progress)
+Release 0.3
 --------------------------------------------
+Release Date: June 20th, 2011
 
 * OODT-279 Make Resource Manager FAILURE and SUCCESS aware instead of just 
   COMPLETE aware (mattmann, bfoster)
