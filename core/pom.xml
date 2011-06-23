@@ -255,12 +255,6 @@ the License.
             <distribution>manual</distribution>
         </license>
     </licenses>
-    <scm>
-        <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk</developerConnection>
-        <url>http://svn.apache.org/viewvc/oodt/trunk</url>
-        <tag>HEAD</tag>
-    </scm>
     <organization>
         <name>Apache OODT</name>
         <url>http://oodt.apache.org/</url>
