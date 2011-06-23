@@ -25,7 +25,7 @@ the License.
 	</parent>    
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
     <name>OODT Core</name>
     <packaging>pom</packaging>
     <properties>
@@ -421,4 +421,10 @@ the License.
             </plugin>
         </plugins>
     </reporting>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/pom/tags/0.3/oodt-core</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/pom/tags/0.3/oodt-core</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/pom/tags/0.3/oodt-core</url>
+  </scm>
 </project>
