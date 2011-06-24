@@ -55,14 +55,14 @@ import java.util.logging.Logger;
  * @version $Revision$
  * 
  * <p>
- * An instance of the {@link WorkflowProcessorThread} that works with the 
+ * An instance of the {@link WorkflowProcessor} that works with the 
  * non-blocking thread pool engine.
  * </p>
  * 
  */
 
-public class NonBlockingIterativeWorkflowProcessorThread implements
-        WorkflowProcessorThread, WorkflowStatus, CoreMetKeys {
+public class NonBlockingIterativeWorkflowProcessorThread extends 
+        WorkflowProcessor implements WorkflowStatus, CoreMetKeys {
 
     /* the default queue name if we're using resmgr job submission */
     private static final String DEFAULT_QUEUE_NAME = "high";
@@ -96,7 +96,7 @@ public class NonBlockingIterativeWorkflowProcessorThread implements
 
     /* our log stream */
     private static Logger LOG = Logger
-            .getLogger(IterativeWorkflowProcessorThread.class.getName());
+            .getLogger(SequentialWorkflowProcessor.class.getName());
 
     private Map CONDITION_CACHE = new HashMap();
 
@@ -107,20 +107,10 @@ public class NonBlockingIterativeWorkflowProcessorThread implements
     private String currentJobId = null;
 
     public NonBlockingIterativeWorkflowProcessorThread(WorkflowInstance wInst,
-            WorkflowInstanceRepository instRep, URL wParentUrl) {
-        workflowInst = wInst;
-        taskId = workflowInst.getCurrentTaskId();
-        this.instanceRepository = instRep;
-
-        /* start out the gates running */
-        running = true;
-
-        pollingWaitTime = Long
-                .getLong(
-                        "org.apache.oodt.cas.workflow.engine.resourcemgr.pollingWaitTime",
-                        10).longValue();
-
-        wmgrParentUrl = wParentUrl;
+            WorkflowInstanceRepository instRep, URL wParentUrl, long pollingWaitTime) {
+      super(wInst, instRep, wParentUrl, pollingWaitTime);
+      /* start out the gates running */
+      running = true;
     }
 
     /*
@@ -491,105 +481,7 @@ public class NonBlockingIterativeWorkflowProcessorThread implements
         return true;
     }*/
 
-    private String getTaskNameById(String taskId) {
-        for (Iterator i = workflowInst.getWorkflow().getTasks().iterator(); i
-                .hasNext();) {
-            WorkflowTask task = (WorkflowTask) i.next();
-            if (task.getTaskId().equals(taskId)) {
-                return task.getTaskName();
-            }
-        }
 
-        return null;
-    }
-
-    private boolean satisfied(List conditionList, String taskId) {
-        for (Iterator i = conditionList.iterator(); i.hasNext();) {
-            WorkflowCondition c = (WorkflowCondition) i.next();
-            WorkflowConditionInstance cInst = null;
-
-            // see if we've already cached this condition instance
-            if (CONDITION_CACHE.get(taskId) != null) {
-                HashMap conditionMap = (HashMap) CONDITION_CACHE.get(taskId);
-
-                /*
-                 * okay we have some conditions cached for this task, see if we
-                 * have the one we need
-                 */
-                if (conditionMap.get(c.getConditionId()) != null) {
-                    cInst = (WorkflowConditionInstance) conditionMap.get(c
-                            .getConditionId());
-                }
-                /* if not, then go ahead and create it and cache it */
-                else {
-                    cInst = GenericWorkflowObjectFactory
-                            .getConditionObjectFromClassName(c
-                                    .getConditionInstanceClassName());
-                    conditionMap.put(c.getConditionId(), cInst);
-                }
-            }
-            /* no conditions cached yet, so set everything up */
-            else {
-                HashMap conditionMap = new HashMap();
-                cInst = GenericWorkflowObjectFactory
-                        .getConditionObjectFromClassName(c
-                                .getConditionInstanceClassName());
-                conditionMap.put(c.getConditionId(), cInst);
-                CONDITION_CACHE.put(taskId, conditionMap);
-            }
-
-            // actually perform the evaluation
-            if (!cInst.evaluate(workflowInst.getSharedContext(), c.getTaskConfig())) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private String getHostname() {
-        try {
-            // Get hostname by textual representation of IP address
-            InetAddress addr = InetAddress.getLocalHost();
-            // Get the host name
-            String hostname = addr.getHostName();
-            return hostname;
-        } catch (UnknownHostException e) {
-        }
-        return null;
-    }
-
-    private void persistWorkflowInstance() {
-        try {
-            instanceRepository.updateWorkflowInstance(workflowInst);
-        } catch (InstanceRepositoryException e) {
-            LOG.log(Level.WARNING, "Exception persisting workflow instance: ["
-                    + workflowInst.getId() + "]: Message: " + e.getMessage());
-        }
-    }
-
-    private void executeTaskLocally(WorkflowTaskInstance instance,
-            Metadata met, WorkflowTaskConfiguration cfg, String taskName) {
-        try {
-            LOG.log(Level.INFO, "Executing task: [" + taskName + "] locally");
-            instance.run(met, cfg);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING, "Exception executing task: [" + taskName
-                    + "] locally: Message: " + e.getMessage());
-        }
-    }
-
-    private boolean safeCheckJobComplete(String jobId) {
-        try {
-            return rClient.isJobComplete(jobId);
-        } catch (Exception e) {
-            LOG.log(Level.WARNING,
-                    "Exception checking completion status for job: [" + jobId
-                            + "]: Messsage: " + e.getMessage());
-            return false;
-        }
-    }
     
     private WorkflowTask getTaskById(Workflow w, String Id){
     	List tasks = w.getTasks();

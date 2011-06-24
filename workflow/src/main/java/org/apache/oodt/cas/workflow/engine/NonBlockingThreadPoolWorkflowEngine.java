@@ -30,7 +30,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
-import org.apache.oodt.cas.workflow.engine.IterativeWorkflowProcessorThread;
+import org.apache.oodt.cas.workflow.engine.SequentialWorkflowProcessor;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.engine.NonBlockingShepardThread;
 import org.apache.oodt.commons.util.DateConvert;
@@ -151,8 +151,12 @@ public class NonBlockingThreadPoolWorkflowEngine implements WorkflowEngine, Work
     }
     
     public void submitWorkflowInstancetoPool(WorkflowInstance wInst){
-    	IterativeWorkflowProcessorThread worker = new IterativeWorkflowProcessorThread(
-                wInst, instRep, this.wmgrUrl);
+      long pollingWaitTime = Long
+      .getLong(
+              "org.apache.oodt.cas.workflow.engine.resourcemgr.pollingWaitTime",
+              10).longValue();
+    	SequentialWorkflowProcessor worker = new SequentialWorkflowProcessor(
+                wInst, instRep, this.wmgrUrl, pollingWaitTime);
         worker.setRClient(rClient);
         workerMap.put(wInst.getId(), worker);
 
@@ -231,7 +235,7 @@ public class NonBlockingThreadPoolWorkflowEngine implements WorkflowEngine, Work
      */
     public synchronized void pauseWorkflowInstance(String workflowInstId) {
         // okay, try and look up that worker thread in our hash map
-        IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
+        SequentialWorkflowProcessor worker = (SequentialWorkflowProcessor) workerMap
                 .get(workflowInstId);
         if (worker == null) {
             LOG
@@ -255,7 +259,7 @@ public class NonBlockingThreadPoolWorkflowEngine implements WorkflowEngine, Work
      */
     public synchronized void resumeWorkflowInstance(String workflowInstId) {
         // okay, try and look up that worker thread in our hash map
-        IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
+        SequentialWorkflowProcessor worker = (SequentialWorkflowProcessor) workerMap
                 .get(workflowInstId);
         if (worker == null) {
             LOG.log(Level.WARNING,
@@ -370,7 +374,7 @@ public class NonBlockingThreadPoolWorkflowEngine implements WorkflowEngine, Work
      */
     public synchronized void stopWorkflow(String workflowInstId) {
         // okay, try and look up that worker thread in our hash map
-        IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
+        SequentialWorkflowProcessor worker = (SequentialWorkflowProcessor) workerMap
                 .get(workflowInstId);
         if (worker == null) {
             LOG.log(Level.WARNING,
