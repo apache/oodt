@@ -86,8 +86,12 @@ public class BasicVersioner implements Versioner {
 
             try {
                 dataStoreRef = new File(new URI(productRepoPath)).toURL()
-                        .toExternalForm()
-                        + URLEncoder.encode(productName, "UTF-8") + "/";
+                        .toExternalForm();
+                if(!dataStoreRef.endsWith("/")){
+                  dataStoreRef+="/";
+                }
+                
+                dataStoreRef+= URLEncoder.encode(productName, "UTF-8") + "/";
                 LOG.log(Level.INFO, "BasicVersioner: generated DataStore ref: "
                         + dataStoreRef + " from origRef: "
                         + r.getOrigReference());

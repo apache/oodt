@@ -1,6 +1,12 @@
 Apache OODT Change Log
 ======================
 
+Release 0.4: Current Development
+
+* OODT-295 BasicVersioner doesn't work with Hierarchical 
+  Products (mattmann, Tim Stough)
+
+
 Release 0.3
 --------------------------------------------
 Release Date: June 20th, 2011

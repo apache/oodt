@@ -29,6 +29,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
+import org.apache.oodt.cas.metadata.Metadata;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -86,5 +87,30 @@ public class TestBasicVersioner extends TestCase {
 				"file:/foo/bar/test_product/test.txt", generatedRef);
 
 	}
+
+  public void testVersionHierarchical() {
+    String expected = "file:/archive/testdir/";
+    Product p = Product
+        .getDefaultFlatProduct("testdir", "urn:oodt:GenericFile");
+    p.setProductStructure(Product.STRUCTURE_HIERARCHICAL);
+    p.getProductType().setProductRepositoryPath("file:///archive");
+
+    p.getProductReferences().add(
+        new Reference("file:///tmp/somedir/", null, 4L));
+    p.getProductReferences().add(
+        new Reference("file:///tmp/somedir/file.txt", null, 4096L));
+
+    BasicVersioner versioner = new BasicVersioner();
+    try {
+      versioner.createDataStoreReferences(p, new Metadata());
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    assertNotNull(p.getProductReferences());
+    assertEquals(2, p.getProductReferences().size());
+    assertEquals(expected, p.getProductReferences().get(0)
+        .getDataStoreReference());
+  }
 
 }
