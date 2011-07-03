@@ -63,6 +63,17 @@ the License.
     </tag>
     
     -->
+
+    <!-- 
+    
+    If you want to turn your CAS File Manager into a GeoRSS 
+    simple service (see http://georss.org/simple), add the 
+    following block, assuming that you have indexed met fields 
+    named Latitude and Longitude for your product (update as 
+    appropriate otherwise).
+    
+    <tag name="georss:point" source="[Latitude] [Longitude]"/>
+    -->
     
     <tag name="cas:source" source="[ProductType]"/>
     <tag name="source" source="[ProductType]"/>
