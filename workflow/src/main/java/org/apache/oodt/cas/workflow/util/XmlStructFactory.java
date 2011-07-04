@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.workflow.util;
 
 //JDK imports
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -30,6 +31,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 
 //OODT imports
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
@@ -272,6 +274,30 @@ public final class XmlStructFactory {
 
         return properties;
     }
+    
+    public static Metadata getConfigurationAsMetadata(Node configNode)
+        throws Exception {
+      Metadata curMetadata = new Metadata();
+      NodeList curGrandChildren = configNode.getChildNodes();
+      for (int k = 0; k < curGrandChildren.getLength(); k++) {
+        if (curGrandChildren.item(k).getNodeName().equals("property")) {
+          Element property = (Element) curGrandChildren.item(k);
+          String delim = property.getAttribute("delim");
+          String envReplace = property.getAttribute("envReplace");
+          String name = property.getAttribute("name");
+          String value = property.getAttribute("value");
+          if (Boolean.parseBoolean(envReplace))
+            value = PathUtils.doDynamicReplacement(value);
+          List<String> values = new Vector<String>();
+          if (delim.length() > 0)
+            values.addAll(Arrays.asList(value.split("\\" + delim)));
+          else
+            values.add(value);
+          curMetadata.replaceMetadata(name, values);
+        }
+      }
+      return curMetadata;
+    }    
 
     private static Element getFirstElement(String name, Element root) {
         NodeList list = root.getElementsByTagName(name);

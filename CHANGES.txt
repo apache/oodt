@@ -2,6 +2,9 @@ Apache OODT Change Log
 ======================
 
 Release 0.4: Current Development
+--------------------------------------------
+* OODT-70 Add ability for sequential and parallel task 
+  specifications for Workflows (mattmann, bfoster)
 
 * OODT-295 BasicVersioner doesn't work with Hierarchical 
   Products (mattmann, Tim Stough)
