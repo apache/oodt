@@ -245,7 +245,17 @@ the License.
             <roles>
                 <role>committer</role>
             </roles>
-        </developer>        
+        </developer>
+        <developer>
+            <id>gabe</id>
+            <name>Gabe Resneck</name>
+            <email>gabriel.m.resneck@jpl.nasa.gov</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
     </developers>
     <licenses>
         <license>
