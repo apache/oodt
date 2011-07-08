@@ -3,6 +3,10 @@ Apache OODT Change Log
 
 Release 0.4: Current Development
 --------------------------------------------
+* OODT-294 Updated website to announce release of 0.3 (goodale)
+
+* OODT-180 Fixed small typo on website (goodale)
+
 * OODT-70 Add ability for sequential and parallel task 
   specifications for Workflows (mattmann, bfoster)
 
