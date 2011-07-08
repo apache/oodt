@@ -17,7 +17,7 @@
  */
 
 require_once("XML/RPC.php");
-require_once("CAS/Filemgr/Metadata.class.php");
+require_once("Metadata.class.php");
 
 /**
  * Ports the core file manager data structure, 
@@ -25,6 +25,7 @@ require_once("CAS/Filemgr/Metadata.class.php");
  * 
  * @author ahart
  * @author mattmann
+ * @author gabe
  * 
  */
 class CAS_Filemgr_ProductType {
@@ -53,8 +54,8 @@ class CAS_Filemgr_ProductType {
 			? $xmlRpcData['versionerClass'] 
 			: '';
 		$this->typeMetadata = (isset($xmlRpcData['typeMetadata'])) 
-		    ? new Metadata($xmlRpcData['typeMetadata'])
-		    : new Metadata();
+		    ? new CAS_Filemgr_Metadata($xmlRpcData['typeMetadata'])
+		    : new CAS_Filemgr_Metadata();
 	}
 	
 	function __destruct(){
