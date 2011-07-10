@@ -99,9 +99,19 @@ the License.
     </mailingLists>
     <developers>
         <developer>
-            <id>ahart</id>
-            <name>Andrew Hart</name>
-            <email>ahart@apache.org</email>
+            <id>thomas</id>
+            <name>Thomas Bennett</name>
+            <email>thomas@apache.org</email>
+            <organization>SKA South Africa</organization>
+            <timezone>+2</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>    
+        <developer>
+            <id>crichton</id>
+            <name>Daniel Crichton</name>
+            <email>crichton@apache.org</email>
             <organization>NASA Jet Propulsion Laboratory</organization>
             <timezone>-8</timezone>
             <roles>
@@ -117,27 +127,17 @@ the License.
             <roles>
                 <role>committer</role>
             </roles>
-        </developer>
+        </developer>     
         <developer>
-            <id>crichton</id>
-            <name>Daniel Crichton</name>
-            <email>crichton@apache.org</email>
-            <organization>NASA Jet Propulsion Laboratory</organization>
+            <id>joshuaga</id>
+            <name>Joshua Garcia</name>
+            <email>joshuaga@apache.org</email>
+            <organization>University of Southern California</organization>
             <timezone>-8</timezone>
             <roles>
                 <role>committer</role>
             </roles>
-        </developer>
-        <developer>
-            <id>davekale</id>
-            <name>Dave Kale</name>
-            <email>davekale@apache.org</email>
-            <organization>Childrens Hospital Los Angeles</organization>
-            <timezone>-8</timezone>
-            <roles>
-                <role>committer</role>
-            </roles>
-        </developer>
+        </developer>           
         <developer>
             <id>goodale</id>
             <name>Cameron Goodale</name>
@@ -153,15 +153,35 @@ the License.
             </properties>
         </developer>
         <developer>
-            <id>joshuaga</id>
-            <name>Joshua Garcia</name>
-            <email>joshuaga@apache.org</email>
-            <organization>University of Southern California</organization>
+            <id>shardman</id>
+            <name>Sean Hardman</name>
+            <email>shardman@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
             <timezone>-8</timezone>
             <roles>
                 <role>committer</role>
             </roles>
-        </developer>
+        </developer>        
+        <developer>
+            <id>ahart</id>
+            <name>Andrew Hart</name>
+            <email>ahart@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>  
+        <developer>
+            <id>davekale</id>
+            <name>Dave Kale</name>
+            <email>davekale@apache.org</email>
+            <organization>Childrens Hospital Los Angeles</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>              
         <developer>
             <id>kelly</id>
             <name>Sean Kelly</name>
@@ -207,16 +227,6 @@ the License.
             </roles>
         </developer>
         <developer>
-            <id>shardman</id>
-            <name>Sean Hardman</name>
-            <email>shardman@apache.org</email>
-            <organization>NASA Jet Propulsion Laboratory</organization>
-            <timezone>-8</timezone>
-            <roles>
-                <role>committer</role>
-            </roles>
-        </developer>
-        <developer>
             <id>smcclees</id>
             <name>Sean McCleese</name>
             <email>smcclees@apache.org</email>
@@ -227,30 +237,20 @@ the License.
             </roles>
         </developer>
         <developer>
-            <id>woollard</id>
-            <name>David Woollard</name>
-            <email>woollard@apache.org</email>
-            <organization>Project WBS</organization>
-            <timezone>-8</timezone>
-            <roles>
-                <role>committer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>thomas</id>
-            <name>Thomas Bennett</name>
-            <email>thomas@apache.org</email>
-            <organization>SKA South Africa</organization>
-            <timezone>+2</timezone>
-            <roles>
-                <role>committer</role>
-            </roles>
-        </developer>
-        <developer>
             <id>gabe</id>
             <name>Gabe Resneck</name>
             <email>gabriel.m.resneck@jpl.nasa.gov</email>
             <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>        
+        <developer>
+            <id>woollard</id>
+            <name>David Woollard</name>
+            <email>woollard@apache.org</email>
+            <organization>Project WBS</organization>
             <timezone>-8</timezone>
             <roles>
                 <role>committer</role>
