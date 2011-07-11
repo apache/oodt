@@ -40,6 +40,8 @@ class Org_Apache_Oodt_Balance_Core_ApplicationResponse {
 	protected $stylesheets = array();
 	protected $javascripts = array();
 	
+	protected $data;
+
 	const DYN_JS_TAG  = '<!-- JAVASCRIPTS -->';
 	const DYN_CSS_TAG = '<!-- STYLESHEETS -->';
 	
@@ -245,6 +247,24 @@ class Org_Apache_Oodt_Balance_Core_ApplicationResponse {
 	}
 	public function getFooterContent() {
 		return $this->footer;
+	}
+
+	public function data($key = null, $value = null) {
+	       
+		// Return the data store associated with this request
+		if ($key == null && $value == null) {
+			return $this->data;
+		}
+					
+		// Return the stored value for the provided key
+		if ($value == null) {
+			return isset($this->data[$key]) 
+				? $this->data[$key] 
+				: null;
+		}
+															   
+		// Set the stored value for the key to the provided value
+		$this->data[$key] = $value;
 	}
 	
 	public function addStylesheet($href,$condition='') {
