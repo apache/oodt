@@ -17,7 +17,7 @@
 		<groupId>org.apache.oodt</groupId>
 		<artifactId>oodt-core</artifactId>
 		<version>0.4-SNAPSHOT</version>
-		<relativePath>../core/pom.xml</relativePath>
+		<relativePath>../../core/pom.xml</relativePath>
 	</parent>
 	<artifactId>cas-protocol-imaps</artifactId>
 	<name>CAS Protocol IMAPS Implementation</name>
