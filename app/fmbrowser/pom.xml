@@ -29,6 +29,11 @@ the License.
      provides the user of the CAS File Manager with a graphical environment in which they
      can view archived products' metadata, query for products with particular metadata, 
      and export results of queries to the MS Excel(c) file format.</description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/trunk/app/fmbrowser</url>
+  </scm>
   <build>
     <plugins />
   </build>

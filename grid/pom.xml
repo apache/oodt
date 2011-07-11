@@ -57,6 +57,11 @@ the License.
     profiles.  Further, it provides a password-protected mechanism to
     add new sets of product and profile query handlers, enabling
     seamless activation of additional capabilities.</description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/trunk/grid</url>
+  </scm>
   <build>
     <plugins>
       <plugin>

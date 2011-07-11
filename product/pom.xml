@@ -34,6 +34,11 @@
         formats and into Internet standard formats or run other transformations, all
         without impacting local stores or operations.
     </description>
+    <scm>
+   		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/product</connection>
+   		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/product</developerConnection>
+   		<url>http://svn.apache.org/viewvc/oodt/trunk/product</url>
+    </scm>
     <build>
         <resources>
             <resource>

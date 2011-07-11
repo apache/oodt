@@ -35,6 +35,11 @@ the License.
 		<slf4j.version>1.5.8</slf4j.version>
 		<log4j.version>1.2.14</log4j.version>
 	</properties>
+	<scm>
+   		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/webapp/wmonitor</connection>
+   		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/webapp/wmonitor</developerConnection>
+   		<url>http://svn.apache.org/viewvc/oodt/trunk/webapp/wmonitor</url>
+  	</scm>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
