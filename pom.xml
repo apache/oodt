@@ -43,6 +43,11 @@ the License.
         <module>commons</module>
         <module>pcs/input</module>
         <module>metadata</module>
+        <module>protocol/protocol-api</module>
+        <module>protocol/protocol-ftp</module>
+        <module>protocol/protocol-http</module>
+        <module>protocol/protocol-imaps</module>
+        <module>protocol/protocol-sftp</module>
         <module>xmlquery</module>
         <module>sso</module>
         <module>filemgr</module>
