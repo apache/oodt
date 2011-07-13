@@ -1,0 +1,8 @@
+#!/bin/csh
+
+${JAVA_HOME}/bin/java \
+	-Djava.ext.dirs=../lib \
+	-Djava.util.logging.config.file=../etc/logging.properties \
+	org.apache.oodt.cas.workflow.gui.WorkflowGUI
+
+
