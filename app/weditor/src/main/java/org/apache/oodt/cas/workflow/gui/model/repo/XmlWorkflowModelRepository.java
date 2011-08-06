@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -58,6 +61,8 @@ public class XmlWorkflowModelRepository {
   private List<File> files;
   private Set<ModelGraph> graphs;
   private Map<String, ConfigGroup> globalConfigGroups;
+  private static final Logger LOG = Logger
+      .getLogger(XmlWorkflowModelRepository.class.getName());
 
   public XmlWorkflowModelRepository(File workspace) {
     this.files = new Vector<File>();
@@ -84,13 +89,14 @@ public class XmlWorkflowModelRepository {
       for (int i = 0; i < rootChildren.getLength(); i++)
         if (rootChildren.item(i).getNodeType() == Node.ELEMENT_NODE
             && !rootChildren.item(i).getNodeName().equals("configuration")) {
+          System.out.println("node name: ["+rootChildren.item(i).getNodeName()+"]");
           ModelGraph graph = this.loadGraph(rootElements, new FileBasedElement(
               root.getFile(), (Element) rootChildren.item(i)), new Metadata(),
               globalConfGroups, supportedProcessorIds);
           this.graphs.add(graph);
         }
     }
-    insureUniqueIds(graphs);
+    ensureUniqueIds(graphs);
     this.globalConfigGroups = globalConfGroups;
     System.out.println(this.globalConfigGroups.keySet());
   }
@@ -121,7 +127,7 @@ public class XmlWorkflowModelRepository {
     this.files.clear();
   }
 
-  private void insureUniqueIds(Set<ModelGraph> graphs) {
+  private void ensureUniqueIds(Set<ModelGraph> graphs) {
     for (ModelGraph graph : graphs) {
       HashSet<String> names = new HashSet<String>();
       Vector<ModelGraph> stack = new Vector<ModelGraph>();
@@ -143,6 +149,7 @@ public class XmlWorkflowModelRepository {
       FileBasedElement workflowNode, Metadata staticMetadata,
       HashMap<String, ConfigGroup> globalConfGroups,
       Set<String> supportedProcessorIds) throws Exception {
+    
     String modelIdRef = null;
     String modelId = null;
     String modelName = null;
@@ -194,8 +201,8 @@ public class XmlWorkflowModelRepository {
       }
 
       if (!supportedProcessorIds.contains(executionType))
-        throw new Exception("Unsupported execution type id '" + executionType
-            + "'");
+        LOG.log(Level.WARNING, "Unsupported execution type id '"
+            + executionType + "'");
 
       ModelNode modelNode = new ModelNode(workflowNode.getFile());
       modelNode.setModelId(modelId);
@@ -231,7 +238,8 @@ public class XmlWorkflowModelRepository {
                       (Element) curChild), new Metadata(staticMetadata),
                   globalConfGroups, supportedProcessorIds));
             loadedPreConditions = true;
-          } else if (!curChild.getNodeName().equals("configuration")) {
+          } else if (!curChild.getNodeName().equals("configuration") && 
+              !curChild.getNodeName().equals("requiredMetFields")) {
             graph.addChild(this.loadGraph(rootElements, new FileBasedElement(
                 workflowNode.getFile(), (Element) curChild), new Metadata(
                 staticMetadata), globalConfGroups, supportedProcessorIds));
