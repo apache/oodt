@@ -23,6 +23,9 @@ import java.awt.Font;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.BorderFactory;
 
 //OODT imports
@@ -31,21 +34,17 @@ import org.apache.oodt.cas.workflow.gui.model.ModelNode;
 //JGraph imports
 import org.jgraph.event.GraphModelEvent;
 import org.jgraph.event.GraphModelListener;
-import org.jgraph.event.GraphModelEvent.GraphModelChange;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.ConnectionSet;
 import org.jgraph.graph.DefaultEdge;
 import org.jgraph.graph.DefaultGraphCell;
 import org.jgraph.graph.DefaultGraphModel;
 import org.jgraph.graph.DefaultPort;
-import org.jgraph.graph.GraphCell;
 import org.jgraph.graph.GraphConstants;
 
 //Jung imports
 import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.event.GraphEvent;
-import edu.uci.ics.jung.graph.event.GraphEvent.Edge;
-import edu.uci.ics.jung.graph.event.GraphEvent.Vertex;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
 
 /**
@@ -65,47 +64,70 @@ public class JungJGraphModelAdapter extends DefaultGraphModel {
 
   private ObservableGraph<ModelNode, IdentifiableEdge> jungGraph;
 
-  private Map<GraphCell, Vertex<ModelNode, IdentifiableEdge>> jgraphVertexToJungVertexMap;
+  private Map<String, DefaultGraphCell> cellMap;
+  
+  private static final Logger LOG = Logger.getLogger(JungJGraphModelAdapter.class.getName());
 
-  private Map<Vertex<ModelNode, IdentifiableEdge>, GraphCell> jungVertexToJgraphVertexMap;
-  
-  private Map<GraphCell, Edge<ModelNode, IdentifiableEdge>> jgraphEdgeToJungEdgeMap;
-  
-  private Map<Edge<ModelNode, IdentifiableEdge>, GraphCell> jungEdgeToJGraphEdgeMap;
-  
   public JungJGraphModelAdapter(
-      ObservableGraph<ModelNode, IdentifiableEdge> jungGraph) {
+      final ObservableGraph<ModelNode, IdentifiableEdge> jungGraph) {
     this.jungGraph = jungGraph;
-    this.jgraphVertexToJungVertexMap = new HashMap<GraphCell, GraphEvent.Vertex<ModelNode,IdentifiableEdge>>();
-    this.jungVertexToJgraphVertexMap = new HashMap<GraphEvent.Vertex<ModelNode,IdentifiableEdge>, GraphCell>();
-    this.jgraphEdgeToJungEdgeMap = new HashMap<GraphCell, GraphEvent.Edge<ModelNode,IdentifiableEdge>>();
-    this.jungEdgeToJGraphEdgeMap = new HashMap<GraphEvent.Edge<ModelNode,IdentifiableEdge>, GraphCell>();
-    this.jungGraph.addGraphEventListener(new WorkflowChangeListener(this));    
+    this.jungGraph.addGraphEventListener(new WorkflowChangeListener(this));
+    this.cellMap = new HashMap<String, DefaultGraphCell>();
     this.addGraphModelListener(new GraphModelListener() {
-      
+
       @Override
       public void graphChanged(GraphModelEvent e) {
         Object[] added = e.getChange().getInserted();
-        //Object[] removed = 
-        
+        Object[] removed = e.getChange().getRemoved();
+
+        if (added != null && added.length > 0) {
+          for (Object a : added) {
+            LOG.log(Level.FINE, "Jgraph notification of object added: ["
+                + a.getClass().getName() + "]");
+
+            if (a instanceof org.jgraph.graph.Edge) {
+              LOG.log(Level.FINE, "Edge added to jgraph");
+              org.jgraph.graph.DefaultEdge edge = (org.jgraph.graph.DefaultEdge) a;
+              if (!jungGraph.getEdges().contains(edge.getUserObject())) {
+                jungGraph.addEdge(
+                    new IdentifiableEdge((ModelNode) edge.getSource(),
+                        (ModelNode) edge.getTarget()), (ModelNode) edge
+                        .getSource(), (ModelNode) edge.getTarget());
+              }
+            } else if (a instanceof org.jgraph.graph.DefaultGraphCell) {
+              LOG.log(Level.FINE, "Vertex added to jgraph");
+              org.jgraph.graph.DefaultGraphCell cell = (org.jgraph.graph.DefaultGraphCell) a;
+
+              if (!jungGraph.getVertices().contains(cell.getUserObject())) {
+                jungGraph.addVertex((ModelNode) cell.getUserObject());
+              }
+            }
+          }
+        }
+
+        if (removed != null && removed.length > 0) {
+          for (Object r : removed) {
+            LOG.log(Level.FINE, "Jgraph notification of object removed: ["
+                + r.getClass().getName() + "]");
+          }
+        }
+
       }
     });
-    
+
   }
 
   public DefaultGraphCell getVertexCell(ModelNode node) {
-    for (ModelNode v : this.jungGraph.getVertices()) {
-      if (v.getId().equals(node.getId())) {
-        DefaultGraphCell cell = new DefaultGraphCell();
-        cell.setUserObject(v);
-        return cell;
-      }
+    if (cellMap.get(node.getId()) != null) {
+      return cellMap.get(node.getId());
     }
 
-    return new DefaultGraphCell(node);
+    DefaultGraphCell cell = new DefaultGraphCell(node);
+    cell.add(new DefaultPort());
+    return cell;
   }
 
-  private AttributeMap getEdgeAttributes() {
+  private AttributeMap getEdgeAttributes(DefaultEdge edge) {
     AttributeMap eMap = new AttributeMap();
     GraphConstants.setLineEnd(eMap, GraphConstants.ARROW_TECHNICAL);
     GraphConstants.setEndFill(eMap, true);
@@ -114,10 +136,12 @@ public class JungJGraphModelAdapter extends DefaultGraphModel {
     GraphConstants.setFont(eMap,
         GraphConstants.DEFAULTFONT.deriveFont(Font.BOLD, 12));
     GraphConstants.setLineColor(eMap, Color.decode("#7AA1E6"));
-    return eMap;
+    AttributeMap map = new AttributeMap();
+    map.put(edge, eMap);
+    return map;
   }
 
-  private AttributeMap getVertexAttributes() {
+  private AttributeMap getVertexAttributes(DefaultGraphCell cell) {
     AttributeMap vMap = new AttributeMap();
 
     Color c = Color.decode("#FF9900");
@@ -128,7 +152,10 @@ public class JungJGraphModelAdapter extends DefaultGraphModel {
     GraphConstants.setFont(vMap,
         GraphConstants.DEFAULTFONT.deriveFont(Font.BOLD, 12));
     GraphConstants.setOpaque(vMap, true);
-    return vMap;
+
+    AttributeMap map = new AttributeMap();
+    map.put(cell, vMap);
+    return map;
   }
 
   private class WorkflowChangeListener implements
@@ -151,34 +178,52 @@ public class JungJGraphModelAdapter extends DefaultGraphModel {
     @Override
     public void handleGraphEvent(GraphEvent<ModelNode, IdentifiableEdge> e) {
       if (e.getType().equals(GraphEvent.Type.EDGE_ADDED)) {
-        System.out.println("EDGE ADDED!");
+        LOG.log(Level.FINE, "EDGE ADDED!");
         GraphEvent.Edge<ModelNode, IdentifiableEdge> event = (GraphEvent.Edge<ModelNode, IdentifiableEdge>) e;
-        ConnectionSet set = new ConnectionSet();
-        DefaultEdge theEdge = new DefaultEdge(event.getEdge());
-        DefaultGraphCell from = new DefaultGraphCell((Object) event.getEdge()
-            .getFrom());
-        from.add(new DefaultPort((Object) event.getEdge().getFrom()));
-        DefaultGraphCell to = new DefaultGraphCell((Object) event.getEdge()
-            .getTo());
-        to.add(new DefaultPort((Object) event.getEdge().getTo()));
-        set.connect(theEdge, (DefaultPort) from.getChildAt(0),
-            (DefaultPort) to.getChildAt(0));
-        insert(new Object[] { theEdge }, getEdgeAttributes(), set, null, null);
+        addJGraphEdge(event.getEdge());
       } else if (e.getType().equals(GraphEvent.Type.EDGE_REMOVED)) {
-        System.out.println("EDGE REMOVED!");
+        LOG.log(Level.FINE, "EDGE REMOVED!");
       } else if (e.getType().equals(GraphEvent.Type.VERTEX_ADDED)) {
-        System.out.println("VERTEX ADDED!");
+        LOG.log(Level.FINE, "VERTEX ADDED!");
         GraphEvent.Vertex<ModelNode, IdentifiableEdge> event = (GraphEvent.Vertex<ModelNode, IdentifiableEdge>) e;
-        DefaultGraphCell cell = new DefaultGraphCell(event.getVertex());
-        cell.add(new DefaultPort());
-        insert(new Object[] { cell }, getVertexAttributes(), null, null, null);
-
+        addJGraphVertex(event.getVertex());
       } else if (e.getType().equals(GraphEvent.Type.VERTEX_REMOVED)) {
-        System.out.println("VERTEX REMOVED!");
+        LOG.log(Level.FINE, "VERTEX REMOVED!");
       }
 
     }
 
+  }
+
+  private void addJGraphVertex(ModelNode node) {
+    DefaultGraphCell cell = new DefaultGraphCell(node);
+    cell.add(new DefaultPort());
+    insert(new Object[] { cell }, getVertexAttributes(cell), null, null, null);
+    cellMap.put(node.getId(), cell);
+  }
+
+  private void addJGraphEdge(IdentifiableEdge e) {
+    ConnectionSet set = new ConnectionSet();
+    DefaultEdge theEdge = new DefaultEdge(e);
+    DefaultGraphCell from = null;
+    DefaultGraphCell to = null;
+    String fromVertexId = e.getFrom().getId();
+    String toVertexId = e.getTo().getId();
+    if (!cellMap.containsKey(fromVertexId)) {
+      addJGraphVertex(e.getFrom());
+    }
+    from = cellMap.get(fromVertexId);
+
+    if (!cellMap.containsKey(toVertexId)) {
+      addJGraphVertex(e.getTo());
+    }
+
+    to = cellMap.get(toVertexId);
+
+    set.connect(theEdge, (DefaultPort) from.getChildAt(0),
+        (DefaultPort) to.getChildAt(0));
+    insert(new Object[] { theEdge }, getEdgeAttributes(theEdge), set, null,
+        null);
   }
 
 }
