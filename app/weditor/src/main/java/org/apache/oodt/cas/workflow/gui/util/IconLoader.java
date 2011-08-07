@@ -53,10 +53,6 @@ public class IconLoader {
 
   public static Image getIcon(int icon) throws IOException {
     switch (icon) {
-    case CREATE:
-      return ImageIO.read(IconLoader.class.getResource("create.jpg"));
-    case CREATE_SELECTED:
-      return ImageIO.read(IconLoader.class.getResource("create-sel.jpg"));
     case DELETE:
       return ImageIO.read(IconLoader.class.getResource("delete.jpg"));
     case DELETE_SELECTED:

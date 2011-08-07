@@ -39,6 +39,7 @@ public class FileMenu extends JMenu {
   private JMenuItem openWorkspace;
   private JMenuItem importItem;
   private JMenuItem saveItem;
+  private JMenuItem exitItem;
   private JMenu newMenu, openMenu, importMenu;
 
   public FileMenu() {
@@ -51,6 +52,7 @@ public class FileMenu extends JMenu {
     this.add(importMenu = new JMenu("Import"));
     importMenu.add(this.importItem = new JMenuItem("Project"));
     this.add(this.saveItem = new JMenuItem("Save Project"));
+    this.add(this.exitItem = new JMenuItem("Exit"));
   }
 
   public JMenuItem getOpenWorkspace() {
@@ -71,6 +73,10 @@ public class FileMenu extends JMenu {
 
   public JMenuItem getSave() {
     return this.saveItem;
+  }
+  
+  public JMenuItem getExit(){
+    return this.exitItem;
   }
 
 }

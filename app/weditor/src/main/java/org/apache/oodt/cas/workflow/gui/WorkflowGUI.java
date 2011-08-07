@@ -191,6 +191,14 @@ public class WorkflowGUI extends JFrame {
     JMenuBar bar = new JMenuBar();
     FileMenu fileMenu = new FileMenu();
     bar.add(fileMenu);
+    fileMenu.getExit().addActionListener(new ActionListener() {
+      
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        System.exit(1);        
+      }
+    });
+    
     fileMenu.getOpenWorkspace().addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         try {
