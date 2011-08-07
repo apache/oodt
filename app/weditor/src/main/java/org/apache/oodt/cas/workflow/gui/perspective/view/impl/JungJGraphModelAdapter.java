@@ -65,8 +65,9 @@ public class JungJGraphModelAdapter extends DefaultGraphModel {
   private ObservableGraph<ModelNode, IdentifiableEdge> jungGraph;
 
   private Map<String, DefaultGraphCell> cellMap;
-  
-  private static final Logger LOG = Logger.getLogger(JungJGraphModelAdapter.class.getName());
+
+  private static final Logger LOG = Logger
+      .getLogger(JungJGraphModelAdapter.class.getName());
 
   public JungJGraphModelAdapter(
       final ObservableGraph<ModelNode, IdentifiableEdge> jungGraph) {
@@ -79,13 +80,14 @@ public class JungJGraphModelAdapter extends DefaultGraphModel {
       public void graphChanged(GraphModelEvent e) {
         Object[] added = e.getChange().getInserted();
         Object[] removed = e.getChange().getRemoved();
+        Object[] changed = e.getChange().getChanged();
 
         if (added != null && added.length > 0) {
           for (Object a : added) {
             LOG.log(Level.FINE, "Jgraph notification of object added: ["
                 + a.getClass().getName() + "]");
 
-            if (a instanceof org.jgraph.graph.Edge) {
+            if (a instanceof org.jgraph.graph.DefaultEdge) {
               LOG.log(Level.FINE, "Edge added to jgraph");
               org.jgraph.graph.DefaultEdge edge = (org.jgraph.graph.DefaultEdge) a;
               if (!jungGraph.getEdges().contains(edge.getUserObject())) {
@@ -109,6 +111,21 @@ public class JungJGraphModelAdapter extends DefaultGraphModel {
           for (Object r : removed) {
             LOG.log(Level.FINE, "Jgraph notification of object removed: ["
                 + r.getClass().getName() + "]");
+
+            if (r instanceof org.jgraph.graph.DefaultEdge) {
+              LOG.log(Level.FINE, "Edge removed from jgraph");
+              org.jgraph.graph.DefaultEdge edge = (org.jgraph.graph.DefaultEdge) r;
+              if (jungGraph.getEdges().contains(edge.getUserObject())) {
+                jungGraph.removeEdge((IdentifiableEdge) edge.getUserObject());
+              }
+            } else if (r instanceof org.jgraph.graph.DefaultGraphCell) {
+              LOG.log(Level.FINE, "Vertex removed from jgraph");
+              org.jgraph.graph.DefaultGraphCell cell = (org.jgraph.graph.DefaultGraphCell) r;
+
+              if (jungGraph.getVertices().contains(cell.getUserObject())) {
+                jungGraph.removeVertex((ModelNode) cell.getUserObject());
+              }
+            }
           }
         }
 
