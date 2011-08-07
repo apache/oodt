@@ -88,7 +88,8 @@ public class XmlWorkflowModelRepository {
       NodeList rootChildren = root.getElement().getChildNodes();
       for (int i = 0; i < rootChildren.getLength(); i++)
         if (rootChildren.item(i).getNodeType() == Node.ELEMENT_NODE
-            && !rootChildren.item(i).getNodeName().equals("configuration")) {
+            && !rootChildren.item(i).getNodeName().equals("configuration")
+            && !rootChildren.item(i).getNodeName().equals("event")) {
           System.out.println("node name: ["+rootChildren.item(i).getNodeName()+"]");
           ModelGraph graph = this.loadGraph(rootElements, new FileBasedElement(
               root.getFile(), (Element) rootChildren.item(i)), new Metadata(),
@@ -191,11 +192,14 @@ public class XmlWorkflowModelRepository {
     if (modelId != null) {
 
       if (workflowNode.getElement().getNodeName().equals("workflow")
-          || workflowNode.getElement().getNodeName().equals("conditions")) {
-        if (executionType == null)
-          throw new Exception("workflow model '"
+          || workflowNode.getElement().getNodeName().equals("conditions")
+          || workflowNode.getElement().getNodeName().equals("tasks")) {
+        if (executionType == null){
+          LOG.log(Level.WARNING, "workflow model '"
               + workflowNode.getElement().getNodeName()
-              + "' missing execution type");
+              + "' missing execution type: assuming sequential");
+          executionType = "sequential";
+        }
       } else {
         executionType = workflowNode.getElement().getNodeName();
       }
@@ -243,6 +247,7 @@ public class XmlWorkflowModelRepository {
             graph.addChild(this.loadGraph(rootElements, new FileBasedElement(
                 workflowNode.getFile(), (Element) curChild), new Metadata(
                 staticMetadata), globalConfGroups, supportedProcessorIds));
+          
           }
         }
       }
