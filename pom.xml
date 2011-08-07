@@ -69,6 +69,7 @@ the License.
         <module>webapp/fmprod</module>
         <module>webapp/wmonitor</module>
         <module>app/fmbrowser</module>
+        <module>app/weditor</module>
         <module>pcs/core</module>
         <module>pcs/services</module>
     </modules>
