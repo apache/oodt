@@ -4,7 +4,7 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
-* OODT-296 Workflow Editor GUI (mattmann, bfoster)
+* OODT-296 Workflow Editor GUI (mattmann, bfoster, ahart)
 
 * OODT-294 Updated website to announce release of 0.3 (goodale)
 
