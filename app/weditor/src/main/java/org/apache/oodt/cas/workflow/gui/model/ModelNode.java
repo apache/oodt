@@ -39,6 +39,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 public class ModelNode {
 
   private String id;
+  private String alias;
   private boolean isRef;
   private File file;
   private boolean textVisible;
@@ -80,6 +81,14 @@ public class ModelNode {
 
   public String getId() {
     return this.id;
+  }
+
+  public void setAlias(String alias) {
+  	this.alias = alias;
+  }
+
+  public String getAlias() {
+  	return alias;
   }
 
   public void setIsRef(boolean isRef) {

@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
 //OODT imports
 import org.apache.oodt.cas.workflow.gui.menu.EditMenu;
@@ -76,6 +77,8 @@ public class WorkflowGUI extends JFrame {
   private JMenuBar menu;
 
   private File workspace;
+
+  private XmlWorkflowModelRepository repo;
 
   public WorkflowGUI() throws Exception {
 
@@ -170,7 +173,7 @@ public class WorkflowGUI extends JFrame {
     try {
       XmlWorkflowModelRepositoryFactory factory = new XmlWorkflowModelRepositoryFactory();
       factory.setWorkspace(this.workspace.getAbsolutePath());
-      XmlWorkflowModelRepository repo = factory.createModelRepository();
+      repo = factory.createModelRepository();
       repo.loadGraphs(new HashSet<String>(Arrays.asList("sequential",
           "parallel", "task", "condition")));
       for (File file : repo.getFiles()) {
@@ -270,7 +273,11 @@ public class WorkflowGUI extends JFrame {
     });
     fileMenu.getSave().addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        // TODO: add file save code
+      	try {
+      		repo.save();
+      	} catch (Exception e) {
+      		e.printStackTrace();
+      	}
       }
     });
     EditMenu editMenu = new EditMenu();
