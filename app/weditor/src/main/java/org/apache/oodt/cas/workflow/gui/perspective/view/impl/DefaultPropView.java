@@ -359,6 +359,9 @@ public class DefaultPropView extends View {
       masterPanel.add(this.getExecutionTypePanel(state.getSelected(), state));
       masterPanel.add(this.getPriorityPanel(state));
       masterPanel.add(this.getExecusedIds(state.getSelected()));
+      if (state.getSelected().getModel().getExecutionType().equals("condition")) {
+        masterPanel.add(this.getTimeout(state.getSelected(), state));
+      }
       JScrollPane scrollPane = new JScrollPane(table = this.createTable(state),
           JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
           JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -525,6 +528,31 @@ public class DefaultPropView extends View {
       this.add(new JPanel());
     }
     this.revalidate();
+  }
+
+  private JPanel getTimeout(final ModelGraph graph, final ViewState state) {
+    JPanel panel = new JPanel();
+    panel.setLayout(new BorderLayout());
+    panel.setBorder(new EtchedBorder());
+    panel.add(new JLabel("Timeout:"), BorderLayout.NORTH);
+    JTextField field = new JTextField(String.valueOf(graph.getModel()
+        .getTimeout()), 50);
+    field.addActionListener(new ActionListener() {
+
+      public void actionPerformed(ActionEvent e) {
+        if (!graph.getModel().getModelId().equals(e.getActionCommand())) {
+          graph.getModel().setTimeout(Long.valueOf(
+              e.getActionCommand() != null && 
+              !e.getActionCommand().equals("") ? 
+                  e.getActionCommand():"-1"));
+          DefaultPropView.this.notifyListeners();
+          DefaultPropView.this.refreshView(state);
+        }
+      }
+
+    });
+    panel.add(field, BorderLayout.CENTER);
+    return panel;
   }
 
   private JPanel getModelIdPanel(final ModelGraph graph, final ViewState state) {

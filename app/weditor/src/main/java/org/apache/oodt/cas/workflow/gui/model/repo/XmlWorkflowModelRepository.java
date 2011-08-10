@@ -96,7 +96,8 @@ public class XmlWorkflowModelRepository {
         if (rootChildren.item(i).getNodeType() == Node.ELEMENT_NODE
             && !rootChildren.item(i).getNodeName().equals("configuration")
             && !rootChildren.item(i).getNodeName().equals("event")) {
-          System.out.println("node name: ["+rootChildren.item(i).getNodeName()+"]");
+          System.out.println("node name: ["
+              + rootChildren.item(i).getNodeName() + "]");
           ModelGraph graph = this.loadGraph(rootElements, new FileBasedElement(
               root.getFile(), (Element) rootChildren.item(i)), new Metadata(),
               globalConfGroups, supportedProcessorIds);
@@ -117,7 +118,8 @@ public class XmlWorkflowModelRepository {
   }
 
   public void setGlobalConfigGroups(Map<String, ConfigGroup> globalConfigGroups) {
-  	this.globalConfigGroups = new HashMap<String, ConfigGroup>(globalConfigGroups);
+    this.globalConfigGroups = new HashMap<String, ConfigGroup>(
+        globalConfigGroups);
   }
 
   public List<File> getFiles() {
@@ -138,128 +140,144 @@ public class XmlWorkflowModelRepository {
     this.files.clear();
   }
 
-  private void saveGraphs() throws FileNotFoundException, ParserConfigurationException {
-  	Map<File, Document> documents = new HashMap<File, Document>();
-  	for (ModelGraph graph : this.graphs) {
-  		Document document = documents.get(graph.getModel().getFile());
-  		if (document == null) {
-  			document = createDocument();
-  			document.appendChild(document.createElement("workflows"));
-  			documents.put(graph.getModel().getFile(), document);
-  		}
-  		saveGraph(graph, document.getDocumentElement(), document);
-  	}
-  	saveGlobalConfigGroups(documents);
-  	writeOutDocuments(documents);
-  	this.files = new ArrayList<File>(documents.keySet());
+  private void saveGraphs() throws FileNotFoundException,
+      ParserConfigurationException {
+    Map<File, Document> documents = new HashMap<File, Document>();
+    for (ModelGraph graph : this.graphs) {
+      Document document = documents.get(graph.getModel().getFile());
+      if (document == null) {
+        document = createDocument();
+        document.appendChild(document.createElement("workflows"));
+        documents.put(graph.getModel().getFile(), document);
+      }
+      saveGraph(graph, document.getDocumentElement(), document);
+    }
+    saveGlobalConfigGroups(documents);
+    writeOutDocuments(documents);
+    this.files = new ArrayList<File>(documents.keySet());
   }
 
   private void writeOutDocuments(Map<File, Document> documents) {
-  	for (File file : documents.keySet()) {
-  		XMLUtils.writeXmlFile(documents.get(file), file.getAbsolutePath());
-  	}
-  }
-
-  private void saveGlobalConfigGroups(Map<File, Document> documents) throws ParserConfigurationException {
-  	File globalConfigGroupsFile = new File(workspace, "shared-configuration.xml");
-  	Document document = documents.get(globalConfigGroupsFile);
-  	if (document == null) {
-			document = createDocument();
-			document.appendChild(document.createElement("workflows"));
-			documents.put(globalConfigGroupsFile, document);
-  	}
-  	for (String configName : this.globalConfigGroups.keySet()) {
-  		ConfigGroup globalConfig = this.globalConfigGroups.get(configName);
-	    Element configElem = document.createElement("configuration");
-	    document.getDocumentElement().appendChild(configElem);
-	    configElem.setAttribute("name", globalConfig.getName());
-	    if (!globalConfig.getExtends().isEmpty()) {
-	    	configElem.setAttribute("extends", StringUtils.join(globalConfig.getExtends(), ", "));
-	    }
-
-	    String[] properties = globalConfig.getMetadata().getAllKeys().toArray(new String[globalConfig.getMetadata().getAllKeys().size()]);
-	    Arrays.sort(properties);
-	    for (String property : properties) {
-		    Element propElem = document.createElement("property");
-		    configElem.appendChild(propElem);
-		    propElem.setAttribute("name", property);
-		    propElem.setAttribute("value", globalConfig.getMetadata().getMetadata(property));
-	    }
-  	}
-  }
-
-  private void saveGraph(ModelGraph graph, Element parentElem, Document document) throws FileNotFoundException, ParserConfigurationException {
-		ModelNode node = graph.getModel();
-    
-		Element workflowElem = document.createElement(node.getExecutionType());
-		parentElem.appendChild(workflowElem);
-
-		if (node.isRef()) {
-    	workflowElem.setAttribute("id-ref", node.getModelId());
-    	if (node.getAlias() != null) {
-    		workflowElem.setAttribute("alias", node.getAlias());
-    	}
-    	saveConfiguration(node, workflowElem, document);
-    } else {
-	    workflowElem.setAttribute("id", node.getModelId());
-	    workflowElem.setAttribute("name", node.getModelName());
-	    if (node.getInstanceClass() != null) {
-	    	workflowElem.setAttribute("class", node.getInstanceClass());
-	    }
-	  	
-	  	saveConfiguration(node, workflowElem, document);
-
-	    // handle preconditions
-	    if (graph.getPreConditions() != null) {
-	    	Element preConditions = document.createElement("conditions");
-	    	workflowElem.appendChild(preConditions);
-	    	preConditions.setAttribute("type", "pre");
-	    	preConditions.setAttribute("execution", graph.getPreConditions().getModel().getExecutionType());
-	    	for (ModelGraph preCondition : graph.getPreConditions().getChildren()) {
-	    		saveGraph(preCondition, preConditions, document);
-	    	}
-	    }
-	    
-	    // handle subprocessors
-	    for (ModelGraph subProcessor : graph.getChildren()) {
-	    	saveGraph(subProcessor, workflowElem, document);
-	    }
-	    
-	    // handle postconditions
-	    if (graph.getPostConditions() != null) {
-	    	Element postConditions = document.createElement("conditions");
-	    	workflowElem.appendChild(postConditions);
-	    	postConditions.setAttribute("type", "post");
-	    	postConditions.setAttribute("execution", graph.getPostConditions().getModel().getExecutionType());
-	    	for (ModelGraph postCondition : graph.getPostConditions().getChildren()) {
-	    		saveGraph(postCondition, postConditions, document);
-	    	}
-	    }
+    for (File file : documents.keySet()) {
+      XMLUtils.writeXmlFile(documents.get(file), file.getAbsolutePath());
     }
-  	if (!node.getExcusedSubProcessorIds().isEmpty()) {
-  		workflowElem.setAttribute("excused", StringUtils.join(node.getExcusedSubProcessorIds(), ","));
-  	}
-  	if (node.isEntryPoint()) {
-  		workflowElem.setAttribute("entryPoint", "true");
-  	}
   }
 
-  private void saveConfiguration(ModelNode node, Element workflowElem, Document document) {
-  	if (!node.getStaticMetadata().getAllKeys().isEmpty()) {
-	    Element configElem = document.createElement("configuration");
-	    workflowElem.appendChild(configElem);
-	    if (!node.getExtendsConfig().isEmpty()) {
-	    	configElem.setAttribute("extends", StringUtils.join(node.getExtendsConfig(), ", "));
-	    }
-	    String[] properties = node.getStaticMetadata().getAllKeys().toArray(new String[node.getStaticMetadata().getAllKeys().size()]);
-	    Arrays.sort(properties);
-	    for (String property : properties) {
-		    Element propElem = document.createElement("property");
-		    configElem.appendChild(propElem);
-		    propElem.setAttribute("name", property);
-		    propElem.setAttribute("value", node.getStaticMetadata().getMetadata(property));
-	    }
-  	}
+  private void saveGlobalConfigGroups(Map<File, Document> documents)
+      throws ParserConfigurationException {
+    File globalConfigGroupsFile = new File(workspace,
+        "shared-configuration.xml");
+    Document document = documents.get(globalConfigGroupsFile);
+    if (document == null) {
+      document = createDocument();
+      document.appendChild(document.createElement("workflows"));
+      documents.put(globalConfigGroupsFile, document);
+    }
+    for (String configName : this.globalConfigGroups.keySet()) {
+      ConfigGroup globalConfig = this.globalConfigGroups.get(configName);
+      Element configElem = document.createElement("configuration");
+      document.getDocumentElement().appendChild(configElem);
+      configElem.setAttribute("name", globalConfig.getName());
+      if (!globalConfig.getExtends().isEmpty()) {
+        configElem.setAttribute("extends",
+            StringUtils.join(globalConfig.getExtends(), ", "));
+      }
+
+      String[] properties = globalConfig.getMetadata().getAllKeys()
+          .toArray(new String[globalConfig.getMetadata().getAllKeys().size()]);
+      Arrays.sort(properties);
+      for (String property : properties) {
+        Element propElem = document.createElement("property");
+        configElem.appendChild(propElem);
+        propElem.setAttribute("name", property);
+        propElem.setAttribute("value",
+            globalConfig.getMetadata().getMetadata(property));
+      }
+    }
+  }
+
+  private void saveGraph(ModelGraph graph, Element parentElem, Document document)
+      throws FileNotFoundException, ParserConfigurationException {
+    ModelNode node = graph.getModel();
+
+    Element workflowElem = document.createElement(node.getExecutionType());
+    parentElem.appendChild(workflowElem);
+
+    if (node.isRef()) {
+      workflowElem.setAttribute("id-ref", node.getModelId());
+      if (node.getAlias() != null) {
+        workflowElem.setAttribute("alias", node.getAlias());
+      }
+      saveConfiguration(node, workflowElem, document);
+    } else {
+      workflowElem.setAttribute("id", node.getModelId());
+      workflowElem.setAttribute("name", node.getModelName());
+      if (node.getInstanceClass() != null) {
+        workflowElem.setAttribute("class", node.getInstanceClass());
+      }
+
+      saveConfiguration(node, workflowElem, document);
+
+      // handle preconditions
+      if (graph.getPreConditions() != null) {
+        Element preConditions = document.createElement("conditions");
+        workflowElem.appendChild(preConditions);
+        preConditions.setAttribute("type", "pre");
+        preConditions.setAttribute("execution", graph.getPreConditions()
+            .getModel().getExecutionType());
+        preConditions.setAttribute("timeout", String.valueOf(graph.getModel().getTimeout()));
+        for (ModelGraph preCondition : graph.getPreConditions().getChildren()) {
+          saveGraph(preCondition, preConditions, document);
+        }
+      }
+
+      // handle subprocessors
+      for (ModelGraph subProcessor : graph.getChildren()) {
+        saveGraph(subProcessor, workflowElem, document);
+      }
+
+      // handle postconditions
+      if (graph.getPostConditions() != null) {
+        Element postConditions = document.createElement("conditions");
+        workflowElem.appendChild(postConditions);
+        postConditions.setAttribute("type", "post");
+        postConditions.setAttribute("execution", graph.getPostConditions()
+            .getModel().getExecutionType());
+        postConditions.setAttribute("timeout", String.valueOf(graph.getModel().getTimeout()));
+        for (ModelGraph postCondition : graph.getPostConditions().getChildren()) {
+          saveGraph(postCondition, postConditions, document);
+        }
+      }
+    }
+    if (!node.getExcusedSubProcessorIds().isEmpty()) {
+      workflowElem.setAttribute("excused",
+          StringUtils.join(node.getExcusedSubProcessorIds(), ","));
+    }
+    if (node.isEntryPoint()) {
+      workflowElem.setAttribute("entryPoint", "true");
+    }
+  }
+
+  private void saveConfiguration(ModelNode node, Element workflowElem,
+      Document document) {
+    if (!node.getStaticMetadata().getAllKeys().isEmpty()) {
+      Element configElem = document.createElement("configuration");
+      workflowElem.appendChild(configElem);
+      if (!node.getExtendsConfig().isEmpty()) {
+        configElem.setAttribute("extends",
+            StringUtils.join(node.getExtendsConfig(), ", "));
+      }
+      String[] properties = node.getStaticMetadata().getAllKeys()
+          .toArray(new String[node.getStaticMetadata().getAllKeys().size()]);
+      Arrays.sort(properties);
+      for (String property : properties) {
+        Element propElem = document.createElement("property");
+        configElem.appendChild(propElem);
+        propElem.setAttribute("name", property);
+        propElem.setAttribute("value",
+            node.getStaticMetadata().getMetadata(property));
+      }
+    }
   }
 
   private Document createDocument() throws ParserConfigurationException {
@@ -267,7 +285,7 @@ public class XmlWorkflowModelRepository {
     factory.setNamespaceAware(true);
     return factory.newDocumentBuilder().newDocument();
   }
-  
+
   private void ensureUniqueIds(Set<ModelGraph> graphs) {
     for (ModelGraph graph : graphs) {
       HashSet<String> names = new HashSet<String>();
@@ -290,7 +308,7 @@ public class XmlWorkflowModelRepository {
       FileBasedElement workflowNode, Metadata staticMetadata,
       HashMap<String, ConfigGroup> globalConfGroups,
       Set<String> supportedProcessorIds) throws Exception {
-    
+
     String modelIdRef = null;
     String modelId = null;
     String modelName = null;
@@ -298,6 +316,7 @@ public class XmlWorkflowModelRepository {
     String executionType = null;
     List<String> excused = new Vector<String>();
     String clazz = null;
+    long timeout = -1;
     boolean entryPoint = false;
 
     NamedNodeMap attributes = workflowNode.getElement().getAttributes();
@@ -319,6 +338,10 @@ public class XmlWorkflowModelRepository {
         alias = node.getNodeValue();
       } else if (node.getNodeName().equals("execution")) {
         executionType = node.getNodeValue();
+      } else if (node.getNodeName().equals("timeout")) {
+        timeout = node.getNodeValue() != null
+            && !node.getNodeValue().equals("") ? Long.valueOf(node
+            .getNodeValue()) : -1;
       } else if (node.getNodeName().startsWith("p:")) {
         staticMetadata.replaceMetadata(node.getNodeName().substring(2),
             node.getNodeValue());
@@ -334,7 +357,7 @@ public class XmlWorkflowModelRepository {
       if (workflowNode.getElement().getNodeName().equals("workflow")
           || workflowNode.getElement().getNodeName().equals("conditions")
           || workflowNode.getElement().getNodeName().equals("tasks")) {
-        if (executionType == null){
+        if (executionType == null) {
           LOG.log(Level.WARNING, "workflow model '"
               + workflowNode.getElement().getNodeName()
               + "' missing execution type: assuming sequential");
@@ -356,6 +379,7 @@ public class XmlWorkflowModelRepository {
       modelNode.setExcusedSubProcessorIds(excused);
       modelNode.setInstanceClass(clazz);
       modelNode.setEntryPoint(entryPoint);
+      modelNode.setTimeout(timeout);
 
       loadConfiguration(rootElements, workflowNode, modelNode, globalConfGroups);
 
@@ -382,12 +406,12 @@ public class XmlWorkflowModelRepository {
                       (Element) curChild), new Metadata(staticMetadata),
                   globalConfGroups, supportedProcessorIds));
             loadedPreConditions = true;
-          } else if (!curChild.getNodeName().equals("configuration") && 
-              !curChild.getNodeName().equals("requiredMetFields")) {
+          } else if (!curChild.getNodeName().equals("configuration")
+              && !curChild.getNodeName().equals("requiredMetFields")) {
             graph.addChild(this.loadGraph(rootElements, new FileBasedElement(
                 workflowNode.getFile(), (Element) curChild), new Metadata(
                 staticMetadata), globalConfGroups, supportedProcessorIds));
-          
+
           }
         }
       }

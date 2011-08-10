@@ -51,6 +51,7 @@ public class ModelNode {
   private String instanceClass;
   private List<String> excusedSubProcessorIds;
   private Metadata staticMetadata;
+  private long timeout;
 
   public ModelNode(File file) {
     super();
@@ -66,6 +67,7 @@ public class ModelNode {
     this.instanceClass = null;
     this.excusedSubProcessorIds = new Vector<String>();
     this.staticMetadata = new Metadata();
+    this.timeout = -1;
   }
 
   public ModelNode(File file, String modelId) {
@@ -330,6 +332,20 @@ public class ModelNode {
    */
   public void setStaticMetadata(Metadata staticMetadata) {
     this.staticMetadata = staticMetadata;
+  }
+
+  /**
+   * @return the timeout
+   */
+  public long getTimeout() {
+    return timeout;
+  }
+
+  /**
+   * @param timeout the timeout to set
+   */
+  public void setTimeout(long timeout) {
+    this.timeout = timeout;
   }
 
 }
