@@ -40,6 +40,9 @@
 	<event name="metError">
 		<workflow id="urn:oodt:testMetErrorWorkflow" />
 	</event>
+	<event name="timeout">
+	    <workflow id="urn:oodt:timeoutWorkflow"/>
+	</event>
     <event name="GenericFileIngest">
        <workflow id="urn:oodt:mailWorkflow"/>
     </event>

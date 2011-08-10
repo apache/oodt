@@ -89,7 +89,7 @@
 
 
 	<!-- CONDITIONS -->
-	<condition id="urn:npp:MOA_IASI_L1C_Daily" name="MOA_IASI_L1C_Daily" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+	<condition id="urn:npp:MOA_IASI_L1C_Daily" name="MOA_IASI_L1C_Daily" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition" timeout="30">
 		<configuration>
 			<!-- query properties -->
 			<property name="PGETask/Condition/ProductTypeNames" value="MOA_IASI_L1C"/>

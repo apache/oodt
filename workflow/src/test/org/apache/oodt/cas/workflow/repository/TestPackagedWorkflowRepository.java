@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -93,6 +94,23 @@ public class TestPackagedWorkflowRepository extends TestCase {
 
     assertTrue(foundThree);
     assertTrue(foundFour);
+  }
+  
+  /**
+   * @since OODT-207
+   */
+  public void testGetConditionTimeout(){
+    WorkflowCondition cond = null;
+    try{
+      cond = this.repo.getWorkflowConditionById("urn:npp:MOA_IASI_L1C_Daily");
+    }
+    catch(Exception e){
+      e.printStackTrace();
+      fail(e.getMessage());
+    }
+    
+    assertNotNull(cond);
+    assertEquals(30L, cond.getTimeoutSeconds());
   }
 
   /*

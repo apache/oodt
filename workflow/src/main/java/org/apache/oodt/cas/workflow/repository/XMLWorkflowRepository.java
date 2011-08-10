@@ -319,7 +319,8 @@ public class XMLWorkflowRepository implements WorkflowRepository {
                         System.out.println("Condition: ["
                                 + condition.getClass().getName() + ", id="
                                 + condition.getConditionId() + ", name="
-                                + condition.getConditionName() + ", order="
+                                + condition.getConditionName() + ", timeout="
+                                + condition.getTimeoutSeconds()+ ", order="
                                 + condition.getOrder() + "]");
                         
                         System.out.println("Configuration: ");

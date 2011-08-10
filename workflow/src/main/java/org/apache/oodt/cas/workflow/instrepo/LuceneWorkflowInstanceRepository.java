@@ -585,25 +585,24 @@ public class LuceneWorkflowInstanceRepository extends
         }
     }
 
-    private void addConditionsToDoc(String taskId, List conditionList,
-            Document doc) {
-        if (conditionList != null && conditionList.size() > 0) {
-            for (Iterator i = conditionList.iterator(); i.hasNext();) {
-                WorkflowCondition cond = (WorkflowCondition) i.next();
-                doc.add(new Field(taskId + "_condition_name", cond
-                        .getConditionName(), Field.Store.YES, Field.Index.NO));
-                doc.add(new Field(taskId + "_condition_id", cond
-                        .getConditionId(), Field.Store.YES,
-                        Field.Index.UN_TOKENIZED));
-                doc.add(new Field(taskId + "_condition_class", cond
-                        .getConditionInstanceClassName(), Field.Store.YES,
-                        Field.Index.NO));
-                doc.add(new Field(taskId + "_condition_order", String
-                        .valueOf(cond.getOrder()), Field.Store.YES,
-                        Field.Index.NO));
-            }
-        }
+  private void addConditionsToDoc(String taskId, List conditionList,
+      Document doc) {
+    if (conditionList != null && conditionList.size() > 0) {
+      for (Iterator i = conditionList.iterator(); i.hasNext();) {
+        WorkflowCondition cond = (WorkflowCondition) i.next();
+        doc.add(new Field(taskId + "_condition_name", cond.getConditionName(),
+            Field.Store.YES, Field.Index.NO));
+        doc.add(new Field(taskId + "_condition_id", cond.getConditionId(),
+            Field.Store.YES, Field.Index.UN_TOKENIZED));
+        doc.add(new Field(taskId + "_condition_class", cond
+            .getConditionInstanceClassName(), Field.Store.YES, Field.Index.NO));
+        doc.add(new Field(taskId + "_condition_order", String.valueOf(cond
+            .getOrder()), Field.Store.YES, Field.Index.NO));
+        doc.add(new Field(taskId + "_condition_timeout", String.valueOf(cond
+            .getTimeoutSeconds()), Field.Store.YES, Field.Index.NO));
+      }
     }
+  }
 
     private WorkflowInstance toWorkflowInstance(Document doc) {
         WorkflowInstance inst = new WorkflowInstance();
@@ -712,6 +711,7 @@ public class LuceneWorkflowInstanceRepository extends
         String[] condClasses = doc.getValues(taskId + "_condition_class");
         String[] condOrders = doc.getValues(taskId + "_condition_order");
         String[] condIds = doc.getValues(taskId + "_condition_id");
+        String[] condTimeouts = doc.getValues(taskId+"_condition_timeout");
 
         if (condNames == null) {
             return condList;
@@ -719,7 +719,8 @@ public class LuceneWorkflowInstanceRepository extends
 
         if (condNames.length != condClasses.length
                 || condNames.length != condOrders.length
-                || condNames.length != condIds.length) {
+                || condNames.length != condIds.length 
+                || condNames.length != condTimeouts.length) {
             LOG.log(Level.WARNING,
                     "Condition arrays are not of same size when "
                             + "rebuilding from given Document");
@@ -732,6 +733,7 @@ public class LuceneWorkflowInstanceRepository extends
             cond.setConditionInstanceClassName(condClasses[i]);
             cond.setConditionName(condNames[i]);
             cond.setOrder(Integer.parseInt(condOrders[i]));
+            cond.setTimeoutSeconds(Long.parseLong(condTimeouts[i]));
         }
 
         return condList;

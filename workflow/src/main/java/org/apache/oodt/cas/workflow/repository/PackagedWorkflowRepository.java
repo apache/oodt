@@ -496,6 +496,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
         cond.setConditionId(graph.getModelId());
         cond.setConditionName(graph.getModelName());
         cond.setConditionInstanceClassName(graph.getClazz());
+        cond.setTimeoutSeconds(graph.getTimeout());
         cond.setCondConfig(convertToConditionConfiguration(staticMetadata));
 
         if (cond.getConditionName() == null
@@ -564,7 +565,9 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   }
 
   private ParentChildWorkflow getDynamicWorkflow(WorkflowTask task) {
-    ParentChildWorkflow workflow = new ParentChildWorkflow(new Graph());
+    Graph graph = new Graph();
+    graph.setExecutionType("sequential");
+    ParentChildWorkflow workflow = new ParentChildWorkflow(graph);
     workflow.setId("parallel-" + UUID.randomUUID().toString());
     workflow.setName("Parallel Single Task " + task.getTaskName());
     workflow.getTasks().add(task);
@@ -644,6 +647,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     private List<String> excused;
 
     private String clazz;
+    
+    private long timeout;
 
     private Graph parent;
 
@@ -660,6 +665,9 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       this.alias = graphElem.getAttribute("alias");
       this.minReqSuccessfulSubProcessors = graphElem.getAttribute("min");
       this.executionType = graphElem.getAttribute("execution");
+      this.timeout = Long.valueOf(graphElem.getAttribute("timeout") != null 
+          && !graphElem.getAttribute("timeout").equals("") ? 
+              graphElem.getAttribute("timeout"):"-1");
 
       NamedNodeMap attrMap = graphElem.getAttributes();
       for (int i = 0; i < attrMap.getLength(); i++) {
@@ -705,6 +713,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       this.clazz = null;
       this.children = new Vector<Graph>();
       this.parent = null;
+      this.timeout = -1;
     }
 
     /**
@@ -907,6 +916,20 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       return this.modelId;
     }
 
+    /**
+     * @return the timeout
+     */
+    public long getTimeout() {
+      return timeout;
+    }
+
+    /**
+     * @param timeout the timeout to set
+     */
+    public void setTimeout(long timeout) {
+      this.timeout = timeout;
+    }
+
   }
 
   private class ParentChildWorkflow extends Workflow {
@@ -924,7 +947,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       buf.append(",name=");
       buf.append(this.getName());
       buf.append(",parent=");
-      buf.append(this.graph.parent.modelId);
+      buf.append(this.graph.parent != null ? this.graph.parent.modelId:null);
       buf.append(",children=");
       buf.append(this.graph.children);
       buf.append(",executionType=");
@@ -949,6 +972,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
           buf.append(cond.getConditionId());
           buf.append(",instanceClass=");
           buf.append(cond.getConditionInstanceClassName());
+          buf.append(",timeout=");
+          buf.append(cond.getTimeoutSeconds());
           buf.append(",config=");
           buf.append(cond.getCondConfig().getProperties());
           buf.append("]");

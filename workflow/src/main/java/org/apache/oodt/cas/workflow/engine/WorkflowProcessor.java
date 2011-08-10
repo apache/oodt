@@ -21,6 +21,8 @@ package org.apache.oodt.cas.workflow.engine;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+import org.apache.oodt.commons.date.DateUtils;
+import org.apache.oodt.commons.util.DateConvert;
 
 /**
  * An abstract base class representing the methodology for processing a
@@ -75,6 +79,8 @@ public abstract class WorkflowProcessor {
   protected String currentJobId = null;
 
   protected boolean paused = false;
+  
+  protected Map<String, String> COND_TIMEOUTS = new HashMap<String, String>();
 
   public WorkflowProcessor(WorkflowInstance workflowInstance,
       WorkflowInstanceRepository instRep, URL wParentUrl, long conditionWait) {
@@ -250,6 +256,9 @@ public abstract class WorkflowProcessor {
       String taskId) {
     for (WorkflowCondition c : conditionList) {
       WorkflowConditionInstance cInst = null;
+      if(!COND_TIMEOUTS.containsKey(c.getConditionId())){
+          COND_TIMEOUTS.put(c.getConditionId(), generateISO8601());
+      }
 
       // see if we've already cached this condition instance
       if (CONDITION_CACHE.get(taskId) != null) {
@@ -282,13 +291,49 @@ public abstract class WorkflowProcessor {
       }
 
       // actually perform the evaluation
-      if (!cInst.evaluate(this.workflowInstance.getSharedContext(),
+      if (!timedOut(c) && 
+          !cInst.evaluate(this.workflowInstance.getSharedContext(),
           c.getCondConfig())) {
         return false;
       }
     }
 
     return true;
+  }
+  
+  protected boolean timedOut(WorkflowCondition condition) {
+    if (condition.getTimeoutSeconds() == -1)
+      return false;
+    String isoStartDateTimeStr = COND_TIMEOUTS.get(condition.getConditionId());
+    Date isoStartDateTime = null;
+    try {
+      isoStartDateTime = DateConvert.isoParse(isoStartDateTimeStr);
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING, "Unable to parse start date time for condition: ["
+          + condition.getConditionId() + "]: start date time: ["
+          + isoStartDateTimeStr + "]: Reason: " + e.getMessage());
+      return false;
+    }
+    Date now = new Date();
+    long numSecondsElapsed = (now.getTime() - isoStartDateTime.getTime()) / (1000);
+    if (numSecondsElapsed >= condition.getTimeoutSeconds()) {
+      LOG.log(
+          Level.INFO,
+          "Condition: [" + condition.getConditionName()
+              + "]: exceeded timeout threshold of: ["
+              + condition.getTimeoutSeconds() + "] seconds: elapsed time: ["
+              + numSecondsElapsed + "]");
+      return true;
+    } else{
+      LOG.log(
+          Level.FINEST,
+          "Condition: [" + condition.getConditionName()
+              + "]: has not exceeded timeout threshold of: ["
+              + condition.getTimeoutSeconds() + "] seconds: elapsed time: ["
+              + numSecondsElapsed + "]");      
+      return false;
+    }
   }
 
   protected String getTaskNameById(String taskId) {
@@ -312,6 +357,10 @@ public abstract class WorkflowProcessor {
     } catch (UnknownHostException e) {
     }
     return null;
+  }
+  
+  private String generateISO8601(){
+    return DateConvert.isoFormat(new Date());
   }
 
 }

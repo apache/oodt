@@ -62,7 +62,8 @@ workflow_met_val varchar(1000) NOT NULL);
 CREATE TABLE workflow_conditions
 (workflow_condition_id int NOT NULL PRIMARY KEY,
 workflow_condition_name varchar(255) NOT NULL,
-workflow_condition_class varchar(255) NOT NULL);
+workflow_condition_class varchar(255) NOT NULL,
+workflow_condition_timeout int);
 
 CREATE TABLE workflow_condition_map
 (workflow_task_id int NOT NULL, 

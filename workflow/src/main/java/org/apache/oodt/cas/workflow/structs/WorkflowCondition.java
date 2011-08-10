@@ -43,6 +43,8 @@ public class WorkflowCondition {
 
   /* the static configuration parameters for the condition */
   protected WorkflowConditionConfiguration condConfig;
+  
+  private long timeoutSeconds;
 
   /**
    * <p>
@@ -76,6 +78,7 @@ public class WorkflowCondition {
     this.conditionId = conditionId;
     this.conditionInstanceClassName = instanceClass;
     this.order = order;
+    this.timeoutSeconds = -1;
     this.condConfig = new WorkflowConditionConfiguration();
   }
 
@@ -161,6 +164,20 @@ public class WorkflowCondition {
    */
   public void setOrder(int order) {
     this.order = order;
+  }
+
+  /**
+   * @return the timeoutSeconds
+   */
+  public long getTimeoutSeconds() {
+    return timeoutSeconds;
+  }
+
+  /**
+   * @param timeoutSeconds the timeoutSeconds to set
+   */
+  public void setTimeoutSeconds(long timeoutSeconds) {
+    this.timeoutSeconds = timeoutSeconds;
   }
 
 }
