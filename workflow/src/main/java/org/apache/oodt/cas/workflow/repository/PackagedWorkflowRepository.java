@@ -264,6 +264,59 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     return Arrays.asList(this.eventWorkflowMap.keySet().toArray());
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.repository.WorkflowRepository#addWorkflow(
+   * org.apache.oodt.cas.workflow.structs.Workflow)
+   */
+  @Override
+  public String addWorkflow(Workflow workflow) throws RepositoryException {
+    // first check to see that its tasks are all present
+    if (workflow.getTasks() == null
+        || (workflow.getTasks() != null && workflow.getTasks().size() == 0)) {
+      throw new RepositoryException("Attempt to define a new worklfow: ["
+          + workflow.getName() + "] with no tasks.");
+    }
+
+    for (WorkflowTask task : (List<WorkflowTask>) workflow.getTasks()) {
+      if (!this.tasks.containsKey(task.getTaskId())) {
+        throw new RepositoryException("Reference in new workflow: ["
+            + workflow.getName() + "] to undefined task with id: ["
+            + task.getTaskId() + "]");
+      }
+
+      // check its conditions
+      if (task.getConditions() != null && task.getConditions().size() > 0) {
+        for (WorkflowCondition cond : (List<WorkflowCondition>) task
+            .getConditions()) {
+          if (!this.conditions.containsKey(cond.getConditionId())) {
+            throw new RepositoryException("Reference in new workflow: ["
+                + workflow.getName() + "] to undefined condition ith id: ["
+                + cond.getConditionId() + "]");
+          }
+        }
+      }
+    }
+
+    // recast it as a parent/child workflow
+    String workflowId = UUID.randomUUID().toString();
+    workflow.setId(workflowId);
+
+    Graph graph = new Graph();
+    graph.setExecutionType("sequential");
+    ParentChildWorkflow pcw = new ParentChildWorkflow(graph);
+    pcw.setName(workflow.getName());
+    pcw.setTasks(workflow.getTasks());
+    pcw.setId(workflow.getId());
+    this.workflows.put(pcw.getId(), pcw);    
+    this.eventWorkflowMap.put(workflowId, Collections.singletonList(pcw));
+
+    // generate its ID
+    return workflowId;
+  }
+
   private void init() throws RepositoryException {
     this.workflows = new HashMap<String, ParentChildWorkflow>();
     this.tasks = new HashMap<String, WorkflowTask>();
@@ -647,7 +700,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     private List<String> excused;
 
     private String clazz;
-    
+
     private long timeout;
 
     private Graph parent;
@@ -665,9 +718,9 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       this.alias = graphElem.getAttribute("alias");
       this.minReqSuccessfulSubProcessors = graphElem.getAttribute("min");
       this.executionType = graphElem.getAttribute("execution");
-      this.timeout = Long.valueOf(graphElem.getAttribute("timeout") != null 
-          && !graphElem.getAttribute("timeout").equals("") ? 
-              graphElem.getAttribute("timeout"):"-1");
+      this.timeout = Long.valueOf(graphElem.getAttribute("timeout") != null
+          && !graphElem.getAttribute("timeout").equals("") ? graphElem
+          .getAttribute("timeout") : "-1");
 
       NamedNodeMap attrMap = graphElem.getAttributes();
       for (int i = 0; i < attrMap.getLength(); i++) {
@@ -924,7 +977,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     }
 
     /**
-     * @param timeout the timeout to set
+     * @param timeout
+     *          the timeout to set
      */
     public void setTimeout(long timeout) {
       this.timeout = timeout;
@@ -947,7 +1001,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       buf.append(",name=");
       buf.append(this.getName());
       buf.append(",parent=");
-      buf.append(this.graph.parent != null ? this.graph.parent.modelId:null);
+      buf.append(this.graph.parent != null ? this.graph.parent.modelId : null);
       buf.append(",children=");
       buf.append(this.graph.children);
       buf.append(",executionType=");

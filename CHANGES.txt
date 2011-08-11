@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-209 Workflow Manager Dynamic Workflows (mattmann)
+
 * OODT-211 Sub Workflows (mattmann, per OODT-70)
 
 * OODT-207 WorkflowConditions should have a timeout (mattmann)

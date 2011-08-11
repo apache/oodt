@@ -77,6 +77,30 @@ public class XmlRpcWorkflowManagerClient {
         client = new XmlRpcClient(url);
         workflowManagerUrl = url;
     }
+    
+  public String executeDynamicWorkflow(List<String> taskIds, Metadata metadata)
+      throws Exception {
+    Vector argList = new Vector();
+    Vector<String> taskIdVector = new Vector<String>();
+    taskIdVector.addAll(taskIds);
+    String instId = null;
+    
+    argList.add(taskIdVector);
+    argList.add(metadata.getHashtable());
+
+    try {
+      instId = (String) client.execute("workflowmgr.executeDynamicWorkflow",
+          argList);
+    } catch (XmlRpcException e) {
+      e.printStackTrace();
+      throw new Exception(e.getMessage());
+    } catch (IOException e) {
+      throw new Exception(e.getMessage());
+    }
+
+    return instId;
+
+  }
 
     public List getRegisteredEvents() throws Exception {
         Vector argList = new Vector();
@@ -657,6 +681,7 @@ public class XmlRpcWorkflowManagerClient {
             EngineException, RepositoryException {
 
         String sendEventOperation = "--sendEvent --eventName <name> [--metaData --key <key1> <val1> <val2>...<valn>...--keyn <keyn> <val1> <val2>...<valn>]\n";
+        String dynWorkflowOperation = "--dynWorkflow --taskIds <task id1> <task id2>...<task idn> [--metaData --key <key1> <val1> <val2>...<valn>...--keyn <keyn> <val1> <val2>...<valn>]\n";
         String getWorkflowInstOperation = "--getWorkflowInsts\n";
         String getWorkflowsOperation = "--getWorkflows\n";
         String getTaskByIdOperation = "--getTaskById --id <taskId>\n";
@@ -678,6 +703,7 @@ public class XmlRpcWorkflowManagerClient {
         String usage = "wmgr-client --url <url to xml rpc service> --operation [<operation> [params]]\n"
                 + "operations:\n"
                 + sendEventOperation
+                + dynWorkflowOperation
                 + getWorkflowInstOperation
                 + getWorkflowsOperation
                 + getTaskByIdOperation
@@ -766,7 +792,71 @@ public class XmlRpcWorkflowManagerClient {
                 throw new RuntimeException(e);
             }
 
-        } else if (operation.equals("--getWorkflowInsts")) {
+        }
+        
+        else if(operation.equals("--dynWorkflow")){
+          Metadata metadata = new Metadata();
+          List<String> taskIds = new Vector<String>();
+
+          for (int i = 4; i < args.length; i++) {
+              if (args[i].equals("--taskIds")) {
+                int j = -1;
+                  for(j = i+1; j < args.length; j++){
+                     
+                     if(!args[j].equals("--metaData")){
+                       System.out.println("Picked up task id: ["+args[j]+"]");
+                       taskIds.add(args[j]);
+                     }
+                     else{
+                       break;
+                     }
+                  }
+                  
+                  i = j-1;
+              } else if (args[i].equals("--metaData")) {
+                  for (int j = i + 1; j < args.length; j++) {
+
+                      if (args[j].equals("--key")) {
+                          String key = args[++j];
+                          List values = new Vector();
+
+                          boolean endOfList = true;
+                          for (j++; j < args.length; j++) {
+                              if (!args[j].equals("--key")) {
+                                  values.add(args[j]);
+                              } else {
+                                  endOfList = false;
+                                  break;
+                              }
+                          }
+
+                          if (!endOfList) {
+                              j--;
+                          }
+
+                          System.out.println("Picked up metadata: [key="
+                                  + key + ", values=" + values + "]");
+                          metadata.addMetadata(key, values);
+
+                      }
+                  }
+                  break;
+              }
+          }
+
+          // create the client
+          XmlRpcWorkflowManagerClient client = new XmlRpcWorkflowManagerClient(
+                  new URL(url));
+
+          try {
+              System.out.println(client.executeDynamicWorkflow(taskIds, metadata));
+          } catch (Exception e) {
+              e.printStackTrace();
+              throw new RuntimeException(e);
+          }
+          
+        }
+        else if (operation.equals("--getWorkflowInsts")) {
             XmlRpcWorkflowManagerClient client = new XmlRpcWorkflowManagerClient(
                     new URL(url));
 

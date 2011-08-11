@@ -207,5 +207,16 @@ public interface WorkflowRepository {
 	 *             If any error occurs.
 	 */
 	public List getRegisteredEvents() throws RepositoryException;
+	
+	
+	
+	/**
+	 * Adds the specified new {@link Workflow} to this Repository.
+	 * 
+	 * @param workflow The {@link Workflow} to add.
+	 * @return The identifier of the new {@link Workflow} as defined by this repository.
+	 * @throws RepositoryException If any error occurs.
+	 */
+	public String addWorkflow(Workflow workflow) throws RepositoryException;
 
 }

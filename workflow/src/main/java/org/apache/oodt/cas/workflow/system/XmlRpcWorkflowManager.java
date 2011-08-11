@@ -49,6 +49,7 @@ import java.util.logging.Logger;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.Vector;
 
 /**
@@ -146,6 +147,32 @@ public class XmlRpcWorkflowManager {
                 + System.getProperty("user.name", "unknown"));
 
     }
+
+  public String executeDynamicWorkflow(Vector<String> taskIds, Hashtable metadata)
+      throws RepositoryException, EngineException {
+    if (taskIds == null || (taskIds != null && taskIds.size() == 0))
+      throw new RepositoryException(
+          "Must specify task identifiers to build dynamic workflows!");
+
+    Workflow dynamicWorkflow = new Workflow();
+
+    for (String taskId : taskIds) {
+      WorkflowTask task = this.repo.getWorkflowTaskById(taskId);
+      if (task == null)
+        throw new RepositoryException("Dynamic workflow task: [" + taskId
+            + "] is not defined!");
+      dynamicWorkflow.getTasks().add(task);
+    }
+    
+    dynamicWorkflow.setId(this.repo.addWorkflow(dynamicWorkflow));
+    dynamicWorkflow.setName("Dynamic Workflow-" + dynamicWorkflow.getId());
+
+    Metadata met = new Metadata();
+    met.addMetadata(metadata);
+
+    WorkflowInstance inst = this.engine.startWorkflow(dynamicWorkflow, met);
+    return inst.getId();
+  }
 
     public Vector getRegisteredEvents() throws RepositoryException {
 

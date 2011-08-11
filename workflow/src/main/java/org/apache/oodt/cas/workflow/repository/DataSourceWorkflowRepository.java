@@ -1141,5 +1141,232 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
         return events;
     }
+    
+
+    /* (non-Javadoc)
+     * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#addWorkflow(org.apache.oodt.cas.workflow.structs.Workflow)
+     */
+    @Override
+    public String addWorkflow(Workflow workflow) throws RepositoryException {
+      // first check to see that its tasks are all present
+      if (workflow.getTasks() == null
+          || (workflow.getTasks() != null && workflow.getTasks().size() == 0)) {
+        throw new RepositoryException("Attempt to define a new worklfow: ["
+            + workflow.getName() + "] with no tasks.");
+      }
+      
+      List<WorkflowTask> allTasks = this.getTasks();
+
+      for (WorkflowTask task : (List<WorkflowTask>) workflow.getTasks()) {
+        if (!this.hasTaskId(allTasks, task.getTaskId())) {
+          throw new RepositoryException("Reference in new workflow: ["
+              + workflow.getName() + "] to undefined task with id: ["
+              + task.getTaskId() + "]");
+        }
+
+        // check its conditions
+        if (task.getConditions() != null && task.getConditions().size() > 0) {
+          List<WorkflowCondition> conditions = this.getConditionsByTaskId(task.getTaskId());          
+          for (WorkflowCondition cond : (List<WorkflowCondition>) task
+              .getConditions()) {
+            if (!this.hasConditionId(conditions, cond.getConditionId())) {
+              throw new RepositoryException("Reference in new workflow: ["
+                  + workflow.getName() + "] to undefined condition ith id: ["
+                  + cond.getConditionId() + "]");
+            }
+          }
+        }
+      }
+      
+      String workflowId = this.commitWorkflow(workflow);
+      return workflowId;
+    }    
+
+  private String commitWorkflow(Workflow workflow) throws RepositoryException {
+    Connection conn = null;
+    Statement statement = null;
+    ResultSet rs = null;
+    String workflowId = null;
+
+    try {
+      conn = dataSource.getConnection();
+      conn.setAutoCommit(false);
+      statement = conn.createStatement();
+
+      String sql = "INSERT INTO workflows (workflow_name) VALUES ('"
+          + workflow.getName() + "')";
+
+      LOG.log(Level.FINE, "commitWorkflowToDB: Executing: " + sql);
+      statement.execute(sql);
+
+      sql = "SELECT MAX(workflow_id) AS max_id FROM workflows";
+      rs = statement.executeQuery(sql);
+
+      while (rs.next()) {
+        workflowId = String.valueOf(rs.getInt("max_id"));
+      }
+
+      workflow.setId(workflowId);
+
+      // event to workflow map
+      sql = "INSERT INTO event_workflow_map (workflow_id, event_name) VALUES ("
+          + workflowId + ",'workflow-" + workflowId + "')";
+      LOG.log(Level.FINE, "commitWorkflowToDB: Executing: " + sql);
+      statement.execute(sql);
+      conn.commit();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "Exception adding workflow. Message: " + e.getMessage());
+      try {
+        conn.rollback();
+      } catch (SQLException e2) {
+        LOG.log(
+            Level.SEVERE,
+            "Unable to rollback workflow transaction. Message: "
+                + e2.getMessage());
+      }
+      throw new RepositoryException(e.getMessage());
+    } finally {
+
+      if (rs != null) {
+        try {
+          rs.close();
+        } catch (SQLException ignore) {
+        }
+
+        rs = null;
+      }
+
+      if (statement != null) {
+        try {
+          statement.close();
+        } catch (SQLException ignore) {
+        }
+
+        statement = null;
+      }
+
+      if (conn != null) {
+        try {
+          conn.close();
+
+        } catch (SQLException ignore) {
+        }
+
+        conn = null;
+      }
+    }
+    
+    return workflowId;
+  }
+    
+  private List<WorkflowTask> getTasks() throws RepositoryException {
+    Connection conn = null;
+    Statement statement = null;
+    ResultSet rs = null;
+
+    List<WorkflowTask> tasks = null;
+
+    try {
+      conn = dataSource.getConnection();
+      statement = conn.createStatement();
+
+      String getTasksSql = "SELECT workflow_tasks.*, workflow_task_map.task_order "
+          + "FROM workflow_tasks " + "ORDER BY workflow_task_map.task_order";
+
+      LOG.log(Level.FINE, "getTasks: Executing: " + getTasksSql);
+      rs = statement.executeQuery(getTasksSql);
+      tasks = new Vector<WorkflowTask>();
+
+      while (rs.next()) {
+        // get an instance of the class name
+
+        WorkflowTask task = DbStructFactory.getWorkflowTask(rs, true);
+
+        if (task != null) {
+          task.setConditions(getConditionsByTaskId(task.getTaskId()));
+          task.setTaskConfig(getConfigurationByTaskId(task.getTaskId()));
+          tasks.add(task);
+        }
+      }
+
+      if (tasks.size() == 0) {
+        tasks = null;
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "Exception getting tasks. Message: " + e.getMessage());
+      try {
+        conn.rollback();
+      } catch (SQLException e2) {
+        LOG.log(
+            Level.SEVERE,
+            "Unable to rollback getTasks transaction. Message: "
+                + e2.getMessage());
+      }
+      throw new RepositoryException(e.getMessage());
+    } finally {
+
+      if (rs != null) {
+        try {
+          rs.close();
+        } catch (SQLException ignore) {
+        }
+
+        rs = null;
+      }
+
+      if (statement != null) {
+        try {
+          statement.close();
+        } catch (SQLException ignore) {
+        }
+
+        statement = null;
+      }
+
+      if (conn != null) {
+        try {
+          conn.close();
+
+        } catch (SQLException ignore) {
+        }
+
+        conn = null;
+      }
+    }
+
+    return tasks;
+  }
+  
+  private boolean hasTaskId(List<WorkflowTask> tasks, String id) {
+    if (tasks == null || (tasks != null && tasks.size() == 0))
+      return false;
+
+    for (WorkflowTask task : tasks) {
+      if (task.getTaskId().equals(id)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private boolean hasConditionId(List<WorkflowCondition> conds, String id) {
+    if (conds == null || (conds != null && conds.size() == 0))
+      return false;
+
+    for (WorkflowCondition cond : conds) {
+      if (cond.getConditionId().equals(id)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
 }
