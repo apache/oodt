@@ -724,6 +724,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       this.timeout = Long.valueOf(graphElem.getAttribute("timeout") != null
           && !graphElem.getAttribute("timeout").equals("") ? graphElem
           .getAttribute("timeout") : "-1");
+      this.optional = Boolean.valueOf(graphElem.getAttribute("optional")); 
 
       NamedNodeMap attrMap = graphElem.getAttributes();
       for (int i = 0; i < attrMap.getLength(); i++) {

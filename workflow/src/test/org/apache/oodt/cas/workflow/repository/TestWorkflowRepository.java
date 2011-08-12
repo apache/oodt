@@ -208,6 +208,22 @@ public class TestWorkflowRepository extends TestCase {
       
       assertEquals(30L, cond.getTimeoutSeconds());
     }
+    
+    /**
+     * @since OODT-208
+     */
+    public void testGetConditionOptional(){
+      WorkflowCondition cond = null;
+      try{
+        cond = workflowRepository.getWorkflowConditionById("urn:oodt:OptionalCondition");
+      }
+      catch(Exception e){
+        e.printStackTrace();
+        fail(e.getMessage());
+      }
+      
+      assertEquals(true, cond.isOptional());
+    }    
 
     public void testGetConfigurationByTaskId() {
         WorkflowTaskConfiguration config = null;
@@ -345,6 +361,7 @@ public class TestWorkflowRepository extends TestCase {
         assertEquals("True Condition", c.getConditionName());
         assertEquals(1, c.getOrder());
         assertEquals(-1L, c.getTimeoutSeconds());
+        assertEquals(false, c.isOptional());
     }
 
     private void validateTaskConfiguration(WorkflowTaskConfiguration config) {

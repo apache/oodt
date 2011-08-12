@@ -112,6 +112,23 @@ public class TestPackagedWorkflowRepository extends TestCase {
     assertNotNull(cond);
     assertEquals(30L, cond.getTimeoutSeconds());
   }
+  
+  /**
+   * @since OODT-208
+   */
+  public void testGetOptional(){
+    WorkflowCondition cond = null;
+    try{
+      cond = this.repo.getWorkflowConditionById("urn:npp:MOA_ORBITS_FileBased");
+    }
+    catch(Exception e){
+      e.printStackTrace();
+      fail(e.getMessage());
+    }
+    
+    assertNotNull(cond);
+    assertEquals(true, cond.isOptional());   
+  }
 
   /*
    * (non-Javadoc)
