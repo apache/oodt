@@ -361,6 +361,7 @@ public class DefaultPropView extends View {
       masterPanel.add(this.getExecusedIds(state.getSelected()));
       if (state.getSelected().getModel().getExecutionType().equals("condition")) {
         masterPanel.add(this.getTimeout(state.getSelected(), state));
+        masterPanel.add(this.getOptional(state.getSelected(), state));
       }
       JScrollPane scrollPane = new JScrollPane(table = this.createTable(state),
           JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -701,6 +702,34 @@ public class DefaultPropView extends View {
     return panel;
   }
 
+  private JPanel getOptional(final ModelGraph graph, final ViewState state) {
+    JPanel panel = new JPanel();
+    panel.setLayout(new BorderLayout());
+    panel.setBorder(new EtchedBorder());
+    panel.add(new JLabel("Optional:"), BorderLayout.NORTH);
+    JPanel checkBoxes = new JPanel();
+    checkBoxes.setLayout(new GridLayout(1, 1));
+    Checkbox checkbox = new Checkbox("ignore", graph.getModel().isOptional());
+    checkBoxes.add(checkbox);
+        checkbox.addItemListener(new ItemListener() {
+
+          public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.DESELECTED)
+              graph.getModel().setOptional(false);
+            else if (e.getStateChange() == ItemEvent.SELECTED)
+              graph.getModel().setOptional(true);
+            else
+              return;
+            DefaultPropView.this.notifyListeners();
+            DefaultPropView.this.refreshView(state);
+          }
+
+        });
+    panel.add(checkBoxes, BorderLayout.CENTER);
+    return panel;
+  }  
+  
+  
   private JPanel getExecusedIds(final ModelGraph graph) {
     JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());

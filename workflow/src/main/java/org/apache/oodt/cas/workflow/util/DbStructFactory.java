@@ -108,6 +108,7 @@ public final class DbStructFactory {
                     .getInt("workflow_condition_id")));
             condition.setConditionName(rs.getString("workflow_condition_name"));
             condition.setTimeoutSeconds(rs.getLong("workflow_condition_timeout"));
+            condition.setOptional(rs.getBoolean("workflow_condition_optional"));
             if (setOrder) {
                 condition.setOrder(rs.getInt("condition_order"));
             }

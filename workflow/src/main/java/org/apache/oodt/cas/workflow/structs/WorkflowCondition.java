@@ -45,6 +45,8 @@ public class WorkflowCondition {
   protected WorkflowConditionConfiguration condConfig;
   
   private long timeoutSeconds;
+  
+  private boolean optional;
 
   /**
    * <p>
@@ -80,6 +82,7 @@ public class WorkflowCondition {
     this.order = order;
     this.timeoutSeconds = -1;
     this.condConfig = new WorkflowConditionConfiguration();
+    this.optional = false;
   }
 
   /**
@@ -178,6 +181,20 @@ public class WorkflowCondition {
    */
   public void setTimeoutSeconds(long timeoutSeconds) {
     this.timeoutSeconds = timeoutSeconds;
+  }
+
+  /**
+   * @return the optional
+   */
+  public boolean isOptional() {
+    return optional;
+  }
+
+  /**
+   * @param optional the optional to set
+   */
+  public void setOptional(boolean optional) {
+    this.optional = optional;
   }
 
 }

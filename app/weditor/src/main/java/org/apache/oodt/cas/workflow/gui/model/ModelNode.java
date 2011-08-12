@@ -52,6 +52,7 @@ public class ModelNode {
   private List<String> excusedSubProcessorIds;
   private Metadata staticMetadata;
   private long timeout;
+  private boolean optional;
 
   public ModelNode(File file) {
     super();
@@ -68,6 +69,7 @@ public class ModelNode {
     this.excusedSubProcessorIds = new Vector<String>();
     this.staticMetadata = new Metadata();
     this.timeout = -1;
+    this.optional = false;
   }
 
   public ModelNode(File file, String modelId) {
@@ -346,6 +348,20 @@ public class ModelNode {
    */
   public void setTimeout(long timeout) {
     this.timeout = timeout;
+  }
+
+  /**
+   * @return the optional
+   */
+  public boolean isOptional() {
+    return optional;
+  }
+
+  /**
+   * @param optional the optional to set
+   */
+  public void setOptional(boolean optional) {
+    this.optional = optional;
   }
 
 }

@@ -162,6 +162,7 @@ public final class XmlStructFactory {
                                 .getConditionName());
                         workflowCondition.setOrder(i + 1);
                         workflowCondition.setTimeoutSeconds(condition.getTimeoutSeconds());
+                        workflowCondition.setOptional(condition.isOptional());
                         workflowCondition.setCondConfig(condition.getTaskConfig());
                         conditionList.add(workflowCondition);
                     }
@@ -207,6 +208,7 @@ public final class XmlStructFactory {
         condition.setTimeoutSeconds(Long.valueOf(conditionElement.getAttribute("timeout") != null && 
             !conditionElement.getAttribute("timeout").equals("")
             ? conditionElement.getAttribute("timeout"):"-1"));
+        condition.setOptional(Boolean.valueOf(conditionElement.getAttribute("optional")));
 
         // load its configuration
         Element configElement = getFirstElement("configuration", conditionElement);

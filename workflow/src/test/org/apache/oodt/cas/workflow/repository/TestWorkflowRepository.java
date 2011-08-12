@@ -99,7 +99,7 @@ public class TestWorkflowRepository extends TestCase {
         }
 
         assertNotNull(workflows);
-        assertEquals(9, workflows.size());
+        assertEquals(10, workflows.size());
     }
 
     public void testGetWorkflowsForEvent() {

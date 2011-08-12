@@ -43,6 +43,9 @@
 	<event name="timeout">
 	    <workflow id="urn:oodt:timeoutWorkflow"/>
 	</event>
+	<event name="optional">
+	    <workflow id="urn:oodt:optionalWorkflow"/>
+	</event>
     <event name="GenericFileIngest">
        <workflow id="urn:oodt:mailWorkflow"/>
     </event>

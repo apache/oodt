@@ -47,7 +47,8 @@ CREATE TABLE workflow_conditions
 (workflow_condition_id int NOT NULL PRIMARY KEY,
 workflow_condition_name varchar(255) NOT NULL,
 workflow_condition_class varchar(255) NOT NULL,
-workflow_condition_timeout int NOT NULL);
+workflow_condition_timeout int NOT NULL,
+workflow_condition_optional boolean DEFAULT false);
 
 CREATE TABLE workflow_condition_map
 (workflow_task_id int NOT NULL, 
@@ -64,7 +65,7 @@ CREATE TABLE workflow_condition_configuration
 property_name varchar(1000) NOT NULL,
 property_value varchar(1000) NOT NULL);
 
-INSERT INTO workflow_conditions VALUES ('1', 'CheckCond', 'org.apache.oodt.cas.workflow.examples.CheckForMetadataKeys', 30);
+INSERT INTO workflow_conditions VALUES ('1', 'CheckCond', 'org.apache.oodt.cas.workflow.examples.CheckForMetadataKeys', 30, false);
 INSERT INTO workflow_condition_configuration VALUES ('1', 'reqMetKeys', 'Met1,Met2,Met3');
-INSERT INTO workflow_conditions VALUES ('2', 'FalseCond', 'org.apache.oodt.cas.workflow.examples.FalseCondition', 10);
-INSERT INTO workflow_conditions VALUES ('3', 'TrueCond', 'org.apache.oodt.cas.workflow.examples.TrueCondition', 30);
+INSERT INTO workflow_conditions VALUES ('2', 'FalseCond', 'org.apache.oodt.cas.workflow.examples.FalseCondition', 10, true);
+INSERT INTO workflow_conditions VALUES ('3', 'TrueCond', 'org.apache.oodt.cas.workflow.examples.TrueCondition', 30, true);

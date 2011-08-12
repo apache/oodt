@@ -291,9 +291,9 @@ public abstract class WorkflowProcessor {
       }
 
       // actually perform the evaluation
-      if (!timedOut(c) && 
-          !cInst.evaluate(this.workflowInstance.getSharedContext(),
-          c.getCondConfig())) {
+      boolean result = false;
+      if (!(result = cInst.evaluate(this.workflowInstance.getSharedContext(),
+          c.getCondConfig())) && !isOptional(c, result) && !timedOut(c)){
         return false;
       }
     }
@@ -301,6 +301,18 @@ public abstract class WorkflowProcessor {
     return true;
   }
   
+  protected boolean isOptional(WorkflowCondition condition, boolean result) {
+    if (condition.isOptional()) {
+      LOG.log(Level.WARNING, "Condition: [" + condition.getConditionId()
+          + "] is optional: evaluation results: ["+result+"] ignored");
+      return true;
+    } else {
+      LOG.log(Level.INFO, "Condition: [" + condition.getConditionId()
+          + "] is required: evaluation results: ["+result+"] included.");
+      return false;
+    }
+  }
+
   protected boolean timedOut(WorkflowCondition condition) {
     if (condition.getTimeoutSeconds() == -1)
       return false;

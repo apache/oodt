@@ -125,7 +125,7 @@
 			<property name="QueueName" value="java"/>
 		</configuration>
 	</condition>	
-	<condition id="urn:npp:MOA_ORBITS_FileBased" name="MOA_ORBITS_FileBased" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+	<condition id="urn:npp:MOA_ORBITS_FileBased" name="MOA_ORBITS_FileBased" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition" optional="true">
 		<configuration>
 			<!-- query properties -->
 			<property name="PGETask/Condition/ProductTypeNames" value="MOA_ORBITS"/>

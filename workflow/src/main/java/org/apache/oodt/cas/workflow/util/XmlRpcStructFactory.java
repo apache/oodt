@@ -368,6 +368,7 @@ public final class XmlRpcStructFactory {
         condition.put("name", c.getConditionName());
         condition.put("order", String.valueOf(c.getOrder()));
         condition.put("timeout", String.valueOf(c.getTimeoutSeconds()));
+        condition.put("optional", String.valueOf(c.isOptional()));
         condition.put("configuration", getXmlRpcWorkflowConditionConfig(c.getCondConfig()));
         return condition;
 
@@ -483,6 +484,7 @@ public final class XmlRpcStructFactory {
         condition.setOrder(Integer.valueOf((String) cond.get("order"))
                 .intValue());
         condition.setTimeoutSeconds(Long.valueOf((String)cond.get("timeout")));
+        condition.setOptional(Boolean.valueOf((String)cond.get("optional")));
         condition.setCondConfig(getWorkflowConditionConfigurationFromXmlRpc((Hashtable)cond.get("configuration")));
         return condition;
     }

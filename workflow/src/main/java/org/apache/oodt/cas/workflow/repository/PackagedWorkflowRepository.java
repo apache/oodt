@@ -550,6 +550,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
         cond.setConditionName(graph.getModelName());
         cond.setConditionInstanceClassName(graph.getClazz());
         cond.setTimeoutSeconds(graph.getTimeout());
+        cond.setOptional(graph.isOptional());
         cond.setCondConfig(convertToConditionConfiguration(staticMetadata));
 
         if (cond.getConditionName() == null
@@ -702,6 +703,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     private String clazz;
 
     private long timeout;
+    
+    private boolean optional;
 
     private Graph parent;
 
@@ -767,6 +770,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       this.children = new Vector<Graph>();
       this.parent = null;
       this.timeout = -1;
+      this.optional = false;
     }
 
     /**
@@ -984,6 +988,20 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       this.timeout = timeout;
     }
 
+    /**
+     * @return the optional
+     */
+    public boolean isOptional() {
+      return optional;
+    }
+
+    /**
+     * @param optional the optional to set
+     */
+    public void setOptional(boolean optional) {
+      this.optional = optional;
+    }
+
   }
 
   private class ParentChildWorkflow extends Workflow {
@@ -1028,6 +1046,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
           buf.append(cond.getConditionInstanceClassName());
           buf.append(",timeout=");
           buf.append(cond.getTimeoutSeconds());
+          buf.append(",optiona=");
+          buf.append(cond.isOptional());
           buf.append(",config=");
           buf.append(cond.getCondConfig().getProperties());
           buf.append("]");

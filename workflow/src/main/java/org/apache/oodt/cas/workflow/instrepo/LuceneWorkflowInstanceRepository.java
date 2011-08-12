@@ -600,6 +600,8 @@ public class LuceneWorkflowInstanceRepository extends
             .getOrder()), Field.Store.YES, Field.Index.NO));
         doc.add(new Field(taskId + "_condition_timeout", String.valueOf(cond
             .getTimeoutSeconds()), Field.Store.YES, Field.Index.NO));
+        doc.add(new Field(taskId+"_condition_optional", String.valueOf(cond.isOptional()),
+            Field.Store.YES, Field.Index.NO));
       }
     }
   }
@@ -712,6 +714,7 @@ public class LuceneWorkflowInstanceRepository extends
         String[] condOrders = doc.getValues(taskId + "_condition_order");
         String[] condIds = doc.getValues(taskId + "_condition_id");
         String[] condTimeouts = doc.getValues(taskId+"_condition_timeout");
+        String[] condOptionals = doc.getValues(taskId+"_condition_optional");
 
         if (condNames == null) {
             return condList;
@@ -720,7 +723,8 @@ public class LuceneWorkflowInstanceRepository extends
         if (condNames.length != condClasses.length
                 || condNames.length != condOrders.length
                 || condNames.length != condIds.length 
-                || condNames.length != condTimeouts.length) {
+                || condNames.length != condTimeouts.length
+                || condNames.length != condOptionals.length) {
             LOG.log(Level.WARNING,
                     "Condition arrays are not of same size when "
                             + "rebuilding from given Document");
@@ -734,6 +738,7 @@ public class LuceneWorkflowInstanceRepository extends
             cond.setConditionName(condNames[i]);
             cond.setOrder(Integer.parseInt(condOrders[i]));
             cond.setTimeoutSeconds(Long.parseLong(condTimeouts[i]));
+            cond.setOptional(Boolean.valueOf(condOptionals[i]));
         }
 
         return condList;

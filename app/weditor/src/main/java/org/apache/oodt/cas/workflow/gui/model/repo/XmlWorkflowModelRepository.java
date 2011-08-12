@@ -226,6 +226,7 @@ public class XmlWorkflowModelRepository {
         preConditions.setAttribute("execution", graph.getPreConditions()
             .getModel().getExecutionType());
         preConditions.setAttribute("timeout", String.valueOf(graph.getModel().getTimeout()));
+        preConditions.setAttribute("optional", String.valueOf(graph.getModel().isOptional()));
         for (ModelGraph preCondition : graph.getPreConditions().getChildren()) {
           saveGraph(preCondition, preConditions, document);
         }
@@ -244,6 +245,7 @@ public class XmlWorkflowModelRepository {
         postConditions.setAttribute("execution", graph.getPostConditions()
             .getModel().getExecutionType());
         postConditions.setAttribute("timeout", String.valueOf(graph.getModel().getTimeout()));
+        postConditions.setAttribute("optional", String.valueOf(graph.getModel().isOptional()));
         for (ModelGraph postCondition : graph.getPostConditions().getChildren()) {
           saveGraph(postCondition, postConditions, document);
         }
@@ -317,6 +319,7 @@ public class XmlWorkflowModelRepository {
     List<String> excused = new Vector<String>();
     String clazz = null;
     long timeout = -1;
+    boolean optional = false;
     boolean entryPoint = false;
 
     NamedNodeMap attributes = workflowNode.getElement().getAttributes();
@@ -342,7 +345,11 @@ public class XmlWorkflowModelRepository {
         timeout = node.getNodeValue() != null
             && !node.getNodeValue().equals("") ? Long.valueOf(node
             .getNodeValue()) : -1;
-      } else if (node.getNodeName().startsWith("p:")) {
+      } 
+      else if(node.getNodeName().equals("optional")){
+        optional = Boolean.valueOf(node.getNodeValue());
+      }
+        else if (node.getNodeName().startsWith("p:")) {
         staticMetadata.replaceMetadata(node.getNodeName().substring(2),
             node.getNodeValue());
       }
@@ -380,6 +387,7 @@ public class XmlWorkflowModelRepository {
       modelNode.setInstanceClass(clazz);
       modelNode.setEntryPoint(entryPoint);
       modelNode.setTimeout(timeout);
+      modelNode.setOptional(optional);
 
       loadConfiguration(rootElements, workflowNode, modelNode, globalConfGroups);
 
