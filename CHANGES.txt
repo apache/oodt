@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-306 Added FileManager Tool Aliases (mattmann, goodale)
+
 * OODT-208 WorkflowConditions should be identifiable as optional 
   or required (mattmann)
 
