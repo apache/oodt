@@ -516,6 +516,11 @@ public class LuceneWorkflowInstanceRepository extends
 
         // store the tasks
         addTasksToDoc(doc, workflowInst.getWorkflow().getTasks());
+        
+        // store workflow conditions
+        addConditionsToDoc("workflow_condition_"+workflowInst.getWorkflow().getId(), 
+            workflowInst.getWorkflow().getConditions()
+            , doc);
 
         // add the default field (so that we can do a query for *)
         doc.add(new Field("myfield", "myvalue", Field.Store.YES,
@@ -644,6 +649,7 @@ public class LuceneWorkflowInstanceRepository extends
         workflow.setId(doc.get("workflow_id"));
         workflow.setName(doc.get("workflow_name"));
         workflow.setTasks(toTasks(doc));
+        workflow.setConditions(toConditions("workflow_condition_"+workflow.getId(), doc));
 
         inst.setWorkflow(workflow);
 

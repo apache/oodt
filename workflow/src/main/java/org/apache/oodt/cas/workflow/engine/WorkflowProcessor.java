@@ -21,11 +21,7 @@ package org.apache.oodt.cas.workflow.engine;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,16 +29,11 @@ import java.util.logging.Logger;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
-import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
-import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
-import org.apache.oodt.commons.date.DateUtils;
-import org.apache.oodt.commons.util.DateConvert;
 
 /**
  * An abstract base class representing the methodology for processing a
@@ -72,15 +63,11 @@ public abstract class WorkflowProcessor {
 
   protected static final String DEFAULT_QUEUE_NAME = "high";
 
-  protected Map<String, HashMap<String, WorkflowConditionInstance>> CONDITION_CACHE = new HashMap<String, HashMap<String, WorkflowConditionInstance>>();
-
   protected URL wmgrParentUrl = null;
 
   protected String currentJobId = null;
 
   protected boolean paused = false;
-  
-  protected Map<String, String> COND_TIMEOUTS = new HashMap<String, String>();
 
   public WorkflowProcessor(WorkflowInstance workflowInstance,
       WorkflowInstanceRepository instRep, URL wParentUrl, long conditionWait) {
@@ -252,102 +239,6 @@ public abstract class WorkflowProcessor {
     return true;
   }
 
-  protected boolean satisfied(List<WorkflowCondition> conditionList,
-      String taskId) {
-    for (WorkflowCondition c : conditionList) {
-      WorkflowConditionInstance cInst = null;
-      if(!COND_TIMEOUTS.containsKey(c.getConditionId())){
-          COND_TIMEOUTS.put(c.getConditionId(), generateISO8601());
-      }
-
-      // see if we've already cached this condition instance
-      if (CONDITION_CACHE.get(taskId) != null) {
-        HashMap<String, WorkflowConditionInstance> conditionMap = CONDITION_CACHE
-            .get(taskId);
-
-        /*
-         * okay we have some conditions cached for this task, see if we have the
-         * one we need
-         */
-        if (conditionMap.get(c.getConditionId()) != null) {
-          cInst = (WorkflowConditionInstance) conditionMap.get(c
-              .getConditionId());
-        }
-        /* if not, then go ahead and create it and cache it */
-        else {
-          cInst = GenericWorkflowObjectFactory
-              .getConditionObjectFromClassName(c
-                  .getConditionInstanceClassName());
-          conditionMap.put(c.getConditionId(), cInst);
-        }
-      }
-      /* no conditions cached yet, so set everything up */
-      else {
-        HashMap<String, WorkflowConditionInstance> conditionMap = new HashMap<String, WorkflowConditionInstance>();
-        cInst = GenericWorkflowObjectFactory.getConditionObjectFromClassName(c
-            .getConditionInstanceClassName());
-        conditionMap.put(c.getConditionId(), cInst);
-        CONDITION_CACHE.put(taskId, conditionMap);
-      }
-
-      // actually perform the evaluation
-      boolean result = false;
-      if (!(result = cInst.evaluate(this.workflowInstance.getSharedContext(),
-          c.getCondConfig())) && !isOptional(c, result) && !timedOut(c)){
-        return false;
-      }
-    }
-
-    return true;
-  }
-  
-  protected boolean isOptional(WorkflowCondition condition, boolean result) {
-    if (condition.isOptional()) {
-      LOG.log(Level.WARNING, "Condition: [" + condition.getConditionId()
-          + "] is optional: evaluation results: ["+result+"] ignored");
-      return true;
-    } else {
-      LOG.log(Level.INFO, "Condition: [" + condition.getConditionId()
-          + "] is required: evaluation results: ["+result+"] included.");
-      return false;
-    }
-  }
-
-  protected boolean timedOut(WorkflowCondition condition) {
-    if (condition.getTimeoutSeconds() == -1)
-      return false;
-    String isoStartDateTimeStr = COND_TIMEOUTS.get(condition.getConditionId());
-    Date isoStartDateTime = null;
-    try {
-      isoStartDateTime = DateConvert.isoParse(isoStartDateTimeStr);
-    } catch (Exception e) {
-      e.printStackTrace();
-      LOG.log(Level.WARNING, "Unable to parse start date time for condition: ["
-          + condition.getConditionId() + "]: start date time: ["
-          + isoStartDateTimeStr + "]: Reason: " + e.getMessage());
-      return false;
-    }
-    Date now = new Date();
-    long numSecondsElapsed = (now.getTime() - isoStartDateTime.getTime()) / (1000);
-    if (numSecondsElapsed >= condition.getTimeoutSeconds()) {
-      LOG.log(
-          Level.INFO,
-          "Condition: [" + condition.getConditionName()
-              + "]: exceeded timeout threshold of: ["
-              + condition.getTimeoutSeconds() + "] seconds: elapsed time: ["
-              + numSecondsElapsed + "]");
-      return true;
-    } else{
-      LOG.log(
-          Level.FINEST,
-          "Condition: [" + condition.getConditionName()
-              + "]: has not exceeded timeout threshold of: ["
-              + condition.getTimeoutSeconds() + "] seconds: elapsed time: ["
-              + numSecondsElapsed + "]");      
-      return false;
-    }
-  }
-
   protected String getTaskNameById(String taskId) {
     for (WorkflowTask task : (List<WorkflowTask>) (List<?>) this.workflowInstance
         .getWorkflow().getTasks()) {
@@ -369,10 +260,6 @@ public abstract class WorkflowProcessor {
     } catch (UnknownHostException e) {
     }
     return null;
-  }
-  
-  private String generateISO8601(){
-    return DateConvert.isoFormat(new Date());
   }
 
 }

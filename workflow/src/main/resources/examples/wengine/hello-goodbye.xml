@@ -23,6 +23,10 @@
 			<task id-ref="urn:oodt:HelloWorld" />
 			<task id-ref="urn:oodt:GoodbyeWorld" />
 		</sequential>
+		
+		<conditions>
+		  <condition id-ref="urn:oodt:TimeoutCondition"/>
+		</conditions>
 
 		<task id-ref="urn:oodt:IntensiveTask" />
 	</parallel>

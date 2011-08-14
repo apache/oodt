@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.workflow.structs;
 
 //JDK imports
@@ -23,10 +22,8 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * @author mattmann
- * @version $Revision$
  * 
- * <p>
+ * 
  * A Workflow is an abstract representation of a set of interconnected
  * processes. Processes, or jobs, may have dependencies upon one another, may
  * provide each other input, and/or output, or may be completely independent of
@@ -35,87 +32,112 @@ import java.util.Vector;
  * <br>
  * See <a href="http://www.gridbus.org/reports/GridWorkflowTaxonomy.pdf">Buyya
  * et al.</a> for a great description in detail of what exactly a Workflow is.
- * </p>
+ * 
+ * 
+ * @author mattmann
+ * @version $Revision$
  * 
  */
 public class Workflow {
 
-    private String name;
+  private String name;
 
-    private String id;
+  private String id;
 
-    private List tasks;
+  private List<WorkflowTask> tasks;
 
-    /**
-     * Default Constructor
-     * 
-     */
-    public Workflow() {
-        tasks = new Vector();
+  private List<WorkflowCondition> conditions;
 
-    }
+  /**
+   * Default Constructor
+   * 
+   */
+  public Workflow() {
+    this.tasks = new Vector<WorkflowTask>();
+    this.conditions = new Vector<WorkflowCondition>();
+  }
 
-    /**
-     * Constructs a new Workflow with the given parameters.
-     * 
-     * @param name
-     *            The name of this workflow.
-     * @param id
-     *            The identifier for this workflow.
-     * @param tasks
-     *            The {@link List} of {@link WorkflowTask}s associated with
-     *            this workflow.
-     */
-    public Workflow(String name, String id, List tasks) {
-        name = name;
-        id = id;
-        tasks = tasks;
+  /**
+   * Constructs a new Workflow with the given parameters.
+   * 
+   * @param name
+   *          The name of this workflow.
+   * @param id
+   *          The identifier for this workflow.
+   * @param tasks
+   *          The {@link List} of {@link WorkflowTask}s associated with this
+   *          workflow.
+   * 
+   * @param conditions
+   *          The {@link List} of {@link WorkflowCondition}s associated with
+   *          this workflow.
+   */
+  public Workflow(String name, String id, List<WorkflowTask> tasks,
+      List<WorkflowCondition> conditions) {
+    this.name = name;
+    this.id = id;
+    this.tasks = tasks;
+    this.conditions = conditions;
+  }
 
-    }
+  /**
+   * @return the id
+   */
+  public String getId() {
+    return id;
+  }
 
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+  /**
+   * @param name
+   *          the name to set
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+  /**
+   * @return the conditions
+   */
+  public List<WorkflowCondition> getConditions() {
+    return conditions;
+  }
 
-    /**
-     * @return the tasks
-     */
-    public List getTasks() {
-        return tasks;
-    }
+  /**
+   * @param conditions
+   *          the conditions to set
+   */
+  public void setConditions(List<WorkflowCondition> conditions) {
+    this.conditions = conditions;
+  }
 
-    /**
-     * @param tasks
-     *            the tasks to set
-     */
-    public void setTasks(List tasks) {
-        this.tasks = tasks;
-    }
+  /**
+   * @param tasks
+   *          the tasks to set
+   */
+  public void setTasks(List<WorkflowTask> tasks) {
+    this.tasks = tasks;
+  }
+
+  /**
+   * @return the tasks
+   */
+  public List<WorkflowTask> getTasks() {
+    return tasks;
+  }
 
 }

@@ -29,6 +29,7 @@ import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.cas.workflow.util.XmlStructFactory;
+import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.File;
@@ -310,11 +311,28 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     pcw.setName(workflow.getName());
     pcw.setTasks(workflow.getTasks());
     pcw.setId(workflow.getId());
-    this.workflows.put(pcw.getId(), pcw);    
+    this.workflows.put(pcw.getId(), pcw);
     this.eventWorkflowMap.put(workflowId, Collections.singletonList(pcw));
 
     // generate its ID
     return workflowId;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#
+   * getConditionsByWorkflowId(java.lang.String)
+   */
+  @Override
+  public List<WorkflowCondition> getConditionsByWorkflowId(String workflowId)
+      throws RepositoryException {
+    if (!this.workflows.containsKey(workflowId))
+      throw new RepositoryException(
+          "Attempt to obtain conditions for a workflow: " + "[" + workflowId
+              + "] that does not exist!");
+
+    return this.workflows.get(workflowId).getConditions();
   }
 
   private void init() throws RepositoryException {
@@ -445,14 +463,18 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
         }
       } else {
         if (processorType.equals("condition")) {
-          NodeList procTypeBlockNodes = graphElem
-              .getElementsByTagName("condition");
-          if (procTypeBlockNodes != null && procTypeBlockNodes.getLength() > 0) {
-            LOG.log(Level.FINE, "Found: [" + procTypeBlockNodes.getLength()
-                + "] linked condition definitions");
-            for (int i = 0; i < procTypeBlockNodes.getLength(); i++) {
-              loadGraphs(rootElements, (Element) procTypeBlockNodes.item(i),
-                  graph, staticMetadata);
+          Element conditionsElem = XMLUtils.getFirstElement("conditions",
+              graphElem);
+          if (conditionsElem != null) {
+            List<Element> procTypeBlockNodes = this.getChildrenByTagName(
+                conditionsElem, "condition");
+            if (procTypeBlockNodes != null && procTypeBlockNodes.size() > 0) {
+              LOG.log(Level.FINE, "Found: [" + procTypeBlockNodes.size()
+                  + "] linked condition definitions");
+              for (int i = 0; i < procTypeBlockNodes.size(); i++) {
+                loadGraphs(rootElements, procTypeBlockNodes.get(i), graph,
+                    staticMetadata);
+              }
             }
           }
         }
@@ -565,11 +587,10 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       graph.setCond(cond);
       if (graph.getParent() != null) {
         if (graph.getParent().getWorkflow() != null) {
-          LOG.log(
-              Level.WARNING,
-              "wengine feature not supported yet: condition: ["
-                  + cond.getConditionId() + "] has workflow parent: ["
-                  + graph.getParent().getWorkflow().getId() + "]");
+          System.out.println("Adding condition: [" + cond.getConditionName()
+              + "] to parent workflow: ["
+              + graph.getParent().getWorkflow().getName() + "]");
+          graph.getParent().getWorkflow().getConditions().add(cond);
         } else if (graph.getParent().getTask() != null) {
           graph.getParent().getTask().getConditions().add(cond);
         } else {
@@ -703,7 +724,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     private String clazz;
 
     private long timeout;
-    
+
     private boolean optional;
 
     private Graph parent;
@@ -724,7 +745,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       this.timeout = Long.valueOf(graphElem.getAttribute("timeout") != null
           && !graphElem.getAttribute("timeout").equals("") ? graphElem
           .getAttribute("timeout") : "-1");
-      this.optional = Boolean.valueOf(graphElem.getAttribute("optional")); 
+      this.optional = Boolean.valueOf(graphElem.getAttribute("optional"));
 
       NamedNodeMap attrMap = graphElem.getAttributes();
       for (int i = 0; i < attrMap.getLength(); i++) {
@@ -997,7 +1018,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     }
 
     /**
-     * @param optional the optional to set
+     * @param optional
+     *          the optional to set
      */
     public void setOptional(boolean optional) {
       this.optional = optional;

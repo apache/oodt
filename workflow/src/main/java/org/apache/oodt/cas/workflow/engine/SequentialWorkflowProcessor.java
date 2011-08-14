@@ -60,11 +60,14 @@ public class SequentialWorkflowProcessor extends WorkflowProcessor implements
   /* our log stream */
   private static Logger LOG = Logger
       .getLogger(SequentialWorkflowProcessor.class.getName());
+  
+  private ConditionEvaluator conditionEvaluator;
 
   public SequentialWorkflowProcessor(WorkflowInstance wInst,
       WorkflowInstanceRepository instRep, URL wParentUrl, long conditionWait) {
     super(wInst, instRep, wParentUrl, conditionWait);
     taskIterator = this.workflowInstance.getWorkflow().getTasks().iterator();
+    this.conditionEvaluator = new ConditionEvaluator();
   }
 
   /*
@@ -98,8 +101,8 @@ public class SequentialWorkflowProcessor extends WorkflowProcessor implements
       }
 
       if (task.getConditions() != null) {
-        while (!satisfied(task.getConditions(), task.getTaskId())
-            && isRunning()) {
+        while(!this.conditionEvaluator.satisfied(task.getConditions(), task.getTaskId(),
+            this.workflowInstance.getSharedContext()) && isRunning()) {
 
           if (!isPaused()) {
             pause();

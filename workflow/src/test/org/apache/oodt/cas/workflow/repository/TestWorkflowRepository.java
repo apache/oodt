@@ -60,6 +60,24 @@ public class TestWorkflowRepository extends TestCase {
                 .toString());
         workflowRepository = new XMLWorkflowRepository(workflowDirUris);
     }
+    
+    /**
+     * @since OODT-205
+     */
+    public void testWorkflowConditions(){
+      Workflow w = null;
+      try{
+        w = this.workflowRepository.getWorkflowById("urn:oodt:conditionsWorkflow");
+      }
+      catch(Exception e){
+        fail(e.getMessage());
+      }
+      
+      assertNotNull(w);
+      assertNotNull(w.getConditions());
+      assertTrue(w.getConditions().size() > 0);
+      assertEquals(w.getConditions().size(), 1);
+    }    
 
     public void testGetWorkflowByName() {
         Workflow w = null;
@@ -99,7 +117,7 @@ public class TestWorkflowRepository extends TestCase {
         }
 
         assertNotNull(workflows);
-        assertEquals(10, workflows.size());
+        assertEquals(11, workflows.size());
     }
 
     public void testGetWorkflowsForEvent() {

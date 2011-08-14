@@ -42,6 +42,24 @@ public class TestPackagedWorkflowRepository extends TestCase {
 
   public TestPackagedWorkflowRepository() {
   }
+  
+  /**
+   * @since OODT-205
+   */
+  public void testWorkflowConditions(){
+    Workflow w = null;
+    try{
+      w = this.repo.getWorkflowById("urn:npp:GranuleMaps");
+    }
+    catch(Exception e){
+      fail(e.getMessage());
+    }
+    
+    assertNotNull(w);
+    assertNotNull(w.getConditions());
+    assertTrue(w.getConditions().size() > 0);
+    assertEquals(w.getConditions().size(), 3);
+  }
 
   public void testDetectOuterLevelWorkflows() {
     assertNotNull(this.repo);

@@ -293,6 +293,19 @@ public class XMLWorkflowRepository implements WorkflowRepository {
       this.eventMap.put(workflowId, Collections.singletonList(workflow));
       return workflowId;
     }    
+    
+    /* (non-Javadoc)
+     * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#getConditionsByWorkflowId(java.lang.String)
+     */
+    @Override
+    public List<WorkflowCondition> getConditionsByWorkflowId(String workflowId)
+        throws RepositoryException {
+      if(!this.workflowMap.containsKey(workflowId)) throw new 
+         RepositoryException("Attempt to obtain conditions for a workflow: " +
+         		"["+workflowId+"] that does not exist!");
+      
+      return ((Workflow)this.workflowMap.get(workflowId)).getConditions();
+    }    
 
     /**
      * @param args
@@ -506,7 +519,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
                             if (workflowMap.get(workflowId) == null) {
                                 Workflow w = XmlStructFactory.getWorkflow(
                                         workflowRoot.getDocumentElement(),
-                                        taskMap);
+                                        taskMap, conditionMap);
                                 workflowMap.put(workflowId, w);
                             } else {
                                 LOG

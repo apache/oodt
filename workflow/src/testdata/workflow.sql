@@ -1,18 +1,24 @@
 
 DROP TABLE workflows IF EXISTS;
+DROP TABLE workflow_condition_map IF EXISTS;
 DROP TABLE event_workflow_map IF EXISTS;
 DROP TABLE workflow_tasks IF EXISTS;
 DROP TABLE workflow_task_map IF EXISTS;
 DROP TABLE workflow_instances IF EXISTS;
 DROP TABLE workflow_instance_metadata IF EXISTS;
 DROP TABLE workflow_conditions IF EXISTS;
-DROP TABLE workflow_condition_map IF EXISTS;
+DROP TABLE task_condition_map IF EXISTS;
 DROP TABLE workflow_task_configuration IF EXISTS;
 DROP TABLE workflow_condition_configuration IF EXISTS;
 
 CREATE TABLE workflows 
 (workflow_id int NOT NULL PRIMARY KEY, 
 workflow_name varchar(255));
+
+CREATE TABLE workflow_condition_map
+(workflow_id int NOT NULL,
+workflow_condition_id int NOT NULL,
+condition_order int NOT NULL);
 
 CREATE TABLE event_workflow_map
 (workflow_id int NOT NULL,
@@ -50,7 +56,7 @@ workflow_condition_class varchar(255) NOT NULL,
 workflow_condition_timeout int NOT NULL,
 workflow_condition_optional boolean DEFAULT false);
 
-CREATE TABLE workflow_condition_map
+CREATE TABLE task_condition_map
 (workflow_task_id int NOT NULL, 
 workflow_condition_id int NOT NULL,
 condition_order int NOT NULL);
@@ -69,3 +75,5 @@ INSERT INTO workflow_conditions VALUES ('1', 'CheckCond', 'org.apache.oodt.cas.w
 INSERT INTO workflow_condition_configuration VALUES ('1', 'reqMetKeys', 'Met1,Met2,Met3');
 INSERT INTO workflow_conditions VALUES ('2', 'FalseCond', 'org.apache.oodt.cas.workflow.examples.FalseCondition', 10, true);
 INSERT INTO workflow_conditions VALUES ('3', 'TrueCond', 'org.apache.oodt.cas.workflow.examples.TrueCondition', 30, true);
+INSERT INTO workflows VALUES ('1', 'Test Workflow');
+INSERT INTO workflow_condition_map VALUES ('1', '3', '1');

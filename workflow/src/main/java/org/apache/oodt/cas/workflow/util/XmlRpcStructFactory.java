@@ -224,6 +224,7 @@ public final class XmlRpcStructFactory {
         workflow.put("id", w.getId());
         workflow.put("name", w.getName() != null ? w.getName() : "");
         workflow.put("tasks", getXmlRpcWorkflowTasks(w.getTasks()));
+        workflow.put("conditions", getXmlRpcWorkflowConditions(w.getConditions()));
 
         return workflow;
     }
@@ -242,6 +243,7 @@ public final class XmlRpcStructFactory {
         workflow.setName((String) w.get("name"));
         workflow.setId((String) w.get("id"));
         workflow.setTasks(getWorkflowTasksFromXmlRpc((Vector) w.get("tasks")));
+        workflow.setConditions(getWorkflowConditionsFromXmlRpc((Vector)w.get("conditions")));
 
         return workflow;
     }

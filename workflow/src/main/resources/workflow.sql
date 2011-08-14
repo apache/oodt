@@ -17,6 +17,10 @@ CREATE TABLE workflows
 (workflow_id int PRIMARY KEY NOT NULL,
 workflow_name varchar(255));
 
+CREATE TABLE workflow_condition_map
+(workflow_id int NOT NULL,
+workflow_condition_id int NOT NULL);
+
 CREATE TABLE event_workflow_map
 (workflow_id int NOT NULL,
 event_name varchar(255) NOT NULL);
@@ -66,7 +70,7 @@ workflow_condition_class varchar(255) NOT NULL,
 workflow_condition_timeout int,
 workflow_optional boolean DEFAULT false);
 
-CREATE TABLE workflow_condition_map
+CREATE TABLE  task_condition_map
 (workflow_task_id int NOT NULL, 
 workflow_condition_id int NOT NULL
 condition_order int NOT NULL);
