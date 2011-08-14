@@ -19,12 +19,16 @@
 package org.apache.oodt.cas.workflow.repository;
 
 //OODT imports
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.util.XmlStructFactory;
+import org.apache.oodt.cas.workflow.examples.NoOpTask;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
+import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 
 //JDK imports
 import java.util.logging.Level;
@@ -520,6 +524,11 @@ public class XMLWorkflowRepository implements WorkflowRepository {
                                 Workflow w = XmlStructFactory.getWorkflow(
                                         workflowRoot.getDocumentElement(),
                                         taskMap, conditionMap);
+                                
+                                if(w.getConditions() != null && w.getConditions().size() > 0){
+                                  // add a virtual first task, with the conditions 
+                                  w.getTasks().add(0, getGlobalWorkflowConditionsTask(w.getName(), w.getId(), w.getConditions()));
+                                }
                                 workflowMap.put(workflowId, w);
                             } else {
                                 LOG
@@ -649,6 +658,16 @@ public class XMLWorkflowRepository implements WorkflowRepository {
 
         return document;
     }
-
+    
+    private WorkflowTask getGlobalWorkflowConditionsTask(String workflowName, String workflowId, List<WorkflowCondition> conditions){
+      WorkflowTask task = new WorkflowTask();
+      task.setConditions(conditions);
+      task.setTaskConfig(new WorkflowTaskConfiguration());
+      task.setTaskId(workflowId+"-global-conditions-eval");
+      task.setTaskName(workflowName+"-global-conditions-eval");
+      task.setTaskInstanceClassName(NoOpTask.class.getName());
+      this.taskMap.put(task.getTaskId(), task);
+      return task;
+    }
 
 }

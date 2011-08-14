@@ -28,6 +28,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 
 //JDK imports
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
@@ -127,6 +129,67 @@ public final class GenericWorkflowObjectFactory {
 		} else
 			return null;
 	}
+	
+  /**
+   * <p>
+   * Constructs a {@link WorkflowTaskInstance} from the given implementation
+   * class name.
+   * </p>
+   * 
+   * @param className
+   *            The String name of the inner class (including package qualifiers)
+   *            that implements the WorkflowTaskInstance interface to
+   *            construct.
+   * @return A new {@link WorkflowTaskInstance} implementation specified by
+   *         its class name.
+   */
+  public static WorkflowTaskInstance getTaskObjectFromInnerClassName(Class<?> enclosingInstance, String className) {
+
+    if (className != null) {
+      WorkflowTaskInstance taskInstance = null;
+
+      try {
+        Class workflowTaskClass = Class.forName(className);
+        Constructor construct = workflowTaskClass.getConstructor(enclosingInstance);
+        taskInstance = (WorkflowTaskInstance) construct.newInstance();
+
+        return taskInstance;
+
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "ClassNotFound, Unable to locate task class: "
+                + className + ": cannot instantiate!");
+        return null;
+      } catch (InstantiationException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING, "Unable to instantiate task class: "
+            + className + ": Reason: " + e.getMessage() + " !");
+        return null;
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "IllegalAccessException when instantiating task class: "
+                + className + ": cannot instantiate!");
+        return null;
+      }
+      catch (NoSuchMethodException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "NoSuchMethodException when instantiating task class: "
+                + className + ": cannot instantiate!");
+        return null;
+      }
+      catch (InvocationTargetException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "InvocationTargetException when instantiating task class: "
+                + className + ": cannot instantiate!");
+        return null;
+      }
+    } else
+      return null;
+  }	
 
 	/**
 	 * <p>

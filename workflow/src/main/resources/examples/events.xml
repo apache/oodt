@@ -46,6 +46,9 @@
 	<event name="optional">
 	    <workflow id="urn:oodt:optionalWorkflow"/>
 	</event>
+	<event name="conditions">
+	    <workflow id="urn:oodt:conditionsWorkflow"/>
+	</event>
     <event name="GenericFileIngest">
        <workflow id="urn:oodt:mailWorkflow"/>
     </event>

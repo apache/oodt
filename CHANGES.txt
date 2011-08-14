@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-215 WorkflowInstances should have pre-conditions as 
+  well (mattmann)
+
 * OODT-306 Added FileManager Tool Aliases (mattmann, goodale)
 
 * OODT-208 WorkflowConditions should be identifiable as optional 

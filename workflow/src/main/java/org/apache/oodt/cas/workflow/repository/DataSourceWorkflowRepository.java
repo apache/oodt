@@ -19,6 +19,7 @@ package org.apache.oodt.cas.workflow.repository;
 
 //OODT imports
 import org.apache.oodt.cas.workflow.util.DbStructFactory;
+import org.apache.oodt.cas.workflow.examples.NoOpTask;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
@@ -102,6 +103,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
         if (getConditions) {
           workflow.setConditions(getConditionsByWorkflowId(workflow.getId()));
+          handleGlobalWorkflowConditions(workflow);
         }
       }
 
@@ -190,6 +192,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
         if (getConditions) {
           workflow.setConditions(getConditionsByWorkflowId(workflow.getId()));
+          handleGlobalWorkflowConditions(workflow);
         }
       }
 
@@ -277,6 +280,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
         if (getConditions) {
           workflow.setConditions(getConditionsByWorkflowId(workflow.getId()));
+          handleGlobalWorkflowConditions(workflow);
         }
 
         workflows.add(workflow);
@@ -537,6 +541,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
         if (getConditions) {
           workflow.setConditions(getConditionsByWorkflowId(workflow.getId()));
+          handleGlobalWorkflowConditions(workflow);
         }
 
         workflows.add(workflow);
@@ -1370,6 +1375,86 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
     return workflowId;
   }
 
+  private String commitTask(Workflow workflow, WorkflowTask task) throws RepositoryException {
+    Connection conn = null;
+    Statement statement = null;
+    ResultSet rs = null;
+    String taskId = null;
+
+    try {
+      conn = dataSource.getConnection();
+      conn.setAutoCommit(false);
+      statement = conn.createStatement();
+
+      String sql = "INSERT INTO workflow_tasks (workflow_task_name, workflow_task_class) VALUES ('"
+          + task.getTaskName() + "', '"+task.getTaskInstanceClassName()+"')";
+
+      LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
+      statement.execute(sql);
+
+      sql = "SELECT MAX(workflow_task_id) AS max_id FROM workflow_tasks";
+      rs = statement.executeQuery(sql);
+
+      while (rs.next()) {
+        taskId = String.valueOf(rs.getInt("max_id"));
+      }
+
+      task.setTaskId(taskId);
+
+      // task to workflow map
+      sql = "INSERT INTO workflow_task_map (workflow_id, workflow_task_id, task_order) VALUES ("
+          + workflow.getId() + ","+taskId+",1)";
+      LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
+      statement.execute(sql);
+      conn.commit();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "Exception adding task. Message: " + e.getMessage());
+      try {
+        conn.rollback();
+      } catch (SQLException e2) {
+        LOG.log(
+            Level.SEVERE,
+            "Unable to rollback task transaction. Message: "
+                + e2.getMessage());
+      }
+      throw new RepositoryException(e.getMessage());
+    } finally {
+
+      if (rs != null) {
+        try {
+          rs.close();
+        } catch (SQLException ignore) {
+        }
+
+        rs = null;
+      }
+
+      if (statement != null) {
+        try {
+          statement.close();
+        } catch (SQLException ignore) {
+        }
+
+        statement = null;
+      }
+
+      if (conn != null) {
+        try {
+          conn.close();
+
+        } catch (SQLException ignore) {
+        }
+
+        conn = null;
+      }
+    }
+
+    return taskId;
+  }
+  
   private List<WorkflowTask> getTasks() throws RepositoryException {
     Connection conn = null;
     Statement statement = null;
@@ -1475,6 +1560,32 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
     }
 
     return false;
+  }
+
+  private void handleGlobalWorkflowConditions(Workflow workflow) throws RepositoryException {
+    if (workflow.getConditions() != null && workflow.getConditions().size() > 0) {
+      if (workflow.getTasks() == null
+          || (workflow.getTasks() != null && workflow.getTasks().size() == 0)) {
+        workflow.setTasks(new Vector<WorkflowTask>());
+      }
+
+      workflow.getTasks().add(
+          0,
+          getGlobalWorkflowConditionsTask(workflow,
+              workflow.getConditions()));
+    }
+  }
+
+  private WorkflowTask getGlobalWorkflowConditionsTask(Workflow workflow,
+      List<WorkflowCondition> conditions) throws RepositoryException {
+    WorkflowTask task = new WorkflowTask();
+    task.setConditions(conditions);
+    task.setTaskConfig(new WorkflowTaskConfiguration());
+    task.setTaskId(workflow.getId() + "-global-conditions-eval");
+    task.setTaskName(workflow.getName() + "-global-conditions-eval");
+    task.setTaskInstanceClassName(NoOpTask.class.getName());
+    task.setTaskId(this.commitTask(workflow, task));
+    return task;
   }
 
 }

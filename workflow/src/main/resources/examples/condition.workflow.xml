@@ -19,7 +19,7 @@
    <condition id="urn:oodt:TimeoutCondition"/>
  </conditions>
  <tasks>
-   <task id="urn:oodt:LongTask"/>
-   <task id="urn:oodt:LongTask"/>
+   <task id="urn:oodt:IntensiveTask"/>
+   <task id="urn:oodt:IntensiveTask"/>
  </tasks>
 </cas:workflow>

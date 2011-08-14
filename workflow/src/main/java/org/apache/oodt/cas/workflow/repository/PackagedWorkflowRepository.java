@@ -18,22 +18,19 @@ package org.apache.oodt.cas.workflow.repository;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
+import org.apache.oodt.cas.workflow.examples.BranchRedirector;
+import org.apache.oodt.cas.workflow.examples.NoOpTask;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
-import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.cas.workflow.util.XmlStructFactory;
 import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.File;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -356,10 +353,23 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
         loadTaskAndConditionDefinitions(rootElements, root, staticMetadata);
         loadGraphs(rootElements, root, new Graph(), staticMetadata);
         computeEvents();
+        computeWorkflowConditions();
       }
     } catch (Exception e) {
       e.printStackTrace();
       throw new RepositoryException(e.getMessage());
+    }
+  }
+
+  private void computeWorkflowConditions() throws Exception {
+    if (this.workflows != null && this.workflows.values() != null
+        && this.workflows.values().size() > 0) {
+      for (ParentChildWorkflow w : this.workflows.values()) {
+        if (w.getConditions() != null && w.getConditions().size() > 0) {
+          w.getTasks().add(0,
+              getGlobalWorkflowConditionsTask(w.getName(), w.getId(), w.getConditions()));
+        }
+      }
     }
   }
 
@@ -1099,33 +1109,16 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
 
   }
 
-  private class BranchRedirector implements WorkflowTaskInstance {
-
-    public BranchRedirector() {
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance#run(org.apache
-     * .oodt.cas.metadata.Metadata,
-     * org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration)
-     */
-    @Override
-    public void run(Metadata metadata, WorkflowTaskConfiguration config)
-        throws WorkflowTaskInstanceException {
-      XmlRpcWorkflowManagerClient wm = null;
-
-      try {
-        wm = new XmlRpcWorkflowManagerClient(new URL(
-            metadata.getMetadata(CoreMetKeys.WORKFLOW_MANAGER_URL)));
-        wm.sendEvent(config.getProperty("eventName"), metadata);
-      } catch (Exception e) {
-        throw new WorkflowTaskInstanceException(e.getMessage());
-      }
-    }
-
+  private WorkflowTask getGlobalWorkflowConditionsTask(String workflowName, String workflowId,
+      List<WorkflowCondition> conditions) {
+    WorkflowTask task = new WorkflowTask();
+    task.setConditions(conditions);
+    task.setTaskConfig(new WorkflowTaskConfiguration());
+    task.setTaskId(workflowId + "-global-conditions-eval");
+    task.setTaskName(workflowName + "-global-conditions-eval");
+    task.setTaskInstanceClassName(NoOpTask.class.getName());
+    this.tasks.put(task.getTaskId(), task);
+    return task;
   }
 
 }
