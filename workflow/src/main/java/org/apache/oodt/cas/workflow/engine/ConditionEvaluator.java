@@ -58,7 +58,7 @@ public class ConditionEvaluator {
     this.CONDITION_CACHE = new HashMap<String, HashMap<String, WorkflowConditionInstance>>();
   }
 
-  protected boolean satisfied(List<WorkflowCondition> conditionList, String id,
+  public boolean satisfied(List<WorkflowCondition> conditionList, String id,
       Metadata context) {
     for (WorkflowCondition c : conditionList) {
       WorkflowConditionInstance cInst = null;
@@ -107,7 +107,7 @@ public class ConditionEvaluator {
     return true;
   }
 
-  protected boolean isOptional(WorkflowCondition condition, boolean result) {
+  public boolean isOptional(WorkflowCondition condition, boolean result) {
     if (condition.isOptional()) {
       LOG.log(Level.WARNING, "Condition: [" + condition.getConditionId()
           + "] is optional: evaluation results: [" + result + "] ignored");
@@ -119,7 +119,7 @@ public class ConditionEvaluator {
     }
   }
 
-  protected boolean timedOut(WorkflowCondition condition) {
+  public boolean timedOut(WorkflowCondition condition) {
     if (condition.getTimeoutSeconds() == -1)
       return false;
     String isoStartDateTimeStr = COND_TIMEOUTS.get(condition.getConditionId());
