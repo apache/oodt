@@ -99,7 +99,7 @@ public abstract class WorkflowProcessor {
    * <p>
    * Stops once and for all the thread from processing the workflow. This method
    * should not maintain the state of the workflow, it should gracefully shut
-   * down the WorkflowProcessorThread and any of its subsequent resources.
+   * down the WorkflowProcessor and any of its subsequent resources.
    * </p>
    * 
    */
@@ -108,7 +108,7 @@ public abstract class WorkflowProcessor {
   /**
    * <p>
    * Resumes execution of a {@link #pause}d {@link WorkflowInstace} by this
-   * WorkflowProcessorThread.
+   * WorkflowProcessor.
    * </p>
    * 
    */
@@ -117,11 +117,17 @@ public abstract class WorkflowProcessor {
   /**
    * <p>
    * Pauses exectuion of a {@link WorkflowInstace} being handled by this
-   * WorkflowProcessorThread.
+   * WorkflowProcessor.
    * </p>
    * 
    */
   public abstract void pause();
+  
+  
+  /**
+   * Starts execution of the subordinate {@link WorkflowProcessor}.
+   */
+  public abstract void start();
 
   /**
    * Returns the identifier of the current {@link WorkflowTask} being processed

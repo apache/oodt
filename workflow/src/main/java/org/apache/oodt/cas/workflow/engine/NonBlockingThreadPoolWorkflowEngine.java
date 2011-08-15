@@ -30,7 +30,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
-import org.apache.oodt.cas.workflow.engine.SequentialWorkflowProcessor;
+import org.apache.oodt.cas.workflow.engine.NonBlockingIterativeWorkflowProcessorThread;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.engine.NonBlockingShepardThread;
 import org.apache.oodt.commons.util.DateConvert;
@@ -155,13 +155,13 @@ public class NonBlockingThreadPoolWorkflowEngine implements WorkflowEngine, Work
       .getLong(
               "org.apache.oodt.cas.workflow.engine.resourcemgr.pollingWaitTime",
               10).longValue();
-    	SequentialWorkflowProcessor worker = new SequentialWorkflowProcessor(
+    	NonBlockingIterativeWorkflowProcessorThread worker = new NonBlockingIterativeWorkflowProcessorThread(
                 wInst, instRep, this.wmgrUrl, pollingWaitTime);
         worker.setRClient(rClient);
         workerMap.put(wInst.getId(), worker);
 
         try {
-            pool.execute(worker);
+            pool.execute(new ThreadedProcessor(worker));
         } catch (InterruptedException e) {
         	LOG.log(Level.WARNING, "Error running workflow: "
                     + wInst.getWorkflow().getId());
@@ -235,8 +235,8 @@ public class NonBlockingThreadPoolWorkflowEngine implements WorkflowEngine, Work
      */
     public synchronized void pauseWorkflowInstance(String workflowInstId) {
         // okay, try and look up that worker thread in our hash map
-        SequentialWorkflowProcessor worker = (SequentialWorkflowProcessor) workerMap
-                .get(workflowInstId);
+      NonBlockingIterativeWorkflowProcessorThread worker = ((ThreadedProcessor) workerMap
+          .get(workflowInstId)).getProcessor();
         if (worker == null) {
             LOG
                     .log(
@@ -259,8 +259,8 @@ public class NonBlockingThreadPoolWorkflowEngine implements WorkflowEngine, Work
      */
     public synchronized void resumeWorkflowInstance(String workflowInstId) {
         // okay, try and look up that worker thread in our hash map
-        SequentialWorkflowProcessor worker = (SequentialWorkflowProcessor) workerMap
-                .get(workflowInstId);
+      NonBlockingIterativeWorkflowProcessorThread worker = ((ThreadedProcessor) workerMap
+          .get(workflowInstId)).getProcessor();
         if (worker == null) {
             LOG.log(Level.WARNING,
                     "WorkflowEngine: Attempt to resume workflow instance id: "
@@ -374,8 +374,8 @@ public class NonBlockingThreadPoolWorkflowEngine implements WorkflowEngine, Work
      */
     public synchronized void stopWorkflow(String workflowInstId) {
         // okay, try and look up that worker thread in our hash map
-        SequentialWorkflowProcessor worker = (SequentialWorkflowProcessor) workerMap
-                .get(workflowInstId);
+      NonBlockingIterativeWorkflowProcessorThread worker = ((ThreadedProcessor) workerMap
+          .get(workflowInstId)).getProcessor();
         if (worker == null) {
             LOG.log(Level.WARNING,
                     "WorkflowEngine: Attempt to stop workflow instance id: "
@@ -642,6 +642,41 @@ public class NonBlockingThreadPoolWorkflowEngine implements WorkflowEngine, Work
     	
     	return null;
     }
+    
+    class ThreadedProcessor implements Runnable {
+
+      private NonBlockingIterativeWorkflowProcessorThread processor;
+
+      public ThreadedProcessor(NonBlockingIterativeWorkflowProcessorThread processor) {
+        this.processor = processor;
+      }
+
+      /*
+       * (non-Javadoc)
+       * 
+       * @see java.lang.Runnable#run()
+       */
+      @Override
+      public void run() {
+        processor.start();
+      }
+
+      /**
+       * @return the processor
+       */
+      public NonBlockingIterativeWorkflowProcessorThread getProcessor() {
+        return processor;
+      }
+
+      /**
+       * @param processor
+       *          the processor to set
+       */
+      public void setProcessor(NonBlockingIterativeWorkflowProcessorThread processor) {
+        this.processor = processor;
+      }
+
+    }    
 	
 
 }

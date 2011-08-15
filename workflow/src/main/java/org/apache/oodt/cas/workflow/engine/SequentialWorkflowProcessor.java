@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  */
 
 public class SequentialWorkflowProcessor extends WorkflowProcessor implements
-    WorkflowStatus, CoreMetKeys, Runnable {
+    WorkflowStatus, CoreMetKeys {
 
   private Iterator<WorkflowTask> taskIterator;
 
@@ -70,12 +70,11 @@ public class SequentialWorkflowProcessor extends WorkflowProcessor implements
     this.conditionEvaluator = new ConditionEvaluator();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Runnable#run()
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.engine.WorkflowProcessor#start()
    */
-  public void run() {
+  @Override
+  public void start() {
 
     String startDateTimeIsoStr = DateConvert.isoFormat(new Date());
     this.workflowInstance.setStartDateTimeIsoStr(startDateTimeIsoStr);

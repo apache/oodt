@@ -137,8 +137,8 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized void pauseWorkflowInstance(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialWorkflowProcessor worker = (SequentialWorkflowProcessor) workerMap
-        .get(workflowInstId);
+    SequentialWorkflowProcessor worker = ((ThreadedProcessor) workerMap
+        .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
           "WorkflowEngine: Attempt to pause workflow instance id: "
@@ -161,8 +161,8 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized void resumeWorkflowInstance(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialWorkflowProcessor worker = (SequentialWorkflowProcessor) workerMap
-        .get(workflowInstId);
+    SequentialWorkflowProcessor worker = ((ThreadedProcessor) workerMap
+        .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
           "WorkflowEngine: Attempt to resume workflow instance id: "
@@ -217,7 +217,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     persistWorkflowInstance(wInst);
 
     try {
-      pool.execute(worker);
+      pool.execute(new ThreadedProcessor(worker));
     } catch (InterruptedException e) {
       throw new EngineException(e);
     }
@@ -245,8 +245,8 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized boolean updateMetadata(String workflowInstId, Metadata met) {
     // okay, try and look up that worker thread in our hash map
-    SequentialWorkflowProcessor worker = (SequentialWorkflowProcessor) workerMap
-        .get(workflowInstId);
+    SequentialWorkflowProcessor worker = ((ThreadedProcessor) workerMap
+        .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
           "WorkflowEngine: Attempt to update metadata context "
@@ -290,8 +290,8 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized void stopWorkflow(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialWorkflowProcessor worker = (SequentialWorkflowProcessor) workerMap
-        .get(workflowInstId);
+    SequentialWorkflowProcessor worker = ((ThreadedProcessor) workerMap
+        .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
           "WorkflowEngine: Attempt to stop workflow instance id: "
@@ -324,8 +324,8 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public Metadata getWorkflowInstanceMetadata(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialWorkflowProcessor worker = (SequentialWorkflowProcessor) workerMap
-        .get(workflowInstId);
+    SequentialWorkflowProcessor worker = ((ThreadedProcessor) workerMap
+        .get(workflowInstId)).getProcessor();
     if (worker == null) {
       // try and get the metadata
       // from the workflow instance repository (as it was persisted)
@@ -475,6 +475,41 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
       ignore.printStackTrace();
       return null;
     }
+  }
+
+  class ThreadedProcessor implements Runnable {
+
+    private SequentialWorkflowProcessor processor;
+
+    public ThreadedProcessor(SequentialWorkflowProcessor processor) {
+      this.processor = processor;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Runnable#run()
+     */
+    @Override
+    public void run() {
+      processor.start();
+    }
+
+    /**
+     * @return the processor
+     */
+    public SequentialWorkflowProcessor getProcessor() {
+      return processor;
+    }
+
+    /**
+     * @param processor
+     *          the processor to set
+     */
+    public void setProcessor(SequentialWorkflowProcessor processor) {
+      this.processor = processor;
+    }
+
   }
 
 }

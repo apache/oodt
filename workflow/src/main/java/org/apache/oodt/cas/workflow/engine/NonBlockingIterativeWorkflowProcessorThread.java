@@ -113,12 +113,12 @@ public class NonBlockingIterativeWorkflowProcessorThread extends
       running = true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Runnable#run()
+    /* (non-Javadoc)
+     * @see org.apache.oodt.cas.workflow.engine.WorkflowProcessor#start()
      */
-    public void run() {
+    @Override
+    public void start() {
+     
         /*
          * okay, we got into the run method, mark the start date time for the
          * workflow instance here

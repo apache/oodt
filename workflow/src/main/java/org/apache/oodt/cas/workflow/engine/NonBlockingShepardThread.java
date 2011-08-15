@@ -17,27 +17,25 @@
 
 package org.apache.oodt.cas.workflow.engine;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Vector;
 
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
-import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
-import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 
 public class NonBlockingShepardThread implements WorkflowStatus, CoreMetKeys, Runnable {
 
 	private NonBlockingThreadPoolWorkflowEngine engine;
+	
+	private ConditionEvaluator evalutor;
 	
 	/* our log stream */
 	 private static final Logger LOG = Logger
@@ -45,6 +43,7 @@ public class NonBlockingShepardThread implements WorkflowStatus, CoreMetKeys, Ru
 	
 	public NonBlockingShepardThread(NonBlockingThreadPoolWorkflowEngine engine){
 		this.engine = engine;
+		this.evalutor = new ConditionEvaluator();
 	}
 	
 	public void run() {
@@ -68,7 +67,7 @@ public class NonBlockingShepardThread implements WorkflowStatus, CoreMetKeys, Ru
 				
 				//check preconditions on current task
 				if (task.getConditions() != null) {
-	                if(!satisfied(wInst)) {
+	                if(!this.evalutor.satisfied(task.getConditions(), task.getTaskId(), wInst.getSharedContext())) {
 
 	                    /*LOG.log(Level.FINEST, "Pre-conditions for task: "
 	                            + task.getTaskName() + " unsatisfied.");*/
@@ -119,54 +118,6 @@ public class NonBlockingShepardThread implements WorkflowStatus, CoreMetKeys, Ru
 
         LOG.log(Level.INFO, "All required metadata fields present for task: ["
                 + task.getTaskName() + "]");
-
-        return true;
-    }
-	
-	private boolean satisfied(WorkflowInstance wInst) {
-    	String taskId = wInst.getCurrentTaskId();
-    	WorkflowTask task = getTaskById(wInst.getWorkflow(), taskId);
-    	List conditionList = task.getConditions(); 
-    	
-        for (Iterator i = conditionList.iterator(); i.hasNext();) {
-            WorkflowCondition c = (WorkflowCondition) i.next();
-            WorkflowConditionInstance cInst = null;
-
-            // see if we've already cached this condition instance
-            if (engine.CONDITION_CACHE.get(taskId) != null) {
-                HashMap conditionMap = (HashMap) engine.CONDITION_CACHE.get(taskId);
-
-                /*
-                 * okay we have some conditions cached for this task, see if we
-                 * have the one we need
-                 */
-                if (conditionMap.get(c.getConditionId()) != null) {
-                    cInst = (WorkflowConditionInstance) conditionMap.get(c
-                            .getConditionId());
-                }
-                /* if not, then go ahead and create it and cache it */
-                else {
-                    cInst = GenericWorkflowObjectFactory
-                            .getConditionObjectFromClassName(c
-                                    .getConditionInstanceClassName());
-                    conditionMap.put(c.getConditionId(), cInst);
-                }
-            }
-            /* no conditions cached yet, so set everything up */
-            else {
-                HashMap conditionMap = new HashMap();
-                cInst = GenericWorkflowObjectFactory
-                        .getConditionObjectFromClassName(c
-                                .getConditionInstanceClassName());
-                conditionMap.put(c.getConditionId(), cInst);
-                engine.CONDITION_CACHE.put(taskId, conditionMap);
-            }
-
-            // actually perform the evaluation
-            if (!cInst.evaluate(wInst.getSharedContext(), c.getTaskConfig())) {
-                return false;
-            }
-        }
 
         return true;
     }
