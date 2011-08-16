@@ -26,7 +26,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
-import org.apache.oodt.cas.workflow.engine.SequentialWorkflowProcessor;
+import org.apache.oodt.cas.workflow.engine.SequentialProcessor;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.commons.util.DateConvert;
 
@@ -137,7 +137,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized void pauseWorkflowInstance(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialWorkflowProcessor worker = ((ThreadedProcessor) workerMap
+    SequentialProcessor worker = ((ThreadedProcessor) workerMap
         .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
@@ -161,7 +161,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized void resumeWorkflowInstance(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialWorkflowProcessor worker = ((ThreadedProcessor) workerMap
+    SequentialProcessor worker = ((ThreadedProcessor) workerMap
         .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
@@ -208,7 +208,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     wInst.setStatus(CREATED);
     persistWorkflowInstance(wInst);
 
-    SequentialWorkflowProcessor worker = new SequentialWorkflowProcessor(wInst,
+    SequentialProcessor worker = new SequentialProcessor(wInst,
         instRep, this.wmgrUrl, this.conditionWait);
     worker.setRClient(rClient);
     workerMap.put(wInst.getId(), worker);
@@ -245,7 +245,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized boolean updateMetadata(String workflowInstId, Metadata met) {
     // okay, try and look up that worker thread in our hash map
-    SequentialWorkflowProcessor worker = ((ThreadedProcessor) workerMap
+    SequentialProcessor worker = ((ThreadedProcessor) workerMap
         .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
@@ -290,7 +290,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized void stopWorkflow(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialWorkflowProcessor worker = ((ThreadedProcessor) workerMap
+    SequentialProcessor worker = ((ThreadedProcessor) workerMap
         .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
@@ -324,7 +324,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public Metadata getWorkflowInstanceMetadata(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialWorkflowProcessor worker = ((ThreadedProcessor) workerMap
+    SequentialProcessor worker = ((ThreadedProcessor) workerMap
         .get(workflowInstId)).getProcessor();
     if (worker == null) {
       // try and get the metadata
@@ -479,9 +479,9 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   class ThreadedProcessor implements Runnable {
 
-    private SequentialWorkflowProcessor processor;
+    private SequentialProcessor processor;
 
-    public ThreadedProcessor(SequentialWorkflowProcessor processor) {
+    public ThreadedProcessor(SequentialProcessor processor) {
       this.processor = processor;
     }
 
@@ -498,7 +498,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     /**
      * @return the processor
      */
-    public SequentialWorkflowProcessor getProcessor() {
+    public SequentialProcessor getProcessor() {
       return processor;
     }
 
@@ -506,7 +506,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
      * @param processor
      *          the processor to set
      */
-    public void setProcessor(SequentialWorkflowProcessor processor) {
+    public void setProcessor(SequentialProcessor processor) {
       this.processor = processor;
     }
 

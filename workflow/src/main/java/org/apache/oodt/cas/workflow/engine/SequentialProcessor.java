@@ -52,22 +52,22 @@ import java.util.logging.Logger;
  * 
  */
 
-public class SequentialWorkflowProcessor extends WorkflowProcessor implements
+public class SequentialProcessor extends WorkflowProcessor implements
     WorkflowStatus, CoreMetKeys {
 
   private Iterator<WorkflowTask> taskIterator;
 
   /* our log stream */
   private static Logger LOG = Logger
-      .getLogger(SequentialWorkflowProcessor.class.getName());
+      .getLogger(SequentialProcessor.class.getName());
   
-  private ConditionEvaluator conditionEvaluator;
+  private ConditionProcessor conditionEvaluator;
 
-  public SequentialWorkflowProcessor(WorkflowInstance wInst,
+  public SequentialProcessor(WorkflowInstance wInst,
       WorkflowInstanceRepository instRep, URL wParentUrl, long conditionWait) {
     super(wInst, instRep, wParentUrl, conditionWait);
     taskIterator = this.workflowInstance.getWorkflow().getTasks().iterator();
-    this.conditionEvaluator = new ConditionEvaluator();
+    this.conditionEvaluator = new ConditionProcessor();
   }
 
   /* (non-Javadoc)

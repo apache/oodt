@@ -44,16 +44,16 @@ import org.apache.oodt.commons.util.DateConvert;
  * @version $Revision$
  * 
  */
-public class ConditionEvaluator {
+public class ConditionProcessor {
 
   protected Map<String, String> COND_TIMEOUTS;
 
   protected Map<String, HashMap<String, WorkflowConditionInstance>> CONDITION_CACHE;
 
-  private static final Logger LOG = Logger.getLogger(ConditionEvaluator.class
+  private static final Logger LOG = Logger.getLogger(ConditionProcessor.class
       .getName());
 
-  public ConditionEvaluator() {
+  public ConditionProcessor() {
     this.COND_TIMEOUTS = new HashMap<String, String>();
     this.CONDITION_CACHE = new HashMap<String, HashMap<String, WorkflowConditionInstance>>();
   }
