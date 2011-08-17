@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * 
  * An instance of the {@link WorkflowProcessor} that processes through an
  * iterative {@link this.workflowInstance}. This class keeps an
- * <code>Iterator</code> that allows it to move from one end of a sequential
+ * {@llink Iterator} that allows it to move from one end of a sequential
  * {@link Workflow} processing pipeline to another. This class should only be
  * used to process science pipeline style {@link Workflow}s, i.e., those which
  * resemble an iterative processing pipelines, with no forks, or concurrent task
