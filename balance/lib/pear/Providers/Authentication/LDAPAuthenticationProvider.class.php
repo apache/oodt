@@ -80,8 +80,8 @@ class Org_Apache_Oodt_Balance_Providers_Auth_LDAPAuthenticationProvider
 	}
 	
 	public function changePassword( $newPassword ) {
-		if ( App::Get()->settings['auth_encryption_method'] ) {
-			return parent::changePassword( $newPassword, App::Get()->settings['auth_encryption_method'] );
+		if ( App::Get()->settings['authentication_encryption_method'] ) {
+			return parent::changePassword( $newPassword, App::Get()->settings['authentication_encryption_method'] );
 		}
 		return parent::changePassword( $newPassword );
 	}

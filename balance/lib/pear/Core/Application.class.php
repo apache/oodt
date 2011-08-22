@@ -33,7 +33,7 @@ class Org_Apache_Oodt_Balance_Core_Application {
 	
 	public $subrequest;
 	
-	public $authProviderInstance = null;
+	public $authenticationProviderInstance = null;
 	
 	public $authorizationProviderInstance = null;
 	
@@ -68,7 +68,7 @@ class Org_Apache_Oodt_Balance_Core_Application {
 	
 	public function getResponse() {
 		
-		$this->setAuthProviderInstance();
+		$this->setAuthenticationProviderInstance();
 		$this->setAuthorizationProviderInstance();
 		
 		// Interpret the request uri of the current request
@@ -123,19 +123,19 @@ class Org_Apache_Oodt_Balance_Core_Application {
 		return false;
 	}
 	
-	public function getAuthProvider() {
-		return $this->authProviderInstance;
+	public function getAuthenticationProvider() {
+		return $this->authenticationProviderInstance;
 	}
 	
-	public function setAuthProviderInstance() {
+	public function setAuthenticationProviderInstance() {
 		
 		// Check if the user wants authentication for application 
-		if ( $this->settings['auth_class_path'] != null &&
-			 $this->settings['auth_class']      != null   ) {
+		if ( $this->settings['authentication_class_path'] != null &&
+			 $this->settings['authentication_class']      != null   ) {
 			 	
-			 	require_once $this->settings['auth_class_path'];
-				$authProvider 		  		= $this->settings['auth_class'];
-				$this->authProviderInstance = new $authProvider();
+			 	require_once $this->settings['authentication_class_path'];
+				$authProvider = $this->settings['authentication_class'];
+				$this->authenticationProviderInstance = new $authProvider();
 		}
 	}
 	
@@ -145,7 +145,7 @@ class Org_Apache_Oodt_Balance_Core_Application {
 	
 	public function setAuthorizationProviderInstance() {
 		
-		// Check if the user wants authentication for application 
+		// Check if the user wants authorization for application 
 		if ( $this->settings['authorization_class_path'] != null &&
 			 $this->settings['authorization_class']      != null   ) {
 			 	
