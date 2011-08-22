@@ -1,0 +1,43 @@
+#!/bin/tcsh
+# Copyright (c) 2008 California Institute of Technology.
+# ALL RIGHTS RESERVED. U.S. Government Sponsorship acknowledged.
+#
+# $Id$ 
+#
+# PCS Control Utility script: starts, stops, and bounces the PCS.
+#
+# Sample usage: ./pcs_ctl start
+
+set DIR = `dirname $0`
+cd $DIR
+set DIR_PATH = `pwd`
+
+if ( $#argv != 1 ) then
+	echo "Usage: $0 <start|stop|bounce>"
+	exit 1
+else
+	set CMD = $1
+	if ( $CMD == "start" ) then	
+		cd $DIR_PATH/../components/filemgr/bin
+		./filemgr start
+		cd $DIR_PATH/../components/workflow/bin
+		./wmgr start
+		cd $DIR_PATH/../tomcat/bin
+		./startup.sh
+	else if ( $CMD == "stop" ) then
+		cd $DIR_PATH/../components/filemgr/bin
+		./filemgr stop
+		cd $DIR_PATH/../components/workflow/bin
+		./wmgr stop
+		cd $DIR_PATH/../tomcat/bin
+		./shutdown.sh
+	else if ( $CMD == "bounce" ) then
+		cd $DIR_PATH/../components/filemgr/bin
+		./filemgr restart
+		cd $DIR_PATH/../components/workflow/bin
+		./wmgr restart
+		cd $DIR_PATH/../tomcat/bin
+		./shutdown.sh
+		./startup.sh
+	endif
+endif

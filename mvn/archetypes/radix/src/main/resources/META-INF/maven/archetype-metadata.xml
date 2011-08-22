@@ -3,10 +3,45 @@
     xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modules>
-    <module id="exts" dir="extensions" name="extensions" />
-    <module id="filemgr" dir="filemgr" name="filemgr" />
-    <module id="workflow" dir="workflow" name="workflow" />
-    <module id="crawler" dir="crawler" name="crawler" />
-    <module id="distribution" dir="distribution" name="distribution" />
+    <module id="exts" dir="extensions" name="extensions">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="filemgr" dir="filemgr" name="filemgr">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="workflow" dir="workflow" name="workflow">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="crawler" dir="crawler" name="crawler">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="distribution" dir="distribution" name="distribution">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
   </modules>
 </archetype-descriptor>

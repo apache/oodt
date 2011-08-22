@@ -5,7 +5,7 @@
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
-  <baseDirectory>filemgr</baseDirectory>
+  <baseDirectory>workflow</baseDirectory>
   <includeSiteDirectory>false</includeSiteDirectory>
   <fileSets>
     <fileSet>
@@ -15,39 +15,31 @@
         <include>LICENSE.txt</include>
         <include>CHANGES.txt</include>
       </includes>
-      <fileMode>775</fileMode>
     </fileSet>
     <fileSet>
       <directory>${basedir}/src/main/resources/bin</directory>
-      <outputDirectory>filemgr/bin</outputDirectory>
+      <outputDirectory>workflow/bin</outputDirectory>
       <includes/>
-      <fileMode>775</fileMode>
+      <fileMode>755</fileMode>
     </fileSet>
     <fileSet>
       <directory>${basedir}/src/main/resources/logs</directory>
-      <outputDirectory>filemgr/logs</outputDirectory>
+      <outputDirectory>workflow/logs</outputDirectory>
       <includes>
         <include>REMOVE.log</include>
       </includes>
-      <fileMode>775</fileMode>
     </fileSet>
     <fileSet>
       <directory>${basedir}/src/main/resources/etc</directory>
-      <outputDirectory>filemgr/etc</outputDirectory>
+      <outputDirectory>workflow/etc</outputDirectory>
       <includes>
         <include>**.properties</include>
       </includes>
-      <fileMode>664</fileMode>
-      <directoryMode>775</directoryMode>
     </fileSet>
     <fileSet>
       <directory>${basedir}/src/main/resources/policy</directory>
-      <outputDirectory>filemgr/policy</outputDirectory>
-      <includes>
-        <include>**.xml</include>
-      </includes>
-      <fileMode>664</fileMode>
-      <directoryMode>775</directoryMode>
+      <outputDirectory>workflow/policy</outputDirectory>
+      <includes/>
     </fileSet>
     <fileSet>
       <directory>target/site/apidocs</directory>
@@ -58,7 +50,7 @@
   </fileSets>
   <dependencySets>
     <dependencySet>
-      <outputDirectory>filemgr/lib</outputDirectory>
+      <outputDirectory>workflow/lib</outputDirectory>
       <unpack>false</unpack>
       <useProjectArtifact>true</useProjectArtifact>
       <useTransitiveDependencies>true</useTransitiveDependencies>
@@ -66,4 +58,3 @@
     </dependencySet>
   </dependencySets>
 </assembly>
-
