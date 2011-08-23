@@ -1385,21 +1385,25 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       conn = dataSource.getConnection();
       conn.setAutoCommit(false);
       statement = conn.createStatement();
-
-      String sql = "INSERT INTO workflow_tasks (workflow_task_id, workflow_task_name, workflow_task_class) VALUES (1, '"
-          + task.getTaskName() + "', '"+task.getTaskInstanceClassName()+"')";
-
+      
+      String sql = "SELECT MAX(workflow_task_id) AS max_id FROM workflow_tasks";
       LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
-      statement.execute(sql);
-
-      sql = "SELECT MAX(workflow_task_id) AS max_id FROM workflow_tasks";
       rs = statement.executeQuery(sql);
 
       while (rs.next()) {
         taskId = String.valueOf(rs.getInt("max_id"));
+      }      
+      
+      synchronized(taskId){
+        taskId = String.valueOf(new Integer(taskId)+1);
       }
 
       task.setTaskId(taskId);
+      sql = "INSERT INTO workflow_tasks (workflow_task_id, workflow_task_name, workflow_task_class) VALUES ("+taskId+", '"
+          + task.getTaskName() + "', '"+task.getTaskInstanceClassName()+"')";
+
+      LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
+      statement.execute(sql);
 
       // task to workflow map
       sql = "INSERT INTO workflow_task_map (workflow_id, workflow_task_id, task_order) VALUES ("
