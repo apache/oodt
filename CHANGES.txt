@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-311 Test failing related to workflow tasks and the 
+  DataSourceWorkflowRepository (mattmann, riverma, Cecilia S. Cheng)
+
 * OODT-309 SequentialWorkflowProcessor doesn't need to be a 
   Thread (mattmann)
 

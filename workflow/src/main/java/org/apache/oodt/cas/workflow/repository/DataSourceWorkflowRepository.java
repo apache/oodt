@@ -1386,7 +1386,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       conn.setAutoCommit(false);
       statement = conn.createStatement();
 
-      String sql = "INSERT INTO workflow_tasks (workflow_task_name, workflow_task_class) VALUES ('"
+      String sql = "INSERT INTO workflow_tasks (workflow_task_id, workflow_task_name, workflow_task_class) VALUES (1, '"
           + task.getTaskName() + "', '"+task.getTaskInstanceClassName()+"')";
 
       LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
