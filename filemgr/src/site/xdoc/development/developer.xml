@@ -357,7 +357,7 @@ the License.
          Versioner to generate final file References. After final file References have been determined, 
          the file data is transferred by the server or by the client, using the Data Transfer extension 
          point.</p>
-               
+      </section>      
       
       <section name="Conclusion">
       <p>The aim of this document is to provide information relevant to developers
