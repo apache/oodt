@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-313 Copyright statement on OODT website needs updating 
+  (mattmann, Greg Stein)
+
 * OODT-311 Test failing related to workflow tasks and the 
   DataSourceWorkflowRepository (mattmann, riverma, Cecilia S. Cheng)
 
