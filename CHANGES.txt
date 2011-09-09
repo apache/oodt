@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-43 Add the FileManager Use Case Diagram back into the 
+  User Guide (mattmann, cgoodale)
+
 * OODT-313 Copyright statement on OODT website needs updating 
   (mattmann, Greg Stein)
 
