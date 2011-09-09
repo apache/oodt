@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-316 Add the WorkflowManager Use Case Diagram back into 
+  the User Guide (mattmann)
+
 * OODT-43 Add the FileManager Use Case Diagram back into the 
   User Guide (mattmann, cgoodale)
 
