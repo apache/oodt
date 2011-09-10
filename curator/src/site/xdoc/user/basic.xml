@@ -128,10 +128,14 @@ docBase="/usr/local/src/cas-curator-v1.0.0/target/cas-curator-1.0.0.war">
       ]]></source>
        
       <p>Save the context file to 
-      <code>$TOMCAT_HOME/conf/Catalina/localhost/curator.xml</code>. Now you 
+      <code>$TOMCAT_HOME/conf/Catalina/localhost/my-curator.xml</code>. Now you 
       can point a web browser to <a href="http://localhost:8080/my-curator/">
       http://localhost:8080/my-curator</a> and you should see a log-in screen
-      for CAS-Curator.</p> 
+      for CAS-Curator. <em>Note</em>: Tomcat will only use the path attribute 
+      if the context is defined in server.xml. Tomcat uses the xml file name 
+      instead. See the 
+      <a href="http://tomcat.apache.org/tomcat-5.5-doc/config/context.html" class="externalLink"> 
+      Tomcat documentation</a> for further information</p> 
       
       <img src="../images/basic_login.jpg"/>
       

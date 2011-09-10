@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-172 Update CAS Curator Tutorial (thomas via mattmann)
+
 * OODT-316 Add the WorkflowManager Use Case Diagram back into 
   the User Guide (mattmann)
 
