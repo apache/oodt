@@ -20,6 +20,7 @@ package org.apache.oodt.cas.workflow.instrepo;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.Priority;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
@@ -503,6 +504,12 @@ public class LuceneWorkflowInstanceRepository extends
                 .getEndDateTimeIsoStr() != null ? workflowInst
                 .getEndDateTimeIsoStr() : "", Field.Store.YES,
                 Field.Index.UN_TOKENIZED));
+        doc.add(new Field("workflow_inst_priority",
+            workflowInst.getPriority() != null ? 
+                String.valueOf(workflowInst.getPriority().getValue()):
+                  String.valueOf(Priority.getDefault().getValue()),
+                  Field.Store.YES,
+                  Field.Index.UN_TOKENIZED));
 
         // add all metadata
         addInstanceMetadataToDoc(doc, workflowInst.getSharedContext());
@@ -624,6 +631,7 @@ public class LuceneWorkflowInstanceRepository extends
                 .get("workflow_inst_currenttask_enddatetime"));
         inst.setStartDateTimeIsoStr(doc.get("workflow_inst_startdatetime"));
         inst.setEndDateTimeIsoStr(doc.get("workflow_inst_enddatetime"));
+        inst.setPriority(Priority.getPriority(Double.valueOf(doc.get("workflow_inst_priority"))));
 
         // read the workflow instance metadata
         Metadata sharedContext = new Metadata();
