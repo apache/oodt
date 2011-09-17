@@ -43,7 +43,8 @@ current_task_id int NOT NULL,
 start_date_time varchar(255),
 end_date_time varchar(255),
 current_task_start_date_time varchar(255),
-current_task_end_date_time varchar(255));
+current_task_end_date_time varchar(255),
+priority float);
 
 -- use this definition if you would like
 -- to use quoteFields (string versions of
@@ -56,7 +57,8 @@ current_task_id varchar(255) NOT NULL,
 start_date_time varchar(255),
 end_date_time varchar(255),
 current_task_start_date_time varchar(255),
-current_task_end_date_time varchar(255));
+current_task_end_date_time varchar(255),
+priority float);
 
 CREATE TABLE workflow_instance_metadata
 (workflow_instance_id int NOT NULL,

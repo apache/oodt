@@ -42,7 +42,8 @@ current_task_id int NOT NULL,
 start_date_time varchar(255),
 end_date_time varchar(255),
 current_task_start_date_time varchar(255),
-current_task_end_date_time varchar(255));
+current_task_end_date_time varchar(255),
+priority float NOT NULL);
 
 CREATE TABLE workflow_instance_metadata
 (workflow_instance_id int NOT NULL,
