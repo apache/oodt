@@ -20,7 +20,7 @@
 		<relativePath>../../core/pom.xml</relativePath>
 	</parent>
 	<artifactId>cas-protocol-sftp</artifactId>
-	<name>CAS Protocol IMAPS Implementation</name>
+	<name>CAS Protocol SFTP Implementation</name>
 	<profiles>
 		<profile>
 			<id>audit</id>
