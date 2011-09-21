@@ -24,8 +24,7 @@ Release 0.4: Current Development
   DataSourceWorkflowRepository (mattmann, riverma, Cecilia S. Cheng)
 
 * OODT-299 Rename all Authentication properties to use
-  Authentication instead of Auth (ahart, Shakeh 
-Khudikyan)
+  Authentication instead of Auth (ahart, Shakeh Khudikyan)
 
 * OODT-309 SequentialWorkflowProcessor doesn't need to be a 
   Thread (mattmann)
