@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-61 appendTableName property for mapping files in XMLPS 
+  breaks columnname-based lookup in ResultSet (Ricky Nguyen, mattmann)
+
 * OODT-318 Fix for Jenkins builds and java.io.tmpdir issue 
   for testing via Maven (mattann, Olivier Lamy)
   

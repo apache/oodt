@@ -22,13 +22,13 @@ import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlps.util.GenericCDEObjectFactory;
 
-//JDK imports
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -36,7 +36,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * 
+ *
  * <p>
  * A static final reader class for reading {@link Mapping}s.
  * </p>
@@ -119,6 +119,8 @@ public final class MappingReader implements MappingReaderMetKeys {
     if (fldNodes != null && fldNodes.getLength() > 0) {
       for (int i = 0; i < fldNodes.getLength(); i++) {
         MappingField fld = readField((Element) fldNodes.item(i));
+        if (fld.getTableName() == null || fld.getTableName().isEmpty())
+          fld.setTableName(map.getDefaultTable());
         map.addField(fld.getName(), fld);
       }
     }
@@ -144,8 +146,6 @@ public final class MappingReader implements MappingReaderMetKeys {
     }
 
     field.setFuncs(getTranslateFuncs(fldElem));
-    field.setAppendTableName(Boolean.valueOf(fldElem
-          .getAttribute(FIELD_ATTR_APPEND_TABLE_NAME)));
 
     return field;
 

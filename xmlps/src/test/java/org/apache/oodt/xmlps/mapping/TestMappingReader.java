@@ -21,10 +21,8 @@ package org.apache.oodt.xmlps.mapping;
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlps.structs.CDEValue;
 
-//JDK imports
 import java.io.InputStream;
 
-//Junit imports
 import junit.framework.TestCase;
 
 /**
@@ -106,6 +104,19 @@ public class TestMappingReader extends TestCase {
         assertEquals(result.getVal(), "235");
     }
 
+    public void testMappingFieldGetLocalName() {
+        Mapping mapping = getMappingOrFail("test-same-col-name-ps.xml");
+
+        MappingField fieldOnly = mapping.getFieldByName("field_only");
+        assertEquals("defaultTable.field_only", fieldOnly.getLocalName());
+
+        MappingField fieldWithTable = mapping.getFieldByName("field_with_table");
+        assertEquals("anotherTable.field_db", fieldWithTable.getLocalName());
+
+        MappingField fieldUseDefault = mapping.getFieldByName("field_use_default");
+        assertEquals("defaultTable.field_db", fieldUseDefault.getLocalName());
+    }
+
     private void containsSpecimenCollectedCodeOrFail(Mapping mapping) {
 
         MappingField fld = mapping.getFieldByName(SPECIMEN_COLLECTED_CODE);
@@ -129,10 +140,14 @@ public class TestMappingReader extends TestCase {
     }
 
     private Mapping getMappingOrFail() {
+      return getMappingOrFail("test-ps.xml");
+    }
+
+    private Mapping getMappingOrFail(String mapfile) {
         Mapping mapping = null;
 
         InputStream configFileIs = TestMappingReader.class
-                .getResourceAsStream("test-ps.xml");
+                .getResourceAsStream(mapfile);
 
         try {
             mapping = MappingReader.getMapping(configFileIs);

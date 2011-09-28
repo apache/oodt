@@ -18,22 +18,11 @@
 package org.apache.oodt.xmlps.product;
 
 //OODT imports
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
+import org.apache.oodt.product.ProductException;
+import org.apache.oodt.product.QueryHandler;
 import org.apache.oodt.xmlps.mapping.DatabaseTable;
-import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.FieldScope;
+import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.MappingField;
 import org.apache.oodt.xmlps.mapping.MappingReader;
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
@@ -43,16 +32,24 @@ import org.apache.oodt.xmlps.structs.CDEResult;
 import org.apache.oodt.xmlps.structs.CDERow;
 import org.apache.oodt.xmlps.structs.CDEValue;
 import org.apache.oodt.xmlps.util.XMLQueryHelper;
-
-//OODT imports
-import org.apache.oodt.product.ProductException;
-import org.apache.oodt.product.QueryHandler;
 import org.apache.oodt.xmlquery.QueryElement;
 import org.apache.oodt.xmlquery.Result;
 import org.apache.oodt.xmlquery.XMLQuery;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * 
+ *
  * <p>
  * An XML configurable version of a Product Server that requires no code
  * to be written to plug into a local site's relational backend DBMS.
@@ -115,7 +112,7 @@ public class XMLPSProductHandler implements QueryHandler {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.oodt.product.QueryHandler#query(org.apache.oodt.xmlquery.XMLQuery)
      */
     public XMLQuery query(XMLQuery query) throws ProductException {
@@ -125,10 +122,12 @@ public class XMLPSProductHandler implements QueryHandler {
             translateToDomain(selectSet, true);
             translateToDomain(whereSet, false);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.severe(e.getMessage());
             throw new ProductException(e.getMessage());
         }
+
         queryAndPackageResults(query);
+
         return query;
     }
 
@@ -193,7 +192,7 @@ public class XMLPSProductHandler implements QueryHandler {
         List<QueryElement> names = getElemNamesFromQueryElemSet(query
                 .getSelectElementSet());
 
-        String querySelectNames = toNames(names);
+        String querySelectNames = toSQLSelectColumns(names);
 
         StringBuffer sqlBuf = new StringBuffer("SELECT ");
         sqlBuf.append(querySelectNames);
@@ -213,7 +212,7 @@ public class XMLPSProductHandler implements QueryHandler {
                 sqlBuf.append(".");
                 sqlBuf.append(tbl.getJoinFieldName());
                 sqlBuf.append(" = ");
-                sqlBuf.append((tbl.getDefaultTableJoin() != null && 
+                sqlBuf.append((tbl.getDefaultTableJoin() != null &&
                         !tbl.getDefaultTableJoin().equals("")) ? tbl
                         .getDefaultTableJoin() : mapping.getDefaultTable());
                 sqlBuf.append(".");
@@ -224,7 +223,7 @@ public class XMLPSProductHandler implements QueryHandler {
 
         if(parsedQuery != null){
             sqlBuf.append(" WHERE ");
-            sqlBuf.append(parsedQuery.evaluate());            
+            sqlBuf.append(parsedQuery.evaluate());
         }
 
         LOG.log(Level.INFO, sqlBuf.toString());
@@ -232,8 +231,7 @@ public class XMLPSProductHandler implements QueryHandler {
         if (executor != null) {
             try {
                 CDEResult res = executor.executeLocalQuery(this.mapping,
-                        sqlBuf.toString(), Arrays.asList(querySelectNames
-                                .split(",")));
+                        sqlBuf.toString(), toSQLResultSetColumns(names));
 
                 res = addConstFields(res,
                         getConstElemNamesFromQueryElemSet(query
@@ -286,20 +284,39 @@ public class XMLPSProductHandler implements QueryHandler {
 
     }
 
-    private String toNames(List<QueryElement> elems) {
+    private String toSQLSelectColumns(List<QueryElement> elems) {
         if (elems == null || (elems != null && elems.size() == 0))
             return null;
 
-        StringBuffer buf = new StringBuffer();
-        for (Iterator<QueryElement> i = elems.iterator(); i.hasNext();) {
-            QueryElement elem = i.next();
-            buf.append(elem.getValue());
-            buf.append(",");
+        StringBuilder buf = new StringBuilder();
+        for (QueryElement qe : elems) {
+            MappingField fld = this.mapping.getFieldByLocalName(qe.getValue());
+            if (fld != null) {
+                buf.append(fld.getLocalName());
+                buf.append(" as ");
+                buf.append(fld.getName());
+                buf.append(",");
+            }
         }
 
         buf.deleteCharAt(buf.length() - 1);
 
         return buf.toString();
+    }
+
+    private List<String> toSQLResultSetColumns(List<QueryElement> elems) {
+        if (elems == null || (elems != null && elems.size() == 0))
+          return null;
+
+        List<String> resultSetNames = new ArrayList<String>();
+        for (QueryElement qe : elems) {
+            MappingField fld = this.mapping.getFieldByLocalName(qe.getValue());
+            if (fld != null) {
+                resultSetNames.add(fld.getName());
+            }
+        }
+
+        return resultSetNames;
     }
 
     protected void translateToDomain(List<QueryElement> elemSet,
@@ -330,7 +347,7 @@ public class XMLPSProductHandler implements QueryHandler {
                 // check to see if it has a dbname attr, if not, then the name
                 // stays
                 // the same
-                String newFldName = this.mapping.getFieldLocalName(fld);
+                String newFldName = fld.getLocalName();
 
                 elem.setValue(newFldName);
 

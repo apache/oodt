@@ -18,64 +18,18 @@
 package org.apache.oodt.xmlps.mapping;
 
 /**
- * 
+ *
  * <p>
  * Defines the type of a {@link MappingField}
  * </p>.
  */
-public abstract class FieldType {
+public enum FieldType {
 
-    private static final String TYPE_DYNAMIC = "dynamic";
+  DYNAMIC,
+  CONSTANT;
 
-    private static final String TYPE_CONSTANT = "constant";
-
-    public static final FieldType DYNAMIC = new DynamicFieldType();
-
-    public static final FieldType CONSTANT = new ConstantFieldType();
-
-    protected abstract String getType();
-    
-    @Override
-    public boolean equals(Object o){
-        if(!(o instanceof FieldType)){
-            return false;
-        }
-        
-        FieldType other = (FieldType)o;
-        return this.getType().equals(other.getType());
-    }
-
-    private static class DynamicFieldType extends FieldType {
-
-        public DynamicFieldType() {
-
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.apache.oodt.xmlps.mapping.FieldType#getType()
-         */
-        @Override
-        protected String getType() {
-            return TYPE_DYNAMIC;
-        }
-
-    }
-
-    private static class ConstantFieldType extends FieldType {
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.apache.oodt.xmlps.mapping.FieldType#getType()
-         */
-        @Override
-        protected String getType() {
-            // TODO Auto-generated method stub
-            return TYPE_CONSTANT;
-        }
-
-    }
+  public String getType() {
+    return toString().toLowerCase();
+  }
 
 }

@@ -18,13 +18,20 @@
 package org.apache.oodt.xmlps.profile;
 
 //OODT imports
-import org.apache.oodt.xmlps.mapping.Mapping;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
+import org.apache.oodt.profile.EnumeratedProfileElement;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileAttributes;
+import org.apache.oodt.profile.ProfileElement;
+import org.apache.oodt.profile.ResourceAttributes;
 import org.apache.oodt.xmlps.mapping.FieldType;
+import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.MappingField;
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlps.structs.CDEValue;
 
-//JDK imports
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,20 +41,11 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.sql.DataSource;
 
-//OODT imports
-import org.apache.oodt.profile.EnumeratedProfileElement;
-import org.apache.oodt.profile.Profile;
-import org.apache.oodt.profile.ProfileAttributes;
-import org.apache.oodt.profile.ProfileElement;
-import org.apache.oodt.profile.ResourceAttributes;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
-
 /**
- * 
+ *
  * <p>
  * Executes Profile Queries against an underlying JDBC database, backed by
  * Apache commons-pool and commons-dbcp.
@@ -56,7 +54,7 @@ import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
  */
 public class DBMSExecutor {
 
-  private DataSource dataSource;
+  private final DataSource dataSource;
 
   private static final Logger LOG = Logger.getLogger(DBMSExecutor.class
       .getName());
@@ -155,7 +153,7 @@ public class DBMSExecutor {
       } catch (SQLException e) {
         e.printStackTrace();
         LOG.log(Level.WARNING, "Unable to obtain field: ["
-            + map.getFieldLocalName(fld) + "] from result set: message: "
+            + fld.getLocalName() + "] from result set: message: "
             + e.getMessage());
       }
 

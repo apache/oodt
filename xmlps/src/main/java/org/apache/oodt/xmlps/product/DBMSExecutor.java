@@ -19,15 +19,14 @@ package org.apache.oodt.xmlps.product;
 
 //OODT imports
 import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
-import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.FieldType;
+import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.MappingField;
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlps.structs.CDEResult;
 import org.apache.oodt.xmlps.structs.CDERow;
 import org.apache.oodt.xmlps.structs.CDEValue;
 
-//JDK imports
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,10 +35,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.sql.DataSource;
 
 /**
- * 
+ *
  * <p>
  * Executes CDE Queries against an underlying JDBC database, backed by Apache
  * commons-pool and commons-dbcp.
@@ -48,7 +48,7 @@ import javax.sql.DataSource;
  */
 public class DBMSExecutor {
 
-  private DataSource dataSource;
+  private final DataSource dataSource;
 
   private static final Logger LOG = Logger.getLogger(DBMSExecutor.class
       .getName());
@@ -113,7 +113,7 @@ public class DBMSExecutor {
     if (returnNames != null && returnNames.size() > 0) {
       for (Iterator<String> i = returnNames.iterator(); i.hasNext();) {
         String retName = i.next();
-        MappingField fld = map.getFieldByLocalName(retName);
+        MappingField fld = map.getFieldByName(retName);
         // only handle dynamic fields here
         // if it was a constant field, then it will be dealt with
         // later
