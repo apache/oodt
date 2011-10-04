@@ -2,7 +2,6 @@
   <id>bin</id>
   <formats>
     <format>tar.gz</format>
-    <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <baseDirectory>filemgr</baseDirectory>

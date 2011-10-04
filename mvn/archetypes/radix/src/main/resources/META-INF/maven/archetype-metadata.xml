@@ -3,7 +3,7 @@
     xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modules>
-    <module id="exts" dir="extensions" name="extensions">
+    <module id="extensions" dir="extensions" name="extensions">
       <fileSets>
         <fileSet>
           <directory></directory>
@@ -42,6 +42,40 @@
           <includes/>
         </fileSet>
       </fileSets>
+    </module>
+    <module id="webapps" dir="webapps" name="webapps">
+      <!--<fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>-->
+      <modules>
+        <module id="wmonitor" dir="wmonitor" name="wmonitor">
+          <fileSets>
+            <fileSet>
+              <directory></directory>
+              <includes/>
+            </fileSet>
+          </fileSets>
+        </module>
+        <module id="fmbrowser" dir="fmbrowser" name="fmbrowser">
+          <fileSets>
+            <fileSet>
+              <directory></directory>
+              <includes/>
+            </fileSet>
+          </fileSets>
+        </module>
+        <module id="fmprod" dir="fmprod" name="fmprod">
+          <fileSets>
+            <fileSet>
+              <directory></directory>
+              <includes/>
+            </fileSet>
+          </fileSets>
+        </module>
+      </modules>
     </module>
   </modules>
 </archetype-descriptor>

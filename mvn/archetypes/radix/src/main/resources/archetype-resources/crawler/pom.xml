@@ -40,7 +40,7 @@
   <dependencies>
     <dependency>
       <groupId>${groupId}</groupId>
-      <artifactId>${rootArtifactId}-exts</artifactId>
+      <artifactId>${rootArtifactId}-extensions</artifactId>
       <version>${project.parent.version}</version>
       <type>jar</type>
     </dependency>
