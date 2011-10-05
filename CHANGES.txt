@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-150 ToggleAction addition to crawler (bfoster, mattmann)
+
 * OODT-34 Create an Action to Ingest an Ancillary File (mattmann, pramirez)
 
 * OODT-33 Refactor and Improve File Based Actions (mattmann, pramirez)
