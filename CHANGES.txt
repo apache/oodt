@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-35 Create an Action to Send an Email (mattmann, pramirez)
+
 * OODT-320 Update OODT About Page (Adam Estrada via mattmann)
 
 * OODT-61 appendTableName property for mapping files in XMLPS 

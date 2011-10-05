@@ -129,4 +129,21 @@ the License.
         </property>
     </bean>
     
+    <bean id="SendNotification" lazy-init="true" class="org.apache.oodt.cas.crawl.action.EmailNotification">
+        <property name="description" value="This will send an email that indicates the submission to the catalog was successful."/>
+        <property name="mailHost" value="${notification.mail.host}"/>
+        <property name="sender" value="${notification.sender}"/>
+        <property name="subject" value="${notification.success.subject}"/>
+        <property name="message" value="${notification.success.message}"/>
+        <property name="recipients" value="${notification.success.recipients}"/>
+        <property name="ignoreInvalidAddresses">
+            <value type="java.lang.Boolean">true</value>
+        </property>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">postIngestSuccess</value>
+            </list>
+        </property>
+    </bean>    
+    
 </beans>
