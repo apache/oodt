@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-327 Open SSO plug-in client for CAS-SSO (mattmann, pramirez)
+
 * OODT-326 A tool to dump the File Manager catalog metadata 
   into Solr (mattmann, pramirez)
 
