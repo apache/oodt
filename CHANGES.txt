@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-37 Create an Action to Group other Actions Together (pramirez, mattmann)
+
 * OODT-36 Create an Action to Support Simple Branching (pramirez, mattmann)
 
 * OODT-150 ToggleAction addition to crawler (bfoster, mattmann)
