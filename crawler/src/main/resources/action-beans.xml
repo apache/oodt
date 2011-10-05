@@ -144,6 +144,32 @@ the License.
                 <value type="java.lang.String">postIngestSuccess</value>
             </list>
         </property>
-    </bean>    
+    </bean>  
+    
+    <bean id="IngestAncillaryFile" lazy-init="true" class="org.apache.oodt.cas.crawl.action.IngestAncillary">
+        <property name="description" value="This will ingest an associated file along with the current file being ingested by the crawler."/>
+        <property name="fileManagerUrl" value="${filemgr.url}"/>
+        <property name="fileExtension" value="${ancillary.file.extension}"/>
+        <property name="fileSuffix" value="${ancillary.file.suffix}"/>
+        <property name="keepExistingExtension">
+            <value type="java.lang.Boolean">false</value>
+        </property>
+        <property name="dataTransferService" value="${data.transfer.service}"/>
+        <property name="relatedKey" value="CAS.ProductId"/>
+        <property name="copyKeys">
+            <list>
+                <value type="java.lang.String">MetKey1</value>
+            </list>
+        </property>
+        <property name="productType" value="GenericFile"/>
+        <property name="failMissingFile">
+            <value type="java.lang.Boolean">true</value>
+        </property>
+        <property name="phases">
+            <list>
+                <value type="java.lang.String">preIngest</value>
+            </list>
+        </property>
+    </bean>      
     
 </beans>
