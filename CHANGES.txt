@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-322 LDAPAuthenticationProvider class requires 
+  a non-existent path (Shakey Khudikyan via mattmann)
+
 * OODT-321 PEAR install of PHP filemgr is not working 
   properly (Shakeh Khudikyan via mattmann)
 

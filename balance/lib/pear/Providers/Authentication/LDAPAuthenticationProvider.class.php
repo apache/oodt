@@ -34,10 +34,10 @@
  * @author ahart
  * 
  */
-require("Org/Apache/Oodt/Cas/Security/SingleSignOn.php");
+require("Org/Apache/Oodt/Security/SingleSignOn.php");
 
 class Org_Apache_Oodt_Balance_Providers_Auth_LDAPAuthenticationProvider
-	extends Org_Apache_Oodt_Cas_Security_SingleSignOn 
+	extends Org_Apache_Oodt_Security_SingleSignOn 
 	implements Org_Apache_Oodt_Balance_Interfaces_IApplicationAuthenticationProvider {
 
 	/**
