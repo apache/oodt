@@ -48,6 +48,8 @@ public class TestJschSftpProtocol extends TestCase {
 
 	private static final int PORT = 2022;
 	
+	public void testPass() { }
+	
 	@Override
 	public void setUp() {
     XmlServerConfigurationContext context = new XmlServerConfigurationContext();
