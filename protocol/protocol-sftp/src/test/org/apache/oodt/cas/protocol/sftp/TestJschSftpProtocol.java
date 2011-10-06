@@ -18,6 +18,7 @@ package org.apache.oodt.cas.protocol.sftp;
 
 //JUnit imports
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -58,8 +59,8 @@ public class TestJschSftpProtocol extends TestCase {
 	@Override
 	public void setUp() {
     try {
-			ConfigurationLoader.initialize(false, context = new TestXmlServerConfigurationContext());
-		} catch (ConfigurationException e1) {
+			ConfigurationLoader.initialize(true, context = new TestXmlServerConfigurationContext());
+		} catch (Exception e) {
 			fail("Failed to initialize server configuration");
 		}
     
