@@ -53,53 +53,12 @@ import junit.framework.TestCase;
  */
 public class TestJschSftpProtocol extends TestCase {
 
-	private TestServerConfiguration serverConfig;
-	private PlatformConfiguration platformConfig;
+	TestXmlServerConfigurationContext context;
 
 	@Override
 	public void setUp() {
-    XmlServerConfigurationContext context = new XmlServerConfigurationContext() {
-
-    	@Override
-    	public void initialize() throws ConfigurationException {
-    		try {
-    			serverConfig = new TestServerConfiguration(ConfigurationLoader.loadFile("src/testdata/server.xml"));
-    		} catch (Exception e) {
-    			throw new ConfigurationException(e.getMessage());
-    		}
-    		try {
-          platformConfig = new PlatformConfiguration(ConfigurationLoader.loadFile("src/testdata/platform.xml")) {};
-    		} catch (Exception e) {
-    			throw new ConfigurationException(e.getMessage());
-    		}
-    	}
-
-    	@Override
-      public boolean isConfigurationAvailable(@SuppressWarnings("rawtypes") Class cls) {
-        try {
-        	getConfiguration(cls);
-        	return true;
-        } catch (Exception e) {
-        	return false;
-        }
-      }
-
-			@Override
-    	public Object getConfiguration(@SuppressWarnings("rawtypes") Class cls) throws ConfigurationException {
-    		if (ServerConfiguration.class.equals(cls)) {
-    			return serverConfig;
-    		} else if (PlatformConfiguration.class.equals(cls)) {
-    			return platformConfig;
-    		} else {
-    			throw new ConfigurationException(cls.getName()
-    					+ " configuration not available");
-    		}
-    	}
-    };
-//    context.setServerConfigurationResource("src/testdata/server.xml");
-//    context.setPlatformConfigurationResource("src/testdata/platform.xml");
     try {
-			ConfigurationLoader.initialize(false, context);
+			ConfigurationLoader.initialize(false, context = new TestXmlServerConfigurationContext());
 		} catch (ConfigurationException e1) {
 			fail("Failed to initialize server configuration");
 		}
@@ -128,7 +87,7 @@ public class TestJschSftpProtocol extends TestCase {
 	}
 
 	public void testCDandPWDandLS() throws IOException, ProtocolException {
-		JschSftpProtocol sftpProtocol = new JschSftpProtocol(serverConfig.getPort());
+		JschSftpProtocol sftpProtocol = new JschSftpProtocol(context.getPort());
 		sftpProtocol.connect("localhost", new HostKeyAuthentication("bfoster", "",
 				new File("src/testdata/sample-dsa.pub").getAbsoluteFile()
 						.getAbsolutePath()));
@@ -148,7 +107,7 @@ public class TestJschSftpProtocol extends TestCase {
 	}
 
 	public void testGET() throws ProtocolException, IOException {
-		JschSftpProtocol sftpProtocol = new JschSftpProtocol(serverConfig.getPort());
+		JschSftpProtocol sftpProtocol = new JschSftpProtocol(context.getPort());
 		sftpProtocol.connect("localhost", new HostKeyAuthentication("bfoster", "",
 				new File("src/testdata/sample-dsa.pub").getAbsoluteFile()
 						.getAbsolutePath()));
@@ -169,7 +128,8 @@ public class TestJschSftpProtocol extends TestCase {
 		int commandPort = -1;
 		int port = -1;
 
-		public TestServerConfiguration(InputStream is) throws SAXException, ParserConfigurationException, IOException {
+		public TestServerConfiguration(InputStream is) throws SAXException,
+				ParserConfigurationException, IOException {
 			super(is);
 		}
 
@@ -189,6 +149,56 @@ public class TestJschSftpProtocol extends TestCase {
 			} else {
 				return port;
 			}
+		}
+	}
+
+	private class TestXmlServerConfigurationContext extends XmlServerConfigurationContext {
+
+		private TestServerConfiguration serverConfig;
+		private PlatformConfiguration platformConfig;
+
+		public TestXmlServerConfigurationContext() {
+			super();
+		}
+
+  	@Override
+  	public void initialize() throws ConfigurationException {
+  		try {
+  			serverConfig = new TestServerConfiguration(ConfigurationLoader.loadFile("src/testdata/server.xml"));
+  		} catch (Exception e) {
+  			throw new ConfigurationException(e.getMessage());
+  		}
+  		try {
+        platformConfig = new PlatformConfiguration(ConfigurationLoader.loadFile("src/testdata/platform.xml")) {};
+  		} catch (Exception e) {
+  			throw new ConfigurationException(e.getMessage());
+  		}
+  	}
+
+  	@Override
+    public boolean isConfigurationAvailable(@SuppressWarnings("rawtypes") Class cls) {
+      try {
+      	getConfiguration(cls);
+      	return true;
+      } catch (Exception e) {
+      	return false;
+      }
+    }
+
+		@Override
+  	public Object getConfiguration(@SuppressWarnings("rawtypes") Class cls) throws ConfigurationException {
+  		if (ServerConfiguration.class.equals(cls)) {
+  			return serverConfig;
+  		} else if (PlatformConfiguration.class.equals(cls)) {
+  			return platformConfig;
+  		} else {
+  			throw new ConfigurationException(cls.getName()
+  					+ " configuration not available");
+  		}
+  	}
+
+		public int getPort() {
+			return serverConfig.getPort();
 		}
 	}
 }
