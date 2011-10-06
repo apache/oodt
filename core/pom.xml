@@ -247,6 +247,16 @@ the License.
             </roles>
         </developer>        
         <developer>
+            <id>pvee</id>
+            <name>Paul Vee</name>
+            <email>pvee@apache.org</email>
+            <organization>Childrens Hospital Los Angeles</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
+        <developer>
             <id>riverma</id>
             <name>Rishi Verma</name>
             <email>riverma@apache.org</email>
