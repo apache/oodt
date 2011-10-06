@@ -44,7 +44,7 @@ import junit.framework.TestCase;
  * 
  * @author bfoster
  */
-public class TestJschSftpProtocol extends TestCase {
+public class XTestJschSftpProtocol extends TestCase {
 
 	private static final int PORT = 2022;
 	
