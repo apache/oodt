@@ -50,17 +50,6 @@
 			</build>
 		</profile>
 	</profiles>
-  <build>
-    <resources>
-      <resource>
-        <targetPath>org/apache/oodt/cas/protocol/sftp</targetPath>
-        <directory>${basedir}/src/main/resources/policy</directory>
-        <includes>
-          <include>sftp-protocol-config.xml</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
@@ -75,15 +64,15 @@
     <dependency>
       <groupId>sshtools</groupId>
       <artifactId>j2ssh-core</artifactId>
-      <version>0.2.2</version>
+      <version>0.2.9</version>
       <scope>test</scope>
     </dependency>
 		<dependency>
 		  <groupId>sshtools</groupId>
 		  <artifactId>j2ssh-daemon</artifactId>
-		  <version>0.2.2</version>
-		  <scope>test</scope>
-		</dependency>
+		  <version>0.2.9</version>
+      <scope>test</scope>
+    </dependency>
 		<dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -99,7 +88,7 @@
       <artifactId>mina-core</artifactId>
       <version>2.0.4</version>
     </dependency>
-		<dependency>
+    <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.2</version>

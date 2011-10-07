@@ -18,14 +18,9 @@ package org.apache.oodt.cas.protocol.sftp;
 
 //JDK imports
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.UUID;
 
 //Apache imports
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -43,11 +38,8 @@ public class DummyAuthenticationProvider extends NativeAuthenticationProvider {
 
 	Log log = LogFactory.getLog(DummyAuthenticationProvider.class);
 
-	private HashMap<String, String> userHomeDirs;
-
 	public DummyAuthenticationProvider() {
 		log.error("DummyAuthenticationProvider is in use. This is only for testing.");
-		userHomeDirs = new HashMap<String, String>();
 	}
 
 	@Override
@@ -58,11 +50,7 @@ public class DummyAuthenticationProvider extends NativeAuthenticationProvider {
 
 	@Override
 	public String getHomeDirectory(String username) throws IOException {
-		String homeDir = userHomeDirs.get(username);
-		if (homeDir != null) {
-			return homeDir;
-		}
-		return setupHomeDir(username);
+		return new File("src/testdata").getAbsolutePath();
 	}
 
 	@Override
@@ -79,29 +67,5 @@ public class DummyAuthenticationProvider extends NativeAuthenticationProvider {
 	@Override
 	public boolean logonUser(String username) throws IOException {
 		return true;
-	}
-
-	private String setupHomeDir(String username) throws IOException {
-		File tempFile = File.createTempFile("bogus", "bogus");
-		File tmpDir = tempFile.getParentFile();
-		tempFile.delete();
-		FileUtils.forceDeleteOnExit(tmpDir);
-		File homeDirFile = new File(tmpDir, "JschSftpTest/" + UUID.randomUUID());
-		File sshTestDir = new File(homeDirFile, "sshTestDir");
-		sshTestDir.mkdirs();
-		PrintStream ps = null;
-		try {
-			ps = new PrintStream(new FileOutputStream(new File(sshTestDir, "sshTestFile")));
-			ps.println("This is a ");
-			ps.println("test");
-			ps.println("file to test SFTP GET");
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			try { ps.close(); } catch (Exception ignore) {}
-		}
-		System.out.println("HOME: " + homeDirFile.getAbsolutePath());
-		userHomeDirs.put(username, homeDirFile.getAbsolutePath());
-		return homeDirFile.getAbsolutePath();
 	}
 }
