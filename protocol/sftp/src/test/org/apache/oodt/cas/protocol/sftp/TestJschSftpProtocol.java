@@ -17,18 +17,14 @@
 package org.apache.oodt.cas.protocol.sftp;
 
 //JUnit imports
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.concurrent.Executors;
 
-//JAVAX imports
 import javax.xml.parsers.ParserConfigurationException;
 
 //OODT imports
@@ -50,6 +46,7 @@ import com.sshtools.j2ssh.configuration.ConfigurationLoader;
 
 //JUnit imports
 import junit.framework.TestCase;
+
 /**
  * Test class for {@link JschSftpProtocol}.
  * 
@@ -57,49 +54,44 @@ import junit.framework.TestCase;
  */
 public class TestJschSftpProtocol extends TestCase {
 
-	static TestXmlServerConfigurationContext context;
-  static final Logger LOG = Logger.getLogger(TestJschSftpProtocol.class.getName());
-  static Thread thread;
-  File publicKeysDir;
+	TestXmlServerConfigurationContext context;
 
-  @Override
-  public void setUp() {
+	@Override
+	public void setUp() {
     try {
-	  	publicKeysDir = new File("src/testdata/publicKeys");
-			publicKeysDir.mkdirs();
-			FileUtils.forceDeleteOnExit(publicKeysDir);
-			FileUtils.copyFile(new File("src/testdata/authorization.xml"), new File("src/testdata/publicKeys/authorization.xml"));
-			FileUtils.copyFile(new File("src/testdata/server.xml"), new File("src/testdata/publicKeys/server.xml"));
-			FileUtils.copyFile(new File("src/testdata/platform.xml"), new File("src/testdata/publicKeys/platform.xml"));
 			ConfigurationLoader.initialize(true, context = new TestXmlServerConfigurationContext());
 		} catch (Exception e) {
 			fail("Failed to initialize server configuration");
 		}
     
-		(thread = new Thread(new Runnable() {
+    Executors.newSingleThreadExecutor().execute(new Runnable() {
+
 			public void run() {
 				try {
 					SshDaemon.start();
 				} catch (Exception e) {
-					e.printStackTrace();
+					try { SshDaemon.stop(); } catch (Exception ignore) { e.printStackTrace(); }
+					fail("Failed to start SSH daemon");
 				}
 			}
     	
-		})).start();
-  }
+    });
+	}
 
-  @Override
-	public void tearDown() throws IOException {
-  	FileUtils.forceDelete(publicKeysDir);
-		SshDaemon.stop("");
+	@Override
+	public void tearDown() {
+		try {
+			SshDaemon.stop();
+		} catch (IOException e) {
+			fail("Failed to stop SSH daemon");
+		}
 	}
 
 	public void testCDandPWDandLS() throws IOException, ProtocolException {
-		int port = context.getPort();
-		File pubKeyFile = createPubKeyForPort(port);
-		JschSftpProtocol sftpProtocol = new JschSftpProtocol(port);
+		JschSftpProtocol sftpProtocol = new JschSftpProtocol(context.getPort());
 		sftpProtocol.connect("localhost", new HostKeyAuthentication("bfoster", "",
-				pubKeyFile.getAbsoluteFile().getAbsolutePath()));
+				new File("src/testdata/sample-dsa.pub").getAbsoluteFile()
+						.getAbsolutePath()));
 		ProtocolFile homeDir = sftpProtocol.pwd();
 		ProtocolFile testDir = new ProtocolFile(homeDir, "sshTestDir", true);
 		sftpProtocol.cd(testDir);
@@ -116,11 +108,10 @@ public class TestJschSftpProtocol extends TestCase {
 	}
 
 	public void testGET() throws ProtocolException, IOException {
-		int port = context.getPort();
-		File pubKeyFile = createPubKeyForPort(port);
-		JschSftpProtocol sftpProtocol = new JschSftpProtocol(port);
+		JschSftpProtocol sftpProtocol = new JschSftpProtocol(context.getPort());
 		sftpProtocol.connect("localhost", new HostKeyAuthentication("bfoster", "",
-				pubKeyFile.getAbsoluteFile().getAbsolutePath()));
+				new File("src/testdata/sample-dsa.pub").getAbsoluteFile()
+						.getAbsolutePath()));
 		File bogusFile = File.createTempFile("bogus", "bogus");
 		File tmpFile = new File(bogusFile.getParentFile(), "TestJschSftpProtocol");
 		bogusFile.delete();
@@ -128,14 +119,15 @@ public class TestJschSftpProtocol extends TestCase {
 		sftpProtocol.cd(new ProtocolFile("sshTestDir", true));
 		File testDownloadFile = new File(tmpFile, "testDownloadFile");
 		sftpProtocol.get(new ProtocolFile("sshTestFile", false), testDownloadFile);
-		assertTrue(FileUtils.contentEquals(new File("src/testdata/sshTestDir/sshTestFile"), testDownloadFile));
+		assertTrue(FileUtils.contentEquals(new File(
+				"src/testdata/sshTestDir/sshTestFile"), testDownloadFile));
 		FileUtils.forceDelete(tmpFile);
 	}
 
-	private static class TestServerConfiguration extends ServerConfiguration {
+	private class TestServerConfiguration extends ServerConfiguration {
 		
-		int commandPort = AvailablePortFinder.getNextAvailable(12222);
-		int port = AvailablePortFinder.getNextAvailable(2022);
+		int commandPort = -1;
+		int port = -1;
 
 		public TestServerConfiguration(InputStream is) throws SAXException,
 				ParserConfigurationException, IOException {
@@ -144,16 +136,24 @@ public class TestJschSftpProtocol extends TestCase {
 
 		@Override
 		public int getCommandPort() {
-			return commandPort;
+			if (commandPort == -1) {
+				return commandPort = AvailablePortFinder.getNextAvailable(12222);
+			} else {
+				return commandPort;
+			}
 		}
 
 		@Override
 		public int getPort() {
-			return port;
+			if (port == -1) {
+				return port = AvailablePortFinder.getNextAvailable(2022);
+			} else {
+				return port;
+			}
 		}
 	}
 
-	private static class TestXmlServerConfigurationContext extends XmlServerConfigurationContext {
+	private class TestXmlServerConfigurationContext extends XmlServerConfigurationContext {
 
 		private TestServerConfiguration serverConfig;
 		private PlatformConfiguration platformConfig;
@@ -165,12 +165,12 @@ public class TestJschSftpProtocol extends TestCase {
   	@Override
   	public void initialize() throws ConfigurationException {
   		try {
-  			serverConfig = new TestServerConfiguration(ConfigurationLoader.loadFile("src/testdata/publicKeys/server.xml"));
+  			serverConfig = new TestServerConfiguration(ConfigurationLoader.loadFile("src/testdata/server.xml"));
   		} catch (Exception e) {
   			throw new ConfigurationException(e.getMessage());
   		}
   		try {
-        platformConfig = new PlatformConfiguration(ConfigurationLoader.loadFile("src/testdata/publicKeys/platform.xml")) {};
+        platformConfig = new PlatformConfiguration(ConfigurationLoader.loadFile("src/testdata/platform.xml")) {};
   		} catch (Exception e) {
   			throw new ConfigurationException(e.getMessage());
   		}
@@ -200,26 +200,6 @@ public class TestJschSftpProtocol extends TestCase {
 
 		public int getPort() {
 			return serverConfig.getPort();
-		}
-	}
-
-	private File createPubKeyForPort(int port) throws IOException {
-		PrintStream ps = null;
-		BufferedReader br = null;
-		try {
-			File publicKeyFile = new File(publicKeysDir, "sample-dsa.pub");
-			br = new BufferedReader(new FileReader(new File("src/testdata/sample-dsa.pub").getAbsoluteFile()));
-			ps = new PrintStream(new FileOutputStream(publicKeyFile));
-			String nextLine = null;
-			while ((nextLine = br.readLine()) != null) {
-				ps.println(nextLine.replace("2022", Integer.toString(port)));
-			}
-			return publicKeyFile;
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			try { ps.close(); } catch (Exception ingore) {}
-			try { br.close(); } catch (Exception ingore) {}
 		}
 	}
 }
