@@ -24,24 +24,11 @@ import java.util.List;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
-//Spring imports
-import org.springframework.context.ApplicationContext;
-
 /**
  * @author bfoster
  * @version $Revision$
  */
 public abstract class CmdLineOptionHandler {
-
-	private ApplicationContext appContext;
-
-	public void setApplicationContext(ApplicationContext appContext) {
-		this.appContext = appContext;
-	}
-
-	public ApplicationContext getApplicationContext() {
-		return appContext;
-	}
 
 	public abstract void handleOption(CmdLineOption option, List<String> values);
 
