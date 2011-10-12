@@ -257,11 +257,9 @@ public class XmlRpcWorkflowManagerClient {
         }
     }
 
-    public Metadata getWorkflowInstanceMetadata(String wInstId)
-            throws Exception {
+    public Metadata getWorkflowInstanceMetadata(String wInstId) throws Exception {
         Vector argList = new Vector();
         argList.add(wInstId);
-
         Metadata met = null;
 
         try {
@@ -699,6 +697,7 @@ public class XmlRpcWorkflowManagerClient {
         String getNextPageOperation = "--getNextPage --pageNum <num> [--status <status>]\n";
         String getPrevPageOperation = "--getPrevPage --pageNum <num> [--status <status>]\n";
         String getLastPageOperation = "--getLastPage [--status <status>]\n";
+        String getWorkflowInstMetOperation = "--getWorkflowInstMet --id <workflowInstId>\n";
 
         String usage = "wmgr-client --url <url to xml rpc service> --operation [<operation> [params]]\n"
                 + "operations:\n"
@@ -720,7 +719,8 @@ public class XmlRpcWorkflowManagerClient {
                 + getFirstPageOperation
                 + getNextPageOperation
                 + getPrevPageOperation
-                + getLastPageOperation;
+                + getLastPageOperation
+                + getWorkflowInstMetOperation;
 
         String operation = null, url = null;
 
@@ -1436,8 +1436,64 @@ public class XmlRpcWorkflowManagerClient {
                 throw new RuntimeException(e);
             }
 
-        } else
-            throw new IllegalArgumentException("Unknown operation: "
+        } else if (operation.equals("--getWorkflowInstMet")){
+        	        	
+           String wInstId = null;
+           List keys = null;
+           List values = null;
+
+           for (int i = 4; i < args.length; i++) {
+                if (args[i].equals("--id")) {
+                    wInstId = args[++i];
+                }
+            }
+           
+           if (wInstId == null) {
+               System.err.println(getWorkflowInstMetOperation);
+               System.exit(1);
+           }
+           //create client
+           XmlRpcWorkflowManagerClient client = new XmlRpcWorkflowManagerClient(
+                   new URL(url));
+           Metadata met = null;
+           //get workflowInstanceMetadata 
+           try {
+        	     
+        	     met = client.getWorkflowInstanceMetadata(wInstId);	
+             	 System.out.println("[id=" + wInstId + ", met={");
+             	 
+             	 //get all keys for the wInstId
+             	 keys = met.getKeys();
+             	 if(keys != null){
+             		for (Iterator i = keys.iterator(); i.hasNext();) {
+                        String key = (String) i.next();
+                        System.out.print(key + ":[");
+                        
+                        //get all values for the key
+                        values = met.getAllMetadata(key);
+                        if(values != null){
+                        	for(Iterator j = values.iterator(); j.hasNext();){
+                        		String value = (String) j.next();
+                        		System.out.print(value);
+                        		if (j.hasNext())
+                        			System.out.print(", ");
+                        	}
+                        }
+                        System.out.print("]");
+                        if(i.hasNext())
+                        	System.out.print(", ");
+                    }
+             		System.out.print("}]"); 
+             	 }
+             	 
+               
+           } catch (Exception e) {
+               e.printStackTrace();
+               throw new RuntimeException(e);
+           }
+                   	       	       	
+        	
+        } else throw new IllegalArgumentException("Unknown operation: "
                     + operation);
 
     }
