@@ -31,7 +31,7 @@ public class ArgRegExpCmdLineOptionValidator extends
 		AllowedArgsCmdLineOptionValidator {
 
 	@Override
-	public boolean validate(CmdLineOptionInstance optionInst) {
+	public boolean validate(CmdLineOptionInstance<String> optionInst) {
 		TOP: for (String value : optionInst.getValues()) {
 			for (String regex : this.getAllowedArgs()) {
 				if (Pattern.matches(regex, value))

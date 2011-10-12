@@ -17,9 +17,6 @@
 
 package org.apache.oodt.cas.cl.option.handler;
 
-//JDK imports
-import java.util.List;
-
 //OODT imports
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
@@ -28,12 +25,12 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
  * @author bfoster
  * @version $Revision$
  */
-public abstract class CmdLineOptionHandler {
+public abstract class CmdLineOptionHandler<T> {
 
-	public abstract void handleOption(CmdLineOption option, List<String> values);
+	public abstract void handleOption(CmdLineOptionInstance<T> optionInstance);
 
-	public abstract String getCustomOptionHelp(CmdLineOption option);
+	public abstract String getCustomOptionHelp(CmdLineOption<T> option);
 
-	public abstract boolean affectsOption(CmdLineOptionInstance optionInstance);
+	public abstract boolean affectsOption(CmdLineOptionInstance<T> optionInstance);
 
 }

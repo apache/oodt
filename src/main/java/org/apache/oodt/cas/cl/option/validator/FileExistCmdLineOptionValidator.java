@@ -27,9 +27,9 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
  * @author bfoster
  * @version $Revision$
  */
-public class FileExistCmdLineOptionValidator implements CmdLineOptionValidator {
+public class FileExistCmdLineOptionValidator implements CmdLineOptionValidator<String> {
 
-	public boolean validate(CmdLineOptionInstance optionInst) {
+	public boolean validate(CmdLineOptionInstance<String> optionInst) {
 		for (String value : optionInst.getValues()) {
 			if (!new File(value).exists()) {
 				LOG.severe("Option value " + value + " for option "

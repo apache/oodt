@@ -17,11 +17,11 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 public class StdCmdLineOptionHelpFormatter implements CmdLineOptionHelpFormatter {
 
 	public String format(CmdLineOptionHelpPrinter helpPrinter,
-			Set<CmdLineOption> options) {
+			Set<CmdLineOption<?>> options) {
 		StringBuffer sb = new StringBuffer("");
-		List<CmdLineOption> sortedOptions = sortOptionsByRequiredStatus(options);
+		List<CmdLineOption<?>> sortedOptions = sortOptionsByRequiredStatus(options);
 		sb.append(helpPrinter.getHeader()).append("\n");
-		for (CmdLineOption option : sortedOptions) {
+		for (CmdLineOption<?> option : sortedOptions) {
 			sb.append(helpPrinter.getOptionHelp(option)).append("\n");
 		}
 		sb.append(helpPrinter.getFooter()).append("\n");
@@ -29,22 +29,22 @@ public class StdCmdLineOptionHelpFormatter implements CmdLineOptionHelpFormatter
 	}
 
 	public String format(CmdLineOptionSpecificHelpPrinter specificHelpPrinter,
-			Set<CmdLineOption> options, CmdLineOptionInstance specifiedOption) {
+			Set<CmdLineOption<?>> options, CmdLineOptionInstance<?> specifiedOption) {
 		StringBuffer sb = new StringBuffer("");
 		sb.append(specificHelpPrinter.getHeader(specifiedOption)).append("\n");
 
 		sb.append(specificHelpPrinter.getRequiredSubHeader(specifiedOption)).append("\n");
-		Set<CmdLineOption> requiredOptions = getAlwaysRequiredOptions(options);
+		Set<CmdLineOption<?>> requiredOptions = getAlwaysRequiredOptions(options);
 		requiredOptions.addAll(getConditionallyRequiredOptions(options, specifiedOption));
-		List<CmdLineOption> sortedRequiredOptions = sortOptionsByRequiredStatus(requiredOptions);
-		for (CmdLineOption option : sortedRequiredOptions) {
+		List<CmdLineOption<?>> sortedRequiredOptions = sortOptionsByRequiredStatus(requiredOptions);
+		for (CmdLineOption<?> option : sortedRequiredOptions) {
 			sb.append(specificHelpPrinter.getRequiredOptionHelp(option, specifiedOption)).append("\n");
 		}
 
 		sb.append(specificHelpPrinter.getOptionalSubHeader(specifiedOption)).append("\n");
-		Set<CmdLineOption> optionalOptions = getOptionalOptions(options, specifiedOption);
-		List<CmdLineOption> sortedOptionalOptions = sortOptionsByRequiredStatus(optionalOptions);
-		for (CmdLineOption option : sortedOptionalOptions) {
+		Set<CmdLineOption<?>> optionalOptions = getOptionalOptions(options, specifiedOption);
+		List<CmdLineOption<?>> sortedOptionalOptions = sortOptionsByRequiredStatus(optionalOptions);
+		for (CmdLineOption<?> option : sortedOptionalOptions) {
 			sb.append(specificHelpPrinter.getOptionalOptionHelp(option, specifiedOption)).append("\n");
 		}
 

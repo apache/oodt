@@ -21,10 +21,10 @@ package org.apache.oodt.cas.cl.option;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 //OODT imports
 import org.apache.oodt.cas.cl.option.handler.CmdLineOptionHandler;
-import org.apache.oodt.cas.cl.option.handler.StdCmdLineOptionHandler;
 import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 
 /**
@@ -32,7 +32,7 @@ import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
  * @author bfoster
  * @version $Revision$
  */
-public class CmdLineOption implements Comparable<CmdLineOption> {
+public class CmdLineOption<T> implements Comparable<CmdLineOption<T>> {
 
 	private String shortOption;
 
@@ -52,9 +52,13 @@ public class CmdLineOption implements Comparable<CmdLineOption> {
 
 	private Class<?> type;
 
-	private CmdLineOptionHandler handler;
+	private CmdLineOptionHandler<T> handler;
 
-	private List<CmdLineOptionValidator> validators;
+	private List<CmdLineOptionValidator<T>> validators;
+
+	private boolean isHelp;
+
+	private Set<CmdLineSubOption> subOptions;
 
 	public CmdLineOption() {
 		optionArgName = "arg";
@@ -63,8 +67,7 @@ public class CmdLineOption implements Comparable<CmdLineOption> {
 		performAndQuit = false;
 		type = String.class;
 		requirementRules = new ArrayList<RequirementRule>();
-		handler = new StdCmdLineOptionHandler();
-		validators = new LinkedList<CmdLineOptionValidator>();
+		validators = new LinkedList<CmdLineOptionValidator<T>>();
 	}
 
 	public CmdLineOption(String shortOption, String longOption,
@@ -84,19 +87,19 @@ public class CmdLineOption implements Comparable<CmdLineOption> {
 		this.type = type;
 	}
 
-	public void setHandler(CmdLineOptionHandler handler) {
+	public void setHandler(CmdLineOptionHandler<T> handler) {
 		this.handler = handler;
 	}
 
-	public CmdLineOptionHandler getHandler() {
+	public CmdLineOptionHandler<T> getHandler() {
 		return this.handler;
 	}
 
-	public List<CmdLineOptionValidator> getValidators() {
+	public List<CmdLineOptionValidator<T>> getValidators() {
 		return this.validators;
 	}
 
-	public void setValidators(List<CmdLineOptionValidator> validators) {
+	public void setValidators(List<CmdLineOptionValidator<T>> validators) {
 		this.validators = validators;
 	}
 
@@ -164,7 +167,27 @@ public class CmdLineOption implements Comparable<CmdLineOption> {
 		this.performAndQuit = performAndQuit;
 	}
 
-	public int compareTo(CmdLineOption cmdLineOption) {
+	public void setHelp(boolean isHelp) {
+		this.isHelp = isHelp;
+	}
+
+	public boolean isHelp() {
+		return isHelp;
+	}
+
+	public void setSubOptions(Set<CmdLineSubOption> subOptions) {
+		this.subOptions = subOptions;
+	}
+
+	public Set<CmdLineSubOption> getSubOptions() {
+		return subOptions;
+	}
+
+	public boolean isGroup() {
+		return subOptions != null && !subOptions.isEmpty();
+	}
+
+	public int compareTo(CmdLineOption<T> cmdLineOption) {
 		int thisScore = (this.required ? 2 : 0)
 				+ (!requirementRules.isEmpty() ? 1 : 0);
 		int compareScore = (cmdLineOption.required ? 2 : 0)
@@ -175,7 +198,7 @@ public class CmdLineOption implements Comparable<CmdLineOption> {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof CmdLineOption) {
-			CmdLineOption compareObj = (CmdLineOption) obj;
+			CmdLineOption<T> compareObj = (CmdLineOption<T>) obj;
 			return compareObj.shortOption.equals(this.shortOption)
 					|| compareObj.longOption.equals(this.longOption);
 		} else

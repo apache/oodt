@@ -29,7 +29,7 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
  * @version $Revision$
  */
 public class AllowedArgsCmdLineOptionValidator implements
-		CmdLineOptionValidator {
+		CmdLineOptionValidator<String> {
 
 	private List<String> allowedArgs;
 
@@ -37,7 +37,7 @@ public class AllowedArgsCmdLineOptionValidator implements
 		this.allowedArgs = new LinkedList<String>();
 	}
 
-	public boolean validate(CmdLineOptionInstance optionInst) {
+	public boolean validate(CmdLineOptionInstance<String> optionInst) {
 		for (String value : optionInst.getValues()) {
 			if (!allowedArgs.contains(value)) {
 				LOG.severe("Option value " + value + " is not allowed for option "

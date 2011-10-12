@@ -42,7 +42,7 @@ import org.springframework.context.ApplicationContext;
  * @author bfoster
  * @version $Revision$
  */
-public class CmdLineOptionBeanHandler extends CmdLineOptionHandler implements
+public class CmdLineOptionBeanHandler extends CmdLineOptionHandler<String> implements
 		SpringSetContextInjectionType {
 
 	private List<BeanInfo> applyToBeans;
@@ -60,16 +60,16 @@ public class CmdLineOptionBeanHandler extends CmdLineOptionHandler implements
 		this.applyToBeans = applyToBeans;
 	}
 
-	public void handleOption(CmdLineOption option, List<String> values) {
+	public void handleOption(CmdLineOptionInstance<String> optionInstance) {
 		Validate.notNull(appContext, "Spring ApplicationContext must be set!");
 		Validate.notNull(applyToBeans, "Apply to beans must be set!");
 
 		for (BeanInfo beanInfo : applyToBeans) {
 			try {
-				Class<?> type = option.getType();
-				Object[] vals = (values.isEmpty()) ? convertToType(
+				Class<?> type = optionInstance.getOption().getType();
+				Object[] vals = (optionInstance.getValues().isEmpty()) ? convertToType(
 						Arrays.asList(new String[] { "true" }), type = Boolean.TYPE)
-						: convertToType(values, type);
+						: convertToType(optionInstance.getValues(), type);
 				Object applyToBean = appContext.getBean(beanInfo.getBeanId());
 				if (beanInfo.getMethodName() != null) {
 					applyToBean.getClass()
@@ -79,7 +79,7 @@ public class CmdLineOptionBeanHandler extends CmdLineOptionHandler implements
 					applyToBean
 							.getClass()
 							.getMethod(
-									"set" + StringUtils.capitalize(option.getLongOption()), type)
+									"set" + StringUtils.capitalize(optionInstance.getOption().getLongOption()), type)
 							.invoke(applyToBean, vals);
 				}
 			} catch (Exception e) {

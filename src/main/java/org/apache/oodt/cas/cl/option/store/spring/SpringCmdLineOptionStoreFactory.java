@@ -7,6 +7,10 @@ public class SpringCmdLineOptionStoreFactory implements CmdLineOptionStoreFactor
 
 	private String config;
 
+	public SpringCmdLineOptionStoreFactory() {
+		config = System.getProperty("org.apache.oodt.cas.cl.option.store.spring.config", null);
+	}
+
 	public void setConfig(String config) {
 		this.config = config;
 	}

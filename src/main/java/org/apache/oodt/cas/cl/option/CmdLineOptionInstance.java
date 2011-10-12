@@ -14,59 +14,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.cl.option;
 
 //JDK imports
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
+
 /**
- * 
  * @author bfoster
  * @version $Revision$
- *
- * <p>Describe your class here</p>.
  */
-public class CmdLineOptionInstance {
+public abstract class CmdLineOptionInstance<T> {
 
-    private CmdLineOption option;
-    private List<String> values;
+	private CmdLineOption<T> option;
+	private List<T> values;
 
-    public CmdLineOptionInstance() {
-        this.option = null;
-        this.values = new LinkedList<String>();
-    }
+	public CmdLineOptionInstance() {
+		this.option = null;
+		this.values = new ArrayList<T>();
+	}
 
-    public CmdLineOptionInstance(CmdLineOption option, List<String> values) {
-        this.option = option;
-        this.values = values;
-    }
+	public CmdLineOptionInstance(CmdLineOption<T> option, List<T> values) {
+		Validate.notNull(option);
+		Validate.notNull(values);
 
-    public CmdLineOption getOption() {
-        return option;
-    }
+		this.option = option;
+		this.values = values;
+	}
 
-    public void setOption(CmdLineOption option) {
-        this.option = option;
-    }
+	public CmdLineOption<T> getOption() {
+		return option;
+	}
 
-    public List<String> getValues() {
-        return values;
-    }
+	public void setOption(CmdLineOption<T> option) {
+		this.option = option;
+	}
 
-    public void setValues(List<String> values) {
-        this.values = values;
-    }
+	public List<T> getValues() {
+		return values;
+	}
 
-    public boolean equals(Object obj) {
-        if (obj instanceof CmdLineOptionInstance) {
-            CmdLineOptionInstance compareObj = (CmdLineOptionInstance) obj;
-            return compareObj.option.equals(this.option)
-                    && compareObj.values.equals(this.values);
-        } else
-            return false;
-    }
+	public void addValue(T value) {
+		values.add(value);
+	}
 
+	public void setValues(List<T> values) {
+		Validate.notNull(values);
+
+		this.values = values;
+	}
+
+	public boolean equals(Object obj) {
+		if (obj instanceof CmdLineOptionInstance) {
+			CmdLineOptionInstance<?> compareObj = (CmdLineOptionInstance<?>) obj;
+			return compareObj.option.equals(this.option)
+					&& compareObj.values.equals(this.values);
+		} else
+			return false;
+	}
 }
