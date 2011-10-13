@@ -10,12 +10,12 @@ public class StdCmdLineOptionHelpPresenter implements CmdLineOptionHelpPresenter
 		ps = new PrintStream(System.out);
 	}
 
-	public void presentHelp(String helpMessage) {
-		ps.println(helpMessage);
+	public void presentOptionHelp(String optionHelpMessage) {
+		ps.println(optionHelpMessage);
 	}
 
-	public void presentSpecificHelp(String specificHelpMessage) {
-		ps.println(specificHelpMessage);
+	public void presentActionHelp(String actionHelpMessage) {
+		ps.println(actionHelpMessage);
 	}
 
 }

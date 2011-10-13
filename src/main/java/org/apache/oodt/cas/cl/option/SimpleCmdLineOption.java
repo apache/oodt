@@ -139,14 +139,6 @@ public class SimpleCmdLineOption implements CmdLineOption {
 		this.performAndQuit = performAndQuit;
 	}
 
-	public int compareTo(CmdLineOption cmdLineOption) {
-		int thisScore = (this.required ? 2 : 0)
-				+ (!requirementRules.isEmpty() ? 1 : 0);
-		int compareScore = (cmdLineOption.isRequired() ? 2 : 0)
-				+ (!cmdLineOption.getRequirementRules().isEmpty() ? 1 : 0);
-		return new Integer(thisScore).compareTo(compareScore);
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof CmdLineOption) {

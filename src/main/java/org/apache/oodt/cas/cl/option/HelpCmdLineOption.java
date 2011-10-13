@@ -1,6 +1,6 @@
 package org.apache.oodt.cas.cl.option;
 
-public class HelpCmdLineOption extends GroupCmdLineOption {
+public class HelpCmdLineOption extends SimpleCmdLineOption {
 
 	public HelpCmdLineOption() {
 		this("h", "help", "Prints help menu", false);

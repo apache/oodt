@@ -1,6 +1,10 @@
 package org.apache.oodt.cas.cl.help.printer;
 
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.getFormattedString;
+import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.sortOptionsByRequiredStatus;
+
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.cl.option.AdvancedCmdLineOption;
@@ -8,7 +12,18 @@ import org.apache.oodt.cas.cl.option.CmdLineOption;
 
 public class StdCmdLineOptionHelpPrinter implements CmdLineOptionHelpPrinter {
 
-	public String getHeader() {
+	public String printHelp(Set<CmdLineOption> options) {
+		StringBuffer sb = new StringBuffer("");
+		List<CmdLineOption> sortedOptions = sortOptionsByRequiredStatus(options);
+		sb.append(getHeader()).append("\n");
+		for (CmdLineOption option : sortedOptions) {
+			sb.append(getOptionHelp(option)).append("\n");
+		}
+		sb.append(getFooter()).append("\n");
+		return sb.toString();
+	}
+
+	protected String getHeader() {
 		StringBuffer sb = new StringBuffer("");
 		sb.append("-----------------------------------------------------------------------------------------------------------------\n");
 		sb.append("|" + StringUtils.rightPad(" Short", 7) + "|"
@@ -17,7 +32,7 @@ public class StdCmdLineOptionHelpPrinter implements CmdLineOptionHelpPrinter {
 		return sb.toString();
 	}
 
-	public String getOptionHelp(CmdLineOption option) {
+	protected String getOptionHelp(CmdLineOption option) {
 		String argName = option.hasArgs() ? " <" + option.getArgsDescription() + ">" : "";
 		String optionUsage = "-"
 				+ StringUtils.rightPad(option.getShortOption() + ",", 7) + "--"
@@ -43,7 +58,7 @@ public class StdCmdLineOptionHelpPrinter implements CmdLineOptionHelpPrinter {
 		return optionUsage;
 	}
 
-	public String getFooter() {
+	protected String getFooter() {
 		return "-----------------------------------------------------------------------------------------------------------------";
 	}
 }

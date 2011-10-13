@@ -6,12 +6,9 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.apache.oodt.cas.cl.option.BasicCmdLineOption;
-import org.apache.oodt.cas.cl.option.BasicCmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
-import org.apache.oodt.cas.cl.option.GroupCmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.require.RequirementRule;
 
 public class TestCmdLineOptionUtils extends TestCase {

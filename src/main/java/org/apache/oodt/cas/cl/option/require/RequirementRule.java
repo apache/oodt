@@ -25,6 +25,8 @@ import org.apache.oodt.cas.cl.action.CmdLineAction;
  */
 public interface RequirementRule {
 
-	public boolean isRequired(CmdLineAction selectedAction);
+	public enum Relation { REQUIRED, OPTIONAL, NONE }
+
+	public Relation getRelation(CmdLineAction action);
 
 }

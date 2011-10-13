@@ -16,11 +16,11 @@
  */
 package org.apache.oodt.cas.cl.parser;
 
-//JDK imports
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findHelpOption;
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.getOptionByName;
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.isSubOption;
 
+//JDK imports
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -88,7 +88,7 @@ public class StdCmdLineOptionParser extends CmdLineOptionParser {
 
 					// Push group as current group.
 					groupOptions.push(groupInstance);
-				} else if (option.hasArgs()) {
+				} else if (option.hasArgs() || option.equals(helpOption)) {
 					List<String> values = getValues(args, option);
 					if (values.isEmpty()) {
 						throw new IOException("Option " + option
@@ -124,33 +124,12 @@ public class StdCmdLineOptionParser extends CmdLineOptionParser {
 	private List<String> getValues(Args args, CmdLineOption option) {
 		List<String> values = new ArrayList<String>();
 		String nextValue = args.getCurrentArg();
-		while (!isOption(nextValue)) {
+		while (nextValue != null && !isOption(nextValue)) {
 			values.add(nextValue);
+			nextValue = args.getCurrentArg();
 		}
 		return values;
 	}
-
-//	private List<CmdLineOptionInstance<?>> findOptions(Args args,
-//			Set<CmdLineSubOption> subOptions) {
-//		HashSet<CmdLineOption<?>> allOptions = new HashSet<CmdLineOption<?>>();
-//		HashSet<CmdLineOption<?>> requiredOptions = new HashSet<CmdLineOption<?>>();
-//		for (CmdLineSubOption subOption : subOptions) {
-//			allOptions.add(subOption.getOption());
-//			if (subOption.isRequired()) {
-//				requiredOptions.add(subOption.getOption());
-//			}
-//		}
-//
-//		HashSet<CmdLineOption<?>> setOptions = new HashSet<CmdLineOption<?>>();
-//		for (String arg : args) {
-//			if (isOption(arg)) {
-//				CmdLineOption<?> option = CmdLineOptionUtils.getOptionByName(
-//						getOptionName(arg), allOptions);
-//				
-//			}
-//		}
-//		return null;
-//	}
 
 	private static boolean isOption(String arg) {
 		return (arg.startsWith("-"));
@@ -165,15 +144,4 @@ public class StdCmdLineOptionParser extends CmdLineOptionParser {
 			return null;
 		}
 	}
-
-//	private CmdLineOption<?> getHelpOption(Set<CmdLineOption<?>> options) {
-//		for (CmdLineOption<?> option : options) {
-//			if (option instanceof GroupCmdLineOption) {
-//				if (((GroupCmdLineOption) option).isHelp()) {
-//					return option;
-//				}
-//			}
-//		}
-//		return null;
-//	}
 }

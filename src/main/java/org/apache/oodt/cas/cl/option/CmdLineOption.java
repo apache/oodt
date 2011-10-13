@@ -27,7 +27,7 @@ import org.apache.oodt.cas.cl.option.require.RequirementRule;
  * @author bfoster
  * @version $Revision$
  */
-public interface CmdLineOption extends Comparable<CmdLineOption> {
+public interface CmdLineOption {
 
 	public void setLongOption(String longOption);
 
@@ -60,8 +60,6 @@ public interface CmdLineOption extends Comparable<CmdLineOption> {
 	public void setRequirementRules(List<RequirementRule> requirementRules);
 
 	public List<RequirementRule> getRequirementRules();
-
-	public int compareTo(CmdLineOption cmdLineOption);
 
 	public boolean equals(Object obj);
 

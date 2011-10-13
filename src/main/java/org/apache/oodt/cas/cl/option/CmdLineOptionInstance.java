@@ -66,6 +66,14 @@ public class CmdLineOptionInstance {
 		return option instanceof HelpCmdLineOption;
 	}
 
+	public boolean isValidatable() {
+		return option instanceof ValidatableCmdLineOption;
+	}
+
+	public boolean isHandleable() {
+		return option instanceof HandleableCmdLineOption;
+	}
+
 	public void setValues(List<String> values) {
 		Validate.notNull(values);
 
