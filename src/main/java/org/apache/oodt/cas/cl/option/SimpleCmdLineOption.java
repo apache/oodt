@@ -153,4 +153,9 @@ public class SimpleCmdLineOption implements CmdLineOption {
 	public int hashCode() {
 		return shortOption.hashCode();
 	}
+
+	public String toString() {
+		return "Action [longOption='" + longOption + "',shortOption='"
+				+ shortOption + "',description='" + description + "']";
+	}
 }

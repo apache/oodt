@@ -61,6 +61,10 @@ public class CmdLineOptionUtils {
 		Validate.notNull(option);
 		Validate.notNull(action);
 
+		if (option instanceof ActionCmdLineOption) {
+			return false;
+		}
+
 		for (RequirementRule requirementRule : option.getRequirementRules()) {
 			if (requirementRule.getRelation(action) == Relation.REQUIRED) {
 				return true;
@@ -70,18 +74,22 @@ public class CmdLineOptionUtils {
 	}
 
 	public static Set<CmdLineOption> determineOptional(CmdLineAction action, Set<CmdLineOption> options) {
-		Set<CmdLineOption> requiredOptions = getRequiredOptions(options);
+		Set<CmdLineOption> optionalOptions = new HashSet<CmdLineOption>();
 		for (CmdLineOption option : options) {
 			if (isOptional(action, option)) {
-				requiredOptions.add(option);
+				optionalOptions.add(option);
 			}
 		}
-		return requiredOptions;
+		return optionalOptions;
 	}
 
 	public static boolean isOptional(CmdLineAction action, CmdLineOption option) {
 		Validate.notNull(option);
 		Validate.notNull(action);
+
+		if (option instanceof ActionCmdLineOption) {
+			return false;
+		}
 
 		for (RequirementRule requirementRule : option.getRequirementRules()) {
 			if (requirementRule.getRelation(action) == Relation.OPTIONAL) {
@@ -215,6 +223,20 @@ public class CmdLineOptionUtils {
 		for (CmdLineOptionInstance option : options) {
 			if (isHelpOption(option.getOption())) {
 				return option;
+			}
+		}
+		return null;
+	}
+
+	public static CmdLineAction findAction(CmdLineOptionInstance actionOption,
+			Set<CmdLineAction> supportedActions) {
+		Validate.isTrue(actionOption.isAction());
+		Validate.notEmpty(actionOption.getValues());
+
+		String actionName = actionOption.getValues().get(0);
+		for (CmdLineAction action : supportedActions) {
+			if (action.getName().equals(actionName)) {
+				return action;
 			}
 		}
 		return null;

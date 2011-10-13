@@ -1,12 +1,9 @@
 package org.apache.oodt.cas.cl.help.printer;
 
-import java.util.Set;
-
-import org.apache.oodt.cas.cl.action.CmdLineAction;
-import org.apache.oodt.cas.cl.option.CmdLineOption;
+import org.apache.oodt.cas.cl.CmdLineArgs;
 
 public interface CmdLineActionHelpPrinter {
 
-	public String printHelp(CmdLineAction action, Set<CmdLineOption> options);
+	public String printHelp(CmdLineArgs cmdLineArgs);
 
 }

@@ -4,17 +4,17 @@ import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.getFormatted
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.sortOptionsByRequiredStatus;
 
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.oodt.cas.cl.CmdLineArgs;
 import org.apache.oodt.cas.cl.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 
 public class StdCmdLineOptionHelpPrinter implements CmdLineOptionHelpPrinter {
 
-	public String printHelp(Set<CmdLineOption> options) {
+	public String printHelp(CmdLineArgs cmdLineArgs) {
 		StringBuffer sb = new StringBuffer("");
-		List<CmdLineOption> sortedOptions = sortOptionsByRequiredStatus(options);
+		List<CmdLineOption> sortedOptions = sortOptionsByRequiredStatus(cmdLineArgs.getSupportedOptions());
 		sb.append(getHeader()).append("\n");
 		for (CmdLineOption option : sortedOptions) {
 			sb.append(getOptionHelp(option)).append("\n");

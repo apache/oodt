@@ -6,29 +6,43 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.apache.oodt.cas.cl.action.CmdLineAction;
+import org.apache.oodt.cas.cl.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
-import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
+import org.apache.oodt.cas.cl.option.SimpleCmdLineOption;
 import org.apache.oodt.cas.cl.option.require.RequirementRule;
+import org.apache.oodt.cas.cl.option.require.RequirementRule.Relation;
+import org.apache.oodt.cas.cl.option.require.StdRequirementRule;
+import org.apache.oodt.cas.cl.option.require.ActionDependency;
 
 public class TestCmdLineOptionUtils extends TestCase {
 
-	public void testGetOptionalOptions() {
-		BasicCmdLineOption urlOption = createBasicOption("url", new RequirementRule("operation", Collections.singletonList("test"), false));
-		BasicCmdLineOption operationOption = createBasicOption("operation", true); 
-		HashSet<CmdLineOption<?>> options = new HashSet<CmdLineOption<?>>();
+	public void testDetermineOptional() {
+		CmdLineAction action = createAction("TestAction");
+		SimpleCmdLineOption urlOption = createSimpleOption("url", createRequiredRequirementRule(action));
+		ActionCmdLineOption operationOption = createActionOption("operation"); 
+		HashSet<CmdLineOption> options = new HashSet<CmdLineOption>();
 		options.add(urlOption);
-		options.add(createBasicOption("pass", false));
-		options.add(createBasicOption("user", false));
+		options.add(createSimpleOption("pass", false));
+		options.add(createSimpleOption("user", false));
 		options.add(operationOption);
 
-//		specifiedOptions.add(new BasicCmdLineOptionInstance(urlOption, Collections.singletonList("http://oodt.apache.org")));
-
-		Set<CmdLineOption<?>> optionalOptions = CmdLineOptionUtils.getConditionallyRequiredOptions(options, new BasicCmdLineOptionInstance(operationOption, Collections.singletonList("test")));
-		assertEquals(1, optionalOptions.size());
-		assertNotNull(CmdLineOptionUtils.getOptionByName("url", optionalOptions));
+		Set<CmdLineOption> optionalOptions = CmdLineOptionUtils.determineOptional(action, options);
+		System.out.println(optionalOptions);
+		assertEquals(0, optionalOptions.size());
 	}
 
+	private static CmdLineAction createAction(String name) {
+		return new CmdLineAction(name, "This is an action description") {
+
+			@Override
+			public void execute() {
+				// do nothing
+			}
+			
+		};
+	}
 	private static GroupCmdLineOption createGroupOption(String longName, boolean required) {
 		GroupCmdLineOption option = new GroupCmdLineOption();
 		option.setLongOption(longName);
@@ -37,19 +51,32 @@ public class TestCmdLineOptionUtils extends TestCase {
 		return option;
 	}
 
-	private static BasicCmdLineOption createBasicOption(String longName, RequirementRule rule) {
-		BasicCmdLineOption option = new BasicCmdLineOption();
+	private static SimpleCmdLineOption createSimpleOption(String longName, boolean required) {
+		SimpleCmdLineOption option = new SimpleCmdLineOption();
+		option.setLongOption(longName);
+		option.setShortOption(longName);
+		option.setRequired(required);
+		return option;
+	}
+
+	private static SimpleCmdLineOption createSimpleOption(String longName, RequirementRule rule) {
+		SimpleCmdLineOption option = new SimpleCmdLineOption();
 		option.setLongOption(longName);
 		option.setShortOption(longName);
 		option.setRequirementRules(Collections.singletonList(rule));
 		return option;
 	}
 
-	public static BasicCmdLineOption createBasicOption(String longName, boolean required) {
-		BasicCmdLineOption option = new BasicCmdLineOption();
+	public static ActionCmdLineOption createActionOption(String longName) {
+		ActionCmdLineOption option = new ActionCmdLineOption();
 		option.setLongOption(longName);
 		option.setShortOption(longName);
-		option.setRequired(required);
 		return option;
+	}
+
+	private static RequirementRule createRequiredRequirementRule(CmdLineAction action) {
+		StdRequirementRule rule = new StdRequirementRule();
+		rule.addActionDependency(new ActionDependency(action.getName(), Relation.REQUIRED));
+		return rule;
 	}
 }

@@ -7,34 +7,32 @@ import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.sortOptionsB
 import java.util.List;
 import java.util.Set;
 
-import org.apache.oodt.cas.cl.CmdLineUtility;
+import org.apache.oodt.cas.cl.CmdLineArgs;
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
-import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
-import org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils;
 
 public class StdCmdLineActionHelpPrinter implements
 		CmdLineActionHelpPrinter {
 
-	public String printHelp(CmdLineAction action, Set<CmdLineOption> options) {
+	public String printHelp(CmdLineArgs cmdLineArgs) {
 		StringBuffer sb = new StringBuffer("");
-		sb.append(getHeader(action)).append("\n");
+		sb.append(getHeader(cmdLineArgs.getSpecifiedAction())).append("\n");
 
 		sb.append(getRequiredSubHeader()).append("\n");
-		Set<CmdLineOption> requiredOptions = determineRequired(action, options);
+		Set<CmdLineOption> requiredOptions = determineRequired(cmdLineArgs.getSpecifiedAction(), cmdLineArgs.getCustomSupportedOptions());
 		List<CmdLineOption> sortedRequiredOptions = sortOptionsByRequiredStatus(requiredOptions);
 		for (CmdLineOption option : sortedRequiredOptions) {
 			sb.append(getRequiredOptionHelp(option)).append("\n");
 		}
 
 		sb.append(getOptionalSubHeader()).append("\n");
-		Set<CmdLineOption> optionalOptions = determineOptional(action, options);
+		Set<CmdLineOption> optionalOptions = determineOptional(cmdLineArgs.getSpecifiedAction(), cmdLineArgs.getCustomSupportedOptions());
 		List<CmdLineOption> sortedOptionalOptions = sortOptionsByRequiredStatus(optionalOptions);
 		for (CmdLineOption option : sortedOptionalOptions) {
 			sb.append(getOptionalOptionHelp(option)).append("\n");
 		}
 
-		sb.append(getFooter(action)).append("\n");
+		sb.append(getFooter(cmdLineArgs.getSpecifiedAction())).append("\n");
 		return sb.toString();
 	}
 

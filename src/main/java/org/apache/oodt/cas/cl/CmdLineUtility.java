@@ -3,8 +3,6 @@ package org.apache.oodt.cas.cl;
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.determineRequired;
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findActionOption;
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findHelpOption;
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findSpecifiedActionOption;
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findSpecifiedOption;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -24,11 +22,8 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.HandleableCmdLineOption;
 import org.apache.oodt.cas.cl.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cl.option.ValidatableCmdLineOption;
-import org.apache.oodt.cas.cl.option.require.RequirementRule;
-import org.apache.oodt.cas.cl.option.require.RequirementRule.Relation;
 import org.apache.oodt.cas.cl.option.store.CmdLineOptionStore;
 import org.apache.oodt.cas.cl.option.store.spring.SpringCmdLineOptionStoreFactory;
-import org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils;
 import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 import org.apache.oodt.cas.cl.parser.CmdLineOptionParser;
 import org.apache.oodt.cas.cl.parser.StdCmdLineOptionParser;
@@ -81,22 +76,22 @@ public class CmdLineUtility {
 		this.helpPresenter = helpPresenter;
 	}
 
-	public void printOptionHelp(Set<CmdLineOption> options) {
-		helpPresenter.presentOptionHelp(optionHelpPrinter.printHelp(options));
+	public void printOptionHelp(CmdLineArgs cmdLineArgs) {
+		helpPresenter.presentOptionHelp(optionHelpPrinter.printHelp(cmdLineArgs));
 	}
 
-	public void printActionHelp(CmdLineAction action, Set<CmdLineOption> options) {
-		helpPresenter.presentActionHelp(actionHelpPrinter.printHelp(action, options));
+	public void printActionHelp(CmdLineArgs cmdLineArgs) {
+		helpPresenter.presentActionHelp(actionHelpPrinter.printHelp(cmdLineArgs));
 	}
 
 	public void run(String[] args) throws IOException {
-		Set<CmdLineOptionInstance> specifiedOptions = parse(args);
-		if (!handleHelp(specifiedOptions)) {
-			execute(specifiedOptions);
+		CmdLineArgs cmdLineArgs = parse(args);
+		if (!handleHelp(cmdLineArgs)) {
+			execute(cmdLineArgs);
 		}
 	}
 
-	public Set<CmdLineOptionInstance> parse(String[] args) throws IOException {
+	public CmdLineArgs parse(String[] args) throws IOException {
 		Validate.notNull(parser);
 		Validate.notNull(optionStore);
 
@@ -116,61 +111,41 @@ public class CmdLineUtility {
 		}
 
 		// Parse command line arguments.
-		return parser.parse(args, validOptions);
+		return new CmdLineArgs(optionStore.loadSupportedActions(), validOptions, parser.parse(args, validOptions));
 	}
 
-	public boolean handleHelp(Set<CmdLineOptionInstance> specifiedOptions) throws IOException {
-		Set<CmdLineOption> supportedOptions = optionStore.loadSupportedOptions();
-		HelpCmdLineOption helpOption = findHelpOption(supportedOptions); 
-		if (helpOption != null) {
-			CmdLineOptionInstance specifiedHelpOption = findSpecifiedOption(
-					helpOption, specifiedOptions);
-			if (specifiedHelpOption != null) {
-				if (specifiedHelpOption.getSubOptions().isEmpty()) {
-					printOptionHelp(supportedOptions);
-				} else {
-					printActionHelp(getSelectedAction(specifiedOptions), supportedOptions);
-				}
-				return true;
+	public boolean handleHelp(CmdLineArgs cmdLineArgs) throws IOException {
+		if (cmdLineArgs.getHelpOptionInst() != null) {
+			if (cmdLineArgs.getHelpOptionInst().getSubOptions().isEmpty()) {
+				printOptionHelp(cmdLineArgs);
+			} else {
+				printActionHelp(cmdLineArgs);
 			}
+			return true;
 		}
 		return false;
 	}
 
-	public CmdLineAction getSelectedAction(Set<CmdLineOptionInstance> specifiedOptions) throws IOException {
-		CmdLineOptionInstance actionOption = findSpecifiedActionOption(specifiedOptions);
-		if (actionOption == null) {
-			throw new IOException("Action option not specified");
-		}
-		CmdLineAction action = findAction(actionOption, optionStore.loadSupportedActions());
-		if (action == null) {
-			throw new IOException("Action '" + actionOption + "' is not a supported action");
-		}
-		return action;
-	}
-
-	public void execute(Set<CmdLineOptionInstance> specifiedOptions) throws IOException {
-		CmdLineAction action = getSelectedAction(specifiedOptions);
-
-		Set<CmdLineOption> requiredOptions = determineRequired(action, optionStore.loadSupportedOptions());
-		Set<CmdLineOption> requiredOptionsNotSet = check(requiredOptions, specifiedOptions);
+	public void execute(CmdLineArgs cmdLineArgs) throws IOException {
+		Set<CmdLineOption> requiredOptionsNotSet = check(cmdLineArgs);
 		if (!requiredOptionsNotSet.isEmpty()) {
 			throw new IOException("Required options are not set: '" + requiredOptionsNotSet + "'");
 		}
 
-		Set<CmdLineOptionInstance> optionsFailedValidation = validate(specifiedOptions);
+		Set<CmdLineOptionInstance> optionsFailedValidation = validate(cmdLineArgs.getSpecifiedOptions());
 		if (!optionsFailedValidation.isEmpty()) {
 			throw new IOException("Options failed validation: '" + optionsFailedValidation + "'");
 		}
 
-		handle(action, specifiedOptions);
+		handle(cmdLineArgs.getSpecifiedAction(), cmdLineArgs.getSpecifiedOptions());
 
-		action.execute();
+		cmdLineArgs.getSpecifiedAction().execute();
 	}
 
-	public static Set<CmdLineOption> check(Set<CmdLineOption> requiredOptions, Set<CmdLineOptionInstance> specifiedOptions) {
+	public static Set<CmdLineOption> check(CmdLineArgs cmdLineArgs) {
+		Set<CmdLineOption> requiredOptions = determineRequired(cmdLineArgs.getSpecifiedAction(), cmdLineArgs.getCustomSupportedOptions());
 		HashSet<CmdLineOption> requiredOptionsNotSet = new HashSet<CmdLineOption>(requiredOptions);
-		for (CmdLineOptionInstance specifiedOption : specifiedOptions) {
+		for (CmdLineOptionInstance specifiedOption : cmdLineArgs.getCustomSpecifiedOptions()) {
 			requiredOptionsNotSet.remove(specifiedOption.getOption());
 		}
 		return requiredOptionsNotSet;
@@ -197,19 +172,6 @@ public class CmdLineUtility {
 			}
 		}
 		return true;
-	}
-
-	public static CmdLineAction findAction(CmdLineOptionInstance actionOption, Set<CmdLineAction> supportedActions) {
-		Validate.isTrue(actionOption.isAction());
-		Validate.notEmpty(actionOption.getValues());
-
-		String actionName = actionOption.getValues().get(0);
-		for (CmdLineAction action : supportedActions) {
-			if (action.getName().equals(actionName)) {
-				return action;
-			}
-		}
-		return null;
 	}
 
 	public static void handle(CmdLineAction action, Set<CmdLineOptionInstance> options) {
