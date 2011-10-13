@@ -6,4 +6,6 @@ public interface CmdLineOptionHelpPresenter {
 
 	public void presentActionHelp(String actionHelpMessage);
 
+	public void presentActionsHelp(String actionsHelpMessage);
+
 }

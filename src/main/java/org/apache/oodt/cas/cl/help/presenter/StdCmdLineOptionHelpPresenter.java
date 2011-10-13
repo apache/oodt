@@ -18,4 +18,7 @@ public class StdCmdLineOptionHelpPresenter implements CmdLineOptionHelpPresenter
 		ps.println(actionHelpMessage);
 	}
 
+	public void presentActionsHelp(String actionsHelpMessage) {
+		ps.println(actionsHelpMessage);		
+	}
 }

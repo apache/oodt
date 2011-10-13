@@ -9,22 +9,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.help.presenter.CmdLineOptionHelpPresenter;
 import org.apache.oodt.cas.cl.help.presenter.StdCmdLineOptionHelpPresenter;
 import org.apache.oodt.cas.cl.help.printer.CmdLineActionHelpPrinter;
+import org.apache.oodt.cas.cl.help.printer.CmdLineActionsHelpPrinter;
 import org.apache.oodt.cas.cl.help.printer.CmdLineOptionHelpPrinter;
 import org.apache.oodt.cas.cl.help.printer.StdCmdLineActionHelpPrinter;
 import org.apache.oodt.cas.cl.help.printer.StdCmdLineOptionHelpPrinter;
 import org.apache.oodt.cas.cl.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
-import org.apache.oodt.cas.cl.option.HandleableCmdLineOption;
 import org.apache.oodt.cas.cl.option.HelpCmdLineOption;
-import org.apache.oodt.cas.cl.option.ValidatableCmdLineOption;
+import org.apache.oodt.cas.cl.option.PrintSupportedActionsCmdLineOption;
 import org.apache.oodt.cas.cl.option.store.CmdLineOptionStore;
 import org.apache.oodt.cas.cl.option.store.spring.SpringCmdLineOptionStoreFactory;
-import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
+import org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils;
 import org.apache.oodt.cas.cl.parser.CmdLineOptionParser;
 import org.apache.oodt.cas.cl.parser.StdCmdLineOptionParser;
 
@@ -34,6 +33,7 @@ public class CmdLineUtility {
 	private CmdLineOptionStore optionStore;
 	private CmdLineOptionHelpPrinter optionHelpPrinter;
 	private CmdLineActionHelpPrinter actionHelpPrinter;
+	private CmdLineActionsHelpPrinter actionsHelpPrinter;
 	private CmdLineOptionHelpPresenter helpPresenter;
 	
 	public CmdLineUtility() {
@@ -68,6 +68,14 @@ public class CmdLineUtility {
 		this.actionHelpPrinter = actionHelpPrinter;
 	}
 
+	public CmdLineActionsHelpPrinter getActionsHelpPrinter() {
+		return actionsHelpPrinter;
+	}
+
+	public void setActionsHelpPrinter(CmdLineActionsHelpPrinter actionsHelpPrinter) {
+		this.actionsHelpPrinter = actionsHelpPrinter;
+	}
+
 	public CmdLineOptionHelpPresenter getHelpPresenter() {
 		return helpPresenter;
 	}
@@ -84,9 +92,13 @@ public class CmdLineUtility {
 		helpPresenter.presentActionHelp(actionHelpPrinter.printHelp(cmdLineArgs));
 	}
 
+	public void printActionsHelp(CmdLineArgs cmdLineArgs) {
+		helpPresenter.presentActionsHelp(actionsHelpPrinter.printHelp(cmdLineArgs));		
+	}
+
 	public void run(String[] args) throws IOException {
 		CmdLineArgs cmdLineArgs = parse(args);
-		if (!handleHelp(cmdLineArgs)) {
+		if (!handleHelp(cmdLineArgs) && !handlePrintSupportedActions(cmdLineArgs)) {
 			execute(cmdLineArgs);
 		}
 	}
@@ -110,7 +122,13 @@ public class CmdLineUtility {
 			validOptions.add(actionOption = new ActionCmdLineOption());
 		}
 
-		// Parse command line arguments.
+		// Insure print supported actions option is present if required.
+		PrintSupportedActionsCmdLineOption psaOption = CmdLineOptionUtils.findPrintSupportedActionsOption(validOptions);
+		if (psaOption == null) {
+			validOptions.add(psaOption = new PrintSupportedActionsCmdLineOption());
+		}
+
+ 		// Parse command line arguments.
 		return new CmdLineArgs(optionStore.loadSupportedActions(), validOptions, parser.parse(args, validOptions));
 	}
 
@@ -126,18 +144,26 @@ public class CmdLineUtility {
 		return false;
 	}
 
-	public void execute(CmdLineArgs cmdLineArgs) throws IOException {
+	public boolean handlePrintSupportedActions(CmdLineArgs cmdLineArgs) throws IOException {
+		if (cmdLineArgs.getPrintSupportedActionsOptionInst() != null) {
+			printActionsHelp(cmdLineArgs);
+			return true;
+		}
+		return false;
+	}
+
+	public static void execute(CmdLineArgs cmdLineArgs) throws IOException {
 		Set<CmdLineOption> requiredOptionsNotSet = check(cmdLineArgs);
 		if (!requiredOptionsNotSet.isEmpty()) {
 			throw new IOException("Required options are not set: '" + requiredOptionsNotSet + "'");
 		}
 
-		Set<CmdLineOptionInstance> optionsFailedValidation = validate(cmdLineArgs.getSpecifiedOptions());
+		Set<CmdLineOptionInstance> optionsFailedValidation = validate(cmdLineArgs);
 		if (!optionsFailedValidation.isEmpty()) {
 			throw new IOException("Options failed validation: '" + optionsFailedValidation + "'");
 		}
 
-		handle(cmdLineArgs.getSpecifiedAction(), cmdLineArgs.getSpecifiedOptions());
+		handle(cmdLineArgs);
 
 		cmdLineArgs.getSpecifiedAction().execute();
 	}
@@ -151,38 +177,21 @@ public class CmdLineUtility {
 		return requiredOptionsNotSet;
 	}
 
-	public static Set<CmdLineOptionInstance> validate(Set<CmdLineOptionInstance> options)  {
-		Validate.notNull(options);
+	public static Set<CmdLineOptionInstance> validate(CmdLineArgs cmdLineArgs)  {
+		Validate.notNull(cmdLineArgs);
 
 		HashSet<CmdLineOptionInstance> optionsFailed = new HashSet<CmdLineOptionInstance>();
-		for (CmdLineOptionInstance optionInst : options) {
-			if (!validate(optionInst)) {
+		for (CmdLineOptionInstance optionInst : cmdLineArgs.getCustomSpecifiedOptions()) {
+			if (!CmdLineOptionUtils.validate(optionInst)) {
 				optionsFailed.add(optionInst);
 			}
 		}
 		return optionsFailed;
 	}
 
-	public static boolean validate(CmdLineOptionInstance option) {
-		if (option.isValidatable()) {
-			for (CmdLineOptionValidator validator : ((ValidatableCmdLineOption) option.getOption()).getValidators()) {
-				if (!validator.validate(option)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	public static void handle(CmdLineAction action, Set<CmdLineOptionInstance> options) {
-		for (CmdLineOptionInstance option : options) {
-			handle(action, option);
-		}
-	}
-
-	public static void handle(CmdLineAction action, CmdLineOptionInstance option) {
-		if (option.isHandleable()) {
-			((HandleableCmdLineOption) option.getOption()).getHandler().handleOption(action, option);
+	public static void handle(CmdLineArgs cmdLineArgs) {
+		for (CmdLineOptionInstance option : cmdLineArgs.getCustomSpecifiedOptions()) {
+			CmdLineOptionUtils.handle(cmdLineArgs.getSpecifiedAction(), option);
 		}
 	}
 }

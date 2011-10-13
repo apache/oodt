@@ -18,10 +18,14 @@
 package org.apache.oodt.cas.cl.option.util;
 
 //JDK imports
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -33,9 +37,13 @@ import org.apache.oodt.cas.cl.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
+import org.apache.oodt.cas.cl.option.HandleableCmdLineOption;
 import org.apache.oodt.cas.cl.option.HelpCmdLineOption;
+import org.apache.oodt.cas.cl.option.PrintSupportedActionsCmdLineOption;
+import org.apache.oodt.cas.cl.option.ValidatableCmdLineOption;
 import org.apache.oodt.cas.cl.option.require.RequirementRule;
 import org.apache.oodt.cas.cl.option.require.RequirementRule.Relation;
+import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 
 /**
@@ -102,7 +110,7 @@ public class CmdLineOptionUtils {
 	public static Set<CmdLineOption> getRequiredOptions(Set<CmdLineOption> options) {
 		HashSet<CmdLineOption> requiredOptions = new HashSet<CmdLineOption>();
 		for (CmdLineOption option : options) {
-			if (option.isRequired()) {
+			if (!(option instanceof ActionCmdLineOption) && option.isRequired()) {
 				requiredOptions.add(option);
 			}
 		}
@@ -183,6 +191,28 @@ public class CmdLineOptionUtils {
 		return null;
 	}
 
+	public static boolean isPrintSupportedActionsOption(CmdLineOption option) {
+		return option instanceof PrintSupportedActionsCmdLineOption;
+	}
+
+	public static PrintSupportedActionsCmdLineOption findPrintSupportedActionsOption(Set<CmdLineOption> options) {
+		for (CmdLineOption option : options) {
+			if (isPrintSupportedActionsOption(option)) {
+				return (PrintSupportedActionsCmdLineOption) option;
+			}
+		}
+		return null;
+	}
+
+	public static CmdLineOptionInstance findSpecifiedPrintSupportedActionsOption(Set<CmdLineOptionInstance> options) {
+		for (CmdLineOptionInstance option : options) {
+			if (isPrintSupportedActionsOption(option.getOption())) {
+				return option;
+			}
+		}
+		return null;
+	}
+
 	public static boolean isActionOption(CmdLineOption option) {
 		return option instanceof ActionCmdLineOption;
 	}
@@ -242,6 +272,23 @@ public class CmdLineOptionUtils {
 		return null;
 	}
 
+	public static boolean validate(CmdLineOptionInstance option) {
+		if (option.isValidatable()) {
+			for (CmdLineOptionValidator validator : ((ValidatableCmdLineOption) option.getOption()).getValidators()) {
+				if (!validator.validate(option)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public static void handle(CmdLineAction action, CmdLineOptionInstance option) {
+		if (option.isHandleable()) {
+			((HandleableCmdLineOption) option.getOption()).getHandler().handleOption(action, option);
+		}
+	}
+
 	public static String getFormattedString(String string, int startIndex,
 			int endIndex) {
 		StringBuffer outputString = new StringBuffer("");
@@ -259,5 +306,54 @@ public class CmdLineOptionUtils {
 					+ curLine.toString() + "\n");
 		}
 		return outputString.toString();
+	}
+
+	public static Object[] convertToType(List<String> values, Class<?> type)
+			throws MalformedURLException, ClassNotFoundException {
+		if (type.equals(File.class)) {
+			List<Object> files = new LinkedList<Object>();
+			for (String value : values)
+				files.add(new File(value));
+			return files.toArray(new Object[files.size()]);
+		} else if (type.equals(Boolean.class) || type.equals(Boolean.TYPE)) {
+			List<Object> booleans = new LinkedList<Object>();
+			for (String value : values)
+				booleans.add(value.toLowerCase().trim().equals("true"));
+			return booleans.toArray(new Object[booleans.size()]);
+		} else if (type.equals(URL.class)) {
+			List<Object> urls = new LinkedList<Object>();
+			for (String value : values)
+				urls.add(new URL(value));
+			return urls.toArray(new Object[urls.size()]);
+		} else if (type.equals(Class.class)) {
+			List<Object> classes = new LinkedList<Object>();
+			for (String value : values)
+				classes.add(Class.forName(value));
+			return classes.toArray(new Object[classes.size()]);
+		} else if (type.equals(List.class)) {
+			return new Object[] { values };
+		} else if (type.equals(Integer.class) || type.equals(Integer.TYPE)) {
+			List<Object> ints = new LinkedList<Object>();
+			for (String value : values)
+				ints.add(new Integer(value));
+			return ints.toArray(new Object[ints.size()]);
+		} else if (type.equals(Long.class) || type.equals(Long.TYPE)) {
+			List<Object> longs = new LinkedList<Object>();
+			for (String value : values)
+				longs.add(new Long(value));
+			return longs.toArray(new Object[longs.size()]);
+		} else if (type.equals(Double.class) || type.equals(Double.TYPE)) {
+			List<Object> doubles = new LinkedList<Object>();
+			for (String value : values)
+				doubles.add(new Double(value));
+			return doubles.toArray(new Object[doubles.size()]);
+		} else if (type.equals(String.class)) {
+			StringBuffer combinedString = new StringBuffer("");
+			for (String value : values)
+				combinedString.append(value + " ");
+			return new String[] { combinedString.toString().trim() };
+		} else {
+			return values.toArray(new Object[values.size()]);
+		}
 	}
 }
