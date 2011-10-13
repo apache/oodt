@@ -26,52 +26,89 @@ import org.apache.commons.lang.Validate;
  * @author bfoster
  * @version $Revision$
  */
-public abstract class CmdLineOptionInstance<T> {
+public class CmdLineOptionInstance {
 
-	private CmdLineOption<T> option;
-	private List<T> values;
+	private CmdLineOption option;
+	private List<String> values;
+	private List<CmdLineOptionInstance> subOptions;
 
 	public CmdLineOptionInstance() {
-		this.option = null;
-		this.values = new ArrayList<T>();
+		values = new ArrayList<String>();
+		subOptions = new ArrayList<CmdLineOptionInstance>();
 	}
 
-	public CmdLineOptionInstance(CmdLineOption<T> option, List<T> values) {
+	public CmdLineOptionInstance(CmdLineOption option, List<String> values) {
 		Validate.notNull(option);
 		Validate.notNull(values);
 
-		this.option = option;
+		this.option = option; 
 		this.values = values;
+		subOptions = new ArrayList<CmdLineOptionInstance>();
 	}
 
-	public CmdLineOption<T> getOption() {
+	public void setOption(CmdLineOption option) {
+		this.option = option;
+	}
+
+	public CmdLineOption getOption() {
 		return option;
 	}
 
-	public void setOption(CmdLineOption<T> option) {
-		this.option = option;
+	public boolean isGroup() {
+		return option instanceof GroupCmdLineOption;
 	}
 
-	public List<T> getValues() {
-		return values;
+	public boolean isAction() {
+		return option instanceof ActionCmdLineOption;
 	}
 
-	public void addValue(T value) {
+	public boolean isHelp() {
+		return option instanceof HelpCmdLineOption;
+	}
+
+	public void setValues(List<String> values) {
+		Validate.notNull(values);
+
+		this.values = new ArrayList<String>(values);
+	}
+
+	public void addValue(String value) {
 		values.add(value);
 	}
 
-	public void setValues(List<T> values) {
-		Validate.notNull(values);
+	public List<String> getValues() {
+		return values;
+	}
 
-		this.values = values;
+	public void setSubOptions(List<CmdLineOptionInstance> subOptions) {
+		Validate.isTrue(isGroup(), "Must be group option to have subOptions");
+		Validate.notNull(subOptions, "Cannot set subOptions to NULL");
+
+		this.subOptions = new ArrayList<CmdLineOptionInstance>(subOptions);
+	}
+
+	public void addSubOption(CmdLineOptionInstance subOption) {
+		Validate.isTrue(isGroup(), "Must be group option to have subOptions");
+		Validate.notNull(subOption, "Cannot add NULL subOption");
+
+		this.subOptions.add(subOption);
+	}
+
+	public List<CmdLineOptionInstance> getSubOptions() {
+		return subOptions;
 	}
 
 	public boolean equals(Object obj) {
 		if (obj instanceof CmdLineOptionInstance) {
-			CmdLineOptionInstance<?> compareObj = (CmdLineOptionInstance<?>) obj;
+			CmdLineOptionInstance compareObj = (CmdLineOptionInstance) obj;
 			return compareObj.option.equals(this.option)
 					&& compareObj.values.equals(this.values);
-		} else
+		} else {
 			return false;
+		}
+	}
+
+	public int hashCode() {
+		return option.hashCode();
 	}
 }

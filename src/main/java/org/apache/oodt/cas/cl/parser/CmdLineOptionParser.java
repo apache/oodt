@@ -10,11 +10,11 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 public abstract class CmdLineOptionParser {
 
-	public Set<CmdLineOptionInstance<?>> parse(String[] args, Set<CmdLineOption<?>> validOptions) throws IOException {
+	public Set<CmdLineOptionInstance> parse(String[] args, Set<CmdLineOption> validOptions) throws IOException {
 		return parse(new Args(args), validOptions);
 	}
 
-	public abstract Set<CmdLineOptionInstance<?>> parse(Args args, Set<CmdLineOption<?>> validOptions) throws IOException;
+	public abstract Set<CmdLineOptionInstance> parse(Args args, Set<CmdLineOption> validOptions) throws IOException;
 
 	protected class Args implements Iterable<String> {
 		private int curIndex;
@@ -82,13 +82,5 @@ public abstract class CmdLineOptionParser {
 
 			};
 		}
-	}
-
-	protected class GroupCmdLineOptionInstance extends
-			CmdLineOptionInstance<CmdLineOptionInstance<?>> {
-	}
-
-	protected class StringCmdLineOptionInstance extends
-			CmdLineOptionInstance<String> {
 	}
 }

@@ -24,10 +24,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 //OODT imports
+import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.store.spring.SpringSetContextInjectionType;
@@ -38,11 +37,10 @@ import org.apache.commons.lang.Validate;
 import org.springframework.context.ApplicationContext;
 
 /**
- * 
  * @author bfoster
  * @version $Revision$
  */
-public class CmdLineOptionBeanHandler extends CmdLineOptionHandler<String> implements
+public class CmdLineOptionBeanHandler implements CmdLineOptionHandler,
 		SpringSetContextInjectionType {
 
 	private List<BeanInfo> applyToBeans;
@@ -60,7 +58,7 @@ public class CmdLineOptionBeanHandler extends CmdLineOptionHandler<String> imple
 		this.applyToBeans = applyToBeans;
 	}
 
-	public void handleOption(CmdLineOptionInstance<String> optionInstance) {
+	public void handleOption(CmdLineAction action, CmdLineOptionInstance optionInstance) {
 		Validate.notNull(appContext, "Spring ApplicationContext must be set!");
 		Validate.notNull(applyToBeans, "Apply to beans must be set!");
 
@@ -88,7 +86,7 @@ public class CmdLineOptionBeanHandler extends CmdLineOptionHandler<String> imple
 		}
 	}
 
-	public String getCustomOptionHelp(CmdLineOption option) {
+	public String getHelp(CmdLineOption option) {
 		Validate.notNull(applyToBeans, "Apply to beans must be set!");
 
 		HashSet<String> affectedClasses = new HashSet<String>();
@@ -146,24 +144,4 @@ public class CmdLineOptionBeanHandler extends CmdLineOptionHandler<String> imple
 			return values.toArray(new Object[values.size()]);
 		}
 	}
-
-	@Override
-	public boolean affectsOption(CmdLineOptionInstance optionInstance) {
-		Validate.notNull(appContext, "Spring ApplicationContext must be set!");
-
-		@SuppressWarnings("unchecked")
-		Map<String, CmdLineOptionInstance> instances = appContext.getBeansOfType(CmdLineOptionInstance.class);
-		for (Entry<String, CmdLineOptionInstance> instance : instances.entrySet()) {
-			if (instance.getValue().equals(optionInstance)) {
-				for (BeanInfo beanInfo : this.applyToBeans) {
-					if (beanInfo.getBeanId().equals(instance.getKey())) {
-						return true;
-					}
-				}
-				break;
-			}
-		}
-		return false;
-	}
-
 }

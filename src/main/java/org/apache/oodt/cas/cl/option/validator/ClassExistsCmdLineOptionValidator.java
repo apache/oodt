@@ -25,9 +25,9 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
  * @version $Revision$
  */
 public class ClassExistsCmdLineOptionValidator implements
-		CmdLineOptionValidator<String> {
+		CmdLineOptionValidator {
 
-	public boolean validate(CmdLineOptionInstance<String> optionInst) {
+	public boolean validate(CmdLineOptionInstance optionInst) {
 		for (String value : optionInst.getValues()) {
 			try {
 				Class.forName(value);

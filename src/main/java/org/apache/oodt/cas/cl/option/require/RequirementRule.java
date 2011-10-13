@@ -14,35 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.oodt.cas.cl.option.validator;
-
-//JDK imports
-import java.util.regex.Pattern;
+package org.apache.oodt.cas.cl.option.require;
 
 //OODT imports
-import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
+import org.apache.oodt.cas.cl.action.CmdLineAction;
 
 /**
  * @author bfoster
  * @version $Revision$
  */
-public class ArgRegExpCmdLineOptionValidator extends
-		AllowedArgsCmdLineOptionValidator {
+public interface RequirementRule {
 
-	@Override
-	public boolean validate(CmdLineOptionInstance optionInst) {
-		TOP: for (String value : optionInst.getValues()) {
-			for (String regex : this.getAllowedArgs()) {
-				if (Pattern.matches(regex, value))
-					continue TOP;
-			}
-			LOG.severe("Option value " + value + " is not allowed for option "
-					+ optionInst.getOption().getLongOption() + " - Allowed values = "
-					+ this.getAllowedArgs());
-			return false;
-		}
-		return true;
-	}
+	public boolean isRequired(CmdLineAction selectedAction);
 
 }

@@ -3,7 +3,8 @@ package org.apache.oodt.cas.cl.help.printer;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
-public class StdCmdLineOptionSpecificHelpPrinter implements CmdLineOptionSpecificHelpPrinter {
+public class StdCmdLineOptionSpecificHelpPrinter implements
+		CmdLineOptionSpecificHelpPrinter {
 
 	public String getHeader(CmdLineOptionInstance specifiedOption) {
 		return "Option Help when option '--"
@@ -15,7 +16,8 @@ public class StdCmdLineOptionSpecificHelpPrinter implements CmdLineOptionSpecifi
 		return " - Required:";
 	}
 
-	public String getRequiredOptionHelp(CmdLineOption option, CmdLineOptionInstance specifiedOption) {
+	public String getRequiredOptionHelp(CmdLineOption option,
+			CmdLineOptionInstance specifiedOption) {
 		return getOptionHelp(option, specifiedOption);
 	}
 
@@ -23,7 +25,8 @@ public class StdCmdLineOptionSpecificHelpPrinter implements CmdLineOptionSpecifi
 		return " - Optional:";
 	}
 
-	public String getOptionalOptionHelp(CmdLineOption option, CmdLineOptionInstance specifiedOption) {
+	public String getOptionalOptionHelp(CmdLineOption option,
+			CmdLineOptionInstance specifiedOption) {
 		return getOptionHelp(option, specifiedOption);
 	}
 
@@ -33,8 +36,8 @@ public class StdCmdLineOptionSpecificHelpPrinter implements CmdLineOptionSpecifi
 
 	private String getOptionHelp(CmdLineOption option,
 			CmdLineOptionInstance specifiedOption) {
-		return "    -" + option.getShortOption() + " [--"
-				+ option.getLongOption() + "] "
-				+ (option.hasArgs() ? "<" + option.getOptionArgName() + ">" : "");
+		return "    -" + option.getShortOption() + " [--" + option.getLongOption()
+				+ "] "
+				+ (option.hasArgs() ? "<" + option.getArgsDescription() + ">" : "");
 	}
 }

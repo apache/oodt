@@ -1,4 +1,4 @@
-package org.apache.oodt.cas.cl.option;
+package org.apache.oodt.cas.cl.action;
 
 public abstract class CmdLineAction {
 

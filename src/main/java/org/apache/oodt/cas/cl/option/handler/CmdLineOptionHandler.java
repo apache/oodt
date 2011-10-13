@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.cl.option.handler;
 
 //OODT imports
+import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
@@ -25,12 +26,20 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
  * @author bfoster
  * @version $Revision$
  */
-public abstract class CmdLineOptionHandler<T> {
+public interface CmdLineOptionHandler {
 
-	public abstract void handleOption(CmdLineOptionInstance<T> optionInstance);
+	/**
+	 * 
+	 * @param optionInstance
+	 */
+	public abstract void handleOption(CmdLineAction selectedAction, CmdLineOptionInstance optionInstance);
 
-	public abstract String getCustomOptionHelp(CmdLineOption<T> option);
-
-	public abstract boolean affectsOption(CmdLineOptionInstance<T> optionInstance);
+	/**
+	 * Gets the {@link CmdLineOptionHandler}s help message when associated with given {@link CmdLineOption}.
+	 *
+	 * @param option The {@link CmdLineOption} to which this {@link CmdLineOptionHandler} was associated with
+	 * @return The help message for this {@link CmdLineOptionHandler}
+	 */
+	public abstract String getHelp(CmdLineOption option);
 
 }

@@ -31,11 +31,11 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
  *
  * <p>Describe your class here</p>.
  */
-public interface CmdLineOptionValidator<T> {
+public interface CmdLineOptionValidator {
 
     static Logger LOG = Logger
             .getLogger(CmdLineOptionValidator.class.getName());
 
-    public boolean validate(CmdLineOptionInstance<T> optionInst);
+    public boolean validate(CmdLineOptionInstance optionInst);
 
 }

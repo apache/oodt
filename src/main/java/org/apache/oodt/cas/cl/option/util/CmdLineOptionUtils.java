@@ -28,13 +28,21 @@ import java.util.Set;
 //OODT imports
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.apache.oodt.cas.cl.option.ActionCmdLineOption;
+import org.apache.oodt.cas.cl.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
-import org.apache.oodt.cas.cl.option.RequirementRule;
+import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
+import org.apache.oodt.cas.cl.option.GroupCmdLineOptionInstance;
+import org.apache.oodt.cas.cl.option.HandleableCmdLineOption;
+import org.apache.oodt.cas.cl.option.HelpCmdLineOption;
+import org.apache.oodt.cas.cl.option.ValidatableCmdLineOption;
+import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.help.presenter.StdCmdLineOptionHelpPresenter;
 import org.apache.oodt.cas.cl.help.formatter.StdCmdLineOptionHelpFormatter;
 import org.apache.oodt.cas.cl.help.printer.StdCmdLineOptionHelpPrinter;
 import org.apache.oodt.cas.cl.help.printer.StdCmdLineOptionSpecificHelpPrinter;
+import org.apache.oodt.cas.cl.option.require.RequirementRule;
 import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 import org.apache.oodt.cas.cl.parser.CmdLineOptionParser;
 import org.apache.oodt.cas.cl.parser.StdCmdLineOptionParser;
@@ -47,151 +55,134 @@ public class CmdLineOptionUtils {
 
 	private CmdLineOptionUtils() {}
 
-	public static <T> Set<CmdLineOption<?>> getOptionalOptions(
-			Set<CmdLineOption<?>> options, CmdLineOptionInstance<T> specifiedOption) {
-		HashSet<CmdLineOption<?>> optionalOptions = new HashSet<CmdLineOption<?>>();
-		for (CmdLineOption<?> option : options) {
-			try {
-				if (isOptionalOption((CmdLineOption<T>) option, specifiedOption)) {
-					optionalOptions.add(option);
-				}
-			} catch (ClassCastException e) { /* ignore */ }
-		}
-		return optionalOptions;
-	}
+//	public static <T> Set<CmdLineOption<?>> getOptionallyRequiredOptions(
+//			Set<CmdLineOption<?>> options, CmdLineOptionInstance<T> specifiedOption) {
+//		HashSet<CmdLineOption<?>> optionalOptions = new HashSet<CmdLineOption<?>>();
+//		for (CmdLineOption<T> option : (Set<CmdLineOption<T>>)(Set<?>) options) {
+//			if (isOptionallyRequiredOption(option, specifiedOption)) {
+//				optionalOptions.add(option);
+//			}
+//		}
+//		return optionalOptions;
+//	}
+//
+//	public static <T> boolean isOptionallyRequiredOption(CmdLineOption<T> option,
+//			CmdLineAction selectedAction) {
+//		if (!isConditionallyRequired(option, selectedAction)) {
+//			if (option.hasHandler()) {
+//				return option.getHandler().isInterested(selectedAction);
+//			}
+//		}
+//		return false;
+//	}
 
-	public static <T> boolean isOptionalOption(CmdLineOption<T> option,
-			CmdLineOptionInstance<T> specifiedOption) {
-		return !isConditionallyRequired(option, specifiedOption)
-				&& option.getHandler().affectsOption(specifiedOption);
-	}
+//	public static Set<CmdLineOption<?>> getConditionallyRequiredOptions(
+//			Set<CmdLineOption<?>> options, CmdLineOptionInstance<?> specifiedOption) {
+//		HashSet<CmdLineOption<?>> requiredOptions = new HashSet<CmdLineOption<?>>();
+//		for (CmdLineOption<?> option : options) {
+//			if (isConditionallyRequired(option, specifiedOption)) {
+//				requiredOptions.add(option);
+//			}
+//		}
+//		return requiredOptions;
+//	}
 
-	public static Set<CmdLineOption<?>> getConditionallyRequiredOptions(
-			Set<CmdLineOption<?>> options, CmdLineOptionInstance<?> specifiedOption) {
-		HashSet<CmdLineOption<?>> requiredOptions = new HashSet<CmdLineOption<?>>();
-		for (CmdLineOption<?> option : options) {
-			if (isConditionallyRequired(option, specifiedOption)) {
+	public static Set<CmdLineOption> getRequiredOptions(CmdLineAction action,
+			Set<CmdLineOption> options) {
+		Set<CmdLineOption> requiredOptions = getRequiredOptions(options);
+		for (CmdLineOption option : options) {
+			if (isRequired(action, option)) {
 				requiredOptions.add(option);
 			}
 		}
 		return requiredOptions;
 	}
 
-	public static Set<CmdLineOption<?>> getConditionallyRequiredOptions(
-			Set<CmdLineOption<?>> options, Set<CmdLineOptionInstance<?>> specifiedOptions) {
-		HashSet<CmdLineOption<?>> requiredOptions = new HashSet<CmdLineOption<?>>();
-		for (CmdLineOption<?> option : options) {
-			for (CmdLineOptionInstance<?> specifiedOption : specifiedOptions) {
-				if (isConditionallyRequired(option, specifiedOption)) {
-					requiredOptions.add(option);
-					break;
-				}
-			}
-		}
-		return requiredOptions;
-	}
-
-	public static boolean isConditionallyRequired(CmdLineOption<?> option,
-			CmdLineOptionInstance<?> specifiedOption) {
+	public static boolean isRequired(CmdLineAction action, CmdLineOption option) {
 		Validate.notNull(option);
-		Validate.notNull(specifiedOption);
+		Validate.notNull(action);
 
 		for (RequirementRule requirementRule : option.getRequirementRules()) {
-			if (((requirementRule.isRequireAllValues() && specifiedOption.getValues()
-					.containsAll(requirementRule.getOptionValues())) || (!requirementRule
-							.isRequireAllValues() && !Collections.disjoint(
-									specifiedOption.getValues(), requirementRule.getOptionValues())))) {
+			if (requirementRule.isRequired(action)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static Set<CmdLineOption<?>> getAlwaysRequiredOptions(
-			Set<CmdLineOption<?>> options) {
-		HashSet<CmdLineOption<?>> requiredOptions = new HashSet<CmdLineOption<?>>();
-		for (CmdLineOption<?> option : options) {
+	public static Set<CmdLineOption> getRequiredOptions(Set<CmdLineOption> options) {
+		HashSet<CmdLineOption> requiredOptions = new HashSet<CmdLineOption>();
+		for (CmdLineOption option : options) {
 			if (option.isRequired()) {
 				requiredOptions.add(option);
 			}
 		}
 		return requiredOptions;
 	}
+//
+//	public static Set<CmdLineOption<?>> getRequiredOptions(
+//			Set<CmdLineOption<?>> supportedOptions,
+//			Set<CmdLineOptionInstance<?>> specifiedOptions) {
+//		Set<CmdLineOption<?>> reqOptions = getAlwaysRequiredOptions(supportedOptions);
+//		reqOptions.addAll(getConditionallyRequiredOptions(supportedOptions,
+//				specifiedOptions));
+//		return reqOptions;
+//	}
 
-	public static Set<CmdLineOption<?>> getRequiredOptions(
-			Set<CmdLineOption<?>> supportedOptions,
-			Set<CmdLineOptionInstance<?>> specifiedOptions) {
-		Set<CmdLineOption<?>> reqOptions = getAlwaysRequiredOptions(supportedOptions);
-		reqOptions.addAll(getConditionallyRequiredOptions(supportedOptions,
-				specifiedOptions));
-		return reqOptions;
-	}
+//	public static Set<CmdLineOption<?>> getRequiredOptionsNotSet(
+//			Set<CmdLineOption<?>> supportedOptions, Set<CmdLineOptionInstance<?>> setOptions) {
+//		return getOptionsNotSet(getRequiredOptions(supportedOptions, setOptions),
+//				setOptions);
+//	}
 
-	public static Set<CmdLineOption<?>> getRequiredOptionsNotSet(
-			Set<CmdLineOption<?>> supportedOptions, Set<CmdLineOptionInstance<?>> setOptions) {
-		return getOptionsNotSet(getRequiredOptions(supportedOptions, setOptions),
-				setOptions);
-	}
+//	public static Set<CmdLineOption<?>> getOptionsNotSet(
+//			Set<CmdLineOption<?>> expectedOptions, Set<CmdLineOptionInstance<?>> setOptions) {
+//		HashSet<CmdLineOption<?>> nonSetRequiredOptions = new HashSet<CmdLineOption<?>>();
+//		TOP:
+//		for (CmdLineOption<?> reqOption : expectedOptions) {
+//			for (CmdLineOptionInstance<?> optionInst : setOptions) {
+//				if (reqOption.equals(optionInst.getOption()))
+//					continue TOP;
+//			}
+//			nonSetRequiredOptions.add(reqOption);
+//		}
+//		return nonSetRequiredOptions;
+//	}
 
-	public static Set<CmdLineOption<?>> getOptionsNotSet(
-			Set<CmdLineOption<?>> expectedOptions, Set<CmdLineOptionInstance<?>> setOptions) {
-		HashSet<CmdLineOption<?>> nonSetRequiredOptions = new HashSet<CmdLineOption<?>>();
-		TOP:
-		for (CmdLineOption<?> reqOption : expectedOptions) {
-			for (CmdLineOptionInstance<?> optionInst : setOptions) {
-				if (reqOption.equals(optionInst.getOption()))
-					continue TOP;
-			}
-			nonSetRequiredOptions.add(reqOption);
-		}
-		return nonSetRequiredOptions;
-	}
-
-	public static List<CmdLineOption<?>> sortOptionsByRequiredStatus(Set<CmdLineOption<?>> options) {
-		ArrayList<CmdLineOption<?>> optionsList = new ArrayList<CmdLineOption<?>>(options);
+	public static List<CmdLineOption> sortOptionsByRequiredStatus(Set<CmdLineOption> options) {
+		ArrayList<CmdLineOption> optionsList = new ArrayList<CmdLineOption>(options);
 		Collections.sort(optionsList);
 		Collections.reverse(optionsList);
 		return optionsList;
 	}
 
-	public static CmdLineOption<?> getOptionByName(String optionName,
-			Set<CmdLineOption<?>> options) {
-		for (CmdLineOption<?> option : options)
+	public static CmdLineOption getOptionByName(String optionName, Set<CmdLineOption> options) {
+		for (CmdLineOption option : options)
 			if (option.getLongOption().equals(optionName)
 					|| option.getShortOption().equals(optionName))
 				return option;
 		return null;
 	}
 
-	public static CmdLineOptionInstance<?> getOptionInstanceByName(
-			String optionName, Set<CmdLineOptionInstance<?>> optionInsts) {
-		for (CmdLineOptionInstance<?> optionInst : optionInsts)
+	public static CmdLineOptionInstance getOptionInstanceByName(
+			String optionName, Set<CmdLineOptionInstance> optionInsts) {
+		for (CmdLineOptionInstance optionInst : optionInsts)
 			if (optionInst.getOption().getLongOption().equals(optionName)
 					|| optionInst.getOption().getShortOption().equals(optionName))
 				return optionInst;
 		return null;
 	}
 
-//	public static List<?> getOptionValues(String optionName,
-//			Set<CmdLineOptionInstance<?>> options) {
-//		for (CmdLineOptionInstance<?> optionInst : options)
-//			if (optionInst.getOption().getLongOption().equals(optionName)
-//					|| optionInst.getOption().getShortOption().equals(optionName))
-//				return optionInst.getValues();
-//		return null;
-//	}
-
-
-	public static Set<CmdLineOptionInstance<?>> parseArgs(Set<CmdLineOption<?>> supportedOptions, String[] args) throws IOException {
+	public static Set<CmdLineOptionInstance> parseArgs(Set<CmdLineOption> supportedOptions, String[] args) throws IOException {
 		CmdLineOptionParser parser = new StdCmdLineOptionParser();
 		return parser.parse(args, supportedOptions);
 	}
 
-	public static Set<CmdLineOptionInstance<?>> validateOptions(Set<CmdLineOptionInstance<?>> options) throws IOException {
+	public static Set<CmdLineOptionInstance> validateOptions(Set<CmdLineOptionInstance> options) throws IOException {
 		Validate.notNull(options);
 
-		HashSet<CmdLineOptionInstance<?>> optionsFailed = new HashSet<CmdLineOptionInstance<?>>();
-		for (CmdLineOptionInstance<?> optionInst : options) {
+		HashSet<CmdLineOptionInstance> optionsFailed = new HashSet<CmdLineOptionInstance>();
+		for (CmdLineOptionInstance optionInst : options) {
 			if (!validateOption(optionInst)) {
 				optionsFailed.add(optionInst);
 			}
@@ -199,63 +190,182 @@ public class CmdLineOptionUtils {
 		return optionsFailed;
 	}
 
-	public static <T> boolean validateOption(CmdLineOptionInstance<T> option) {
-		for (CmdLineOptionValidator<T> validator : option.getOption()
-				.getValidators()) {
-			if (!validator.validate(option)) {
-				return false;
+	public static boolean validateOption(CmdLineOptionInstance option) {
+		if (isValidatable(option.getOption())) {
+			for (CmdLineOptionValidator validator : ((ValidatableCmdLineOption) option.getOption()).getValidators()) {
+				if (!validator.validate(option)) {
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 
-	public static void handleOptions(Set<CmdLineOptionInstance<?>> options) {
-		for (CmdLineOptionInstance<?> option : options) {
-			handleOption(option);
+	public static boolean isValidatable(CmdLineOption option) {
+		return option instanceof ValidatableCmdLineOption;
+	}
+
+	public static void handleOptions(CmdLineAction action, Set<CmdLineOptionInstance> options) {
+		for (CmdLineOptionInstance option : options) {
+			handleOption(action, option);
 		}
 	}
 
-	public static <T> void handleOption(CmdLineOptionInstance<T> option) {
-		option.getOption().getHandler().handleOption(option);
+	public static void handleOption(CmdLineAction action, CmdLineOptionInstance option) {
+		if (isHandleable(option.getOption())) {
+			((HandleableCmdLineOption) option.getOption()).getHandler().handleOption(action, option);
+		}
 	}
 
-	public static Set<CmdLineOptionInstance<?>> validateAndHandleInstances(
-			Set<CmdLineOption<?>> supportedOptions, String[] args) throws IOException {
+	public static boolean isHandleable(CmdLineOption option) {
+		return option instanceof HandleableCmdLineOption;
+	}
 
-		// parse args
-		Set<CmdLineOptionInstance<?>> setOptions = parseArgs(supportedOptions, args);
+	public static void validateAndHandleInstances(Set<CmdLineOption> supportedOptions,
+			Set<CmdLineOptionInstance> specifiedOptions) throws IOException {
+
 
 		// check that required args have been specified
-		Set<CmdLineOption<?>> unsetReqOptions = getRequiredOptionsNotSet(supportedOptions, setOptions);
+		Set<CmdLineOption> requiredOptions = getRequiredOptions();
+		Set<CmdLineOption> unsetReqOptions = getRequiredOptionsNotSet(supportedOptions, specifiedOptions);
 		if (!unsetReqOptions.isEmpty()) {
 			throw new IOException("Miss required options: " + sortOptionsByRequiredStatus(unsetReqOptions));
 		}
 
 		// validate options
-		Set<CmdLineOptionInstance<?>> optionsFailedVal = validateOptions(setOptions);
+		Set<CmdLineOptionInstance> optionsFailedVal = validateOptions(specifiedOptions);
 		if (!optionsFailedVal.isEmpty()) {
 			throw new IOException("Options failed validations: " + optionsFailedVal);
 		}
 
-		// if all looks good . . . handle options
-		handleOptions(setOptions);
+		// Check for perform and quit options and handle them if specified then return.
+		Set<CmdLineOptionInstance> performAndQuitOptions = findPerformAndQuitOptions(specifiedOptions);
+		if (!performAndQuitOptions.isEmpty()) {
+			handleOptions(performAndQuitOptions);
+			return;
+		}
 
-		return setOptions;
+		// if all looks good . . . handle options
+		handleOptions(specifiedOptions);
 	}
 
-	public static void printHelp(Set<CmdLineOption<?>> options) {
+	public static boolean isSubOption(CmdLineOptionInstance specifiedOption, CmdLineOption option) {
+		if (specifiedOption.isGroup()) {
+			for (GroupCmdLineOption.SubOption subOption : ((GroupCmdLineOption) specifiedOption.getOption()).getSubOptions()) {
+				if (subOption.getOption().equals(option)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static Set<CmdLineOptionInstance> findPerformAndQuitOptions(
+			Set<CmdLineOptionInstance> options) {
+		HashSet<CmdLineOptionInstance> performAndQuitOptions = new HashSet<CmdLineOptionInstance>();
+		for (CmdLineOptionInstance option : options) {
+			if (isPerformAndQuitOption(option.getOption())) {
+				performAndQuitOptions.add(option);
+			}
+		}
+		return performAndQuitOptions;
+	}
+
+	public static boolean isPerformAndQuitOption(CmdLineOption option) {
+		if (option instanceof AdvancedCmdLineOption) {
+			return ((AdvancedCmdLineOption) option).isPerformAndQuit();
+		}
+		return false;
+	}
+
+	public static CmdLineOptionInstance findSpecifiedOption(CmdLineOption option, Set<CmdLineOptionInstance> specifiedOptions) {
+		Validate.notNull(option);
+		Validate.notNull(specifiedOptions);
+
+		for (CmdLineOptionInstance specifiedOption : specifiedOptions) {
+			if (specifiedOption.getOption().equals(option)) {
+				return specifiedOption;
+			}
+		}
+		return null;
+	}
+
+	public static boolean isActionOption(CmdLineOption option) {
+		return option instanceof ActionCmdLineOption;
+	}
+
+	public static ActionCmdLineOption findActionOption(Set<CmdLineOption> options) {
+		for (CmdLineOption option : options) {
+			if (isActionOption(option)) {
+				return (ActionCmdLineOption) option;
+			}
+		}
+	}
+
+	public static CmdLineOptionInstance findSpecifiedActionOption(Set<CmdLineOptionInstance> options) {
+		for (CmdLineOptionInstance option : options) {
+			if (isActionOption(option.getOption())) {
+				return option;
+			}
+		}
+	}
+
+	public static boolean isHelpOption(CmdLineOption option) {
+		return option instanceof HelpCmdLineOption;
+	}
+
+	public static HelpCmdLineOption findHelpOption(Set<CmdLineOption> options) {
+		for (CmdLineOption option : options) {
+			if (isHelpOption(option)) {
+				return (HelpCmdLineOption) option;
+			}
+		}
+		return null;
+	}
+
+	public static CmdLineOptionInstance findSpecifiedHelpOption(
+			Set<CmdLineOptionInstance> options) {
+		for (CmdLineOptionInstance option : options) {
+			if (isHelpOption(option.getOption())) {
+				return option;
+			}
+		}
+		return null;
+	}
+
+	public static void printHelp(Set<CmdLineOption> options) {
 		new StdCmdLineOptionHelpPresenter()
 				.presentHelp(new StdCmdLineOptionHelpFormatter().format(
 						new StdCmdLineOptionHelpPrinter(), options));
 	}
 
-	public static void printSpecificHelp(Set<CmdLineOption<?>> options,
-			CmdLineOptionInstance<?> specifiedOption) {
+	public static void printSpecificHelp(Set<CmdLineOption> options,
+			CmdLineOptionInstance specifiedOption) {
 		new StdCmdLineOptionHelpPresenter()
 				.presentSpecificHelp(new StdCmdLineOptionHelpFormatter()
 						.format(new StdCmdLineOptionSpecificHelpPrinter(), options,
 								specifiedOption));
 	}
+
+//	public static <T> Iterable<CmdLineOption<T>> safeCast(Iterable<CmdLineOption<?>> options) {
+//		return new GenericsSafeIterable<CmdLineOption<T>>(options);
+//	}
+//
+//	public static <T> List<T> iterableToList(Iterable<T> iterable) {
+//		ArrayList<T> safeItems = new ArrayList<T>();
+//		for (T item : iterable) {
+//			safeItems.add(item);
+//		}
+//		return safeItems;
+//	}
+//
+//	public static <T> HashSet<T> iterableToSet(Iterable<T> iterable) {
+//		HashSet<T> safeItems = new HashSet<T>();
+//		for (T item : iterable) {
+//			safeItems.add(item);
+//		}
+//		return safeItems;
+//	}
 
 	public static String getFormattedString(String string, int startIndex,
 			int endIndex) {

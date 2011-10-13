@@ -18,195 +18,52 @@
 package org.apache.oodt.cas.cl.option;
 
 //JDK imports
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 //OODT imports
-import org.apache.oodt.cas.cl.option.handler.CmdLineOptionHandler;
-import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
+import org.apache.oodt.cas.cl.option.require.RequirementRule;
 
 /**
- *
  * @author bfoster
  * @version $Revision$
  */
-public class CmdLineOption<T> implements Comparable<CmdLineOption<T>> {
+public interface CmdLineOption extends Comparable<CmdLineOption> {
 
-	private String shortOption;
+	public void setLongOption(String longOption);
 
-	private String longOption;
+	public String getLongOption();
 
-	private String description;
+	public void setShortOption(String shortOption);
 
-	private String optionArgName;
+	public String getShortOption();
 
-	private boolean required;
+	public void setDescription(String description);
 
-	private List<RequirementRule> requirementRules;
+	public String getDescription();
 
-	private boolean hasArgs;
+	public void setType(Class<?> type);
 
-	private boolean performAndQuit;
+	public Class<?> getType();
 
-	private Class<?> type;
+	public void setHasArgs(boolean hasArgs);
 
-	private CmdLineOptionHandler<T> handler;
+	public boolean hasArgs();
 
-	private List<CmdLineOptionValidator<T>> validators;
+	public void setArgsDescription(String argDescription);
 
-	private boolean isHelp;
+	public String getArgsDescription();
 
-	private Set<CmdLineSubOption> subOptions;
+	public void setRequired(boolean required);
 
-	public CmdLineOption() {
-		optionArgName = "arg";
-		required = false;
-		hasArgs = false;
-		performAndQuit = false;
-		type = String.class;
-		requirementRules = new ArrayList<RequirementRule>();
-		validators = new LinkedList<CmdLineOptionValidator<T>>();
-	}
+	public boolean isRequired();
 
-	public CmdLineOption(String shortOption, String longOption,
-			String description, boolean hasArgs) {
-		this();
-		this.shortOption = shortOption;
-		this.longOption = longOption;
-		this.description = description;
-		this.hasArgs = hasArgs;
-	}
+	public void setRequirementRules(List<RequirementRule> requirementRules);
 
-	public Class<?> getType() {
-		return type;
-	}
+	public List<RequirementRule> getRequirementRules();
 
-	public void setType(Class<?> type) {
-		this.type = type;
-	}
+	public int compareTo(CmdLineOption cmdLineOption);
 
-	public void setHandler(CmdLineOptionHandler<T> handler) {
-		this.handler = handler;
-	}
+	public boolean equals(Object obj);
 
-	public CmdLineOptionHandler<T> getHandler() {
-		return this.handler;
-	}
-
-	public List<CmdLineOptionValidator<T>> getValidators() {
-		return this.validators;
-	}
-
-	public void setValidators(List<CmdLineOptionValidator<T>> validators) {
-		this.validators = validators;
-	}
-
-	public String getShortOption() {
-		return shortOption;
-	}
-
-	public void setShortOption(String shortOption) {
-		this.shortOption = shortOption;
-	}
-
-	public String getLongOption() {
-		return longOption;
-	}
-
-	public void setLongOption(String longOption) {
-		this.longOption = longOption;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public boolean hasArgs() {
-		return hasArgs;
-	}
-
-	public void setHasArgs(boolean hasArgs) {
-		this.hasArgs = hasArgs;
-	}
-
-	public void setOptionArgName(String optionArgName) {
-		this.optionArgName = optionArgName;
-	}
-
-	public String getOptionArgName() {
-		return optionArgName;
-	}
-
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
-
-	public boolean isRequired() {
-		return required;
-	}
-
-	public List<RequirementRule> getRequirementRules() {
-		return this.requirementRules;
-	}
-
-	public void setRequirementRules(List<RequirementRule> requirementRules) {
-		this.requirementRules = requirementRules;
-	}
-
-	public boolean isPerformAndQuit() {
-		return performAndQuit;
-	}
-
-	public void setPerformAndQuit(boolean performAndQuit) {
-		this.performAndQuit = performAndQuit;
-	}
-
-	public void setHelp(boolean isHelp) {
-		this.isHelp = isHelp;
-	}
-
-	public boolean isHelp() {
-		return isHelp;
-	}
-
-	public void setSubOptions(Set<CmdLineSubOption> subOptions) {
-		this.subOptions = subOptions;
-	}
-
-	public Set<CmdLineSubOption> getSubOptions() {
-		return subOptions;
-	}
-
-	public boolean isGroup() {
-		return subOptions != null && !subOptions.isEmpty();
-	}
-
-	public int compareTo(CmdLineOption<T> cmdLineOption) {
-		int thisScore = (this.required ? 2 : 0)
-				+ (!requirementRules.isEmpty() ? 1 : 0);
-		int compareScore = (cmdLineOption.required ? 2 : 0)
-				+ (!cmdLineOption.requirementRules.isEmpty() ? 1 : 0);
-		return new Integer(thisScore).compareTo(compareScore);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof CmdLineOption) {
-			CmdLineOption<T> compareObj = (CmdLineOption<T>) obj;
-			return compareObj.shortOption.equals(this.shortOption)
-					|| compareObj.longOption.equals(this.longOption);
-		} else
-			return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return shortOption.hashCode();
-	}
+	public int hashCode();
 }

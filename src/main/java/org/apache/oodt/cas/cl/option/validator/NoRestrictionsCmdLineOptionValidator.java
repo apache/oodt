@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.cl.option.validator;
 
 //OODT imports
@@ -25,8 +23,6 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
  * 
  * @author bfoster
  * @version $Revision$
- *
- * <p>Describe your class here</p>.
  */
 public class NoRestrictionsCmdLineOptionValidator implements
         CmdLineOptionValidator {

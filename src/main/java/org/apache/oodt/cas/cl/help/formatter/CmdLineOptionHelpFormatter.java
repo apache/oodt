@@ -10,9 +10,9 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 public interface CmdLineOptionHelpFormatter {
 
 	public String format(CmdLineOptionHelpPrinter helpPrinter,
-			Set<CmdLineOption<?>> options);
+			Set<CmdLineOption> options);
 
 	public String format(CmdLineOptionSpecificHelpPrinter specificHelpPrinter,
-			Set<CmdLineOption<?>> options, CmdLineOptionInstance<?> specifiedOption);
+			Set<CmdLineOption> options, CmdLineOptionInstance specifiedOption);
 
 }

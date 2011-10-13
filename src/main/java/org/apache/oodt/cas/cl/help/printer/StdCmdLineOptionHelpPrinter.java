@@ -3,6 +3,7 @@ package org.apache.oodt.cas.cl.help.printer;
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.getFormattedString;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.oodt.cas.cl.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 
 public class StdCmdLineOptionHelpPrinter implements CmdLineOptionHelpPrinter {
@@ -17,13 +18,17 @@ public class StdCmdLineOptionHelpPrinter implements CmdLineOptionHelpPrinter {
 	}
 
 	public String getOptionHelp(CmdLineOption option) {
-		String argName = option.hasArgs() ? " <" + option.getOptionArgName() + ">" : "";
+		String argName = option.hasArgs() ? " <" + option.getArgsDescription() + ">" : "";
 		String optionUsage = "-"
 				+ StringUtils.rightPad(option.getShortOption() + ",", 7) + "--"
 				+ StringUtils.rightPad((option.getLongOption() + argName), 49)
 				+ option.getDescription();
-		optionUsage += getFormattedString(option.getHandler().getCustomOptionHelp(option),
-				62, 113);
+		if (option instanceof AdvancedCmdLineOption) {
+			if (((AdvancedCmdLineOption) option).hasHandler()) {
+				optionUsage += getFormattedString(((AdvancedCmdLineOption) option).getHandler().getHelp(option),
+						62, 113);
+			}
+		}
 
 		if (option.isRequired()) {
 			optionUsage = " " + optionUsage;
