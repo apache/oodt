@@ -239,7 +239,9 @@ public class XMLPSProductHandler implements QueryHandler {
 
                 if (res.getRows() == null
                         || (res.getRows() != null && res.getRows().size() == 0)) {
+                  LOG.log(Level.WARNING, "Query retrieved no results.");
                 }
+                
                 Result r = res.toResult();
                 if (r != null) {
                     query.getResults().add(r);
