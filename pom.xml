@@ -51,26 +51,26 @@
 		</profile>
 	</profiles>
 	<dependencies>
-<!-- 		<dependency>
-			<groupId>org.apache.oodt</groupId>
-			<artifactId>oodt-commons</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency> -->
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.3</version>
 		</dependency>
 		<dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>2.5.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-hibernate3</artifactId>
-      <version>2.0.8</version>
-    </dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>2.5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-hibernate3</artifactId>
+			<version>2.0.8</version>
+		</dependency>
+		<dependency>
+	    <groupId>com.google.guava</groupId>
+	    <artifactId>guava</artifactId>
+	    <version>10.0.1</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

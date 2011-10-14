@@ -38,6 +38,8 @@ import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption.SubOption;
 import org.apache.oodt.cas.cl.util.Args;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
  * @author bfoster
  * @version $Revision$
@@ -128,6 +130,7 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
 		return optionInstances;
 	}
 
+	@VisibleForTesting
 	/*package*/ static Set<CmdLineOption> verifyGroupHasRequiredSubOptions(CmdLineOptionInstance group) {
 		Validate.isTrue(group.isGroup());
 
@@ -146,6 +149,7 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
 		return missingSubOptions;
 	}
 
+	@VisibleForTesting
 	/*package*/ static CmdLineOptionInstance getOption(Args args, CmdLineOption option) throws IOException {
 		CmdLineOptionInstance specifiedOption = new CmdLineOptionInstance();
 		specifiedOption.setOption(option);
@@ -162,6 +166,7 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
 		return specifiedOption;
 	}
 
+	@VisibleForTesting
 	/*package*/ static List<String> getValues(Args args) {
 		List<String> values = new ArrayList<String>();
 		String nextValue = args.getCurrentArg();
@@ -172,10 +177,12 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
 		return values;
 	}
 
+	@VisibleForTesting
 	/*package*/ static boolean isOption(String arg) {
 		return (arg.startsWith("-"));
 	}
 
+	@VisibleForTesting
 	/*package*/ static String getOptionName(String arg) {
 		if (arg.startsWith("--")) {
 			return arg.substring(2);

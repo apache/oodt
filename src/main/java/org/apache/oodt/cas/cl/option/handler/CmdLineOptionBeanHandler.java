@@ -16,15 +16,12 @@
  */
 package org.apache.oodt.cas.cl.option.handler;
 
-//JDK imports
+//OODT static imports
 import static org.apache.oodt.cas.cl.util.CmdLineUtils.convertToType;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
+//JDK imports
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 //OODT imports

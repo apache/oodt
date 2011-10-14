@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.oodt.cas.cl.util;
 
 //JDK imports
@@ -47,13 +46,25 @@ import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * Collection of common helper methods.
+ *
+ * @author bfoster (Brian Foster)
  */
 public class CmdLineUtils {
 
 	private CmdLineUtils() {}
 
+	/**
+	 * Determines which of the given {@link CmdLineOption}s are required because
+	 * the given {@link CmdLineAction} was specified.
+	 * 
+	 * @param action
+	 *          The {@link CmdLineAction} which was specified.
+	 * @param options
+	 *          The {@link CmdLineOption}s in question of being required or not.
+	 * @return The {@link Set} of {@link CmdLineOption}s where are required
+	 *         because the given {@link CmdLineAction} was specified.
+	 */
 	public static Set<CmdLineOption> determineRequired(CmdLineAction action,
 			Set<CmdLineOption> options) {
 		Set<CmdLineOption> requiredOptions = getRequiredOptions(options);
@@ -65,6 +76,16 @@ public class CmdLineUtils {
 		return requiredOptions;
 	}
 
+	/**
+	 * Determines if the given {@link CmdLineOption} is required because the given
+	 * {@link CmdLineAction} was specified.
+	 * 
+	 * @param action
+	 *          The {@link CmdLineAction} which was specified.
+	 * @param option
+	 *          The {@link CmdLineOption} in question of being required or not.
+	 * @return True is option is required, false otherwise.
+	 */
 	public static boolean isRequired(CmdLineAction action, CmdLineOption option) {
 		Validate.notNull(option);
 		Validate.notNull(action);
@@ -81,7 +102,19 @@ public class CmdLineUtils {
 		return false;
 	}
 
-	public static Set<CmdLineOption> determineOptional(CmdLineAction action, Set<CmdLineOption> options) {
+	/**
+	 * Determines which of the given {@link CmdLineOption}s are optional because
+	 * the given {@link CmdLineAction} was specified.
+	 * 
+	 * @param action
+	 *          The {@link CmdLineAction} which was specified.
+	 * @param options
+	 *          The {@link CmdLineOption} in question of being optional or not.
+	 * @return The {@link Set} of {@link CmdLineOption}s where are optional
+	 *         because the given {@link CmdLineAction} was specified.
+	 */
+	public static Set<CmdLineOption> determineOptional(CmdLineAction action,
+			Set<CmdLineOption> options) {
 		Set<CmdLineOption> optionalOptions = new HashSet<CmdLineOption>();
 		for (CmdLineOption option : options) {
 			if (isOptional(action, option)) {
@@ -91,6 +124,16 @@ public class CmdLineUtils {
 		return optionalOptions;
 	}
 
+	/**
+	 * Determines if the given {@link CmdLineOption} is optional because the given
+	 * {@link CmdLineAction} was specified.
+	 * 
+	 * @param action
+	 *          The {@link CmdLineAction} which was specified.
+	 * @param option
+	 *          The {@link CmdLineOption} in question of being optional or not.
+	 * @return True is option is optional, false otherwise.
+	 */
 	public static boolean isOptional(CmdLineAction action, CmdLineOption option) {
 		Validate.notNull(option);
 		Validate.notNull(action);
@@ -107,16 +150,56 @@ public class CmdLineUtils {
 		return false;
 	}
 
+	/**
+	 * Get {@link CmdLineOption}s which are always required regardless of
+	 * {@link CmdLineAction} specified. NOTE: Ignores {@link CmdLineOption}s of
+	 * type {@link ActionCmdLineOption}.
+	 * 
+	 * @param options
+	 *          The {@link CmdLineOption}S to check for required
+	 *          {@link CmdLineOption}s
+	 * @return The {@link CmdLineOption}s which will be check for always required
+	 *         {@link CmdLineOption}s
+	 */
 	public static Set<CmdLineOption> getRequiredOptions(Set<CmdLineOption> options) {
+		return getRequiredOptions(options, true);
+	}
+
+	/**
+	 * Get {@link CmdLineOption}s which are always required regardless of
+	 * {@link CmdLineAction} specified.
+	 * 
+	 * @param options
+	 *          The {@link CmdLineOption}S to check for required
+	 *          {@link CmdLineOption}s
+	 * @param ignoreActionOption
+	 *          Where or not to ignore {@link CmdLineOption}s of type
+	 *          {@link ActionCmdLineOption}
+	 * @return The {@link CmdLineOption}s which will be check for always required
+	 *         {@link CmdLineOption}s
+	 */
+	public static Set<CmdLineOption> getRequiredOptions(
+			Set<CmdLineOption> options, boolean ignoreActionOption) {
 		HashSet<CmdLineOption> requiredOptions = new HashSet<CmdLineOption>();
 		for (CmdLineOption option : options) {
-			if (!(option instanceof ActionCmdLineOption) && option.isRequired()) {
+			if (option.isRequired()
+					&& !(isActionOption(option) && ignoreActionOption)) {
 				requiredOptions.add(option);
 			}
 		}
 		return requiredOptions;
 	}
 
+	/**
+	 * Sorts {@link CmdLineOption}s by requirement levels. {@link CmdLineOption}s
+	 * which are always required have highest sort score, followed by
+	 * {@link CmdLineOption}s which have {@link RequirementRule}s, followed by all
+	 * others.
+	 * 
+	 * @param options
+	 *          The {@link Set} of {@link CmdLineOption}s to sort.
+	 * @return The {@link CmdLineOption}s sorted by requirement.
+	 */
 	public static List<CmdLineOption> sortOptionsByRequiredStatus(
 			Set<CmdLineOption> options) {
 		ArrayList<CmdLineOption> optionsList = new ArrayList<CmdLineOption>(options);
