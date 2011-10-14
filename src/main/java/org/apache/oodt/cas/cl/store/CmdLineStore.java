@@ -1,11 +1,11 @@
-package org.apache.oodt.cas.cl.option.store;
+package org.apache.oodt.cas.cl.store;
 
 import java.util.Set;
 
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 
-public interface CmdLineOptionStore {
+public interface CmdLineStore {
 
 	public Set<CmdLineOption> loadSupportedOptions();
 

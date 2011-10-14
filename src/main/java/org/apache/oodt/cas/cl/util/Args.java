@@ -1,4 +1,4 @@
-package org.apache.oodt.cas.cl.option.util;
+package org.apache.oodt.cas.cl.util;
 
 import java.util.Arrays;
 import java.util.Iterator;

@@ -45,6 +45,10 @@ public interface CmdLineOption {
 
 	public Class<?> getType();
 
+	public void setRepeating(boolean repeating);
+
+	public boolean isRepeating();
+
 	public void setHasArgs(boolean hasArgs);
 
 	public boolean hasArgs();

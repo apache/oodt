@@ -1,9 +1,12 @@
 package org.apache.oodt.cas.cl.parser;
 
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.getOptionInstanceByName;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.oodt.cas.cl.option.CmdLineOption;
@@ -12,8 +15,8 @@ import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption.SubOption;
 import org.apache.oodt.cas.cl.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cl.option.SimpleCmdLineOption;
-import org.apache.oodt.cas.cl.option.util.Args;
 import org.apache.oodt.cas.cl.parser.StdCmdLineOptionParser;
+import org.apache.oodt.cas.cl.util.Args;
 
 import junit.framework.TestCase;
 
@@ -32,9 +35,51 @@ public class TestStdCmdLineOptionParser extends TestCase {
 				new SubOption(noneOption, false)));
 		options.add(new HelpCmdLineOption());
 
+		// Parse args.
 		StdCmdLineOptionParser parser = new StdCmdLineOptionParser();
 		Set<CmdLineOptionInstance> specifiedOptions = parser.parse(args, options);
+
+		// Check that two option instances where returned.
 		assertEquals(2, specifiedOptions.size());
+
+		// Find first and second group.
+		Iterator<CmdLineOptionInstance> iter = specifiedOptions.iterator();
+		CmdLineOptionInstance firstGroup = iter.next();
+		CmdLineOptionInstance secondGroup = iter.next();
+		if (getOptionInstanceByName("none", firstGroup.getSubOptions()) == null) {
+			CmdLineOptionInstance tmpHold = firstGroup;
+			firstGroup = secondGroup;
+			secondGroup = tmpHold;
+		}
+
+		// verify first group's list was found and found its 4 args. 
+		CmdLineOptionInstance firstGroupList = getOptionInstanceByName("list", firstGroup.getSubOptions());
+		assertNotNull(firstGroupList);
+		assertEquals(Arrays.asList("one", "two", "three", "four"), firstGroupList.getValues());
+		
+		// verify first group's scalar was found and found its 1 args. 		
+		CmdLineOptionInstance firstGroupScalar = getOptionInstanceByName("scalar", firstGroup.getSubOptions());
+		assertNotNull(firstGroupScalar);
+		assertEquals(Arrays.asList("one"), firstGroupScalar.getValues());
+
+		// verify first group's none was found and found no args. 		
+		CmdLineOptionInstance firstGroupNone = getOptionInstanceByName("none", firstGroup.getSubOptions());
+		assertNotNull(firstGroupNone);
+		assertTrue(firstGroupNone.getValues().isEmpty());
+
+		// verify second group's list was found and found its 1 args. 
+		CmdLineOptionInstance secondGroupList = getOptionInstanceByName("list", secondGroup.getSubOptions());
+		assertNotNull(secondGroupList);
+		assertEquals(Arrays.asList("one"), secondGroupList.getValues());
+
+		// verify second group's scalar was found and found its 1 args. 
+		CmdLineOptionInstance secondGroupScalar = getOptionInstanceByName("scalar", secondGroup.getSubOptions());
+		assertNotNull(secondGroupScalar);
+		assertEquals(Arrays.asList("one"), secondGroupScalar.getValues());
+
+		// verify second group's none was not found 
+		CmdLineOptionInstance secondGroupNone = getOptionInstanceByName("none", secondGroup.getSubOptions());
+		assertNull(secondGroupNone);
 	}
 
 	public void testGetOptions() throws IOException {

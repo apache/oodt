@@ -1,4 +1,4 @@
-package org.apache.oodt.cas.cl.option.store.spring;
+package org.apache.oodt.cas.cl.store.spring;
 
 import org.springframework.context.ApplicationContext;
 

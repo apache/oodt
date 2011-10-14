@@ -1,8 +1,8 @@
 package org.apache.oodt.cas.cl.help.printer;
 
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.determineOptional;
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.determineRequired;
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.sortOptionsByRequiredStatus;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.determineOptional;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.determineRequired;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.sortOptionsByRequiredStatus;
 
 import java.util.List;
 import java.util.Set;

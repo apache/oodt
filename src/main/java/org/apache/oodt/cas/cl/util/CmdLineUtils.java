@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.cl.option.util;
+package org.apache.oodt.cas.cl.util;
 
 //JDK imports
 import java.io.File;
@@ -50,9 +50,9 @@ import org.apache.oodt.cas.cl.action.CmdLineAction;
  * @author bfoster
  * @version $Revision$
  */
-public class CmdLineOptionUtils {
+public class CmdLineUtils {
 
-	private CmdLineOptionUtils() {}
+	private CmdLineUtils() {}
 
 	public static Set<CmdLineOption> determineRequired(CmdLineAction action,
 			Set<CmdLineOption> options) {

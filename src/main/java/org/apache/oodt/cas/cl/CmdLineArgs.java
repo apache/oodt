@@ -1,10 +1,10 @@
 package org.apache.oodt.cas.cl;
 
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findAction;
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findActionOption;
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findHelpOption;
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findPrintSupportedActionsOption;
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findSpecifiedOption;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.findAction;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.findActionOption;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.findHelpOption;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.findPrintSupportedActionsOption;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.findSpecifiedOption;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -37,6 +37,8 @@ public class SimpleCmdLineOption implements CmdLineOption {
 
 	private String description;
 
+	private boolean repeating;
+
 	private String argDescription;
 
 	private boolean required;
@@ -51,6 +53,7 @@ public class SimpleCmdLineOption implements CmdLineOption {
 
 	public SimpleCmdLineOption() {
 		argDescription = "arg";
+		repeating = false;
 		required = false;
 		hasArgs = false;
 		performAndQuit = false;
@@ -97,6 +100,14 @@ public class SimpleCmdLineOption implements CmdLineOption {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public boolean isRepeating() {
+		return repeating;
+	}
+
+	public void setRepeating(boolean repeating) {
+		this.repeating = repeating;
 	}
 
 	public boolean hasArgs() {

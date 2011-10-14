@@ -1,6 +1,6 @@
 package org.apache.oodt.cas.cl.option.handler;
 
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.convertToType;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.convertToType;
 
 import java.util.Arrays;
 import java.util.Map;

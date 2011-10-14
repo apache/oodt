@@ -17,7 +17,7 @@
 package org.apache.oodt.cas.cl.option.handler;
 
 //JDK imports
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.convertToType;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.convertToType;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -31,7 +31,7 @@ import java.util.List;
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
-import org.apache.oodt.cas.cl.option.store.spring.SpringSetContextInjectionType;
+import org.apache.oodt.cas.cl.store.spring.SpringSetContextInjectionType;
 
 //Spring imports
 import org.apache.commons.lang.StringUtils;

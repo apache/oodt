@@ -18,7 +18,9 @@ package org.apache.oodt.cas.cl.option;
 
 //JDK imports
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 
@@ -30,11 +32,11 @@ public class CmdLineOptionInstance {
 
 	private CmdLineOption option;
 	private List<String> values;
-	private List<CmdLineOptionInstance> subOptions;
+	private Set<CmdLineOptionInstance> subOptions;
 
 	public CmdLineOptionInstance() {
 		values = new ArrayList<String>();
-		subOptions = new ArrayList<CmdLineOptionInstance>();
+		subOptions = new HashSet<CmdLineOptionInstance>();
 	}
 
 	public CmdLineOptionInstance(CmdLineOption option, List<String> values) {
@@ -43,7 +45,7 @@ public class CmdLineOptionInstance {
 
 		this.option = option; 
 		this.values = values;
-		subOptions = new ArrayList<CmdLineOptionInstance>();
+		subOptions = new HashSet<CmdLineOptionInstance>();
 	}
 
 	public void setOption(CmdLineOption option) {
@@ -64,6 +66,10 @@ public class CmdLineOptionInstance {
 
 	public boolean isHelp() {
 		return option instanceof HelpCmdLineOption;
+	}
+
+	public boolean isPrintSupportedActions() {
+		return option instanceof PrintSupportedActionsCmdLineOption;
 	}
 
 	public boolean isValidatable() {
@@ -92,7 +98,7 @@ public class CmdLineOptionInstance {
 		Validate.isTrue(isGroup(), "Must be group option to have subOptions");
 		Validate.notNull(subOptions, "Cannot set subOptions to NULL");
 
-		this.subOptions = new ArrayList<CmdLineOptionInstance>(subOptions);
+		this.subOptions = new HashSet<CmdLineOptionInstance>(subOptions);
 	}
 
 	public void addSubOption(CmdLineOptionInstance subOption) {
@@ -102,7 +108,7 @@ public class CmdLineOptionInstance {
 		this.subOptions.add(subOption);
 	}
 
-	public List<CmdLineOptionInstance> getSubOptions() {
+	public Set<CmdLineOptionInstance> getSubOptions() {
 		return subOptions;
 	}
 

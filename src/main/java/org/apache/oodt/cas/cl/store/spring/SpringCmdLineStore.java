@@ -1,4 +1,4 @@
-package org.apache.oodt.cas.cl.option.store.spring;
+package org.apache.oodt.cas.cl.store.spring;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -6,16 +6,16 @@ import java.util.Set;
 
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
-import org.apache.oodt.cas.cl.option.store.CmdLineOptionStore;
+import org.apache.oodt.cas.cl.store.CmdLineStore;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-public class SpringCmdLineOptionStore implements CmdLineOptionStore {
+public class SpringCmdLineStore implements CmdLineStore {
 
 	private ApplicationContext appContext;
 
-	public SpringCmdLineOptionStore(String springConfig) {
+	public SpringCmdLineStore(String springConfig) {
 		appContext = new FileSystemXmlApplicationContext(springConfig);
 		handleSpringSetContextInjectionType();
 	}

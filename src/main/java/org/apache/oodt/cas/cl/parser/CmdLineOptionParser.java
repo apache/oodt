@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
-import org.apache.oodt.cas.cl.option.util.Args;
+import org.apache.oodt.cas.cl.util.Args;
 
 public interface CmdLineOptionParser {
 

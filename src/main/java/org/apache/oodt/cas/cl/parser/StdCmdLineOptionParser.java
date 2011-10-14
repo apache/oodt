@@ -16,10 +16,10 @@
  */
 package org.apache.oodt.cas.cl.parser;
 
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findHelpOption;
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.getOptionByName;
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.isSubOption;
-import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.sortOptionsByRequiredStatus;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.findHelpOption;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.getOptionByName;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.isSubOption;
+import static org.apache.oodt.cas.cl.util.CmdLineUtils.sortOptionsByRequiredStatus;
 
 //JDK imports
 import java.io.IOException;
@@ -36,7 +36,7 @@ import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption.SubOption;
-import org.apache.oodt.cas.cl.option.util.Args;
+import org.apache.oodt.cas.cl.util.Args;
 
 /**
  * @author bfoster
