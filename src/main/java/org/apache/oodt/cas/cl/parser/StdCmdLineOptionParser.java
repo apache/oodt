@@ -19,6 +19,7 @@ package org.apache.oodt.cas.cl.parser;
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.findHelpOption;
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.getOptionByName;
 import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.isSubOption;
+import static org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils.sortOptionsByRequiredStatus;
 
 //JDK imports
 import java.io.IOException;
@@ -29,16 +30,19 @@ import java.util.Set;
 import java.util.Stack;
 
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cl.help.OptionHelpException;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
+import org.apache.oodt.cas.cl.option.GroupCmdLineOption.SubOption;
+import org.apache.oodt.cas.cl.option.util.Args;
 
 /**
  * @author bfoster
  * @version $Revision$
  */
-public class StdCmdLineOptionParser extends CmdLineOptionParser {
+public class StdCmdLineOptionParser implements CmdLineOptionParser {
 
 	public Set<CmdLineOptionInstance> parse(Args args,
 			Set<CmdLineOption> validOptions) throws IOException {
@@ -67,79 +71,116 @@ public class StdCmdLineOptionParser extends CmdLineOptionParser {
 					throw new IOException("Invalid option: '" + arg + "'");
 				}
 
-				args.incrementIndex();
-				if (option instanceof GroupCmdLineOption) {
-					CmdLineOptionInstance groupInstance = new CmdLineOptionInstance();
-					groupInstance.setOption(option);
+				// read found option
+				CmdLineOptionInstance specifiedOption = getOption(args, option);
 
-					// Check if we are currently loading subOptions.
-					if (!groupOptions.isEmpty()) {
+				// Check if we are currently loading subOptions.
+				if (!groupOptions.isEmpty()) {
 
-						CmdLineOptionInstance currentGroup = groupOptions.peek();
+					CmdLineOptionInstance currentGroup = groupOptions.peek();
 
-						// Verify option is a valid subOption for current group.
-						if (!isSubOption(currentGroup, option)) {
-							throw new IOException("Option " + option + " is not a subOption for " + currentGroup.getOption());
+					// Check if option is a subOption for current group.
+					if (!isSubOption(currentGroup, option)) {
+
+						// Check if current group was expecting more subOptions.
+						Set<CmdLineOption> requiredSubOptions = verifyGroupHasRequiredSubOptions(currentGroup);
+						if (!requiredSubOptions.isEmpty()) {
+							throw new IOException("Missing the following required subOptions for '" + currentGroup.getOption() + "': " + sortOptionsByRequiredStatus(requiredSubOptions));
+
+						} else {
+
+							// pop group and add to list of specified options.
+							optionInstances.add(groupOptions.pop());
 						}
-
-						// Add option to current group values.
-						currentGroup.addSubOption(groupInstance);
-					}
-
-					// Push group as current group.
-					groupOptions.push(groupInstance);
-				} else if (option.hasArgs() || option.equals(helpOption)) {
-					List<String> values = getValues(args, option);
-					if (values.isEmpty()) {
-						throw new IOException("Option " + option
-								+ " requires argument values");
-					}
-					CmdLineOptionInstance specifiedOption = new CmdLineOptionInstance();
-					specifiedOption.setOption(option);
-					specifiedOption.setValues(values);
-
-					// Check if we are currently loading subOptions.
-					if (!groupOptions.isEmpty()) {
-
-						CmdLineOptionInstance currentGroup = groupOptions.peek();
-
-						// Verify option is a valid subOption for current group.
-						if (!isSubOption(currentGroup, option)) {
-							throw new IOException("Option " + option + " is not a subOption for " + currentGroup.getOption());
-						}
-
-						// Add option to current group values.
-						currentGroup.addSubOption(specifiedOption);
 					} else {
-						optionInstances.add(specifiedOption);
+						
+						// Add option to current group subOptions.
+						currentGroup.addSubOption(specifiedOption);
+						continue;
+
 					}
+				}
+
+				if (option instanceof GroupCmdLineOption) {
+					
+					// Push group as current group.
+					groupOptions.push(specifiedOption);
+					
+				} else {
+
+					// Option good to go.
+					optionInstances.add(specifiedOption);
 				}
 			} else {
 				throw new IOException("Invalid argument: '" + arg + "'");
 			}
 		}
+		while (!groupOptions.isEmpty()) {
+			CmdLineOptionInstance currentGroup = groupOptions.pop();
+			Set<CmdLineOption> requiredSubOptions = verifyGroupHasRequiredSubOptions(currentGroup);
+			if (!requiredSubOptions.isEmpty()) {
+				throw new IOException("Missing the following required subOptions for '" + currentGroup.getOption() + "': " + sortOptionsByRequiredStatus(requiredSubOptions));
+
+			} else {
+				optionInstances.add(currentGroup);
+			}
+		}
 		return optionInstances;
 	}
 
-	private List<String> getValues(Args args, CmdLineOption option) {
+	/*package*/ static Set<CmdLineOption> verifyGroupHasRequiredSubOptions(CmdLineOptionInstance group) {
+		Validate.isTrue(group.isGroup());
+
+		Set<CmdLineOption> missingSubOptions = new HashSet<CmdLineOption>();
+		TOP:
+		for (SubOption subOption : ((GroupCmdLineOption) group.getOption()).getSubOptions()) {
+			if (subOption.isRequired()) {
+				for (CmdLineOptionInstance specifiedSubOption : group.getSubOptions()) {
+					if (specifiedSubOption.getOption().equals(subOption.getOption())) {
+						continue TOP;
+					}
+				}
+				missingSubOptions.add(subOption.getOption());
+			}
+		}
+		return missingSubOptions;
+	}
+
+	/*package*/ static CmdLineOptionInstance getOption(Args args, CmdLineOption option) throws IOException {
+		CmdLineOptionInstance specifiedOption = new CmdLineOptionInstance();
+		specifiedOption.setOption(option);
+		List<String> values = getValues(args);
+		if (option.hasArgs()) {
+			if (values.isEmpty()) {
+				throw new IOException("Option " + option + " requires args");			
+			} else {
+				specifiedOption.setValues(values);				
+			}
+		} else  if (!option.hasArgs() && !values.isEmpty()) {
+			throw new IOException("Option " + option + " does not support args");			
+		}
+		return specifiedOption;
+	}
+
+	/*package*/ static List<String> getValues(Args args) {
 		List<String> values = new ArrayList<String>();
 		String nextValue = args.getCurrentArg();
 		while (nextValue != null && !isOption(nextValue)) {
 			values.add(nextValue);
-			nextValue = args.getCurrentArg();
+			nextValue = args.incrementAndGet();
 		}
 		return values;
 	}
 
-	private static boolean isOption(String arg) {
+	/*package*/ static boolean isOption(String arg) {
 		return (arg.startsWith("-"));
 	}
 
-	private static String getOptionName(String arg) {
-		if (arg.startsWith("-")) {
-			return arg.substring(1);
-		} else if (arg.startsWith("--")) {
+	/*package*/ static String getOptionName(String arg) {
+		if (arg.startsWith("--")) {
 			return arg.substring(2);
+		} else if (arg.startsWith("-")) {
+			return arg.substring(1);
 		} else {
 			return null;
 		}

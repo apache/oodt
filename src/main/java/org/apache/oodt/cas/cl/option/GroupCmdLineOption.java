@@ -50,7 +50,7 @@ public class GroupCmdLineOption extends SimpleCmdLineOption {
 		return subOptions != null && !subOptions.isEmpty();
 	}
 
-	public class SubOption {
+	public static class SubOption {
 
 		private CmdLineOption option;
 		private boolean required;

@@ -115,8 +115,4 @@ public class CmdLineOptionInstance {
 			return false;
 		}
 	}
-
-	public int hashCode() {
-		return option.hashCode();
-	}
 }

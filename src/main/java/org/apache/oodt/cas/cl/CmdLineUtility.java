@@ -23,6 +23,7 @@ import org.apache.oodt.cas.cl.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cl.option.PrintSupportedActionsCmdLineOption;
 import org.apache.oodt.cas.cl.option.store.CmdLineOptionStore;
 import org.apache.oodt.cas.cl.option.store.spring.SpringCmdLineOptionStoreFactory;
+import org.apache.oodt.cas.cl.option.util.Args;
 import org.apache.oodt.cas.cl.option.util.CmdLineOptionUtils;
 import org.apache.oodt.cas.cl.parser.CmdLineOptionParser;
 import org.apache.oodt.cas.cl.parser.StdCmdLineOptionParser;
@@ -129,7 +130,7 @@ public class CmdLineUtility {
 		}
 
  		// Parse command line arguments.
-		return new CmdLineArgs(optionStore.loadSupportedActions(), validOptions, parser.parse(args, validOptions));
+		return new CmdLineArgs(optionStore.loadSupportedActions(), validOptions, parser.parse(new Args(args), validOptions));
 	}
 
 	public boolean handleHelp(CmdLineArgs cmdLineArgs) throws IOException {
