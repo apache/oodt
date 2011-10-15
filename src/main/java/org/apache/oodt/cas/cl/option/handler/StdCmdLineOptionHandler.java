@@ -3,6 +3,7 @@ package org.apache.oodt.cas.cl.option.handler;
 import static org.apache.oodt.cas.cl.util.CmdLineUtils.convertToType;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,19 +22,19 @@ public class StdCmdLineOptionHandler {
 	public void handleOption(CmdLineAction action, CmdLineOptionInstance optionInstance) {
 		try {
 			Class<?> type = optionInstance.getOption().getType();
-			Object[] vals = (optionInstance.getValues().isEmpty()) ? convertToType(
+			List<?> vals = (optionInstance.getValues().isEmpty()) ? convertToType(
 					Arrays.asList(new String[] { "true" }), type = Boolean.TYPE)
 					: convertToType(optionInstance.getValues(), type);
 			if (actionToMethodMap != null && actionToMethodMap.containsKey(action.getName())) {
 				action.getClass()
 						.getMethod(actionToMethodMap.get(action.getName()), type)
-						.invoke(action, vals);
+						.invoke(action, vals.toArray(new Object[vals.size()]));
 			} else {
 				action
 					.getClass()
 					.getMethod(
 							"set" + StringUtils.capitalize(optionInstance.getOption().getLongOption()), type)
-					.invoke(action, vals);
+					.invoke(action, vals.toArray(new Object[vals.size()]));
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

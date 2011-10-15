@@ -17,6 +17,7 @@
 package org.apache.oodt.cas.cl.util;
 
 //JDK imports
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,7 @@ import junit.framework.TestCase;
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
+import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
 import org.apache.oodt.cas.cl.option.SimpleCmdLineOption;
 import org.apache.oodt.cas.cl.option.require.RequirementRule;
@@ -41,8 +43,8 @@ import org.apache.oodt.cas.cl.util.CmdLineUtils;
 import com.google.common.collect.Sets;
 
 /**
- * Test class for {@link CmdLineUtils}. 
- *
+ * Test class for {@link CmdLineUtils}.
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestCmdLineUtils extends TestCase {
@@ -52,19 +54,20 @@ public class TestCmdLineUtils extends TestCase {
 		CmdLineOption urlOption, passOption;
 
 		HashSet<CmdLineOption> options = Sets.newHashSet(
-			urlOption = createSimpleOption("url", createRequiredRequirementRule(action)),
-			passOption = createSimpleOption("pass", false),
-			createSimpleOption("user", false),
-			createActionOption("operation"));
+				urlOption = createSimpleOption("url",
+						createRequiredRequirementRule(action)),
+				passOption = createSimpleOption("pass", false),
+				createSimpleOption("user", false), createActionOption("operation"));
 
-		Set<CmdLineOption> requiredOptions = CmdLineUtils.determineRequired(action, options);
+		Set<CmdLineOption> requiredOptions = CmdLineUtils.determineRequired(action,
+				options);
 		assertEquals(Sets.newHashSet(urlOption), requiredOptions);
 
 		options = Sets.newHashSet(
-				urlOption = createSimpleOption("url", createRequiredRequirementRule(action)),
+				urlOption = createSimpleOption("url",
+						createRequiredRequirementRule(action)),
 				passOption = createSimpleOption("pass", true),
-				createSimpleOption("user", false),
-				createActionOption("operation"));
+				createSimpleOption("user", false), createActionOption("operation"));
 
 		requiredOptions = CmdLineUtils.determineRequired(action, options);
 		assertEquals(Sets.newHashSet(urlOption, passOption), requiredOptions);
@@ -72,9 +75,12 @@ public class TestCmdLineUtils extends TestCase {
 
 	public void testIsRequired() {
 		CmdLineAction action = createAction("TestAction");
-		assertTrue(CmdLineUtils.isRequired(action, createSimpleOption("url", createRequiredRequirementRule(action))));
-		assertFalse(CmdLineUtils.isRequired(action, createSimpleOption("url", true)));
-		assertFalse(CmdLineUtils.isRequired(action, createSimpleOption("url", false)));
+		assertTrue(CmdLineUtils.isRequired(action,
+				createSimpleOption("url", createRequiredRequirementRule(action))));
+		assertFalse(CmdLineUtils
+				.isRequired(action, createSimpleOption("url", true)));
+		assertFalse(CmdLineUtils.isRequired(action,
+				createSimpleOption("url", false)));
 	}
 
 	public void testDetermineOptional() {
@@ -82,27 +88,26 @@ public class TestCmdLineUtils extends TestCase {
 		CmdLineOption actionOption = new ActionCmdLineOption();
 
 		HashSet<CmdLineOption> options = Sets.newHashSet(
-			createSimpleOption("url", createRequiredRequirementRule(action)),
-			createSimpleOption("pass", false),
-			createSimpleOption("user", false),
-			actionOption);
+				createSimpleOption("url", createRequiredRequirementRule(action)),
+				createSimpleOption("pass", false), createSimpleOption("user", false),
+				actionOption);
 
-		Set<CmdLineOption> optionalOptions = CmdLineUtils.determineOptional(action, options);
+		Set<CmdLineOption> optionalOptions = CmdLineUtils.determineOptional(action,
+				options);
 		assertTrue(optionalOptions.isEmpty());
 
-		options = Sets.newHashSet(
-			createSimpleOption("pass", true),
-			createSimpleOption("user", true),
-			actionOption);
+		options = Sets.newHashSet(createSimpleOption("pass", true),
+				createSimpleOption("user", true), actionOption);
 
 		optionalOptions = CmdLineUtils.determineOptional(action, options);
 		assertTrue(optionalOptions.isEmpty());
 
-		CmdLineOption passOption, userOption; 
+		CmdLineOption passOption, userOption;
 		options = Sets.newHashSet(
-			passOption = createSimpleOption("pass", createOptionalRequirementRule(action)),
-			userOption = createSimpleOption("user", createOptionalRequirementRule(action)),
-			actionOption);
+				passOption = createSimpleOption("pass",
+						createOptionalRequirementRule(action)),
+				userOption = createSimpleOption("user",
+						createOptionalRequirementRule(action)), actionOption);
 
 		optionalOptions = CmdLineUtils.determineOptional(action, options);
 		assertEquals(Sets.newHashSet(passOption, userOption), optionalOptions);
@@ -110,31 +115,33 @@ public class TestCmdLineUtils extends TestCase {
 
 	public void testIsOptional() {
 		CmdLineAction action = createAction("TestAction");
-		assertTrue(CmdLineUtils.isOptional(action, createSimpleOption("url", createOptionalRequirementRule(action))));
-		assertFalse(CmdLineUtils.isOptional(action, createSimpleOption("url", true)));
-		assertFalse(CmdLineUtils.isOptional(action, createSimpleOption("url", false)));
+		assertTrue(CmdLineUtils.isOptional(action,
+				createSimpleOption("url", createOptionalRequirementRule(action))));
+		assertFalse(CmdLineUtils
+				.isOptional(action, createSimpleOption("url", true)));
+		assertFalse(CmdLineUtils.isOptional(action,
+				createSimpleOption("url", false)));
 	}
 
 	public void testGetRequiredOptions() {
 		CmdLineOption urlOption = createSimpleOption("url", true);
-		HashSet<CmdLineOption> options = Sets.newHashSet(
-			urlOption,
-			createActionOption("action"),
-			createSimpleOption("user", false),
-			createSimpleOption("pass", false));
+		HashSet<CmdLineOption> options = Sets.newHashSet(urlOption,
+				createActionOption("action"), createSimpleOption("user", false),
+				createSimpleOption("pass", false));
 
-		assertEquals(Sets.newHashSet(urlOption), CmdLineUtils.getRequiredOptions(options));
+		assertEquals(Sets.newHashSet(urlOption),
+				CmdLineUtils.getRequiredOptions(options));
 	}
 
 	public void testGetRequiredOptionsDoNotIgnoreActionOptions() {
 		CmdLineOption actionOption, urlOption;
 		HashSet<CmdLineOption> options = Sets.newHashSet(
-			actionOption = createActionOption("action"),
-			urlOption = createSimpleOption("url", true),
-			createSimpleOption("user", false),
-			createSimpleOption("pass", false));
+				actionOption = createActionOption("action"),
+				urlOption = createSimpleOption("url", true),
+				createSimpleOption("user", false), createSimpleOption("pass", false));
 
-		assertEquals(Sets.newHashSet(actionOption, urlOption), CmdLineUtils.getRequiredOptions(options, false));
+		assertEquals(Sets.newHashSet(actionOption, urlOption),
+				CmdLineUtils.getRequiredOptions(options, false));
 	}
 
 	public void testSortOptionsByRequiredStatus() {
@@ -142,15 +149,79 @@ public class TestCmdLineUtils extends TestCase {
 		CmdLineOption userOption, urlOption, passOption, actionOption;
 		HashSet<CmdLineOption> options = Sets.newHashSet(
 				userOption = createSimpleOption("user", false),
-				urlOption = createSimpleOption("url", createRequiredRequirementRule(action)),
+				urlOption = createSimpleOption("url",
+						createRequiredRequirementRule(action)),
 				passOption = createSimpleOption("pass", false),
 				actionOption = createActionOption("action"));
 
-		List<CmdLineOption> sortedOptions = CmdLineUtils.sortOptionsByRequiredStatus(options);
+		List<CmdLineOption> sortedOptions = CmdLineUtils
+				.sortOptionsByRequiredStatus(options);
 		assertEquals(options.size(), sortedOptions.size());
 		assertEquals(actionOption, sortedOptions.get(0));
 		assertEquals(urlOption, sortedOptions.get(1));
-		assertEquals(Sets.newHashSet(userOption, passOption), Sets.newHashSet(sortedOptions.get(2), sortedOptions.get(3)));
+		assertEquals(Sets.newHashSet(userOption, passOption),
+				Sets.newHashSet(sortedOptions.get(2), sortedOptions.get(3)));
+	}
+
+	public void testGetOptionByName() {
+		CmdLineAction action = createAction("action");
+		CmdLineOption userOption, urlOption, passOption, actionOption;
+		HashSet<CmdLineOption> options = Sets.newHashSet(
+				userOption = createSimpleOption("user", "username", false),
+				urlOption = createSimpleOption("u", "url",
+						createRequiredRequirementRule(action)),
+				passOption = createSimpleOption("pass", "password", false),
+				actionOption = createActionOption("action"));
+
+		assertEquals(userOption,
+				CmdLineUtils.getOptionByName(userOption.getShortOption(), options));
+		assertEquals(userOption,
+				CmdLineUtils.getOptionByName(userOption.getLongOption(), options));
+		assertEquals(urlOption,
+				CmdLineUtils.getOptionByName(urlOption.getShortOption(), options));
+		assertEquals(urlOption,
+				CmdLineUtils.getOptionByName(urlOption.getLongOption(), options));
+		assertEquals(passOption,
+				CmdLineUtils.getOptionByName(passOption.getShortOption(), options));
+		assertEquals(passOption,
+				CmdLineUtils.getOptionByName(passOption.getLongOption(), options));
+		assertEquals(actionOption,
+				CmdLineUtils.getOptionByName(actionOption.getShortOption(), options));
+		assertEquals(actionOption,
+				CmdLineUtils.getOptionByName(actionOption.getLongOption(), options));
+	}
+
+	public void testGetOptionInstanceByName() {
+		CmdLineAction action = createAction("action");
+		CmdLineOptionInstance userOptionInst, urlOptionInst, passOptionInst,
+				actionOptionInst;
+		HashSet<CmdLineOptionInstance> optionInsts = Sets.newHashSet(
+				userOptionInst = new CmdLineOptionInstance(createSimpleOption("user",
+						"username", false), new ArrayList<String>()),
+				urlOptionInst = new CmdLineOptionInstance(createSimpleOption("u",
+						"url", createRequiredRequirementRule(action)),
+						new ArrayList<String>()),
+				passOptionInst = new CmdLineOptionInstance(createSimpleOption("pass",
+						"password", false), new ArrayList<String>()),
+				actionOptionInst = new CmdLineOptionInstance(
+						createActionOption("action"), new ArrayList<String>()));
+
+		assertEquals(userOptionInst, CmdLineUtils.getOptionInstanceByName(
+				userOptionInst.getOption().getShortOption(), optionInsts));
+		assertEquals(userOptionInst, CmdLineUtils.getOptionInstanceByName(
+				userOptionInst.getOption().getLongOption(), optionInsts));
+		assertEquals(urlOptionInst, CmdLineUtils.getOptionInstanceByName(
+				urlOptionInst.getOption().getShortOption(), optionInsts));
+		assertEquals(urlOptionInst, CmdLineUtils.getOptionInstanceByName(
+				urlOptionInst.getOption().getLongOption(), optionInsts));
+		assertEquals(passOptionInst, CmdLineUtils.getOptionInstanceByName(
+				passOptionInst.getOption().getShortOption(), optionInsts));
+		assertEquals(passOptionInst, CmdLineUtils.getOptionInstanceByName(
+				passOptionInst.getOption().getLongOption(), optionInsts));
+		assertEquals(actionOptionInst, CmdLineUtils.getOptionInstanceByName(
+				actionOptionInst.getOption().getShortOption(), optionInsts));
+		assertEquals(actionOptionInst, CmdLineUtils.getOptionInstanceByName(
+				actionOptionInst.getOption().getLongOption(), optionInsts));
 	}
 
 	private static CmdLineAction createAction(String name) {
@@ -160,11 +231,12 @@ public class TestCmdLineUtils extends TestCase {
 			public void execute() {
 				// do nothing
 			}
-			
+
 		};
 	}
 
-	private static GroupCmdLineOption createGroupOption(String longName, boolean required) {
+	private static GroupCmdLineOption createGroupOption(String longName,
+			boolean required) {
 		GroupCmdLineOption option = new GroupCmdLineOption();
 		option.setLongOption(longName);
 		option.setShortOption(longName);
@@ -172,18 +244,30 @@ public class TestCmdLineUtils extends TestCase {
 		return option;
 	}
 
-	private static SimpleCmdLineOption createSimpleOption(String longName, boolean required) {
+	private static SimpleCmdLineOption createSimpleOption(String longName,
+			boolean required) {
+		return createSimpleOption(longName, longName, required);
+	}
+
+	private static SimpleCmdLineOption createSimpleOption(String shortName,
+			String longName, boolean required) {
 		SimpleCmdLineOption option = new SimpleCmdLineOption();
+		option.setShortOption(shortName);
 		option.setLongOption(longName);
-		option.setShortOption(longName);
 		option.setRequired(required);
 		return option;
 	}
 
-	private static SimpleCmdLineOption createSimpleOption(String longName, RequirementRule rule) {
+	private static SimpleCmdLineOption createSimpleOption(String longName,
+			RequirementRule rule) {
+		return createSimpleOption(longName, longName, rule);
+	}
+
+	private static SimpleCmdLineOption createSimpleOption(String shortName,
+			String longName, RequirementRule rule) {
 		SimpleCmdLineOption option = new SimpleCmdLineOption();
+		option.setShortOption(shortName);
 		option.setLongOption(longName);
-		option.setShortOption(longName);
 		option.setRequirementRules(Collections.singletonList(rule));
 		return option;
 	}
@@ -195,15 +279,19 @@ public class TestCmdLineUtils extends TestCase {
 		return option;
 	}
 
-	private static RequirementRule createRequiredRequirementRule(CmdLineAction action) {
+	private static RequirementRule createRequiredRequirementRule(
+			CmdLineAction action) {
 		StdRequirementRule rule = new StdRequirementRule();
-		rule.addActionDependency(new ActionDependency(action.getName(), Relation.REQUIRED));
+		rule.addActionDependency(new ActionDependency(action.getName(),
+				Relation.REQUIRED));
 		return rule;
 	}
 
-	private static RequirementRule createOptionalRequirementRule(CmdLineAction action) {
+	private static RequirementRule createOptionalRequirementRule(
+			CmdLineAction action) {
 		StdRequirementRule rule = new StdRequirementRule();
-		rule.addActionDependency(new ActionDependency(action.getName(), Relation.OPTIONAL));
+		rule.addActionDependency(new ActionDependency(action.getName(),
+				Relation.OPTIONAL));
 		return rule;
 	}
 }

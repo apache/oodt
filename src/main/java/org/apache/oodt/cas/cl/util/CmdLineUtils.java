@@ -45,6 +45,9 @@ import org.apache.oodt.cas.cl.option.require.RequirementRule.Relation;
 import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 
+//Google imports
+import com.google.common.collect.Lists;
+
 /**
  * Collection of common helper methods.
  *
@@ -67,6 +70,9 @@ public class CmdLineUtils {
 	 */
 	public static Set<CmdLineOption> determineRequired(CmdLineAction action,
 			Set<CmdLineOption> options) {
+		Validate.notNull(action);
+		Validate.notNull(options);
+
 		Set<CmdLineOption> requiredOptions = getRequiredOptions(options);
 		for (CmdLineOption option : options) {
 			if (isRequired(action, option)) {
@@ -115,6 +121,9 @@ public class CmdLineUtils {
 	 */
 	public static Set<CmdLineOption> determineOptional(CmdLineAction action,
 			Set<CmdLineOption> options) {
+		Validate.notNull(action);
+		Validate.notNull(options);
+
 		Set<CmdLineOption> optionalOptions = new HashSet<CmdLineOption>();
 		for (CmdLineOption option : options) {
 			if (isOptional(action, option)) {
@@ -135,8 +144,8 @@ public class CmdLineUtils {
 	 * @return True is option is optional, false otherwise.
 	 */
 	public static boolean isOptional(CmdLineAction action, CmdLineOption option) {
-		Validate.notNull(option);
 		Validate.notNull(action);
+		Validate.notNull(option);
 
 		if (option instanceof ActionCmdLineOption) {
 			return false;
@@ -180,6 +189,8 @@ public class CmdLineUtils {
 	 */
 	public static Set<CmdLineOption> getRequiredOptions(
 			Set<CmdLineOption> options, boolean ignoreActionOption) {
+		Validate.notNull(options);
+
 		HashSet<CmdLineOption> requiredOptions = new HashSet<CmdLineOption>();
 		for (CmdLineOption option : options) {
 			if (option.isRequired()
@@ -202,6 +213,8 @@ public class CmdLineUtils {
 	 */
 	public static List<CmdLineOption> sortOptionsByRequiredStatus(
 			Set<CmdLineOption> options) {
+		Validate.notNull(options);
+
 		ArrayList<CmdLineOption> optionsList = new ArrayList<CmdLineOption>(options);
 		Collections.sort(optionsList, new Comparator<CmdLineOption>() {
 			public int compare(CmdLineOption option1, CmdLineOption option2) {
@@ -216,7 +229,21 @@ public class CmdLineUtils {
 		return optionsList;
 	}
 
-	public static CmdLineOption getOptionByName(String optionName, Set<CmdLineOption> options) {
+	/**
+	 * Finds {@link CmdLineOption} whose short name or long name equals given
+	 * option name.
+	 * 
+	 * @param optionName
+	 *          The short or long name of the {@link CmdLineOption} to find
+	 * @param options
+	 *          The {@link CmdLineOption}s to search in
+	 * @return The {@link CmdLineOption} found or null if not found.
+	 */
+	public static CmdLineOption getOptionByName(String optionName,
+			Set<CmdLineOption> options) {
+		Validate.notNull(optionName);
+		Validate.notNull(options);
+
 		for (CmdLineOption option : options)
 			if (option.getLongOption().equals(optionName)
 					|| option.getShortOption().equals(optionName))
@@ -224,8 +251,22 @@ public class CmdLineUtils {
 		return null;
 	}
 
+	/**
+	 * Finds {@link CmdLineOptionInstance} whose {@link CmdLineOption}'s short
+	 * name or long name equals given option name.
+	 * 
+	 * @param optionName
+	 *          The short or long name of the {@link CmdLineOptionInstance}'s
+	 *          {@link CmdLineOption} to find
+	 * @param optionInsts
+	 *          The {@link CmdLineOptionIntance}s to search in
+	 * @return The {@link CmdLineOptionInstance} found or null if not found.
+	 */
 	public static CmdLineOptionInstance getOptionInstanceByName(
 			String optionName, Set<CmdLineOptionInstance> optionInsts) {
+		Validate.notNull(optionName);
+		Validate.notNull(optionInsts);
+
 		for (CmdLineOptionInstance optionInst : optionInsts)
 			if (optionInst.getOption().getLongOption().equals(optionName)
 					|| optionInst.getOption().getShortOption().equals(optionName))
@@ -391,52 +432,52 @@ public class CmdLineUtils {
 		return outputString.toString();
 	}
 
-	public static Object[] convertToType(List<String> values, Class<?> type)
+	public static List<?> convertToType(List<String> values, Class<?> type)
 			throws MalformedURLException, ClassNotFoundException {
 		if (type.equals(File.class)) {
 			List<Object> files = new LinkedList<Object>();
 			for (String value : values)
 				files.add(new File(value));
-			return files.toArray(new Object[files.size()]);
+			return files;
 		} else if (type.equals(Boolean.class) || type.equals(Boolean.TYPE)) {
 			List<Object> booleans = new LinkedList<Object>();
 			for (String value : values)
 				booleans.add(value.toLowerCase().trim().equals("true"));
-			return booleans.toArray(new Object[booleans.size()]);
+			return booleans;
 		} else if (type.equals(URL.class)) {
 			List<Object> urls = new LinkedList<Object>();
 			for (String value : values)
 				urls.add(new URL(value));
-			return urls.toArray(new Object[urls.size()]);
+			return urls;
 		} else if (type.equals(Class.class)) {
 			List<Object> classes = new LinkedList<Object>();
 			for (String value : values)
 				classes.add(Class.forName(value));
-			return classes.toArray(new Object[classes.size()]);
+			return classes;
 		} else if (type.equals(List.class)) {
-			return new Object[] { values };
+			return values;
 		} else if (type.equals(Integer.class) || type.equals(Integer.TYPE)) {
 			List<Object> ints = new LinkedList<Object>();
 			for (String value : values)
 				ints.add(new Integer(value));
-			return ints.toArray(new Object[ints.size()]);
+			return ints;
 		} else if (type.equals(Long.class) || type.equals(Long.TYPE)) {
 			List<Object> longs = new LinkedList<Object>();
 			for (String value : values)
 				longs.add(new Long(value));
-			return longs.toArray(new Object[longs.size()]);
+			return longs;
 		} else if (type.equals(Double.class) || type.equals(Double.TYPE)) {
 			List<Object> doubles = new LinkedList<Object>();
 			for (String value : values)
 				doubles.add(new Double(value));
-			return doubles.toArray(new Object[doubles.size()]);
+			return doubles;
 		} else if (type.equals(String.class)) {
 			StringBuffer combinedString = new StringBuffer("");
 			for (String value : values)
 				combinedString.append(value + " ");
-			return new String[] { combinedString.toString().trim() };
+			return Lists.newArrayList(combinedString.toString().trim());
 		} else {
-			return values.toArray(new Object[values.size()]);
+			return values;
 		}
 	}
 }

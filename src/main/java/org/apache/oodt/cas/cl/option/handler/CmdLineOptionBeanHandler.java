@@ -64,20 +64,20 @@ public class CmdLineOptionBeanHandler implements CmdLineOptionHandler,
 		for (BeanInfo beanInfo : applyToBeans) {
 			try {
 				Class<?> type = optionInstance.getOption().getType();
-				Object[] vals = (optionInstance.getValues().isEmpty()) ? convertToType(
+				List<?> vals = (optionInstance.getValues().isEmpty()) ? convertToType(
 						Arrays.asList(new String[] { "true" }), type = Boolean.TYPE)
 						: convertToType(optionInstance.getValues(), type);
 				Object applyToBean = appContext.getBean(beanInfo.getBeanId());
 				if (beanInfo.getMethodName() != null) {
 					applyToBean.getClass()
 							.getMethod(beanInfo.getMethodName(), type)
-							.invoke(applyToBean, vals);
+							.invoke(applyToBean, vals.toArray(new Object[vals.size()]));
 				} else {
 					applyToBean
 							.getClass()
 							.getMethod(
 									"set" + StringUtils.capitalize(optionInstance.getOption().getLongOption()), type)
-							.invoke(applyToBean, vals);
+							.invoke(applyToBean, vals.toArray(new Object[vals.size()]));
 				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);
