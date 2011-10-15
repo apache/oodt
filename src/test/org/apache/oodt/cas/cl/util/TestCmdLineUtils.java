@@ -32,6 +32,9 @@ import org.apache.oodt.cas.cl.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
+import org.apache.oodt.cas.cl.option.GroupCmdLineOption.SubOption;
+import org.apache.oodt.cas.cl.option.HelpCmdLineOption;
+import org.apache.oodt.cas.cl.option.PrintSupportedActionsCmdLineOption;
 import org.apache.oodt.cas.cl.option.SimpleCmdLineOption;
 import org.apache.oodt.cas.cl.option.require.RequirementRule;
 import org.apache.oodt.cas.cl.option.require.RequirementRule.Relation;
@@ -40,6 +43,7 @@ import org.apache.oodt.cas.cl.option.require.ActionDependency;
 import org.apache.oodt.cas.cl.util.CmdLineUtils;
 
 //Google imports
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -224,6 +228,190 @@ public class TestCmdLineUtils extends TestCase {
 				actionOptionInst.getOption().getLongOption(), optionInsts));
 	}
 
+	public void testIsSubOption() {
+		CmdLineOption subOption = createSimpleOption("test", false);
+		GroupCmdLineOption groupOption = createGroupOption("group", false);
+		assertFalse(CmdLineUtils.isSubOption(groupOption, subOption));
+
+		groupOption.addSubOption(new SubOption(subOption, false));
+		assertTrue(CmdLineUtils.isSubOption(groupOption, subOption));
+	}
+
+	public void testFindPerformAndQuitOptions() {
+		SimpleCmdLineOption performAndQuitOption = createSimpleOption("help", false);
+		performAndQuitOption.setPerformAndQuit(true);
+		SimpleCmdLineOption otherOption = createSimpleOption("help", false);
+		otherOption.setPerformAndQuit(false);
+
+		CmdLineOptionInstance performAndQuitOptionInstance = new CmdLineOptionInstance(
+				performAndQuitOption, new ArrayList<String>());
+		CmdLineOptionInstance otherInstance = new CmdLineOptionInstance(
+				otherOption, new ArrayList<String>());
+
+		assertEquals(Sets.newHashSet(performAndQuitOptionInstance),
+				CmdLineUtils.findPerformAndQuitOptions(Sets.newHashSet(
+						performAndQuitOptionInstance, otherInstance)));
+	}
+
+	public void testIsPerformAndQuitOption() {
+		SimpleCmdLineOption performAndQuitOption = createSimpleOption("help", false);
+		performAndQuitOption.setPerformAndQuit(true);
+		SimpleCmdLineOption otherOption = createSimpleOption("help", false);
+		otherOption.setPerformAndQuit(false);
+
+		assertTrue(CmdLineUtils.isPerformAndQuitOption(performAndQuitOption));
+		assertFalse(CmdLineUtils.isPerformAndQuitOption(otherOption));
+	}
+
+	public void testFindSpecifiedOption() {
+		CmdLineOption findOption = createSimpleOption("test", false);
+		Set<CmdLineOptionInstance> options = Sets.newHashSet(
+				createOptionInstance(createSimpleOption("test1", false)),
+				createOptionInstance(createSimpleOption("test2", false)));
+
+		assertNull(CmdLineUtils.findSpecifiedOption(findOption, options));
+		options.add(createOptionInstance(findOption));
+		assertEquals(createOptionInstance(findOption),
+				CmdLineUtils.findSpecifiedOption(findOption, options));
+	}
+
+	public void testFindAllOfSpecifiedOption() {
+		CmdLineOption findOption = createSimpleOption("test", false);
+		Set<CmdLineOptionInstance> options = Sets.newHashSet(
+				createOptionInstance(createSimpleOption("test1", false)),
+				createOptionInstance(createSimpleOption("test2", false)));
+
+		assertTrue(CmdLineUtils.findAllOfSpecifiedOption(findOption, options).isEmpty());
+		CmdLineOptionInstance firstOption = createOptionInstance(findOption, "first");
+		CmdLineOptionInstance secondOption = createOptionInstance(findOption, "second");
+		options.add(firstOption);
+		assertEquals(Sets.newHashSet(firstOption),
+				CmdLineUtils.findAllOfSpecifiedOption(findOption, options));
+		options.add(secondOption);
+		assertEquals(Sets.newHashSet(firstOption, secondOption),
+				CmdLineUtils.findAllOfSpecifiedOption(findOption, options));		
+	}
+
+	public void testIsPrintSupportedActionsOption() {
+		assertFalse(CmdLineUtils.isPrintSupportedActionsOption(createSimpleOption(
+				"test", false)));
+		assertTrue(CmdLineUtils
+				.isPrintSupportedActionsOption(new PrintSupportedActionsCmdLineOption()));
+	}
+
+	public void testFindPrintSupportedActionsOption() {
+		CmdLineOption psaAction = new PrintSupportedActionsCmdLineOption();
+		Set<CmdLineOption> options = Sets.newHashSet(
+				(CmdLineOption) createSimpleOption("test", false),
+				createSimpleOption("test2", false));
+
+		assertNull(CmdLineUtils.findPrintSupportedActionsOption(options));
+		options.add(psaAction);
+		assertEquals(psaAction, CmdLineUtils.findPrintSupportedActionsOption(options));
+	}
+
+	public void testFindSpecifiedPrintSupportedActionsOption() {
+		CmdLineOptionInstance psaAction = createOptionInstance(new PrintSupportedActionsCmdLineOption());
+		Set<CmdLineOptionInstance> options = Sets.newHashSet(
+				createOptionInstance(createSimpleOption("test", false)),
+				createOptionInstance(createSimpleOption("test2", false)));
+
+		assertNull(CmdLineUtils.findSpecifiedPrintSupportedActionsOption(options));
+		options.add(psaAction);
+		assertEquals(psaAction, CmdLineUtils.findSpecifiedPrintSupportedActionsOption(options));
+	}
+
+	public void testIsSimpleOption() {
+		assertTrue(CmdLineUtils.isSimpleOption(new PrintSupportedActionsCmdLineOption()));
+		assertTrue(CmdLineUtils.isSimpleOption(new HelpCmdLineOption()));
+		assertTrue(CmdLineUtils.isSimpleOption(createSimpleOption("Test", true)));
+	}
+
+	public void testIsActionOption() {
+		assertFalse(CmdLineUtils.isActionOption(new HelpCmdLineOption()));
+		assertTrue(CmdLineUtils.isActionOption(createActionOption("action")));
+	}
+
+	public void testFindActionOption() {
+		ActionCmdLineOption actionOption = createActionOption("action");
+		Set<CmdLineOption> options = Sets.newHashSet(
+				(CmdLineOption) createSimpleOption("test", false),
+				createSimpleOption("test", false));
+
+		assertNull(CmdLineUtils.findActionOption(options));
+		options.add(actionOption);
+		assertEquals(actionOption, CmdLineUtils.findActionOption(options));
+	}
+
+	public void testFindSpecifiedActionOption() {
+		CmdLineOptionInstance actionOption = createOptionInstance(createActionOption("action"));
+		Set<CmdLineOptionInstance> options = Sets.newHashSet(
+				createOptionInstance(createSimpleOption("test", false)),
+				createOptionInstance(createSimpleOption("test", false)));
+
+		assertNull(CmdLineUtils.findSpecifiedActionOption(options));
+		options.add(actionOption);
+		assertEquals(actionOption, CmdLineUtils.findSpecifiedActionOption(options));
+	}
+
+	public void testIsGroupOption() {
+		assertFalse(CmdLineUtils.isGroupOption(new HelpCmdLineOption()));
+		assertTrue(CmdLineUtils.isGroupOption(createGroupOption("test", false)));
+	}
+
+	public void testAsGroupOption() {
+		try {
+			CmdLineUtils.asGroupOption(createSimpleOption("test", false));
+			fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException ignore) { /* expect throw */ }
+		CmdLineUtils.asGroupOption(createGroupOption("test", false));
+	}
+
+	public void testIsHelpOption() {
+		assertFalse(CmdLineUtils.isHelpOption(createSimpleOption("test", false)));
+		assertTrue(CmdLineUtils.isHelpOption(new HelpCmdLineOption()));
+	}
+
+	public void testAsHelpOption() {
+		try {
+			CmdLineUtils.asHelpOption(createSimpleOption("test", false));
+			fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException ignore) { /* expect throw */ }
+		CmdLineUtils.asHelpOption(new HelpCmdLineOption());
+	}
+
+	public void testFindHelpOption() {
+		HelpCmdLineOption helpOption = new HelpCmdLineOption();
+		Set<CmdLineOption> options = Sets.newHashSet(
+				(CmdLineOption) createSimpleOption("test", false),
+				createSimpleOption("test", false));
+
+		assertNull(CmdLineUtils.findHelpOption(options));
+		options.add(helpOption);
+		assertEquals(helpOption, CmdLineUtils.findHelpOption(options));
+	}
+
+	public void testFindSpecifiedHelpOption() {
+		CmdLineOptionInstance helpOption = createOptionInstance(new HelpCmdLineOption());
+		Set<CmdLineOptionInstance> options = Sets.newHashSet(
+				createOptionInstance(createSimpleOption("test", false)),
+				createOptionInstance(createSimpleOption("test", false)));
+
+		assertNull(CmdLineUtils.findSpecifiedHelpOption(options));
+		options.add(helpOption);
+		assertEquals(helpOption, CmdLineUtils.findSpecifiedHelpOption(options));
+	}
+
+	public void testFindAction() {
+		CmdLineAction action = createAction("TestAction1");
+		Set<CmdLineAction> actions = Sets.newHashSet(
+				action,
+				createAction("TestAction2"),
+				createAction("TestAction3"));
+		assertNull(CmdLineUtils.findAction(createOptionInstance(createActionOption("action"), "TestAction"), actions));
+		assertEquals(action, CmdLineUtils.findAction(createOptionInstance(createActionOption("action"), "TestAction1"), actions));
+	}
+
 	private static CmdLineAction createAction(String name) {
 		return new CmdLineAction(name, "This is an action description") {
 
@@ -277,6 +465,11 @@ public class TestCmdLineUtils extends TestCase {
 		option.setLongOption(longName);
 		option.setShortOption(longName);
 		return option;
+	}
+
+	public static CmdLineOptionInstance createOptionInstance(
+			CmdLineOption option, String... values) {
+		return new CmdLineOptionInstance(option, Lists.newArrayList(values));
 	}
 
 	private static RequirementRule createRequiredRequirementRule(

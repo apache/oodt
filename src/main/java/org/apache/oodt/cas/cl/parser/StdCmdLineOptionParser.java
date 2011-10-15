@@ -82,7 +82,7 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
 					CmdLineOptionInstance currentGroup = groupOptions.peek();
 
 					// Check if option is a subOption for current group.
-					if (!isSubOption(currentGroup, option)) {
+					if (!isSubOption(currentGroup.getOption(), option)) {
 
 						// Check if current group was expecting more subOptions.
 						Set<CmdLineOption> requiredSubOptions = verifyGroupHasRequiredSubOptions(currentGroup);

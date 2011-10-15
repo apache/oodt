@@ -20,10 +20,8 @@ package org.apache.oodt.cas.cl.util;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -32,13 +30,13 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cl.option.ActionCmdLineOption;
-import org.apache.oodt.cas.cl.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
 import org.apache.oodt.cas.cl.option.HandleableCmdLineOption;
 import org.apache.oodt.cas.cl.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cl.option.PrintSupportedActionsCmdLineOption;
+import org.apache.oodt.cas.cl.option.SimpleCmdLineOption;
 import org.apache.oodt.cas.cl.option.ValidatableCmdLineOption;
 import org.apache.oodt.cas.cl.option.require.RequirementRule;
 import org.apache.oodt.cas.cl.option.require.RequirementRule.Relation;
@@ -47,6 +45,7 @@ import org.apache.oodt.cas.cl.action.CmdLineAction;
 
 //Google imports
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Collection of common helper methods.
@@ -124,7 +123,7 @@ public class CmdLineUtils {
 		Validate.notNull(action);
 		Validate.notNull(options);
 
-		Set<CmdLineOption> optionalOptions = new HashSet<CmdLineOption>();
+		Set<CmdLineOption> optionalOptions = Sets.newHashSet();
 		for (CmdLineOption option : options) {
 			if (isOptional(action, option)) {
 				optionalOptions.add(option);
@@ -171,6 +170,8 @@ public class CmdLineUtils {
 	 *         {@link CmdLineOption}s
 	 */
 	public static Set<CmdLineOption> getRequiredOptions(Set<CmdLineOption> options) {
+		Validate.notNull(options);
+
 		return getRequiredOptions(options, true);
 	}
 
@@ -191,7 +192,7 @@ public class CmdLineUtils {
 			Set<CmdLineOption> options, boolean ignoreActionOption) {
 		Validate.notNull(options);
 
-		HashSet<CmdLineOption> requiredOptions = new HashSet<CmdLineOption>();
+		Set<CmdLineOption> requiredOptions = Sets.newHashSet();
 		for (CmdLineOption option : options) {
 			if (option.isRequired()
 					&& !(isActionOption(option) && ignoreActionOption)) {
@@ -215,7 +216,7 @@ public class CmdLineUtils {
 			Set<CmdLineOption> options) {
 		Validate.notNull(options);
 
-		ArrayList<CmdLineOption> optionsList = new ArrayList<CmdLineOption>(options);
+		List<CmdLineOption> optionsList = Lists.newArrayList(options);
 		Collections.sort(optionsList, new Comparator<CmdLineOption>() {
 			public int compare(CmdLineOption option1, CmdLineOption option2) {
 				int thisScore = (option1.isRequired() ? 2 : 0)
@@ -274,10 +275,27 @@ public class CmdLineUtils {
 		return null;
 	}
 
-	public static boolean isSubOption(CmdLineOptionInstance specifiedOption, CmdLineOption option) {
-		if (specifiedOption.isGroup()) {
-			for (GroupCmdLineOption.SubOption subOption : ((GroupCmdLineOption) specifiedOption.getOption()).getSubOptions()) {
-				if (subOption.getOption().equals(option)) {
+	/**
+	 * Checks if given {@link CmdLineOption} is a sub-option of other given
+	 * {@link CmdLineOption}.
+	 * 
+	 * @param option
+	 *          {@link CmdLineOption} which is being checked if the other given
+	 *          {@link CmdLineOption} is one of its sub-options
+	 * @param subOption
+	 *          The {@link CmdLineOption} which is being check if it is a
+	 *          sub-option of the other given {@link CmdLineOption}
+	 * @return True if subOption is a sub-option of option
+	 */
+	public static boolean isSubOption(CmdLineOption option,
+			CmdLineOption subOption) {
+		Validate.notNull(option);
+		Validate.notNull(subOption);
+
+		if (isGroupOption(option)) {
+			for (GroupCmdLineOption.SubOption curSubOption : asGroupOption(option)
+					.getSubOptions()) {
+				if (curSubOption.getOption().equals(subOption)) {
 					return true;
 				}
 			}
@@ -285,9 +303,20 @@ public class CmdLineUtils {
 		return false;
 	}
 
+	/**
+	 * Finds all the perform-and-quit type {@link CmdLineOptionInstance}s from the
+	 * given {@link Set} of {@link CmdLineOptionInstance}s.
+	 * 
+	 * @param options
+	 *          The {@link Set} of {@link CmdLineOptionInstance} who will be check
+	 *          for perform-and-quit {@link CmdLineOptionInstance}s
+	 * @return The perform-and-quit {@link CmdLineOptionInstance}s found
+	 */
 	public static Set<CmdLineOptionInstance> findPerformAndQuitOptions(
 			Set<CmdLineOptionInstance> options) {
-		HashSet<CmdLineOptionInstance> performAndQuitOptions = new HashSet<CmdLineOptionInstance>();
+		Validate.notNull(options);
+
+		Set<CmdLineOptionInstance> performAndQuitOptions = Sets.newHashSet();
 		for (CmdLineOptionInstance option : options) {
 			if (isPerformAndQuitOption(option.getOption())) {
 				performAndQuitOptions.add(option);
@@ -296,14 +325,39 @@ public class CmdLineUtils {
 		return performAndQuitOptions;
 	}
 
+	/**
+	 * Checks if the given {@link CmdLineOption} is a perform-and-quit type
+	 * {@link CmdLineOption}.
+	 * 
+	 * @param option
+	 *          The {@link CmdLineOption} being checked if it is perform-and-quit
+	 *          type.
+	 * @return True if {@link CmdLineOption} is a perform-and-quit type, false
+	 *         otherwise.
+	 */
 	public static boolean isPerformAndQuitOption(CmdLineOption option) {
-		if (option instanceof AdvancedCmdLineOption) {
-			return ((AdvancedCmdLineOption) option).isPerformAndQuit();
+		Validate.notNull(option);
+
+		if (isSimpleOption(option)) {
+			return asSimpleOption(option).isPerformAndQuit();
 		}
 		return false;
 	}
 
-	public static CmdLineOptionInstance findSpecifiedOption(CmdLineOption option, Set<CmdLineOptionInstance> specifiedOptions) {
+	/**
+	 * Finds the first {@link CmdLineOptionInstance} whose {@link CmdLineOption}
+	 * is the given {@link CmdLineOption}.
+	 * 
+	 * @param option
+	 *          The {@link CmdLineOption} to find.
+	 * @param specifiedOptions
+	 *          The {@link CmdLineOptionInstance} whose {@link CmdLineOption} is
+	 *          the given {@link CmdLineOption}
+	 * @return The first {@link CmdLineOptionInstance} whose {@link CmdLineOption}
+	 *         is the given {@link CmdLineOption}, or null if not found
+	 */
+	public static CmdLineOptionInstance findSpecifiedOption(CmdLineOption option,
+			Set<CmdLineOptionInstance> specifiedOptions) {
 		Validate.notNull(option);
 		Validate.notNull(specifiedOptions);
 
@@ -315,11 +369,60 @@ public class CmdLineUtils {
 		return null;
 	}
 
+	/**
+	 * Finds the {@link CmdLineOptionInstance}s whose {@link CmdLineOption} is the
+	 * given {@link CmdLineOption}.
+	 * 
+	 * @param option
+	 *          The {@link CmdLineOption} to find.
+	 * @param specifiedOptions
+	 *          The {@link CmdLineOptionInstance} whose {@link CmdLineOption} is
+	 *          the given {@link CmdLineOption}
+	 * @return The {@link CmdLineOptionInstance}s whose {@link CmdLineOption} is
+	 *         the given {@link CmdLineOption}
+	 */
+	public static Set<CmdLineOptionInstance> findAllOfSpecifiedOption(
+			CmdLineOption option, Set<CmdLineOptionInstance> specifiedOptions) {
+		Validate.notNull(option);
+		Validate.notNull(specifiedOptions);
+
+		Set<CmdLineOptionInstance> options = Sets.newHashSet();
+		for (CmdLineOptionInstance specifiedOption : specifiedOptions) {
+			if (specifiedOption.getOption().equals(option)) {
+				options.add(specifiedOption);
+			}
+		}
+		return options;
+	}
+
+	/**
+	 * Checks if {@link CmdLineOption} is a {@link PrintSupportedActionsOption}.
+	 * 
+	 * @param option
+	 *          The {@link CmdLineOption} in question
+	 * @return True is {@link CmdLineOption} is a
+	 *         {@link PrintSupportedActionsOption}, false otherwise
+	 */
 	public static boolean isPrintSupportedActionsOption(CmdLineOption option) {
+		Validate.notNull(option);
+
 		return option instanceof PrintSupportedActionsCmdLineOption;
 	}
 
-	public static PrintSupportedActionsCmdLineOption findPrintSupportedActionsOption(Set<CmdLineOption> options) {
+	/**
+	 * Finds {@link CmdLineOption} of type
+	 * {@link PrintSupportedActionsCmdLineOption}.
+	 * 
+	 * @param options
+	 *          The {@link Set} of {@link CmdLineOption} to find a
+	 *          {@link PrintSupportedActionsCmdLineOption} in
+	 * @return The found {@link PrintSupportedActionsCmdLineOption}, or null if
+	 *         not found.
+	 */
+	public static PrintSupportedActionsCmdLineOption findPrintSupportedActionsOption(
+			Set<CmdLineOption> options) {
+		Validate.notNull(options);
+
 		for (CmdLineOption option : options) {
 			if (isPrintSupportedActionsOption(option)) {
 				return (PrintSupportedActionsCmdLineOption) option;
@@ -328,7 +431,22 @@ public class CmdLineUtils {
 		return null;
 	}
 
-	public static CmdLineOptionInstance findSpecifiedPrintSupportedActionsOption(Set<CmdLineOptionInstance> options) {
+	/**
+	 * Finds {@link CmdLineOptionInstance} whose {@link CmdLineOption} of type
+	 * {@link PrintSupportedActionsCmdLineOption}.
+	 * 
+	 * @param options
+	 *          The {@link Set} of {@link CmdLineOptionInstance} to find the
+	 *          {@link CmdLineOptionInstance} whose {@link CmdLineOption} is of
+	 *          type {@link PrintSupportedActionsCmdLineOption} in
+	 * @return The found {@link CmdLineOptionInstance} whose {@link CmdLineOption} is of
+	 *          type {@link PrintSupportedActionsCmdLineOption}, or null if
+	 *         not found.
+	 */
+	public static CmdLineOptionInstance findSpecifiedPrintSupportedActionsOption(
+			Set<CmdLineOptionInstance> options) {
+		Validate.notNull(options);
+
 		for (CmdLineOptionInstance option : options) {
 			if (isPrintSupportedActionsOption(option.getOption())) {
 				return option;
@@ -337,11 +455,58 @@ public class CmdLineUtils {
 		return null;
 	}
 
+	/**
+	 * Checks if {@link CmdLineOption} is a {@link SimpleCmdLineOption}.
+	 * 
+	 * @param option
+	 *          The {@link CmdLineOption} checked if it is a
+	 *          {@link SimpleCmdLineOption}
+	 * @return True if {@link CmdLineOption} is a {@link SimpleCmdLineOption},
+	 *         false otherwise
+	 */
+	public static boolean isSimpleOption(CmdLineOption option) {
+		Validate.notNull(option);
+
+		return option instanceof SimpleCmdLineOption;
+	}
+
+	/**
+	 * Casts the {@link CmdLineOption} to a {@link SimpleCmdLineOption}.
+	 *
+	 * @param option The {@link CmdLineOption} to cast as a {@link SimpleCmdLineOption}
+	 * @return The casted {@link CmdLineOption}
+	 */
+	public static SimpleCmdLineOption asSimpleOption(CmdLineOption option) { 
+		Validate.isTrue(isSimpleOption(option));
+
+		return (SimpleCmdLineOption) option;
+	}
+
+	/**
+	 * Checks if {@link CmdLineOption} is a {@link ActionCmdLineOption}.
+	 * 
+	 * @param option
+	 *          {@link CmdLineOption} check if a {@link ActionCmdLineOption}
+	 * @return True if {@link CmdLineOption} is a {@link ActionCmdLineOption},
+	 *         false otherwise
+	 */
 	public static boolean isActionOption(CmdLineOption option) {
+		Validate.notNull(option);
+
 		return option instanceof ActionCmdLineOption;
 	}
 
+	/**
+	 * Find {@link ActionCmdLineOption} in {@link Set} of {@link CmdLineOption}s.
+	 * 
+	 * @param options
+	 *          The {@link Set} of {@link CmdLineOption} to search through for a
+	 *          {@link ActionCmdLineOption}
+	 * @return The found {@link ActionCmdLineOption}, or null if not found
+	 */
 	public static ActionCmdLineOption findActionOption(Set<CmdLineOption> options) {
+		Validate.notNull(options);
+
 		for (CmdLineOption option : options) {
 			if (isActionOption(option)) {
 				return (ActionCmdLineOption) option;
@@ -350,7 +515,18 @@ public class CmdLineUtils {
 		return null;
 	}
 
-	public static CmdLineOptionInstance findSpecifiedActionOption(Set<CmdLineOptionInstance> options) {
+	/**
+	 * Find {@link ActionCmdLineOption} in {@link Set} of {@link CmdLineOption}s.
+	 * 
+	 * @param options
+	 *          The {@link Set} of {@link CmdLineOption} to search through for a
+	 *          {@link ActionCmdLineOption}
+	 * @return The found {@link ActionCmdLineOption}, or null if not found
+	 */
+	public static CmdLineOptionInstance findSpecifiedActionOption(
+			Set<CmdLineOptionInstance> options) {
+		Validate.notNull(options);
+
 		for (CmdLineOptionInstance option : options) {
 			if (isActionOption(option.getOption())) {
 				return option;
@@ -359,11 +535,75 @@ public class CmdLineUtils {
 		return null;
 	}
 
+	/**
+	 * Checks if {@link CmdLineOption} is a {@link GroupCmdLineOption}.
+	 * 
+	 * @param option
+	 *          {@link CmdLineOption} in question
+	 * @return True if {@link CmdLineOption} is a {@link GroupCmdLineOption},
+	 *         false otherwise
+	 */
+	public static boolean isGroupOption(CmdLineOption option) {
+		Validate.notNull(option);
+
+		return option instanceof GroupCmdLineOption;
+	}
+
+	/**
+	 * Cast {@link CmdLineOption} to a {@link GroupCmdLineOption}.
+	 * 
+	 * @param option
+	 *          The {@link CmdLineOption} to be cast as a
+	 *          {@link GroupCmdLineOption}
+	 * @return A {@link GroupCmdLineOption}
+	 */
+	public static GroupCmdLineOption asGroupOption(CmdLineOption option) {
+		Validate.isTrue(isGroupOption(option));
+
+		return (GroupCmdLineOption) option;
+	}
+
+	/**
+	 * Checks if {@link CmdLineOption} is a {@link HelpCmdLineOption}.
+	 * 
+	 * @param option
+	 *          The {@link CmdLineOption} that is checked if it is a
+	 *          {@link HelpCmdLineOption}
+	 * @return True if {@link CmdLineOption} is a {@link HelpCmdLineOption},
+	 *         otherwise false
+	 */
 	public static boolean isHelpOption(CmdLineOption option) {
+		Validate.notNull(option);
+
 		return option instanceof HelpCmdLineOption;
 	}
 
+	/**
+	 * Casts {@link CmdLineOption} to a {@link HelpCmdLineOption}.
+	 * 
+	 * @param option
+	 *          The {@link CmdLineOption} to be cast as a
+	 *          {@link HelpCmdLineOption}
+	 * @return A {@link HelpCmdLineOption}
+	 */
+	public static HelpCmdLineOption asHelpOption(CmdLineOption option) {
+		Validate.isTrue(isHelpOption(option));
+
+		return (HelpCmdLineOption) option;
+	}
+
+	/**
+	 * Finds the {@link HelpCmdLineOption} in the {@link Set} of
+	 * {@link CmdLineOption}s.
+	 * 
+	 * @param options
+	 *          The {@link Set} of {@link CmdLineOption}s to search through for
+	 *          {@link HelpCmdLineOption}
+	 * @return The found {@link HelpCmdLineOption}, null if not found
+	 */
 	public static HelpCmdLineOption findHelpOption(Set<CmdLineOption> options) {
+		Validate.notNull(options);
+
 		for (CmdLineOption option : options) {
 			if (isHelpOption(option)) {
 				return (HelpCmdLineOption) option;
@@ -372,8 +612,20 @@ public class CmdLineUtils {
 		return null;
 	}
 
+	/**
+	 * Finds the {@link CmdLineOptionInstance} whose {@link CmdLineOption} is of
+	 * type {@link HelpCmdLineOption}
+	 * 
+	 * @param options
+	 *          The {@link Set} of {@link CmdLineOptionInstance}s to search
+	 *          through for the {@link CmdLineOptionInstance} whose
+	 *          {@link CmdLineOption} is of type {@link HelpCmdLineOption}
+	 * @return The found {@link CmdLineOptionInstance}, null if not found
+	 */
 	public static CmdLineOptionInstance findSpecifiedHelpOption(
 			Set<CmdLineOptionInstance> options) {
+		Validate.notNull(options);
+
 		for (CmdLineOptionInstance option : options) {
 			if (isHelpOption(option.getOption())) {
 				return option;
@@ -382,6 +634,13 @@ public class CmdLineUtils {
 		return null;
 	}
 
+	/**
+	 * Finds the {@link CmdLineAction} specified by the given {@link CmdLineOptionInstance}.
+	 *
+	 * @param actionOption The {@link CmdLineOptionInstance} which specifies an {@link ActionCmdLineOption}
+	 * @param supportedActions {@link Set} of supported {@link CmdLineAction}s
+	 * @return The found {@link CmdLineAction}, null if not found
+	 */
 	public static CmdLineAction findAction(CmdLineOptionInstance actionOption,
 			Set<CmdLineAction> supportedActions) {
 		Validate.isTrue(actionOption.isAction());
