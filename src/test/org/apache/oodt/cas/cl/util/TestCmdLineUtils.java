@@ -29,6 +29,7 @@ import junit.framework.TestCase;
 //OODT imports
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.option.ActionCmdLineOption;
+import org.apache.oodt.cas.cl.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
@@ -36,10 +37,13 @@ import org.apache.oodt.cas.cl.option.GroupCmdLineOption.SubOption;
 import org.apache.oodt.cas.cl.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cl.option.PrintSupportedActionsCmdLineOption;
 import org.apache.oodt.cas.cl.option.SimpleCmdLineOption;
+import org.apache.oodt.cas.cl.option.handler.CmdLineOptionHandler;
 import org.apache.oodt.cas.cl.option.require.RequirementRule;
 import org.apache.oodt.cas.cl.option.require.RequirementRule.Relation;
 import org.apache.oodt.cas.cl.option.require.StdRequirementRule;
 import org.apache.oodt.cas.cl.option.require.ActionDependency;
+import org.apache.oodt.cas.cl.option.validator.AllowedArgsCmdLineOptionValidator;
+import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 import org.apache.oodt.cas.cl.util.CmdLineUtils;
 
 //Google imports
@@ -400,6 +404,39 @@ public class TestCmdLineUtils extends TestCase {
 		assertNull(CmdLineUtils.findSpecifiedHelpOption(options));
 		options.add(helpOption);
 		assertEquals(helpOption, CmdLineUtils.findSpecifiedHelpOption(options));
+	}
+
+	public void testValidate() {
+		AdvancedCmdLineOption option = new AdvancedCmdLineOption("t", "test", "", true);
+		AllowedArgsCmdLineOptionValidator validator = new AllowedArgsCmdLineOptionValidator();
+		validator.setAllowedArgs(Lists.newArrayList("value"));
+		option.setValidators(Lists.newArrayList((CmdLineOptionValidator) validator));
+
+		assertFalse(CmdLineUtils.validate(createOptionInstance(option, "value1")));
+		assertTrue(CmdLineUtils.validate(createOptionInstance(option, "value")));		
+	}
+
+	public void testHandle() {
+		CmdLineAction action = createAction("testAction");
+		action.setDescription("test description");
+		AdvancedCmdLineOption option = new AdvancedCmdLineOption("t", "test", "", true);
+		// Insure runs with no errors when action doesn't have a handler.
+		CmdLineUtils.handle(action, createOptionInstance(option));
+
+		// Test case when option has a handler.
+		option.setHandler(new CmdLineOptionHandler() {
+
+			public void handleOption(CmdLineAction selectedAction,
+					CmdLineOptionInstance optionInstance) {
+				selectedAction.setDescription("handler modified description");
+			}
+
+			public String getHelp(CmdLineOption option) {
+				return null;
+			}
+		});
+		CmdLineUtils.handle(action, createOptionInstance(option));
+		assertEquals("handler modified description", action.getDescription());
 	}
 
 	public void testFindAction() {

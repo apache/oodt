@@ -19,6 +19,7 @@ package org.apache.oodt.cas.cl.util;
 //JDK imports
 import java.util.Arrays;
 
+//OODT imports
 import org.apache.oodt.cas.cl.util.Args;
 
 //JUnit imports

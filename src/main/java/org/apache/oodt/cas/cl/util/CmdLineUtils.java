@@ -655,9 +655,20 @@ public class CmdLineUtils {
 		return null;
 	}
 
+	/**
+	 * Validates the given {@link CmdLineOptionInstance}.
+	 * 
+	 * @param option
+	 *          The {@link CmdLineOptionInstance} to be validated
+	 * @return True if {@link CmdLineOptionInstance} passed validation, false
+	 *         otherwise
+	 */
 	public static boolean validate(CmdLineOptionInstance option) {
+		Validate.notNull(option);
+
 		if (option.isValidatable()) {
-			for (CmdLineOptionValidator validator : ((ValidatableCmdLineOption) option.getOption()).getValidators()) {
+			for (CmdLineOptionValidator validator : ((ValidatableCmdLineOption) option
+					.getOption()).getValidators()) {
 				if (!validator.validate(option)) {
 					return false;
 				}
@@ -666,12 +677,32 @@ public class CmdLineUtils {
 		return true;
 	}
 
+	/**
+	 * Runs the {@link CmdLineOptionInstance}'s handler against the given
+	 * {@link CmdLineAction}.
+	 * 
+	 * @param action
+	 *          The {@link CmdLineAction} which the given
+	 *          {@link CmdLineOptionInstance}'s handler will be run against
+	 * @param option
+	 *          The {@link CmdLineOptionInstance} whose handler will be run
+	 *          against the given {@link CmdLineAction}
+	 */
 	public static void handle(CmdLineAction action, CmdLineOptionInstance option) {
-		if (option.isHandleable()) {
-			((HandleableCmdLineOption) option.getOption()).getHandler().handleOption(action, option);
+		Validate.notNull(action);
+		Validate.notNull(option);
+
+		if (option.isHandleable()
+				&& ((HandleableCmdLineOption) option.getOption()).getHandler() != null) {
+			((HandleableCmdLineOption) option.getOption()).getHandler().handleOption(
+					action, option);
 		}
 	}
 
+	/**
+	 * Formats given string to a string where txt starts at startIndex and wraps
+	 * around at endIndex, all other indexes are filled with empty space.
+	 */
 	public static String getFormattedString(String string, int startIndex,
 			int endIndex) {
 		StringBuffer outputString = new StringBuffer("");
