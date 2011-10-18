@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-333 XMLPS query doesn't quote literal string 
+  (Ricky Nguyen, mattmann, Sheryl John)
+
 * OODT-323 Add new command line option in Workflow manager 
   client to get Workflow Instance Metadata (Sheryl John via mattmann)
 
