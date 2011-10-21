@@ -16,9 +16,17 @@
  */
 package org.apache.oodt.cas.cl.util;
 
+//OODT static imports
+import static org.apache.oodt.cas.cl.test.util.TestUtils.createAction;
+import static org.apache.oodt.cas.cl.test.util.TestUtils.createActionOption;
+import static org.apache.oodt.cas.cl.test.util.TestUtils.createGroupOption;
+import static org.apache.oodt.cas.cl.test.util.TestUtils.createOptionInstance;
+import static org.apache.oodt.cas.cl.test.util.TestUtils.createOptionalRequirementRule;
+import static org.apache.oodt.cas.cl.test.util.TestUtils.createRequiredRequirementRule;
+import static org.apache.oodt.cas.cl.test.util.TestUtils.createSimpleOption;
+
 //JDK imports
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,10 +46,6 @@ import org.apache.oodt.cas.cl.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cl.option.PrintSupportedActionsCmdLineOption;
 import org.apache.oodt.cas.cl.option.SimpleCmdLineOption;
 import org.apache.oodt.cas.cl.option.handler.CmdLineOptionHandler;
-import org.apache.oodt.cas.cl.option.require.RequirementRule;
-import org.apache.oodt.cas.cl.option.require.RequirementRule.Relation;
-import org.apache.oodt.cas.cl.option.require.StdRequirementRule;
-import org.apache.oodt.cas.cl.option.require.ActionDependency;
 import org.apache.oodt.cas.cl.option.validator.AllowedArgsCmdLineOptionValidator;
 import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 import org.apache.oodt.cas.cl.util.CmdLineUtils;
@@ -447,81 +451,5 @@ public class TestCmdLineUtils extends TestCase {
 				createAction("TestAction3"));
 		assertNull(CmdLineUtils.findAction(createOptionInstance(createActionOption("action"), "TestAction"), actions));
 		assertEquals(action, CmdLineUtils.findAction(createOptionInstance(createActionOption("action"), "TestAction1"), actions));
-	}
-
-	private static CmdLineAction createAction(String name) {
-		return new CmdLineAction(name, "This is an action description") {
-
-			@Override
-			public void execute() {
-				// do nothing
-			}
-
-		};
-	}
-
-	private static GroupCmdLineOption createGroupOption(String longName,
-			boolean required) {
-		GroupCmdLineOption option = new GroupCmdLineOption();
-		option.setLongOption(longName);
-		option.setShortOption(longName);
-		option.setRequired(required);
-		return option;
-	}
-
-	private static SimpleCmdLineOption createSimpleOption(String longName,
-			boolean required) {
-		return createSimpleOption(longName, longName, required);
-	}
-
-	private static SimpleCmdLineOption createSimpleOption(String shortName,
-			String longName, boolean required) {
-		SimpleCmdLineOption option = new SimpleCmdLineOption();
-		option.setShortOption(shortName);
-		option.setLongOption(longName);
-		option.setRequired(required);
-		return option;
-	}
-
-	private static SimpleCmdLineOption createSimpleOption(String longName,
-			RequirementRule rule) {
-		return createSimpleOption(longName, longName, rule);
-	}
-
-	private static SimpleCmdLineOption createSimpleOption(String shortName,
-			String longName, RequirementRule rule) {
-		SimpleCmdLineOption option = new SimpleCmdLineOption();
-		option.setShortOption(shortName);
-		option.setLongOption(longName);
-		option.setRequirementRules(Collections.singletonList(rule));
-		return option;
-	}
-
-	public static ActionCmdLineOption createActionOption(String longName) {
-		ActionCmdLineOption option = new ActionCmdLineOption();
-		option.setLongOption(longName);
-		option.setShortOption(longName);
-		return option;
-	}
-
-	public static CmdLineOptionInstance createOptionInstance(
-			CmdLineOption option, String... values) {
-		return new CmdLineOptionInstance(option, Lists.newArrayList(values));
-	}
-
-	private static RequirementRule createRequiredRequirementRule(
-			CmdLineAction action) {
-		StdRequirementRule rule = new StdRequirementRule();
-		rule.addActionDependency(new ActionDependency(action.getName(),
-				Relation.REQUIRED));
-		return rule;
-	}
-
-	private static RequirementRule createOptionalRequirementRule(
-			CmdLineAction action) {
-		StdRequirementRule rule = new StdRequirementRule();
-		rule.addActionDependency(new ActionDependency(action.getName(),
-				Relation.OPTIONAL));
-		return rule;
 	}
 }

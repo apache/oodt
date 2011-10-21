@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
@@ -38,6 +39,8 @@ public class AllowedArgsCmdLineOptionValidator implements
 	}
 
 	public boolean validate(CmdLineOptionInstance optionInst) {
+		Validate.notNull(optionInst);
+
 		for (String value : optionInst.getValues()) {
 			if (!allowedArgs.contains(value)) {
 				LOG.severe("Option value " + value + " is not allowed for option "

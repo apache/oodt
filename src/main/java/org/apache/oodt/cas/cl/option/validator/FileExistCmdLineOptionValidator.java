@@ -14,22 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.oodt.cas.cl.option.validator;
 
 //JDK imports
 import java.io.File;
 
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * A {@link CmdLineOptionValidator} which checks args if they are existing files.
+ *
+ * @author bfoster (Brian Foster)
  */
 public class FileExistCmdLineOptionValidator implements CmdLineOptionValidator {
 
 	public boolean validate(CmdLineOptionInstance optionInst) {
+		Validate.notNull(optionInst);
+
 		for (String value : optionInst.getValues()) {
 			if (!new File(value).exists()) {
 				LOG.severe("Option value " + value + " for option "

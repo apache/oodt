@@ -20,9 +20,9 @@ package org.apache.oodt.cas.cl.option.validator;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
- * 
- * @author bfoster
- * @version $Revision$
+ * A {@link CmdLineOptionValidator} which always returns true.
+ *
+ * @author bfoster (Brian Foster)
  */
 public class NoRestrictionsCmdLineOptionValidator implements
         CmdLineOptionValidator {

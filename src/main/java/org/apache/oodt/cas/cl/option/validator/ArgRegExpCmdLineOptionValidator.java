@@ -14,32 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.oodt.cas.cl.option.validator;
 
 //JDK imports
 import java.util.regex.Pattern;
 
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * Performs validation on option instances via allowed args which are regular
+ * expressions for allowed argument values.
+ *
+ * @author bfoster (Brian Foster)
  */
 public class ArgRegExpCmdLineOptionValidator extends
 		AllowedArgsCmdLineOptionValidator {
 
 	@Override
 	public boolean validate(CmdLineOptionInstance optionInst) {
-		TOP: for (String value : optionInst.getValues()) {
-			for (String regex : this.getAllowedArgs()) {
-				if (Pattern.matches(regex, value))
+		Validate.notNull(optionInst);
+
+		TOP:
+		for (String value : optionInst.getValues()) {
+			for (String regex : getAllowedArgs()) {
+				if (Pattern.matches(regex, value)) {
 					continue TOP;
+				}
 			}
-			LOG.severe("Option value " + value + " is not allowed for option "
+			LOG.severe("Option1 value " + value + " is not allowed for option "
 					+ optionInst.getOption().getLongOption() + " - Allowed values = "
-					+ this.getAllowedArgs());
+					+ getAllowedArgs());
 			return false;
 		}
 		return true;

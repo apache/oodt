@@ -14,20 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.oodt.cas.cl.option.validator;
 
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * Validates arguments which are checked to see if they are valid classpaths.
+ *
+ * @author bfoster (Brian Foster)
  */
 public class ClassExistsCmdLineOptionValidator implements
 		CmdLineOptionValidator {
 
 	public boolean validate(CmdLineOptionInstance optionInst) {
+		Validate.notNull(optionInst);
+
 		for (String value : optionInst.getValues()) {
 			try {
 				Class.forName(value);
