@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.oodt.cas.cl.option.validator;
 
 //JDK imports
@@ -26,8 +25,10 @@ import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * A {@link CmdLineOptionValidator} which check args against a supplied list of
+ * valid allowed arguments.
+ *
+ * @author bfoster (Brian Foster)
  */
 public class AllowedArgsCmdLineOptionValidator implements
 		CmdLineOptionValidator {

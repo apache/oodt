@@ -36,9 +36,6 @@ import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 //Google imports
 import com.google.common.collect.Lists;
 
-//JUnit imports
-import junit.framework.TestCase;
-
 /**
  * Base Test case for CAS-CL unit tests.
  *
