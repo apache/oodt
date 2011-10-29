@@ -20,8 +20,10 @@ package org.apache.oodt.cas.cl.option.require;
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * A {@link CmdLineOption} requirement rule which specifies if it is
+ * required, optional, or not required at all.
+ *
+ * @author bfoster (Brian Foster)
  */
 public interface RequirementRule {
 
