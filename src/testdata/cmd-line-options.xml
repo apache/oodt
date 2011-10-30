@@ -29,7 +29,7 @@
     <property name="type" value="java.io.OutputStream" />
     <property name="defaultArgs">
       <list>
-        <value>org.apache.oodt.cas.cl.store.spring.TestOutputStream</value>
+        <value>org.apache.oodt.cas.cl.test.util.TestOutputStream</value>
       </list>
     </property>
     <property name="argsDescription" value="OutputStream classpath" />
@@ -41,11 +41,11 @@
     </property>
     <property name="handler">
       <bean
-        class="org.apache.oodt.cas.cl.option.handler.CmdLineOptionBeanHandler">
-        <property name="applyToBeans">
+        class="org.apache.oodt.cas.cl.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
           <list>
-            <bean class="org.apache.oodt.cas.cl.option.handler.BeanInfo"
-              p:bean-ref="PrintMessageAction" p:methodName="setOutputStream" />
+            <bean class="org.apache.oodt.cas.cl.option.handler.ApplyToAction"
+              p:actionName="PrintMessageAction" p:methodName="setOutputStream" />
           </list>
         </property>
       </bean>
@@ -66,11 +66,11 @@
 		</property>
 		<property name="handler">
 			<bean
-				class="org.apache.oodt.cas.cl.option.handler.CmdLineOptionBeanHandler">
-				<property name="applyToBeans">
+				class="org.apache.oodt.cas.cl.option.handler.ApplyToActionHandler">
+				<property name="applyToActions">
 					<list>
-						<bean class="org.apache.oodt.cas.cl.option.handler.BeanInfo"
-							p:bean-ref="PrintMessageAction" p:methodName="setMessage" />
+						<bean class="org.apache.oodt.cas.cl.option.handler.ApplyToAction"
+							p:actionName="PrintMessageAction" p:methodName="setMessage" />
 					</list>
 				</property>
 			</bean>

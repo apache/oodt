@@ -14,28 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cl.store.spring;
-
-//JDK imports
-import java.io.IOException;
-import java.io.OutputStream;
+package org.apache.oodt.cas.cl.option.handler;
 
 /**
- * Test {@link OutputStream} which writes everything to a
- * {@link StringBuffer} which can be retrieved to see what was written.
+ * Mapping of {@link CmdLineAction} name to its method which should be called
+ * by {@link ApplyToActionHandler} when injecting argument value.
  *
  * @author bfoster (Brian Foster)
  */
-public class TestOutputStream extends OutputStream {
+public class ApplyToAction {
 
-	private StringBuffer sb = new StringBuffer("");
+	private String actionName;
+	private String methodName;
 
-	@Override
-	public void write(int character) throws IOException {
-		sb.append((char) character);
+	public ApplyToAction() {}
+
+	public ApplyToAction(String actionName, String methodName) {
+		this.actionName = actionName;
+		this.methodName = methodName;
 	}
 
-	public String getText() {
-		return sb.toString();
+	public String getActionName() {
+		return actionName;
+	}
+
+	public void setActionName(String actionName) {
+		this.actionName = actionName;
+	}
+
+	public String getMethodName() {
+		return methodName;
+	}
+
+	public void setMethodName(String methodName) {
+		this.methodName = methodName;
 	}
 }

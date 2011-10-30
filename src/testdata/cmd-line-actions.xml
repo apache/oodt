@@ -28,5 +28,8 @@
   <bean id="PrintHelloWorldAction" class="org.apache.oodt.cas.cl.action.PrintMessageAction">
     <property name="description" value="Prints out 'Hello World'"/>
     <property name="message" value="Hello World"/>
-  </bean>    
+  </bean>
+  <bean id="TestSetContextInjectAction" class="org.apache.oodt.cas.cl.test.util.TestSetContextInjectTypeAction">
+    <property name="description" value="Test action for testing application context injection"/>
+  </bean>
 </beans>

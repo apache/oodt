@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cl.store.spring;
+package org.apache.oodt.cas.cl.option.store.spring;
 
 //OODT static imports
 import static org.apache.oodt.cas.cl.test.util.TestUtils.createOptionInstance;
@@ -22,78 +22,40 @@ import static org.apache.oodt.cas.cl.util.CmdLineUtils.findAction;
 import static org.apache.oodt.cas.cl.util.CmdLineUtils.getOptionByName;
 
 //JDK imports
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 //OODT imports
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.action.PrintMessageAction;
+import org.apache.oodt.cas.cl.action.store.spring.SpringCmdLineActionStore;
 import org.apache.oodt.cas.cl.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
-import org.apache.oodt.cas.cl.option.handler.CmdLineOptionBeanHandler;
+import org.apache.oodt.cas.cl.option.handler.ApplyToActionHandler;
 import org.apache.oodt.cas.cl.option.require.ActionDependencyRule;
 import org.apache.oodt.cas.cl.option.require.RequirementRule.Relation;
-import org.springframework.context.ApplicationContext;
+import org.apache.oodt.cas.cl.test.util.TestOutputStream;
 
 //JUnit imports
 import junit.framework.TestCase;
 
 /**
- * Test class for {@link SpringCmdLineStore}.
+ * Test class for {@link SpringCmdLineOptionStore}.
  *
  * @author bfoster (Brian Foster)
  */
-public class TestSpringCmdLineStore extends TestCase {
+public class TestSpringCmdLineOptionStore extends TestCase {
 
-	private static final String SPRING_CONFIG = "src/testdata/cmd-line-config.xml";
-
-	public void testActionNamesAutoSet() {
-		SpringCmdLineStore store = new SpringCmdLineStore(SPRING_CONFIG);
-		ApplicationContext appContext = store.getApplicationContext();
-		@SuppressWarnings("unchecked")
-		Map<String, CmdLineAction> actionsMap = appContext.getBeansOfType(CmdLineAction.class);
-		for (Entry<String, CmdLineAction> entry : actionsMap.entrySet()) {
-			assertEquals(entry.getKey(), entry.getValue().getName());
-		}
-	}
-
-	public void testApplicationContextAutoSet() {
-		SpringCmdLineStore store = new SpringCmdLineStore(SPRING_CONFIG);
-		AdvancedCmdLineOption option = (AdvancedCmdLineOption) getOptionByName(
-				"outputStream", store.loadSupportedOptions());
-		assertEquals(((CmdLineOptionBeanHandler) option.getHandler()).getContext(),
-				store.getApplicationContext());
-	}
-
-	public void testLoadSupportedActions() {
-		SpringCmdLineStore store = new SpringCmdLineStore(SPRING_CONFIG);
-		Set<CmdLineAction> actions = store.loadSupportedActions();
-
-		// Check that all actions were loaded.
-		assertEquals(2, actions.size());
-
-		// Load and verify PrintMessageAction was loaded correctly.
-		CmdLineAction action = findAction("PrintMessageAction", actions);
-		assertTrue(action instanceof PrintMessageAction);
-		PrintMessageAction pma = (PrintMessageAction) action;
-		assertEquals("Prints out a given message", pma.getDescription());
-		assertNull(pma.getMessage());
-		assertEquals(System.out, pma.getOutputStream());
-
-		// Load and verify PrintHelloWorldAction was loaded correctly.
-		action = findAction("PrintHelloWorldAction", actions);
-		assertTrue(action instanceof PrintMessageAction);
-		pma = (PrintMessageAction) action;
-		assertEquals("Prints out 'Hello World'", pma.getDescription());
-		assertEquals("Hello World", pma.getMessage());
-		assertEquals(System.out, pma.getOutputStream());
-	}
+	private static final String SPRING_OPTION_CONFIG = "src/testdata/cmd-line-options.xml";
+	private static final String SPRING_ACTION_CONFIG = "src/testdata/cmd-line-actions.xml";
 
 	public void testLoadSupportedOptions() {
-		SpringCmdLineStore store = new SpringCmdLineStore(SPRING_CONFIG);
-		Set<CmdLineOption> options = store.loadSupportedOptions();
-
+		SpringCmdLineOptionStore optionStore = new SpringCmdLineOptionStore(
+				SPRING_OPTION_CONFIG);
+		Set<CmdLineOption> options = optionStore.loadSupportedOptions();
+		SpringCmdLineActionStore actionStore = new SpringCmdLineActionStore(
+				SPRING_ACTION_CONFIG);
+		Set<CmdLineAction> actions = actionStore.loadSupportedActions();
+		
 		// Check that all options were loaded.
 		assertEquals(2, options.size());
 
@@ -106,7 +68,7 @@ public class TestSpringCmdLineStore extends TestCase {
 		assertEquals("Specify OutputStream", advancedOption.getDescription());
 		assertTrue(advancedOption.hasArgs());
 		assertEquals(1, advancedOption.getDefaultArgs().size());
-		assertEquals("org.apache.oodt.cas.cl.store.spring.TestOutputStream",
+		assertEquals("org.apache.oodt.cas.cl.test.util.TestOutputStream",
 				advancedOption.getDefaultArgs().get(0));
 		assertEquals("OutputStream classpath", advancedOption.getArgsDescription());
 		assertEquals(1, advancedOption.getRequirementRules().size());
@@ -130,22 +92,25 @@ public class TestSpringCmdLineStore extends TestCase {
 		assertEquals(Relation.REQUIRED, ((ActionDependencyRule) advancedOption
 				.getRequirementRules().get(0)).getRelation());
 		assertNotNull(advancedOption.getHandler());
-		assertTrue(advancedOption.getHandler() instanceof CmdLineOptionBeanHandler);
-		assertEquals(1, ((CmdLineOptionBeanHandler) advancedOption.getHandler())
-				.getApplyToBeans().size());
+		assertTrue(advancedOption.getHandler() instanceof ApplyToActionHandler);
+		assertEquals(1, ((ApplyToActionHandler) advancedOption.getHandler())
+				.getApplyToActions().size());
 		assertEquals(
-				findAction("PrintMessageAction", store.loadSupportedActions()),
-				((CmdLineOptionBeanHandler) advancedOption.getHandler())
-						.getApplyToBeans().get(0).getBean());
+				findAction("PrintMessageAction", actions).getName(),
+				((ApplyToActionHandler) advancedOption.getHandler())
+						.getApplyToActions().get(0).getActionName());
 		assertEquals("setMessage",
-				((CmdLineOptionBeanHandler) advancedOption.getHandler())
-						.getApplyToBeans().get(0).getMethodName());
+				((ApplyToActionHandler) advancedOption.getHandler())
+						.getApplyToActions().get(0).getMethodName());
 	}
 
 	public void testHandlers() {
-		SpringCmdLineStore store = new SpringCmdLineStore(SPRING_CONFIG);
+		SpringCmdLineOptionStore store = new SpringCmdLineOptionStore(
+				SPRING_OPTION_CONFIG);
 		Set<CmdLineOption> options = store.loadSupportedOptions();
-		Set<CmdLineAction> actions = store.loadSupportedActions();
+		SpringCmdLineActionStore actionStore = new SpringCmdLineActionStore(
+				SPRING_ACTION_CONFIG);
+		Set<CmdLineAction> actions = actionStore.loadSupportedActions();
 
 		// Load PrintHelloWorldAction
 		PrintMessageAction printHelloWorldAction = (PrintMessageAction) findAction(

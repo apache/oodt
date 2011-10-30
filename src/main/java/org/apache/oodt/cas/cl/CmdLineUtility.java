@@ -16,6 +16,7 @@
  */
 package org.apache.oodt.cas.cl;
 
+//OODT static imports
 import static org.apache.oodt.cas.cl.util.CmdLineUtils.determineRequired;
 import static org.apache.oodt.cas.cl.util.CmdLineUtils.findActionOption;
 import static org.apache.oodt.cas.cl.util.CmdLineUtils.findHelpOption;
@@ -29,6 +30,8 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 
 //OODT imports
+import org.apache.oodt.cas.cl.action.store.CmdLineActionStore;
+import org.apache.oodt.cas.cl.action.store.spring.SpringCmdLineActionStoreFactory;
 import org.apache.oodt.cas.cl.help.presenter.CmdLineOptionHelpPresenter;
 import org.apache.oodt.cas.cl.help.presenter.StdCmdLineOptionHelpPresenter;
 import org.apache.oodt.cas.cl.help.printer.CmdLineActionHelpPrinter;
@@ -41,10 +44,10 @@ import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cl.option.PrintSupportedActionsCmdLineOption;
+import org.apache.oodt.cas.cl.option.store.CmdLineOptionStore;
+import org.apache.oodt.cas.cl.option.store.spring.SpringCmdLineOptionStoreFactory;
 import org.apache.oodt.cas.cl.parser.CmdLineOptionParser;
 import org.apache.oodt.cas.cl.parser.StdCmdLineOptionParser;
-import org.apache.oodt.cas.cl.store.CmdLineStore;
-import org.apache.oodt.cas.cl.store.spring.SpringCmdLineStoreFactory;
 import org.apache.oodt.cas.cl.util.Args;
 import org.apache.oodt.cas.cl.util.CmdLineUtils;
 
@@ -60,7 +63,8 @@ import org.apache.oodt.cas.cl.util.CmdLineUtils;
 public class CmdLineUtility {
 
 	private CmdLineOptionParser parser;
-	private CmdLineStore optionStore;
+	private CmdLineOptionStore optionStore;
+	private CmdLineActionStore actionStore;
 	private CmdLineOptionHelpPrinter optionHelpPrinter;
 	private CmdLineActionHelpPrinter actionHelpPrinter;
 	private CmdLineActionsHelpPrinter actionsHelpPrinter;
@@ -68,18 +72,27 @@ public class CmdLineUtility {
 	
 	public CmdLineUtility() {
 		parser = new StdCmdLineOptionParser();
-		optionStore = new SpringCmdLineStoreFactory().createStore();
+		optionStore = new SpringCmdLineOptionStoreFactory().createStore();
+		actionStore = new SpringCmdLineActionStoreFactory().createStore();
 		optionHelpPrinter = new StdCmdLineOptionHelpPrinter();
 		actionHelpPrinter = new StdCmdLineActionHelpPrinter();
 		helpPresenter = new StdCmdLineOptionHelpPresenter();
 	}
 
-	public CmdLineStore getOptionStore() {
+	public CmdLineOptionStore getOptionStore() {
 		return optionStore;
 	}
 
-	public void setOptionStore(CmdLineStore optionStore) {
+	public void setOptionStore(CmdLineOptionStore optionStore) {
 		this.optionStore = optionStore;
+	}
+
+	public CmdLineActionStore getActionStore() {
+		return actionStore;
+	}
+
+	public void setActionStore(CmdLineActionStore actionStore) {
+		this.actionStore = actionStore;
 	}
 
 	public CmdLineOptionHelpPrinter getOptionHelpPrinter() {
@@ -174,7 +187,7 @@ public class CmdLineUtility {
 		}
 
  		// Parse command line arguments.
-		return new CmdLineArgs(optionStore.loadSupportedActions(), validOptions, parser.parse(new Args(args), validOptions));
+		return new CmdLineArgs(actionStore.loadSupportedActions(), validOptions, parser.parse(new Args(args), validOptions));
 	}
 
 	/**
