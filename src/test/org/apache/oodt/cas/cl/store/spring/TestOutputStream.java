@@ -14,21 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cl.option;
+package org.apache.oodt.cas.cl.store.spring;
+
+//JDK imports
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * The Print Supported Actions {@link CmdLineOption}. 
+ * Test {@link OutputStream} which writes everything to a
+ * {@link StringBuffer} which can be retrieved to see what was written.
  *
  * @author bfoster (Brian Foster)
  */
-public class PrintSupportedActionsCmdLineOption extends SimpleCmdLineOption {
+public class TestOutputStream extends OutputStream {
 
-	public PrintSupportedActionsCmdLineOption() {
-		super("psa", "printSupportedActions", "Print Supported Actions", false);
+	private StringBuffer sb = new StringBuffer("");
+
+	@Override
+	public void write(int character) throws IOException {
+		sb.append((char) character);
 	}
 
-	public PrintSupportedActionsCmdLineOption(String shortOption, String longOption,
-			String description, boolean hasArgs) {
-		super(shortOption, longOption, description, hasArgs);
+	public String getText() {
+		return sb.toString();
 	}
 }

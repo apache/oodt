@@ -645,8 +645,22 @@ public class CmdLineUtils {
 			Set<CmdLineAction> supportedActions) {
 		Validate.isTrue(actionOption.isAction());
 		Validate.notEmpty(actionOption.getValues());
+		Validate.notNull(supportedActions);
 
-		String actionName = actionOption.getValues().get(0);
+		return findAction(actionOption.getValues().get(0), supportedActions);
+	}
+
+	/**
+	 * Finds a {@link CmdLineAction} by its name.
+	 *
+	 * @param actionName Name of {@link CmdLineAction} to find
+	 * @param supportedActions {@link Set} of supported {@link CmdLineAction}s
+	 * @return Found {@link CmdLineAction} or null if not found
+	 */
+	public static CmdLineAction findAction(String actionName, Set<CmdLineAction> supportedActions) {
+		Validate.notNull(actionName);
+		Validate.notNull(supportedActions);
+
 		for (CmdLineAction action : supportedActions) {
 			if (action.getName().equals(actionName)) {
 				return action;
@@ -723,7 +737,8 @@ public class CmdLineUtils {
 	}
 
 	public static List<?> convertToType(List<String> values, Class<?> type)
-			throws MalformedURLException, ClassNotFoundException {
+			throws MalformedURLException, ClassNotFoundException,
+			InstantiationException, IllegalAccessException {
 		if (type.equals(File.class)) {
 			List<Object> files = new LinkedList<Object>();
 			for (String value : values)
@@ -767,7 +782,16 @@ public class CmdLineUtils {
 				combinedString.append(value + " ");
 			return Lists.newArrayList(combinedString.toString().trim());
 		} else {
-			return values;
+			List<Object> objects = new LinkedList<Object>();
+			for (String value : values) {
+				Object object = Class.forName(value).newInstance();
+				if (!type.isAssignableFrom(object.getClass())) {
+					throw new RuntimeException(object.getClass() + " is not a valid"
+							+ " type or sub-type of " + type);
+				}
+				objects.add(object);
+			}
+			return objects;
 		}
 	}
 }

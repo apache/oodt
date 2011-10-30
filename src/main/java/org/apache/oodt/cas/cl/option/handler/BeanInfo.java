@@ -24,15 +24,15 @@ package org.apache.oodt.cas.cl.option.handler;
  */
 public class BeanInfo {
 
-	private String beanId;
+	private Object bean;
 	private String methodName;
 
-	public String getBeanId() {
-		return beanId;
+	public Object getBean() {
+		return bean;
 	}
 
-	public void setBeanId(String beanId) {
-		this.beanId = beanId;
+	public void setBean(Object bean) {
+		this.bean = bean;
 	}
 
 	public String getMethodName() {

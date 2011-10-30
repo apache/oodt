@@ -16,45 +16,51 @@
  */
 package org.apache.oodt.cas.cl.option.require;
 
-//JDK imports
-import java.util.HashSet;
-import java.util.Set;
-
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 
 /**
- * Standard {@link RequirementRule} which defines requirement
- * relationships between {@link CmdLineOption}s and
- * {@link CmdLineAction}s. 
- *
+ * A {@link RequirementRule} which links the {@link CmdLineOption} to the
+ * {@link CmdLineAction} via the {@link CmdLineAction}'s name and also specifies
+ * its relationship to the {@link CmdLineAction} (i.e. Required, Optional,
+ * etc...).
+ * 
  * @author bfoster (Brian Foster)
  */
-public class StdRequirementRule implements RequirementRule {
+public class ActionDependencyRule implements RequirementRule {
+	String actionName;
+	Relation relation;
 
-	private Set<ActionDependency> dependencies;
+	public ActionDependencyRule() {}
 
-	public StdRequirementRule() {
-		dependencies = new HashSet<ActionDependency>();
+	public ActionDependencyRule(String actionName, Relation relation) {
+		this.actionName = actionName;
+		this.relation = relation;
 	}
 
-	public void setActionDependency(Set<ActionDependency> dependencies) {
-		this.dependencies = new HashSet<ActionDependency>(dependencies);
+	public String getActionName() {
+		return actionName;
 	}
 
-	public void addActionDependency(ActionDependency dependency) {
-		dependencies.add(dependency);
+	public void setActionName(String actionName) {
+		this.actionName = actionName;
 	}
 
-	public Set<ActionDependency> getActionDependency() {
-		return dependencies;
+	public Relation getRelation() {
+		return relation;
+	}
+
+	public void setRelation(Relation relation) {
+		this.relation = relation;
 	}
 
 	public Relation getRelation(CmdLineAction action) {
-		for (ActionDependency dependency : dependencies) {
-			if (dependency.getActionName().equals(action.getName())) {
-				return dependency.getRelation();
-			}
+		Validate.notNull(actionName);
+		Validate.notNull(relation);
+
+		if (action.getName().equals(actionName)) {
+			return relation;
 		}
 		return Relation.NONE;
 	}

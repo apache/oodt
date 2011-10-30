@@ -27,9 +27,8 @@ import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
 import org.apache.oodt.cas.cl.option.SimpleCmdLineOption;
-import org.apache.oodt.cas.cl.option.require.ActionDependency;
+import org.apache.oodt.cas.cl.option.require.ActionDependencyRule;
 import org.apache.oodt.cas.cl.option.require.RequirementRule;
-import org.apache.oodt.cas.cl.option.require.StdRequirementRule;
 import org.apache.oodt.cas.cl.option.require.RequirementRule.Relation;
 import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 
@@ -113,17 +112,17 @@ public class TestUtils {
 
 	public static RequirementRule createRequiredRequirementRule(
 			CmdLineAction action) {
-		StdRequirementRule rule = new StdRequirementRule();
-		rule.addActionDependency(new ActionDependency(action.getName(),
-				Relation.REQUIRED));
+		ActionDependencyRule rule = new ActionDependencyRule();
+		rule.setActionName(action.getName());
+		rule.setRelation(Relation.REQUIRED);
 		return rule;
 	}
 
 	public static RequirementRule createOptionalRequirementRule(
 			CmdLineAction action) {
-		StdRequirementRule rule = new StdRequirementRule();
-		rule.addActionDependency(new ActionDependency(action.getName(),
-				Relation.OPTIONAL));
+		ActionDependencyRule rule = new ActionDependencyRule();
+		rule.setActionName(action.getName());
+		rule.setRelation(Relation.OPTIONAL);
 		return rule;
 	}
 }

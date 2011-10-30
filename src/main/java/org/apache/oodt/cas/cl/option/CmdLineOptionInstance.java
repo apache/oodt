@@ -22,11 +22,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+//Apache imports
 import org.apache.commons.lang.Validate;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * A specified {@link CmdLineOption} with its specified argument
+ * values.
+ *
+ * @author bfoster (Brian Foster)
  */
 public class CmdLineOptionInstance {
 
@@ -91,7 +94,11 @@ public class CmdLineOptionInstance {
 	}
 
 	public List<String> getValues() {
-		return values;
+		if (values.isEmpty() && option.hasDefaultArgs()) {
+			return option.getDefaultArgs();
+		} else {
+			return values;
+		}
 	}
 
 	public void setSubOptions(List<CmdLineOptionInstance> subOptions) {

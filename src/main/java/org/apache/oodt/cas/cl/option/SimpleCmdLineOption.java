@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.oodt.cas.cl.option;
 
 //JDK imports
@@ -25,9 +24,11 @@ import java.util.List;
 import org.apache.oodt.cas.cl.option.require.RequirementRule;
 
 /**
+ * {@link CmdLineOption} which implements the basic methods for any
+ * {@link CmdLineOption}.  Can be used as-is or extends to add
+ * additional option features.
  *
- * @author bfoster
- * @version $Revision$
+ * @author bfoster (Brian Foster)
  */
 public class SimpleCmdLineOption implements CmdLineOption {
 
@@ -39,7 +40,7 @@ public class SimpleCmdLineOption implements CmdLineOption {
 
 	private boolean repeating;
 
-	private String argDescription;
+	private String argsDescription;
 
 	private boolean required;
 
@@ -47,17 +48,19 @@ public class SimpleCmdLineOption implements CmdLineOption {
 
 	private boolean hasArgs;
 
+	private List<String> defaultArgs;
+
 	private boolean performAndQuit;
 
 	private Class<?> type;
 
 	public SimpleCmdLineOption() {
-		argDescription = "arg";
+		argsDescription = "arg";
 		repeating = false;
 		required = false;
 		hasArgs = false;
 		performAndQuit = false;
-		type = String.class;
+		type = List.class;
 		requirementRules = new ArrayList<RequirementRule>();
 	}
 
@@ -119,11 +122,23 @@ public class SimpleCmdLineOption implements CmdLineOption {
 	}
 
 	public void setArgsDescription(String argDescription) {
-		this.argDescription = argDescription;
+		this.argsDescription = argDescription;
 	}
 
 	public String getArgsDescription() {
-		return argDescription;
+		return argsDescription;
+	}
+
+	public void setDefaultArgs(List<String> defaultArgs) {
+		this.defaultArgs = defaultArgs;
+	}
+
+	public List<String> getDefaultArgs() {
+		return defaultArgs;
+	}
+
+	public boolean hasDefaultArgs() {
+		return defaultArgs != null;
 	}
 
 	public void setRequired(boolean required) {

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.oodt.cas.cl.option;
 
 //JDK imports
@@ -24,8 +23,9 @@ import java.util.List;
 import org.apache.oodt.cas.cl.option.require.RequirementRule;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * Command Line option interface spec.
+ *
+ * @author bfoster (Brian Foster)
  */
 public interface CmdLineOption {
 
@@ -56,6 +56,12 @@ public interface CmdLineOption {
 	public void setArgsDescription(String argDescription);
 
 	public String getArgsDescription();
+
+	public void setDefaultArgs(List<String> values);
+
+	public List<String> getDefaultArgs();
+
+	public boolean hasDefaultArgs();
 
 	public void setRequired(boolean required);
 

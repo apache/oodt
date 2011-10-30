@@ -57,6 +57,10 @@ public class CmdLineOptionBeanHandler implements CmdLineOptionHandler,
 		this.applyToBeans = applyToBeans;
 	}
 
+	public List<BeanInfo> getApplyToBeans() {
+		return applyToBeans;
+	}
+
 	public void handleOption(CmdLineAction action, CmdLineOptionInstance optionInstance) {
 		Validate.notNull(appContext, "Spring ApplicationContext must be set!");
 		Validate.notNull(applyToBeans, "Apply to beans must be set!");
@@ -67,17 +71,16 @@ public class CmdLineOptionBeanHandler implements CmdLineOptionHandler,
 				List<?> vals = (optionInstance.getValues().isEmpty()) ? convertToType(
 						Arrays.asList(new String[] { "true" }), type = Boolean.TYPE)
 						: convertToType(optionInstance.getValues(), type);
-				Object applyToBean = appContext.getBean(beanInfo.getBeanId());
 				if (beanInfo.getMethodName() != null) {
-					applyToBean.getClass()
+					action.getClass()
 							.getMethod(beanInfo.getMethodName(), type)
-							.invoke(applyToBean, vals.toArray(new Object[vals.size()]));
+							.invoke(action, vals.toArray(new Object[vals.size()]));
 				} else {
-					applyToBean
+					action
 							.getClass()
 							.getMethod(
 									"set" + StringUtils.capitalize(optionInstance.getOption().getLongOption()), type)
-							.invoke(applyToBean, vals.toArray(new Object[vals.size()]));
+							.invoke(action, vals.toArray(new Object[vals.size()]));
 				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -90,7 +93,12 @@ public class CmdLineOptionBeanHandler implements CmdLineOptionHandler,
 
 		HashSet<String> affectedClasses = new HashSet<String>();
 		for (BeanInfo beanInfo : applyToBeans) {
-				affectedClasses.add(beanInfo.getBeanId());
+			Object bean = beanInfo.getBean();
+			if (bean instanceof CmdLineAction) {
+				affectedClasses.add(((CmdLineAction) bean).getName());
+			} else {
+				affectedClasses.add(bean.getClass().getName());
+			}
 		}
 		return "Affects: " + affectedClasses.toString();
 	}

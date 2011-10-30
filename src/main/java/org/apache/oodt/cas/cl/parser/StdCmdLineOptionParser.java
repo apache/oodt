@@ -167,10 +167,10 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
 		specifiedOption.setOption(option);
 		List<String> values = getValues(args);
 		if (option.hasArgs()) {
-			if (values.isEmpty()) {
-				throw new IOException("Option " + option + " requires args");
-			} else {
+			if (!values.isEmpty()) {
 				specifiedOption.setValues(values);
+			} else if (!option.hasDefaultArgs()) {
+				throw new IOException("Option " + option + " requires args");
 			}
 		} else if (!option.hasArgs() && !values.isEmpty()) {
 			throw new IOException("Option " + option + " does not support args");
