@@ -60,7 +60,7 @@ public class SimpleCmdLineOption implements CmdLineOption {
 		required = false;
 		hasArgs = false;
 		performAndQuit = false;
-		type = List.class;
+		type = String.class;
 		requirementRules = new ArrayList<RequirementRule>();
 	}
 

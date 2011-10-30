@@ -27,6 +27,9 @@ import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cl.option.GroupCmdLineOption;
 import org.apache.oodt.cas.cl.option.SimpleCmdLineOption;
+import org.apache.oodt.cas.cl.option.handler.ApplyToAction;
+import org.apache.oodt.cas.cl.option.handler.ApplyToActionHandler;
+import org.apache.oodt.cas.cl.option.handler.CmdLineOptionHandler;
 import org.apache.oodt.cas.cl.option.require.ActionDependencyRule;
 import org.apache.oodt.cas.cl.option.require.RequirementRule;
 import org.apache.oodt.cas.cl.option.require.RequirementRule.Relation;
@@ -90,6 +93,20 @@ public class TestUtils {
 		return option;
 	}
 
+	public static AdvancedCmdLineOption createAdvancedOption(String longName,
+			CmdLineOptionHandler handler) {
+		return createAdvancedOption(longName, longName, handler);
+	}
+
+	public static AdvancedCmdLineOption createAdvancedOption(String shortName,
+			String longName, CmdLineOptionHandler handler) {
+		AdvancedCmdLineOption option = new AdvancedCmdLineOption();
+		option.setShortOption(shortName);
+		option.setLongOption(longName);
+		option.setHandler(handler);
+		return option;
+	}
+
 	public static AdvancedCmdLineOption createValidationOption(String longName, CmdLineOptionValidator... validators) {
 		AdvancedCmdLineOption option = new AdvancedCmdLineOption();
 		option.setLongOption(longName);
@@ -124,5 +141,13 @@ public class TestUtils {
 		rule.setActionName(action.getName());
 		rule.setRelation(Relation.OPTIONAL);
 		return rule;
+	}
+
+	public static ApplyToActionHandler createApplyToActionHandler(
+			String actionName, String methodName) {
+		ApplyToActionHandler handler = new ApplyToActionHandler();
+		handler.setApplyToActions(Lists.newArrayList(new ApplyToAction(actionName,
+				methodName)));
+		return handler;
 	}
 }

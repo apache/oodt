@@ -14,33 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cl.help.presenter;
+package org.apache.oodt.cas.cl.help.printer;
 
 //JDK imports
-import java.io.PrintStream;
+import java.util.Set;
+
+//OODT imports
+import org.apache.oodt.cas.cl.option.CmdLineOption;
 
 /**
- * Standard help presenter which sends help messages to {@link System.out}.
+ * Help printer responsible for generating help message for given
+ * {@link CmdLineOption}s.
  *
  * @author bfoster (Brian Foster)
  */
-public class StdCmdLineOptionHelpPresenter implements CmdLineOptionHelpPresenter {
+public interface CmdLineOptionsHelpPrinter {
 
-	private PrintStream ps;
+	/**
+	 * Generates help message for given {@link CmdLineOption}s
+	 *
+	 * @param options {@link CmdLineOption}s for which help message will be
+	 * generated
+	 * @return Help message for given {@link CmdLineOption}s.
+	 */
+	public String printHelp(Set<CmdLineOption> options);
 
-	public StdCmdLineOptionHelpPresenter() {
-		ps = new PrintStream(System.out);
-	}
-
-	public void presentOptionHelp(String optionHelpMessage) {
-		ps.println(optionHelpMessage);
-	}
-
-	public void presentActionHelp(String actionHelpMessage) {
-		ps.println(actionHelpMessage);
-	}
-
-	public void presentActionsHelp(String actionsHelpMessage) {
-		ps.println(actionsHelpMessage);		
-	}
 }

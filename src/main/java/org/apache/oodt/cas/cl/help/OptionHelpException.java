@@ -14,17 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.oodt.cas.cl.help;
 
 //JDK imports
 import java.io.IOException;
 
 /**
+ * Exception thrown to express that help {@link CmdLineOption} should be
+ * given to see help message.
  * 
- * @author bfoster
- * Exception thrown to express that -h should be given to see help
- *
+ * @author bfoster (Brian Foster)
  */
 public class OptionHelpException extends IOException {
 

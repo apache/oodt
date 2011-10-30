@@ -14,33 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cl.help.presenter;
+package org.apache.oodt.cas.cl.option.handler;
 
-//JDK imports
-import java.io.PrintStream;
+//JUnit imports
+import junit.framework.TestCase;
 
 /**
- * Standard help presenter which sends help messages to {@link System.out}.
+ * Test class for {@link ApplyToAction}.
  *
  * @author bfoster (Brian Foster)
  */
-public class StdCmdLineOptionHelpPresenter implements CmdLineOptionHelpPresenter {
+public class TestApplyToAction extends TestCase {
 
-	private PrintStream ps;
+	public void testVariableSetters() {
+		ApplyToAction applyToAction = new ApplyToAction();
+		assertNull(applyToAction.getActionName());
+		assertNull(applyToAction.getMethodName());
 
-	public StdCmdLineOptionHelpPresenter() {
-		ps = new PrintStream(System.out);
-	}
+		String actionName = "message";
+		applyToAction.setActionName(actionName);
+		assertEquals(actionName, applyToAction.getActionName());
 
-	public void presentOptionHelp(String optionHelpMessage) {
-		ps.println(optionHelpMessage);
-	}
-
-	public void presentActionHelp(String actionHelpMessage) {
-		ps.println(actionHelpMessage);
-	}
-
-	public void presentActionsHelp(String actionsHelpMessage) {
-		ps.println(actionsHelpMessage);		
+		String methodName = "setMessage";
+		applyToAction.setMethodName(methodName);
+		assertEquals(methodName, applyToAction.getMethodName());
 	}
 }

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.oodt.cas.cl.option.handler;
 
 //OODT imports
@@ -23,15 +22,13 @@ import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * Handles a {@link CmdLineOption}'s values in relation to given
+ * {@link CmdLineAction}s. 
+ *
+ * @author bfoster (Brian Foster)
  */
 public interface CmdLineOptionHandler {
 
-	/**
-	 * 
-	 * @param optionInstance
-	 */
 	public abstract void handleOption(CmdLineAction selectedAction, CmdLineOptionInstance optionInstance);
 
 	/**

@@ -27,8 +27,10 @@ import static org.apache.oodt.cas.cl.util.CmdLineUtils.findSpecifiedOption;
 import java.util.HashSet;
 import java.util.Set;
 
-//OODT imports
+//Apache imports
 import org.apache.commons.lang.Validate;
+
+//OODT imports
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;

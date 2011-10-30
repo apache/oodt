@@ -36,9 +36,9 @@ import org.apache.oodt.cas.cl.help.presenter.CmdLineOptionHelpPresenter;
 import org.apache.oodt.cas.cl.help.presenter.StdCmdLineOptionHelpPresenter;
 import org.apache.oodt.cas.cl.help.printer.CmdLineActionHelpPrinter;
 import org.apache.oodt.cas.cl.help.printer.CmdLineActionsHelpPrinter;
-import org.apache.oodt.cas.cl.help.printer.CmdLineOptionHelpPrinter;
+import org.apache.oodt.cas.cl.help.printer.CmdLineOptionsHelpPrinter;
 import org.apache.oodt.cas.cl.help.printer.StdCmdLineActionHelpPrinter;
-import org.apache.oodt.cas.cl.help.printer.StdCmdLineOptionHelpPrinter;
+import org.apache.oodt.cas.cl.help.printer.StdCmdLineOptionsHelpPrinter;
 import org.apache.oodt.cas.cl.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
@@ -65,7 +65,7 @@ public class CmdLineUtility {
 	private CmdLineOptionParser parser;
 	private CmdLineOptionStore optionStore;
 	private CmdLineActionStore actionStore;
-	private CmdLineOptionHelpPrinter optionHelpPrinter;
+	private CmdLineOptionsHelpPrinter optionHelpPrinter;
 	private CmdLineActionHelpPrinter actionHelpPrinter;
 	private CmdLineActionsHelpPrinter actionsHelpPrinter;
 	private CmdLineOptionHelpPresenter helpPresenter;
@@ -74,7 +74,7 @@ public class CmdLineUtility {
 		parser = new StdCmdLineOptionParser();
 		optionStore = new SpringCmdLineOptionStoreFactory().createStore();
 		actionStore = new SpringCmdLineActionStoreFactory().createStore();
-		optionHelpPrinter = new StdCmdLineOptionHelpPrinter();
+		optionHelpPrinter = new StdCmdLineOptionsHelpPrinter();
 		actionHelpPrinter = new StdCmdLineActionHelpPrinter();
 		helpPresenter = new StdCmdLineOptionHelpPresenter();
 	}
@@ -95,11 +95,11 @@ public class CmdLineUtility {
 		this.actionStore = actionStore;
 	}
 
-	public CmdLineOptionHelpPrinter getOptionHelpPrinter() {
+	public CmdLineOptionsHelpPrinter getOptionHelpPrinter() {
 		return optionHelpPrinter;
 	}
 
-	public void setOptionHelpPrinter(CmdLineOptionHelpPrinter optionHelpPrinter) {
+	public void setOptionHelpPrinter(CmdLineOptionsHelpPrinter optionHelpPrinter) {
 		this.optionHelpPrinter = optionHelpPrinter;
 	}
 
@@ -128,15 +128,22 @@ public class CmdLineUtility {
 	}
 
 	public void printOptionHelp(CmdLineArgs cmdLineArgs) {
-		helpPresenter.presentOptionHelp(optionHelpPrinter.printHelp(cmdLineArgs));
+		helpPresenter.presentOptionHelp(optionHelpPrinter.printHelp(cmdLineArgs
+				.getSupportedOptions()));
 	}
 
 	public void printActionHelp(CmdLineArgs cmdLineArgs) {
-		helpPresenter.presentActionHelp(actionHelpPrinter.printHelp(cmdLineArgs));
+		Validate.notEmpty(cmdLineArgs.getHelpOptionInst().getValues());
+
+		helpPresenter.presentActionHelp(actionHelpPrinter.printHelp(
+				CmdLineUtils.findAction(cmdLineArgs.getHelpOptionInst().getValues()
+						.get(0), cmdLineArgs.getSupportedActions()),
+				cmdLineArgs.getCustomSupportedOptions()));
 	}
 
 	public void printActionsHelp(CmdLineArgs cmdLineArgs) {
-		helpPresenter.presentActionsHelp(actionsHelpPrinter.printHelp(cmdLineArgs));		
+		helpPresenter.presentActionsHelp(actionsHelpPrinter.printHelp(cmdLineArgs
+				.getSupportedActions()));		
 	}
 
 	/**
