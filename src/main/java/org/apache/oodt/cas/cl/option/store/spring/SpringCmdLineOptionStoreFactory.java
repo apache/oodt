@@ -21,26 +21,28 @@ import org.apache.oodt.cas.cl.option.store.CmdLineOptionStoreFactory;
 
 /**
  * Factory for creating {@link SpringCmdLineOptionStore}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
-public class SpringCmdLineOptionStoreFactory implements CmdLineOptionStoreFactory {
+public class SpringCmdLineOptionStoreFactory implements
+      CmdLineOptionStoreFactory {
 
-	private String config;
+   private String config;
 
-	public SpringCmdLineOptionStoreFactory() {
-		config = System.getProperty("org.apache.oodt.cas.cl.option.store.spring.config", null);
-	}
+   public SpringCmdLineOptionStoreFactory() {
+      config = System.getProperty(
+            "org.apache.oodt.cas.cl.option.store.spring.config", null);
+   }
 
-	public SpringCmdLineOptionStore createStore() {
-		if (config != null) {
-			return new SpringCmdLineOptionStore(config); 
-		} else {
-			return null;
-		}
-	}
+   public SpringCmdLineOptionStore createStore() {
+      if (config != null) {
+         return new SpringCmdLineOptionStore(config);
+      } else {
+         return null;
+      }
+   }
 
-	public void setConfig(String config) {
-		this.config = config;
-	}
+   public void setConfig(String config) {
+      this.config = config;
+   }
 }

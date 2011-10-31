@@ -21,36 +21,35 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="outputStream" class="org.apache.oodt.cas.cl.option.AdvancedCmdLineOption">
-    <property name="shortOption" value="utos" />
-    <property name="longOption" value="outputStream" />
-    <property name="description" value="Specify OutputStream" />
-    <property name="hasArgs" value="true" />
-    <property name="type" value="java.io.OutputStream" />
-    <property name="defaultArgs">
-      <list>
-        <value>org.apache.oodt.cas.cl.test.util.TestOutputStream</value>
-      </list>
-    </property>
-    <property name="argsDescription" value="OutputStream classpath" />
-    <property name="requirementRules">
-      <list>
-        <bean class="org.apache.oodt.cas.cl.option.require.ActionDependencyRule"
-          p:actionName="PrintMessageAction" p:relation="OPTIONAL" />
-      </list>
-    </property>
-    <property name="handler">
-      <bean
-        class="org.apache.oodt.cas.cl.option.handler.ApplyToActionHandler">
-        <property name="applyToActions">
-          <list>
-            <bean class="org.apache.oodt.cas.cl.option.handler.ApplyToAction"
-              p:actionName="PrintMessageAction" p:methodName="setOutputStream" />
-          </list>
-        </property>
-      </bean>
-    </property>
-  </bean>
+	<bean id="outputStream" class="org.apache.oodt.cas.cl.option.AdvancedCmdLineOption">
+		<property name="shortOption" value="utos" />
+		<property name="longOption" value="outputStream" />
+		<property name="description" value="Specify OutputStream" />
+		<property name="hasArgs" value="true" />
+		<property name="type" value="java.io.OutputStream" />
+		<property name="defaultArgs">
+			<list>
+				<value>org.apache.oodt.cas.cl.test.util.TestOutputStream</value>
+			</list>
+		</property>
+		<property name="argsDescription" value="OutputStream classpath" />
+		<property name="requirementRules">
+			<list>
+				<bean class="org.apache.oodt.cas.cl.option.require.ActionDependencyRule"
+					p:actionName="PrintMessageAction" p:relation="OPTIONAL" />
+			</list>
+		</property>
+		<property name="handler">
+			<bean class="org.apache.oodt.cas.cl.option.handler.ApplyToActionHandler">
+				<property name="applyToActions">
+					<list>
+						<bean class="org.apache.oodt.cas.cl.option.handler.ApplyToAction"
+							p:actionName="PrintMessageAction" p:methodName="setOutputStream" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
 
 	<bean id="printMessage" class="org.apache.oodt.cas.cl.option.AdvancedCmdLineOption">
 		<property name="shortOption" value="pm" />
@@ -65,8 +64,7 @@
 			</list>
 		</property>
 		<property name="handler">
-			<bean
-				class="org.apache.oodt.cas.cl.option.handler.ApplyToActionHandler">
+			<bean class="org.apache.oodt.cas.cl.option.handler.ApplyToActionHandler">
 				<property name="applyToActions">
 					<list>
 						<bean class="org.apache.oodt.cas.cl.option.handler.ApplyToAction"

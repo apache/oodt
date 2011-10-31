@@ -24,11 +24,11 @@ import org.apache.oodt.cas.cl.option.CmdLineOption;
 
 /**
  * Storage for loading supported {@link CmdLineOption}s.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface CmdLineOptionStore {
 
-	public Set<CmdLineOption> loadSupportedOptions();
+   public Set<CmdLineOption> loadSupportedOptions();
 
 }

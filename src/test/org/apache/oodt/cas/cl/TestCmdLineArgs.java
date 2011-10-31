@@ -48,74 +48,82 @@ import junit.framework.TestCase;
  */
 public class TestCmdLineArgs extends TestCase {
 
-	private final static CmdLineAction TEST_ACTION_1 = createAction("TestAction1");
-	private final static CmdLineAction TEST_ACTION_2 = createAction("TestAction2");
-	private final static CmdLineAction TEST_ACTION_3 = createAction("TestAction3");
-	
-	private final static ActionCmdLineOption ACTION_OPTION = createActionOption("operation");
-	private final static HelpCmdLineOption HELP_OPTION = new HelpCmdLineOption();
-	private final static PrintSupportedActionsCmdLineOption PSA_ACTION = new PrintSupportedActionsCmdLineOption();
+   private final static CmdLineAction TEST_ACTION_1 = createAction("TestAction1");
+   private final static CmdLineAction TEST_ACTION_2 = createAction("TestAction2");
+   private final static CmdLineAction TEST_ACTION_3 = createAction("TestAction3");
 
-	private final static Set<CmdLineAction> SUPPORTED_ACTIONS
-			= newHashSet(TEST_ACTION_1, TEST_ACTION_2, TEST_ACTION_3);
-	private final static Set<CmdLineOption> SUPPORTED_OPTIONS = newHashSet((CmdLineOption) ACTION_OPTION,
-			(CmdLineOption) HELP_OPTION, (CmdLineOption) PSA_ACTION);
+   private final static ActionCmdLineOption ACTION_OPTION = createActionOption("operation");
+   private final static HelpCmdLineOption HELP_OPTION = new HelpCmdLineOption();
+   private final static PrintSupportedActionsCmdLineOption PSA_ACTION = new PrintSupportedActionsCmdLineOption();
 
-	public void testBaseCase() {
-		CmdLineOptionInstance specifiedAction = createOptionInstance(ACTION_OPTION, TEST_ACTION_1.getName());
-		Set<CmdLineOptionInstance> specifiedOptions = newHashSet(specifiedAction);
-		CmdLineArgs args = new CmdLineArgs(SUPPORTED_ACTIONS, SUPPORTED_OPTIONS,
-				specifiedOptions);
-		assertEquals(TEST_ACTION_1, args.getSpecifiedAction());
-		assertEquals(ACTION_OPTION, args.getActionOption());
-		assertEquals(args.getActionOptionInst(), specifiedAction);
-		assertEquals(HELP_OPTION, args.getHelpOption());
-		assertNull(args.getHelpOptionInst());
-		assertEquals(PSA_ACTION, args.getPrintSupportedActionsOption());
-		assertNull(args.getPrintSupportedActionsOptionInst());
-	}
+   private final static Set<CmdLineAction> SUPPORTED_ACTIONS = newHashSet(
+         TEST_ACTION_1, TEST_ACTION_2, TEST_ACTION_3);
+   private final static Set<CmdLineOption> SUPPORTED_OPTIONS = newHashSet(
+         (CmdLineOption) ACTION_OPTION, (CmdLineOption) HELP_OPTION,
+         (CmdLineOption) PSA_ACTION);
 
-	public void testCaseActionNotSupported() {
-		CmdLineOptionInstance specifiedAction = createOptionInstance(
-				ACTION_OPTION, "NotSupportedActionName");
-		Set<CmdLineOptionInstance> specifiedOptions = newHashSet(specifiedAction);
-		CmdLineArgs args = new CmdLineArgs(SUPPORTED_ACTIONS, SUPPORTED_OPTIONS,
-				specifiedOptions);
+   public void testBaseCase() {
+      CmdLineOptionInstance specifiedAction = createOptionInstance(
+            ACTION_OPTION, TEST_ACTION_1.getName());
+      Set<CmdLineOptionInstance> specifiedOptions = newHashSet(specifiedAction);
+      CmdLineArgs args = new CmdLineArgs(SUPPORTED_ACTIONS, SUPPORTED_OPTIONS,
+            specifiedOptions);
+      assertEquals(TEST_ACTION_1, args.getSpecifiedAction());
+      assertEquals(ACTION_OPTION, args.getActionOption());
+      assertEquals(args.getActionOptionInst(), specifiedAction);
+      assertEquals(HELP_OPTION, args.getHelpOption());
+      assertNull(args.getHelpOptionInst());
+      assertEquals(PSA_ACTION, args.getPrintSupportedActionsOption());
+      assertNull(args.getPrintSupportedActionsOptionInst());
+   }
 
-		// Verify that CmdLineAction is null since it was not able to be located in set of supported actions.
-		assertNull(args.getSpecifiedAction());
-		// Verify that if did find the action option.
-		assertEquals(specifiedAction.getOption(), args.getActionOption());
-		// Verify that if found the specified action even though it is not supported.
-		assertEquals(newArrayList("NotSupportedActionName"), args.getActionOptionInst().getValues());
-	}
+   public void testCaseActionNotSupported() {
+      CmdLineOptionInstance specifiedAction = createOptionInstance(
+            ACTION_OPTION, "NotSupportedActionName");
+      Set<CmdLineOptionInstance> specifiedOptions = newHashSet(specifiedAction);
+      CmdLineArgs args = new CmdLineArgs(SUPPORTED_ACTIONS, SUPPORTED_OPTIONS,
+            specifiedOptions);
 
-	public void testGetCustomOptions() {
-		CmdLineOption customOption = createSimpleOption("test", false);
-		Set<CmdLineOption> options = newHashSet(SUPPORTED_OPTIONS);
-		options.add(customOption);
-		CmdLineArgs args = new CmdLineArgs(SUPPORTED_ACTIONS, options,
-				new HashSet<CmdLineOptionInstance>());
+      // Verify that CmdLineAction is null since it was not able to be located
+      // in set of supported actions.
+      assertNull(args.getSpecifiedAction());
+      // Verify that if did find the action option.
+      assertEquals(specifiedAction.getOption(), args.getActionOption());
+      // Verify that if found the specified action even though it is not
+      // supported.
+      assertEquals(newArrayList("NotSupportedActionName"), args
+            .getActionOptionInst().getValues());
+   }
 
-		// Test that custom supported options only contains the custom option.
-		assertEquals(newHashSet(customOption), args.getCustomSupportedOptions());
-	}
+   public void testGetCustomOptions() {
+      CmdLineOption customOption = createSimpleOption("test", false);
+      Set<CmdLineOption> options = newHashSet(SUPPORTED_OPTIONS);
+      options.add(customOption);
+      CmdLineArgs args = new CmdLineArgs(SUPPORTED_ACTIONS, options,
+            new HashSet<CmdLineOptionInstance>());
 
-	public void testGetCustomSpecifiedOptions() {
-		CmdLineOption customOption = createSimpleOption("test", false);
-		Set<CmdLineOption> options = newHashSet(SUPPORTED_OPTIONS);
-		options.add(customOption);
-		CmdLineOptionInstance specifiedOptions = createOptionInstance(customOption, "test-values");
-		CmdLineArgs args = new CmdLineArgs(SUPPORTED_ACTIONS, options,
-				newHashSet(specifiedOptions));
+      // Test that custom supported options only contains the custom option.
+      assertEquals(newHashSet(customOption), args.getCustomSupportedOptions());
+   }
 
-		// Test that custom specified options only contains the custom option.
-		assertEquals(newHashSet(specifiedOptions), args.getCustomSpecifiedOptions());
+   public void testGetCustomSpecifiedOptions() {
+      CmdLineOption customOption = createSimpleOption("test", false);
+      Set<CmdLineOption> options = newHashSet(SUPPORTED_OPTIONS);
+      options.add(customOption);
+      CmdLineOptionInstance specifiedOptions = createOptionInstance(
+            customOption, "test-values");
+      CmdLineArgs args = new CmdLineArgs(SUPPORTED_ACTIONS, options,
+            newHashSet(specifiedOptions));
 
-		args = new CmdLineArgs(SUPPORTED_ACTIONS, options,
-				new HashSet<CmdLineOptionInstance>());
+      // Test that custom specified options only contains the custom option.
+      assertEquals(newHashSet(specifiedOptions),
+            args.getCustomSpecifiedOptions());
 
-		// Test that custom specified options is empty since custom option was not specified.
-		assertTrue(args.getCustomSpecifiedOptions().isEmpty());
-	}
+      args = new CmdLineArgs(SUPPORTED_ACTIONS, options,
+            new HashSet<CmdLineOptionInstance>());
+
+      // Test that custom specified options is empty since custom option was not
+      // specified.
+      assertTrue(args.getCustomSpecifiedOptions().isEmpty());
+   }
 }

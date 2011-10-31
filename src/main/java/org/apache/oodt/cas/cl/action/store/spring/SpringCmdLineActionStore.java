@@ -30,45 +30,45 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
  * A Spring Framework based {@link CmdLineActionStore}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class SpringCmdLineActionStore implements CmdLineActionStore {
 
-	private ApplicationContext appContext;
+   private ApplicationContext appContext;
 
-	public SpringCmdLineActionStore(String springConfig) {
-		appContext = new FileSystemXmlApplicationContext(springConfig);
-		handleSpringSetContextInjectionType();
-		handleSettingNameForCmdLineActions();
-	}
+   public SpringCmdLineActionStore(String springConfig) {
+      appContext = new FileSystemXmlApplicationContext(springConfig);
+      handleSpringSetContextInjectionType();
+      handleSettingNameForCmdLineActions();
+   }
 
-	public Set<CmdLineAction> loadSupportedActions() {
-		@SuppressWarnings("unchecked")
-		Map<String, CmdLineAction> actionsMap = appContext
-				.getBeansOfType(CmdLineAction.class);
-		return new HashSet<CmdLineAction>(actionsMap.values());
-	}
+   public Set<CmdLineAction> loadSupportedActions() {
+      @SuppressWarnings("unchecked")
+      Map<String, CmdLineAction> actionsMap = appContext
+            .getBeansOfType(CmdLineAction.class);
+      return new HashSet<CmdLineAction>(actionsMap.values());
+   }
 
-	protected ApplicationContext getApplicationContext() {
-		return appContext;
-	}
+   protected ApplicationContext getApplicationContext() {
+      return appContext;
+   }
 
-	private void handleSpringSetContextInjectionType() {
-		@SuppressWarnings("unchecked")
-		Map<String, SpringSetContextInjectionType> beans = appContext
-				.getBeansOfType(SpringSetContextInjectionType.class);
-		for (SpringSetContextInjectionType bean : beans.values()) {
-			bean.setContext(appContext);
-		}
-	}
+   private void handleSpringSetContextInjectionType() {
+      @SuppressWarnings("unchecked")
+      Map<String, SpringSetContextInjectionType> beans = appContext
+            .getBeansOfType(SpringSetContextInjectionType.class);
+      for (SpringSetContextInjectionType bean : beans.values()) {
+         bean.setContext(appContext);
+      }
+   }
 
-	private void handleSettingNameForCmdLineActions() {
-		@SuppressWarnings("unchecked")
-		Map<String, CmdLineAction> beans = appContext
-		.getBeansOfType(CmdLineAction.class);
-		for (Entry<String, CmdLineAction> entry : beans.entrySet()) {
-			entry.getValue().setName(entry.getKey());
-		}
-	}
+   private void handleSettingNameForCmdLineActions() {
+      @SuppressWarnings("unchecked")
+      Map<String, CmdLineAction> beans = appContext
+            .getBeansOfType(CmdLineAction.class);
+      for (Entry<String, CmdLineAction> entry : beans.entrySet()) {
+         entry.getValue().setName(entry.getKey());
+      }
+   }
 }

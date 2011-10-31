@@ -32,28 +32,29 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
  * Test class for {@link FileExistCmdLineOptionValidator}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestFileExistCmdLineOptionValidator extends TestCase {
 
-	public void testValidate() throws IOException {
-		// Test null option instance not allowed.
-		try {
-			new FileExistCmdLineOptionValidator().validate(null);
-			fail("Should have thrown IllegalArgumentException");
-		} catch (IllegalArgumentException ignore) { /* expect throw */ }
+   public void testValidate() throws IOException {
+      // Test null option instance not allowed.
+      try {
+         new FileExistCmdLineOptionValidator().validate(null);
+         fail("Should have thrown IllegalArgumentException");
+      } catch (IllegalArgumentException ignore) { /* expect throw */
+      }
 
-		// Test fail case.
-		CmdLineOptionInstance instance = createOptionInstance(
-				createSimpleOption("test", false), "bogus");
-		assertFalse(new FileExistCmdLineOptionValidator().validate(instance));
+      // Test fail case.
+      CmdLineOptionInstance instance = createOptionInstance(
+            createSimpleOption("test", false), "bogus");
+      assertFalse(new FileExistCmdLineOptionValidator().validate(instance));
 
-		// Test pass case.
-		File tempFile = File.createTempFile("bogus", "bogus");
-		tempFile.deleteOnExit();
-		instance = createOptionInstance(
-				createSimpleOption("test", false), tempFile.getAbsolutePath());
-		assertTrue(new FileExistCmdLineOptionValidator().validate(instance));		
-	}
+      // Test pass case.
+      File tempFile = File.createTempFile("bogus", "bogus");
+      tempFile.deleteOnExit();
+      instance = createOptionInstance(createSimpleOption("test", false),
+            tempFile.getAbsolutePath());
+      assertTrue(new FileExistCmdLineOptionValidator().validate(instance));
+   }
 }

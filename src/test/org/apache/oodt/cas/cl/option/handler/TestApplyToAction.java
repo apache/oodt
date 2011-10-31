@@ -21,22 +21,22 @@ import junit.framework.TestCase;
 
 /**
  * Test class for {@link ApplyToAction}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestApplyToAction extends TestCase {
 
-	public void testVariableSetters() {
-		ApplyToAction applyToAction = new ApplyToAction();
-		assertNull(applyToAction.getActionName());
-		assertNull(applyToAction.getMethodName());
+   public void testVariableSetters() {
+      ApplyToAction applyToAction = new ApplyToAction();
+      assertNull(applyToAction.getActionName());
+      assertNull(applyToAction.getMethodName());
 
-		String actionName = "message";
-		applyToAction.setActionName(actionName);
-		assertEquals(actionName, applyToAction.getActionName());
+      String actionName = "message";
+      applyToAction.setActionName(actionName);
+      assertEquals(actionName, applyToAction.getActionName());
 
-		String methodName = "setMessage";
-		applyToAction.setMethodName(methodName);
-		assertEquals(methodName, applyToAction.getMethodName());
-	}
+      String methodName = "setMessage";
+      applyToAction.setMethodName(methodName);
+      assertEquals(methodName, applyToAction.getMethodName());
+   }
 }

@@ -26,43 +26,43 @@ import org.springframework.beans.factory.annotation.Required;
 
 /**
  * A {@link CmdLineAction} which prints out a given message.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class PrintMessageAction extends CmdLineAction {
 
-	private String message;
-	private OutputStream os;
+   private String message;
+   private OutputStream os;
 
-	public PrintMessageAction() {
-		os = System.out;
-	}
+   public PrintMessageAction() {
+      os = System.out;
+   }
 
-	@Override
-	public void execute() {
-		Validate.notNull(message);
+   @Override
+   public void execute() {
+      Validate.notNull(message);
 
-		PrintStream ps = new PrintStream(os);
-		ps.println(message);
-		ps.close();
-	}
+      PrintStream ps = new PrintStream(os);
+      ps.println(message);
+      ps.close();
+   }
 
-	@Required
-	public void setMessage(String message) {
-		this.message = message;
-	}
+   @Required
+   public void setMessage(String message) {
+      this.message = message;
+   }
 
-	public String getMessage() {
-		return message;
-	}
+   public String getMessage() {
+      return message;
+   }
 
-	public void setOutputStream(OutputStream os) {
-		Validate.notNull(os);
+   public void setOutputStream(OutputStream os) {
+      Validate.notNull(os);
 
-		this.os = os;
-	}
+      this.os = os;
+   }
 
-	public OutputStream getOutputStream() {
-		return os;
-	}
+   public OutputStream getOutputStream() {
+      return os;
+   }
 }

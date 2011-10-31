@@ -17,36 +17,37 @@
 package org.apache.oodt.cas.cl.option.handler;
 
 /**
- * Mapping of {@link CmdLineAction} name to its method which should be called
- * by {@link ApplyToActionHandler} when injecting argument value.
- *
+ * Mapping of {@link CmdLineAction} name to its method which should be called by
+ * {@link ApplyToActionHandler} when injecting argument value.
+ * 
  * @author bfoster (Brian Foster)
  */
 public class ApplyToAction {
 
-	private String actionName;
-	private String methodName;
+   private String actionName;
+   private String methodName;
 
-	public ApplyToAction() {}
+   public ApplyToAction() {
+   }
 
-	public ApplyToAction(String actionName, String methodName) {
-		this.actionName = actionName;
-		this.methodName = methodName;
-	}
+   public ApplyToAction(String actionName, String methodName) {
+      this.actionName = actionName;
+      this.methodName = methodName;
+   }
 
-	public String getActionName() {
-		return actionName;
-	}
+   public String getActionName() {
+      return actionName;
+   }
 
-	public void setActionName(String actionName) {
-		this.actionName = actionName;
-	}
+   public void setActionName(String actionName) {
+      this.actionName = actionName;
+   }
 
-	public String getMethodName() {
-		return methodName;
-	}
+   public String getMethodName() {
+      return methodName;
+   }
 
-	public void setMethodName(String methodName) {
-		this.methodName = methodName;
-	}
+   public void setMethodName(String methodName) {
+      this.methodName = methodName;
+   }
 }

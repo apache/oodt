@@ -20,15 +20,17 @@ package org.apache.oodt.cas.cl.option.require;
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 
 /**
- * A {@link CmdLineOption} requirement rule which specifies if it is
- * required, optional, or not required at all.
- *
+ * A {@link CmdLineOption} requirement rule which specifies if it is required,
+ * optional, or not required at all.
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface RequirementRule {
 
-	public enum Relation { REQUIRED, OPTIONAL, NONE }
+   public enum Relation {
+      REQUIRED, OPTIONAL, NONE
+   }
 
-	public Relation getRelation(CmdLineAction action);
+   public Relation getRelation(CmdLineAction action);
 
 }

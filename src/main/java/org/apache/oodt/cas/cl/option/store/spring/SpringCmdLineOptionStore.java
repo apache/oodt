@@ -31,25 +31,25 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
  * Spring Framework based {@link CmdLineOptionStore}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class SpringCmdLineOptionStore implements CmdLineOptionStore {
 
-	private ApplicationContext appContext;
+   private ApplicationContext appContext;
 
-	public SpringCmdLineOptionStore(String springConfig) {
-		appContext = new FileSystemXmlApplicationContext(springConfig);
-	}
+   public SpringCmdLineOptionStore(String springConfig) {
+      appContext = new FileSystemXmlApplicationContext(springConfig);
+   }
 
-	public Set<CmdLineOption> loadSupportedOptions() {
-		@SuppressWarnings("unchecked")
-		Map<String, CmdLineOption> optionsMap = appContext
-				.getBeansOfType(CmdLineOption.class);
-		return new HashSet<CmdLineOption>(optionsMap.values());
-	}
+   public Set<CmdLineOption> loadSupportedOptions() {
+      @SuppressWarnings("unchecked")
+      Map<String, CmdLineOption> optionsMap = appContext
+            .getBeansOfType(CmdLineOption.class);
+      return new HashSet<CmdLineOption>(optionsMap.values());
+   }
 
-	protected ApplicationContext getApplicationContext() {
-		return appContext;
-	}
+   protected ApplicationContext getApplicationContext() {
+      return appContext;
+   }
 }

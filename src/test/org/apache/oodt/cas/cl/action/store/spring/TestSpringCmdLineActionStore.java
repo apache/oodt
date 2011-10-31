@@ -37,51 +37,55 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * Test case for {@link SpringCmdLineActionStore}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestSpringCmdLineActionStore extends TestCase {
 
-	private static final String SPRING_CONFIG = "src/testdata/cmd-line-actions.xml";
+   private static final String SPRING_CONFIG = "src/testdata/cmd-line-actions.xml";
 
-	public void testActionNamesAutoSet() {
-		SpringCmdLineActionStore store = new SpringCmdLineActionStore(SPRING_CONFIG);
-		ApplicationContext appContext = store.getApplicationContext();
-		@SuppressWarnings("unchecked")
-		Map<String, CmdLineAction> actionsMap = appContext.getBeansOfType(CmdLineAction.class);
-		for (Entry<String, CmdLineAction> entry : actionsMap.entrySet()) {
-			assertEquals(entry.getKey(), entry.getValue().getName());
-		}
-	}
+   public void testActionNamesAutoSet() {
+      SpringCmdLineActionStore store = new SpringCmdLineActionStore(
+            SPRING_CONFIG);
+      ApplicationContext appContext = store.getApplicationContext();
+      @SuppressWarnings("unchecked")
+      Map<String, CmdLineAction> actionsMap = appContext
+            .getBeansOfType(CmdLineAction.class);
+      for (Entry<String, CmdLineAction> entry : actionsMap.entrySet()) {
+         assertEquals(entry.getKey(), entry.getValue().getName());
+      }
+   }
 
-	public void testApplicationContextAutoSet() {
-		SpringCmdLineActionStore store = new SpringCmdLineActionStore(SPRING_CONFIG);
-		TestSetContextInjectTypeAction action = (TestSetContextInjectTypeAction) findAction(
-				"TestSetContextInjectAction", store.loadSupportedActions());
-		assertEquals(action.getContext(), store.getApplicationContext());
-	}
+   public void testApplicationContextAutoSet() {
+      SpringCmdLineActionStore store = new SpringCmdLineActionStore(
+            SPRING_CONFIG);
+      TestSetContextInjectTypeAction action = (TestSetContextInjectTypeAction) findAction(
+            "TestSetContextInjectAction", store.loadSupportedActions());
+      assertEquals(action.getContext(), store.getApplicationContext());
+   }
 
-	public void testLoadSupportedActions() {
-		SpringCmdLineActionStore store = new SpringCmdLineActionStore(SPRING_CONFIG);
-		Set<CmdLineAction> actions = store.loadSupportedActions();
+   public void testLoadSupportedActions() {
+      SpringCmdLineActionStore store = new SpringCmdLineActionStore(
+            SPRING_CONFIG);
+      Set<CmdLineAction> actions = store.loadSupportedActions();
 
-		// Check that all actions were loaded.
-		assertEquals(3, actions.size());
+      // Check that all actions were loaded.
+      assertEquals(3, actions.size());
 
-		// Load and verify PrintMessageAction was loaded correctly.
-		CmdLineAction action = findAction("PrintMessageAction", actions);
-		assertTrue(action instanceof PrintMessageAction);
-		PrintMessageAction pma = (PrintMessageAction) action;
-		assertEquals("Prints out a given message", pma.getDescription());
-		assertNull(pma.getMessage());
-		assertEquals(System.out, pma.getOutputStream());
+      // Load and verify PrintMessageAction was loaded correctly.
+      CmdLineAction action = findAction("PrintMessageAction", actions);
+      assertTrue(action instanceof PrintMessageAction);
+      PrintMessageAction pma = (PrintMessageAction) action;
+      assertEquals("Prints out a given message", pma.getDescription());
+      assertNull(pma.getMessage());
+      assertEquals(System.out, pma.getOutputStream());
 
-		// Load and verify PrintHelloWorldAction was loaded correctly.
-		action = findAction("PrintHelloWorldAction", actions);
-		assertTrue(action instanceof PrintMessageAction);
-		pma = (PrintMessageAction) action;
-		assertEquals("Prints out 'Hello World'", pma.getDescription());
-		assertEquals("Hello World", pma.getMessage());
-		assertEquals(System.out, pma.getOutputStream());
-	}
+      // Load and verify PrintHelloWorldAction was loaded correctly.
+      action = findAction("PrintHelloWorldAction", actions);
+      assertTrue(action instanceof PrintMessageAction);
+      pma = (PrintMessageAction) action;
+      assertEquals("Prints out 'Hello World'", pma.getDescription());
+      assertEquals("Hello World", pma.getMessage());
+      assertEquals(System.out, pma.getOutputStream());
+   }
 }

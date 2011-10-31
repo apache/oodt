@@ -18,18 +18,19 @@
   Author: bfoster (Brian Foster)
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:p="http://www.springframework.org/schema/p"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-  
-  <bean id="PrintMessageAction" class="org.apache.oodt.cas.cl.action.PrintMessageAction">
-    <property name="description" value="Prints out a given message"/>
-  </bean>
-  <bean id="PrintHelloWorldAction" class="org.apache.oodt.cas.cl.action.PrintMessageAction">
-    <property name="description" value="Prints out 'Hello World'"/>
-    <property name="message" value="Hello World"/>
-  </bean>
-  <bean id="TestSetContextInjectAction" class="org.apache.oodt.cas.cl.test.util.TestSetContextInjectTypeAction">
-    <property name="description" value="Test action for testing application context injection"/>
-  </bean>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="PrintMessageAction" class="org.apache.oodt.cas.cl.action.PrintMessageAction">
+		<property name="description" value="Prints out a given message" />
+	</bean>
+	<bean id="PrintHelloWorldAction" class="org.apache.oodt.cas.cl.action.PrintMessageAction">
+		<property name="description" value="Prints out 'Hello World'" />
+		<property name="message" value="Hello World" />
+	</bean>
+	<bean id="TestSetContextInjectAction"
+		class="org.apache.oodt.cas.cl.test.util.TestSetContextInjectTypeAction">
+		<property name="description"
+			value="Test action for testing application context injection" />
+	</bean>
 </beans>

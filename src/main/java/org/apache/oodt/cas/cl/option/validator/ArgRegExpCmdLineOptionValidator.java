@@ -26,29 +26,27 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 /**
  * Performs validation on option instances via allowed args which are regular
  * expressions for allowed argument values.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class ArgRegExpCmdLineOptionValidator extends
-		AllowedArgsCmdLineOptionValidator {
+      AllowedArgsCmdLineOptionValidator {
 
-	@Override
-	public boolean validate(CmdLineOptionInstance optionInst) {
-		Validate.notNull(optionInst);
+   @Override
+   public boolean validate(CmdLineOptionInstance optionInst) {
+      Validate.notNull(optionInst);
 
-		TOP:
-		for (String value : optionInst.getValues()) {
-			for (String regex : getAllowedArgs()) {
-				if (Pattern.matches(regex, value)) {
-					continue TOP;
-				}
-			}
-			LOG.severe("Option1 value " + value + " is not allowed for option "
-					+ optionInst.getOption().getLongOption() + " - Allowed values = "
-					+ getAllowedArgs());
-			return false;
-		}
-		return true;
-	}
-
+      TOP: for (String value : optionInst.getValues()) {
+         for (String regex : getAllowedArgs()) {
+            if (Pattern.matches(regex, value)) {
+               continue TOP;
+            }
+         }
+         LOG.severe("Option1 value " + value + " is not allowed for option "
+               + optionInst.getOption().getLongOption()
+               + " - Allowed values = " + getAllowedArgs());
+         return false;
+      }
+      return true;
+   }
 }

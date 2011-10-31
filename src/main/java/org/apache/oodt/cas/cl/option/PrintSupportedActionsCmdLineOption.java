@@ -17,18 +17,18 @@
 package org.apache.oodt.cas.cl.option;
 
 /**
- * The Print Supported Actions {@link CmdLineOption}. 
- *
+ * The Print Supported Actions {@link CmdLineOption}.
+ * 
  * @author bfoster (Brian Foster)
  */
 public class PrintSupportedActionsCmdLineOption extends SimpleCmdLineOption {
 
-	public PrintSupportedActionsCmdLineOption() {
-		super("psa", "printSupportedActions", "Print Supported Actions", false);
-	}
+   public PrintSupportedActionsCmdLineOption() {
+      super("psa", "printSupportedActions", "Print Supported Actions", false);
+   }
 
-	public PrintSupportedActionsCmdLineOption(String shortOption, String longOption,
-			String description, boolean hasArgs) {
-		super(shortOption, longOption, description, hasArgs);
-	}
+   public PrintSupportedActionsCmdLineOption(String shortOption,
+         String longOption, String description, boolean hasArgs) {
+      super(shortOption, longOption, description, hasArgs);
+   }
 }

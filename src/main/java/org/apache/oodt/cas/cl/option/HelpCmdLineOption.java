@@ -18,17 +18,17 @@ package org.apache.oodt.cas.cl.option;
 
 /**
  * The Help {@link CmdLineOption}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class HelpCmdLineOption extends SimpleCmdLineOption {
 
-	public HelpCmdLineOption() {
-		this("h", "help", "Prints help menu", false);
-	}
+   public HelpCmdLineOption() {
+      this("h", "help", "Prints help menu", false);
+   }
 
-	public HelpCmdLineOption(String shortOption, String longOption,
-			String description, boolean hasArgs) {
-		super(shortOption, longOption, description, hasArgs);
-	}
+   public HelpCmdLineOption(String shortOption, String longOption,
+         String description, boolean hasArgs) {
+      super(shortOption, longOption, description, hasArgs);
+   }
 }

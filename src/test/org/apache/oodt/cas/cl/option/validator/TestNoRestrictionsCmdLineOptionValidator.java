@@ -28,18 +28,18 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
  * Test class for {@link NoRestrictionsCmdLineOptionValidator}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestNoRestrictionsCmdLineOptionValidator extends TestCase {
 
-	public void testValidate() {
-		// Test pass for null option instance.
-		assertTrue(new NoRestrictionsCmdLineOptionValidator().validate(null));
+   public void testValidate() {
+      // Test pass for null option instance.
+      assertTrue(new NoRestrictionsCmdLineOptionValidator().validate(null));
 
-		// Test pass for not null option instance.
-		CmdLineOptionInstance instance = createOptionInstance(
-				createSimpleOption("test", false), "bogus");
-		assertTrue(new NoRestrictionsCmdLineOptionValidator().validate(instance));
-	}
+      // Test pass for not null option instance.
+      CmdLineOptionInstance instance = createOptionInstance(
+            createSimpleOption("test", false), "bogus");
+      assertTrue(new NoRestrictionsCmdLineOptionValidator().validate(instance));
+   }
 }

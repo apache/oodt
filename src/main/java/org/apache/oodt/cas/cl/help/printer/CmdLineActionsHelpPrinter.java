@@ -23,19 +23,20 @@ import java.util.Set;
 import org.apache.oodt.cas.cl.action.CmdLineAction;
 
 /**
- * Help printer responsible for generating print help message for
- * supported {@link CmdLineAction}s.
- *
+ * Help printer responsible for generating print help message for supported
+ * {@link CmdLineAction}s.
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface CmdLineActionsHelpPrinter {
 
-	/**
-	 * Generates help messages given {@link CmdLineAction}s.
-	 *
-	 * @param actions {@link CmdLineAction}s to print help for
-	 * @return Help message for given {@link CmdLineAction}s.
-	 */
-	public String printHelp(Set<CmdLineAction> actions);
+   /**
+    * Generates help messages given {@link CmdLineAction}s.
+    * 
+    * @param actions
+    *           {@link CmdLineAction}s to print help for
+    * @return Help message for given {@link CmdLineAction}s.
+    */
+   public String printHelp(Set<CmdLineAction> actions);
 
 }

@@ -21,14 +21,14 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * Interface which if implemented will have the Spring Framework
- * {@link ApplicationContext} injected via the setter method
- * after loading from Spring XML configuration.
- *
+ * {@link ApplicationContext} injected via the setter method after loading from
+ * Spring XML configuration.
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface SpringSetContextInjectionType {
 
-	public void setContext(ApplicationContext appContext);
+   public void setContext(ApplicationContext appContext);
 
-	public ApplicationContext getContext();
+   public ApplicationContext getContext();
 }

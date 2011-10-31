@@ -20,21 +20,21 @@ package org.apache.oodt.cas.cl.help;
 import java.io.IOException;
 
 /**
- * Exception thrown to express that help {@link CmdLineOption} should be
- * given to see help message.
+ * Exception thrown to express that help {@link CmdLineOption} should be given
+ * to see help message.
  * 
  * @author bfoster (Brian Foster)
  */
 public class OptionHelpException extends IOException {
 
-	private static final long serialVersionUID = -8198106641155733222L;
+   private static final long serialVersionUID = -8198106641155733222L;
 
-	public OptionHelpException() {
-		super();
-	}
-	
-	public OptionHelpException(String message) {
-		super(message);
-	}
-	
+   public OptionHelpException() {
+      super();
+   }
+
+   public OptionHelpException(String message) {
+      super(message);
+   }
+
 }

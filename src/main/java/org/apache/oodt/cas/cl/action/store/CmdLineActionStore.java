@@ -24,11 +24,11 @@ import org.apache.oodt.cas.cl.action.CmdLineAction;
 
 /**
  * Storage for loading supported {@link CmdLineAction}s.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface CmdLineActionStore {
 
-	public Set<CmdLineAction> loadSupportedActions();
+   public Set<CmdLineAction> loadSupportedActions();
 
 }

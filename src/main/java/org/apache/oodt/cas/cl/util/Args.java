@@ -31,85 +31,85 @@ import org.apache.commons.lang.Validate;
  * @author bfoster (Brian Foster)
  */
 public class Args implements Iterable<String> {
-	private int curIndex;
-	private String[] args;
+   private int curIndex;
+   private String[] args;
 
-	public Args(String[] args) {
-		Validate.notNull(args);
+   public Args(String[] args) {
+      Validate.notNull(args);
 
-		curIndex = 0;
-		this.args = args;
-	}
+      curIndex = 0;
+      this.args = args;
+   }
 
-	public String[] getArgs() {
-		return args;
-	}
+   public String[] getArgs() {
+      return args;
+   }
 
-	public String[] getArgsLeft() {
-		return Arrays.copyOfRange(args, curIndex, args.length);
-	}
+   public String[] getArgsLeft() {
+      return Arrays.copyOfRange(args, curIndex, args.length);
+   }
 
-	public int getCurrentIndex() {
-		return curIndex;
-	}
+   public int getCurrentIndex() {
+      return curIndex;
+   }
 
-	public void incrementIndex() {
-		curIndex++;
-	}
+   public void incrementIndex() {
+      curIndex++;
+   }
 
-	public void descrementIndex() {
-		curIndex--;
-	}
+   public void descrementIndex() {
+      curIndex--;
+   }
 
-	public String incrementAndGet() {
-		incrementIndex();
-		return getCurrentArg();
-	}
+   public String incrementAndGet() {
+      incrementIndex();
+      return getCurrentArg();
+   }
 
-	public String getAndIncrement() {
-		String next = getCurrentArg();
-		incrementIndex();
-		return next;
-	}
+   public String getAndIncrement() {
+      String next = getCurrentArg();
+      incrementIndex();
+      return next;
+   }
 
-	public int numArgs() {
-		return args.length;
-	}
+   public int numArgs() {
+      return args.length;
+   }
 
-	public String getArg(int index) {
-		return args[index];
-	}
+   public String getArg(int index) {
+      return args[index];
+   }
 
-	public boolean hasNext() {
-		return curIndex < args.length;
-	}
+   public boolean hasNext() {
+      return curIndex < args.length;
+   }
 
-	public String getCurrentArg() {
-		if (hasNext()) {
-			return args[curIndex];
-		} else {
-			return null;
-		}
-	}
+   public String getCurrentArg() {
+      if (hasNext()) {
+         return args[curIndex];
+      } else {
+         return null;
+      }
+   }
 
-	public Iterator<String> iterator() {
-		return new Iterator<String>() {
+   public Iterator<String> iterator() {
+      return new Iterator<String>() {
 
-			public boolean hasNext() {
-				return Args.this.hasNext();
-			}
+         public boolean hasNext() {
+            return Args.this.hasNext();
+         }
 
-			public String next() {
-				if (!hasNext()) {
-					throw new IndexOutOfBoundsException(curIndex + "");
-				}
-				return getAndIncrement();
-			}
+         public String next() {
+            if (!hasNext()) {
+               throw new IndexOutOfBoundsException(curIndex + "");
+            }
+            return getAndIncrement();
+         }
 
-			public void remove() {
-				// do nothing
-			}
+         public void remove() {
+            // do nothing
+         }
 
-		};
-	}
+      };
+   }
 }

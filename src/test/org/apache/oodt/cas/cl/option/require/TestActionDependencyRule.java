@@ -27,39 +27,39 @@ import junit.framework.TestCase;
 
 /**
  * Test class for {@link ActionDependencyRule}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestActionDependencyRule extends TestCase {
 
-	public void testInitialCase() {
-		ActionDependencyRule actionDependency = new ActionDependencyRule();
-		assertNull(actionDependency.getActionName());
-		assertNull(actionDependency.getRelation());
-	}
+   public void testInitialCase() {
+      ActionDependencyRule actionDependency = new ActionDependencyRule();
+      assertNull(actionDependency.getActionName());
+      assertNull(actionDependency.getRelation());
+   }
 
-	public void testVariableSetting() {
-		String actionName = "operation";
-		Relation relation = Relation.OPTIONAL;
-		ActionDependencyRule actionDependency = new ActionDependencyRule(
-				actionName, relation);
-		assertEquals(actionName, actionDependency.getActionName());
-		assertEquals(relation, actionDependency.getRelation());
+   public void testVariableSetting() {
+      String actionName = "operation";
+      Relation relation = Relation.OPTIONAL;
+      ActionDependencyRule actionDependency = new ActionDependencyRule(
+            actionName, relation);
+      assertEquals(actionName, actionDependency.getActionName());
+      assertEquals(relation, actionDependency.getRelation());
 
-		actionName = "action";
-		relation = Relation.REQUIRED;
-		actionDependency.setActionName(actionName);
-		actionDependency.setRelation(relation);
-		assertEquals(actionName, actionDependency.getActionName());
-		assertEquals(relation, actionDependency.getRelation());
-	}
+      actionName = "action";
+      relation = Relation.REQUIRED;
+      actionDependency.setActionName(actionName);
+      actionDependency.setRelation(relation);
+      assertEquals(actionName, actionDependency.getActionName());
+      assertEquals(relation, actionDependency.getRelation());
+   }
 
-	public void testGetRelation() {
-		String actionName = "operation";
-		Relation relation = Relation.OPTIONAL;
-		ActionDependencyRule actionDependency = new ActionDependencyRule(
-				actionName, relation);
-		assertEquals(relation,
-				actionDependency.getRelation(createAction(actionName)));
-	}
+   public void testGetRelation() {
+      String actionName = "operation";
+      Relation relation = Relation.OPTIONAL;
+      ActionDependencyRule actionDependency = new ActionDependencyRule(
+            actionName, relation);
+      assertEquals(relation,
+            actionDependency.getRelation(createAction(actionName)));
+   }
 }

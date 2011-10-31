@@ -24,82 +24,83 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 
 /**
- * {@link CmdLineOption} which is a group option (i.e. supports
- * sub-{@link CmdLineOption}s.
+ * {@link CmdLineOption} which is a group option (i.e. supports sub-
+ * {@link CmdLineOption}s.
  * 
  * @author bfoster (Brian Foster)
  */
 public class GroupCmdLineOption extends SimpleCmdLineOption {
 
-	private Set<SubOption> subOptions;
-	private boolean allowAnySubOption;
+   private Set<SubOption> subOptions;
+   private boolean allowAnySubOption;
 
-	public GroupCmdLineOption() {
-		super();
-		this.setHasArgs(false);
-		this.setAllowAnySubOptions(false);
-		subOptions = new HashSet<SubOption>();
-	}
+   public GroupCmdLineOption() {
+      super();
+      this.setHasArgs(false);
+      this.setAllowAnySubOptions(false);
+      subOptions = new HashSet<SubOption>();
+   }
 
-	public GroupCmdLineOption(String shortOption, String longOption,
-			String description, boolean hasArgs) {
-		super(shortOption, longOption, description, hasArgs);
-	}
+   public GroupCmdLineOption(String shortOption, String longOption,
+         String description, boolean hasArgs) {
+      super(shortOption, longOption, description, hasArgs);
+   }
 
-	public void setAllowAnySubOptions(boolean allowAnySubOption) {
-		this.allowAnySubOption = allowAnySubOption;
-	}
+   public void setAllowAnySubOptions(boolean allowAnySubOption) {
+      this.allowAnySubOption = allowAnySubOption;
+   }
 
-	public boolean isAllowAnySubOptions() {
-		return subOptions.isEmpty() && allowAnySubOption;
-	}
+   public boolean isAllowAnySubOptions() {
+      return subOptions.isEmpty() && allowAnySubOption;
+   }
 
-	public void setSubOptions(Set<SubOption> subOptions) {
-		Validate.notNull(subOptions, "Cannot set subOptions to NULL");
+   public void setSubOptions(Set<SubOption> subOptions) {
+      Validate.notNull(subOptions, "Cannot set subOptions to NULL");
 
-		this.subOptions = new HashSet<SubOption>(subOptions);
-	}
+      this.subOptions = new HashSet<SubOption>(subOptions);
+   }
 
-	public void addSubOption(SubOption subOption) {
-		Validate.notNull(subOption, "Cannot add NULL subOption");
+   public void addSubOption(SubOption subOption) {
+      Validate.notNull(subOption, "Cannot add NULL subOption");
 
-		subOptions.add(subOption);
-	}
+      subOptions.add(subOption);
+   }
 
-	public Set<SubOption> getSubOptions() {
-		return subOptions;
-	}
+   public Set<SubOption> getSubOptions() {
+      return subOptions;
+   }
 
-	public boolean hasSubOptions() {
-		return subOptions != null && !subOptions.isEmpty();
-	}
+   public boolean hasSubOptions() {
+      return subOptions != null && !subOptions.isEmpty();
+   }
 
-	public static class SubOption {
+   public static class SubOption {
 
-		private CmdLineOption option;
-		private boolean required;
+      private CmdLineOption option;
+      private boolean required;
 
-		public SubOption() {}
+      public SubOption() {
+      }
 
-		public SubOption(CmdLineOption option, boolean required) {
-			this.option = option;
-			this.required = required;
-		}
+      public SubOption(CmdLineOption option, boolean required) {
+         this.option = option;
+         this.required = required;
+      }
 
-		public void setOption(CmdLineOption option) {
-			this.option = option;
-		}
+      public void setOption(CmdLineOption option) {
+         this.option = option;
+      }
 
-		public CmdLineOption getOption() {
-			return option;
-		}
+      public CmdLineOption getOption() {
+         return option;
+      }
 
-		public void setRequired(boolean required) {
-			this.required = required;
-		}
+      public void setRequired(boolean required) {
+         this.required = required;
+      }
 
-		public boolean isRequired() {
-			return required;
-		}
-	}
+      public boolean isRequired() {
+         return required;
+      }
+   }
 }

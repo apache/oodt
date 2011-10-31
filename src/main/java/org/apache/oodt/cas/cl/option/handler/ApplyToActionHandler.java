@@ -35,61 +35,61 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * {@link CmdLineOptionHandler} which applies {@link CmdLineOption} values
- * to given {@link CmdLineAction}.
- *
+ * {@link CmdLineOptionHandler} which applies {@link CmdLineOption} values to
+ * given {@link CmdLineAction}.
+ * 
  * @author bfoster (Brian Foster)
  */
 public class ApplyToActionHandler implements CmdLineOptionHandler {
 
-	private List<ApplyToAction> applyToActions;
+   private List<ApplyToAction> applyToActions;
 
-	public void setApplyToActions(List<ApplyToAction> applyToActions) {
-		this.applyToActions = applyToActions;
-	}
+   public void setApplyToActions(List<ApplyToAction> applyToActions) {
+      this.applyToActions = applyToActions;
+   }
 
-	public List<ApplyToAction> getApplyToActions() {
-		return applyToActions;
-	}
+   public List<ApplyToAction> getApplyToActions() {
+      return applyToActions;
+   }
 
-	public void handleOption(CmdLineAction action,
-			CmdLineOptionInstance optionInstance) {
-		try {
-			Class<?> type = optionInstance.getOption().getType();
-			List<?> vals = (optionInstance.getValues().isEmpty()) ? convertToType(
-					Arrays.asList(new String[] { "true" }), type = Boolean.TYPE)
-					: convertToType(optionInstance.getValues(), type);
-			String methodName = getMethodName(action.getName());
-			if (methodName != null) {
-				action.getClass()
-						.getMethod(methodName, type)
-						.invoke(action, vals.toArray(new Object[vals.size()]));
-			} else {
-				action
-					.getClass()
-					.getMethod(
-							"set" + StringUtils.capitalize(
-									optionInstance.getOption().getLongOption()), type)
-					.invoke(action, vals.toArray(new Object[vals.size()]));
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+   public void handleOption(CmdLineAction action,
+         CmdLineOptionInstance optionInstance) {
+      try {
+         Class<?> type = optionInstance.getOption().getType();
+         List<?> vals = (optionInstance.getValues().isEmpty()) ? convertToType(
+               Arrays.asList(new String[] { "true" }), type = Boolean.TYPE)
+               : convertToType(optionInstance.getValues(), type);
+         String methodName = getMethodName(action.getName());
+         if (methodName != null) {
+            action.getClass().getMethod(methodName, type)
+                  .invoke(action, vals.toArray(new Object[vals.size()]));
+         } else {
+            action.getClass()
+                  .getMethod(
+                        "set"
+                              + StringUtils.capitalize(optionInstance
+                                    .getOption().getLongOption()), type)
+                  .invoke(action, vals.toArray(new Object[vals.size()]));
+         }
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+   }
 
-	@VisibleForTesting
-	protected String getMethodName(String actionName) {
-		if (applyToActions != null) {
-			for (ApplyToAction applyToAction : applyToActions) {
-				if (applyToAction.getActionName().equals(actionName)) {
-					return applyToAction.getMethodName();
-				}
-			}
-		}
-		return null;
-	}
+   @VisibleForTesting
+   protected String getMethodName(String actionName) {
+      if (applyToActions != null) {
+         for (ApplyToAction applyToAction : applyToActions) {
+            if (applyToAction.getActionName().equals(actionName)) {
+               return applyToAction.getMethodName();
+            }
+         }
+      }
+      return null;
+   }
 
-	public String getHelp(CmdLineOption option) {
-		return "Will invoke 'set" + option.getLongOption() + "' on action selected";
-	}
+   public String getHelp(CmdLineOption option) {
+      return "Will invoke 'set" + option.getLongOption()
+            + "' on action selected";
+   }
 }

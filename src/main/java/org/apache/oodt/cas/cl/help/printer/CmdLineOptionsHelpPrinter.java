@@ -25,18 +25,18 @@ import org.apache.oodt.cas.cl.option.CmdLineOption;
 /**
  * Help printer responsible for generating help message for given
  * {@link CmdLineOption}s.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface CmdLineOptionsHelpPrinter {
 
-	/**
-	 * Generates help message for given {@link CmdLineOption}s
-	 *
-	 * @param options {@link CmdLineOption}s for which help message will be
-	 * generated
-	 * @return Help message for given {@link CmdLineOption}s.
-	 */
-	public String printHelp(Set<CmdLineOption> options);
+   /**
+    * Generates help message for given {@link CmdLineOption}s
+    * 
+    * @param options
+    *           {@link CmdLineOption}s for which help message will be generated
+    * @return Help message for given {@link CmdLineOption}s.
+    */
+   public String printHelp(Set<CmdLineOption> options);
 
 }

@@ -40,114 +40,115 @@ import com.google.common.collect.Lists;
 
 /**
  * Base Test case for CAS-CL unit tests.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestUtils {
 
-	public static CmdLineAction createAction(String name) {
-		return new CmdLineAction(name, "This is an action description") {
+   public static CmdLineAction createAction(String name) {
+      return new CmdLineAction(name, "This is an action description") {
 
-			@Override
-			public void execute() {
-				// do nothing
-			}
+         @Override
+         public void execute() {
+            // do nothing
+         }
 
-		};
-	}
+      };
+   }
 
-	public static GroupCmdLineOption createGroupOption(String longName,
-			boolean required) {
-		GroupCmdLineOption option = new GroupCmdLineOption();
-		option.setLongOption(longName);
-		option.setShortOption(longName);
-		option.setRequired(required);
-		return option;
-	}
+   public static GroupCmdLineOption createGroupOption(String longName,
+         boolean required) {
+      GroupCmdLineOption option = new GroupCmdLineOption();
+      option.setLongOption(longName);
+      option.setShortOption(longName);
+      option.setRequired(required);
+      return option;
+   }
 
-	public static SimpleCmdLineOption createSimpleOption(String longName,
-			boolean required) {
-		return createSimpleOption(longName, longName, required);
-	}
+   public static SimpleCmdLineOption createSimpleOption(String longName,
+         boolean required) {
+      return createSimpleOption(longName, longName, required);
+   }
 
-	public static SimpleCmdLineOption createSimpleOption(String shortName,
-			String longName, boolean required) {
-		SimpleCmdLineOption option = new SimpleCmdLineOption();
-		option.setShortOption(shortName);
-		option.setLongOption(longName);
-		option.setRequired(required);
-		return option;
-	}
+   public static SimpleCmdLineOption createSimpleOption(String shortName,
+         String longName, boolean required) {
+      SimpleCmdLineOption option = new SimpleCmdLineOption();
+      option.setShortOption(shortName);
+      option.setLongOption(longName);
+      option.setRequired(required);
+      return option;
+   }
 
-	public static SimpleCmdLineOption createSimpleOption(String longName,
-			RequirementRule rule) {
-		return createSimpleOption(longName, longName, rule);
-	}
+   public static SimpleCmdLineOption createSimpleOption(String longName,
+         RequirementRule rule) {
+      return createSimpleOption(longName, longName, rule);
+   }
 
-	public static SimpleCmdLineOption createSimpleOption(String shortName,
-			String longName, RequirementRule rule) {
-		SimpleCmdLineOption option = new SimpleCmdLineOption();
-		option.setShortOption(shortName);
-		option.setLongOption(longName);
-		option.setRequirementRules(Collections.singletonList(rule));
-		return option;
-	}
+   public static SimpleCmdLineOption createSimpleOption(String shortName,
+         String longName, RequirementRule rule) {
+      SimpleCmdLineOption option = new SimpleCmdLineOption();
+      option.setShortOption(shortName);
+      option.setLongOption(longName);
+      option.setRequirementRules(Collections.singletonList(rule));
+      return option;
+   }
 
-	public static AdvancedCmdLineOption createAdvancedOption(String longName,
-			CmdLineOptionHandler handler) {
-		return createAdvancedOption(longName, longName, handler);
-	}
+   public static AdvancedCmdLineOption createAdvancedOption(String longName,
+         CmdLineOptionHandler handler) {
+      return createAdvancedOption(longName, longName, handler);
+   }
 
-	public static AdvancedCmdLineOption createAdvancedOption(String shortName,
-			String longName, CmdLineOptionHandler handler) {
-		AdvancedCmdLineOption option = new AdvancedCmdLineOption();
-		option.setShortOption(shortName);
-		option.setLongOption(longName);
-		option.setHandler(handler);
-		return option;
-	}
+   public static AdvancedCmdLineOption createAdvancedOption(String shortName,
+         String longName, CmdLineOptionHandler handler) {
+      AdvancedCmdLineOption option = new AdvancedCmdLineOption();
+      option.setShortOption(shortName);
+      option.setLongOption(longName);
+      option.setHandler(handler);
+      return option;
+   }
 
-	public static AdvancedCmdLineOption createValidationOption(String longName, CmdLineOptionValidator... validators) {
-		AdvancedCmdLineOption option = new AdvancedCmdLineOption();
-		option.setLongOption(longName);
-		option.setShortOption(longName);
-		option.setValidators(Lists.newArrayList(validators));
-		return option;
-	}
+   public static AdvancedCmdLineOption createValidationOption(String longName,
+         CmdLineOptionValidator... validators) {
+      AdvancedCmdLineOption option = new AdvancedCmdLineOption();
+      option.setLongOption(longName);
+      option.setShortOption(longName);
+      option.setValidators(Lists.newArrayList(validators));
+      return option;
+   }
 
-	public static ActionCmdLineOption createActionOption(String longName) {
-		ActionCmdLineOption option = new ActionCmdLineOption();
-		option.setLongOption(longName);
-		option.setShortOption(longName);
-		return option;
-	}
+   public static ActionCmdLineOption createActionOption(String longName) {
+      ActionCmdLineOption option = new ActionCmdLineOption();
+      option.setLongOption(longName);
+      option.setShortOption(longName);
+      return option;
+   }
 
-	public static CmdLineOptionInstance createOptionInstance(
-			CmdLineOption option, String... values) {
-		return new CmdLineOptionInstance(option, Lists.newArrayList(values));
-	}
+   public static CmdLineOptionInstance createOptionInstance(
+         CmdLineOption option, String... values) {
+      return new CmdLineOptionInstance(option, Lists.newArrayList(values));
+   }
 
-	public static RequirementRule createRequiredRequirementRule(
-			CmdLineAction action) {
-		ActionDependencyRule rule = new ActionDependencyRule();
-		rule.setActionName(action.getName());
-		rule.setRelation(Relation.REQUIRED);
-		return rule;
-	}
+   public static RequirementRule createRequiredRequirementRule(
+         CmdLineAction action) {
+      ActionDependencyRule rule = new ActionDependencyRule();
+      rule.setActionName(action.getName());
+      rule.setRelation(Relation.REQUIRED);
+      return rule;
+   }
 
-	public static RequirementRule createOptionalRequirementRule(
-			CmdLineAction action) {
-		ActionDependencyRule rule = new ActionDependencyRule();
-		rule.setActionName(action.getName());
-		rule.setRelation(Relation.OPTIONAL);
-		return rule;
-	}
+   public static RequirementRule createOptionalRequirementRule(
+         CmdLineAction action) {
+      ActionDependencyRule rule = new ActionDependencyRule();
+      rule.setActionName(action.getName());
+      rule.setRelation(Relation.OPTIONAL);
+      return rule;
+   }
 
-	public static ApplyToActionHandler createApplyToActionHandler(
-			String actionName, String methodName) {
-		ApplyToActionHandler handler = new ApplyToActionHandler();
-		handler.setApplyToActions(Lists.newArrayList(new ApplyToAction(actionName,
-				methodName)));
-		return handler;
-	}
+   public static ApplyToActionHandler createApplyToActionHandler(
+         String actionName, String methodName) {
+      ApplyToActionHandler handler = new ApplyToActionHandler();
+      handler.setApplyToActions(Lists.newArrayList(new ApplyToAction(
+            actionName, methodName)));
+      return handler;
+   }
 }

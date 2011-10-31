@@ -26,22 +26,23 @@ import org.springframework.context.ApplicationContext;
 /**
  * Test {@link CmdLineAction} for testing {@link SpringSetContextInjectionType}
  * are injected with the {@link ApplicationContext} correctly.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
-public class TestSetContextInjectTypeAction extends CmdLineAction
-		implements SpringSetContextInjectionType {
+public class TestSetContextInjectTypeAction extends CmdLineAction implements
+      SpringSetContextInjectionType {
 
-	private ApplicationContext appContext;
-	
-	@Override
-	public void execute() {}
+   private ApplicationContext appContext;
 
-	public void setContext(ApplicationContext appContext) {
-		this.appContext = appContext;
-	}
+   @Override
+   public void execute() {
+   }
 
-	public ApplicationContext getContext() {
-		return appContext;
-	}
+   public void setContext(ApplicationContext appContext) {
+      this.appContext = appContext;
+   }
+
+   public ApplicationContext getContext() {
+      return appContext;
+   }
 }

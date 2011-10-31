@@ -17,39 +17,40 @@
 package org.apache.oodt.cas.cl.action;
 
 /**
- * Action which is specified and configurated via {@link CmdLineOption}s
- * and then executed.
- *
+ * Action which is specified and configurated via {@link CmdLineOption}s and
+ * then executed.
+ * 
  * @author bfoster (Brian Foster)
  */
 public abstract class CmdLineAction {
 
-	private String name;
-	private String description;
+   private String name;
+   private String description;
 
-	public CmdLineAction() {}
+   public CmdLineAction() {
+   }
 
-	public CmdLineAction(String name, String description) {
-		this.name = name;
-		this.description = description;
-	}
+   public CmdLineAction(String name, String description) {
+      this.name = name;
+      this.description = description;
+   }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+   public void setName(String name) {
+      this.name = name;
+   }
 
-	public String getName() {
-		return name;
-	}
+   public String getName() {
+      return name;
+   }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+   public void setDescription(String description) {
+      this.description = description;
+   }
 
-	public String getDescription() {
-		return description;
-	}
+   public String getDescription() {
+      return description;
+   }
 
-	public abstract void execute();
+   public abstract void execute();
 
 }

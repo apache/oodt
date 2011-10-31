@@ -21,26 +21,27 @@ import java.io.PrintStream;
 
 /**
  * Standard help presenter which sends help messages to {@link System.out}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
-public class StdCmdLineOptionHelpPresenter implements CmdLineOptionHelpPresenter {
+public class StdCmdLineOptionHelpPresenter implements
+      CmdLineOptionHelpPresenter {
 
-	private PrintStream ps;
+   private PrintStream ps;
 
-	public StdCmdLineOptionHelpPresenter() {
-		ps = new PrintStream(System.out);
-	}
+   public StdCmdLineOptionHelpPresenter() {
+      ps = new PrintStream(System.out);
+   }
 
-	public void presentOptionHelp(String optionHelpMessage) {
-		ps.println(optionHelpMessage);
-	}
+   public void presentOptionHelp(String optionHelpMessage) {
+      ps.println(optionHelpMessage);
+   }
 
-	public void presentActionHelp(String actionHelpMessage) {
-		ps.println(actionHelpMessage);
-	}
+   public void presentActionHelp(String actionHelpMessage) {
+      ps.println(actionHelpMessage);
+   }
 
-	public void presentActionsHelp(String actionsHelpMessage) {
-		ps.println(actionsHelpMessage);		
-	}
+   public void presentActionsHelp(String actionsHelpMessage) {
+      ps.println(actionsHelpMessage);
+   }
 }

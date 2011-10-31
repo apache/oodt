@@ -52,245 +52,277 @@ import org.apache.oodt.cas.cl.util.Args;
 import org.apache.oodt.cas.cl.util.CmdLineUtils;
 
 /**
- * A highly configurable utility class which supports parsing and handling of 
- * command line arguments via its action driven design.  After parsing the
+ * A highly configurable utility class which supports parsing and handling of
+ * command line arguments via its action driven design. After parsing the
  * command line arguments it will check for required arguments not specified,
- * validate the arguments, run the arguments handlers and then invoke the specified
- * action.  It also supports print out help messages and printing supported actions.
- *
+ * validate the arguments, run the arguments handlers and then invoke the
+ * specified action. It also supports print out help messages and printing
+ * supported actions.
+ * 
  * @author bfoster (Brian Foster)
  */
 public class CmdLineUtility {
 
-	private CmdLineOptionParser parser;
-	private CmdLineOptionStore optionStore;
-	private CmdLineActionStore actionStore;
-	private CmdLineOptionsHelpPrinter optionHelpPrinter;
-	private CmdLineActionHelpPrinter actionHelpPrinter;
-	private CmdLineActionsHelpPrinter actionsHelpPrinter;
-	private CmdLineOptionHelpPresenter helpPresenter;
-	
-	public CmdLineUtility() {
-		parser = new StdCmdLineOptionParser();
-		optionStore = new SpringCmdLineOptionStoreFactory().createStore();
-		actionStore = new SpringCmdLineActionStoreFactory().createStore();
-		optionHelpPrinter = new StdCmdLineOptionsHelpPrinter();
-		actionHelpPrinter = new StdCmdLineActionHelpPrinter();
-		helpPresenter = new StdCmdLineOptionHelpPresenter();
-	}
+   private CmdLineOptionParser parser;
+   private CmdLineOptionStore optionStore;
+   private CmdLineActionStore actionStore;
+   private CmdLineOptionsHelpPrinter optionHelpPrinter;
+   private CmdLineActionHelpPrinter actionHelpPrinter;
+   private CmdLineActionsHelpPrinter actionsHelpPrinter;
+   private CmdLineOptionHelpPresenter helpPresenter;
 
-	public CmdLineOptionStore getOptionStore() {
-		return optionStore;
-	}
+   public CmdLineUtility() {
+      parser = new StdCmdLineOptionParser();
+      optionStore = new SpringCmdLineOptionStoreFactory().createStore();
+      actionStore = new SpringCmdLineActionStoreFactory().createStore();
+      optionHelpPrinter = new StdCmdLineOptionsHelpPrinter();
+      actionHelpPrinter = new StdCmdLineActionHelpPrinter();
+      helpPresenter = new StdCmdLineOptionHelpPresenter();
+   }
 
-	public void setOptionStore(CmdLineOptionStore optionStore) {
-		this.optionStore = optionStore;
-	}
+   public CmdLineOptionStore getOptionStore() {
+      return optionStore;
+   }
 
-	public CmdLineActionStore getActionStore() {
-		return actionStore;
-	}
+   public void setOptionStore(CmdLineOptionStore optionStore) {
+      this.optionStore = optionStore;
+   }
 
-	public void setActionStore(CmdLineActionStore actionStore) {
-		this.actionStore = actionStore;
-	}
+   public CmdLineActionStore getActionStore() {
+      return actionStore;
+   }
 
-	public CmdLineOptionsHelpPrinter getOptionHelpPrinter() {
-		return optionHelpPrinter;
-	}
+   public void setActionStore(CmdLineActionStore actionStore) {
+      this.actionStore = actionStore;
+   }
 
-	public void setOptionHelpPrinter(CmdLineOptionsHelpPrinter optionHelpPrinter) {
-		this.optionHelpPrinter = optionHelpPrinter;
-	}
+   public CmdLineOptionsHelpPrinter getOptionHelpPrinter() {
+      return optionHelpPrinter;
+   }
 
-	public CmdLineActionHelpPrinter getActionHelpPrinter() {
-		return actionHelpPrinter;
-	}
+   public void setOptionHelpPrinter(CmdLineOptionsHelpPrinter optionHelpPrinter) {
+      this.optionHelpPrinter = optionHelpPrinter;
+   }
 
-	public void setActionHelpPrinter(CmdLineActionHelpPrinter actionHelpPrinter) {
-		this.actionHelpPrinter = actionHelpPrinter;
-	}
+   public CmdLineActionHelpPrinter getActionHelpPrinter() {
+      return actionHelpPrinter;
+   }
 
-	public CmdLineActionsHelpPrinter getActionsHelpPrinter() {
-		return actionsHelpPrinter;
-	}
+   public void setActionHelpPrinter(CmdLineActionHelpPrinter actionHelpPrinter) {
+      this.actionHelpPrinter = actionHelpPrinter;
+   }
 
-	public void setActionsHelpPrinter(CmdLineActionsHelpPrinter actionsHelpPrinter) {
-		this.actionsHelpPrinter = actionsHelpPrinter;
-	}
+   public CmdLineActionsHelpPrinter getActionsHelpPrinter() {
+      return actionsHelpPrinter;
+   }
 
-	public CmdLineOptionHelpPresenter getHelpPresenter() {
-		return helpPresenter;
-	}
+   public void setActionsHelpPrinter(
+         CmdLineActionsHelpPrinter actionsHelpPrinter) {
+      this.actionsHelpPrinter = actionsHelpPrinter;
+   }
 
-	public void setHelpPresenter(CmdLineOptionHelpPresenter helpPresenter) {
-		this.helpPresenter = helpPresenter;
-	}
+   public CmdLineOptionHelpPresenter getHelpPresenter() {
+      return helpPresenter;
+   }
 
-	public void printOptionHelp(CmdLineArgs cmdLineArgs) {
-		helpPresenter.presentOptionHelp(optionHelpPrinter.printHelp(cmdLineArgs
-				.getSupportedOptions()));
-	}
+   public void setHelpPresenter(CmdLineOptionHelpPresenter helpPresenter) {
+      this.helpPresenter = helpPresenter;
+   }
 
-	public void printActionHelp(CmdLineArgs cmdLineArgs) {
-		Validate.notEmpty(cmdLineArgs.getHelpOptionInst().getValues());
+   public void printOptionHelp(CmdLineArgs cmdLineArgs) {
+      helpPresenter.presentOptionHelp(optionHelpPrinter.printHelp(cmdLineArgs
+            .getSupportedOptions()));
+   }
 
-		helpPresenter.presentActionHelp(actionHelpPrinter.printHelp(
-				CmdLineUtils.findAction(cmdLineArgs.getHelpOptionInst().getValues()
-						.get(0), cmdLineArgs.getSupportedActions()),
-				cmdLineArgs.getCustomSupportedOptions()));
-	}
+   public void printActionHelp(CmdLineArgs cmdLineArgs) {
+      Validate.notEmpty(cmdLineArgs.getHelpOptionInst().getValues());
 
-	public void printActionsHelp(CmdLineArgs cmdLineArgs) {
-		helpPresenter.presentActionsHelp(actionsHelpPrinter.printHelp(cmdLineArgs
-				.getSupportedActions()));		
-	}
+      helpPresenter.presentActionHelp(actionHelpPrinter.printHelp(
+            CmdLineUtils.findAction(cmdLineArgs.getHelpOptionInst().getValues()
+                  .get(0), cmdLineArgs.getSupportedActions()),
+            cmdLineArgs.getCustomSupportedOptions()));
+   }
 
-	/**
-	 * Parses given command line arguments, then checks for help and print supported actions
-	 * options, prints them out if found, otherwise performs execution on the arguments - 
-	 * see execute(CmdLineArgs).
-	 *
-	 * @param args The who will be parsed and executed.
-	 * @throws IOException On error parsing or executing the args.
-	 */
-	public void run(String[] args) throws IOException {
-		CmdLineArgs cmdLineArgs = parse(args);
-		if (!handleHelp(cmdLineArgs) && !handlePrintSupportedActions(cmdLineArgs)) {
-			execute(cmdLineArgs);
-		}
-	}
+   public void printActionsHelp(CmdLineArgs cmdLineArgs) {
+      helpPresenter.presentActionsHelp(actionsHelpPrinter.printHelp(cmdLineArgs
+            .getSupportedActions()));
+   }
 
-	/**
-	 * Parses the given command line arguments and converts it to {@link CmdLineArgs}.
-	 *
-	 * @param args The command line arguments to parse.
-	 * @return The parsed command line arguments in {@link CmdLineArgs} form.
-	 * @throws IOException On error parsing command line arguments.
-	 */
-	public CmdLineArgs parse(String[] args) throws IOException {
-		Validate.notNull(parser);
-		Validate.notNull(optionStore);
+   /**
+    * Parses given command line arguments, then checks for help and print
+    * supported actions options, prints them out if found, otherwise performs
+    * execution on the arguments - see execute(CmdLineArgs).
+    * 
+    * @param args
+    *           The who will be parsed and executed.
+    * @throws IOException
+    *            On error parsing or executing the args.
+    */
+   public void run(String[] args) throws IOException {
+      CmdLineArgs cmdLineArgs = parse(args);
+      if (!handleHelp(cmdLineArgs) && !handlePrintSupportedActions(cmdLineArgs)) {
+         execute(cmdLineArgs);
+      }
+   }
 
-		// Load supported options.
-		Set<CmdLineOption> validOptions = optionStore.loadSupportedOptions();
+   /**
+    * Parses the given command line arguments and converts it to
+    * {@link CmdLineArgs}.
+    * 
+    * @param args
+    *           The command line arguments to parse.
+    * @return The parsed command line arguments in {@link CmdLineArgs} form.
+    * @throws IOException
+    *            On error parsing command line arguments.
+    */
+   public CmdLineArgs parse(String[] args) throws IOException {
+      Validate.notNull(parser);
+      Validate.notNull(optionStore);
 
-		// Insure help options is present if required.
-		HelpCmdLineOption helpOption = findHelpOption(validOptions); 
-		if (helpOption == null) {
-			validOptions.add(helpOption = new HelpCmdLineOption());
-		}
+      // Load supported options.
+      Set<CmdLineOption> validOptions = optionStore.loadSupportedOptions();
 
-		// Insure action options is present if required.
-		ActionCmdLineOption actionOption = findActionOption(validOptions); 
-		if (actionOption == null) {
-			validOptions.add(actionOption = new ActionCmdLineOption());
-		}
+      // Insure help options is present if required.
+      HelpCmdLineOption helpOption = findHelpOption(validOptions);
+      if (helpOption == null) {
+         validOptions.add(helpOption = new HelpCmdLineOption());
+      }
 
-		// Insure print supported actions option is present if required.
-		PrintSupportedActionsCmdLineOption psaOption = CmdLineUtils.findPrintSupportedActionsOption(validOptions);
-		if (psaOption == null) {
-			validOptions.add(psaOption = new PrintSupportedActionsCmdLineOption());
-		}
+      // Insure action options is present if required.
+      ActionCmdLineOption actionOption = findActionOption(validOptions);
+      if (actionOption == null) {
+         validOptions.add(actionOption = new ActionCmdLineOption());
+      }
 
- 		// Parse command line arguments.
-		return new CmdLineArgs(actionStore.loadSupportedActions(), validOptions, parser.parse(new Args(args), validOptions));
-	}
+      // Insure print supported actions option is present if required.
+      PrintSupportedActionsCmdLineOption psaOption = CmdLineUtils
+            .findPrintSupportedActionsOption(validOptions);
+      if (psaOption == null) {
+         validOptions.add(psaOption = new PrintSupportedActionsCmdLineOption());
+      }
 
-	/**
-	 * Checks if help option was specified and if so prints out help.
-	 *
-	 * @param cmdLineArgs The {@link CmdLineArgs} which will be checked for help option
-	 * @return True if help was printed, false otherwise
-	 */
-	public boolean handleHelp(CmdLineArgs cmdLineArgs) {
-		if (cmdLineArgs.getHelpOptionInst() != null) {
-			if (cmdLineArgs.getHelpOptionInst().getSubOptions().isEmpty()) {
-				printOptionHelp(cmdLineArgs);
-			} else {
-				printActionHelp(cmdLineArgs);
-			}
-			return true;
-		}
-		return false;
-	}
+      // Parse command line arguments.
+      return new CmdLineArgs(actionStore.loadSupportedActions(), validOptions,
+            parser.parse(new Args(args), validOptions));
+   }
 
-	/**
-	 * Checks if print supported actions option was specified and if so prints out supported actions.
-	 *
-	 * @param cmdLineArgs The {@link CmdLineArgs} which will be checked for print supported action options
-	 * @return True if supported actions was printed, false otherwise
-	 */
-	public boolean handlePrintSupportedActions(CmdLineArgs cmdLineArgs) {
-		if (cmdLineArgs.getPrintSupportedActionsOptionInst() != null) {
-			printActionsHelp(cmdLineArgs);
-			return true;
-		}
-		return false;
-	}
+   /**
+    * Checks if help option was specified and if so prints out help.
+    * 
+    * @param cmdLineArgs
+    *           The {@link CmdLineArgs} which will be checked for help option
+    * @return True if help was printed, false otherwise
+    */
+   public boolean handleHelp(CmdLineArgs cmdLineArgs) {
+      if (cmdLineArgs.getHelpOptionInst() != null) {
+         if (cmdLineArgs.getHelpOptionInst().getSubOptions().isEmpty()) {
+            printOptionHelp(cmdLineArgs);
+         } else {
+            printActionHelp(cmdLineArgs);
+         }
+         return true;
+      }
+      return false;
+   }
 
-	/**
-	 * Checks if required options are set and validation passes, then runs handlers and executes its action.
-	 *
-	 * @param cmdLineArgs The {@link CmdLineArgs} for which execution processing will be run.
-	 * @throws IOException If required options are missing or validation fails.
-	 */
-	public static void execute(CmdLineArgs cmdLineArgs) throws IOException {
-		Set<CmdLineOption> requiredOptionsNotSet = check(cmdLineArgs);
-		if (!requiredOptionsNotSet.isEmpty()) {
-			throw new IOException("Required options are not set: '" + requiredOptionsNotSet + "'");
-		}
+   /**
+    * Checks if print supported actions option was specified and if so prints
+    * out supported actions.
+    * 
+    * @param cmdLineArgs
+    *           The {@link CmdLineArgs} which will be checked for print
+    *           supported action options
+    * @return True if supported actions was printed, false otherwise
+    */
+   public boolean handlePrintSupportedActions(CmdLineArgs cmdLineArgs) {
+      if (cmdLineArgs.getPrintSupportedActionsOptionInst() != null) {
+         printActionsHelp(cmdLineArgs);
+         return true;
+      }
+      return false;
+   }
 
-		Set<CmdLineOptionInstance> optionsFailedValidation = validate(cmdLineArgs);
-		if (!optionsFailedValidation.isEmpty()) {
-			throw new IOException("Options failed validation: '" + optionsFailedValidation + "'");
-		}
+   /**
+    * Checks if required options are set and validation passes, then runs
+    * handlers and executes its action.
+    * 
+    * @param cmdLineArgs
+    *           The {@link CmdLineArgs} for which execution processing will be
+    *           run.
+    * @throws IOException
+    *            If required options are missing or validation fails.
+    */
+   public static void execute(CmdLineArgs cmdLineArgs) throws IOException {
+      Set<CmdLineOption> requiredOptionsNotSet = check(cmdLineArgs);
+      if (!requiredOptionsNotSet.isEmpty()) {
+         throw new IOException("Required options are not set: '"
+               + requiredOptionsNotSet + "'");
+      }
 
-		handle(cmdLineArgs);
+      Set<CmdLineOptionInstance> optionsFailedValidation = validate(cmdLineArgs);
+      if (!optionsFailedValidation.isEmpty()) {
+         throw new IOException("Options failed validation: '"
+               + optionsFailedValidation + "'");
+      }
 
-		cmdLineArgs.getSpecifiedAction().execute();
-	}
+      handle(cmdLineArgs);
 
-	/**
-	 * Checks for required options which are not set and returns the ones it finds.
-	 *
-	 * @param cmdLineArgs The {@link CmdLineArgs} which will be check for required options.
-	 * @return The required {@link CmdLineOption}s not specified.
-	 */
-	public static Set<CmdLineOption> check(CmdLineArgs cmdLineArgs) {
-		Set<CmdLineOption> requiredOptions = determineRequired(cmdLineArgs.getSpecifiedAction(), cmdLineArgs.getCustomSupportedOptions());
-		HashSet<CmdLineOption> requiredOptionsNotSet = new HashSet<CmdLineOption>(requiredOptions);
-		for (CmdLineOptionInstance specifiedOption : cmdLineArgs.getCustomSpecifiedOptions()) {
-			requiredOptionsNotSet.remove(specifiedOption.getOption());
-		}
-		return requiredOptionsNotSet;
-	}
+      cmdLineArgs.getSpecifiedAction().execute();
+   }
 
-	/**
-	 * Runs validation on {@link CmdLineArgs} and returns the options which failed validation.
-	 *
-	 * @param cmdLineArgs The {@link CmdLineArgs} which will be validated. 
-	 * @return The {@link CmdLineOptionInstance}s which failed validation.
-	 */
-	public static Set<CmdLineOptionInstance> validate(CmdLineArgs cmdLineArgs)  {
-		Validate.notNull(cmdLineArgs);
+   /**
+    * Checks for required options which are not set and returns the ones it
+    * finds.
+    * 
+    * @param cmdLineArgs
+    *           The {@link CmdLineArgs} which will be check for required
+    *           options.
+    * @return The required {@link CmdLineOption}s not specified.
+    */
+   public static Set<CmdLineOption> check(CmdLineArgs cmdLineArgs) {
+      Set<CmdLineOption> requiredOptions = determineRequired(
+            cmdLineArgs.getSpecifiedAction(),
+            cmdLineArgs.getCustomSupportedOptions());
+      HashSet<CmdLineOption> requiredOptionsNotSet = new HashSet<CmdLineOption>(
+            requiredOptions);
+      for (CmdLineOptionInstance specifiedOption : cmdLineArgs
+            .getCustomSpecifiedOptions()) {
+         requiredOptionsNotSet.remove(specifiedOption.getOption());
+      }
+      return requiredOptionsNotSet;
+   }
 
-		HashSet<CmdLineOptionInstance> optionsFailed = new HashSet<CmdLineOptionInstance>();
-		for (CmdLineOptionInstance optionInst : cmdLineArgs.getCustomSpecifiedOptions()) {
-			if (!CmdLineUtils.validate(optionInst)) {
-				optionsFailed.add(optionInst);
-			}
-		}
-		return optionsFailed;
-	}
+   /**
+    * Runs validation on {@link CmdLineArgs} and returns the options which
+    * failed validation.
+    * 
+    * @param cmdLineArgs
+    *           The {@link CmdLineArgs} which will be validated.
+    * @return The {@link CmdLineOptionInstance}s which failed validation.
+    */
+   public static Set<CmdLineOptionInstance> validate(CmdLineArgs cmdLineArgs) {
+      Validate.notNull(cmdLineArgs);
 
-	/**
-	 * Runs the {@link CmdLineOptionHandler}s for {@link CmdLineArgs} given.
-	 * @param cmdLineArgs The {@link CmdLineArgs} whose option handlers will be run.
-	 */
-	public static void handle(CmdLineArgs cmdLineArgs) {
-		for (CmdLineOptionInstance option : cmdLineArgs.getCustomSpecifiedOptions()) {
-			CmdLineUtils.handle(cmdLineArgs.getSpecifiedAction(), option);
-		}
-	}
+      HashSet<CmdLineOptionInstance> optionsFailed = new HashSet<CmdLineOptionInstance>();
+      for (CmdLineOptionInstance optionInst : cmdLineArgs
+            .getCustomSpecifiedOptions()) {
+         if (!CmdLineUtils.validate(optionInst)) {
+            optionsFailed.add(optionInst);
+         }
+      }
+      return optionsFailed;
+   }
+
+   /**
+    * Runs the {@link CmdLineOptionHandler}s for {@link CmdLineArgs} given.
+    * 
+    * @param cmdLineArgs
+    *           The {@link CmdLineArgs} whose option handlers will be run.
+    */
+   public static void handle(CmdLineArgs cmdLineArgs) {
+      for (CmdLineOptionInstance option : cmdLineArgs
+            .getCustomSpecifiedOptions()) {
+         CmdLineUtils.handle(cmdLineArgs.getSpecifiedAction(), option);
+      }
+   }
 }

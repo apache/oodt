@@ -21,22 +21,24 @@ import org.apache.oodt.cas.cl.action.store.CmdLineActionStoreFactory;
 
 /**
  * Factory for creating {@link SpringCmdLineActionStore}s.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
-public class SpringCmdLineActionStoreFactory implements CmdLineActionStoreFactory {
+public class SpringCmdLineActionStoreFactory implements
+      CmdLineActionStoreFactory {
 
-	private String config;
+   private String config;
 
-	public SpringCmdLineActionStoreFactory() {
-		config = System.getProperty("org.apache.oodt.cas.cl.option.action.spring.config", null);
-	}
+   public SpringCmdLineActionStoreFactory() {
+      config = System.getProperty(
+            "org.apache.oodt.cas.cl.option.action.spring.config", null);
+   }
 
-	public SpringCmdLineActionStore createStore() {
-		if (config != null) {
-			return new SpringCmdLineActionStore(config); 
-		} else {
-			return null;
-		}
-	}
+   public SpringCmdLineActionStore createStore() {
+      if (config != null) {
+         return new SpringCmdLineActionStore(config);
+      } else {
+         return null;
+      }
+   }
 }

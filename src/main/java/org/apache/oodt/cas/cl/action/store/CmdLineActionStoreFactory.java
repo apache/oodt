@@ -18,11 +18,11 @@ package org.apache.oodt.cas.cl.action.store;
 
 /**
  * Factory for creating {@link CmdLineActionStore}s.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface CmdLineActionStoreFactory {
 
-	public CmdLineActionStore createStore();
+   public CmdLineActionStore createStore();
 
 }

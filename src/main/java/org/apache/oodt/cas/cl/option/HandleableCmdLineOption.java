@@ -22,12 +22,12 @@ import org.apache.oodt.cas.cl.option.handler.CmdLineOptionHandler;
 /**
  * A {@link CmdLineOption} which has a {@link CmdLineOptionHandler} should
  * implement this interface.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface HandleableCmdLineOption {
 
-	public void setHandler(CmdLineOptionHandler handler);
+   public void setHandler(CmdLineOptionHandler handler);
 
-	public CmdLineOptionHandler getHandler();
+   public CmdLineOptionHandler getHandler();
 }

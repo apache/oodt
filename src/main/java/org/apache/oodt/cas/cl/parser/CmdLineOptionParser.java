@@ -33,6 +33,7 @@ import org.apache.oodt.cas.cl.util.Args;
  */
 public interface CmdLineOptionParser {
 
-	public Set<CmdLineOptionInstance> parse(Args args, Set<CmdLineOption> validOptions) throws IOException;
+   public Set<CmdLineOptionInstance> parse(Args args,
+         Set<CmdLineOption> validOptions) throws IOException;
 
 }

@@ -28,25 +28,26 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
  * Test class for {@link ClassExistsCmdLineOptionValidator}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestClassExistsCmdLineOptionValidator extends TestCase {
 
-	public void testValidate() {
-		// Check null option instance not allowed.
-		try {
-			new ClassExistsCmdLineOptionValidator().validate(null);
-		} catch (IllegalArgumentException ignore) { /* expect throw */ }
+   public void testValidate() {
+      // Check null option instance not allowed.
+      try {
+         new ClassExistsCmdLineOptionValidator().validate(null);
+      } catch (IllegalArgumentException ignore) { /* expect throw */
+      }
 
-		// Check fail case.
-		CmdLineOptionInstance instance = createOptionInstance(
-				createSimpleOption("test", false), "bogus");
-		assertFalse(new ClassExistsCmdLineOptionValidator().validate(instance));
+      // Check fail case.
+      CmdLineOptionInstance instance = createOptionInstance(
+            createSimpleOption("test", false), "bogus");
+      assertFalse(new ClassExistsCmdLineOptionValidator().validate(instance));
 
-		// Check pass case.
-		instance = createOptionInstance(
-				createSimpleOption("test", false), "java.lang.String");
-		assertTrue(new ClassExistsCmdLineOptionValidator().validate(instance));		
-	}
+      // Check pass case.
+      instance = createOptionInstance(createSimpleOption("test", false),
+            "java.lang.String");
+      assertTrue(new ClassExistsCmdLineOptionValidator().validate(instance));
+   }
 }

@@ -25,163 +25,163 @@ import org.apache.oodt.cas.cl.option.require.RequirementRule;
 
 /**
  * {@link CmdLineOption} which implements the basic methods for any
- * {@link CmdLineOption}.  Can be used as-is or extends to add
- * additional option features.
- *
+ * {@link CmdLineOption}. Can be used as-is or extends to add additional option
+ * features.
+ * 
  * @author bfoster (Brian Foster)
  */
 public class SimpleCmdLineOption implements CmdLineOption {
 
-	private String shortOption;
+   private String shortOption;
 
-	private String longOption;
+   private String longOption;
 
-	private String description;
+   private String description;
 
-	private boolean repeating;
+   private boolean repeating;
 
-	private String argsDescription;
+   private String argsDescription;
 
-	private boolean required;
+   private boolean required;
 
-	private List<RequirementRule> requirementRules;
+   private List<RequirementRule> requirementRules;
 
-	private boolean hasArgs;
+   private boolean hasArgs;
 
-	private List<String> defaultArgs;
+   private List<String> defaultArgs;
 
-	private boolean performAndQuit;
+   private boolean performAndQuit;
 
-	private Class<?> type;
+   private Class<?> type;
 
-	public SimpleCmdLineOption() {
-		argsDescription = "arg";
-		repeating = false;
-		required = false;
-		hasArgs = false;
-		performAndQuit = false;
-		type = String.class;
-		requirementRules = new ArrayList<RequirementRule>();
-	}
+   public SimpleCmdLineOption() {
+      argsDescription = "arg";
+      repeating = false;
+      required = false;
+      hasArgs = false;
+      performAndQuit = false;
+      type = String.class;
+      requirementRules = new ArrayList<RequirementRule>();
+   }
 
-	public SimpleCmdLineOption(String shortOption, String longOption,
-			String description, boolean hasArgs) {
-		this();
-		this.shortOption = shortOption;
-		this.longOption = longOption;
-		this.description = description;
-		this.hasArgs = hasArgs;
-	}
+   public SimpleCmdLineOption(String shortOption, String longOption,
+         String description, boolean hasArgs) {
+      this();
+      this.shortOption = shortOption;
+      this.longOption = longOption;
+      this.description = description;
+      this.hasArgs = hasArgs;
+   }
 
-	public Class<?> getType() {
-		return type;
-	}
+   public Class<?> getType() {
+      return type;
+   }
 
-	public void setType(Class<?> type) {
-		this.type = type;
-	}
+   public void setType(Class<?> type) {
+      this.type = type;
+   }
 
-	public String getShortOption() {
-		return shortOption;
-	}
+   public String getShortOption() {
+      return shortOption;
+   }
 
-	public void setShortOption(String shortOption) {
-		this.shortOption = shortOption;
-	}
+   public void setShortOption(String shortOption) {
+      this.shortOption = shortOption;
+   }
 
-	public String getLongOption() {
-		return longOption;
-	}
+   public String getLongOption() {
+      return longOption;
+   }
 
-	public void setLongOption(String longOption) {
-		this.longOption = longOption;
-	}
+   public void setLongOption(String longOption) {
+      this.longOption = longOption;
+   }
 
-	public String getDescription() {
-		return description;
-	}
+   public String getDescription() {
+      return description;
+   }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+   public void setDescription(String description) {
+      this.description = description;
+   }
 
-	public boolean isRepeating() {
-		return repeating;
-	}
+   public boolean isRepeating() {
+      return repeating;
+   }
 
-	public void setRepeating(boolean repeating) {
-		this.repeating = repeating;
-	}
+   public void setRepeating(boolean repeating) {
+      this.repeating = repeating;
+   }
 
-	public boolean hasArgs() {
-		return hasArgs;
-	}
+   public boolean hasArgs() {
+      return hasArgs;
+   }
 
-	public void setHasArgs(boolean hasArgs) {
-		this.hasArgs = hasArgs;
-	}
+   public void setHasArgs(boolean hasArgs) {
+      this.hasArgs = hasArgs;
+   }
 
-	public void setArgsDescription(String argDescription) {
-		this.argsDescription = argDescription;
-	}
+   public void setArgsDescription(String argDescription) {
+      this.argsDescription = argDescription;
+   }
 
-	public String getArgsDescription() {
-		return argsDescription;
-	}
+   public String getArgsDescription() {
+      return argsDescription;
+   }
 
-	public void setDefaultArgs(List<String> defaultArgs) {
-		this.defaultArgs = defaultArgs;
-	}
+   public void setDefaultArgs(List<String> defaultArgs) {
+      this.defaultArgs = defaultArgs;
+   }
 
-	public List<String> getDefaultArgs() {
-		return defaultArgs;
-	}
+   public List<String> getDefaultArgs() {
+      return defaultArgs;
+   }
 
-	public boolean hasDefaultArgs() {
-		return defaultArgs != null;
-	}
+   public boolean hasDefaultArgs() {
+      return defaultArgs != null;
+   }
 
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
+   public void setRequired(boolean required) {
+      this.required = required;
+   }
 
-	public boolean isRequired() {
-		return required;
-	}
+   public boolean isRequired() {
+      return required;
+   }
 
-	public List<RequirementRule> getRequirementRules() {
-		return this.requirementRules;
-	}
+   public List<RequirementRule> getRequirementRules() {
+      return this.requirementRules;
+   }
 
-	public void setRequirementRules(List<RequirementRule> requirementRules) {
-		this.requirementRules = requirementRules;
-	}
+   public void setRequirementRules(List<RequirementRule> requirementRules) {
+      this.requirementRules = requirementRules;
+   }
 
-	public boolean isPerformAndQuit() {
-		return performAndQuit;
-	}
+   public boolean isPerformAndQuit() {
+      return performAndQuit;
+   }
 
-	public void setPerformAndQuit(boolean performAndQuit) {
-		this.performAndQuit = performAndQuit;
-	}
+   public void setPerformAndQuit(boolean performAndQuit) {
+      this.performAndQuit = performAndQuit;
+   }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof CmdLineOption) {
-			SimpleCmdLineOption compareObj = (SimpleCmdLineOption) obj;
-			return compareObj.shortOption.equals(this.shortOption)
-					|| compareObj.longOption.equals(this.longOption);
-		} else
-			return false;
-	}
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof CmdLineOption) {
+         SimpleCmdLineOption compareObj = (SimpleCmdLineOption) obj;
+         return compareObj.shortOption.equals(this.shortOption)
+               || compareObj.longOption.equals(this.longOption);
+      } else
+         return false;
+   }
 
-	@Override
-	public int hashCode() {
-		return shortOption.hashCode();
-	}
+   @Override
+   public int hashCode() {
+      return shortOption.hashCode();
+   }
 
-	public String toString() {
-		return "Action [longOption='" + longOption + "',shortOption='"
-				+ shortOption + "',description='" + description + "']";
-	}
+   public String toString() {
+      return "Action [longOption='" + longOption + "',shortOption='"
+            + shortOption + "',description='" + description + "']";
+   }
 }

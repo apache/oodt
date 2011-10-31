@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.cl.option.validator;
 
 //JDK imports
@@ -25,17 +23,14 @@ import java.util.logging.Logger;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
+ * Validator for specified values of {@link CmdLineOption}s.
  * 
- * @author bfoster
- * @version $Revision$
- *
- * <p>Describe your class here</p>.
+ * @author bfoster (Brian Foster)
  */
 public interface CmdLineOptionValidator {
 
-    static Logger LOG = Logger
-            .getLogger(CmdLineOptionValidator.class.getName());
+   static Logger LOG = Logger.getLogger(CmdLineOptionValidator.class.getName());
 
-    public boolean validate(CmdLineOptionInstance optionInst);
+   public boolean validate(CmdLineOptionInstance optionInst);
 
 }

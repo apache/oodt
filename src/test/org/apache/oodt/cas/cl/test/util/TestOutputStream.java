@@ -21,21 +21,21 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Test {@link OutputStream} which writes everything to a
- * {@link StringBuffer} which can be retrieved to see what was written.
- *
+ * Test {@link OutputStream} which writes everything to a {@link StringBuffer}
+ * which can be retrieved to see what was written.
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestOutputStream extends OutputStream {
 
-	private StringBuffer sb = new StringBuffer("");
+   private StringBuffer sb = new StringBuffer("");
 
-	@Override
-	public void write(int character) throws IOException {
-		sb.append((char) character);
-	}
+   @Override
+   public void write(int character) throws IOException {
+      sb.append((char) character);
+   }
 
-	public String getText() {
-		return sb.toString();
-	}
+   public String getText() {
+      return sb.toString();
+   }
 }

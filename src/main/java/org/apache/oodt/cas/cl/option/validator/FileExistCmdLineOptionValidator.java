@@ -24,24 +24,24 @@ import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
- * A {@link CmdLineOptionValidator} which checks args if they are existing files.
- *
+ * A {@link CmdLineOptionValidator} which checks args if they are existing
+ * files.
+ * 
  * @author bfoster (Brian Foster)
  */
 public class FileExistCmdLineOptionValidator implements CmdLineOptionValidator {
 
-	public boolean validate(CmdLineOptionInstance optionInst) {
-		Validate.notNull(optionInst);
+   public boolean validate(CmdLineOptionInstance optionInst) {
+      Validate.notNull(optionInst);
 
-		for (String value : optionInst.getValues()) {
-			if (!new File(value).exists()) {
-				LOG.severe("Option value " + value + " for option "
-						+ optionInst.getOption().getLongOption()
-						+ " is not an existing file");
-				return false;
-			}
-		}
-		return true;
-	}
-
+      for (String value : optionInst.getValues()) {
+         if (!new File(value).exists()) {
+            LOG.severe("Option value " + value + " for option "
+                  + optionInst.getOption().getLongOption()
+                  + " is not an existing file");
+            return false;
+         }
+      }
+      return true;
+   }
 }

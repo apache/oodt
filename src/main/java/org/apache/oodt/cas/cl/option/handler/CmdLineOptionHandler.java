@@ -23,20 +23,24 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
  * Handles a {@link CmdLineOption}'s values in relation to given
- * {@link CmdLineAction}s. 
- *
+ * {@link CmdLineAction}s.
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface CmdLineOptionHandler {
 
-	public abstract void handleOption(CmdLineAction selectedAction, CmdLineOptionInstance optionInstance);
+   public abstract void handleOption(CmdLineAction selectedAction,
+         CmdLineOptionInstance optionInstance);
 
-	/**
-	 * Gets the {@link CmdLineOptionHandler}s help message when associated with given {@link CmdLineOption}.
-	 *
-	 * @param option The {@link CmdLineOption} to which this {@link CmdLineOptionHandler} was associated with
-	 * @return The help message for this {@link CmdLineOptionHandler}
-	 */
-	public abstract String getHelp(CmdLineOption option);
+   /**
+    * Gets the {@link CmdLineOptionHandler}s help message when associated with
+    * given {@link CmdLineOption}.
+    * 
+    * @param option
+    *           The {@link CmdLineOption} to which this
+    *           {@link CmdLineOptionHandler} was associated with
+    * @return The help message for this {@link CmdLineOptionHandler}
+    */
+   public abstract String getHelp(CmdLineOption option);
 
 }

@@ -21,14 +21,13 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 
 /**
  * A {@link CmdLineOptionValidator} which always returns true.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class NoRestrictionsCmdLineOptionValidator implements
-        CmdLineOptionValidator {
+      CmdLineOptionValidator {
 
-    public boolean validate(CmdLineOptionInstance optionInst) {
-        return true;
-    }
-
+   public boolean validate(CmdLineOptionInstance optionInst) {
+      return true;
+   }
 }

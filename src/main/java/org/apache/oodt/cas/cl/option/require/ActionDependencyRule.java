@@ -29,39 +29,40 @@ import org.apache.oodt.cas.cl.action.CmdLineAction;
  * @author bfoster (Brian Foster)
  */
 public class ActionDependencyRule implements RequirementRule {
-	String actionName;
-	Relation relation;
+   String actionName;
+   Relation relation;
 
-	public ActionDependencyRule() {}
+   public ActionDependencyRule() {
+   }
 
-	public ActionDependencyRule(String actionName, Relation relation) {
-		this.actionName = actionName;
-		this.relation = relation;
-	}
+   public ActionDependencyRule(String actionName, Relation relation) {
+      this.actionName = actionName;
+      this.relation = relation;
+   }
 
-	public String getActionName() {
-		return actionName;
-	}
+   public String getActionName() {
+      return actionName;
+   }
 
-	public void setActionName(String actionName) {
-		this.actionName = actionName;
-	}
+   public void setActionName(String actionName) {
+      this.actionName = actionName;
+   }
 
-	public Relation getRelation() {
-		return relation;
-	}
+   public Relation getRelation() {
+      return relation;
+   }
 
-	public void setRelation(Relation relation) {
-		this.relation = relation;
-	}
+   public void setRelation(Relation relation) {
+      this.relation = relation;
+   }
 
-	public Relation getRelation(CmdLineAction action) {
-		Validate.notNull(actionName);
-		Validate.notNull(relation);
+   public Relation getRelation(CmdLineAction action) {
+      Validate.notNull(actionName);
+      Validate.notNull(relation);
 
-		if (action.getName().equals(actionName)) {
-			return relation;
-		}
-		return Relation.NONE;
-	}
+      if (action.getName().equals(actionName)) {
+         return relation;
+      }
+      return Relation.NONE;
+   }
 }

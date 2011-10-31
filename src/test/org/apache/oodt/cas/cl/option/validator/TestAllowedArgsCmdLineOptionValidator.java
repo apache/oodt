@@ -30,42 +30,45 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 import com.google.common.collect.Lists;
 
 /**
- * Test class for {@link AllowedArgsCmdLineOptionValidator}. 
- *
+ * Test class for {@link AllowedArgsCmdLineOptionValidator}.
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestAllowedArgsCmdLineOptionValidator extends TestCase {
 
-	public void testIntialState() {
-		// Test no null option instance allowed.
-		try {
-			new AllowedArgsCmdLineOptionValidator().validate(null);
-			fail("Should have thrown IllegalArgumentException");
-		} catch (IllegalArgumentException ignore) { /* expect throw */ }
+   public void testIntialState() {
+      // Test no null option instance allowed.
+      try {
+         new AllowedArgsCmdLineOptionValidator().validate(null);
+         fail("Should have thrown IllegalArgumentException");
+      } catch (IllegalArgumentException ignore) { /* expect throw */
+      }
 
-		// Test no allowed args set and valid option instance
-		CmdLineOptionInstance instance = createOptionInstance(
-				createSimpleOption("test", false), "value");
-		assertFalse(new AllowedArgsCmdLineOptionValidator().validate(instance));
-	}
+      // Test no allowed args set and valid option instance
+      CmdLineOptionInstance instance = createOptionInstance(
+            createSimpleOption("test", false), "value");
+      assertFalse(new AllowedArgsCmdLineOptionValidator().validate(instance));
+   }
 
-	public void testValidate() {
-		AllowedArgsCmdLineOptionValidator validator = new AllowedArgsCmdLineOptionValidator();
-		validator.setAllowedArgs(Lists.newArrayList("value1", "value2"));
+   public void testValidate() {
+      AllowedArgsCmdLineOptionValidator validator = new AllowedArgsCmdLineOptionValidator();
+      validator.setAllowedArgs(Lists.newArrayList("value1", "value2"));
 
-		// Test no null option instance allowed.
-		try {
-			validator.validate(null);
-			fail("Should have thrown IllegalArgumentException");
-		} catch (IllegalArgumentException ignore) { /* expect throw */ }
+      // Test no null option instance allowed.
+      try {
+         validator.validate(null);
+         fail("Should have thrown IllegalArgumentException");
+      } catch (IllegalArgumentException ignore) { /* expect throw */
+      }
 
-		// Test should fail case.
-		CmdLineOptionInstance instance = createOptionInstance(
-				createSimpleOption("test", false), "value");
-		assertFalse(validator.validate(instance));
+      // Test should fail case.
+      CmdLineOptionInstance instance = createOptionInstance(
+            createSimpleOption("test", false), "value");
+      assertFalse(validator.validate(instance));
 
-		// Test should pass case.
-		instance = createOptionInstance(createSimpleOption("test", false), "value1");
-		assertTrue(validator.validate(instance));
-	}
+      // Test should pass case.
+      instance = createOptionInstance(createSimpleOption("test", false),
+            "value1");
+      assertTrue(validator.validate(instance));
+   }
 }

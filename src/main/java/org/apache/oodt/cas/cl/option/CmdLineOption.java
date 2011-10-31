@@ -24,54 +24,54 @@ import org.apache.oodt.cas.cl.option.require.RequirementRule;
 
 /**
  * Command Line option interface spec.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface CmdLineOption {
 
-	public void setLongOption(String longOption);
+   public void setLongOption(String longOption);
 
-	public String getLongOption();
+   public String getLongOption();
 
-	public void setShortOption(String shortOption);
+   public void setShortOption(String shortOption);
 
-	public String getShortOption();
+   public String getShortOption();
 
-	public void setDescription(String description);
+   public void setDescription(String description);
 
-	public String getDescription();
+   public String getDescription();
 
-	public void setType(Class<?> type);
+   public void setType(Class<?> type);
 
-	public Class<?> getType();
+   public Class<?> getType();
 
-	public void setRepeating(boolean repeating);
+   public void setRepeating(boolean repeating);
 
-	public boolean isRepeating();
+   public boolean isRepeating();
 
-	public void setHasArgs(boolean hasArgs);
+   public void setHasArgs(boolean hasArgs);
 
-	public boolean hasArgs();
+   public boolean hasArgs();
 
-	public void setArgsDescription(String argDescription);
+   public void setArgsDescription(String argDescription);
 
-	public String getArgsDescription();
+   public String getArgsDescription();
 
-	public void setDefaultArgs(List<String> values);
+   public void setDefaultArgs(List<String> values);
 
-	public List<String> getDefaultArgs();
+   public List<String> getDefaultArgs();
 
-	public boolean hasDefaultArgs();
+   public boolean hasDefaultArgs();
 
-	public void setRequired(boolean required);
+   public void setRequired(boolean required);
 
-	public boolean isRequired();
+   public boolean isRequired();
 
-	public void setRequirementRules(List<RequirementRule> requirementRules);
+   public void setRequirementRules(List<RequirementRule> requirementRules);
 
-	public List<RequirementRule> getRequirementRules();
+   public List<RequirementRule> getRequirementRules();
 
-	public boolean equals(Object obj);
+   public boolean equals(Object obj);
 
-	public int hashCode();
+   public int hashCode();
 }

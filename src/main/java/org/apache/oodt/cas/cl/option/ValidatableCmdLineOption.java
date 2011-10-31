@@ -23,15 +23,15 @@ import java.util.List;
 import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 
 /**
- * A {@link CmdLineOption} which has {@link CmdLineOptionValidator}s
- * should implement this interface.
+ * A {@link CmdLineOption} which has {@link CmdLineOptionValidator}s should
+ * implement this interface.
  * 
  * @author bfoster (Brian Foster)
  */
 public interface ValidatableCmdLineOption {
 
-	public void setValidators(List<CmdLineOptionValidator> validators);
+   public void setValidators(List<CmdLineOptionValidator> validators);
 
-	public List<CmdLineOptionValidator> getValidators();
+   public List<CmdLineOptionValidator> getValidators();
 
 }

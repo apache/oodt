@@ -27,38 +27,38 @@ import org.apache.oodt.cas.cl.option.CmdLineOptionInstance;
 /**
  * A {@link CmdLineOptionValidator} which check args against a supplied list of
  * valid allowed arguments.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class AllowedArgsCmdLineOptionValidator implements
-		CmdLineOptionValidator {
+      CmdLineOptionValidator {
 
-	private List<String> allowedArgs;
+   private List<String> allowedArgs;
 
-	public AllowedArgsCmdLineOptionValidator() {
-		this.allowedArgs = new LinkedList<String>();
-	}
+   public AllowedArgsCmdLineOptionValidator() {
+      this.allowedArgs = new LinkedList<String>();
+   }
 
-	public boolean validate(CmdLineOptionInstance optionInst) {
-		Validate.notNull(optionInst);
+   public boolean validate(CmdLineOptionInstance optionInst) {
+      Validate.notNull(optionInst);
 
-		for (String value : optionInst.getValues()) {
-			if (!allowedArgs.contains(value)) {
-				LOG.severe("Option value " + value + " is not allowed for option "
-						+ optionInst.getOption().getLongOption() + " - Allowed values = "
-						+ this.getAllowedArgs());
-				return false;
-			}
-		}
-		return true;
-	}
+      for (String value : optionInst.getValues()) {
+         if (!allowedArgs.contains(value)) {
+            LOG.severe("Option value " + value + " is not allowed for option "
+                  + optionInst.getOption().getLongOption()
+                  + " - Allowed values = " + this.getAllowedArgs());
+            return false;
+         }
+      }
+      return true;
+   }
 
-	public List<String> getAllowedArgs() {
-		return allowedArgs;
-	}
+   public List<String> getAllowedArgs() {
+      return allowedArgs;
+   }
 
-	public void setAllowedArgs(List<String> allowedArgs) {
-		this.allowedArgs = allowedArgs;
-	}
+   public void setAllowedArgs(List<String> allowedArgs) {
+      this.allowedArgs = allowedArgs;
+   }
 
 }

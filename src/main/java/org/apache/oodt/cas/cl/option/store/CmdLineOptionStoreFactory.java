@@ -18,11 +18,11 @@ package org.apache.oodt.cas.cl.option.store;
 
 /**
  * Factory for creating {@link CmdLineOptionStore}s.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface CmdLineOptionStoreFactory {
 
-	public CmdLineOptionStore createStore();
+   public CmdLineOptionStore createStore();
 
 }

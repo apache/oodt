@@ -45,143 +45,143 @@ import junit.framework.TestCase;
 
 /**
  * Test class for {@link StdCmdLineOptionParser}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestStdCmdLineOptionParser extends TestCase {
 
-	public void testParser() throws IOException {
-		Args args = new Args(
-				"--group --list one two three four --scalar one --none --group --list one --scalar one"
-						.split(" "));
-		Set<CmdLineOption> options = new HashSet<CmdLineOption>();
-		SimpleCmdLineOption listOption, scalarOption, noneOption;
-		options.add(listOption = createSimpleOption("list", true));
-		options.add(scalarOption = createSimpleOption("scalar", true));
-		options.add(noneOption = createSimpleOption("none", false));
-		options.add(noneOption = createGroupOption("group", new SubOption(
-				listOption, true), new SubOption(scalarOption, true), new SubOption(
-				noneOption, false)));
-		options.add(new HelpCmdLineOption());
+   public void testParser() throws IOException {
+      Args args = new Args(
+            "--group --list one two three four --scalar one --none --group --list one --scalar one"
+                  .split(" "));
+      Set<CmdLineOption> options = new HashSet<CmdLineOption>();
+      SimpleCmdLineOption listOption, scalarOption, noneOption;
+      options.add(listOption = createSimpleOption("list", true));
+      options.add(scalarOption = createSimpleOption("scalar", true));
+      options.add(noneOption = createSimpleOption("none", false));
+      options.add(noneOption = createGroupOption("group", new SubOption(
+            listOption, true), new SubOption(scalarOption, true),
+            new SubOption(noneOption, false)));
+      options.add(new HelpCmdLineOption());
 
-		// Parse args.
-		StdCmdLineOptionParser parser = new StdCmdLineOptionParser();
-		Set<CmdLineOptionInstance> specifiedOptions = parser.parse(args, options);
+      // Parse args.
+      StdCmdLineOptionParser parser = new StdCmdLineOptionParser();
+      Set<CmdLineOptionInstance> specifiedOptions = parser.parse(args, options);
 
-		// Check that two option instances where returned.
-		assertEquals(2, specifiedOptions.size());
+      // Check that two option instances where returned.
+      assertEquals(2, specifiedOptions.size());
 
-		// Find first and second group.
-		Iterator<CmdLineOptionInstance> iter = specifiedOptions.iterator();
-		CmdLineOptionInstance firstGroup = iter.next();
-		CmdLineOptionInstance secondGroup = iter.next();
-		if (getOptionInstanceByName("none", firstGroup.getSubOptions()) == null) {
-			CmdLineOptionInstance tmpHold = firstGroup;
-			firstGroup = secondGroup;
-			secondGroup = tmpHold;
-		}
+      // Find first and second group.
+      Iterator<CmdLineOptionInstance> iter = specifiedOptions.iterator();
+      CmdLineOptionInstance firstGroup = iter.next();
+      CmdLineOptionInstance secondGroup = iter.next();
+      if (getOptionInstanceByName("none", firstGroup.getSubOptions()) == null) {
+         CmdLineOptionInstance tmpHold = firstGroup;
+         firstGroup = secondGroup;
+         secondGroup = tmpHold;
+      }
 
-		// verify first group's list was found and found its 4 args.
-		CmdLineOptionInstance firstGroupList = getOptionInstanceByName("list",
-				firstGroup.getSubOptions());
-		assertNotNull(firstGroupList);
-		assertEquals(Arrays.asList("one", "two", "three", "four"),
-				firstGroupList.getValues());
+      // verify first group's list was found and found its 4 args.
+      CmdLineOptionInstance firstGroupList = getOptionInstanceByName("list",
+            firstGroup.getSubOptions());
+      assertNotNull(firstGroupList);
+      assertEquals(Arrays.asList("one", "two", "three", "four"),
+            firstGroupList.getValues());
 
-		// verify first group's scalar was found and found its 1 args.
-		CmdLineOptionInstance firstGroupScalar = getOptionInstanceByName("scalar",
-				firstGroup.getSubOptions());
-		assertNotNull(firstGroupScalar);
-		assertEquals(Arrays.asList("one"), firstGroupScalar.getValues());
+      // verify first group's scalar was found and found its 1 args.
+      CmdLineOptionInstance firstGroupScalar = getOptionInstanceByName(
+            "scalar", firstGroup.getSubOptions());
+      assertNotNull(firstGroupScalar);
+      assertEquals(Arrays.asList("one"), firstGroupScalar.getValues());
 
-		// verify first group's none was found and found no args.
-		CmdLineOptionInstance firstGroupNone = getOptionInstanceByName("none",
-				firstGroup.getSubOptions());
-		assertNotNull(firstGroupNone);
-		assertTrue(firstGroupNone.getValues().isEmpty());
+      // verify first group's none was found and found no args.
+      CmdLineOptionInstance firstGroupNone = getOptionInstanceByName("none",
+            firstGroup.getSubOptions());
+      assertNotNull(firstGroupNone);
+      assertTrue(firstGroupNone.getValues().isEmpty());
 
-		// verify second group's list was found and found its 1 args.
-		CmdLineOptionInstance secondGroupList = getOptionInstanceByName("list",
-				secondGroup.getSubOptions());
-		assertNotNull(secondGroupList);
-		assertEquals(Arrays.asList("one"), secondGroupList.getValues());
+      // verify second group's list was found and found its 1 args.
+      CmdLineOptionInstance secondGroupList = getOptionInstanceByName("list",
+            secondGroup.getSubOptions());
+      assertNotNull(secondGroupList);
+      assertEquals(Arrays.asList("one"), secondGroupList.getValues());
 
-		// verify second group's scalar was found and found its 1 args.
-		CmdLineOptionInstance secondGroupScalar = getOptionInstanceByName("scalar",
-				secondGroup.getSubOptions());
-		assertNotNull(secondGroupScalar);
-		assertEquals(Arrays.asList("one"), secondGroupScalar.getValues());
+      // verify second group's scalar was found and found its 1 args.
+      CmdLineOptionInstance secondGroupScalar = getOptionInstanceByName(
+            "scalar", secondGroup.getSubOptions());
+      assertNotNull(secondGroupScalar);
+      assertEquals(Arrays.asList("one"), secondGroupScalar.getValues());
 
-		// verify second group's none was not found
-		CmdLineOptionInstance secondGroupNone = getOptionInstanceByName("none",
-				secondGroup.getSubOptions());
-		assertNull(secondGroupNone);
-	}
+      // verify second group's none was not found
+      CmdLineOptionInstance secondGroupNone = getOptionInstanceByName("none",
+            secondGroup.getSubOptions());
+      assertNull(secondGroupNone);
+   }
 
-	public void testGetOptions() throws IOException {
-		Args args = new Args("--scalar one --none".split(" "));
-		SimpleCmdLineOption option = createSimpleOption(
-				StdCmdLineOptionParser.getOptionName(args.getAndIncrement()), true);
-		CmdLineOptionInstance specifiedOption = StdCmdLineOptionParser.getOption(
-				args, option);
-		assertEquals(specifiedOption.getOption(), option);
-		assertEquals(Arrays.asList("one"), specifiedOption.getValues());
-		assertTrue(specifiedOption.getSubOptions().isEmpty());
-	}
+   public void testGetOptions() throws IOException {
+      Args args = new Args("--scalar one --none".split(" "));
+      SimpleCmdLineOption option = createSimpleOption(
+            StdCmdLineOptionParser.getOptionName(args.getAndIncrement()), true);
+      CmdLineOptionInstance specifiedOption = StdCmdLineOptionParser.getOption(
+            args, option);
+      assertEquals(specifiedOption.getOption(), option);
+      assertEquals(Arrays.asList("one"), specifiedOption.getValues());
+      assertTrue(specifiedOption.getSubOptions().isEmpty());
+   }
 
-	public void testUseDefaultValues() throws IOException {
-		Args args = new Args("--scalar --none".split(" "));
-		SimpleCmdLineOption option = createSimpleOption(
-				StdCmdLineOptionParser.getOptionName(args.getAndIncrement()), true);
-		option.setDefaultArgs(Lists.newArrayList("one"));
-		CmdLineOptionInstance specifiedOption = StdCmdLineOptionParser.getOption(
-				args, option);
-		assertEquals(specifiedOption.getOption(), option);
-		assertEquals(Arrays.asList("one"), specifiedOption.getValues());
-		assertTrue(specifiedOption.getSubOptions().isEmpty());
-	}
+   public void testUseDefaultValues() throws IOException {
+      Args args = new Args("--scalar --none".split(" "));
+      SimpleCmdLineOption option = createSimpleOption(
+            StdCmdLineOptionParser.getOptionName(args.getAndIncrement()), true);
+      option.setDefaultArgs(Lists.newArrayList("one"));
+      CmdLineOptionInstance specifiedOption = StdCmdLineOptionParser.getOption(
+            args, option);
+      assertEquals(specifiedOption.getOption(), option);
+      assertEquals(Arrays.asList("one"), specifiedOption.getValues());
+      assertTrue(specifiedOption.getSubOptions().isEmpty());
+   }
 
-	public void testGetValues() {
-		Args args = new Args(
-				"--list one two three four --scalar one --none".split(" "));
-		assertEquals("--list", args.getAndIncrement());
-		assertEquals(Arrays.asList("one", "two", "three", "four"),
-				StdCmdLineOptionParser.getValues(args));
-		assertEquals("--scalar", args.getAndIncrement());
-		assertEquals(Arrays.asList("one"), StdCmdLineOptionParser.getValues(args));
-		assertEquals("--none", args.getAndIncrement());
-		assertEquals(Collections.emptyList(),
-				StdCmdLineOptionParser.getValues(args));
-		assertNull(args.getCurrentArg());
-	}
+   public void testGetValues() {
+      Args args = new Args(
+            "--list one two three four --scalar one --none".split(" "));
+      assertEquals("--list", args.getAndIncrement());
+      assertEquals(Arrays.asList("one", "two", "three", "four"),
+            StdCmdLineOptionParser.getValues(args));
+      assertEquals("--scalar", args.getAndIncrement());
+      assertEquals(Arrays.asList("one"), StdCmdLineOptionParser.getValues(args));
+      assertEquals("--none", args.getAndIncrement());
+      assertEquals(Collections.emptyList(),
+            StdCmdLineOptionParser.getValues(args));
+      assertNull(args.getCurrentArg());
+   }
 
-	public void testIsOption() {
-		assertTrue(StdCmdLineOptionParser.isOption("--arg"));
-		assertTrue(StdCmdLineOptionParser.isOption("-arg"));
-		assertFalse(StdCmdLineOptionParser.isOption("arg"));
-	}
+   public void testIsOption() {
+      assertTrue(StdCmdLineOptionParser.isOption("--arg"));
+      assertTrue(StdCmdLineOptionParser.isOption("-arg"));
+      assertFalse(StdCmdLineOptionParser.isOption("arg"));
+   }
 
-	public void testGetOptionName() {
-		assertEquals("arg", StdCmdLineOptionParser.getOptionName("--arg"));
-		assertEquals("arg", StdCmdLineOptionParser.getOptionName("-arg"));
-		assertNull(StdCmdLineOptionParser.getOptionName("arg"));
-	}
+   public void testGetOptionName() {
+      assertEquals("arg", StdCmdLineOptionParser.getOptionName("--arg"));
+      assertEquals("arg", StdCmdLineOptionParser.getOptionName("-arg"));
+      assertNull(StdCmdLineOptionParser.getOptionName("arg"));
+   }
 
-	private static GroupCmdLineOption createGroupOption(String longName,
-			SubOption... subOptions) {
-		GroupCmdLineOption option = new GroupCmdLineOption();
-		option.setLongOption(longName);
-		option.setShortOption(longName);
-		option.setSubOptions(new HashSet<SubOption>(Arrays.asList(subOptions)));
-		return option;
-	}
+   private static GroupCmdLineOption createGroupOption(String longName,
+         SubOption... subOptions) {
+      GroupCmdLineOption option = new GroupCmdLineOption();
+      option.setLongOption(longName);
+      option.setShortOption(longName);
+      option.setSubOptions(new HashSet<SubOption>(Arrays.asList(subOptions)));
+      return option;
+   }
 
-	private static SimpleCmdLineOption createSimpleOption(String longName,
-			boolean hasArgs) {
-		SimpleCmdLineOption option = new SimpleCmdLineOption();
-		option.setLongOption(longName);
-		option.setShortOption(longName);
-		option.setHasArgs(hasArgs);
-		return option;
-	}
+   private static SimpleCmdLineOption createSimpleOption(String longName,
+         boolean hasArgs) {
+      SimpleCmdLineOption option = new SimpleCmdLineOption();
+      option.setLongOption(longName);
+      option.setShortOption(longName);
+      option.setHasArgs(hasArgs);
+      return option;
+   }
 }

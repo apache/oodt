@@ -27,40 +27,42 @@ import junit.framework.TestCase;
 
 /**
  * Test class for {@link Args}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestArgs extends TestCase {
 
-	private static final String ARGS_STRING = "--operation download --url http://somewhere.com --user foo --pass bar --toDir /tmp";
+   private static final String ARGS_STRING = "--operation download --url http://somewhere.com --user foo --pass bar --toDir /tmp";
 
-	public void testIteration() {
-		StringBuffer argsString = new StringBuffer("");
-		Args args = createArgs();
-		for (String arg : args) {
-			argsString.append(arg).append(" ");
-			int i = 0;
-			for (String argInner : args) {
-				argsString.append(argInner).append(" ");
-				if (i++ > 1) {
-					break;
-				}
-			}
-			argsString.append(args.getAndIncrement()).append(" ");
-		}
+   public void testIteration() {
+      StringBuffer argsString = new StringBuffer("");
+      Args args = createArgs();
+      for (String arg : args) {
+         argsString.append(arg).append(" ");
+         int i = 0;
+         for (String argInner : args) {
+            argsString.append(argInner).append(" ");
+            if (i++ > 1) {
+               break;
+            }
+         }
+         argsString.append(args.getAndIncrement()).append(" ");
+      }
 
-		assertEquals(Arrays.asList(ARGS_STRING.split(" ")), Arrays.asList(argsString.toString().split(" ")));
-	}
+      assertEquals(Arrays.asList(ARGS_STRING.split(" ")),
+            Arrays.asList(argsString.toString().split(" ")));
+   }
 
-	public void testIndexOutOfBoundsException() {
-		Args args = new Args(new String[] {});
-		try {
-			args.iterator().next();
-			fail("Should have thrown IndexOutOfBoundsException");
-		} catch (IndexOutOfBoundsException ignore) { /* expect throw */ }
-	}
+   public void testIndexOutOfBoundsException() {
+      Args args = new Args(new String[] {});
+      try {
+         args.iterator().next();
+         fail("Should have thrown IndexOutOfBoundsException");
+      } catch (IndexOutOfBoundsException ignore) { /* expect throw */
+      }
+   }
 
-	private Args createArgs() {
-		return new Args(ARGS_STRING.split(" "));
-	}
+   private Args createArgs() {
+      return new Args(ARGS_STRING.split(" "));
+   }
 }

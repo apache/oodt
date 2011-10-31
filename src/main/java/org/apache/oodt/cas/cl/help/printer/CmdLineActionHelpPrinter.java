@@ -24,21 +24,23 @@ import org.apache.oodt.cas.cl.action.CmdLineAction;
 import org.apache.oodt.cas.cl.option.CmdLineOption;
 
 /**
- * Help printer responsible for generating help message for using
- * a given {@link CmdLineAction}.
- *
+ * Help printer responsible for generating help message for using a given
+ * {@link CmdLineAction}.
+ * 
  * @author bfoster (Brian Foster)
  */
 public interface CmdLineActionHelpPrinter {
 
-	/**
-	 * Should generate help message for action specified by
-	 * {@link #CmdLineArgs.getSpecifiedAction()}.
-	 *
-	 * @param action {@link CmdLineAction} for which help will be generate
-	 * @param options Supported {@link CmdLineOption}s.
-	 * @return Help message for specified action.
-	 */
-	public String printHelp(CmdLineAction action, Set<CmdLineOption> options);
+   /**
+    * Should generate help message for action specified by
+    * {@link #CmdLineArgs.getSpecifiedAction()}.
+    * 
+    * @param action
+    *           {@link CmdLineAction} for which help will be generate
+    * @param options
+    *           Supported {@link CmdLineOption}s.
+    * @return Help message for specified action.
+    */
+   public String printHelp(CmdLineAction action, Set<CmdLineOption> options);
 
 }

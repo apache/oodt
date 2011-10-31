@@ -30,36 +30,36 @@ import junit.framework.TestCase;
 
 /**
  * Test class for {@link ApplyToActionHandler}.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class TestApplyToActionHandler extends TestCase {
 
-	public void testWithoutApplyToActionMappingSet() {
-		ApplyToActionHandler handler = new ApplyToActionHandler();
-		assertNull(handler.getApplyToActions());
-		PrintMessageAction action = new PrintMessageAction();
-		action.setName("PrintMessageAction");
+   public void testWithoutApplyToActionMappingSet() {
+      ApplyToActionHandler handler = new ApplyToActionHandler();
+      assertNull(handler.getApplyToActions());
+      PrintMessageAction action = new PrintMessageAction();
+      action.setName("PrintMessageAction");
 
-		assertNull(action.getMessage());
+      assertNull(action.getMessage());
 
-		AdvancedCmdLineOption option = new AdvancedCmdLineOption();
-		option.setLongOption("message");
-		option.setHandler(handler);
-		option.getHandler().handleOption(action,
-				createOptionInstance(option, "Howdy"));
+      AdvancedCmdLineOption option = new AdvancedCmdLineOption();
+      option.setLongOption("message");
+      option.setHandler(handler);
+      option.getHandler().handleOption(action,
+            createOptionInstance(option, "Howdy"));
 
-		assertEquals("Howdy", action.getMessage());
-	}
+      assertEquals("Howdy", action.getMessage());
+   }
 
-	public void testApplyToActionsMapping() {
-		PrintMessageAction action = new PrintMessageAction();
-		action.setName("PrintMessageAction");
-		AdvancedCmdLineOption option = createAdvancedOption("printMessage",
-				createApplyToActionHandler(action.getName(), "setMessage"));
-		option.getHandler().handleOption(action,
-				createOptionInstance(option, "Howdy"));
+   public void testApplyToActionsMapping() {
+      PrintMessageAction action = new PrintMessageAction();
+      action.setName("PrintMessageAction");
+      AdvancedCmdLineOption option = createAdvancedOption("printMessage",
+            createApplyToActionHandler(action.getName(), "setMessage"));
+      option.getHandler().handleOption(action,
+            createOptionInstance(option, "Howdy"));
 
-		assertEquals("Howdy", action.getMessage());
-	}
+      assertEquals("Howdy", action.getMessage());
+   }
 }
