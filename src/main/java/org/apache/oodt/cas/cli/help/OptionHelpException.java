@@ -20,7 +20,7 @@ package org.apache.oodt.cas.cli.help;
 import java.io.IOException;
 
 /**
- * Exception thrown to express that help {@link CmdLineOption} should be given
+ * Exception thrown to express that {@link HelpCmdLineOption} should be given
  * to see help message.
  * 
  * @author bfoster (Brian Foster)

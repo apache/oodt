@@ -17,7 +17,7 @@
 package org.apache.oodt.cas.cli.action;
 
 /**
- * Action which is specified and configurated via {@link CmdLineOption}s and
+ * Action which is specified and configured via {@link CmdLineOption}s and
  * then executed.
  * 
  * @author bfoster (Brian Foster)
