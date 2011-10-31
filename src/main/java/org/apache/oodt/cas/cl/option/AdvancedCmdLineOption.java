@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cl.option.handler.CmdLineOptionHandler;
 import org.apache.oodt.cas.cl.option.validator.CmdLineOptionValidator;
 
@@ -72,7 +73,15 @@ public class AdvancedCmdLineOption extends SimpleCmdLineOption implements
       return this.validators;
    }
 
+   public void addValidator(CmdLineOptionValidator validator) {
+      Validate.notNull(validator);
+
+      validators.add(validator);
+   }
+
    public void setValidators(List<CmdLineOptionValidator> validators) {
+      Validate.notNull(validators);
+
       this.validators = validators;
    }
 
