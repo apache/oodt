@@ -19,10 +19,14 @@ the License.
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.apache.oodt</groupId>
 	<artifactId>pcs-opsui</artifactId>
 	<packaging>war</packaging>
-	<version>0.4-SNAPSHOT</version>
+	<parent>
+       <groupId>org.apache.oodt</groupId>
+       <artifactId>oodt-core</artifactId>
+       <version>0.4-SNAPSHOT</version>
+       <relativePath>../../core/pom.xml</relativePath>
+    </parent>
 	<name>Process Control System Operator Interface Webapp</name>
 	<properties>
 		<wicket.version>1.4.16</wicket.version>
@@ -39,7 +43,7 @@ the License.
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>oodt-webapp-components</artifactId>
-		  <version>0.4-SNAPSHOT</version>
+		  <version>${project.parent.version}</version>
 		  <exclusions>
 		    <exclusion>
 		      <artifactId>cas-filemgr</artifactId>
@@ -50,6 +54,16 @@ the License.
 		      <groupId>org.apache.oodt</groupId>
 		    </exclusion>
 		  </exclusions>
+		</dependency>
+		<dependency>
+		   <groupId>org.apache.oodt</groupId>
+		   <artifactId>cas-filemgr</artifactId>
+		   <version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.oodt</groupId>
+		  <artifactId>cas-metadata</artifactId>
+		  <version>${project.parent.version}</version>
 		</dependency>
 
 		<!-- LOGGING DEPENDENCIES - LOG4J -->

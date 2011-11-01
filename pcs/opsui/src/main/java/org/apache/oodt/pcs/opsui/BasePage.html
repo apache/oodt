@@ -1,0 +1,176 @@
+<html
+	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
+<head>
+<title>Apache OODT PCS Operator Interface</title>
+<wicket:link>
+  <link type="text/css" rel="stylesheet" href="BasePage.css"/>
+</wicket:link>
+</head>
+<body>
+
+<table id="opsui_header_tbl">
+	<tr>
+		<td>
+		<table id="opsui_inner_header_tbl">
+			<tr>
+				<td style="width:379px;background-color:#ccccc;">
+				 <wicket:link>
+				   <img src="nasa_logo.gif" alt="banner image" class="banner" usemap="#Map"/>
+			     </wicket:link>	
+				</td>
+				<td style="height:70px;width:136px;background-color:#cccccc;"></td>
+				<td style="width:205px;background-color:#000669;text-align:center;vertical-align:middle;">
+					<!--TODO: add Wicket logon widget here -->
+					
+					<span id="logon_widget"/>
+					  <span style="font-size:2px;color:white;">Welcome to the Operator Interface Web site</span>
+					  <br/><br/>
+				</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		 <wicket:link>
+		   <img src="spacer.gif" alt="spacer" class="spacer"/>
+	     </wicket:link>
+	    </td>
+	</tr>
+	<tr>
+		<td class="white">
+		<table id="menu_tbl">
+			<tr>
+				<td id="menu_inner_tbl"
+					onMouseOver="menuSelected(this)" onMouseOut="menuNotSelected(this)">
+			     <a href="#" wicket:id="home_link" class="white" style="text-align:center;">HOME</a>		
+				</td>
+				<td class="tdspacer"></td>
+				<td class="tdspacer"></td>
+				<td class="tdspacer"></td>
+				<td class="tdspacer"></td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		 <wicket:link>
+		   <img src="spacer.gif" alt="spacer" class="spacer" style="height:1px;"/>
+	     </wicket:link>
+	    </td>
+	</tr>
+	<tr>
+		<td style="width:100%">
+		 <wicket:link>
+		  <img src="banner.jpg" class="tight-noborder" alt="Banner"/>
+		 </wicket:link>
+		</td>
+	</tr>
+	<tr>
+	  <td class="white">
+	    <table id="menu_tbl">
+			<tr>
+				<td id="menu_links" 
+				    onMouseOver="menuSelected(this)"
+					onMouseOut="menuNotSelected(this)">
+					
+					<a href="#" wicket:id="fmbrowser_link" class="blackLink">
+					  <span style="text-align:center;color:white;font-weight:bold;">
+					    File Catalog Browse
+					  </span>
+					</a>
+		        </td>
+				<td id="menu_links" 
+				    onMouseOver="menuSelected(this)"
+					onMouseOut="menuNotSelected(this)">
+					
+					<a href="#" id="wmonitor_link" class="blackLink">
+					  <span style="text-align:center;color:white;font-weight:bold;">
+					    Workflow Monitor
+					  </span>
+					</a>
+		        </td>
+				<td id="menu_links" 
+				    onMouseOver="menuSelected(this)"
+					onMouseOut="menuNotSelected(this)">
+					
+					<a href="#" id="rmonitor_link" class="blackLink">
+					  <span style="text-align:center;color:white;font-weight:bold;">
+					    Resource Monitor
+					  </span>
+					</a>
+		        </td>
+				<td id="menu_links" 
+				    onMouseOver="menuSelected(this)"
+					onMouseOut="menuNotSelected(this)">
+					
+					<a href="#" id="config_link" class="blackLink">
+					  <span style="text-align:center;color:white;font-weight:bold;">
+					    Configuration
+					  </span>
+					</a>
+		        </td>		        		        
+				<td id="menu_links" 
+				    onMouseOver="menuSelected(this)"
+					onMouseOut="menuNotSelected(this)">
+					
+					<a href="#" id="pcsstatus_link" class="blackLink">
+					  <span style="text-align:center;color:white;font-weight:bold;">
+					    PCS Status
+					  </span>
+					</a>
+		        </td>
+		    </tr>
+		</table>
+     </td>
+	</tr>
+	<tr>
+		<td>
+		 <wicket:link>
+		  <img src="spacer.gif" alt="spacer" class="spacer" style="height:1px;">
+		 </wicket:link>
+		</td>
+	</tr>
+
+</table>
+
+<wicket:child/>
+
+<table id="footer_tbl">
+	<tr>
+		<td style="vertical-align:top;width:160px;">
+		 <a target="_blank" href="http://www.firstgov.gov/">
+		  <wicket:link>
+		    <img class="firstGovImg" src="footer_image1.gif"/>
+		  </wicket:link>
+		 </a>
+		</td>
+		<td style="width:200px;">
+		  <a target="_blank" 
+		     href="http://www.jpl.nasa.gov/copyrights.cfm">+ JPL/Caltech Privacy/Copyright
+		  </a>		  
+		</td>
+		<td style="width:61px;">
+		  <a target="_blank" href="http://www.nasa.gov/home/index.html">
+		   <wicket:link>
+			<img class="nasaHomePageImg" alt="NASA Home Page" src="footer_image2.gif"/>
+		   </wicket:link>
+		  </a>
+		</td>
+		<td style="width:280px;">
+		  <span class="feedback">&nbsp;</span>
+		  <a href="#" wicket:id="contact_link">Feedback</a>
+		</td>
+	</tr>
+</table>
+
+<wicket:remove>
+  <div style="text-align:center">
+    <p>Powered by <a href="http://oodt.apache.org/">Apache OODT</a></p>
+  </div>
+</wicket:remove>
+
+</body>
+
+</html>

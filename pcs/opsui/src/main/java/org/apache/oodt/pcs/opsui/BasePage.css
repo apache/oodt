@@ -1,0 +1,93 @@
+
+#opsui_header_tbl{
+  border:0px;
+  border-spacing:0px;
+  white-space:nowrap;
+  padding:0px;
+  width:100%;
+
+}
+
+#opsui_inner_header_tbl{
+  border:0px;
+  border-spacing:0px;
+  white-space:nowrap;
+  padding:0px;
+  width:100%;
+
+}
+
+#menu_tbl{
+  padding:0px;
+  border-spacing:1px;
+  border:0px;
+  width:100%;
+  color:white; 
+}
+
+#menu_inner_tbl{
+  background-color:#666666;
+  height:23px;
+  width:20px;
+}
+
+#menu_links{
+  background-color:#666666;
+  height:23px;
+}
+
+#footer_tbl{
+  padding:4px;
+  border-spacing:0px;
+  width:730px;
+  border:0px;
+}
+
+.banner{
+  border:0px;
+  width:379px;
+  height:65px;  
+}
+
+.spacer{
+  width:730px;
+  height:2px;  
+}
+
+.tdspacer{
+  background-color:#666666;
+  height:23px;
+  width:20%;
+}
+
+.tight-noborder{
+  vertical-spacing:0px;
+  width:100%;
+  border:0px;
+}
+
+.white {
+  color:white;
+}
+
+.blackLink {
+  color:#000000;
+  line-height:18px;
+}
+
+.firstGovImg{
+  height:39px;
+  width:136px;
+  border:0px;
+}
+
+.nasaHomePageImg{
+  height:40px;
+  width:61px;
+  border:0px;
+}
+
+.feedback{
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:2px;
+}
