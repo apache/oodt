@@ -41,6 +41,7 @@ the License.
     <modules>
         <module>core</module>
         <module>commons</module>
+        <module>cli</module>
         <module>pcs/input</module>
         <module>metadata</module>
         <module>protocol/api</module>

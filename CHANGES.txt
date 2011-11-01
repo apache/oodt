@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-330 Factor out command line utility from oodt-commons
+    - check in CAS-CLI... integration to other components to come (bfoster)
+
 * OODT-333 XMLPS query doesn't quote literal string 
   (Ricky Nguyen, mattmann, Sheryl John)
 
