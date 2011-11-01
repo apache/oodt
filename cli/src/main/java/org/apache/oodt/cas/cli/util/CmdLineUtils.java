@@ -700,6 +700,15 @@ public class CmdLineUtils {
             }
          }
       }
+
+      if (option.isGroup()) {
+         for (CmdLineOptionInstance subOption : option.getSubOptions()) {
+            if (!validate(subOption)) {
+               return false;
+            }
+         }
+      }
+
       return true;
    }
 
@@ -723,6 +732,12 @@ public class CmdLineUtils {
          ((HandleableCmdLineOption) option.getOption()).getHandler()
                .handleOption(action, option);
       }
+
+      if (option.isGroup()) {
+         for (CmdLineOptionInstance subOption : option.getSubOptions()) {
+            handle(action, subOption);
+         }
+      }     
    }
 
    /**

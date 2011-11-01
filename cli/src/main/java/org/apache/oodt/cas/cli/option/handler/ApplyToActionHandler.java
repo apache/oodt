@@ -36,7 +36,10 @@ import com.google.common.annotations.VisibleForTesting;
 
 /**
  * {@link CmdLineOptionHandler} which applies {@link CmdLineOption} values to
- * given {@link CmdLineAction}.
+ * given {@link CmdLineAction}.  If {@link CmdLineOption} is a repeating option
+ * then "add<long-name>" is invoked on {@link CmdLineAction}, otherwise
+ * "set<long-name" is invoked, unless the method name was supplied, then that
+ * method will be invoked.
  * 
  * @author bfoster (Brian Foster)
  */
@@ -66,8 +69,8 @@ public class ApplyToActionHandler implements CmdLineOptionHandler {
          } else {
             action.getClass()
                   .getMethod(
-                        "set"
-                              + StringUtils.capitalize(optionInstance
+                        (optionInstance.getOption().isRepeating() ? "add"
+                              : "set") + StringUtils.capitalize(optionInstance
                                     .getOption().getLongOption()), type)
                   .invoke(action, vals.toArray(new Object[vals.size()]));
          }

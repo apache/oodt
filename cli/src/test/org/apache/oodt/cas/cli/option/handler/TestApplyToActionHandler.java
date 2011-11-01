@@ -22,6 +22,7 @@ import static org.apache.oodt.cas.cli.test.util.TestUtils.createApplyToActionHan
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createOptionInstance;
 
 //OODT imports
+import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.action.PrintMessageAction;
 import org.apache.oodt.cas.cli.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler;
@@ -62,5 +63,50 @@ public class TestApplyToActionHandler extends TestCase {
             createOptionInstance(option, "Howdy"));
 
       assertEquals("Howdy", action.getMessage());
+   }
+
+   public void testSetOrAddInvoke() {
+      TestCmdLineAction action = new TestCmdLineAction();
+      action.setName("TestAction");
+      AdvancedCmdLineOption option = createAdvancedOption("message",
+            createApplyToActionHandler(action.getName(), null));
+
+      // Test that default isRepeating() is false.
+      option.getHandler().handleOption(action,
+            createOptionInstance(option, "Howdy"));
+      assertEquals(TestCmdLineAction.CallType.SET, action.getCallType());
+
+      // Test when isRepeating() is set to false.
+      option.setRepeating(false);
+      option.getHandler().handleOption(action,
+            createOptionInstance(option, "Howdy"));
+      assertEquals(TestCmdLineAction.CallType.SET, action.getCallType());
+
+      // Test when isRepeating() is set to true.
+      option.setRepeating(true);
+      option.getHandler().handleOption(action,
+            createOptionInstance(option, "Howdy"));
+      assertEquals(TestCmdLineAction.CallType.ADD, action.getCallType());
+   }
+
+   public static class TestCmdLineAction extends CmdLineAction {
+      public enum CallType { ADD, SET };
+      private CallType callType;
+
+      @Override
+      public void execute() {
+      }
+
+      public void addMessage(String message) {
+         callType = CallType.ADD;
+      }
+
+      public void setMessage(String message) {
+         callType = CallType.SET;
+      }
+
+      public CallType getCallType () {
+         return callType;
+      }
    }
 }

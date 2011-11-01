@@ -34,7 +34,6 @@ import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator;
 public class AdvancedCmdLineOption extends SimpleCmdLineOption implements
       ValidatableCmdLineOption, HandleableCmdLineOption {
 
-   private boolean isAction;
    private CmdLineOptionHandler handler;
    private List<CmdLineOptionValidator> validators;
    private boolean performAndQuit;
@@ -47,14 +46,6 @@ public class AdvancedCmdLineOption extends SimpleCmdLineOption implements
    public AdvancedCmdLineOption(String shortOption, String longOption,
          String description, boolean hasArgs) {
       super(shortOption, longOption, description, hasArgs);
-   }
-
-   public void setAction(boolean isAction) {
-      this.isAction = isAction;
-   }
-
-   public boolean isAction() {
-      return isAction;
    }
 
    public void setHandler(CmdLineOptionHandler handler) {
