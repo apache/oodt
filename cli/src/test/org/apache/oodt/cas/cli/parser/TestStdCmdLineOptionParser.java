@@ -31,9 +31,9 @@ import java.util.Set;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.GroupCmdLineOption;
+import org.apache.oodt.cas.cli.option.GroupSubOption;
 import org.apache.oodt.cas.cli.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cli.option.SimpleCmdLineOption;
-import org.apache.oodt.cas.cli.option.GroupCmdLineOption.SubOption;
 import org.apache.oodt.cas.cli.parser.StdCmdLineOptionParser;
 import org.apache.oodt.cas.cli.util.Args;
 
@@ -59,9 +59,9 @@ public class TestStdCmdLineOptionParser extends TestCase {
       options.add(listOption = createSimpleOption("list", true));
       options.add(scalarOption = createSimpleOption("scalar", true));
       options.add(noneOption = createSimpleOption("none", false));
-      options.add(noneOption = createGroupOption("group", new SubOption(
-            listOption, true), new SubOption(scalarOption, true),
-            new SubOption(noneOption, false)));
+      options.add(noneOption = createGroupOption("group", new GroupSubOption(
+            listOption, true), new GroupSubOption(scalarOption, true),
+            new GroupSubOption(noneOption, false)));
       options.add(new HelpCmdLineOption());
 
       // Parse args.
@@ -168,11 +168,11 @@ public class TestStdCmdLineOptionParser extends TestCase {
    }
 
    private static GroupCmdLineOption createGroupOption(String longName,
-         SubOption... subOptions) {
+         GroupSubOption... subOptions) {
       GroupCmdLineOption option = new GroupCmdLineOption();
       option.setLongOption(longName);
       option.setShortOption(longName);
-      option.setSubOptions(new HashSet<SubOption>(Arrays.asList(subOptions)));
+      option.setSubOptions(Lists.newArrayList(subOptions));
       return option;
    }
 

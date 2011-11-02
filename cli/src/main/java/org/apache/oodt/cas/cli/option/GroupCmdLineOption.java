@@ -18,10 +18,13 @@ package org.apache.oodt.cas.cli.option;
 
 //JDK imports
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 //Apache imports
 import org.apache.commons.lang.Validate;
+
+import com.google.common.collect.Lists;
 
 /**
  * {@link CmdLineOption} which is a group option (i.e. supports sub-
@@ -31,14 +34,14 @@ import org.apache.commons.lang.Validate;
  */
 public class GroupCmdLineOption extends SimpleCmdLineOption {
 
-   private Set<SubOption> subOptions;
+   private List<GroupSubOption> subOptions;
    private boolean allowAnySubOption;
 
    public GroupCmdLineOption() {
       super();
       this.setHasArgs(false);
       this.setAllowAnySubOptions(false);
-      subOptions = new HashSet<SubOption>();
+      subOptions = Lists.newArrayList();
    }
 
    public GroupCmdLineOption(String shortOption, String longOption,
@@ -54,53 +57,23 @@ public class GroupCmdLineOption extends SimpleCmdLineOption {
       return subOptions.isEmpty() && allowAnySubOption;
    }
 
-   public void setSubOptions(Set<SubOption> subOptions) {
+   public void setSubOptions(List<GroupSubOption> subOptions) {
       Validate.notNull(subOptions, "Cannot set subOptions to NULL");
 
-      this.subOptions = new HashSet<SubOption>(subOptions);
+      this.subOptions = Lists.newArrayList(subOptions);
    }
 
-   public void addSubOption(SubOption subOption) {
+   public void addSubOption(GroupSubOption subOption) {
       Validate.notNull(subOption, "Cannot add NULL subOption");
 
       subOptions.add(subOption);
    }
 
-   public Set<SubOption> getSubOptions() {
+   public List<GroupSubOption> getSubOptions() {
       return subOptions;
    }
 
    public boolean hasSubOptions() {
       return subOptions != null && !subOptions.isEmpty();
-   }
-
-   public static class SubOption {
-
-      private CmdLineOption option;
-      private boolean required;
-
-      public SubOption() {
-      }
-
-      public SubOption(CmdLineOption option, boolean required) {
-         this.option = option;
-         this.required = required;
-      }
-
-      public void setOption(CmdLineOption option) {
-         this.option = option;
-      }
-
-      public CmdLineOption getOption() {
-         return option;
-      }
-
-      public void setRequired(boolean required) {
-         this.required = required;
-      }
-
-      public boolean isRequired() {
-         return required;
-      }
    }
 }

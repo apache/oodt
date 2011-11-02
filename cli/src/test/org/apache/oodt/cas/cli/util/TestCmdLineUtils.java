@@ -44,10 +44,10 @@ import org.apache.oodt.cas.cli.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.GroupCmdLineOption;
+import org.apache.oodt.cas.cli.option.GroupSubOption;
 import org.apache.oodt.cas.cli.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption;
 import org.apache.oodt.cas.cli.option.SimpleCmdLineOption;
-import org.apache.oodt.cas.cli.option.GroupCmdLineOption.SubOption;
 import org.apache.oodt.cas.cli.option.handler.CmdLineOptionHandler;
 import org.apache.oodt.cas.cli.option.validator.AllowedArgsCmdLineOptionValidator;
 import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator;
@@ -244,7 +244,7 @@ public class TestCmdLineUtils extends TestCase {
       GroupCmdLineOption groupOption = createGroupOption("group", false);
       assertFalse(CmdLineUtils.isSubOption(groupOption, subOption));
 
-      groupOption.addSubOption(new SubOption(subOption, false));
+      groupOption.addSubOption(new GroupSubOption(subOption, false));
       assertTrue(CmdLineUtils.isSubOption(groupOption, subOption));
    }
 

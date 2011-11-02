@@ -31,7 +31,7 @@ public class SpringCmdLineOptionStoreFactory implements
 
    public SpringCmdLineOptionStoreFactory() {
       config = System.getProperty(
-            "org.apache.oodt.cas.cl.option.store.spring.config", null);
+            "org.apache.oodt.cas.cli.option.spring.config", null);
    }
 
    public SpringCmdLineOptionStore createStore() {

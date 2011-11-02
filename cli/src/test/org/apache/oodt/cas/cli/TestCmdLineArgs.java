@@ -27,7 +27,6 @@ import static org.apache.oodt.cas.cli.test.util.TestUtils.createOptionInstance;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createSimpleOption;
 
 //JDK imports
-import java.util.HashSet;
 import java.util.Set;
 
 //OODT imports
@@ -38,6 +37,9 @@ import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption;
+
+//Google imports
+import com.google.common.collect.Sets;
 
 //JUnit imports
 import junit.framework.TestCase;
@@ -101,7 +103,7 @@ public class TestCmdLineArgs extends TestCase {
       Set<CmdLineOption> options = newHashSet(SUPPORTED_OPTIONS);
       options.add(customOption);
       CmdLineArgs args = new CmdLineArgs(SUPPORTED_ACTIONS, options,
-            new HashSet<CmdLineOptionInstance>());
+            Sets.newHashSet(createOptionInstance(ACTION_OPTION, TEST_ACTION_1.getName())));
 
       // Test that custom supported options only contains the custom option.
       assertEquals(newHashSet(customOption), args.getCustomSupportedOptions());
@@ -114,14 +116,15 @@ public class TestCmdLineArgs extends TestCase {
       CmdLineOptionInstance specifiedOptions = createOptionInstance(
             customOption, "test-values");
       CmdLineArgs args = new CmdLineArgs(SUPPORTED_ACTIONS, options,
-            newHashSet(specifiedOptions));
+            newHashSet(specifiedOptions,
+                  createOptionInstance(ACTION_OPTION, TEST_ACTION_1.getName())));
 
       // Test that custom specified options only contains the custom option.
       assertEquals(newHashSet(specifiedOptions),
             args.getCustomSpecifiedOptions());
 
       args = new CmdLineArgs(SUPPORTED_ACTIONS, options,
-            new HashSet<CmdLineOptionInstance>());
+            Sets.newHashSet(createOptionInstance(ACTION_OPTION, TEST_ACTION_1.getName())));
 
       // Test that custom specified options is empty since custom option was not
       // specified.

@@ -14,31 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.action.store.spring;
-
-//OODT imports
-import org.apache.oodt.cas.cli.action.store.CmdLineActionStoreFactory;
+package org.apache.oodt.cas.cli.option;
 
 /**
- * Factory for creating {@link SpringCmdLineActionStore}s.
- * 
+ * A Group allowable sub-{@link CmdLineOption}.
+ *
  * @author bfoster (Brian Foster)
  */
-public class SpringCmdLineActionStoreFactory implements
-      CmdLineActionStoreFactory {
+public class GroupSubOption {
 
-   private String config;
+   private CmdLineOption option;
+   private boolean required;
 
-   public SpringCmdLineActionStoreFactory() {
-      config = System.getProperty(
-            "org.apache.oodt.cas.cli.action.spring.config", null);
+   public GroupSubOption() {
+      required = false;
    }
 
-   public SpringCmdLineActionStore createStore() {
-      if (config != null) {
-         return new SpringCmdLineActionStore(config);
-      } else {
-         return null;
-      }
+   public GroupSubOption(CmdLineOption option, boolean required) {
+      this.option = option;
+      this.required = required;
+   }
+
+   public void setOption(CmdLineOption option) {
+      this.option = option;
+   }
+
+   public CmdLineOption getOption() {
+      return option;
+   }
+
+   public void setRequired(boolean required) {
+      this.required = required;
+   }
+
+   public boolean isRequired() {
+      return required;
    }
 }

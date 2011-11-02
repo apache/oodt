@@ -18,9 +18,9 @@ package org.apache.oodt.cas.cli;
 
 //OODT static imports
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findAction;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.findActionOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findHelpOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findPrintSupportedActionsOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedActionOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedOption;
 
 //JDK imports
@@ -63,14 +63,18 @@ public class CmdLineArgs {
    /* package */CmdLineArgs(Set<CmdLineAction> supportedActions,
          Set<CmdLineOption> supportedOptions,
          Set<CmdLineOptionInstance> specifiedOptions) {
+      System.out.println(specifiedOptions);
       Validate.notNull(supportedActions);
       Validate.notNull(supportedOptions);
       Validate.notNull(specifiedOptions);
 
       helpOption = findHelpOption(supportedOptions);
       helpOptionInst = findSpecifiedOption(helpOption, specifiedOptions);
-      actionOption = findActionOption(supportedOptions);
-      actionOptionInst = findSpecifiedOption(actionOption, specifiedOptions);
+      actionOptionInst = findSpecifiedActionOption(specifiedOptions);
+      if (actionOptionInst == null) {
+         throw new IllegalArgumentException("Must specify action option!");
+      }
+      actionOption = (ActionCmdLineOption) actionOptionInst.getOption();
       psaOption = findPrintSupportedActionsOption(supportedOptions);
       psaOptionInst = findSpecifiedOption(psaOption, specifiedOptions);
 
@@ -89,17 +93,13 @@ public class CmdLineArgs {
       if (helpOptionInst != null) {
          customSpecifiedOptions.remove(helpOptionInst);
       }
-      if (actionOptionInst != null) {
-         customSpecifiedOptions.remove(actionOptionInst);
-      }
+      customSpecifiedOptions.remove(actionOptionInst);
       if (psaOptionInst != null) {
          customSpecifiedOptions.remove(psaOptionInst);
       }
 
       this.supportedActions = supportedActions;
-      if (actionOptionInst != null) {
-         specifiedAction = findAction(actionOptionInst, supportedActions);
-      }
+      specifiedAction = findAction(actionOptionInst, supportedActions);
    }
 
    /**

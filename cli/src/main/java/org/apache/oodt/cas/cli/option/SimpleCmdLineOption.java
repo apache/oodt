@@ -52,6 +52,8 @@ public class SimpleCmdLineOption implements CmdLineOption {
 
    private boolean performAndQuit;
 
+   private boolean isSubOption;
+
    private Class<?> type;
 
    public SimpleCmdLineOption() {
@@ -60,6 +62,7 @@ public class SimpleCmdLineOption implements CmdLineOption {
       required = false;
       hasArgs = false;
       performAndQuit = false;
+      isSubOption = false;
       type = String.class;
       requirementRules = new ArrayList<RequirementRule>();
    }
@@ -165,6 +168,14 @@ public class SimpleCmdLineOption implements CmdLineOption {
       this.performAndQuit = performAndQuit;
    }
 
+   public void setIsSubOption(boolean isSubOption) {
+      this.isSubOption = isSubOption;
+   }
+
+   public boolean isSubOption() {
+      return isSubOption;
+   }
+
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof CmdLineOption) {
@@ -181,7 +192,7 @@ public class SimpleCmdLineOption implements CmdLineOption {
    }
 
    public String toString() {
-      return "Action [longOption='" + longOption + "',shortOption='"
+      return "[longOption='" + longOption + "',shortOption='"
             + shortOption + "',description='" + description + "']";
    }
 }

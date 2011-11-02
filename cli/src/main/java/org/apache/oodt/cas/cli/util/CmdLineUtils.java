@@ -34,6 +34,7 @@ import org.apache.oodt.cas.cli.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.GroupCmdLineOption;
+import org.apache.oodt.cas.cli.option.GroupSubOption;
 import org.apache.oodt.cas.cli.option.HandleableCmdLineOption;
 import org.apache.oodt.cas.cli.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption;
@@ -295,7 +296,7 @@ public class CmdLineUtils {
       Validate.notNull(subOption);
 
       if (isGroupOption(option)) {
-         for (GroupCmdLineOption.SubOption curSubOption : asGroupOption(option)
+         for (GroupSubOption curSubOption : asGroupOption(option)
                .getSubOptions()) {
             if (curSubOption.getOption().equals(subOption)) {
                return true;
@@ -543,12 +544,21 @@ public class CmdLineUtils {
 
       CmdLineOptionInstance specifiedAction = null;
       for (CmdLineOptionInstance option : options) {
-         if (isActionOption(option.getOption())) {
+         if (option.isAction()) {
             if (specifiedAction != null) {
                throw new IllegalArgumentException(
                      "Only one action may be specified!");
             }
             specifiedAction = option;
+         } else if (option.isGroup()) {
+            CmdLineOptionInstance foundAction = findSpecifiedActionOption(option
+                  .getSubOptions());
+            if (specifiedAction != null && foundAction != null) {
+               throw new IllegalArgumentException(
+                  "Only one action may be specified!");
+            } else if (foundAction != null) {
+               specifiedAction = foundAction;
+            }
          }
       }
       return specifiedAction;
@@ -808,7 +818,9 @@ public class CmdLineUtils {
             classes.add(Class.forName(value));
          return classes;
       } else if (type.equals(List.class)) {
-         return values;
+         List<Object> lists = new LinkedList<Object>();
+         lists.add(values);
+         return lists;
       } else if (type.equals(Integer.class) || type.equals(Integer.TYPE)) {
          List<Object> ints = new LinkedList<Object>();
          for (String value : values)

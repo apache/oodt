@@ -36,7 +36,7 @@ import org.apache.oodt.cas.cli.help.OptionHelpException;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.GroupCmdLineOption;
-import org.apache.oodt.cas.cli.option.GroupCmdLineOption.SubOption;
+import org.apache.oodt.cas.cli.option.GroupSubOption;
 import org.apache.oodt.cas.cli.util.Args;
 
 //Google imports
@@ -149,7 +149,7 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
       Validate.isTrue(group.isGroup());
 
       Set<CmdLineOption> missingSubOptions = new HashSet<CmdLineOption>();
-      TOP: for (SubOption subOption : ((GroupCmdLineOption) group.getOption())
+      TOP: for (GroupSubOption subOption : ((GroupCmdLineOption) group.getOption())
             .getSubOptions()) {
          if (subOption.isRequired()) {
             for (CmdLineOptionInstance specifiedSubOption : group

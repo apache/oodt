@@ -71,6 +71,10 @@ public interface CmdLineOption {
 
    public List<RequirementRule> getRequirementRules();
 
+   public void setIsSubOption(boolean isSubOption);
+
+   public boolean isSubOption();
+
    public boolean equals(Object obj);
 
    public int hashCode();
