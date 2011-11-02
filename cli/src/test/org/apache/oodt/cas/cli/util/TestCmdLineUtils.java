@@ -24,6 +24,9 @@ import static org.apache.oodt.cas.cli.test.util.TestUtils.createOptionInstance;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createOptionalRequirementRule;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createRequiredRequirementRule;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createSimpleOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedActionOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedHelpOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedPrintSupportedActionsOption;
 
 //JDK imports
 import java.util.ArrayList;
@@ -325,15 +328,22 @@ public class TestCmdLineUtils extends TestCase {
    }
 
    public void testFindSpecifiedPrintSupportedActionsOption() {
-      CmdLineOptionInstance psaAction = createOptionInstance(new PrintSupportedActionsCmdLineOption());
+      CmdLineOptionInstance psaAction = createOptionInstance(
+            new PrintSupportedActionsCmdLineOption());
       Set<CmdLineOptionInstance> options = Sets.newHashSet(
             createOptionInstance(createSimpleOption("test", false)),
             createOptionInstance(createSimpleOption("test2", false)));
 
-      assertNull(CmdLineUtils.findSpecifiedPrintSupportedActionsOption(options));
+      assertNull(findSpecifiedPrintSupportedActionsOption(options));
       options.add(psaAction);
       assertEquals(psaAction,
-            CmdLineUtils.findSpecifiedPrintSupportedActionsOption(options));
+            findSpecifiedPrintSupportedActionsOption(options));
+      options.add(createOptionInstance(new PrintSupportedActionsCmdLineOption(
+            "psa2", "PrintSupportedActions2", "Print Actions 2", false)));
+      try {
+         findSpecifiedPrintSupportedActionsOption(options);
+         fail("Should have thrown IllegalArgumentException");
+      } catch (IllegalArgumentException ignore) { /* expect throw */ }
    }
 
    public void testIsSimpleOption() {
@@ -365,10 +375,16 @@ public class TestCmdLineUtils extends TestCase {
             createOptionInstance(createSimpleOption("test", false)),
             createOptionInstance(createSimpleOption("test", false)));
 
-      assertNull(CmdLineUtils.findSpecifiedActionOption(options));
+      assertNull(findSpecifiedActionOption(options));
       options.add(actionOption);
       assertEquals(actionOption,
-            CmdLineUtils.findSpecifiedActionOption(options));
+            findSpecifiedActionOption(options));
+      options.add(createOptionInstance(createActionOption("action2")));
+      try {
+         findSpecifiedActionOption(options);
+         fail("Should have thrown IllegalArgumentException");
+      } catch (IllegalArgumentException ignore) { /* expect throw */ }
+      
    }
 
    public void testIsGroupOption() {
@@ -394,8 +410,7 @@ public class TestCmdLineUtils extends TestCase {
       try {
          CmdLineUtils.asHelpOption(createSimpleOption("test", false));
          fail("Should have thrown IllegalArgumentException");
-      } catch (IllegalArgumentException ignore) { /* expect throw */
-      }
+      } catch (IllegalArgumentException ignore) { /* expect throw */ }
       CmdLineUtils.asHelpOption(new HelpCmdLineOption());
    }
 
@@ -416,9 +431,14 @@ public class TestCmdLineUtils extends TestCase {
             createOptionInstance(createSimpleOption("test", false)),
             createOptionInstance(createSimpleOption("test", false)));
 
-      assertNull(CmdLineUtils.findSpecifiedHelpOption(options));
+      assertNull(findSpecifiedHelpOption(options));
       options.add(helpOption);
-      assertEquals(helpOption, CmdLineUtils.findSpecifiedHelpOption(options));
+      assertEquals(helpOption, findSpecifiedHelpOption(options));
+      options.add(createOptionInstance(new HelpCmdLineOption("h2", "help2", "Second Help Option", true)));
+      try {
+         findSpecifiedHelpOption(options);
+         fail("Should have thrown IllegalArgumentException");
+      } catch (IllegalArgumentException ignore) { /* expect throw */ }
    }
 
    public void testValidate() {

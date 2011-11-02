@@ -442,6 +442,8 @@ public class CmdLineUtils {
     *           The {@link Set} of {@link CmdLineOptionInstance} to find the
     *           {@link CmdLineOptionInstance} whose {@link CmdLineOption} is of
     *           type {@link PrintSupportedActionsCmdLineOption} in
+    * @throws IllegalArgumentException
+    *            If more than one print supported actions option is specified
     * @return The found {@link CmdLineOptionInstance} whose
     *         {@link CmdLineOption} is of type
     *         {@link PrintSupportedActionsCmdLineOption}, or null if not found.
@@ -450,12 +452,17 @@ public class CmdLineUtils {
          Set<CmdLineOptionInstance> options) {
       Validate.notNull(options);
 
+      CmdLineOptionInstance specifiedPsa = null;
       for (CmdLineOptionInstance option : options) {
          if (isPrintSupportedActionsOption(option.getOption())) {
-            return option;
+            if (specifiedPsa != null) {
+               throw new IllegalArgumentException(
+                     "Only on print supported actions option can be specified!");
+            }
+            specifiedPsa = option;
          }
       }
-      return null;
+      return specifiedPsa;
    }
 
    /**
@@ -526,18 +533,25 @@ public class CmdLineUtils {
     * @param options
     *           The {@link Set} of {@link CmdLineOption} to search through for a
     *           {@link ActionCmdLineOption}
+    * @throws IllegalArgumentException
+    *            If more than one action option has be specified
     * @return The found {@link ActionCmdLineOption}, or null if not found
     */
    public static CmdLineOptionInstance findSpecifiedActionOption(
          Set<CmdLineOptionInstance> options) {
       Validate.notNull(options);
 
+      CmdLineOptionInstance specifiedAction = null;
       for (CmdLineOptionInstance option : options) {
          if (isActionOption(option.getOption())) {
-            return option;
+            if (specifiedAction != null) {
+               throw new IllegalArgumentException(
+                     "Only one action may be specified!");
+            }
+            specifiedAction = option;
          }
       }
-      return null;
+      return specifiedAction;
    }
 
    /**
@@ -625,18 +639,25 @@ public class CmdLineUtils {
     *           The {@link Set} of {@link CmdLineOptionInstance}s to search
     *           through for the {@link CmdLineOptionInstance} whose
     *           {@link CmdLineOption} is of type {@link HelpCmdLineOption}
+    * @throws IllegalArgumentException
+    *            If more than one help option is specified
     * @return The found {@link CmdLineOptionInstance}, null if not found
     */
    public static CmdLineOptionInstance findSpecifiedHelpOption(
          Set<CmdLineOptionInstance> options) {
       Validate.notNull(options);
 
+      CmdLineOptionInstance specifiedHelp = null;
       for (CmdLineOptionInstance option : options) {
          if (isHelpOption(option.getOption())) {
-            return option;
+            if (specifiedHelp != null) {
+               throw new IllegalArgumentException(
+                     "Help can only be specified once!");
+            }
+            specifiedHelp = option;
          }
       }
-      return null;
+      return specifiedHelp;
    }
 
    /**
