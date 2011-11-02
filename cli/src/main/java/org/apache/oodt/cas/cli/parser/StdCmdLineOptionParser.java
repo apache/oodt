@@ -99,6 +99,11 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
                                  + "': "
                                  + sortOptionsByRequiredStatus(requiredSubOptions));
 
+                  } else if (currentGroup.getSubOptions().isEmpty()) {
+                     throw new IOException(
+                           "Must specify a subOption for group option '"
+                                 + currentGroup.getOption() + "'");
+
                   } else {
 
                      // pop group and add to list of specified options.
@@ -117,6 +122,10 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
 
                // Push group as current group.
                groupOptions.push(specifiedOption);
+
+            } else if (option.isSubOption()) {
+               throw new IOException("Option '" + option
+                     + "' is a subOption, but was used at top level Option");
 
             } else {
 
