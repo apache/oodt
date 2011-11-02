@@ -63,7 +63,6 @@ public class CmdLineArgs {
    /* package */CmdLineArgs(Set<CmdLineAction> supportedActions,
          Set<CmdLineOption> supportedOptions,
          Set<CmdLineOptionInstance> specifiedOptions) {
-      System.out.println(specifiedOptions);
       Validate.notNull(supportedActions);
       Validate.notNull(supportedOptions);
       Validate.notNull(specifiedOptions);

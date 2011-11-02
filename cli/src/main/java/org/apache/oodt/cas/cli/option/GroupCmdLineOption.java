@@ -17,13 +17,12 @@
 package org.apache.oodt.cas.cli.option;
 
 //JDK imports
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 //Apache imports
 import org.apache.commons.lang.Validate;
 
+//Google imports
 import com.google.common.collect.Lists;
 
 /**
