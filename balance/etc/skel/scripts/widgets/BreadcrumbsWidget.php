@@ -46,7 +46,7 @@
  */
 
 class BreadcrumbsWidget
-	implements Ogr_Apache_Oodt_Balance_Interfaces_IApplicationWidget {
+	implements Org_Apache_Oodt_Balance_Interfaces_IApplicationWidget {
 
 	protected $separator = '&nbsp;&rarr;&nbsp;';
 
