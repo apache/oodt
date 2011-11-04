@@ -19,6 +19,7 @@
 package org.apache.oodt.pcs.opsui;
 
 //Wicket imports
+import org.apache.oodt.pcs.opsui.status.StatusPage;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.ExternalLink;
@@ -52,6 +53,18 @@ public class BasePage extends WebPage {
       @Override
       public void onClick() {
        setResponsePage(TypesPage.class); 
+      }
+    });
+    
+    add(new Link("pcsstatus_link"){
+      
+    /* (non-Javadoc)
+       * @see org.apache.wicket.markup.html.link.Link#onClick()
+       */
+      @Override
+      public void onClick() {
+        setResponsePage(StatusPage.class);
+        
       }
     });
     

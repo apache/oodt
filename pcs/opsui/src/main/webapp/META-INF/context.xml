@@ -22,7 +22,10 @@ the License.
 		
 	<Parameter name="workflow.url"
 	    value="[WORKFLOW_URL]"/>
-	    
+
+	<Parameter name="resmgr.url"
+	    value="[RESMGR_URL]"/>
+
 	<Parameter name="org.apache.oodt.cas.workflow.webapp.lifecycleFilePath"
 	    value="[WORKFLOW_HOME]/policy/workflow-lifecycle.xml"/>
 	    
@@ -31,6 +34,12 @@ the License.
 	    
 	<Parameter name="org.apache.oodt.cas.workflow.webapp.inst.metFields.filePath"
 	    value="[WORKFLOW_HOME]/policy/workflow-instance-met.xml"/>
+	    
+	<Parameter name="org.apache.oodt.pcs.health.crawler.conf.filePath"
+	    value="[PCS_HOME]/aux/pcs/pcs-crawlers.xml"/>
+	    
+	<Parameter name="org.apache.oodt.pcs.health.workflow.statuses.filePath"
+	    value="[PCS_HOME]/aux/pcs/pcs-workflow-statuses.xml"/>	    
 	    
 	<Parameter name="contact.email" value="user@oodt.apache.org"/>
 	    

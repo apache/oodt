@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.pcs.opsui;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.webcomponents.filemgr.FMBrowserSession;
 import org.apache.oodt.cas.webcomponents.workflow.instance.WorkflowInstancesViewer;
+import org.apache.oodt.pcs.opsui.status.StatusPage;
 
 //Wicket imports
 import org.apache.wicket.Page;
@@ -33,17 +33,16 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
 
 /**
- *
+ * 
  * The OPSUI application object.
- *
+ * 
  * @author mattmann
  * @version $Revision$
- *
+ * 
  */
 public class OpsuiApp extends WebApplication {
 
-  
-  public OpsuiApp(){
+  public OpsuiApp() {
     MixedParamUrlCodingStrategy types = new MixedParamUrlCodingStrategy(
         "types", TypesPage.class, new String[] {});
     mount(types);
@@ -54,35 +53,64 @@ public class OpsuiApp extends WebApplication {
 
     MixedParamUrlCodingStrategy prodBrowser = new MixedParamUrlCodingStrategy(
         "product", ProductBrowserPage.class, new String[] { "id" });
-    mount(prodBrowser);    
+    mount(prodBrowser);
+
+    MixedParamUrlCodingStrategy pcsStatus = new MixedParamUrlCodingStrategy(
+        "status", StatusPage.class, new String[] {});
+    mount(pcsStatus);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.wicket.Application#getHomePage()
    */
   @Override
   public Class<? extends Page> getHomePage() {
     return HomePage.class;
   }
-  
+
   public String getFmUrlStr() {
-    return 
-      PathUtils.replaceEnvVariables(getServletContext().
-          getInitParameter("filemgr.url"));
+    return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
+        "filemgr.url"));
   }
-  
-  public String getEmailContactLink(){
+
+  public String getWmUrlStr() {
+    return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
+        "workflow.url"));
+  }
+
+  public String getRmUrlStr() {
+    return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
+        "resmgr.url"));
+  }
+
+  public String getEmailContactLink() {
     return getServletContext().getInitParameter("contact.email");
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.wicket.protocol.http.WebApplication#newSession(org.apache.wicket.Request, org.apache.wicket.Response)
+  public String getCrawlerConfFilePath() {
+    return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
+        "org.apache.oodt.pcs.health.crawler.conf.filePath"));
+  }
+
+  public String getStatesFilePath() {
+    return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
+        "org.apache.oodt.pcs.health.workflow.statuses.filePath"));
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.wicket.protocol.http.WebApplication#newSession(org.apache.wicket
+   * .Request, org.apache.wicket.Response)
    */
   @Override
   public Session newSession(Request request, Response response) {
     return new FMBrowserSession(request);
   }
-  
+
   /*
    * (non-Javadoc)
    * 
@@ -104,9 +132,10 @@ public class OpsuiApp extends WebApplication {
     mountSharedResource("/images/percentImage_back4.png",
         new ResourceReference(WorkflowInstancesViewer.class,
             "percentImage_back4.png").getSharedResourceKey());
-  }  
-  
-  
 
+    mountSharedResource("/images/icon_arrow_up.gif", new ResourceReference(
+        StatusPage.class, "icon_arrow_up.gif").getSharedResourceKey());
+
+  }
 
 }
