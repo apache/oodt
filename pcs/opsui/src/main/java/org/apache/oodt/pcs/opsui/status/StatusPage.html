@@ -53,16 +53,20 @@
 				   <tr wicket:id="crawler_status_list">
 				     <td wicket:id="crawler_name_and_url" class="crawler_name_and_url">Local File Crawler (http://localhost:9091)</td>
 				     <td><img wicket:id="crawler_status_icon" src="icon_arrow_up.gif" /></td>
-				   </tr> 
+				   </tr> 	
+				   <wicket:container wicket:id="crawler_toggler">
+				   <wicket:enclosure child="crawler_status_more">			   
                     <tr>
-                      <td colspan="2">... ...</td>
+                      <td wicket:id="crawler_status_more" colspan="2">... ...</td>
 					</tr>
-				    <tr>
-					   <td><a href="javascript:toggleOn('crawlerShowAll');">See All</a></td>
-					   <td><a href="javascript:toggleOff('crawlerShowAll');">Hide</a></td>
-					   <td><a href="javascript:toggleOn('crawlerSort');">Sorting By Status</a></td>
-					   <td><a href="javascript:toggleOff('crawlerSort');">Unsort</a></td>
+					</wicket:enclosure>
+				    <tr id="crawler_status_options">
+					   <td><a wicket:id="crawler_status_showall" href="#">See All</a></td>
+					   <td><a wicket:id="crawler_status_hide" "href="#">Hide</a></td>
+					   <td><a wicket:id="crawler_status_sort" href="#">Sorting By Status</a></td>
+					   <td><a wicket:id="crawler_status_unsort" href="#">Unsort</a></td>
 					</tr>
+					</wicket:container>
 				</table>
 				</div>
 				</td>
@@ -78,13 +82,19 @@
 						<td class="nowrap"><span wicket:id="batch_stub_url" class="batch_stub_url">http://compute-0-1:2001</span></td>
 						<td><img wicket:id="batch_stub_status_icon" src="icon_arrow_down.gif" /></td>
 				    </tr>
-					<tr>
-						<td colspan="2">... ...</td></tr><tr>
-						<td><a href="javascript:toggleOn('batchStubShowAll');">See All</a></td>
-						<td><a href="javascript:toggleOff('batchStubShowAll');">Hide</a></td>
-						<td><a href="javascript:toggleOn('batchStubSort');">Sorting By Status</a></td>
-                        <td><a href="javascript:toggleOff('batchStubSort');">Unsort</a></td>
+				    <wicket:container wicket:id="batch_stub_toggler">
+				    <wicket:enclosure child="batch_stub_more">
+				    <tr>
+						<td wicket:id="batch_stub_more" colspan="2">... ...</td></tr><tr>				     
+				    </tr>
+				    </wicket:enclosure>
+					<tr id="batch_stub_options">
+						<td><a wicket:id="batch_stub_showall" href="#">See All</a></td>
+						<td><a wicket:id="batch_stub_hide" href="#">Hide</a></td>
+						<td><a wicket:id="batch_stub_sort" href="#">Sorting By Status</a></td>
+                        <td><a wicket:id="batch_stub_unsort" href="#">Unsort</a></td>
 					</tr>
+					</wicket:container>
 				</table>
 				</div>
 				</td>
@@ -142,15 +152,21 @@
 				<td>
 				<div class="roundtable">
 				<table>
-					 <tr>
-						<td class="nowrap"><span class="crawler_name">Local File Crawler</span> Number of Crawls: <span class="num_crawls">32</span> Avg Time: <span class="avg_crawl_time">5 sec</span>
+					 <tr wicket:id="crawler_health_list">
+						<td class="nowrap" colspan="2"><span wicket:id="crawler_name" class="crawler_name">Local File Crawler</span> Number of Crawls: <span wicket:id="num_crawls" class="num_crawls">32</span> Avg Time: <span wicket:id="avg_crawl_time" class="avg_crawl_time">5</span> sec
 						</td>
 					   </tr>
+					<wicket:container wicket:id="crawler_health_toggler">
+					<wicket:enclosure child="crawler_health_more">
 				    <tr>
-						<td colspan="2">... ...</td></tr><tr>
-						<td colspan="2"><a href="javascript:toggleOn('crawlerHealthShowAll');">See All</a></td>
-						<td colspan="2"><a href="javascript:toggleOff('crawlerHealthShowAll');">Hide</a></td>
+						<td colspan="2" wicket:id="crawler_health_more">... ...</td>
+				    </tr>
+				    </wicket:enclosure>
+				    <tr>
+						<td><a wicket:id="crawler_health_showall" href="#">See All</a></td>
+						<td><a wicket:id="crawler_health_hide" href="#">Hide</a></td>
 					</tr>
+					</wicket:container>
 				</table>
 				</div>
 				</td>

@@ -18,7 +18,7 @@
 package org.apache.oodt.pcs.opsui;
 
 //OODT imports
-import java.util.Arrays;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
@@ -44,7 +44,9 @@ import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
  * @version $Revision$
  * 
  */
-public class OpsuiApp extends WebApplication {
+public class OpsuiApp extends WebApplication implements Serializable{
+  
+  private static final long serialVersionUID = 1403288657369282259L;
 
   public OpsuiApp() {
     MixedParamUrlCodingStrategy types = new MixedParamUrlCodingStrategy(

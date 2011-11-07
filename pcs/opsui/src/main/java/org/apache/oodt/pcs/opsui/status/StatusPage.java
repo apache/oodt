@@ -18,16 +18,14 @@
 package org.apache.oodt.pcs.opsui.status;
 
 //JDK imports
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Vector;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.pcs.opsui.ProductBrowserPage;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.pcs.health.CrawlerHealth;
 import org.apache.oodt.pcs.health.CrawlerStatus;
 import org.apache.oodt.pcs.health.JobHealthStatus;
 import org.apache.oodt.pcs.health.PCSDaemonStatus;
@@ -47,10 +45,12 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.util.ListModel;
 
 /**
  * 
- * Describe your class here.
+ * A wicket controller for exposing the super awesome power of 
+ * the {@link PCSHealthMonitor}.
  * 
  * @author mattmann
  * @version $Revision$
@@ -73,7 +73,7 @@ public class StatusPage extends BasePage {
     String statesFilePath = app.getStatesFilePath();
     PCSHealthMonitor mon = new PCSHealthMonitor(fmUrlStr, wmUrlStr, rmUrlStr,
         crawlerConfFilePath, statesFilePath);
-    PCSHealthMonitorReport report = mon.getReport();
+    final PCSHealthMonitorReport report = mon.getReport();
 
     add(new Label("report_date", report.getCreateDateIsoFormat()));
     add(new Label("fmurl", report.getFmStatus().getUrlStr()));
@@ -87,8 +87,13 @@ public class StatusPage extends BasePage {
     add(new Image("rmstatus_icon", getUpOrDownArrowRef(report.getRmStatus()
         .getStatus())));
 
-    List<CrawlerStatus> crawlerStatusList = report.getCrawlerStatus();
-    add(new ListView<CrawlerStatus>("crawler_status_list", crawlerStatusList) {
+    ListModel crawlerStatusListModel = new ListModel(report.getCrawlerStatus());
+    add(new VisibilityAndSortToggler("crawler_toggler",
+        "crawler_status_showall", "crawler_status_hide", "crawler_status_sort",
+        "crawler_status_unsort", "crawler_status_more", crawlerStatusListModel));
+
+    add(new ListView<CrawlerStatus>("crawler_status_list",
+        crawlerStatusListModel) {
       /*
        * (non-Javadoc)
        * 
@@ -108,8 +113,14 @@ public class StatusPage extends BasePage {
       }
     });
 
-    List<PCSDaemonStatus> batchStubStatusList = report.getBatchStubStatus();
-    add(new ListView<PCSDaemonStatus>("batch_stub_list", batchStubStatusList) {
+    ListModel batchStubStatusListModel = new ListModel(
+        report.getBatchStubStatus());
+    add(new VisibilityAndSortToggler("batch_stub_toggler",
+        "batch_stub_showall", "batch_stub_hide", "batch_stub_sort",
+        "batch_stub_unsort", "batch_stub_more", batchStubStatusListModel));
+
+    add(new ListView<PCSDaemonStatus>("batch_stub_list",
+        batchStubStatusListModel) {
 
       @Override
       protected void populateItem(ListItem<PCSDaemonStatus> item) {
@@ -191,45 +202,36 @@ public class StatusPage extends BasePage {
       }
     });
 
+    ListModel crawlerHealthListModel = new ListModel(
+        report.getCrawlerHealthStatus());
+    add(new VisibilityToggler("crawler_health_toggler",
+        "crawler_health_showall", "crawler_health_hide", "crawler_health_more",
+        crawlerHealthListModel));
+
+    add(new ListView<CrawlerHealth>("crawler_health_list",
+        crawlerHealthListModel) {
+      /*
+       * (non-Javadoc)
+       * 
+       * @see
+       * org.apache.wicket.markup.html.list.ListView#populateItem(org.apache
+       * .wicket.markup.html.list.ListItem)
+       */
+      @Override
+      protected void populateItem(ListItem<CrawlerHealth> item) {
+        CrawlerHealth health = item.getModelObject();
+        item.add(new Label("crawler_name", health.getCrawlerName()));
+        item.add(new Label("num_crawls", String.valueOf(health.getNumCrawls())));
+        item.add(new Label("avg_crawl_time", String.valueOf(health
+            .getAvgCrawlTime())));
+      }
+    });
+
   }
 
   private ResourceReference getUpOrDownArrowRef(String status) {
     return new ResourceReference(StatusPage.class, "icon_arrow_"
         + status.toLowerCase() + ".gif");
-  }
-
-  private static List getTopN(List statuses, int topN) {
-    List subset = new Vector();
-    if (statuses != null && statuses.size() > 0) {
-      int numGobble = topN <= statuses.size() ? topN : statuses.size();
-      for (int i = 0; i < numGobble; i++) {
-        Object status = statuses.get(i);
-        subset.add(status);
-      }
-    }
-
-    return subset;
-  }
-
-  private static void sortByStatus(List statusList) {
-    Collections.sort(statusList, new Comparator() {
-
-      public int compare(Object o1, Object o2) {
-        if (o1 instanceof CrawlerStatus) {
-          CrawlerStatus stat1 = (CrawlerStatus) o1;
-          CrawlerStatus stat2 = (CrawlerStatus) o2;
-
-          return stat1.getStatus().compareTo(stat2.getStatus());
-        } else if (o1 instanceof PCSDaemonStatus) {
-          PCSDaemonStatus stat1 = (PCSDaemonStatus) o1;
-          PCSDaemonStatus stat2 = (PCSDaemonStatus) o2;
-
-          return stat1.getStatus().compareTo(stat2.getStatus());
-        } else
-          return 0;
-      }
-
-    });
   }
 
 }
