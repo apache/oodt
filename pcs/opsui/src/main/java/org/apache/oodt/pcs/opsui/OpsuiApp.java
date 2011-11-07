@@ -18,6 +18,10 @@
 package org.apache.oodt.pcs.opsui;
 
 //OODT imports
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
+
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.webcomponents.filemgr.FMBrowserSession;
 import org.apache.oodt.cas.webcomponents.workflow.instance.WorkflowInstancesViewer;
@@ -45,19 +49,40 @@ public class OpsuiApp extends WebApplication {
   public OpsuiApp() {
     MixedParamUrlCodingStrategy types = new MixedParamUrlCodingStrategy(
         "types", TypesPage.class, new String[] {});
-    mount(types);
 
     MixedParamUrlCodingStrategy typeBrowser = new MixedParamUrlCodingStrategy(
         "type", TypeBrowserPage.class, new String[] { "name", "pageNum" });
-    mount(typeBrowser);
 
     MixedParamUrlCodingStrategy prodBrowser = new MixedParamUrlCodingStrategy(
         "product", ProductBrowserPage.class, new String[] { "id" });
-    mount(prodBrowser);
 
     MixedParamUrlCodingStrategy pcsStatus = new MixedParamUrlCodingStrategy(
         "status", StatusPage.class, new String[] {});
+
+    MixedParamUrlCodingStrategy taskPageMount = new MixedParamUrlCodingStrategy(
+        "task", WorkflowTaskViewerPage.class, new String[] { "id" });
+    MixedParamUrlCodingStrategy condPageMount = new MixedParamUrlCodingStrategy(
+        "condition", WorkflowConditionViewerPage.class, new String[] { "id" });
+
+    MixedParamUrlCodingStrategy workflowPageMount = new MixedParamUrlCodingStrategy(
+        "workflow", WorkflowViewerPage.class, new String[] { "id" });
+
+    MixedParamUrlCodingStrategy workflowsPageMount = new MixedParamUrlCodingStrategy(
+        "workflows", WorkflowsViewerPage.class, new String[] {});
+
+    MixedParamUrlCodingStrategy workflowInstsPageMount = new MixedParamUrlCodingStrategy(
+        "instances", WorkflowInstanceViewerPage.class, new String[] { "status",
+            "pageNum" });
+
     mount(pcsStatus);
+    mount(types);
+    mount(typeBrowser);
+    mount(prodBrowser);
+    mount(taskPageMount);
+    mount(condPageMount);
+    mount(workflowPageMount);
+    mount(workflowsPageMount);
+    mount(workflowInstsPageMount);
   }
 
   /*
@@ -97,6 +122,27 @@ public class OpsuiApp extends WebApplication {
   public String getStatesFilePath() {
     return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
         "org.apache.oodt.pcs.health.workflow.statuses.filePath"));
+  }
+
+  public String getWorkflowLifecycleFilePath() {
+    return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
+        "org.apache.oodt.pcs.opsui.workflow.lifecycleFilePath"));
+  }
+
+  public List<String> getWorkflowInstStatues() {
+    String[] statuses = getServletContext().getInitParameter(
+        "org.apache.oodt.pcs.opsui.winst.statuses").split(",");
+    List<String> statusList = new Vector<String>();
+    for (String status : statuses) {
+      statusList.add(status.trim());
+    }
+    statusList.add("ALL");
+    return statusList;
+  }
+
+  public String getWorkflowInstMetFieldsFilePath() {
+    return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
+        "org.apache.oodt.pcs.opsui.winst.metFields.filePath"));
   }
 
   /*

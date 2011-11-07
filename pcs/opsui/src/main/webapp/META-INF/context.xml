@@ -26,14 +26,14 @@ the License.
 	<Parameter name="resmgr.url"
 	    value="[RESMGR_URL]"/>
 
-	<Parameter name="org.apache.oodt.cas.workflow.webapp.lifecycleFilePath"
+	<Parameter name="org.apache.oodt.pcs.opsui.workflow.lifecycleFilePath"
 	    value="[WORKFLOW_HOME]/policy/workflow-lifecycle.xml"/>
 	    
-	<Parameter name="org.apache.oodt.cas.workflow.inst.statuses"
-	    value="STARTED, FINISHED, METMISS, PAUSED"/>
+	<Parameter name="org.apache.oodt.pcs.opsui.winst.statuses"
+	    value="QUEUED, RSUBMIT, BUILDING CONFIG FILE, PGE EXEC, CRAWLING, STAGING INPUT, FINISHED, STARTED, PAUSED"/>
 	    
-	<Parameter name="org.apache.oodt.cas.workflow.webapp.inst.metFields.filePath"
-	    value="[WORKFLOW_HOME]/policy/workflow-instance-met.xml"/>
+	<Parameter name="org.apache.oodt.pcs.opsui.winst.metFields.filePath"
+	    value="[WORKFLOW_HOME]/policy/workflow-instance-met.xml"/>   
 	    
 	<Parameter name="org.apache.oodt.pcs.health.crawler.conf.filePath"
 	    value="[PCS_HOME]/aux/pcs/pcs-crawlers.xml"/>

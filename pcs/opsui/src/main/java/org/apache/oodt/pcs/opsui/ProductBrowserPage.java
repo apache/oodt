@@ -38,7 +38,7 @@ public class ProductBrowserPage extends BasePage {
   public ProductBrowserPage(PageParameters parameters){
     super(parameters);
     add(new ProductBrowser("prod_browser_component", 
-        ((OpsuiApp)getApplication()).getFmUrlStr(),
+        app.getFmUrlStr(),
         parameters.getString("id")));
   }
 }

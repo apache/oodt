@@ -38,7 +38,7 @@ public class ProductRefBrowserPage extends BasePage {
   public ProductRefBrowserPage(PageParameters parameters){
     super(parameters);    
     add(new ProductRefsBrowser("refs_component",
-        ((OpsuiApp)getApplication()).getFmUrlStr(),
+        app.getFmUrlStr(),
         parameters.getString("id")));
   }
 

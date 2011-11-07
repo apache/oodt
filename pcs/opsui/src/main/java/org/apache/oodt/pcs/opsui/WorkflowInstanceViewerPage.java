@@ -19,28 +19,33 @@
 package org.apache.oodt.pcs.opsui;
 
 //OODT imports
-import org.apache.oodt.cas.webcomponents.filemgr.browser.types.TypeBrowser;
+import org.apache.oodt.cas.webcomponents.workflow.instance.WorkflowInstancesViewer;
 
 //Wicket imports
 import org.apache.wicket.PageParameters;
 
 /**
  *
- * The type browser page that shows a table including 
- * all of the queried products for a given type and a 
- * query selection form.
+ * Shows a set of workflow instances.
  *
  * @author mattmann
  * @version $Revision$
  *
  */
-public class TypeBrowserPage extends BasePage {
+public class WorkflowInstanceViewerPage extends WorkflowCrumbedPage {
 
-  public TypeBrowserPage(PageParameters parameters){
+  /**
+   * @param parameters
+   */
+  public WorkflowInstanceViewerPage(PageParameters parameters) {
     super(parameters);
-    add(new TypeBrowser("type_browser_component", app.getFmUrlStr(),
-        parameters.getString("name"), parameters.getInt("pageNum", 1),        
-        TypeBrowserPage.class, ProductBrowserPage.class, ProductRefBrowserPage.class, 
-        ProductMetBrowserPage.class));
+    OpsuiApp app = (OpsuiApp)getApplication();
+    add(new WorkflowInstancesViewer("instance_viewer", 
+        app.getWmUrlStr(), parameters.getString("status"), 
+        parameters.getInt("pageNum", 1), 
+        app.getWorkflowInstStatues(), app.getWorkflowLifecycleFilePath(), 
+        app.getWorkflowInstMetFieldsFilePath(), WorkflowViewerPage.class, 
+        WorkflowTaskViewerPage.class, WorkflowInstanceViewerPage.class));
   }
+
 }

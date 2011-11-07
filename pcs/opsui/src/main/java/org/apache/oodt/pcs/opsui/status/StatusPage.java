@@ -24,20 +24,29 @@ import java.util.List;
 import java.util.Vector;
 
 //OODT imports
+import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.pcs.opsui.ProductBrowserPage;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.pcs.health.CrawlerStatus;
+import org.apache.oodt.pcs.health.JobHealthStatus;
 import org.apache.oodt.pcs.health.PCSDaemonStatus;
 import org.apache.oodt.pcs.health.PCSHealthMonitorReport;
 import org.apache.oodt.pcs.opsui.BasePage;
 import org.apache.oodt.pcs.opsui.OpsuiApp;
+import org.apache.oodt.pcs.opsui.WorkflowInstanceViewerPage;
 import org.apache.oodt.pcs.tools.PCSHealthMonitor;
+import org.apache.oodt.pcs.util.FileManagerUtils;
 
 //Wicket imports
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.Model;
 
 /**
  * 
@@ -96,6 +105,89 @@ public class StatusPage extends BasePage {
         statusItem.add(new Label("crawler_name_and_url", statusString));
         statusItem.add(new Image("crawler_status_icon",
             getUpOrDownArrowRef(status.getStatus())));
+      }
+    });
+
+    List<PCSDaemonStatus> batchStubStatusList = report.getBatchStubStatus();
+    add(new ListView<PCSDaemonStatus>("batch_stub_list", batchStubStatusList) {
+
+      @Override
+      protected void populateItem(ListItem<PCSDaemonStatus> item) {
+        item.add(new Label("batch_stub_url", item.getModelObject().getUrlStr()));
+        item.add(new Image("batch_stub_status_icon", getUpOrDownArrowRef(item
+            .getModelObject().getStatus())));
+
+      }
+    });
+
+    List<JobHealthStatus> jobHealthStatusList = report.getJobHealthStatus();
+    add(new ListView<JobHealthStatus>("jobstatus_list", jobHealthStatusList) {
+      /*
+       * (non-Javadoc)
+       * 
+       * @see
+       * org.apache.wicket.markup.html.list.ListView#populateItem(org.apache
+       * .wicket.markup.html.list.ListItem)
+       */
+      @Override
+      protected void populateItem(final ListItem<JobHealthStatus> item) {
+        item.add(new Label("status_name", item.getModelObject().getStatus()));
+        Link<String> countLink = new Link<String>("jobstatus_count_link",
+            new Model<String>(item.getModelObject().getStatus())) {
+
+          @Override
+          public void onClick() {
+            PageParameters params = new PageParameters();
+            params.add("pageNum", "1");
+            params.add("status", getModelObject());
+            setResponsePage(WorkflowInstanceViewerPage.class, params);
+          }
+        };
+        countLink.add(new Label("status_num_jobs", String.valueOf(item
+            .getModelObject().getNumPipelines())));
+        item.add(countLink);
+      }
+    });
+
+    List<Product> prodList = report.getLatestProductsIngested();
+    final FileManagerUtils fm = new FileManagerUtils(fmUrlStr);
+
+    add(new ListView<Product>("file_health_list", prodList) {
+      /*
+       * (non-Javadoc)
+       * 
+       * @see
+       * org.apache.wicket.markup.html.list.ListView#populateItem(org.apache
+       * .wicket.markup.html.list.ListItem)
+       */
+      @Override
+      protected void populateItem(ListItem<Product> item) {
+        final Product product = item.getModelObject();
+        product.setProductType(fm.safeGetProductTypeById(product
+            .getProductType().getProductTypeId()));
+        product.setProductReferences(fm.safeGetProductReferences(product));
+        final Metadata prodMet = fm.safeGetMetadata(product);
+        final String filePath = fm.getFilePath(product);
+
+        Link link = new Link("view_product_link") {
+          /*
+           * (non-Javadoc)
+           * 
+           * @see org.apache.wicket.markup.html.link.Link#onClick()
+           */
+          @Override
+          public void onClick() {
+            PageParameters params = new PageParameters();
+            params.add("id", product.getProductId());
+            setResponsePage(ProductBrowserPage.class, params);
+          }
+        };
+
+        link.add(new Label("file_path", filePath));
+        item.add(link);
+        item.add(new Label("file_ingest_datetime", prodMet.getMetadata("CAS."
+            + CoreMetKeys.PRODUCT_RECEVIED_TIME)));
+
       }
     });
 

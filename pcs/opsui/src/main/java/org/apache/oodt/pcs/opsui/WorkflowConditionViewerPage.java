@@ -15,32 +15,33 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.pcs.opsui;
 
 //OODT imports
-import org.apache.oodt.cas.webcomponents.filemgr.browser.types.TypeBrowser;
+import org.apache.oodt.cas.webcomponents.workflow.conditions.WorkflowConditionViewer;
 
 //Wicket imports
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.basic.Label;
 
 /**
- *
- * The type browser page that shows a table including 
- * all of the queried products for a given type and a 
- * query selection form.
- *
+ * 
+ * Page controller for the WorkflowConditionViewerPage.html file.
+ * 
  * @author mattmann
  * @version $Revision$
- *
+ * 
  */
-public class TypeBrowserPage extends BasePage {
+public class WorkflowConditionViewerPage extends WorkflowCrumbedPage {
 
-  public TypeBrowserPage(PageParameters parameters){
+  /**
+   * @param parameters
+   */
+  public WorkflowConditionViewerPage(PageParameters parameters) {
     super(parameters);
-    add(new TypeBrowser("type_browser_component", app.getFmUrlStr(),
-        parameters.getString("name"), parameters.getInt("pageNum", 1),        
-        TypeBrowserPage.class, ProductBrowserPage.class, ProductRefBrowserPage.class, 
-        ProductMetBrowserPage.class));
+    add(new WorkflowConditionViewer("cond_viewer", app.getWmUrlStr(),
+        parameters.getString("id")));
+    add(new Label("cond_id", parameters.getString("id")));
   }
+
 }

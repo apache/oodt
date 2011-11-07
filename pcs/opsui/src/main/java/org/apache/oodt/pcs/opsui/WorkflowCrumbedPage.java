@@ -19,28 +19,37 @@
 package org.apache.oodt.pcs.opsui;
 
 //OODT imports
-import org.apache.oodt.cas.webcomponents.filemgr.browser.types.TypeBrowser;
+import org.apache.oodt.pcs.opsui.status.StatusPage;
 
 //Wicket imports
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.link.Link;
 
 /**
  *
- * The type browser page that shows a table including 
- * all of the queried products for a given type and a 
- * query selection form.
+ * Adds a bread crumb link to the OPSUI app home, 
+ * the PCS status page.
  *
  * @author mattmann
  * @version $Revision$
  *
  */
-public class TypeBrowserPage extends BasePage {
+public class WorkflowCrumbedPage extends BasePage {
 
-  public TypeBrowserPage(PageParameters parameters){
+  /**
+   * @param parameters
+   */
+  public WorkflowCrumbedPage(PageParameters parameters) {
     super(parameters);
-    add(new TypeBrowser("type_browser_component", app.getFmUrlStr(),
-        parameters.getString("name"), parameters.getInt("pageNum", 1),        
-        TypeBrowserPage.class, ProductBrowserPage.class, ProductRefBrowserPage.class, 
-        ProductMetBrowserPage.class));
+    add(new Link("crumb_home_link"){
+      /* (non-Javadoc)
+       * @see org.apache.wicket.markup.html.link.Link#onClick()
+       */
+      @Override
+      public void onClick() {
+        setResponsePage(StatusPage.class);        
+      }
+    });
   }
+
 }

@@ -37,6 +37,6 @@ public class TypesPage extends BasePage {
   public TypesPage(PageParameters parameters) {
     super(parameters);    
     add(new Types("types_component",
-        ((OpsuiApp) getApplication()).getFmUrlStr(), TypeBrowserPage.class));
+       app.getFmUrlStr(), TypeBrowserPage.class));
   }
 }

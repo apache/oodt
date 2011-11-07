@@ -15,32 +15,44 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.pcs.opsui;
 
 //OODT imports
-import org.apache.oodt.cas.webcomponents.filemgr.browser.types.TypeBrowser;
+import org.apache.oodt.cas.webcomponents.workflow.model.WorkflowViewer;
 
 //Wicket imports
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 
 /**
- *
- * The type browser page that shows a table including 
- * all of the queried products for a given type and a 
- * query selection form.
- *
+ * 
+ * Controller for the WorkflowViewerPage.html.
+ * 
  * @author mattmann
  * @version $Revision$
- *
+ * 
  */
-public class TypeBrowserPage extends BasePage {
+public class WorkflowViewerPage extends WorkflowCrumbedPage {
 
-  public TypeBrowserPage(PageParameters parameters){
+  /**
+   * @param parameters
+   */
+  public WorkflowViewerPage(PageParameters parameters) {
     super(parameters);
-    add(new TypeBrowser("type_browser_component", app.getFmUrlStr(),
-        parameters.getString("name"), parameters.getInt("pageNum", 1),        
-        TypeBrowserPage.class, ProductBrowserPage.class, ProductRefBrowserPage.class, 
-        ProductMetBrowserPage.class));
+    add(new WorkflowViewer("workflow_viewer", app.getWmUrlStr(),
+        parameters.getString("id"), WorkflowTaskViewerPage.class));
+    add(new Link("workflows_viewer_link"){
+        /* (non-Javadoc)
+         * @see org.apache.wicket.markup.html.link.Link#onClick()
+         */
+        @Override
+        public void onClick() {
+          setResponsePage(WorkflowsViewerPage.class);          
+        }
+    });
+    
+    add(new Label("workflow_id", parameters.getString("id")));
   }
+
 }

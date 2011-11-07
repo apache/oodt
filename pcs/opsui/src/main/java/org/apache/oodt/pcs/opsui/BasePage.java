@@ -35,7 +35,10 @@ import org.apache.wicket.markup.html.link.Link;
  */
 public class BasePage extends WebPage {
   
-  public BasePage(PageParameters parameters){
+  protected OpsuiApp app;
+  
+  public BasePage(PageParameters parameters){    
+    this.app = (OpsuiApp)getApplication();
     add(new Link("home_link"){
       /* (non-Javadoc)
        * @see org.apache.wicket.markup.html.link.Link#onClick()
@@ -64,6 +67,20 @@ public class BasePage extends WebPage {
       @Override
       public void onClick() {
         setResponsePage(StatusPage.class);
+        
+      }
+    });
+    
+    add(new Link("wmonitor_link"){
+       /* (non-Javadoc)
+       * @see org.apache.wicket.markup.html.link.Link#onClick()
+       */
+      @Override
+      public void onClick() {
+        PageParameters params = new PageParameters();
+        params.add("status", "ALL");
+        params.add("pageNum", "1");
+        setResponsePage(WorkflowInstanceViewerPage.class, params);
         
       }
     });

@@ -36,7 +36,7 @@ public class ProductMetBrowserPage extends BasePage {
   
   public ProductMetBrowserPage(PageParameters parameters){
     super(parameters);
-    add(new MetadataBrowser("met_browser_component", ((OpsuiApp)getApplication()).getFmUrlStr(), 
+    add(new MetadataBrowser("met_browser_component", app.getFmUrlStr(), 
         parameters.getString("id")));
   }
 
