@@ -48,7 +48,7 @@ public class SimpleCmdLineOption implements CmdLineOption {
 
    private boolean hasArgs;
 
-   private List<String> defaultArgs;
+   private List<String> staticArgs;
 
    private boolean performAndQuit;
 
@@ -132,16 +132,16 @@ public class SimpleCmdLineOption implements CmdLineOption {
       return argsDescription;
    }
 
-   public void setDefaultArgs(List<String> defaultArgs) {
-      this.defaultArgs = defaultArgs;
+   public void setStaticArgs(List<String> staticArgs) {
+      this.staticArgs = staticArgs;
    }
 
-   public List<String> getDefaultArgs() {
-      return defaultArgs;
+   public List<String> getStaticArgs() {
+      return staticArgs;
    }
 
-   public boolean hasDefaultArgs() {
-      return defaultArgs != null;
+   public boolean hasStaticArgs() {
+      return staticArgs != null;
    }
 
    public void setRequired(boolean required) {
@@ -188,7 +188,7 @@ public class SimpleCmdLineOption implements CmdLineOption {
 
    @Override
    public int hashCode() {
-      return shortOption.hashCode();
+      return longOption.hashCode();
    }
 
    public String toString() {

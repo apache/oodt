@@ -17,36 +17,38 @@
 package org.apache.oodt.cas.cli.util;
 
 //JDK imports
-import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 //Apache imports
 import org.apache.commons.lang.Validate;
 
 /**
- * Wrapper class around command line arguments that allows multiple iterators
- * which affect each other, also allows you to increment iterators index
- * manually. all iterators handle termination safely.
+ * An {@link Iterable} which allows multiple concurrent iterators which affect
+ * each other, also allows you to increment iterators index manually. All
+ * iterators handle termination safely. However, the catch being that you can
+ * only iterate through this {@link Iterable} once, then you must create a new
+ * object of it to iterate over it again.
  * 
  * @author bfoster (Brian Foster)
  */
-public class Args implements Iterable<String> {
+public class CmdLineIterable<T> implements Iterable<T> {
    private int curIndex;
-   private String[] args;
+   private List<T> args;
 
-   public Args(String[] args) {
+   public CmdLineIterable(List<T> args) {
       Validate.notNull(args);
 
       curIndex = 0;
       this.args = args;
    }
 
-   public String[] getArgs() {
+   public List<T> getArgs() {
       return args;
    }
 
-   public String[] getArgsLeft() {
-      return Arrays.copyOfRange(args, curIndex, args.length);
+   public List<T> getArgsLeft() {
+      return args.subList(curIndex, args.size());
    }
 
    public int getCurrentIndex() {
@@ -61,45 +63,45 @@ public class Args implements Iterable<String> {
       curIndex--;
    }
 
-   public String incrementAndGet() {
+   public T incrementAndGet() {
       incrementIndex();
       return getCurrentArg();
    }
 
-   public String getAndIncrement() {
-      String next = getCurrentArg();
+   public T getAndIncrement() {
+      T next = getCurrentArg();
       incrementIndex();
       return next;
    }
 
    public int numArgs() {
-      return args.length;
+      return args.size();
    }
 
-   public String getArg(int index) {
-      return args[index];
+   public T getArg(int index) {
+      return args.get(index);
    }
 
    public boolean hasNext() {
-      return curIndex < args.length;
+      return curIndex < args.size();
    }
 
-   public String getCurrentArg() {
+   public T getCurrentArg() {
       if (hasNext()) {
-         return args[curIndex];
+         return args.get(curIndex);
       } else {
          return null;
       }
    }
 
-   public Iterator<String> iterator() {
-      return new Iterator<String>() {
+   public Iterator<T> iterator() {
+      return new Iterator<T>() {
 
          public boolean hasNext() {
-            return Args.this.hasNext();
+            return CmdLineIterable.this.hasNext();
          }
 
-         public String next() {
+         public T next() {
             if (!hasNext()) {
                throw new IndexOutOfBoundsException(curIndex + "");
             }

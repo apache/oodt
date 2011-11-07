@@ -28,6 +28,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 //OODT imports
+import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 
@@ -68,23 +69,23 @@ public class StdCmdLineOptionsHelpPrinter implements CmdLineOptionsHelpPrinter {
             + StringUtils.rightPad(option.getShortOption() + ",", 7) + "--"
             + StringUtils.rightPad((option.getLongOption() + argName), 49)
             + option.getDescription();
-      if (option instanceof AdvancedCmdLineOption) {
-         if (((AdvancedCmdLineOption) option).hasHandler()) {
-            optionUsage += getFormattedString(((AdvancedCmdLineOption) option)
-                  .getHandler().getHelp(option), 62, 113);
-         }
+
+      optionUsage = " " + optionUsage;
+
+      if (!option.getRequirementRules().isEmpty()) {
+         optionUsage += "\n"
+               + getFormattedString("Requirement Rules:", 62, 113)
+               + getFormattedString(option.getRequirementRules().toString(),
+                     63, 113);
       }
 
-      if (option.isRequired()) {
-         optionUsage = " " + optionUsage;
-      } else if (!option.getRequirementRules().isEmpty()) {
-         optionUsage = "{" + optionUsage + "}";
-         optionUsage += "\n"
-               + getFormattedString(
-                     "RequiredOptions: " + option.getRequirementRules(), 62,
-                     113);
-      } else {
-         optionUsage = "[" + optionUsage + "]";
+      if (option instanceof AdvancedCmdLineOption) {
+         if (((AdvancedCmdLineOption) option).hasHandler()) {
+            optionUsage += "\n"
+                  + getFormattedString("Handler:", 62, 113)
+                  + getFormattedString(((AdvancedCmdLineOption) option)
+                        .getHandler().getHelp(option), 63, 113);
+         }
       }
 
       return optionUsage;

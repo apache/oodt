@@ -19,15 +19,26 @@ package org.apache.oodt.cas.cli.help.printer;
 //OODT static imports
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineOptional;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRequired;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRequiredSubOptions;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.sortOptionsByRequiredStatus;
 
 //JDK imports
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 //OODT imports
+import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.cli.action.CmdLineAction;
+import org.apache.oodt.cas.cli.option.ActionCmdLineOption;
+import org.apache.oodt.cas.cli.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
+import org.apache.oodt.cas.cli.option.GroupCmdLineOption;
+import org.apache.oodt.cas.cli.option.GroupSubOption;
+import org.apache.oodt.cas.cli.util.CmdLineUtils;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Standard help printer for printing help for a {@link CmdLineAction}.
@@ -47,14 +58,14 @@ public class StdCmdLineActionHelpPrinter implements CmdLineActionHelpPrinter {
       Set<CmdLineOption> requiredOptions = determineRequired(action, options);
       List<CmdLineOption> sortedRequiredOptions = sortOptionsByRequiredStatus(requiredOptions);
       for (CmdLineOption option : sortedRequiredOptions) {
-         sb.append(getRequiredOptionHelp(option)).append("\n");
+         sb.append(getRequiredOptionHelp(action, option)).append("\n");
       }
 
       sb.append(getOptionalSubHeader()).append("\n");
       Set<CmdLineOption> optionalOptions = determineOptional(action, options);
       List<CmdLineOption> sortedOptionalOptions = sortOptionsByRequiredStatus(optionalOptions);
       for (CmdLineOption option : sortedOptionalOptions) {
-         sb.append(getOptionalOptionHelp(option)).append("\n");
+         sb.append(getOptionalOptionHelp(action, option)).append("\n");
       }
 
       sb.append(getFooter(action)).append("\n");
@@ -69,25 +80,72 @@ public class StdCmdLineActionHelpPrinter implements CmdLineActionHelpPrinter {
       return " - Required:";
    }
 
-   protected String getRequiredOptionHelp(CmdLineOption option) {
-      return getOptionHelp(option);
+   protected String getRequiredOptionHelp(CmdLineAction action, CmdLineOption option) {
+      if (option instanceof GroupCmdLineOption) {
+         return getGroupHelp(action, (GroupCmdLineOption) option, "    ");
+      } else {
+         return getOptionHelp(action, option, "    ");
+      }
    }
 
    protected String getOptionalSubHeader() {
       return " - Optional:";
    }
 
-   protected String getOptionalOptionHelp(CmdLineOption option) {
-      return getOptionHelp(option);
+   protected String getOptionalOptionHelp(CmdLineAction action, CmdLineOption option) {
+      if (option instanceof GroupCmdLineOption) {
+         return getGroupHelp(action, (GroupCmdLineOption) option, "    ");
+      } else {
+         return getOptionHelp(action, option, "    ");
+      }
    }
 
    protected String getFooter(CmdLineAction action) {
       return "";
    }
 
-   protected String getOptionHelp(CmdLineOption option) {
-      return "    -" + option.getShortOption() + " [--"
-            + option.getLongOption() + "] "
-            + (option.hasArgs() ? "<" + option.getArgsDescription() + ">" : "");
+   protected String getOptionHelp(CmdLineAction action, CmdLineOption option, String indent) {
+      String argDescription = null;
+      if (option instanceof AdvancedCmdLineOption) {
+         argDescription = ((AdvancedCmdLineOption) option).getHandler().getArgDescription(action, option);
+      }
+
+      String argHelp = null;
+      if (option instanceof ActionCmdLineOption && option.hasArgs()) {
+         argHelp = action.getName();
+      } else {
+         argHelp = (option.hasArgs() ? " <" + (argDescription != null ?
+               argDescription : option.getArgsDescription()) + ">" : "");
+      }
+      return indent + "-" + option.getShortOption() + " [--"
+            + option.getLongOption() + "]"
+            + argHelp;
+   }
+
+   protected String getGroupHelp(CmdLineAction action,
+         GroupCmdLineOption option, String indent) {
+      String helpString = getOptionHelp(action, option, indent) + "\n";
+      Set<CmdLineOption> subOptions = determineRequiredSubOptions(action,
+            (GroupCmdLineOption) option);
+      if (subOptions.isEmpty()) {
+         if (!option.getSubOptions().isEmpty()) {
+            helpString += indent + "  One of:";
+            for (GroupSubOption subOption : option.getSubOptions()) {
+               helpString += "\n"
+                     + getOptionHelp(action, subOption.getOption(), "   "
+                           + indent);
+            }
+         }
+      } else {
+         for (CmdLineOption subOption : subOptions) {
+            if (subOption instanceof GroupCmdLineOption) {
+               helpString += getGroupHelp(action,
+                     (GroupCmdLineOption) subOption, "  " + indent);
+            } else {
+               helpString += getOptionHelp(action, subOption, "  " + indent);
+            }
+         }
+      }
+      return helpString;
    }
 }

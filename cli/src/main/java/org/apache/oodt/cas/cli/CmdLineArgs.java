@@ -18,13 +18,11 @@ package org.apache.oodt.cas.cli;
 
 //OODT static imports
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findAction;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.findHelpOption;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.findPrintSupportedActionsOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedHelpOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedPrintSupportedActionsOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedActionOption;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedOption;
 
 //JDK imports
-import java.util.HashSet;
 import java.util.Set;
 
 //Apache imports
@@ -49,16 +47,11 @@ public class CmdLineArgs {
    private CmdLineAction specifiedAction;
    private Set<CmdLineAction> supportedActions;
 
-   private HelpCmdLineOption helpOption;
    private CmdLineOptionInstance helpOptionInst;
-   private ActionCmdLineOption actionOption;
    private CmdLineOptionInstance actionOptionInst;
-   private PrintSupportedActionsCmdLineOption psaOption;
    private CmdLineOptionInstance psaOptionInst;
    private Set<CmdLineOption> supportedOptions;
-   private Set<CmdLineOption> customSupportedOptions;
    private Set<CmdLineOptionInstance> specifiedOptions;
-   private Set<CmdLineOptionInstance> customSpecifiedOptions;
 
    /* package */CmdLineArgs(Set<CmdLineAction> supportedActions,
          Set<CmdLineOption> supportedOptions,
@@ -67,45 +60,17 @@ public class CmdLineArgs {
       Validate.notNull(supportedOptions);
       Validate.notNull(specifiedOptions);
 
-      helpOption = findHelpOption(supportedOptions);
-      helpOptionInst = findSpecifiedOption(helpOption, specifiedOptions);
+      helpOptionInst = findSpecifiedHelpOption(specifiedOptions);
+      psaOptionInst = findSpecifiedPrintSupportedActionsOption(specifiedOptions);
       actionOptionInst = findSpecifiedActionOption(specifiedOptions);
-      if (actionOptionInst == null) {
-         throw new IllegalArgumentException("Must specify action option!");
-      }
-      actionOption = (ActionCmdLineOption) actionOptionInst.getOption();
-      psaOption = findPrintSupportedActionsOption(supportedOptions);
-      psaOptionInst = findSpecifiedOption(psaOption, specifiedOptions);
 
-      this.supportedOptions = new HashSet<CmdLineOption>(supportedOptions);
-
-      customSupportedOptions = new HashSet<CmdLineOption>(supportedOptions);
-      customSupportedOptions.remove(helpOption);
-      customSupportedOptions.remove(actionOption);
-      customSupportedOptions.remove(psaOption);
-
-      this.specifiedOptions = new HashSet<CmdLineOptionInstance>(
-            specifiedOptions);
-
-      customSpecifiedOptions = new HashSet<CmdLineOptionInstance>(
-            specifiedOptions);
-      if (helpOptionInst != null) {
-         customSpecifiedOptions.remove(helpOptionInst);
-      }
-      customSpecifiedOptions.remove(actionOptionInst);
-      if (psaOptionInst != null) {
-         customSpecifiedOptions.remove(psaOptionInst);
-      }
-
+      this.supportedOptions = supportedOptions;
+      this.specifiedOptions = specifiedOptions;
       this.supportedActions = supportedActions;
-      specifiedAction = findAction(actionOptionInst, supportedActions);
-   }
 
-   /**
-    * @return The {@link HelpCmdLineOption}
-    */
-   public HelpCmdLineOption getHelpOption() {
-      return helpOption;
+      if (actionOptionInst != null) {
+         specifiedAction = findAction(actionOptionInst, supportedActions);
+      }
    }
 
    /**
@@ -117,25 +82,11 @@ public class CmdLineArgs {
    }
 
    /**
-    * @return The {@link ActionCmdLineOption}
-    */
-   public ActionCmdLineOption getActionOption() {
-      return actionOption;
-   }
-
-   /**
     * @return The {@link CmdLineOptionInstance} which is the specified
     *         {@link ActionCmdLineOption}, or null if it was not specified
     */
    public CmdLineOptionInstance getActionOptionInst() {
       return actionOptionInst;
-   }
-
-   /**
-    * @return The {@link PrintSupportedActionsCmdLineOption}
-    */
-   public PrintSupportedActionsCmdLineOption getPrintSupportedActionsOption() {
-      return psaOption;
    }
 
    /**
@@ -155,26 +106,10 @@ public class CmdLineArgs {
    }
 
    /**
-    * @return Supported {@link CmdLineOption}s less Help, Action,
-    *         PrintSupportActions options
-    */
-   public Set<CmdLineOption> getCustomSupportedOptions() {
-      return customSupportedOptions;
-   }
-
-   /**
     * @return All specified {@link CmdLineOptionInstance}s
     */
    public Set<CmdLineOptionInstance> getSpecifiedOptions() {
       return specifiedOptions;
-   }
-
-   /**
-    * @return Specified {@link CmdLineOptionInstance}s less Help, Action,
-    *         PrintSupportedActions option instances
-    */
-   public Set<CmdLineOptionInstance> getCustomSpecifiedOptions() {
-      return customSpecifiedOptions;
    }
 
    /**

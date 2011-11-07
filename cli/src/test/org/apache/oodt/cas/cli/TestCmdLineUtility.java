@@ -60,7 +60,7 @@ public class TestCmdLineUtility extends TestCase {
       assertEquals(0, CmdLineUtility.check(args).size());
 
       // Expect fail.
-      args.getCustomSupportedOptions().add(
+      args.getSupportedOptions().add(
             TestUtils.createSimpleOption("ReqTestAction", true));
       assertEquals(1, CmdLineUtility.check(args).size());
    }

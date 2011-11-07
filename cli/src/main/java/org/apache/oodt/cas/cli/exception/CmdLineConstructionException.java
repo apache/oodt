@@ -14,22 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.option;
-
-//OODT imports
-import org.apache.oodt.cas.cli.option.handler.CmdLineOptionHandler;
+package org.apache.oodt.cas.cli.exception;
 
 /**
- * A {@link CmdLineOption} which has a {@link CmdLineOptionHandler} should
- * implement this interface.
- * 
+ * {@link Exception} thrown if there is an error during command line
+ * construction.
+ *
  * @author bfoster (Brian Foster)
  */
-public interface HandleableCmdLineOption {
+public class CmdLineConstructionException extends Exception {
 
-   public void setHandler(CmdLineOptionHandler handler);
+   private static final long serialVersionUID = 223647396006947261L;
 
-   public CmdLineOptionHandler getHandler();
+   public CmdLineConstructionException(String msg) {
+      super(msg);
+   }
 
-   public boolean hasHandler();
+   public CmdLineConstructionException(String msg, Throwable t) {
+      super(msg, t);
+   }
 }

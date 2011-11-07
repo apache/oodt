@@ -17,10 +17,11 @@
 package org.apache.oodt.cas.cli.util;
 
 //JDK imports
+import java.io.IOException;
 import java.util.Arrays;
 
 //OODT imports
-import org.apache.oodt.cas.cli.util.Args;
+import org.apache.oodt.cas.cli.parser.StdCmdLineParser;
 
 //JUnit imports
 import junit.framework.TestCase;
@@ -30,31 +31,42 @@ import junit.framework.TestCase;
  * 
  * @author bfoster (Brian Foster)
  */
-public class TestArgs extends TestCase {
+public class TestCmdLineIterable extends TestCase {
 
    private static final String ARGS_STRING = "--operation download --url http://somewhere.com --user foo --pass bar --toDir /tmp";
 
-   public void testIteration() {
+   public void testIteration() throws IOException {
       StringBuffer argsString = new StringBuffer("");
-      Args args = createArgs();
-      for (String arg : args) {
-         argsString.append(arg).append(" ");
+      CmdLineIterable<ParsedArg> args = createArgs();
+      for (ParsedArg arg : args) {
+         if (arg.getType().equals(ParsedArg.Type.OPTION)) {
+            argsString.append("--");
+         }
+         argsString.append(arg.getName()).append(" ");
          int i = 0;
-         for (String argInner : args) {
-            argsString.append(argInner).append(" ");
+         for (ParsedArg argInner : args) {
+            if (argInner.getType().equals(ParsedArg.Type.OPTION)) {
+               argsString.append("--");
+            }
+            argsString.append(argInner.getName()).append(" ");
             if (i++ > 1) {
                break;
             }
          }
-         argsString.append(args.getAndIncrement()).append(" ");
+         arg = args.getAndIncrement();
+         if (arg.getType().equals(ParsedArg.Type.OPTION)) {
+            argsString.append("--");
+         }
+         argsString.append(arg.getName()).append(" ");
       }
 
       assertEquals(Arrays.asList(ARGS_STRING.split(" ")),
             Arrays.asList(argsString.toString().split(" ")));
    }
 
-   public void testIndexOutOfBoundsException() {
-      Args args = new Args(new String[] {});
+   public void testIndexOutOfBoundsException() throws IOException {
+      CmdLineIterable<ParsedArg> args = new CmdLineIterable<ParsedArg>(
+            new StdCmdLineParser().parse(new String[] {}));
       try {
          args.iterator().next();
          fail("Should have thrown IndexOutOfBoundsException");
@@ -62,7 +74,8 @@ public class TestArgs extends TestCase {
       }
    }
 
-   private Args createArgs() {
-      return new Args(ARGS_STRING.split(" "));
+   private CmdLineIterable<ParsedArg> createArgs() throws IOException {
+      return new CmdLineIterable<ParsedArg>(
+            new StdCmdLineParser().parse(ARGS_STRING.split(" ")));
    }
 }

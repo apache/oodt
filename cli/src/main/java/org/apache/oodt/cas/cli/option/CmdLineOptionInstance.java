@@ -98,8 +98,8 @@ public class CmdLineOptionInstance {
    }
 
    public List<String> getValues() {
-      if (values.isEmpty() && option.hasDefaultArgs()) {
-         return option.getDefaultArgs();
+      if (values.isEmpty() && option.hasStaticArgs()) {
+         return option.getStaticArgs();
       } else {
          return values;
       }

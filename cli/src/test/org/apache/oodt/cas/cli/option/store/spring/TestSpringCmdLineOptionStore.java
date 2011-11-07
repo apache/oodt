@@ -68,9 +68,9 @@ public class TestSpringCmdLineOptionStore extends TestCase {
       assertEquals("outputStream", advancedOption.getLongOption());
       assertEquals("Specify OutputStream", advancedOption.getDescription());
       assertTrue(advancedOption.hasArgs());
-      assertEquals(1, advancedOption.getDefaultArgs().size());
+      assertEquals(1, advancedOption.getStaticArgs().size());
       assertEquals(TestOutputStream.class.getCanonicalName(),
-            advancedOption.getDefaultArgs().get(0));
+            advancedOption.getStaticArgs().get(0));
       assertEquals("OutputStream classpath",
             advancedOption.getArgsDescription());
       assertEquals(1, advancedOption.getRequirementRules().size());

@@ -57,11 +57,11 @@ public interface CmdLineOption {
 
    public String getArgsDescription();
 
-   public void setDefaultArgs(List<String> values);
+   public void setStaticArgs(List<String> values);
 
-   public List<String> getDefaultArgs();
+   public List<String> getStaticArgs();
 
-   public boolean hasDefaultArgs();
+   public boolean hasStaticArgs();
 
    public void setRequired(boolean required);
 

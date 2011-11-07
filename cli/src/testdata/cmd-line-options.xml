@@ -27,7 +27,7 @@
 		<property name="description" value="Specify OutputStream" />
 		<property name="hasArgs" value="true" />
 		<property name="type" value="java.io.OutputStream" />
-		<property name="defaultArgs">
+		<property name="staticArgs">
 			<list>
 				<value>org.apache.oodt.cas.cli.test.util.TestOutputStream</value>
 			</list>

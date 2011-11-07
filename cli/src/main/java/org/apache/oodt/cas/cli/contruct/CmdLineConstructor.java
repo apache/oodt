@@ -14,26 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.parser;
+package org.apache.oodt.cas.cli.contruct;
 
 //JDK imports
-import java.io.IOException;
 import java.util.Set;
 
 //OODT imports
+import org.apache.oodt.cas.cli.exception.CmdLineConstructionException;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
-import org.apache.oodt.cas.cli.util.Args;
+import org.apache.oodt.cas.cli.util.CmdLineIterable;
+import org.apache.oodt.cas.cli.util.ParsedArg;
 
 /**
- * Command Line parser which parse command line arguments into a {@link Set} of
- * {@link CmdLineOptionInstance}s.
- * 
+ * Responsible for constructing {@link CmdLineOptionInstance}s from parsed
+ * command line arguments.
+ *
  * @author bfoster (Brian Foster)
  */
-public interface CmdLineOptionParser {
+public interface CmdLineConstructor {
 
-   public Set<CmdLineOptionInstance> parse(Args args,
-         Set<CmdLineOption> validOptions) throws IOException;
+   public Set<CmdLineOptionInstance> construct(CmdLineIterable<ParsedArg> parsedArgs,
+         Set<CmdLineOption> validOptions) throws CmdLineConstructionException;
 
 }

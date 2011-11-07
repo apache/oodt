@@ -43,4 +43,6 @@ public interface CmdLineOptionHandler {
     */
    public abstract String getHelp(CmdLineOption option);
 
+   public abstract String getArgDescription(CmdLineAction action,
+         CmdLineOption option);
 }

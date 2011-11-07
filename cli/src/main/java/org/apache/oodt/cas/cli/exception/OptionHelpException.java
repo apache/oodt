@@ -14,22 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.option;
+package org.apache.oodt.cas.cli.exception;
 
-//OODT imports
-import org.apache.oodt.cas.cli.option.handler.CmdLineOptionHandler;
+//JDK imports
+import java.io.IOException;
 
 /**
- * A {@link CmdLineOption} which has a {@link CmdLineOptionHandler} should
- * implement this interface.
+ * Exception thrown to express that {@link HelpCmdLineOption} should be given
+ * to see help message.
  * 
  * @author bfoster (Brian Foster)
  */
-public interface HandleableCmdLineOption {
+public class OptionHelpException extends IOException {
 
-   public void setHandler(CmdLineOptionHandler handler);
+   private static final long serialVersionUID = -8198106641155733222L;
 
-   public CmdLineOptionHandler getHandler();
+   public OptionHelpException() {
+      super();
+   }
 
-   public boolean hasHandler();
+   public OptionHelpException(String message) {
+      super(message);
+   }
+
 }

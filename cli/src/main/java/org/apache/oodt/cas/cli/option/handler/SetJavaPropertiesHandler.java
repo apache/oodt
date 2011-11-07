@@ -51,15 +51,19 @@ public class SetJavaPropertiesHandler implements CmdLineOptionHandler {
       }
    }
 
-   public String getHelp(CmdLineOption option) {
-      return "Sets the following Java Properties: " + this.propertyNames;
-   }
-
    public void setPropertyNames(List<String> propertyNames) {
       this.propertyNames = propertyNames;
    }
 
    public List<String> getPropertyNames() {
       return propertyNames;
+   }
+
+   public String getHelp(CmdLineOption option) {
+      return "Sets the following Java Properties: " + this.propertyNames;
+   }
+
+   public String getArgDescription(CmdLineAction action, CmdLineOption option) {
+      return null;
    }
 }

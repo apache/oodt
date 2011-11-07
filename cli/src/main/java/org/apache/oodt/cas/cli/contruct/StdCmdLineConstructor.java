@@ -14,73 +14,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.parser;
+package org.apache.oodt.cas.cli.contruct;
 
 //OODT static imports
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.findHelpOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.getOptionByName;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.isHelpOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.isSubOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.sortOptionsByRequiredStatus;
 
 //JDK imports
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-//OODT imports
+//Apache imports
 import org.apache.commons.lang.Validate;
-import org.apache.oodt.cas.cli.help.OptionHelpException;
+
+//OODT imports
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.GroupCmdLineOption;
 import org.apache.oodt.cas.cli.option.GroupSubOption;
-import org.apache.oodt.cas.cli.util.Args;
+import org.apache.oodt.cas.cli.util.CmdLineIterable;
+import org.apache.oodt.cas.cli.util.ParsedArg;
 
 //Google imports
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * Standard Command-line parser which parser command line options of the form
- * --longOption -shortOption. Supports group options, options with values, and
- * without values.
- * 
+ * Standard {@link CmdLineConstructor} which support options and option
+ * groups.
+ *
  * @author bfoster (Brian Foster)
  */
-public class StdCmdLineOptionParser implements CmdLineOptionParser {
+public class StdCmdLineConstructor implements CmdLineConstructor {
 
-   public Set<CmdLineOptionInstance> parse(Args args,
-         Set<CmdLineOption> validOptions) throws IOException {
+   public Set<CmdLineOptionInstance> construct(CmdLineIterable<ParsedArg> parsedArgs,
+         Set<CmdLineOption> validOptions) {
       HashSet<CmdLineOptionInstance> optionInstances = new HashSet<CmdLineOptionInstance>();
 
-      CmdLineOption helpOption = findHelpOption(validOptions);
-      if (helpOption == null) {
-         throw new OptionHelpException(
-               "Must specify a help option in set of valid options");
-      }
-
-      if (args.numArgs() < 1) {
-         throw new OptionHelpException("Must specify options : type -"
-               + helpOption.getShortOption() + " or --"
-               + helpOption.getLongOption() + " for info");
-      }
-
       Stack<CmdLineOptionInstance> groupOptions = new Stack<CmdLineOptionInstance>();
-      for (String arg : args) {
+      for (ParsedArg arg : parsedArgs) {
 
-         if (isOption(arg)) {
+         if (arg.getType().equals(ParsedArg.Type.OPTION)) {
 
             // check if option is a valid one
-            CmdLineOption option = getOptionByName(getOptionName(arg),
+            CmdLineOption option = getOptionByName(arg.getName(),
                   validOptions);
             if (option == null) {
-               throw new IOException("Invalid option: '" + arg + "'");
+               throw new RuntimeException("Invalid option: '" + arg.getName() + "'");
             }
 
             // read found option
-            CmdLineOptionInstance specifiedOption = getOption(args, option);
+            CmdLineOptionInstance specifiedOption = getOption(parsedArgs, option);
 
             // Check if we are currently loading subOptions.
             if (!groupOptions.isEmpty()) {
@@ -93,14 +81,14 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
                   // Check if current group was expecting more subOptions.
                   Set<CmdLineOption> requiredSubOptions = verifyGroupHasRequiredSubOptions(currentGroup);
                   if (!requiredSubOptions.isEmpty()) {
-                     throw new IOException(
+                     throw new RuntimeException(
                            "Missing the following required subOptions for '"
                                  + currentGroup.getOption()
                                  + "': "
                                  + sortOptionsByRequiredStatus(requiredSubOptions));
 
                   } else if (currentGroup.getSubOptions().isEmpty()) {
-                     throw new IOException(
+                     throw new RuntimeException(
                            "Must specify a subOption for group option '"
                                  + currentGroup.getOption() + "'");
 
@@ -124,7 +112,7 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
                groupOptions.push(specifiedOption);
 
             } else if (option.isSubOption()) {
-               throw new IOException("Option '" + option
+               throw new RuntimeException("Option '" + option
                      + "' is a subOption, but was used at top level Option");
 
             } else {
@@ -133,14 +121,14 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
                optionInstances.add(specifiedOption);
             }
          } else {
-            throw new IOException("Invalid argument: '" + arg + "'");
+            throw new RuntimeException("Invalid argument: '" + arg + "'");
          }
       }
       while (!groupOptions.isEmpty()) {
          CmdLineOptionInstance currentGroup = groupOptions.pop();
          Set<CmdLineOption> requiredSubOptions = verifyGroupHasRequiredSubOptions(currentGroup);
          if (!requiredSubOptions.isEmpty()) {
-            throw new IOException(
+            throw new RuntimeException(
                   "Missing the following required subOptions for '"
                         + currentGroup.getOption() + "': "
                         + sortOptionsByRequiredStatus(requiredSubOptions));
@@ -151,6 +139,27 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
       }
       return optionInstances;
    }
+
+   @VisibleForTesting
+   /* package */static CmdLineOptionInstance getOption(CmdLineIterable<ParsedArg> args,
+         CmdLineOption option) {
+      CmdLineOptionInstance specifiedOption = new CmdLineOptionInstance();
+      specifiedOption.setOption(option);
+      List<String> values = getValues(args);
+      if (isHelpOption(option)) {
+         specifiedOption.setValues(values);         
+      } else if (option.hasArgs()) {
+         if (!values.isEmpty()) {
+            specifiedOption.setValues(values);
+         } else if (!option.hasStaticArgs()) {
+            throw new RuntimeException("Option " + option + " requires args");
+         }
+      } else if (!option.hasArgs() && !values.isEmpty()) {
+         throw new RuntimeException("Option " + option + " does not support args");
+      }
+      return specifiedOption;
+   }
+
 
    @VisibleForTesting
    /* package */static Set<CmdLineOption> verifyGroupHasRequiredSubOptions(
@@ -174,47 +183,13 @@ public class StdCmdLineOptionParser implements CmdLineOptionParser {
    }
 
    @VisibleForTesting
-   /* package */static CmdLineOptionInstance getOption(Args args,
-         CmdLineOption option) throws IOException {
-      CmdLineOptionInstance specifiedOption = new CmdLineOptionInstance();
-      specifiedOption.setOption(option);
-      List<String> values = getValues(args);
-      if (option.hasArgs()) {
-         if (!values.isEmpty()) {
-            specifiedOption.setValues(values);
-         } else if (!option.hasDefaultArgs()) {
-            throw new IOException("Option " + option + " requires args");
-         }
-      } else if (!option.hasArgs() && !values.isEmpty()) {
-         throw new IOException("Option " + option + " does not support args");
-      }
-      return specifiedOption;
-   }
-
-   @VisibleForTesting
-   /* package */static List<String> getValues(Args args) {
+   /* package */static List<String> getValues(CmdLineIterable<ParsedArg> args) {
       List<String> values = new ArrayList<String>();
-      String nextValue = args.getCurrentArg();
-      while (nextValue != null && !isOption(nextValue)) {
-         values.add(nextValue);
+      ParsedArg nextValue = args.getCurrentArg();
+      while (nextValue != null && nextValue.getType().equals(ParsedArg.Type.VALUE)) {
+         values.add(nextValue.getName());
          nextValue = args.incrementAndGet();
       }
       return values;
-   }
-
-   @VisibleForTesting
-   /* package */static boolean isOption(String arg) {
-      return (arg.startsWith("-"));
-   }
-
-   @VisibleForTesting
-   /* package */static String getOptionName(String arg) {
-      if (arg.startsWith("--")) {
-         return arg.substring(2);
-      } else if (arg.startsWith("-")) {
-         return arg.substring(1);
-      } else {
-         return null;
-      }
    }
 }

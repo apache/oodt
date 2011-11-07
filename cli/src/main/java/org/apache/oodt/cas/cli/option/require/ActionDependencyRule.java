@@ -59,10 +59,15 @@ public class ActionDependencyRule implements RequirementRule {
    public Relation getRelation(CmdLineAction action) {
       Validate.notNull(actionName);
       Validate.notNull(relation);
+      Validate.notNull(action);
 
       if (action.getName().equals(actionName)) {
          return relation;
       }
       return Relation.NONE;
+   }
+
+   public String toString() {
+      return actionName + " : " + relation;
    }
 }

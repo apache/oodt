@@ -17,7 +17,6 @@
 package org.apache.oodt.cas.cli.option.store.spring;
 
 //JDK imports
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +27,8 @@ import org.apache.oodt.cas.cli.option.store.CmdLineOptionStore;
 //Spring imports
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import com.google.common.collect.Sets;
 
 /**
  * Spring Framework based {@link CmdLineOptionStore}.
@@ -46,7 +47,13 @@ public class SpringCmdLineOptionStore implements CmdLineOptionStore {
       @SuppressWarnings("unchecked")
       Map<String, CmdLineOption> optionsMap = appContext
             .getBeansOfType(CmdLineOption.class);
-      return new HashSet<CmdLineOption>(optionsMap.values());
+      Set<CmdLineOption> supportedOptions = Sets.newHashSet();
+      for (CmdLineOption option : optionsMap.values()) {
+         if (!option.isSubOption()) {
+            supportedOptions.add(option);
+         }
+      }
+      return supportedOptions;
    }
 
    protected ApplicationContext getApplicationContext() {

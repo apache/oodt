@@ -14,27 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.help;
-
-//JDK imports
-import java.io.IOException;
+package org.apache.oodt.cas.cli.util;
 
 /**
- * Exception thrown to express that {@link HelpCmdLineOption} should be given
- * to see help message.
  * 
+ *
  * @author bfoster (Brian Foster)
  */
-public class OptionHelpException extends IOException {
+public class ParsedArg {
 
-   private static final long serialVersionUID = -8198106641155733222L;
-
-   public OptionHelpException() {
-      super();
+   public enum Type {
+      OPTION, VALUE;
    }
 
-   public OptionHelpException(String message) {
-      super(message);
+   private String name;
+   private Type type;
+
+   public ParsedArg(String name, Type type) {
+      this.name = name;
+      this.type = type;
    }
 
+   public String getName() {
+      return name;
+   }
+
+   public Type getType() {
+      return type;
+   }
+
+   public String toString() {
+      return name + " : " + type;
+   }
 }

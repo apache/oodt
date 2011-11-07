@@ -83,6 +83,21 @@ public class CmdLineUtils {
       return requiredOptions;
    }
 
+   public static Set<CmdLineOption> determineRequiredSubOptions(
+         CmdLineAction action, GroupCmdLineOption option) {
+      Validate.notNull(action);
+      Validate.notNull(option);
+
+      Set<CmdLineOption> requiredOptions = Sets.newHashSet();
+      for (GroupSubOption subOption : option.getSubOptions()) {
+         if (subOption.isRequired()
+               || isRequired(action, subOption.getOption())) {
+            requiredOptions.add(subOption.getOption());
+         }
+      }
+      return requiredOptions;
+   }
+
    /**
     * Determines if the given {@link CmdLineOption} is required because the
     * given {@link CmdLineAction} was specified.
@@ -96,10 +111,6 @@ public class CmdLineUtils {
    public static boolean isRequired(CmdLineAction action, CmdLineOption option) {
       Validate.notNull(option);
       Validate.notNull(action);
-
-      if (option instanceof ActionCmdLineOption) {
-         return false;
-      }
 
       for (RequirementRule requirementRule : option.getRequirementRules()) {
          if (requirementRule.getRelation(action) == Relation.REQUIRED) {
@@ -147,10 +158,6 @@ public class CmdLineUtils {
    public static boolean isOptional(CmdLineAction action, CmdLineOption option) {
       Validate.notNull(action);
       Validate.notNull(option);
-
-      if (option instanceof ActionCmdLineOption) {
-         return false;
-      }
 
       for (RequirementRule requirementRule : option.getRequirementRules()) {
          if (requirementRule.getRelation(action) == Relation.OPTIONAL) {

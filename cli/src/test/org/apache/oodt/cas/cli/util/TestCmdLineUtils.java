@@ -156,6 +156,7 @@ public class TestCmdLineUtils extends TestCase {
             createSimpleOption("user", false),
             createSimpleOption("pass", false));
 
+      actionOption.setRequired(true);
       assertEquals(Sets.newHashSet(actionOption, urlOption),
             CmdLineUtils.getRequiredOptions(options, false));
    }
@@ -170,6 +171,7 @@ public class TestCmdLineUtils extends TestCase {
             passOption = createSimpleOption("pass", false),
             actionOption = createActionOption("action"));
 
+      actionOption.setRequired(true);
       List<CmdLineOption> sortedOptions = CmdLineUtils
             .sortOptionsByRequiredStatus(options);
       assertEquals(options.size(), sortedOptions.size());
@@ -470,6 +472,11 @@ public class TestCmdLineUtils extends TestCase {
          }
 
          public String getHelp(CmdLineOption option) {
+            return null;
+         }
+
+         public String getArgDescription(CmdLineAction action,
+               CmdLineOption option) {
             return null;
          }
       });

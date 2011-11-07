@@ -14,22 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.option;
+package org.apache.oodt.cas.cli.parser;
+
+//JDK imports
+import java.io.IOException;
+import java.util.List;
 
 //OODT imports
-import org.apache.oodt.cas.cli.option.handler.CmdLineOptionHandler;
+import org.apache.oodt.cas.cli.util.ParsedArg;
 
 /**
- * A {@link CmdLineOption} which has a {@link CmdLineOptionHandler} should
- * implement this interface.
+ * Command Line parser which parse command line arguments into a {@link Set} of
+ * {@link CmdLineOptionInstance}s.
  * 
  * @author bfoster (Brian Foster)
  */
-public interface HandleableCmdLineOption {
+public interface CmdLineParser {
 
-   public void setHandler(CmdLineOptionHandler handler);
+   public List<ParsedArg> parse(String[] args) throws IOException;
 
-   public CmdLineOptionHandler getHandler();
-
-   public boolean hasHandler();
 }

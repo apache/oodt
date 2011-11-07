@@ -33,6 +33,7 @@ import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 
 //Google imports
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 
 /**
  * {@link CmdLineOptionHandler} which applies {@link CmdLineOption} values to
@@ -91,8 +92,42 @@ public class ApplyToActionHandler implements CmdLineOptionHandler {
       return null;
    }
 
+   @VisibleForTesting
+   protected String getDescription(String actionName) {
+      if (applyToActions != null) {
+         for (ApplyToAction applyToAction : applyToActions) {
+            if (applyToAction.getActionName().equals(actionName)) {
+               return applyToAction.getDescription();
+            }
+         }
+      }
+      return null;
+   }
+
+   @VisibleForTesting
+   protected String getArgDescription(String actionName) {
+      if (applyToActions != null) {
+         for (ApplyToAction applyToAction : applyToActions) {
+            if (applyToAction.getActionName().equals(actionName)) {
+               return applyToAction.getArgDescription();
+            }
+         }
+      }
+      return null;
+   }
+
    public String getHelp(CmdLineOption option) {
-      return "Will invoke 'set" + option.getLongOption()
-            + "' on action selected";
+      return "Will invoke '" + (option.isRepeating() ? "add" : "set")
+         + StringUtils.capitalize(option.getLongOption())
+         + "' on action selected, except for the following actions: "
+         + (applyToActions != null ? applyToActions : Lists.newArrayList());
+   }
+
+   public String getDescription(CmdLineAction action, CmdLineOption option) {
+      return getDescription(action.getName());
+   }
+
+   public String getArgDescription(CmdLineAction action, CmdLineOption option) {
+      return getArgDescription(action.getName());
    }
 }

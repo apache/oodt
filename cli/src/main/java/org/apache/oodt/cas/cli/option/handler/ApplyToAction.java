@@ -26,6 +26,8 @@ public class ApplyToAction {
 
    private String actionName;
    private String methodName;
+   private String description;
+   private String argDescription;
 
    public ApplyToAction() {
    }
@@ -49,5 +51,25 @@ public class ApplyToAction {
 
    public void setMethodName(String methodName) {
       this.methodName = methodName;
+   }
+
+   public String getDescription() {
+      return description;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
+   }
+
+   public String getArgDescription() {
+      return argDescription;
+   }
+
+   public void setArgDescription(String argDescription) {
+      this.argDescription = argDescription;
+   }
+
+   public String toString() {
+      return actionName + " : " + methodName;
    }
 }
