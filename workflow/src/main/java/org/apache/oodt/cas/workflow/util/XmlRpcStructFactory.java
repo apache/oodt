@@ -129,10 +129,10 @@ public final class XmlRpcStructFactory {
     workflowInstance.put("sharedContext",
         wInst.getSharedContext() != null ? wInst.getSharedContext()
             .getHashtable() : new Hashtable());
-    workflowInstance.put("priority", 
-        wInst.getPriority() != null ? 
-            String.valueOf(wInst.getPriority().getValue()):
-              String.valueOf(Priority.getDefault().getValue()));
+    workflowInstance.put(
+        "priority",
+        wInst.getPriority() != null ? String.valueOf(wInst.getPriority()
+            .getValue()) : String.valueOf(Priority.getDefault().getValue()));
     return workflowInstance;
   }
 
@@ -491,7 +491,9 @@ public final class XmlRpcStructFactory {
     condition.setConditionId((String) cond.get("id"));
     condition.setConditionName((String) cond.get("name"));
     condition.setOrder(Integer.valueOf((String) cond.get("order")).intValue());
-    condition.setTimeoutSeconds(Long.valueOf((String) cond.get("timeout")));
+    condition
+        .setTimeoutSeconds(Long.valueOf(cond.get("timeout") != null ? (String) cond
+            .get("timeout") : "-1"));
     condition.setOptional(Boolean.valueOf((String) cond.get("optional")));
     condition
         .setCondConfig(getWorkflowConditionConfigurationFromXmlRpc((Hashtable) cond
@@ -531,10 +533,12 @@ public final class XmlRpcStructFactory {
   public static List getWorkflowConditionsFromXmlRpc(Vector conds) {
     List conditions = new Vector();
 
-    for (Iterator i = conds.iterator(); i.hasNext();) {
-      Hashtable cond = (Hashtable) i.next();
-      WorkflowCondition condition = getWorkflowConditionFromXmlRpc(cond);
-      conditions.add(condition);
+    if (conds != null && conds.size() > 0) {
+      for (Iterator i = conds.iterator(); i.hasNext();) {
+        Hashtable cond = (Hashtable) i.next();
+        WorkflowCondition condition = getWorkflowConditionFromXmlRpc(cond);
+        conditions.add(condition);
+      }
     }
 
     return conditions;
