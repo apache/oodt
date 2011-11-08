@@ -17,7 +17,7 @@
 
 }
 
-#menu_tbl{
+#menu_inner_tbl{
   padding:0px;
   border-spacing:1px;
   border:0px;
@@ -25,15 +25,49 @@
   color:white; 
 }
 
-#menu_inner_tbl{
+#menu_inner_tbl_home{
   background-color:#666666;
   height:23px;
   width:20px;
+  text-align:center;
 }
 
-#menu_links{
+#menu_tbl_links{
+  padding:0px;
+  border-spacing:1px;
+  border:0px;
+  width:100%;
+  color:white; 
+}
+
+#menu_inner_tbl_links_fm{
   background-color:#666666;
   height:23px;
+  text-align:center;
+}
+
+#menu_inner_tbl_links_wm{
+  background-color:#666666;
+  height:23px;
+  text-align:center;
+}
+
+#menu_inner_tbl_links_rm{
+  background-color:#666666;
+  height:23px;
+  text-align:center;
+}
+
+#menu_inner_tbl_links_cfg{
+  background-color:#666666;
+  height:23px;
+  text-align:center;
+}
+
+#menu_inner_tbl_links_pcsstat{
+  background-color:#666666;
+  height:23px;
+  text-align:center;
 }
 
 #footer_tbl{
@@ -90,4 +124,12 @@
 .feedback{
   font-family:Arial, Helvetica, sans-serif;
   font-size:2px;
+}
+
+a{
+	text-decoration:none;
+}
+
+a:hover{
+	text-decoration:underline;
 }
