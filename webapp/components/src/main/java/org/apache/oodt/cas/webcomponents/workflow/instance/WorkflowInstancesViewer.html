@@ -9,9 +9,11 @@
  <script type="text/javascript" language="Javascript" src="progress.js"></script>
 </wicket:link>
 
-<div id="instance_filter_header">Filter Workflows by Status:<br> |
+<div id="instance_filter_header">
+  <h4>Filter Workflows by Status:</h4>
+  <p>Select any of the following to display only workflow instances with the corresponding status:</p>
   <wicket:container wicket:id="workflow_statuses">
-    <a class="workflow_status" wicket:id="wstatus_link" href="#"><span wicket:id="wstatus">STARTED</span></a>&nbsp;|
+    <a class="workflow_status" wicket:id="wstatus_link" href="#"><span wicket:id="wstatus">STARTED</span></a>
   </wicket:container> 
     <wicket:remove>
     <a class="workflow_status" href="#">FINISHED</a>&nbsp;|
