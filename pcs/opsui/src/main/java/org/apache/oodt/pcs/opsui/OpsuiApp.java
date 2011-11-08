@@ -162,9 +162,9 @@ public class OpsuiApp extends WebApplication implements Serializable {
   @Override
   public Session newSession(Request request, Response response) {
     FMBrowserSession session = new FMBrowserSession(request);
-    session
-        .setStyle(getServletContext().getInitParameter("opsui.skin") != null ? getServletContext()
-            .getInitParameter("opsui.skin") : "classic");
+    if (getServletContext().getInitParameter("opsui.skin") != null) {
+      session.setStyle(getServletContext().getInitParameter("opsui.skin"));
+    }
     return session;
   }
 

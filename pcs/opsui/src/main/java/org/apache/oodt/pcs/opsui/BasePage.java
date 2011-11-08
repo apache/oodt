@@ -45,7 +45,7 @@ public class BasePage extends WebPage {
        */
       @Override
       public void onClick() {
-        setResponsePage(StatusPage.class);
+        setResponsePage(HomePage.class);
       }
     });
     
