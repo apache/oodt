@@ -44,8 +44,8 @@ import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
  * @version $Revision$
  * 
  */
-public class OpsuiApp extends WebApplication implements Serializable{
-  
+public class OpsuiApp extends WebApplication implements Serializable {
+
   private static final long serialVersionUID = 1403288657369282259L;
 
   public OpsuiApp() {
@@ -183,6 +183,16 @@ public class OpsuiApp extends WebApplication implements Serializable{
 
     mountSharedResource("/images/icon_arrow_up.gif", new ResourceReference(
         StatusPage.class, "icon_arrow_up.gif").getSharedResourceKey());
+    
+
+    mountSharedResource("/images/rightcorner.gif", new ResourceReference(
+        BasePage.class, "rightcorner.gif").getSharedResourceKey());
+    mountSharedResource("/images/leftcorner.gif", new ResourceReference(
+        BasePage.class, "leftcorner.gif").getSharedResourceKey());
+    mountSharedResource("/images/selrightcorner.gif", new ResourceReference(
+        BasePage.class, "selrightcorner.gif").getSharedResourceKey());
+    mountSharedResource("/images/selleftcorner.gif", new ResourceReference(
+        BasePage.class, "selleftcorner.gif").getSharedResourceKey());    
 
   }
 
