@@ -29,7 +29,7 @@ import org.apache.wicket.PageParameters;
  * @version $Revision$
  *
  */
-public class HomePage extends BasePage {
+public class HomePage extends SplashPage {
 
   public HomePage(PageParameters parameters){
      super(parameters);
