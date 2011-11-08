@@ -45,7 +45,7 @@ public class BasePage extends WebPage {
        */
       @Override
       public void onClick() {
-        setResponsePage(HomePage.class);
+        setResponsePage(StatusPage.class);
       }
     });
     
@@ -84,6 +84,8 @@ public class BasePage extends WebPage {
         
       }
     });
+    
+    add(new ExternalLink("ganglia_link", app.getGangliaUrl()));
     
     add(new ExternalLink("contact_link", "mailto:"+((OpsuiApp)getApplication()).getEmailContactLink()));
   }

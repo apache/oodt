@@ -86,8 +86,6 @@ public class OpsuiApp extends WebApplication implements Serializable {
     mount(workflowsPageMount);
     mount(workflowInstsPageMount);
   }
-  
-  
 
   /*
    * (non-Javadoc)
@@ -96,7 +94,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
    */
   @Override
   public Class<? extends Page> getHomePage() {
-    return HomePage.class;
+    return StatusPage.class;
   }
 
   public String getFmUrlStr() {
@@ -133,6 +131,11 @@ public class OpsuiApp extends WebApplication implements Serializable {
         "org.apache.oodt.pcs.opsui.workflow.lifecycleFilePath"));
   }
 
+  public String getGangliaUrl() {
+    return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
+        "ganglia.url"));
+  }
+
   public List<String> getWorkflowInstStatues() {
     String[] statuses = getServletContext().getInitParameter(
         "org.apache.oodt.pcs.opsui.winst.statuses").split(",");
@@ -159,8 +162,9 @@ public class OpsuiApp extends WebApplication implements Serializable {
   @Override
   public Session newSession(Request request, Response response) {
     FMBrowserSession session = new FMBrowserSession(request);
-    session.setStyle(getServletContext().getInitParameter("opsui.skin") != null ? 
-        getServletContext().getInitParameter("opsui.skin"):"classic");
+    session
+        .setStyle(getServletContext().getInitParameter("opsui.skin") != null ? getServletContext()
+            .getInitParameter("opsui.skin") : "classic");
     return session;
   }
 
@@ -188,7 +192,6 @@ public class OpsuiApp extends WebApplication implements Serializable {
 
     mountSharedResource("/images/icon_arrow_up.gif", new ResourceReference(
         StatusPage.class, "icon_arrow_up.gif").getSharedResourceKey());
-    
 
     mountSharedResource("/images/rightcorner.gif", new ResourceReference(
         BasePage.class, "rightcorner.gif").getSharedResourceKey());
@@ -197,7 +200,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
     mountSharedResource("/images/selrightcorner.gif", new ResourceReference(
         BasePage.class, "selrightcorner.gif").getSharedResourceKey());
     mountSharedResource("/images/selleftcorner.gif", new ResourceReference(
-        BasePage.class, "selleftcorner.gif").getSharedResourceKey());    
+        BasePage.class, "selleftcorner.gif").getSharedResourceKey());
 
   }
 
