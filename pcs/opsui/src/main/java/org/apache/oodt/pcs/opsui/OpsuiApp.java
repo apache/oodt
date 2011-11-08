@@ -86,6 +86,8 @@ public class OpsuiApp extends WebApplication implements Serializable {
     mount(workflowsPageMount);
     mount(workflowInstsPageMount);
   }
+  
+  
 
   /*
    * (non-Javadoc)
@@ -156,7 +158,10 @@ public class OpsuiApp extends WebApplication implements Serializable {
    */
   @Override
   public Session newSession(Request request, Response response) {
-    return new FMBrowserSession(request);
+    FMBrowserSession session = new FMBrowserSession(request);
+    session.setStyle(getServletContext().getInitParameter("opsui.skin") != null ? 
+        getServletContext().getInitParameter("opsui.skin"):"classic");
+    return session;
   }
 
   /*

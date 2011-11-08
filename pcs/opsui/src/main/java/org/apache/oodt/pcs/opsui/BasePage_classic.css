@@ -1,3 +1,13 @@
+body{
+	background-color:#000000;
+	color:#000000;
+	margin-top: 0;
+	margin-left:0; 
+	margin-right:0; 
+	margin-bottom:0;
+	width:100%;
+	height:100%;
+}
 
 #opsui_header_tbl{
   border:0px;
@@ -102,6 +112,14 @@
 
 .white {
   color:white;
+}
+
+.whitebg{
+	background-color:white;
+}
+
+.blackbg{
+	background-color:black;
 }
 
 .blackLink {
