@@ -47,6 +47,6 @@ the License.
 	<Parameter name="ganglia.url" value="[GANGLIA_URL]"/>
 	<Parameter name="contact.email" value="user@oodt.apache.org"/>
 	
-	<Parameter name="opsui_skin" value="classic"/>
-	    
+	<Parameter name="opsui.skin" value=""/>
+	<Parameter name="opsui.homepage" value="org.apache.oodt.pcs.opsui.HomePage"/>   
 </Context>
