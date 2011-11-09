@@ -94,7 +94,12 @@ public class OpsuiApp extends WebApplication implements Serializable {
    */
   @Override
   public Class<? extends Page> getHomePage() {
-    return StatusPage.class;
+    try {
+      return (Class<? extends Page>) Class.forName(getHomePageClass());
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+      return HomePage.class;
+    }
   }
 
   public String getFmUrlStr() {
@@ -135,6 +140,14 @@ public class OpsuiApp extends WebApplication implements Serializable {
     return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
         "ganglia.url"));
   }
+  
+  public String getSkin(){
+    return getServletContext().getInitParameter("opsui.skin");
+  }
+  
+  public String getHomePageClass(){
+    return getServletContext().getInitParameter("opsui.homepage");
+  }
 
   public List<String> getWorkflowInstStatues() {
     String[] statuses = getServletContext().getInitParameter(
@@ -162,8 +175,8 @@ public class OpsuiApp extends WebApplication implements Serializable {
   @Override
   public Session newSession(Request request, Response response) {
     FMBrowserSession session = new FMBrowserSession(request);
-    if (getServletContext().getInitParameter("opsui.skin") != null) {
-      session.setStyle(getServletContext().getInitParameter("opsui.skin"));
+    if (getSkin() != null) {
+      session.setStyle(getSkin());
     }
     return session;
   }

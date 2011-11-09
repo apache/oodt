@@ -19,7 +19,11 @@
 package org.apache.oodt.pcs.opsui;
 
 //Wicket imports
+import org.apache.oodt.pcs.opsui.status.StatusPage;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.markup.html.link.Link;
 
 /**
  *
@@ -29,9 +33,49 @@ import org.apache.wicket.PageParameters;
  * @version $Revision$
  *
  */
-public class HomePage extends SplashPage {
+public class HomePage extends WebPage {
 
+  protected OpsuiApp app;
+  
   public HomePage(PageParameters parameters){
-     super(parameters);
+    this.app = (OpsuiApp)getApplication();
+    
+    add(new Link("fmbrowser_link"){
+      /* (non-Javadoc)
+       * @see org.apache.wicket.markup.html.link.Link#onClick()
+       */
+      @Override
+      public void onClick() {
+       setResponsePage(TypesPage.class); 
+      }
+    });
+    
+    add(new Link("pcsstatus_link"){
+      
+    /* (non-Javadoc)
+       * @see org.apache.wicket.markup.html.link.Link#onClick()
+       */
+      @Override
+      public void onClick() {
+        setResponsePage(StatusPage.class);
+        
+      }
+    });
+    
+    add(new Link("wmonitor_link"){
+       /* (non-Javadoc)
+       * @see org.apache.wicket.markup.html.link.Link#onClick()
+       */
+      @Override
+      public void onClick() {
+        PageParameters params = new PageParameters();
+        params.add("status", "ALL");
+        params.add("pageNum", "1");
+        setResponsePage(WorkflowInstanceViewerPage.class, params);
+        
+      }
+    });
+    
+    add(new ExternalLink("ganglia_link", app.getGangliaUrl()));
   }
 }
