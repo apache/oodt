@@ -14,29 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.help.printer;
-
-//JDK imports
-import java.util.Set;
-
-//OODT imports
-import org.apache.oodt.cas.cli.option.CmdLineOption;
+package org.apache.oodt.cas.cli.exception;
 
 /**
- * Help printer responsible for generating help message for given
- * {@link CmdLineOption}s.
- * 
+ * An {@link Exception} thrown when failure to execute a {@link CmdLineAction}.
+ *
  * @author bfoster (Brian Foster)
  */
-public interface CmdLineOptionsHelpPrinter {
+public class CmdLineActionExecutionException extends Exception {
 
-   /**
-    * Generates help message for given {@link CmdLineOption}s
-    * 
-    * @param options
-    *           {@link CmdLineOption}s for which help message will be generated
-    * @return Help message for given {@link CmdLineOption}s.
-    */
-   public String printHelp(Set<CmdLineOption> options);
+   private static final long serialVersionUID = 4784139793086538249L;
 
+   public CmdLineActionExecutionException(String msg) {
+      super(msg);
+   }
+
+   public CmdLineActionExecutionException(String msg, Throwable t) {
+      super(msg, t);
+   }
 }

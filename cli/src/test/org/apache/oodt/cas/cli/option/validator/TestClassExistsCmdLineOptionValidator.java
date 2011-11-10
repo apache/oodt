@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 //OODT imports
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.validator.ClassExistsCmdLineOptionValidator;
+import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result;
 
 /**
  * Test class for {@link ClassExistsCmdLineOptionValidator}.
@@ -44,11 +45,13 @@ public class TestClassExistsCmdLineOptionValidator extends TestCase {
       // Check fail case.
       CmdLineOptionInstance instance = createOptionInstance(
             createSimpleOption("test", false), "bogus");
-      assertFalse(new ClassExistsCmdLineOptionValidator().validate(instance));
+      assertEquals(Result.Grade.FAIL, new ClassExistsCmdLineOptionValidator()
+            .validate(instance).getGrade());
 
       // Check pass case.
       instance = createOptionInstance(createSimpleOption("test", false),
             "java.lang.String");
-      assertTrue(new ClassExistsCmdLineOptionValidator().validate(instance));
+      assertEquals(Result.Grade.PASS, new ClassExistsCmdLineOptionValidator()
+            .validate(instance).getGrade());
    }
 }

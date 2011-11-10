@@ -24,9 +24,12 @@ import static org.apache.oodt.cas.cli.test.util.TestUtils.createOptionInstance;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createOptionalRequirementRule;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createRequiredRequirementRule;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createSimpleOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineFailedValidation;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.findFirstActionOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedActionOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedHelpOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedPrintSupportedActionsOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.validate;
 
 //JDK imports
 import java.util.ArrayList;
@@ -366,9 +369,9 @@ public class TestCmdLineUtils extends TestCase {
             (CmdLineOption) createSimpleOption("test", false),
             createSimpleOption("test", false));
 
-      assertNull(CmdLineUtils.findActionOption(options));
+      assertNull(findFirstActionOption(options));
       options.add(actionOption);
-      assertEquals(actionOption, CmdLineUtils.findActionOption(options));
+      assertEquals(actionOption, findFirstActionOption(options));
    }
 
    public void testFindSpecifiedActionOption() {
@@ -451,8 +454,10 @@ public class TestCmdLineUtils extends TestCase {
       option.setValidators(Lists
             .newArrayList((CmdLineOptionValidator) validator));
 
-      assertFalse(CmdLineUtils.validate(createOptionInstance(option, "value1")));
-      assertTrue(CmdLineUtils.validate(createOptionInstance(option, "value")));
+      // Test case fail.
+      assertFalse(determineFailedValidation(validate(createOptionInstance(option, "value1"))).isEmpty());
+      // Test case pass.
+      assertTrue(determineFailedValidation(validate(createOptionInstance(option, "value"))).isEmpty());
    }
 
    public void testHandle() {

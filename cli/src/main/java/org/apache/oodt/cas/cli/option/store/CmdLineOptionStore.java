@@ -20,6 +20,7 @@ package org.apache.oodt.cas.cli.option.store;
 import java.util.Set;
 
 //OODT imports
+import org.apache.oodt.cas.cli.exception.CmdLineOptionStoreException;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 
 /**
@@ -29,6 +30,7 @@ import org.apache.oodt.cas.cli.option.CmdLineOption;
  */
 public interface CmdLineOptionStore {
 
-   public Set<CmdLineOption> loadSupportedOptions();
+   public Set<CmdLineOption> loadSupportedOptions()
+      throws CmdLineOptionStoreException;
 
 }

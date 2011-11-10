@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 //OODT imports
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.validator.NoRestrictionsCmdLineOptionValidator;
+import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result;
 
 /**
  * Test class for {@link NoRestrictionsCmdLineOptionValidator}.
@@ -36,11 +37,15 @@ public class TestNoRestrictionsCmdLineOptionValidator extends TestCase {
 
    public void testValidate() {
       // Test pass for null option instance.
-      assertTrue(new NoRestrictionsCmdLineOptionValidator().validate(null));
+      assertEquals(Result.Grade.PASS,
+            new NoRestrictionsCmdLineOptionValidator().validate(null)
+                  .getGrade());
 
       // Test pass for not null option instance.
       CmdLineOptionInstance instance = createOptionInstance(
             createSimpleOption("test", false), "bogus");
-      assertTrue(new NoRestrictionsCmdLineOptionValidator().validate(instance));
+      assertEquals(Result.Grade.PASS,
+            new NoRestrictionsCmdLineOptionValidator().validate(instance)
+                  .getGrade());
    }
 }

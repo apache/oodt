@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 //OODT imports
 import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
+import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result.Grade;
 
 /**
  * Performs validation on option instances via allowed args which are regular
@@ -33,7 +34,7 @@ public class ArgRegExpCmdLineOptionValidator extends
       AllowedArgsCmdLineOptionValidator {
 
    @Override
-   public boolean validate(CmdLineOptionInstance optionInst) {
+   public Result validate(CmdLineOptionInstance optionInst) {
       Validate.notNull(optionInst);
 
       TOP: for (String value : optionInst.getValues()) {
@@ -42,11 +43,11 @@ public class ArgRegExpCmdLineOptionValidator extends
                continue TOP;
             }
          }
-         LOG.severe("Option1 value " + value + " is not allowed for option "
+         return new Result(Grade.FAIL, "Option1 value " + value
+               + " is not allowed for option "
                + optionInst.getOption().getLongOption()
                + " - Allowed values = " + getAllowedArgs());
-         return false;
       }
-      return true;
+      return new Result(Grade.PASS, "Success");
    }
 }

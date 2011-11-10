@@ -33,6 +33,7 @@ import java.util.Stack;
 import org.apache.commons.lang.Validate;
 
 //OODT imports
+import org.apache.oodt.cas.cli.exception.CmdLineConstructionException;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.GroupCmdLineOption;
@@ -52,7 +53,7 @@ import com.google.common.annotations.VisibleForTesting;
 public class StdCmdLineConstructor implements CmdLineConstructor {
 
    public Set<CmdLineOptionInstance> construct(CmdLineIterable<ParsedArg> parsedArgs,
-         Set<CmdLineOption> validOptions) {
+         Set<CmdLineOption> validOptions) throws CmdLineConstructionException {
       HashSet<CmdLineOptionInstance> optionInstances = new HashSet<CmdLineOptionInstance>();
 
       Stack<CmdLineOptionInstance> groupOptions = new Stack<CmdLineOptionInstance>();
@@ -64,7 +65,7 @@ public class StdCmdLineConstructor implements CmdLineConstructor {
             CmdLineOption option = getOptionByName(arg.getName(),
                   validOptions);
             if (option == null) {
-               throw new RuntimeException("Invalid option: '" + arg.getName() + "'");
+               throw new CmdLineConstructionException("Invalid option: '" + arg.getName() + "'");
             }
 
             // read found option
@@ -75,20 +76,20 @@ public class StdCmdLineConstructor implements CmdLineConstructor {
 
                CmdLineOptionInstance currentGroup = groupOptions.peek();
 
-               // Check if option is a subOption for current group.
+               // Check if option is NOT a subOption for current group.
                if (!isSubOption(currentGroup.getOption(), option)) {
 
                   // Check if current group was expecting more subOptions.
                   Set<CmdLineOption> requiredSubOptions = verifyGroupHasRequiredSubOptions(currentGroup);
                   if (!requiredSubOptions.isEmpty()) {
-                     throw new RuntimeException(
+                     throw new CmdLineConstructionException(
                            "Missing the following required subOptions for '"
                                  + currentGroup.getOption()
                                  + "': "
                                  + sortOptionsByRequiredStatus(requiredSubOptions));
 
                   } else if (currentGroup.getSubOptions().isEmpty()) {
-                     throw new RuntimeException(
+                     throw new CmdLineConstructionException(
                            "Must specify a subOption for group option '"
                                  + currentGroup.getOption() + "'");
 
@@ -97,6 +98,7 @@ public class StdCmdLineConstructor implements CmdLineConstructor {
                      // pop group and add to list of specified options.
                      optionInstances.add(groupOptions.pop());
                   }
+               // It is a sub-option...
                } else {
 
                   // Add option to current group subOptions.
@@ -110,9 +112,14 @@ public class StdCmdLineConstructor implements CmdLineConstructor {
 
                // Push group as current group.
                groupOptions.push(specifiedOption);
-
+               
+               if (!parsedArgs.hasNext()) {
+                  throw new CmdLineConstructionException(
+                        "Must specify a subOption for group option '"
+                              + specifiedOption.getOption() + "'");
+               }
             } else if (option.isSubOption()) {
-               throw new RuntimeException("Option '" + option
+               throw new CmdLineConstructionException("Option '" + option
                      + "' is a subOption, but was used at top level Option");
 
             } else {
@@ -121,14 +128,14 @@ public class StdCmdLineConstructor implements CmdLineConstructor {
                optionInstances.add(specifiedOption);
             }
          } else {
-            throw new RuntimeException("Invalid argument: '" + arg + "'");
+            throw new CmdLineConstructionException("Invalid argument: '" + arg + "'");
          }
       }
       while (!groupOptions.isEmpty()) {
          CmdLineOptionInstance currentGroup = groupOptions.pop();
          Set<CmdLineOption> requiredSubOptions = verifyGroupHasRequiredSubOptions(currentGroup);
          if (!requiredSubOptions.isEmpty()) {
-            throw new RuntimeException(
+            throw new CmdLineConstructionException(
                   "Missing the following required subOptions for '"
                         + currentGroup.getOption() + "': "
                         + sortOptionsByRequiredStatus(requiredSubOptions));
@@ -142,7 +149,7 @@ public class StdCmdLineConstructor implements CmdLineConstructor {
 
    @VisibleForTesting
    /* package */static CmdLineOptionInstance getOption(CmdLineIterable<ParsedArg> args,
-         CmdLineOption option) {
+         CmdLineOption option) throws CmdLineConstructionException {
       CmdLineOptionInstance specifiedOption = new CmdLineOptionInstance();
       specifiedOption.setOption(option);
       List<String> values = getValues(args);
@@ -152,10 +159,10 @@ public class StdCmdLineConstructor implements CmdLineConstructor {
          if (!values.isEmpty()) {
             specifiedOption.setValues(values);
          } else if (!option.hasStaticArgs()) {
-            throw new RuntimeException("Option " + option + " requires args");
+            throw new CmdLineConstructionException("Option " + option + " requires args");
          }
       } else if (!option.hasArgs() && !values.isEmpty()) {
-         throw new RuntimeException("Option " + option + " does not support args");
+         throw new CmdLineConstructionException("Option " + option + " does not support args");
       }
       return specifiedOption;
    }
@@ -185,11 +192,12 @@ public class StdCmdLineConstructor implements CmdLineConstructor {
    @VisibleForTesting
    /* package */static List<String> getValues(CmdLineIterable<ParsedArg> args) {
       List<String> values = new ArrayList<String>();
-      ParsedArg nextValue = args.getCurrentArg();
+      ParsedArg nextValue = args.incrementAndGet();
       while (nextValue != null && nextValue.getType().equals(ParsedArg.Type.VALUE)) {
          values.add(nextValue.getName());
          nextValue = args.incrementAndGet();
       }
+      args.descrementIndex();
       return values;
    }
 }

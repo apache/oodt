@@ -17,13 +17,15 @@
 package org.apache.oodt.cas.cli;
 
 //OODT static imports
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineFailedValidation;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRequired;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.findActionOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.findFirstActionOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findHelpOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.findPrintSupportedActionsOption;
 
 //JDK imports
-import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 //Apache imports
@@ -34,15 +36,12 @@ import org.apache.oodt.cas.cli.action.store.CmdLineActionStore;
 import org.apache.oodt.cas.cli.action.store.spring.SpringCmdLineActionStoreFactory;
 import org.apache.oodt.cas.cli.contruct.CmdLineConstructor;
 import org.apache.oodt.cas.cli.contruct.StdCmdLineConstructor;
+import org.apache.oodt.cas.cli.exception.CmdLineActionException;
+import org.apache.oodt.cas.cli.exception.CmdLineActionExecutionException;
+import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
 import org.apache.oodt.cas.cli.exception.CmdLineConstructionException;
-import org.apache.oodt.cas.cli.help.presenter.CmdLineOptionHelpPresenter;
-import org.apache.oodt.cas.cli.help.presenter.StdCmdLineOptionHelpPresenter;
-import org.apache.oodt.cas.cli.help.printer.CmdLineActionHelpPrinter;
-import org.apache.oodt.cas.cli.help.printer.CmdLineActionsHelpPrinter;
-import org.apache.oodt.cas.cli.help.printer.CmdLineOptionsHelpPrinter;
-import org.apache.oodt.cas.cli.help.printer.StdCmdLineActionHelpPrinter;
-import org.apache.oodt.cas.cli.help.printer.StdCmdLineActionsHelpPrinter;
-import org.apache.oodt.cas.cli.help.printer.StdCmdLineOptionsHelpPrinter;
+import org.apache.oodt.cas.cli.exception.CmdLineOptionStoreException;
+import org.apache.oodt.cas.cli.exception.CmdLineParserException;
 import org.apache.oodt.cas.cli.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
@@ -50,11 +49,19 @@ import org.apache.oodt.cas.cli.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption;
 import org.apache.oodt.cas.cli.option.store.CmdLineOptionStore;
 import org.apache.oodt.cas.cli.option.store.spring.SpringCmdLineOptionStoreFactory;
+import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator;
 import org.apache.oodt.cas.cli.parser.CmdLineParser;
 import org.apache.oodt.cas.cli.parser.StdCmdLineParser;
+import org.apache.oodt.cas.cli.presenter.CmdLinePresenter;
+import org.apache.oodt.cas.cli.presenter.StdCmdLinePresenter;
+import org.apache.oodt.cas.cli.printer.CmdLinePrinter;
+import org.apache.oodt.cas.cli.printer.StdCmdLinePrinter;
 import org.apache.oodt.cas.cli.util.CmdLineIterable;
 import org.apache.oodt.cas.cli.util.CmdLineUtils;
 import org.apache.oodt.cas.cli.util.ParsedArg;
+
+//Google imports
+import com.google.common.collect.Lists;
 
 /**
  * A highly configurable utility class which supports parsing and handling of
@@ -68,24 +75,23 @@ import org.apache.oodt.cas.cli.util.ParsedArg;
  */
 public class CmdLineUtility {
 
+   private boolean debugMode;
    private CmdLineParser parser;
    private CmdLineConstructor constructor;
    private CmdLineOptionStore optionStore;
    private CmdLineActionStore actionStore;
-   private CmdLineOptionsHelpPrinter optionHelpPrinter;
-   private CmdLineActionHelpPrinter actionHelpPrinter;
-   private CmdLineActionsHelpPrinter actionsHelpPrinter;
-   private CmdLineOptionHelpPresenter helpPresenter;
+   private CmdLinePrinter printer;
+   private CmdLinePresenter presenter;
 
    public CmdLineUtility() {
       parser = new StdCmdLineParser();
       constructor = new StdCmdLineConstructor();
       optionStore = new SpringCmdLineOptionStoreFactory().createStore();
       actionStore = new SpringCmdLineActionStoreFactory().createStore();
-      optionHelpPrinter = new StdCmdLineOptionsHelpPrinter();
-      actionHelpPrinter = new StdCmdLineActionHelpPrinter();
-      actionsHelpPrinter = new StdCmdLineActionsHelpPrinter();
-      helpPresenter = new StdCmdLineOptionHelpPresenter();
+      printer = new StdCmdLinePrinter();
+      presenter = new StdCmdLinePresenter();
+
+      debugMode = Boolean.getBoolean("org.apache.oodt.cas.cli.debug");
    }
 
    public CmdLineOptionStore getOptionStore() {
@@ -104,56 +110,51 @@ public class CmdLineUtility {
       this.actionStore = actionStore;
    }
 
-   public CmdLineOptionsHelpPrinter getOptionHelpPrinter() {
-      return optionHelpPrinter;
+   public CmdLinePrinter getPrinter() {
+      return printer;
    }
 
-   public void setOptionHelpPrinter(CmdLineOptionsHelpPrinter optionHelpPrinter) {
-      this.optionHelpPrinter = optionHelpPrinter;
+   public void setPrinter(CmdLinePrinter printer) {
+      this.printer = printer;
    }
 
-   public CmdLineActionHelpPrinter getActionHelpPrinter() {
-      return actionHelpPrinter;
+   public CmdLinePresenter getPresenter() {
+      return presenter;
    }
 
-   public void setActionHelpPrinter(CmdLineActionHelpPrinter actionHelpPrinter) {
-      this.actionHelpPrinter = actionHelpPrinter;
-   }
-
-   public CmdLineActionsHelpPrinter getActionsHelpPrinter() {
-      return actionsHelpPrinter;
-   }
-
-   public void setActionsHelpPrinter(
-         CmdLineActionsHelpPrinter actionsHelpPrinter) {
-      this.actionsHelpPrinter = actionsHelpPrinter;
-   }
-
-   public CmdLineOptionHelpPresenter getHelpPresenter() {
-      return helpPresenter;
-   }
-
-   public void setHelpPresenter(CmdLineOptionHelpPresenter helpPresenter) {
-      this.helpPresenter = helpPresenter;
+   public void setPresenter(CmdLinePresenter presenter) {
+      this.presenter = presenter;
    }
 
    public void printOptionHelp(CmdLineArgs cmdLineArgs) {
-      helpPresenter.presentOptionHelp(optionHelpPrinter.printHelp(cmdLineArgs
+      presenter.presentOptionHelp(printer.printOptionsHelp(cmdLineArgs
             .getSupportedOptions()));
    }
 
    public void printActionHelp(CmdLineArgs cmdLineArgs) {
       Validate.notEmpty(cmdLineArgs.getHelpOptionInst().getValues());
 
-      helpPresenter.presentActionHelp(actionHelpPrinter.printHelp(
+      presenter.presentActionHelp(printer.printActionHelp(
             CmdLineUtils.findAction(cmdLineArgs.getHelpOptionInst().getValues()
                   .get(0), cmdLineArgs.getSupportedActions()),
             cmdLineArgs.getSupportedOptions()));
    }
 
    public void printActionsHelp(CmdLineArgs cmdLineArgs) {
-      helpPresenter.presentActionsHelp(actionsHelpPrinter.printHelp(cmdLineArgs
+      presenter.presentActionsHelp(printer.printActionsHelp(cmdLineArgs
             .getSupportedActions()));
+   }
+
+   public void printValidationErrors(List<CmdLineOptionValidator.Result> results) {
+      presenter.presentErrorMessage(printer.printOptionValidationErrors(results));
+   }
+
+   public void printMissingRequiredOptionsError(Set<CmdLineOption> missingOptions) {
+      presenter.presentErrorMessage(printer.printRequiredOptionsMissingError(missingOptions));
+   }
+
+   public void printErrorMessage(String errorMessage) {
+      presenter.presentErrorMessage(errorMessage);
    }
 
    /**
@@ -163,17 +164,18 @@ public class CmdLineUtility {
     * 
     * @param args
     *           The who will be parsed and executed.
-    * @throws IOException
-    *            On error parsing or executing the args.
-    * @throws CmdLineConstructionException 
-    *            On error constructing or executing the args.
     */
-   public void run(String[] args) throws IOException, CmdLineConstructionException {
-      CmdLineArgs cmdLineArgs = parse(args);
-      if (cmdLineArgs.getSpecifiedOptions().isEmpty()) {
-         printOptionHelp(cmdLineArgs);
-      } else if (!handleHelp(cmdLineArgs) && !handlePrintSupportedActions(cmdLineArgs)) {
-         execute(cmdLineArgs);
+   public void run(String[] args) {
+      try {
+         CmdLineArgs cmdLineArgs = parse(args);
+         if (cmdLineArgs.getSpecifiedOptions().isEmpty()) {
+            printOptionHelp(cmdLineArgs);
+         } else if (!handleHelp(cmdLineArgs) && !handlePrintSupportedActions(cmdLineArgs)) {
+            execute(cmdLineArgs);
+         }
+      } catch (Exception e) {
+         if (debugMode) { e.printStackTrace(); }
+         printErrorMessage(e.getMessage());
       }
    }
 
@@ -188,8 +190,11 @@ public class CmdLineUtility {
     *            On error parsing command line arguments.
     * @throws CmdLineConstructionException 
     *            On error constructing command line arguments.
+    * @throws CmdLineOptionStoreException 
     */
-   public CmdLineArgs parse(String[] args) throws IOException, CmdLineConstructionException {
+   public CmdLineArgs parse(String[] args) throws CmdLineParserException,
+         CmdLineActionStoreException, CmdLineConstructionException,
+         CmdLineOptionStoreException {
       Validate.notNull(parser);
       Validate.notNull(optionStore);
 
@@ -197,27 +202,25 @@ public class CmdLineUtility {
       Set<CmdLineOption> validOptions = optionStore.loadSupportedOptions();
 
       // Insure help options is present if required.
-      HelpCmdLineOption helpOption = findHelpOption(validOptions);
-      if (helpOption == null) {
-         validOptions.add(helpOption = new HelpCmdLineOption());
+      if (findHelpOption(validOptions) == null) {
+         validOptions.add(new HelpCmdLineOption());
       }
 
-      // Insure action options is present if required.
-      ActionCmdLineOption actionOption = findActionOption(validOptions);
-      if (actionOption == null) {
-         validOptions.add(actionOption = new ActionCmdLineOption());
+      // Insure action options are present if required.
+      if (findFirstActionOption(validOptions) == null) {
+         validOptions.add(new ActionCmdLineOption());
       }
 
       // Insure print supported actions option is present if required.
-      PrintSupportedActionsCmdLineOption psaOption = CmdLineUtils
-            .findPrintSupportedActionsOption(validOptions);
-      if (psaOption == null) {
-         validOptions.add(psaOption = new PrintSupportedActionsCmdLineOption());
+      if (findPrintSupportedActionsOption(validOptions) == null) {
+         validOptions.add(new PrintSupportedActionsCmdLineOption());
       }
 
       // Parse command line arguments.
       return new CmdLineArgs(actionStore.loadSupportedActions(), validOptions,
-            constructor.construct(new CmdLineIterable<ParsedArg>(parser.parse(args)), validOptions));
+            constructor.construct(
+                  new CmdLineIterable<ParsedArg>(parser.parse(args)),
+                  validOptions));
    }
 
    /**
@@ -263,20 +266,23 @@ public class CmdLineUtility {
     * @param cmdLineArgs
     *           The {@link CmdLineArgs} for which execution processing will be
     *           run.
-    * @throws IOException
-    *            If required options are missing or validation fails.
     */
-   public static void execute(CmdLineArgs cmdLineArgs) throws IOException {
+   public void execute(CmdLineArgs cmdLineArgs)
+         throws CmdLineActionExecutionException, CmdLineActionException {
+      if (cmdLineArgs.getActionOptionInst() == null) {
+         throw new CmdLineActionExecutionException(
+               "Must specify an action option!");
+      }
       Set<CmdLineOption> requiredOptionsNotSet = check(cmdLineArgs);
       if (!requiredOptionsNotSet.isEmpty()) {
-         throw new IOException("Required options are not set: '"
-               + requiredOptionsNotSet + "'");
+         printMissingRequiredOptionsError(requiredOptionsNotSet);
+         return;
       }
 
-      Set<CmdLineOptionInstance> optionsFailedValidation = validate(cmdLineArgs);
-      if (!optionsFailedValidation.isEmpty()) {
-         throw new IOException("Options failed validation: '"
-               + optionsFailedValidation + "'");
+      List<CmdLineOptionValidator.Result> failedValidationResults = determineFailedValidation(validate(cmdLineArgs));
+      if (!failedValidationResults.isEmpty()) {
+         printValidationErrors(failedValidationResults);
+         return;
       }
 
       handle(cmdLineArgs);
@@ -307,24 +313,23 @@ public class CmdLineUtility {
    }
 
    /**
-    * Runs validation on {@link CmdLineArgs} and returns the options which
-    * failed validation.
+    * Runs validation on {@link CmdLineArgs} and returns the validation results.
     * 
     * @param cmdLineArgs
     *           The {@link CmdLineArgs} which will be validated.
-    * @return The {@link CmdLineOptionInstance}s which failed validation.
+    * @return The {@link CmdLineOptionValidator.Result}s generated when running
+    *    {@link CmdLineOptionValidator}s.
     */
-   public static Set<CmdLineOptionInstance> validate(CmdLineArgs cmdLineArgs) {
+   public static List<CmdLineOptionValidator.Result> validate(
+         CmdLineArgs cmdLineArgs) {
       Validate.notNull(cmdLineArgs);
 
-      HashSet<CmdLineOptionInstance> optionsFailed = new HashSet<CmdLineOptionInstance>();
+      List<CmdLineOptionValidator.Result> results = Lists.newArrayList();
       for (CmdLineOptionInstance optionInst : cmdLineArgs
             .getSpecifiedOptions()) {
-         if (!CmdLineUtils.validate(optionInst)) {
-            optionsFailed.add(optionInst);
-         }
+         results.addAll(CmdLineUtils.validate(optionInst));
       }
-      return optionsFailed;
+      return results;
    }
 
    /**

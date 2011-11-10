@@ -19,6 +19,7 @@ package org.apache.oodt.cas.cli.option.validator;
 //OODT imports
 import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
+import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result.Grade;
 
 /**
  * Validates arguments which are checked to see if they are valid classpaths.
@@ -28,19 +29,19 @@ import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 public class ClassExistsCmdLineOptionValidator implements
       CmdLineOptionValidator {
 
-   public boolean validate(CmdLineOptionInstance optionInst) {
+   @Override
+   public Result validate(CmdLineOptionInstance optionInst) {
       Validate.notNull(optionInst);
 
       for (String value : optionInst.getValues()) {
          try {
             Class.forName(value);
          } catch (Exception e) {
-            LOG.severe("Option value " + value + " for option "
-                  + optionInst.getOption().getLongOption()
+            return new Result(Grade.FAIL, "Option value " + value
+                  + " for option " + optionInst.getOption().getLongOption()
                   + " is not a valid class");
-            return false;
          }
       }
-      return true;
+      return new Result(Grade.PASS, "Success");
    }
 }

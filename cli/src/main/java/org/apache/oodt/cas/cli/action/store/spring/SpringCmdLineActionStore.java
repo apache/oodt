@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 //OODT imports
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.action.store.CmdLineActionStore;
+import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -43,7 +44,9 @@ public class SpringCmdLineActionStore implements CmdLineActionStore {
       handleSettingNameForCmdLineActions();
    }
 
-   public Set<CmdLineAction> loadSupportedActions() {
+   @Override
+   public Set<CmdLineAction> loadSupportedActions()
+         throws CmdLineActionStoreException {
       @SuppressWarnings("unchecked")
       Map<String, CmdLineAction> actionsMap = appContext
             .getBeansOfType(CmdLineAction.class);

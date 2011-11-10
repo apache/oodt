@@ -17,10 +17,10 @@
 package org.apache.oodt.cas.cli.util;
 
 //JDK imports
-import java.io.IOException;
 import java.util.Arrays;
 
 //OODT imports
+import org.apache.oodt.cas.cli.exception.CmdLineParserException;
 import org.apache.oodt.cas.cli.parser.StdCmdLineParser;
 
 //JUnit imports
@@ -35,7 +35,7 @@ public class TestCmdLineIterable extends TestCase {
 
    private static final String ARGS_STRING = "--operation download --url http://somewhere.com --user foo --pass bar --toDir /tmp";
 
-   public void testIteration() throws IOException {
+   public void testIteration() throws CmdLineParserException {
       StringBuffer argsString = new StringBuffer("");
       CmdLineIterable<ParsedArg> args = createArgs();
       for (ParsedArg arg : args) {
@@ -53,7 +53,7 @@ public class TestCmdLineIterable extends TestCase {
                break;
             }
          }
-         arg = args.getAndIncrement();
+         arg = args.incrementAndGet();
          if (arg.getType().equals(ParsedArg.Type.OPTION)) {
             argsString.append("--");
          }
@@ -64,7 +64,7 @@ public class TestCmdLineIterable extends TestCase {
             Arrays.asList(argsString.toString().split(" ")));
    }
 
-   public void testIndexOutOfBoundsException() throws IOException {
+   public void testIndexOutOfBoundsException() throws CmdLineParserException {
       CmdLineIterable<ParsedArg> args = new CmdLineIterable<ParsedArg>(
             new StdCmdLineParser().parse(new String[] {}));
       try {
@@ -74,7 +74,7 @@ public class TestCmdLineIterable extends TestCase {
       }
    }
 
-   private CmdLineIterable<ParsedArg> createArgs() throws IOException {
+   private CmdLineIterable<ParsedArg> createArgs() throws CmdLineParserException {
       return new CmdLineIterable<ParsedArg>(
             new StdCmdLineParser().parse(ARGS_STRING.split(" ")));
    }

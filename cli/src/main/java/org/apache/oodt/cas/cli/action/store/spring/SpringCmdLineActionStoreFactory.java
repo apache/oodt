@@ -17,6 +17,7 @@
 package org.apache.oodt.cas.cli.action.store.spring;
 
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.action.store.CmdLineActionStoreFactory;
 
 /**
@@ -35,10 +36,8 @@ public class SpringCmdLineActionStoreFactory implements
    }
 
    public SpringCmdLineActionStore createStore() {
-      if (config != null) {
-         return new SpringCmdLineActionStore(config);
-      } else {
-         return null;
-      }
+      Validate.notNull(config);
+
+      return new SpringCmdLineActionStore(config);
    }
 }

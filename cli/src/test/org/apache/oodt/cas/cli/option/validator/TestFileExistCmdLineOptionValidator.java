@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 //OODT imports
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.validator.FileExistCmdLineOptionValidator;
+import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result;
 
 /**
  * Test class for {@link FileExistCmdLineOptionValidator}.
@@ -49,13 +50,15 @@ public class TestFileExistCmdLineOptionValidator extends TestCase {
       // Test fail case.
       CmdLineOptionInstance instance = createOptionInstance(
             createSimpleOption("test", false), "bogus");
-      assertFalse(new FileExistCmdLineOptionValidator().validate(instance));
+      assertEquals(Result.Grade.FAIL, new FileExistCmdLineOptionValidator()
+            .validate(instance).getGrade());
 
       // Test pass case.
       File tempFile = File.createTempFile("bogus", "bogus");
       tempFile.deleteOnExit();
       instance = createOptionInstance(createSimpleOption("test", false),
             tempFile.getAbsolutePath());
-      assertTrue(new FileExistCmdLineOptionValidator().validate(instance));
+      assertEquals(Result.Grade.PASS, new FileExistCmdLineOptionValidator()
+            .validate(instance).getGrade());
    }
 }

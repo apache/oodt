@@ -16,6 +16,9 @@
  */
 package org.apache.oodt.cas.cli.action;
 
+//OODT imports
+import org.apache.oodt.cas.cli.exception.CmdLineActionException;
+
 /**
  * Action which is specified and configured via {@link CmdLineOption}s and
  * then executed.
@@ -51,6 +54,6 @@ public abstract class CmdLineAction {
       return description;
    }
 
-   public abstract void execute();
+   public abstract void execute() throws CmdLineActionException;
 
 }

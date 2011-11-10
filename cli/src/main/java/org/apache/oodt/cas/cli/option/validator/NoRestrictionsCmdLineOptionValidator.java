@@ -18,6 +18,7 @@ package org.apache.oodt.cas.cli.option.validator;
 
 //OODT imports
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
+import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result.Grade;
 
 /**
  * A {@link CmdLineOptionValidator} which always returns true.
@@ -27,7 +28,7 @@ import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 public class NoRestrictionsCmdLineOptionValidator implements
       CmdLineOptionValidator {
 
-   public boolean validate(CmdLineOptionInstance optionInst) {
-      return true;
+   public Result validate(CmdLineOptionInstance optionInst) {
+      return new Result(Grade.PASS, "Success");
    }
 }

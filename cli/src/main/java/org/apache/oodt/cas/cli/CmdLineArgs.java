@@ -39,7 +39,7 @@ import org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption;
 /**
  * A convenience class for {@link CmdLineUtility} for helping use already parsed
  * Command-Line arguments.
- * 
+ *
  * @author bfoster (Brian Foster)
  */
 public class CmdLineArgs {

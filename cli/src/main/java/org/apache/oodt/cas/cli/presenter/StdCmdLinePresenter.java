@@ -14,34 +14,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.help.presenter;
+package org.apache.oodt.cas.cli.presenter;
 
 //JDK imports
+import java.io.OutputStream;
 import java.io.PrintStream;
+
+//Apache imports
+import org.apache.commons.lang.Validate;
 
 /**
  * Standard help presenter which sends help messages to {@link System.out}.
  * 
  * @author bfoster (Brian Foster)
  */
-public class StdCmdLineOptionHelpPresenter implements
-      CmdLineOptionHelpPresenter {
+public class StdCmdLinePresenter implements
+      CmdLinePresenter {
 
    private PrintStream ps;
 
-   public StdCmdLineOptionHelpPresenter() {
-      ps = new PrintStream(System.out);
+   public StdCmdLinePresenter() {
+      this(System.out);
    }
 
+   public StdCmdLinePresenter(OutputStream os) {
+      Validate.notNull(os);
+
+      ps = new PrintStream(os);
+   }
+
+   @Override
    public void presentOptionHelp(String optionHelpMessage) {
       ps.println(optionHelpMessage);
    }
 
+   @Override
    public void presentActionHelp(String actionHelpMessage) {
       ps.println(actionHelpMessage);
    }
 
+   @Override
    public void presentActionsHelp(String actionsHelpMessage) {
       ps.println(actionsHelpMessage);
+   }
+
+   @Override
+   public void presentErrorMessage(String errorMessage) {
+      ps.println(errorMessage);
    }
 }

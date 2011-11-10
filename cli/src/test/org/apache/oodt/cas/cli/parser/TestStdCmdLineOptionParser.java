@@ -17,10 +17,10 @@
 package org.apache.oodt.cas.cli.parser;
 
 //JDK imports
-import java.io.IOException;
 import java.util.List;
 
 //OODT imports
+import org.apache.oodt.cas.cli.exception.CmdLineParserException;
 import org.apache.oodt.cas.cli.util.ParsedArg;
 
 //JUnit imports
@@ -33,7 +33,7 @@ import junit.framework.TestCase;
  */
 public class TestStdCmdLineOptionParser extends TestCase {
 
-   public void testParser() throws IOException {
+   public void testParser() throws CmdLineParserException {
       String[] args =
             "--group --list one two three four --scalar one --none --group --list one --scalar one"
                   .split(" ");

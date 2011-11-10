@@ -14,14 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.action.store;
+package org.apache.oodt.cas.cli.exception;
 
 /**
- * Factory for creating {@link CmdLineActionStore}s.
- * 
+ * An {@link Exception} thrown by {@link CmdLineActionStore}.
+ *
  * @author bfoster (Brian Foster)
  */
-public interface CmdLineActionStoreFactory {
+public class CmdLineActionStoreException extends Exception {
 
-   public CmdLineActionStore createStore();
+   private static final long serialVersionUID = 4303378887098186113L;
+
+   public CmdLineActionStoreException(String msg) {
+      super(msg);
+   }
+
+   public CmdLineActionStoreException(String msg, Throwable t) {
+      super(msg, t);
+   }
 }

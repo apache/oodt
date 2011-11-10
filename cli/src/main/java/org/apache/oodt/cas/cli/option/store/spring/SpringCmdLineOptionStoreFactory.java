@@ -17,6 +17,7 @@
 package org.apache.oodt.cas.cli.option.store.spring;
 
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.option.store.CmdLineOptionStoreFactory;
 
 /**
@@ -34,12 +35,11 @@ public class SpringCmdLineOptionStoreFactory implements
             "org.apache.oodt.cas.cli.option.spring.config", null);
    }
 
+   @Override
    public SpringCmdLineOptionStore createStore() {
-      if (config != null) {
-         return new SpringCmdLineOptionStore(config);
-      } else {
-         return null;
-      }
+      Validate.notNull(config);
+
+      return new SpringCmdLineOptionStore(config);
    }
 
    public void setConfig(String config) {

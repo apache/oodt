@@ -33,10 +33,10 @@
 package org.apache.oodt.cas.cli.parser;
 
 //JDK imports
-import java.io.IOException;
 import java.util.List;
 
 //OODT imports
+import org.apache.oodt.cas.cli.exception.CmdLineParserException;
 import org.apache.oodt.cas.cli.util.ParsedArg;
 
 //Google imports
@@ -51,7 +51,7 @@ import com.google.common.collect.Lists;
  */
 public class StdCmdLineParser implements CmdLineParser {
 
-   public List<ParsedArg> parse(String[] args) throws IOException {
+   public List<ParsedArg> parse(String[] args) throws CmdLineParserException {
       List<ParsedArg> parsedArgs = Lists.newArrayList();
 
       for (String arg : args) {

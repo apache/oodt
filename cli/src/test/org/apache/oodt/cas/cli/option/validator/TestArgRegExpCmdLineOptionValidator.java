@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.validator.AllowedArgsCmdLineOptionValidator;
 import org.apache.oodt.cas.cli.option.validator.ArgRegExpCmdLineOptionValidator;
+import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result;
 
 //Google imports
 import com.google.common.collect.Lists;
@@ -49,7 +50,8 @@ public class TestArgRegExpCmdLineOptionValidator extends TestCase {
       // Test no allowed args set and valid option instance
       CmdLineOptionInstance instance = createOptionInstance(
             createSimpleOption("test", false), "value");
-      assertFalse(new AllowedArgsCmdLineOptionValidator().validate(instance));
+      assertEquals(Result.Grade.FAIL, new AllowedArgsCmdLineOptionValidator()
+            .validate(instance).getGrade());
    }
 
    public void testValidate() {
@@ -66,11 +68,11 @@ public class TestArgRegExpCmdLineOptionValidator extends TestCase {
       // Test should fail case.
       CmdLineOptionInstance instance = createOptionInstance(
             createSimpleOption("test", false), "value");
-      assertFalse(validator.validate(instance));
+      assertEquals(Result.Grade.FAIL, validator.validate(instance).getGrade());
 
       // Test should pass case.
       instance = createOptionInstance(createSimpleOption("test", false),
             "value1");
-      assertTrue(validator.validate(instance));
+      assertEquals(Result.Grade.PASS, validator.validate(instance).getGrade());
    }
 }

@@ -23,6 +23,7 @@ import java.util.List;
 //OODT imports
 import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
+import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result.Grade;
 
 /**
  * A {@link CmdLineOptionValidator} which check args against a supplied list of
@@ -39,18 +40,19 @@ public class AllowedArgsCmdLineOptionValidator implements
       this.allowedArgs = new LinkedList<String>();
    }
 
-   public boolean validate(CmdLineOptionInstance optionInst) {
+   @Override
+   public Result validate(CmdLineOptionInstance optionInst) {
       Validate.notNull(optionInst);
 
       for (String value : optionInst.getValues()) {
          if (!allowedArgs.contains(value)) {
-            LOG.severe("Option value " + value + " is not allowed for option "
+            return new Result(Grade.FAIL, "Option value " + value
+                  + " is not allowed for option "
                   + optionInst.getOption().getLongOption()
                   + " - Allowed values = " + this.getAllowedArgs());
-            return false;
          }
       }
-      return true;
+      return new Result(Grade.PASS, "Success");
    }
 
    public List<String> getAllowedArgs() {

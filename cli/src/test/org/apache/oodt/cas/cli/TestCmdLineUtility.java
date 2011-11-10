@@ -17,13 +17,16 @@
 package org.apache.oodt.cas.cli;
 
 //OODT static imports
+import static org.apache.oodt.cas.cli.CmdLineUtility.validate;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createActionOption;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createAdvancedOption;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createApplyToActionHandler;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createOptionInstance;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineFailedValidation;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.getOptionByName;
 
 //JDK imports
+import java.util.List;
 import java.util.Set;
 
 //OODT imports
@@ -37,7 +40,9 @@ import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.HelpCmdLineOption;
 import org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption;
 import org.apache.oodt.cas.cli.option.validator.ArgRegExpCmdLineOptionValidator;
+import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result;
 import org.apache.oodt.cas.cli.test.util.TestUtils;
+import org.apache.oodt.cas.cli.util.CmdLineUtils;
 
 //Google imports
 import com.google.common.collect.Lists;
@@ -69,7 +74,9 @@ public class TestCmdLineUtility extends TestCase {
       CmdLineArgs args = getArgs();
 
       // Expect pass.
-      assertEquals(0, CmdLineUtility.validate(args).size());
+      assertEquals(1, CmdLineUtility.validate(args).size());
+      assertEquals(Result.Grade.PASS, CmdLineUtility.validate(args).get(0)
+            .getGrade());
 
       // Add validator which will cause fail.
       AdvancedCmdLineOption option = (AdvancedCmdLineOption) getOptionByName("message", args.getSupportedOptions());
@@ -78,7 +85,7 @@ public class TestCmdLineUtility extends TestCase {
       option.addValidator(validator);
 
       // Expect fail.
-      assertEquals(1, CmdLineUtility.validate(args).size());
+      assertFalse(determineFailedValidation(validate(args)).isEmpty());
    }
 
    public void testHandle() {

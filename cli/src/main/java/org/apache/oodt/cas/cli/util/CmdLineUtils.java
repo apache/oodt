@@ -255,10 +255,21 @@ public class CmdLineUtils {
       Validate.notNull(optionName);
       Validate.notNull(options);
 
-      for (CmdLineOption option : options)
+      for (CmdLineOption option : options) {
          if (option.getLongOption().equals(optionName)
-               || option.getShortOption().equals(optionName))
+               || option.getShortOption().equals(optionName)) {
             return option;
+         } else if (isGroupOption(option)) {
+            Set<CmdLineOption> subOptions = Sets.newHashSet(); 
+            for (GroupSubOption subOption : asGroupOption(option).getSubOptions()) {
+               subOptions.add(subOption.getOption());
+            }
+            CmdLineOption foundOption = getOptionByName(optionName, subOptions);
+            if (foundOption != null) {
+               return foundOption;
+            }
+         }
+      }
       return null;
    }
 
@@ -524,15 +535,54 @@ public class CmdLineUtils {
     *           {@link ActionCmdLineOption}
     * @return The found {@link ActionCmdLineOption}, or null if not found
     */
-   public static ActionCmdLineOption findActionOption(Set<CmdLineOption> options) {
+   public static ActionCmdLineOption findFirstActionOption(
+         Set<CmdLineOption> options) {
       Validate.notNull(options);
 
       for (CmdLineOption option : options) {
          if (isActionOption(option)) {
             return (ActionCmdLineOption) option;
+         } else if (isGroupOption(option)) {
+            GroupCmdLineOption groupOption = (GroupCmdLineOption) option;
+            Set<CmdLineOption> subOptions = Sets.newHashSet();
+            for (GroupSubOption subOption : groupOption.getSubOptions()) {
+               subOptions.add(subOption.getOption());
+            }
+            ActionCmdLineOption foundOption = findFirstActionOption(subOptions);
+            if (foundOption != null) {
+               return foundOption;
+            }
          }
       }
       return null;
+   }
+
+   /**
+    * Finds all {@link CmdLineOption}s that are {@link ActionCmdLineOption}s.
+    * 
+    * @param options
+    *           The {@link CmdLineOption}s to look through for
+    *           {@link ActionCmdLineOption}s
+    * @return All {@link ActionCmdLineOption}s found
+    */
+   public static List<ActionCmdLineOption> findActionOptions(
+         Set<CmdLineOption> options) {
+      Validate.notNull(options);
+
+      List<ActionCmdLineOption> actionOptions = Lists.newArrayList();
+      for (CmdLineOption option : options) {
+         if (isActionOption(option)) {
+            actionOptions.add((ActionCmdLineOption) option);
+         } else if (isGroupOption(option)) {
+            GroupCmdLineOption groupOption = (GroupCmdLineOption) option;
+            Set<CmdLineOption> subOptions = Sets.newHashSet();
+            for (GroupSubOption subOption : groupOption.getSubOptions()) {
+               subOptions.add(subOption.getOption());
+            }
+            actionOptions.addAll(findActionOptions(subOptions));
+         }
+      }
+      return actionOptions;
    }
 
    /**
@@ -724,30 +774,46 @@ public class CmdLineUtils {
     * 
     * @param option
     *           The {@link CmdLineOptionInstance} to be validated
-    * @return True if {@link CmdLineOptionInstance} passed validation, false
-    *         otherwise
+    * @return {@link CmdLineOptionValidator.Result}s from running
+    *         {@link CmdLineOptionValidator}s.
     */
-   public static boolean validate(CmdLineOptionInstance option) {
+   public static List<CmdLineOptionValidator.Result> validate(
+         CmdLineOptionInstance option) {
       Validate.notNull(option);
 
+      List<CmdLineOptionValidator.Result> results = Lists.newArrayList();
       if (option.isValidatable()) {
          for (CmdLineOptionValidator validator : ((ValidatableCmdLineOption) option
                .getOption()).getValidators()) {
-            if (!validator.validate(option)) {
-               return false;
-            }
+            results.add(validator.validate(option));
          }
       }
 
       if (option.isGroup()) {
          for (CmdLineOptionInstance subOption : option.getSubOptions()) {
-            if (!validate(subOption)) {
-               return false;
-            }
+            results.addAll(validate(subOption));
          }
       }
+      return results;
+   }
 
-      return true;
+   /**
+    * Finds the {@link CmdLineOptionValidator.Result}s with grade of FAIL.
+    * 
+    * @param results
+    *           The {@link CmdLineOptionValidator.Result}s which are checked if
+    *           they have a failing grade.
+    * @return {@link CmdLineOptionValidator.Result}s with grade of FAIL.
+    */
+   public static List<CmdLineOptionValidator.Result> determineFailedValidation(
+         List<CmdLineOptionValidator.Result> results) {
+      List<CmdLineOptionValidator.Result> failedResults = Lists.newArrayList();
+      for (CmdLineOptionValidator.Result result : results) {
+         if (result.getGrade().equals(CmdLineOptionValidator.Result.Grade.FAIL)) {
+            failedResults.add(result);
+         }
+      }
+      return failedResults;
    }
 
    /**

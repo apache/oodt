@@ -14,14 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.action.store;
+package org.apache.oodt.cas.cli.exception;
 
 /**
- * Factory for creating {@link CmdLineActionStore}s.
- * 
+ * A {@link Exception} throw when there is an error parsing command line args.
+ *
  * @author bfoster (Brian Foster)
  */
-public interface CmdLineActionStoreFactory {
+public class CmdLineParserException extends Exception {
 
-   public CmdLineActionStore createStore();
+   private static final long serialVersionUID = 926637321837303042L;
+
+   public CmdLineParserException(String msg) {
+      super(msg);
+   }
+
+   public CmdLineParserException(String msg, Throwable t) {
+      super(msg, t);
+   }
 }

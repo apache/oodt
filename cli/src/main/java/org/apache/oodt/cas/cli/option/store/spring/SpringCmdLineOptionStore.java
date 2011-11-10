@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 //OODT imports
+import org.apache.oodt.cas.cli.exception.CmdLineOptionStoreException;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.store.CmdLineOptionStore;
 
@@ -28,6 +29,7 @@ import org.apache.oodt.cas.cli.option.store.CmdLineOptionStore;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+//Google imports
 import com.google.common.collect.Sets;
 
 /**
@@ -43,7 +45,9 @@ public class SpringCmdLineOptionStore implements CmdLineOptionStore {
       appContext = new FileSystemXmlApplicationContext(springConfig);
    }
 
-   public Set<CmdLineOption> loadSupportedOptions() {
+   @Override
+   public Set<CmdLineOption> loadSupportedOptions()
+         throws CmdLineOptionStoreException {
       @SuppressWarnings("unchecked")
       Map<String, CmdLineOption> optionsMap = appContext
             .getBeansOfType(CmdLineOption.class);

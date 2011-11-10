@@ -28,6 +28,8 @@ import java.util.Set;
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.action.PrintMessageAction;
 import org.apache.oodt.cas.cli.action.store.spring.SpringCmdLineActionStore;
+import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
+import org.apache.oodt.cas.cli.exception.CmdLineOptionStoreException;
 import org.apache.oodt.cas.cli.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler;
@@ -49,7 +51,8 @@ public class TestSpringCmdLineOptionStore extends TestCase {
    private static final String SPRING_OPTION_CONFIG = "src/testdata/cmd-line-options.xml";
    private static final String SPRING_ACTION_CONFIG = "src/testdata/cmd-line-actions.xml";
 
-   public void testLoadSupportedOptions() {
+   public void testLoadSupportedOptions() throws CmdLineActionStoreException,
+         CmdLineOptionStoreException {
       SpringCmdLineOptionStore optionStore = new SpringCmdLineOptionStore(
             SPRING_OPTION_CONFIG);
       Set<CmdLineOption> options = optionStore.loadSupportedOptions();
@@ -105,7 +108,8 @@ public class TestSpringCmdLineOptionStore extends TestCase {
                   .getApplyToActions().get(0).getMethodName());
    }
 
-   public void testHandlers() {
+   public void testHandlers() throws CmdLineActionStoreException,
+         CmdLineOptionStoreException {
       SpringCmdLineOptionStore store = new SpringCmdLineOptionStore(
             SPRING_OPTION_CONFIG);
       Set<CmdLineOption> options = store.loadSupportedOptions();

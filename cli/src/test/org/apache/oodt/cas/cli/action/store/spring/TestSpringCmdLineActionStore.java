@@ -31,6 +31,7 @@ import junit.framework.TestCase;
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.action.PrintMessageAction;
 import org.apache.oodt.cas.cli.action.store.spring.SpringCmdLineActionStore;
+import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
 import org.apache.oodt.cas.cli.test.util.TestSetContextInjectTypeAction;
 
 //Spring imports
@@ -57,7 +58,7 @@ public class TestSpringCmdLineActionStore extends TestCase {
       }
    }
 
-   public void testApplicationContextAutoSet() {
+   public void testApplicationContextAutoSet() throws CmdLineActionStoreException {
       SpringCmdLineActionStore store = new SpringCmdLineActionStore(
             SPRING_CONFIG);
       TestSetContextInjectTypeAction action = (TestSetContextInjectTypeAction) findAction(
@@ -65,7 +66,7 @@ public class TestSpringCmdLineActionStore extends TestCase {
       assertEquals(action.getContext(), store.getApplicationContext());
    }
 
-   public void testLoadSupportedActions() {
+   public void testLoadSupportedActions() throws CmdLineActionStoreException {
       SpringCmdLineActionStore store = new SpringCmdLineActionStore(
             SPRING_CONFIG);
       Set<CmdLineAction> actions = store.loadSupportedActions();

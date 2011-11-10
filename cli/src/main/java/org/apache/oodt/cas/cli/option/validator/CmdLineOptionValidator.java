@@ -16,9 +16,6 @@
  */
 package org.apache.oodt.cas.cli.option.validator;
 
-//JDK imports
-import java.util.logging.Logger;
-
 //OODT imports
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 
@@ -29,8 +26,31 @@ import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
  */
 public interface CmdLineOptionValidator {
 
-   static Logger LOG = Logger.getLogger(CmdLineOptionValidator.class.getName());
+   public class Result {
+      public enum Grade {
+         PASS, FAIL;
+      }
 
-   public boolean validate(CmdLineOptionInstance optionInst);
+      private String message;
+      private Grade grade;
 
+      public Result(Grade grade, String message) {
+         this.message = message;
+         this.grade = grade;
+      }
+
+      public String getMessage() {
+         return message;
+      }
+
+      public Grade getGrade() {
+         return grade;
+      }
+   }
+
+   /**
+    * Throws {@link CmdLineValidationException} if validation fails, otherwise
+    * method just returns.
+    */
+   public Result validate(CmdLineOptionInstance optionInst);
 }

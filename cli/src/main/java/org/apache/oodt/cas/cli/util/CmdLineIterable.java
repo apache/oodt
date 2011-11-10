@@ -39,7 +39,7 @@ public class CmdLineIterable<T> implements Iterable<T> {
    public CmdLineIterable(List<T> args) {
       Validate.notNull(args);
 
-      curIndex = 0;
+      curIndex = -1;
       this.args = args;
    }
 
@@ -56,11 +56,15 @@ public class CmdLineIterable<T> implements Iterable<T> {
    }
 
    public void incrementIndex() {
-      curIndex++;
+      if (curIndex < args.size()) {
+         curIndex++;
+      }
    }
 
    public void descrementIndex() {
-      curIndex--;
+      if (curIndex > 0) {
+         curIndex--;
+      }
    }
 
    public T incrementAndGet() {
@@ -83,11 +87,13 @@ public class CmdLineIterable<T> implements Iterable<T> {
    }
 
    public boolean hasNext() {
-      return curIndex < args.size();
+      return curIndex + 1 < args.size();
    }
 
    public T getCurrentArg() {
-      if (hasNext()) {
+      if (curIndex == -1) {
+         return incrementAndGet();
+      } else if (curIndex > -1 && curIndex < args.size()) {
          return args.get(curIndex);
       } else {
          return null;
@@ -103,9 +109,9 @@ public class CmdLineIterable<T> implements Iterable<T> {
 
          public T next() {
             if (!hasNext()) {
-               throw new IndexOutOfBoundsException(curIndex + "");
+               throw new IndexOutOfBoundsException((curIndex + 1) + "");
             }
-            return getAndIncrement();
+            return incrementAndGet();
          }
 
          public void remove() {
