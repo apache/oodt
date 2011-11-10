@@ -17,40 +17,21 @@
 
 package org.apache.oodt.pcs.opsui.status;
 
-//JDK imports
-import java.util.List;
-
 //OODT imports
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
-import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.pcs.opsui.ProductBrowserPage;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.pcs.health.CrawlerHealth;
-import org.apache.oodt.pcs.health.CrawlerStatus;
-import org.apache.oodt.pcs.health.JobHealthStatus;
-import org.apache.oodt.pcs.health.PCSDaemonStatus;
-import org.apache.oodt.pcs.health.PCSHealthMonitorReport;
 import org.apache.oodt.pcs.opsui.BasePage;
 import org.apache.oodt.pcs.opsui.OpsuiApp;
 import org.apache.oodt.pcs.opsui.WorkflowInstanceViewerPage;
 import org.apache.oodt.pcs.tools.PCSHealthMonitor;
-import org.apache.oodt.pcs.util.FileManagerUtils;
+import org.apache.oodt.pcs.webcomponents.health.HealthMonitor;
 
 //Wicket imports
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.ResourceReference;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.image.Image;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.util.ListModel;
 
 /**
  * 
- * A wicket controller for exposing the super awesome power of 
- * the {@link PCSHealthMonitor}.
+ * A wicket controller for exposing the super awesome power of the
+ * {@link PCSHealthMonitor}.
  * 
  * @author mattmann
  * @version $Revision$
@@ -71,167 +52,9 @@ public class StatusPage extends BasePage {
     String rmUrlStr = app.getRmUrlStr();
     String crawlerConfFilePath = app.getCrawlerConfFilePath();
     String statesFilePath = app.getStatesFilePath();
-    PCSHealthMonitor mon = new PCSHealthMonitor(fmUrlStr, wmUrlStr, rmUrlStr,
-        crawlerConfFilePath, statesFilePath);
-    final PCSHealthMonitorReport report = mon.getReport();
-
-    add(new Label("report_date", report.getCreateDateIsoFormat()));
-    add(new Label("fmurl", report.getFmStatus().getUrlStr()));
-    add(new Label("wmurl", report.getWmStatus().getUrlStr()));
-    add(new Label("rmurl", report.getRmStatus().getUrlStr()));
-
-    add(new Image("fmstatus_icon", getUpOrDownArrowRef(report.getFmStatus()
-        .getStatus())));
-    add(new Image("wmstatus_icon", getUpOrDownArrowRef(report.getWmStatus()
-        .getStatus())));
-    add(new Image("rmstatus_icon", getUpOrDownArrowRef(report.getRmStatus()
-        .getStatus())));
-
-    ListModel crawlerStatusListModel = new ListModel(report.getCrawlerStatus());
-    add(new VisibilityAndSortToggler("crawler_toggler",
-        "crawler_status_showall", "crawler_status_hide", "crawler_status_sort",
-        "crawler_status_unsort", "crawler_status_more", crawlerStatusListModel));
-
-    add(new ListView<CrawlerStatus>("crawler_status_list",
-        crawlerStatusListModel) {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.apache.wicket.markup.html.list.ListView#populateItem(org.apache
-       * .wicket.markup.html.list.ListItem)
-       */
-      @Override
-      protected void populateItem(ListItem<CrawlerStatus> statusItem) {
-        CrawlerStatus status = statusItem.getModelObject();
-        String statusString = status.getInfo().getCrawlerName() + " ("
-            + status.getCrawlHost() + ":" + status.getInfo().getCrawlerPort()
-            + ")";
-        statusItem.add(new Label("crawler_name_and_url", statusString));
-        statusItem.add(new Image("crawler_status_icon",
-            getUpOrDownArrowRef(status.getStatus())));
-      }
-    });
-
-    ListModel batchStubStatusListModel = new ListModel(
-        report.getBatchStubStatus());
-    add(new VisibilityAndSortToggler("batch_stub_toggler",
-        "batch_stub_showall", "batch_stub_hide", "batch_stub_sort",
-        "batch_stub_unsort", "batch_stub_more", batchStubStatusListModel));
-
-    add(new ListView<PCSDaemonStatus>("batch_stub_list",
-        batchStubStatusListModel) {
-
-      @Override
-      protected void populateItem(ListItem<PCSDaemonStatus> item) {
-        item.add(new Label("batch_stub_url", item.getModelObject().getUrlStr()));
-        item.add(new Image("batch_stub_status_icon", getUpOrDownArrowRef(item
-            .getModelObject().getStatus())));
-
-      }
-    });
-
-    List<JobHealthStatus> jobHealthStatusList = report.getJobHealthStatus();
-    add(new ListView<JobHealthStatus>("jobstatus_list", jobHealthStatusList) {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.apache.wicket.markup.html.list.ListView#populateItem(org.apache
-       * .wicket.markup.html.list.ListItem)
-       */
-      @Override
-      protected void populateItem(final ListItem<JobHealthStatus> item) {
-        item.add(new Label("status_name", item.getModelObject().getStatus()));
-        Link<String> countLink = new Link<String>("jobstatus_count_link",
-            new Model<String>(item.getModelObject().getStatus())) {
-
-          @Override
-          public void onClick() {
-            PageParameters params = new PageParameters();
-            params.add("pageNum", "1");
-            params.add("status", getModelObject());
-            setResponsePage(WorkflowInstanceViewerPage.class, params);
-          }
-        };
-        countLink.add(new Label("status_num_jobs", String.valueOf(item
-            .getModelObject().getNumPipelines())));
-        item.add(countLink);
-      }
-    });
-
-    List<Product> prodList = report.getLatestProductsIngested();
-    final FileManagerUtils fm = new FileManagerUtils(fmUrlStr);
-
-    add(new ListView<Product>("file_health_list", prodList) {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.apache.wicket.markup.html.list.ListView#populateItem(org.apache
-       * .wicket.markup.html.list.ListItem)
-       */
-      @Override
-      protected void populateItem(ListItem<Product> item) {
-        final Product product = item.getModelObject();
-        product.setProductType(fm.safeGetProductTypeById(product
-            .getProductType().getProductTypeId()));
-        product.setProductReferences(fm.safeGetProductReferences(product));
-        final Metadata prodMet = fm.safeGetMetadata(product);
-        final String filePath = fm.getFilePath(product);
-
-        Link link = new Link("view_product_link") {
-          /*
-           * (non-Javadoc)
-           * 
-           * @see org.apache.wicket.markup.html.link.Link#onClick()
-           */
-          @Override
-          public void onClick() {
-            PageParameters params = new PageParameters();
-            params.add("id", product.getProductId());
-            setResponsePage(ProductBrowserPage.class, params);
-          }
-        };
-
-        link.add(new Label("file_path", filePath));
-        item.add(link);
-        item.add(new Label("file_ingest_datetime", prodMet.getMetadata("CAS."
-            + CoreMetKeys.PRODUCT_RECEVIED_TIME)));
-
-      }
-    });
-
-    ListModel crawlerHealthListModel = new ListModel(
-        report.getCrawlerHealthStatus());
-    add(new VisibilityToggler("crawler_health_toggler",
-        "crawler_health_showall", "crawler_health_hide", "crawler_health_more",
-        crawlerHealthListModel));
-
-    add(new ListView<CrawlerHealth>("crawler_health_list",
-        crawlerHealthListModel) {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see
-       * org.apache.wicket.markup.html.list.ListView#populateItem(org.apache
-       * .wicket.markup.html.list.ListItem)
-       */
-      @Override
-      protected void populateItem(ListItem<CrawlerHealth> item) {
-        CrawlerHealth health = item.getModelObject();
-        item.add(new Label("crawler_name", health.getCrawlerName()));
-        item.add(new Label("num_crawls", String.valueOf(health.getNumCrawls())));
-        item.add(new Label("avg_crawl_time", String.valueOf(health
-            .getAvgCrawlTime())));
-      }
-    });
-
-  }
-
-  private ResourceReference getUpOrDownArrowRef(String status) {
-    return new ResourceReference(StatusPage.class, "icon_arrow_"
-        + status.toLowerCase() + ".gif");
+    add(new HealthMonitor("health_monitor", fmUrlStr, wmUrlStr, rmUrlStr,
+        crawlerConfFilePath, statesFilePath, ProductBrowserPage.class,
+        WorkflowInstanceViewerPage.class));
   }
 
 }
