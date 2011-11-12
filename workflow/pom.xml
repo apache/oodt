@@ -126,6 +126,11 @@ the License.
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-cli</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
       <version>${project.parent.version}</version>
     </dependency>

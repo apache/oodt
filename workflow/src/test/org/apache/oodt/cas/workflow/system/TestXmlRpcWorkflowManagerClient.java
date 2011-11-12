@@ -160,15 +160,13 @@ public class TestXmlRpcWorkflowManagerClient extends TestCase {
 
     for (Iterator i = met.getAllMetadata("key2").iterator(); i.hasNext();) {
       String val = (String) i.next();
-      if (val.equals("val1")) {
+      if (val.equals("val4")) {
         checkVal4 = true;
-      } else if (val.equals("val2")) {
+      } else if (val.equals("val5")) {
         checkVal5 = true;
       }
     }
 
-    assert (checkVal4 && checkVal5);
-
+    assertTrue(checkVal4 && checkVal5);
   }
-
 }
