@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-345 Integration CAS-Workflow with CAS-CLI (bfoster)
+
 * OODT-344 Workflow Conditions and Timeout Seconds causes 
   backwards incompat SerDe issues with XML-RPC (mattmann)
 
