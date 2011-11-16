@@ -22,11 +22,18 @@
       <fileMode>755</fileMode>
     </fileSet>
     <fileSet>
-      <directory>${basedir}/src/main/resources/logs</directory>
-      <outputDirectory>workflow/logs</outputDirectory>
-      <includes>
-        <include>REMOVE.log</include>
-      </includes>
+      <directory>target</directory>
+      <outputDirectory>filemgr/logs</outputDirectory>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>workflow/run</outputDirectory>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
     </fileSet>
     <fileSet>
       <directory>${basedir}/src/main/resources/etc</directory>

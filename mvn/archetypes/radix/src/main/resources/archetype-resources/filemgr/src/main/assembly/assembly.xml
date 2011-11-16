@@ -23,12 +23,18 @@
       <fileMode>775</fileMode>
     </fileSet>
     <fileSet>
-      <directory>${basedir}/src/main/resources/logs</directory>
+      <directory>target</directory>
       <outputDirectory>filemgr/logs</outputDirectory>
-      <includes>
-        <include>REMOVE.log</include>
-      </includes>
-      <fileMode>775</fileMode>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>filemgr/run</outputDirectory>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
     </fileSet>
     <fileSet>
       <directory>${basedir}/src/main/resources/etc</directory>
@@ -43,7 +49,7 @@
       <directory>${basedir}/src/main/resources/policy</directory>
       <outputDirectory>filemgr/policy</outputDirectory>
       <includes>
-        <include>**.xml</include>
+        <include>**/**.xml</include>
       </includes>
       <fileMode>664</fileMode>
       <directoryMode>775</directoryMode>

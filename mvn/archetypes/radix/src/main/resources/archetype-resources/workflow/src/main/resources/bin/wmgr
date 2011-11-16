@@ -44,14 +44,14 @@ PRGDIR=`dirname "$PRG"`
 # Only set OODT_HOME if not already set
 [ -z "$OODT_HOME" ] && OODT_HOME=`cd "$PRGDIR/../../.." ; pwd`
 
-# Only set FILEMGR_HOME if not already set
-if [ -z "$FILEMGR_HOME" ]; then
-  FILEMGR_HOME="$OODT_HOME"/components/filemgr
+# Only set WORKFLOW_HOME if not already set
+if [ -z "$WORKFLOW_HOME" ]; then
+  WORKFLOW_HOME="$OODT_HOME"/components/workflow
 fi
 
-if [ -z "$FILEMGR_PID" ]; then
-  FILEMGR_PID="$FILEMGR_HOME"/run/cas.filemgr.pid
-fi 
+if [ -z "$WORKFLOW_PID" ]; then
+  WORKFLOW_PID="$WORKFLOW_HOME"/run/cas.workflow.pid
+fi
 
 # Get OODT environment set up
 if [ -r "$OODT_HOME"/bin/env.sh ]; then
@@ -68,27 +68,28 @@ if $cygwin; then
 fi
 
 if [ "$1" = "start" ]; then
-  if [ ! -z "$FILEMGR_PID" ]; then
-    if [ -f "$FILEMGR_PID" ]; then
-      echo "PID file ($FILEMGR_PID) found. Is File Manager still running? Start aborted."
+  if [ ! -z "$WORKFLOW_PID" ]; then
+    if [ -f "$WORKFLOW_PID" ]; then
+      echo "PID file ($WORKFLOW_PID) found. Is Workflow Manager still running? Start aborted."
       exit 1
     fi
   fi
-  
-  "$_RUNJAVA" $JAVA_OPTS $OODT_OPTS \
-    -Djava.endorsed.dirs="$FILEMGR_HOME"/lib \
-    -Djava.util.logging.config.file="$FILEMGR_HOME"/etc/logging.properties \
-    -Dorg.apache.oodt.cas.filemgr.properties="$FILEMGR_HOME"/etc/filemgr.properties \
-    -Djava.io.tmpdir="$OODT_TMPDIR" \
-    org.apache.oodt.cas.filemgr.system.XmlRpcFileManager \
-    --portNum $FILEMGR_PORT 2>&1 &
 
-  if [ ! -z "$FILEMGR_PID" ]; then
-    echo $! > $FILEMGR_PID
+  touch "$OODT_OUT"
+  "$_RUNJAVA" $JAVA_OPTS $OODT_OPTS \
+    -Djava.endorsed.dirs="$WORKFLOW_HOME"/lib \
+    -Djava.util.logging.config.file="$WORKFLOW_HOME"/etc/logging.properties \
+    -Dorg.apache.oodt.cas.workflow.properties="$WORKFLOW_HOME"/etc/filemgr.properties \
+    -Djava.io.tmpdir="$OODT_TMPDIR" \
+    org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager \
+    --portNum $WORKFLOW_PORT 2>&1 &
+
+  if [ ! -z "$WORKFLOW_PID" ]; then
+    echo $! > $WORKFLOW_PID
   fi
 
   if [ $have_tty -eq 1 ]; then
-    echo "File Manager started PID file ($FILEMGR_PID)."
+    echo "Workflow Manager started PID file ($WORKFLOW_PID)."
   fi
 
 elif [ "$1" = "stop" ]; then
@@ -110,25 +111,25 @@ elif [ "$1" = "stop" ]; then
     FORCE=1
   fi
 
-  if [ ! -z "$FILEMGR_PID" ]; then
-    if [ -f "$FILEMGR_PID" ]; then
-      kill `cat $FILEMGR_PID` >/dev/null 2>&1
+  if [ ! -z "$WORKFLOW_PID" ]; then
+    if [ -f "$WORLFLOW_PID" ]; then
+      kill `cat $WORKFLOW_PID` >/dev/null 2>&1
       if [ $? -eq 1 ]; then
-        echo "PID file ($FILEMGR_PID) found but no matching process was found. Stop aborted."
+        echo "PID file ($WORKFLOW_PID) found but no matching process was found. Stop aborted."
         exit 1
       fi
     else
-      echo "\$FILEMGR_PID was set ($FILEMGR_PID) but the specified file does not exist. Is File Manager running? Stop aborted."
+      echo "\$WORKFLOW_PID was set ($WORKFLOW_PID) but the specified file does not exist. Is Workflow Manager running? Stop aborted."
       exit 1
     fi
   fi
 
-  if [ ! -z "$FILEMGR_PID" ]; then
-    if [ -f "$FILEMGR_PID" ]; then
+  if [ ! -z "$WORKFLOW_PID" ]; then
+    if [ -f "$WORKFLOW_PID" ]; then
       while [ $SLEEP -ge 0 ]; do
-        kill -0 `cat $FILEMGR_PID` >/dev/null 2>&1
+        kill -0 `cat $WORKFLOW_PID` >/dev/null 2>&1
         if [ $? -eq 1 ]; then
-          rm $FILEMGR_PID
+          rm $WORKFLOW_PID
           break
         fi
         if [ $SLEEP -gt 0 ]; then
@@ -136,7 +137,7 @@ elif [ "$1" = "stop" ]; then
         fi
         if [ $SLEEP -eq 0 ]; then
           if [ $FORCE -eq 0 ]; then
-            echo "File Manager did not stop in time. PID file was not removed."
+            echo "Workflow Manager did not stop in time. PID file was not removed."
           fi
         fi
         SLEEP=`expr $SLEEP - 1 `
@@ -145,18 +146,18 @@ elif [ "$1" = "stop" ]; then
   fi
 
   if [ $FORCE -eq 1 ]; then
-    if [ -z "$FILEMGR_PID" ]; then
-      echo "Kill failed: \$FILEMGR_PID not set"
+    if [ -z "$WORKFLOW_PID" ]; then
+      echo "Kill failed: \$WORKFLOW_PID not set"
     else
-      if [ -f "$FILEMGR_PID" ]; then
-        echo "Killing: `cat $FILEMGR_PID`"
-        kill -9 `cat $FILEMGR_PID`
-        rm $FILEMGR_PID
+      if [ -f "$WORKFLOW_PID" ]; then
+        echo "Killing: `cat $WORKFLOW_PID`"
+        kill -9 `cat $WORKFLOW_PID`
+        rm $WORKFLOW_PID
       fi
     fi
   fi
 
 else
-  echo "Usage: filemgr {start|stop|status}"
+  echo "Usage: wmgr {start|stop}"
   exit 1
 fi

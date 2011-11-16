@@ -13,9 +13,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
 # License for the specific language governing permissions and limitations
 # under the License.    
-##########################################################################
 
-java -Dorg.apache.oodt.cas.crawl.bean.repo=file:./../policy/crawler-config.xml \
-     -Dorg.apache.oodt.cas.filemgr.properties=../../filemgr/etc/filemgr.properties \
-     -Djava.util.logging.config.file=../etc/logging.properties \
-     -Djava.ext.dirs=../lib org.apache.oodt.cas.crawl.CrawlerLauncher $*
+
+if [ -z $JAVA_HOME ] ; then
+	JAVA_HOME=/path/to/java/home
+else
+	JAVA_HOME=${JAVA_HOME}
+fi
+
+export JAVA_HOME
+
+$JAVA_HOME/bin/java -Djava.ext.dirs=../lib -Djava.util.logging.config.file=../etc/logging.properties org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient $*

@@ -51,23 +51,7 @@
         </fileSet>
       </fileSets>-->
       <modules>
-        <module id="wmonitor" dir="wmonitor" name="wmonitor">
-          <fileSets>
-            <fileSet>
-              <directory></directory>
-              <includes/>
-            </fileSet>
-          </fileSets>
-        </module>
-        <module id="fmbrowser" dir="fmbrowser" name="fmbrowser">
-          <fileSets>
-            <fileSet>
-              <directory></directory>
-              <includes/>
-            </fileSet>
-          </fileSets>
-        </module>
-        <module id="fmprod" dir="fmprod" name="fmprod">
+        <module id="opsui" dir="opsui" name="opsui">
           <fileSets>
             <fileSet>
               <directory></directory>

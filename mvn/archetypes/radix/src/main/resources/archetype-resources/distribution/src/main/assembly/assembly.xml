@@ -13,6 +13,68 @@
       <includes/>
       <fileMode>775</fileMode>
     </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>logs</outputDirectory>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>data</outputDirectory>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>data/archive</outputDirectory>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>data/staging</outputDirectory>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>data/work</outputDirectory>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>data/met</outputDirectory>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>data/failure</outputDirectory>
+      <excludes>
+        <exclude>**/*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}/apache-tomcat-${tomcat.version}</directory>
+      <outputDirectory>components/tomcat</outputDirectory>
+      <excludes>
+        <exclude>**/webapps/docs/**</exclude>
+        <exclude>**/webapps/examples/**</exclude>
+        <exclude>**/webapps/host-manager/**</exclude>
+        <exclude>**/webapps/manager/**</exclude>
+        <exclude>**/webapps/servlets-examples/**</exclude>
+        <exclude>**/webapps/jsp-examples/**</exclude>
+        <exclude>**/webapps/webdav/**</exclude>
+      </excludes>
+    </fileSet>
   </fileSets>
   <dependencySets>
     <dependencySet>
@@ -20,7 +82,9 @@
       <unpack>true</unpack>
       <useProjectArtifact>false</useProjectArtifact>
       <useTransitiveDependencies>false</useTransitiveDependencies>
-      <unpackOptions/>
+      <excludes>
+        <exclude>${groupId}:${parent.artifactId}-opsui</exclude>
+      </excludes>
     </dependencySet>
   </dependencySets>
 </assembly>
