@@ -23,7 +23,7 @@ Release 0.4: Current Development
 * OODT-52 Update the CAS File Manager User Guide (thomas, goodale)
 
 * OODT-322 LDAPAuthenticationProvider class requires 
-  a non-existent path (Shakey Khudikyan via mattmann)
+  a non-existent path (Shakeh Khudikyan via mattmann)
 
 * OODT-321 PEAR install of PHP filemgr is not working 
   properly (Shakeh Khudikyan via mattmann)
