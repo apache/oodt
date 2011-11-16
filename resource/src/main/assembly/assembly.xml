@@ -55,6 +55,14 @@ the License.
       </includes>
     </fileSet>
     <fileSet>
+      <directory>${basedir}/src/main/resources</directory>
+      <outputDirectory>policy</outputDirectory>
+      <includes>
+        <include>cmd-line-actions.xml</include>
+        <include>cmd-line-options.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>${basedir}/src/main/resources/examples</directory>
       <outputDirectory>policy</outputDirectory>
       <excludes/>
