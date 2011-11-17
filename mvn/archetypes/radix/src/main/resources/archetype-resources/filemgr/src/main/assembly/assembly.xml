@@ -41,6 +41,7 @@
       <outputDirectory>filemgr/etc</outputDirectory>
       <includes>
         <include>**.properties</include>
+        <include>**.xml</include>
       </includes>
       <fileMode>664</fileMode>
       <directoryMode>775</directoryMode>
