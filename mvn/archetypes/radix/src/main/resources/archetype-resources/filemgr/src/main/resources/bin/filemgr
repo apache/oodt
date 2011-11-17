@@ -44,19 +44,20 @@ PRGDIR=`dirname "$PRG"`
 # Only set OODT_HOME if not already set
 [ -z "$OODT_HOME" ] && OODT_HOME=`cd "$PRGDIR/../../.." ; pwd`
 
+# Get OODT environment set up
+if [ -r "$OODT_HOME"/bin/env.sh ]; then
+  . "$OODT_HOME"/bin/env.sh
+fi
+
 # Only set FILEMGR_HOME if not already set
 if [ -z "$FILEMGR_HOME" ]; then
   FILEMGR_HOME="$OODT_HOME"/components/filemgr
+  export FILEMGR_HOME
 fi
 
 if [ -z "$FILEMGR_PID" ]; then
   FILEMGR_PID="$FILEMGR_HOME"/run/cas.filemgr.pid
 fi 
-
-# Get OODT environment set up
-if [ -r "$OODT_HOME"/bin/env.sh ]; then
-  . "$OODT_HOME"/bin/env.sh
-fi
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched
 if $cygwin; then
@@ -74,6 +75,10 @@ if [ "$1" = "start" ]; then
       exit 1
     fi
   fi
+
+  # Move to bin directory in case this is called from some other directory. 
+  # This is to keep relative paths correct.
+  cd "$FILEMGR_HOME"/bin
   
   "$_RUNJAVA" $JAVA_OPTS $OODT_OPTS \
     -Djava.endorsed.dirs="$FILEMGR_HOME"/lib \
