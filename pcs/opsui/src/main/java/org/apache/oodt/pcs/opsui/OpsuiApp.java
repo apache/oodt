@@ -26,6 +26,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.webcomponents.filemgr.FMBrowserSession;
 import org.apache.oodt.cas.webcomponents.workflow.instance.WorkflowInstancesViewer;
 import org.apache.oodt.pcs.opsui.status.StatusPage;
+import org.apache.oodt.pcs.webcomponents.trace.Trace;
 
 //Wicket imports
 import org.apache.wicket.Page;
@@ -215,6 +216,13 @@ public class OpsuiApp extends WebApplication implements Serializable {
     mountSharedResource("/images/selleftcorner.gif", new ResourceReference(
         BasePage.class, "selleftcorner.gif").getSharedResourceKey());
 
+    
+    mountSharedResource("/images/open.gif", new ResourceReference(
+        Trace.class, "open.gif").getSharedResourceKey());
+    mountSharedResource("/images/closed.gif", new ResourceReference(
+        Trace.class, "closed.gif").getSharedResourceKey());
+
+    
   }
 
 }
