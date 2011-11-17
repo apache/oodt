@@ -44,18 +44,19 @@ PRGDIR=`dirname "$PRG"`
 # Only set OODT_HOME if not already set
 [ -z "$OODT_HOME" ] && OODT_HOME=`cd "$PRGDIR/../../.." ; pwd`
 
+# Get OODT environment set up
+if [ -r "$OODT_HOME"/bin/env.sh ]; then
+  . "$OODT_HOME"/bin/env.sh
+fi
+
 # Only set WORKFLOW_HOME if not already set
 if [ -z "$WORKFLOW_HOME" ]; then
   WORKFLOW_HOME="$OODT_HOME"/components/workflow
+  export WORKFLOW_HOME
 fi
 
 if [ -z "$WORKFLOW_PID" ]; then
   WORKFLOW_PID="$WORKFLOW_HOME"/run/cas.workflow.pid
-fi
-
-# Get OODT environment set up
-if [ -r "$OODT_HOME"/bin/env.sh ]; then
-  . "$OODT_HOME"/bin/env.sh
 fi
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched
@@ -75,14 +76,16 @@ if [ "$1" = "start" ]; then
     fi
   fi
 
-  touch "$OODT_OUT"
+  # In case this script was run from somewhere else cd to this directory
+  cd "$WORKFLOW_HOME"/bin
+
   "$_RUNJAVA" $JAVA_OPTS $OODT_OPTS \
     -Djava.endorsed.dirs="$WORKFLOW_HOME"/lib \
     -Djava.util.logging.config.file="$WORKFLOW_HOME"/etc/logging.properties \
-    -Dorg.apache.oodt.cas.workflow.properties="$WORKFLOW_HOME"/etc/filemgr.properties \
+    -Dorg.apache.oodt.cas.workflow.properties="$WORKFLOW_HOME"/etc/workflow.properties \
     -Djava.io.tmpdir="$OODT_TMPDIR" \
     org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager \
-    --portNum $WORKFLOW_PORT 2>&1 &
+    --portNum "$WORKFLOW_PORT" 2>&1 &
 
   if [ ! -z "$WORKFLOW_PID" ]; then
     echo $! > $WORKFLOW_PID
@@ -112,7 +115,7 @@ elif [ "$1" = "stop" ]; then
   fi
 
   if [ ! -z "$WORKFLOW_PID" ]; then
-    if [ -f "$WORLFLOW_PID" ]; then
+    if [ -f "$WORKFLOW_PID" ]; then
       kill `cat $WORKFLOW_PID` >/dev/null 2>&1
       if [ $? -eq 1 ]; then
         echo "PID file ($WORKFLOW_PID) found but no matching process was found. Stop aborted."

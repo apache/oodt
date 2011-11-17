@@ -23,7 +23,7 @@
     </fileSet>
     <fileSet>
       <directory>target</directory>
-      <outputDirectory>filemgr/logs</outputDirectory>
+      <outputDirectory>workflow/logs</outputDirectory>
       <excludes>
         <exclude>**/*</exclude>
       </excludes>
@@ -38,9 +38,7 @@
     <fileSet>
       <directory>${basedir}/src/main/resources/etc</directory>
       <outputDirectory>workflow/etc</outputDirectory>
-      <includes>
-        <include>**.properties</include>
-      </includes>
+      <includes/>
     </fileSet>
     <fileSet>
       <directory>${basedir}/src/main/resources/policy</directory>

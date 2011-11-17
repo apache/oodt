@@ -121,8 +121,8 @@ if [ -z "$CRAWLER_PORT" ]; then
   CRAWLER_PORT=9100
 fi 
 
-if [ -z "$WORKFLOWMGR_PORT" ]; then
-  WORKFLOWMGR_PORT=9200
+if [ -z "$WORKFLOW_PORT" ]; then
+  WORKFLOW_PORT=9200
 fi
 
 if [ -z "$RESMGR_PORT" ]; then
