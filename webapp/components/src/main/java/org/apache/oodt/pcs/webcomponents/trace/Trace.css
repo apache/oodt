@@ -1,0 +1,21 @@
+.trigger {
+	cursor: pointer;
+	cursor: hand;
+}
+
+.branch {
+	display: none;
+	margin-left: 16px;
+}
+
+#upstream_pedigree_heading{
+}
+
+#upstream_pedigree_tree{
+}
+
+#downstream_pedigree_heading{
+}
+
+#downstream_pedigree_tree{
+}

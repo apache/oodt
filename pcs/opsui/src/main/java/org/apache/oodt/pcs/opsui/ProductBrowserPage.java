@@ -19,7 +19,7 @@
 package org.apache.oodt.pcs.opsui;
 
 //OODT imports
-import org.apache.oodt.cas.webcomponents.filemgr.browser.product.ProductBrowser;
+import org.apache.oodt.pcs.opsui.pedigree.TraceableProductBrowser;
 
 //Wicket imports
 import org.apache.wicket.PageParameters;
@@ -37,7 +37,7 @@ public class ProductBrowserPage extends BasePage {
 
   public ProductBrowserPage(PageParameters parameters){
     super(parameters);
-    add(new ProductBrowser("prod_browser_component", 
+    add(new TraceableProductBrowser("prod_browser_component", 
         app.getFmUrlStr(),
         parameters.getString("id")));
   }
