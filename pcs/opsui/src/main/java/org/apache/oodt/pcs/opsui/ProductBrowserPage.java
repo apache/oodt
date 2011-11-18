@@ -39,6 +39,7 @@ public class ProductBrowserPage extends BasePage {
     super(parameters);
     add(new TraceableProductBrowser("prod_browser_component", 
         app.getFmUrlStr(),
-        parameters.getString("id")));
+        parameters.getString("id"), app.isEnabledTraceNotCatProducts(), 
+        app.getTraceExcludedProductTypeList()));
   }
 }

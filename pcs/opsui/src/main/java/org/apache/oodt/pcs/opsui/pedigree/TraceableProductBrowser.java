@@ -19,6 +19,7 @@ package org.apache.oodt.pcs.opsui.pedigree;
 
 //JDK imports
 import java.util.Collections;
+import java.util.List;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -50,7 +51,7 @@ public class TraceableProductBrowser extends ProductBrowser {
    * @param productId
    */
   public TraceableProductBrowser(String componentId, final String fmUrlStr,
-      String productId) {
+      String productId, final boolean enableNotCat, final List<String> excludes) {
     super(componentId, fmUrlStr, productId);
     FileManagerConn fm = new FileManagerConn(fmUrlStr);
     final Product product = fm.safeGetProductById(productId);
@@ -64,8 +65,8 @@ public class TraceableProductBrowser extends ProductBrowser {
        */
       @Override
       public void onSubmit() {
-        Trace tracer = new Trace("pedigree", fmUrlStr, true,
-            Collections.EMPTY_LIST, product);
+        Trace tracer = new Trace("pedigree", fmUrlStr, enableNotCat,
+            excludes, product);
         tracer.setVisible(true);
         getParent().getParent().replace(tracer);
         setVisible(false);

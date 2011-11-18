@@ -141,12 +141,12 @@ public class OpsuiApp extends WebApplication implements Serializable {
     return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
         "ganglia.url"));
   }
-  
-  public String getSkin(){
+
+  public String getSkin() {
     return getServletContext().getInitParameter("opsui.skin");
   }
-  
-  public String getHomePageClass(){
+
+  public String getHomePageClass() {
     return getServletContext().getInitParameter("opsui.homepage");
   }
 
@@ -164,6 +164,24 @@ public class OpsuiApp extends WebApplication implements Serializable {
   public String getWorkflowInstMetFieldsFilePath() {
     return PathUtils.replaceEnvVariables(getServletContext().getInitParameter(
         "org.apache.oodt.pcs.opsui.winst.metFields.filePath"));
+  }
+
+  public boolean isEnabledTraceNotCatProducts() {
+    return Boolean.valueOf(getServletContext().getInitParameter(
+        "org.apache.oodt.pcs.trace.enableNotCat"));
+  }
+
+  public List<String> getTraceExcludedProductTypeList() {
+    String[] types = getServletContext().getInitParameter(
+        "org.apache.oodt.pcs.trace.excludeList").split(",");
+    List<String> excludes = new Vector<String>();
+
+    for (String type : types) {
+      excludes.add(type);
+    }
+
+    return excludes;
+
   }
 
   /*
@@ -216,13 +234,11 @@ public class OpsuiApp extends WebApplication implements Serializable {
     mountSharedResource("/images/selleftcorner.gif", new ResourceReference(
         BasePage.class, "selleftcorner.gif").getSharedResourceKey());
 
-    
-    mountSharedResource("/images/open.gif", new ResourceReference(
-        Trace.class, "open.gif").getSharedResourceKey());
+    mountSharedResource("/images/open.gif", new ResourceReference(Trace.class,
+        "open.gif").getSharedResourceKey());
     mountSharedResource("/images/closed.gif", new ResourceReference(
         Trace.class, "closed.gif").getSharedResourceKey());
 
-    
   }
 
 }
