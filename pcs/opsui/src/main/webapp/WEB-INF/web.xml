@@ -4,7 +4,7 @@
 	 xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	 version="2.4">
 
-	<display-name>opsui</display-name>
+	<display-name>pcs-opsui</display-name>
 
 	 <!--  
 	      There are three means to configure Wickets configuration mode and they are
@@ -29,6 +29,31 @@
   <filter-name>wicket.browser</filter-name>
 	<url-pattern>/*</url-pattern>
  </filter-mapping>
+ 
+  <context-param>
+    <param-name>filemgr.working.dir</param-name>
+    <param-value>/tmp</param-value>
+  </context-param>
+
+  <servlet>
+    <servlet-name>DataDeliveryServlet</servlet-name>
+    <servlet-class>org.apache.oodt.cas.product.data.DataDeliveryServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>DatasetDeliveryServlet</servlet-name>
+    <servlet-class>org.apache.oodt.cas.product.data.DatasetDeliveryServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>DataDeliveryServlet</servlet-name>
+    <url-pattern>/data</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>DatasetDeliveryServlet</servlet-name>
+    <url-pattern>/dataset</url-pattern>
+  </servlet-mapping>  
+ 
 
 
 </web-app>

@@ -67,6 +67,12 @@ the License.
 		</dependency>
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
+		  <artifactId>cas-product</artifactId>
+		  <version>${project.parent.version}</version>
+		  <type>war</type>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>pcs-core</artifactId>
 		  <version>${project.parent.version}</version>
 		</dependency>

@@ -22,6 +22,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
+import javax.servlet.ServletContext;
+
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.webcomponents.filemgr.FMBrowserSession;
 import org.apache.oodt.cas.webcomponents.workflow.instance.WorkflowInstancesViewer;
@@ -182,6 +184,10 @@ public class OpsuiApp extends WebApplication implements Serializable {
 
     return excludes;
 
+  }
+
+  public String getRootContext() {
+    return getServletContext().getServletContextName();
   }
 
   /*
