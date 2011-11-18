@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-349 CAS-CLI CmdLineAction should take a printer which
+  it is required to print it's messages to (bfoster)
+
 * OODT-350 File Manager query_tool bug fix for Lucene
   style queries (goodale, mattmann, bfoster)
 

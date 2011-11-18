@@ -24,7 +24,7 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 
 /**
  * A {@link CmdLineAction} which get execution node for a job.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class GetExecNodeCliAction extends ResourceCliAction {
@@ -32,12 +32,13 @@ public class GetExecNodeCliAction extends ResourceCliAction {
    private String jobId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(jobId, "Must specify jobId");
-         
+
          String execNode = getClient().getExecutionNode(jobId);
-         System.out.println("Executing node: " + execNode);
+         printer.println("Executing node: " + execNode);
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to get execution node for"
                + " job '" + jobId + "' : " + e.getMessage(), e);

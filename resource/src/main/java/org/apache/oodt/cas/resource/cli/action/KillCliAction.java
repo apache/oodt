@@ -32,12 +32,13 @@ public class KillCliAction extends ResourceCliAction {
    private String jobId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(jobId, "Must specify jobId");
 
          if (getClient().killJob(jobId)) {
-            System.out.println("Job: [" + jobId + "] successfully killed.");
+            printer.println("Job: [" + jobId + "] successfully killed.");
          } else {
             throw new Exception("Kill job returned false");
          }

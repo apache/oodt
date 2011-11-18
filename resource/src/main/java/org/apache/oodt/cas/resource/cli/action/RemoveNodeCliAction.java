@@ -32,12 +32,13 @@ public class RemoveNodeCliAction extends ResourceCliAction {
    private String nodeId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(nodeId, "Must specify nodeId");
 
          getClient().removeNode(nodeId);
-         System.out.println("Successfully removed node!");
+         printer.println("Successfully removed node!");
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to remove node with id '"
                + nodeId + "' : " + e.getMessage(), e);

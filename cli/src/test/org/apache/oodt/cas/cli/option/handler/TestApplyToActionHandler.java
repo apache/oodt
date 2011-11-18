@@ -94,7 +94,7 @@ public class TestApplyToActionHandler extends TestCase {
       private CallType callType;
 
       @Override
-      public void execute() {
+      public void execute(ActionMessagePrinter printer) {
       }
 
       public void addMessage(String message) {

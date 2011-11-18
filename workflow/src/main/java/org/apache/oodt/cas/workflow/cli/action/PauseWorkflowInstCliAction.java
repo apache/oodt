@@ -29,10 +29,11 @@ public class PauseWorkflowInstCliAction extends WorkflowCliAction {
    private String instanceId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          if (getClient().pauseWorkflowInstance(instanceId)) {
-            System.out.println("Successfully paused workflow '" + instanceId
+            printer.println("Successfully paused workflow '" + instanceId
                   + "'");
          } else {
             throw new Exception("Paused workflow returned false");

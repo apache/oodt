@@ -29,10 +29,11 @@ public class ResumeWorkflowInstCliAction extends WorkflowCliAction {
    private String instanceId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          if (getClient().resumeWorkflowInstance(instanceId)) {
-            System.out.println("Successfully resumed workflow '" + instanceId
+            printer.println("Successfully resumed workflow '" + instanceId
                   + "'");
          } else {
             throw new Exception("Resume workflow returned false");

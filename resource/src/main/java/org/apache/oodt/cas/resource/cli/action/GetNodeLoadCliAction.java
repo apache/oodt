@@ -24,7 +24,7 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 
 /**
  * A {@link CmdLineAction} which get load of given node.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class GetNodeLoadCliAction extends ResourceCliAction {
@@ -32,12 +32,13 @@ public class GetNodeLoadCliAction extends ResourceCliAction {
    private String nodeId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(nodeId, "Must specify nodeId");
 
          String result = getClient().getNodeLoad(nodeId);
-         System.out.println("Load for node '" + nodeId + "': " + result);
+         printer.println("Load for node '" + nodeId + "': " + result);
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to get node load for node '"
                + nodeId + "' : " + e.getMessage(), e);

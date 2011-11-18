@@ -30,11 +30,12 @@ public class GetWallClockTimeCliAction extends WorkflowCliAction {
    private String instanceId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          double wallClockTime = getClient().getWorkflowWallClockMinutes(
                instanceId);
-         System.out.println(wallClockTime + " minutes");
+         printer.println(wallClockTime + " minutes");
       } catch (Exception e) {
          throw new CmdLineActionException(
                "Failed to get wall clock time for instance '" + instanceId

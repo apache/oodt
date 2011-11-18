@@ -32,6 +32,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 
 //OODT imports
+import org.apache.oodt.cas.cli.action.CmdLineAction.ActionMessagePrinter;
 import org.apache.oodt.cas.cli.action.store.CmdLineActionStore;
 import org.apache.oodt.cas.cli.action.store.spring.SpringCmdLineActionStoreFactory;
 import org.apache.oodt.cas.cli.contruct.CmdLineConstructor;
@@ -287,7 +288,7 @@ public class CmdLineUtility {
 
       handle(cmdLineArgs);
 
-      cmdLineArgs.getSpecifiedAction().execute();
+      cmdLineArgs.getSpecifiedAction().execute(new ActionMessagePrinter());
    }
 
    /**

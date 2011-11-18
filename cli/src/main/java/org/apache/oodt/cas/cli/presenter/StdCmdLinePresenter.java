@@ -60,6 +60,11 @@ public class StdCmdLinePresenter implements
 
    @Override
    public void presentErrorMessage(String errorMessage) {
-      ps.println(errorMessage);
+      ps.println("ERROR: " + errorMessage);
+   }
+
+   @Override
+   public void presentActionMessage(String actionMessage) {
+      ps.println(actionMessage);
    }
 }

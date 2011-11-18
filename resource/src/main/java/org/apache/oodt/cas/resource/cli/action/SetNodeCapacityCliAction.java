@@ -33,13 +33,14 @@ public class SetNodeCapacityCliAction extends ResourceCliAction {
    private int capacity;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(nodeId, "Must specify nodeId");
          Validate.notNull(capacity, "Must specify capacity");
 
          getClient().setNodeCapacity(nodeId, capacity);
-         System.out.println("Successfully set node capacity!");
+         printer.println("Successfully set node capacity!");
       } catch (Exception e) {
          throw new CmdLineActionException("", e);
       }

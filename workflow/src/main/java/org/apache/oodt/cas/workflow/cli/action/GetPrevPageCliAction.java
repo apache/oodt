@@ -40,7 +40,8 @@ public class GetPrevPageCliAction extends WorkflowCliAction {
 
    @SuppressWarnings("unchecked")
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       Validate.isTrue(pageNum != -1);
 
       try {
@@ -52,7 +53,7 @@ public class GetPrevPageCliAction extends WorkflowCliAction {
             page = client.paginateWorkflowInstances(pageNum - 1);
          }
 
-         System.out.println("Page: [num=" + page.getPageNum() + ","
+         printer.println("Page: [num=" + page.getPageNum() + ","
                + "pageSize=" + page.getPageSize() + ",totalPages="
                + page.getTotalPages() + "]");
          if (page.getPageWorkflows() == null) {
@@ -61,7 +62,7 @@ public class GetPrevPageCliAction extends WorkflowCliAction {
          }
          for (WorkflowInstance inst : (List<WorkflowInstance>) page
                .getPageWorkflows()) {
-            System.out.println("Instance: [id=" + inst.getId() + ", status="
+            printer.println("Instance: [id=" + inst.getId() + ", status="
                   + inst.getStatus() + ", currentTask="
                   + inst.getCurrentTaskId() + ", workflow="
                   + inst.getWorkflow().getName() + ",wallClockTime="

@@ -31,7 +31,8 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 public class GetNodesCliAction extends ResourceCliAction {
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          @SuppressWarnings("unchecked")
          List<ResourceNode> nodes = getClient().getNodes();
@@ -40,7 +41,7 @@ public class GetNodesCliAction extends ResourceCliAction {
             throw new Exception("ResourceManager returned null nodes");
          }
          for (ResourceNode node : nodes) {
-            System.out.println("node: [id=" + node.getNodeId() + ",capacity="
+            printer.println("node: [id=" + node.getNodeId() + ",capacity="
                   + node.getCapacity() + ",url=" + node.getIpAddr() + "]");
          }
       } catch (Exception e) {

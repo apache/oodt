@@ -35,7 +35,7 @@ public class TestSetContextInjectTypeAction extends CmdLineAction implements
    private ApplicationContext appContext;
 
    @Override
-   public void execute() {
+   public void execute(ActionMessagePrinter printer) {
    }
 
    public void setContext(ApplicationContext appContext) {

@@ -33,7 +33,8 @@ import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 public class GetWorkflowInstsCliAction extends WorkflowCliAction {
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
 
       try {
          XmlRpcWorkflowManagerClient client = getClient();
@@ -45,7 +46,7 @@ public class GetWorkflowInstsCliAction extends WorkflowCliAction {
                   "WorkflowManager return null workflow instances list");
          }
          for (WorkflowInstance inst : insts) {
-            System.out.println("Instance: [id="
+            printer.println("Instance: [id="
                   + inst.getId()
                   + ", status="
                   + inst.getStatus()

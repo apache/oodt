@@ -49,7 +49,7 @@ public class TestUtils {
       return new CmdLineAction(name, "This is an action description") {
 
          @Override
-         public void execute() {
+         public void execute(ActionMessagePrinter printer) {
             // do nothing
          }
 

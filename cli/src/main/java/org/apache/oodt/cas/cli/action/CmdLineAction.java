@@ -16,8 +16,14 @@
  */
 package org.apache.oodt.cas.cli.action;
 
+//JDK imports
+import java.util.List;
+
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
+
+//Google imports
+import com.google.common.collect.Lists;
 
 /**
  * Action which is specified and configured via {@link CmdLineOption}s and
@@ -54,6 +60,31 @@ public abstract class CmdLineAction {
       return description;
    }
 
-   public abstract void execute() throws CmdLineActionException;
+   public abstract void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException;
 
+   public static class ActionMessagePrinter {
+      private List<String> messages;
+
+      public ActionMessagePrinter() {
+         messages = Lists.newArrayList();
+      }
+
+      public void print(String message) {
+         messages.add(message);
+      }
+
+      public void println(String message) {
+         print(message);
+         println();
+      }
+
+      public void println() {
+         messages.add("\n");
+      }
+
+      public List<String> getPrintedMessages() {
+         return messages;
+      }
+   }
 }

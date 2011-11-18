@@ -29,6 +29,7 @@ import junit.framework.TestCase;
 
 //Apache imports
 import org.apache.oodt.cas.cli.action.CmdLineAction;
+import org.apache.oodt.cas.cli.action.CmdLineAction.ActionMessagePrinter;
 import org.apache.oodt.cas.cli.action.PrintMessageAction;
 import org.apache.oodt.cas.cli.action.store.spring.SpringCmdLineActionStore;
 import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
@@ -79,8 +80,12 @@ public class TestSpringCmdLineActionStore extends TestCase {
       assertTrue(action instanceof PrintMessageAction);
       PrintMessageAction pma = (PrintMessageAction) action;
       assertEquals("Prints out a given message", pma.getDescription());
-      assertNull(pma.getMessage());
-      assertEquals(System.out, pma.getOutputStream());
+      ActionMessagePrinter printer = new ActionMessagePrinter();
+      try {
+         pma.execute(printer);
+         fail("Should have thrown IllegalArgumentException");
+      } catch (IllegalArgumentException e) { /* do nothing */ }
+      assertEquals(0, printer.getPrintedMessages().size());
 
       // Load and verify PrintHelloWorldAction was loaded correctly.
       action = findAction("PrintHelloWorldAction", actions);
@@ -88,6 +93,8 @@ public class TestSpringCmdLineActionStore extends TestCase {
       pma = (PrintMessageAction) action;
       assertEquals("Prints out 'Hello World'", pma.getDescription());
       assertEquals("Hello World", pma.getMessage());
-      assertEquals(System.out, pma.getOutputStream());
+      pma.execute(printer);
+      assertEquals(1, printer.getPrintedMessages().size());
+      assertEquals(pma.getMessage(), printer.getPrintedMessages().get(0));
    }
 }

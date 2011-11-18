@@ -38,15 +38,22 @@ public class SubmitJobCliAction extends ResourceCliAction {
    public URL url;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(jobDefinitionFile, "Must specify jobDefinitionFile");
 
          JobSpec spec = JobBuilder.buildJobSpec(jobDefinitionFile);
          if (url == null) {
-            getClient().submitJob(spec.getJob(), spec.getIn());
+            printer.println("Successful submit job with jobId '"
+                  + getClient().submitJob(spec.getJob(), spec.getIn()) + "'");
          } else {
-            getClient().submitJob(spec.getJob(), spec.getIn(), url);            
+            if (getClient().submitJob(spec.getJob(), spec.getIn(), url)) {
+               printer.println("Successfully submitted job to url '"
+                     + url + "'");
+            } else {
+               throw new Exception("Job submit returned false");
+            }
          }
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to submit job for job"

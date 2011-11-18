@@ -259,4 +259,13 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
       }
       return sb.toString();
    }
+
+   @Override
+   public String printActionMessages(List<String> messages) {
+      StringBuffer sb = new StringBuffer("");
+      for (String message : messages) {
+         sb.append(message);
+      }
+      return sb.toString();
+   }
 }

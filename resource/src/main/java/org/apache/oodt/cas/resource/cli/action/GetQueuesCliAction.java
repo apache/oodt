@@ -30,13 +30,14 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 public class GetQueuesCliAction extends ResourceCliAction {
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          List<String> queueNames = getClient().getQueues();
-         System.out.println("Queues:");
+         printer.println("Queues:");
          for (String queueName : queueNames)
-            System.out.println(" - " + queueName);
-         System.out.println();
+            printer.println(" - " + queueName);
+         printer.println();
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to get queues : "
                + e.getMessage(), e);

@@ -83,4 +83,12 @@ public interface CmdLinePrinter {
     */
    public String printRequiredOptionsMissingError(
          Set<CmdLineOption> missingOptions);
+
+   /**
+    * Generates {@link CmdLineAction} message from list of messages.
+    *
+    * @param messages The messages from a {@link CmdLineAction}
+    * @return printed message from list of messages.
+    */
+   public String printActionMessages(List<String> messages);
 }

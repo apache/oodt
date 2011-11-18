@@ -32,7 +32,8 @@ public class GetWorkflowInstCliAction extends WorkflowCliAction {
    private String instanceId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          XmlRpcWorkflowManagerClient client = getClient();
          WorkflowInstance inst = client.getWorkflowInstanceById(instanceId);
@@ -40,7 +41,7 @@ public class GetWorkflowInstCliAction extends WorkflowCliAction {
             throw new Exception(
                   "WorkflowManager returned null workflow instance");
          }
-         System.out.println("Instance: [id=" + inst.getId() + ", status="
+         printer.println("Instance: [id=" + inst.getId() + ", status="
                + inst.getStatus() + ", currentTask=" + inst.getCurrentTaskId()
                + ", workflow=" + inst.getWorkflow().getName()
                + ",wallClockTime="

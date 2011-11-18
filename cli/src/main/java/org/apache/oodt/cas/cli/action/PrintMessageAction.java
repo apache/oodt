@@ -16,10 +16,6 @@
  */
 package org.apache.oodt.cas.cli.action;
 
-//JDK imports
-import java.io.OutputStream;
-import java.io.PrintStream;
-
 //Apache imports
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Required;
@@ -32,19 +28,12 @@ import org.springframework.beans.factory.annotation.Required;
 public class PrintMessageAction extends CmdLineAction {
 
    private String message;
-   private OutputStream os;
-
-   public PrintMessageAction() {
-      os = System.out;
-   }
 
    @Override
-   public void execute() {
+   public void execute(ActionMessagePrinter printer) {
       Validate.notNull(message);
 
-      PrintStream ps = new PrintStream(os);
-      ps.println(message);
-      ps.close();
+      printer.print(message);
    }
 
    @Required
@@ -54,15 +43,5 @@ public class PrintMessageAction extends CmdLineAction {
 
    public String getMessage() {
       return message;
-   }
-
-   public void setOutputStream(OutputStream os) {
-      Validate.notNull(os);
-
-      this.os = os;
-   }
-
-   public OutputStream getOutputStream() {
-      return os;
    }
 }

@@ -24,7 +24,7 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 
 /**
  * A {@link CmdLineAction} which adds a queue.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class AddQueueCliAction extends ResourceCliAction {
@@ -32,12 +32,13 @@ public class AddQueueCliAction extends ResourceCliAction {
    private String queueName;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(queueName, "Must specify queueName");
 
          getClient().addQueue(queueName);
-         System.out.println("Successfully added queue!");
+         printer.println("Successfully added queue!");
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to add queue with name '"
                + queueName + "' : " + e.getMessage(), e);

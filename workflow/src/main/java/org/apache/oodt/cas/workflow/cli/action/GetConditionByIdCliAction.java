@@ -31,11 +31,12 @@ public class GetConditionByIdCliAction extends WorkflowCliAction {
    private String conditionId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          WorkflowCondition condition = getClient()
                .getConditionById(conditionId);
-         System.out.println("Condition: [id=" + condition.getConditionId()
+         printer.println("Condition: [id=" + condition.getConditionId()
                + ", name=" + condition.getConditionName() + ", order="
                + condition.getOrder() + ", class="
                + condition.getClass().getName() + "]");

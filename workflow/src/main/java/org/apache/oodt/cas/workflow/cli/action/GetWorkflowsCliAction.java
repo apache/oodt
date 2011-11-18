@@ -32,7 +32,8 @@ import org.apache.oodt.cas.workflow.structs.Workflow;
 public class GetWorkflowsCliAction extends WorkflowCliAction {
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          @SuppressWarnings("unchecked")
          List<Workflow> workflows = getClient().getWorkflows();
@@ -43,7 +44,7 @@ public class GetWorkflowsCliAction extends WorkflowCliAction {
          }
 
          for (Workflow workflow : workflows) {
-            System.out.println("Workflow: [id=" + workflow.getId() + ", name="
+            printer.println("Workflow: [id=" + workflow.getId() + ", name="
                   + workflow.getName() + ", numTasks="
                   + workflow.getTasks().size() + "]");
          }

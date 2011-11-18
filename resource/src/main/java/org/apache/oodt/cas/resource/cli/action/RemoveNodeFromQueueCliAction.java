@@ -33,13 +33,14 @@ public class RemoveNodeFromQueueCliAction extends ResourceCliAction {
    private String queueName;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(nodeId, "Must specify nodeId");
          Validate.notNull(queueName, "Must specify queueName");
 
          getClient().removeNodeFromQueue(nodeId, queueName);
-         System.out.println("Successfully removed node from queue!");
+         printer.println("Successfully removed node from queue!");
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to remove node '"
                + nodeId + "' from queue '" + queueName + "' : "

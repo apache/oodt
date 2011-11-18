@@ -27,7 +27,7 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 
 /**
  * A {@link CmdLineAction} which gets the nodes in a queue.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class GetNodesInQueueCliAction extends ResourceCliAction {
@@ -35,15 +35,16 @@ public class GetNodesInQueueCliAction extends ResourceCliAction {
    private String queueName;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(queueName, "Must specify queueName");
 
          List<String> nodeIds = getClient().getNodesInQueue(queueName);
-         System.out.println("Nodes in Queue '" + queueName + "':");
-         for (String nodeId : nodeIds) 
-             System.out.println(" - " + nodeId);
-         System.out.println();
+         printer.println("Nodes in Queue '" + queueName + "':");
+         for (String nodeId : nodeIds)
+            printer.println(" - " + nodeId);
+         printer.println();
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to get nodes in queue '"
                + queueName + "' : " + e.getMessage(), e);

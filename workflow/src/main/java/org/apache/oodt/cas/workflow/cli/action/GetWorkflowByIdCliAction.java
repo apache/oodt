@@ -31,10 +31,11 @@ public class GetWorkflowByIdCliAction extends WorkflowCliAction {
    private String workflowId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Workflow workflow = getClient().getWorkflowById(workflowId);
-         System.out.println("Workflow: [id=" + workflow.getId() + ", name="
+         printer.println("Workflow: [id=" + workflow.getId() + ", name="
                + workflow.getName() + ", numTasks="
                + workflow.getTasks().size() + "]");
       } catch (Exception e) {

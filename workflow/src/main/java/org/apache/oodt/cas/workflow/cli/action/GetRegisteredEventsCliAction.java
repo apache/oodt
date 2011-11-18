@@ -30,7 +30,8 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 public class GetRegisteredEventsCliAction extends WorkflowCliAction {
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          @SuppressWarnings("unchecked")
          List<String> events = getClient().getRegisteredEvents();
@@ -39,7 +40,7 @@ public class GetRegisteredEventsCliAction extends WorkflowCliAction {
             throw new Exception("WorkflowManager returned null event list");
          }
          for (String event : events) {
-            System.out.println("Event: [name=" + event + "]");
+            printer.println("Event: [name=" + event + "]");
          }
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to get registered events : "

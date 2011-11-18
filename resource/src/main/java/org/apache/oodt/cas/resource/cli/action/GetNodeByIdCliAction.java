@@ -33,7 +33,8 @@ public class GetNodeByIdCliAction extends ResourceCliAction {
    private String nodeId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(nodeId, "Must specify nodeId");
 
@@ -43,7 +44,7 @@ public class GetNodeByIdCliAction extends ResourceCliAction {
             throw new Exception("ResourceManager returned null ResourceNode"
                   + " for nodeId '" + nodeId + "'");
          }
-         System.out.println("node: [id=" + node.getNodeId() + ",capacity="
+         printer.println("node: [id=" + node.getNodeId() + ",capacity="
                + node.getCapacity() + ",url=" + node.getIpAddr() + "]");
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to get node by id '" + nodeId

@@ -34,7 +34,8 @@ public class GetWorkflowsByEventCliAction extends WorkflowCliAction {
    private String eventName;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          @SuppressWarnings("unchecked")
          List<Workflow> workflows = getClient().getWorkflowsByEvent(eventName);
@@ -43,7 +44,7 @@ public class GetWorkflowsByEventCliAction extends WorkflowCliAction {
             throw new Exception("WorkflowManager returned null workflow list");
          }
          for (Workflow workflow : workflows) {
-            System.out.println("Workflow: [id=" + workflow.getId() + ", name="
+            printer.println("Workflow: [id=" + workflow.getId() + ", name="
                   + workflow.getName() + ", numTasks="
                   + workflow.getTasks().size() + "]");
          }

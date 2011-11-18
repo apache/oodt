@@ -36,7 +36,8 @@ public class GetFirstPageCliAction extends WorkflowCliAction {
 
    @SuppressWarnings("unchecked")
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          XmlRpcWorkflowManagerClient client = getClient();
          WorkflowInstancePage page = null;
@@ -46,7 +47,7 @@ public class GetFirstPageCliAction extends WorkflowCliAction {
             page = client.getFirstPage();
          }
 
-         System.out.println("Page: [num=" + page.getPageNum() + ","
+         printer.println("Page: [num=" + page.getPageNum() + ","
                + "pageSize=" + page.getPageSize() + ",totalPages="
                + page.getTotalPages() + "]");
          if (page.getPageWorkflows() == null) {
@@ -55,7 +56,7 @@ public class GetFirstPageCliAction extends WorkflowCliAction {
          }
          for (WorkflowInstance inst : (List<WorkflowInstance>) page
                .getPageWorkflows()) {
-            System.out.println("Instance: [id=" + inst.getId() + ", status="
+            printer.println("Instance: [id=" + inst.getId() + ", status="
                   + inst.getStatus() + ", currentTask="
                   + inst.getCurrentTaskId() + ", workflow="
                   + inst.getWorkflow().getName() + ", wallClockTime="

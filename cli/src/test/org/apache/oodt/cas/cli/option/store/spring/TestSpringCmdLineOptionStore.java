@@ -26,6 +26,7 @@ import java.util.Set;
 
 //OODT imports
 import org.apache.oodt.cas.cli.action.CmdLineAction;
+import org.apache.oodt.cas.cli.action.CmdLineAction.ActionMessagePrinter;
 import org.apache.oodt.cas.cli.action.PrintMessageAction;
 import org.apache.oodt.cas.cli.action.store.spring.SpringCmdLineActionStore;
 import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
@@ -36,7 +37,6 @@ import org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler;
 import org.apache.oodt.cas.cli.option.require.ActionDependencyRule;
 import org.apache.oodt.cas.cli.option.require.RequirementRule.Relation;
 import org.apache.oodt.cas.cli.option.store.spring.SpringCmdLineOptionStore;
-import org.apache.oodt.cas.cli.test.util.TestOutputStream;
 
 //JUnit imports
 import junit.framework.TestCase;
@@ -63,19 +63,16 @@ public class TestSpringCmdLineOptionStore extends TestCase {
       // Check that all options were loaded.
       assertEquals(2, options.size());
 
-      // Load and verify useTestOutputStream was loaded correctly.
-      CmdLineOption option = getOptionByName("outputStream", options);
+      // Load and verify printHelloWorld was loaded correctly.
+      CmdLineOption option = getOptionByName("printHelloWorld", options);
       assertTrue(option instanceof AdvancedCmdLineOption);
       AdvancedCmdLineOption advancedOption = (AdvancedCmdLineOption) option;
-      assertEquals("utos", advancedOption.getShortOption());
-      assertEquals("outputStream", advancedOption.getLongOption());
-      assertEquals("Specify OutputStream", advancedOption.getDescription());
-      assertTrue(advancedOption.hasArgs());
+      assertEquals("phw", advancedOption.getShortOption());
+      assertEquals("printHelloWorld", advancedOption.getLongOption());
+      assertEquals("Print Hello World", advancedOption.getDescription());
+      assertFalse(advancedOption.hasArgs());
       assertEquals(1, advancedOption.getStaticArgs().size());
-      assertEquals(TestOutputStream.class.getCanonicalName(),
-            advancedOption.getStaticArgs().get(0));
-      assertEquals("OutputStream classpath",
-            advancedOption.getArgsDescription());
+      assertEquals("Hello World!", advancedOption.getStaticArgs().get(0));
       assertEquals(1, advancedOption.getRequirementRules().size());
       assertEquals("PrintMessageAction", ((ActionDependencyRule) advancedOption
             .getRequirementRules().get(0)).getActionName());
@@ -119,15 +116,14 @@ public class TestSpringCmdLineOptionStore extends TestCase {
 
       // Load PrintHelloWorldAction
       PrintMessageAction printHelloWorldAction = (PrintMessageAction) findAction(
-            "PrintHelloWorldAction", actions);
-      AdvancedCmdLineOption outputStreamOption = (AdvancedCmdLineOption) getOptionByName(
-            "outputStream", options);
-      outputStreamOption.getHandler().handleOption(printHelloWorldAction,
-            createOptionInstance(outputStreamOption));
-      assertTrue(printHelloWorldAction.getOutputStream() instanceof TestOutputStream);
-      printHelloWorldAction.execute();
-      assertEquals("Hello World\n",
-            ((TestOutputStream) printHelloWorldAction.getOutputStream())
-                  .getText());
+            "PrintMessageAction", actions);
+      AdvancedCmdLineOption printHelloWorldOption = (AdvancedCmdLineOption) getOptionByName(
+            "printHelloWorld", options);
+      printHelloWorldOption.getHandler().handleOption(printHelloWorldAction,
+            createOptionInstance(printHelloWorldOption));
+      ActionMessagePrinter printer = new ActionMessagePrinter();
+      printHelloWorldAction.execute(printer);
+      assertEquals(1, printer.getPrintedMessages().size());
+      assertEquals("Hello World!", printer.getPrintedMessages().get(0));
    }
 }

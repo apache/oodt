@@ -33,13 +33,14 @@ public class AddNodeToQueueCliAction extends ResourceCliAction {
    private String nodeId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(queueName, "Must specify queueName");
          Validate.notNull(nodeId, "Must specify nodeId");
 
          getClient().addNodeToQueue(nodeId, queueName);
-         System.out.println("Successfully added node to queue!");
+         printer.println("Successfully added node to queue!");
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to get add node '" + nodeId
                + "' to queue '" + queueName + "' : " + e.getMessage(), e);

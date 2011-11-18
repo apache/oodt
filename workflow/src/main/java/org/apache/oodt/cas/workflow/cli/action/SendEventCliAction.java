@@ -41,12 +41,13 @@ public class SendEventCliAction extends WorkflowCliAction {
    }
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       Validate.notNull(eventName, "Must specify eventName");
 
       try {
-         System.out.print("Sending event '" + eventName + "'... ");
-         System.out.println(getClient().sendEvent(eventName, metadata) ?
+         printer.print("Sending event '" + eventName + "'... ");
+         printer.println(getClient().sendEvent(eventName, metadata) ?
                "SUCCESS" : "FAILURE");
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to send event '" + eventName

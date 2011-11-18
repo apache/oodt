@@ -33,12 +33,13 @@ public class GetWorkflowInstMetCliAction extends WorkflowCliAction {
    private String instanceId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       Validate.notNull(instanceId);
 
       try {
          Metadata met = getClient().getWorkflowInstanceMetadata(instanceId);
-         System.out.println("[id=" + instanceId + ", met=" + met.getHashtable()
+         printer.println("[id=" + instanceId + ", met=" + met.getHashtable()
                + "]");
       } catch (Exception e) {
          throw new CmdLineActionException(

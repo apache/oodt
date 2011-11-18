@@ -31,4 +31,5 @@ public interface CmdLinePresenter {
 
    public void presentErrorMessage(String errorMessage);
 
+   public void presentActionMessage(String actionMessage);
 }

@@ -29,10 +29,11 @@ public class StopWorkflowInstCliAction extends WorkflowCliAction {
    private String instanceId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          if (getClient().stopWorkflowInstance(instanceId)) {
-            System.out.println("Successfully stopped workflow '" + instanceId
+            printer.println("Successfully stopped workflow '" + instanceId
                   + "'");
          } else {
             throw new Exception("Stop workflow returned false");

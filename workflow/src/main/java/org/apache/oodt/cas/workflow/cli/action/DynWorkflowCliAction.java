@@ -42,12 +42,13 @@ public class DynWorkflowCliAction extends WorkflowCliAction {
    }
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       Validate.notNull(taskIds, "Must specify taskIds");
 
       try {
          String instId = getClient().executeDynamicWorkflow(taskIds, metadata);
-         System.out.println("Started dynamic workflow with id '" + instId + "'");
+         printer.println("Started dynamic workflow with id '" + instId + "'");
       } catch (Exception e) {
          throw new CmdLineActionException(
                "Failed to submit dynamic workflow for taskIds " + taskIds

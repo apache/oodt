@@ -30,11 +30,12 @@ public class GetTaskWallClockTimeCliAction extends WorkflowCliAction {
    private String instanceId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          double wallClockTime = getClient()
                .getWorkflowCurrentTaskWallClockMinutes(instanceId);
-         System.out.println(wallClockTime + " minutes");
+         printer.println(wallClockTime + " minutes");
       } catch (Exception e) {
          throw new CmdLineActionException(
                "Failed to get current workflow instance's "

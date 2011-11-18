@@ -34,13 +34,14 @@ public class GetJobInfoCliAction extends ResourceCliAction {
    private String jobId;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(jobId, "Must specify jobId");
 
          Job jobInfo = getClient().getJobInfo(jobId);
 
-         System.out.println("Job: [id=" + jobId + ", status="
+         printer.println("Job: [id=" + jobId + ", status="
                + getReadableJobStatus(jobInfo.getStatus()) + ",name="
                + jobInfo.getName() + ",queue=" + jobInfo.getQueueName()
                + ",load=" + jobInfo.getLoadValue() + ",inputClass="

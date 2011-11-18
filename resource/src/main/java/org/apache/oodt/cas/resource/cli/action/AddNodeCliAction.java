@@ -28,7 +28,7 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 
 /**
  * A {@link CmdLineAction} which adds a ResourceNode.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public class AddNodeCliAction extends ResourceCliAction {
@@ -38,14 +38,15 @@ public class AddNodeCliAction extends ResourceCliAction {
    private int capacity;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull(nodeId, "Must specify nodeId");
          Validate.notNull(nodeUrl, "Must specify nodeUrl");
          Validate.notNull(capacity, "Must specify capacity");
 
          getClient().addNode(new ResourceNode(nodeId, nodeUrl, capacity));
-         System.out.println("Successfully added node!");
+         printer.println("Successfully added node!");
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to add node with nodeId '"
                + nodeId + "', nodeUrl '" + nodeUrl + "', and capacity '"

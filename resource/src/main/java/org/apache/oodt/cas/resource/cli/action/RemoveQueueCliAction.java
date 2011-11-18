@@ -32,12 +32,13 @@ public class RemoveQueueCliAction extends ResourceCliAction {
    private String queueName;
 
    @Override
-   public void execute() throws CmdLineActionException {
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
       try {
          Validate.notNull("Must specify queueName");
 
          getClient().removeQueue(queueName);
-         System.out.println("Successfully removed queue!");
+         printer.println("Successfully removed queue!");
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to remove queue with name '"
                + queueName + "' : " + e.getMessage(), e);
