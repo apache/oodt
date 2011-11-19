@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.cli.contruct;
+package org.apache.oodt.cas.cli.construct;
 
 //OODT static imports
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.getOptionByName;
