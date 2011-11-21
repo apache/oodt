@@ -29,7 +29,7 @@ the License.
     </parent>
 	<name>Process Control System Operator Interface Webapp</name>
 	<properties>
-		<wicket.version>1.4.16</wicket.version>
+		<wicket.version>1.4.17</wicket.version>
 		<jetty.version>6.1.25</jetty.version>
 		<slf4j.version>1.5.8</slf4j.version>
 		<log4j.version>1.2.14</log4j.version>
@@ -39,6 +39,11 @@ the License.
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket</artifactId>
 			<version>${wicket.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.wicket</groupId>
+		    <artifactId>wicket-extensions</artifactId>
+		    <version>${wicket.version}</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>

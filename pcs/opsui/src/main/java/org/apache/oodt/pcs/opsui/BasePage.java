@@ -19,6 +19,7 @@
 package org.apache.oodt.pcs.opsui;
 
 //Wicket imports
+import org.apache.oodt.pcs.opsui.config.ConfigPage;
 import org.apache.oodt.pcs.opsui.status.StatusPage;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
@@ -83,6 +84,18 @@ public class BasePage extends WebPage {
         setResponsePage(WorkflowInstanceViewerPage.class, params);
         
       }
+    });
+    
+    add(new Link("config_link"){
+        /* (non-Javadoc)
+         * @see org.apache.wicket.markup.html.link.Link#onClick()
+         */
+        @Override
+        public void onClick() {
+          PageParameters params = new PageParameters();
+          params.add("tab", "File Manager");
+          setResponsePage(ConfigPage.class, params);  
+        }
     });
     
     add(new ExternalLink("ganglia_link", app.getGangliaUrl()));

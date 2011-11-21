@@ -27,6 +27,7 @@ import javax.servlet.ServletContext;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.webcomponents.filemgr.FMBrowserSession;
 import org.apache.oodt.cas.webcomponents.workflow.instance.WorkflowInstancesViewer;
+import org.apache.oodt.pcs.opsui.config.ConfigPage;
 import org.apache.oodt.pcs.opsui.status.StatusPage;
 import org.apache.oodt.pcs.webcomponents.trace.Trace;
 
@@ -78,6 +79,9 @@ public class OpsuiApp extends WebApplication implements Serializable {
     MixedParamUrlCodingStrategy workflowInstsPageMount = new MixedParamUrlCodingStrategy(
         "instances", WorkflowInstanceViewerPage.class, new String[] { "status",
             "pageNum" });
+    
+    MixedParamUrlCodingStrategy configPageMount = new MixedParamUrlCodingStrategy("config", 
+        ConfigPage.class, new String [] {"tab"});
 
     mount(pcsStatus);
     mount(types);
@@ -88,6 +92,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
     mount(workflowPageMount);
     mount(workflowsPageMount);
     mount(workflowInstsPageMount);
+    mount(configPageMount);
   }
 
   /*
@@ -244,6 +249,9 @@ public class OpsuiApp extends WebApplication implements Serializable {
         "open.gif").getSharedResourceKey());
     mountSharedResource("/images/closed.gif", new ResourceReference(
         Trace.class, "closed.gif").getSharedResourceKey());
+    
+    mountSharedResource("/images/tab_bottom.gif", new ResourceReference(ConfigPage.class, 
+        "tab_bottom.gif").getSharedResourceKey());
 
   }
 
