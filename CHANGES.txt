@@ -4,6 +4,10 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-353 getXmlRpcProduct and getProductFromXmlRpc should allow 
+  null values for product member variables since Product is just 
+  a carrier object (bfoster)
+
 * OODT-349 CAS-CLI CmdLineAction should take a printer which
   it is required to print it's messages to (bfoster)
 
