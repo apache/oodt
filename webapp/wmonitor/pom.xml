@@ -30,7 +30,7 @@ the License.
 	<version>0.4-SNAPSHOT</version>
 	<name>CAS Workflow Manager Monitor Web App</name>
 	<properties>
-		<wicket.version>1.4.16</wicket.version>
+		<wicket.version>1.4.17</wicket.version>
 		<jetty.version>6.1.25</jetty.version>
 		<slf4j.version>1.5.8</slf4j.version>
 		<log4j.version>1.2.14</log4j.version>
