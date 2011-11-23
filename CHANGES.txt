@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 0.4: Current Development
 --------------------------------------------
+* OODT-343 Add support for basic 'environment replacement' in 
+  module config.ini files (ahart)
 
 * OODT-353 getXmlRpcProduct and getProductFromXmlRpc should allow 
   null values for product member variables since Product is just 
