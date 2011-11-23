@@ -181,7 +181,16 @@ class Org_Apache_Oodt_Balance_Core_Application {
 
 			// Read in the module config file and append to application config
 			if (file_exists($modulePath . '/config.ini')) {
-				$moduleSettings   = parse_ini_file($modulePath . '/config.ini');
+			   	// Get the raw contents of the config file
+			   	$ini = file_get_contents($modulePath . '/config.ini');
+				// Perform environment replacement
+				$ini = str_replace('[MODULE_PATH]',  $modClass->modulePath,   $ini);
+				$ini = str_replace('[MODULE_ROOT]',  $modClass->moduleRoot,   $ini);
+				$ini = str_replace('[MODULE_STATIC]',$modClass->moduleStatic, $ini);
+				// Parse the env-replaced content
+				$moduleSettings   = parse_ini_string($ini);
+				// Append (union) with global settings. += ensures that
+				// application settings always override module settings.
 				$this->settings  += $moduleSettings;
 			}
 			
