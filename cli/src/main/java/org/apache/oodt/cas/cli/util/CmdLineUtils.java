@@ -83,6 +83,67 @@ public class CmdLineUtils {
       return requiredOptions;
    }
 
+   /**
+    * Determines the given {@link GroupCmdLineOption}'s sub-options which are
+    * affect the given {@link CmdLineAction}.
+    * 
+    * @param action
+    *           The {@link CmdLineAction} for which given
+    *           {@link GroupCmdLineOption}'s sub-options will be determined
+    *           relevant or not
+    * @param option
+    *           The {@link GroupCmdLineOption} whose sub-options are in question
+    *           of being relevant to the given {@link CmdLineAction}
+    * @return The {@link GroupCmdLineOption}'s sub-options who are relevant to
+    *         given {@link CmdLineAction}
+    */
+   public static Set<CmdLineOption> determineRelevantSubOptions(
+         CmdLineAction action, GroupCmdLineOption option) {
+      Set<CmdLineOption> relevantOptions = Sets.newHashSet();
+      for (GroupSubOption subOption : option.getSubOptions()) {
+         if (subOption.isRequired()
+               || isRequired(action, subOption.getOption())
+               || isOptional(action, subOption.getOption())) {
+            relevantOptions.add(subOption.getOption());
+         }
+      }
+      return relevantOptions;
+   }
+
+   /**
+    * Determines the sub-options of given {@link GroupCmdLineOption} who are
+    * always required.
+    * 
+    * @param option
+    *           The {@link GroupCmdLineOption} whose sub-options are check where
+    *           they are required
+    * @return The required sub-options of given {@link GroupCmdLineOption}
+    */
+   public static Set<CmdLineOption> determineRequiredSubOptions(
+         GroupCmdLineOption option) {
+      Validate.notNull(option);
+
+      Set<CmdLineOption> requiredOptions = Sets.newHashSet();
+      for (GroupSubOption subOption : option.getSubOptions()) {
+         if (subOption.isRequired()) {
+            requiredOptions.add(subOption.getOption());
+         }
+      }
+      return requiredOptions;
+   }
+
+   /**
+    * Determines the sub-options of given {@link GroupCmdLineOption} who are
+    * either always required for become requried when given
+    * {@link CmdLineAction} is specified.
+    * 
+    * @param action
+    *           The specified {@link CmdLineAction}
+    * @param option
+    *           The {@link GroupCmdLineOption} whose sub-options are checked if
+    *           they are required
+    * @return The given {@link GroupCmdLineOption}'s required sub-options
+    */
    public static Set<CmdLineOption> determineRequiredSubOptions(
          CmdLineAction action, GroupCmdLineOption option) {
       Validate.notNull(action);

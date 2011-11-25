@@ -19,6 +19,7 @@ package org.apache.oodt.cas.cli.printer;
 //OODT static imports
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.asGroupOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineOptional;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRelevantSubOptions;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRequired;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRequiredSubOptions;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.getFormattedString;
@@ -40,8 +41,8 @@ import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.GroupCmdLineOption;
 import org.apache.oodt.cas.cli.option.GroupSubOption;
 import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result;
-import org.apache.oodt.cas.cli.util.CmdLineUtils;
 
+//Google imports
 import com.google.common.collect.Lists;
 
 /**
@@ -131,12 +132,12 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
 
    protected String getGroupHelp(CmdLineAction action,
          GroupCmdLineOption option, String indent) {
-      String helpString = getOptionHelp(action, option, indent) + "\n";
+      String helpString = getOptionHelp(action, option, indent);
       Set<CmdLineOption> subOptions = determineRequiredSubOptions(action,
             (GroupCmdLineOption) option);
       if (subOptions.isEmpty()) {
          if (!option.getSubOptions().isEmpty()) {
-            helpString += indent + "  One of:";
+            helpString += "\n" + indent + "  One of:";
             for (GroupSubOption subOption : option.getSubOptions()) {
                helpString += "\n"
                      + getOptionHelp(action, subOption.getOption(), "   "
@@ -144,13 +145,18 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
             }
          }
       } else {
-         for (CmdLineOption subOption : subOptions) {
+         for (CmdLineOption subOption : determineRelevantSubOptions(action,
+               option)) {
+            helpString += "\n";
             if (subOption instanceof GroupCmdLineOption) {
                helpString += getGroupHelp(action,
                      (GroupCmdLineOption) subOption, "  " + indent);
             } else {
                helpString += getOptionHelp(action, subOption, "  " + indent);
             }
+            helpString += " "
+                  + (subOptions.contains(subOption) ? "(required)"
+                        : "(optional)");
          }
       }
       return helpString;
