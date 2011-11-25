@@ -3,6 +3,10 @@ Apache OODT Change Log
 
 Release 0.4: Current Development
 --------------------------------------------
+
+* OODT-354 CAS-CLI StdCmdLinePrinter doesn't print optional sub-options
+  for group options (bfoster)
+
 * OODT-343 Add support for basic 'environment replacement' in 
   module config.ini files (ahart)
 
