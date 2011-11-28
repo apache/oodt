@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-336 xmlps should omit joining of tables that are unnecessary to 
+  fulfill query (Ricky Nguyen via mattmann)
+
 * OODT-339 MappingReader should add default join table to DatabaseTable 
   if none defined (Ricky Nguyen via mattmann)
 

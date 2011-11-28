@@ -41,8 +41,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -189,10 +191,10 @@ public class XMLPSProductHandler implements QueryHandler {
                 .createQueryStack(query.getWhereElementSet());
         Expression parsedQuery = HandlerQueryParser.parse(queryStack,
                 this.mapping);
-        List<QueryElement> names = getElemNamesFromQueryElemSet(query
+        List<QueryElement> selectNames = getElemNamesFromQueryElemSet(query
                 .getSelectElementSet());
 
-        String querySelectNames = toSQLSelectColumns(names);
+        String querySelectNames = toSQLSelectColumns(selectNames);
 
         StringBuffer sqlBuf = new StringBuffer("SELECT ");
         sqlBuf.append(querySelectNames);
@@ -201,10 +203,9 @@ public class XMLPSProductHandler implements QueryHandler {
         sqlBuf.append(" ");
 
         if (mapping.getNumTables() > 0) {
-            for (Iterator<String> i = mapping.getTableNames().iterator(); i
-                    .hasNext();) {
-                String tableName = i.next();
-                DatabaseTable tbl = mapping.getTableByName(tableName);
+            List<QueryElement> whereNames = getElemNamesFromQueryElemSet(query.getWhereElementSet());
+            Set<DatabaseTable> requiredTables = getRequiredTables(whereNames, selectNames);
+            for (DatabaseTable tbl : requiredTables) {
                 sqlBuf.append("INNER JOIN ");
                 sqlBuf.append(tbl.getName());
                 sqlBuf.append(" ON ");
@@ -229,7 +230,7 @@ public class XMLPSProductHandler implements QueryHandler {
         if (executor != null) {
             try {
                 CDEResult res = executor.executeLocalQuery(this.mapping,
-                        sqlBuf.toString(), toSQLResultSetColumns(names));
+                        sqlBuf.toString(), toSQLResultSetColumns(selectNames));
 
                 res = addConstFields(res,
                         getConstElemNamesFromQueryElemSet(query
@@ -381,6 +382,50 @@ public class XMLPSProductHandler implements QueryHandler {
             }
         }
 
+    }
+  
+    protected Set<DatabaseTable> getRequiredTables(
+            List<QueryElement> whereElemNames, List<QueryElement> selectElemNames) {
+        Set<DatabaseTable> tables = new HashSet<DatabaseTable>();
+        // add tables from where element set
+        if (whereElemNames != null) {
+            for (QueryElement qe : whereElemNames) {
+                MappingField fld = mapping.getFieldByLocalName(qe.getValue());
+                if (fld != null) {
+                    DatabaseTable t = mapping.getTableByName(fld.getTableName());
+                    if (t != null && !tables.contains(t)) {
+                        tables.add(t);
+                    }
+                }
+            }
+        }
+        // add tables from select element set
+        if (selectElemNames != null) {
+            for (QueryElement qe : selectElemNames) {
+                MappingField fld = mapping.getFieldByLocalName(qe.getValue());
+                if (fld != null) {
+                    DatabaseTable t = mapping.getTableByName(fld.getTableName());
+                    if (t != null && !tables.contains(t)) {
+                        tables.add(t);
+                    }
+                }
+            }
+        }
+        // the tables found may be joined on columns from tables we haven't found
+        // yet
+        // add additional required join tables
+        Set<DatabaseTable> moreTables = new HashSet<DatabaseTable>(tables);
+        for (DatabaseTable t : tables) {
+            DatabaseTable join = mapping.getTableByName(t.getDefaultTableJoin());
+            // recursively add all join tables until we get to either
+            // (a) the mapping default table (join == null)
+            // (b) or a table already found (moreTables.contains(join))
+            while (join != null && !moreTables.contains(join)) {
+                moreTables.add(join);
+                join = mapping.getTableByName(join.getDefaultTableJoin());
+            }
+        }
+        return moreTables;
     }
 
 }

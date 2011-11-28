@@ -20,8 +20,10 @@ package org.apache.oodt.xmlps.product;
 //JDK imports
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 //APACHE imports
+import org.apache.oodt.xmlps.mapping.DatabaseTable;
 import org.apache.oodt.xmlps.util.XMLQueryHelper;
 import org.apache.oodt.xmlquery.QueryElement;
 import org.apache.oodt.xmlquery.XMLQuery;
@@ -139,5 +141,44 @@ public class TestXMLPSProductHandler extends TestCase {
                 + elem.getValue() + "]", elem.getValue(),
                 expectedSpecimenFldName);
 
+    }
+    
+    public void testGetRequiredTables() {
+        System.setProperty("org.apache.oodt.xmlps.xml.mapFilePath",
+            "./src/test/resources/test-required-tables-ps.xml");
+        
+        try {
+            handler = new XMLPSProductHandler();
+        } catch (InstantiationException e) {
+            fail(e.getMessage());
+        }
+        
+        String queryStr = "RETURN = id AND RETURN = id_1 AND RETURN = id_2 AND RETURN = id_3 AND RETURN = id_4";
+        XMLQuery query = XMLQueryHelper.getDefaultQueryFromQueryString(queryStr);
+        
+        List<QueryElement> where = query.getWhereElementSet();
+        List<QueryElement> select = query.getSelectElementSet();
+        
+        try {
+            handler.translateToDomain(where, false);
+            handler.translateToDomain(select, true);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+        
+        List<QueryElement> whereNames = handler.getElemNamesFromQueryElemSet(where);
+        List<QueryElement> selectNames = handler.getElemNamesFromQueryElemSet(select);
+        
+        Set<DatabaseTable> tables = handler.getRequiredTables(whereNames, selectNames);
+        
+        assertEquals(7, tables.size());
+        assertTrue(tables.contains(handler.mapping.getTableByName("joinToDefault")));
+        assertTrue(tables.contains(handler.mapping.getTableByName("joinToExtraDefault")));
+        assertTrue(tables.contains(handler.mapping.getTableByName("joinToExtraJoin")));
+        assertTrue(tables.contains(handler.mapping.getTableByName("joinToExtraOther")));
+        assertTrue(tables.contains(handler.mapping.getTableByName("extraDefault")));
+        assertTrue(tables.contains(handler.mapping.getTableByName("extraOther")));
+        assertTrue(tables.contains(handler.mapping.getTableByName("other")));
+        assertTrue(!tables.contains(handler.mapping.getTableByName("another")));
     }
 }
