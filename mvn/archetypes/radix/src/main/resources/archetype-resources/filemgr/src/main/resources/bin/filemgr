@@ -119,7 +119,8 @@ elif [ "$1" = "stop" ]; then
     if [ -f "$FILEMGR_PID" ]; then
       kill `cat $FILEMGR_PID` >/dev/null 2>&1
       if [ $? -eq 1 ]; then
-        echo "PID file ($FILEMGR_PID) found but no matching process was found. Stop aborted."
+        echo "ID file ($FILEMGR_PID) found with PID `cat $FILEMGR_PID` but no matching process was found. Removed $FILEMGR_PID, now FileManager can be started."
+        `rm $FILEMGR_PID`
         exit 1
       fi
     else
