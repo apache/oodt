@@ -212,9 +212,7 @@ public class XMLPSProductHandler implements QueryHandler {
                 sqlBuf.append(".");
                 sqlBuf.append(tbl.getJoinFieldName());
                 sqlBuf.append(" = ");
-                sqlBuf.append((tbl.getDefaultTableJoin() != null &&
-                        !tbl.getDefaultTableJoin().equals("")) ? tbl
-                        .getDefaultTableJoin() : mapping.getDefaultTable());
+                sqlBuf.append(tbl.getDefaultTableJoin());
                 sqlBuf.append(".");
                 sqlBuf.append(tbl.getDefaultTableJoinFieldName());
                 sqlBuf.append(" ");

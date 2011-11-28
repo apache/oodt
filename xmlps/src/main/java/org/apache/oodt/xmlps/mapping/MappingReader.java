@@ -97,6 +97,8 @@ public final class MappingReader implements MappingReaderMetKeys {
       for (int i = 0; i < tableNodes.getLength(); i++) {
         Element tableElem = (Element) tableNodes.item(i);
         DatabaseTable tbl = readTable(tableElem);
+        if (tbl.getDefaultTableJoin() == null || tbl.getDefaultTableJoin().isEmpty())
+          tbl.setDefaultTableJoin(map.getDefaultTable());
         map.addTable(tbl.getName(), tbl);
       }
     }

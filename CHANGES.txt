@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-339 MappingReader should add default join table to DatabaseTable 
+  if none defined (Ricky Nguyen via mattmann)
+
 * OODT-354 CAS-CLI StdCmdLinePrinter doesn't print optional sub-options
   for group options (bfoster)
 
