@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-337 XMLPSProductHandler methods should return empty lists instead 
+  of null (Ricky Nguyen via mattmann)
+
 * OODT-336 xmlps should omit joining of tables that are unnecessary to 
   fulfill query (Ricky Nguyen via mattmann)
 

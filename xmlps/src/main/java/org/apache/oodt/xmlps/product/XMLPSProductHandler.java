@@ -41,6 +41,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -150,7 +151,7 @@ public class XMLPSProductHandler implements QueryHandler {
     protected List<QueryElement> getElemNamesFromQueryElemSet(
             List<QueryElement> origSet) {
         if (origSet == null || (origSet != null && origSet.size() == 0))
-            return null;
+            return Collections.emptyList();
 
         List<QueryElement> newSet = new Vector<QueryElement>();
 
@@ -171,7 +172,7 @@ public class XMLPSProductHandler implements QueryHandler {
     protected List<QueryElement> getConstElemNamesFromQueryElemSet(
             List<QueryElement> origSet) {
         if (origSet == null || (origSet != null && origSet.size() == 0))
-            return null;
+            return Collections.emptyList();
 
         List<QueryElement> newSet = new Vector<QueryElement>();
 
@@ -307,7 +308,7 @@ public class XMLPSProductHandler implements QueryHandler {
 
     private List<String> toSQLResultSetColumns(List<QueryElement> elems) {
         if (elems == null || (elems != null && elems.size() == 0))
-          return null;
+          return Collections.emptyList();
 
         List<String> resultSetNames = new ArrayList<String>();
         for (QueryElement qe : elems) {
