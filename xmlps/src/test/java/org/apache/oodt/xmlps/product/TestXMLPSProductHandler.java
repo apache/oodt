@@ -38,7 +38,7 @@ public class TestXMLPSProductHandler extends TestCase {
 
     private static final String expectedSpecimenFldName = "specimen.specimen_collected";
 
-    private static XMLPSProductHandler handler;
+    private XMLPSProductHandler handler;
 
     private static final String specimenCollectedCodeField = "SPECIMEN_COLLECTED_CODE";
 
@@ -50,7 +50,7 @@ public class TestXMLPSProductHandler extends TestCase {
             + " = 3 AND " + studyProtocolIdField + " = 71 AND RETURN = "
             + specimenCollectedCodeField;
 
-    public TestXMLPSProductHandler() {
+    public void setUp() {
         System.setProperty("org.apache.oodt.xmlps.xml.mapFilePath",
                 "./src/test/resources/test-ps.xml");
 

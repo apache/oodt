@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-338 XMLPS unit tests should change constructor to 
+  setUp() (Ricky Nguyen via mattmann)
+
 * OODT-337 XMLPSProductHandler methods should return empty lists instead 
   of null (Ricky Nguyen via mattmann)
 
