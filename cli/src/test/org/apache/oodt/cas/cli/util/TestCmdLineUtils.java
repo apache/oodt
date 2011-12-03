@@ -184,6 +184,19 @@ public class TestCmdLineUtils extends TestCase {
             Sets.newHashSet(sortedOptions.get(2), sortedOptions.get(3)));
    }
 
+   public void testSortActions() {
+      Set<CmdLineAction> actions = Sets.newHashSet(
+            createAction("Tom"),
+            createAction("Bill"),
+            createAction("Young"),
+            createAction("Andy"));
+      List<CmdLineAction> sortedActions = CmdLineUtils.sortActions(actions);
+      assertEquals("Andy", sortedActions.get(0).getName());
+      assertEquals("Bill", sortedActions.get(1).getName());
+      assertEquals("Tom", sortedActions.get(2).getName());
+      assertEquals("Young", sortedActions.get(3).getName());
+   }
+
    public void testGetOptionByName() {
       CmdLineAction action = createAction("action");
       CmdLineOption userOption, urlOption, passOption, actionOption;

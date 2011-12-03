@@ -302,6 +302,23 @@ public class CmdLineUtils {
    }
 
    /**
+    * Sorts {@link CmdLineAction}s by there name.
+    *
+    * @param actions The {@link CmdLineAction}s to be sorted
+    * @return Sorted {@link List} of {@link CmdLineAction}s
+    */
+   public static List<CmdLineAction> sortActions(Set<CmdLineAction> actions) {
+      List<CmdLineAction> actionsList = Lists.newArrayList(actions);
+      Collections.sort(actionsList, new Comparator<CmdLineAction>() {
+         @Override
+         public int compare(CmdLineAction a1, CmdLineAction a2) {
+            return a1.getName().compareTo(a2.getName());
+         }
+      });
+      return actionsList;
+   }
+
+   /**
     * Finds {@link CmdLineOption} whose short name or long name equals given
     * option name.
     * 

@@ -146,6 +146,10 @@ public class CmdLineUtility {
             .getSupportedActions()));
    }
 
+   public void printActionMessages(List<String> messages) {
+      presenter.presentActionMessage(printer.printActionMessages(messages));
+   }
+
    public void printValidationErrors(List<CmdLineOptionValidator.Result> results) {
       presenter.presentErrorMessage(printer.printOptionValidationErrors(results));
    }
@@ -175,7 +179,7 @@ public class CmdLineUtility {
             execute(cmdLineArgs);
          }
       } catch (Exception e) {
-         if (debugMode) { e.printStackTrace(); }
+         if (debugMode) { throw new RuntimeException(e); }
          printErrorMessage(e.getMessage());
       }
    }
@@ -288,7 +292,9 @@ public class CmdLineUtility {
 
       handle(cmdLineArgs);
 
-      cmdLineArgs.getSpecifiedAction().execute(new ActionMessagePrinter());
+      ActionMessagePrinter printer = new ActionMessagePrinter();
+      cmdLineArgs.getSpecifiedAction().execute(printer);
+      printActionMessages(printer.getPrintedMessages());
    }
 
    /**

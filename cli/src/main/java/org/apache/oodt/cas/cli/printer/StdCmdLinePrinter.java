@@ -24,6 +24,7 @@ import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRequired;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRequiredSubOptions;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.getFormattedString;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.isGroupOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.sortActions;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.sortOptionsByRequiredStatus;
 
 //JDK imports
@@ -35,6 +36,7 @@ import org.apache.commons.lang.StringUtils;
 
 //OODT imports
 import org.apache.oodt.cas.cli.action.CmdLineAction;
+import org.apache.oodt.cas.cli.action.CmdLineAction.Example;
 import org.apache.oodt.cas.cli.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cli.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
@@ -57,7 +59,31 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
          Set<CmdLineOption> options) {
       StringBuffer sb = new StringBuffer("");
       sb.append(getHeader(action)).append("\n");
+      sb.append(getDescription(action)).append("\n");
+      sb.append(getUsage(action, options)).append("\n");
+      sb.append(getExamples(action)).append("\n");
+      sb.append(getFooter(action)).append("\n");
+      return sb.toString();
+   }
 
+   protected String getHeader(CmdLineAction action) {
+      return "** Action Help for '" + action.getName() + "' **";
+   }
+
+   protected String getDescription(CmdLineAction action) {
+      StringBuffer sb = new StringBuffer("DESCRIPTION:\n");
+      if (action.getDetailedDescription() != null) {
+         sb.append(action.getDetailedDescription());
+      } else if (action.getDescription() != null){
+         sb.append(" ").append(action.getDescription());
+      } else {
+         sb.append(" - N/A");
+      }
+      return sb.append("\n").toString();
+   }
+
+   protected String getUsage(CmdLineAction action, Set<CmdLineOption> options) {
+      StringBuffer sb = new StringBuffer("USAGE:\n");
       sb.append(getRequiredSubHeader()).append("\n");
       Set<CmdLineOption> requiredOptions = determineRequired(action, options);
       List<CmdLineOption> sortedRequiredOptions = sortOptionsByRequiredStatus(requiredOptions);
@@ -71,17 +97,11 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
       for (CmdLineOption option : sortedOptionalOptions) {
          sb.append(getOptionalOptionHelp(action, option)).append("\n");
       }
-
-      sb.append(getFooter(action)).append("\n");
       return sb.toString();
    }
 
-   protected String getHeader(CmdLineAction action) {
-      return "Action Help for '" + action.getName() + "'";
-   }
-
    protected String getRequiredSubHeader() {
-      return " - Required:";
+      return " Required:";
    }
 
    protected String getRequiredOptionHelp(CmdLineAction action,
@@ -89,12 +109,12 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
       if (option instanceof GroupCmdLineOption) {
          return getGroupHelp(action, (GroupCmdLineOption) option, "    ");
       } else {
-         return getOptionHelp(action, option, "    ");
+         return getOptionHelp(action, option, "  ");
       }
    }
 
    protected String getOptionalSubHeader() {
-      return " - Optional:";
+      return " Optional:";
    }
 
    protected String getOptionalOptionHelp(CmdLineAction action,
@@ -102,8 +122,21 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
       if (option instanceof GroupCmdLineOption) {
          return getGroupHelp(action, (GroupCmdLineOption) option, "    ");
       } else {
-         return getOptionHelp(action, option, "    ");
+         return getOptionHelp(action, option, "  ");
       }
+   }
+
+   protected String getExamples(CmdLineAction action) {
+      StringBuffer sb = new StringBuffer("EXAMPLES:\n");
+      if (action.getExamples() != null && !action.getExamples().isEmpty()) {
+         for (Example example : action.getExamples()) {
+            sb.append(example.getDescription()).append("\n");
+            sb.append(" - ").append(example.getExample()).append("\n");
+         }
+      } else {
+         sb.append(" - N/A");
+      }
+      return sb.toString();
    }
 
    protected String getFooter(CmdLineAction action) {
@@ -165,13 +198,15 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    @Override
    public String printActionsHelp(Set<CmdLineAction> actions) {
       StringBuffer sb = new StringBuffer("");
-      sb.append("Actions:").append("\n");
-      for (CmdLineAction action : actions) {
-         sb.append("  Action:").append("\n");
-         sb.append("    Name: ").append(action.getName()).append("\n");
-         sb.append("    Description: ").append(action.getDescription())
-               .append("\n").append("\n");
+      sb.append("-----------------------------------------------------------------------------------------------------------------\n");
+      sb.append("|" + StringUtils.rightPad(" Action", 35) + "|"
+            + " Description\n");
+      sb.append("-----------------------------------------------------------------------------------------------------------------\n");
+      for (CmdLineAction action : sortActions(actions)) {
+         sb.append("  ").append(StringUtils.rightPad(action.getName(), 35));
+         sb.append(" ").append(action.getDescription()).append("\n\n");
       }
+      sb.append("-----------------------------------------------------------------------------------------------------------------\n");
       return sb.toString();
    }
 

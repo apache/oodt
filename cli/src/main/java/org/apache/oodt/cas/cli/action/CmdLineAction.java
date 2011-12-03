@@ -35,6 +35,8 @@ public abstract class CmdLineAction {
 
    private String name;
    private String description;
+   private String detailedDescription;
+   private List<Example> examples;
 
    public CmdLineAction() {
    }
@@ -58,6 +60,22 @@ public abstract class CmdLineAction {
 
    public String getDescription() {
       return description;
+   }
+
+   public void setDetailedDescription(String detailedDescription) {
+      this.detailedDescription = detailedDescription;
+   }
+
+   public String getDetailedDescription() {
+      return detailedDescription;
+   }
+
+   public void setExamples(List<Example> examples) {
+      this.examples = examples;
+   }
+
+   public List<Example> getExamples() {
+      return examples;
    }
 
    public abstract void execute(ActionMessagePrinter printer)
@@ -85,6 +103,24 @@ public abstract class CmdLineAction {
 
       public List<String> getPrintedMessages() {
          return messages;
+      }
+   }
+
+   public static class Example {
+      private String description;
+      private String example;
+
+      public Example(String description, String example) {
+         this.description = description;
+         this.example = example;
+      }
+
+      public String getDescription() {
+         return description;
+      }
+
+      public String getExample() {
+         return example;
       }
    }
 }
