@@ -3,6 +3,15 @@ Apache OODT Change Log
 
 Release 0.4: Current Development
 --------------------------------------------
+* OODT-360 Add supported for CmdLineAction detailed help description (bfoster)
+
+* OODT-359 CmdLineUtility is not printing action messages (bfoster)
+
+* OODT-358 Change CmdLineUtility's run(String[]) method to throw
+  RuntimeException when in debug mode (bfoster)
+
+* OODT-357 Change Print Supported Actions StdCmdLinePrinter output
+  format to more "readable" (bfoster)
 
 * OODT-338 XMLPS unit tests should change constructor to 
   setUp() (Ricky Nguyen via mattmann)
