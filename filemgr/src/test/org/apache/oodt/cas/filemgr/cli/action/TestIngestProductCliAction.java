@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
 
 //Apache imports
 import org.apache.commons.io.FileUtils;
@@ -35,6 +37,7 @@ import org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory;
 import org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferer;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -187,6 +190,12 @@ public class TestIngestProductCliAction extends TestCase {
       assertEquals(Product.STRUCTURE_HIERARCHICAL, clientSetProduct.getProductStructure());
       assertEquals(PRODUCT_TYPE_NAME, clientSetProduct.getProductType().getName());
       assertEquals(3, clientSetProduct.getProductReferences().size());
+      Collections.sort(clientSetProduct.getProductReferences(), new Comparator<Reference>() {
+         @Override
+         public int compare(Reference ref1, Reference ref2) {
+            return ref1.getOrigReference().compareTo(ref2.getOrigReference());
+         }
+      });
       assertEquals("file:" + hierRefFile.getAbsolutePath() + "/", clientSetProduct.getProductReferences().get(0).getOrigReference());
       assertEquals("file:" + new File(hierRefFile, SUB_REF_1).getAbsolutePath(), clientSetProduct.getProductReferences().get(1).getOrigReference());
       assertEquals("file:" + new File(hierRefFile, SUB_REF_2).getAbsolutePath(), clientSetProduct.getProductReferences().get(2).getOrigReference());
@@ -212,6 +221,12 @@ public class TestIngestProductCliAction extends TestCase {
       assertEquals(Product.STRUCTURE_HIERARCHICAL, clientSetProduct.getProductStructure());
       assertEquals(PRODUCT_TYPE_NAME, clientSetProduct.getProductType().getName());
       assertEquals(3, clientSetProduct.getProductReferences().size());
+      Collections.sort(clientSetProduct.getProductReferences(), new Comparator<Reference>() {
+         @Override
+         public int compare(Reference ref1, Reference ref2) {
+            return ref1.getOrigReference().compareTo(ref2.getOrigReference());
+         }
+      });
       assertEquals("file:" + hierRefFile.getAbsolutePath() + "/", clientSetProduct.getProductReferences().get(0).getOrigReference());
       assertEquals("file:" + new File(hierRefFile, SUB_REF_1).getAbsolutePath(), clientSetProduct.getProductReferences().get(1).getOrigReference());
       assertEquals("file:" + new File(hierRefFile, SUB_REF_2).getAbsolutePath(), clientSetProduct.getProductReferences().get(2).getOrigReference());
