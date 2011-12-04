@@ -1,0 +1,1016 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	You under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. Author: 
+	bfoster (Brian Foster) -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="url" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+		<property name="shortOption" value="u" />
+		<property name="longOption" value="url" />
+		<property name="description" value="Workflow Manager URL" />
+		<property name="hasArgs" value="true" />
+		<property name="argsDescription" value="url" />
+		<property name="required" value="true" />
+		<property name="handler">
+			<bean
+				class="org.apache.oodt.cas.cli.option.handler.SetJavaPropertiesHandler">
+				<property name="propertyNames">
+					<list>
+						<value>org.apache.oodt.cas.workflow.url</value>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="operation" class="org.apache.oodt.cas.cli.option.GroupCmdLineOption">
+		<property name="shortOption" value="op" />
+		<property name="longOption" value="operation" />
+		<property name="description"
+			value="Declare that you wish to present an operation" />
+		<property name="hasArgs" value="false" />
+		<property name="required" value="true" />
+		<property name="subOptions">
+			<list>
+				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+					p:option-ref="addProductType" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="deleteProductById" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="deleteProductByName" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="ingestProduct" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="hasProduct" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getProductTypeByName" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getNumProducts" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getFirstPage" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getNextPage" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getPrevPage" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getLastPage" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getCurrentTransfer" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getCurrentTransfers" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getProductById" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getProductByName" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getProductPctTransferred" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="getFilePctTransferred" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="sqlQuery" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="dumpMetadata" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="luceneQuery" p:required="false" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- AddProductType Options -->
+	<bean id="addProductType" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+		p:isSubOption="true">
+		<property name="shortOption" value="addPT" />
+		<property name="longOption" value="addProductType" />
+		<property name="description" value="Triggers AddProductType Action" />
+		<property name="hasArgs" value="false" />
+		<property name="staticArgs">
+			<list>
+				<value>AddProductType</value>
+			</list>
+		</property>
+		<property name="requirementRules">
+			<list>
+				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+					p:actionName="AddProductType" p:relation="REQUIRED" />
+			</list>
+		</property>
+	</bean>
+
+  <bean id="typeName" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="tn" />
+    <property name="longOption" value="typeName" />
+    <property name="description" value="ProductType name" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="product-type-name" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="AddProductType" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="AddProductType" p:methodName="setProductTypeName" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="typeDesc" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="td" />
+    <property name="longOption" value="typeDesc" />
+    <property name="description" value="ProductType description" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="description" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="AddProductType" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="AddProductType" p:methodName="setProductTypeDescription" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="repository" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="repo" />
+    <property name="longOption" value="repository" />
+    <property name="description" value="ProductType repository" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="file-path" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="AddProductType" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="AddProductType" p:methodName="setFileRepositoryPath" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="versionClass" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="vc" />
+    <property name="longOption" value="versionClass" />
+    <property name="description" value="ProductType versioner class" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="classpath" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="AddProductType" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="AddProductType" p:methodName="setVersioner" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <!-- IngestProduct Options -->
+  <bean id="ingestProduct" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="ingest" />
+    <property name="longOption" value="ingestProduct" />
+    <property name="description" value="Triggers IngestProduct Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>IngestProduct</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="IngestProduct" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="productStructure" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="ps" />
+    <property name="longOption" value="productStructure" />
+    <property name="description" value="Hierarchical | Flat" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="structure-type" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="IngestProduct" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="IngestProduct" p:methodName="setProductStructure" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="metadataFile" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="mf" />
+    <property name="longOption" value="metadataFile" />
+    <property name="description" value="Metadata XML file path or URL" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="file-path-or-url" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="IngestProduct" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="clientTransfer" class="org.apache.oodt.cas.cli.option.GroupCmdLineOption">
+    <property name="shortOption" value="ct" />
+    <property name="longOption" value="clientTransfer" />
+    <property name="description" value="User client transferer" />
+    <property name="hasArgs" value="false" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="IngestProduct" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="subOptions">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="dataTransfer" p:required="true" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="dataTransfer" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+      p:isSubOption="true">
+    <property name="shortOption" value="dt" />
+    <property name="longOption" value="dataTransfer" />
+    <property name="description" value="DataTransferer factory class" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="classpath" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="IngestProduct" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="IngestProduct" p:methodName="setDataTransferer" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="refs" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="rs" />
+    <property name="longOption" value="refs" />
+    <property name="description" value="Data file path or URL" />
+    <property name="type" value="java.util.List" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="file-path-or-url" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="IngestProduct" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="IngestProduct" p:methodName="setReferences" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <!-- HasProduct Options -->
+  <bean id="hasProduct" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="product" />
+    <property name="longOption" value="hasProduct" />
+    <property name="description" value="Triggers HasProduct Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>HasProduct</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="HasProduct" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- GetProductTypeByName Options -->
+  <bean id="getProductTypeByName" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="ptbyn" />
+    <property name="longOption" value="getProductTypeByName" />
+    <property name="description" value="Triggers GetProductTypeByName Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetProductTypeByName</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetProductTypeByName" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- GetNumProducts Options -->
+  <bean id="getNumProducts" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="num" />
+    <property name="longOption" value="getNumProducts" />
+    <property name="description" value="Triggers GetNumProducts Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetNumProducts</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetNumProducts" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- GetFirstPage Options -->
+  <bean id="getFirstPage" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="page1" />
+    <property name="longOption" value="getFirstPage" />
+    <property name="description" value="Triggers GetFirstPage Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetFirstPage</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetFirstPage" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- GetNextPage Options -->
+  <bean id="getNextPage" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="next" />
+    <property name="longOption" value="getNextPage" />
+    <property name="description" value="Triggers GetNextPage Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetNextPage</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetNextPage" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- GetPrevPage Options -->
+  <bean id="getPrevPage" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="prev" />
+    <property name="longOption" value="getPrevPage" />
+    <property name="description" value="Triggers GetPrevPage Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetPrevPage</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetPrevPage" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- GetLastPage Options -->
+  <bean id="getLastPage" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="last" />
+    <property name="longOption" value="getLastPage" />
+    <property name="description" value="Triggers GetLastPage Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetLastPage</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetLastPage" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- GetCurrentTransfer Options -->
+  <bean id="getCurrentTransfer" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="curTran" />
+    <property name="longOption" value="getCurrentTransfer" />
+    <property name="description" value="Triggers GetCurrentTransfer Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetCurrentTransfer</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetCurrentTransfer" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- GetCurrentTransfers Options -->
+  <bean id="getCurrentTransfers" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="curTrans" />
+    <property name="longOption" value="getCurrentTransfers" />
+    <property name="description" value="Triggers GetCurrentTransfers Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetCurrentTransfers</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetCurrentTransfers" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- GetProductPercentTransferred Options -->
+  <bean id="getProductPctTransferred" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="pctTrans" />
+    <property name="longOption" value="getProductPctTransferred" />
+    <property name="description" value="Triggers GetProductPercentTransferred Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetProductPercentTransferred</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetProductPercentTransferred" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- GetFilePercentTransferred Options -->
+  <bean id="getFilePctTransferred" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="filePctTrans" />
+    <property name="longOption" value="getFilePctTransferred" />
+    <property name="description" value="Triggers GetFilePercentTransferred Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetFilePercentTransferred</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetFilePercentTransferred" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="origRef" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="or" />
+    <property name="longOption" value="origRef" />
+    <property name="description" value="Original reference" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="file-path-or-url" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetFilePercentTransferred" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <!-- SqlQuery Options -->
+  <bean id="sqlQuery" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="sql" />
+    <property name="longOption" value="sqlQuery" />
+    <property name="description" value="Triggers SqlQuery Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>SqlQuery</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="sortBy" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="sb" />
+    <property name="longOption" value="sortBy" />
+    <property name="description" value="Metadata field to sort query results by" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="metadata field" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="outputFormat" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="of" />
+    <property name="longOption" value="outputFormat" />
+    <property name="description" value="Output format string (i.e. Filename = $Filename)" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="output-format-string" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="delimiter" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="dlmtr" />
+    <property name="longOption" value="delimiter" />
+    <property name="description" value="String to use the separate query results" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="delimiter-string" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="filter" class="org.apache.oodt.cas.cli.option.GroupCmdLineOption">
+    <property name="shortOption" value="f" />
+    <property name="longOption" value="filter" />
+    <property name="description" value="Query filter" />
+    <property name="hasArgs" value="false" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="subOptions">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="algor" p:required="true" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="converter" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="startDateTimeMetKey" p:required="true" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="endDateTimeMetKey" p:required="true" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="priorityMetKey" p:required="true" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="algor" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+      p:isSubOption="true">
+    <property name="shortOption" value="algor" />
+    <property name="longOption" value="algor" />
+    <property name="description" value="FilterAlgor class" />
+    <property name="type" value="org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="classpath" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+  
+  <bean id="converter" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+      p:isSubOption="true">
+    <property name="shortOption" value="conv" />
+    <property name="longOption" value="converter" />
+    <property name="description" value="VersionConverter class" />
+    <property name="type" value="org.apache.oodt.cas.filemgr.structs.query.conv.VersionConverter" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="classpath" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="startDateTimeMetKey" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+      p:isSubOption="true">
+    <property name="shortOption" value="sdtMetKey" />
+    <property name="longOption" value="startDateTimeMetKey" />
+    <property name="description" value="Start date time metadata key" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="metadata-key" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+  
+  <bean id="endDateTimeMetKey" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+      p:isSubOption="true">
+    <property name="shortOption" value="edtMetKey" />
+    <property name="longOption" value="endDateTimeMetKey" />
+    <property name="description" value="End date time metadata key" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="metadata-key" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+  
+  <bean id="priorityMetKey" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+      p:isSubOption="true">
+    <property name="shortOption" value="prMetKey" />
+    <property name="longOption" value="priorityMetKey" />
+    <property name="description" value="Priority metadata key" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="metadata-key" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <!-- GetProductById Options -->
+  <bean id="getProductById" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="pbyid" />
+    <property name="longOption" value="getProductById" />
+    <property name="description" value="Triggers GetProductById Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetProductById</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetProductById" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- GetProductByName Options -->
+  <bean id="getProductByName" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="pbyn" />
+    <property name="longOption" value="getProductByName" />
+    <property name="description" value="Triggers GetProductByName Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>GetProductByName</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetProductByName" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- DeleteProductById Options -->
+  <bean id="deleteProductById" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="dbyid" />
+    <property name="longOption" value="deleteProductById" />
+    <property name="description" value="Triggers DeleteProductById Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>DeleteProductById</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="DeleteProductById" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- DeleteProductByName Options -->
+  <bean id="deleteProductByName" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="dbyn" />
+    <property name="longOption" value="deleteProductByName" />
+    <property name="description" value="Triggers DeleteProductByName Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>DeleteProductByName</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="DeleteProductByName" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- DumpMetadata Options -->
+  <bean id="dumpMetadata" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="dmet" />
+    <property name="longOption" value="dumpMetadata" />
+    <property name="description" value="Triggers DumpMetadata Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>DumpMetadata</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="DumpMetadata" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="outputDir" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="out" />
+    <property name="longOption" value="outputDir" />
+    <property name="description" value="Output directory" />
+    <property name="type" value="java.io.File" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="file-dir" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="DumpMetadata" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <!-- LuceneQuery Options -->
+  <bean id="luceneQuery" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="lucene" />
+    <property name="longOption" value="luceneQuery" />
+    <property name="description" value="Triggers LuceneQuery Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>LuceneQuery</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+	<!-- Options used for multiple Actions -->
+  <bean id="productId" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="pid" />
+    <property name="longOption" value="productId" />
+    <property name="description" value="Product ID" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="product-id" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetProductPercentTransferred" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetProductById" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="DeleteProductById" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="DumpMetadata" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+	
+  <bean id="productName" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="pn" />
+    <property name="longOption" value="productName" />
+    <property name="description" value="Product name" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="product-name" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="IngestProduct" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="HasProduct" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetProductByName" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="DeleteProductByName" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="productTypeName" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="ptn" />
+    <property name="longOption" value="productTypeName" />
+    <property name="description" value="ProductType name" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="product-type-name" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="IngestProduct" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetProductTypeByName" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetNumProducts" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetFirstPage" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetNextPage" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetPrevPage" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetLastPage" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetProductPercentTransferred" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+  
+  <bean id="currentPageNum" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="curPage" />
+    <property name="longOption" value="currentPageNum" />
+    <property name="description" value="Current Page Number" />
+    <property name="type" value="int" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="page-number" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetNextPage" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="GetPrevPage" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="query" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="q" />
+    <property name="longOption" value="query" />
+    <property name="description" value="File Manager query" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="query" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+</beans>

@@ -48,6 +48,7 @@ import java.util.Vector;
  * </p>
  * 
  */
+@Deprecated
 public class DeleteProduct {
 
     /* our log stream */

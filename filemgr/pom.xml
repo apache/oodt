@@ -123,6 +123,11 @@
       <version>${project.parent.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-cli</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>    
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>10.0.1</version>
