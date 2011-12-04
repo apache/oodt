@@ -36,7 +36,6 @@ import org.apache.commons.lang.StringUtils;
 
 //OODT imports
 import org.apache.oodt.cas.cli.action.CmdLineAction;
-import org.apache.oodt.cas.cli.action.CmdLineAction.Example;
 import org.apache.oodt.cas.cli.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cli.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
@@ -71,11 +70,14 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    }
 
    protected String getDescription(CmdLineAction action) {
-      StringBuffer sb = new StringBuffer("DESCRIPTION:\n");
+      StringBuffer sb = new StringBuffer("> DESCRIPTION:\n");
       if (action.getDetailedDescription() != null) {
-         sb.append(action.getDetailedDescription());
-      } else if (action.getDescription() != null){
-         sb.append(" ").append(action.getDescription());
+         sb.append(" ").append(action.getDetailedDescription()
+               .replaceAll("^\\s*", "").replaceAll("\\s*$", ""));
+      } else if (action.getDescription() != null) {
+         sb.append(" ").append(
+               action.getDescription().replaceAll("^\\s*", "")
+                     .replaceAll("\\s*$", ""));
       } else {
          sb.append(" - N/A");
       }
@@ -83,7 +85,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    }
 
    protected String getUsage(CmdLineAction action, Set<CmdLineOption> options) {
-      StringBuffer sb = new StringBuffer("USAGE:\n");
+      StringBuffer sb = new StringBuffer("> USAGE:\n");
       sb.append(getRequiredSubHeader()).append("\n");
       Set<CmdLineOption> requiredOptions = determineRequired(action, options);
       List<CmdLineOption> sortedRequiredOptions = sortOptionsByRequiredStatus(requiredOptions);
@@ -107,9 +109,9 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    protected String getRequiredOptionHelp(CmdLineAction action,
          CmdLineOption option) {
       if (option instanceof GroupCmdLineOption) {
-         return getGroupHelp(action, (GroupCmdLineOption) option, "    ");
+         return getGroupHelp(action, (GroupCmdLineOption) option, "   ");
       } else {
-         return getOptionHelp(action, option, "  ");
+         return getOptionHelp(action, option, "   ");
       }
    }
 
@@ -120,19 +122,17 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    protected String getOptionalOptionHelp(CmdLineAction action,
          CmdLineOption option) {
       if (option instanceof GroupCmdLineOption) {
-         return getGroupHelp(action, (GroupCmdLineOption) option, "    ");
+         return getGroupHelp(action, (GroupCmdLineOption) option, "   ");
       } else {
-         return getOptionHelp(action, option, "  ");
+         return getOptionHelp(action, option, "   ");
       }
    }
 
    protected String getExamples(CmdLineAction action) {
-      StringBuffer sb = new StringBuffer("EXAMPLES:\n");
-      if (action.getExamples() != null && !action.getExamples().isEmpty()) {
-         for (Example example : action.getExamples()) {
-            sb.append(example.getDescription()).append("\n");
-            sb.append(" - ").append(example.getExample()).append("\n");
-         }
+      StringBuffer sb = new StringBuffer("> EXAMPLES:\n");
+      if (action.getExamples() != null) {
+         sb.append(" ").append(action.getExamples().replaceAll("^\\s*", "")
+               .replaceAll("\\s*$", ""));
       } else {
          sb.append(" - N/A");
       }
@@ -234,10 +234,12 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
    protected String getOptionHelp(CmdLineOption option, String indent) {
       String argName = option.hasArgs() ? " <" + option.getArgsDescription()
             + ">" : "";
-      String optionUsage = indent + "-"
-            + StringUtils.rightPad(option.getShortOption() + ",", 7) + "--"
-            + StringUtils.rightPad((option.getLongOption() + argName), 49 - indent.length())
-            + option.getDescription();
+      String optionUsage = indent
+            + "-"
+            + StringUtils.rightPad(option.getShortOption() + ",", 7)
+            + "--"
+            + StringUtils.rightPad((option.getLongOption() + argName),
+                  49 - indent.length()) + option.getDescription();
 
       optionUsage = " " + optionUsage;
 
@@ -260,7 +262,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
          optionUsage += "\n";
          optionUsage += "   SubOptions:\n";
          optionUsage += "   > Required:\n";
-         
+
          List<CmdLineOption> optionalOptions = Lists.newArrayList();
          for (GroupSubOption subOption : groupOption.getSubOptions()) {
             if (subOption.isRequired()) {
