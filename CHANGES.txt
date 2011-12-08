@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-363 Add support for LuceneQuery action to optionally return more than
+  just Product ID results (bfoster)
+
 * OODT-351 Integrate CAS-CLI into CAS-Filemgr (bfoster)
 
 * OODT-360 Add supported for CmdLineAction detailed help description (bfoster)
