@@ -27,12 +27,13 @@ import org.apache.oodt.cas.cli.action.CmdLineAction.ActionMessagePrinter;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.structs.Query;
+import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
+import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.Metadata;
 
 //Google imports
 import com.google.common.collect.Lists;
@@ -47,7 +48,9 @@ import junit.framework.TestCase;
  */
 public class TestLuceneQueryCliAction extends TestCase {
 
-   private Query clientSetQuery;
+   private static final String TEST_FILENAME = "data.dat";
+
+   private ComplexQuery clientSetQuery;
 
    public void testValidation() {
       ActionMessagePrinter printer = new ActionMessagePrinter();
@@ -196,19 +199,15 @@ public class TestLuceneQueryCliAction extends TestCase {
          return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
-            public List<Product> query(Query query, ProductType pt) {
-               clientSetQuery = query;
+            public List<QueryResult> complexQuery(ComplexQuery complexQuery) {
+               clientSetQuery = complexQuery;
                Product p = new Product();
                p.setProductId("TestProductId");
-               p.setProductType(pt);
-               return Lists.newArrayList(p);
-            }
-
-            @Override
-            public List<ProductType> getProductTypes() {
-               ProductType pt = new ProductType();
-               pt.setName("TestProductType");
-               return Lists.newArrayList(pt);
+               Metadata m = new Metadata();
+               m.addMetadata("Filename", TEST_FILENAME);
+               QueryResult qr = new QueryResult(p, m);
+               qr.setToStringFormat(complexQuery.getToStringResultFormat());
+               return Lists.newArrayList(qr);
             }
          };
       }

@@ -37,9 +37,13 @@ import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.system.MockXmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.system.MockXmlRpcFileManagerClient.MethodCallDetails;
 import org.apache.oodt.cas.metadata.Metadata;
+
+//Google imports
+import com.google.common.collect.Lists;
 
 /**
  * Tests File Manager Clients Command-line interface.
@@ -320,11 +324,34 @@ public class TestFileManagerCli extends TestCase {
             .run(("--url http://localhost:9000 --operation --luceneQuery"
                   + " --query " + query).split(" "));
       MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
-      assertEquals("query", methodCallDetails.getMethodName());
+      assertEquals("complexQuery", methodCallDetails.getMethodName());
       assertEquals("ProductId", ((TermQueryCriteria) ((Query) methodCallDetails
             .getArgs().get(0)).getCriteria().get(0)).getElementName());
       assertEquals("TestProductId",
             ((TermQueryCriteria) ((Query) methodCallDetails.getArgs().get(0))
                   .getCriteria().get(0)).getValue());
+
+      String reducedMetadataKeys = "ProductId ProductType";
+      String outputFormat = "$ProductId";
+      String reducedProductTypes = "TestProductType";
+      String sortBy = "ProductId";
+      String delimiter = ",";
+      cmdLineUtility
+            .run(("--url http://localhost:9000 --operation --luceneQuery"
+                  + " --query " + query + " --reducedMetadataKeys " + reducedMetadataKeys
+                  + " --outputFormat " + outputFormat
+                  + " --reducedProductTypes " + reducedProductTypes
+                  + " --sortBy " + sortBy
+                  + " --delimiter " + delimiter).split(" "));
+      methodCallDetails = client.getLastMethodCallDetails();
+      assertEquals("complexQuery", methodCallDetails.getMethodName());
+      ComplexQuery complexQuery = (ComplexQuery) methodCallDetails.getArgs().get(0);
+      assertEquals("ProductId", ((TermQueryCriteria) complexQuery.getCriteria().get(0)).getElementName());
+      assertEquals("TestProductId",
+            ((TermQueryCriteria) complexQuery.getCriteria().get(0)).getValue());
+      assertEquals(Lists.newArrayList(reducedMetadataKeys.split(" ")), complexQuery.getReducedMetadata());
+      assertEquals(outputFormat, complexQuery.getToStringResultFormat());
+      assertEquals(Lists.newArrayList(reducedProductTypes.split(" ")), complexQuery.getReducedProductTypeNames());
+      assertEquals(sortBy, complexQuery.getSortByMetKey());
    }
 }

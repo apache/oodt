@@ -589,175 +589,7 @@
     </property>
   </bean>
 
-  <bean id="sortBy" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
-    <property name="shortOption" value="sb" />
-    <property name="longOption" value="sortBy" />
-    <property name="description" value="Metadata field to sort query results by" />
-    <property name="hasArgs" value="true" />
-    <property name="argsDescription" value="metadata field" />
-    <property name="requirementRules">
-      <list>
-        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
-      </list>
-    </property>
-    <property name="handler">
-      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
-    </property>
-  </bean>
 
-  <bean id="outputFormat" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
-    <property name="shortOption" value="of" />
-    <property name="longOption" value="outputFormat" />
-    <property name="description" value="Output format string (i.e. Filename = $Filename)" />
-    <property name="hasArgs" value="true" />
-    <property name="argsDescription" value="output-format-string" />
-    <property name="requirementRules">
-      <list>
-        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
-      </list>
-    </property>
-    <property name="handler">
-      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
-    </property>
-  </bean>
-
-  <bean id="delimiter" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
-    <property name="shortOption" value="dlmtr" />
-    <property name="longOption" value="delimiter" />
-    <property name="description" value="String to use the separate query results" />
-    <property name="hasArgs" value="true" />
-    <property name="argsDescription" value="delimiter-string" />
-    <property name="requirementRules">
-      <list>
-        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
-      </list>
-    </property>
-    <property name="handler">
-      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
-    </property>
-  </bean>
-
-  <bean id="filter" class="org.apache.oodt.cas.cli.option.GroupCmdLineOption">
-    <property name="shortOption" value="f" />
-    <property name="longOption" value="filter" />
-    <property name="description" value="Query filter" />
-    <property name="hasArgs" value="false" />
-    <property name="requirementRules">
-      <list>
-        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
-      </list>
-    </property>
-    <property name="subOptions">
-      <list>
-        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
-          p:option-ref="algor" p:required="true" />
-        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
-          p:option-ref="converter" p:required="false" />
-        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
-          p:option-ref="startDateTimeMetKey" p:required="true" />
-        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
-          p:option-ref="endDateTimeMetKey" p:required="true" />
-        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
-          p:option-ref="priorityMetKey" p:required="true" />
-      </list>
-    </property>
-  </bean>
-
-  <bean id="algor" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
-      p:isSubOption="true">
-    <property name="shortOption" value="algor" />
-    <property name="longOption" value="algor" />
-    <property name="description" value="FilterAlgor class" />
-    <property name="type" value="org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor" />
-    <property name="hasArgs" value="true" />
-    <property name="argsDescription" value="classpath" />
-    <property name="requirementRules">
-      <list>
-        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="REQUIRED" />
-      </list>
-    </property>
-    <property name="handler">
-      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
-    </property>
-  </bean>
-  
-  <bean id="converter" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
-      p:isSubOption="true">
-    <property name="shortOption" value="conv" />
-    <property name="longOption" value="converter" />
-    <property name="description" value="VersionConverter class" />
-    <property name="type" value="org.apache.oodt.cas.filemgr.structs.query.conv.VersionConverter" />
-    <property name="hasArgs" value="true" />
-    <property name="argsDescription" value="classpath" />
-    <property name="requirementRules">
-      <list>
-        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
-      </list>
-    </property>
-    <property name="handler">
-      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
-    </property>
-  </bean>
-
-  <bean id="startDateTimeMetKey" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
-      p:isSubOption="true">
-    <property name="shortOption" value="sdtMetKey" />
-    <property name="longOption" value="startDateTimeMetKey" />
-    <property name="description" value="Start date time metadata key" />
-    <property name="hasArgs" value="true" />
-    <property name="argsDescription" value="metadata-key" />
-    <property name="requirementRules">
-      <list>
-        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="REQUIRED" />
-      </list>
-    </property>
-    <property name="handler">
-      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
-    </property>
-  </bean>
-  
-  <bean id="endDateTimeMetKey" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
-      p:isSubOption="true">
-    <property name="shortOption" value="edtMetKey" />
-    <property name="longOption" value="endDateTimeMetKey" />
-    <property name="description" value="End date time metadata key" />
-    <property name="hasArgs" value="true" />
-    <property name="argsDescription" value="metadata-key" />
-    <property name="requirementRules">
-      <list>
-        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="REQUIRED" />
-      </list>
-    </property>
-    <property name="handler">
-      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
-    </property>
-  </bean>
-  
-  <bean id="priorityMetKey" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
-      p:isSubOption="true">
-    <property name="shortOption" value="prMetKey" />
-    <property name="longOption" value="priorityMetKey" />
-    <property name="description" value="Priority metadata key" />
-    <property name="hasArgs" value="true" />
-    <property name="argsDescription" value="metadata-key" />
-    <property name="requirementRules">
-      <list>
-        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="REQUIRED" />
-      </list>
-    </property>
-    <property name="handler">
-      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
-    </property>
-  </bean>
 
   <!-- GetProductById Options -->
   <bean id="getProductById" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
@@ -897,6 +729,42 @@
     </property>
   </bean>
 
+  <bean id="reducedProductTypes" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="pts" />
+    <property name="longOption" value="reducedProductTypes" />
+    <property name="description" value="Limit query ProductTypes queried against" />
+    <property name="type" value="java.util.List" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="list-of-product-types" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="reducedMetadataKeys" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="metKeys" />
+    <property name="longOption" value="reducedMetadataKeys" />
+    <property name="description" value="Limit Elements returned by query" />
+    <property name="type" value="java.util.List" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="list-of-elements" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
 	<!-- Options used for multiple Actions -->
   <bean id="productId" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
     <property name="shortOption" value="pid" />
@@ -1007,6 +875,194 @@
           p:actionName="SqlQuery" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
           p:actionName="LuceneQuery" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="sortBy" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="sb" />
+    <property name="longOption" value="sortBy" />
+    <property name="description" value="Metadata field to sort query results by" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="metadata field" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="outputFormat" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="of" />
+    <property name="longOption" value="outputFormat" />
+    <property name="description" value="Output format string (i.e. Filename = $Filename)" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="output-format-string" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="delimiter" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="dlmtr" />
+    <property name="longOption" value="delimiter" />
+    <property name="description" value="String to use the separate query results" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="delimiter-string" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="filter" class="org.apache.oodt.cas.cli.option.GroupCmdLineOption">
+    <property name="shortOption" value="f" />
+    <property name="longOption" value="filter" />
+    <property name="description" value="Query filter" />
+    <property name="hasArgs" value="false" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="subOptions">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="algor" p:required="true" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="converter" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="startDateTimeMetKey" p:required="true" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="endDateTimeMetKey" p:required="true" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="priorityMetKey" p:required="true" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="algor" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+      p:isSubOption="true">
+    <property name="shortOption" value="algor" />
+    <property name="longOption" value="algor" />
+    <property name="description" value="FilterAlgor class" />
+    <property name="type" value="org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="classpath" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+  
+  <bean id="converter" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+      p:isSubOption="true">
+    <property name="shortOption" value="conv" />
+    <property name="longOption" value="converter" />
+    <property name="description" value="VersionConverter class" />
+    <property name="type" value="org.apache.oodt.cas.filemgr.structs.query.conv.VersionConverter" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="classpath" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
+  <bean id="startDateTimeMetKey" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+      p:isSubOption="true">
+    <property name="shortOption" value="sdtMetKey" />
+    <property name="longOption" value="startDateTimeMetKey" />
+    <property name="description" value="Start date time metadata key" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="metadata-key" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+  
+  <bean id="endDateTimeMetKey" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+      p:isSubOption="true">
+    <property name="shortOption" value="edtMetKey" />
+    <property name="longOption" value="endDateTimeMetKey" />
+    <property name="description" value="End date time metadata key" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="metadata-key" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+  
+  <bean id="priorityMetKey" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+      p:isSubOption="true">
+    <property name="shortOption" value="prMetKey" />
+    <property name="longOption" value="priorityMetKey" />
+    <property name="description" value="Priority metadata key" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="metadata-key" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">

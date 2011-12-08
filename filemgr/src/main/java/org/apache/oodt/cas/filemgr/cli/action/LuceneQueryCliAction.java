@@ -32,14 +32,11 @@ import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.TermQuery;
 
 //OODT imports
-import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.tools.CASAnalyzer;
 
 //Google imports
@@ -51,65 +48,45 @@ import com.google.common.collect.Lists;
  * 
  * @author bfoster (Brian Foster)
  */
-public class LuceneQueryCliAction extends FileManagerCliAction {
+public class LuceneQueryCliAction extends AbstractQueryCliAction {
 
    private static final String FREE_TEXT_BLOCK = "__FREE__";
 
    private String query;
+   private List<String> reducedProductTypes;
+   private List<String> reducedMetadataKeys;
+
+   public LuceneQueryCliAction() {
+      super();
+   }
 
    @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
-      try {
-         Validate.notNull(query, "Must specify query");
+   public ComplexQuery getQuery() throws Exception {
+      Validate.notNull(query, "Must specify query");
 
-         XmlRpcFileManagerClient client = getClient();
-         List<ProductType> productTypes = client.getProductTypes();
-         if (productTypes == null) {
-            throw new Exception("FileManager return null list of product types");
-         }
-         org.apache.oodt.cas.filemgr.structs.Query casQuery = new org.apache.oodt.cas.filemgr.structs.Query();
-         casQuery.setCriteria(Lists.newArrayList(generateCASQuery(parseQuery(query))));
-
-         List<String> productIds = query(client, casQuery, productTypes);
-         if (productIds == null) {
-            throw new Exception("FileManager returned null list of Product IDs");
-         }
-         for (String productId : productIds) {
-            printer.println(productId);
-         }
-      } catch (Exception e) {
-         throw new CmdLineActionException("Failed to perform lucene query '"
-               + query + "' : " + e.getMessage(), e);
-      }
+      ComplexQuery complexQuery = new ComplexQuery();
+      complexQuery.setCriteria(Lists.newArrayList(generateCASQuery(parseQuery(query))));
+      complexQuery.setReducedProductTypeNames(reducedProductTypes);
+      complexQuery.setReducedMetadata(reducedMetadataKeys);
+      return complexQuery;
    }
 
    public void setQuery(String query) {
       this.query = query;
    }
 
+   public void setReducedProductTypes(List<String> reducedProductTypes) {
+      this.reducedProductTypes = reducedProductTypes;
+   }
+
+   public void setReducedMetadataKeys(List<String> reducedMetadataKeys) {
+      this.reducedMetadataKeys = reducedMetadataKeys;
+   }
+
    private Query parseQuery(String query) throws ParseException {
       // note that "__FREE__" is a control work for free text searching
       return (Query) new QueryParser(FREE_TEXT_BLOCK, new CASAnalyzer())
             .parse(query);
-   }
-
-   private List<String> query(XmlRpcFileManagerClient client,
-         org.apache.oodt.cas.filemgr.structs.Query fmQuery,
-         List<ProductType> productTypes) throws Exception {
-      List<String> productIds = Lists.newArrayList();
-      for (ProductType type : productTypes) {
-         List<Product> products = client.query(fmQuery, type);
-         if (products == null) {
-            throw new Exception(
-                  "FileManager returned null products for query '" + query
-                        + "' and product type '" + type.getName() + "'");
-         }
-         for (Product product : products) {
-            productIds.add(product.getProductId());
-         }
-      }
-      return productIds;
    }
 
    private QueryCriteria generateCASQuery(Query luceneQuery)

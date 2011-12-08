@@ -16,19 +16,11 @@
  */
 package org.apache.oodt.cas.filemgr.cli.action;
 
-//JDK imports
-import java.util.List;
-
 //Apache imports
 import org.apache.commons.lang.Validate;
 
 //OODT imports
-import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
-import org.apache.oodt.cas.filemgr.structs.query.QueryFilter;
-import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
-import org.apache.oodt.cas.filemgr.structs.query.conv.VersionConverter;
-import org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
 
 /**
@@ -37,124 +29,22 @@ import org.apache.oodt.cas.filemgr.util.SqlParser;
  * 
  * @author bfoster (Brian Foster)
  */
-public class SqlQueryCliAction extends FileManagerCliAction {
+public class SqlQueryCliAction extends AbstractQueryCliAction {
 
    private String query;
-   private String sortBy;
-   private String outputFormat;
-   private String delimiter;
-
-   private List<String> reducedProductTypes;
-   private List<String> reducedMetadataKeys;
-
-   private FilterAlgor filterAlgor;
-   private String startDateTimeMetKey;
-   private String endDateTimeMetKey;
-   private String priorityMetKey;
-   private VersionConverter versionConverter;
 
    public SqlQueryCliAction() {
-      delimiter = "\n";
+      super();
    }
 
    @Override
-   public void execute(ActionMessagePrinter printer)
-         throws CmdLineActionException {
-      try {
-         Validate.notNull(query, "Must specify query");
+   public ComplexQuery getQuery() throws Exception {
+      Validate.notNull(query, "Must specify query");
 
-         ComplexQuery complexQuery = SqlParser.parseSqlQuery(query);
-         complexQuery.setSortByMetKey(sortBy);
-         complexQuery.setToStringResultFormat(outputFormat);
-         complexQuery.setReducedProductTypeNames(reducedProductTypes);
-         complexQuery.setReducedMetadata(reducedMetadataKeys);
-         if (filterAlgor != null) {
-            Validate.notNull(startDateTimeMetKey,
-                  "Must specify startDateTimeMetKey");
-            Validate.notNull(endDateTimeMetKey,
-                  "Must specify endDateTimeMetKey");
-            Validate.notNull(priorityMetKey, "Must specify priorityMetKey");
-            QueryFilter filter = new QueryFilter(startDateTimeMetKey,
-                  endDateTimeMetKey, priorityMetKey, filterAlgor);
-            if (versionConverter != null) {
-               filter.setConverter(versionConverter);
-            }
-            complexQuery.setQueryFilter(filter);
-         }
-         List<QueryResult> results = getClient().complexQuery(complexQuery);
-         StringBuffer returnString = new StringBuffer("");
-         for (QueryResult qr : results) {
-            returnString.append(qr.toString() + delimiter);
-         }
-         printer.println(returnString.substring(0, returnString.length()
-               - delimiter.length()));
-      } catch (Exception e) {
-         throw new CmdLineActionException("Failed to perform sql query for"
-               + " query '"
-               + query
-               + "', sortBy '"
-               + sortBy
-               + "', "
-               + "outputFormat '"
-               + outputFormat
-               + "', and delimiter '"
-               + delimiter
-               + "', filterAlgor '"
-               + (filterAlgor != null ? filterAlgor.getClass()
-                     .getCanonicalName() : null)
-               + "', startDateTimeMetKey '"
-               + startDateTimeMetKey
-               + "', endDateTimeMetKey '"
-               + endDateTimeMetKey
-               + "', priorityMetKey '"
-               + priorityMetKey
-               + "', "
-               + (versionConverter != null ? versionConverter.getClass()
-                     .getCanonicalName() : null) + "' : " + e.getMessage(), e);
-      }
+      return SqlParser.parseSqlQuery(query);
    }
 
    public void setQuery(String query) {
       this.query = query;
-   }
-
-   public void setSortBy(String sortBy) {
-      this.sortBy = sortBy;
-   }
-
-   public void setOutputFormat(String outputFormat) {
-      this.outputFormat = outputFormat;
-   }
-
-   public void setDelimiter(String delimiter) {
-      this.delimiter = delimiter;
-   }
-
-   public void setReducedProductTypes(List<String> reducedProductTypes) {
-      this.reducedProductTypes = reducedProductTypes;
-   }
-
-   public void setReducedMetadataKeys(List<String> reducedMetadataKeys) {
-      this.reducedMetadataKeys = reducedMetadataKeys;
-   }
-
-   public void setStartDateTimeMetKey(String startDateTimeMetKey) {
-      this.startDateTimeMetKey = startDateTimeMetKey;
-   }
-
-   public void setEndDateTimeMetKey(String endDateTimeMetKey) {
-      this.endDateTimeMetKey = endDateTimeMetKey;
-   }
-
-   public void setPriorityMetKey(String priorityMetKey) {
-      this.priorityMetKey = priorityMetKey;
-   }
-
-   public void setConverter(VersionConverter versionConverter) {
-      this.versionConverter = versionConverter;
-   }
-
-   public void setFilterAlgor(FilterAlgor filterAlgor) {
-      this.filterAlgor = filterAlgor;
    }
 }

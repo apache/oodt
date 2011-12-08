@@ -52,8 +52,6 @@ public class TestSqlQueryCliAction extends TestCase {
    private static final String SORT_BY = "Filename";
    private static final String OUTPUT_FORMAT = "Filename = $Filename";
    private static final String DELIMITER = ",";
-   private static final List<String> REDUCED_PRODUCT_TYPES = Lists.newArrayList("TestProductType");
-   private static final List<String> REDUCED_METADATA_KEYS = Lists.newArrayList("Filename");
    private static final FilterAlgor FILTER_ALGOR = new MockFilterAlgor();
    private static final String START_DATE_TIME_MET_KEY = "StartDateTime";
    private static final String END_DATE_TIME_MET_KEY = "EndDateTime";
@@ -84,7 +82,7 @@ public class TestSqlQueryCliAction extends TestCase {
       cliAction.setEndDateTimeMetKey(END_DATE_TIME_MET_KEY);
       cliAction.setPriorityMetKey(PRIORITY_DATE_TIME_MET_KEY);
       cliAction.execute(printer); // Should not throw exception.
-      cliAction.setConverter(VERSION_CONV);
+      cliAction.setVersionConverter(VERSION_CONV);
       cliAction.execute(printer); // Should not throw exception.
    }
 
@@ -95,21 +93,19 @@ public class TestSqlQueryCliAction extends TestCase {
       cliAction.setSortBy(SORT_BY);
       cliAction.setOutputFormat(OUTPUT_FORMAT);
       cliAction.setDelimiter(DELIMITER);
-      cliAction.setReducedProductTypes(REDUCED_PRODUCT_TYPES);
-      cliAction.setReducedMetadataKeys(REDUCED_METADATA_KEYS);
       cliAction.setFilterAlgor(FILTER_ALGOR);
       cliAction.setStartDateTimeMetKey(START_DATE_TIME_MET_KEY);
       cliAction.setEndDateTimeMetKey(END_DATE_TIME_MET_KEY);
       cliAction.setPriorityMetKey(PRIORITY_DATE_TIME_MET_KEY);
-      cliAction.setConverter(VERSION_CONV);
+      cliAction.setVersionConverter(VERSION_CONV);
       cliAction.execute(printer);
       assertEquals(2, printer.getPrintedMessages().size());
       assertEquals("Filename = data.dat", printer.getPrintedMessages().get(0));
       assertEquals("\n", printer.getPrintedMessages().get(1));
       assertEquals(SORT_BY, clientSetComplexQuery.getSortByMetKey());
       assertEquals(OUTPUT_FORMAT, clientSetComplexQuery.getToStringResultFormat());
-      assertEquals(REDUCED_PRODUCT_TYPES, clientSetComplexQuery.getReducedProductTypeNames());
-      assertEquals(REDUCED_METADATA_KEYS, clientSetComplexQuery.getReducedMetadata());
+      assertNull(clientSetComplexQuery.getReducedProductTypeNames());
+      assertNull(clientSetComplexQuery.getReducedMetadata());
       assertEquals(FILTER_ALGOR, clientSetComplexQuery.getQueryFilter().getFilterAlgor());
       assertEquals(START_DATE_TIME_MET_KEY, clientSetComplexQuery.getQueryFilter().getStartDateTimeMetKey());
       assertEquals(END_DATE_TIME_MET_KEY, clientSetComplexQuery.getQueryFilter().getEndDateTimeMetKey());

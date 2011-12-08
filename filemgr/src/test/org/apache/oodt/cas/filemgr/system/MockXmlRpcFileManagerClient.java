@@ -30,6 +30,8 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
+import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //Google imports
@@ -247,9 +249,9 @@ public class MockXmlRpcFileManagerClient extends XmlRpcFileManagerClient {
    }
 
    @Override
-   public List<Product> query(Query query, ProductType type) {
-      lastMethodCallDetails = new MethodCallDetails("query",
-            Lists.newArrayList((Object) query, type));
+   public List<QueryResult> complexQuery(ComplexQuery query) {
+      lastMethodCallDetails = new MethodCallDetails("complexQuery",
+            Lists.newArrayList((Object) query));
       return Lists.newArrayList();
    }
 
