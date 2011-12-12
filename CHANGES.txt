@@ -3,6 +3,7 @@ Apache OODT Change Log
 
 Release 0.4: Current Development
 --------------------------------------------
+* OODT-364 Prevent XSS attacks via malformed query string (ahart)
 
 * OODT-363 Add support for LuceneQuery action to optionally return more than
   just Product ID results (bfoster)
