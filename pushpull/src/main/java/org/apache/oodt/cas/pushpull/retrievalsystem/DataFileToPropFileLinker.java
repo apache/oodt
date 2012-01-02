@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 
 //OODT imports
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFile;
+import org.apache.oodt.cas.protocol.ProtocolFile;
 
 /**
  * 
@@ -58,8 +58,7 @@ public class DataFileToPropFileLinker implements DownloadListener {
 
     public synchronized void addPropFileToDataFileLink(File propFile,
             ProtocolFile pFile) {
-        this.addPropFileToDataFileLink(propFile, pFile.getProtocolPath()
-                .getPathString());
+        this.addPropFileToDataFileLink(propFile, pFile.getPath());
     }
 
     public synchronized void addPropFileToDataFileLink(File propFile,
@@ -76,7 +75,7 @@ public class DataFileToPropFileLinker implements DownloadListener {
     }
 
     public synchronized void markAsFailed(ProtocolFile pFile, String errorMsg) {
-        this.markAsFailed(pFile.getProtocolPath().getPathString(), errorMsg);
+        this.markAsFailed(pFile.getPath(), errorMsg);
     }
 
     public synchronized void markAsFailed(String pFilePath, String errorMsg) {
@@ -146,8 +145,7 @@ public class DataFileToPropFileLinker implements DownloadListener {
             File propFile, LinkedList<ProtocolFile> list) {
         LinkedList<ProtocolFile> returnList = new LinkedList<ProtocolFile>();
         for (ProtocolFile pFile : list) {
-            if (this.protocolFilePathAndPropFileMap.get(pFile.getProtocolPath()
-                    .getPathString()) != null)
+            if (this.protocolFilePathAndPropFileMap.get(pFile.getPath()) != null)
                 returnList.add(pFile);
         }
         return returnList;

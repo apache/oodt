@@ -31,9 +31,11 @@ import org.apache.oodt.cas.pushpull.filerestrictions.FileRestrictions;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFile;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFileFilter;
+import org.apache.oodt.cas.protocol.ProtocolFile;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
+import org.apache.oodt.cas.pushpull.protocol.ProtocolPath;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
+import org.apache.oodt.cas.pushpull.protocol.RemoteSiteFile;
 import org.apache.oodt.cas.pushpull.retrievalsystem.DataFileToPropFileLinker;
 import org.apache.oodt.cas.pushpull.retrievalsystem.FileRetrievalSystem;
 
@@ -85,8 +87,7 @@ public class RemoteCrawler implements RetrievalMethod {
 
         // modify vfs to be root based if HOME directory based
         if (!vfs.isRootBased()) {
-            String homeDirPath = frs.getHomeDir(remoteSite).getProtocolPath()
-                    .getPathString();
+            String homeDirPath = frs.getHomeDir(remoteSite).getPath();
             VirtualFile root = new VirtualFile(homeDirPath, true);
             root.addChild(vfs.getRootVirtualFile());
             vfs = new VirtualFileStructure(homeDirPath + "/"
@@ -102,22 +103,23 @@ public class RemoteCrawler implements RetrievalMethod {
         frs.changeToDir(initialCdPath, remoteSite);
 
         // add starting directory to stack
-        Stack<ProtocolFile> files = new Stack<ProtocolFile>();
-        files.add(frs.getCurrentFile(remoteSite));
+        Stack<RemoteSiteFile> files = new Stack<RemoteSiteFile>();
+        files.add(new RemoteSiteFile(frs.getCurrentFile(remoteSite)));
 
         // start crawling
         while (!files.isEmpty()) {
-            ProtocolFile file = files.peek();
+            RemoteSiteFile file = files.peek();
             try {
                 // if directory, then add its children to the crawl list
-                if (file.isDirectory()) {
+                if (file.isDir()) {
 
                     // get next page worth of children
-                    List<ProtocolFile> children = frs.getNextPage(file,
+                    List<RemoteSiteFile> children = frs.getNextPage(file,
                             new ProtocolFileFilter() {
                                 public boolean accept(ProtocolFile pFile) {
-                                    return FileRestrictions.isAllowed(pFile
-                                            .getProtocolPath(), vf);
+                                    return FileRestrictions.isAllowed(new 
+                                        ProtocolPath(pFile
+                                            .getPath(), pFile.isDir()), vf);
                                 }
                             });
 
