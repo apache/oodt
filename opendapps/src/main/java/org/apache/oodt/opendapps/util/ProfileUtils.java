@@ -19,6 +19,7 @@ package org.apache.oodt.opendapps.util;
 
 //JDK imports
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,10 +27,19 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OPeNDAP/THREDDS imports
+//OPeNDAP imports
+import opendap.dap.BaseType;
+import opendap.dap.DArray;
 import opendap.dap.DConnect;
+import opendap.dap.DDS;
+import opendap.dap.DGrid;
 
-//APACHE imports
+//OODT imports
+import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.ENUM_ELEMENT_TYPE;
+import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.PROF_ATTR_SPEC_TYPE;
+import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.PROF_ELEM_SPEC_TYPE;
+import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.RANGED_ELEMENT_TYPE;
+import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.RES_ATTR_SPEC_TYPE;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.opendapps.OpendapProfileElementExtractor;
@@ -42,8 +52,6 @@ import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileAttributes;
 import org.apache.oodt.profile.ProfileElement;
 import org.apache.oodt.profile.ResourceAttributes;
-
-import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.*;
 
 /**
  * 
@@ -106,33 +114,49 @@ public class ProfileUtils {
   }
 
   public static Map<String, ProfileElement> getProfileElements(
-      OpendapConfig conf, DConnect dConn, Metadata datasetMet, Profile profile) {
-    // TODO: later, we should just read all attributes instead of just those
-    // specified in the conf
+      OpendapConfig conf, DConnect dConn, Metadata datasetMet, Profile profile) throws Exception {
+  	
     OpendapProfileElementExtractor pe = new OpendapProfileElementExtractor(conf);
     Map<String, ProfileElement> profElements = new HashMap<String, ProfileElement>();
 
-    for (RewriteSpec spec : conf.getRewriteSpecs()) {
-      String peName = spec.getRename() != null && !spec.getRename().equals("") ? spec
-          .getRename()
-          : spec.getOrigName();
-      try {
-        if (spec.getElementType().equals(RANGED_ELEMENT_TYPE)) {
-          profElements.put(peName, pe.extractRangedProfileElement(peName, spec
-              .getOrigName(), profile, dConn.getDAS()));
-        } else if (spec.getElementType().equals(ENUM_ELEMENT_TYPE)) {
-          profElements.put(peName, pe.extractEnumeratedProfileElement(peName,
-              spec.getOrigName(), profile, dConn.getDAS()));
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-        LOG
-            .log(Level.WARNING, "Problem obtaining attribute: ["
-                + spec.getOrigName() + "] from OPeNDAP: Message: "
-                + e.getMessage());
-        continue;
-      }
+    // extracts all variables defined in DDS
+    try {
+      	
+    		DDS dds = dConn.getDDS();
+      	      	
+      	// loop over all variables found
+      	Enumeration variables = dds.getVariables();
+      	while (variables.hasMoreElements()) {
+      		
+      		BaseType variable = (BaseType)variables.nextElement();
+      		String varName = variable.getName();
+      		if (variable instanceof DArray) {
+      			LOG.log(Level.INFO, "Extracting Darray variable: "+varName);
+      		} else if (variable instanceof DGrid) {
+      			LOG.log(Level.INFO, "Extracting Dgrid variable: "+varName);
+      		}     		
 
+      		RewriteSpec spec = getProfileElementSpec(varName, conf);
+      		if (spec!=null) {
+      			// use configuration to set variable re-name and type
+      			String peName = spec.getRename() != null && !spec.getRename().equals("") ? spec.getRename() : spec.getOrigName();
+            if (spec.getElementType().equals(RANGED_ELEMENT_TYPE)) {
+              profElements.put(peName, pe.extractRangedProfileElement(peName, spec.getOrigName(), profile, dConn.getDAS()));
+            } else if (spec.getElementType().equals(ENUM_ELEMENT_TYPE)) {
+              profElements.put(peName, pe.extractEnumeratedProfileElement(peName, spec.getOrigName(), profile, dConn.getDAS()));
+            }
+      		} else {
+      			// if not explicitly configured, assume variable if of RANGED_ELEMENT_TYPE
+      			profElements.put(varName, pe.extractRangedProfileElement(varName, varName, profile, dConn.getDAS()));
+      		}
+      		
+      	}
+      	
+    } catch(Exception e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING, "Error extracting metadata from DDS ("+dConn.URL()+") :"  +e.getMessage());
+      // rethrow the exception so that this dataset is not harvested
+      throw e;
     }
 
     if (datasetMet != null) {
@@ -242,6 +266,20 @@ public class ProfileUtils {
     EnumeratedProfileElement pe = new EnumeratedProfileElement(profile);
     pe.setName(name);
     return pe;
+  }
+  
+  /**
+   * Utility method to discover the rewrite specification for a named variable, if available.
+   * @param name
+   * @param conf
+   */
+  private static RewriteSpec getProfileElementSpec(String origName, OpendapConfig conf) {
+  	for (RewriteSpec spec : conf.getRewriteSpecs()) {
+  		if (spec.getOrigName().equals(origName)) {
+  			return spec;
+  		}
+  	}
+  	return null;
   }
 
 }

@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-366 Extension to opendapps module to extract ALL variables 
+  in DDS stream (Luca Cinquini, mattmann)
+
 * OODT-365 Main class to drive opendapps profile generation 
   (Luca Cinquini, mattmann)
 

@@ -104,8 +104,8 @@ public class DatasetExtractor {
     };
 
     LOG.log(Level.INFO, "catalogURL: " + this.mainCatalogURL);
-    CatalogCrawler crawler = new CatalogCrawler(CatalogCrawler.USE_ALL_DIRECT,
-        false, listener);
+    // Note: look for all datasets, that have either a urlPath="" attribute, or a <access> subelement
+    CatalogCrawler crawler = new CatalogCrawler(CatalogCrawler.USE_ALL, false, listener);
     crawler.crawl(this.mainCatalogURL, ignore, System.out, this);
     this.allUrls = listener.getURLs();
     this.datasetMet = listener.getDatasetMet();

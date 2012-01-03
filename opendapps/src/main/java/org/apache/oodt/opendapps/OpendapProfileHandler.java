@@ -90,29 +90,43 @@ public class OpendapProfileHandler implements ProfileHandler {
     List<DapRoot> roots = this.conf.getRoots();
 	  
     for (DapRoot root : roots) {
+    	LOG.log(Level.INFO,"Parsing DapRoot="+root.getDatasetUrl());
+
       DatasetExtractor d = new DatasetExtractor(xmlQuery, root.getCatalogUrl()
           .toExternalForm(), root.getDatasetUrl().toExternalForm());
       if (d.getDapUrls() != null) {
         for (String opendapUrl : d.getDapUrls()) {
-          Profile profile = new Profile();
-          DConnect dConn = null;
+        	
+          // wrap the profile generation in try-catch to avoid stopping the whole harvesting process in case an exception is thrown
           try {
-            dConn = new DConnect(opendapUrl, true);
-          } catch (FileNotFoundException e) {
-            LOG.log(Level.WARNING, "Opendap URL not found: [" + opendapUrl
-                + "]: Message: " + e.getMessage());
-            throw new ProfileException("Opendap URL not found: [" + opendapUrl
-                + "]: Message: " + e.getMessage());
+
+          	LOG.log(Level.INFO,"Connecting to opendapurl="+opendapUrl);
+  
+            Profile profile = new Profile();
+            DConnect dConn = null;
+            try {
+              dConn = new DConnect(opendapUrl, true);
+            } catch (FileNotFoundException e) {
+              LOG.log(Level.WARNING, "Opendap URL not found: [" + opendapUrl
+                  + "]: Message: " + e.getMessage());
+              throw new ProfileException("Opendap URL not found: [" + opendapUrl
+                  + "]: Message: " + e.getMessage());
+            }
+
+          	Metadata datasetMet = d.getDatasetMet(opendapUrl);
+            profile.setResourceAttributes(ProfileUtils.getResourceAttributes(
+                this.conf, opendapUrl, dConn, datasetMet));
+            profile.setProfileAttributes(ProfileUtils
+                .getProfileAttributes(this.conf, datasetMet));
+            profile.getProfileElements().putAll(
+                ProfileUtils.getProfileElements(this.conf, dConn, datasetMet, profile));
+            profiles.add(profile);
+            LOG.log(Level.INFO, "Added profile id="+profile.getProfileAttributes().getID());
+          } catch(Exception e) {
+          	// in case of exception, don't harvest this dataset, but keep going
+          	LOG.log(Level.WARNING,"Error while building profile for opendapurl="+opendapUrl); 
           }
 
-          Metadata datasetMet = d.getDatasetMet(opendapUrl);
-          profile.setResourceAttributes(ProfileUtils.getResourceAttributes(
-              this.conf, opendapUrl, dConn, datasetMet));
-          profile.setProfileAttributes(ProfileUtils
-              .getProfileAttributes(this.conf, datasetMet));
-          profile.getProfileElements().putAll(
-              ProfileUtils.getProfileElements(this.conf, dConn, datasetMet, profile));
-          profiles.add(profile);
         }
       }
     }

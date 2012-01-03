@@ -30,8 +30,11 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//APACHE imports
+//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+
+//Spring imports
+import org.springframework.util.StringUtils;
 
 //OPeNDAP/THREDDS imports
 import thredds.catalog.InvAccess;
@@ -39,6 +42,8 @@ import thredds.catalog.InvCatalogRef;
 import thredds.catalog.InvDataset;
 import thredds.catalog.InvDocumentation;
 import thredds.catalog.InvProperty;
+import thredds.catalog.InvService;
+import thredds.catalog.ServiceType;
 import thredds.catalog.ThreddsMetadata.Contributor;
 import thredds.catalog.ThreddsMetadata.GeospatialCoverage;
 import thredds.catalog.ThreddsMetadata.Range;
@@ -47,7 +52,6 @@ import thredds.catalog.ThreddsMetadata.Variable;
 import thredds.catalog.ThreddsMetadata.Variables;
 import thredds.catalog.ThreddsMetadata.Vocab;
 import thredds.catalog.crawl.CatalogCrawler;
-import thredds.catalog.InvService;
 import ucar.nc2.units.DateType;
 import ucar.unidata.geoloc.LatLonRect;
 
@@ -89,29 +93,25 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
    * .InvDataset, java.lang.Object)
    */
   public void getDataset(InvDataset dd, Object context) {
-    String url = this.datasetURL + dd.getCatalogUrl().split("#")[1];
-    String id = dd.getID();
-    this.datasetMet.put(url, this.extractDatasetMet(dd));
+  	String url = this.datasetURL + dd.getCatalogUrl().split("#")[1];
+    String id = dd.getID();    
     LOG.log(Level.INFO, url + " is the computed access URL for this dataset");
+    // look for an OpenDAP access URL, only extract metadata if it is found
     List<InvAccess> datasets = dd.getAccess();
     if (dd.getAccess() != null && dd.getAccess().size() > 0) {
       Iterator<InvAccess> sets = datasets.iterator();
       while (sets.hasNext()) {
         InvAccess single = sets.next();
         InvService service = single.getService();
-        if (service.getName().equals("odap")
-            || service.getName().equals("rdbmDods")) // only get the opendap one
-        {
-          LOG.log(Level.INFO,
-              "Found a service-specific dataset URL to over-ride the computed URL: "
-                  + single.getUrlPath());
-          url = this.datasetURL + single.getUrlPath();
+        // note: select the OpenDAP access URL based on THREDDS service type
+        if (service.getServiceType()==ServiceType.OPENDAP) {
+          LOG.log(Level.INFO, "Found OpenDAP access URL: "+ single.getUrlPath());
+          String opendapurl = this.datasetURL + single.getUrlPath();
+          this.datasetMet.put(opendapurl, this.extractDatasetMet(dd));
+          this.urls.add(opendapurl);
           break;
         }
       }
-    }
-    if (url != null) {
-      this.urls.add(url);
     }
   }
 
@@ -135,6 +135,9 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
   }
 
   private Metadata extractDatasetMet(InvDataset dataset) {
+  	
+  	LOG.log(Level.INFO, "Crawling catalog URL=" + dataset.getCatalogUrl()+" dataset ID="+dataset.getID());
+  	
     Metadata met = new Metadata();
     this.addIfNotNull(met, "Authority", dataset.getAuthority());
     this.addIfNotNull(met, "CatalogUrl", dataset.getCatalogUrl());
@@ -281,7 +284,14 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
       this.addIfNotNull(met, "TimeCoverageResolution", dataset
           .getTimeCoverage().getResolution().getText());
     }
-    this.addIfNotNull(met, "UniqueID", dataset.getUniqueID());
+    // dataset unique ID
+    if (StringUtils.hasText(dataset.getUniqueID()) && !dataset.getUniqueID().equalsIgnoreCase("null")) {
+    	// note: globally unique ID, or string "null" if missing authority or ID
+    	this.addIfNotNull(met, "UniqueID", dataset.getUniqueID());
+    } else {
+    	// dataset ID is typically not null
+    	this.addIfNotNull(met, "UniqueID", dataset.getID());
+    }
 
     if (dataset.getVariables() != null) {
       for (Variables vars : dataset.getVariables()) {
