@@ -27,14 +27,16 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//OPeNDAP/THREDDS imports
 import opendap.dap.DConnect;
 
-//APACHE imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.opendapps.config.DapRoot;
 import org.apache.oodt.opendapps.config.OpendapConfig;
 import org.apache.oodt.opendapps.config.OpendapConfigReader;
+import org.apache.oodt.opendapps.extractors.DasMetadataExtractor;
+import org.apache.oodt.opendapps.extractors.MetadataExtractor;
+import org.apache.oodt.opendapps.extractors.NcmlMetadataExtractor;
+import org.apache.oodt.opendapps.extractors.ThreddsMetadataExtractor;
 import org.apache.oodt.opendapps.util.ProfileUtils;
 import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileException;
@@ -60,6 +62,9 @@ public class OpendapProfileHandler implements ProfileHandler {
   public OpendapProfileHandler(){
   }
 
+  /**
+   * Implementation of interface method
+   */
   public List<Profile> findProfiles(XMLQuery xmlQuery) throws ProfileException {
     String configFileLoc = null;
     String q = xmlQuery.getKwdQueryString();
@@ -89,6 +94,7 @@ public class OpendapProfileHandler implements ProfileHandler {
     List<Profile> profiles = new Vector<Profile>();
     List<DapRoot> roots = this.conf.getRoots();
 	  
+    // loop over THREDDS catalogs
     for (DapRoot root : roots) {
     	LOG.log(Level.INFO,"Parsing DapRoot="+root.getDatasetUrl());
 
@@ -113,15 +119,39 @@ public class OpendapProfileHandler implements ProfileHandler {
                   + "]: Message: " + e.getMessage());
             }
 
-          	Metadata datasetMet = d.getDatasetMet(opendapUrl);
+            // retrieve already extracted THREDDS metadata
+            Metadata datasetMet = d.getDatasetMet(opendapUrl);
+            
+            // extract DAS metadata
+            MetadataExtractor dasExtractor = new DasMetadataExtractor(dConn);
+            dasExtractor.extract(datasetMet);
+            
+            // extract NcML metadata, if available
+           if (datasetMet.containsKey(ThreddsMetadataExtractor.SERVICE_TYPE_NCML)) {
+            	// retrieve URL of NcML document, previously stored
+            	final String ncmlUrl = datasetMet.getMetadata(ThreddsMetadataExtractor.SERVICE_TYPE_NCML);
+            	MetadataExtractor ncmlExtractor = new NcmlMetadataExtractor(ncmlUrl);
+            	ncmlExtractor.extract(datasetMet);
+            }
+            
+            // debug: write out all metadata entries
+            for (String key : datasetMet.getAllKeys()) {
+          	  LOG.log(Level.FINE, "Metadata key="+key+" value="+datasetMet.getMetadata(key));
+            }
+         
+            // <resAttributes>
             profile.setResourceAttributes(ProfileUtils.getResourceAttributes(
                 this.conf, opendapUrl, dConn, datasetMet));
+            // <profAttributes>
             profile.setProfileAttributes(ProfileUtils
                 .getProfileAttributes(this.conf, datasetMet));
+            // <profElement>
             profile.getProfileElements().putAll(
                 ProfileUtils.getProfileElements(this.conf, dConn, datasetMet, profile));
             profiles.add(profile);
             LOG.log(Level.INFO, "Added profile id="+profile.getProfileAttributes().getID());
+            
+            
           } catch(Exception e) {
           	// in case of exception, don't harvest this dataset, but keep going
           	LOG.log(Level.WARNING,"Error while building profile for opendapurl="+opendapUrl); 

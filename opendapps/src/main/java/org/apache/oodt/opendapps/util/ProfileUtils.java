@@ -18,28 +18,30 @@
 package org.apache.oodt.opendapps.util;
 
 //JDK imports
+import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.ENUM_ELEMENT_TYPE;
+import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.PROF_ATTR_SPEC_TYPE;
+import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.PROF_ELEM_SPEC_TYPE;
+import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.RANGED_ELEMENT_TYPE;
+import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.RES_ATTR_SPEC_TYPE;
+
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OPeNDAP imports
 import opendap.dap.BaseType;
 import opendap.dap.DArray;
 import opendap.dap.DConnect;
 import opendap.dap.DDS;
 import opendap.dap.DGrid;
 
-//OODT imports
-import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.ENUM_ELEMENT_TYPE;
-import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.PROF_ATTR_SPEC_TYPE;
-import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.PROF_ELEM_SPEC_TYPE;
-import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.RANGED_ELEMENT_TYPE;
-import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.RES_ATTR_SPEC_TYPE;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.opendapps.OpendapProfileElementExtractor;
@@ -52,6 +54,7 @@ import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileAttributes;
 import org.apache.oodt.profile.ProfileElement;
 import org.apache.oodt.profile.ResourceAttributes;
+import org.springframework.util.StringUtils;
 
 /**
  * 
@@ -280,6 +283,45 @@ public class ProfileUtils {
   		}
   	}
   	return null;
+  }
+  
+  /**
+   * Method to add a (name,value) pair to the metadata container if the value is not null or empty.
+   * @param met
+   * @param field
+   * @param value
+   */
+  public static void addIfNotNull(Metadata met, String key, String value) {
+  	if (StringUtils.hasText(value)) {
+      met.addMetadata(key, value);
+    }
+  }
+  
+	/**
+	 * Method to add multiple (key, value) pairs to the metadata container if not existing already.
+	 * @param met
+	 * @param field
+	 * @param value
+	 */
+	public static void addIfNotExisting(Metadata metadata, String key, Enumeration<String> values) {
+		if (StringUtils.hasText(key) && !metadata.containsKey(key)) {
+			while (values.hasMoreElements()) {
+				String value = values.nextElement();
+				if (StringUtils.hasText(value)) {
+					metadata.addMetadata(key,value);
+				}
+			}
+		}
+	}
+  
+  // inspired from ASLv2 code at:
+  // http://www.java2s.com/Code/Java/Data-Type/ISO8601dateparsingutility.htm
+  public static String toISO8601(Date date) {
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    TimeZone tz = TimeZone.getTimeZone("UTC");
+    df.setTimeZone(tz);
+    String output = df.format(date);
+    return output;
   }
 
 }
