@@ -706,21 +706,41 @@ public class XmlRpcFileManagerClient {
         }
     }
 
-    public void addMetadata(Product product, Metadata metadata)
-            throws CatalogException {
+  public void addMetadata(Product product, Metadata metadata)
+      throws CatalogException {
 
-        Vector<Object> argList = new Vector<Object>();
-        argList.add(XmlRpcStructFactory.getXmlRpcProduct(product));
-        argList.add(metadata.getHashtable());
+    Vector<Object> argList = new Vector<Object>();
+    argList.add(XmlRpcStructFactory.getXmlRpcProduct(product));
+    argList.add(metadata.getHashtable());
 
-        try {
-            client.execute("filemgr.addMetadata", argList);
-        } catch (XmlRpcException e) {
-            throw new CatalogException(e.getMessage());
-        } catch (IOException e) {
-            throw new CatalogException(e.getMessage());
-        }
+    try {
+      client.execute("filemgr.addMetadata", argList);
+    } catch (XmlRpcException e) {
+      throw new CatalogException(e.getMessage());
+    } catch (IOException e) {
+      throw new CatalogException(e.getMessage());
     }
+  }
+
+  public boolean updateMetadata(Product product, Metadata met)
+      throws CatalogException {
+    Vector<Object> argList = new Vector<Object>();
+    argList.add(XmlRpcStructFactory.getXmlRpcProduct(product));
+    argList.add(met.getHashtable());
+
+    boolean result = false;
+
+    try {
+      result = (Boolean) client.execute("filemgr.updateMetadata", argList);
+    } catch (XmlRpcException e) {
+      throw new CatalogException(e.getMessage());
+    } catch (IOException e) {
+      throw new CatalogException(e.getMessage());
+    }
+
+    return result;
+
+  }
 
     public String catalogProduct(Product product) throws CatalogException {
         Vector<Object> argList = new Vector<Object>();

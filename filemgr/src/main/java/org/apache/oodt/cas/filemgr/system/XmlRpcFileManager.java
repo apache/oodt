@@ -667,6 +667,17 @@ public class XmlRpcFileManager {
             throw new RepositoryManagerException(e.getMessage());
         }
     }
+    
+    public synchronized boolean updateMetadata(Hashtable<String, Object> productHash, 
+        Hashtable<String, Object> metadataHash) throws CatalogException{
+        Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
+        Metadata met = new Metadata();
+        met.addMetadata(metadataHash);
+        Metadata oldMetadata = catalog.getMetadata(product);
+        catalog.removeMetadata(oldMetadata, product);
+        catalog.addMetadata(met, product);
+        return true;
+    }
 
     public synchronized String catalogProduct(Hashtable<String, Object> productHash)
             throws CatalogException {

@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-256 updateMetadata needed in XmlRpcFileManager (mattmann)
+
 * OODT-368 Refactoring of metadata extraction functionality for 
   opendapps module (Luca Cinquini, mattmann)
 
