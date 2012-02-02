@@ -36,7 +36,7 @@
  */
 require("Org/Apache/Oodt/Security/SingleSignOn.php");
 
-class Org_Apache_Oodt_Balance_Providers_Auth_LDAPAuthenticationProvider
+class Org_Apache_Oodt_Balance_Providers_Authentication_LDAPAuthenticationProvider
 	extends Org_Apache_Oodt_Security_SingleSignOn 
 	implements Org_Apache_Oodt_Balance_Interfaces_IApplicationAuthenticationProvider {
 
