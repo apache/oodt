@@ -631,7 +631,8 @@ public class LuceneWorkflowInstanceRepository extends
                 .get("workflow_inst_currenttask_enddatetime"));
         inst.setStartDateTimeIsoStr(doc.get("workflow_inst_startdatetime"));
         inst.setEndDateTimeIsoStr(doc.get("workflow_inst_enddatetime"));
-        inst.setPriority(Priority.getPriority(Double.valueOf(doc.get("workflow_inst_priority"))));
+        inst.setPriority(Priority.getPriority(doc.get("workflow_inst_priority") != null ? 
+            Double.valueOf(doc.get("workflow_inst_priority")):Priority.getDefault().getValue()));
 
         // read the workflow instance metadata
         Metadata sharedContext = new Metadata();
@@ -737,8 +738,8 @@ public class LuceneWorkflowInstanceRepository extends
         if (condNames.length != condClasses.length
                 || condNames.length != condOrders.length
                 || condNames.length != condIds.length 
-                || condNames.length != condTimeouts.length
-                || condNames.length != condOptionals.length) {
+                || (condTimeouts != null && condNames.length != condTimeouts.length)
+                || (condOptionals != null && condNames.length != condOptionals.length)) {
             LOG.log(Level.WARNING,
                     "Condition arrays are not of same size when "
                             + "rebuilding from given Document");
@@ -751,8 +752,12 @@ public class LuceneWorkflowInstanceRepository extends
             cond.setConditionInstanceClassName(condClasses[i]);
             cond.setConditionName(condNames[i]);
             cond.setOrder(Integer.parseInt(condOrders[i]));
-            cond.setTimeoutSeconds(Long.parseLong(condTimeouts[i]));
-            cond.setOptional(Boolean.valueOf(condOptionals[i]));
+            if(condTimeouts != null){
+              cond.setTimeoutSeconds(Long.parseLong(condTimeouts[i]));
+            }
+            if(condOptionals != null){
+              cond.setOptional(Boolean.valueOf(condOptionals[i]));
+            }
         }
 
         return condList;
