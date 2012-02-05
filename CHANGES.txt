@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-356 Tool to clean Workflow Instance repositories (mattmann, bfoster)
+
 * OODT-372 Correct LDAPAuthenticationProvider class name (Shakeh Khudikyan via ahart)
 
 * OODT-256 updateMetadata needed in XmlRpcFileManager (mattmann)
