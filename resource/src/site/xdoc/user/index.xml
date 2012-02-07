@@ -353,7 +353,7 @@ the License.
           </li>
        </ol>
    
-     <p>Other configuration options are possible: check the <a href="../apidocs">API documentation</a>, 
+     <p>Other configuration options are possible: check the <a href="../../apidocs/org/apache/oodt/cas/resource">API documentation</a>, 
      as well as the comments within the resource.properties file to find out the rest of the configurable 
      properties for the extension points you choose. A full listing of all the extension point factory 
      class names are provided in the Appendix. After step 7, you are officially done configuring the Resource 
