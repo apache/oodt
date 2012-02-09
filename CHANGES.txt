@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 0.4: Current Development
 --------------------------------------------
+* OODT-375 Improve ApplicationResponse::includeJavascript to support including 
+  JavaScript snippets in addition to static files (ahart)
 
 * OODT-356 Tool to clean Workflow Instance repositories (mattmann, bfoster)
 

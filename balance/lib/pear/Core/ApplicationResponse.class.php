@@ -276,10 +276,31 @@ class Org_Apache_Oodt_Balance_Core_ApplicationResponse {
 		$this->stylesheets[] = $str;
 	}
 	
-	public function addJavascript($src) {
-		// Build the string for the javascript import
-		$str = "<script type=\"text/javascript\" src=\"{$src}\"></script>";
-		$this->javascripts[] = $str;
+    /**
+     * Add javascript resources to the response
+     *
+     * This function provides a clean way to programmatically include arbitrary
+     * Javascript resources in the response. Depending upon the value
+     * provided for 'isRaw', the contents of 'src' will either be interpreted
+     * as the 'src' attribute or the body content of the generated <script> block. 
+     *
+     * @param string src - Either the url to the resource to include (if 
+     *                     'isRaw' = false) or a string representing the 
+     *                     raw Javascript to include (if 'isRaw' = true)
+     * @param boolean isRaw - Controls how 'src' is interpreted. If set to false 
+     *                     (default), 'src' will be interpreted as a URL to the
+     *                     Javascript resource to include. If set to true, 'src' 
+     *                     will be interpreted as a string of raw Javascript.
+     */
+	public function addJavascript($src, $isRaw = false) {
+        if ($isRaw === true) {
+            // Build a script container for the raw javascript
+            $str = "<script type=\"text/javascript\">{$src}</script>";
+            $this->javascripts[] = $str;
+        } else {
+            // Build the string for the javascript file import
+            $str = "<script type=\"text/javascript\" src=\"{$src}\"></script>";
+            $this->javascripts[] = $str;
+        }
 	}
-	
 }
