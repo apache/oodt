@@ -40,7 +40,6 @@ configurable in Java code, but is now configurable via this file.
     <root datasetURL="http://thredds1.pfeg.noaa.gov/thredds/dodsC/" catalogURL="http://thredds1.pfeg.noaa.gov/thredds/Satellite/aggregsatMH/sstd/catalog.xml" filter=".*" />
 	
 	
-	
 	<!-- 
 	   A set of specifications for how to rewrite the names of underlying OPeNDAP/THREDDS dataset variables 
 	   into profile elements within the generated OODT profile. These information are used only to transform 
