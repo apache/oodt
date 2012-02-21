@@ -17,13 +17,6 @@
 
 package org.apache.oodt.grid;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.oodt.product.LargeProductQueryHandler;
 import org.apache.oodt.product.ProductException;
 import org.apache.oodt.product.QueryHandler;
@@ -32,21 +25,32 @@ import org.apache.oodt.xmlquery.LargeResult;
 import org.apache.oodt.xmlquery.Result;
 import org.apache.oodt.xmlquery.XMLQuery;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * Product query servlet handles product queries.  It always returns the first matching
  * product, if any.  If no handler can provide a product, it returns 404 Not Found.  If
  * there are no query handlers, it returns 404 Not Found.
- * 
+ *
  */
 public class ProductQueryServlet extends QueryServlet {
 	/** {@inheritDoc} */
-	protected List getServers(Configuration config) {
+	@Override
+  protected List getServers(Configuration config) {
 		return config.getProductServers();
 	}
 
 	/** {@inheritDoc} */
-	protected void handleQuery(XMLQuery query, List handlers, HttpServletRequest req, HttpServletResponse res)
+	@Override
+  protected void handleQuery(XMLQuery query, List handlers, HttpServletRequest req, HttpServletResponse res)
 		throws IOException, ServletException {
 		if (handlers.isEmpty()) {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND, "no query handlers available to handle query");
@@ -94,6 +98,7 @@ public class ProductQueryServlet extends QueryServlet {
 			int num;						       // And a place to count data
 			while ((num = in.read(buf)) != -1)			       // While we read
 				res.getOutputStream().write(buf, 0, num);	       // We write
+			res.getOutputStream().flush();
 		} finally {							       // And finally
 			if (in != null) try {					       // If we opened it
 				in.close();					       // Close it
@@ -111,7 +116,8 @@ public class ProductQueryServlet extends QueryServlet {
 		String contentType = result.getMimeType();			       // Grab the content type
 		res.setContentType(contentType);				       // Set it
 		long size = result.getSize();					       // Grab the size
-		res.addHeader("Content-Length", String.valueOf(size));		       // Don't use setContentLength(int)
+		if (size >= 0)
+		  res.addHeader("Content-Length", String.valueOf(size));		       // Don't use setContentLength(int)
 		if (!displayable(contentType))					       // Finally, if a browser can't show it
 			suggestFilename(result.getResourceID(), res);		       // Then suggest a save-as filename
 	}
@@ -178,7 +184,7 @@ public class ProductQueryServlet extends QueryServlet {
 		}
 
 		/** Handler to use. */
-		private LargeProductQueryHandler handler;
+		private final LargeProductQueryHandler handler;
 	}
 }
 

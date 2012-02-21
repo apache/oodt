@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 0.4: Current Development
 --------------------------------------------
+* OODT-341 XMLPS should be able to stream large results (rickdn)
+
 * OODT-375 Improve ApplicationResponse::includeJavascript to support including 
   JavaScript snippets in addition to static files (ahart)
 

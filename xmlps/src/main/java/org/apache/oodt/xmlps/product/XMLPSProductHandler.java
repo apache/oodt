@@ -29,11 +29,9 @@ import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlps.queryparser.Expression;
 import org.apache.oodt.xmlps.queryparser.HandlerQueryParser;
 import org.apache.oodt.xmlps.structs.CDEResult;
-import org.apache.oodt.xmlps.structs.CDERow;
 import org.apache.oodt.xmlps.structs.CDEValue;
 import org.apache.oodt.xmlps.util.XMLQueryHelper;
 import org.apache.oodt.xmlquery.QueryElement;
-import org.apache.oodt.xmlquery.Result;
 import org.apache.oodt.xmlquery.XMLQuery;
 
 import java.io.FileInputStream;
@@ -230,22 +228,10 @@ public class XMLPSProductHandler implements QueryHandler {
 
         if (executor != null) {
             try {
-                CDEResult res = executor.executeLocalQuery(this.mapping,
-                        sqlBuf.toString(), toSQLResultSetColumns(selectNames));
-
-                res = addConstFields(res,
-                        getConstElemNamesFromQueryElemSet(query
-                                .getSelectElementSet()));
-
-                if (res.getRows() == null
-                        || (res.getRows() != null && res.getRows().size() == 0)) {
-                  LOG.log(Level.WARNING, "Query retrieved no results.");
-                }
-                
-                Result r = res.toResult();
-                if (r != null) {
-                    query.getResults().add(r);
-                }
+                CDEResult res = executor.executeLocalQuery(sqlBuf.toString());
+                res.setMapping(mapping);
+                res.setConstValues(getConstValuesForQuery(query));
+                query.getResults().add(res);
             } catch (SQLException e) {
                 e.printStackTrace();
                 LOG.log(Level.WARNING, "Error executing sql: ["
@@ -255,35 +241,19 @@ public class XMLPSProductHandler implements QueryHandler {
 
     }
 
-    private CDEResult addConstFields(CDEResult res,
-            List<QueryElement> constFlds) {
-        CDEResult newRes = res;
-        if (constFlds != null && constFlds.size() > 0) {
-            if (res == null
-                    || (res != null && (res.getRows() == null || (res.getRows() != null && res
-                            .getRows().size() == 0)))) {
-                newRes = new CDEResult();
-                // add one row
-                newRes.getRows().add(new CDERow());
-            }
-
-            for (Iterator<QueryElement> i = constFlds.iterator(); i.hasNext();) {
-                QueryElement elem = i.next();
-                MappingField fld = this.mapping.getFieldByLocalName(elem
-                        .getValue());
-
-                for (Iterator<CDERow> j = newRes.getRows().iterator(); j
-                        .hasNext();) {
-                    CDERow row = j.next();
-                    CDEValue val = new CDEValue(fld.getName(), fld
-                            .getConstantValue());
-                    row.getVals().add(val);
+    private List<CDEValue> getConstValuesForQuery(XMLQuery query) {
+        List<QueryElement> select = query.getSelectElementSet();
+        List<QueryElement> constNames = getConstElemNamesFromQueryElemSet(select);
+        List<CDEValue> constValues = new ArrayList<CDEValue>();
+        if (constNames != null) {
+            for (QueryElement qe : constNames) {
+                MappingField fld = mapping.getFieldByLocalName(qe.getValue());
+                if (fld != null) {
+                    constValues.add(new CDEValue(fld.getName(), fld.getConstantValue()));
                 }
             }
         }
-
-        return newRes;
-
+        return constValues;
     }
 
     private String toSQLSelectColumns(List<QueryElement> elems) {
@@ -304,21 +274,6 @@ public class XMLPSProductHandler implements QueryHandler {
         buf.deleteCharAt(buf.length() - 1);
 
         return buf.toString();
-    }
-
-    private List<String> toSQLResultSetColumns(List<QueryElement> elems) {
-        if (elems == null || (elems != null && elems.size() == 0))
-          return Collections.emptyList();
-
-        List<String> resultSetNames = new ArrayList<String>();
-        for (QueryElement qe : elems) {
-            MappingField fld = this.mapping.getFieldByLocalName(qe.getValue());
-            if (fld != null) {
-                resultSetNames.add(fld.getName());
-            }
-        }
-
-        return resultSetNames;
     }
 
     protected void translateToDomain(List<QueryElement> elemSet,
@@ -384,7 +339,7 @@ public class XMLPSProductHandler implements QueryHandler {
         }
 
     }
-  
+
     protected Set<DatabaseTable> getRequiredTables(
             List<QueryElement> whereElemNames, List<QueryElement> selectElemNames) {
         Set<DatabaseTable> tables = new HashSet<DatabaseTable>();
