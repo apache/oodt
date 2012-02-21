@@ -19,19 +19,27 @@ package org.apache.oodt.cas.workflow.engine;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.resource.structs.Job;
+import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
+import org.apache.oodt.cas.workflow.structs.TaskJobInput;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 import org.apache.oodt.cas.workflow.engine.SequentialProcessor;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,14 +77,15 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
   /* our instance repository */
   private WorkflowInstanceRepository instRep = null;
 
-  /* our resource manager client */
-  private XmlRpcResourceManagerClient rClient = null;
-
   /* the URL pointer to the parent Workflow Manager */
   private URL wmgrUrl = null;
 
   /* how long to wait before checking whether a condition is satisfied. */
   private long conditionWait;
+
+  private ConditionProcessor condProcessor;
+
+  private EngineRunner runner;
 
   /**
    * Default Constructor.
@@ -120,12 +129,17 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
     workerMap = new HashMap();
 
-    if (resUrl != null)
-      rClient = new XmlRpcResourceManagerClient(resUrl);
+    if (resUrl != null) {
+      this.runner = new ResourceRunner(resUrl);
+    } else {
+      this.runner = new AsynchronousLocalEngineRunner();
+    }
 
     this.conditionWait = Long.getLong(
         "org.apache.oodt.cas.workflow.engine.preConditionWaitTime", 10)
         .longValue();
+
+    this.condProcessor = new ConditionProcessor();
   }
 
   /*
@@ -137,7 +151,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized void pauseWorkflowInstance(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialProcessor worker = ((ThreadedProcessor) workerMap
+    SequentialProcessor worker = ((ThreadedExecutor) workerMap
         .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
@@ -161,7 +175,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized void resumeWorkflowInstance(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialProcessor worker = ((ThreadedProcessor) workerMap
+    SequentialProcessor worker = ((ThreadedExecutor) workerMap
         .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
@@ -173,7 +187,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
     // also check to make sure that the worker is currently paused
     // only can resume WorkflowInstances that are paused, right?
-    if (!worker.isPaused()) {
+    if (true/*!worker.isPaused()*/) {
       LOG.log(Level.WARNING,
           "WorkflowEngine: Attempt to resume a workflow that "
               + "isn't paused currently: instance id: " + workflowInstId);
@@ -208,16 +222,15 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     wInst.setStatus(CREATED);
     persistWorkflowInstance(wInst);
 
-    SequentialProcessor worker = new SequentialProcessor(wInst,
-        instRep, this.wmgrUrl, this.conditionWait);
-    worker.setRClient(rClient);
+    SequentialProcessor worker = new SequentialProcessor(wInst, instRep,
+        this.wmgrUrl, this.conditionWait);
     workerMap.put(wInst.getId(), worker);
 
     wInst.setStatus(QUEUED);
     persistWorkflowInstance(wInst);
 
     try {
-      pool.execute(new ThreadedProcessor(worker));
+      pool.execute(new ThreadedExecutor(worker, this.condProcessor));
     } catch (InterruptedException e) {
       throw new EngineException(e);
     }
@@ -245,7 +258,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized boolean updateMetadata(String workflowInstId, Metadata met) {
     // okay, try and look up that worker thread in our hash map
-    SequentialProcessor worker = ((ThreadedProcessor) workerMap
+    SequentialProcessor worker = ((ThreadedExecutor) workerMap
         .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
@@ -290,7 +303,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public synchronized void stopWorkflow(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialProcessor worker = ((ThreadedProcessor) workerMap
+    SequentialProcessor worker = ((ThreadedExecutor) workerMap
         .get(workflowInstId)).getProcessor();
     if (worker == null) {
       LOG.log(Level.WARNING,
@@ -324,7 +337,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public Metadata getWorkflowInstanceMetadata(String workflowInstId) {
     // okay, try and look up that worker thread in our hash map
-    SequentialProcessor worker = ((ThreadedProcessor) workerMap
+    SequentialProcessor worker = ((ThreadedExecutor) workerMap
         .get(workflowInstId)).getProcessor();
     if (worker == null) {
       // try and get the metadata
@@ -477,12 +490,19 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     }
   }
 
-  class ThreadedProcessor implements Runnable {
+  class ThreadedExecutor implements Runnable, CoreMetKeys {
 
     private SequentialProcessor processor;
 
-    public ThreadedProcessor(SequentialProcessor processor) {
+    private boolean running;
+
+    private ConditionProcessor conditionEvaluator;
+
+    public ThreadedExecutor(SequentialProcessor processor,
+        ConditionProcessor conditionEvaluator) {
       this.processor = processor;
+      this.running = false;
+      this.conditionEvaluator = conditionEvaluator;
     }
 
     /*
@@ -492,7 +512,90 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
      */
     @Override
     public void run() {
-      processor.start();
+      String startDateTimeIsoStr = DateConvert.isoFormat(new Date());
+      this.getProcessor().getWorkflowInstance()
+          .setStartDateTimeIsoStr(startDateTimeIsoStr);
+      this.getProcessor().persistWorkflowInstance();
+
+      while (running && this.getProcessor().getRunnableSubProcessors() != null
+          && this.getProcessor().getRunnableSubProcessors().size() > 0) {
+        if (isPaused()) {
+          LOG.log(
+              Level.FINE,
+              "SequentialProcessor: Skipping execution: Paused: CurrentTask: "
+                  + this.getProcessor().getTaskNameById(
+                      this.getProcessor().getCurrentTaskId()));
+          continue;
+        }
+
+        TaskProcessor taskProcessor = (TaskProcessor) this.processor
+            .getRunnableSubProcessors().get(0);
+        WorkflowTask task = taskProcessor.getTask();
+        this.getProcessor().getWorkflowInstance()
+            .setCurrentTaskId(task.getTaskId());
+
+        this.getProcessor().persistWorkflowInstance();
+        if (!taskProcessor.checkTaskRequiredMetadata(this.getProcessor()
+            .getWorkflowInstance().getSharedContext())) {
+          this.getProcessor().getWorkflowInstance().setStatus(METADATA_MISSING);
+          this.getProcessor().persistWorkflowInstance();
+          return;
+        }
+
+        if (task.getConditions() != null) {
+          if (!this.conditionEvaluator.satisfied(task.getConditions(),
+              task.getTaskId(), this.getProcessor().getWorkflowInstance()
+                  .getSharedContext())
+              && isRunning()) {
+
+            LOG.log(Level.FINEST,
+                "Pre-conditions for task: " + task.getTaskName()
+                    + " unsatisfied");
+
+            if (!isPaused()) {
+              this.getProcessor().getWorkflowInstance()
+                  .setStatus(WorkflowStatus.PAUSED);
+            }
+            continue;
+          }
+        }
+        LOG.log(Level.FINEST, "Executing task: " + task.getTaskName());
+
+        this.addStdWorkflowMetadata(getProcessor().getWorkflowInstance(), task,
+            getProcessor().getWorkflowInstance().getSharedContext(), wmgrUrl);
+
+        if (runner instanceof ResourceRunner) {
+          getProcessor().getWorkflowInstance().setStatus(RESMGR_SUBMIT);
+          //persistWorkflowInstance();
+          /*runner.execute(task, getProcessor().getWorkflowInstance()
+              .getSharedContext());*/
+        } else {
+          //this.workflowInstance.setStatus(STARTED);
+          //this.persistWorkflowInstance();
+          String currentTaskIsoStartDateTimeStr = DateConvert
+              .isoFormat(new Date());
+          //this.workflowInstance
+              //.setCurrentTaskStartDateTimeIsoStr(currentTaskIsoStartDateTimeStr);
+          //this.workflowInstance.setCurrentTaskEndDateTimeIsoStr(null);
+          /*runner.execute(task, getProcessor().getWorkflowInstance()
+              .getSharedContext());*/
+
+          String currentTaskIsoEndDateTimeStr = DateConvert
+              .isoFormat(new Date());
+          //this.workflowInstance
+            //  .setCurrentTaskEndDateTimeIsoStr(currentTaskIsoEndDateTimeStr);
+         // this.persistWorkflowInstance();
+        }
+
+        LOG.log(Level.FINEST, "Completed task: " + task.getTaskName());
+
+      }
+
+      /*LOG.log(Level.FINEST, "Completed workflow: "
+          + this.workflowInstance.getWorkflow().getName());
+      if (isRunning()) {
+        stop();
+      }*/
     }
 
     /**
@@ -508,6 +611,62 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
      */
     public void setProcessor(SequentialProcessor processor) {
       this.processor = processor;
+    }
+
+    /**
+     * @return the running
+     */
+    public boolean isRunning() {
+      return running;
+    }
+
+    /**
+     * @param running
+     *          the running to set
+     */
+    public void setRunning(boolean running) {
+      this.running = running;
+    }
+
+    /**
+     * @return the conditionEvaluator
+     */
+    public ConditionProcessor getConditionEvaluator() {
+      return conditionEvaluator;
+    }
+
+    /**
+     * @param conditionEvaluator
+     *          the conditionEvaluator to set
+     */
+    public void setConditionEvaluator(ConditionProcessor conditionEvaluator) {
+      this.conditionEvaluator = conditionEvaluator;
+    }
+
+    public boolean isPaused() {
+      return this.getProcessor().getWorkflowInstance().getStatus()
+          .equals(WorkflowStatus.PAUSED);
+    }
+
+    protected void addStdWorkflowMetadata(WorkflowInstance wInst,
+        WorkflowTask task, Metadata ctx, URL wUrl) {
+      ctx.replaceMetadata(TASK_ID, task.getTaskId());
+      ctx.replaceMetadata(WORKFLOW_INST_ID, wInst.getId());
+      ctx.replaceMetadata(JOB_ID, wInst.getId());
+      ctx.replaceMetadata(PROCESSING_NODE, getHostname());
+      ctx.replaceMetadata(WORKFLOW_MANAGER_URL, wUrl.toString());
+    }
+
+    protected String getHostname() {
+      try {
+        // Get hostname by textual representation of IP address
+        InetAddress addr = InetAddress.getLocalHost();
+        // Get the host name
+        String hostname = addr.getHostName();
+        return hostname;
+      } catch (UnknownHostException e) {
+      }
+      return null;
     }
 
   }
