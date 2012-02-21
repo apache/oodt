@@ -35,6 +35,7 @@ import org.apache.oodt.commons.util.DateConvert;
 import java.net.URL;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,171 +71,10 @@ public class SequentialProcessor extends WorkflowProcessor implements
     this.conditionEvaluator = new ConditionProcessor();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowProcessor#start()
-   */
-  @Override
-  public void start() {
-
-    String startDateTimeIsoStr = DateConvert.isoFormat(new Date());
-    this.workflowInstance.setStartDateTimeIsoStr(startDateTimeIsoStr);
-    this.persistWorkflowInstance();
-
-    while (running && taskIterator.hasNext()) {
-      if (isPaused()) {
-        LOG.log(Level.FINE,
-            "SequentialProcessor: Skipping execution: Paused: CurrentTask: "
-                + getTaskNameById(this.workflowInstance.getCurrentTaskId()));
-        continue;
-      }
-
-      WorkflowTask task = (WorkflowTask) taskIterator.next();
-      this.workflowInstance.setCurrentTaskId(task.getTaskId());
-
-      this.persistWorkflowInstance();
-      if (!checkTaskRequiredMetadata(task,
-          this.workflowInstance.getSharedContext())) {
-        this.workflowInstance.setStatus(METADATA_MISSING);
-        this.persistWorkflowInstance();
-        return;
-      }
-
-      if (task.getConditions() != null) {
-        while(!this.conditionEvaluator.satisfied(task.getConditions(), task.getTaskId(),
-            this.workflowInstance.getSharedContext()) && isRunning()) {
-
-          if (!isPaused()) {
-            pause();
-          }
-
-          LOG.log(Level.FINEST,
-              "Pre-conditions for task: " + task.getTaskName()
-                  + " unsatisfied: waiting: " + waitForConditionSatisfy
-                  + " seconds before checking again.");
-          try {
-            Thread.currentThread().sleep(waitForConditionSatisfy * 1000);
-          } catch (InterruptedException ignore) {
-          }
-
-          if (!isPaused()) {
-            break;
-          }
-        }
-
-        if (!isRunning()) {
-          break;
-        }
-
-        if (isPaused()) {
-          resume();
-        }
-      }
-      LOG.log(
-          Level.FINEST,
-          "IterativeWorkflowProcessorThread: Executing task: "
-              + task.getTaskName());
-
-      WorkflowTaskInstance taskInstance = GenericWorkflowObjectFactory
-          .getTaskObjectFromClassName(task.getTaskInstanceClassName());
-      this.workflowInstance.getSharedContext().replaceMetadata(TASK_ID,
-          task.getTaskId());
-      this.workflowInstance.getSharedContext().replaceMetadata(
-          WORKFLOW_INST_ID, this.workflowInstance.getId());
-      this.workflowInstance.getSharedContext().replaceMetadata(JOB_ID,
-          this.workflowInstance.getId());
-      this.workflowInstance.getSharedContext().replaceMetadata(PROCESSING_NODE,
-          getHostname());
-      this.workflowInstance.getSharedContext().replaceMetadata(
-          WORKFLOW_MANAGER_URL, this.wmgrParentUrl.toString());
-
-      if (rClient != null) {
-        Job taskJob = new Job();
-        taskJob.setName(task.getTaskId());
-        taskJob
-            .setJobInstanceClassName("org.apache.oodt.cas.workflow.structs.TaskJob");
-        taskJob
-            .setJobInputClassName("org.apache.oodt.cas.workflow.structs.TaskJobInput");
-        taskJob.setLoadValue(new Integer(2));
-        taskJob
-            .setQueueName(task.getTaskConfig().getProperty(QUEUE_NAME) != null ? task
-                .getTaskConfig().getProperty(QUEUE_NAME) : DEFAULT_QUEUE_NAME);
-
-        TaskJobInput in = new TaskJobInput();
-        in.setDynMetadata(this.workflowInstance.getSharedContext());
-        in.setTaskConfig(task.getTaskConfig());
-        in.setWorkflowTaskInstanceClassName(task.getTaskInstanceClassName());
-
-        this.workflowInstance.setStatus(RESMGR_SUBMIT);
-        this.persistWorkflowInstance();
-
-        try {
-          this.currentJobId = rClient.submitJob(taskJob, in);
-          while (!safeCheckJobComplete(this.currentJobId) && isRunning()) {
-            try {
-              Thread.currentThread().sleep(pollingWaitTime * 1000);
-            } catch (InterruptedException ignore) {
-            }
-          }
-
-          if (!isRunning()) {
-            break;
-          }
-
-          WorkflowInstance updatedInst = null;
-          try {
-            updatedInst = instanceRepository
-                .getWorkflowInstanceById(this.workflowInstance.getId());
-            this.workflowInstance = updatedInst;
-          } catch (InstanceRepositoryException e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING, "Unable to get " + "updated workflow "
-                + "instance record " + "when executing remote job: Message: "
-                + e.getMessage());
-          }
-
-        } catch (JobExecutionException e) {
-          LOG.log(Level.WARNING,
-              "Job execution exception using resource manager to execute job: Message: "
-                  + e.getMessage());
-        }
-      } else {
-        this.workflowInstance.setStatus(STARTED);
-        String currentTaskIsoStartDateTimeStr = DateConvert
-            .isoFormat(new Date());
-        this.workflowInstance
-            .setCurrentTaskStartDateTimeIsoStr(currentTaskIsoStartDateTimeStr);
-        this.workflowInstance.setCurrentTaskEndDateTimeIsoStr(null); 
-        this.persistWorkflowInstance();
-        this.executeTaskLocally(taskInstance,
-            this.workflowInstance.getSharedContext(), task.getTaskConfig(),
-            task.getTaskName());
-        String currentTaskIsoEndDateTimeStr = DateConvert.isoFormat(new Date());
-        this.workflowInstance
-            .setCurrentTaskEndDateTimeIsoStr(currentTaskIsoEndDateTimeStr);
-        this.persistWorkflowInstance();
-      }
-
-      LOG.log(Level.FINEST, "SequentialWorkflowProcessor: Completed task: "
-          + task.getTaskName());
-
-    }
-
-    LOG.log(Level.FINEST, "SequentialWorkflowProcessor: Completed workflow: "
-        + this.workflowInstance.getWorkflow().getName());
-    if (isRunning()) {
-      stop();
-    }
-
-  }
 
   public synchronized void stop() {
     running = false;
-    if (this.rClient != null && this.currentJobId != null) {
-      if (!this.rClient.killJob(this.currentJobId)) {
-        LOG.log(Level.WARNING, "Attempt to kill " + "current resmgr job: ["
-            + this.currentJobId + "]: failed");
-      }
-    }
+    //something with resource manager client here
 
     this.workflowInstance.setStatus(FINISHED);
     String isoEndDateTimeStr = DateConvert.isoFormat(new Date());
@@ -243,15 +83,25 @@ public class SequentialProcessor extends WorkflowProcessor implements
   }
 
   public synchronized void resume() {
-    this.paused = false;
+    //this.paused = false;
     this.workflowInstance.setStatus(STARTED);
     this.persistWorkflowInstance();
   }
 
   public synchronized void pause() {
-    this.paused = true;
+    //this.paused = true;
     this.workflowInstance.setStatus(PAUSED);
     this.persistWorkflowInstance();
+  }
+
+
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.engine.WorkflowProcessor#getRunnableSubProcessors()
+   */
+  @Override
+  protected List<WorkflowProcessor> getRunnableSubProcessors() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

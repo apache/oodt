@@ -115,7 +115,7 @@ public class ConditionProcessor {
     } else {
       LOG.log(Level.INFO, "Condition: [" + condition.getConditionId()
           + "] is required: evaluation results: [" + result + "] included.");
-      return false;
+      return result;
     }
   }
 

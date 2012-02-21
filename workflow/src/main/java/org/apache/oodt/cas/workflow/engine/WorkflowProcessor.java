@@ -18,16 +18,13 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
-import java.net.InetAddress;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
@@ -53,21 +50,15 @@ public abstract class WorkflowProcessor {
 
   protected WorkflowInstanceRepository instanceRepository = null;
 
-  protected XmlRpcResourceManagerClient rClient = null;
-
   protected long pollingWaitTime = 10L;
 
   protected boolean running = false;
 
   protected int timesPaused;
 
-  protected static final String DEFAULT_QUEUE_NAME = "high";
-
   protected URL wmgrParentUrl = null;
 
   protected String currentJobId = null;
-
-  protected boolean paused = false;
 
   public WorkflowProcessor(WorkflowInstance workflowInstance,
       WorkflowInstanceRepository instRep, URL wParentUrl, long conditionWait) {
@@ -77,7 +68,6 @@ public abstract class WorkflowProcessor {
     this.waitForConditionSatisfy = conditionWait;
     this.pollingWaitTime = conditionWait;
     this.wmgrParentUrl = wParentUrl;
-
   }
 
   /**
@@ -94,40 +84,6 @@ public abstract class WorkflowProcessor {
   public void setWorkflowInstance(WorkflowInstance workflowInstance) {
     this.workflowInstance = workflowInstance;
   }
-
-  /**
-   * <p>
-   * Stops once and for all the thread from processing the workflow. This method
-   * should not maintain the state of the workflow, it should gracefully shut
-   * down the WorkflowProcessor and any of its subsequent resources.
-   * </p>
-   * 
-   */
-  public abstract void stop();
-
-  /**
-   * <p>
-   * Resumes execution of a {@link #pause}d {@link WorkflowInstace} by this
-   * WorkflowProcessor.
-   * </p>
-   * 
-   */
-  public abstract void resume();
-
-  /**
-   * <p>
-   * Pauses exectuion of a {@link WorkflowInstace} being handled by this
-   * WorkflowProcessor.
-   * </p>
-   * 
-   */
-  public abstract void pause();
-  
-  
-  /**
-   * Starts execution of the subordinate {@link WorkflowProcessor}.
-   */
-  public abstract void start();
 
   /**
    * Returns the identifier of the current {@link WorkflowTask} being processed
@@ -154,41 +110,29 @@ public abstract class WorkflowProcessor {
   public void setRunning(boolean running) {
     this.running = running;
   }
-
-  /**
-   * @return the paused
-   */
-  public boolean isPaused() {
-    return paused;
+  
+  @Override
+  public String toString(){
+    StringBuilder builder = new StringBuilder();
+    builder.append("processor:[type=");
+    builder.append(getClass().toString());
+    builder.append(",startdate=");
+    builder.append(getWorkflowInstance().getStartDate());
+    builder.append(",priority=");
+    builder.append(getWorkflowInstance().getPriority());
+    builder.append("]");
+    return builder.toString();
   }
 
   /**
-   * @param paused
-   *          the paused to set
+   * Gets the runnable consituent elements of this {@link WorkflowProcessor}
+   * which may include {@link WorkflowProcessor}s themselves.
+   * 
+   * @return The current runnable set of {@link WorkflowProcessor}s that this 
+   * {@link WorkflowProcessor} is modeling.
    */
-  public void setPaused(boolean paused) {
-    this.paused = paused;
-  }
-
-  /**
-   * @return the rClient
-   */
-  public XmlRpcResourceManagerClient getrClient() {
-    return rClient;
-  }
-
-  /**
-   * @param client
-   *          the rClient to set
-   */
-  public void setRClient(XmlRpcResourceManagerClient client) {
-    rClient = client;
-    if (rClient != null) {
-      LOG.log(Level.INFO, "Resource Manager Job Submission enabled to: ["
-          + rClient.getResMgrUrl() + "]");
-    }
-  }
-
+  protected abstract List<WorkflowProcessor> getRunnableSubProcessors();
+  
   protected void persistWorkflowInstance() {
     try {
       instanceRepository.updateWorkflowInstance(this.workflowInstance);
@@ -210,41 +154,6 @@ public abstract class WorkflowProcessor {
     }
   }
 
-  protected boolean safeCheckJobComplete(String jobId) {
-    try {
-      return rClient.isJobComplete(jobId);
-    } catch (Exception e) {
-      LOG.log(Level.WARNING, "Exception checking completion status for job: ["
-          + jobId + "]: Messsage: " + e.getMessage());
-      return false;
-    }
-  }
-
-  protected boolean checkTaskRequiredMetadata(WorkflowTask task,
-      Metadata dynMetadata) {
-    if (task.getRequiredMetFields() == null
-        || (task.getRequiredMetFields() != null && task.getRequiredMetFields()
-            .size() == 0)) {
-      LOG.log(Level.INFO, "Task: [" + task.getTaskName()
-          + "] has no required metadata fields");
-      return true; /* no required metadata, so we're fine */
-    }
-
-    for (String reqField : (List<String>) (List<?>) task.getRequiredMetFields()) {
-      if (!dynMetadata.containsKey(reqField)) {
-        LOG.log(Level.SEVERE, "Checking metadata key: [" + reqField
-            + "] for task: [" + task.getTaskName()
-            + "]: failed: aborting workflow");
-        return false;
-      }
-    }
-
-    LOG.log(Level.INFO, "All required metadata fields present for task: ["
-        + task.getTaskName() + "]");
-
-    return true;
-  }
-
   protected String getTaskNameById(String taskId) {
     for (WorkflowTask task : (List<WorkflowTask>) (List<?>) this.workflowInstance
         .getWorkflow().getTasks()) {
@@ -255,17 +164,5 @@ public abstract class WorkflowProcessor {
 
     return null;
   }
-
-  protected String getHostname() {
-    try {
-      // Get hostname by textual representation of IP address
-      InetAddress addr = InetAddress.getLocalHost();
-      // Get the host name
-      String hostname = addr.getHostName();
-      return hostname;
-    } catch (UnknownHostException e) {
-    }
-    return null;
-  }
-
+  
 }
