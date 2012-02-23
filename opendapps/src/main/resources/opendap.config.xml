@@ -72,23 +72,26 @@ configurable in Java code, but is now configurable via this file.
 	  value set.	
 	 -->
 	<datasetMetadata>
-	   <elem name="short_name" value="Name"/>
-	   <elem name="long_name" value="FullName"/>
-	   <!-- <elem name="mission_name" value="Projects"/>-->
-	   <elem name="mission_description" value="Documentation"/>
-	   <elem name="parameter" value="Variables"/>
-	   <elem name="startdate" value="StartDateTime"/>
-	   <elem name="enddate" value="EndDateTime"/>
-	   <!-- <elem name="spatial_resolution" value="GeospatialCoverage"/>-->
-	   <elem name="description" value="Documentation"/>
-	   <elem name="spatial_coverage" value="GeospatialCoverage"/>
-	   <elem name="processing_level" value="Processing"/>
-	   <elem name="temporal_resolution" value="TimeCoverageResolution"/>
-	   <elem name="latitude_resolution" value="GeospatialCoverageLatitudeResolution"/>
-	   <elem name="longitude_resolution" value="GeospatialCoverageLongitudeResolution"/>
-	   <elem name="creator" value="Creator"/>
-	   <elem name="project" value="Project"/>
-	   <elem name="access_type" value="Authority"/>
+	
+	   <!-- variable names -->
+	   <elem name="variable" value="Variables"/>
+	   <elem name="cf_standard_name" value="CF Standard Names"/>
+	   <elem name="variable_long_name" value="Variable Long Names"/>
+	   
+	   	<!-- geospatial coverage -->
+		<elem name="south_deegrees" value="GeospatialCoverageLatSouth"/>
+		<elem name="north_deegrees" value="GeospatialCoverageLatNorth"/>
+		<elem name="west_deegrees" value="GeospatialCoverageLonWest"/>
+		<elem name="east_deegrees" value="GeospatialCoverageLonEast"/>
+		<elem name="spatial_coverage" value="GeospatialCoverage"/>
+		<elem name="latitude_resolution" value="GeospatialCoverageLatitudeResolution"/>
+	    <elem name="longitude_resolution" value="GeospatialCoverageLongitudeResolution"/>
+	
+		<!-- temporal coverage -->
+		<elem name="datetime_start" value="StartDateTime"/>
+	   	<elem name="datetime_stop" value="EndDateTime"/>
+	    <elem name="temporal_resolution" value="TimeCoverageResolution"/>
+
 	</datasetMetadata>
 	
 	<!-- 
@@ -137,18 +140,53 @@ configurable in Java code, but is now configurable via this file.
           resLocation              
 	 -->
 	<constants>
-	    <const type="profAttr" name="profType" value="CMDS Ocean Dataset"/>
+	
+	    <!-- profile attributes -->
+	    <const type="profAttr" name="profType" value="CMDS Ocean Dataset Profile"/>
 	    <const type="profAttr" name="profStatusId" value="active"/>
-	    <const type="profAttr" name="profRegAuthority" value="NASA Coastal Marine Data Discovery Service" />
-	    <const type="profAttr" name="profId" value="[UniqueID]"/>
-		<const type="resAttr" name="Publisher" value="CMDS CoastWatch Product Server" />
-		<const type="resAttr" name="resClass" value="system.dataset" />
-		<const type="resAttr" name="resContext" value="[Authority]"/>
-		<const type="resAttr" name="Type" value="[DataFormatType]"/>
-		<const type="resAttr" name="Date" value="[StartDateTime],[EndDateTime]"/>
-		<const type="resAttr" name="resLocation" value="http://thredds1.pfeg.noaa.gov/thredds/dodsC/[ID].html,http://thredds1.pfeg.noaa.gov/thredds/dodsC/[ID].dods"/>
+	    <const type="profAttr" name="profRegAuthority" value="NASA Coastal Marine Data Discovery Service (CMDS)" />
+	    <const type="profAttr" name="profId" value="[UUID]"/>
+	    <const type="profAttr" name="profVersion" value="1.0"/>
+	    	    
+	    <!-- resource attributes -->
+	    <const type="resAttr" name="Identifier" value="[ID]|[Host]" />
+        <const type="resAttr" name="Title" value="[FullName]" />
+        <const type="resAttr" name="Description" value="[Summary]" />
+        <const type="resAttr" name="resLocation" value="[Access]"/>
+        <const type="resAttr" name="Rights" value="[Rights]" />       
+        <const type="resAttr" name="Relation" value="[Xlink]"/>
+		<const type="resAttr" name="Publisher" value="[Publisher]" />
+		<const type="resAttr" name="Creator" value="[Creator]" />
+		<const type="resAttr" name="Type" value="[DataType]"/>
+		<const type="resAttr" name="Format" value="[DataFormatType]"/>
+		<!-- dynamic keywords harvested from data -->
+		<const type="resAttr" name="Subject" value="[Keywords]" />
+		<!-- static keywords to supplement keywords harvested from data -->
+		<const type="resAttr" name="Subject" value="Coastal Marine Data" />
+		<const type="resAttr" name="Subject" value="Oceans" />
+		<const type="resAttr" name="Subject" value="Climate Change" />
+		<!-- OODT resource parameters -->
+		<const type="resAttr" name="resClass" value="data.dataSet" />
+		<const type="resAttr" name="resContext" value="Oceanography"/>
+		<const type="resAttr" name="resAggregation" value="dataSet"/>
+		
+		<!-- profile elements from DAS/NC_GLOBAL section -->
+		<const type="profElem" name="mission_name" value="[satellite]"/>
+		<const type="profElem" name="sensor" value="[sensor]"/>
+		<const type="profElem" name="source" value="[source]"/>
+		<const type="profElem" name="project" value="[project]"/>
+		<const type="profElem" name="processing_level" value="[processing_level]"/>
+		<!-- constant values -->
 		<const type="profElem" name="spatial_coverage" value="Global"/>
-		<const type="profElem" name="mission_name" value="Coastwatch"/>
+		<const type="profElem" name="institute" value="NOAA CoastWatch"/>
+		
+		<!-- constants required by ESGF harvesting process -->
+		<const type="profElem" name="master_id" value="[ID]|[Host]"/>
+		<const type="profElem" name="type" value="Dataset"/>
+		<const type="profElem" name="data_node" value="[Host]"/>
+		<const type="profElem" name="index_node" value="cmds-esg.jpl.nasa.gov"/>
+		
+		
 	</constants>
 
 </oodt:opendap>

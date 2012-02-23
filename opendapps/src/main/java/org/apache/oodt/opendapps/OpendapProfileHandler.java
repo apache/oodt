@@ -106,7 +106,7 @@ public class OpendapProfileHandler implements ProfileHandler {
           // wrap the profile generation in try-catch to avoid stopping the whole harvesting process in case an exception is thrown
           try {
 
-          	LOG.log(Level.INFO,"Connecting to opendapurl="+opendapUrl);
+          	LOG.log(Level.FINE,"Connecting to opendapurl="+opendapUrl);
   
             Profile profile = new Profile();
             DConnect dConn = null;
@@ -136,12 +136,13 @@ public class OpendapProfileHandler implements ProfileHandler {
             
             // debug: write out all metadata entries
             for (String key : datasetMet.getAllKeys()) {
-          	  LOG.log(Level.FINE, "Metadata key="+key+" value="+datasetMet.getMetadata(key));
+          	  LOG.log(Level.FINER, "Metadata key="+key+" value="+datasetMet.getMetadata(key));
             }
          
             // <resAttributes>
             profile.setResourceAttributes(ProfileUtils.getResourceAttributes(
                 this.conf, opendapUrl, dConn, datasetMet));
+            
             // <profAttributes>
             profile.setProfileAttributes(ProfileUtils
                 .getProfileAttributes(this.conf, datasetMet));
@@ -149,12 +150,13 @@ public class OpendapProfileHandler implements ProfileHandler {
             profile.getProfileElements().putAll(
                 ProfileUtils.getProfileElements(this.conf, dConn, datasetMet, profile));
             profiles.add(profile);
-            LOG.log(Level.INFO, "Added profile id="+profile.getProfileAttributes().getID());
+            LOG.log(Level.FINE, "Added profile id="+profile.getProfileAttributes().getID());
             
             
           } catch(Exception e) {
           	// in case of exception, don't harvest this dataset, but keep going
           	LOG.log(Level.WARNING,"Error while building profile for opendapurl="+opendapUrl); 
+          	LOG.log(Level.WARNING,e.getMessage());
           }
 
         }

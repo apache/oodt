@@ -78,7 +78,7 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
   public void getDataset(InvDataset dd, Object context) {
   	String url = this.datasetURL + dd.getCatalogUrl().split("#")[1];
     String id = dd.getID();    
-    LOG.log(Level.INFO, url + " is the computed access URL for this dataset");
+    LOG.log(Level.FINE, url + " is the computed access URL for this dataset");
     // look for an OpenDAP access URL, only extract metadata if it is found
     List<InvAccess> datasets = dd.getAccess();
     if (dd.getAccess() != null && dd.getAccess().size() > 0) {
@@ -88,7 +88,7 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
         InvService service = single.getService();
         // note: select the OpenDAP access URL based on THREDDS service type
         if (service.getServiceType()==ServiceType.OPENDAP) {
-          LOG.log(Level.INFO, "Found OpenDAP access URL: "+ single.getUrlPath());
+          LOG.log(Level.FINE, "Found OpenDAP access URL: "+ single.getUrlPath());
           String opendapurl = this.datasetURL + single.getUrlPath();
           // extract metadata from THREDDS catalog
           MetadataExtractor extractor = new ThreddsMetadataExtractor(dd);

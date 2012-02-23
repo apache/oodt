@@ -17,14 +17,15 @@
 
 package org.apache.oodt.opendapps.util;
 
-//JDK imports
 import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.ENUM_ELEMENT_TYPE;
 import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.PROF_ATTR_SPEC_TYPE;
 import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.PROF_ELEM_SPEC_TYPE;
 import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.RANGED_ELEMENT_TYPE;
 import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.RES_ATTR_SPEC_TYPE;
 
+//JDK imports
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
@@ -32,16 +33,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//OPENDAP imports
 import opendap.dap.BaseType;
 import opendap.dap.DArray;
 import opendap.dap.DConnect;
 import opendap.dap.DDS;
 import opendap.dap.DGrid;
 
+//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.opendapps.OpendapProfileElementExtractor;
@@ -66,6 +68,36 @@ import org.springframework.util.StringUtils;
  * 
  */
 public class ProfileUtils {
+	
+	static {
+		// Note: must override the CAS PathUtils delimiter otherwise every sentence is split at the ',' as different metadata fields.
+		// The delimiter must be a character that is not commonly used in the metadata values, 
+		// and that it does not a special regular expression character.
+		// Cannot use '#' as it is used in URL anchors, such as THREDDS urls.
+		// Cannot use '|' as it is used as multi-part separators in encoding of metadata fields.
+		PathUtils.DELIMITER = "&";
+	}
+	
+  // character separating multiple parts of the same metadata field,
+  // when more than one piece of information needs to be stored in one field
+  public final static String CHAR = "|";
+  
+  // HTTP mime types
+  public final static String MIME_TYPE_THREDDS = "application/xml+thredds";   
+  public final static String MIME_TYPE_NETCDF = "application/netcdf";
+  public final static String MIME_TYPE_GRIDFTP = "application/gridftp";
+  public final static String MIME_TYPE_FTP = "application/ftp";
+  public final static String MIME_TYPE_LAS = "application/las";   
+  public final static String MIME_TYPE_HTML = "text/html";
+  public final static String MIME_TYPE_GOOGLE_EARTH = "application/vnd.google-earth.kmz";
+  public final static String MIME_TYPE_HDF = "application/x-hdf";
+  public final static String MIME_TYPE_OPENDAP = "application/opendap";
+  public final static String MIME_TYPE_OPENDAP_DODS = "application/opendap-dods";
+  public final static String MIME_TYPE_OPENDAP_DAS = "application/opendap-das";
+  public final static String MIME_TYPE_OPENDAP_DDS = "application/opendap-dds";
+  public final static String MIME_TYPE_OPENDAP_HTML = "application/opendap-html";
+  public final static String MIME_TYPE_RSS = "application/rss+xml";
+
 
   private static final Logger LOG = Logger.getLogger(ProfileUtils.class
       .getName());
@@ -75,9 +107,11 @@ public class ProfileUtils {
     ResourceAttributes resAttr = new ResourceAttributes();
     for (ConstantSpec spec : conf.getConstSpecs()) {
       if (spec.getType().equals(RES_ATTR_SPEC_TYPE)) {
-        try {
-          setResourceAttributes(resAttr, spec.getName(), PathUtils
-              .replaceEnvVariables(spec.getValue(), datasetMet, true));
+        try {        	
+        	String value = PathUtils.replaceEnvVariables(spec.getValue(), datasetMet, true);  
+        	if (StringUtils.hasText(value)) {
+        		setResourceAttributes(resAttr, spec.getName(), value);
+        	}
         } catch (Exception e) {
           e.printStackTrace();
           LOG.log(Level.WARNING, "Error setting field: [" + spec.getName()
@@ -86,19 +120,6 @@ public class ProfileUtils {
       }
     }
 
-    // set the identifier
-    if (resAttr.getIdentifier() == null
-        || (resAttr.getIdentifier() != null && (resAttr.getIdentifier().equals(
-            "") || resAttr.getIdentifier().equals("UNKNOWN")))) {
-      resAttr.setIdentifier(UUID.randomUUID().toString());
-    }
-
-    // set res location
-    if (resAttr.getResLocations() == null
-        || (resAttr.getResLocations() != null && resAttr.getResLocations()
-            .size() == 0)) {
-      resAttr.getResLocations().add(opendapUrl);
-    }
 
     return resAttr;
   }
@@ -134,9 +155,9 @@ public class ProfileUtils {
       		BaseType variable = (BaseType)variables.nextElement();
       		String varName = variable.getName();
       		if (variable instanceof DArray) {
-      			LOG.log(Level.INFO, "Extracting Darray variable: "+varName);
+      			LOG.log(Level.FINE, "Extracting Darray variable: "+varName);
       		} else if (variable instanceof DGrid) {
-      			LOG.log(Level.INFO, "Extracting Dgrid variable: "+varName);
+      			LOG.log(Level.FINE, "Extracting Dgrid variable: "+varName);
       		}     		
 
       		RewriteSpec spec = getProfileElementSpec(varName, conf);
@@ -162,38 +183,53 @@ public class ProfileUtils {
       throw e;
     }
 
+    // add profile elements from <datasetMetadata> specification
     if (datasetMet != null) {
       for (DatasetMetElem datasetSpec : conf.getDatasetMetSpecs()) {
-        EnumeratedProfileElement epe = getEnumeratedProfileElement(datasetSpec
-            .getProfileElementName(), profile);
-        List<String> epeVals = datasetMet
-            .getAllMetadata(datasetSpec.getValue());
-        if (epeVals != null && epeVals.size() > 0)
-          epe.getValues().addAll(epeVals);
-        profElements.put(datasetSpec.getProfileElementName(), epe);
+      	// retrieve values from metadata container
+        List<String> values = datasetMet.getAllMetadata(datasetSpec.getValue());
+      	addValuesToEnumeratedProfileElement(datasetSpec.getProfileElementName(), values, profile, profElements);
       }
     }
     
-    // now add const prof elems
+    // add profile elements from <constants> specification
     for (ConstantSpec spec : conf.getConstSpecs()) {
       if (spec.getType().equals(PROF_ELEM_SPEC_TYPE)) {
-        try {
-          EnumeratedProfileElement epe = getEnumeratedProfileElement(spec.getName(), profile);  
-          String replaceVal = PathUtils.replaceEnvVariables(spec.getValue(), datasetMet);
-          List<String> epeVals = Arrays.asList(replaceVal.split(PathUtils.DELIMITER));
-          if (epeVals != null && epeVals.size() > 0)
-            epe.getValues().addAll(epeVals);
-          profElements.put(spec.getName(), epe);
-        } catch (Exception e) {
-          e.printStackTrace();
-          LOG.log(Level.WARNING, "Error setting field: [" + spec.getName()
-              + "] in resource attributes: Message: " + e.getMessage());
-        }
+      	// retrieve value from XML configuration file, replace with value from metadata container if required,
+      	// split according to delimiter
+        String replaceVal = PathUtils.replaceEnvVariables(spec.getValue(), datasetMet);
+        List<String> values = Arrays.asList(replaceVal.split(PathUtils.DELIMITER));
+      	addValuesToEnumeratedProfileElement(spec.getName(), values, profile, profElements);
       }
     }
 
     return profElements;
 
+  }
+  
+  /**
+   * Method to add one or more values to an EnumeratedProfileElement, creating the element if not existing already.
+   * The supplied values are added only if valid.
+   */
+  private static void addValuesToEnumeratedProfileElement(final String name, final List<String> values, Profile profile, Map<String, ProfileElement> profElements) {
+  	
+  	// try retrieve existing profile element
+  	ProfileElement epe = profElements.get(name);
+  	// or create a new one if not found
+  	if (epe==null) {
+  		 epe = new EnumeratedProfileElement(profile);
+  	   epe.setName(name);
+  	} 
+  	if (values!=null) {
+      for (String value : values) {
+      	if (StringUtils.hasText(value) && !value.equalsIgnoreCase("null")) {
+      		epe.getValues().add(value);
+      	}
+      }
+  	}
+    // only save profile elements with one or more values
+    if (epe.getValues().size()>0) profElements.put(name, epe);
+  	
   }
 
   private static void setProfileAttributesProperty(ProfileAttributes attr,
@@ -222,53 +258,47 @@ public class ProfileUtils {
 
   private static void setResourceAttributes(ResourceAttributes resAttr,
       String propName, String value) {
-    
-    if (propName.equals("Identifier")) {
-      resAttr.setIdentifier(value);
-    } else if (propName.equals("Title")) {
-      resAttr.setTitle(value);
-    } else if (propName.equals("Format")) {
-      resAttr.getFormats().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("Description")) {
-      resAttr.setDescription(value);
-    } else if (propName.equals("Creator")) {
-      resAttr.getCreators().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("Subject")) {
-      resAttr.getSubjects().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("Publisher")) {
-      resAttr.getPublishers().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("Contributor")) {
-      resAttr.getContributors().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("Date")) {
-      resAttr.getDates().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("Type")) {
-      resAttr.getTypes().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("Source")) {
-      resAttr.getSources().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("Language")) {
-      resAttr.getLanguages().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("Relation")) {
-      resAttr.getRelations().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("Coverage")) {
-      resAttr.getCoverages().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("Rights")) {
-      resAttr.getRights().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("resContext")) {
-      resAttr.getResContexts().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
-    } else if (propName.equals("resAggregation")) {
-      resAttr.setResAggregation(value);
-    } else if (propName.equals("resClass")) {
-      resAttr.setResClass(value);
-    } else if (propName.equals("resLocation")) {
-      resAttr.getResLocations().addAll(Arrays.asList(value.split(PathUtils.DELIMITER)));
+    if (StringUtils.hasText(value) && !value.equalsIgnoreCase("null")) {
+      if (propName.equals("Identifier")) {
+        resAttr.setIdentifier(value);
+      } else if (propName.equals("Title")) {
+        resAttr.setTitle(value);
+      } else if (propName.equals("Format")) {
+        resAttr.getFormats().addAll( parseValues(value) );
+      } else if (propName.equals("Description")) {
+        resAttr.setDescription(value);
+      } else if (propName.equals("Creator")) {
+        resAttr.getCreators().addAll( parseValues(value) );
+      } else if (propName.equals("Subject")) {
+        resAttr.getSubjects().addAll( parseValues(value) );
+      } else if (propName.equals("Publisher")) {
+        resAttr.getPublishers().addAll( parseValues(value) );
+      } else if (propName.equals("Contributor")) {
+        resAttr.getContributors().addAll( parseValues(value) );
+      } else if (propName.equals("Date")) {
+        resAttr.getDates().addAll( parseValues(value) );
+      } else if (propName.equals("Type")) {
+        resAttr.getTypes().addAll( parseValues(value) );
+      } else if (propName.equals("Source")) {
+        resAttr.getSources().addAll( parseValues(value) );
+      } else if (propName.equals("Language")) {
+        resAttr.getLanguages().addAll( parseValues(value) );
+      } else if (propName.equals("Relation")) {
+        resAttr.getRelations().addAll( parseValues(value) );
+      } else if (propName.equals("Coverage")) {
+        resAttr.getCoverages().addAll( parseValues(value) );
+      } else if (propName.equals("Rights")) {
+        resAttr.getRights().addAll( parseValues(value) );
+      } else if (propName.equals("resContext")) {
+        resAttr.getResContexts().addAll( parseValues(value) );
+      } else if (propName.equals("resAggregation")) {
+        resAttr.setResAggregation(value);
+      } else if (propName.equals("resClass")) {
+        resAttr.setResClass(value);
+      } else if (propName.equals("resLocation")) {
+        resAttr.getResLocations().addAll( parseValues(value) );
+      }
     }
-  }
-
-  private static EnumeratedProfileElement getEnumeratedProfileElement(
-      String name, Profile profile) {
-    EnumeratedProfileElement pe = new EnumeratedProfileElement(profile);
-    pe.setName(name);
-    return pe;
   }
   
   /**
@@ -286,14 +316,35 @@ public class ProfileUtils {
   }
   
   /**
-   * Method to add a (name,value) pair to the metadata container if the value is not null or empty.
+   * Utility method to split a metadata field value according to the known delimiter.
+   * @param value
+   * @return
+   */
+  public static List<String> parseValues(String value) {
+  	List<String> values = new ArrayList<String>();
+  	for (String val : value.split(PathUtils.DELIMITER)) {
+  		if (StringUtils.hasText(val) && !val.equalsIgnoreCase("null")) {
+  			values.add(val);
+  		}
+  	}
+  	
+  	return values;
+  }
+  
+  /**
+   * Method to add a (name,value) pair to the metadata container if the value is not null or empty,
+   * and doesn't exist already.
    * @param met
    * @param field
    * @param value
    */
   public static void addIfNotNull(Metadata met, String key, String value) {
-  	if (StringUtils.hasText(value)) {
-      met.addMetadata(key, value);
+  	// do not add a null value
+  	if (StringUtils.hasText(value) && !value.equalsIgnoreCase("null")) {
+  		// do not add the same value twice for the same metadata key
+  		if (!met.containsKey(key) || !met.getAllMetadata(key).contains(value)) {
+  			met.addMetadata(key, value);
+  		}
     }
   }
   
@@ -307,7 +358,7 @@ public class ProfileUtils {
 		if (StringUtils.hasText(key) && !metadata.containsKey(key)) {
 			while (values.hasMoreElements()) {
 				String value = values.nextElement();
-				if (StringUtils.hasText(value)) {
+				if (StringUtils.hasText(value) && !value.equalsIgnoreCase("null")) {
 					metadata.addMetadata(key,value);
 				}
 			}

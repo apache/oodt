@@ -30,6 +30,7 @@ import opendap.dap.DConnect;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.opendapps.config.OpendapProfileMetKeys;
 import org.apache.oodt.opendapps.util.ProfileUtils;
 
 /**
@@ -42,8 +43,10 @@ import org.apache.oodt.opendapps.util.ProfileUtils;
  */
 public class DasMetadataExtractor implements MetadataExtractor {
 
-  // prefix for all NetCDF global attributes
+  // constants from NetCDF metadata convention
   public static final String NC_GLOBAL = "NC_GLOBAL";
+  public static final String LONG_NAME = "long_name";
+  public static final String STANDARD_NAME = "standard_name";
 
   // NetCDF data types
   public static final int INT32_TYPE = 6;
@@ -81,25 +84,36 @@ public class DasMetadataExtractor implements MetadataExtractor {
       while (names.hasMoreElements()) {
         String attName = (String) names.nextElement();
         LOG.log(Level.FINE, "Extracting DAS attribute: " + attName);
-
         AttributeTable at = das.getAttributeTable(attName);
         Enumeration e = at.getNames();
-        while (e.hasMoreElements()) {
-          String key = (String) e.nextElement();
-          Attribute att = at.getAttribute(key);
-          LOG.log(Level.FINER,
-              "\t" + att.getName() + " value=" + att.getValueAt(0) + "type="
-                  + att.getType());
-
-          // store NetCDF global attributes
-          if (attName.equals(NC_GLOBAL)) {
-            if (att.getType() == STRING_TYPE) {
-              ProfileUtils.addIfNotExisting(metadata, key, att.getValues());
-            }
-          }
+        
+        // NetCDF global attributes
+        // store attribute name, all values for ALL attributes (strings and numerics)
+        if (attName.equals(NC_GLOBAL)) {
+        	while (e.hasMoreElements()) {
+        		String key = (String) e.nextElement();
+        		Attribute att = at.getAttribute(key);
+        		ProfileUtils.addIfNotExisting(metadata, key, att.getValues());
+        	}
+          
+        // NetCDF variables
+        } else {
+        	// store variable name
+        	ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.VARIABLES, attName);
+        	// store "standard_name", "long_name"
+        	while (e.hasMoreElements()) {
+        		String key = (String) e.nextElement();
+        		Attribute att = at.getAttribute(key);
+        		if (key.equalsIgnoreCase(STANDARD_NAME)) {
+        			ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.CF_STANDARD_NAMES, att.getValueAt(0));
+        		} else if (key.equalsIgnoreCase(LONG_NAME)) {
+        			ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.VARIABLES_LONG_NAMES, att.getValueAt(0));
+        		}       		
+        	}
         }
 
       }
+      
     } catch (Exception e) {
       LOG.log(Level.WARNING, "Error parsing DAS metadata: " + e.getMessage());
     }

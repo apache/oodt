@@ -103,7 +103,7 @@ public class DatasetExtractor {
 
     };
 
-    LOG.log(Level.INFO, "catalogURL: " + this.mainCatalogURL);
+    LOG.log(Level.FINE, "catalogURL: " + this.mainCatalogURL);
     // Note: look for all datasets, that have either a urlPath="" attribute, or a <access> subelement
     CatalogCrawler crawler = new CatalogCrawler(CatalogCrawler.USE_ALL, false, listener);
     crawler.crawl(this.mainCatalogURL, ignore, System.out, this);
@@ -112,7 +112,7 @@ public class DatasetExtractor {
   }
 
   private List<String> getFindQuery() {
-    LOG.log(Level.INFO, "PFunction: findquery selected: orig query: [" + this.q
+    LOG.log(Level.FINE, "PFunction: findquery selected: orig query: [" + this.q
         + "]");
     String queryExpression = "";
     Pattern parameterPattern = Pattern.compile("PParameter=\"(.+?)\"");
@@ -149,7 +149,7 @@ public class DatasetExtractor {
   }
 
   private List<String> getFindSome() {
-    LOG.log(Level.INFO, "PFunction: findsome selected");
+    LOG.log(Level.FINE, "PFunction: findsome selected");
     String urlsString = "";
     Pattern parameterPattern = Pattern.compile("PParameter=\"(.+?)\"");
     Matcher urlsMatch = parameterPattern.matcher(this.q);
@@ -157,7 +157,7 @@ public class DatasetExtractor {
       urlsString = urlsMatch.group(1);
     }
 
-    LOG.log(Level.INFO, "PParameter: [" + urlsString
+    LOG.log(Level.FINE, "PParameter: [" + urlsString
         + "] parsed from original string query: [" + this.q + "]");
 
     List<String> openDapUrls = new ArrayList<String>();
@@ -167,7 +167,7 @@ public class DatasetExtractor {
       openDapUrls.add(tokens.nextToken());
     }
 
-    LOG.log(Level.INFO, "OPeNDAP urls: [" + openDapUrls + "]");
+    LOG.log(Level.FINE, "OPeNDAP urls: [" + openDapUrls + "]");
     return openDapUrls;
   }
 

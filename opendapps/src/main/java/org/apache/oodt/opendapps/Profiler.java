@@ -21,15 +21,15 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 //OODT imports
 import org.apache.commons.io.FileUtils;
+import org.apache.oodt.opendapps.util.ProfileChecker;
 import org.apache.oodt.opendapps.util.ProfileSerializer;
 import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.handlers.ProfileHandler;
 import org.apache.oodt.xmlquery.XMLQuery;
+import org.xml.sax.SAXException;
 
 /**
  * Command line class to drive the creation of OODT profiles from THREDDS
@@ -77,14 +77,21 @@ public class Profiler {
     XMLQuery xmlQuery = Profiler.buildXMLQuery(configFile);
     @SuppressWarnings(value = "unchecked")
     final List<Profile> profiles = profileHandler.findProfiles(xmlQuery);
+    
+    // check profiles
+    for (final Profile profile : profiles) {
+    	final StringBuilder sb = new StringBuilder();
+    	boolean ok = ProfileChecker.check(profile, sb);
+    	// print out the profile summary for quick review by the publisher
+    	System.out.println(sb.toString());
+    	if (!ok) {
+    		LOG.log(Level.SEVERE, "ERROR: invalid profile:"+profile.getResourceAttributes().getIdentifier());
+    	} 	
+    }
 
     // serialize profiles to XML
-    final Document doc = Profile.createProfileDocument();
-    for (final Profile profile : profiles) {
-      profile.toXML(doc);
-    }
     String xml = ProfileSerializer.toXML(profiles);
-    LOG.log(Level.INFO, xml);
+    LOG.log(Level.FINE, xml);
 
     // write XML to disk
     if (outputDir != null) {

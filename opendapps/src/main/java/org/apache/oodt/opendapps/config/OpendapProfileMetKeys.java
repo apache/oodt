@@ -14,41 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.oodt.opendapps.extractors;
-
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
+package org.apache.oodt.opendapps.config;
 
 /**
- * Implementation of {@link MetadataExtractor} that parses an NcML XML document.
- * Currently this class is simply a stub that doesn't do anything.
+ * Interface containing names for the metadata keys written to an OpenDAP profile document.
  * 
  * @author Luca Cinquini
- * 
+ *
  */
-public class NcmlMetadataExtractor implements MetadataExtractor {
-
-  private final String ncmlUrl;
-
-  private static Logger LOG = Logger.getLogger(NcmlMetadataExtractor.class
-      .getName());
-
-  public NcmlMetadataExtractor(String ncmlUrl) {
-    this.ncmlUrl = ncmlUrl;
-  }
-
-  /**
-   * Stub implementation of interface method.
-   */
-  public void extract(Metadata metadata) {
-
-    LOG.log(Level.FINE, "Parsing NcML metadata from: " + ncmlUrl);
-
-  }
+public interface OpendapProfileMetKeys {
+	
+	 public static final String VARIABLES = "Variables";
+	 
+	 public static final String VARIABLES_LONG_NAMES = "Variable Long Names";
+	 
+	 public static final String CF_STANDARD_NAMES = "CF Standard Names";
+	 
 
 }
