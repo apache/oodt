@@ -29,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 
 //OODT imports
 import org.apache.oodt.cas.cli.CmdLineUtility;
+import org.apache.oodt.cas.cli.util.OptionPropertyRegister;
 import org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
@@ -70,6 +71,11 @@ public class TestFileManagerCli extends TestCase {
       UseMockClientCmdLineActionStore actionStore = new UseMockClientCmdLineActionStore();
       client = actionStore.getClient();
       cmdLineUtility.setActionStore(actionStore);
+   }
+
+   @Override
+   public void tearDown() throws Exception {
+      OptionPropertyRegister.clearRegister();
    }
 
    public void testAddProductType() throws MalformedURLException,
@@ -307,6 +313,9 @@ public class TestFileManagerCli extends TestCase {
       cmdLineUtility
             .run(("--url http://localhost:9000 --operation --dumpMetadata"
                   + " --productId " + productId).split(" "));
+
+      OptionPropertyRegister.clearRegister();
+
       MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
       assertEquals("getMetadata", methodCallDetails.getMethodName());
       assertEquals(productId,
@@ -330,6 +339,8 @@ public class TestFileManagerCli extends TestCase {
       assertEquals("TestProductId",
             ((TermQueryCriteria) ((Query) methodCallDetails.getArgs().get(0))
                   .getCriteria().get(0)).getValue());
+
+      OptionPropertyRegister.clearRegister();
 
       String reducedMetadataKeys = "ProductId ProductType";
       String outputFormat = "$ProductId";

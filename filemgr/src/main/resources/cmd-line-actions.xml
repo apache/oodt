@@ -21,64 +21,64 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-	<bean id="AddProductType" class="org.apache.oodt.cas.filemgr.cli.action.AddProductTypeCliAction">
+	<bean id="addProductType" class="org.apache.oodt.cas.filemgr.cli.action.AddProductTypeCliAction">
 		<property name="description" value="Adds a ProductType to list of supported ProductTypes" />
 	</bean>
-  <bean id="DeleteProductByName" class="org.apache.oodt.cas.filemgr.cli.action.DeleteProductByNameCliAction">
+  <bean id="deleteProductByName" class="org.apache.oodt.cas.filemgr.cli.action.DeleteProductByNameCliAction">
     <property name="description" value="Delete Product by name" />
   </bean>
-  <bean id="DeleteProductById" class="org.apache.oodt.cas.filemgr.cli.action.DeleteProductByIdCliAction">
+  <bean id="deleteProductById" class="org.apache.oodt.cas.filemgr.cli.action.DeleteProductByIdCliAction">
     <property name="description" value="Delete Product by ID" />
   </bean>
-  <bean id="DumpMetadata" class="org.apache.oodt.cas.filemgr.cli.action.DumpMetadataCliAction">
+  <bean id="dumpMetadata" class="org.apache.oodt.cas.filemgr.cli.action.DumpMetadataCliAction">
     <property name="description" value="Dumps Product Metadata out to XML" />
   </bean>
-	<bean id="GetCurrentTransfer" class="org.apache.oodt.cas.filemgr.cli.action.GetCurrentTransferCliAction">
+	<bean id="getCurrentTransfer" class="org.apache.oodt.cas.filemgr.cli.action.GetCurrentTransferCliAction">
     <property name="description" value="Gets the status of the current Product file transfer" />
   </bean>
-  <bean id="GetCurrentTransfers" class="org.apache.oodt.cas.filemgr.cli.action.GetCurrentTransfersCliAction">
+  <bean id="getCurrentTransfers" class="org.apache.oodt.cas.filemgr.cli.action.GetCurrentTransfersCliAction">
     <property name="description" value="Gets the status of the current Product file transfers" />
   </bean>
-  <bean id="GetFilePercentTransferred" class="org.apache.oodt.cas.filemgr.cli.action.GetFilePercentTransferredCliAction">
+  <bean id="getFilePercentTransferred" class="org.apache.oodt.cas.filemgr.cli.action.GetFilePercentTransferredCliAction">
     <property name="description" value="Gets the percent amount transferred of given file" />
   </bean>
-  <bean id="GetFirstPage" class="org.apache.oodt.cas.filemgr.cli.action.GetFirstPageCliAction">
+  <bean id="getFirstPage" class="org.apache.oodt.cas.filemgr.cli.action.GetFirstPageCliAction">
     <property name="description" value="Gets first page of Products of given ProductType" />
   </bean>
-  <bean id="GetLastPage" class="org.apache.oodt.cas.filemgr.cli.action.GetLastPageCliAction">
+  <bean id="getLastPage" class="org.apache.oodt.cas.filemgr.cli.action.GetLastPageCliAction">
     <property name="description" value="Gets last page of Products of given ProductType" />
   </bean>
-  <bean id="GetNextPage" class="org.apache.oodt.cas.filemgr.cli.action.GetNextPageCliAction">
+  <bean id="getNextPage" class="org.apache.oodt.cas.filemgr.cli.action.GetNextPageCliAction">
     <property name="description" value="Gets next page of Products of given ProductType" />
   </bean>
-  <bean id="GetNumProducts" class="org.apache.oodt.cas.filemgr.cli.action.GetNumProductsCliAction">
+  <bean id="getNumProducts" class="org.apache.oodt.cas.filemgr.cli.action.GetNumProductsCliAction">
     <property name="description" value="Gets number of Products ingested for a given ProductType" />
   </bean>
-  <bean id="GetPrevPage" class="org.apache.oodt.cas.filemgr.cli.action.GetPrevPageCliAction">
+  <bean id="getPrevPage" class="org.apache.oodt.cas.filemgr.cli.action.GetPrevPageCliAction">
     <property name="description" value="Gets prev page of Products of given ProductType" />
   </bean>
-  <bean id="GetProductByName" class="org.apache.oodt.cas.filemgr.cli.action.GetProductByNameCliAction">
+  <bean id="getProductByName" class="org.apache.oodt.cas.filemgr.cli.action.GetProductByNameCliAction">
     <property name="description" value="Get Product info by name" />
   </bean>
-  <bean id="GetProductById" class="org.apache.oodt.cas.filemgr.cli.action.GetProductByIdCliAction">
+  <bean id="getProductById" class="org.apache.oodt.cas.filemgr.cli.action.GetProductByIdCliAction">
     <property name="description" value="Gets Product info by ID" />
   </bean>
-  <bean id="GetProductPercentTransferred" class="org.apache.oodt.cas.filemgr.cli.action.GetProductPercentTransferredCliAction">
+  <bean id="getProductPercentTransferred" class="org.apache.oodt.cas.filemgr.cli.action.GetProductPercentTransferredCliAction">
     <property name="description" value="Gets percent amount transferred of a Products data files" />
   </bean>
-  <bean id="GetProductTypeByName" class="org.apache.oodt.cas.filemgr.cli.action.GetProductTypeByNameCliAction">
+  <bean id="getProductTypeByName" class="org.apache.oodt.cas.filemgr.cli.action.GetProductTypeByNameCliAction">
     <property name="description" value="Gets a ProductType by its name" />
   </bean>
-  <bean id="HasProduct" class="org.apache.oodt.cas.filemgr.cli.action.HasProductCliAction">
+  <bean id="hasProduct" class="org.apache.oodt.cas.filemgr.cli.action.HasProductCliAction">
     <property name="description" value="Checks if Product with given name has been ingested" />
   </bean>
-  <bean id="IngestProduct" class="org.apache.oodt.cas.filemgr.cli.action.IngestProductCliAction">
+  <bean id="ingestProduct" class="org.apache.oodt.cas.filemgr.cli.action.IngestProductCliAction">
     <property name="description" value="Ingests a Product" />
   </bean>
-  <bean id="LuceneQuery" class="org.apache.oodt.cas.filemgr.cli.action.LuceneQueryCliAction">
+  <bean id="luceneQuery" class="org.apache.oodt.cas.filemgr.cli.action.LuceneQueryCliAction">
     <property name="description" value="Queries by parsing an Lucene-like query into a FileManager Query" />
   </bean>
-  <bean id="SqlQuery" class="org.apache.oodt.cas.filemgr.cli.action.SqlQueryCliAction">
+  <bean id="sqlQuery" class="org.apache.oodt.cas.filemgr.cli.action.SqlQueryCliAction">
     <property name="description" value="Queries by parsing an SQL-like query into a FileManager Query" />
     <property name="detailedDescription">
       <value>

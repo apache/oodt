@@ -38,7 +38,7 @@ public abstract class FileManagerCliAction extends CmdLineAction {
    private XmlRpcFileManagerClient client;
 
    public String getUrl() {
-      return System.getProperty("org.apache.oodt.cas.workflow.url");
+      return System.getProperty("org.apache.oodt.cas.filemgr.url");
    }
 
    protected XmlRpcFileManagerClient getClient()

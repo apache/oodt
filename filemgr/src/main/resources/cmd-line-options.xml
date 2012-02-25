@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
-	license agreements. See the NOTICE file distributed with this work for additional 
-	information regarding copyright ownership. The ASF licenses this file to 
-	You under the Apache License, Version 2.0 (the "License"); you may not use 
-	this file except in compliance with the License. You may obtain a copy of 
-	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
-	by applicable law or agreed to in writing, software distributed under the 
-	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
-	OF ANY KIND, either express or implied. See the License for the specific 
-	language governing permissions and limitations under the License. Author: 
-	bfoster (Brian Foster) -->
+<!-- 
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author: bfoster (Brian Foster)
+-->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
@@ -17,7 +24,7 @@
 	<bean id="url" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
 		<property name="shortOption" value="u" />
 		<property name="longOption" value="url" />
-		<property name="description" value="Workflow Manager URL" />
+		<property name="description" value="File Manager URL" />
 		<property name="hasArgs" value="true" />
 		<property name="argsDescription" value="url" />
 		<property name="required" value="true" />
@@ -26,7 +33,7 @@
 				class="org.apache.oodt.cas.cli.option.handler.SetJavaPropertiesHandler">
 				<property name="propertyNames">
 					<list>
-						<value>org.apache.oodt.cas.workflow.url</value>
+						<value>org.apache.oodt.cas.filemgr.url</value>
 					</list>
 				</property>
 			</bean>
@@ -91,17 +98,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="addPT" />
 		<property name="longOption" value="addProductType" />
-		<property name="description" value="Triggers AddProductType Action" />
+		<property name="description" value="Triggers addProductType Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>AddProductType</value>
+				<value>addProductType</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="AddProductType" p:relation="REQUIRED" />
+					p:actionName="addProductType" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -115,7 +122,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="AddProductType" p:relation="REQUIRED" />
+          p:actionName="addProductType" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -123,7 +130,7 @@
         <property name="applyToActions">
           <list>
             <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-              p:actionName="AddProductType" p:methodName="setProductTypeName" />
+              p:actionName="addProductType" p:methodName="setProductTypeName" />
           </list>
         </property>
       </bean>
@@ -139,7 +146,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="AddProductType" p:relation="REQUIRED" />
+          p:actionName="addProductType" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -147,7 +154,7 @@
         <property name="applyToActions">
           <list>
             <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-              p:actionName="AddProductType" p:methodName="setProductTypeDescription" />
+              p:actionName="addProductType" p:methodName="setProductTypeDescription" />
           </list>
         </property>
       </bean>
@@ -163,7 +170,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="AddProductType" p:relation="REQUIRED" />
+          p:actionName="addProductType" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -171,7 +178,7 @@
         <property name="applyToActions">
           <list>
             <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-              p:actionName="AddProductType" p:methodName="setFileRepositoryPath" />
+              p:actionName="addProductType" p:methodName="setFileRepositoryPath" />
           </list>
         </property>
       </bean>
@@ -187,7 +194,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="AddProductType" p:relation="REQUIRED" />
+          p:actionName="addProductType" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -195,7 +202,7 @@
         <property name="applyToActions">
           <list>
             <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-              p:actionName="AddProductType" p:methodName="setVersioner" />
+              p:actionName="addProductType" p:methodName="setVersioner" />
           </list>
         </property>
       </bean>
@@ -207,17 +214,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="ingest" />
     <property name="longOption" value="ingestProduct" />
-    <property name="description" value="Triggers IngestProduct Action" />
+    <property name="description" value="Triggers ingestProduct Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>IngestProduct</value>
+        <value>ingestProduct</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="IngestProduct" p:relation="REQUIRED" />
+          p:actionName="ingestProduct" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -231,7 +238,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="IngestProduct" p:relation="REQUIRED" />
+          p:actionName="ingestProduct" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -239,7 +246,7 @@
         <property name="applyToActions">
           <list>
             <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-              p:actionName="IngestProduct" p:methodName="setProductStructure" />
+              p:actionName="ingestProduct" p:methodName="setProductStructure" />
           </list>
         </property>
       </bean>
@@ -255,7 +262,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="IngestProduct" p:relation="REQUIRED" />
+          p:actionName="ingestProduct" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -271,7 +278,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="IngestProduct" p:relation="OPTIONAL" />
+          p:actionName="ingestProduct" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="subOptions">
@@ -292,7 +299,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="IngestProduct" p:relation="REQUIRED" />
+          p:actionName="ingestProduct" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -300,7 +307,7 @@
         <property name="applyToActions">
           <list>
             <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-              p:actionName="IngestProduct" p:methodName="setDataTransferer" />
+              p:actionName="ingestProduct" p:methodName="setDataTransferer" />
           </list>
         </property>
       </bean>
@@ -317,7 +324,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="IngestProduct" p:relation="REQUIRED" />
+          p:actionName="ingestProduct" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -325,7 +332,7 @@
         <property name="applyToActions">
           <list>
             <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-              p:actionName="IngestProduct" p:methodName="setReferences" />
+              p:actionName="ingestProduct" p:methodName="setReferences" />
           </list>
         </property>
       </bean>
@@ -337,17 +344,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="product" />
     <property name="longOption" value="hasProduct" />
-    <property name="description" value="Triggers HasProduct Action" />
+    <property name="description" value="Triggers hasProduct Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>HasProduct</value>
+        <value>hasProduct</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="HasProduct" p:relation="REQUIRED" />
+          p:actionName="hasProduct" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -357,17 +364,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="ptbyn" />
     <property name="longOption" value="getProductTypeByName" />
-    <property name="description" value="Triggers GetProductTypeByName Action" />
+    <property name="description" value="Triggers getProductTypeByName Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetProductTypeByName</value>
+        <value>getProductTypeByName</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetProductTypeByName" p:relation="REQUIRED" />
+          p:actionName="getProductTypeByName" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -377,17 +384,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="num" />
     <property name="longOption" value="getNumProducts" />
-    <property name="description" value="Triggers GetNumProducts Action" />
+    <property name="description" value="Triggers getNumProducts Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetNumProducts</value>
+        <value>getNumProducts</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetNumProducts" p:relation="REQUIRED" />
+          p:actionName="getNumProducts" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -397,17 +404,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="page1" />
     <property name="longOption" value="getFirstPage" />
-    <property name="description" value="Triggers GetFirstPage Action" />
+    <property name="description" value="Triggers getFirstPage Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetFirstPage</value>
+        <value>getFirstPage</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetFirstPage" p:relation="REQUIRED" />
+          p:actionName="getFirstPage" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -417,17 +424,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="next" />
     <property name="longOption" value="getNextPage" />
-    <property name="description" value="Triggers GetNextPage Action" />
+    <property name="description" value="Triggers getNextPage Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetNextPage</value>
+        <value>getNextPage</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetNextPage" p:relation="REQUIRED" />
+          p:actionName="getNextPage" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -437,17 +444,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="prev" />
     <property name="longOption" value="getPrevPage" />
-    <property name="description" value="Triggers GetPrevPage Action" />
+    <property name="description" value="Triggers getPrevPage Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetPrevPage</value>
+        <value>getPrevPage</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetPrevPage" p:relation="REQUIRED" />
+          p:actionName="getPrevPage" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -457,17 +464,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="last" />
     <property name="longOption" value="getLastPage" />
-    <property name="description" value="Triggers GetLastPage Action" />
+    <property name="description" value="Triggers getLastPage Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetLastPage</value>
+        <value>getLastPage</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetLastPage" p:relation="REQUIRED" />
+          p:actionName="getLastPage" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -477,17 +484,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="curTran" />
     <property name="longOption" value="getCurrentTransfer" />
-    <property name="description" value="Triggers GetCurrentTransfer Action" />
+    <property name="description" value="Triggers getCurrentTransfer Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetCurrentTransfer</value>
+        <value>getCurrentTransfer</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetCurrentTransfer" p:relation="REQUIRED" />
+          p:actionName="getCurrentTransfer" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -497,17 +504,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="curTrans" />
     <property name="longOption" value="getCurrentTransfers" />
-    <property name="description" value="Triggers GetCurrentTransfers Action" />
+    <property name="description" value="Triggers getCurrentTransfers Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetCurrentTransfers</value>
+        <value>getCurrentTransfers</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetCurrentTransfers" p:relation="REQUIRED" />
+          p:actionName="getCurrentTransfers" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -517,17 +524,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="pctTrans" />
     <property name="longOption" value="getProductPctTransferred" />
-    <property name="description" value="Triggers GetProductPercentTransferred Action" />
+    <property name="description" value="Triggers getProductPercentTransferred Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetProductPercentTransferred</value>
+        <value>getProductPercentTransferred</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetProductPercentTransferred" p:relation="REQUIRED" />
+          p:actionName="getProductPercentTransferred" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -537,17 +544,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="filePctTrans" />
     <property name="longOption" value="getFilePctTransferred" />
-    <property name="description" value="Triggers GetFilePercentTransferred Action" />
+    <property name="description" value="Triggers getFilePercentTransferred Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetFilePercentTransferred</value>
+        <value>getFilePercentTransferred</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetFilePercentTransferred" p:relation="REQUIRED" />
+          p:actionName="getFilePercentTransferred" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -561,7 +568,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetFilePercentTransferred" p:relation="REQUIRED" />
+          p:actionName="getFilePercentTransferred" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -574,17 +581,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="sql" />
     <property name="longOption" value="sqlQuery" />
-    <property name="description" value="Triggers SqlQuery Action" />
+    <property name="description" value="Triggers sqlQuery Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>SqlQuery</value>
+        <value>sqlQuery</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="REQUIRED" />
+          p:actionName="sqlQuery" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -596,17 +603,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="pbyid" />
     <property name="longOption" value="getProductById" />
-    <property name="description" value="Triggers GetProductById Action" />
+    <property name="description" value="Triggers getProductById Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetProductById</value>
+        <value>getProductById</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetProductById" p:relation="REQUIRED" />
+          p:actionName="getProductById" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -616,17 +623,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="pbyn" />
     <property name="longOption" value="getProductByName" />
-    <property name="description" value="Triggers GetProductByName Action" />
+    <property name="description" value="Triggers getProductByName Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetProductByName</value>
+        <value>getProductByName</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetProductByName" p:relation="REQUIRED" />
+          p:actionName="getProductByName" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -636,17 +643,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="dbyid" />
     <property name="longOption" value="deleteProductById" />
-    <property name="description" value="Triggers DeleteProductById Action" />
+    <property name="description" value="Triggers deleteProductById Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>DeleteProductById</value>
+        <value>deleteProductById</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="DeleteProductById" p:relation="REQUIRED" />
+          p:actionName="deleteProductById" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -656,17 +663,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="dbyn" />
     <property name="longOption" value="deleteProductByName" />
-    <property name="description" value="Triggers DeleteProductByName Action" />
+    <property name="description" value="Triggers deleteProductByName Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>DeleteProductByName</value>
+        <value>deleteProductByName</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="DeleteProductByName" p:relation="REQUIRED" />
+          p:actionName="deleteProductByName" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -676,17 +683,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="dmet" />
     <property name="longOption" value="dumpMetadata" />
-    <property name="description" value="Triggers DumpMetadata Action" />
+    <property name="description" value="Triggers dumpMetadata Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>DumpMetadata</value>
+        <value>dumpMetadata</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="DumpMetadata" p:relation="REQUIRED" />
+          p:actionName="dumpMetadata" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -701,7 +708,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="DumpMetadata" p:relation="OPTIONAL" />
+          p:actionName="dumpMetadata" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -714,17 +721,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="lucene" />
     <property name="longOption" value="luceneQuery" />
-    <property name="description" value="Triggers LuceneQuery Action" />
+    <property name="description" value="Triggers luceneQuery Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>LuceneQuery</value>
+        <value>luceneQuery</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="REQUIRED" />
+          p:actionName="luceneQuery" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -739,7 +746,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+          p:actionName="luceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -757,7 +764,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+          p:actionName="luceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -775,13 +782,13 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetProductPercentTransferred" p:relation="REQUIRED" />
+          p:actionName="getProductPercentTransferred" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetProductById" p:relation="REQUIRED" />
+          p:actionName="getProductById" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="DeleteProductById" p:relation="REQUIRED" />
+          p:actionName="deleteProductById" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="DumpMetadata" p:relation="REQUIRED" />
+          p:actionName="dumpMetadata" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -798,13 +805,13 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="IngestProduct" p:relation="REQUIRED" />
+          p:actionName="ingestProduct" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="HasProduct" p:relation="REQUIRED" />
+          p:actionName="hasProduct" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetProductByName" p:relation="REQUIRED" />
+          p:actionName="getProductByName" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="DeleteProductByName" p:relation="REQUIRED" />
+          p:actionName="deleteProductByName" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -821,21 +828,21 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="IngestProduct" p:relation="REQUIRED" />
+          p:actionName="ingestProduct" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetProductTypeByName" p:relation="REQUIRED" />
+          p:actionName="getProductTypeByName" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetNumProducts" p:relation="REQUIRED" />
+          p:actionName="getNumProducts" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetFirstPage" p:relation="REQUIRED" />
+          p:actionName="getFirstPage" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetNextPage" p:relation="REQUIRED" />
+          p:actionName="getNextPage" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetPrevPage" p:relation="REQUIRED" />
+          p:actionName="getPrevPage" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetLastPage" p:relation="REQUIRED" />
+          p:actionName="getLastPage" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetProductPercentTransferred" p:relation="REQUIRED" />
+          p:actionName="getProductPercentTransferred" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -853,9 +860,9 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetNextPage" p:relation="REQUIRED" />
+          p:actionName="getNextPage" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetPrevPage" p:relation="REQUIRED" />
+          p:actionName="getPrevPage" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -872,9 +879,9 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="REQUIRED" />
+          p:actionName="sqlQuery" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="REQUIRED" />
+          p:actionName="luceneQuery" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -891,9 +898,9 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+          p:actionName="sqlQuery" p:relation="OPTIONAL" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+          p:actionName="luceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -910,9 +917,9 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+          p:actionName="sqlQuery" p:relation="OPTIONAL" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+          p:actionName="luceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -929,9 +936,9 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+          p:actionName="sqlQuery" p:relation="OPTIONAL" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+          p:actionName="luceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -947,9 +954,9 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+          p:actionName="sqlQuery" p:relation="OPTIONAL" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+          p:actionName="luceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="subOptions">
@@ -979,9 +986,9 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+          p:actionName="sqlQuery" p:relation="OPTIONAL" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+          p:actionName="luceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -1000,9 +1007,9 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+          p:actionName="sqlQuery" p:relation="OPTIONAL" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+          p:actionName="luceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -1020,9 +1027,9 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+          p:actionName="sqlQuery" p:relation="OPTIONAL" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+          p:actionName="luceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -1040,9 +1047,9 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+          p:actionName="sqlQuery" p:relation="OPTIONAL" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+          p:actionName="luceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -1060,9 +1067,9 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SqlQuery" p:relation="OPTIONAL" />
+          p:actionName="sqlQuery" p:relation="OPTIONAL" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="LuceneQuery" p:relation="OPTIONAL" />
+          p:actionName="luceneQuery" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
