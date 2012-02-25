@@ -4,6 +4,10 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-379 Fix CAS-CLI help option sorting and added handler initialization (bfoster)
+
+* OODT-362 Change CmdLineAction names to match their CmdLineOption long option (bfoster)
+
 * OODT-371 Improvements in the richness and consistency of metadata extracted from the THREDDS catalogs
   in the opendap-ps module (luca)
 
