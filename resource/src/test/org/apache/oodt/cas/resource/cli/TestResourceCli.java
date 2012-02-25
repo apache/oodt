@@ -22,6 +22,7 @@ import java.net.URL;
 
 //OODT imports
 import org.apache.oodt.cas.cli.CmdLineUtility;
+import org.apache.oodt.cas.cli.util.OptionPropertyRegister;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.JobSpec;
@@ -50,11 +51,17 @@ public class TestResourceCli extends TestCase {
    private CmdLineUtility cmdLineUtility;
    private MockXmlRpcResourceManagerClient client;
 
-   public void setUp() {
+   @Override
+   public void setUp() throws Exception {
       cmdLineUtility = new CmdLineUtility();
       UseMockClientCmdLineActionStore actionStore = new UseMockClientCmdLineActionStore();
       client = actionStore.getClient();
       cmdLineUtility.setActionStore(actionStore);
+   }
+
+   @Override
+   public void tearDown() throws Exception {
+      OptionPropertyRegister.clearRegister();
    }
 
    public void testAddNode() throws MalformedURLException {
@@ -236,6 +243,8 @@ public class TestResourceCli extends TestCase {
       JobInput actualJobInput = (JobInput) methodCallDetails.getArgs().get(1);
       assertEquals(spec.getIn().getClass(), actualJobInput.getClass());
       assertEquals(2, methodCallDetails.getArgs().size());
+
+      OptionPropertyRegister.clearRegister();
 
       String url = "http://localhost:9000";
       cmdLineUtility.run(("--url http://localhost:9000"

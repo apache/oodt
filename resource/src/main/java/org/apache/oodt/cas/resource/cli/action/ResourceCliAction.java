@@ -37,7 +37,7 @@ public abstract class ResourceCliAction extends CmdLineAction {
    private XmlRpcResourceManagerClient client;
 
    public String getUrl() {
-      return System.getProperty("org.apache.oodt.cas.workflow.url");
+      return System.getProperty("org.apache.oodt.cas.resource.url");
    }
 
    protected XmlRpcResourceManagerClient getClient()

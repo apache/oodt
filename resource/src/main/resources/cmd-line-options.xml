@@ -24,7 +24,7 @@
 	<bean id="url" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
 		<property name="shortOption" value="u" />
 		<property name="longOption" value="url" />
-		<property name="description" value="Workflow Manager URL" />
+		<property name="description" value="Resource Manager URL" />
 		<property name="hasArgs" value="true" />
 		<property name="argsDescription" value="url" />
 		<property name="required" value="true" />
@@ -33,7 +33,7 @@
 				class="org.apache.oodt.cas.cli.option.handler.SetJavaPropertiesHandler">
 				<property name="propertyNames">
 					<list>
-						<value>org.apache.oodt.cas.workflow.url</value>
+						<value>org.apache.oodt.cas.resource.url</value>
 					</list>
 				</property>
 			</bean>
@@ -92,17 +92,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="nbyid" />
 		<property name="longOption" value="getNodeById" />
-		<property name="description" value="Triggers GetNodeById Action" />
+		<property name="description" value="Triggers getNodeById Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetNodeById</value>
+				<value>getNodeById</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetNodeById" p:relation="REQUIRED" />
+					p:actionName="getNodeById" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -112,17 +112,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="nodes" />
 		<property name="longOption" value="getNodes" />
-		<property name="description" value="Triggers GetNodes Action" />
+		<property name="description" value="Triggers getNodes Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetNodes</value>
+				<value>getNodes</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetNodes" p:relation="REQUIRED" />
+					p:actionName="getNodes" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -132,17 +132,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="queues" />
 		<property name="longOption" value="getQueues" />
-		<property name="description" value="Triggers GetQueues Action" />
+		<property name="description" value="Triggers getQueues Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetQueues</value>
+				<value>getQueues</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetQueues" p:relation="REQUIRED" />
+					p:actionName="getQueues" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -152,17 +152,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="an" />
 		<property name="longOption" value="addNode" />
-		<property name="description" value="Triggers AddNode Action" />
+		<property name="description" value="Triggers addNode Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>AddNode</value>
+				<value>addNode</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="AddNode" p:relation="REQUIRED" />
+					p:actionName="addNode" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -177,7 +177,7 @@
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="AddNode" p:relation="REQUIRED" />
+					p:actionName="addNode" p:relation="REQUIRED" />
 			</list>
 		</property>
 		<property name="handler">
@@ -185,7 +185,7 @@
 				<property name="applyToActions">
 					<list>
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="AddNode" p:methodName="setNodeUrl" />
+							p:actionName="addNode" p:methodName="setNodeUrl" />
 					</list>
 				</property>
 			</bean>
@@ -197,17 +197,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="rn" />
 		<property name="longOption" value="removeNode" />
-		<property name="description" value="Triggers RemoveNode Action" />
+		<property name="description" value="Triggers removeNode Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>RemoveNode</value>
+				<value>removeNode</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="RemoveNode" p:relation="REQUIRED" />
+					p:actionName="removeNode" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -217,17 +217,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="sncap" />
 		<property name="longOption" value="setNodeCapacity" />
-		<property name="description" value="Triggers SetNodeCapacity Action" />
+		<property name="description" value="Triggers setNodeCapacity Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>SetNodeCapacity</value>
+				<value>setNodeCapacity</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="SetNodeCapacity" p:relation="REQUIRED" />
+					p:actionName="setNodeCapacity" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -237,17 +237,17 @@
     p:isSubOption="true">
     <property name="shortOption" value="exeNode" />
     <property name="longOption" value="getExecNode" />
-    <property name="description" value="Triggers GetExecNode Action" />
+    <property name="description" value="Triggers getExecNode Action" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
       <list>
-        <value>GetExecNode</value>
+        <value>getExecNode</value>
       </list>
     </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetExecNode" p:relation="REQUIRED" />
+          p:actionName="getExecNode" p:relation="REQUIRED" />
       </list>
     </property>
   </bean>
@@ -257,17 +257,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="aq" />
 		<property name="longOption" value="addQueue" />
-		<property name="description" value="Triggers AddQueue Action" />
+		<property name="description" value="Triggers addQueue Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>AddQueue</value>
+				<value>addQueue</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="AddQueue" p:relation="REQUIRED" />
+					p:actionName="addQueue" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -277,17 +277,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="rq" />
 		<property name="longOption" value="removeQueue" />
-		<property name="description" value="Triggers RemoveQueue Action" />
+		<property name="description" value="Triggers removeQueue Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>RemoveQueue</value>
+				<value>removeQueue</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="RemoveQueue" p:relation="REQUIRED" />
+					p:actionName="removeQueue" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -297,17 +297,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="antq" />
 		<property name="longOption" value="addNodeToQueue" />
-		<property name="description" value="Triggers AddNodeToQueue Action" />
+		<property name="description" value="Triggers addNodeToQueue Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>AddNodeToQueue</value>
+				<value>addNodeToQueue</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="AddNodeToQueue" p:relation="REQUIRED" />
+					p:actionName="addNodeToQueue" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -317,17 +317,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="ninq" />
 		<property name="longOption" value="getNodesInQueue" />
-		<property name="description" value="Triggers GetNodesInQueue Action" />
+		<property name="description" value="Triggers getNodesInQueue Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetNodesInQueue</value>
+				<value>getNodesInQueue</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetNodesInQueue" p:relation="REQUIRED" />
+					p:actionName="getNodesInQueue" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -337,17 +337,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="qwn" />
 		<property name="longOption" value="getQueuesWithNode" />
-		<property name="description" value="Triggers GetQueuesWithNode Action" />
+		<property name="description" value="Triggers getQueuesWithNode Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetQueuesWithNode</value>
+				<value>getQueuesWithNode</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetQueuesWithNode" p:relation="REQUIRED" />
+					p:actionName="getQueuesWithNode" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -357,17 +357,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="rnfq" />
 		<property name="longOption" value="removeNodeFromQueue" />
-		<property name="description" value="Triggers RemoveNodeFromQueue Action" />
+		<property name="description" value="Triggers removeNodeFromQueue Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>RemoveNodeFromQueue</value>
+				<value>removeNodeFromQueue</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="RemoveNodeFromQueue" p:relation="REQUIRED" />
+					p:actionName="removeNodeFromQueue" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -377,17 +377,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="load" />
 		<property name="longOption" value="getNodeLoad" />
-		<property name="description" value="Triggers GetNodeLoad Action" />
+		<property name="description" value="Triggers getNodeLoad Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetNodeLoad</value>
+				<value>getNodeLoad</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetNodeLoad" p:relation="REQUIRED" />
+					p:actionName="getNodeLoad" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -397,17 +397,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="submit" />
 		<property name="longOption" value="submitJob" />
-		<property name="description" value="Triggers SubmitJob Action" />
+		<property name="description" value="Triggers submitJob Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>SubmitJob</value>
+				<value>submitJob</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="SubmitJob" p:relation="REQUIRED" />
+					p:actionName="submitJob" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -421,7 +421,7 @@
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="SubmitJob" p:relation="REQUIRED" />
+					p:actionName="submitJob" p:relation="REQUIRED" />
 			</list>
 		</property>
 		<property name="handler">
@@ -429,7 +429,7 @@
 				<property name="applyToActions">
 					<list>
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="SubmitJob" p:methodName="setJobDefinitionFile" />
+							p:actionName="submitJob" p:methodName="setJobDefinitionFile" />
 					</list>
 				</property>
 			</bean>
@@ -446,7 +446,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="SubmitJob" p:relation="OPTIONAL" />
+          p:actionName="submitJob" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -454,7 +454,7 @@
         <property name="applyToActions">
           <list>
             <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-              p:actionName="SubmitJob" p:methodName="setUrl" />
+              p:actionName="submitJob" p:methodName="setUrl" />
           </list>
         </property>
       </bean>
@@ -466,17 +466,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="info" />
 		<property name="longOption" value="getJobInfo" />
-		<property name="description" value="Triggers GetJobInfo Action" />
+		<property name="description" value="Triggers getJobInfo Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetJobInfo</value>
+				<value>getJobInfo</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetJobInfo" p:relation="REQUIRED" />
+					p:actionName="getJobInfo" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -486,17 +486,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="k" />
 		<property name="longOption" value="kill" />
-		<property name="description" value="Triggers Kill Action" />
+		<property name="description" value="Triggers kill Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>Kill</value>
+				<value>kill</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="Kill" p:relation="REQUIRED" />
+					p:actionName="kill" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -511,21 +511,21 @@
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetNodeById" p:relation="REQUIRED" />
+					p:actionName="getNodeById" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="AddNode" p:relation="REQUIRED" />
+					p:actionName="addNode" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="RemoveNode" p:relation="REQUIRED" />
+					p:actionName="removeNode" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="SetNodeCapacity" p:relation="REQUIRED" />
+					p:actionName="setNodeCapacity" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="AddNodeToQueue" p:relation="REQUIRED" />
+					p:actionName="addNodeToQueue" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetQueuesWithNode" p:relation="REQUIRED" />
+					p:actionName="getQueuesWithNode" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="RemoveNodeFromQueue" p:relation="REQUIRED" />
+					p:actionName="removeNodeFromQueue" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetNodeLoad" p:relation="REQUIRED" />
+					p:actionName="getNodeLoad" p:relation="REQUIRED" />
 			</list>
 		</property>
 		<property name="handler">
@@ -543,9 +543,9 @@
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="AddNode" p:relation="REQUIRED" />
+					p:actionName="addNode" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="SetNodeCapacity" p:relation="REQUIRED" />
+					p:actionName="setNodeCapacity" p:relation="REQUIRED" />
 			</list>
 		</property>
 		<property name="handler">
@@ -562,15 +562,15 @@
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="AddQueue" p:relation="REQUIRED" />
+					p:actionName="addQueue" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="RemoveQueue" p:relation="REQUIRED" />
+					p:actionName="removeQueue" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="AddNodeToQueue" p:relation="REQUIRED" />
+					p:actionName="addNodeToQueue" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetNodesInQueue" p:relation="REQUIRED" />
+					p:actionName="getNodesInQueue" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="RemoveNodeFromQueue" p:relation="REQUIRED" />
+					p:actionName="removeNodeFromQueue" p:relation="REQUIRED" />
 			</list>
 		</property>
 		<property name="handler">
@@ -587,11 +587,11 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetJobInfo" p:relation="REQUIRED" />
+          p:actionName="getJobInfo" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="GetExecNode" p:relation="REQUIRED" />
+          p:actionName="getExecNode" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="Kill" p:relation="REQUIRED" />
+          p:actionName="kill" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
