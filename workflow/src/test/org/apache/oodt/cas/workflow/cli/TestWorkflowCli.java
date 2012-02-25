@@ -18,6 +18,7 @@ package org.apache.oodt.cas.workflow.cli;
 
 //OODT imports
 import org.apache.oodt.cas.cli.CmdLineUtility;
+import org.apache.oodt.cas.cli.util.OptionPropertyRegister;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.repository.MockWorkflowRepository;
 import org.apache.oodt.cas.workflow.system.MockXmlRpcWorkflowManagerClient;
@@ -48,11 +49,17 @@ public class TestWorkflowCli extends TestCase {
    private CmdLineUtility cmdLineUtility;
    private MockXmlRpcWorkflowManagerClient client;
 
-   public void setUp() {
+   @Override
+   public void setUp() throws Exception {
       cmdLineUtility = new CmdLineUtility();
       UseMockClientCmdLineActionStore actionStore = new UseMockClientCmdLineActionStore();
       client = actionStore.getClient();
       cmdLineUtility.setActionStore(actionStore);
+   }
+
+   @Override
+   public void tearDown() throws Exception {
+      OptionPropertyRegister.clearRegister();
    }
 
    public void testDynWorkflow() throws Exception {
@@ -91,6 +98,9 @@ public class TestWorkflowCli extends TestCase {
             + " --operation --getFirstPage").split(" "));
       MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
       assertEquals("getFirstPage", methodCallDetails.getMethodName());
+
+      OptionPropertyRegister.clearRegister();
+
       String status = "DONE";
       cmdLineUtility.run(("--url http://localhost:9000"
             + " --operation --getFirstPage --status " + status).split(" "));
@@ -105,6 +115,9 @@ public class TestWorkflowCli extends TestCase {
             + " --operation --getLastPage").split(" "));
       MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
       assertEquals("getLastPage", methodCallDetails.getMethodName());
+
+      OptionPropertyRegister.clearRegister();
+
       String status = "DONE";
       cmdLineUtility.run(("--url http://localhost:9000"
             + " --operation --getLastPage --status " + status).split(" "));
@@ -119,6 +132,9 @@ public class TestWorkflowCli extends TestCase {
             + " --operation --getNextPage --pageNum 1").split(" "));
       MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
       assertEquals("paginateWorkflowInstances", methodCallDetails.getMethodName());
+
+      OptionPropertyRegister.clearRegister();
+
       String status = "DONE";
       cmdLineUtility.run(("--url http://localhost:9000"
             + " --operation --getNextPage --pageNum 1 --status " + status).split(" "));
@@ -133,6 +149,9 @@ public class TestWorkflowCli extends TestCase {
             + " --operation --getPrevPage --pageNum 1").split(" "));
       MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
       assertEquals("paginateWorkflowInstances", methodCallDetails.getMethodName());
+
+      OptionPropertyRegister.clearRegister();
+
       String status = "DONE";
       cmdLineUtility.run(("--url http://localhost:9000"
             + " --operation --getPrevPage --pageNum 1 --status " + status).split(" "));
@@ -254,6 +273,8 @@ public class TestWorkflowCli extends TestCase {
       MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
       assertEquals("sendEvent", methodCallDetails.getMethodName());
       assertEquals(eventName, methodCallDetails.getArgs().get(0));
+
+      OptionPropertyRegister.clearRegister();
 
       cmdLineUtility.run(("--url http://localhost:9000"
            + " --operation --sendEvent --eventName " + eventName

@@ -91,17 +91,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="se" />
 		<property name="longOption" value="sendEvent" />
-		<property name="description" value="Triggers SendEvent Action" />
+		<property name="description" value="Triggers sendEvent Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>SendEvent</value>
+				<value>sendEvent</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="SendEvent" p:relation="REQUIRED" />
+					p:actionName="sendEvent" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -111,17 +111,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="dw" />
 		<property name="longOption" value="dynWorkflow" />
-		<property name="description" value="Triggers DynWorkflow Action" />
+		<property name="description" value="Triggers dynWorkflow Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>DynWorkflow</value>
+				<value>dynWorkflow</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="DynWorkflow" p:relation="REQUIRED" />
+					p:actionName="dynWorkflow" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -136,7 +136,7 @@
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="DynWorkflow" p:relation="REQUIRED" />
+					p:actionName="dynWorkflow" p:relation="REQUIRED" />
 			</list>
 		</property>
 		<property name="handler">
@@ -153,7 +153,7 @@
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetWorkflowInsts</value>
+				<value>getWorkflowInsts</value>
 			</list>
 		</property>
 		<property name="requirementRules">
@@ -169,17 +169,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="wflows" />
 		<property name="longOption" value="getWorkflows" />
-		<property name="description" value="Triggers GetWorkflows Action" />
+		<property name="description" value="Triggers getWorkflows Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetWorkflows</value>
+				<value>getWorkflows</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetWorkflows" p:relation="REQUIRED" />
+					p:actionName="getWorkflows" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -189,17 +189,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="tbyid" />
 		<property name="longOption" value="getTaskById" />
-		<property name="description" value="Triggers GetTaskById Action" />
+		<property name="description" value="Triggers getTaskById Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetTaskById</value>
+				<value>getTaskById</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetTaskById" p:relation="REQUIRED" />
+					p:actionName="getTaskById" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -209,17 +209,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="cbyid" />
 		<property name="longOption" value="getConditionById" />
-		<property name="description" value="Triggers GetConditionById Action" />
+		<property name="description" value="Triggers getConditionById Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetConditionById</value>
+				<value>getConditionById</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetConditionById" p:relation="REQUIRED" />
+					p:actionName="getConditionById" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -229,17 +229,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="wbyid" />
 		<property name="longOption" value="getWorkflowById" />
-		<property name="description" value="Triggers GetWorkflowById Action" />
+		<property name="description" value="Triggers getWorkflowById Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetWorkflowById</value>
+				<value>getWorkflowById</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetWorkflowById" p:relation="REQUIRED" />
+					p:actionName="getWorkflowById" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -249,17 +249,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="wbye" />
 		<property name="longOption" value="getWorkflowsByEvent" />
-		<property name="description" value="Triggers GetWorkflowsByEvent Action" />
+		<property name="description" value="Triggers getWorkflowsByEvent Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetWorkflowsByEvent</value>
+				<value>getWorkflowsByEvent</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetWorkflowsByEvent" p:relation="REQUIRED" />
+					p:actionName="getWorkflowsByEvent" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -269,17 +269,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="events" />
 		<property name="longOption" value="getRegisteredEvents" />
-		<property name="description" value="Triggers GetRegisteredEvents Action" />
+		<property name="description" value="Triggers getRegisteredEvents Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetRegisteredEvents</value>
+				<value>getRegisteredEvents</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetRegisteredEvents" p:relation="REQUIRED" />
+					p:actionName="getRegisteredEvents" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -289,17 +289,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="inst" />
 		<property name="longOption" value="getWorkflowInst" />
-		<property name="description" value="Triggers GetWorkflowInst Action" />
+		<property name="description" value="Triggers getWorkflowInst Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetWorkflowInst</value>
+				<value>getWorkflowInst</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetWorkflowInst" p:relation="REQUIRED" />
+					p:actionName="getWorkflowInst" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -309,17 +309,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="time" />
 		<property name="longOption" value="getWallClockTime" />
-		<property name="description" value="Triggers GetWallClockTime Action" />
+		<property name="description" value="Triggers getWallClockTime Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetWallClockTime</value>
+				<value>getWallClockTime</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetWallClockTime" p:relation="REQUIRED" />
+					p:actionName="getWallClockTime" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -329,17 +329,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="ttime" />
 		<property name="longOption" value="getTaskWallClockTime" />
-		<property name="description" value="Triggers GetWallClockTime Action" />
+		<property name="description" value="Triggers getTaskWallClockTime Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetTaskWallClockTime</value>
+				<value>getTaskWallClockTime</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetTaskWallClockTime" p:relation="REQUIRED" />
+					p:actionName="getTaskWallClockTime" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -349,17 +349,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="stop" />
 		<property name="longOption" value="stopWorkflowInst" />
-		<property name="description" value="Triggers StopWorkflowInst Action" />
+		<property name="description" value="Triggers stopWorkflowInst Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>StopWorkflowInst</value>
+				<value>stopWorkflowInst</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="StopWorkflowInst" p:relation="REQUIRED" />
+					p:actionName="stopWorkflowInst" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -369,17 +369,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="pause" />
 		<property name="longOption" value="pauseWorkflowInst" />
-		<property name="description" value="Triggers PauseWorkflowInst Action" />
+		<property name="description" value="Triggers pauseWorkflowInst Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>PauseWorkflowInst</value>
+				<value>pauseWorkflowInst</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="PauseWorkflowInst" p:relation="REQUIRED" />
+					p:actionName="pauseWorkflowInst" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -389,17 +389,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="resume" />
 		<property name="longOption" value="resumeWorkflowInst" />
-		<property name="description" value="Triggers ResumeWorkflowInst Action" />
+		<property name="description" value="Triggers resumeWorkflowInst Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>ResumeWorkflowInst</value>
+				<value>resumeWorkflowInst</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="ResumeWorkflowInst" p:relation="REQUIRED" />
+					p:actionName="resumeWorkflowInst" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -409,17 +409,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="page1" />
 		<property name="longOption" value="getFirstPage" />
-		<property name="description" value="Triggers GetFirstPage Action" />
+		<property name="description" value="Triggers getFirstPage Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetFirstPage</value>
+				<value>getFirstPage</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetFirstPage" p:relation="REQUIRED" />
+					p:actionName="getFirstPage" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -429,17 +429,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="next" />
 		<property name="longOption" value="getNextPage" />
-		<property name="description" value="Triggers GetNextPage Action" />
+		<property name="description" value="Triggers getNextPage Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetNextPage</value>
+				<value>getNextPage</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetNextPage" p:relation="REQUIRED" />
+					p:actionName="getNextPage" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -449,17 +449,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="prev" />
 		<property name="longOption" value="getPrevPage" />
-		<property name="description" value="Triggers GetPrevPage Action" />
+		<property name="description" value="Triggers getPrevPage Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetPrevPage</value>
+				<value>getPrevPage</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetPrevPage" p:relation="REQUIRED" />
+					p:actionName="getPrevPage" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -469,17 +469,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="last" />
 		<property name="longOption" value="getLastPage" />
-		<property name="description" value="Triggers GetLastPage Action" />
+		<property name="description" value="Triggers getLastPage Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetLastPage</value>
+				<value>getLastPage</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetLastPage" p:relation="REQUIRED" />
+					p:actionName="getLastPage" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -489,17 +489,17 @@
 		p:isSubOption="true">
 		<property name="shortOption" value="getMet" />
 		<property name="longOption" value="getWorkflowInstMet" />
-		<property name="description" value="Triggers GetWorkflowInstMet Action" />
+		<property name="description" value="Triggers getWorkflowInstMet Action" />
 		<property name="hasArgs" value="false" />
 		<property name="staticArgs">
 			<list>
-				<value>GetWorkflowInstMet</value>
+				<value>getWorkflowInstMet</value>
 			</list>
 		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetWorkflowInstMet" p:relation="REQUIRED" />
+					p:actionName="getWorkflowInstMet" p:relation="REQUIRED" />
 			</list>
 		</property>
 	</bean>
@@ -514,9 +514,9 @@
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="SendEvent" p:relation="REQUIRED" />
+					p:actionName="sendEvent" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetWorkflowsByEvent" p:relation="REQUIRED" />
+					p:actionName="getWorkflowsByEvent" p:relation="REQUIRED" />
 			</list>
 		</property>
 		<property name="handler">
@@ -532,9 +532,9 @@
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="SendEvent" p:relation="OPTIONAL" />
+					p:actionName="sendEvent" p:relation="OPTIONAL" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="DynMetadata" p:relation="OPTIONAL" />
+					p:actionName="dynMetadata" p:relation="OPTIONAL" />
 			</list>
 		</property>
 		<property name="subOptions">
@@ -559,9 +559,9 @@
 				<property name="applyToActions">
 					<list>
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="SendEvent" p:methodName="addMetadata" />
+							p:actionName="sendEvent" p:methodName="addMetadata" />
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="DynWorkflow" p:methodName="addMetadata" />
+							p:actionName="dynWorkflow" p:methodName="addMetadata" />
 					</list>
 				</property>
 			</bean>
@@ -577,25 +577,25 @@
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetTaskById" p:relation="REQUIRED" />
+					p:actionName="getTaskById" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetConditionById" p:relation="REQUIRED" />
+					p:actionName="getConditionById" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetWorkflowById" p:relation="REQUIRED" />
+					p:actionName="getWorkflowById" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetWorkflowInst" p:relation="REQUIRED" />
+					p:actionName="getWorkflowInst" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetWallClockTime" p:relation="REQUIRED" />
+					p:actionName="getWallClockTime" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetTaskWallClockTime" p:relation="REQUIRED" />
+					p:actionName="getTaskWallClockTime" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="StopWorkflowInst" p:relation="REQUIRED" />
+					p:actionName="stopWorkflowInst" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="PauseWorkflowInst" p:relation="REQUIRED" />
+					p:actionName="pauseWorkflowInst" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="ResumeWorkflowInst" p:relation="REQUIRED" />
+					p:actionName="resumeWorkflowInst" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetWorkflowInstMet" p:relation="REQUIRED" />
+					p:actionName="getWorkflowInstMet" p:relation="REQUIRED" />
 			</list>
 		</property>
 		<property name="handler">
@@ -603,34 +603,34 @@
 				<property name="applyToActions">
 					<list>
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="GetTaskById" p:methodName="setTaskId"
+							p:actionName="getTaskById" p:methodName="setTaskId"
 							p:argDescription="task-id" />
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="GetConditionById" p:methodName="setConditionId"
+							p:actionName="getConditionById" p:methodName="setConditionId"
 							p:argDescription="condition-id" />
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="GetWorkflowById" p:methodName="setWorkflowId"
+							p:actionName="getWorkflowById" p:methodName="setWorkflowId"
 							p:argDescription="workflow-id" />
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="GetWorkflowInst" p:methodName="setInstanceId"
+							p:actionName="getWorkflowInst" p:methodName="setInstanceId"
 							p:argDescription="instance-id" />
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="GetWallClockTime" p:methodName="setInstanceId"
+							p:actionName="getWallClockTime" p:methodName="setInstanceId"
 							p:argDescription="instance-id" />
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="GetTaskWallClockTime" p:methodName="setInstanceId"
+							p:actionName="getTaskWallClockTime" p:methodName="setInstanceId"
 							p:argDescription="instance-id" />
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="StopWorkflowInst" p:methodName="setInstanceId"
+							p:actionName="stopWorkflowInst" p:methodName="setInstanceId"
 							p:argDescription="instance-id" />
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="PauseWorkflowInst" p:methodName="setInstanceId"
+							p:actionName="pauseWorkflowInst" p:methodName="setInstanceId"
 							p:argDescription="instance-id" />
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="ResumeWorkflowInst" p:methodName="setInstanceId"
+							p:actionName="resumeWorkflowInst" p:methodName="setInstanceId"
 							p:argDescription="instance-id" />
 						<bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-							p:actionName="GetWorkflowInstMet" p:methodName="setInstanceId"
+							p:actionName="getWorkflowInstMet" p:methodName="setInstanceId"
 							p:argDescription="instance-id" />
 					</list>
 				</property>
@@ -647,13 +647,13 @@
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetFirstPage" p:relation="OPTIONAL" />
+					p:actionName="getFirstPage" p:relation="OPTIONAL" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetNextPage" p:relation="OPTIONAL" />
+					p:actionName="getNextPage" p:relation="OPTIONAL" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetPrevPage" p:relation="OPTIONAL" />
+					p:actionName="getPrevPage" p:relation="OPTIONAL" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetLastPage" p:relation="OPTIONAL" />
+					p:actionName="getLastPage" p:relation="OPTIONAL" />
 			</list>
 		</property>
 		<property name="handler">
@@ -671,9 +671,9 @@
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetNextPage" p:relation="REQUIRED" />
+					p:actionName="getNextPage" p:relation="REQUIRED" />
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-					p:actionName="GetPrevPage" p:relation="REQUIRED" />
+					p:actionName="getPrevPage" p:relation="REQUIRED" />
 			</list>
 		</property>
 		<property name="handler">
