@@ -29,6 +29,14 @@ import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
  */
 public interface CmdLineOptionHandler {
 
+   /**
+    * Called after handler construction to allow handler to setup
+    * state before it is required to handle the option later. This
+    * is also called when help is run so allows registration to take
+    * place if necessary for help analysis.
+    */
+   public abstract void initialize(CmdLineOption option);
+
    public abstract void handleOption(CmdLineAction selectedAction,
          CmdLineOptionInstance optionInstance);
 
@@ -43,6 +51,11 @@ public interface CmdLineOptionHandler {
     */
    public abstract String getHelp(CmdLineOption option);
 
+   /**
+    * If this handler causes the argument descriptor to be different for
+    * certain {@link CmdLineAction}s, then should return the arg
+    * description here.
+    */
    public abstract String getArgDescription(CmdLineAction action,
          CmdLineOption option);
 }

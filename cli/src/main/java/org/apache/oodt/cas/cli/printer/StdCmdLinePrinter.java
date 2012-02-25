@@ -25,6 +25,7 @@ import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRequiredSubOpti
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.getFormattedString;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.isGroupOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.sortActions;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.sortOptions;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.sortOptionsByRequiredStatus;
 
 //JDK imports
@@ -88,14 +89,14 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
       StringBuffer sb = new StringBuffer("> USAGE:\n");
       sb.append(getRequiredSubHeader()).append("\n");
       Set<CmdLineOption> requiredOptions = determineRequired(action, options);
-      List<CmdLineOption> sortedRequiredOptions = sortOptionsByRequiredStatus(requiredOptions);
+      List<CmdLineOption> sortedRequiredOptions = sortOptions(requiredOptions);
       for (CmdLineOption option : sortedRequiredOptions) {
          sb.append(getRequiredOptionHelp(action, option)).append("\n");
       }
 
       sb.append(getOptionalSubHeader()).append("\n");
       Set<CmdLineOption> optionalOptions = determineOptional(action, options);
-      List<CmdLineOption> sortedOptionalOptions = sortOptionsByRequiredStatus(optionalOptions);
+      List<CmdLineOption> sortedOptionalOptions = sortOptions(optionalOptions);
       for (CmdLineOption option : sortedOptionalOptions) {
          sb.append(getOptionalOptionHelp(action, option)).append("\n");
       }
@@ -153,7 +154,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
 
       String argHelp = null;
       if (option instanceof ActionCmdLineOption && option.hasArgs()) {
-         argHelp = action.getName();
+         argHelp = " " + action.getName();
       } else {
          argHelp = (option.hasArgs() ? " <"
                + (argDescription != null ? argDescription : option
@@ -252,10 +253,13 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
 
       if (option instanceof AdvancedCmdLineOption) {
          if (((AdvancedCmdLineOption) option).hasHandler()) {
-            optionUsage += "\n"
-                  + getFormattedString("Handler:", 62, 113)
-                  + getFormattedString(((AdvancedCmdLineOption) option)
-                        .getHandler().getHelp(option), 63, 113);
+            String handlerHelp = ((AdvancedCmdLineOption) option).getHandler()
+                  .getHelp(option);
+            if (handlerHelp != null) {
+               optionUsage += "\n"
+                     + getFormattedString("Handler:", 62, 113)
+                     + getFormattedString(handlerHelp, 63, 113);
+            }
          }
       } else if (isGroupOption(option)) {
          GroupCmdLineOption groupOption = asGroupOption(option);

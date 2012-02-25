@@ -56,6 +56,10 @@ public class ApplyToActionHandler implements CmdLineOptionHandler {
       return applyToActions;
    }
 
+   public void initialize(CmdLineOption option) {
+      // Do nothing.
+   }
+
    public void handleOption(CmdLineAction action,
          CmdLineOptionInstance optionInstance) {
       try {

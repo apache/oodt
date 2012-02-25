@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.option.ActionCmdLineOption;
+import org.apache.oodt.cas.cli.option.AdvancedCmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 import org.apache.oodt.cas.cli.option.GroupCmdLineOption;
@@ -59,24 +60,35 @@ public class CmdLineUtils {
    }
 
    /**
-    * Determines which of the given {@link CmdLineOption}s are required because
-    * the given {@link CmdLineAction} was specified.
+    * Determines which of the given {@link CmdLineOption}s are either always
+    * required and are required because the given {@link CmdLineAction} was
+    * specified.
     * 
     * @param action
     *           The {@link CmdLineAction} which was specified.
     * @param options
     *           The {@link CmdLineOption}s in question of being required or not.
-    * @return The {@link Set} of {@link CmdLineOption}s where are required
-    *         because the given {@link CmdLineAction} was specified.
+    * @return The {@link Set} of {@link CmdLineOption}s which are either always
+    *         required or are required because the given {@link CmdLineAction}
+    *         was specified.
     */
    public static Set<CmdLineOption> determineRequired(CmdLineAction action,
          Set<CmdLineOption> options) {
+      return determineRequired(action, options, false);
+   }
+
+   /**
+    * Same as method above but optionally allows action options to be ignored.
+    */
+   public static Set<CmdLineOption> determineRequired(CmdLineAction action,
+         Set<CmdLineOption> options, boolean ignoreActionOption) {
       Validate.notNull(action);
       Validate.notNull(options);
 
-      Set<CmdLineOption> requiredOptions = getRequiredOptions(options);
+      Set<CmdLineOption> requiredOptions = Sets.newHashSet();
       for (CmdLineOption option : options) {
-         if (isRequired(action, option)) {
+         if (!(ignoreActionOption && isActionOption(option))
+               && isRequired(action, option)) {
             requiredOptions.add(option);
          }
       }
@@ -84,7 +96,7 @@ public class CmdLineUtils {
    }
 
    /**
-    * Determines the given {@link GroupCmdLineOption}'s sub-options which are
+    * Determines the given {@link GroupCmdLineOption}'s sub-options which
     * affect the given {@link CmdLineAction}.
     * 
     * @param action
@@ -101,9 +113,8 @@ public class CmdLineUtils {
          CmdLineAction action, GroupCmdLineOption option) {
       Set<CmdLineOption> relevantOptions = Sets.newHashSet();
       for (GroupSubOption subOption : option.getSubOptions()) {
-         if (subOption.isRequired()
-               || isRequired(action, subOption.getOption())
-               || isOptional(action, subOption.getOption())) {
+         if (isRequired(action, subOption.getOption())
+               || isStrictlyOptional(action, subOption.getOption())) {
             relevantOptions.add(subOption.getOption());
          }
       }
@@ -151,8 +162,7 @@ public class CmdLineUtils {
 
       Set<CmdLineOption> requiredOptions = Sets.newHashSet();
       for (GroupSubOption subOption : option.getSubOptions()) {
-         if (subOption.isRequired()
-               || isRequired(action, subOption.getOption())) {
+         if (isRequired(action, subOption.getOption())) {
             requiredOptions.add(subOption.getOption());
          }
       }
@@ -161,7 +171,7 @@ public class CmdLineUtils {
 
    /**
     * Determines if the given {@link CmdLineOption} is required because the
-    * given {@link CmdLineAction} was specified.
+    * given {@link CmdLineAction} was specified or because it is always required.
     * 
     * @param action
     *           The {@link CmdLineAction} which was specified.
@@ -178,7 +188,7 @@ public class CmdLineUtils {
             return true;
          }
       }
-      return false;
+      return option.getRequirementRules().isEmpty() && option.isRequired();
    }
 
    /**
@@ -207,8 +217,9 @@ public class CmdLineUtils {
    }
 
    /**
-    * Determines if the given {@link CmdLineOption} is optional because the
-    * given {@link CmdLineAction} was specified.
+    * Determines if the given {@link CmdLineOption} is optional either because
+    * it is always optional or because the given {@link CmdLineAction} was
+    * specified.
     * 
     * @param action
     *           The {@link CmdLineAction} which was specified.
@@ -217,6 +228,32 @@ public class CmdLineUtils {
     * @return True is option is optional, false otherwise.
     */
    public static boolean isOptional(CmdLineAction action, CmdLineOption option) {
+      Validate.notNull(action);
+      Validate.notNull(option);
+
+      if (isHelpOption(option) || isPrintSupportedActionsOption(option)) {
+         return false;
+      }
+
+      for (RequirementRule requirementRule : option.getRequirementRules()) {
+         if (requirementRule.getRelation(action) == Relation.OPTIONAL) {
+            return true;
+         }
+      }
+      return option.getRequirementRules().isEmpty() && !option.isRequired();
+   }
+
+   /**
+    * Determines if the given {@link CmdLineOption} is optional ONLY because the
+    * given {@link CmdLineAction} was specified.
+    * 
+    * @param action
+    *           The {@link CmdLineAction} which was specified.
+    * @param option
+    *           The {@link CmdLineOption} in question of being optional or not.
+    * @return True is option is optional, false otherwise.
+    */   
+   public static boolean isStrictlyOptional(CmdLineAction action, CmdLineOption option) {
       Validate.notNull(action);
       Validate.notNull(option);
 
@@ -294,13 +331,35 @@ public class CmdLineUtils {
                   + (!option1.getRequirementRules().isEmpty() ? 1 : 0);
             int compareScore = (option2.isRequired() ? 2 : 0)
                   + (!option2.getRequirementRules().isEmpty() ? 1 : 0);
-            return new Integer(thisScore).compareTo(compareScore);
+            if (thisScore == compareScore) {
+               return option2.getLongOption()
+                     .compareTo(option1.getLongOption());
+            } else {
+               return new Integer(thisScore).compareTo(compareScore);
+            }
          }
       });
       Collections.reverse(optionsList);
       return optionsList;
    }
 
+   /**
+    * Sorts {@link CmdLineOption}s by there long name.
+    *
+    * @param options The {@link CmdLineOption}s to be sorted
+    * @return Sorted {@link List} of {@link CmdLineOption}s
+    */
+   public static List<CmdLineOption> sortOptions(Set<CmdLineOption> options) {
+      List<CmdLineOption> optionList = Lists.newArrayList(options);
+      Collections.sort(optionList, new Comparator<CmdLineOption>() {
+         @Override
+         public int compare(CmdLineOption o1, CmdLineOption o2) {
+            return o1.getLongOption().compareTo(o2.getLongOption());
+         }
+      });
+      return optionList;
+   }
+   
    /**
     * Sorts {@link CmdLineAction}s by there name.
     *
@@ -560,6 +619,35 @@ public class CmdLineUtils {
          }
       }
       return specifiedPsa;
+   }
+
+   /**
+    * Checks if {@link CmdLineOption} is a {@link AdvancedCmdLineOption}.
+    * 
+    * @param option
+    *           The {@link CmdLineOption} checked if it is a
+    *           {@link AdvancedCmdLineOption}
+    * @return True if {@link CmdLineOption} is a {@link AdvancedCmdLineOption},
+    *         false otherwise
+    */
+   public static boolean isAdvancedOption(CmdLineOption option) {
+      Validate.notNull(option);
+
+      return option instanceof AdvancedCmdLineOption;
+   }
+
+   /**
+    * Casts the {@link CmdLineOption} to a {@link AdvancedCmdLineOption}.
+    * 
+    * @param option
+    *           The {@link CmdLineOption} to cast as a
+    *           {@link AdvancedCmdLineOption}
+    * @return The casted {@link CmdLineOption}
+    */
+   public static AdvancedCmdLineOption asAdvancedOption(CmdLineOption option) {
+      Validate.isTrue(isAdvancedOption(option));
+
+      return (AdvancedCmdLineOption) option;
    }
 
    /**

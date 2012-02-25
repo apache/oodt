@@ -26,7 +26,6 @@ import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineFailedValidatio
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.getOptionByName;
 
 //JDK imports
-import java.util.List;
 import java.util.Set;
 
 //OODT imports
@@ -42,7 +41,6 @@ import org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption;
 import org.apache.oodt.cas.cli.option.validator.ArgRegExpCmdLineOptionValidator;
 import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator.Result;
 import org.apache.oodt.cas.cli.test.util.TestUtils;
-import org.apache.oodt.cas.cli.util.CmdLineUtils;
 
 //Google imports
 import com.google.common.collect.Lists;

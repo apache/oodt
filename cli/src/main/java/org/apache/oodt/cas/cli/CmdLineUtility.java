@@ -17,11 +17,13 @@
 package org.apache.oodt.cas.cli;
 
 //OODT static imports
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.asAdvancedOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineFailedValidation;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.determineRequired;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findFirstActionOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findHelpOption;
 import static org.apache.oodt.cas.cli.util.CmdLineUtils.findPrintSupportedActionsOption;
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.isAdvancedOption;
 
 //JDK imports
 import java.util.HashSet;
@@ -205,6 +207,7 @@ public class CmdLineUtility {
 
       // Load supported options.
       Set<CmdLineOption> validOptions = optionStore.loadSupportedOptions();
+      initializeHandlers(validOptions);
 
       // Insure help options is present if required.
       if (findHelpOption(validOptions) == null) {
@@ -226,6 +229,21 @@ public class CmdLineUtility {
             constructor.construct(
                   new CmdLineIterable<ParsedArg>(parser.parse(args)),
                   validOptions));
+   }
+
+   /**
+    * Initializes each {@link CmdLineOptionHandler} with their assigned
+    * {@link CmdLineOption}.
+    * 
+    * @param options
+    */
+   public void initializeHandlers(Set<CmdLineOption> options) {
+      for (CmdLineOption option : options) {
+         if (isAdvancedOption(option)
+               && asAdvancedOption(option).getHandler() != null) {
+            asAdvancedOption(option).getHandler().initialize(option);
+         }
+      }
    }
 
    /**

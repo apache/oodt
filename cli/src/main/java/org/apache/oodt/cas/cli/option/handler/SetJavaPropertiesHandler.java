@@ -27,6 +27,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
+import org.apache.oodt.cas.cli.util.OptionPropertyRegister;
 
 /**
  * {@link CmdLineOptionHandler} which sets Java Properties equals to the
@@ -38,6 +39,12 @@ import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
 public class SetJavaPropertiesHandler implements CmdLineOptionHandler {
 
    private List<String> propertyNames;
+
+   public void initialize(CmdLineOption option) {
+      for (String property : propertyNames) {
+         OptionPropertyRegister.registerOption(property, option);
+      }
+   }
 
    public void handleOption(CmdLineAction selectedAction,
          CmdLineOptionInstance optionInstance) {

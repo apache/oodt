@@ -69,33 +69,36 @@ public class TestCmdLineUtils extends TestCase {
 
    public void testDetermineRequired() {
       CmdLineAction action = createAction("TestAction");
-      CmdLineOption urlOption, passOption;
+      CmdLineOption urlOption, passOption, actionOption;
 
       HashSet<CmdLineOption> options = Sets.newHashSet(
             urlOption = createSimpleOption("url",
                   createRequiredRequirementRule(action)),
             passOption = createSimpleOption("pass", false),
-            createSimpleOption("user", false), createActionOption("operation"));
+            createSimpleOption("user", false),
+            actionOption = createActionOption("operation"));
 
       Set<CmdLineOption> requiredOptions = CmdLineUtils.determineRequired(
             action, options);
-      assertEquals(Sets.newHashSet(urlOption), requiredOptions);
+      assertEquals(Sets.newHashSet(urlOption, actionOption), requiredOptions);
 
       options = Sets.newHashSet(
             urlOption = createSimpleOption("url",
                   createRequiredRequirementRule(action)),
             passOption = createSimpleOption("pass", true),
-            createSimpleOption("user", false), createActionOption("operation"));
+            createSimpleOption("user", false),
+            actionOption = createActionOption("operation"));
 
       requiredOptions = CmdLineUtils.determineRequired(action, options);
-      assertEquals(Sets.newHashSet(urlOption, passOption), requiredOptions);
+      assertEquals(Sets.newHashSet(urlOption, passOption, actionOption),
+            requiredOptions);
    }
 
    public void testIsRequired() {
       CmdLineAction action = createAction("TestAction");
       assertTrue(CmdLineUtils.isRequired(action,
             createSimpleOption("url", createRequiredRequirementRule(action))));
-      assertFalse(CmdLineUtils.isRequired(action,
+      assertTrue(CmdLineUtils.isRequired(action,
             createSimpleOption("url", true)));
       assertFalse(CmdLineUtils.isRequired(action,
             createSimpleOption("url", false)));
@@ -104,15 +107,16 @@ public class TestCmdLineUtils extends TestCase {
    public void testDetermineOptional() {
       CmdLineAction action = createAction("TestAction");
       CmdLineOption actionOption = new ActionCmdLineOption();
+      CmdLineOption passOption, userOption;
 
       HashSet<CmdLineOption> options = Sets.newHashSet(
             createSimpleOption("url", createRequiredRequirementRule(action)),
-            createSimpleOption("pass", false),
-            createSimpleOption("user", false), actionOption);
+            passOption = createSimpleOption("pass", false),
+            userOption = createSimpleOption("user", false), actionOption);
 
       Set<CmdLineOption> optionalOptions = CmdLineUtils.determineOptional(
             action, options);
-      assertTrue(optionalOptions.isEmpty());
+      assertEquals(Sets.newHashSet(passOption, userOption), optionalOptions);
 
       options = Sets.newHashSet(createSimpleOption("pass", true),
             createSimpleOption("user", true), actionOption);
@@ -120,7 +124,6 @@ public class TestCmdLineUtils extends TestCase {
       optionalOptions = CmdLineUtils.determineOptional(action, options);
       assertTrue(optionalOptions.isEmpty());
 
-      CmdLineOption passOption, userOption;
       options = Sets.newHashSet(
             passOption = createSimpleOption("pass",
                   createOptionalRequirementRule(action)),
@@ -137,7 +140,7 @@ public class TestCmdLineUtils extends TestCase {
             createSimpleOption("url", createOptionalRequirementRule(action))));
       assertFalse(CmdLineUtils.isOptional(action,
             createSimpleOption("url", true)));
-      assertFalse(CmdLineUtils.isOptional(action,
+      assertTrue(CmdLineUtils.isOptional(action,
             createSimpleOption("url", false)));
    }
 
@@ -483,16 +486,21 @@ public class TestCmdLineUtils extends TestCase {
 
       // Test case when option has a handler.
       option.setHandler(new CmdLineOptionHandler() {
+         @Override
+         public void initialize(CmdLineOption option) {}
 
+         @Override
          public void handleOption(CmdLineAction selectedAction,
                CmdLineOptionInstance optionInstance) {
             selectedAction.setDescription("handler modified description");
          }
 
+         @Override
          public String getHelp(CmdLineOption option) {
             return null;
          }
 
+         @Override
          public String getArgDescription(CmdLineAction action,
                CmdLineOption option) {
             return null;
