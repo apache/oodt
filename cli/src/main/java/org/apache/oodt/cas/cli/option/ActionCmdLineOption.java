@@ -32,7 +32,6 @@ public class ActionCmdLineOption extends SimpleCmdLineOption {
       super(shortOption, longOption, description, hasArgs);
       this.setArgsDescription("action-name");
       this.setType(String.class);
-      this.setPerformAndQuit(false);
       this.setRequired(true);
    }
 }

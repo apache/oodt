@@ -19,6 +19,7 @@ package org.apache.oodt.cas.cli.util;
 //OODT static imports
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createAction;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createActionOption;
+import static org.apache.oodt.cas.cli.test.util.TestUtils.createAdvancedOption;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createGroupOption;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createOptionInstance;
 import static org.apache.oodt.cas.cli.test.util.TestUtils.createOptionalRequirementRule;
@@ -54,6 +55,7 @@ import org.apache.oodt.cas.cli.option.SimpleCmdLineOption;
 import org.apache.oodt.cas.cli.option.handler.CmdLineOptionHandler;
 import org.apache.oodt.cas.cli.option.validator.AllowedArgsCmdLineOptionValidator;
 import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator;
+import org.apache.oodt.cas.cli.test.util.TestUtils;
 import org.apache.oodt.cas.cli.util.CmdLineUtils;
 
 //Google imports
@@ -116,6 +118,7 @@ public class TestCmdLineUtils extends TestCase {
 
       Set<CmdLineOption> optionalOptions = CmdLineUtils.determineOptional(
             action, options);
+      assertEquals(2, optionalOptions.size());
       assertEquals(Sets.newHashSet(passOption, userOption), optionalOptions);
 
       options = Sets.newHashSet(createSimpleOption("pass", true),
@@ -270,10 +273,10 @@ public class TestCmdLineUtils extends TestCase {
    }
 
    public void testFindPerformAndQuitOptions() {
-      SimpleCmdLineOption performAndQuitOption = createSimpleOption("help",
-            false);
+      AdvancedCmdLineOption performAndQuitOption = createAdvancedOption("help",
+            null);
       performAndQuitOption.setPerformAndQuit(true);
-      SimpleCmdLineOption otherOption = createSimpleOption("help", false);
+      AdvancedCmdLineOption otherOption = createAdvancedOption("help", null);
       otherOption.setPerformAndQuit(false);
 
       CmdLineOptionInstance performAndQuitOptionInstance = new CmdLineOptionInstance(
@@ -287,10 +290,10 @@ public class TestCmdLineUtils extends TestCase {
    }
 
    public void testIsPerformAndQuitOption() {
-      SimpleCmdLineOption performAndQuitOption = createSimpleOption("help",
-            false);
+      AdvancedCmdLineOption performAndQuitOption = createAdvancedOption("help",
+            null);
       performAndQuitOption.setPerformAndQuit(true);
-      SimpleCmdLineOption otherOption = createSimpleOption("help", false);
+      AdvancedCmdLineOption otherOption = createAdvancedOption("help", null);
       otherOption.setPerformAndQuit(false);
 
       assertTrue(CmdLineUtils.isPerformAndQuitOption(performAndQuitOption));

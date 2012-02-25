@@ -59,7 +59,7 @@ public class AdvancedCmdLineOption extends SimpleCmdLineOption implements
    public boolean hasHandler() {
       return handler != null;
    }
-
+   
    public List<CmdLineOptionValidator> getValidators() {
       return this.validators;
    }

@@ -231,7 +231,7 @@ public class CmdLineUtils {
       Validate.notNull(action);
       Validate.notNull(option);
 
-      if (isHelpOption(option) || isPrintSupportedActionsOption(option)) {
+      if (isPerformAndQuitOption(option)) {
          return false;
       }
 
@@ -256,6 +256,10 @@ public class CmdLineUtils {
    public static boolean isStrictlyOptional(CmdLineAction action, CmdLineOption option) {
       Validate.notNull(action);
       Validate.notNull(option);
+
+      if (isPerformAndQuitOption(option)) {
+         return false;
+      }
 
       for (RequirementRule requirementRule : option.getRequirementRules()) {
          if (requirementRule.getRelation(action) == Relation.OPTIONAL) {
@@ -496,10 +500,13 @@ public class CmdLineUtils {
    public static boolean isPerformAndQuitOption(CmdLineOption option) {
       Validate.notNull(option);
 
-      if (isSimpleOption(option)) {
-         return asSimpleOption(option).isPerformAndQuit();
+      if (isHelpOption(option) || isPrintSupportedActionsOption(option)) {
+         return true;
+      } else if (isAdvancedOption(option)) {
+         return asAdvancedOption(option).isPerformAndQuit();
+      } else {
+         return false;
       }
-      return false;
    }
 
    /**
@@ -980,6 +987,29 @@ public class CmdLineUtils {
          }
       }
       return failedResults;
+   }
+
+   /**
+    * Runs the {@link CmdLineOptionInstance}'s handler if it a perform and
+    * quit option.
+    * 
+    * @param option
+    *           The {@link CmdLineOptionInstance} whose handler will be run
+    */
+   public static void handlePerformAndQuitOption(CmdLineOptionInstance option) {
+      Validate.notNull(option);
+
+      if (option.isHandleable()
+            && ((HandleableCmdLineOption) option.getOption()).getHandler() != null) {
+         ((HandleableCmdLineOption) option.getOption()).getHandler()
+               .handleOption(null, option);
+      }
+
+      if (option.isGroup()) {
+         for (CmdLineOptionInstance subOption : option.getSubOptions()) {
+            handlePerformAndQuitOption(subOption);
+         }
+      }     
    }
 
    /**

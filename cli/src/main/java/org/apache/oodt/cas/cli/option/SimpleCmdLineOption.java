@@ -50,8 +50,6 @@ public class SimpleCmdLineOption implements CmdLineOption {
 
    private List<String> staticArgs;
 
-   private boolean performAndQuit;
-
    private boolean isSubOption;
 
    private Class<?> type;
@@ -61,7 +59,6 @@ public class SimpleCmdLineOption implements CmdLineOption {
       repeating = false;
       required = false;
       hasArgs = false;
-      performAndQuit = false;
       isSubOption = false;
       type = String.class;
       requirementRules = new ArrayList<RequirementRule>();
@@ -158,14 +155,6 @@ public class SimpleCmdLineOption implements CmdLineOption {
 
    public void setRequirementRules(List<RequirementRule> requirementRules) {
       this.requirementRules = requirementRules;
-   }
-
-   public boolean isPerformAndQuit() {
-      return performAndQuit;
-   }
-
-   public void setPerformAndQuit(boolean performAndQuit) {
-      this.performAndQuit = performAndQuit;
    }
 
    public void setIsSubOption(boolean isSubOption) {
