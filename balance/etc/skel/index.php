@@ -36,6 +36,11 @@ require_once("Org/Apache/Oodt/Balance/Boot/bootstrap.php");
 /* Initialize the application with the settings from config.ini *********/
 $app = $GLOBALS['app'] = App::Create(parse_ini_file(HOME . '/config.ini'));
 
+/* Initialize any globally required modules here ************************/
+// Example:
+// To load a module 'foo', located at ./modules/foo, on every request:
+// App::Get()->loadModule('foo');
+
 /* Generate and send a response to the browser **************************/
 $response = $app->getResponse()->send();
 
