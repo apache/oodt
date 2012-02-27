@@ -14,14 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-package org.apache.oodt.cas.crawl.option;
+package org.apache.oodt.cas.crawl.cli.option.handler;
 
 //JDK imports
 import java.io.OutputStream;
 
-import org.apache.oodt.commons.option.handler.CmdLineOptionHandler;
+//OODT imports
+import org.apache.oodt.cas.cli.option.handler.CmdLineOptionHandler;
 
 //Spring imports
 import org.springframework.context.ApplicationContext;
@@ -33,12 +32,12 @@ import org.springframework.context.ApplicationContext;
  *
  * <p>Describe your class here</p>.
  */
-public abstract class CmdLineOptionInfoHandler extends CmdLineOptionHandler {
+public abstract class BeanInfoHandler implements CmdLineOptionHandler {
 
     private OutputStream outStream;
     private ApplicationContext applicationContext;
 
-    public CmdLineOptionInfoHandler() {
+    public BeanInfoHandler() {
         this.outStream = System.out;
     }
 

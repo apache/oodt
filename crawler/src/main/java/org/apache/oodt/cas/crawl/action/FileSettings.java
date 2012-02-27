@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.oodt.cas.crawl.action;
 
 //JDK imports
@@ -29,72 +28,72 @@ import java.io.File;
  * fileExtension="png", and keepExistingExtension=true. This conversion could
  * take place by passing calling the getPreparedFileString method.
  * 
- * @author pramirez
- * @author mattmann
+ * @author pramirez (Paul Ramirez)
+ * @author mattmann (Chris Mattmann)
  * 
  */
 public class FileSettings {
-  private String filePrefix;
-  private String fileSuffix;
-  private String fileExtension;
-  private boolean keepExistingExtension;
+   private String filePrefix;
+   private String fileSuffix;
+   private String fileExtension;
+   private boolean keepExistingExtension;
 
-  public FileSettings() {
-    this.keepExistingExtension = true;
-  }
+   public FileSettings() {
+      this.keepExistingExtension = true;
+   }
 
-  public void setFilePrefix(String filePrefix) {
-    this.filePrefix = filePrefix;
-  }
+   public void setFilePrefix(String filePrefix) {
+      this.filePrefix = filePrefix;
+   }
 
-  public void setFileSuffix(String fileSuffix) {
-    this.fileSuffix = fileSuffix;
-  }
+   public void setFileSuffix(String fileSuffix) {
+      this.fileSuffix = fileSuffix;
+   }
 
-  public void setFileExtension(String fileExtension) {
-    this.fileExtension = fileExtension;
-  }
+   public void setFileExtension(String fileExtension) {
+      this.fileExtension = fileExtension;
+   }
 
-  public void setKeepExistingExtension(boolean keepExistingExtension) {
-    this.keepExistingExtension = keepExistingExtension;
-  }
+   public void setKeepExistingExtension(boolean keepExistingExtension) {
+      this.keepExistingExtension = keepExistingExtension;
+   }
 
-  public String getPreparedFileString(File file) {
-    StringBuffer fileString = new StringBuffer();
+   public String getPreparedFileString(File file) {
+      StringBuffer fileString = new StringBuffer();
 
-    if (file.getParent() != null) {
-      fileString.append(file.getParent());
-      fileString.append(System.getProperties().getProperty("file.separator",
-          "/"));
-    }
+      if (file.getParent() != null) {
+         fileString.append(file.getParent());
+         fileString.append(System.getProperties().getProperty("file.separator",
+               "/"));
+      }
 
-    if (filePrefix != null) {
-      fileString.append(filePrefix);
-    }
+      if (filePrefix != null) {
+         fileString.append(filePrefix);
+      }
 
-    String existingExtension = "";
-    String filename = file.getName();
-    int existingIndex = filename.lastIndexOf(".");
-    if (existingIndex != -1) {
-      existingExtension = filename.substring(existingIndex);
-      filename = filename.substring(0, existingIndex);
-    }
+      String existingExtension = "";
+      String filename = file.getName();
+      int existingIndex = filename.lastIndexOf(".");
+      if (existingIndex != -1) {
+         existingExtension = filename.substring(existingIndex);
+         filename = filename.substring(0, existingIndex);
+      }
 
-    fileString.append(filename);
+      fileString.append(filename);
 
-    if (fileSuffix != null) {
-      fileString.append(fileSuffix);
-    }
+      if (fileSuffix != null) {
+         fileString.append(fileSuffix);
+      }
 
-    if (keepExistingExtension) {
-      fileString.append(existingExtension);
-    }
+      if (keepExistingExtension) {
+         fileString.append(existingExtension);
+      }
 
-    if (fileExtension != null) {
-      fileString.append(".");
-      fileString.append(fileExtension);
-    }
+      if (fileExtension != null) {
+         fileString.append(".");
+         fileString.append(fileExtension);
+      }
 
-    return fileString.toString();
-  }
+      return fileString.toString();
+   }
 }

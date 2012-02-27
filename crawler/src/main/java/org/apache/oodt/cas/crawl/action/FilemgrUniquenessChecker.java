@@ -14,61 +14,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.crawl.action;
+
+//OODT static imports
+import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.PRODUCT_NAME;
 
 //JDK imports
 import java.io.File;
 import java.net.URL;
 
+//Apache imports
+import org.apache.commons.lang.Validate;
+
 //OODT imports
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 
-import org.springframework.beans.factory.annotation.Required;
-
 /**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
  * Check whether a product exists in the database already
- * </p>.
+ * 
+ * @author bfoster (Brian Foster)
  */
 public class FilemgrUniquenessChecker extends CrawlerAction {
 
-    private String filemgrUrl;
+   private String filemgrUrl;
 
-    public FilemgrUniquenessChecker() {}
+   @Override
+   public boolean performAction(File product, Metadata productMetadata)
+         throws CrawlerActionException {
+      try {
+         Validate.notNull(productMetadata.getMetadata(PRODUCT_NAME),
+               PRODUCT_NAME + " was not found in metadata");
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.oodt.cas.crawl.action.CrawlerAction#performAction(java.io.File,
-     *      org.apache.oodt.cas.metadata.Metadata)
-     */
-    public boolean performAction(File product, Metadata productMetadata)
-            throws CrawlerActionException {
-        try {
-            URL filemgrURL = new URL(this.filemgrUrl);
-            XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(
-                    filemgrURL);
-            return !fmClient.hasProduct(productMetadata
-                    .getMetadata(CoreMetKeys.PRODUCT_NAME));
-        } catch (Exception e) {
-            throw new CrawlerActionException(
-                    "Product failed uniqueness check : [" + product + "] : "
-                            + e.getMessage());
-        }
-    }
+         XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(
+               new URL(this.filemgrUrl));
+         return !fmClient.hasProduct(productMetadata.getMetadata(PRODUCT_NAME));
+      } catch (Exception e) {
+         throw new CrawlerActionException("Product failed uniqueness check : ["
+               + product + "] : " + e.getMessage());
+      }
+   }
 
-    @Required
-    public void setFilemgrUrl(String filemgrUrl) {
-        this.filemgrUrl = filemgrUrl;
-    }
+   @Override
+   public void validate() throws CrawlerActionException {
+      super.validate();
+      try {
+         Validate.notNull(filemgrUrl, "Must specify filemgrUrl");
+      } catch (Exception e) {
+         throw new CrawlerActionException(e);
+      }
+   }
 
+   public void setFilemgrUrl(String filemgrUrl) {
+      this.filemgrUrl = filemgrUrl;
+   }
 }

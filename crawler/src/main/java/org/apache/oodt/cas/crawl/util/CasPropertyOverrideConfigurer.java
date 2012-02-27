@@ -14,35 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.crawl.action;
+package org.apache.oodt.cas.crawl.util;
+
+//JDK imports
+import java.io.IOException;
+
+//Spring imports
+import org.springframework.beans.factory.config.PropertyOverrideConfigurer;
 
 /**
- * Supported Crawler Phases.
+ * A {@link PropertyOverrideConfigurer} which sets properties stored in
+ * {@link ActionBeanProperties}.
  *
- * @author mattmann (Chris Mattmann)
  * @author bfoster (Brian Foster)
  */
-public enum CrawlerActionPhases {
-   PRE_INGEST("preIngest"),
-   POST_INGEST_SUCCESS("postIngestSuccess"),
-   POST_INGEST_FAILURE("postIngestFailure");
+public class CasPropertyOverrideConfigurer extends PropertyOverrideConfigurer {
 
-   private String name;
-
-   private CrawlerActionPhases(String name) {
-      this.name = name;
-   }
-
-   public String getName() {
-      return name;
-   }
-
-   public static CrawlerActionPhases getPhaseByName(String name) {
-      for (CrawlerActionPhases phase : CrawlerActionPhases.values()) {
-         if (phase.getName().equals(name)) {
-            return phase;
-         }
-      }
-      return null;
+   public CasPropertyOverrideConfigurer() throws IOException {
+      super();
+      setProperties(ActionBeanProperties.getProperties());
    }
 }

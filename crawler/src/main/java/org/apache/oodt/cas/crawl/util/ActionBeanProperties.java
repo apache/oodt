@@ -14,35 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.crawl.action;
+package org.apache.oodt.cas.crawl.util;
+
+//JDK imports
+import java.util.Properties;
 
 /**
- * Supported Crawler Phases.
+ * A collection of bean properties which are used by
+ * {@link CasPropertyOverrideConfigurer} to set properties on
+ * {@link ProductCrawler}s and {@link CrawlerAction}s.
  *
- * @author mattmann (Chris Mattmann)
  * @author bfoster (Brian Foster)
  */
-public enum CrawlerActionPhases {
-   PRE_INGEST("preIngest"),
-   POST_INGEST_SUCCESS("postIngestSuccess"),
-   POST_INGEST_FAILURE("postIngestFailure");
+public class ActionBeanProperties {
 
-   private String name;
+   private static Properties properties = new Properties();
 
-   private CrawlerActionPhases(String name) {
-      this.name = name;
+   private ActionBeanProperties() throws InstantiationException {
+      throw new InstantiationException("Do not instantiate ActionBeanProperties");
    }
 
-   public String getName() {
-      return name;
+   public static void setProperty(String key, String value) {
+      System.out.println("Setting property '" + key + "'");
+      properties.setProperty(key, value);
    }
 
-   public static CrawlerActionPhases getPhaseByName(String name) {
-      for (CrawlerActionPhases phase : CrawlerActionPhases.values()) {
-         if (phase.getName().equals(name)) {
-            return phase;
-         }
-      }
-      return null;
+   public static Properties getProperties() {
+      return properties;
    }
 }

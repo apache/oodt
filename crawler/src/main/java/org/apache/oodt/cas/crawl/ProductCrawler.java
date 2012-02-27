@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.crawl;
 
 //OODT imports
@@ -40,8 +38,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author mattmann
- * @author bfoster
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  * @version $Revision$
  * 
  * <p>
@@ -49,7 +47,6 @@ import java.util.logging.Logger;
  * communicate with the file manager and parse met files that show how to ingest
  * a particular Product into the File Manager.
  * </p>
- * 
  */
 public abstract class ProductCrawler extends ProductCrawlerBean {
 
@@ -76,17 +73,19 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
     private Ingester ingester;
 
     public void crawl() {
-        this.crawl(new File(this.getProductPath()));
+       crawl(new File(this.getProductPath()));
     }
 
     public void crawl(File dirRoot) {
     	this.ingestStatus = new Vector<IngestStatus>();
 
         // Load actions
-        if (this.getApplicationContext() != null)
+        if (this.getApplicationContext() != null) {
             (this.actionRepo = new CrawlerActionRepo())
                     .loadActionsFromBeanFactory(this.getApplicationContext(), this
                             .getActionIds());
+            validateActions();
+        }
 
         // create ingester
         this.ingester = new StdIngester(this.getClientTransferer());
@@ -129,7 +128,21 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
     public List<IngestStatus> getIngestStatus() {
     	return Collections.unmodifiableList(this.ingestStatus);
     }
-    
+
+    private void validateActions() {
+       StringBuffer actionErrors = new StringBuffer("");
+       for (CrawlerAction action : actionRepo.getActions()) {
+          try {
+             action.validate();
+          } catch (Exception e) {
+             actionErrors.append(" " + action.getId() + ": " + e.getMessage() + "\n");
+          }
+       }
+       if (actionErrors.length() > 0) {
+          throw new RuntimeException("Actions failed validation:\n" + actionErrors);
+       }
+    }
+
     private synchronized boolean containsRequiredMetadata(
             Metadata productMetadata) {
         for (int i = 0; i < this.getRequiredMetadata().size(); i++) {
@@ -290,5 +303,4 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
         }
         return allSucceeded;
     }
-
 }
