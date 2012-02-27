@@ -3,6 +3,9 @@ Apache OODT Change Log
 
 Release 0.4: Current Development
 --------------------------------------------
+* OODT-389 Lucene Workflow Instance Repository index now intialized on startup (pramirez)
+
+* OODT-382 Lucene FileManager index now intialized on startup (pramirez)
 
 * OODT-388 Clearly indicate location for loading globally-required Balance modules (ahart)
 
