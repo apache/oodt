@@ -156,6 +156,19 @@ public class TestLuceneCatalog extends TestCase {
         }
 
     }
+    
+    /**
+    * @since OODT-382
+    */
+    public void testNoCatalogDirectoryQueries() {
+        // Test querying against a catalog directory that has not yet been created or is empty. 
+        // The LuceneCatalogFactory should be creating the index directory if not there.
+        try {
+            myCat.getTopNProducts(10);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
 
     public void testRemoveProduct() {
         Product productToRemove = getTestProduct();
