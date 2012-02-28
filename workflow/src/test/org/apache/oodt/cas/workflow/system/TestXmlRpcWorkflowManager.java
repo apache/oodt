@@ -20,13 +20,17 @@ package org.apache.oodt.cas.workflow.system;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //Junit imports
 import junit.framework.TestCase;
 
 //OODT imports
+import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 
 /**
@@ -47,6 +51,9 @@ public class TestXmlRpcWorkflowManager extends TestCase {
 
   private String luceneCatLoc;
 
+  private static final Logger LOG = Logger
+      .getLogger(TestXmlRpcWorkflowManager.class.getName());
+
   public void testGetWorkflowInstances() {
     Vector workflowInsts = null;
     try {
@@ -65,26 +72,6 @@ public class TestXmlRpcWorkflowManager extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    // FIXME: wmgr.shutdown(); // Define a method and shutdown the webserver.
-    // This is
-    // FIXME: not implemented in XmlRpcWorkflowManager.
-
-    // blow away lucene cat
-    deleteAllFiles(luceneCatLoc);
-
-  }
-
-  private void deleteAllFiles(String startDir) {
-    File startDirFile = new File(startDir);
-    File[] delFiles = startDirFile.listFiles();
-
-    if (delFiles != null && delFiles.length > 0) {
-      for (int i = 0; i < delFiles.length; i++) {
-        delFiles[i].delete();
-      }
-    }
-
-    startDirFile.delete();
 
   }
 
@@ -118,11 +105,25 @@ public class TestXmlRpcWorkflowManager extends TestCase {
     }
 
     try {
-      luceneCatLoc = File.createTempFile("blah", "txt").getParentFile().getCanonicalPath();
-      luceneCatLoc = !luceneCatLoc.endsWith("/") ? luceneCatLoc+"/":luceneCatLoc;
+      luceneCatLoc = File.createTempFile("blah", "txt").getParentFile()
+          .getCanonicalPath();
+      luceneCatLoc = !luceneCatLoc.endsWith("/") ? luceneCatLoc + "/"
+          : luceneCatLoc;
       luceneCatLoc += "repo";
+      LOG.log(Level.INFO, "Lucene instance repository: [" + luceneCatLoc + "]");
     } catch (Exception e) {
       fail(e.getMessage());
+    }
+
+    if (new File(luceneCatLoc).exists()) {
+      // blow away lucene cat
+      LOG.log(Level.INFO, "Removing workflow instance repository: ["
+          + luceneCatLoc + "]");
+      try {
+        FileUtils.deleteDirectory(new File(luceneCatLoc));
+      } catch (IOException e) {
+        fail(e.getMessage());
+      }
     }
 
     System
