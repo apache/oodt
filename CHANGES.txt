@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 0.4: Current Development
 --------------------------------------------
+* OODT-392 Remove old command line option code from commons (bfoster)
+
 * OODT-391 Integrate CAS-Catalog with CAS-CLI (bfoster)
 
 * OODT-352 Integrate CAS-CLI into CAS-Crawler (bfoster)
