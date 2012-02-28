@@ -10,8 +10,6 @@
 	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <import resource="protocol-action-beans.xml"/>
-  <import resource="protocol-cmd-line-beans.xml"/>
 	<import resource="classpath*:/org/apache/oodt/cas/protocol/**/*-protocol-config.xml"/>
 	
 </beans>

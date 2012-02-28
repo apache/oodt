@@ -14,19 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.action;
+package org.apache.oodt.cas.protocol.system;
 
 //OODT imports
-import org.apache.oodt.cas.protocol.system.ProtocolManager;
+import org.apache.oodt.cas.cli.CmdLineUtility;
 
 /**
- * Mock class for {@ProtocolAction}.
- * 
- * @author bfoster
+ * @author bfoster (Brian Foster)
  */
-public class MockProtocolAction extends ProtocolAction {
+public class ProtocolCommandLine {
 
-	@Override
-	public void performAction(ProtocolManager protocolManager) throws Exception {}
-
+	public static void main(String[] args) throws Exception {
+      CmdLineUtility cmdLineUtility = new CmdLineUtility();
+      cmdLineUtility.run(args);
+	}
 }

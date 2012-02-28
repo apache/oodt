@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Author: bfoster 
+  Description: ProtocolManager Configuration
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="download" class="org.apache.oodt.cas.protocol.cli.action.DownloadCliAction">
+		<property name="description" value="Downloads a file" />
+	</bean>
+	<bean id="getSupportedFactories" class="org.apache.oodt.cas.protocol.cli.action.GetSupportedFactoriesCliAction">
+		<property name="description" value="Prints out list of supported ProtocolFactory(s)" />
+	</bean>
+	<bean id="crossProtocolTransfer" class="org.apache.oodt.cas.protocol.cli.action.CrossProtocolTransferCliAction">
+		<property name="description" value="Transfers a file across 2 different protocols" />
+		<property name="verifierFactory" ref="BasicVerifier" />
+	</bean>
+
+	<bean id="BasicVerifier" class="org.apache.oodt.cas.protocol.verify.BasicProtocolVerifierFactory" />
+</beans>

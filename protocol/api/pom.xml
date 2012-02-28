@@ -76,6 +76,15 @@
 				</executions>
 			</plugin>
 		</plugins>
+    <resources>
+      <resource>
+        <targetPath>org/apache/oodt/cas/protocol</targetPath>
+        <directory>${basedir}/src/main/resources/policy</directory>
+        <includes>
+          <include>protocol-config.xml</include>
+        </includes>
+      </resource>
+    </resources>
 	</build>
 	<dependencies>
 		<dependency>
@@ -88,6 +97,11 @@
 			<artifactId>cas-metadata</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-cli</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>

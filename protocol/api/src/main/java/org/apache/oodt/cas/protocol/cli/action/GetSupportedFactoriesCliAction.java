@@ -14,25 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.action;
+package org.apache.oodt.cas.protocol.cli.action;
 
-// OODT imports
+//OODT imports
+import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.protocol.ProtocolFactory;
-import org.apache.oodt.cas.protocol.system.ProtocolManager;
 
 /**
  * {@link ProtocolAction} for get a list of supported {@link ProtocolFactory}s.
- *
- * @author bfoster
+ * 
+ * @author bfoster (Brian Foster)
  */
-public class GetSupportedFactoriesAction extends ProtocolAction {
+public class GetSupportedFactoriesCliAction extends ProtocolCliAction {
 
-	@Override
-	public void performAction(ProtocolManager protocolManager) throws Exception {
-		System.out.println("Supported Factories:");
-		for (ProtocolFactory factory : protocolManager.getFactories()) {
-			System.out.println(" - " + factory.getClass().getCanonicalName());
-		}
-	}
-
+   @Override
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
+      try {
+         printer.println("Supported Factories:");
+         for (ProtocolFactory factory : getProtocolManager().getFactories()) {
+            System.out.println(" - " + factory.getClass().getCanonicalName());
+         }
+      } catch (Exception e) {
+         throw new CmdLineActionException(
+               "Failed to get supported factories : " + e.getMessage(), e);
+      }
+   }
 }

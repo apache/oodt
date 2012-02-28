@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author: bfoster Description: ProtocolManager Configuration -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="user" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+		<property name="shortOption" value="u" />
+		<property name="longOption" value="user" />
+		<property name="description" value="Username for authentication" />
+		<property name="hasArgs" value="true" />
+		<property name="argsDescription" value="username" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="download" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="download" />
+          </list>
+        </property>
+      </bean>
+    </property>
+	</bean>
+
+	<bean id="pass" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+		<property name="shortOption" value="p" />
+		<property name="longOption" value="pass" />
+		<property name="description" value="Password for authentication" />
+		<property name="hasArgs" value="true" />
+		<property name="argsDescription" value="password" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="download" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="download" />
+          </list>
+        </property>
+      </bean>
+    </property>
+	</bean>
+
+	<bean id="url" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+		<property name="shortOption" value="url" />
+		<property name="longOption" value="url" />
+		<property name="description" value="URL to download" />
+		<property name="hasArgs" value="true" />
+		<property name="argsDescription" value="URL" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="download" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="download" />
+          </list>
+        </property>
+      </bean>
+    </property>
+	</bean>
+
+	<bean id="fromUrl" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+		<property name="shortOption" value="fu" />
+		<property name="longOption" value="fromUrl" />
+		<property name="description" value="URL to get file" />
+		<property name="hasArgs" value="true" />
+		<property name="argsDescription" value="URL" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="crossProtocolTransfer" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="CrossProtocolTransfer" p:methodName="setFromUri" />
+          </list>
+        </property>
+      </bean>
+    </property>
+	</bean>
+
+	<bean id="toUrl" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+		<property name="shortOption" value="tu" />
+		<property name="longOption" value="toUrl" />
+		<property name="description" value="URL to send file" />
+		<property name="hasArgs" value="true" />
+		<property name="argsDescription" value="URL" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="crossProtocolTransfer" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="CrossProtocolTransfer" p:methodName="setToUri" />
+          </list>
+        </property>
+      </bean>
+    </property>
+	</bean>
+</beans>

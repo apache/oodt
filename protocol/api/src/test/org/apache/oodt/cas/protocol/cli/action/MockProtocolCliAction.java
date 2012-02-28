@@ -14,29 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.protocol.action;
+package org.apache.oodt.cas.protocol.cli.action;
 
-//JUnit imports
-import java.net.URISyntaxException;
-
-import junit.framework.TestCase;
+//OODT imports
+import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 
 /**
- * Test class for {@link ProtocolAction}.
+ * Mock class for {@ProtocolAction}.
  * 
- * @author bfoster
+ * @author bfoster (Brian Foster)
  */
-public class TestProtocolAction extends TestCase {
+public class MockProtocolCliAction extends ProtocolCliAction {
 
-	public void testInitialState() throws URISyntaxException {
-		MockProtocolAction action = new MockProtocolAction();
-		action.setId("id");
-		action.setUser("user");
-		action.setPass("pass");
-		action.setSite("http://some-site");
-		assertEquals("id", action.getId());
-		assertEquals("user", action.getAuthentication().getUser());
-		assertEquals("pass", action.getAuthentication().getPass());
-		assertEquals("http://some-site", action.getSite().toString());
-	}
+   @Override
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {      
+   }
 }
