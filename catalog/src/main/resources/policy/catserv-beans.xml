@@ -16,68 +16,56 @@
     limitations under the License.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-        
-    <bean class="org.apache.oodt.commons.spring.postprocessor.SetIdBeanPostProcessor"/>    
-    
-    <!-- Catalog Services -->
-    <bean id="CatalogServiceLocalFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.system.impl.CatalogServiceLocalFactory">
-        <property name="transactionIdFactory" value="org.apache.oodt.cas.catalog.struct.impl.transaction.UuidTransactionIdFactory"/>
-        <property name="catalogRepositoryFactory" ref="SerializedCatalogRepositoryFactory"/>
-        <property name="ingestMapperFactory" ref="InMemoryIngestMapperFactory"/>
-        <property name="pluginStorageDir" value="${pcs.support.home}/cas-catalog/plugin-jars/"/>
-        <property name="restrictQueryPermissions" value="false"/>
-        <property name="restrictIngestPermissions" value="false"/>
-    	<property name="oneCatalogFailsAllFail" value="true"/>
-    	<property name="simplifyQueries" value="true"/>
-        <property name="disableIntersectingCrossCatalogQueries" value="false"/>
-        <property name="crossCatalogResultSortingThreshold" value="200"/>
-    </bean>    
-    <bean id="CatalogServiceClientFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.system.impl.CatalogServiceClientFactory">
-        <property name="communicationChannelClientFactory" ref="XmlRpcClientFactory"/>
-        <property name="autoPagerSize" value="1000"/>
-    </bean>
-    
-    <!-- Communication Channels -->
-    <bean id="XmlRpcServerFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelServerFactory">
-        <property name="port" value="${catalog.port}"/>
-        <property name="catalogServiceFactory" ref="CatalogServiceLocalFactory"/>
-    </bean> 
-    <bean id="XmlRpcClientFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelClientFactory">
-        <property name="serverUrl" value="${catalog.url}"/>
-        <property name="requestTimeout" value="20"/>
-        <property name="connectionTimeout" value="60"/>
-        <property name="chunkSize" value="1024"/>
-    </bean> 
-    
-    <!-- Catalog Repositories -->
-    <bean id="SpringCatalogRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.repository.SpringCatalogRepositoryFactory">
-        <property name="catalogBeanRepo" value="${catalog.home}/policy/filemgr-catalog-beans.xml"/>
-    </bean>
-    <bean id="WorkflowManagerRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.repository.SpringCatalogRepositoryFactory">
-        <property name="catalogBeanRepo" value="${catalog.home}/policy/workflow-manager-beans.xml"/>
-    </bean>
-    <bean id="SerializedCatalogRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.repository.SerializedCatalogRepositoryFactory">
-        <property name="storageDir" value="${pcs.support.home}/cas-catalog/catalog-repo"/>
-    </bean>
-    
-    <!-- Mapper Indexes -->
-    <bean id="DataSourceIngestMapperFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.mapping.DataSourceIngestMapperFactory">
-        <property name="jdbcUrl" value="jdbc:oracle:thin:@dew.jpl.nasa.gov:1521:npptest"/>
-        <property name="user" value="sa"/>
-        <property name="pass" value=""/>
-        <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
-    </bean>
-    <bean id="InMemoryIngestMapperFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.mapping.InMemoryIngestMapperFactory">
-        <property name="jdbcUrl" value="jdbc:hsqldb:file:${pcs.support.home}/hsqldb;shutdown=true"/>
-        <property name="user" value="sa"/>
-        <property name="pass" value=""/>
-        <property name="driver" value="org.hsqldb.jdbcDriver"/>
-        <property name="tablesFile" value="${catalog.home}/policy/in-memory-ingest-mapper.sql"/>        
-    </bean>
-    <bean id="MemoryBasedIngestMapperFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.mapping.MemoryBasedIngestMapperFactory"/>
-    
-</beans>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<bean class="org.apache.oodt.commons.spring.postprocessor.SetIdBeanPostProcessor" />
+
+	<!-- Catalog Services -->
+	<bean id="CatalogServiceLocalFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.system.impl.CatalogServiceLocalFactory">
+		<property name="transactionIdFactory" value="org.apache.oodt.cas.catalog.struct.impl.transaction.UuidTransactionIdFactory" />
+		<property name="catalogRepositoryFactory" ref="SerializedCatalogRepositoryFactory" />
+		<property name="ingestMapperFactory" ref="InMemoryIngestMapperFactory" />
+		<property name="pluginStorageDir" value="${pcs.support.home}/cas-catalog/plugin-jars/" />
+		<property name="restrictQueryPermissions" value="false" />
+		<property name="restrictIngestPermissions" value="false" />
+		<property name="oneCatalogFailsAllFail" value="true" />
+		<property name="simplifyQueries" value="true" />
+		<property name="disableIntersectingCrossCatalogQueries" value="false" />
+		<property name="crossCatalogResultSortingThreshold" value="200" />
+	</bean>
+
+	<!-- Communication Channels -->
+	<bean id="XmlRpcServerFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.server.channel.xmlrpc.XmlRpcCommunicationChannelServerFactory">
+		<property name="port" value="${catalog.port}" />
+		<property name="catalogServiceFactory" ref="CatalogServiceLocalFactory" />
+	</bean>
+
+	<!-- Catalog Repositories -->
+	<bean id="SpringCatalogRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.repository.SpringCatalogRepositoryFactory">
+		<property name="catalogBeanRepo" value="${catalog.home}/policy/filemgr-catalog-beans.xml" />
+	</bean>
+	<bean id="WorkflowManagerRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.repository.SpringCatalogRepositoryFactory">
+		<property name="catalogBeanRepo" value="${catalog.home}/policy/workflow-manager-beans.xml" />
+	</bean>
+	<bean id="SerializedCatalogRepositoryFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.repository.SerializedCatalogRepositoryFactory">
+		<property name="storageDir" value="${pcs.support.home}/cas-catalog/catalog-repo" />
+	</bean>
+
+	<!-- Mapper Indexes -->
+	<bean id="DataSourceIngestMapperFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.mapping.DataSourceIngestMapperFactory">
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@dew.jpl.nasa.gov:1521:npptest" />
+		<property name="user" value="sa" />
+		<property name="pass" value="" />
+		<property name="driver" value="oracle.jdbc.driver.OracleDriver" />
+	</bean>
+	<bean id="InMemoryIngestMapperFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.mapping.InMemoryIngestMapperFactory">
+		<property name="jdbcUrl" value="jdbc:hsqldb:file:${pcs.support.home}/hsqldb;shutdown=true" />
+		<property name="user" value="sa" />
+		<property name="pass" value="" />
+		<property name="driver" value="org.hsqldb.jdbcDriver" />
+		<property name="tablesFile" value="${catalog.home}/policy/in-memory-ingest-mapper.sql" />
+	</bean>
+	<bean id="MemoryBasedIngestMapperFactory" lazy-init="true" class="org.apache.oodt.cas.catalog.mapping.MemoryBasedIngestMapperFactory" />
+
+</beans>

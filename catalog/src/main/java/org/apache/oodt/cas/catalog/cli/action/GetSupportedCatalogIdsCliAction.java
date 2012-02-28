@@ -14,42 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.catalog.server.action;
-
-//Spring imports
-import org.springframework.beans.factory.annotation.Required;
+package org.apache.oodt.cas.catalog.cli.action;
 
 //OODT imports
 import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
-import org.apache.oodt.commons.spring.SpringSetIdInjectionType;
+import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * A {@link CmdLineAction} which get a list of supported {@link Catalog}
+ * IDs for given {@link CatalogServiceClient}.
  *
+ * @author bfoster (Brian Foster) 
  */
-public abstract class CatalogServiceServerAction implements SpringSetIdInjectionType {
-	
-	protected String id;
-	protected String description;
-	
-	public String getId() {
-		return id;
-	}
+public class GetSupportedCatalogIdsCliAction extends CatalogServiceCliAction {
 
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	@Required
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	public String getDescription() {
-		return this.description;
-	}
-	
-	public abstract void performAction(CatalogServiceClient csClient) throws Exception;
-	
+   @Override
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
+      try {
+         printer.println("CatalogIDs: " + getClient().getCurrentCatalogIds());
+      } catch (Exception e) {
+         throw new CmdLineActionException(
+               "Failed to get supported Catalog IDs : " + e.getMessage(), e);
+      }
+   }
 }

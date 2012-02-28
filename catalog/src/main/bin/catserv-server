@@ -20,14 +20,14 @@
 set args
 
 if ( $#args > 0 ) then
-	set args = "$*"
+        set args = "$*"
 endif
 
 setenv CATALOG_HOME `pwd`/..
 
 ${JAVA_HOME}/bin/java \
-   -Djava.ext.dirs=../lib \
-   -Djava.util.logging.config.file=../etc/logging.properties \
-   -Dorg.apache.oodt.cas.catalog.properties.file=../etc/catalog-service.properties \
-   org.apache.oodt.cas.catalog.server.CatalogServiceServerLauncher ${args}
-   
+        -Djava.ext.dirs=../lib \
+        -Djava.util.logging.config.file=../etc/logging.properties \
+        -Dorg.apache.oodt.cas.cli.action.spring.config=../policy/cmd-line-server-actions.xml \
+        -Dorg.apache.oodt.cas.cli.option.spring.config=../policy/cmd-line-server-options.xml \
+        org.apache.oodt.cas.catalog.server.CatalogServiceServerLauncher ${args}

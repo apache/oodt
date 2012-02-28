@@ -14,20 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.catalog.server.action;
+package org.apache.oodt.cas.catalog.cli.action;
 
 //OODT imports
-import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
+import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 
 /**
- * @author bfoster
- * @version $Revision$
- *
+ * A {@link CmdLineAction} which shuts down Catalog Service server.
+ * @author bfoster (Brian Foster)
  */
-public class GetSupportedCatalogIds extends CatalogServiceServerAction {
-	
-	public void performAction(CatalogServiceClient csClient) throws Exception {
-		System.out.println("CatalogIDs: " + csClient.getCurrentCatalogIds());
-	}
+public class ShutdownCliAction extends CatalogServiceCliAction {
 
+   @Override
+   public void execute(ActionMessagePrinter printer)
+         throws CmdLineActionException {
+      try {
+         getClient().shutdown();
+      } catch (Exception e) {
+         throw new CmdLineActionException("Failed to shutdown server : "
+               + e.getMessage(), e);
+      }
+   }
 }
