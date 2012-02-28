@@ -3,6 +3,9 @@ Apache OODT Change Log
 
 Release 0.4: Current Development
 --------------------------------------------
+
+* OODT-396 Add shutdown hook to the Workflow Manager server (mattmann)
+
 * OODT-394 Integrate CAS-Protocol with CAS-CLI (bfoster)
 
 * OODT-392 Remove old command line option code from commons (bfoster)

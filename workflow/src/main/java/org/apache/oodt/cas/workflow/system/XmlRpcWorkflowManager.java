@@ -148,6 +148,15 @@ public class XmlRpcWorkflowManager {
 
     }
 
+  public boolean shutdown() {
+    if (this.webServer != null) {
+      webServer.shutdown();
+      webServer = null;
+      return true;
+    } else
+      return false;
+  }
+
   public String executeDynamicWorkflow(Vector<String> taskIds, Hashtable metadata)
       throws RepositoryException, EngineException {
     if (taskIds == null || (taskIds != null && taskIds.size() == 0))
