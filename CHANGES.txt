@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-373 PCS OpsUI component not listed in OODT pom.xml (ahart)
+
 * OODT-397 XmlRpcWorkflowManager tests don't properly clean up 
   LuceneCatalog remnants (mattmann)
 
