@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 0.4: Current Development
 --------------------------------------------
+* OODT-391 Integrate CAS-Catalog with CAS-CLI (bfoster)
+
 * OODT-352 Integrate CAS-CLI into CAS-Crawler (bfoster)
 
 * OODT-389 Lucene Workflow Instance Repository index now intialized on startup (pramirez)
