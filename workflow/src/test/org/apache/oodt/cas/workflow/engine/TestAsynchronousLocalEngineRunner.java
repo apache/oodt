@@ -21,10 +21,7 @@ package org.apache.oodt.cas.workflow.engine;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -33,10 +30,12 @@ import java.util.Date;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
-import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.commons.util.DateConvert;
+
+//JODA imports
+import org.joda.time.DateTime;
+import org.joda.time.Seconds;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -59,24 +58,29 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
     WorkflowTask task = new WorkflowTask();
     task.setConditions(Collections.emptyList());
     task.setRequiredMetFields(Collections.emptyList());
-    task.setTaskConfig(new WorkflowTaskConfiguration());
     task.setTaskId("urn:cas:workflow:tester");
     task.setTaskInstanceClassName(SimpleTester.class.getName());
     task.setTaskName("Tester");
+    WorkflowTaskConfiguration config = new WorkflowTaskConfiguration();
+    config.addConfigProperty("TestDirPath",
+        testDir.getAbsolutePath().endsWith("/") ? testDir.getAbsolutePath()
+            : testDir.getAbsolutePath() + "/");
+    task.setTaskConfig(config);
     Metadata met = new Metadata();
     met.addMetadata("StartDateTime", DateUtils.toString(Calendar.getInstance()));
-    met.addMetadata("TestDir", testDir.getAbsolutePath());
     try {
       runner.execute(task, met);
       runner.execute(task, met);
       assertTrue(ranFast());
     } catch (Exception e) {
+      e.printStackTrace();
       fail(e.getMessage());
     }
   }
 
   private boolean ranFast() {
     boolean ranFast = true;
+    int jobNum = 1;
     for (File f : this.testDir.listFiles()) {
       BufferedReader br = null;
       try {
@@ -88,11 +92,14 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
 
         String[] toks = line.split(",");
         Date dateTime = DateConvert.isoParse(toks[1]);
-        // FIXME: compare the date time with the current
-        // date time and make sure that it's not larger
-        // than 30 seconds for any of the files (should be 2)
-        // in there
+        Seconds seconds = Seconds.secondsBetween(new DateTime(dateTime),
+            new DateTime());
+        if (seconds.getSeconds() > 30) {
+          fail("More than 30 seconds elapsed now and running job " + jobNum
+              + ": seconds elapsed: [" + seconds.getSeconds() + "]");
+        }
       } catch (Exception e) {
+        e.printStackTrace();
         fail(e.getMessage());
         ranFast = false;
       } finally {
@@ -110,38 +117,6 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
     return ranFast;
   }
 
-  private class SimpleTester implements WorkflowTaskInstance {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance#run(org.apache
-     * .oodt.cas.metadata.Metadata,
-     * org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration)
-     */
-    @Override
-    public void run(Metadata metadata, WorkflowTaskConfiguration config)
-        throws WorkflowTaskInstanceException {
-      PrintWriter pw = null;
-      try {
-        pw = new PrintWriter(new FileOutputStream(testDir.getAbsolutePath()
-            + "/" + "task-" + metadata.getMetadata("StartDateTime")));
-        pw.println("StartDateTime=" + metadata.getMetadata("StartDateTime"));
-      } catch (FileNotFoundException e) {
-        throw new WorkflowTaskInstanceException(e.getMessage());
-      } finally {
-        if (pw != null) {
-          try {
-            pw.close();
-          } catch (Exception ignore) {
-          }
-          pw = null;
-        }
-      }
-
-    }
-  }
-
   /*
    * (non-Javadoc)
    * 
@@ -149,7 +124,12 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
    */
   @Override
   protected void setUp() throws Exception {
-    testDir = File.createTempFile("test", "txt").getParentFile();
+    String parentPath = File.createTempFile("test", "txt").getParentFile().getAbsolutePath();
+    parentPath = parentPath.endsWith("/") ? parentPath:parentPath + "/";
+    String testJobDirPath = parentPath + "jobs";
+    testDir = new File(testJobDirPath);
+    testDir.mkdirs();
+    this.runner = new AsynchronousLocalEngineRunner();
   }
 
   /*
@@ -164,6 +144,7 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
     deleteAllFiles(testDir.getAbsolutePath());
     testDir.delete();
     testDir = null;
+    this.runner = null;
   }
 
   private void deleteAllFiles(String startDir) {

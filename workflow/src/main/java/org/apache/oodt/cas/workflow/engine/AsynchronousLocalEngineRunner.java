@@ -21,6 +21,7 @@ package org.apache.oodt.cas.workflow.engine;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -50,8 +51,11 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
 
   private Map<String, Thread> workerMap;
 
+  private final int NUM_THREADS = 25;
+
   public AsynchronousLocalEngineRunner() {
-    this.executor = new ThreadPoolExecutor(0, 0, 0, TimeUnit.SECONDS, null,
+    this.executor = new ThreadPoolExecutor(NUM_THREADS, NUM_THREADS, 30,
+        TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
         new RejectedExecutionHandler() {
 
           @Override
@@ -105,7 +109,7 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
 
     };
 
-    String id = null;
+    String id = "";
     synchronized (id) {
       id = UUID.randomUUID().toString();
       this.workerMap.put(id, worker);
