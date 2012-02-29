@@ -38,8 +38,8 @@ public class FileExistCmdLineOptionValidator implements CmdLineOptionValidator {
 
       for (String value : optionInst.getValues()) {
          if (!new File(value).exists()) {
-            return new Result(Grade.FAIL, "Option value " + value
-                  + " for option " + optionInst.getOption().getLongOption()
+            return new Result(Grade.FAIL, "Value '" + value
+                  + "' for option " + optionInst.getOption().getLongOption()
                   + " is not an existing file");
          }
       }

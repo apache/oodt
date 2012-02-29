@@ -59,7 +59,7 @@ java \
   -Djava.util.logging.config.file=./logging.properties \
         -Dorg.apache.oodt.cas.cli.action.spring.config=./cmd-line-actions.xml \
         -Dorg.apache.oodt.cas.cli.option.spring.config=./cmd-line-options.xml \
-  MyMain $*
+  MyMain "$@"
 
 Then checkout cas-cli and in the same directory as its pom.xml file run (you will need to install maven 2 if you do not have it):
 
@@ -957,3 +957,168 @@ You should see:
   PrintMessageAction                  Prints out specified message
 
 -----------------------------------------------------------------------------------------------------------------
+
+At the begin of this guide it was stated that AdvancedCmdLineOption is a ValidatableCmdLineOption and HandleableCmdLineOption.  It has already been should how they are HandleableCmdLineOption by examples using handlers.  Now let's look at how they are ValidatableCmdLineOption.  Lets added another sub-option to --print which allows use to specify whatever message we want, so long as the argument value is "<someword> World":
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+  <bean id="execute" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption">
+    <property name="shortOption" value="e" />
+    <property name="longOption" value="execute" />
+    <property name="description" value="Executes the specified action" />
+    <property name="hasArgs" value="true" />
+    <property name="required" value="true" />
+  </bean>
+
+  <bean id="manual" class="org.apache.oodt.cas.cli.option.HelpCmdLineOption">
+    <property name="shortOption" value="man" />
+    <property name="longOption" value="manual" />
+    <property name="description" value="Print out option help" />
+    <property name="hasArgs" value="false" />
+    <property name="required" value="false" />
+  </bean>
+
+  <bean id="listActions" class="org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption">
+    <property name="shortOption" value="la" />
+    <property name="longOption" value="listActions" />
+    <property name="description" value="Print out supported actions" />
+    <property name="hasArgs" value="false" />
+    <property name="required" value="false" />
+  </bean>
+
+  <bean id="print" class="org.apache.oodt.cas.cli.option.GroupCmdLineOption">
+    <property name="shortOption" value="p" />
+    <property name="longOption" value="print" />
+    <property name="description" value="Declare that you wish to print a message" />
+    <property name="hasArgs" value="false" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="PrintMessageAction" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="subOptions">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="helloWorld" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="byeWorld" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="custom" p:required="false" />
+      </list>
+    </property>
+    </bean>
+
+  <bean id="helloWorld" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption" p:isSubOption="true">
+    <property name="shortOption" value="hw" />
+    <property name="longOption" value="helloWorld" />
+    <property name="description" value="Print out 'Hello World'" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+            <list>
+              <value>Hello World</value>
+            </list>
+        </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="PrintMessageAction" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="PrintMessageAction" p:methodName="setMessage" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="byeWorld" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption" p:isSubOption="true">
+    <property name="shortOption" value="bw" />
+    <property name="longOption" value="byeWorld" />
+    <property name="description" value="Print out 'Bye World'" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+            <list>
+              <value>Bye World</value>
+            </list>
+        </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="PrintMessageAction" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="PrintMessageAction" p:methodName="setMessage" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="custom" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption" p:isSubOption="true">
+    <property name="shortOption" value="c" />
+    <property name="longOption" value="custom" />
+    <property name="description" value="Print out custom message" />
+    <property name="hasArgs" value="true" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="PrintMessageAction" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="PrintMessageAction" p:methodName="setMessage" />
+          </list>
+        </property>
+      </bean>
+    </property>
+    <property name="validators">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.validator.ArgRegExpCmdLineOptionValidator">
+          <property name="allowedArgs">
+            <list>
+                                                        <value>[^\s]+\sWorld</value>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+</beans>
+
+Now try executing:
+
+$ ./cli-test.sh -e PrintMessageAction -p -c "Hey World"
+
+You should see:
+Hey World
+
+Let's change it a bit:
+
+$ ./cli-test.sh -e PrintMessageAction -p -c "Hey There World"
+
+You should see:
+ERROR: Validation Failures: - Value 'Hey There World' is not allowed for option [longOption='custom',shortOption='c',description='Print out custom message'] - Allowed values = [[^\s]+\sWorld]
+
+The validator used was: org.apache.oodt.cas.cli.option.validator.ArgRegExpCmdLineOptionValidator.  This validator takes a java Pattern supported regular expression which is enforced against the options argument values.  Other supplied validators are:
+
+AllowedArgsCmdLineOptionValidator - Argument value must be one of the supplied values
+ClassExistsCmdLineOptionValidator - Expects the argument value to be an existing java class
+FileExistCmdLineOptionValidator - Expects the argument value to be an existing file

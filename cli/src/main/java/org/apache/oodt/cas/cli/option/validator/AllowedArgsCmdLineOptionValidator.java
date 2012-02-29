@@ -46,8 +46,8 @@ public class AllowedArgsCmdLineOptionValidator implements
 
       for (String value : optionInst.getValues()) {
          if (!allowedArgs.contains(value)) {
-            return new Result(Grade.FAIL, "Option value " + value
-                  + " is not allowed for option "
+            return new Result(Grade.FAIL, "Value '" + value
+                  + "' is not allowed for option "
                   + optionInst.getOption().getLongOption()
                   + " - Allowed values = " + this.getAllowedArgs());
          }

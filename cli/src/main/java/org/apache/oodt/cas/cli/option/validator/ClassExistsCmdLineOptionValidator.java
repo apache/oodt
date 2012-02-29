@@ -37,8 +37,8 @@ public class ClassExistsCmdLineOptionValidator implements
          try {
             Class.forName(value);
          } catch (Exception e) {
-            return new Result(Grade.FAIL, "Option value " + value
-                  + " for option " + optionInst.getOption().getLongOption()
+            return new Result(Grade.FAIL, "Value '" + value
+                  + "' for option " + optionInst.getOption().getLongOption()
                   + " is not a valid class");
          }
       }

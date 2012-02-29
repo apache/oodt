@@ -43,9 +43,8 @@ public class ArgRegExpCmdLineOptionValidator extends
                continue TOP;
             }
          }
-         return new Result(Grade.FAIL, "Option1 value " + value
-               + " is not allowed for option "
-               + optionInst.getOption().getLongOption()
+         return new Result(Grade.FAIL, "Value '" + value
+               + "' is not allowed for option " + optionInst.getOption()
                + " - Allowed values = " + getAllowedArgs());
       }
       return new Result(Grade.PASS, "Success");
