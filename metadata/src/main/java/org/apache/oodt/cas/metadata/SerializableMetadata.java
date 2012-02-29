@@ -170,8 +170,8 @@ public class SerializableMetadata extends Metadata implements Serializable {
             factory.setNamespaceAware(true);
             Document document = factory.newDocumentBuilder().newDocument();
 
-            Element root = (Element) document.createElement("cas:metadata");
-            root.setAttribute("xmlns:cas", "http://oodt.jpl.nasa.gov/1.0/cas");
+            Element root = document.createElementNS("http://oodt.jpl.nasa.gov/1.0/cas", "metadata");
+            root.setPrefix("cas");
             document.appendChild(root);
 
             // now add the set of metadata elements in the properties object
