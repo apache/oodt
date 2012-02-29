@@ -4,6 +4,10 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-395 SerializableMetadata.toXml() doesn't set namespace on root element (rickdn)
+
+* OODT-361 Workflow test event fails with NPE (rickdn)
+
 * OODT-373 PCS OpsUI component not listed in OODT pom.xml (ahart)
 
 * OODT-397 XmlRpcWorkflowManager tests don't properly clean up 
