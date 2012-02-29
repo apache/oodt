@@ -31,7 +31,7 @@ public class PrintMessageAction extends CmdLineAction {
 
    @Override
    public void execute(ActionMessagePrinter printer) {
-      Validate.notNull(message);
+      Validate.notNull(message, "Must specify message");
 
       printer.print(message);
    }
