@@ -267,10 +267,10 @@ Options can also have static argument values, which can be used as a default arg
     <property name="hasArgs" value="true" />
     <property name="argsDescription" value="message" />
     <property name="staticArgs">
-            <list>
-              <value>Hello World</value>
-            </list>
-        </property>
+      <list>
+        <value>Hello World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -317,10 +317,10 @@ So the static argument value made printMessage option value optional.  Now the o
     <property name="description" value="Message to print out" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
-            <list>
-              <value>Hello World</value>
-            </list>
-        </property>
+      <list>
+        <value>Hello World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -379,10 +379,10 @@ Now how is this useful, less change the the cmd-line-options.xml file, renaming 
     <property name="description" value="Print out 'Hello World'" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
-            <list>
-              <value>Hello World</value>
-            </list>
-        </property>
+      <list>
+        <value>Hello World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -407,10 +407,10 @@ Now how is this useful, less change the the cmd-line-options.xml file, renaming 
     <property name="description" value="Print out 'Bye World'" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
-            <list>
-              <value>Bye World</value>
-            </list>
-        </property>
+      <list>
+        <value>Bye World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -504,10 +504,10 @@ We can prevent the PrintMessageAction from having to throw this exception by, cr
     <property name="description" value="Print out 'Hello World'" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
-            <list>
-              <value>Hello World</value>
-            </list>
-        </property>
+      <list>
+        <value>Hello World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -532,10 +532,10 @@ We can prevent the PrintMessageAction from having to throw this exception by, cr
     <property name="description" value="Print out 'Bye World'" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
-            <list>
-              <value>Bye World</value>
-            </list>
-        </property>
+      <list>
+        <value>Bye World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -687,10 +687,10 @@ Up til now, we have just accepted that -a, -h, and -psa magically appear.  Howev
     <property name="description" value="Print out 'Hello World'" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
-            <list>
-              <value>Hello World</value>
-            </list>
-        </property>
+      <list>
+        <value>Hello World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -715,10 +715,10 @@ Up til now, we have just accepted that -a, -h, and -psa magically appear.  Howev
     <property name="description" value="Print out 'Bye World'" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
-            <list>
-              <value>Bye World</value>
-            </list>
-        </property>
+      <list>
+        <value>Bye World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -848,10 +848,10 @@ Similarly the same can be done for help and print supported actions:
     <property name="description" value="Print out 'Hello World'" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
-            <list>
-              <value>Hello World</value>
-            </list>
-        </property>
+      <list>
+        <value>Hello World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -876,10 +876,10 @@ Similarly the same can be done for help and print supported actions:
     <property name="description" value="Print out 'Bye World'" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
-            <list>
-              <value>Bye World</value>
-            </list>
-        </property>
+      <list>
+        <value>Bye World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -1018,10 +1018,10 @@ At the begin of this guide it was stated that AdvancedCmdLineOption is a Validat
     <property name="description" value="Print out 'Hello World'" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
-            <list>
-              <value>Hello World</value>
-            </list>
-        </property>
+      <list>
+        <value>Hello World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -1046,10 +1046,10 @@ At the begin of this guide it was stated that AdvancedCmdLineOption is a Validat
     <property name="description" value="Print out 'Bye World'" />
     <property name="hasArgs" value="false" />
     <property name="staticArgs">
-            <list>
-              <value>Bye World</value>
-            </list>
-        </property>
+      <list>
+        <value>Bye World</value>
+      </list>
+    </property>
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -1094,7 +1094,7 @@ At the begin of this guide it was stated that AdvancedCmdLineOption is a Validat
         <bean class="org.apache.oodt.cas.cli.option.validator.ArgRegExpCmdLineOptionValidator">
           <property name="allowedArgs">
             <list>
-                                                        <value>[^\s]+\sWorld</value>
+              <value>[^\s]+\sWorld</value>
             </list>
           </property>
         </bean>
@@ -1122,3 +1122,4 @@ The validator used was: org.apache.oodt.cas.cli.option.validator.ArgRegExpCmdLin
 AllowedArgsCmdLineOptionValidator - Argument value must be one of the supplied values
 ClassExistsCmdLineOptionValidator - Expects the argument value to be an existing java class
 FileExistCmdLineOptionValidator - Expects the argument value to be an existing file
+
