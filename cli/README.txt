@@ -167,7 +167,7 @@ If we where to change that to something else, say "Bye World", it would instead 
     <property name="message" value="Hello World" />
   </bean>
   <bean id="PrintMessageAction" class="org.apache.oodt.cas.cli.action.PrintMessageAction">
-    <property name="description" value="Prints out 'Hello World'" />
+    <property name="description" value="Prints out specified message" />
   </bean>
 </beans>
 
@@ -644,3 +644,316 @@ You should see:
 Bye World
 
 As you can see, still the same output as before without the grouping, but have we now added the ability to have list of optional options where at least one is required.
+
+Up til now, we have just accepted that -a, -h, and -psa magically appear.  However, these are defaults that a given to you for free if you don't specify replacements.  Say for example we don't like -a or --action for the action option and instead would like -e and --execute.  We can change our cmd-line-options.xml to the following:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+  <bean id="execute" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption">
+    <property name="shortOption" value="e" />
+    <property name="longOption" value="execute" />
+    <property name="description" value="Executes the specified action" />
+    <property name="hasArgs" value="true" />
+    <property name="required" value="true" />
+  </bean>
+
+  <bean id="print" class="org.apache.oodt.cas.cli.option.GroupCmdLineOption">
+    <property name="shortOption" value="p" />
+    <property name="longOption" value="print" />
+    <property name="description" value="Declare that you wish to print a message" />
+    <property name="hasArgs" value="false" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="PrintMessageAction" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="subOptions">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="helloWorld" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="byeWorld" p:required="false" />
+      </list>
+    </property>
+    </bean>
+
+  <bean id="helloWorld" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption" p:isSubOption="true">
+    <property name="shortOption" value="hw" />
+    <property name="longOption" value="helloWorld" />
+    <property name="description" value="Print out 'Hello World'" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+            <list>
+              <value>Hello World</value>
+            </list>
+        </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="PrintMessageAction" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="PrintMessageAction" p:methodName="setMessage" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="byeWorld" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption" p:isSubOption="true">
+    <property name="shortOption" value="bw" />
+    <property name="longOption" value="byeWorld" />
+    <property name="description" value="Print out 'Bye World'" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+            <list>
+              <value>Bye World</value>
+            </list>
+        </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="PrintMessageAction" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="PrintMessageAction" p:methodName="setMessage" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+</beans>
+
+Now execute the following and notice that -a and --action are no longer and -e and --execute are there instead:
+
+$ ./cli-test.sh -h
+
+You should see:
+-----------------------------------------------------------------------------------------------------------------
+| Short | Long                                             | Description
+-----------------------------------------------------------------------------------------------------------------
+
+ -e,     --execute <action-name>                            Executes the specified action
+ -p,     --print                                            Declare that you wish to print a message
+                                                              Requirement Rules: 
+                                                               [PrintMessageAction : REQUIRED] 
+
+   SubOptions:
+   > Required:
+   > Optional:
+      -hw,    --helloWorld                                  Print out 'Hello World'
+                                                              Requirement Rules: 
+                                                               [PrintMessageAction : OPTIONAL] 
+
+                                                              Handler: 
+                                                               Will invoke 'setHelloWorld' on action selected, 
+                                                               except for the following actions: 
+                                                               [PrintMessageAction : setMessage] 
+      -bw,    --byeWorld                                    Print out 'Bye World'
+                                                              Requirement Rules: 
+                                                               [PrintMessageAction : OPTIONAL] 
+
+                                                              Handler: 
+                                                               Will invoke 'setByeWorld' on action selected, 
+                                                               except for the following actions: 
+                                                               [PrintMessageAction : setMessage] 
+
+ -h,     --help                                             Prints help menu
+ -psa,   --printSupportedActions                            Print Supported Actions
+-----------------------------------------------------------------------------------------------------------------
+
+Now try executing a command we ran before:
+
+$ ./cli-test.sh -a PrintMessageAction -p -bw
+
+You should see:
+ERROR: Invalid option: 'a'
+
+This is because you now have to use your new action (i.e. -e):
+
+$ ./cli-test.sh -e PrintMessageAction -p -bw
+
+You should see:
+Bye World
+
+Similarly the same can be done for help and print supported actions:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+  <bean id="execute" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption">
+    <property name="shortOption" value="e" />
+    <property name="longOption" value="execute" />
+    <property name="description" value="Executes the specified action" />
+    <property name="hasArgs" value="true" />
+    <property name="required" value="true" />
+  </bean>
+
+  <bean id="manual" class="org.apache.oodt.cas.cli.option.HelpCmdLineOption">
+    <property name="shortOption" value="man" />
+    <property name="longOption" value="manual" />
+    <property name="description" value="Print out option help" />
+    <property name="hasArgs" value="false" />
+    <property name="required" value="false" />
+  </bean>
+
+  <bean id="listActions" class="org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption">
+    <property name="shortOption" value="la" />
+    <property name="longOption" value="listActions" />
+    <property name="description" value="Print out supported actions" />
+    <property name="hasArgs" value="false" />
+    <property name="required" value="false" />
+  </bean>
+
+  <bean id="print" class="org.apache.oodt.cas.cli.option.GroupCmdLineOption">
+    <property name="shortOption" value="p" />
+    <property name="longOption" value="print" />
+    <property name="description" value="Declare that you wish to print a message" />
+    <property name="hasArgs" value="false" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="PrintMessageAction" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="subOptions">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="helloWorld" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="byeWorld" p:required="false" />
+      </list>
+    </property>
+    </bean>
+
+  <bean id="helloWorld" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption" p:isSubOption="true">
+    <property name="shortOption" value="hw" />
+    <property name="longOption" value="helloWorld" />
+    <property name="description" value="Print out 'Hello World'" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+            <list>
+              <value>Hello World</value>
+            </list>
+        </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="PrintMessageAction" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="PrintMessageAction" p:methodName="setMessage" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="byeWorld" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption" p:isSubOption="true">
+    <property name="shortOption" value="bw" />
+    <property name="longOption" value="byeWorld" />
+    <property name="description" value="Print out 'Bye World'" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+            <list>
+              <value>Bye World</value>
+            </list>
+        </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="PrintMessageAction" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="PrintMessageAction" p:methodName="setMessage" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+</beans>
+
+Now try running:
+
+$ ./cli-test.sh -h
+
+You should see:
+ERROR: Invalid option: 'h'
+
+This is because you have replace -h and --help with -man and --manual so instead run:
+
+$ ./cli-test.sh -man
+
+You should see:
+-----------------------------------------------------------------------------------------------------------------
+| Short | Long                                             | Description
+-----------------------------------------------------------------------------------------------------------------
+
+ -e,     --execute <action-name>                            Executes the specified action
+ -p,     --print                                            Declare that you wish to print a message
+                                                              Requirement Rules: 
+                                                               [PrintMessageAction : REQUIRED] 
+
+   SubOptions:
+   > Required:
+   > Optional:
+      -hw,    --helloWorld                                  Print out 'Hello World'
+                                                              Requirement Rules: 
+                                                               [PrintMessageAction : OPTIONAL] 
+
+                                                              Handler: 
+                                                               Will invoke 'setHelloWorld' on action selected, 
+                                                               except for the following actions: 
+                                                               [PrintMessageAction : setMessage] 
+      -bw,    --byeWorld                                    Print out 'Bye World'
+                                                              Requirement Rules: 
+                                                               [PrintMessageAction : OPTIONAL] 
+
+                                                              Handler: 
+                                                               Will invoke 'setByeWorld' on action selected, 
+                                                               except for the following actions: 
+                                                               [PrintMessageAction : setMessage] 
+
+ -la,    --listActions                                      Print out supported actions
+ -man,   --manual                                           Print out option help
+-----------------------------------------------------------------------------------------------------------------
+
+Now execute:
+
+$ ./cli-test.sh -la
+
+You should see:
+-----------------------------------------------------------------------------------------------------------------
+| Action                            | Description
+-----------------------------------------------------------------------------------------------------------------
+  PrintHelloWorldAction               Prints out 'Hello World'
+
+  PrintMessageAction                  Prints out specified message
+
+-----------------------------------------------------------------------------------------------------------------
