@@ -496,7 +496,7 @@ We can prevent the PrintMessageAction from having to throw this exception by, cr
           p:option-ref="byeWorld" p:required="false" />
       </list>
     </property>
-    </bean>
+  </bean>
 
   <bean id="helloWorld" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption" p:isSubOption="true">
     <property name="shortOption" value="hw" />
@@ -679,7 +679,7 @@ Up til now, we have just accepted that -a, -h, and -psa magically appear.  Howev
           p:option-ref="byeWorld" p:required="false" />
       </list>
     </property>
-    </bean>
+  </bean>
 
   <bean id="helloWorld" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption" p:isSubOption="true">
     <property name="shortOption" value="hw" />
@@ -840,7 +840,7 @@ Similarly the same can be done for help and print supported actions:
           p:option-ref="byeWorld" p:required="false" />
       </list>
     </property>
-    </bean>
+  </bean>
 
   <bean id="helloWorld" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption" p:isSubOption="true">
     <property name="shortOption" value="hw" />
@@ -1010,7 +1010,7 @@ At the begin of this guide it was stated that AdvancedCmdLineOption is a Validat
           p:option-ref="custom" p:required="false" />
       </list>
     </property>
-    </bean>
+  </bean>
 
   <bean id="helloWorld" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption" p:isSubOption="true">
     <property name="shortOption" value="hw" />
