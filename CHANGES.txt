@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-399 cas-cli sub-option requirements for help printing was not
+  using p:required for GroupSubOption (bfoster)
+ 
 * OODT-395 SerializableMetadata.toXml() doesn't set namespace on root element (rickdn)
 
 * OODT-361 Workflow test event fails with NPE (rickdn)
