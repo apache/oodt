@@ -113,7 +113,8 @@ public class CmdLineUtils {
          CmdLineAction action, GroupCmdLineOption option) {
       Set<CmdLineOption> relevantOptions = Sets.newHashSet();
       for (GroupSubOption subOption : option.getSubOptions()) {
-         if (isRequired(action, subOption.getOption())
+         if (subOption.getOption().getRequirementRules().isEmpty()
+               || isRequired(action, subOption.getOption())
                || isStrictlyOptional(action, subOption.getOption())) {
             relevantOptions.add(subOption.getOption());
          }
@@ -162,7 +163,8 @@ public class CmdLineUtils {
 
       Set<CmdLineOption> requiredOptions = Sets.newHashSet();
       for (GroupSubOption subOption : option.getSubOptions()) {
-         if (isRequired(action, subOption.getOption())) {
+         if (subOption.isRequired()
+               || isRequired(action, subOption.getOption())) {
             requiredOptions.add(subOption.getOption());
          }
       }
