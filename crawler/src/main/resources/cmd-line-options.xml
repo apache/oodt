@@ -725,4 +725,143 @@
 			</bean>
 		</property>
 	</bean>
+
+  <bean id="notification" class="org.apache.oodt.cas.cli.option.GroupCmdLineOption">
+    <property name="shortOption" value="n" />
+    <property name="longOption" value="notification" />
+    <property name="description" value="Declare that your want email notification" />
+    <property name="hasArgs" value="false" />
+    <property name="required" value="false" />
+    <property name="subOptions">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="mailHost" p:required="true" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="sender" p:required="true" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="subject" p:required="true" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="message" p:required="true" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="recipients" p:required="true" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="ignoreInvalidAddresses" p:required="false" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="mailHost" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="mh" />
+    <property name="longOption" value="mailHost" />
+    <property name="description" value="Email Host" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="host" />
+    <property name="required" value="false" />
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.crawl.cli.option.handler.CrawlerBeansPropHandler">
+        <property name="properties">
+          <list>
+            <value>SendNotification.emailHost</value>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="sender" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="sdr" />
+    <property name="longOption" value="sender" />
+    <property name="description" value="Email sender" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="email address" />
+    <property name="required" value="false" />
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.crawl.cli.option.handler.CrawlerBeansPropHandler">
+        <property name="properties">
+          <list>
+            <value>SendNotification.sender</value>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="subject" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="sub" />
+    <property name="longOption" value="subject" />
+    <property name="description" value="Email subject" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="email subject" />
+    <property name="required" value="false" />
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.crawl.cli.option.handler.CrawlerBeansPropHandler">
+        <property name="properties">
+          <list>
+            <value>SendNotification.subject</value>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="message" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="msg" />
+    <property name="longOption" value="message" />
+    <property name="description" value="Email message body" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="email message" />
+    <property name="required" value="false" />
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.crawl.cli.option.handler.CrawlerBeansPropHandler">
+        <property name="properties">
+          <list>
+            <value>SendNotification.message</value>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="recipients" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="rcpts" />
+    <property name="longOption" value="recipients" />
+    <property name="description" value="List of recipient emails" />
+    <property name="type" value="java.util.List" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="email addresses" />
+    <property name="required" value="false" />
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.crawl.cli.option.handler.CrawlerBeansPropHandler">
+        <property name="properties">
+          <list>
+            <value>SendNotification.recipients</value>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="ignoreInvalidAddresses" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="iias" />
+    <property name="longOption" value="ignoreInvalidAddresses" />
+    <property name="description" value="If invalid addresses should just be ignored" />
+    <property name="type" value="boolean" />
+    <property name="hasArgs" value="false" />
+    <property name="required" value="false" />
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.crawl.cli.option.handler.CrawlerBeansPropHandler">
+        <property name="properties">
+          <list>
+            <value>SendNotification.ignoreInvalidAddresses</value>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
 </beans>

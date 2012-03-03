@@ -18,6 +18,7 @@ package org.apache.oodt.cas.crawl.action;
 
 //JDK imports
 import java.io.File;
+import java.util.List;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.Session;
@@ -38,6 +39,8 @@ import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
+import com.google.common.collect.Lists;
+
 /**
  * This action sends an email notification. It performs metadata and system
  * property replacement on the subject, recipients, and message. This allows the
@@ -52,7 +55,7 @@ public class EmailNotification extends CrawlerAction {
    private String mailHost;
    private String subject;
    private String message;
-   private String recipients;
+   private List<String> recipients;
    private String sender;
    private boolean ignoreInvalidAddresses;
 
@@ -74,8 +77,7 @@ public class EmailNotification extends CrawlerAction {
          msg.setSubject(PathUtils.doDynamicReplacement(subject, metadata));
          msg.setText(new String(PathUtils.doDynamicReplacement(message,
                metadata).getBytes()));
-         String[] recips = recipients.split(",");
-         for (String recipient : recips) {
+         for (String recipient : recipients) {
             try {
                msg.addRecipient(Message.RecipientType.TO, new InternetAddress(
                      PathUtils.replaceEnvVariables(recipient.trim(), metadata),
@@ -129,8 +131,13 @@ public class EmailNotification extends CrawlerAction {
       this.message = message;
    }
 
-   @Required
    public void setRecipients(String recipients) {
+      if (recipients != null) {
+         this.recipients = Lists.newArrayList(recipients.split(","));
+      }
+   }
+
+   public void setRecipients(List<String> recipients) {
       this.recipients = recipients;
    }
 
