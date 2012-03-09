@@ -89,6 +89,10 @@
           p:option-ref="dumpMetadata" p:required="false" />
         <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
           p:option-ref="luceneQuery" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="retrieveFilesById" p:required="false" />
+        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+          p:option-ref="retrieveFilesByName" p:required="false" />
 			</list>
 		</property>
 	</bean>
@@ -772,6 +776,94 @@
     </property>
   </bean>
 
+  <!-- retrieveFiles Options -->
+  <bean id="retrieveFilesById" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="rfbyid" />
+    <property name="longOption" value="retrieveFilesById" />
+    <property name="description" value="Triggers retrieveFilesById Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>retrieveFilesById</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="retrieveFilesById" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="retrieveFilesByName" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+    p:isSubOption="true">
+    <property name="shortOption" value="rfbyn" />
+    <property name="longOption" value="retrieveFilesByName" />
+    <property name="description" value="Triggers retrieveFilesByName Action" />
+    <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+      <list>
+        <value>retrieveFilesByName</value>
+      </list>
+    </property>
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="retrieveFilesByName" p:relation="REQUIRED" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="transferer" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="trans" />
+    <property name="longOption" value="transferer" />
+    <property name="description" value="Factory for creating DataTransfer which will perform the file transfer(s)" />
+    <property name="type" value="org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="transfer factory class" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="retrieveFilesById" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="retrieveFilesByName" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="retrieveFilesById" p:methodName="setDataTransferFactory" />
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="retrieveFilesByName" p:methodName="setDataTransferFactory" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="destination" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="dest" />
+    <property name="longOption" value="destination" />
+    <property name="description" value="Directory to transfer Product file to" />
+    <property name="type" value="java.io.File" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="directory" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="retrieveFilesById" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="retrieveFilesByName" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
+    </property>
+  </bean>
+
 	<!-- Options used for multiple Actions -->
   <bean id="productId" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
     <property name="shortOption" value="pid" />
@@ -789,6 +881,8 @@
           p:actionName="deleteProductById" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
           p:actionName="dumpMetadata" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="retrieveFilesById" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -812,6 +906,8 @@
           p:actionName="getProductByName" p:relation="REQUIRED" />
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
           p:actionName="deleteProductByName" p:relation="REQUIRED" />
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="retrieveFilesByName" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">

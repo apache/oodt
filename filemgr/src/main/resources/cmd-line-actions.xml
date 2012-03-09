@@ -78,6 +78,12 @@
   <bean id="luceneQuery" class="org.apache.oodt.cas.filemgr.cli.action.LuceneQueryCliAction">
     <property name="description" value="Queries by parsing an Lucene-like query into a FileManager Query" />
   </bean>
+  <bean id="retrieveFilesById" class="org.apache.oodt.cas.filemgr.cli.action.RetrieveFilesCliAction">
+    <property name="description" value="Retrieve a Product's files by Product ID" />
+  </bean>
+  <bean id="retrieveFilesByName" class="org.apache.oodt.cas.filemgr.cli.action.RetrieveFilesCliAction">
+    <property name="description" value="Retrieve a Product's files by Product name" />
+  </bean>
   <bean id="sqlQuery" class="org.apache.oodt.cas.filemgr.cli.action.SqlQueryCliAction">
     <property name="description" value="Queries by parsing an SQL-like query into a FileManager Query" />
     <property name="detailedDescription">

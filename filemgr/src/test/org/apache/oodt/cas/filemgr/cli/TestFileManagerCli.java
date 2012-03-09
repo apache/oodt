@@ -365,4 +365,30 @@ public class TestFileManagerCli extends TestCase {
       assertEquals(Lists.newArrayList(reducedProductTypes.split(" ")), complexQuery.getReducedProductTypeNames());
       assertEquals(sortBy, complexQuery.getSortByMetKey());
    }
+
+   public void testRetrieveFilesById() {
+      String productId = "TestProductId";
+      String destination = "/tmp/toDir";
+      String transferer = "org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory";
+      cmdLineUtility
+            .run(("--url http://localhost:9000 --operation --retrieveFilesById"
+                  + " --productId " + productId + " --destination " + destination
+                  + " --transferer " + transferer).split(" "));
+      MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
+      assertEquals("getProductById", methodCallDetails.getMethodName());
+      assertEquals(productId, methodCallDetails.getArgs().get(0));
+   }
+
+   public void testRetrieveFilesByName() {
+      String productName = "TestProductName";
+      String destination = "/tmp/toDir";
+      String transferer = "org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory";
+      cmdLineUtility
+            .run(("--url http://localhost:9000 --operation --retrieveFilesByName"
+                  + " --productName " + productName + " --destination " + destination
+                  + " --transferer " + transferer).split(" "));
+      MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
+      assertEquals("getProductByName", methodCallDetails.getMethodName());
+      assertEquals(productName, methodCallDetails.getArgs().get(0));
+   }
 }

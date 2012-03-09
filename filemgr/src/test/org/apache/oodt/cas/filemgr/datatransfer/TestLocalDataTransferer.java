@@ -14,72 +14,89 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.filemgr.datatransfer;
+
+//Apache imports
+import org.apache.commons.io.FileUtils;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 
 //JDK imports
 import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 //Junit imports
 import junit.framework.TestCase;
 
 /**
- * @author mattmann
- * @version $Revision$
- * 
- * <p>
- * Describe your class here
- * </p>.
+ * Test class for {@link LocalDataTransferer}.
+ *
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
 public class TestLocalDataTransferer extends TestCase {
 
-    private LocalDataTransferer transfer;
+   private LocalDataTransferer transfer;
 
-    private String productOrigLoc;
+   private File origFile;
+   private File testDir;
+   private File repoDir;
+   private File repoFile;
+   private File destDir;
+   private File destFile;
 
-    private String productExpectedLoc;
+   public void setUp() throws Exception {
+      transfer = (LocalDataTransferer) new LocalDataTransferFactory()
+         .createDataTransfer();
+      origFile = new File("./src/testdata/test.txt");
+      File testFile = File.createTempFile("test", ".txt");
+      testDir = new File(testFile.getParentFile(), UUID.randomUUID().toString());
+      repoDir = new File(testDir, "repo");
+      if (!repoDir.mkdirs()) {
+         throw new Exception("Failed to create repo directory!");
+      }
+      repoFile = new File(repoDir, "test.txt"); 
+      destDir = new File(testDir, "dest");
+      if (!destDir.mkdirs()) {
+         throw new Exception("Failed to create destination directory!");
+      }
+      destFile = new File(destDir, "test.txt"); 
+   }
 
-    public TestLocalDataTransferer() {
-        transfer = (LocalDataTransferer) new LocalDataTransferFactory()
-                .createDataTransfer();
-        
-        try {
-            File tempFileSrc = new File("./src/testdata/test.txt");
-            productOrigLoc = tempFileSrc.getCanonicalPath();
-            File tempFileDest = File.createTempFile("foo", ".txt");
-            productExpectedLoc = tempFileDest.getAbsolutePath();
-            // now delete the file so that it can be created
-            assertTrue(tempFileDest.delete());
+   public void tearDown() throws Exception {
+      FileUtils.forceDelete(testDir);
+   }
 
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
+   public void testTransferAndRetrieve() throws DataTransferException, IOException {
+      Product testProduct = createDummyProduct();
 
-    public void testTransfer() {
-        Product testProduct = Product.getDefaultFlatProduct("test",
-                "urn:oodt:GenericFile");
-        testProduct.getProductReferences().add(
-                new Reference("file://" + productOrigLoc, "file://"
-                        + productExpectedLoc, new File(productOrigLoc).length()));
-        
-        System.out.println("Added ref: ["+((Reference)testProduct.getProductReferences().get(0))+"]");
+      // Test transfer.
+      transfer.transferProduct(testProduct);
 
-        try {
-            transfer.transferProduct(testProduct);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+      // Check that file was successfully transfered.
+      assertTrue("Repo file does not exist", repoFile.exists());
+      assertTrue("Repo file does not have the same contents as orig file",
+            FileUtils.contentEquals(origFile, repoFile));
 
-        // assert that it didn't transfer the file anywhere
-        assertTrue(new File(productExpectedLoc).exists());
-        new File(productExpectedLoc).deleteOnExit();
-    }
+      // Test retrieve
+      transfer.retrieveProduct(testProduct, destDir);
 
+      // Check that file was successfully transfered.
+      assertTrue("Destination file does not exist", destFile.exists());
+      assertTrue("Destination file does not have the same contents as orig file",
+            FileUtils.contentEquals(origFile, destFile));
+   }
+
+   private Product createDummyProduct() {
+      Product testProduct = Product.getDefaultFlatProduct("test",
+            "urn:oodt:GenericFile");
+      testProduct.getProductReferences().add(
+            new Reference(origFile.toURI().toString(), new File(repoDir,
+                  "test.txt").toURI().toString(), origFile.length()));
+      return testProduct;
+   }
 }

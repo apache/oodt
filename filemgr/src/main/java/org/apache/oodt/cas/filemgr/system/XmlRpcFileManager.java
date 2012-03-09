@@ -771,7 +771,32 @@ public class XmlRpcFileManager {
 
   }
 
-
+   public byte[] retrieveFile(String filePath, int offset, int numBytes)
+         throws DataTransferException {
+      FileInputStream is = null;
+      try {
+         byte[] fileData = new byte[numBytes];
+         (is = new FileInputStream(filePath)).skip(offset);
+         int bytesRead = is.read(fileData);
+         if (bytesRead != -1) {
+            byte[] fileDataTruncated = new byte[bytesRead];
+            System.arraycopy(fileData, 0, fileDataTruncated, 0, bytesRead);
+            return fileDataTruncated;
+         } else {
+            return new byte[0];
+         }
+      } catch (Exception e) {
+         LOG.log(Level.SEVERE, "Failed to read '" + numBytes
+               + "' bytes from file '" + filePath + "' at index '" + offset
+               + "' : " + e.getMessage(), e);
+         throw new DataTransferException("Failed to read '" + numBytes
+               + "' bytes from file '" + filePath + "' at index '" + offset
+               + "' : " + e.getMessage(), e);
+      } finally {
+         try { is.close(); } catch (Exception e) {}
+      }
+   }
+    
     public boolean transferFile(String filePath, byte[] fileData, int offset,
             int numBytes) {
         File outFile = new File(filePath);

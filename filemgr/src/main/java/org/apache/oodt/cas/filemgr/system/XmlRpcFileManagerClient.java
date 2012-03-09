@@ -826,6 +826,22 @@ public class XmlRpcFileManagerClient {
         return success;
     }
 
+   public byte[] retrieveFile(String filePath, int offset, int numBytes)
+         throws DataTransferException {
+      Vector<Object> argList = new Vector<Object>();
+      argList.add(filePath);
+      argList.add(new Integer(offset));
+      argList.add(new Integer(numBytes));
+
+      try {
+         return (byte[]) client.execute("filemgr.retrieveFile", argList);
+      } catch (XmlRpcException e) {
+         throw new DataTransferException(e.getMessage());
+      } catch (IOException e) {
+         throw new DataTransferException(e.getMessage());
+      }
+   }
+
     public void transferFile(String filePath, byte[] fileData, int offset,
             int numBytes) throws DataTransferException {
         Vector<Object> argList = new Vector<Object>();

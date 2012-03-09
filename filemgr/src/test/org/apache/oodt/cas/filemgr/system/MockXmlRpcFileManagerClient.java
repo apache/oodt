@@ -30,6 +30,7 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -115,6 +116,14 @@ public class MockXmlRpcFileManagerClient extends XmlRpcFileManagerClient {
       lastMethodCallDetails = new MethodCallDetails("removeFile",
             Lists.newArrayList((Object) file));
       return true;
+   }
+
+   @Override
+   public byte[] retrieveFile(String filePath, int offset, int numBytes)
+      throws DataTransferException {
+      lastMethodCallDetails = new MethodCallDetails("removeFile",
+            Lists.newArrayList((Object) filePath, offset, numBytes));
+      return new byte[0];
    }
 
    @Override

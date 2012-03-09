@@ -24,6 +24,7 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 
 //JDK imports
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -80,5 +81,17 @@ public class InPlaceDataTransferer implements DataTransfer {
     public void transferProduct(Product product) throws DataTransferException,
             IOException {
         // do nothing
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.apache.oodt.cas.filemgr.datatransfer.DataTransfer#retrieveProduct(org.
+     * apache.oodt.cas.filemgr.structs.Product, java.io.File)
+     */
+    public void retrieveProduct(Product product, File directory)
+          throws DataTransferException, IOException {
+       // do nothing
     }
 }
