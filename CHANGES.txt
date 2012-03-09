@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-34 Ability for File Manager to stage an ingested Product to one of its clients (bfoster)
+
 * OODT-400 Add options for CAS-Crawler's SendNotification CrawlerAction (bfoster)
 
 * OODT-399 cas-cli sub-option requirements for help printing was not
