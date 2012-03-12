@@ -14,221 +14,447 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.pge.metadata;
 
 //JDK imports
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
-import java.util.Map.Entry;
+
+//Apache imports
+import org.apache.commons.lang.Validate;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+
+//Google imports
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
  * A wrapper class to act as a facade interface to all the different
- * {@link Metadata} sources given to a PGE
- * </p>.
+ * {@link Metadata} sources given to a PGE.
+ * 
+ * NOTE: 2 ways to update DYNAMIC metadata: 1) Create a key link to a DYNAMIC metadata
+ * key, then change the value of the key link or 2) add metadata then mark the
+ * key as dynamic and commit it.
+ * 
+ * @author bfoster (Brian Foster)
  */
 public class PgeMetadata {
 
-    private Metadata dynMetadata, staticMetadata, customMetadata;
+   public enum Type {
+      STATIC, DYNAMIC, LOCAL;
+   }
+   public static final List<Type> DEFAULT_PRECENDENCE_HIERARCHY = Lists
+         .newArrayList(Type.DYNAMIC, Type.LOCAL, Type.STATIC);
 
-    private WorkflowTaskConfiguration staticConfig;
+   private final Metadata staticMetadata;
+   private final Metadata dynamicMetadata;
+   private final Metadata localMetadata;
 
-    public static final int DYN = 1;
+   private final Map<String, String> keyLinkMap;
+   private final Set<String> markedAsDynamicMetKeys;
 
-    public static final int STATIC = 2;
+   public PgeMetadata() {
+      keyLinkMap = Maps.newHashMap();
+      markedAsDynamicMetKeys = Sets.newHashSet();
+      staticMetadata = new Metadata();
+      dynamicMetadata = new Metadata();
+      localMetadata = new Metadata();
+   }
 
-    public static final int CUSTOM = 3;
+   public PgeMetadata(PgeMetadata pgeMetadata) {
+      this();
 
-    private static int[] defaultMetadataQueryOrder = new int[] {
-            PgeMetadata.STATIC, PgeMetadata.DYN, PgeMetadata.CUSTOM };
+      Validate.notNull(pgeMetadata, "pgeMetadata cannot be null");
 
-    private static int[] defaultMetadataCombineOrder = new int[] {
-            PgeMetadata.CUSTOM, PgeMetadata.DYN, PgeMetadata.STATIC };
+      replaceMetadata(pgeMetadata);
+   }
 
-    private HashMap<String, String> keyLinkMap;
-    
-    private Set<String> workflowMetKeys;
-    
-    public PgeMetadata() throws Exception {
-    	this(null, null);
-    }
-    
-    public PgeMetadata(Metadata dynamicMetadata,
-            WorkflowTaskConfiguration staticConfig) throws Exception {
-        this.keyLinkMap = new HashMap<String, String>();
-        this.workflowMetKeys = new HashSet<String>();
-        this.customMetadata = new Metadata();
-        this.dynMetadata = dynamicMetadata != null ? dynamicMetadata : new Metadata();
-		this.staticMetadata = staticConfig != null ? this.convertToMetadata(staticConfig, dynamicMetadata) : new Metadata();
-		this.staticConfig = staticConfig != null ? staticConfig : new WorkflowTaskConfiguration();
-	}
+   public PgeMetadata(Metadata staticMetadata, Metadata dynamicMetadata) {
+      this();
 
-	private Metadata convertToMetadata(WorkflowTaskConfiguration config,
-			Metadata dynMetadata) throws Exception {
-		Metadata metadata = new Metadata();
-		for (Entry entry : config.getProperties().entrySet())
-			metadata.replaceMetadata((String) entry.getKey(), (String) entry.getValue());
-		return metadata;
-	}
+      Validate.notNull(staticMetadata, "staticMetadata cannot be null");
+      Validate.notNull(dynamicMetadata, "dynamicMetadata cannot be null");
 
-    public void addWorkflowMetadataKey(String key) {
-        this.workflowMetKeys.add(key);
-    }
-    
-    public void addPgeMetadata(PgeMetadata pgeMetadata) {
-    	this.addPgeMetadata(pgeMetadata, null);
-    }
-    
-    //Namespaces custom metadata, keyLinkMap keys (if key-ref exists in custom metadata or keyLinkMap) and, workflowMetKeys (if they exist in custom metadata or keyLinkMap)
-    public void addPgeMetadata(PgeMetadata pgeMetadata, String namespace) {
-    	this.dynMetadata.addMetadata(pgeMetadata.dynMetadata.getHashtable(), true);
-    	this.staticMetadata.addMetadata(pgeMetadata.staticMetadata.getHashtable(), true);
-    	this.staticConfig.getProperties().putAll(pgeMetadata.staticConfig.getProperties());
-    	for (Object key : pgeMetadata.customMetadata.getHashtable().keySet())
-    		this.addCustomMetadata(namespace != null ? namespace + ":" + (String) key : (String) key, pgeMetadata.customMetadata.getAllMetadata((String) key));
-    	for (String key : pgeMetadata.keyLinkMap.keySet()) {
-    		String value = pgeMetadata.keyLinkMap.get(key);
-    		if (namespace != null && (pgeMetadata.customMetadata.containsKey(value) || pgeMetadata.keyLinkMap.containsKey(value)))
-    			value = namespace + ":" + value;
-    		this.linkKey(namespace != null ? namespace + ":" + key : key, value);
-    	}
-    	for (String key : pgeMetadata.workflowMetKeys)
-    		this.addWorkflowMetadataKey((namespace != null && (pgeMetadata.customMetadata.containsKey(key) || pgeMetadata.keyLinkMap.containsKey(key))) ? namespace + ":" + key : key);
-    }
-    
-    public void commitWorkflowMetadataKeys() {
-        for (String key : this.workflowMetKeys) 
-            this.dynMetadata.replaceMetadata(key, this.getMetadataValues(key));
-        this.workflowMetKeys.clear();
-    }
-    
-    public void linkKey(String keyName, String linkToKeyName) {
-    	this.customMetadata.removeMetadata(keyName);
-        this.keyLinkMap.put(keyName, linkToKeyName);
-    }
-    
-    /**
-     * Included for backwards compatibility with oco-pge
-     * 
-     * @return
-     */
-    @Deprecated
-    public WorkflowTaskConfiguration getWorkflowTaskConfiguration() {
-        return this.staticConfig;
-    }
+      this.staticMetadata.replaceMetadata(staticMetadata);
+      this.dynamicMetadata.replaceMetadata(dynamicMetadata);
+   }
 
-    /**
-     * Included for backwards compatibility with oco-pge
-     * 
-     * @return
-     */
-    @Deprecated
-    public Metadata getDynamicMetadata() {
-        return this.dynMetadata;
-    }
+   /**
+    * Replaces or creates this {@link PgeMetadata}'s metadata with given
+    * {@link PgeMetadata}'s metadata. Also adds in the list of given
+    * {@link PgeMetadata}'s LOCAL metadata marked for promotion DYNAMIC
+    * metadata and list of key links.
+    * 
+    * @param pgeMetadata
+    *           A {@link PgeMetadata} whose metadata and key links will be added
+    *           to this {@link PgeMetadata}'s metadata and key links.
+    */
+   public void replaceMetadata(PgeMetadata pgeMetadata) {
+      Validate.notNull(pgeMetadata, "pgeMetadata cannot be null");
 
-    public void addDynamicMetadata(String name, String value) {
-        this.dynMetadata.replaceMetadata(name, value);
-    }
+      staticMetadata.replaceMetadata(pgeMetadata.staticMetadata);
+      dynamicMetadata.replaceMetadata(pgeMetadata.dynamicMetadata);
+      localMetadata.replaceMetadata(pgeMetadata.localMetadata);
 
-    public void addDynamicMetadata(String name, List<String> values) {
-        this.dynMetadata.replaceMetadata(name, values);
-    }
+      keyLinkMap.putAll(pgeMetadata.keyLinkMap);
+      markedAsDynamicMetKeys.addAll(pgeMetadata.markedAsDynamicMetKeys);
+   }
 
-    public void addCustomMetadata(String name, String value) {
-    	this.keyLinkMap.remove(name);
-        this.customMetadata.replaceMetadata(name, value);
-    }
+   /**
+    * Replaces or creates this {@link PgeMetadata}'s metadata with given
+    * {@link PgeMetadata}'s metadata. The provided "group" will be used to
+    * namespace the given {@link PgeMetadata}'s LOCAL metadata when add to this
+    * {@link PgeMetadata}'s LOCAL metadata. It will also namespace given
+    * {@link PgeMetadata}'s key links before adding then to this
+    * {@link PgeMetadata}'s key links. Also add in the list of given
+    * {@link PgeMetadata}'s LOCAL metadata marked for promotion DYNAMIC
+    * metadata.
+    * 
+    * @param pgeMetadata
+    *           A {@link PgeMetadata} whose metadata and key links will be added
+    *           to this {@link PgeMetadata}'s metadata and key links.
+    * @param group
+    *           The namespace which will be used to namespace given
+    *           {@link PgeMetadata}'s LOCAL metadata and key links before being
+    *           added to this {@link PgeMetadata}'s LOCAL metadata and key
+    *           links.
+    */
+   public void replaceMetadata(PgeMetadata pgeMetadata, String group) {
+      Validate.notNull(pgeMetadata, "pgeMetadata cannot be null");
+      Validate.notNull(group, "group cannot be null");
 
-    public void addCustomMetadata(Metadata metadata) {
-    	for (Object key : metadata.getHashtable().keySet())
-    		this.addCustomMetadata((String) key, metadata.getAllMetadata((String) key));
-    }
-    
-    public void addCustomMetadata(String name, List<String> values) {
-    	this.keyLinkMap.remove(name);
-        this.customMetadata.replaceMetadata(name, values);
-    }
+      staticMetadata.replaceMetadata(pgeMetadata.staticMetadata);
+      dynamicMetadata.replaceMetadata(pgeMetadata.dynamicMetadata);
+      localMetadata.replaceMetadata(group, pgeMetadata.localMetadata);
 
-    // add in order which you want metadata added (will return a copy)
-    public Metadata getMetadata(int... types) {
-        if (types.length < 1)
-            types = defaultMetadataCombineOrder;
-        Metadata combinedMetadata = new Metadata();
-        for (int type : types) {
-            switch (type) {
-            case DYN:
-                combinedMetadata.addMetadata(this.dynMetadata.getHashtable(),
-                        true);
-                break;
+      // Namespace link keys that point to either importing
+      // metadata's local key or link key.
+      for (String keyLink : pgeMetadata.keyLinkMap.keySet()) {
+         String key = pgeMetadata.keyLinkMap.get(keyLink);
+         // Check if key is was local key or a link key
+         if (pgeMetadata.localMetadata.containsKey(key)
+               || pgeMetadata.keyLinkMap.containsKey(key)) {
+            key = group + "/" + key;
+         }
+         linkKey(group + "/" + keyLink, key);
+      }
+
+      // Namespace workflow keys that point to either importing
+      // metadata's local key or link key.
+      for (String key : pgeMetadata.markedAsDynamicMetKeys) {
+         if (pgeMetadata.localMetadata.containsKey(key)
+               || pgeMetadata.keyLinkMap.containsKey(key)) {
+            key = group + "/" + key;
+         }
+         markAsDynamicMetadataKey(key);
+      }
+   }
+
+   /**
+    * Use to mark LOCAL keys which should be moved into DYNAMIC metadata when
+    * {@link #commitMarkedDynamicMetadataKeys(String...)} is invoked. If no 
+    * args are specified then all LOCAL metadata is marked for move to
+    * DYNAMIC metadata.
+    * 
+    * @param keys
+    *           Keys to mark as to be made DYNAMIC, otherwise if no keys then
+    *           all LOCAL metadata keys are mark for move to DYNAMIC.
+    */
+   public void markAsDynamicMetadataKey(String... keys) {
+      List<String> markedKeys = Lists.newArrayList(keys);
+      if (markedKeys.isEmpty()) {
+         markedKeys.addAll(localMetadata.getAllKeys());
+      }
+      markedAsDynamicMetKeys.addAll(markedKeys);
+   }
+
+   /**
+    * Use to commit marked LOCAL keys to DYNAMIC keys. Specify a list of keys
+    * only if you want to limit the keys which get committed, otherwise all
+    * marked keys will be moved into DYNAMIC metadata.
+    * 
+    * @param keys
+    *           The list of marked LOCAL metadata keys which should be moved
+    *           into DYNAMIC metadata. If no keys are specified then all marked
+    *           keys are moved.
+    */
+   public void commitMarkedDynamicMetadataKeys(String... keys) {
+      Set<String> commitKeys = Sets.newHashSet(keys);
+      if (commitKeys.isEmpty()) {
+         commitKeys.addAll(markedAsDynamicMetKeys);
+      } else {
+         commitKeys.retainAll(markedAsDynamicMetKeys);
+      }
+      for (String key : commitKeys) {
+         dynamicMetadata.replaceMetadata(key,
+               localMetadata.getAllMetadata(resolveKey(key)));
+         localMetadata.removeMetadata(key);
+         markedAsDynamicMetKeys.remove(key);
+      }
+   }
+
+   @VisibleForTesting
+   protected Set<String> getMarkedAsDynamicMetadataKeys() {
+      return Collections.unmodifiableSet(markedAsDynamicMetKeys);
+   }
+
+   /**
+    * Create a key which is a link to another key, such that if you get the
+    * metadata values for the created link it will return the current metadata
+    * values of the key it was linked to. NOTE: if the key's metadata values
+    * change, then the metadata values for the link key will also be the changed
+    * values. If you want to create a key which holds the current value of a
+    * key, then create a new metadata key.
+    * 
+    * @param keyLink
+    *           The name of the link key you wish to create.
+    * @param key
+    *           The key you which to link to (may also be a key link)
+    */
+   public void linkKey(String keyLink, String key) {
+      Validate.notNull(keyLink, "keyLink cannot be null");
+      Validate.notNull(key, "key cannot be null");
+
+      localMetadata.removeMetadata(keyLink);
+      keyLinkMap.put(keyLink, key);
+   }
+
+   /**
+    * Removes a key link reference. The key which the key link was linked to
+    * remains unchanged.
+    * 
+    * @param keyLink
+    *           The key link which you wish to destroy.
+    */
+   public void unlinkKey(String keyLink) {
+      Validate.notNull(keyLink, "keyLink cannot be null");
+
+      keyLinkMap.remove(keyLink);
+   }
+
+   /**
+    * Check if the given key name is a key link.
+    * 
+    * @param key
+    *           The key name in question.
+    * @return True is the given key name is a key link, false if key name is an
+    *         actual key.
+    */
+   public boolean isLink(String key) {
+      Validate.notNull(key, "key cannot be null");
+
+      return keyLinkMap.containsKey(key);
+   }
+
+   /**
+    * Find the actual key whose value will be returned for the given key. If the
+    * given key is a key (not a key link) then the given key will just be
+    * returned, otherwise it will trace through key link mapping to find the key
+    * which the given key link points to.
+    * 
+    * @param key
+    *           The name of a key or key link.
+    * @return The key whose value will be returned for the given key or key
+    *         link.
+    */
+   public String resolveKey(String key) {
+      Validate.notNull(key, "key cannot be null");
+
+      while (keyLinkMap.containsKey(key)) {
+         key = keyLinkMap.get(key);
+      }
+      return key;
+   }
+
+   /**
+    * Determines the path by which the given key (if it is a key link) links to
+    * the key whose value it will return. If the given key is a key link and
+    * points to a key then the returning {@link List} will be of size 1 and will
+    * contain just that key. However, if the given key is a key link which
+    * points to another key link then the returning {@link List} will be greater
+    * than 1 (will depend on how many key links are connected before they actual
+    * point to a key. If the given key is a key, then the returning {@link List}
+    * will be empty.
+    * 
+    * @param key
+    *           The path to the key whose value will be returned for the give
+    *           key.
+    * @return A key path {@link List}.
+    */
+   public List<String> getReferenceKeyPath(String key) {
+      Validate.notNull(key, "key cannot be null");
+
+      List<String> keyPath = Lists.newArrayList();
+      while (keyLinkMap.containsKey(key))
+         keyPath.add(key = keyLinkMap.get(key));
+      return keyPath;
+   }
+
+   /**
+    * Replace the given key's value with the given value. If the given key is a
+    * key link, then it will update the value of the key it is linked to if that
+    * key is DYNAMIC or LOCAL. If given key is a key link and it links to a
+    * STATIC key, then a new LOCAL key will be create.
+    * 
+    * @param key
+    *           The key or key link for whose value should be replaced.
+    * @param value
+    *           The value to give the given key. Will replace any existing value
+    *           or will be the value of a newly created LOCAL key.
+    */
+   public void replaceMetadata(String key, String value) {
+      Validate.notNull(key, "key cannot be null");
+      Validate.notNull(value, "value cannot be null");
+
+      String resolveKey = resolveKey(key);
+      // If key is a key link which points to a DYNAMIC key then update the
+      // DYNAMIC key's value.
+      if (keyLinkMap.containsKey(key)
+            && dynamicMetadata.containsKey(resolveKey)) {
+         dynamicMetadata.replaceMetadata(resolveKey, value);
+      } else {
+         localMetadata.replaceMetadata(resolveKey, value);
+      }
+   }
+
+   /**
+    * Replace all key values with the given key values in the provided
+    * {@link Metadata}. If the key does not exist it will be created.
+    * 
+    * @param metadata
+    *           {@link Metadata} to replace or create.
+    */
+   public void replaceMetadata(Metadata metadata) {
+      Validate.notNull(metadata, "metadata cannot be null");
+
+      for (String key : metadata.getAllKeys()) {
+         replaceMetadata(key, metadata.getAllMetadata(key));
+      }
+   }
+
+   /**
+    * Replace the given key's values with the given values. If the given key is
+    * a key link, then it will update the values of the key it is linked to if
+    * that key is DYNAMIC or LOCAL. If given key is a key link and it links to a
+    * STATIC key, then a new LOCAL key will be create.
+    * 
+    * @param key
+    *           The key or key link for whose values should be replaced.
+    * @param values
+    *           The values to give the given key. Will replace any existing
+    *           values or will be the values of a newly created LOCAL key.
+    */
+   public void replaceMetadata(String key, List<String> values) {
+      Validate.notNull(key, "key cannot be null");
+      Validate.notNull(values, "values cannot be null");
+
+      String resolveKey = resolveKey(key);
+      if (keyLinkMap.containsKey(key) && dynamicMetadata.containsKey(resolveKey)) {
+         dynamicMetadata.replaceMetadata(resolveKey, values);
+      } else {
+         localMetadata.replaceMetadata(resolveKey, values);
+      }
+   }
+
+   /**
+    * Combines STATIC, DYNAMIC, and LOCAL metadata into one metadata object. You
+    * can restrict which metadata you want combined and change the order in
+    * which combining takes place by specifying Type arguments in the order you
+    * which precedence to be observed. For example, if you perform the
+    * following: pgeMetadata.asMetadata(LOCAL, STATIC) then only LOCAL and
+    * STATIC metadata will be combined and LOCAL metadata will trump STATIC
+    * metadata if they both contain the same key. If no arguments are specified
+    * then DEFAULT_PRECENDENCE_HIERARCHY is used.
+    * 
+    * @param types
+    *           The Type hierarchy you which to use when metadata is combined,
+    *           if no args then DEFAULT_PRECENDENCE_HIERARCHY is used.
+    * @return Combined metadata.
+    */
+   public Metadata asMetadata(Type... types) {
+      List<Type> conbineOrder = Lists.newArrayList(types);
+      if (conbineOrder.isEmpty()) {
+         conbineOrder.addAll(DEFAULT_PRECENDENCE_HIERARCHY);
+      }
+      Collections.reverse(conbineOrder);
+
+      Metadata combinedMetadata = new Metadata();
+      for (Type type : conbineOrder) {
+         switch (type) {
+            case DYNAMIC:
+               combinedMetadata.replaceMetadata(dynamicMetadata);
+               break;
             case STATIC:
-                combinedMetadata.addMetadata(
-                        this.staticMetadata.getHashtable(), true);
-                break;
-            case CUSTOM:
-                combinedMetadata.addMetadata(
-                        this.customMetadata.getHashtable(), true);
-                for (Iterator<String> iter = this.keyLinkMap.keySet().iterator(); iter.hasNext(); ) {
-                    String key = iter.next();
-                    combinedMetadata.replaceMetadata(key, this.getMetadataValues(key));
-                }
-                break;
-            }
-        }
-        return combinedMetadata;
-    }
+               combinedMetadata.replaceMetadata(staticMetadata);
+               break;
+            case LOCAL:
+               combinedMetadata.replaceMetadata(localMetadata);
+               for (String key : keyLinkMap.keySet()) {
+                  combinedMetadata.replaceMetadata(key, getAllMetadata(key));
+               }
+               break;
+         }
+      }
+      return combinedMetadata;
+   }
 
-    public List<String> getMetadataValues(String name, int... types) {
-        if (types.length < 1)
-            types = defaultMetadataQueryOrder;
-        String useKeyName = this.resolveKey(name);
-        for (int type : types) {
-            List<String> value = null;
-            switch (type) {
-            case DYN:
-                if ((value = this.dynMetadata.getAllMetadata(useKeyName)) != null)
-                    return value;
-                break;
+   /**
+    * Get metadata values for given key. If Types are specified then it provides
+    * the precedence order in which to search for the key. If no Type args are
+    * specified then DEFAULT_PRECENDENCE_HIERARCHY will be used. For example if
+    * you pass in Type args: STATIC, LOCAL then STATIC metadata will first be
+    * checked for the key and if it contains it, then it will return the found
+    * value, otherwise it will then check LOCAL metadata for the key and if it
+    * finds the value it will return it, otherwise null.
+    * 
+    * @param key
+    *           The key for whose metadata values should be returned.
+    * @param types
+    *           The type hierarchy which should be used, if no Types specified
+    *           DEFAULT_PRECENDENCE_HIERARCHY will be used.
+    * @return Metadata values for given key.
+    */
+   public List<String> getAllMetadata(String key, Type... types) {
+      List<Type> queryOrder = Lists.newArrayList(types);
+      if (queryOrder.isEmpty()) {
+         queryOrder.addAll(DEFAULT_PRECENDENCE_HIERARCHY);
+      }
+
+      String useKey = resolveKey(key);
+      for (Type type : queryOrder) {
+         switch (type) {
+            case DYNAMIC:
+               if (dynamicMetadata.containsKey(useKey)) {
+                  return dynamicMetadata.getAllMetadata(useKey);
+               }
+               break;
             case STATIC:
-                if ((value = this.staticMetadata.getAllMetadata(useKeyName)) != null)
-                    return value;
-                break;
-            case CUSTOM:
-                if ((value = this.customMetadata.getAllMetadata(useKeyName)) != null)
-                    return value;
-                break;
-            }
-        }
-        return new Vector<String>();
-    }
+               if (staticMetadata.containsKey(useKey)) {
+                  return staticMetadata.getAllMetadata(useKey);
+               }
+               break;
+            case LOCAL:
+               if (localMetadata.containsKey(useKey)) {
+                  return localMetadata.getAllMetadata(useKey);
+               }
+               break;
+         }
+      }
+      return Lists.newArrayList();
+   }
 
-    public String getMetadataValue(String name, int... types) {
-        List<String> values = this.getMetadataValues(name, types);
-        if (values.size() > 0)
-            return values.get(0);
-        else
-            return null;
-    }
-    
-    public String resolveKey(String keyName) {
-        String useKeyName = keyName;
-        while(this.keyLinkMap.containsKey(useKeyName))
-            useKeyName = this.keyLinkMap.get(useKeyName);
-        return useKeyName;
-    }
-
+   /**
+    * Returns the first value returned by {@link #getAllMetadata(String, Type...)}, if it returns
+    * null then this method will also return null.
+    */
+   public String getMetadata(String key, Type... types) {
+      List<String> values = getAllMetadata(key, types);
+      return (values.size() > 0) ? values.get(0) : null;
+   }
 }

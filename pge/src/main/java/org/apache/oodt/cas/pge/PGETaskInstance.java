@@ -92,14 +92,14 @@ public class PGETaskInstance implements WorkflowTaskInstance {
             WorkflowTaskConfiguration config) throws InstantiationException {
         try {
             // merge metadata
-            this.pgeMetadata = new PgeMetadata(metadata, config);
+            this.pgeMetadata = createPgeMetadata(metadata, config);
             
             // create PgeConfig
             this.pgeConfig = this.createPgeConfig();
 
             // load property adder
             String propertyAdderClasspath = this.pgeMetadata
-                    .getMetadataValue(PgeTaskMetadataKeys.PROPERTY_ADDER_CLASSPATH);
+                    .getMetadata(PgeTaskMetadataKeys.PROPERTY_ADDER_CLASSPATH);
             if (propertyAdderClasspath != null
                     && !propertyAdderClasspath.equals(""))
                 this.runPropertyAdder(this
@@ -107,15 +107,25 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 
             // configure workflow manager
             wm = new XmlRpcWorkflowManagerClient(new URL(this.pgeMetadata
-                    .getMetadataValue(PcsMetadataKeys.WORKFLOW_MANAGER_URL)));
+                    .getMetadata(PcsMetadataKeys.WORKFLOW_MANAGER_URL)));
             workflowInstId = this.pgeMetadata
-                    .getMetadataValue(CoreMetKeys.WORKFLOW_INST_ID);
+                    .getMetadata(CoreMetKeys.WORKFLOW_INST_ID);
 
         } catch (Exception e) {
             e.printStackTrace();
             throw new InstantiationException(
                     "Failed to instanciate PGETaskInstance : " + e.getMessage());
         }
+    }
+
+    protected PgeMetadata createPgeMetadata(Metadata dynMetadata,
+          WorkflowTaskConfiguration config) {
+       Metadata staticMetadata = new Metadata();
+       for (Object key : config.getProperties().keySet()) {
+          staticMetadata.addMetadata((String) key,
+                config.getProperty((String) key));
+       }
+       return new PgeMetadata(staticMetadata, dynMetadata);
     }
 
     protected ConfigFilePropertyAdder loadPropertyAdder(
@@ -190,7 +200,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
         SciPgeConfigFileWriter writer = (SciPgeConfigFileWriter) Class.forName(
                 dynamicConfigFile.getWriterClass()).newInstance();
         writer.createConfigFile(dynamicConfigFile.getFilePath(),
-                this.pgeMetadata.getMetadata(), dynamicConfigFile.getArgs());
+                this.pgeMetadata.asMetadata(), dynamicConfigFile.getArgs());
     }
 
     protected void processOutput() throws FileNotFoundException, IOException {
@@ -220,13 +230,13 @@ public class PGETaskInstance implements WorkflowTaskInstance {
                 }
                 if (outputMetadata.getAllKeys().size() > 0)
                 	this.writeFromMetadata(outputMetadata, createdFile.getAbsolutePath() 
-                			+ "." + this.pgeMetadata.getMetadataValue(PcsMetadataKeys.MET_FILE_EXT));
+                			+ "." + this.pgeMetadata.getMetadata(PcsMetadataKeys.MET_FILE_EXT));
             }
         }
     }
 
     protected File renameFile(File file, RenamingConv renamingConv) throws Exception {
-    	Metadata curMetadata = this.pgeMetadata.getMetadata();
+    	Metadata curMetadata = this.pgeMetadata.asMetadata();
     	curMetadata.replaceMetadata(renamingConv.getTmpReplaceMet());
     	String newFileName = PathUtils.doDynamicReplacement(renamingConv.getRenamingString(), curMetadata);
     	File newFile = new File(file.getParentFile(), newFileName);
@@ -262,14 +272,14 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 
     protected String getPgeScriptName() {
         return "sciPgeExeScript_"
-                + this.pgeMetadata.getMetadataValue(PgeTaskMetadataKeys.NAME);
+                + this.pgeMetadata.getMetadata(PgeTaskMetadataKeys.NAME);
     }
 
     protected Handler initializePgeLogHandler() throws SecurityException,
 			IOException {
     	FileHandler handler = null;
 		String logFilePattern = this.pgeMetadata
-				.getMetadataValue(PgeTaskMetadataKeys.LOG_FILE_PATTERN);
+				.getMetadata(PgeTaskMetadataKeys.LOG_FILE_PATTERN);
 		if (logFilePattern != null) {
 			LOG.log(Level.INFO, "Creating Log Handler to capture pge output to file '"
 							+ logFilePattern + "'");
@@ -284,7 +294,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
     protected Logger initializePgeLogger(Handler handler) {
     	if (handler != null) {
 	    	Logger pgeLogger = Logger.getLogger(this.pgeMetadata
-					.getMetadataValue(PgeTaskMetadataKeys.NAME)
+					.getMetadata(PgeTaskMetadataKeys.NAME)
 					+ System.currentTimeMillis());
 			pgeLogger.addHandler(handler);
 			return pgeLogger;
@@ -326,7 +336,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
            
             
             long endTime = System.currentTimeMillis();
-            this.pgeMetadata.addCustomMetadata(PgeTaskMetadataKeys.PGE_RUNTIME,
+            this.pgeMetadata.replaceMetadata(PgeTaskMetadataKeys.PGE_RUNTIME,
                     (endTime - startTime) + "");
 
         } catch (Exception e) {
@@ -359,35 +369,35 @@ public class PGETaskInstance implements WorkflowTaskInstance {
     protected void setCrawlerConfigurations(StdProductCrawler crawler)
             throws Exception {
         crawler.setMetFileExtension(this.pgeMetadata
-                .getMetadataValue(PcsMetadataKeys.MET_FILE_EXT));
+                .getMetadata(PcsMetadataKeys.MET_FILE_EXT));
         crawler
                 .setClientTransferer(this.pgeMetadata
-                        .getMetadataValue(PcsMetadataKeys.CLIENT_TRANSFER_SERVICE_FACTORY));
+                        .getMetadata(PcsMetadataKeys.CLIENT_TRANSFER_SERVICE_FACTORY));
         crawler.setFilemgrUrl(this.pgeMetadata
-                .getMetadataValue(PcsMetadataKeys.FILE_MANAGER_URL));
+                .getMetadata(PcsMetadataKeys.FILE_MANAGER_URL));
         String actionRepoFile = this.pgeMetadata
-                .getMetadataValue(PcsMetadataKeys.ACTION_REPO_FILE);
+                .getMetadata(PcsMetadataKeys.ACTION_REPO_FILE);
         if (actionRepoFile != null && !actionRepoFile.equals("")) {
             crawler.setApplicationContext(new FileSystemXmlApplicationContext(
                     actionRepoFile));
             crawler.setActionIds(this.pgeMetadata
-                    .getMetadataValues(PcsMetadataKeys.ACTION_IDS));
+                    .getAllMetadata(PcsMetadataKeys.ACTION_IDS));
         }
         crawler.setRequiredMetadata(this.pgeMetadata
-                .getMetadataValues(PcsMetadataKeys.REQUIRED_METADATA));
+                .getAllMetadata(PcsMetadataKeys.REQUIRED_METADATA));
         String crawlForDirsString = this.pgeMetadata
-                .getMetadataValue(PcsMetadataKeys.CRAWLER_CRAWL_FOR_DIRS);
+                .getMetadata(PcsMetadataKeys.CRAWLER_CRAWL_FOR_DIRS);
         boolean crawlForDirs = (crawlForDirsString != null) ? crawlForDirsString
                 .toLowerCase().equals("true")
                 : false;
         String recurString = this.pgeMetadata
-                .getMetadataValue(PcsMetadataKeys.CRAWLER_RECUR);
+                .getMetadata(PcsMetadataKeys.CRAWLER_RECUR);
         boolean recur = (recurString != null) ? recurString.toLowerCase()
                 .equals("true") : true;
         crawler.setCrawlForDirs(crawlForDirs);
         crawler.setNoRecur(!recur);
     	LOG.log(Level.INFO, "Passing Workflow Metadata to CAS-Crawler as global metadata . . .");
-    	crawler.setGlobalMetadata(this.pgeMetadata.getMetadata(PgeMetadata.DYN));
+    	crawler.setGlobalMetadata(this.pgeMetadata.asMetadata(PgeMetadata.Type.DYNAMIC));
     }
 
     protected void runIngestCrawler(StdProductCrawler crawler,
@@ -396,7 +406,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 		try {
 			this.updateStatus(PgeTaskMetadataKeys.CRAWLING);
 			boolean attemptIngestAll = Boolean.parseBoolean(this.pgeMetadata
-					.getMetadataValue(PgeTaskMetadataKeys.ATTEMPT_INGEST_ALL));
+					.getMetadata(PgeTaskMetadataKeys.ATTEMPT_INGEST_ALL));
 			for (File crawlDir : crawlDirs) {
 				currentDir = crawlDir;
 				LOG.log(Level.INFO,
@@ -440,7 +450,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
     }
     
     protected void updateDynamicMetadata() {
-        this.pgeMetadata.commitWorkflowMetadataKeys();
+        this.pgeMetadata.commitMarkedDynamicMetadataKeys();
     }
 
     public void run(Metadata metadata, WorkflowTaskConfiguration config)
@@ -457,5 +467,4 @@ public class PGETaskInstance implements WorkflowTaskInstance {
                     + e.getMessage(), e);
         }
     }
-
 }

@@ -14,9 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.pge.config;
+
+//OODT static imports
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.ARGS_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.CMD_TAG;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.CREATE_BEFORE_EXEC_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.CUSTOM_METADATA_TAG;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.DIR_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.DIR_TAG;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.DYN_INPUT_FILES_TAG;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.ENV_REPLACE_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.ENV_REPLACE_NO_RECUR_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.EXE_TAG;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.FILES_TAG;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.FILE_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.FILE_TAG;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.IMPORT_TAG;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.KEYREF_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.KEY_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.KEY_GEN_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.METADATA_TAG;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.MET_FILE_WRITER_CLASS_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.NAMESPACE_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.NAME_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.NAMING_EXPR_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.OUTPUT_TAG;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.PATH_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.REGEX_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.RENAMING_CONV_TAG;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.SHELL_TYPE_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.SPLIT_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.VAL_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.WORKFLOW_MET_ATTR;
+import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.WRITER_CLASS_ATTR;
 
 //JDK imports
 import java.io.File;
@@ -33,31 +64,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.QueryUtils;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.pge.metadata.PcsMetadataKeys;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 import org.apache.oodt.cas.pge.metadata.PgeTaskMetadataKeys;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.*;
+import org.apache.oodt.commons.xml.XMLUtils;
 
-//DOM imports
+//W3C imports
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
  * An implementation of the {@link PgeConfigBuilder} that reads an XML file
- * representation of the {@link PgeConfig}
- * </p>.
+ * representation of the {@link PgeConfig}.
+ *
+ * @author bfoster (Brian Foster)
  */
 public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
     
@@ -67,15 +93,14 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
         try {
             PgeConfig pgeConfig = new PgeConfig();
             this.buildImports(this.fillIn(pgeMetadata
-                    .getMetadataValue(PgeTaskMetadataKeys.CONFIG_FILE_PATH),
-                    pgeMetadata.getMetadata()), null, pgeConfig, pgeMetadata);
+                    .getMetadata(PgeTaskMetadataKeys.CONFIG_FILE_PATH),
+                    pgeMetadata.asMetadata()), null, pgeConfig, pgeMetadata);
             return pgeConfig;
         } catch (Exception e) {
             e.printStackTrace();
             throw new IOException("Failed to build PgeConfig : "
                     + e.getMessage());
         }
-        
     }
     
     private void buildImports(String configFile, String namespace, PgeConfig pgeConfig, PgeMetadata pgeMetadata) throws MalformedURLException, Exception {
@@ -87,9 +112,9 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
         for (int i = 0; i < nodeList.getLength(); i++) {
             String curImportNS = this.fillIn(((Element) nodeList.item(i))
                     .getAttribute(NAMESPACE_ATTR), pgeMetadata
-                    .getMetadata());
+                    .asMetadata());
             String file = this.fillIn(((Element) nodeList.item(i))
-                    .getAttribute(FILE_ATTR), pgeMetadata.getMetadata());
+                    .getAttribute(FILE_ATTR), pgeMetadata.asMetadata());
             if (!file.startsWith(File.separator))
                 file = new File(configFile).getParent()
                         + File.separator + file;
@@ -99,7 +124,6 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
         // load base config file
         LOG.log(Level.INFO, "Loading PgeConfig file '" + configFile + "'");
         this.build(root, namespace, pgeConfig, pgeMetadata);
-
     }
 
     private void build(Element root, String namespace, PgeConfig pgeConfig,
@@ -109,9 +133,9 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
         PgeMetadata localPgeMetadata = this.getCustomMetadata((Element) root
                 .getElementsByTagName(CUSTOM_METADATA_TAG).item(0), pgeMetadata);
         PgeMetadata curPgeMetadata = new PgeMetadata();
-        curPgeMetadata.addPgeMetadata(pgeMetadata);
-        curPgeMetadata.addPgeMetadata(localPgeMetadata);
-        Metadata curMetadata = curPgeMetadata.getMetadata();
+        curPgeMetadata.replaceMetadata(pgeMetadata);
+        curPgeMetadata.replaceMetadata(localPgeMetadata);
+        Metadata curMetadata = curPgeMetadata.asMetadata();
         
         // load dynamic config file info
         List<DynamicConfigFile> configFileList = this.getDynConfigFile(
@@ -139,16 +163,16 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
             pgeConfig.addOuputDirAndExpressions(outputDir);
         
         // add local pge metadata to global pge metadata with given namespace
-        pgeMetadata.addPgeMetadata(localPgeMetadata, namespace);
+        pgeMetadata.replaceMetadata(localPgeMetadata, namespace);
     }
 
     private PgeMetadata getCustomMetadata(Element customMetadataElem, PgeMetadata pgeMetadata)
             throws MalformedURLException, Exception {
     	PgeMetadata localPgeMetadata = new PgeMetadata();
     	PgeMetadata curPgeMetadata = new PgeMetadata();
-    	curPgeMetadata.addPgeMetadata(pgeMetadata);
+    	curPgeMetadata.replaceMetadata(pgeMetadata);
     	Metadata curPlusLocalMetadata = new Metadata();
-    	curPlusLocalMetadata.addMetadata(curPgeMetadata.getMetadata().getHashtable());
+    	curPlusLocalMetadata.addMetadata(curPgeMetadata.asMetadata().getHashtable());
     	
         if (customMetadataElem != null) {
             NodeList customMetadataList = customMetadataElem
@@ -184,14 +208,14 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
                     	valList.addAll(Arrays.asList((val + ",").split(",")));
                     else 
                     	valList.add(val);
-                    localPgeMetadata.addCustomMetadata(key, valList);
-                    curPgeMetadata.addCustomMetadata(key, valList);
+                    localPgeMetadata.replaceMetadata(key, valList);
+                    curPgeMetadata.replaceMetadata(key, valList);
                 }
                 if (metadataElement.getAttribute(WORKFLOW_MET_ATTR)
                         .toLowerCase().equals("true"))
-                	localPgeMetadata.addWorkflowMetadataKey(key);
+                	localPgeMetadata.markAsDynamicMetadataKey(key);
                 
-                curPlusLocalMetadata.replaceMetadata(key, curPgeMetadata.getMetadataValues(key));
+                curPlusLocalMetadata.replaceMetadata(key, curPgeMetadata.getAllMetadata(key));
             }
         }
         return localPgeMetadata;

@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.pge.writers;
 
 //OODT imports
@@ -27,13 +25,9 @@ import org.apache.oodt.cas.metadata.Metadata;
 import java.io.File;
 
 /**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
- * Writes a PCS metadata file for the give data file
- * </p>.
+ * Writes a PCS metadata file for the give data file.
+ *
+ * @author bfoster (Brian Foster)
  */
 public abstract class PcsMetFileWriter {
 
@@ -42,7 +36,7 @@ public abstract class PcsMetFileWriter {
     public Metadata getMetadataForFile(File sciPgeCreatedDataFile,
             PgeMetadata pgeMetadata, Object... customArgs) throws Exception {
         try {
-            Metadata inputMetadata = pgeMetadata.getMetadata();
+            Metadata inputMetadata = pgeMetadata.asMetadata();
 
             inputMetadata.replaceMetadata(CoreMetKeys.FILENAME,
                     sciPgeCreatedDataFile.getName());
