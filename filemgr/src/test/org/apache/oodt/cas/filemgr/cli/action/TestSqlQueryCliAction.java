@@ -113,6 +113,32 @@ public class TestSqlQueryCliAction extends TestCase {
       assertEquals(VERSION_CONV, clientSetComplexQuery.getQueryFilter().getConverter());
    }
 
+   public void testClientTransTrueAndFlatProductAndNoOutputFormat() throws CmdLineActionException, IOException {
+      ActionMessagePrinter printer = new ActionMessagePrinter();
+      MockSqlQueryCliAction cliAction = new MockSqlQueryCliAction();
+      cliAction.setQuery(QUERY);
+      cliAction.setSortBy(SORT_BY);
+      cliAction.setDelimiter(DELIMITER);
+      cliAction.setFilterAlgor(FILTER_ALGOR);
+      cliAction.setStartDateTimeMetKey(START_DATE_TIME_MET_KEY);
+      cliAction.setEndDateTimeMetKey(END_DATE_TIME_MET_KEY);
+      cliAction.setPriorityMetKey(PRIORITY_DATE_TIME_MET_KEY);
+      cliAction.setVersionConverter(VERSION_CONV);
+      cliAction.execute(printer);
+      assertEquals(2, printer.getPrintedMessages().size());
+      assertEquals("data.dat,Bob,Billy", printer.getPrintedMessages().get(0));
+      assertEquals("\n", printer.getPrintedMessages().get(1));
+      assertEquals(SORT_BY, clientSetComplexQuery.getSortByMetKey());
+      assertNull(clientSetComplexQuery.getToStringResultFormat());
+      assertNull(clientSetComplexQuery.getReducedProductTypeNames());
+      assertNull(clientSetComplexQuery.getReducedMetadata());
+      assertEquals(FILTER_ALGOR, clientSetComplexQuery.getQueryFilter().getFilterAlgor());
+      assertEquals(START_DATE_TIME_MET_KEY, clientSetComplexQuery.getQueryFilter().getStartDateTimeMetKey());
+      assertEquals(END_DATE_TIME_MET_KEY, clientSetComplexQuery.getQueryFilter().getEndDateTimeMetKey());
+      assertEquals(PRIORITY_DATE_TIME_MET_KEY, clientSetComplexQuery.getQueryFilter().getPriorityMetKey());
+      assertEquals(VERSION_CONV, clientSetComplexQuery.getQueryFilter().getConverter());
+   }
+
    public class MockSqlQueryCliAction extends SqlQueryCliAction {
       @Override
       public XmlRpcFileManagerClient getClient() throws MalformedURLException,
@@ -126,6 +152,7 @@ public class TestSqlQueryCliAction extends TestCase {
                p.setProductId("TestProductId");
                Metadata m = new Metadata();
                m.addMetadata("Filename", TEST_FILENAME);
+               m.addMetadata("Owners", Lists.newArrayList("Bob", "Billy"));
                QueryResult qr = new QueryResult(p, m);
                qr.setToStringFormat(complexQuery.getToStringResultFormat());
                return Lists.newArrayList(qr);

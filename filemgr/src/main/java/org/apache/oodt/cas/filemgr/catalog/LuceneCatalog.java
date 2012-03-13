@@ -621,7 +621,7 @@ public class LuceneCatalog implements Catalog {
         for (int i = 0; i < elements.size(); i++) {
             String element = elements.get(i);
             reducedMetadata.addMetadata(element, fullMetadata
-                    .getMetadata(element));
+                    .getAllMetadata(element));
         }
         return reducedMetadata;
     }
