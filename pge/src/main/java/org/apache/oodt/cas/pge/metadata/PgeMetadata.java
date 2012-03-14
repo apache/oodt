@@ -396,7 +396,10 @@ public class PgeMetadata {
             case LOCAL:
                combinedMetadata.replaceMetadata(localMetadata);
                for (String key : keyLinkMap.keySet()) {
-                  combinedMetadata.replaceMetadata(key, getAllMetadata(key));
+                  List<String> values = getAllMetadata(key);
+                  if (values != null) {
+                     combinedMetadata.replaceMetadata(key, values);
+                  }
                }
                break;
          }
@@ -446,7 +449,7 @@ public class PgeMetadata {
                break;
          }
       }
-      return Lists.newArrayList();
+      return null;
    }
 
    /**
@@ -455,6 +458,6 @@ public class PgeMetadata {
     */
    public String getMetadata(String key, Type... types) {
       List<String> values = getAllMetadata(key, types);
-      return (values.size() > 0) ? values.get(0) : null;
+      return values != null ? values.get(0) : null;
    }
 }

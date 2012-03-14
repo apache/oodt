@@ -14,32 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.pge.metadata;
 
 /**
- * 
- * @author bfoster
- * @version $Revision$
+ * PGETaskInstance Reserved Metadata keys.
  *
- * <p>Describe your class here</p>.
+ * @author bfoster (Brian Foster)
  */
 public interface PgeTaskMetadataKeys {
 
     public static final String NAME = "PGETask_Name";
 
+    /** @deprecated Never used. */
+    @Deprecated
     public static final String SCI_EXE_PATH = "PGETask_SciExe_Path";
 
+    /** @deprecated Never used. */
+    @Deprecated
     public static final String SCI_EXE_VERSION = "PGETask_SciExe_Version";
 
+    /** @deprecated Never used. */
+    @Deprecated
     public static final String PRODUCT_PATH = "PGETask_ProductPath";
 
     public static final String CONFIG_FILE_PATH = "PGETask_ConfigFilePath";
     
     public static final String LOG_FILE_PATTERN = "PGETask_LogFilePattern";
 
+    /** @deprecated Use {@link #PROPERTY_ADDERS} instead. */
+    @Deprecated
     public static final String PROPERTY_ADDER_CLASSPATH = "PGETask_PropertyAdderClasspath";
+
+    public static final String PROPERTY_ADDERS = "PGETask_PropertyAdders";
 
     public static final String PGE_RUNTIME = "PGETask_Runtime";
 

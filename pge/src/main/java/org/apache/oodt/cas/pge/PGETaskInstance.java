@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.pge;
+
+//OODT static imports
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetadataKeys.PROPERTY_ADDERS;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetadataKeys.PROPERTY_ADDER_CLASSPATH;
 
 //JDK imports
 import java.util.LinkedList;
@@ -62,409 +65,437 @@ import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
 //Spring imports
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.google.common.collect.Lists;
 
 /**
- * 
- * @author mattmann
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
  * Runs a CAS-style Product Generation Executive based on the PCS Wrapper
- * Architecture from mattmann et al. on OCO
- * </p>.
+ * Architecture from mattmann et al. on OCO.
+ * 
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
 public class PGETaskInstance implements WorkflowTaskInstance {
-    
-    protected static Logger LOG = Logger.getLogger(PGETaskInstance.class.getName());
-    
-    protected XmlRpcWorkflowManagerClient wm;
 
-    protected String workflowInstId;
+   protected static Logger LOG = Logger.getLogger(PGETaskInstance.class
+         .getName());
 
-    protected PgeMetadata pgeMetadata;
+   protected XmlRpcWorkflowManagerClient wm;
 
-    protected PgeConfig pgeConfig;
-    
-    protected PGETaskInstance() {}
+   protected String workflowInstId;
 
-    protected void initialize(Metadata metadata,
-            WorkflowTaskConfiguration config) throws InstantiationException {
-        try {
-            // merge metadata
-            this.pgeMetadata = createPgeMetadata(metadata, config);
-            
-            // create PgeConfig
-            this.pgeConfig = this.createPgeConfig();
+   protected PgeMetadata pgeMetadata;
 
-            // load property adder
-            String propertyAdderClasspath = this.pgeMetadata
-                    .getMetadata(PgeTaskMetadataKeys.PROPERTY_ADDER_CLASSPATH);
-            if (propertyAdderClasspath != null
-                    && !propertyAdderClasspath.equals(""))
-                this.runPropertyAdder(this
-                        .loadPropertyAdder(propertyAdderClasspath));
+   protected PgeConfig pgeConfig;
 
-            // configure workflow manager
-            wm = new XmlRpcWorkflowManagerClient(new URL(this.pgeMetadata
-                    .getMetadata(PcsMetadataKeys.WORKFLOW_MANAGER_URL)));
-            workflowInstId = this.pgeMetadata
-                    .getMetadata(CoreMetKeys.WORKFLOW_INST_ID);
+   protected PGETaskInstance() {
+   }
 
-        } catch (Exception e) {
+   protected void initialize(Metadata metadata, WorkflowTaskConfiguration config)
+         throws InstantiationException {
+      try {
+         // merge metadata
+         this.pgeMetadata = createPgeMetadata(metadata, config);
+
+         // create PgeConfig
+         this.pgeConfig = this.createPgeConfig();
+
+         // run Property Adders.
+         runPropertyAdders();
+
+         // configure workflow manager
+         wm = new XmlRpcWorkflowManagerClient(new URL(
+               this.pgeMetadata
+                     .getMetadata(PcsMetadataKeys.WORKFLOW_MANAGER_URL)));
+         workflowInstId = this.pgeMetadata
+               .getMetadata(CoreMetKeys.WORKFLOW_INST_ID);
+
+      } catch (Exception e) {
+         e.printStackTrace();
+         throw new InstantiationException(
+               "Failed to instanciate PGETaskInstance : " + e.getMessage());
+      }
+   }
+
+   protected PgeMetadata createPgeMetadata(Metadata dynMetadata,
+         WorkflowTaskConfiguration config) {
+      Metadata staticMetadata = new Metadata();
+      for (Object key : config.getProperties().keySet()) {
+         if (PROPERTY_ADDERS.equals((String) key)
+               || PROPERTY_ADDER_CLASSPATH.equals((String) key)) {
+            staticMetadata.addMetadata((String) key,
+                  Lists.newArrayList(config.getProperty((String) key).split(",")));            
+         } else {
+            staticMetadata.addMetadata((String) key,
+                  config.getProperty((String) key));
+         }
+      }
+      return new PgeMetadata(staticMetadata, dynMetadata);
+   }
+
+   protected void runPropertyAdders() throws Exception {
+      try {
+         List<String> propertyAdders = pgeMetadata
+               .getAllMetadata(PROPERTY_ADDERS);
+         if (propertyAdders == null) {
+            // Left for backwards compatibility.
+            propertyAdders = pgeMetadata
+                  .getAllMetadata(PROPERTY_ADDER_CLASSPATH);
+         }
+         if (propertyAdders != null) {
+            for (String propertyAdder : propertyAdders) {
+               runPropertyAdder(loadPropertyAdder(propertyAdder));
+            }
+         }
+      } catch (Exception e) {
+         throw new Exception("Failed to instanciate/run Property Adders : "
+               + e.getMessage(), e);
+      }
+   }
+
+   protected ConfigFilePropertyAdder loadPropertyAdder(
+         String propertyAdderClasspath) throws Exception {
+      return (ConfigFilePropertyAdder) Class.forName(propertyAdderClasspath)
+            .newInstance();
+   }
+
+   protected void runPropertyAdder(ConfigFilePropertyAdder propAdder) {
+      propAdder.addConfigProperties(this.pgeMetadata,
+            this.pgeConfig.getPropertyAdderCustomArgs());
+   }
+
+   protected PgeConfig createPgeConfig() throws Exception {
+      return new XmlFilePgeConfigBuilder().build(this.pgeMetadata);
+   }
+
+   protected void updateStatus(String status) {
+      try {
+         LOG.log(Level.INFO, "Updating status to workflow as " + status);
+         this.wm.updateWorkflowInstanceStatus(this.workflowInstId, status);
+      } catch (Exception e) {
+         LOG.log(Level.WARNING, "Failed to update to workflow as " + status
+               + " : " + e.getMessage());
+      }
+   }
+
+   protected void prePgeSetup() throws Exception {
+      this.createExeDir();
+      this.createOuputDirsIfRequested();
+      this.createSciPgeConfigFiles();
+   }
+
+   protected void createExeDir() {
+      LOG.log(Level.INFO, "Creating PGE execution working directory: ["
+            + this.pgeConfig.getExeDir() + "]");
+      new File(this.pgeConfig.getExeDir()).mkdirs();
+   }
+
+   protected void createOuputDirsIfRequested() {
+      for (OutputDir outputDir : this.pgeConfig.getOuputDirs()) {
+         if (outputDir.isCreateBeforeExe()) {
+            LOG.log(Level.INFO, "Creating PGE file ouput directory: ["
+                  + outputDir.getPath() + "]");
+            new File(outputDir.getPath()).mkdirs();
+         }
+      }
+   }
+
+   protected void createSciPgeConfigFiles() throws IOException {
+      this.updateStatus(PgeTaskMetadataKeys.CONF_FILE_BUILD);
+      for (DynamicConfigFile dynamicConfigFile : pgeConfig
+            .getDynamicConfigFiles()) {
+         try {
+            this.createSciPgeConfigFile(dynamicConfigFile);
+         } catch (Exception e) {
             e.printStackTrace();
-            throw new InstantiationException(
-                    "Failed to instanciate PGETaskInstance : " + e.getMessage());
-        }
-    }
+            throw new IOException("Failed to created pge input config file ' "
+                  + dynamicConfigFile.getFilePath() + "' : " + e.getMessage());
+         }
+      }
+   }
 
-    protected PgeMetadata createPgeMetadata(Metadata dynMetadata,
-          WorkflowTaskConfiguration config) {
-       Metadata staticMetadata = new Metadata();
-       for (Object key : config.getProperties().keySet()) {
-          staticMetadata.addMetadata((String) key,
-                config.getProperty((String) key));
-       }
-       return new PgeMetadata(staticMetadata, dynMetadata);
-    }
+   protected void createSciPgeConfigFile(DynamicConfigFile dynamicConfigFile)
+         throws Exception {
+      File parentDir = new File(dynamicConfigFile.getFilePath())
+            .getParentFile();
+      if (!parentDir.exists())
+         parentDir.mkdirs();
+      SciPgeConfigFileWriter writer = (SciPgeConfigFileWriter) Class.forName(
+            dynamicConfigFile.getWriterClass()).newInstance();
+      writer.createConfigFile(dynamicConfigFile.getFilePath(),
+            this.pgeMetadata.asMetadata(), dynamicConfigFile.getArgs());
+   }
 
-    protected ConfigFilePropertyAdder loadPropertyAdder(
-            String propertyAdderClasspath) throws Exception {
-        return (ConfigFilePropertyAdder) Class.forName(propertyAdderClasspath)
-                .newInstance();
-    }
-
-    protected void runPropertyAdder(ConfigFilePropertyAdder propAdder) {
-        propAdder.addConfigProperties(this.pgeMetadata, this.pgeConfig
-                .getPropertyAdderCustomArgs());
-    }
-
-    protected PgeConfig createPgeConfig() throws Exception {
-        return new XmlFilePgeConfigBuilder().build(this.pgeMetadata);
-    }
-
-    protected void updateStatus(String status) {
-        try {
-            LOG.log(Level.INFO, "Updating status to workflow as " + status);
-            this.wm.updateWorkflowInstanceStatus(this.workflowInstId, status);
-        } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to update to workflow as " + status 
-                    + " : " + e.getMessage());
-        }
-    }
-
-    protected void prePgeSetup() throws Exception {
-        this.createExeDir();
-        this.createOuputDirsIfRequested();
-        this.createSciPgeConfigFiles();
-    }
-
-    protected void createExeDir() {
-        LOG.log(Level.INFO, "Creating PGE execution working directory: ["
-                + this.pgeConfig.getExeDir() + "]");
-        new File(this.pgeConfig.getExeDir()).mkdirs();
-    }
-
-    protected void createOuputDirsIfRequested() {
-        for (OutputDir outputDir : this.pgeConfig.getOuputDirs()) {
-            if (outputDir.isCreateBeforeExe()) {
-                LOG.log(Level.INFO, "Creating PGE file ouput directory: ["
-                        + outputDir.getPath() + "]");
-                new File(outputDir.getPath()).mkdirs();
+   protected void processOutput() throws FileNotFoundException, IOException {
+      for (final OutputDir outputDir : this.pgeConfig.getOuputDirs()) {
+         File[] createdFiles = new File(outputDir.getPath()).listFiles();
+         for (File createdFile : createdFiles) {
+            Metadata outputMetadata = new Metadata();
+            for (RegExprOutputFiles regExprFiles : outputDir
+                  .getRegExprOutputFiles()) {
+               if (Pattern.matches(regExprFiles.getRegExp(),
+                     createdFile.getName())) {
+                  try {
+                     PcsMetFileWriter writer = (PcsMetFileWriter) Class
+                           .forName(regExprFiles.getConverterClass())
+                           .newInstance();
+                     outputMetadata
+                           .replaceMetadata(this.getMetadataForFile(
+                                 (regExprFiles.getRenamingConv() != null) ? createdFile = this
+                                       .renameFile(createdFile,
+                                             regExprFiles.getRenamingConv())
+                                       : createdFile, writer, regExprFiles
+                                       .getArgs()));
+                  } catch (Exception e) {
+                     LOG.log(Level.SEVERE,
+                           "Failed to create metadata file for '" + createdFile
+                                 + "' : " + e.getMessage(), e);
+                  }
+               }
             }
-        }
-    }
+            if (outputMetadata.getAllKeys().size() > 0)
+               this.writeFromMetadata(
+                     outputMetadata,
+                     createdFile.getAbsolutePath()
+                           + "."
+                           + this.pgeMetadata
+                                 .getMetadata(PcsMetadataKeys.MET_FILE_EXT));
+         }
+      }
+   }
 
-    protected void createSciPgeConfigFiles() throws IOException {
-        this.updateStatus(PgeTaskMetadataKeys.CONF_FILE_BUILD);
-        for (DynamicConfigFile dynamicConfigFile : pgeConfig
-                .getDynamicConfigFiles()) {
-            try {
-                this.createSciPgeConfigFile(dynamicConfigFile);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new IOException(
-                        "Failed to created pge input config file ' "
-                                + dynamicConfigFile.getFilePath() + "' : "
-                                + e.getMessage());
-            }
-        }
-    }
+   protected File renameFile(File file, RenamingConv renamingConv)
+         throws Exception {
+      Metadata curMetadata = this.pgeMetadata.asMetadata();
+      curMetadata.replaceMetadata(renamingConv.getTmpReplaceMet());
+      String newFileName = PathUtils.doDynamicReplacement(
+            renamingConv.getRenamingString(), curMetadata);
+      File newFile = new File(file.getParentFile(), newFileName);
+      LOG.log(Level.INFO, "Renaming file '" + file.getAbsolutePath() + "' to '"
+            + newFile.getAbsolutePath() + "'");
+      if (!file.renameTo(newFile))
+         throw new IOException("Renaming returned false");
+      return newFile;
+   }
 
-    protected void createSciPgeConfigFile(DynamicConfigFile dynamicConfigFile)
-            throws Exception {
-        File parentDir = new File(dynamicConfigFile.getFilePath())
-                .getParentFile();
-        if (!parentDir.exists())
-            parentDir.mkdirs();
-        SciPgeConfigFileWriter writer = (SciPgeConfigFileWriter) Class.forName(
-                dynamicConfigFile.getWriterClass()).newInstance();
-        writer.createConfigFile(dynamicConfigFile.getFilePath(),
-                this.pgeMetadata.asMetadata(), dynamicConfigFile.getArgs());
-    }
+   protected Metadata getMetadataForFile(File sciPgeCreatedDataFile,
+         PcsMetFileWriter writer, Object[] args) throws Exception {
+      return writer.getMetadataForFile(sciPgeCreatedDataFile, this.pgeMetadata,
+            args);
+   }
 
-    protected void processOutput() throws FileNotFoundException, IOException {
-        for (final OutputDir outputDir : this.pgeConfig.getOuputDirs()) {
-            File[] createdFiles = new File(outputDir.getPath()).listFiles();
-            for (File createdFile : createdFiles) {
-                Metadata outputMetadata = new Metadata();
-                for (RegExprOutputFiles regExprFiles : outputDir
-                        .getRegExprOutputFiles()) {
-                    if (Pattern.matches(regExprFiles.getRegExp(), createdFile
-                            .getName())) {
-                        try {
-                            PcsMetFileWriter writer = (PcsMetFileWriter) Class
-                                    .forName(regExprFiles.getConverterClass())
-                                    .newInstance();
-                            outputMetadata.replaceMetadata(this.getMetadataForFile(
-						        (regExprFiles.getRenamingConv() != null) 
-							    ? createdFile = this.renameFile(createdFile, regExprFiles.getRenamingConv())
-							    : createdFile, writer, regExprFiles.getArgs()));
-                        } catch (Exception e) {
-                            LOG.log(Level.SEVERE,
-                                    "Failed to create metadata file for '"
-                                            + createdFile + "' : "
-                                            + e.getMessage(), e);
-                        }
-                    }
-                }
-                if (outputMetadata.getAllKeys().size() > 0)
-                	this.writeFromMetadata(outputMetadata, createdFile.getAbsolutePath() 
-                			+ "." + this.pgeMetadata.getMetadata(PcsMetadataKeys.MET_FILE_EXT));
-            }
-        }
-    }
+   protected void writeFromMetadata(Metadata metadata, String toMetFilePath)
+         throws FileNotFoundException, IOException {
+      new SerializableMetadata(metadata, "UTF-8", false)
+            .writeMetadataToXmlStream(new FileOutputStream(toMetFilePath));
+   }
 
-    protected File renameFile(File file, RenamingConv renamingConv) throws Exception {
-    	Metadata curMetadata = this.pgeMetadata.asMetadata();
-    	curMetadata.replaceMetadata(renamingConv.getTmpReplaceMet());
-    	String newFileName = PathUtils.doDynamicReplacement(renamingConv.getRenamingString(), curMetadata);
-    	File newFile = new File(file.getParentFile(), newFileName);
-        LOG.log(Level.INFO, "Renaming file '" + file.getAbsolutePath() 
-        		+ "' to '" + newFile.getAbsolutePath() + "'");
-    	if (!file.renameTo(newFile))
-    		throw new IOException("Renaming returned false");
-    	return newFile;
-    }
-    
-    protected Metadata getMetadataForFile(File sciPgeCreatedDataFile,
-            PcsMetFileWriter writer, Object[] args) throws Exception {
-        return writer.getMetadataForFile(sciPgeCreatedDataFile, this.pgeMetadata,
-                args);
-    }
-    
-    protected void writeFromMetadata(Metadata metadata, String toMetFilePath) 
-    		throws FileNotFoundException, IOException {
-		new SerializableMetadata(metadata, "UTF-8", false)
-				.writeMetadataToXmlStream(new FileOutputStream(toMetFilePath));
-	}
+   protected ScriptFile buildPgeRunScript() {
+      ScriptFile sf = new ScriptFile(this.pgeConfig.getShellType());
+      sf.setCommands(this.pgeConfig.getExeCmds());
+      return sf;
+   }
 
-    protected ScriptFile buildPgeRunScript() {
-        ScriptFile sf = new ScriptFile(this.pgeConfig.getShellType());
-        sf.setCommands(this.pgeConfig.getExeCmds());
-        return sf;
-    }
+   protected String getScriptPath() {
+      return new File(this.pgeConfig.getExeDir()).getAbsolutePath() + "/"
+            + this.getPgeScriptName();
+   }
 
-    protected String getScriptPath() {
-        return new File(this.pgeConfig.getExeDir()).getAbsolutePath() + "/"
-                + this.getPgeScriptName();
-    }
+   protected String getPgeScriptName() {
+      return "sciPgeExeScript_"
+            + this.pgeMetadata.getMetadata(PgeTaskMetadataKeys.NAME);
+   }
 
-    protected String getPgeScriptName() {
-        return "sciPgeExeScript_"
-                + this.pgeMetadata.getMetadata(PgeTaskMetadataKeys.NAME);
-    }
+   protected Handler initializePgeLogHandler() throws SecurityException,
+         IOException {
+      FileHandler handler = null;
+      String logFilePattern = this.pgeMetadata
+            .getMetadata(PgeTaskMetadataKeys.LOG_FILE_PATTERN);
+      if (logFilePattern != null) {
+         LOG.log(Level.INFO,
+               "Creating Log Handler to capture pge output to file '"
+                     + logFilePattern + "'");
+         new File(logFilePattern).getParentFile().mkdirs();
+         handler = new FileHandler(logFilePattern);
+         handler.setFormatter(new SimpleFormatter());
 
-    protected Handler initializePgeLogHandler() throws SecurityException,
-			IOException {
-    	FileHandler handler = null;
-		String logFilePattern = this.pgeMetadata
-				.getMetadata(PgeTaskMetadataKeys.LOG_FILE_PATTERN);
-		if (logFilePattern != null) {
-			LOG.log(Level.INFO, "Creating Log Handler to capture pge output to file '"
-							+ logFilePattern + "'");
-			new File(logFilePattern).getParentFile().mkdirs();
-			handler = new FileHandler(logFilePattern);
-			handler.setFormatter(new SimpleFormatter());
+      }
+      return handler;
+   }
 
-		}
-		return handler;
-	}
-    
-    protected Logger initializePgeLogger(Handler handler) {
-    	if (handler != null) {
-	    	Logger pgeLogger = Logger.getLogger(this.pgeMetadata
-					.getMetadata(PgeTaskMetadataKeys.NAME)
-					+ System.currentTimeMillis());
-			pgeLogger.addHandler(handler);
-			return pgeLogger;
-    	}else {
-    		return LOG;
-    	}
-    }
-    
-    protected void closePgeLogHandler(Logger logger, Handler handler) {
-    	if (logger != null && handler != null) {
-    		logger.removeHandler(handler);
-    		handler.close();
-    	}
-    }
-    
-    protected void runPge() throws Exception {
-        ScriptFile sf = null;
-        Handler handler = null;
-        Logger pgeLogger = null;
-        try {
-            long startTime = System.currentTimeMillis();
+   protected Logger initializePgeLogger(Handler handler) {
+      if (handler != null) {
+         Logger pgeLogger = Logger.getLogger(this.pgeMetadata
+               .getMetadata(PgeTaskMetadataKeys.NAME)
+               + System.currentTimeMillis());
+         pgeLogger.addHandler(handler);
+         return pgeLogger;
+      } else {
+         return LOG;
+      }
+   }
 
-            // create script to run
-            sf = this.buildPgeRunScript();
-            sf.writeScriptFile(this.getScriptPath());
+   protected void closePgeLogHandler(Logger logger, Handler handler) {
+      if (logger != null && handler != null) {
+         logger.removeHandler(handler);
+         handler.close();
+      }
+   }
 
-            // run script and evaluate whether success or failure
-            handler = this.initializePgeLogHandler();
-            pgeLogger = this.initializePgeLogger(handler);
-            this.updateStatus(PgeTaskMetadataKeys.RUNNING_PGE);
-            if (!this.wasPgeSuccessful(ExecUtils.callProgram(this.pgeConfig
-                    .getShellType()
-                    + " " + this.getScriptPath(), pgeLogger, new File(this.pgeConfig
-                    .getExeDir()).getAbsoluteFile())))
-                throw new RuntimeException("Pge didn't finish successfully");
-            else
-                LOG.log(Level.INFO, "Successfully completed running: '"
-                        + sf.getCommands() + "'");
-           
-            
-            long endTime = System.currentTimeMillis();
-            this.pgeMetadata.replaceMetadata(PgeTaskMetadataKeys.PGE_RUNTIME,
-                    (endTime - startTime) + "");
+   protected void runPge() throws Exception {
+      ScriptFile sf = null;
+      Handler handler = null;
+      Logger pgeLogger = null;
+      try {
+         long startTime = System.currentTimeMillis();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("Exception when executing PGE commands '"
-                    + (sf != null ? sf.getCommands() : "NULL") + "' : "
-                    + e.getMessage());
-        }finally {
-        	this.closePgeLogHandler(pgeLogger, handler);
-        }
-    }
+         // create script to run
+         sf = this.buildPgeRunScript();
+         sf.writeScriptFile(this.getScriptPath());
 
-    protected boolean wasPgeSuccessful(int returnCode) {
-        return returnCode == 0;
-    }
+         // run script and evaluate whether success or failure
+         handler = this.initializePgeLogHandler();
+         pgeLogger = this.initializePgeLogger(handler);
+         this.updateStatus(PgeTaskMetadataKeys.RUNNING_PGE);
+         if (!this.wasPgeSuccessful(ExecUtils.callProgram(
+               this.pgeConfig.getShellType() + " " + this.getScriptPath(),
+               pgeLogger,
+               new File(this.pgeConfig.getExeDir()).getAbsoluteFile())))
+            throw new RuntimeException("Pge didn't finish successfully");
+         else
+            LOG.log(Level.INFO,
+                  "Successfully completed running: '" + sf.getCommands() + "'");
 
-    protected void ingestProducts() throws Exception {
-        StdProductCrawler crawler = new StdProductCrawler();
-        this.setCrawlerConfigurations(crawler);
-        this.runIngestCrawler(crawler, this.getOutputDirs());
-    }
+         long endTime = System.currentTimeMillis();
+         this.pgeMetadata.replaceMetadata(PgeTaskMetadataKeys.PGE_RUNTIME,
+               (endTime - startTime) + "");
 
-    protected List<File> getOutputDirs() {
-        List<File> outputDirs = new LinkedList<File>();
-        for (OutputDir outputDir : pgeConfig.getOuputDirs())
-            outputDirs.add(new File(outputDir.getPath()));
-        return outputDirs;
-    }
+      } catch (Exception e) {
+         e.printStackTrace();
+         throw new Exception("Exception when executing PGE commands '"
+               + (sf != null ? sf.getCommands() : "NULL") + "' : "
+               + e.getMessage());
+      } finally {
+         this.closePgeLogHandler(pgeLogger, handler);
+      }
+   }
 
-    protected void setCrawlerConfigurations(StdProductCrawler crawler)
-            throws Exception {
-        crawler.setMetFileExtension(this.pgeMetadata
-                .getMetadata(PcsMetadataKeys.MET_FILE_EXT));
-        crawler
-                .setClientTransferer(this.pgeMetadata
-                        .getMetadata(PcsMetadataKeys.CLIENT_TRANSFER_SERVICE_FACTORY));
-        crawler.setFilemgrUrl(this.pgeMetadata
-                .getMetadata(PcsMetadataKeys.FILE_MANAGER_URL));
-        String actionRepoFile = this.pgeMetadata
-                .getMetadata(PcsMetadataKeys.ACTION_REPO_FILE);
-        if (actionRepoFile != null && !actionRepoFile.equals("")) {
-            crawler.setApplicationContext(new FileSystemXmlApplicationContext(
-                    actionRepoFile));
-            crawler.setActionIds(this.pgeMetadata
-                    .getAllMetadata(PcsMetadataKeys.ACTION_IDS));
-        }
-        crawler.setRequiredMetadata(this.pgeMetadata
-                .getAllMetadata(PcsMetadataKeys.REQUIRED_METADATA));
-        String crawlForDirsString = this.pgeMetadata
-                .getMetadata(PcsMetadataKeys.CRAWLER_CRAWL_FOR_DIRS);
-        boolean crawlForDirs = (crawlForDirsString != null) ? crawlForDirsString
-                .toLowerCase().equals("true")
-                : false;
-        String recurString = this.pgeMetadata
-                .getMetadata(PcsMetadataKeys.CRAWLER_RECUR);
-        boolean recur = (recurString != null) ? recurString.toLowerCase()
-                .equals("true") : true;
-        crawler.setCrawlForDirs(crawlForDirs);
-        crawler.setNoRecur(!recur);
-    	LOG.log(Level.INFO, "Passing Workflow Metadata to CAS-Crawler as global metadata . . .");
-    	crawler.setGlobalMetadata(this.pgeMetadata.asMetadata(PgeMetadata.Type.DYNAMIC));
-    }
+   protected boolean wasPgeSuccessful(int returnCode) {
+      return returnCode == 0;
+   }
 
-    protected void runIngestCrawler(StdProductCrawler crawler,
-            List<File> crawlDirs) {
-    	File currentDir = null;
-		try {
-			this.updateStatus(PgeTaskMetadataKeys.CRAWLING);
-			boolean attemptIngestAll = Boolean.parseBoolean(this.pgeMetadata
-					.getMetadata(PgeTaskMetadataKeys.ATTEMPT_INGEST_ALL));
-			for (File crawlDir : crawlDirs) {
-				currentDir = crawlDir;
-				LOG.log(Level.INFO,
-						"Executing StdProductCrawler in productPath: ["
-								+ crawlDir + "]");
-				crawler.crawl(crawlDir);
-				if (!attemptIngestAll)
-					this.verifyIngests(crawler);
-			}
-			if (attemptIngestAll)
-				this.verifyIngests(crawler);
-		} catch (Exception e) {
-			LOG.log(Level.WARNING,
-					"Failed while attempting to ingest products while crawling directory '"
-							+ currentDir
-							+ "' (all products may not have been ingested) : "
-							+ e.getMessage(), e);
-		}
-    }
-    
-    protected void verifyIngests(ProductCrawler crawler) throws Exception {
-    	boolean ingestsSuccess = true;
-    	String exceptionMsg = "";
-    	for (IngestStatus status : crawler.getIngestStatus()) {
-    		if (status.getResult().equals(IngestStatus.Result.FAILURE)) {
-    			exceptionMsg += (exceptionMsg.equals("") ? "" : " : ")
-						+ "Failed to ingest product [file='"
-						+ status.getProduct().getAbsolutePath() + "',result='"
-						+ status.getResult() + "',msg='" + status.getMessage()
-						+ "']";
-    			ingestsSuccess = false;
-    		}else if (!status.getResult().equals(IngestStatus.Result.SUCCESS)) {
-                LOG.log(Level.WARNING, "Product was not ingested [file='"
-						+ status.getProduct().getAbsolutePath() + "',result='"
-						+ status.getResult() + "',msg='" + status.getMessage()
-						+ "']");
-    		}
-    	}
-    	if (!ingestsSuccess)
-    		throw new Exception(exceptionMsg);
-    }
-    
-    protected void updateDynamicMetadata() {
-        this.pgeMetadata.commitMarkedDynamicMetadataKeys();
-    }
+   protected void ingestProducts() throws Exception {
+      StdProductCrawler crawler = new StdProductCrawler();
+      this.setCrawlerConfigurations(crawler);
+      this.runIngestCrawler(crawler, this.getOutputDirs());
+   }
 
-    public void run(Metadata metadata, WorkflowTaskConfiguration config)
-            throws WorkflowTaskInstanceException {
-        try {
-            this.initialize(metadata, config);
-            this.prePgeSetup();
-            this.runPge();
-            this.processOutput();
-            this.updateDynamicMetadata();
-            this.ingestProducts();
-        } catch (Exception e) {
-            throw new WorkflowTaskInstanceException("PGETask failed : "
-                    + e.getMessage(), e);
-        }
-    }
+   protected List<File> getOutputDirs() {
+      List<File> outputDirs = new LinkedList<File>();
+      for (OutputDir outputDir : pgeConfig.getOuputDirs())
+         outputDirs.add(new File(outputDir.getPath()));
+      return outputDirs;
+   }
+
+   protected void setCrawlerConfigurations(StdProductCrawler crawler)
+         throws Exception {
+      crawler.setMetFileExtension(this.pgeMetadata
+            .getMetadata(PcsMetadataKeys.MET_FILE_EXT));
+      crawler.setClientTransferer(this.pgeMetadata
+            .getMetadata(PcsMetadataKeys.CLIENT_TRANSFER_SERVICE_FACTORY));
+      crawler.setFilemgrUrl(this.pgeMetadata
+            .getMetadata(PcsMetadataKeys.FILE_MANAGER_URL));
+      String actionRepoFile = this.pgeMetadata
+            .getMetadata(PcsMetadataKeys.ACTION_REPO_FILE);
+      if (actionRepoFile != null && !actionRepoFile.equals("")) {
+         crawler.setApplicationContext(new FileSystemXmlApplicationContext(
+               actionRepoFile));
+         List<String> actionIds = pgeMetadata
+            .getAllMetadata(PcsMetadataKeys.ACTION_IDS);
+         if (actionIds != null) {
+            crawler.setActionIds(actionIds);
+         }
+      }
+      crawler.setRequiredMetadata(this.pgeMetadata
+            .getAllMetadata(PcsMetadataKeys.REQUIRED_METADATA));
+      String crawlForDirsString = this.pgeMetadata
+            .getMetadata(PcsMetadataKeys.CRAWLER_CRAWL_FOR_DIRS);
+      boolean crawlForDirs = (crawlForDirsString != null) ? crawlForDirsString
+            .toLowerCase().equals("true") : false;
+      String recurString = this.pgeMetadata
+            .getMetadata(PcsMetadataKeys.CRAWLER_RECUR);
+      boolean recur = (recurString != null) ? recurString.toLowerCase().equals(
+            "true") : true;
+      crawler.setCrawlForDirs(crawlForDirs);
+      crawler.setNoRecur(!recur);
+      LOG.log(Level.INFO,
+            "Passing Workflow Metadata to CAS-Crawler as global metadata . . .");
+      crawler.setGlobalMetadata(this.pgeMetadata
+            .asMetadata(PgeMetadata.Type.DYNAMIC));
+   }
+
+   protected void runIngestCrawler(StdProductCrawler crawler,
+         List<File> crawlDirs) {
+      File currentDir = null;
+      try {
+         this.updateStatus(PgeTaskMetadataKeys.CRAWLING);
+         boolean attemptIngestAll = Boolean.parseBoolean(this.pgeMetadata
+               .getMetadata(PgeTaskMetadataKeys.ATTEMPT_INGEST_ALL));
+         for (File crawlDir : crawlDirs) {
+            currentDir = crawlDir;
+            LOG.log(Level.INFO, "Executing StdProductCrawler in productPath: ["
+                  + crawlDir + "]");
+            crawler.crawl(crawlDir);
+            if (!attemptIngestAll)
+               this.verifyIngests(crawler);
+         }
+         if (attemptIngestAll)
+            this.verifyIngests(crawler);
+      } catch (Exception e) {
+         LOG.log(
+               Level.WARNING,
+               "Failed while attempting to ingest products while crawling directory '"
+                     + currentDir
+                     + "' (all products may not have been ingested) : "
+                     + e.getMessage(), e);
+      }
+   }
+
+   protected void verifyIngests(ProductCrawler crawler) throws Exception {
+      boolean ingestsSuccess = true;
+      String exceptionMsg = "";
+      for (IngestStatus status : crawler.getIngestStatus()) {
+         if (status.getResult().equals(IngestStatus.Result.FAILURE)) {
+            exceptionMsg += (exceptionMsg.equals("") ? "" : " : ")
+                  + "Failed to ingest product [file='"
+                  + status.getProduct().getAbsolutePath() + "',result='"
+                  + status.getResult() + "',msg='" + status.getMessage() + "']";
+            ingestsSuccess = false;
+         } else if (!status.getResult().equals(IngestStatus.Result.SUCCESS)) {
+            LOG.log(Level.WARNING, "Product was not ingested [file='"
+                  + status.getProduct().getAbsolutePath() + "',result='"
+                  + status.getResult() + "',msg='" + status.getMessage() + "']");
+         }
+      }
+      if (!ingestsSuccess)
+         throw new Exception(exceptionMsg);
+   }
+
+   protected void updateDynamicMetadata() {
+      this.pgeMetadata.commitMarkedDynamicMetadataKeys();
+   }
+
+   public void run(Metadata metadata, WorkflowTaskConfiguration config)
+         throws WorkflowTaskInstanceException {
+      try {
+         this.initialize(metadata, config);
+         this.prePgeSetup();
+         this.runPge();
+         this.processOutput();
+         this.updateDynamicMetadata();
+         this.ingestProducts();
+      } catch (Exception e) {
+         throw new WorkflowTaskInstanceException("PGETask failed : "
+               + e.getMessage(), e);
+      }
+   }
 }

@@ -215,7 +215,10 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
                         .toLowerCase().equals("true"))
                 	localPgeMetadata.markAsDynamicMetadataKey(key);
                 
-                curPlusLocalMetadata.replaceMetadata(key, curPgeMetadata.getAllMetadata(key));
+                List<String> values = curPgeMetadata.getAllMetadata(key);
+                if (values != null) {
+                   curPlusLocalMetadata.replaceMetadata(key, values);
+                }
             }
         }
         return localPgeMetadata;
