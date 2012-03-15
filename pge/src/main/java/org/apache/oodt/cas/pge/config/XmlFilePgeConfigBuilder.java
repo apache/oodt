@@ -48,6 +48,8 @@ import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.SPLIT_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.VAL_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.WORKFLOW_MET_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.WRITER_CLASS_ATTR;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CONFIG_FILE_PATH;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.QUERY_FILE_MANAGER_URL;
 
 //JDK imports
 import java.io.File;
@@ -69,9 +71,7 @@ import org.apache.oodt.cas.filemgr.util.QueryUtils;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.pge.metadata.PcsMetadataKeys;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
-import org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys;
 import org.apache.oodt.commons.xml.XMLUtils;
 
 //W3C imports
@@ -93,7 +93,7 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
         try {
             PgeConfig pgeConfig = new PgeConfig();
             this.buildImports(this.fillIn(pgeMetadata
-                    .getMetadata(PgeTaskMetKeys.CONFIG_FILE_PATH.getName()),
+                    .getMetadata(CONFIG_FILE_PATH.getName()),
                     pgeMetadata.asMetadata()), null, pgeConfig, pgeMetadata);
             return pgeConfig;
         } catch (Exception e) {
@@ -347,7 +347,7 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
 	        if (value.toUpperCase()
 	                .matches("^\\s*SQL\\s*\\(.*\\)\\s*\\{.*\\}\\s*$"))
 	            value = QueryUtils.getQueryResultsAsString(new XmlRpcFileManagerClient(new URL(inputMetadata
-	                    .getMetadata(PcsMetadataKeys.FILE_MANAGER_URL))).complexQuery(SqlParser.parseSqlQueryMethod(value)));
+	                    .getMetadata(QUERY_FILE_MANAGER_URL.getName()))).complexQuery(SqlParser.parseSqlQueryMethod(value)));
 	        return value;
     	}catch (Exception e) {
     		throw new Exception("Failed to parse value: " + value, e);

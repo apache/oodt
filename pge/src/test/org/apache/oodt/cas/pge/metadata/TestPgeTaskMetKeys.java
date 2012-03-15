@@ -31,4 +31,14 @@ public class TestPgeTaskMetKeys extends TestCase {
       System.setProperty(PgeTaskMetKeys.USE_LEGACY_PROPERTY, "true");
       assertEquals(PgeTaskMetKeys.NAME.getName(), PgeTaskMetKeys.NAME.legacyName);
    }
+
+   public void testIsVector() {
+      assertFalse(PgeTaskMetKeys.NAME.isVector());
+      assertFalse(PgeTaskMetKeys.getByName(
+            PgeTaskMetKeys.NAME.getName()).isVector());
+      assertTrue(PgeTaskMetKeys.PROPERTY_ADDERS.isVector());
+      assertTrue(PgeTaskMetKeys.getByName(
+            PgeTaskMetKeys.PROPERTY_ADDERS.getName()).isVector());
+      assertNull(PgeTaskMetKeys.getByName("BOGUS/BOGUS/BOGUS"));
+   }
 }

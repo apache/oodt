@@ -21,29 +21,149 @@ import com.google.common.annotations.VisibleForTesting;
 
 /**
  * PGETaskInstance Reserved Metadata keys.
- *
+ * 
  * @author bfoster (Brian Foster)
  */
 public enum PgeTaskMetKeys {
 
-   NAME("PGETask/Name", "PGETask_Name"),
-   CONFIG_FILE_PATH("PGETask/ConfigFilePath", "PGETask_ConfigFilePath"),
-   LOG_FILE_PATTERN("PGETask/LogFilePattern", "PGETask_LogFilePattern"),
-   PROPERTY_ADDERS("PGETask/PropertyAdders", "PGETask_PropertyAdderClasspath"),
-   PGE_RUNTIME("PGETask/Runtime", "PGETask_Runtime"),
-   ATTEMPT_INGEST_ALL("PGETask/AttemptIngestAll", "PGETask_AttemptIngestAll");
+   /**
+    * PGE Name used to create the execution script file name and name the Java Logger.
+    */
+   NAME(
+         "PGETask/Name",
+         "PGETask_Name"),
+   /**
+    * Path to CAS-PGE's configuration file.
+    */
+   CONFIG_FILE_PATH(
+         "PGETask/ConfigFilePath",
+         "PGETask_ConfigFilePath"),
+   /**
+    * Java logger pattern used to create log files for CAS-PGE.
+    */
+   LOG_FILE_PATTERN(
+         "PGETask/LogFilePattern",
+         "PGETask_LogFilePattern"),
+   /**
+    * List of {@link ConfigFilePropertyAdder}s classpaths to be run.
+    */
+   PROPERTY_ADDERS(
+         "PGETask/PropertyAdders",
+         "PGETask_PropertyAdderClasspath",
+         true),
+   /**
+    * Set by CAS-PGE to the number of milliseconds it took CAS-PGE to run.
+    */
+   PGE_RUNTIME(
+         "PGETask/Runtime",
+         "PGETask_Runtime"),
+   /**
+    * CAS Workflow Manager URL to which CAS-PGE should update it's status
+    * and metadata.
+    */
+   WORKFLOW_MANAGER_URL(
+         "PGETask/WorkflowManagerUrl",
+         "PCS_WorkflowManagerUrl"),
+   /**
+    * CAS File Manager URL used for queries.
+    */
+   QUERY_FILE_MANAGER_URL(
+         "PGETask/Query/FileManagerUrl",
+         "PCS_FileManagerUrl"),
+   /**
+    * CAS File Manager URL used for product ingestion.
+    */
+   INGEST_FILE_MANAGER_URL(
+         "PGETask/Ingest/FileManagerUrl",
+         "PCS_FileManagerUrl"),
+   /**
+    * The {@link DataTransferFactory} used for product staging.
+    */
+   QUERY_CLIENT_TRANSFER_SERVICE_FACTORY(
+         "PGETask/Query/ClientTransferServiceFactory",
+         "PCS_ClientTransferServiceFactory"),
+   /**
+    * The {@link DataTransferFactory} used for product ingestion.
+    */
+   INGEST_CLIENT_TRANSFER_SERVICE_FACTORY(
+         "PGETask/Ingest/ClientTransferServiceFactory",
+         "PCS_ClientTransferServiceFactory"),
+   /**
+    * Path to Spring XML file which contains CAS {@link CrawlerAction}s.
+    */
+   ACTION_REPO_FILE(
+         "PGETask/Ingest/ActionRepoFile",
+         "PCS_ActionRepoFile"),
+   /**
+    * The IDs of the {@link CrawlerAction}s in the {@link #ACTION_REPO_FILE} to run.
+    */
+   ACTION_IDS(
+         "PGETask/Ingest/ActionsIds",
+         "PCS_ActionsIds",
+         true),
+   /**
+    * If set to true the crawler will crawl for directories instead of files.
+    */
+   CRAWLER_CRAWL_FOR_DIRS(
+         "PGETask/Ingest/CrawlerCrawlForDirs",
+         "PCS_CrawlerCrawlForDirs"),
+   /**
+    * If set to true the crawler will perform a deep crawl for files.
+    */
+   CRAWLER_RECUR(
+         "PGETask/Ingest/CrawlerRecur",
+         "PCS_CrawlerRecur"),
+   /**
+    * File extension given to each Product's metadata file.
+    */
+   MET_FILE_EXT(
+         "PGETask/Ingest/MetFileExtension",
+         "PCS_MetFileExtension"),
+   /**
+    * List of metadata keys required for Product ingest.
+    */
+   REQUIRED_METADATA(
+         "PGETask/Ingest/RequiredMetadata",
+         "PCS_RequiredMetadata",
+         true),
+   /**
+    * If set to true then will attempt to ingest all Product's even if one
+    * fails. If false, will bail ingest after first failed Product ingest.
+    */
+   ATTEMPT_INGEST_ALL(
+         "PGETask/Ingest/AttemptIngestAll",
+         "PGETask_AttemptIngestAll");
 
    public static final String USE_LEGACY_PROPERTY = "org.apache.oodt.cas.pge.legacyMode";
 
    @VisibleForTesting String name;
    @VisibleForTesting String legacyName;
+   private boolean isVector;
 
    PgeTaskMetKeys(String name, String legacyName) {
+      this(name, legacyName, false);
+   }
+
+   PgeTaskMetKeys(String name, String legacyName, boolean isVector) {
       this.name = name;
       this.legacyName = legacyName;
+      this.isVector = isVector;
    }
 
    public String getName() {
       return Boolean.getBoolean(USE_LEGACY_PROPERTY) ? legacyName : name;
+   }
+
+   public boolean isVector() {
+      return isVector;
+   }
+
+   public static PgeTaskMetKeys getByName(String name) {
+      for (PgeTaskMetKeys key : values()) {
+         if (key.getName().equals(name)) {
+            return key;
+         }
+      }
+      return null;
    }
 }
