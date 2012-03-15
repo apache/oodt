@@ -71,7 +71,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.pge.metadata.PcsMetadataKeys;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
-import org.apache.oodt.cas.pge.metadata.PgeTaskMetadataKeys;
+import org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys;
 import org.apache.oodt.commons.xml.XMLUtils;
 
 //W3C imports
@@ -93,7 +93,7 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
         try {
             PgeConfig pgeConfig = new PgeConfig();
             this.buildImports(this.fillIn(pgeMetadata
-                    .getMetadata(PgeTaskMetadataKeys.CONFIG_FILE_PATH),
+                    .getMetadata(PgeTaskMetKeys.CONFIG_FILE_PATH.getName()),
                     pgeMetadata.asMetadata()), null, pgeConfig, pgeMetadata);
             return pgeConfig;
         } catch (Exception e) {

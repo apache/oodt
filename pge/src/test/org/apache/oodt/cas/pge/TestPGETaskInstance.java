@@ -17,14 +17,14 @@
 package org.apache.oodt.cas.pge;
 
 //OODT static imports
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetadataKeys.PROPERTY_ADDERS;
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetadataKeys.PROPERTY_ADDER_CLASSPATH;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PROPERTY_ADDERS;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.pge.PGETaskInstance;
 import org.apache.oodt.cas.pge.config.PgeConfig;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
+import org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys;
 
 //Google imports
 import com.google.common.collect.Lists;
@@ -49,7 +49,7 @@ public class TestPGETaskInstance extends TestCase {
    public void testRunPropertyAdders() throws Exception {
       PGETaskInstance pgeTask = new PGETaskInstance();
       Metadata staticMet = new Metadata();
-      staticMet.addMetadata(PROPERTY_ADDER_CLASSPATH, MockConfigFilePropertyAdder.class.getCanonicalName());
+      staticMet.addMetadata(PROPERTY_ADDERS.getName(), MockConfigFilePropertyAdder.class.getCanonicalName());
       Metadata dynMet = new Metadata();
       pgeTask.pgeMetadata = new PgeMetadata(staticMet, dynMet);
       pgeTask.pgeConfig = new PgeConfig();
@@ -59,22 +59,23 @@ public class TestPGETaskInstance extends TestCase {
 
       staticMet = new Metadata();
       dynMet = new Metadata();
-      dynMet.addMetadata(PROPERTY_ADDERS, MockConfigFilePropertyAdder.class.getCanonicalName());
-      pgeTask.pgeMetadata = new PgeMetadata(staticMet, dynMet);
-      pgeTask.pgeConfig = new PgeConfig();
-      pgeTask.pgeConfig.setPropertyAdderCustomArgs(new Object[] { "key", "value" });
-      pgeTask.runPropertyAdders();
-      assertEquals("value", pgeTask.pgeMetadata.getMetadata("key"));
-      assertEquals("1", pgeTask.pgeMetadata.getMetadata(MockConfigFilePropertyAdder.RUN_COUNTER));
-
-      staticMet = new Metadata();
-      dynMet = new Metadata();
-      dynMet.addMetadata(PROPERTY_ADDERS, Lists.newArrayList(MockConfigFilePropertyAdder.class.getCanonicalName(), MockConfigFilePropertyAdder.class.getCanonicalName()));
+      dynMet.addMetadata(PROPERTY_ADDERS.getName(), Lists.newArrayList(MockConfigFilePropertyAdder.class.getCanonicalName(), MockConfigFilePropertyAdder.class.getCanonicalName()));
       pgeTask.pgeMetadata = new PgeMetadata(staticMet, dynMet);
       pgeTask.pgeConfig = new PgeConfig();
       pgeTask.pgeConfig.setPropertyAdderCustomArgs(new Object[] { "key", "value" });
       pgeTask.runPropertyAdders();
       assertEquals("value", pgeTask.pgeMetadata.getMetadata("key"));
       assertEquals("2", pgeTask.pgeMetadata.getMetadata(MockConfigFilePropertyAdder.RUN_COUNTER));
+
+      System.setProperty(PgeTaskMetKeys.USE_LEGACY_PROPERTY, "true");
+      staticMet = new Metadata();
+      dynMet = new Metadata();
+      dynMet.addMetadata(PROPERTY_ADDERS.getName(), MockConfigFilePropertyAdder.class.getCanonicalName());
+      pgeTask.pgeMetadata = new PgeMetadata(staticMet, dynMet);
+      pgeTask.pgeConfig = new PgeConfig();
+      pgeTask.pgeConfig.setPropertyAdderCustomArgs(new Object[] { "key", "value" });
+      pgeTask.runPropertyAdders();
+      assertEquals("value", pgeTask.pgeMetadata.getMetadata("key"));
+      assertEquals("1", pgeTask.pgeMetadata.getMetadata(MockConfigFilePropertyAdder.RUN_COUNTER));
    }
 }
