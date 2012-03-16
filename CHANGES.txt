@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-414 Create Java Logger Handler for CAS-PGE (bfoster)
+
 * OODT-415 Add support to ExecUtils callProgram to take OutputStreams
   for forwarding stdout and stderr (bfoster)
 
