@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-415 Add support to ExecUtils callProgram to take OutputStreams
+  for forwarding stdout and stderr (bfoster)
+
 * OODT-249 When a node is removed from the Resource Management 
   system, it should be removed from all of its queues as well (gabe via mattmann)
 
