@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-249 When a node is removed from the Resource Management 
+  system, it should be removed from all of its queues as well (gabe via mattmann)
+
 * OODT-376 Addition of Cas-Browser Balance module (gabe)
 
 * OODT-411 Port CAS-PGE's PcsMetadataKeys to PgeTaskMetKeys (bfoster)

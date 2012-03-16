@@ -292,7 +292,15 @@ public class XmlRpcResourceManager {
     }
     
     public boolean removeNode(String nodeId) throws MonitorException {
-    	this.scheduler.getMonitor().removeNodeById(nodeId);
+    	try{
+	    	for(String queueName: this.getQueuesWithNode(nodeId)){
+	    		this.removeNodeFromQueue(nodeId, queueName);
+	    	}
+	    	this.scheduler.getMonitor().removeNodeById(nodeId);
+    	}catch(Exception e){
+    		throw new MonitorException(e.getMessage(), e);
+    	}
+    	
     	return true;
     }
     
