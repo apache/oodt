@@ -296,6 +296,12 @@ public class PgeMetadata {
       return keyPath;
    }
 
+   public void replaceMetadata(PgeTaskMetKeys key, String value) {
+      Validate.notNull(key, "key cannot be null");
+
+      replaceMetadata(key.getName(), value);
+   }
+
    /**
     * Replace the given key's value with the given value. If the given key is a
     * key link, then it will update the value of the key it is linked to if that
@@ -336,6 +342,12 @@ public class PgeMetadata {
       for (String key : metadata.getAllKeys()) {
          replaceMetadata(key, metadata.getAllMetadata(key));
       }
+   }
+
+   public void replaceMetadata(PgeTaskMetKeys key, List<String> values) {
+      Validate.notNull(key, "key cannot be null");
+
+      replaceMetadata(key.getName(), values);
    }
 
    /**
@@ -407,6 +419,10 @@ public class PgeMetadata {
       return combinedMetadata;
    }
 
+   public List<String> getAllMetadata(PgeTaskMetKeys key, Type... types) {
+      return getAllMetadata(key.getName(), types);
+   }
+
    /**
     * Get metadata values for given key. If Types are specified then it provides
     * the precedence order in which to search for the key. If no Type args are
@@ -450,6 +466,10 @@ public class PgeMetadata {
          }
       }
       return null;
+   }
+
+   public String getMetadata(PgeTaskMetKeys key, Type... types) {
+      return getMetadata(key.getName(), types);
    }
 
    /**

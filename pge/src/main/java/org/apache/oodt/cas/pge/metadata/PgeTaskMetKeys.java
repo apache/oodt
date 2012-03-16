@@ -39,12 +39,6 @@ public enum PgeTaskMetKeys {
          "PGETask/ConfigFilePath",
          "PGETask_ConfigFilePath"),
    /**
-    * Java logger pattern used to create log files for CAS-PGE.
-    */
-   LOG_FILE_PATTERN(
-         "PGETask/LogFilePattern",
-         "PGETask_LogFilePattern"),
-   /**
     * List of {@link ConfigFilePropertyAdder}s classpaths to be run.
     */
    PROPERTY_ADDERS(
@@ -165,5 +159,10 @@ public enum PgeTaskMetKeys {
          }
       }
       return null;
+   }
+
+   @Override
+   public String toString() {
+      return getName();
    }
 }
