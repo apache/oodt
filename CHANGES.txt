@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-376 Addition of Cas-Browser Balance module (gabe)
+
 * OODT-411 Port CAS-PGE's PcsMetadataKeys to PgeTaskMetKeys (bfoster)
 
 * OODT-409 Convert CAS-PGE metadata keys and workflow statuses from static Strings to enums (bfoster)
