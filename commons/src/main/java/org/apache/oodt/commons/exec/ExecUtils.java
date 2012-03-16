@@ -24,6 +24,7 @@ import org.apache.oodt.commons.io.LoggerOutputStream;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,11 +58,35 @@ public final class ExecUtils {
 
     public static int callProgram(String commandLine, Logger logger)
             throws IOException {
-        return callProgram(commandLine, logger, null);
+       try {
+          return callProgram(commandLine,
+                             new LoggerOutputStream(logger, Level.INFO),
+                             new LoggerOutputStream(logger, Level.SEVERE),
+                             null);
+       } catch (Exception e) {
+          throw new IOException(e);
+       }
+    }
+
+    public static int callProgram(String commandLine, OutputStream stdOutStream,
+          OutputStream stdErrStream) throws IOException {
+       return callProgram(commandLine, stdOutStream, stdErrStream, null);
     }
 
     public static int callProgram(String commandLine, Logger logger,
-            File workDir) throws IOException {
+          File workDir) throws IOException {
+       try {
+          return callProgram(commandLine,
+                             new LoggerOutputStream(logger, Level.INFO),
+                             new LoggerOutputStream(logger, Level.SEVERE),
+                             workDir);
+       } catch (Exception e) {
+          throw new IOException(e);
+       }
+    }
+
+    public static int callProgram(String commandLine, OutputStream stdOutStream,
+            OutputStream stdErrStream, File workDir) throws IOException {
         Process progProcess = null;
         StreamGobbler errorGobbler = null, outputGobbler = null;
         int returnVal = -1;
@@ -70,9 +95,9 @@ public final class ExecUtils {
                     commandLine) : Runtime.getRuntime().exec(commandLine, null,
                     workDir);
             errorGobbler = new StreamGobbler(progProcess.getErrorStream(),
-                    "ERROR", new LoggerOutputStream(logger, Level.SEVERE));
+                    "ERROR", stdErrStream);
             outputGobbler = new StreamGobbler(progProcess.getInputStream(),
-                    "OUTPUT", new LoggerOutputStream(logger, Level.INFO));
+                    "OUTPUT", stdOutStream);
             errorGobbler.start();
             outputGobbler.start();
             returnVal = progProcess.waitFor();
