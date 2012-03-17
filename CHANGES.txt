@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-71 Add lifecycle model supporting transition, done 
+  and waiting states (mattmann)
+
 * OODT-414 Create Java Logger Handler for CAS-PGE (bfoster)
 
 * OODT-415 Add support to ExecUtils callProgram to take OutputStreams
