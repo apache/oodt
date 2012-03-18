@@ -14,34 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.pge.logging;
+package org.apache.oodt.cas.pge.config;
 
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
+//OODT imports
+import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 
 /**
- * CAS-PGE's {@link LogRecord}.
+ * Mock implementation of {@link PgeConfigBuilder}.
  *
  * @author bfoster (Brian Foster)
  */
-public class PgeLogRecord extends LogRecord {
+public class MockPgeConfigBuilder implements PgeConfigBuilder {
 
-   private static final long serialVersionUID = 2334166761035931387L;
+   public static final String MOCK_EXE_DIR = "/mock/exe/dir";
 
-   private String workflowInstId;
-
-   public PgeLogRecord(String workflowInstId, Level level, String msg) {
-      super(level, msg);
-      this.workflowInstId = workflowInstId;
-   }
-
-   public PgeLogRecord(String workflowInstId, Level level, String msg, Throwable t) {
-      this(workflowInstId, level, msg);
-      setThrown(t);
-   }
-
-   public String getWorkflowInstId() {
-      return workflowInstId;
+   public PgeConfig build(PgeMetadata pgeMetadata) throws Exception {
+      PgeConfig pgeConfig = new PgeConfig();
+      pgeConfig.setExeDir(MOCK_EXE_DIR);
+      return pgeConfig;
    }
 }

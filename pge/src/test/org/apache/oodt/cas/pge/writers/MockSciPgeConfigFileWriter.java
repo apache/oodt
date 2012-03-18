@@ -14,34 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.pge.logging;
+package org.apache.oodt.cas.pge.writers;
 
 //JDK imports
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
+import java.io.File;
+import java.io.IOException;
+
+//Apache imports
+import org.apache.commons.io.FileUtils;
+
+//OODT imports
+import org.apache.oodt.cas.metadata.Metadata;
 
 /**
- * CAS-PGE's {@link LogRecord}.
+ * Mock implementation of {@link SciPgeConfigFileWriter}.
  *
  * @author bfoster (Brian Foster)
  */
-public class PgeLogRecord extends LogRecord {
+public class MockSciPgeConfigFileWriter implements SciPgeConfigFileWriter {
 
-   private static final long serialVersionUID = 2334166761035931387L;
-
-   private String workflowInstId;
-
-   public PgeLogRecord(String workflowInstId, Level level, String msg) {
-      super(level, msg);
-      this.workflowInstId = workflowInstId;
-   }
-
-   public PgeLogRecord(String workflowInstId, Level level, String msg, Throwable t) {
-      this(workflowInstId, level, msg);
-      setThrown(t);
-   }
-
-   public String getWorkflowInstId() {
-      return workflowInstId;
+   public File createConfigFile(String sciPgeConfigFilePath,
+         Metadata inputMetadata, Object... customArgs) throws IOException {
+      File configFile = new File(sciPgeConfigFilePath);
+      configFile.getParentFile().mkdirs();
+      FileUtils.touch(configFile);
+      return configFile;
    }
 }

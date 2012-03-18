@@ -39,6 +39,12 @@ public enum PgeTaskMetKeys {
          "PGETask/ConfigFilePath",
          "PGETask_ConfigFilePath"),
    /**
+    * CAS-PGE's ConfigBuilder classpath.
+    */
+   PGE_CONFIG_BUILDER(
+         "PGETask/PgeConfigBuilder",
+         "PGETask/PgeConfigBuilder"),
+   /**
     * List of {@link ConfigFilePropertyAdder}s classpaths to be run.
     */
    PROPERTY_ADDERS(

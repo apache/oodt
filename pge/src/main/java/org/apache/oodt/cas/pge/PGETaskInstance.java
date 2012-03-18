@@ -26,6 +26,7 @@ import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_CLIENT_TRAN
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_FILE_MANAGER_URL;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.MET_FILE_EXT;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.NAME;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PGE_CONFIG_BUILDER;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PGE_RUNTIME;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PROPERTY_ADDERS;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.REQUIRED_METADATA;
@@ -36,12 +37,12 @@ import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.RUNNING_PGE;
 
 //JDK imports
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.CharBuffer;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Handler;
@@ -49,8 +50,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-//OODT imports
+//Apache imports
 import org.apache.commons.lang.Validate;
+
+//OODT imports
 import org.apache.oodt.cas.crawl.ProductCrawler;
 import org.apache.oodt.cas.crawl.StdProductCrawler;
 import org.apache.oodt.cas.crawl.status.IngestStatus;
@@ -60,6 +63,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.pge.config.DynamicConfigFile;
 import org.apache.oodt.cas.pge.config.OutputDir;
 import org.apache.oodt.cas.pge.config.PgeConfig;
+import org.apache.oodt.cas.pge.config.PgeConfigBuilder;
 import org.apache.oodt.cas.pge.config.RegExprOutputFiles;
 import org.apache.oodt.cas.pge.config.RenamingConv;
 import org.apache.oodt.cas.pge.config.XmlFilePgeConfigBuilder;
@@ -97,74 +101,142 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    protected String workflowInstId;
    protected PgeMetadata pgeMetadata;
    protected PgeConfig pgeConfig;
+   protected Handler logHandler;
 
    protected PGETaskInstance() {}
+
+   public void run(Metadata metadata, WorkflowTaskConfiguration config)
+         throws WorkflowTaskInstanceException {
+      try {
+         // Initialize CAS-PGE.
+         pgeMetadata = createPgeMetadata(metadata, config);
+         pgeConfig = createPgeConfig();
+         runPropertyAdders();
+         wm = createWorkflowManagerClient();
+         workflowInstId = getWorkflowInstanceId();
+
+         // Initialize Logger.
+         initializePgeLogger();
+
+         // Setup the PGE.
+         createExeDir();
+         createOuputDirsIfRequested();
+         updateStatus(CONF_FILE_BUILD.getWorkflowStatusName());
+         createSciPgeConfigFiles();
+
+         // Run the PGE and process its data.
+         runPge();
+
+         // Generate product metadata.
+         generateMetadataForProducts();
+
+         // Ingest products.
+         runIngestCrawler(createProductCrawler());
+
+         // Commit dynamic metadata.
+         updateDynamicMetadata();
+      } catch (Exception e) {
+         log(Level.SEVERE, "PGETask FAILED!!! : " + e.getMessage(), e);
+         throw new WorkflowTaskInstanceException("PGETask FAILED!!! : "
+               + e.getMessage(), e);
+      } finally {
+         try { closePgeLogger(); } catch (Exception e) {}
+      }
+   }
 
    protected void updateStatus(String status) throws Exception {
       log(Level.INFO, "Updating status to workflow as [" + status + "]");
       wm.updateWorkflowInstanceStatus(workflowInstId, status);
    }
 
-   protected Handler initializePgeLogger() throws Exception {
+   protected void initializePgeLogger() throws Exception {
       File logDir = new File(pgeConfig.getExeDir(), "logs");
-      if (!logDir.mkdirs()) {
+      if (!(logDir.exists() || logDir.mkdirs())) {
          throw new Exception("mkdirs for logs directory return false");
       }
-      Handler handler = new PgeLogHandler(pgeMetadata.getMetadata(NAME),
+      logHandler = new PgeLogHandler(workflowInstId,
             new FileOutputStream(new File(logDir, createLogFileName())));
-      Logger.getLogger(PGETaskInstance.class.getName()).addHandler(handler);
-      return handler;
+      Logger.getLogger(PGETaskInstance.class.getName()).addHandler(logHandler);
    }
 
-   protected String createLogFileName() {
+   protected String createLogFileName() throws Exception {
       return pgeMetadata.getMetadata(NAME) + "." + System.currentTimeMillis()
             + ".log";
    }
 
-   protected void closePgeLogger(Handler handler) {
-      handler.close();
-      Logger.getLogger(PGETaskInstance.class.getName()).removeHandler(handler);
+   protected void closePgeLogger() throws Exception {
+      logHandler.close();
+      Logger.getLogger(PGETaskInstance.class.getName()).removeHandler(logHandler);
    }
 
    protected void log(Level level, String message) {
       Logger.getLogger(PGETaskInstance.class.getName()).log(
-            new PgeLogRecord(pgeMetadata.getMetadata(NAME), level, message));
+            new PgeLogRecord(workflowInstId, level, message));
    }
 
    protected void log(Level level, String message, Throwable t) {
       Logger.getLogger(PGETaskInstance.class.getName()).log(
-            new PgeLogRecord(pgeMetadata.getMetadata(NAME), level, message, t));
+            new PgeLogRecord(workflowInstId, level, message, t));
    }
 
    protected PgeMetadata createPgeMetadata(Metadata dynMetadata,
          WorkflowTaskConfiguration config) throws Exception {
+      log(Level.INFO,
+            "Converting workflow configuration to static metadata...");
       Metadata staticMetadata = new Metadata();
       for (Object objKey : config.getProperties().keySet()) {
          String key = (String) objKey;
          PgeTaskMetKeys metKey = PgeTaskMetKeys.getByName(key);
          if (metKey != null && metKey.isVector()) {
-            staticMetadata.addMetadata(key,
-                  Lists.newArrayList(Splitter.on(",").trimResults()
-                        .omitEmptyStrings()
-                        .split(config.getProperty(key))));
+            List<String> values = Lists.newArrayList(
+                  Splitter.on(",").trimResults()
+                  .omitEmptyStrings()
+                  .split(config.getProperty(key)));
+            log(Level.FINEST, "Adding static metadata: key = [" + key
+                  + "] value = " + values);
+            staticMetadata.addMetadata(key, values);
          } else {
-            staticMetadata.addMetadata(key, config.getProperty(key));
+            String value = config.getProperty(key);
+            log(Level.FINEST, "Adding static metadata: key = [" + key
+                  + "] value = [" + value + "]");
+            staticMetadata.addMetadata(key, value);
          }
+      }
+      log(Level.INFO, "Loading workflow context metadata...");
+      for (String key : dynMetadata.getAllKeys()) {
+         log(Level.FINEST,
+               "Adding dynamic metadata: key = [" + key + "] value = "
+                     + dynMetadata.getAllMetadata(key));
       }
       return new PgeMetadata(staticMetadata, dynMetadata);
    }
 
    protected PgeConfig createPgeConfig() throws Exception {
-      return new XmlFilePgeConfigBuilder().build(pgeMetadata);
+      log(Level.INFO, "Create PgeConfig...");
+      String pgeConfigBuilderClass = pgeMetadata
+            .getMetadata(PGE_CONFIG_BUILDER);
+      if (pgeConfigBuilderClass != null) {
+         log(Level.INFO, "Using PgeConfigBuilder: " + pgeConfigBuilderClass);
+         return ((PgeConfigBuilder) Class.forName(pgeConfigBuilderClass)
+               .newInstance()).build(pgeMetadata);
+      } else {
+         log(Level.INFO, "Using default PgeConfigBuilder: "
+               + XmlFilePgeConfigBuilder.class.getCanonicalName());
+         return new XmlFilePgeConfigBuilder().build(pgeMetadata);
+      }
    }
 
    protected void runPropertyAdders() throws Exception {
       try {
-         List<String> propertyAdders = pgeMetadata.getAllMetadata(PROPERTY_ADDERS);
+         log(Level.INFO, "Loading/Running property adders...");
+         List<String> propertyAdders = pgeMetadata
+               .getAllMetadata(PROPERTY_ADDERS);
          if (propertyAdders != null) {
             for (String propertyAdder : propertyAdders) {
                runPropertyAdder(loadPropertyAdder(propertyAdder));
             }
+         } else {
+            log(Level.INFO, "No property adders specified");
          }
       } catch (Exception e) {
          throw new Exception("Failed to instanciate/run Property Adders : "
@@ -174,25 +246,30 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 
    protected ConfigFilePropertyAdder loadPropertyAdder(
          String propertyAdderClasspath) throws Exception {
+      log(Level.FINE, "Loading property adder: " + propertyAdderClasspath);
       return (ConfigFilePropertyAdder) Class.forName(propertyAdderClasspath)
             .newInstance();
    }
 
    protected void runPropertyAdder(ConfigFilePropertyAdder propAdder)
          throws Exception {
+      log(Level.INFO, "Running property adder: "
+            + propAdder.getClass().getCanonicalName());
       propAdder.addConfigProperties(pgeMetadata,
             pgeConfig.getPropertyAdderCustomArgs());
    }
 
    protected XmlRpcWorkflowManagerClient createWorkflowManagerClient()
          throws Exception {
-      String urlString = pgeMetadata.getMetadata(WORKFLOW_MANAGER_URL);
-      Validate.notNull(urlString, "Must specify " + WORKFLOW_MANAGER_URL);
-      return new XmlRpcWorkflowManagerClient(new URL(urlString));
+      String url = pgeMetadata.getMetadata(WORKFLOW_MANAGER_URL);
+      log(Level.INFO, "Creating WorkflowManager client for url [" + url + "]");
+      Validate.notNull(url, "Must specify " + WORKFLOW_MANAGER_URL);
+      return new XmlRpcWorkflowManagerClient(new URL(url));
    }
 
    protected String getWorkflowInstanceId() throws Exception {
       String instanceId = pgeMetadata.getMetadata(CoreMetKeys.WORKFLOW_INST_ID);
+      log(Level.INFO, "Workflow instanceId is [" + instanceId + "]");
       Validate.notNull(instanceId, "Must specify "
             + CoreMetKeys.WORKFLOW_INST_ID);
       return instanceId;
@@ -201,7 +278,8 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    protected void createExeDir() throws Exception {
       log(Level.INFO, "Creating PGE execution working directory: ["
             + pgeConfig.getExeDir() + "]");
-      if (!new File(pgeConfig.getExeDir()).mkdirs()) {
+      File executionDir = new File(pgeConfig.getExeDir());
+      if (!(executionDir.exists() || executionDir.mkdirs())) {
          throw new Exception("mkdirs returned false for creating ["
                + pgeConfig.getExeDir() + "]");
       }
@@ -212,7 +290,8 @@ public class PGETaskInstance implements WorkflowTaskInstance {
          if (outputDir.isCreateBeforeExe()) {
             log(Level.INFO, "Creating PGE file ouput directory: ["
                   + outputDir.getPath() + "]");
-            if (!new File(outputDir.getPath()).mkdirs()) {
+            File dir = new File(outputDir.getPath());
+            if (!(dir.exists() || dir.mkdirs())) {
                throw new Exception("mkdir returned false for creating ["
                      + outputDir.getPath() + "]");
             }
@@ -232,103 +311,147 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    protected void createSciPgeConfigFile(DynamicConfigFile dynamicConfigFile)
          throws Exception {
       Validate.notNull(dynamicConfigFile, "dynamicConfigFile cannot be null");
-      log(Level.INFO, "Starting creation of science PGE file [" + dynamicConfigFile.getFilePath() + "]...");
+      log(Level.FINE, "Starting creation of science PGE file ["
+            + dynamicConfigFile.getFilePath() + "]...");
 
       // Create parent directory if it doesn't exist.
       File parentDir = new File(dynamicConfigFile.getFilePath())
             .getParentFile();
-      if (!parentDir.exists()) {
-         parentDir.mkdirs();
+      if (!(parentDir.exists() || parentDir.mkdirs())) {
+         throw new Exception("Failed to create directory where science PGE file ["
+               + dynamicConfigFile.getFilePath() + "] was to be written");
       }
 
       // Load writer and write file.
-      log(Level.INFO, "Loading writer class for science PGE file [" + dynamicConfigFile.getFilePath() + "]...");
+      log(Level.FINE, "Loading writer class for science PGE file ["
+            + dynamicConfigFile.getFilePath() + "]...");
       SciPgeConfigFileWriter writer = (SciPgeConfigFileWriter) Class.forName(
             dynamicConfigFile.getWriterClass()).newInstance();
-      log(Level.INFO, "Loaded writer [" + writer.getClass().getCanonicalName()
+      log(Level.FINE, "Loaded writer [" + writer.getClass().getCanonicalName()
             + "] for science PGE file [" + dynamicConfigFile.getFilePath()
             + "]...");
-      log(Level.INFO, "Writing science PGE file [" + dynamicConfigFile.getFilePath() + "]...");
-      writer.createConfigFile(dynamicConfigFile.getFilePath(),
+      log(Level.INFO,
+            "Writing science PGE file [" + dynamicConfigFile.getFilePath()
+                  + "]...");
+      File configFile = writer.createConfigFile(dynamicConfigFile.getFilePath(),
             pgeMetadata.asMetadata(), dynamicConfigFile.getArgs());
+      if (!configFile.exists()) {
+         throw new Exception("Writer failed to create config file ["
+               + configFile + "], exists returned false");
+      }
    }
 
-   protected void processOutput() throws FileNotFoundException, IOException {
-      for (final OutputDir outputDir : this.pgeConfig.getOuputDirs()) {
+   protected void generateMetadataForProducts() throws Exception {
+      log(Level.INFO, "Generating metadata for products...");
+      for (OutputDir outputDir : pgeConfig.getOuputDirs()) {
+
+         log(Level.FINE, "Looking for products in output directory ["
+               + outputDir.getPath() + "]");
+
          File[] createdFiles = new File(outputDir.getPath()).listFiles();
+         log(Level.FINE, "Found files: " + Lists.newArrayList(createdFiles));
+
          for (File createdFile : createdFiles) {
-            Metadata outputMetadata = new Metadata();
-            for (RegExprOutputFiles regExprFiles : outputDir
-                  .getRegExprOutputFiles()) {
-               if (Pattern.matches(regExprFiles.getRegExp(),
-                     createdFile.getName())) {
-                  try {
-                     PcsMetFileWriter writer = (PcsMetFileWriter) Class
-                           .forName(regExprFiles.getConverterClass())
-                           .newInstance();
-                     outputMetadata
-                           .replaceMetadata(this.getMetadataForFile(
-                                 (regExprFiles.getRenamingConv() != null) ? createdFile = this
-                                       .renameFile(createdFile,
-                                             regExprFiles.getRenamingConv())
-                                       : createdFile, writer, regExprFiles
-                                       .getArgs()));
-                  } catch (Exception e) {
-                     log(Level.SEVERE,
-                           "Failed to create metadata file for '" + createdFile
-                                 + "' : " + e.getMessage(), e);
-                  }
+            log(Level.FINE, "Inspecting file [" + createdFile + "]");
+            List<RegExprOutputFiles> regexRules = findMatchingRegexRules(
+                  createdFile, outputDir);
+            if (!regexRules.isEmpty()) {
+               Metadata productMetadata = new Metadata();
+               for (RegExprOutputFiles regexRule : regexRules) {
+                  productMetadata.replaceMetadata(generateMetadataForProduct(
+                        createdFile, regexRule));
                }
+               if (productMetadata.getAllKeys().isEmpty()) {
+                  throw new Exception("No metadata was generated for product ["
+                        + createdFile + "]");
+               }
+               writeMetadataFile(productMetadata, createdFile.getAbsolutePath()
+                     + "." + pgeMetadata.getMetadata(MET_FILE_EXT));
+            } else {
+               log(Level.FINE, "Ignoring file [" + createdFile
+                     + "] because it doesn't matches any product regex rules"
+                     + " for this directory [" + outputDir.getPath() + "]");
             }
-            if (outputMetadata.getAllKeys().size() > 0)
-               this.writeFromMetadata(
-                     outputMetadata,
-                     createdFile.getAbsolutePath()
-                           + "."
-                           + pgeMetadata.getMetadata(MET_FILE_EXT));
          }
       }
    }
 
-   protected File renameFile(File file, RenamingConv renamingConv)
+   protected List<RegExprOutputFiles> findMatchingRegexRules(File file,
+         OutputDir outputDir) throws Exception {
+      log(Level.FINE, "Checking file [" + file
+            + "] against regex rules for output directory ["
+            + outputDir.getPath() + "]");
+      List<RegExprOutputFiles> regexRules = Lists.newArrayList();
+      for (RegExprOutputFiles regExprFiles : outputDir.getRegExprOutputFiles()) {
+         if (Pattern.matches(regExprFiles.getRegExp(), file.getName())) {
+            log(Level.FINE, "File [" + file + "] matched regex rule ["
+                  + regExprFiles.getRegExp() + "]");
+            regexRules.add(regExprFiles);
+         }
+      }
+      return regexRules;
+   }
+
+   protected Metadata generateMetadataForProduct(
+         File product, RegExprOutputFiles regexRule) throws Exception {
+      log(Level.FINE, "Loading metadata writer ["
+            + regexRule.getConverterClass() + "] for product [" + product + "]");
+      PcsMetFileWriter writer = (PcsMetFileWriter) Class.forName(
+            regexRule.getConverterClass()).newInstance();
+      if (regexRule.getRenamingConv() != null) {
+         log(Level.FINE, "Renaming product [" + product + "]...");
+         product = renameProduct(product, regexRule.getRenamingConv());
+      }
+      return getMetadataForProduct(product, writer, regexRule.getArgs());
+   }
+
+   protected File renameProduct(File product, RenamingConv renamingConv)
          throws Exception {
-      Metadata curMetadata = this.pgeMetadata.asMetadata();
+      Metadata curMetadata = pgeMetadata.asMetadata();
       curMetadata.replaceMetadata(renamingConv.getTmpReplaceMet());
       String newFileName = PathUtils.doDynamicReplacement(
             renamingConv.getRenamingString(), curMetadata);
-      File newFile = new File(file.getParentFile(), newFileName);
-      log(Level.INFO, "Renaming file '" + file.getAbsolutePath() + "' to '"
-            + newFile.getAbsolutePath() + "'");
-      if (!file.renameTo(newFile))
+      File newFile = new File(product.getParentFile(), newFileName);
+      log(Level.INFO, "Renaming product [" + product + "] to ["
+            + newFile + "]");
+      if (!product.renameTo(newFile)) {
          throw new IOException("Renaming returned false");
+      }
       return newFile;
    }
 
-   protected Metadata getMetadataForFile(File sciPgeCreatedDataFile,
+   protected Metadata getMetadataForProduct(File product,
          PcsMetFileWriter writer, Object[] args) throws Exception {
-      return writer.getMetadataForFile(sciPgeCreatedDataFile, this.pgeMetadata,
-            args);
+      log(Level.INFO, "Generating metadata for product [" + product + "]");
+      return writer.getMetadataForFile(product, pgeMetadata, args);
    }
 
-   protected void writeFromMetadata(Metadata metadata, String toMetFilePath)
-         throws FileNotFoundException, IOException {
+   protected void writeMetadataFile(Metadata metadata, String toFile)
+         throws Exception {
+      log(Level.INFO, "Writing out metadata file [" + toFile + "]");
       new SerializableMetadata(metadata, "UTF-8", false)
-            .writeMetadataToXmlStream(new FileOutputStream(toMetFilePath));
+            .writeMetadataToXmlStream(new FileOutputStream(toFile));
    }
 
    protected ScriptFile buildPgeRunScript() {
-      ScriptFile sf = new ScriptFile(this.pgeConfig.getShellType());
-      sf.setCommands(this.pgeConfig.getExeCmds());
+      log(Level.FINE,
+            "Creating PGE run script for shell [" + pgeConfig.getShellType()
+                  + "] with contents " + pgeConfig.getExeCmds());
+      ScriptFile sf = new ScriptFile(pgeConfig.getShellType());
+      sf.setCommands(pgeConfig.getExeCmds());
       return sf;
    }
 
-   protected String getScriptPath() {
-      return new File(this.pgeConfig.getExeDir()).getAbsolutePath() + "/"
-            + this.getPgeScriptName();
+   protected File getScriptPath() {
+      File script = new File(pgeConfig.getExeDir(), getPgeScriptName());
+      log(Level.FINE, "Script file with be written to [" + script + "]");
+      return script;
    }
 
    protected String getPgeScriptName() {
-      return "sciPgeExeScript_" + this.pgeMetadata.getMetadata(NAME);
+      String pgeScriptName = "sciPgeExeScript_" + pgeMetadata.getMetadata(NAME);
+      log(Level.FINE, "Generated script file name [" + pgeScriptName + "]");
+      return pgeScriptName;
    }
 
    protected void runPge() throws Exception {
@@ -337,24 +460,32 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       OutputStream errOS = createStdErrLogger();
       try {
          long startTime = System.currentTimeMillis();
+         log(Level.INFO, "PGE start time [" + new Date(startTime) + "]");
 
          // create script to run
-         sf = this.buildPgeRunScript();
-         sf.writeScriptFile(this.getScriptPath());
+         sf = buildPgeRunScript();
+         sf.writeScriptFile(getScriptPath().getAbsolutePath());
 
          // run script and evaluate whether success or failure
-         this.updateStatus(RUNNING_PGE.getWorkflowStatusName());
-         if (!this.wasPgeSuccessful(ExecUtils.callProgram(
-               this.pgeConfig.getShellType() + " " + this.getScriptPath(),
+         updateStatus(RUNNING_PGE.getWorkflowStatusName());
+         log(Level.INFO, "Starting execution of PGE...");
+         if (!wasPgeSuccessful(ExecUtils.callProgram(
+               pgeConfig.getShellType() + " " + getScriptPath(),
                stdOS, errOS,
-               new File(this.pgeConfig.getExeDir()).getAbsoluteFile())))
+               new File(pgeConfig.getExeDir()).getAbsoluteFile()))) {
             throw new RuntimeException("Pge didn't finish successfully");
-         else
+         } else {
             log(Level.INFO,
                   "Successfully completed running: '" + sf.getCommands() + "'");
+         }
 
          long endTime = System.currentTimeMillis();
-         pgeMetadata.replaceMetadata(PGE_RUNTIME, (endTime - startTime) + "");
+         log(Level.INFO, "PGE end time [" + new Date(startTime) + "]");
+
+         long runTime = endTime - startTime;
+         log(Level.INFO, "PGE runtime in millis [" + runTime + "]");
+
+         pgeMetadata.replaceMetadata(PGE_RUNTIME, Long.toString(runTime));
 
       } catch (Exception e) {
          throw new Exception("Exception when executing PGE commands '"
@@ -378,21 +509,9 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       return returnCode == 0;
    }
 
-   protected void ingestProducts() throws Exception {
+   protected ProductCrawler createProductCrawler() throws Exception {
+      log(Level.INFO, "Configuring ProductCrawler...");
       StdProductCrawler crawler = new StdProductCrawler();
-      this.setCrawlerConfigurations(crawler);
-      this.runIngestCrawler(crawler, this.getOutputDirs());
-   }
-
-   protected List<File> getOutputDirs() {
-      List<File> outputDirs = new LinkedList<File>();
-      for (OutputDir outputDir : pgeConfig.getOuputDirs())
-         outputDirs.add(new File(outputDir.getPath()));
-      return outputDirs;
-   }
-
-   protected void setCrawlerConfigurations(StdProductCrawler crawler)
-         throws Exception {
       crawler.setMetFileExtension(pgeMetadata.getMetadata(MET_FILE_EXT));
       crawler.setClientTransferer(pgeMetadata
             .getMetadata(INGEST_CLIENT_TRANSFER_SERVICE_FACTORY));
@@ -417,39 +536,39 @@ public class PGETaskInstance implements WorkflowTaskInstance {
             "true") : true;
       crawler.setCrawlForDirs(crawlForDirs);
       crawler.setNoRecur(!recur);
-      log(Level.INFO,
+      log(Level.FINE,
             "Passing Workflow Metadata to CAS-Crawler as global metadata . . .");
-      crawler.setGlobalMetadata(this.pgeMetadata
-            .asMetadata(PgeMetadata.Type.DYNAMIC));
+      crawler.setGlobalMetadata(pgeMetadata.asMetadata(PgeMetadata.Type.DYNAMIC));
+      log(Level.FINE, "Created ProductCrawler ["
+            + crawler.getClass().getCanonicalName() + "]");
+      return crawler;
    }
 
-   protected void runIngestCrawler(StdProductCrawler crawler,
-         List<File> crawlDirs) {
-      File currentDir = null;
-      try {
-         this.updateStatus(CRAWLING.getWorkflowStatusName());
-         boolean attemptIngestAll = Boolean.parseBoolean(pgeMetadata
-               .getMetadata(ATTEMPT_INGEST_ALL));
-         for (File crawlDir : crawlDirs) {
-            currentDir = crawlDir;
-            log(Level.INFO, "Executing StdProductCrawler in productPath: ["
-                  + crawlDir + "]");
-            crawler.crawl(crawlDir);
-            if (!attemptIngestAll)
-               this.verifyIngests(crawler);
+   protected void runIngestCrawler(ProductCrawler crawler) throws Exception {
+      // Determine directories to crawl.
+      List<File> crawlDirs = new LinkedList<File>();
+      for (OutputDir outputDir : pgeConfig.getOuputDirs()) {
+         crawlDirs.add(new File(outputDir.getPath()));
+      }
+
+      // Start crawlin...
+      updateStatus(CRAWLING.getWorkflowStatusName());
+      boolean attemptIngestAll = Boolean.parseBoolean(pgeMetadata
+            .getMetadata(ATTEMPT_INGEST_ALL));
+      for (File crawlDir : crawlDirs) {
+         log(Level.INFO, "Crawling for products in [" + crawlDir + "]");
+         crawler.crawl(crawlDir);
+         if (!attemptIngestAll) {
+            verifyIngests(crawler);
          }
-         if (attemptIngestAll)
-            this.verifyIngests(crawler);
-      } catch (Exception e) {
-         log(Level.WARNING,
-             "Failed while attempting to ingest products while crawling directory '"
-                     + currentDir
-                     + "' (all products may not have been ingested) : "
-                     + e.getMessage(), e);
+      }
+      if (attemptIngestAll) {
+         verifyIngests(crawler);
       }
    }
 
    protected void verifyIngests(ProductCrawler crawler) throws Exception {
+      log(Level.INFO, "Verifying ingests successful...");
       boolean ingestsSuccess = true;
       String exceptionMsg = "";
       for (IngestStatus status : crawler.getIngestStatus()) {
@@ -465,49 +584,17 @@ public class PGETaskInstance implements WorkflowTaskInstance {
                   + status.getResult() + "',msg='" + status.getMessage() + "']");
          }
       }
-      if (!ingestsSuccess)
+      if (!ingestsSuccess) {
          throw new Exception(exceptionMsg);
-   }
-
-   protected void updateDynamicMetadata() {
-      pgeMetadata.commitMarkedDynamicMetadataKeys();
-   }
-
-   public void run(Metadata metadata, WorkflowTaskConfiguration config)
-         throws WorkflowTaskInstanceException {
-      Handler handler = null;
-      try {
-         // Initialize CAS-PGE.
-         pgeMetadata = createPgeMetadata(metadata, config);
-         pgeConfig = createPgeConfig();
-         runPropertyAdders();
-         wm = createWorkflowManagerClient();
-         workflowInstId = getWorkflowInstanceId();
-
-         // Initialize Logger.
-         handler = initializePgeLogger();
-
-         // Setup the PGE.
-         createExeDir();
-         createOuputDirsIfRequested();
-         updateStatus(CONF_FILE_BUILD.getWorkflowStatusName());
-         createSciPgeConfigFiles();
-
-         // Run the PGE and proccess it data.
-         runPge();
-
-         // Update metadata.
-         processOutput();
-         updateDynamicMetadata();
-
-         // Inject products.
-         ingestProducts();
-      } catch (Exception e) {
-         throw new WorkflowTaskInstanceException("PGETask failed : "
-               + e.getMessage(), e);
-      } finally {
-         closePgeLogger(handler);
+      } else {
+         log(Level.INFO, "Ingests were successful");
       }
+   }
+
+   protected void updateDynamicMetadata() throws Exception {
+      pgeMetadata.commitMarkedDynamicMetadataKeys();
+      wm.updateMetadataForWorkflow(workflowInstId,
+            pgeMetadata.asMetadata(PgeMetadata.Type.DYNAMIC));
    }
 
    /**
@@ -540,7 +627,6 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 
       @Override
       public void flush() {
-         System.out.println("HELLO");
          if (buffer.position() > 0) {
             char[] flushContext = new char[buffer.position()];
             System.arraycopy(buffer.array(), 0, flushContext, 0,

@@ -92,14 +92,13 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
     public PgeConfig build(PgeMetadata pgeMetadata) throws IOException {
         try {
             PgeConfig pgeConfig = new PgeConfig();
-            this.buildImports(this.fillIn(pgeMetadata
-                    .getMetadata(CONFIG_FILE_PATH.getName()),
-                    pgeMetadata.asMetadata()), null, pgeConfig, pgeMetadata);
+            buildImports(
+               fillIn(pgeMetadata.getMetadata(CONFIG_FILE_PATH),
+                     pgeMetadata.asMetadata()), null, pgeConfig, pgeMetadata);
             return pgeConfig;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new IOException("Failed to build PgeConfig : "
-                    + e.getMessage());
+                    + e.getMessage(), e);
         }
     }
     
@@ -163,7 +162,11 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
             pgeConfig.addOuputDirAndExpressions(outputDir);
         
         // add local pge metadata to global pge metadata with given namespace
-        pgeMetadata.replaceMetadata(localPgeMetadata, namespace);
+        if (namespace != null) {
+           pgeMetadata.replaceMetadata(localPgeMetadata, namespace);
+        } else {
+           pgeMetadata.replaceMetadata(localPgeMetadata);  
+        }
     }
 
     private PgeMetadata getCustomMetadata(Element customMetadataElem, PgeMetadata pgeMetadata)

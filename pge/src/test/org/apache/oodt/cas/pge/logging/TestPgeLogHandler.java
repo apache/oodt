@@ -39,18 +39,18 @@ import junit.framework.TestCase;
 public class TestPgeLogHandler extends TestCase {
 
    public void testSeparatesMultipleCasPgeLogWritesByPgeName() throws SecurityException, FileNotFoundException {
-      final String PGE_1_NAME = "PGE1";
-      final String PGE_2_NAME = "PGE2";
+      final String instanceId1 = "1234";
+      final String instanceId2 = "4321";
       
       final StringBuffer pge1LogMessages = new StringBuffer("");
-      PgeLogHandler handler1 = new PgeLogHandler(PGE_1_NAME, new OutputStream() {
+      PgeLogHandler handler1 = new PgeLogHandler(instanceId1, new OutputStream() {
          @Override
          public void write(int character) throws IOException {
             pge1LogMessages.append((char) character);
          }
       });
       final StringBuffer pge2LogMessages = new StringBuffer("");
-      PgeLogHandler handler2 = new PgeLogHandler(PGE_2_NAME, new OutputStream() {
+      PgeLogHandler handler2 = new PgeLogHandler(instanceId2, new OutputStream() {
          @Override
          public void write(int character) throws IOException {
             pge2LogMessages.append((char) character);
@@ -61,11 +61,11 @@ public class TestPgeLogHandler extends TestCase {
       logger.addHandler(handler1);
       logger.addHandler(handler2);
 
-      logger.log(new PgeLogRecord(PGE_1_NAME, Level.INFO, "pge1 message1"));
-      logger.log(new PgeLogRecord(PGE_1_NAME, Level.INFO, "pge1 message2"));
-      logger.log(new PgeLogRecord(PGE_1_NAME, Level.INFO, "pge1 message3"));
+      logger.log(new PgeLogRecord(instanceId1, Level.INFO, "pge1 message1"));
+      logger.log(new PgeLogRecord(instanceId1, Level.INFO, "pge1 message2"));
+      logger.log(new PgeLogRecord(instanceId1, Level.INFO, "pge1 message3"));
 
-      logger.log(new PgeLogRecord(PGE_2_NAME, Level.INFO, "pge2 message1"));
+      logger.log(new PgeLogRecord(instanceId2, Level.INFO, "pge2 message1"));
 
       handler1.close();
       handler2.close();

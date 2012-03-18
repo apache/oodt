@@ -32,18 +32,18 @@ import java.util.logging.StreamHandler;
  */
 public class PgeLogHandler extends StreamHandler {
 
-   private String pgeName;
+   private String workflowInstId;
 
-   public PgeLogHandler(String pgeName, OutputStream os)
+   public PgeLogHandler(String workflowInstId, OutputStream os)
          throws SecurityException, FileNotFoundException {
       super(os, new SimpleFormatter());
-      this.pgeName = pgeName;
+      this.workflowInstId = workflowInstId;
    }
 
    @Override
    public void publish(LogRecord record) {
       if (record instanceof PgeLogRecord
-            && pgeName.equals(((PgeLogRecord) record).getPgeName())) {
+            && workflowInstId.equals(((PgeLogRecord) record).getWorkflowInstId())) {
          super.publish(record);
       }
    }
