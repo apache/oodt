@@ -4,6 +4,12 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-420 CAS-PGE should fail when product ingests fail (bfoster)
+
+* OODT-419 Make PgeConfigBuilder configuration via PgeTaskMetKeys (bfoster)
+
+* OODT-418 Improve CAS-PGE logging (bfoster)
+
 * OODT-71 Add lifecycle model supporting transition, done 
   and waiting states (mattmann)
 
