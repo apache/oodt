@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-410 DataSourceCatalog compatible with HypersonicSQL 
+  (mattmann,rickdn,bfoster,pramirez)
+
 * OODT-413 filemgr query throws NPE when some products have undefined metadata values (rickdn)
 
 * OODT-420 CAS-PGE should fail when product ingests fail (bfoster)

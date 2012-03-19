@@ -1790,7 +1790,6 @@ public class DataSourceCatalog implements Catalog {
                 getProductSql += whereClause.toString();
             }
 
-            getProductSql += "ORDER BY p.product_id DESC ";
 
             LOG.log(Level.FINE, "catalog get num results: executing: "
                     + getProductSql);
