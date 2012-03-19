@@ -45,6 +45,12 @@ public enum PgeTaskMetKeys {
          "PGETask/PgeConfigBuilder",
          "PGETask/PgeConfigBuilder"),
    /**
+    * The java logger {@link FileHandler} pattern (only for filename though).
+    */
+   LOG_FILENAME_PATTERN(
+         "PGETask/LogFilenamePattern",
+         "PGETask/LogFilenamePattern"),
+   /**
     * List of {@link ConfigFilePropertyAdder}s classpaths to be run.
     */
    PROPERTY_ADDERS(

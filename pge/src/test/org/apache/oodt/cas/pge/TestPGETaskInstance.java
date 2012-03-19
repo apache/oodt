@@ -38,7 +38,6 @@ import org.apache.commons.io.FileUtils;
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.pge.PGETaskInstance;
-import org.apache.oodt.cas.pge.PGETaskInstance.LoggerOuputStream;
 import org.apache.oodt.cas.pge.config.DynamicConfigFile;
 import org.apache.oodt.cas.pge.config.MockPgeConfigBuilder;
 import org.apache.oodt.cas.pge.config.OutputDir;
@@ -65,14 +64,9 @@ import junit.framework.TestCase;
  */
 public class TestPGETaskInstance extends TestCase {
 
-   private List<PGETaskInstance> pgeTasks = Lists.newArrayList();
    private List<File> tmpDirs = Lists.newArrayList();
 
    public void tearDown() throws Exception {
-      for (PGETaskInstance pgeTask : pgeTasks) {
-         pgeTask.closePgeLogger();
-      }
-      pgeTasks.clear();
       for (File tmpDir : tmpDirs) {
          FileUtils.forceDelete(tmpDir);
       }
@@ -160,55 +154,26 @@ public class TestPGETaskInstance extends TestCase {
 
    @SuppressWarnings("unchecked") // FileUtils.readLines cast to List<String>
    public void testLogger() throws Exception {
-      File tmpFile = File.createTempFile("bogus", "bogus");
-      File tmpDir = tmpFile.getParentFile();
-      tmpFile.delete();
-      File tmpDir3 = new File(tmpDir, UUID.randomUUID().toString());
-      assertTrue(tmpDir3.mkdirs());
-
       PGETaskInstance pgeTask1 = createTestInstance();
-      pgeTask1.log(Level.INFO, "pge1 message1");
-      pgeTask1.log(Level.INFO, "pge1 message2");
-      pgeTask1.log(Level.INFO, "pge1 message3");
-      pgeTask1.closePgeLogger();
+      PGETaskInstance pgeTask2 = createTestInstance();
+
+      pgeTask1.logger.log(Level.INFO, "pge1 message1");
+      pgeTask1.logger.log(Level.INFO, "pge1 message2");
+      pgeTask2.logger.log(Level.SEVERE, "pge2 message1");
+      pgeTask1.logger.log(Level.INFO, "pge1 message3");
+
+      pgeTask1.logger.getHandlers()[0].flush();
+      pgeTask2.logger.getHandlers()[0].flush();
       List<String> messages = FileUtils.readLines(
             new File(pgeTask1.pgeConfig.getExeDir() + "/logs").listFiles()[0],
             "UTF-8");
       assertEquals("INFO: pge1 message1", messages.get(1));
       assertEquals("INFO: pge1 message2", messages.get(3));
       assertEquals("INFO: pge1 message3", messages.get(5));
-
-      PGETaskInstance pgeTask2 = createTestInstance();
-      pgeTask2.log(Level.SEVERE, "pge2 message1");
-      pgeTask2.closePgeLogger();
       messages = FileUtils.readLines(new File(pgeTask2.pgeConfig.getExeDir()
             + "/logs").listFiles()[0], "UTF-8");
+      System.out.println(messages);
       assertEquals("SEVERE: pge2 message1", messages.get(1));
-
-      PGETaskInstance pgeTask3 = new PGETaskInstance() {
-         @Override
-         protected LoggerOuputStream createStdOutLogger() {
-            return new LoggerOuputStream(Level.INFO, 10);
-         }
-      };
-      pgeTask3.workflowInstId = "1234";
-      pgeTask3.pgeMetadata = new PgeMetadata();
-      pgeTask3.pgeConfig = new PgeConfig();
-      pgeTask3.pgeConfig.setExeDir(tmpDir3.getAbsolutePath());
-      pgeTask3.initializePgeLogger();
-      LoggerOuputStream los = pgeTask3.createStdOutLogger();
-      los.write("This is a test write to a log file".getBytes());
-      los.close();
-      pgeTask3.closePgeLogger();
-      messages = FileUtils.readLines(new File(tmpDir3, "logs").listFiles()[0],
-            "UTF-8");
-      assertEquals(8, messages.size());
-      assertEquals("INFO: This is a ", messages.get(1));
-      assertEquals("INFO: test write", messages.get(3));
-      assertEquals("INFO:  to a log ", messages.get(5));
-      assertEquals("INFO: file", messages.get(7));
-
-      FileUtils.forceDelete(tmpDir3);
    }
 
    public void testUpdateStatus() throws Exception {
@@ -360,8 +325,7 @@ public class TestPGETaskInstance extends TestCase {
       pgeTask.pgeConfig = new PgeConfig();
       File exeDir = createTmpDir(workflowInstId);
       pgeTask.pgeConfig.setExeDir(exeDir.getAbsolutePath());
-      pgeTask.initializePgeLogger();
-      pgeTasks.add(pgeTask);
+      pgeTask.logger = pgeTask.createLogger();
       return pgeTask;
    }
 
