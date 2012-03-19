@@ -22,6 +22,7 @@ import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.ACTION_REPO_FILE;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.ATTEMPT_INGEST_ALL;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CRAWLER_CRAWL_FOR_DIRS;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CRAWLER_RECUR;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.DUMP_METADATA;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_CLIENT_TRANSFER_SERVICE_FACTORY;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_FILE_MANAGER_URL;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.MET_FILE_EXT;
@@ -117,6 +118,9 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 
          // Initialize Logger.
          initializePgeLogger();
+
+         // Write out PgeMetadata.
+         dumpMetadataIfRequested();
 
          // Setup the PGE.
          createExeDir();
@@ -273,6 +277,24 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       Validate.notNull(instanceId, "Must specify "
             + CoreMetKeys.WORKFLOW_INST_ID);
       return instanceId;
+   }
+
+   protected void dumpMetadataIfRequested() throws Exception {
+      if (Boolean.parseBoolean(pgeMetadata
+            .getMetadata(DUMP_METADATA))) {
+         new SerializableMetadata(pgeMetadata.asMetadata())
+               .writeMetadataToXmlStream(new FileOutputStream(
+                     getDumpMetadataPath()));
+      }      
+   }
+
+   protected String getDumpMetadataPath() throws Exception {
+      return new File(pgeConfig.getExeDir()).getAbsolutePath() + "/"
+            + getDumpMetadataName();
+   }
+
+   protected String getDumpMetadataName() throws Exception {
+      return "pgetask-metadata.xml";
    }
 
    protected void createExeDir() throws Exception {

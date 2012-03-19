@@ -52,6 +52,12 @@ public enum PgeTaskMetKeys {
          "PGETask_PropertyAdderClasspath",
          true),
    /**
+    * List of {@link ConfigFilePropertyAdder}s classpaths to be run.
+    */
+   DUMP_METADATA(
+         "PGETask/DumpMetadata",
+         "PGETask/DumpMetadata"),
+   /**
     * Set by CAS-PGE to the number of milliseconds it took CAS-PGE to run.
     */
    PGE_RUNTIME(

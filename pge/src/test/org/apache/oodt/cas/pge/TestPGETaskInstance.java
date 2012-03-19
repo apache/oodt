@@ -19,6 +19,7 @@ package org.apache.oodt.cas.pge;
 //OODT static imports
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.NAME;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CONFIG_FILE_PATH;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.DUMP_METADATA;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PGE_CONFIG_BUILDER;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PROPERTY_ADDERS;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.REQUIRED_METADATA;
@@ -117,6 +118,7 @@ public class TestPGETaskInstance extends TestCase {
       assertEquals("1",
             pgeTask.pgeMetadata
                   .getMetadata(MockConfigFilePropertyAdder.RUN_COUNTER));
+      System.getProperties().remove(PgeTaskMetKeys.USE_LEGACY_PROPERTY);
    }
 
    public void testCreatePgeMetadata() throws Exception {
@@ -156,6 +158,7 @@ public class TestPGETaskInstance extends TestCase {
             .getAllMetadata(PROPERTY_ADDERS).get(0));
    }
 
+   @SuppressWarnings("unchecked") // FileUtils.readLines cast to List<String>
    public void testLogger() throws Exception {
       File tmpFile = File.createTempFile("bogus", "bogus");
       File tmpDir = tmpFile.getParentFile();
@@ -313,6 +316,35 @@ public class TestPGETaskInstance extends TestCase {
             MockSciPgeConfigFileWriter.class.getCanonicalName(),
             new Object[] {}));
       assertTrue(sciPgeConfigFile.exists());
+   }
+
+   public void testDumpMetadataIfRequested() throws Exception {
+      PGETaskInstance pgeTask = createTestInstance();
+      File dumpMetFile = new File(pgeTask.getDumpMetadataPath());
+      pgeTask.dumpMetadataIfRequested();
+      assertFalse(dumpMetFile.exists());
+      pgeTask.pgeMetadata.replaceMetadata(DUMP_METADATA, "true");
+      pgeTask.dumpMetadataIfRequested();
+      assertTrue(dumpMetFile.exists());
+      @SuppressWarnings("unchecked")
+      List<String> dumpedMet = FileUtils.readLines(dumpMetFile, "UTF-8");
+      assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+            dumpedMet.get(0));
+      assertEquals(
+            "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">",
+            dumpedMet.get(1));
+      assertEquals("   <keyval type=\"vector\">", dumpedMet.get(2));
+      assertEquals("      <key>PGETask%2FName</key>", dumpedMet.get(3));
+      assertEquals("      <val>" + pgeTask.pgeMetadata.getMetadata(NAME)
+            + "</val>", dumpedMet.get(4));
+      assertEquals("   </keyval>", dumpedMet.get(5));
+      assertEquals("   <keyval type=\"vector\">", dumpedMet.get(6));
+      assertEquals("      <key>PGETask%2FDumpMetadata</key>", dumpedMet.get(7));
+      assertEquals(
+            "      <val>" + pgeTask.pgeMetadata.getMetadata(DUMP_METADATA)
+                  + "</val>", dumpedMet.get(8));
+      assertEquals("   </keyval>", dumpedMet.get(9));
+      assertEquals("</cas:metadata>", dumpedMet.get(10));
    }
 
    private PGETaskInstance createTestInstance() throws Exception {
