@@ -203,6 +203,20 @@ public class TestLuceneCatalog extends TestCase {
        assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/2"));
     }
 
+    public void testGetReducedMetadataNull() throws CatalogException {
+	      Product p = getTestProduct();
+	      myCat.addProduct(p);
+	      myCat.addProductReferences(p);
+	      myCat.addMetadata(new Metadata(), p);
+
+	      // should not throw NPE here
+	      Metadata rndTripMet = myCat.getReducedMetadata(p, Lists.newArrayList(CoreMetKeys.FILENAME));
+
+	      assertNotNull(rndTripMet);
+	      // should return null if met key has no value
+	      assertNull(rndTripMet.getAllMetadata(CoreMetKeys.FILENAME));
+    }
+
     public void testRemoveProduct() {
         Product productToRemove = getTestProduct();
 

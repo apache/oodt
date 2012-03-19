@@ -618,10 +618,9 @@ public class LuceneCatalog implements Catalog {
     public Metadata getReducedMetadata(Product product, List<String> elements) throws CatalogException {
         Metadata fullMetadata = getMetadata(product);
         Metadata reducedMetadata = new Metadata();
-        for (int i = 0; i < elements.size(); i++) {
-            String element = elements.get(i);
-            reducedMetadata.addMetadata(element, fullMetadata
-                    .getAllMetadata(element));
+        for (String element : elements) {
+            if (fullMetadata.containsKey(element))
+                reducedMetadata.replaceMetadata(element, fullMetadata.getAllMetadata(element));
         }
         return reducedMetadata;
     }
