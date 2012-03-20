@@ -27,9 +27,11 @@ import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.WORKFLOW_MANAGER_U
 
 //JDK imports
 import java.io.File;
+import java.io.FileFilter;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 
 //Apache imports
@@ -162,17 +164,33 @@ public class TestPGETaskInstance extends TestCase {
       pgeTask2.logger.log(Level.SEVERE, "pge2 message1");
       pgeTask1.logger.log(Level.INFO, "pge1 message3");
 
-      pgeTask1.logger.getHandlers()[0].flush();
-      pgeTask2.logger.getHandlers()[0].flush();
-      List<String> messages = FileUtils.readLines(
-            new File(pgeTask1.pgeConfig.getExeDir() + "/logs").listFiles()[0],
-            "UTF-8");
+      for (Handler handler : pgeTask1.logger.getHandlers()) {
+         handler.flush();
+      }
+      for (Handler handler : pgeTask2.logger.getHandlers()) {
+         handler.flush();
+      }
+      File logDir = new File(pgeTask1.pgeConfig.getExeDir() + "/logs");
+      assertTrue(logDir.exists());
+      List<String> messages = FileUtils.readLines(logDir.listFiles(
+         new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+               return pathname.getName().endsWith(".log");
+            } 
+         })[0], "UTF-8");
       assertEquals("INFO: pge1 message1", messages.get(1));
       assertEquals("INFO: pge1 message2", messages.get(3));
       assertEquals("INFO: pge1 message3", messages.get(5));
-      messages = FileUtils.readLines(new File(pgeTask2.pgeConfig.getExeDir()
-            + "/logs").listFiles()[0], "UTF-8");
-      System.out.println(messages);
+      logDir = new File(pgeTask2.pgeConfig.getExeDir() + "/logs");
+      assertTrue(logDir.exists());
+      messages = FileUtils.readLines(logDir.listFiles(
+         new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+               return pathname.getName().endsWith(".log");
+            } 
+         })[0], "UTF-8");
       assertEquals("SEVERE: pge2 message1", messages.get(1));
    }
 
@@ -198,7 +216,7 @@ public class TestPGETaskInstance extends TestCase {
    public void testCreatePgeConfig() throws Exception {
       final String KEY = "TestKey";
       final String VALUE = "TestValue";
-      File pgeConfigFile = new File(createTmpDir("1234"), "pgeConfig.xml");
+      File pgeConfigFile = new File(createTmpDir(), "pgeConfig.xml");
       FileUtils.writeLines(pgeConfigFile, "UTF-8", 
             Lists.newArrayList(
                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
@@ -250,9 +268,9 @@ public class TestPGETaskInstance extends TestCase {
 
    public void testCreateOuputDirsIfRequested() throws Exception {
       PGETaskInstance pgeTask = createTestInstance();
-      File outputDir1 = createTmpDir("outputDir1");
+      File outputDir1 = createTmpDir();
       FileUtils.forceDelete(outputDir1);
-      File outputDir2 = createTmpDir("outputDir2");
+      File outputDir2 = createTmpDir();
       FileUtils.forceDelete(outputDir2);
       File outputDir3 = new File("/some/file/path");
       assertFalse(outputDir1.exists());
@@ -271,7 +289,7 @@ public class TestPGETaskInstance extends TestCase {
    }
 
    public void testCreateSciPgeConfigFile() throws Exception {
-      File tmpDir = createTmpDir("sciPgeDir");
+      File tmpDir = createTmpDir();
       FileUtils.forceDelete(tmpDir);
       assertFalse(tmpDir.exists());
       PGETaskInstance pgeTask = createTestInstance();
@@ -313,7 +331,7 @@ public class TestPGETaskInstance extends TestCase {
    }
 
    private PGETaskInstance createTestInstance() throws Exception {
-      return createTestInstance(UUID.randomUUID().toString());
+      return createTestInstance(Long.toString(System.currentTimeMillis()));
    }
 
    private PGETaskInstance createTestInstance(String workflowInstId)
@@ -323,15 +341,15 @@ public class TestPGETaskInstance extends TestCase {
       pgeTask.pgeMetadata = new PgeMetadata();
       pgeTask.pgeMetadata.replaceMetadata(NAME, "TestPGE");
       pgeTask.pgeConfig = new PgeConfig();
-      File exeDir = createTmpDir(workflowInstId);
+      File exeDir = new File(createTmpDir(), workflowInstId);
       pgeTask.pgeConfig.setExeDir(exeDir.getAbsolutePath());
       pgeTask.logger = pgeTask.createLogger();
       return pgeTask;
    }
 
-   private File createTmpDir(String workflowInstId) throws Exception {
+   private File createTmpDir() throws Exception {
       File tmpFile = File.createTempFile("bogus", "bogus");
-      File tmpDir = new File(tmpFile.getParentFile(), workflowInstId);
+      File tmpDir = new File(tmpFile.getParentFile(), UUID.randomUUID().toString());
       tmpFile.delete();
       tmpDir.mkdirs();
       tmpDirs.add(tmpDir);
