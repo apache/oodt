@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-425 CAS-PGE logger unit-test fails because it sometimes finds logger lock file (bfoster)
+
 * OODT-422 Allow for CAS-PGE PgeMetadata to be dumped to an xml
   file after initialization (bfoster)
 
