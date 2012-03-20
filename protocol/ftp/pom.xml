@@ -50,6 +50,19 @@
 			</build>
 		</profile>
 	</profiles>
+  <repositories>
+           <repository>
+             <id>globus-repo</id>
+             <name>Globus Toolkit Internal Maven2 Repository</name>
+             <url>http://projects.iplantcollaborative.org/archiva/repository/internal</url>
+             <releases>
+               <enabled>true</enabled>
+             </releases>
+             <snapshots>
+               <enabled>true</enabled>
+             </snapshots>
+          </repository>
+  </repositories>
   <build>
     <resources>
       <resource>
