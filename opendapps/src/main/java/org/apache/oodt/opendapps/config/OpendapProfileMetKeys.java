@@ -26,6 +26,8 @@ public interface OpendapProfileMetKeys {
 	
 	 public static final String VARIABLES = "Variables";
 	 
+	 public static final String COORDINATES = "Coordinates";
+	 
 	 public static final String VARIABLES_LONG_NAMES = "Variable Long Names";
 	 
 	 public static final String CF_STANDARD_NAMES = "CF Standard Names";

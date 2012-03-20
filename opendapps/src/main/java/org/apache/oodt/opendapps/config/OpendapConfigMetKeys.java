@@ -69,5 +69,7 @@ public interface OpendapConfigMetKeys {
   public static final String DATASET_MET_NAME_ATTR = "name";
   
   public static final String DATASET_MET_VALUE_ATTR = "value";
+  
+  public static final String RES_LOCATION_ATTR = "resLocation";
 
 }

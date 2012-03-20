@@ -96,19 +96,39 @@ public class DasMetadataExtractor implements MetadataExtractor {
         		ProfileUtils.addIfNotExisting(metadata, key, att.getValues());
         	}
           
-        // NetCDF variables
+        // NetCDF coordinates
         } else {
-        	// store variable name
-        	ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.VARIABLES, attName);
-        	// store "standard_name", "long_name"
-        	while (e.hasMoreElements()) {
-        		String key = (String) e.nextElement();
-        		Attribute att = at.getAttribute(key);
-        		if (key.equalsIgnoreCase(STANDARD_NAME)) {
-        			ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.CF_STANDARD_NAMES, att.getValueAt(0));
-        		} else if (key.equalsIgnoreCase(LONG_NAME)) {
-        			ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.VARIABLES_LONG_NAMES, att.getValueAt(0));
-        		}       		
+        	
+        	if (   attName.equalsIgnoreCase("lat") || attName.equalsIgnoreCase("latitude")
+        			|| attName.equalsIgnoreCase("lon") || attName.equalsIgnoreCase("longitude")
+        			|| attName.equalsIgnoreCase("time")
+        			|| attName.equalsIgnoreCase("alt") || attName.equalsIgnoreCase("altitude")
+        			|| attName.equalsIgnoreCase("depth")
+        			) {
+        		
+          	// store coordinate name
+          	ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.COORDINATES, attName);
+          	
+        	} else if (attName.startsWith("time_")) {
+        		
+        		// ignore for now - it's not a coordinate neither a variable you would want to search on
+        		
+          // NetCDF variables
+        	} else {
+        		
+          	// store variable name
+          	ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.VARIABLES, attName);
+          	// store "standard_name", "long_name"
+          	while (e.hasMoreElements()) {
+          		String key = (String) e.nextElement();
+          		Attribute att = at.getAttribute(key);
+          		if (key.equalsIgnoreCase(STANDARD_NAME)) {
+          			ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.CF_STANDARD_NAMES, att.getValueAt(0));
+          		} else if (key.equalsIgnoreCase(LONG_NAME)) {
+          			ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.VARIABLES_LONG_NAMES, att.getValueAt(0));
+          		}       		
+          	}
+          	
         	}
         }
 

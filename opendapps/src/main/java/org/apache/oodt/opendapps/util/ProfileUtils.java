@@ -74,8 +74,9 @@ public class ProfileUtils {
 		// The delimiter must be a character that is not commonly used in the metadata values, 
 		// and that it does not a special regular expression character.
 		// Cannot use '#' as it is used in URL anchors, such as THREDDS urls.
+		// Cannot user '?', '&' as they are used in URL query strings.
 		// Cannot use '|' as it is used as multi-part separators in encoding of metadata fields.
-		PathUtils.DELIMITER = "&";
+		PathUtils.DELIMITER = "~";
 	}
 	
   // character separating multiple parts of the same metadata field,
@@ -97,6 +98,7 @@ public class ProfileUtils {
   public final static String MIME_TYPE_OPENDAP_DDS = "application/opendap-dds";
   public final static String MIME_TYPE_OPENDAP_HTML = "application/opendap-html";
   public final static String MIME_TYPE_RSS = "application/rss+xml";
+  public final static String MIME_TYPE_GIS = "application/gis";
 
 
   private static final Logger LOG = Logger.getLogger(ProfileUtils.class
@@ -108,10 +110,19 @@ public class ProfileUtils {
     for (ConstantSpec spec : conf.getConstSpecs()) {
       if (spec.getType().equals(RES_ATTR_SPEC_TYPE)) {
         try {        	
-        	String value = PathUtils.replaceEnvVariables(spec.getValue(), datasetMet, true);  
-        	if (StringUtils.hasText(value)) {
-        		setResourceAttributes(resAttr, spec.getName(), value);
+        	      	        	
+        	// first process expanded '[@...]' instructions
+        	List<String> values = multipleEnvVariablesReplacement(spec.getValue(), datasetMet);
+        	
+        	// then process standard '[...]' instructions
+        	for (String value : values) {
+          	String _value = PathUtils.replaceEnvVariables(value, datasetMet, true);          		        		
+        		if (StringUtils.hasText(_value)) {
+        			setResourceAttributes(resAttr, spec.getName(), _value);
+        		}
+        		
         	}
+ 
         } catch (Exception e) {
           e.printStackTrace();
           LOG.log(Level.WARNING, "Error setting field: [" + spec.getName()
@@ -122,6 +133,44 @@ public class ProfileUtils {
 
 
     return resAttr;
+  }
+  
+  /**
+   * Utility method to process environment replacement instructions of the form '[@key]'
+   * resulting in as many output values as there are values for the environment variable 'key'.
+   * Note that currently only one such pattern '[@key']' can be processed.
+   * 
+   * @param value
+   * @param metadata
+   * @return
+   */
+  private static List<String> multipleEnvVariablesReplacement(String value, Metadata metadata) {
+  	
+  	List<String> newValues = new ArrayList<String>();
+
+  	// regexp matching found > replace values
+  	int start = value.indexOf("[@");
+  	if (start>=0) {
+  		
+  			int end = value.indexOf("]",start+2);
+  			// remove '[@',']' to obtain environment variable key
+  			String envKey = value.substring(start+2,end);
+    		List<String> envValues = metadata.getAllMetadata(envKey);
+    		if (envValues!=null) {
+      		for (String envValue : envValues) {
+      			// create new metadata value for this environment replacement
+      			String newValue = value.replaceAll("\\[@"+envKey+"\\]", envValue);
+      			newValues.add(newValue);
+      		}
+  		}
+  		
+    // regexp matching not found > return original value
+  	} else {
+  		newValues.add(value);
+  	}
+  	
+  	return newValues;
+  	
   }
 
   public static ProfileAttributes getProfileAttributes(OpendapConfig conf, Metadata datasetMet) {

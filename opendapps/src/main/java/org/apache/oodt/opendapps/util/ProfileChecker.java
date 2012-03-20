@@ -82,6 +82,11 @@ public class ProfileChecker {
         selectResourceLocationByMimeType(profile.getResourceAttributes().getResLocations(), ProfileUtils.MIME_TYPE_HTML), 
         true, sb);
 		
+    // <resLocation>http://cmds-gis.jpl.nasa.gov/Export/NetViewer.asp?Height=1024&amp;Width=1280&amp;BrowseImage=Aqua/MODIS MHchla|application/gis|NetViewer</resLocation>
+		ok = ok && checkResourceAttribute("Location of type "+ProfileUtils.MIME_TYPE_GIS, 
+        selectResourceLocationByMimeType(profile.getResourceAttributes().getResLocations(), ProfileUtils.MIME_TYPE_GIS), 
+        true, sb);
+		
 		// <elemName>mission_name</elemName>
 		// <elemName>sensor</elemName>
 		// <elemName>...</elemName>
