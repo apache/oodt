@@ -55,6 +55,11 @@ import org.xml.sax.SAXException;
 public class Profiler {
 
   private static Logger LOG = Logger.getLogger(Profiler.class.getName());
+  
+  /**
+   * Optional directory to serialize the profiles to.
+   */
+  private File outputDir;
 
   /**
    * Command line invocation method.
@@ -68,9 +73,36 @@ public class Profiler {
       usage();
     }
     File configFile = new File(args[0]);
-    File outputDir = null;
-    if (args.length == 2)
-      outputDir = new File(args[1]);
+    Profiler profiler = new Profiler();
+    if (args.length == 2) {
+      profiler.setOutputDir( new File(args[1]) );
+    }
+    
+    // run profiler
+    profiler.makeProfiles(configFile);
+    
+  }
+  
+  /**
+   * No argument constructor.
+   */
+  public Profiler() {}
+  
+  /**
+   * Setter method for output directory.
+   * @param outputDir
+   */
+  public void setOutputDir(File outputDir) {
+		this.outputDir = outputDir;
+	}
+
+	/**
+   * Method to generate OODT profiles according to the specifications contained in a configuration file.
+   * 
+   * @param configFile 
+   * @return
+   */
+  public List<Profile> makeProfiles(final File configFile) throws Exception {
 
     // parse THREDDS catalogs, create OODT profiles
     ProfileHandler profileHandler = new OpendapProfileHandler();
@@ -99,6 +131,8 @@ public class Profiler {
       FileUtils.writeStringToFile(file, xml);
     }
 
+    return profiles;
+    
   }
 
   private static XMLQuery buildXMLQuery(final File file) throws SAXException {
