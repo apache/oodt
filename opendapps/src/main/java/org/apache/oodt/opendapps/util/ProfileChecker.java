@@ -58,38 +58,28 @@ public class ProfileChecker {
 		boolean ok = true;
 		sb.append("\nChecking profile="+profile.getProfileAttributes().getID());
 		
-		// <Identifier>IOSS_TCHP_RITA</Identifier>
 		ok = ok && checkResourceAttribute("Identifier", profile.getResourceAttributes().getIdentifier(), true, sb);
 		
-		// <Title>Chlorophyll-a, Aqua MODIS, NPP, Global, Science Quality/8-day</Title>
 		ok = ok && checkResourceAttribute("Title", profile.getResourceAttributes().getTitle(), true, sb);
 		
-		// <Description>NOAA CoastWatch distributes chlorophyll-a...</Description>
 		ok = ok && checkResourceAttribute("Description", profile.getResourceAttributes().getDescription(), false, sb);
 		
-		// <resLocation>http://oceanwatch.pfeg.noaa.gov/thredds/dodsC/satellite/MH/chla/8day.html|application/opendap-html|OPENDAP</resLocation>
 		ok = ok && checkResourceAttribute("Location of type "+ProfileUtils.MIME_TYPE_OPENDAP_HTML, 
 				             selectResourceLocationByMimeType(profile.getResourceAttributes().getResLocations(), ProfileUtils.MIME_TYPE_OPENDAP_HTML), 
 				             true, sb);
 		
-		// <resLocation>http://oceanwatch.pfeg.noaa.gov/thredds/Satellite/aggregsatMH/chla/catalog.xml#satellite/MH/chla/8day|application/xml-thredds|Catalog/XML</resLocation>
 		ok = ok && checkResourceAttribute("Location of type "+ProfileUtils.MIME_TYPE_THREDDS, 
         selectResourceLocationByMimeType(profile.getResourceAttributes().getResLocations(), ProfileUtils.MIME_TYPE_THREDDS), 
         true, sb);
 		
-		// <resLocation>http://oceanwatch.pfeg.noaa.gov/thredds/Satellite/aggregsatMH/chla/catalog.html?dataset=satellite/MH/chla/8day|text/html|Catalog/HTML</resLocation>
 		ok = ok && checkResourceAttribute("Location of type "+ProfileUtils.MIME_TYPE_HTML, 
         selectResourceLocationByMimeType(profile.getResourceAttributes().getResLocations(), ProfileUtils.MIME_TYPE_HTML), 
         true, sb);
 		
-    // <resLocation>http://cmds-gis.jpl.nasa.gov/Export/NetViewer.asp?Height=1024&amp;Width=1280&amp;BrowseImage=Aqua/MODIS MHchla|application/gis|NetViewer</resLocation>
 		ok = ok && checkResourceAttribute("Location of type "+ProfileUtils.MIME_TYPE_GIS, 
         selectResourceLocationByMimeType(profile.getResourceAttributes().getResLocations(), ProfileUtils.MIME_TYPE_GIS), 
         true, sb);
 		
-		// <elemName>mission_name</elemName>
-		// <elemName>sensor</elemName>
-		// <elemName>...</elemName>
 		for (String name : mandatoryProfileElements) {
 			ok = ok && checkProfileElement(profile, name, true, sb);
 		}
