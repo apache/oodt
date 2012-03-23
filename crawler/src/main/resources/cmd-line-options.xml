@@ -186,7 +186,7 @@
 			<bean class="org.apache.oodt.cas.crawl.cli.option.handler.CrawlerBeansPropHandler">
 				<property name="properties">
 					<list>
-						<value>MoveMetadataToFailureDir.toDir</value>
+						<value>MoveMetadataFileToFailureDir.toDir</value>
 						<value>MovePushpullMetFileToFailureDir.toDir</value>
 						<value>MoveDataFileToFailureDir.toDir</value>
 					</list>
