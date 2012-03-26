@@ -104,7 +104,7 @@
 		<property name="longOption" value="printSupportedCrawlerActions" />
 		<property name="description" value="Prints a list and description of all supported CrawlerActions" />
 		<property name="hasArgs" value="false" />
-    <property name="required" value="false" />
+		<property name="required" value="false" />
 		<property name="performAndQuit" value="true" />
 		<property name="handler">
 			<bean class="org.apache.oodt.cas.crawl.cli.option.handler.CrawlerActionInfoHandler">
@@ -393,7 +393,13 @@
 		<property name="shortOption" value="nr" />
 		<property name="longOption" value="noRecur" />
 		<property name="description" value="Turns off recursive crawling - will only process files in productPath directory" />
+		<property name="type" value="boolean" />
 		<property name="hasArgs" value="false" />
+                <property name="staticArgs">
+			<list>
+				<value>true</value>
+			</list>
+		</property>
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -421,7 +427,13 @@
 		<property name="shortOption" value="cfd" />
 		<property name="longOption" value="crawlForDirs" />
 		<property name="description" value="Will crawl for directories instead of files" />
+		<property name="type" value="boolean" />
 		<property name="hasArgs" value="false" />
+                <property name="staticArgs">
+			<list>
+				<value>true</value>
+			</list>
+		</property>
 		<property name="required" value="false" />
 		<property name="requirementRules">
 			<list>
@@ -450,7 +462,13 @@
 		<property name="shortOption" value="si" />
 		<property name="longOption" value="skipIngest" />
 		<property name="description" value="Will skip ingest to file manager and any post ingest actions" />
+		<property name="type" value="boolean" />
 		<property name="hasArgs" value="false" />
+                <property name="staticArgs">
+			<list>
+				<value>true</value>
+			</list>
+		</property>
 		<property name="required" value="false" />
 		<property name="requirementRules">
 			<list>
@@ -853,6 +871,11 @@
     <property name="description" value="If invalid addresses should just be ignored" />
     <property name="type" value="boolean" />
     <property name="hasArgs" value="false" />
+    <property name="staticArgs">
+    <list>
+        <value>true</value>
+    </list>
+    </property>
     <property name="required" value="false" />
     <property name="handler">
       <bean class="org.apache.oodt.cas.crawl.cli.option.handler.CrawlerBeansPropHandler">
