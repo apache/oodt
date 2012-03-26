@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-429 filemgr query throws NPE when sorting by key with possibly empty values (rickdn)
+
 * OODT-427 filemgr query throws "String index out of range: -1" when some products have undefined
   metadata values (rickdn)
 
