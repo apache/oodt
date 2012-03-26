@@ -19,9 +19,6 @@ package org.apache.oodt.cas.crawl.cli.option.handler;
 //JDK imports 
 import java.util.List;
 
-//Apache imports 
-import org.apache.commons.lang.StringUtils;
-
 //OODT imports 
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
@@ -50,8 +47,20 @@ public class CrawlerBeansPropHandler implements CmdLineOptionHandler {
    public void handleOption(CmdLineAction selectedAction,
          CmdLineOptionInstance optionInstance) {
       for (String beanProperty : properties) {
-         ActionBeanProperties.setProperty(beanProperty,
-               StringUtils.join(optionInstance.getValues().iterator(), ","));
+         if (optionInstance.getValues().size() > 1) {
+            for (int i = 0; i < optionInstance.getValues().size(); i++) {
+               ActionBeanProperties.setProperty(beanProperty + "[" + i + "]",
+                     optionInstance.getValues().get(i));
+            }
+         } else if (!optionInstance.getValues().isEmpty()) {
+            ActionBeanProperties.setProperty(beanProperty,
+                  optionInstance.getValues().get(0));
+         } else {
+            throw new RuntimeException(
+                  CrawlerBeansPropHandler.class.getCanonicalName()
+                        + " can't apply option '" + optionInstance.getOption()
+                        + "' since it has no value");
+         }
       }
    }
 
