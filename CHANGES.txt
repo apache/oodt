@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-427 filemgr query throws "String index out of range: -1" when some products have undefined
+  metadata values (rickdn)
+
 * OODT-405 Introduced new syntax for environment variable replacement in opendapps module (luca)
 
 * OODT-425 CAS-PGE logger unit-test fails because it sometimes finds logger lock file (bfoster)

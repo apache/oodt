@@ -126,7 +126,10 @@ public class TestSqlQueryCliAction extends TestCase {
       cliAction.setVersionConverter(VERSION_CONV);
       cliAction.execute(printer);
       assertEquals(2, printer.getPrintedMessages().size());
-      assertEquals("data.dat,Bob,Billy", printer.getPrintedMessages().get(0));
+      String msg = printer.getPrintedMessages().get(0);
+      assertTrue(msg.contains("data.dat"));
+      assertTrue(msg.contains("Bob,Billy"));
+      assertEquals(",", msg.replace("data.dat","").replace("Bob,Billy",""));
       assertEquals("\n", printer.getPrintedMessages().get(1));
       assertEquals(SORT_BY, clientSetComplexQuery.getSortByMetKey());
       assertNull(clientSetComplexQuery.getToStringResultFormat());
