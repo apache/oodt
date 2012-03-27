@@ -4,6 +4,10 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-430 Update all boolean type bean properties in the crawler cmd-line-options.xml (thomas)
+
+* OODT-412 Bugfix: MoveMetadataToFailureDir should read MoveMetadataFileToFailureDir (thomas)
+
 * OODT-428 CrawlerBeansPropHandler doesn't set list properties for Spring
   PropertyOverrideConfigurer correctly (bfoster)
 
