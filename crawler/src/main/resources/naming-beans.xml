@@ -16,14 +16,10 @@ License for the specific language governing permissions and limitations under
 the License.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean class="org.apache.oodt.cas.crawl.util.CasPropertyOverrideConfigurer" />
-
-	<import resource="crawler-beans.xml" />
-	<import resource="action-beans.xml" />
-	<import resource="precondition-beans.xml" />
-  <import resource="naming-beans.xml" />
-
+  <bean id="ExampleNamingConv" class="org.apache.oodt.cas.metadata.filenaming.PathUtilsNamingConvention">
+    <property name="namingConv" value="[ProductType].[NominalDate].txt" />
+  </bean>
 </beans>

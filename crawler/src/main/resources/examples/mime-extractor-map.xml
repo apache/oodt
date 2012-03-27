@@ -19,7 +19,10 @@ the License.
 	
 	<!-- extractor specs for mime-type from mimetypes.xml (one or more) -->
 	<mime type="some/mime-type">
-		
+
+    <!-- naming convention for renaming file (zero or one) -->
+    <namingConvention class="naming.convention.class" />
+
 		<!-- extractor spec for given mime-type (one or more) -->
 		<extractor class="extractor.class">
 			

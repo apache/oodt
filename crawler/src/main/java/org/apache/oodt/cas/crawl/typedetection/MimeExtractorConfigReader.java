@@ -14,29 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.crawl.typedetection;
 
 //OODT imports
+import org.apache.oodt.cas.metadata.filenaming.NamingConvention;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.FileInputStream;
 import java.util.LinkedList;
+
+//W3C imports
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+//Google imports
+import com.google.common.base.Strings;
+
 /**
- * @author mattmann
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
  * Static reader class for {@link MimeExtractor}s.
- * </p>.
+ *
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
 public final class MimeExtractorConfigReader implements
         MimeExtractorConfigMetKeys {
@@ -73,15 +74,23 @@ public final class MimeExtractorConfigReader implements
                     for (int k = 0; k < preCondComparators.getLength(); k++)
                         preCondComparatorIds.add(((Element) preCondComparators
                                 .item(k)).getAttribute(ID_ATTR));
+                    // This seems wrong, so added support for CLASS_ATTR while still
+                    //  supporting EXTRACTOR_CLASS_TAG as an attribute for specifying
+                    //  extractor class.
+                    String extractorClass = extractorElem.getAttribute(CLASS_ATTR);
+                    if (Strings.isNullOrEmpty(extractorClass)) {
+                       extractorClass = extractorElem.getAttribute(EXTRACTOR_CLASS_TAG);
+                    }
                     defaultExtractorSpecs
-                            .add(new MetExtractorSpec(extractorElem
-                                    .getAttribute(EXTRACTOR_CLASS_TAG),
+                            .add(new MetExtractorSpec(extractorClass,
                                     getFilePathFromElement(extractorElem,
                                             EXTRACTOR_CONFIG_TAG),
                                     preCondComparatorIds));
                 }
                 extractorRepo
                         .setDefaultMetExtractorSpecs(defaultExtractorSpecs);
+                extractorRepo.setDefaultNamingConvention(
+                      getNamingConvention(defaultExtractorElem));
             }
 
             NodeList mimeElems = root.getElementsByTagName(MIME_TAG);
@@ -89,6 +98,10 @@ public final class MimeExtractorConfigReader implements
                 Element mimeElem = (Element) mimeElems.item(i);
                 String mimeType = mimeElem.getAttribute(MIME_TYPE_ATTR);
                 LinkedList<MetExtractorSpec> specs = new LinkedList<MetExtractorSpec>();
+
+                // Load naming convention class.
+                extractorRepo.setNamingConvention(mimeType,
+                      getNamingConvention(mimeElem));
 
                 NodeList extractorSpecElems = mimeElem
                         .getElementsByTagName(EXTRACTOR_TAG);
@@ -130,6 +143,22 @@ public final class MimeExtractorConfigReader implements
             e.printStackTrace();
             throw e;
         }
+    }
+
+    private static NamingConvention getNamingConvention(Element parent)
+          throws Exception {
+       NodeList namingConventions = parent
+             .getElementsByTagName(NAMING_CONVENTION_TAG);
+       if (namingConventions != null && namingConventions.getLength() > 0) {
+          if (namingConventions.getLength() > 1) {
+             throw new Exception("Can only have 1 '"
+                   + NAMING_CONVENTION_TAG + "' tag per mimetype");
+          }
+          Element namingConvention = (Element) namingConventions.item(0);
+          return (NamingConvention) Class.forName(
+                namingConvention.getAttribute(CLASS_ATTR)).newInstance();
+       }
+       return null;
     }
 
     private static String getFilePathFromElement(Element root, String elemName) {

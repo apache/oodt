@@ -389,6 +389,29 @@
 		</property>
 	</bean>
 
+  <bean id="namingConventionId" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="ncid" />
+    <property name="longOption" value="namingConventionId" />
+    <property name="description" value="ID of the NamingConvention to use to rename products before ingest" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="NamingConvention ID" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="launchMetCrawler" p:relation="OPTIONAL" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.crawl.cli.option.handler.CrawlerBeansPropHandler">
+        <property name="properties">
+          <list>
+            <value>MetExtractorProductCrawler.namingConventionId</value>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
 	<bean id="noRecur" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
 		<property name="shortOption" value="nr" />
 		<property name="longOption" value="noRecur" />

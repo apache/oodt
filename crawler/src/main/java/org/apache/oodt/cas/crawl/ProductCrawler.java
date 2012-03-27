@@ -26,6 +26,8 @@ import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
 
+import com.google.common.annotations.VisibleForTesting;
+
 //JDK imports
 import java.io.File;
 import java.io.FileFilter;
@@ -38,269 +40,327 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author mattmann (Chris Mattmann)
- * @author bfoster (Brian Foster)
- * @version $Revision$
- * 
- * <p>
  * An abstract base class for Product Crawling. This class provides methods to
  * communicate with the file manager and parse met files that show how to ingest
  * a particular Product into the File Manager.
- * </p>
+ * 
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
 public abstract class ProductCrawler extends ProductCrawlerBean {
 
-    /* our log stream */
-    protected static Logger LOG = Logger.getLogger(ProductCrawler.class
-            .getName());
+   /* our log stream */
+   protected static Logger LOG = Logger.getLogger(ProductCrawler.class
+         .getName());
 
-    // filter to only find directories when doing a listFiles
-    protected static FileFilter DIR_FILTER = new FileFilter() {
-        public boolean accept(File file) {
-            return file.isDirectory();
-        }
-    };
+   // filter to only find directories when doing a listFiles
+   protected static FileFilter DIR_FILTER = new FileFilter() {
+      public boolean accept(File file) {
+         return file.isDirectory();
+      }
+   };
 
-    // filter to only find product files, not met files
-    protected static FileFilter FILE_FILTER = new FileFilter() {
-        public boolean accept(File file) {
-            return file.isFile();
-        }
-    };
+   // filter to only find product files, not met files
+   protected static FileFilter FILE_FILTER = new FileFilter() {
+      public boolean accept(File file) {
+         return file.isFile();
+      }
+   };
 
-    private CrawlerActionRepo actionRepo;
-    private List<IngestStatus> ingestStatus;
-    private Ingester ingester;
+   protected List<IngestStatus> ingestStatus = new Vector<IngestStatus>();
+   protected CrawlerActionRepo actionRepo;
+   protected Ingester ingester;
 
-    public void crawl() {
-       crawl(new File(this.getProductPath()));
-    }
+   public void crawl() {
+      crawl(new File(getProductPath()));
+   }
 
-    public void crawl(File dirRoot) {
-    	this.ingestStatus = new Vector<IngestStatus>();
+   public void crawl(File dirRoot) {
+      // Reset ingest status.
+      ingestStatus.clear();
 
-        // Load actions
-        if (this.getApplicationContext() != null) {
-            (this.actionRepo = new CrawlerActionRepo())
-                    .loadActionsFromBeanFactory(this.getApplicationContext(), this
-                            .getActionIds());
-            validateActions();
-        }
+      // Load actions.
+      loadAndValidateActions();
 
-        // create ingester
-        this.ingester = new StdIngester(this.getClientTransferer());
+      // Create Ingester.
+      setupIngester();
 
-        if (dirRoot == null || ((dirRoot != null && !dirRoot.exists())))
-            throw new IllegalArgumentException("dir root is null or non existant!");
+      // Verify valid crawl directory.
+      if (dirRoot == null || !dirRoot.exists()) {
+         throw new IllegalArgumentException("dir root is null or non existant!");
+      }
 
-        // start crawling
-        Stack<File> stack = new Stack<File>();
-        stack.push(dirRoot.isDirectory() ? dirRoot : dirRoot.getParentFile());
-        while (!stack.isEmpty()) {
-            File dir = (File) stack.pop();
-            LOG.log(Level.INFO, "Crawling " + dir);
+      // Start crawling.
+      Stack<File> stack = new Stack<File>();
+      stack.push(dirRoot.isDirectory() ? dirRoot : dirRoot.getParentFile());
+      while (!stack.isEmpty()) {
+         File dir = (File) stack.pop();
+         LOG.log(Level.INFO, "Crawling " + dir);
 
-            File[] productFiles = null;
-            if (this.isCrawlForDirs()) {
-                productFiles = dir.listFiles(DIR_FILTER);
-            } else {
-                productFiles = dir.listFiles(FILE_FILTER);
+         File[] productFiles = null;
+         if (isCrawlForDirs()) {
+            productFiles = dir.listFiles(DIR_FILTER);
+         } else {
+            productFiles = dir.listFiles(FILE_FILTER);
+         }
+
+         for (int j = 0; j < productFiles.length; j++) {
+            ingestStatus.add(handleFile(productFiles[j]));
+         }
+
+         if (!isNoRecur()) {
+            File[] subdirs = dir.listFiles(DIR_FILTER);
+            if (subdirs != null) {
+               for (int j = 0; j < subdirs.length; j++) {
+                  stack.push(subdirs[j]);
+               }
             }
+         }
+      }
+   }
 
-            for (int j = 0; j < productFiles.length; j++) {
-                try {
-                    this.handleFile(productFiles[j]);
-                } catch (Exception e) {
-                    LOG.log(Level.WARNING, "Failed to process file : "
-                            + e.getMessage());
-                }
-            }
+   public IngestStatus handleFile(File product) {
+      LOG.log(Level.INFO, "Handling file " + product);
 
-            if (!this.isNoRecur()) {
-                File[] subdirs = dir.listFiles(DIR_FILTER);
-                if (subdirs != null)
-                    for (int j = 0; j < subdirs.length; j++)
-                        stack.push(subdirs[j]);
-            }
-        }
-    }
+      // Check preconditions.
+      if (!passesPreconditions(product)) {
+         LOG.log(Level.WARNING,
+               "Failed to pass preconditions for ingest of product: ["
+                     + product.getAbsolutePath() + "]");
+         return createIngestStatus(product,
+               IngestStatus.Result.PRECONDS_FAILED,
+               "Failed to pass preconditions");
+      }
 
-    public List<IngestStatus> getIngestStatus() {
-    	return Collections.unmodifiableList(this.ingestStatus);
-    }
+      // Generate Metadata for product.
+      Metadata productMetadata = new Metadata();
+      productMetadata.addMetadata(getGlobalMetadata());
+      try {
+         productMetadata.addMetadata(getMetadataForProduct(product));
+      } catch (Exception e) {
+         LOG.log(Level.SEVERE,
+               "Failed to get metadata for product : " + e.getMessage(), e);
+         performPostIngestOnFailActions(product, productMetadata);
+         return createIngestStatus(product,
+               IngestStatus.Result.FAILURE,
+               "Failed to get metadata for product : " + e.getMessage());
+      }
 
-    private void validateActions() {
-       StringBuffer actionErrors = new StringBuffer("");
-       for (CrawlerAction action : actionRepo.getActions()) {
-          try {
-             action.validate();
-          } catch (Exception e) {
-             actionErrors.append(" " + action.getId() + ": " + e.getMessage() + "\n");
-          }
-       }
-       if (actionErrors.length() > 0) {
-          throw new RuntimeException("Actions failed validation:\n" + actionErrors);
-       }
-    }
+      // Rename the product.
+      try {
+         product = renameProduct(product, productMetadata);
+      } catch (Exception e) {
+         LOG.log(Level.SEVERE,
+               "Failed to rename product : " + e.getMessage(), e);
+         performPostIngestOnFailActions(product, productMetadata);
+         return createIngestStatus(product, IngestStatus.Result.FAILURE,
+               "Failed to rename product : " + e.getMessage());
+      }
 
-    private synchronized boolean containsRequiredMetadata(
-            Metadata productMetadata) {
-        for (int i = 0; i < this.getRequiredMetadata().size(); i++) {
-            if (productMetadata.getMetadata((String) this.getRequiredMetadata()
-                    .get(i)) == null) {
-                LOG.log(Level.WARNING, "Missing required metadata field "
-                        + this.getRequiredMetadata().get(i));
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    private void addKnownMetadata(File product, Metadata productMetadata) {
-        if (productMetadata.getMetadata(CoreMetKeys.PRODUCT_NAME) == null)
-			productMetadata.addMetadata(CoreMetKeys.PRODUCT_NAME, product
-					.getName());  
-        if (productMetadata.getMetadata(CoreMetKeys.FILENAME) == null)
-			productMetadata.addMetadata(CoreMetKeys.FILENAME, product
-					.getName());
-        if (productMetadata.getMetadata(CoreMetKeys.FILE_LOCATION) == null)
-			productMetadata.addMetadata(CoreMetKeys.FILE_LOCATION, product
-					.getAbsoluteFile().getParentFile().getAbsolutePath());
-    }
+      // Set known metadata if not already specified.
+      addKnownMetadata(product, productMetadata);
 
-    private void handleFile(final File product) {
-        LOG.log(Level.INFO, "Handling file " + product);
-    	final IngestStatus.Result ingestResult;
-    	final String message;
-        if (this.passesPreconditions(product)) {
-            Metadata productMetadata = new Metadata();
-            productMetadata.addMetadata(this.getGlobalMetadata().getHashtable());
-            productMetadata.addMetadata(this.getMetadataForProduct(product).getHashtable(), true);
-            this.addKnownMetadata(product, productMetadata);
-            
-            boolean isRequiredMetadataPresent = this.containsRequiredMetadata(productMetadata);
-            boolean isPreIngestActionsComplete = this.performPreIngestActions(product, productMetadata);
-            
-            if (this.isSkipIngest()) {
-            	ingestResult = IngestStatus.Result.SKIPPED;
-            	message = "Crawler ingest turned OFF";
-                LOG.log(Level.INFO, "Skipping ingest of product: ["
-                    + product.getAbsolutePath() + "]");
-            } else {
-                if (isRequiredMetadataPresent
-                        && isPreIngestActionsComplete
-                        && this.ingest(product, productMetadata)) {
-                	ingestResult = IngestStatus.Result.SUCCESS;
-                	message = "Ingest was successful";
-                    LOG.log(Level.INFO, "Successful ingest of product: ["
-                            + product.getAbsolutePath() + "]");
-                    this
-                            .performPostIngestOnSuccessActions(product,
-                                    productMetadata);
-                } else {
-                	ingestResult = IngestStatus.Result.FAILURE;
-                	if (!isRequiredMetadataPresent)
-                		message = "Missing required metadata";
-                	else if (!isPreIngestActionsComplete)
-                		message = "PreIngest actions failed to complete";
-                	else
-                		message = "Failed to ingest product";
-                    LOG.log(Level.WARNING, "Failed to ingest product: ["
-                            + product.getAbsolutePath()
-                            + "]: performing postIngestFail actions");
-                    this.performPostIngestOnFailActions(product, productMetadata);
-                }
-            }
-        } else {
-        	ingestResult = IngestStatus.Result.PRECONDS_FAILED;
-        	message = "Failed to pass preconditions";
-            LOG.log(Level.WARNING,
-                    "Failed to pass preconditions for ingest of product: ["
-                            + product.getAbsolutePath() + "]");
-        }
-        this.ingestStatus.add(new IngestStatus() {
-			public File getProduct() {
-				return product;
-			}
-			public Result getResult() {
-				return ingestResult;
-			}
-			public String getMessage() {
-				return message;
-			}
-        });
-    }
+      // Check that metadata contains required metadata.
+      if (!containsRequiredMetadata(productMetadata)) {
+         LOG.log(Level.SEVERE, "Missing required metadata for product '"
+               + product + "'");
+         performPostIngestOnFailActions(product, productMetadata);
+         return createIngestStatus(product, IngestStatus.Result.FAILURE,
+               "Missing required metadata");
+      }
 
-    private boolean ingest(File product, Metadata productMetdata) {
-        try {
-            LOG.log(Level.INFO, "ProductCrawler: Ready to ingest product: ["
-                    + product + "]: ProductType: ["
-                    + productMetdata.getMetadata(PRODUCT_TYPE) + "]");
-            String productId = ingester.ingest(new URL(this.getFilemgrUrl()),
-                    product, productMetdata);
-            LOG.log(Level.INFO, "Successfully ingested product: [" + product
-                    + "]: product id: " + productId);
-        } catch (Exception e) {
-            LOG.log(Level.WARNING,
-                    "ProductCrawler: Exception ingesting product: [" + product
-                            + "]: Message: " + e.getMessage()
-                            + ": attempting to continue crawling", e);
+      // Run preIngest actions.
+      if (!performPreIngestActions(product, productMetadata)) {
+         performPostIngestOnFailActions(product, productMetadata);
+         return createIngestStatus(product, IngestStatus.Result.FAILURE,
+            "PreIngest actions failed to complete");            
+      }
+
+      // Check if ingest has been turned off.
+      if (isSkipIngest()) {
+         LOG.log(Level.INFO, "Skipping ingest of product: ["
+               + product.getAbsolutePath() + "]");
+         return createIngestStatus(product, IngestStatus.Result.SKIPPED,
+               "Crawler ingest turned OFF");
+      }
+
+      // Ingest product.
+      boolean ingestSuccess = ingest(product, productMetadata);
+
+      // On Successful Ingest.
+      if (ingestSuccess) {
+         LOG.log(Level.INFO, "Successful ingest of product: ["
+               + product.getAbsolutePath() + "]");
+         performPostIngestOnSuccessActions(product, productMetadata);
+         return createIngestStatus(product,
+               IngestStatus.Result.SUCCESS, "Ingest was successful");
+
+      // On Failed Ingest.
+      } else {
+         LOG.log(Level.WARNING, "Failed to ingest product: ["
+               + product.getAbsolutePath()
+               + "]: performing postIngestFail actions");         
+         performPostIngestOnFailActions(product, productMetadata);
+         return createIngestStatus(product, IngestStatus.Result.FAILURE,
+               "Failed to ingest product");
+      }
+   }
+
+   public List<IngestStatus> getIngestStatus() {
+      return Collections.unmodifiableList(ingestStatus);
+   }
+
+   protected abstract boolean passesPreconditions(File product);
+
+   protected abstract Metadata getMetadataForProduct(File product)
+         throws Exception;
+
+   protected abstract File renameProduct(File product, Metadata productMetadata)
+         throws Exception;
+
+   @VisibleForTesting void setupIngester() {
+      ingester = new StdIngester(getClientTransferer());
+   }
+
+   @VisibleForTesting void loadAndValidateActions() {
+      if (actionRepo == null && getApplicationContext() != null) {
+         actionRepo = new CrawlerActionRepo();
+         actionRepo.loadActionsFromBeanFactory(
+               getApplicationContext(), getActionIds());
+         validateActions();
+      }
+   }
+
+   @VisibleForTesting void validateActions() {
+      StringBuffer actionErrors = new StringBuffer("");
+      for (CrawlerAction action : actionRepo.getActions()) {
+         try {
+            action.validate();
+         } catch (Exception e) {
+            actionErrors.append(" " + action.getId() + ": " + e.getMessage()
+                  + "\n");
+         }
+      }
+      if (actionErrors.length() > 0) {
+         throw new RuntimeException("Actions failed validation:\n"
+               + actionErrors);
+      }
+   }
+
+   @VisibleForTesting synchronized boolean containsRequiredMetadata(
+         Metadata productMetadata) {
+      for (String reqMetKey : getRequiredMetadata()) {
+         if (!productMetadata.containsKey(reqMetKey)) {
+            LOG.log(Level.WARNING, "Missing required metadata field "
+                  + reqMetKey);
             return false;
-        }
-        return true;
-    }
+         }
+      }
+      return true;
+   }
 
-    protected abstract boolean passesPreconditions(File product);
+   @VisibleForTesting void addKnownMetadata(File product,
+         Metadata productMetadata) {
+      // Add ProductName if not specified.
+      if (productMetadata.getMetadata(CoreMetKeys.PRODUCT_NAME) == null) {
+         productMetadata.addMetadata(
+               CoreMetKeys.PRODUCT_NAME, product.getName());
+      }
+      // Add Filename if not specified.
+      if (productMetadata.getMetadata(CoreMetKeys.FILENAME) == null) {
+         productMetadata.addMetadata(CoreMetKeys.FILENAME, product.getName());
+      }
+      // Add FileLocation if not specified.
+      if (productMetadata.getMetadata(CoreMetKeys.FILE_LOCATION) == null) {
+         productMetadata.addMetadata(CoreMetKeys.FILE_LOCATION, product
+               .getAbsoluteFile().getParentFile().getAbsolutePath());
+      }
+   }
 
-    protected abstract Metadata getMetadataForProduct(File product);
+   @VisibleForTesting IngestStatus createIngestStatus(final File product,
+         final IngestStatus.Result result, final String message) {
+      return new IngestStatus() {
+         public File getProduct() {
+            return product;
+         }
+         public Result getResult() {
+            return result;
+         }
+         public String getMessage() {
+            return message;
+         }
+      };
+   }
 
-    private boolean performPreIngestActions(File product,
-            Metadata productMetadata) {
-        if (this.actionRepo != null)
-            return this.performProductCrawlerActions(this.actionRepo
-                    .getPreIngestActions(), product, productMetadata);
-        else
-            return true;
-    }
+   @VisibleForTesting boolean ingest(File product, Metadata productMetdata) {
+      try {
+         LOG.log(Level.INFO, "ProductCrawler: Ready to ingest product: ["
+               + product + "]: ProductType: ["
+               + productMetdata.getMetadata(PRODUCT_TYPE) + "]");
+         String productId = ingester.ingest(new URL(getFilemgrUrl()),
+               product, productMetdata);
+         LOG.log(Level.INFO, "Successfully ingested product: [" + product
+               + "]: product id: " + productId);
+      } catch (Exception e) {
+         LOG.log(Level.WARNING,
+               "ProductCrawler: Exception ingesting product: [" + product
+                     + "]: Message: " + e.getMessage()
+                     + ": attempting to continue crawling", e);
+         return false;
+      }
+      return true;
+   }
 
-    private boolean performPostIngestOnSuccessActions(File product,
-            Metadata productMetadata) {
-        if (this.actionRepo != null)
-            return this.performProductCrawlerActions(this.actionRepo
-                    .getPostIngestOnSuccessActions(), product, productMetadata);
-        else
-            return true;
-    }
+   @VisibleForTesting boolean performPreIngestActions(File product,
+         Metadata productMetadata) {
+      if (actionRepo != null) {
+         return performProductCrawlerActions(
+               actionRepo.getPreIngestActions(), product, productMetadata);
+      } else {
+         return true;
+      }
+   }
 
-    private boolean performPostIngestOnFailActions(File product,
-            Metadata productMetadata) {
-        if (this.actionRepo != null)
-            return this.performProductCrawlerActions(this.actionRepo
-                    .getPostIngestOnFailActions(), product, productMetadata);
-        else
-            return true;
-    }
+   @VisibleForTesting boolean performPostIngestOnSuccessActions(File product,
+         Metadata productMetadata) {
+      if (actionRepo != null) {
+         return performProductCrawlerActions(
+               actionRepo.getPostIngestOnSuccessActions(), product,
+               productMetadata);
+      } else {
+         return true;
+      }
+   }
 
-    private boolean performProductCrawlerActions(List<CrawlerAction> actions,
-            File product, Metadata productMetadata) {
-        boolean allSucceeded = true;
-        for (CrawlerAction action : actions) {
-            try {
-                LOG.log(Level.INFO, "Performing action (id = "
-                        + action.getId() + " : description = " 
-                        + action.getDescription() + ")");
-                if (!action.performAction(product,
-                        productMetadata))
-                    throw new Exception("Action (id = "
-                            + action.getId() + " : description = " 
-                            + action.getDescription() 
-                            + ") returned false");
-            } catch (Exception e) {
-                allSucceeded = false;
-                LOG.log(Level.WARNING, "Failed to perform crawler action : "
-                        + e.getMessage());
+   @VisibleForTesting boolean performPostIngestOnFailActions(File product,
+         Metadata productMetadata) {
+      if (actionRepo != null) {
+         return performProductCrawlerActions(
+               actionRepo.getPostIngestOnFailActions(), product,
+               productMetadata);
+      } else {
+         return true;
+      }
+   }
+
+   @VisibleForTesting boolean performProductCrawlerActions(
+         List<CrawlerAction> actions, File product, Metadata productMetadata) {
+      boolean allSucceeded = true;
+      for (CrawlerAction action : actions) {
+         try {
+            LOG.log(Level.INFO, "Performing action (id = " + action.getId()
+                  + " : description = " + action.getDescription() + ")");
+            if (!action.performAction(product, productMetadata)) {
+               throw new Exception("Action (id = " + action.getId()
+                     + " : description = " + action.getDescription()
+                     + ") returned false");
             }
-        }
-        return allSucceeded;
-    }
+         } catch (Exception e) {
+            allSucceeded = false;
+            LOG.log(Level.WARNING,
+                  "Failed to perform crawler action : " + e.getMessage(), e);
+         }
+      }
+      return allSucceeded;
+   }
 }

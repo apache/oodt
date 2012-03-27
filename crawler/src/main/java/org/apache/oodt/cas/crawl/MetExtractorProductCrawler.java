@@ -14,20 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.crawl;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.metadata.filenaming.NamingConvention;
 import org.apache.oodt.cas.metadata.preconditions.PreConditionComparator;
 
 //JDK imports
 import java.io.File;
 import java.util.List;
-import java.util.logging.Level;
 
 //Spring imports
 import org.springframework.beans.factory.annotation.Required;
@@ -41,7 +39,6 @@ import org.springframework.beans.factory.annotation.Required;
  * A variant of the Standard Product Crawler where .met files are generated on
  * the fly as product files are encountered.
  * </p>
- * 
  */
 public class MetExtractorProductCrawler extends ProductCrawler {
 
@@ -51,16 +48,14 @@ public class MetExtractorProductCrawler extends ProductCrawler {
 
     private List<String> preCondIds;
 
-    protected Metadata getMetadataForProduct(File product) {
-        try {
-            return this.metExtractor.extractMetadata(product);
-        } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to extract metadata from file "
-                    + e.getMessage());
-            return new Metadata();
-        }
+    private String namingConventionId;
+
+    @Override
+    protected Metadata getMetadataForProduct(File product) throws Exception {
+        return metExtractor.extractMetadata(product);
     }
 
+    @Override
     protected boolean passesPreconditions(File product) {
         if (this.getPreCondIds() != null) {
             for (String preCondId : this.getPreCondIds()) {
@@ -70,6 +65,22 @@ public class MetExtractorProductCrawler extends ProductCrawler {
             }
         }
         return product.exists() && product.length() > 0;
+    }
+
+    @Override
+    protected File renameProduct(File product, Metadata productMetadata)
+          throws Exception {
+       if (getNamingConventionId() != null) {
+          NamingConvention namingConvention = (NamingConvention)
+                getApplicationContext().getBean(getNamingConventionId());
+          if (namingConvention == null) {
+             throw new Exception("NamingConvention Id '" + getNamingConventionId()
+                   + "' is not defined");
+          }
+          return namingConvention.rename(product, productMetadata);
+       } else {
+          return product;
+       }
     }
 
     @Required
@@ -99,4 +110,11 @@ public class MetExtractorProductCrawler extends ProductCrawler {
         this.preCondIds = preCondIds;
     }
 
+    public void setNamingConventionId(String namingConventionId) {
+        this.namingConventionId = namingConventionId;
+    }
+
+    public String getNamingConventionId() {
+       return namingConventionId;
+    }
 }

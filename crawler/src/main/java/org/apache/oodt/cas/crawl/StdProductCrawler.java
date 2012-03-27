@@ -50,22 +50,21 @@ public class StdProductCrawler extends ProductCrawler {
    }
 
    @Override
-   protected Metadata getMetadataForProduct(File product) {
-      try {
-         MetReaderExtractor extractor = new MetReaderExtractor(
-               this.metFileExtension);
-         return extractor.extractMetadata(product);
-      } catch (Exception e) {
-         LOG.log(Level.WARNING, "Failed to get metadata for " + product + " : "
-               + e.getMessage());
-         return new Metadata();
-      }
+   protected Metadata getMetadataForProduct(File product) throws Exception {
+      MetReaderExtractor extractor = new MetReaderExtractor(
+            this.metFileExtension);
+      return extractor.extractMetadata(product);
    }
 
    @Override
    protected boolean passesPreconditions(File product) {
       return new File(product.getAbsolutePath() + "." + this.metFileExtension)
             .exists();
+   }
+
+   @Override
+   protected File renameProduct(File product, Metadata productMetadata) {
+      return product;
    }
 
    public void setMetFileExtension(String metFileExtension) {
