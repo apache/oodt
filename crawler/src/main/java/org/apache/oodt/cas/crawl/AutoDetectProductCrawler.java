@@ -121,9 +121,11 @@ public class AutoDetectProductCrawler extends ProductCrawler implements
    @Override
    protected File renameProduct(File product, Metadata productMetadata)
          throws Exception {
-      NamingConvention namingConvention = mimeExtractorRepo
-            .getNamingConvention(mimeExtractorRepo.getMimeType(product));
-      if (namingConvention != null) {
+      String namingConventionId = mimeExtractorRepo
+            .getNamingConventionId(mimeExtractorRepo.getMimeType(product));
+      if (namingConventionId != null) {
+         NamingConvention namingConvention = (NamingConvention) getApplicationContext()
+               .getBean(namingConventionId);
          return namingConvention.rename(product, productMetadata);
       } else {
          return product;

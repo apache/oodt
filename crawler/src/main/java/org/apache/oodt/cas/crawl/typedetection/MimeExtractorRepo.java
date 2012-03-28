@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Vector;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.filenaming.NamingConvention;
 import org.apache.oodt.cas.metadata.util.MimeTypeUtils;
 
 //Google imports
@@ -42,11 +41,11 @@ import com.google.common.collect.Maps;
 public class MimeExtractorRepo {
 
 	private List<MetExtractorSpec> defaultExtractorSpecs;
-	private NamingConvention defaultNamingConvention;
+	private String defaultNamingConventionId;
 	private MimeTypeUtils mimeRepo;
 	private boolean magic;
 	private Map<String, List<MetExtractorSpec>> mimeTypeToMetExtractorSpecsMap;
-	private Map<String, NamingConvention> mimeTypeToNamingConventionMap;
+	private Map<String, String> mimeTypeToNamingConventionIdMap;
 
 	/**
 	 * Default Constructor
@@ -74,28 +73,28 @@ public class MimeExtractorRepo {
 	 * @throws FileNotFoundException
 	 */
 	public MimeExtractorRepo(List<MetExtractorSpec> defaultExtractorSpecs,
-	      NamingConvention defaultNamingConvention, String mimeRepoFile,
+	      String defaultNamingConventionId, String mimeRepoFile,
 	      boolean magic) throws FileNotFoundException {
 		setDefaultMetExtractorSpecs(defaultExtractorSpecs);
-		setDefaultNamingConvention(defaultNamingConvention);
+		setDefaultNamingConventionId(defaultNamingConventionId);
 		setMimeRepoFile(mimeRepoFile);
 		setMagic(magic);
 		mimeTypeToMetExtractorSpecsMap = Maps.newHashMap();
-		mimeTypeToNamingConventionMap = Maps.newHashMap();
+		mimeTypeToNamingConventionIdMap = Maps.newHashMap();
 	}
 
-	public synchronized void setNamingConvention(String mimeType,
-	      NamingConvention namingConvention) {
-	   mimeTypeToNamingConventionMap.put(mimeType, namingConvention);
+	public synchronized void setNamingConventionId(String mimeType,
+	      String namingConventionId) {
+	   mimeTypeToNamingConventionIdMap.put(mimeType, namingConventionId);
 	}
 
-	public synchronized NamingConvention getNamingConvention(String mimeType) {
-	   NamingConvention namingConvention =  mimeTypeToNamingConventionMap.get(
+	public synchronized String getNamingConventionId(String mimeType) {
+	   String namingConventionId =  mimeTypeToNamingConventionIdMap.get(
 	         mimeType);
-	   if (namingConvention == null) {
-	      return getDefaultNamingConvention();
+	   if (namingConventionId == null) {
+	      return getDefaultNamingConventionId();
 	   }
-	   return namingConvention;
+	   return namingConventionId;
 	}
 
 	public synchronized void addMetExtractorSpec(String mimeType,
@@ -157,13 +156,13 @@ public class MimeExtractorRepo {
 		this.defaultExtractorSpecs = defaultExtractorSpecs;
 	}
 
-	public void setDefaultNamingConvention(
-	      NamingConvention defaultNamingConvention) {
-	   this.defaultNamingConvention = defaultNamingConvention;
+	public void setDefaultNamingConventionId(
+	      String defaultNamingConventionId) {
+	   this.defaultNamingConventionId = defaultNamingConventionId;
 	}
 
-	public NamingConvention getDefaultNamingConvention() {
-	   return defaultNamingConvention;
+	public String getDefaultNamingConventionId() {
+	   return defaultNamingConventionId;
 	}
 
 	/**

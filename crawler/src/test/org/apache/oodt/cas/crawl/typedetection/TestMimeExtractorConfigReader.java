@@ -66,6 +66,7 @@ public class TestMimeExtractorConfigReader extends TestCase {
    }
 
    public void testReadWithDefaults() throws Exception {
+      String namingConvId = "PathUtilsNC";
       String defaultPreconditionId = "TestPrecondition";
       String preconditionId1 = "Precondition1";
       String preconditionId2 = "Precondition2";
@@ -75,8 +76,7 @@ public class TestMimeExtractorConfigReader extends TestCase {
                + " magic=\"false\" mimeRepo=\""
                + mimeTypesFile.getAbsolutePath() + "\">\n"
          + "<default>\n"
-         + "   <namingConvention class=\""
-               + PathUtilsNamingConvention.class.getCanonicalName() + "\" />\n"
+         + "   <namingConvention id=\"" + namingConvId + "\" />\n"
          + "   <extractor class=\""
                + CopyAndRewriteExtractor.class.getCanonicalName() + "\">\n"
          + "      <config file=\"" + defaultExtractorConfig.getAbsolutePath()
@@ -103,8 +103,7 @@ public class TestMimeExtractorConfigReader extends TestCase {
       assertTrue(xmlMimeRepo.exists());
       MimeExtractorRepo mimeRepo = MimeExtractorConfigReader.read(
             xmlMimeRepo.getAbsolutePath());
-      assertEquals(PathUtilsNamingConvention.class,
-            mimeRepo.getNamingConvention("some/mime-type").getClass());
+      assertEquals(namingConvId, mimeRepo.getNamingConventionId("some/mime-type"));
       List<MetExtractorSpec> specs = mimeRepo.getExtractorSpecsForMimeType("some/mime-type");
       assertEquals(1, specs.size());
       assertEquals(MetReaderExtractor.class,
@@ -120,6 +119,7 @@ public class TestMimeExtractorConfigReader extends TestCase {
    }
 
    public void testReadWithoutDefaults() throws Exception {
+      String namingConvId = "PathUtilsNC";
       String preconditionId1 = "Precondition1";
       String preconditionId2 = "Precondition2";
       String xmlFileContents =
@@ -128,8 +128,7 @@ public class TestMimeExtractorConfigReader extends TestCase {
                + " magic=\"false\" mimeRepo=\""
                + mimeTypesFile.getAbsolutePath() + "\">\n"
          + "<mime type=\"some/mime-type\">\n"
-         + "   <namingConvention class=\""
-                  + PathUtilsNamingConvention.class.getCanonicalName() + "\" />\n"
+         + "   <namingConvention id=\"" + namingConvId + "\" />\n"
          + "   <extractor class=\""
                + MetReaderExtractor.class.getCanonicalName() + "\">\n"
          + "      <config file=\"" + defaultExtractorConfig.getAbsolutePath()
@@ -146,8 +145,7 @@ public class TestMimeExtractorConfigReader extends TestCase {
       assertTrue(xmlMimeRepo.exists());
       MimeExtractorRepo mimeRepo = MimeExtractorConfigReader.read(
             xmlMimeRepo.getAbsolutePath());
-      assertEquals(PathUtilsNamingConvention.class,
-            mimeRepo.getNamingConvention("some/mime-type").getClass());
+      assertEquals(namingConvId, mimeRepo.getNamingConventionId("some/mime-type"));
       List<MetExtractorSpec> specs = mimeRepo.getExtractorSpecsForMimeType("some/mime-type");
       assertEquals(1, specs.size());
       assertEquals(MetReaderExtractor.class,

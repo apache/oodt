@@ -89,8 +89,8 @@ public final class MimeExtractorConfigReader implements
                 }
                 extractorRepo
                         .setDefaultMetExtractorSpecs(defaultExtractorSpecs);
-                extractorRepo.setDefaultNamingConvention(
-                      getNamingConvention(defaultExtractorElem));
+                extractorRepo.setDefaultNamingConventionId(
+                      getNamingConventionId(defaultExtractorElem));
             }
 
             NodeList mimeElems = root.getElementsByTagName(MIME_TAG);
@@ -100,8 +100,8 @@ public final class MimeExtractorConfigReader implements
                 LinkedList<MetExtractorSpec> specs = new LinkedList<MetExtractorSpec>();
 
                 // Load naming convention class.
-                extractorRepo.setNamingConvention(mimeType,
-                      getNamingConvention(mimeElem));
+                extractorRepo.setNamingConventionId(mimeType,
+                      getNamingConventionId(mimeElem));
 
                 NodeList extractorSpecElems = mimeElem
                         .getElementsByTagName(EXTRACTOR_TAG);
@@ -145,8 +145,7 @@ public final class MimeExtractorConfigReader implements
         }
     }
 
-    private static NamingConvention getNamingConvention(Element parent)
-          throws Exception {
+    private static String getNamingConventionId(Element parent) throws Exception {
        NodeList namingConventions = parent
              .getElementsByTagName(NAMING_CONVENTION_TAG);
        if (namingConventions != null && namingConventions.getLength() > 0) {
@@ -155,8 +154,7 @@ public final class MimeExtractorConfigReader implements
                    + NAMING_CONVENTION_TAG + "' tag per mimetype");
           }
           Element namingConvention = (Element) namingConventions.item(0);
-          return (NamingConvention) Class.forName(
-                namingConvention.getAttribute(CLASS_ATTR)).newInstance();
+          return namingConvention.getAttribute(ID_ATTR);
        }
        return null;
     }

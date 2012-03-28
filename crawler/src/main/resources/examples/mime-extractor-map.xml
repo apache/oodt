@@ -21,7 +21,7 @@ the License.
 	<mime type="some/mime-type">
 
     <!-- naming convention for renaming file (zero or one) -->
-    <namingConvention class="naming.convention.class" />
+    <namingConvention id="id_from_application_context_bean_file" />
 
 		<!-- extractor spec for given mime-type (one or more) -->
 		<extractor class="extractor.class">
