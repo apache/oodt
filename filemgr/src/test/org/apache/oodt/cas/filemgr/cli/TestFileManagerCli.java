@@ -375,8 +375,8 @@ public class TestFileManagerCli extends TestCase {
                   + " --productId " + productId + " --destination " + destination
                   + " --transferer " + transferer).split(" "));
       MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
-      assertEquals("getProductById", methodCallDetails.getMethodName());
-      assertEquals(productId, methodCallDetails.getArgs().get(0));
+      assertEquals("getProductReferences", methodCallDetails.getMethodName());
+      assertEquals(productId, ((Product) methodCallDetails.getArgs().get(0)).getProductId());
    }
 
    public void testRetrieveFilesByName() {
@@ -388,7 +388,7 @@ public class TestFileManagerCli extends TestCase {
                   + " --productName " + productName + " --destination " + destination
                   + " --transferer " + transferer).split(" "));
       MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
-      assertEquals("getProductByName", methodCallDetails.getMethodName());
-      assertEquals(productName, methodCallDetails.getArgs().get(0));
+      assertEquals("getProductReferences", methodCallDetails.getMethodName());
+      assertEquals(productName, ((Product) methodCallDetails.getArgs().get(0)).getProductName());
    }
 }

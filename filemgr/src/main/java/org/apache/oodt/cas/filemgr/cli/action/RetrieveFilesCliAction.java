@@ -48,16 +48,16 @@ public class RetrieveFilesCliAction extends FileManagerCliAction {
          if (productId != null) {
             product = fmClient.getProductById(productId);
          } else if (productName != null) {
-            product = fmClient.getProductByName(productName);            
+            product = fmClient.getProductByName(productName);
          } else {
-            throw new Exception("Must specify either productId or productName");
+              throw new Exception("Must specify either productId or productName");
          }
          if (product != null) {
+            product.setProductReferences(fmClient.getProductReferences(product));
             dt.retrieveProduct(product, destination);
          } else {
             throw new Exception("Product was not found");
          }
-         dt.retrieveProduct(product, destination);
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to retrieve files for product : " + e.getMessage(), e);
       }

@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-433 Fix retrieveFileByName and retrieveFileById buy setting the product's references 
+  before calling retrieveProduct (thomas)
+
 * OODT-430 Update all boolean type bean properties in the crawler cmd-line-options.xml (thomas)
 
 * OODT-412 Bugfix: MoveMetadataToFailureDir should read MoveMetadataFileToFailureDir (thomas)
