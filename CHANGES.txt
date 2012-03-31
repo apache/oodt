@@ -4,7 +4,10 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
-* OODT-401: added profile management module to balance modules directory (skhudiky)
+* OODT-157 PCS Operator User Interface web application  
+  (mattmann, ahart, cgoodale, pramirez)
+
+* OODT-401 added profile management module to balance modules directory (skhudiky)
   
 * OODT-433 Fix retrieveFileByName and retrieveFileById buy setting the product's references 
   before calling retrieveProduct (thomas)
