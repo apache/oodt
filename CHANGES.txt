@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-435 Refactor Graph and ParentChildWorkflow class 
+  outside of PackagedWorkflowRepository (mattmann)
+
 * OODT-157 PCS Operator User Interface web application  
   (mattmann, ahart, cgoodale, pramirez)
 
