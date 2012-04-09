@@ -20,7 +20,6 @@ the License.
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<bean class="org.apache.oodt.commons.spring.postprocessor.SetIdBeanPostProcessor" />
-
 	<bean class="org.apache.oodt.cas.crawl.util.CasPropertyPlaceholderConfigurer">
 
 		<!-- Allow for system-level properties to override all properties below -->
@@ -33,10 +32,9 @@ the License.
 				<prop key="crawler.backup.dir">[BACKUP_DIR]</prop>
 				<prop key="crawler.workflowmgr.url">[WORKFLOWMGR_URL]</prop>
 				<prop key="crawler.filemgr.url">[FILEMGR_URL]</prop>
-				<prop key="crawler.client.transferer">org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory
-				</prop>
+				<prop key="crawler.client.transferer">org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory</prop>
 				<prop key="crawler.met.file.ext">met</prop>
-				<prop key="crawler.pushpull.met.file.ext">info.tmp</prop>
+				<prop key="crawler.pushpull.met.file.ext">[PUSHPULL_MET_FILE_EXT]</prop>
 				<prop key="crawler.anc.file.ext">anc</prop>
 				<prop key="crawler.anc.file.suffix"></prop>
 				<prop key="notification.mail.host"></prop>

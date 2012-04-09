@@ -22,6 +22,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.LinkedList;
 
@@ -55,8 +56,13 @@ public final class MimeExtractorConfigReader implements
             MimeExtractorRepo extractorRepo = new MimeExtractorRepo();
             extractorRepo.setMagic(Boolean.valueOf(
                     root.getAttribute(MAGIC_ATTR)).booleanValue());
-            extractorRepo.setMimeRepoFile(PathUtils.replaceEnvVariables(root
-                    .getAttribute(MIME_REPO_ATTR)));
+            String mimeTypeFile = PathUtils.replaceEnvVariables(root
+                  .getAttribute(MIME_REPO_ATTR));
+            if (!mimeTypeFile.startsWith("/")) {
+               mimeTypeFile = new File(new File(mapFilePath).getParentFile(),
+                     mimeTypeFile).getAbsolutePath();
+            }
+            extractorRepo.setMimeRepoFile(mimeTypeFile);
 
             Element defaultExtractorElem = XMLUtils.getFirstElement(
                     DEFAULT_EXTRACTOR_TAG, root);
@@ -67,13 +73,16 @@ public final class MimeExtractorConfigReader implements
                 for (int i = 0; i < defaultExtractorElems.getLength(); i++) {
                     Element extractorElem = (Element) defaultExtractorElems
                             .item(i);
-                    NodeList preCondComparators = XMLUtils.getFirstElement(
-                            PRECONDITION_COMPARATORS_TAG, extractorElem)
-                            .getElementsByTagName(PRECONDITION_COMPARATOR_TAG);
+                    Element preCondsElem = XMLUtils.getFirstElement(
+                          PRECONDITION_COMPARATORS_TAG, extractorElem);
                     LinkedList<String> preCondComparatorIds = new LinkedList<String>();
-                    for (int k = 0; k < preCondComparators.getLength(); k++)
-                        preCondComparatorIds.add(((Element) preCondComparators
-                                .item(k)).getAttribute(ID_ATTR));
+                    if (preCondsElem != null) {
+                       NodeList preCondComparators = 
+                          preCondsElem.getElementsByTagName(PRECONDITION_COMPARATOR_TAG);
+                       for (int k = 0; k < preCondComparators.getLength(); k++)
+                           preCondComparatorIds.add(((Element) preCondComparators
+                                   .item(k)).getAttribute(ID_ATTR));
+                    }
                     // This seems wrong, so added support for CLASS_ATTR while still
                     //  supporting EXTRACTOR_CLASS_TAG as an attribute for specifying
                     //  extractor class.
@@ -81,10 +90,15 @@ public final class MimeExtractorConfigReader implements
                     if (Strings.isNullOrEmpty(extractorClass)) {
                        extractorClass = extractorElem.getAttribute(EXTRACTOR_CLASS_TAG);
                     }
+                    String extractorConfigFile = getFilePathFromElement(
+                          extractorElem, EXTRACTOR_CONFIG_TAG);
+                    if (extractorConfigFile != null && !extractorConfigFile.startsWith("/")) {
+                       extractorConfigFile = new File(new File(mapFilePath).getParentFile(),
+                             extractorConfigFile).getAbsolutePath();
+                    }
                     defaultExtractorSpecs
                             .add(new MetExtractorSpec(extractorClass,
-                                    getFilePathFromElement(extractorElem,
-                                            EXTRACTOR_CONFIG_TAG),
+                                    extractorConfigFile,
                                     preCondComparatorIds));
                 }
                 extractorRepo
@@ -117,21 +131,27 @@ public final class MimeExtractorConfigReader implements
                         // get config file if specified
                         String configFilePath = getFilePathFromElement(
                                 extractorSpecElem, EXTRACTOR_CONFIG_TAG);
-                        if (configFilePath != null)
-                            spec.setExtractorConfigFile(configFilePath);
+                        if (configFilePath != null) {
+                           if (!configFilePath.startsWith("/")) {
+                              configFilePath = new File(new File(mapFilePath).getParentFile(),
+                                    configFilePath).getAbsolutePath();
+                           }
+                           spec.setExtractorConfigFile(configFilePath);
+                        }
 
                         // get preconditions file if specified
-                        NodeList preCondComparators = XMLUtils
-                                .getFirstElement(PRECONDITION_COMPARATORS_TAG,
-                                        extractorSpecElem)
-                                .getElementsByTagName(
-                                        PRECONDITION_COMPARATOR_TAG);
-                        LinkedList<String> preCondComparatorIds = new LinkedList<String>();
-                        for (int k = 0; k < preCondComparators.getLength(); k++)
-                            preCondComparatorIds
-                                    .add(((Element) preCondComparators.item(k))
-                                            .getAttribute(ID_ATTR));
-                        spec.setPreConditionComparatorIds(preCondComparatorIds);
+                        Element preCondsElem = XMLUtils.getFirstElement(
+                              PRECONDITION_COMPARATORS_TAG, extractorSpecElem);
+                        if (preCondsElem != null) {
+                           NodeList preCondComparators = preCondsElem
+                                 .getElementsByTagName(PRECONDITION_COMPARATOR_TAG);
+                           LinkedList<String> preCondComparatorIds = new LinkedList<String>();
+                           for (int k = 0; k < preCondComparators.getLength(); k++)
+                               preCondComparatorIds
+                                       .add(((Element) preCondComparators.item(k))
+                                               .getAttribute(ID_ATTR));
+                           spec.setPreConditionComparatorIds(preCondComparatorIds);
+                        }
 
                         specs.add(spec);
                     }

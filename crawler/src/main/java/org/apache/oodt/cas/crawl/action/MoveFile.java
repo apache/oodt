@@ -92,6 +92,10 @@ public class MoveFile extends CrawlerAction {
       this.toDir = toDir;
    }
 
+   public String getToDir() {
+      return toDir;
+   }
+
    public void setFileExtension(String fileExtension) {
       this.fileExtension = fileExtension;
    }
