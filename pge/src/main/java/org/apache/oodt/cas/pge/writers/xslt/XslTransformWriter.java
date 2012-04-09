@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.pge.writers.xslt;
 
 //JDK imports
 import java.io.File;
 import java.io.IOException;
+
+//JavaX imports.
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Result;
@@ -35,15 +35,11 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
 
-/**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
+/** 
  * XSL Transformation class which writes Science PGE config files based from the
- * XML format of SerializableMetadata
- * </p>.
+ * XML format of SerializableMetadata.
+ *
+ * @author bfoster (Brian Foster)
  */
 public class XslTransformWriter implements SciPgeConfigFileWriter {
 
@@ -75,5 +71,4 @@ public class XslTransformWriter implements SciPgeConfigFileWriter {
                     + sciPgeConfigFilePath + "' : " + e.getMessage());
         }
     }
-
 }

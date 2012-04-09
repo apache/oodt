@@ -14,6 +14,8 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
 License for the specific language governing permissions and limitations under
 the License.
+
+TODO(bfoster): Make this a working example.
 -->
 <pgeConfig>
     
@@ -39,22 +41,7 @@ the License.
     <output>
 
         <!-- one or more of these -->
-        <dir path="path-to-an-output-dir" createBeforeExe="true-or-false">
-            
-            <!-- one or more of these ** regExp or name can be used-->
-            <files regExp="regex-of-files-to-ingest-to-filemgr" metFileWriterClass="class-path-to-PcsMetFileWriter" args="zero-or-more-args-comma-segregated">
-                
-                <!-- zero or one of these -->                
-                <renamingConv namingExpr="">
-                    
-                    <!-- zero or more of these -->                    
-                    <metadata key="name-of-metadata-field" val="metadata-value"/>
-                    
-                </renamingConv>
-                
-            </files>
-            
-        </dir>
+        <dir path="path-to-an-output-dir" createBeforeExe="true-or-false" />
 
     </output>
     

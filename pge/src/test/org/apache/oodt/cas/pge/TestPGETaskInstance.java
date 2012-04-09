@@ -17,29 +17,48 @@
 package org.apache.oodt.cas.pge;
 
 //OODT static imports
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.NAME;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.ACTION_IDS;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.ATTEMPT_INGEST_ALL;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CONFIG_FILE_PATH;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CRAWLER_CONFIG_FILE;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CRAWLER_CRAWL_FOR_DIRS;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CRAWLER_RECUR;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.DUMP_METADATA;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_CLIENT_TRANSFER_SERVICE_FACTORY;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_FILE_MANAGER_URL;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.MIME_EXTRACTOR_REPO;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.NAME;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PGE_CONFIG_BUILDER;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PROPERTY_ADDERS;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.REQUIRED_METADATA;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.WORKFLOW_MANAGER_URL;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.CRAWLING;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
-//JDK imports
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-//Apache imports
+import junit.framework.TestCase;
+
 import org.apache.commons.io.FileUtils;
-
-//OODT imports
+import org.apache.oodt.cas.crawl.AutoDetectProductCrawler;
+import org.apache.oodt.cas.crawl.ProductCrawler;
+import org.apache.oodt.cas.crawl.action.CrawlerAction;
+import org.apache.oodt.cas.crawl.action.MoveFile;
+import org.apache.oodt.cas.crawl.status.IngestStatus;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.pge.PGETaskInstance;
 import org.apache.oodt.cas.pge.config.DynamicConfigFile;
 import org.apache.oodt.cas.pge.config.MockPgeConfigBuilder;
 import org.apache.oodt.cas.pge.config.OutputDir;
@@ -52,12 +71,9 @@ import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 
-//Google imports
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-//JUnit imports
-import junit.framework.TestCase;
+import com.google.common.collect.Sets;
 
 /**
  * Test class for {@link PGETaskInstance}.
@@ -328,6 +344,217 @@ public class TestPGETaskInstance extends TestCase {
                   + "</val>", dumpedMet.get(8));
       assertEquals("   </keyval>", dumpedMet.get(9));
       assertEquals("</cas:metadata>", dumpedMet.get(10));
+   }
+
+   public void testCreateProductCrawler() throws Exception {
+      PGETaskInstance pgeTask = createTestInstance();
+      pgeTask.pgeMetadata.replaceMetadata(MIME_EXTRACTOR_REPO,
+            "src/main/resources/examples/Crawler/mime-extractor-map.xml");
+      pgeTask.pgeMetadata.replaceMetadata(
+            INGEST_CLIENT_TRANSFER_SERVICE_FACTORY,
+            "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory");
+      pgeTask.pgeMetadata.replaceMetadata(INGEST_FILE_MANAGER_URL,
+            "http://localhost:9000");
+      pgeTask.pgeMetadata.replaceMetadata(CRAWLER_CONFIG_FILE,
+            "src/main/resources/examples/Crawler/crawler-config.xml");
+      pgeTask.pgeMetadata.replaceMetadata(ACTION_IDS,
+            Lists.newArrayList("DeleteDataFile", "MoveMetadataFileToFailureDir"));
+      pgeTask.pgeMetadata.replaceMetadata(REQUIRED_METADATA,
+            Lists.newArrayList("Owners"));
+      pgeTask.pgeMetadata.replaceMetadata(CRAWLER_CRAWL_FOR_DIRS,
+            Boolean.toString(false));
+      pgeTask.pgeMetadata.replaceMetadata(CRAWLER_RECUR,
+            Boolean.toString(true));
+
+      ProductCrawler pc = pgeTask.createProductCrawler();
+      assertEquals(
+            "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory",
+            pc.getClientTransferer());
+      assertEquals("http://localhost:9000", pc.getFilemgrUrl());
+      assertEquals(
+            Sets.newHashSet("DeleteDataFile", "MoveMetadataFileToFailureDir"),
+            Sets.newHashSet(pc.getActionIds()));
+      CrawlerAction action = (CrawlerAction) pc.getApplicationContext().getBean("DeleteDataFile");
+      assertNotNull(action);
+      MoveFile moveFileAction = (MoveFile) pc.getApplicationContext().getBean("MoveMetadataFileToFailureDir");
+      Properties properties = new Properties();
+      properties.load(new FileInputStream(new File(
+            "src/main/resources/examples/Crawler/action-beans.properties")));
+      assertEquals(properties.get("crawler.failure.dir"),
+            moveFileAction.getToDir());
+      assertTrue(pc.getRequiredMetadata().contains("Owners"));
+      assertFalse(pc.isCrawlForDirs());
+      assertFalse(pc.isNoRecur());
+   }
+
+   public void testRunIngestCrawler() throws Exception {
+      // Case: UpdateStatus Success, VerifyIngest Success, 
+      PGETaskInstance pgeTask = createTestInstance();
+      pgeTask.pgeConfig.addOuputDirAndExpressions(new OutputDir("/tmp/dir1", true));
+      pgeTask.pgeConfig.addOuputDirAndExpressions(new OutputDir("/tmp/dir2", true));
+      pgeTask.pgeMetadata.replaceMetadata(ATTEMPT_INGEST_ALL, Boolean.toString(true));
+      pgeTask.workflowInstId = "WorkflowInstanceId";
+
+      pgeTask.wm = createMock(XmlRpcWorkflowManagerClient.class);
+      expect(pgeTask.wm.updateWorkflowInstanceStatus(pgeTask.workflowInstId,
+            CRAWLING.getWorkflowStatusName())).andReturn(true);
+      replay(pgeTask.wm);
+
+      AutoDetectProductCrawler pc = createMock(AutoDetectProductCrawler.class);
+      pc.crawl(new File("/tmp/dir1"));
+      pc.crawl(new File("/tmp/dir2"));
+      expect(pc.getIngestStatus()).andReturn(Collections.<IngestStatus>emptyList());
+      replay(pc);
+
+      pgeTask.runIngestCrawler(pc);
+
+      verify(pgeTask.wm);
+      verify(pc);
+
+      // Case: UpdateStatus Fail
+      pgeTask.wm = createMock(XmlRpcWorkflowManagerClient.class);
+      expect(pgeTask.wm.updateWorkflowInstanceStatus(pgeTask.workflowInstId,
+            CRAWLING.getWorkflowStatusName())).andReturn(false);
+      replay(pgeTask.wm);
+
+      pc = createMock(AutoDetectProductCrawler.class);
+      replay(pc);
+
+      try {
+         pgeTask.runIngestCrawler(pc);
+         fail("Should have thrown");
+      } catch (Exception e) { /* expect throw */ }
+
+      verify(pgeTask.wm);
+      verify(pc);
+
+      // Case: UpdateStatus Success, VerifyIngest Fail
+      pgeTask.wm = createMock(XmlRpcWorkflowManagerClient.class);
+      expect(pgeTask.wm.updateWorkflowInstanceStatus(pgeTask.workflowInstId,
+            CRAWLING.getWorkflowStatusName())).andReturn(true);
+      replay(pgeTask.wm);
+
+      pc = createMock(AutoDetectProductCrawler.class);
+      pc.crawl(new File("/tmp/dir1"));
+      pc.crawl(new File("/tmp/dir2"));
+      IngestStatus failedIngestStatus = new IngestStatus() {
+         @Override
+         public String getMessage() {
+            return "Ingest Failure";
+         }
+         @Override
+         public File getProduct() {
+            return new File("/tmp/dir1");
+         }
+         @Override
+         public Result getResult() {
+            return Result.FAILURE;
+         }
+      };
+      expect(pc.getIngestStatus()).andReturn(
+            Lists.newArrayList(failedIngestStatus));
+      replay(pc);
+
+      try {
+         pgeTask.runIngestCrawler(pc);
+         fail("Should have thrown");
+      } catch (Exception e) { /* expect throw */ }
+
+      verify(pgeTask.wm);
+      verify(pc);
+   }
+
+   public void testVerifyIngests() throws Exception {
+      PGETaskInstance pgeTask = createTestInstance();
+
+      // Test case failure.
+      AutoDetectProductCrawler pc = createMock(AutoDetectProductCrawler.class);
+      IngestStatus failedIngestStatus = new IngestStatus() {
+         @Override
+         public String getMessage() {
+            return "Ingest Failure";
+         }
+         @Override
+         public File getProduct() {
+            return new File("/tmp/dir1");
+         }
+         @Override
+         public Result getResult() {
+            return Result.FAILURE;
+         }
+      };
+      expect(pc.getIngestStatus()).andReturn(
+            Lists.newArrayList(failedIngestStatus));
+      replay(pc);
+
+      try {
+         pgeTask.verifyIngests(pc);
+         fail("Should have thrown");
+      } catch (Exception e) { /* expect throw */ }
+
+      verify(pc);
+
+      // Test case warn failure of precondition, but success overall.
+      pc = createMock(AutoDetectProductCrawler.class);
+      IngestStatus precondsFailIngestStatus = new IngestStatus() {
+         @Override
+         public String getMessage() {
+            return "Preconditions failed";
+         }
+         @Override
+         public File getProduct() {
+            return new File("/tmp/dir1");
+         }
+         @Override
+         public Result getResult() {
+            return Result.PRECONDS_FAILED;
+         }
+      };
+      expect(pc.getIngestStatus()).andReturn(
+            Lists.newArrayList(precondsFailIngestStatus));
+      replay(pc);
+
+      pgeTask.logger = createMock(Logger.class);
+      pgeTask.logger.log(Level.INFO, "Verifying ingests successful...");
+      pgeTask.logger.log(Level.WARNING,
+            "Product was not ingested [file='/tmp/dir1',result='PRECONDS_FAILED',msg='Preconditions failed']");
+      pgeTask.logger.log(Level.INFO, "Ingests were successful");
+      replay(pgeTask.logger);
+
+      pgeTask.verifyIngests(pc);
+
+      verify(pc);
+      verify(pgeTask.logger);
+
+      // Test case success.
+      pc = createMock(AutoDetectProductCrawler.class);
+      IngestStatus successIngestStatus = new IngestStatus() {
+         @Override
+         public String getMessage() {
+            return "Ingest Success";
+         }
+         @Override
+         public File getProduct() {
+            return new File("/tmp/dir1");
+         }
+         @Override
+         public Result getResult() {
+            return Result.SUCCESS;
+         }
+      };
+      expect(pc.getIngestStatus()).andReturn(
+            Lists.newArrayList(successIngestStatus));
+      replay(pc);
+
+      pgeTask.logger = createMock(Logger.class);
+      pgeTask.logger.log(Level.INFO, "Verifying ingests successful...");
+      pgeTask.logger.log(Level.INFO, "Ingests were successful");
+      replay(pgeTask.logger);
+
+      pgeTask.verifyIngests(pc);
+
+      verify(pc);
+      verify(pgeTask.logger);
    }
 
    private PGETaskInstance createTestInstance() throws Exception {

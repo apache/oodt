@@ -27,7 +27,6 @@ import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.DYN_INPUT_FILES_TA
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.ENV_REPLACE_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.ENV_REPLACE_NO_RECUR_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.EXE_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.FILES_TAG;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.FILE_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.FILE_TAG;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.IMPORT_TAG;
@@ -35,14 +34,9 @@ import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.KEYREF_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.KEY_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.KEY_GEN_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.METADATA_TAG;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.MET_FILE_WRITER_CLASS_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.NAMESPACE_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.NAME_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.NAMING_EXPR_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.OUTPUT_TAG;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.PATH_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.REGEX_ATTR;
-import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.RENAMING_CONV_TAG;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.SHELL_TYPE_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.SPLIT_ATTR;
 import static org.apache.oodt.cas.pge.config.PgeConfigMetKeys.VAL_ATTR;
@@ -292,47 +286,12 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
                     .getElementsByTagName(DIR_TAG);
             for (int i = 0; i < outputDirsList.getLength(); i++) {
                 Element outputDirElement = (Element) outputDirsList.item(i);
-                String dirPath = this.fillIn(outputDirElement
-                        .getAttribute(PATH_ATTR), curMetadata);
-                OutputDir outputDir = new OutputDir(dirPath, this.fillIn(
-                        outputDirElement.getAttribute(CREATE_BEFORE_EXEC_ATTR),
-                        curMetadata).equals("true"));
-                NodeList fileList = outputDirElement
-                        .getElementsByTagName(FILES_TAG);
-                for (int j = 0; j < fileList.getLength(); j++) {
-                    Element fileElement = (Element) fileList.item(j);
-                    String outputFile = fileElement.getAttribute(REGEX_ATTR);
-                    if (outputFile.equals(""))
-                        outputFile = this.fillIn(fileElement
-                                .getAttribute(NAME_ATTR), curMetadata);
-                    NodeList renamingConvNodes = fileElement.getElementsByTagName(RENAMING_CONV_TAG);
-                    RenamingConv renamingConv = null;
-                    if (renamingConvNodes.getLength() > 0) {
-                    	Element renamingElement = (Element) renamingConvNodes.item(0);
-                    	String namingExpr = renamingElement.getAttribute(NAMING_EXPR_ATTR);
-                        if (renamingElement.getAttribute(ENV_REPLACE_ATTR)
-                                .toLowerCase().equals("true"))
-                        	namingExpr = this.fillIn(namingExpr, curMetadata, false);
-                        else if (!renamingElement.getAttribute(ENV_REPLACE_ATTR)
-                                .toLowerCase().equals("false"))
-                        	namingExpr = this.fillIn(namingExpr, curMetadata);
-                        renamingConv = new RenamingConv(namingExpr);
-                    	NodeList metadataNodes = renamingElement.getElementsByTagName(METADATA_TAG);
-                        for (int k = 0; k < metadataNodes.getLength(); k++) 
-                        	renamingConv.addTmpReplaceMet(
-									((Element) metadataNodes.item(k))
-											.getAttribute(KEY_ATTR), Arrays
-											.asList(((Element) metadataNodes
-													.item(k)).getAttribute(
-													VAL_ATTR).split(",")));
-                    }
-                    outputDir.addRegExprOutputFiles(new RegExprOutputFiles(
-                            outputFile, this.fillIn(fileElement
-                                    .getAttribute(MET_FILE_WRITER_CLASS_ATTR),
-                                    curMetadata), renamingConv, (Object[]) this.fillIn(
-                                    fileElement.getAttribute(ARGS_ATTR),
-                                    curMetadata).split(",")));
-                }
+                String dirPath = fillIn(outputDirElement
+                      .getAttribute(PATH_ATTR), curMetadata);
+                OutputDir outputDir = new OutputDir(dirPath,
+                      Boolean.parseBoolean(fillIn(outputDirElement
+                            .getAttribute(CREATE_BEFORE_EXEC_ATTR),
+                            curMetadata)));
                 outputDirs.add(outputDir);
             }
         }
@@ -356,5 +315,4 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
     		throw new Exception("Failed to parse value: " + value, e);
     	}
     }
-
 }

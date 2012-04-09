@@ -101,11 +101,11 @@ public enum PgeTaskMetKeys {
          "PGETask/Ingest/ClientTransferServiceFactory",
          "PCS_ClientTransferServiceFactory"),
    /**
-    * Path to Spring XML file which contains CAS {@link CrawlerAction}s.
+    * Path to Crawler Spring XML config file.
     */
-   ACTION_REPO_FILE(
-         "PGETask/Ingest/ActionRepoFile",
-         "PCS_ActionRepoFile"),
+   CRAWLER_CONFIG_FILE(
+         "PGETask/Ingest/CrawlerConfigFile",
+         "PGETask/Ingest/CrawlerConfigFile"),
    /**
     * The IDs of the {@link CrawlerAction}s in the {@link #ACTION_REPO_FILE} to run.
     */
@@ -126,11 +126,11 @@ public enum PgeTaskMetKeys {
          "PGETask/Ingest/CrawlerRecur",
          "PCS_CrawlerRecur"),
    /**
-    * File extension given to each Product's metadata file.
+    * Path to AutoDetectProductCrawler's MimeExtractorRepo XML config.
     */
-   MET_FILE_EXT(
-         "PGETask/Ingest/MetFileExtension",
-         "PCS_MetFileExtension"),
+   MIME_EXTRACTOR_REPO(
+         "PGETask/Ingest/MimeExtractorRepo",
+         "PGETask/Ingest/MimeExtractorRepo"),
    /**
     * List of metadata keys required for Product ingest.
     */

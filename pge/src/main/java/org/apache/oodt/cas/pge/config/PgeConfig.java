@@ -14,42 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.pge.config;
 
 //JDK imports
-import java.util.LinkedList;
 import java.util.List;
 
-/**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
- * Configuration file for CAS-PGE
- * </p>.
+//Google imports
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+
+/** 
+ * Configuration file for CAS-PGE.
+ *
+ * @author bfoster (Brian Foster)
  */
 public class PgeConfig {
 
     private List<DynamicConfigFile> dynamicConfigFiles;
-
     private List<OutputDir> outputDirs;
-
     private Object[] propertyAdderCustomArgs;
-
     private String exeDir;
-
     private String shellType;
-
     private List<String> exeCmds;
 
     public PgeConfig() {
-        this.shellType = "sh";
-        this.outputDirs = new LinkedList<OutputDir>();
-        this.dynamicConfigFiles = new LinkedList<DynamicConfigFile>();
-        this.exeCmds = new LinkedList<String>();
+        shellType = "sh";
+        outputDirs = Lists.newArrayList();
+        dynamicConfigFiles = Lists.newArrayList();
+        exeCmds = Lists.newArrayList();
     }
 
     public void addDynamicConfigFile(DynamicConfigFile dynamicConfigFile) {
@@ -57,15 +49,15 @@ public class PgeConfig {
     }
 
     public List<DynamicConfigFile> getDynamicConfigFiles() {
-        return this.dynamicConfigFiles;
+        return dynamicConfigFiles;
     }
 
     public void addOuputDirAndExpressions(OutputDir outputDir) {
-        this.outputDirs.add(outputDir);
+        outputDirs.add(outputDir);
     }
 
     public List<OutputDir> getOuputDirs() {
-        return this.outputDirs;
+        return outputDirs;
     }
 
     public void setExeDir(String exeDir) {
@@ -73,16 +65,17 @@ public class PgeConfig {
     }
 
     public String getExeDir() {
-        return this.exeDir;
+        return exeDir;
     }
 
     public void setShellType(String shellType) {
-        if (shellType != null && !shellType.equals(""))
+        if (!Strings.isNullOrEmpty(shellType)) {
             this.shellType = shellType;
+        }
     }
 
     public String getShellType() {
-        return this.shellType;
+        return shellType;
     }
 
     public void setExeCmds(List<String> exeCmds) {
@@ -90,7 +83,7 @@ public class PgeConfig {
     }
 
     public List<String> getExeCmds() {
-        return this.exeCmds;
+        return exeCmds;
     }
 
     public void setPropertyAdderCustomArgs(Object[] args) {
@@ -101,5 +94,4 @@ public class PgeConfig {
         return propertyAdderCustomArgs != null ? propertyAdderCustomArgs
                 : new Object[0];
     }
-
 }
