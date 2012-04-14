@@ -113,10 +113,44 @@ public final class WorkflowLifecyclesReader implements WorkflowLifecycleMetKeys 
                 WorkflowLifecycleStage stage = new WorkflowLifecycleStage();
                 stage.setName(STAGE_TAG_NAME_ATTR);
                 stage.setOrder(i+1);
-                stage.setStates(XMLUtils.readMany(stageElem, STATUS_TAG_NAME));
+                stage.setStates(readStates(stageElem, stage));
                 lifecycle.addStage(stage);
             }
         }
+    }
+    
+    private static List<WorkflowState> readStates(Element stageElem, WorkflowLifecycleStage category){
+      List<WorkflowState> states = new Vector<WorkflowState>();
+      NodeList statusNodeList = stageElem.getElementsByTagName(STATUS_TAG_NAME);
+      if(statusNodeList != null && statusNodeList.getLength() > 0){
+        for(int i=0; i < statusNodeList.getLength(); i++){
+          Element statusElem = (Element)statusNodeList.item(i);
+          // see if its name is specified via the name attribute, otherwise
+          // read it in back compat mode
+          
+          if(statusElem.getAttribute("name") != null && 
+              !statusElem.getAttribute("name").equals("")){
+            String statusName = statusElem.getAttribute("name");
+            String description = XMLUtils.getElementText("description", statusElem);
+            WorkflowState state = new WorkflowState();
+            state.setCategory(category);
+            state.setName(statusName);
+            state.setDescription(description);
+            states.add(state);
+          }
+          else{
+            // back compat mode
+            String statusName = XMLUtils.getSimpleElementText(statusElem);
+            WorkflowState state = new WorkflowState();
+            state.setName(statusName);
+            state.setMessage(statusName);
+            state.setCategory(category);
+            states.add(state);
+          }
+        }
+      }
+      
+      return states;
     }
 
     private static Document getDocumentRoot(String xmlFile) {

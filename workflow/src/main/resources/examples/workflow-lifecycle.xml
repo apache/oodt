@@ -17,6 +17,19 @@ the License.
 -->
 <!-- FIXME: Change namespace URI? -->
 <cas:workflowlifecycles xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+<!-- 
+  To preserve backwards compatibility. In this
+       case, the given description will simply be the 
+       provided status name.
+       
+     As of Apache OODT 0.4, statuses in this file can 
+     also take the form:
+     
+       &lt;status name=&quot;Name&quot;&gt;
+        &lt;description&gt;Description&lt;/description&gt;   
+       &lt;/status&gt;
+       
+ -->
 <default>
   <stage name="setup">
     <status>QUEUED</status>
