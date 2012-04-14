@@ -54,6 +54,8 @@ public class SynchronousLocalEngineRunner extends EngineRunner {
     WorkflowTaskInstance inst = GenericWorkflowObjectFactory
         .getTaskObjectFromClassName(workflowTask.getTaskInstanceClassName());
     try {
+      LOG.log(Level.INFO, "Executing task: [" + workflowTask.getTaskName()
+          + "] locally");
       inst.run(dynMetadata, workflowTask.getTaskConfig());
     } catch (Exception e) {
       LOG.log(Level.WARNING,

@@ -17,11 +17,14 @@
 
 package org.apache.oodt.cas.workflow.structs;
 
-//OODT imports
+//JDK imports
 import java.text.ParseException;
 import java.util.Date;
 
+//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.commons.util.DateConvert;
 
 /**
@@ -30,6 +33,24 @@ import org.apache.oodt.commons.util.DateConvert;
  * status, and in general are data structures intended to be used as a means for
  * monitoring the status of an executing {@link Workflow}.
  * 
+ * As of Apache OODT 0.4, the internal {@link Workflow} implementation uses 
+ * {@link ParentChildWorkflow}, introduced as part of OODT-70, and the 
+ * PackagedWorkflowRepository. {@link Workflow} instances given to the class will 
+ * automatically convert to {@link ParentChildWorkflow} implementations internally,
+ * and the existing {@link #getWorkflow()} and {@link #setWorkflow(Workflow)} methods
+ * have been depcreated in favor of {@link #getParentChildWorkflow()} and 
+ * {@link #setParentChildWorkflow(ParentChildWorkflow)} which will supersede 
+ * those methods, and eventually turn into their concrete implementations.
+ * 
+ * In addition, as of Apache OODT 0.4 the internal {@link #state} member variable
+ * now uses {@link WorkflowState} for representation. This requires the use of
+ * {@link WorkflowLifecycle} which has now moved from being simply a UI utility
+ * class for the Worklow Monitor web application to actually being fully integrated
+ * with the Workflow Manager. For backwards compatibility the {@link #setStatus(String)} 
+ * and {@link #getStatus()} methods are still supported, but are deprecated. Developers
+ * using this class should move towards using {@link #setState(WorkflowState)} and 
+ * {@link #getState()}.
+ * 
  * @author mattmann
  * @author bfoster
  * @version $Revision$
@@ -37,11 +58,11 @@ import org.apache.oodt.commons.util.DateConvert;
  */
 public class WorkflowInstance {
 
-  private Workflow workflow;
+  private ParentChildWorkflow workflow;
 
   private String id;
 
-  private String status;
+  private WorkflowState state;
 
   private String currentTaskId;
 
@@ -56,6 +77,8 @@ public class WorkflowInstance {
   private Metadata sharedContext;
 
   private Priority priority;
+  
+  private WorkflowLifecycle lifecycle;
 
   /**
    * Default Constructor.
@@ -63,15 +86,17 @@ public class WorkflowInstance {
    */
   public WorkflowInstance() {
     this(null, null, null, null, new Date(), null, null, null, new Metadata(),
-        Priority.getDefault());
+        Priority.getDefault(), null);
   }
 
-  public WorkflowInstance(Workflow workflow, String id, String status,
+  public WorkflowInstance(Workflow workflow, String id, WorkflowState state,
       String currentTaskId, Date startDate, Date endDate, Date taskStartDate,
-      Date taskEndDate, Metadata sharedContext, Priority priority) {
-    this.workflow = workflow;
+      Date taskEndDate, Metadata sharedContext, Priority priority, 
+      WorkflowLifecycle lifecycle) {
+    this.workflow = workflow instanceof ParentChildWorkflow ? (ParentChildWorkflow) workflow
+        : new ParentChildWorkflow(workflow);
     this.id = id;
-    this.status = status;
+    this.state = state;
     this.currentTaskId = currentTaskId;
     this.startDate = startDate;
     this.endDate = endDate;
@@ -79,6 +104,7 @@ public class WorkflowInstance {
     this.taskEndDate = taskEndDate;
     this.sharedContext = sharedContext;
     this.priority = priority;
+    this.lifecycle = lifecycle;
   }
 
   /**
@@ -99,30 +125,73 @@ public class WorkflowInstance {
   /**
    * @return the status
    */
+  @Deprecated
   public String getStatus() {
-    return status;
+    return state.getName();
+  }
+  
+  /**
+   * Sets the current {@link WorkflowState} 
+   * to the provided status.
+   * 
+   * @param status The provided status to set.
+   */
+  @Deprecated
+  public void setStatus(String status){
+    this.state = this.lifecycle.getStateByName(status);
   }
 
   /**
-   * @param status
-   *          the status to set
+   * @return the state
    */
-  public void setStatus(String status) {
-    this.status = status;
+  public WorkflowState getState() {
+    return state;
+  }
+
+  /**
+   * @param state
+   *          the state to set
+   */
+  public void setState(WorkflowState state) {
+    this.state = state;
   }
 
   /**
    * @return the workflow
    */
+  @Deprecated
   public Workflow getWorkflow() {
-    return workflow;
+    return (Workflow) workflow;
   }
 
   /**
    * @param workflow
    *          the workflow to set
    */
+  @Deprecated
   public void setWorkflow(Workflow workflow) {
+    if (workflow instanceof ParentChildWorkflow) {
+      this.workflow = (ParentChildWorkflow) workflow;
+    } else {
+      this.workflow = new ParentChildWorkflow(workflow);
+    }
+  }
+
+  /**
+   * 
+   * @return The workflow, with its parent/child relationships.
+   */
+  public ParentChildWorkflow getParentChildWorkflow() {
+    return this.workflow;
+  }
+
+  /**
+   * Sets the Parent Child workflow.
+   * 
+   * @param workflow
+   *          The workflow to set.
+   */
+  public void setParentChildWorkflow(ParentChildWorkflow workflow) {
     this.workflow = workflow;
   }
 
@@ -201,7 +270,8 @@ public class WorkflowInstance {
   }
 
   /**
-   * @param startDate the startDate to set
+   * @param startDate
+   *          the startDate to set
    */
   public void setStartDate(Date startDate) {
     this.startDate = startDate;
@@ -215,7 +285,8 @@ public class WorkflowInstance {
   }
 
   /**
-   * @param endDate the endDate to set
+   * @param endDate
+   *          the endDate to set
    */
   public void setEndDate(Date endDate) {
     this.endDate = endDate;
@@ -229,7 +300,8 @@ public class WorkflowInstance {
   }
 
   /**
-   * @param taskStartDate the taskStartDate to set
+   * @param taskStartDate
+   *          the taskStartDate to set
    */
   public void setTaskStartDate(Date taskStartDate) {
     this.taskStartDate = taskStartDate;
@@ -243,7 +315,8 @@ public class WorkflowInstance {
   }
 
   /**
-   * @param taskEndDate the taskEndDate to set
+   * @param taskEndDate
+   *          the taskEndDate to set
    */
   public void setTaskEndDate(Date taskEndDate) {
     this.taskEndDate = taskEndDate;
@@ -254,8 +327,7 @@ public class WorkflowInstance {
    */
   @Deprecated
   public String getEndDateTimeIsoStr() {
-    return this.endDate != null ? 
-        DateConvert.isoFormat(this.endDate):null;
+    return this.endDate != null ? DateConvert.isoFormat(this.endDate) : null;
   }
 
   /**
@@ -277,8 +349,8 @@ public class WorkflowInstance {
    */
   @Deprecated
   public String getStartDateTimeIsoStr() {
-    return this.startDate != null ? 
-        DateConvert.isoFormat(this.startDate):null;
+    return this.startDate != null ? DateConvert.isoFormat(this.startDate)
+        : null;
   }
 
   /**
@@ -300,8 +372,8 @@ public class WorkflowInstance {
    */
   @Deprecated
   public String getCurrentTaskEndDateTimeIsoStr() {
-    return this.taskEndDate != null ? 
-        DateConvert.isoFormat(this.taskEndDate):null;
+    return this.taskEndDate != null ? DateConvert.isoFormat(this.taskEndDate)
+        : null;
   }
 
   /**
@@ -324,8 +396,8 @@ public class WorkflowInstance {
    */
   @Deprecated
   public String getCurrentTaskStartDateTimeIsoStr() {
-    return this.taskStartDate != null ? 
-        DateConvert.isoFormat(this.taskStartDate):null;
+    return this.taskStartDate != null ? DateConvert
+        .isoFormat(this.taskStartDate) : null;
   }
 
   /**
@@ -341,6 +413,20 @@ public class WorkflowInstance {
       e.printStackTrace();
       // fail silently besides this: it's just a setter
     }
+  }
+
+  /**
+   * @return the lifecycle
+   */
+  public WorkflowLifecycle getLifecycle() {
+    return lifecycle;
+  }
+
+  /**
+   * @param lifecycle the lifecycle to set
+   */
+  public void setLifecycle(WorkflowLifecycle lifecycle) {
+    this.lifecycle = lifecycle;
   }
 
 }
