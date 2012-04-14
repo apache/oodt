@@ -33,12 +33,6 @@ public class ParentChildWorkflow extends Workflow {
 
   private Graph graph;
 
-  public ParentChildWorkflow(Workflow workflow) {
-    super(workflow.getName(), workflow.getId(), workflow.getTasks(), workflow
-        .getConditions());
-    this.graph = new Graph();
-  }
-
   public ParentChildWorkflow(Graph graph) {
     this.graph = graph;
   }

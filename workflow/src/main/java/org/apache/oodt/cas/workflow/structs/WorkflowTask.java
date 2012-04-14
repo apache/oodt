@@ -23,11 +23,12 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * 
- * A Workflow task, or job, or process.
- * 
  * @author mattmann
  * @version $Revision$
+ * 
+ * <p>
+ * A Workflow task, or job, or process.
+ * </p>
  * 
  */
 public class WorkflowTask {
@@ -41,11 +42,8 @@ public class WorkflowTask {
     /* the static configuration parameters for the task */
     protected WorkflowTaskConfiguration taskConfig = null;
 
-    /* pre conditions for this task */
-    protected List<WorkflowCondition> preConditions = null;
-    
-    /* post conditions for this task */
-    protected List<WorkflowCondition> postConditions = null;
+    /* the set of ordered conditions on this particular WorkflowTask */
+    protected List conditions = null;
 
     /* the actual work performing portion of this WorkflowTask */
     protected String taskInstanceClassName = null;
@@ -63,20 +61,12 @@ public class WorkflowTask {
      * 
      */
     public WorkflowTask() {
-        this.preConditions = new Vector<WorkflowCondition>();
-        this.postConditions = new Vector<WorkflowCondition>();
+        conditions = new Vector();
         requiredMetFields = new Vector();
         taskConfig = new WorkflowTaskConfiguration();
     }
 
     /**
-     * 
-     * This constructor is now deprecated in Apache OODT 0.4, in favor of
-     * {@link #WorkflowTask(String, String, WorkflowTaskConfiguration, List, List, String, int)}
-     * that explicitly specifies pre- and post- {@link WorkflowCondition}s.
-     * As used, this method will set the pre-conditions via the passed in 
-     * {@link List} of {@link WorkflowCondition}s only.
-     * 
      * @param taskId
      *            The unique ID for this WorkflowTask.
      * @param taskName
@@ -91,41 +81,15 @@ public class WorkflowTask {
      *            The order in which this WorkflowTask is executed within a
      *            Workflow.
      */
-    @Deprecated
     public WorkflowTask(String taskId, String taskName,
             WorkflowTaskConfiguration taskConfig, List conditions,
             String taskInstanceClassName, int order) {
         this.taskId = taskId;
         this.taskName = taskName;
         this.taskConfig = taskConfig;
-        this.preConditions = conditions;
+        this.conditions = conditions;
         this.taskInstanceClassName = taskInstanceClassName;
         this.order = order;
-    }
-    
-    /**
-     * Constructs a new WorkflowTask.
-     * 
-     * @param taskId The identifier for this task.
-     * @param taskName The name for this task.
-     * @param taskConfig The associated {@link WorkflowTaskConfiguration}.
-     * @param preConditions The {@link List} of pre-{@link WorkflowCondition}s.
-     * @param postConditions The {@link List} of post-{@link WorkflowCondition}s.
-     * @param taskInstanceClassName The implementing class name of this WorkflowTask.
-     * @param order The order in which this task should be run.
-     */
-    public WorkflowTask(String taskId, String taskName, 
-        WorkflowTaskConfiguration taskConfig, List<WorkflowCondition> 
-        preConditions, List<WorkflowCondition> postConditions, 
-        String taskInstanceClassName, int order){
-      this.taskId = taskId;
-      this.taskName = taskName;
-      this.taskConfig = taskConfig;
-      this.preConditions = preConditions;
-      this.postConditions = postConditions;
-      this.taskInstanceClassName = taskInstanceClassName;
-      this.order = order;
-      
     }
 
     /**
@@ -133,34 +97,6 @@ public class WorkflowTask {
      */
     public WorkflowTaskConfiguration getTaskConfig() {
         return taskConfig;
-    }
-
-    /**
-     * @return the preConditions
-     */
-    public List<WorkflowCondition> getPreConditions() {
-      return preConditions;
-    }
-
-    /**
-     * @param preConditions the preConditions to set
-     */
-    public void setPreConditions(List<WorkflowCondition> preConditions) {
-      this.preConditions = preConditions;
-    }
-
-    /**
-     * @return the postConditions
-     */
-    public List<WorkflowCondition> getPostConditions() {
-      return postConditions;
-    }
-
-    /**
-     * @param postConditions the postConditions to set
-     */
-    public void setPostConditions(List<WorkflowCondition> postConditions) {
-      this.postConditions = postConditions;
     }
 
     /**
@@ -215,43 +151,26 @@ public class WorkflowTask {
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
-    
-    
 
     /**
-     * This method is deprecated in favor of using 
-     * {@link #getPreConditions()} or {@link #getPostConditions()}. As called,
-     * will return a union of the Tasks's pre- and post- {@link WorkflowCondition}s.
      * 
      * @return A {@link List} of {@link WorkflowCondition}s associated with
      *         this task.
      */
-    @Deprecated
     public List getConditions() {
-        List conditions = new Vector();
-        conditions.addAll(this.preConditions);
-        conditions.addAll(this.postConditions);
         return conditions;
     }
 
     /**
-     * 
-     * This method is depcreated in favor of {@link #setPostConditions(List)} and
-     * {@link #setPreConditions(List)}, for explicitly setting the pre or post
-     * conditions of this WorkflowTask. 
-     * 
-     * To keep back compat, this method in its deprecated form will set the 
-     * WorkflowTask pre-conditions, as was the case before.
-     * 
+     * <p>
      * Sets the {@link List} of {@link WorkflowCondition}s associated with this
      * task.
      * 
      * @param conditions
      *            The condition {@link List}.
      */
-    @Deprecated
     public void setConditions(List conditions) {
-        this.preConditions = conditions;
+        this.conditions = conditions;
     }
 
     /**

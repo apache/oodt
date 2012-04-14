@@ -373,30 +373,6 @@ public class Graph {
   public List<String> getProcessorIds() {
     return processorIds;
   }
-  
-  /**
-   * 
-   * @return True is {@link #cond} isn't null, false otherwise.
-   */
-  public boolean isCondition(){
-    return this.cond != null;
-  }
-  
-  /**
-   * 
-   * @return True if {@link #workflow} isn't null, false othewise.
-   */
-  public boolean isWorkflow(){
-    return this.workflow != null;
-  }
-  
-  /**
-   * 
-   * @return True if {@link #task} isn't null, false otherwise.
-   */
-  public boolean isTask(){
-    return this.task != null;
-  }
 
   private boolean checkValue(String value) {
     return value != null && !value.equals("");

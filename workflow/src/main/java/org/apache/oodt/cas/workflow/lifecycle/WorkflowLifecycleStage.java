@@ -36,14 +36,14 @@ public class WorkflowLifecycleStage {
 
     private int order;
 
-    private List<WorkflowState> states;
+    private List states;
 
     /**
      * Default Constructor.
      * 
      */
     public WorkflowLifecycleStage() {
-        states = new Vector<WorkflowState>();
+        states = new Vector();
     }
 
     /**
@@ -59,7 +59,7 @@ public class WorkflowLifecycleStage {
      *            The ordering of this State in a {@List} of States that make up
      *            a {@link WorkflowLifeCycle}.
      */
-    public WorkflowLifecycleStage(String name, List<WorkflowState> states, int order) {
+    public WorkflowLifecycleStage(String name, List states, int order) {
         this.name = name;
         this.states = states;
         this.order = order;
@@ -83,7 +83,7 @@ public class WorkflowLifecycleStage {
     /**
      * @return the states
      */
-    public List<WorkflowState> getStates() {
+    public List getStates() {
         return states;
     }
 
@@ -91,7 +91,7 @@ public class WorkflowLifecycleStage {
      * @param states
      *            the states to set
      */
-    public void setStates(List<WorkflowState> states) {
+    public void setStates(List states) {
         this.states = states;
     }
 
@@ -118,15 +118,5 @@ public class WorkflowLifecycleStage {
     public int hashCode() {
         return this.name.hashCode() + new Integer(this.order).hashCode();
     }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object stage) {
-      return this.name.equals(((WorkflowLifecycleStage)stage).getName());
-    }
-    
-    
 
 }
