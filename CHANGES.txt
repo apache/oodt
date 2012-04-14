@@ -4,11 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
-* OODT-438 Make CAS-Crawlers MimeExtractorConfigReader relative file paths be relative to its
-  XML fileMake CAS-Crawlers MimeExtractorConfigReader relative file paths be relative to its
-  XML file (bfoster)
-
-* OODT-426 Introduce a CAS-Metadata based renaming interface (bfoster)
+* OODT-442 Apache project branding requirements: DOAP 
+  file [PATCH] (Shane Curcuru via mattmann)
 
 * OODT-435 Refactor Graph and ParentChildWorkflow class 
   outside of PackagedWorkflowRepository (mattmann)
