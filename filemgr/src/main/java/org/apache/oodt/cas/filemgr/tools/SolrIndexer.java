@@ -50,6 +50,7 @@ import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.core.CoreContainer;
 
 //OODT imports
+import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
@@ -176,7 +177,7 @@ public class SolrIndexer {
     SerializableMetadata metadata = new SerializableMetadata("UTF-8", false);
     metadata.loadMetadataFromXmlStream(new FileInputStream(file));
     if (delete) {
-      server.deleteById(metadata.getMetadata("uuid"));
+      server.deleteById(metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
     }
     server.add(this.getSolrDocument(metadata));
   }
@@ -201,24 +202,24 @@ public class SolrIndexer {
             Metadata metadata = fmClient.getMetadata(product);
             if (metadata != null) {
               LOG.info("Found metadata for product ID "
-                  + metadata.getMetadata("CAS.ProductId"));
+                  + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
             } else {
               LOG.info("Could not find metadata for product "
                   + product.getProductId());
             }
-            if (metadata.getMetadata("UUID") != null) {
+            if (metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID) != null) {
               if (metadata.getMetadata("Deleted") == null
                   || !"true".equals(metadata.getMetadata("Deleted"))) {
                 try {
                   server.add(this.getSolrDocument(metadata));
                   server.commit();
-                  LOG.info("Indexed " + metadata.getMetadata("UUID"));
+                  LOG.info("Indexed " + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
                 } catch (Exception e) {
-                  LOG.severe("Could not index " + metadata.getMetadata("UUID")
+                  LOG.severe("Could not index " + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID)
                       + " " + e.getMessage());
                 }
               } else {
-                LOG.info("Skipping Deleted: " + metadata.getMetadata("UUID"));
+                LOG.info("Skipping Deleted: " + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
               }
             }
           }
