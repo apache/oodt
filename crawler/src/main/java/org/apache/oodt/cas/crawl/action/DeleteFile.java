@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.logging.Level;
 
 //Apache imports
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.Validate;
 
 //OODT imports
@@ -32,6 +33,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  * 
  * @author bfoster (Brian Foster)
  * @author mattmann (Chris Mattmann)
+ * @author luca (Luca Cinquini)
  */
 public class DeleteFile extends CrawlerAction {
 
@@ -50,7 +52,14 @@ public class DeleteFile extends CrawlerAction {
          }
 
          LOG.log(Level.INFO, "Deleting file " + fileToDelete.getAbsolutePath());
-         return fileToDelete.delete();
+         if (fileToDelete.isDirectory()) {
+         	// the following method will throw an exception if the directory cannot be deleted
+         	FileUtils.deleteDirectory(fileToDelete); 
+         	return true;
+         } else {
+        	 return fileToDelete.delete();
+         }
+         
       } catch (Exception e) {
          LOG.log(Level.SEVERE, "Error while deleting file for product '"
                + product + "' : " + e.getMessage(), e);
