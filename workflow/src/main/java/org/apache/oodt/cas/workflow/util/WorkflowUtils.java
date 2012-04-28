@@ -105,13 +105,13 @@ public class WorkflowUtils {
         + "'\n");
     stringModel.append("   - dates: \n");
     stringModel.append("        CreationDate = '"
-        + skeleton.getProcessorInfo().getCreationDate() + "'\n");
+        + skeleton.getProcessorDateTimeInfo().getCreationDate() + "'\n");
     stringModel.append("        ReadyDate = '"
-        + skeleton.getProcessorInfo().getReadyDate() + "'\n");
+        + skeleton.getProcessorDateTimeInfo().getReadyDate() + "'\n");
     stringModel.append("        ExecutionDate = '"
-        + skeleton.getProcessorInfo().getExecutionDate() + "'\n");
+        + skeleton.getProcessorDateTimeInfo().getExecutionDate() + "'\n");
     stringModel.append("        CompletionDate = '"
-        + skeleton.getProcessorInfo().getCompletionDate() + "'\n");
+        + skeleton.getProcessorDateTimeInfo().getCompletionDate() + "'\n");
     stringModel.append("   - state: \n");
     stringModel.append("        name = '" + skeleton.getState().getName()
         + "'\n");
@@ -173,7 +173,7 @@ public class WorkflowUtils {
     // need them in the PackagedWorkflowRepository, so not sure what they do.
     // wp.setExcusedSubProcessorIds(model.getGraph().getExcusedSubProcessorIds());
     wp.getWorkflowInstance().setId(instanceId);
-    wp.setIsConditionProcessor(isCondition);
+    wp.setConditionProcessor(isCondition);
     wp.setExecutionType(model.getGraph().getExecutionType());
     if (model.getPreConditions() != null)
       wp.setPreConditions(buildProcessor(instanceId, model,
