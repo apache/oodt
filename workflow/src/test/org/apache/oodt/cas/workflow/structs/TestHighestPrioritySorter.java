@@ -76,8 +76,8 @@ public class TestHighestPrioritySorter extends TestCase {
     workflow.setTasks(Collections.EMPTY_LIST);
     inst.setWorkflow(workflow);
     inst.setPriority(Priority.getPriority(priority));
-    SequentialProcessor processor = new SequentialProcessor(inst, null, null,
-        0L);
+    SequentialProcessor processor = new SequentialProcessor();
+    processor.setWorkflowInstance(inst);
     return processor;
   }
 

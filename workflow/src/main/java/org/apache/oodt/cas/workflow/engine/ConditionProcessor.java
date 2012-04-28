@@ -32,7 +32,7 @@ public class ConditionProcessor extends TaskProcessor {
 
 	public ConditionProcessor() {
 		super();
-		this.setIsConditionProcessor(true);
+		this.setConditionProcessor(true);
 	}
 	
 	public void setPriority(Priority priority) {
