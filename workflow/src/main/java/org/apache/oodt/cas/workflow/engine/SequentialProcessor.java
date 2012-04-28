@@ -17,33 +17,43 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
+import java.util.Collections;
 import java.util.List;
-
-//OODT imports
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
-import org.apache.oodt.cas.workflow.util.WorkflowUtils;
+import java.util.Vector;
 
 /**
  * 
- * WorkflowProcessor which handles running sub-workflow processors in parallel.
+ * WorkflowProcessor which handles running sub-processors in sequence.
  * 
  * @author bfoster
  * @author mattmann
  * @version $Revision$
- * 
  */
-public class ParallelProcessor extends WorkflowProcessor {
+public class SequentialProcessor extends WorkflowProcessor {
 
-  public ParallelProcessor() {
-  }
-
+  @Override
   public List<WorkflowProcessor> getRunnableSubProcessors() {
-    return this.getSubProcessors();
+    WorkflowProcessor nextWP = this.getNext();
+    if (nextWP != null)
+      return Collections.singletonList(nextWP);
+    else
+      return new Vector<WorkflowProcessor>();
   }
 
+  @Override
   public void handleSubProcessorMetadata(WorkflowProcessor workflowProcessor) {
-    this.setDynamicMetadata(wutils.mergeMetadata(this.getDynamicMetadata(),
-        workflowProcessor.getPassThroughDynamicMetadata()));
+    this.setDynamicMetadata(workflowProcessor.getPassThroughDynamicMetadata());
+    WorkflowProcessor nextWP = this.getNext();
+    if (nextWP != null)
+      nextWP.setDynamicMetadataRecur(workflowProcessor
+          .getPassThroughDynamicMetadata());
+  }
+
+  private WorkflowProcessor getNext() {
+    for (WorkflowProcessor wp : this.getSubProcessors())
+      if (!wp.getState().getCategory().getName().equals("done"))
+        return wp;
+    return null;
   }
 
 }
