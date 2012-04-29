@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-450 Crawler being able to delete a non-empty product directory
+  upon successful product ingestion (luca)
+
 * OODT-421 Make WorkflowLifecycleManager understand 
   WorkflowStates (mattmann)
 
