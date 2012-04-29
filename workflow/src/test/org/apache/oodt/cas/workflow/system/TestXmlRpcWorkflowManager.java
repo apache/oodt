@@ -63,7 +63,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
     }
 
     assertNotNull(workflowInsts);
-    assertEquals(1, workflowInsts.size());
+    assertEquals(2, workflowInsts.size());
   }
 
   protected void setUp() throws Exception {

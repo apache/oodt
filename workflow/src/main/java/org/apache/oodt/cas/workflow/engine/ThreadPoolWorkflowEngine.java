@@ -162,6 +162,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     persistWorkflowInstance(wInst);
 
     SequentialProcessor worker = new SequentialProcessor(this.lifecycleManager);
+    worker.setWorkflowInstance(wInst);
     workerMap.put(wInst.getId(), worker);
 
     wInst.setStatus(QUEUED);
@@ -222,8 +223,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   @Override
   public WorkflowInstanceRepository getInstanceRepository() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.instRep;
   }
 
   /*
