@@ -39,7 +39,7 @@ public class TestWorkflowLifecycleManager extends TestCase {
   public void testStages() {
     assertNotNull(this.lifecycle.getDefaultLifecycle());
     assertNotNull(this.lifecycle.getDefaultLifecycle().getStages());
-    assertEquals(this.lifecycle.getDefaultLifecycle().getStages().size(), 5);
+    assertEquals(this.lifecycle.getDefaultLifecycle().getStages().size(), 7);
   }
 
   public void readNewStateFormat() {
@@ -64,8 +64,34 @@ public class TestWorkflowLifecycleManager extends TestCase {
     assertTrue(gotNull && gotLoaded);
   }
 
-  public void XreadOldStateFormat() {
-    assertTrue(false); // TODO: add test to verify back compat
+  public void readOldStateFormat() throws InstantiationException {
+    this.lifecycle = new WorkflowLifecycleManager("./src/main/resources"
+        + "/examples/workflow-lifecycle.xml");
+    assertNotNull(this.lifecycle);
+    assertNotNull(this.lifecycle.getDefaultLifecycle());
+    assertNotNull(this.lifecycle.getDefaultLifecycle().getStages());
+    assertEquals(this.lifecycle.getDefaultLifecycle().getStages().size(), 5);
+    assertNotNull(this.lifecycle.getDefaultLifecycle().getCategoryByName(
+        "workflow_start"));
+    assertNotNull(this.lifecycle.getDefaultLifecycle()
+        .getCategoryByName("workflow_start").getStates());
+    assertEquals(
+        this.lifecycle.getDefaultLifecycle()
+            .getCategoryByName("workflow_start").getStates().size(), 2);
+    boolean gotRsubmit = false, gotStarted = false;
+
+    for (WorkflowState state : this.lifecycle.getDefaultLifecycle()
+        .getCategoryByName("workflow_start").getStates()) {
+      if (state.getName().equals("RSUBMIT")) {
+        gotRsubmit = true;
+      }
+
+      if (state.getName().equals("STARTED")) {
+        gotStarted = true;
+      }
+    }
+
+    assertTrue(gotRsubmit && gotStarted);
   }
 
   /*

@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-421 Make WorkflowLifecycleManager understand 
+  WorkflowStates (mattmann)
+
 * OODT-440 Replace legacy getMetadata("UUID") calls with 
   getMetadata("CAS." + CoreMetKeys.PRODUCT_ID) (thomas)
 
