@@ -26,6 +26,7 @@ import java.util.Vector;
 //OODT imports
 import org.apache.oodt.cas.workflow.engine.SequentialProcessor;
 import org.apache.oodt.cas.workflow.engine.WorkflowProcessor;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -46,7 +47,7 @@ public class TestFILOPrioritySorter extends TestCase {
     this.dateGen = 0;
   }
 
-  public void testSort() {
+  public void testSort() throws InstantiationException {
     FILOPrioritySorter sorter = new FILOPrioritySorter();
     WorkflowProcessor proc = getProcessor(2.0);
     WorkflowProcessor proc2 = getProcessor(7.0);
@@ -67,7 +68,8 @@ public class TestFILOPrioritySorter extends TestCase {
         .getValue());
   }
 
-  private WorkflowProcessor getProcessor(double priority) {
+  private WorkflowProcessor getProcessor(double priority) throws InstantiationException {
+    WorkflowLifecycleManager lifecycleManager = new WorkflowLifecycleManager("./src/main/resources/examples/wengine/wengine-lifecycle.xml");
     WorkflowInstance inst = new WorkflowInstance();
     Date sd = new Date();
     sd.setTime(sd.getTime()+(this.dateGen*5000));
@@ -78,7 +80,7 @@ public class TestFILOPrioritySorter extends TestCase {
     workflow.setTasks(Collections.EMPTY_LIST);
     inst.setWorkflow(workflow);
     inst.setPriority(Priority.getPriority(priority));
-    SequentialProcessor processor = new SequentialProcessor();
+    SequentialProcessor processor = new SequentialProcessor(lifecycleManager);
     processor.setWorkflowInstance(inst);
     return processor;
   }

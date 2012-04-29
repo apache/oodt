@@ -17,6 +17,7 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //OODT import
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.structs.Priority;
 
 /**
@@ -30,8 +31,8 @@ import org.apache.oodt.cas.workflow.structs.Priority;
  */
 public class ConditionProcessor extends TaskProcessor {
 
-	public ConditionProcessor() {
-		super();
+	public ConditionProcessor(WorkflowLifecycleManager lifecycleManager) {
+		super(lifecycleManager);
 		this.setConditionProcessor(true);
 	}
 	

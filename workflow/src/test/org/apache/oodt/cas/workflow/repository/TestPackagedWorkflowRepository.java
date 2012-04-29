@@ -57,6 +57,7 @@ public class TestPackagedWorkflowRepository extends TestCase {
     
     assertNotNull(w);
     assertNotNull(w.getConditions());
+    System.out.println("NUM CONDITIONS: "+w.getConditions().size());
     assertTrue(w.getConditions().size() > 0);
     assertEquals(w.getConditions().size(), 3);
   }

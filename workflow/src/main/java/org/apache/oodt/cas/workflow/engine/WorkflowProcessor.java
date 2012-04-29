@@ -17,8 +17,12 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +30,6 @@ import java.util.logging.Logger;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
-import org.apache.oodt.cas.workflow.util.WorkflowUtils;
 import org.apache.oodt.cas.workflow.structs.Priority;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 
@@ -67,12 +70,9 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
   private Metadata dynamicMetadata;
   private boolean isConditionProcessor;
   private int timesBlocked;
-  protected WorkflowUtils wutils;
-  protected WorkflowLifecycleManager lifecycleMgr;
+  protected WorkflowLifecycleManager lifecycleManager;
 
-  public WorkflowProcessor() {
-    this.state = lifecycleMgr.getDefaultLifecycle().createState("Null",
-        "initial", "");
+  public WorkflowProcessor(WorkflowLifecycleManager lifecycleManager) {
     this.listeners = new Vector<WorkflowProcessorListener>();
     this.ProcessorDateTimeInfo = new ProcessorDateTimeInfo();
     this.staticMetadata = new Metadata();
@@ -82,7 +82,7 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
     this.isConditionProcessor = false;
     this.timesBlocked = 0;
     this.workflowInstance = new WorkflowInstance();
-    this.wutils = new WorkflowUtils(lifecycleMgr);
+    this.lifecycleManager = lifecycleManager;
   }
 
   /**
@@ -330,36 +330,22 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
   public void setTimesBlocked(int timesBlocked) {
     this.timesBlocked = timesBlocked;
   }
-
+  
   /**
-   * @return the wutils
+   * @return the lifecycleManager
    */
-  public WorkflowUtils getWutils() {
-    return wutils;
+  public WorkflowLifecycleManager getLifecycleManager() {
+    return lifecycleManager;
   }
 
   /**
-   * @param wutils
-   *          the wutils to set
+   * @param lifecycleManager the lifecycleManager to set
    */
-  public void setWutils(WorkflowUtils wutils) {
-    this.wutils = wutils;
-  }
+  public void setLifecycleManager(WorkflowLifecycleManager lifecycleManager) {
+    this.lifecycleManager = lifecycleManager;
+  }  
 
-  /**
-   * @return the lifecycleMgr
-   */
-  public WorkflowLifecycleManager getLifecycleMgr() {
-    return lifecycleMgr;
-  }
 
-  /**
-   * @param lifecycleMgr
-   *          the lifecycleMgr to set
-   */
-  public void setLifecycleMgr(WorkflowLifecycleManager lifecycleMgr) {
-    this.lifecycleMgr = lifecycleMgr;
-  }
 
   /*
    * (non-Javadoc)
@@ -439,6 +425,24 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
         return true;
     return false;
   }
+  
+  protected Metadata mergeMetadata(Metadata m1, Metadata m2) {
+    HashMap<String, LinkedHashSet<String>> merge = new HashMap<String, LinkedHashSet<String>>();
+    List<Metadata> metadatas = Arrays.asList(m1, m2);
+    for (Metadata m : metadatas) {
+      for (String key : m.getAllKeys()) {
+        LinkedHashSet<String> values = merge.get(key);
+        if (values == null)
+          values = new LinkedHashSet<String>();
+        values.addAll(m.getAllMetadata(key));
+        merge.put(key, values);
+      }
+    }
+    Metadata m = new Metadata();
+    for (Entry<String, LinkedHashSet<String>> entry : merge.entrySet())
+      m.addMetadata(entry.getKey(), new Vector<String>(entry.getValue()));
+    return m;
+  }
 
   /**
    * First checks to see if any of this Processor's {@link #subProcessors} have
@@ -461,12 +465,12 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
           this.getSubProcessors(), "Failure");
       if (this.minReqSuccessfulSubProcessors != -1
           && failedSubProcessors.size() > (this.getSubProcessors().size() - this.minReqSuccessfulSubProcessors))
-        return lifecycleMgr.getDefaultLifecycle().createState("ResultsFailure",
+        return lifecycleManager.getDefaultLifecycle().createState("ResultsFailure",
             "results", "More than the allowed number of sub-processors failed");
       for (WorkflowProcessor subProcessor : failedSubProcessors) {
         if (!this.getExcusedSubProcessorIds().contains(
             subProcessor.getWorkflowInstance().getId())) {
-          return lifecycleMgr.getDefaultLifecycle().createState(
+          return lifecycleManager.getDefaultLifecycle().createState(
               "ResultsFailure",
               "results",
               "Sub processor: [" + subProcessor.getWorkflowInstance().getId()
@@ -474,13 +478,13 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
         }
       }
       if (allProcessorsSameCategory(this.getSubProcessors(), "done"))
-        return lifecycleMgr.getDefaultLifecycle().createState(
+        return lifecycleManager.getDefaultLifecycle().createState(
             "ResultsSuccess",
             "results",
             "Workflow Processor: processing instance id: ["
                 + workflowInstance.getId() + "] is Done.");
     }
-    return lifecycleMgr.getDefaultLifecycle().createState(
+    return lifecycleManager.getDefaultLifecycle().createState(
         "ResultsBail",
         "results",
         "All sub-processors for Workflow Processor handling workflow id: ["

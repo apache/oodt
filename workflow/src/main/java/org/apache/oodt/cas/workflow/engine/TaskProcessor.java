@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Vector;
 
 //OODT imports
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.structs.Priority;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 
@@ -40,8 +41,8 @@ public class TaskProcessor extends WorkflowProcessor {
   private Class<? extends WorkflowTaskInstance> instanceClass;
   private String jobId;
 
-  public TaskProcessor() {
-    super();
+  public TaskProcessor(WorkflowLifecycleManager lifecycleManager) {
+    super(lifecycleManager);
   }
 
   public Class<? extends WorkflowTaskInstance> getInstanceClass() {

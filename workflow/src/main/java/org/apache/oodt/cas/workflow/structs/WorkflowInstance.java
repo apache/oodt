@@ -77,8 +77,7 @@ public class WorkflowInstance {
   private Metadata sharedContext;
 
   private Priority priority;
-  
-  private WorkflowLifecycle lifecycle;
+
 
   /**
    * Default Constructor.
@@ -86,15 +85,14 @@ public class WorkflowInstance {
    */
   public WorkflowInstance() {
     this(null, null, null, null, new Date(), null, null, null, new Metadata(),
-        Priority.getDefault(), null);
+        Priority.getDefault());
   }
 
   public WorkflowInstance(Workflow workflow, String id, WorkflowState state,
       String currentTaskId, Date startDate, Date endDate, Date taskStartDate,
-      Date taskEndDate, Metadata sharedContext, Priority priority, 
-      WorkflowLifecycle lifecycle) {
-    this.workflow = workflow instanceof ParentChildWorkflow ? (ParentChildWorkflow) workflow
-        : new ParentChildWorkflow(workflow);
+      Date taskEndDate, Metadata sharedContext, Priority priority) {
+    this.workflow = workflow != null && workflow instanceof ParentChildWorkflow ? (ParentChildWorkflow) workflow
+        : new ParentChildWorkflow(workflow != null ? workflow:new Workflow());
     this.id = id;
     this.state = state;
     this.currentTaskId = currentTaskId;
@@ -104,7 +102,6 @@ public class WorkflowInstance {
     this.taskEndDate = taskEndDate;
     this.sharedContext = sharedContext;
     this.priority = priority;
-    this.lifecycle = lifecycle;
   }
 
   /**
@@ -127,7 +124,7 @@ public class WorkflowInstance {
    */
   @Deprecated
   public String getStatus() {
-    return state.getName();
+    return state != null ? state.getName():"Null";
   }
   
   /**
@@ -138,7 +135,9 @@ public class WorkflowInstance {
    */
   @Deprecated
   public void setStatus(String status){
-    this.state = this.lifecycle.getStateByName(status);
+    WorkflowState state = new WorkflowState();
+    state.setName(status);
+    this.state = state;
   }
 
   /**
@@ -170,10 +169,11 @@ public class WorkflowInstance {
    */
   @Deprecated
   public void setWorkflow(Workflow workflow) {
-    if (workflow instanceof ParentChildWorkflow) {
+    if (workflow != null && workflow instanceof ParentChildWorkflow) {
       this.workflow = (ParentChildWorkflow) workflow;
     } else {
-      this.workflow = new ParentChildWorkflow(workflow);
+      if(workflow == null) workflow = new Workflow();
+        this.workflow = new ParentChildWorkflow(workflow);
     }
   }
 
@@ -413,20 +413,6 @@ public class WorkflowInstance {
       e.printStackTrace();
       // fail silently besides this: it's just a setter
     }
-  }
-
-  /**
-   * @return the lifecycle
-   */
-  public WorkflowLifecycle getLifecycle() {
-    return lifecycle;
-  }
-
-  /**
-   * @param lifecycle the lifecycle to set
-   */
-  public void setLifecycle(WorkflowLifecycle lifecycle) {
-    this.lifecycle = lifecycle;
   }
 
 }

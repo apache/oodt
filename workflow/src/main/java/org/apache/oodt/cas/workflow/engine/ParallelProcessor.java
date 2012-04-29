@@ -34,7 +34,8 @@ import org.apache.oodt.cas.workflow.util.WorkflowUtils;
  */
 public class ParallelProcessor extends WorkflowProcessor {
 
-  public ParallelProcessor() {
+  public ParallelProcessor(WorkflowLifecycleManager lifecycleMgr) {
+    super(lifecycleMgr);
   }
 
   public List<WorkflowProcessor> getRunnableSubProcessors() {
@@ -42,7 +43,7 @@ public class ParallelProcessor extends WorkflowProcessor {
   }
 
   public void handleSubProcessorMetadata(WorkflowProcessor workflowProcessor) {
-    this.setDynamicMetadata(wutils.mergeMetadata(this.getDynamicMetadata(),
+    this.setDynamicMetadata(mergeMetadata(this.getDynamicMetadata(),
         workflowProcessor.getPassThroughDynamicMetadata()));
   }
 

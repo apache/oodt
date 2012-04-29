@@ -21,9 +21,13 @@ package org.apache.oodt.cas.workflow.engine;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
+import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
@@ -39,6 +43,7 @@ import EDU.oswego.cs.dl.util.concurrent.BoundedBuffer;
 import EDU.oswego.cs.dl.util.concurrent.Channel;
 import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
+import EDU.oswego.cs.dl.util.concurrent.ThreadedExecutor;
 
 /**
  * 
@@ -50,7 +55,7 @@ import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
  * @author mattmann
  * 
  */
-public class ThreadPoolWorkflowEngine implements WorkflowEngine {
+public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus {
 
   /* our thread pool */
   private PooledExecutor pool = null;
@@ -74,6 +79,8 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine {
   private ConditionProcessor condProcessor;
 
   private EngineRunner runner;
+
+  private WorkflowLifecycleManager lifecycleManager;
 
   /**
    * Default Constructor.
@@ -127,48 +134,91 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine {
         "org.apache.oodt.cas.workflow.engine.preConditionWaitTime", 10)
         .longValue();
 
-    this.condProcessor = new ConditionProcessor();
+    this.condProcessor = new ConditionProcessor(lifecycleManager);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#startWorkflow(org.apache.oodt.cas.workflow.structs.Workflow, org.apache.oodt.cas.metadata.Metadata)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#startWorkflow(org.apache
+   * .oodt.cas.workflow.structs.Workflow, org.apache.oodt.cas.metadata.Metadata)
    */
   @Override
   public WorkflowInstance startWorkflow(Workflow workflow, Metadata metadata)
       throws EngineException {
-    // TODO Auto-generated method stub
-    return null;
+    // to start the workflow, we create a default workflow instance
+    // populate it
+    // persist it
+    // add it to the worker map
+    // start it
+
+    WorkflowInstance wInst = new WorkflowInstance();
+    wInst.setWorkflow(workflow);
+    wInst.setCurrentTaskId(((WorkflowTask) workflow.getTasks().get(0))
+        .getTaskId());
+    wInst.setSharedContext(metadata);
+    wInst.setStatus(CREATED);
+    persistWorkflowInstance(wInst);
+
+    SequentialProcessor worker = new SequentialProcessor(this.lifecycleManager);
+    workerMap.put(wInst.getId(), worker);
+
+    wInst.setStatus(QUEUED);
+    persistWorkflowInstance(wInst);
+
+    /*
+     * try { pool.execute(new ThreadedExecutor(worker, this.condProcessor)); }
+     * catch (InterruptedException e) { throw new EngineException(e); }
+     */
+
+    return wInst;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#stopWorkflow(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#stopWorkflow(java.lang
+   * .String)
    */
   @Override
   public void stopWorkflow(String workflowInstId) {
     // TODO Auto-generated method stub
-    
+
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#pauseWorkflowInstance(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#pauseWorkflowInstance
+   * (java.lang.String)
    */
   @Override
   public void pauseWorkflowInstance(String workflowInstId) {
     // TODO Auto-generated method stub
-    
+
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#resumeWorkflowInstance(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#resumeWorkflowInstance
+   * (java.lang.String)
    */
   @Override
   public void resumeWorkflowInstance(String workflowInstId) {
     // TODO Auto-generated method stub
-    
+
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#getInstanceRepository()
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getInstanceRepository()
    */
   @Override
   public WorkflowInstanceRepository getInstanceRepository() {
@@ -176,8 +226,12 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#updateMetadata(java.lang.String, org.apache.oodt.cas.metadata.Metadata)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#updateMetadata(java.
+   * lang.String, org.apache.oodt.cas.metadata.Metadata)
    */
   @Override
   public boolean updateMetadata(String workflowInstId, Metadata met) {
@@ -185,17 +239,25 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine {
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#setWorkflowManagerUrl(java.net.URL)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#setWorkflowManagerUrl
+   * (java.net.URL)
    */
   @Override
   public void setWorkflowManagerUrl(URL url) {
     // TODO Auto-generated method stub
-    
+
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWallClockMinutes(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWallClockMinutes(
+   * java.lang.String)
    */
   @Override
   public double getWallClockMinutes(String workflowInstId) {
@@ -203,8 +265,11 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine {
     return 0;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#getCurrentTaskWallClockMinutes(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#
+   * getCurrentTaskWallClockMinutes(java.lang.String)
    */
   @Override
   public double getCurrentTaskWallClockMinutes(String workflowInstId) {
@@ -212,15 +277,19 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine {
     return 0;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWorkflowInstanceMetadata(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWorkflowInstanceMetadata
+   * (java.lang.String)
    */
   @Override
   public Metadata getWorkflowInstanceMetadata(String workflowInstId) {
     // TODO Auto-generated method stub
     return null;
   }
-  
+
   protected static double getWallClockMinutes(WorkflowInstance inst) {
     if (inst == null) {
       return 0.0;
@@ -300,7 +369,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine {
     double diffMins = diffSecs / 60.0;
     return diffMins;
   }
-  
+
   private static Date safeDateConvert(String isoTimeStr) {
     try {
       return DateConvert.isoParse(isoTimeStr);
@@ -310,11 +379,28 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine {
     }
   }
 
-  
-  
-  
-  //FIXME: add back in the ThreadPoolWorkflowEngine implementation, 
-  //after the sub-modules are fixed.
-  
+  private synchronized void persistWorkflowInstance(WorkflowInstance wInst)
+      throws EngineException {
+
+    try {
+      if (wInst.getId() == null
+          || (wInst.getId() != null && wInst.getId().equals(""))) {
+        // we have to persist it by adding it
+        // rather than updating it
+        instRep.addWorkflowInstance(wInst);
+
+      } else {
+        // persist by update
+        instRep.updateWorkflowInstance(wInst);
+      }
+    } catch (InstanceRepositoryException e) {
+      e.printStackTrace();
+      throw new EngineException(e.getMessage());
+    }
+
+  }
+
+  // FIXME: add back in the ThreadPoolWorkflowEngine implementation,
+  // after the sub-modules are fixed.
 
 }

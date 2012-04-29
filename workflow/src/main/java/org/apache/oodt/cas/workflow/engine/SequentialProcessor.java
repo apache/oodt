@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+
 /**
  * 
  * WorkflowProcessor which handles running sub-processors in sequence.
@@ -30,6 +32,10 @@ import java.util.Vector;
  * @version $Revision$
  */
 public class SequentialProcessor extends WorkflowProcessor {
+  
+  public SequentialProcessor(WorkflowLifecycleManager lifecycleManager){
+    super(lifecycleManager);
+  }
 
   @Override
   public List<WorkflowProcessor> getRunnableSubProcessors() {
