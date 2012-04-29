@@ -148,16 +148,15 @@ public class Workflow {
 
   /**
    * Deprecated. Currently, this will return a list
-   * of all pre- and post- {@link WorkflowCondition}s.
+   * of all pre- {@link WorkflowCondition}s. The list
+   * is mutable, and can change the inner portion of the
+   * class. 
    * 
-   * @return All pre-and-post conditions.
+   * @return All pre- conditions.
    */
   @Deprecated
   public List<WorkflowCondition> getConditions() {
-    List<WorkflowCondition> allConds = new Vector<WorkflowCondition>();
-    allConds.addAll(preConditions);
-    allConds.addAll(this.postConditions);
-    return allConds;
+    return this.preConditions;
   }
 
   /**
