@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE.txt file distributed with this work for
@@ -15,16 +14,16 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean class="org.apache.oodt.cas.crawl.util.CasPropertyOverrideConfigurer" />
+<Context path="/fmprod" debug="5"
+  reloadable="true" crossContext="true">
 
-    <import resource="crawler-beans.xml"/>
-    <import resource="action-beans.xml"/>
-    <import resource="precondition-beans.xml"/>
-    <import resource="naming-beans.xml" />
+  <Valve className="org.apache.catalina.valves.AccessLogValve"
+    prefix="fmprod_access_log." suffix=".txt" pattern="common" />
 
-</beans>
+  <Parameter name="filemgr.url" value="[FILEMGR_URL]" override="false" />
+  <Parameter name="filemgr.rdfconf.file" value="[FMPROD_HOME]/rdfconf.xml" override="false"/>
+  <Parameter name="filemgr.rssconf.file" value="[FMPROD_HOME]/rssconf.xml" override="false"/>
+  <Parameter name="filemgr.working.dir" value="/tmp" override="false" />
+
+</Context>

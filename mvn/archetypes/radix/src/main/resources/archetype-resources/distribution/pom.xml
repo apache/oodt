@@ -53,6 +53,18 @@
       <version>${project.parent.version}</version>
       <type>war</type>
     </dependency>
+    <dependency>
+      <groupId>${groupId}</groupId>
+      <artifactId>${rootArtifactId}-pcs-services</artifactId>
+      <version>${project.parent.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${groupId}</groupId>
+      <artifactId>${rootArtifactId}-fmprod</artifactId>
+      <version>${project.parent.version}</version>
+      <type>war</type>
+    </dependency>
   </dependencies>
 
   <build>
@@ -84,6 +96,20 @@
                   <type>war</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/opsui</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${groupId}</groupId>
+                  <artifactId>${parent.artifactId}-pcs-services</artifactId>
+                  <type>war</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/pcs</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${groupId}</groupId>
+                  <artifactId>${parent.artifactId}-fmprod</artifactId>
+                  <type>war</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/fmprod</outputDirectory>
                 </artifactItem>
               </artifactItems>
             </configuration>

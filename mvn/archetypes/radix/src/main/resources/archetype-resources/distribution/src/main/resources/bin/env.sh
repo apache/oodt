@@ -94,17 +94,17 @@ if [ -z "$OODT_OUT" ] ; then
 fi
 
 if [ -z "$FILEMGR_HOME" ]; then
-  FILEMGR_HOME="$OODT_HOME"/components/filemgr
+  FILEMGR_HOME="$OODT_HOME"/filemgr
   export FILEMGR_HOME
 fi
 
 if [ -z "$WORKFLOW_HOME" ]; then
-  WORKFLOW_HOME="$OODT_HOME"/components/workflow
+  WORKFLOW_HOME="$OODT_HOME"/workflow
   export WORKFLOW_HOME
 fi
 
 if [ -z "$CRAWLER_HOME" ]; then
-  CRAWLER_HOME="$OODT_HOME"/components/crawler
+  CRAWLER_HOME="$OODT_HOME"/crawler
   export CRAWLER_HOME
 fi
 

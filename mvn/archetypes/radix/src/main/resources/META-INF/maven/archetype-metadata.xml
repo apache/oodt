@@ -44,14 +44,24 @@
       </fileSets>
     </module>
     <module id="webapps" dir="webapps" name="webapps">
-      <!--<fileSets>
-        <fileSet>
-          <directory></directory>
-          <includes/>
-        </fileSet>
-      </fileSets>-->
       <modules>
         <module id="opsui" dir="opsui" name="opsui">
+          <fileSets>
+            <fileSet>
+              <directory></directory>
+              <includes/>
+            </fileSet>
+          </fileSets>
+        </module>
+        <module id="pcs-services" dir="pcs-services" name="pcs-services">
+          <fileSets>
+            <fileSet>
+              <directory></directory>
+              <includes/>
+            </fileSet>
+          </fileSets>
+        </module>
+        <module id="fmprod" dir="fmprod" name="fmprod">
           <fileSets>
             <fileSet>
               <directory></directory>

@@ -42,7 +42,7 @@ done
 PRGDIR=`dirname "$PRG"`
 
 # Only set OODT_HOME if not already set
-[ -z "$OODT_HOME" ] && OODT_HOME=`cd "$PRGDIR/../../.." ; pwd`
+[ -z "$OODT_HOME" ] && OODT_HOME=`cd "$PRGDIR/../.." ; pwd`
 
 # Get OODT environment set up
 if [ -r "$OODT_HOME"/bin/env.sh ]; then
@@ -51,12 +51,8 @@ fi
 
 # Only set FILEMGR_HOME if not already set
 if [ -z "$FILEMGR_HOME" ]; then
-  FILEMGR_HOME="$OODT_HOME"/components/filemgr
+  FILEMGR_HOME="$OODT_HOME"/filemgr
   export FILEMGR_HOME
-fi
-
-if [ -z "$FILEMGR_PID" ]; then
-  FILEMGR_PID="$FILEMGR_HOME"/run/cas.filemgr.pid
 fi
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched
@@ -64,7 +60,7 @@ if $cygwin; then
   [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
   [ -n "$JRE_HOME" ] && JRE_HOME=`cygpath --unix "$JRE_HOME"`
   [ -n "$OODT_HOME" ] && OODT_HOME=`cygpath --unix "$OODT_HOME"`
-  [ -n "$OODT_BASE" ] && OODT_BASE=`cygpath --unix "$OODT_BASE"`
+  [ -n "$FILEMGR_HOME" ] && FILEMGR_HOME=`cygpath --unix "$FILEMGR_HOME"`
   [ -n "$CLASSPATH" ] && CLASSPATH=`cygpath --path --unix "$CLASSPATH"`
 fi
 
@@ -73,7 +69,9 @@ fi
 cd "$FILEMGR_HOME"/bin
 
 "$_RUNJAVA" $JAVA_OPTS $OODT_OPTS \
-  -Djava.endorsed.dirs=../lib \
-  -Dorg.apache.oodt.cas.filemgr.properties=../conf/filemgr.properties \
-  -Djava.util.logging.config.file=../conf/logging.properties \
+  -Djava.ext.dirs="$FILEMGR_HOME"/lib \
+  -Dorg.apache.oodt.cas.filemgr.properties="$FILEMGR_HOME"/conf/filemgr.properties \
+  -Djava.util.logging.config.file="$FILEMGR_HOME"/conf/logging.properties \
+  -Dorg.apache.oodt.cas.cli.action.spring.config="$FILEMGR_HOME"/policy/cmd-line-actions.xml \
+  -Dorg.apache.oodt.cas.cli.action.spring.config="$FILEMGR_HOME"/policy/cmd-line-actions.xml \
   org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient "$@"

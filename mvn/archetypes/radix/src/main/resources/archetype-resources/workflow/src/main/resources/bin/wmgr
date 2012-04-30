@@ -42,7 +42,7 @@ done
 PRGDIR=`dirname "$PRG"`
 
 # Only set OODT_HOME if not already set
-[ -z "$OODT_HOME" ] && OODT_HOME=`cd "$PRGDIR/../../.." ; pwd`
+[ -z "$OODT_HOME" ] && OODT_HOME=`cd "$PRGDIR/../.." ; pwd`
 
 # Get OODT environment set up
 if [ -r "$OODT_HOME"/bin/env.sh ]; then
@@ -51,7 +51,7 @@ fi
 
 # Only set WORKFLOW_HOME if not already set
 if [ -z "$WORKFLOW_HOME" ]; then
-  WORKFLOW_HOME="$OODT_HOME"/components/workflow
+  WORKFLOW_HOME="$OODT_HOME"/workflow
   export WORKFLOW_HOME
 fi
 
@@ -64,7 +64,7 @@ if $cygwin; then
   [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
   [ -n "$JRE_HOME" ] && JRE_HOME=`cygpath --unix "$JRE_HOME"`
   [ -n "$OODT_HOME" ] && OODT_HOME=`cygpath --unix "$OODT_HOME"`
-  [ -n "$OODT_BASE" ] && OODT_BASE=`cygpath --unix "$OODT_BASE"`
+  [ -n "$WORKFLOW_HOME" ] && WORKFLOW_HOME=`cygpath --unix "$WORKFLOW_HOME"`
   [ -n "$CLASSPATH" ] && CLASSPATH=`cygpath --path --unix "$CLASSPATH"`
 fi
 
@@ -80,7 +80,7 @@ if [ "$1" = "start" ]; then
   cd "$WORKFLOW_HOME"/bin
 
   "$_RUNJAVA" $JAVA_OPTS $OODT_OPTS \
-    -Djava.endorsed.dirs="$WORKFLOW_HOME"/lib \
+    -Djava.ext.dirs="$WORKFLOW_HOME"/lib \
     -Djava.util.logging.config.file="$WORKFLOW_HOME"/etc/logging.properties \
     -Dorg.apache.oodt.cas.workflow.properties="$WORKFLOW_HOME"/etc/workflow.properties \
     -Djava.io.tmpdir="$OODT_TMPDIR" \

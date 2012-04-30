@@ -64,7 +64,7 @@
     </fileSet>
     <fileSet>
       <directory>${project.build.directory}/apache-tomcat-${tomcat.version}</directory>
-      <outputDirectory>components/tomcat</outputDirectory>
+      <outputDirectory>tomcat</outputDirectory>
       <excludes>
         <exclude>**/webapps/docs/**</exclude>
         <exclude>**/webapps/examples/**</exclude>
@@ -78,12 +78,14 @@
   </fileSets>
   <dependencySets>
     <dependencySet>
-      <outputDirectory>components</outputDirectory>
+      <outputDirectory>.</outputDirectory>
       <unpack>true</unpack>
       <useProjectArtifact>false</useProjectArtifact>
       <useTransitiveDependencies>false</useTransitiveDependencies>
       <excludes>
         <exclude>${groupId}:${parent.artifactId}-opsui</exclude>
+        <exclude>${groupId}:${parent.artifactId}-pcs-services</exclude>
+        <exclude>${groupId}:${parent.artifactId}-fmprod</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>
