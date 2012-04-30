@@ -28,7 +28,7 @@
  * 2) create a new header file, and update config.ini to point to it, instead
  */
 ?>
-<DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Untitled OODT Balance Application</title>
