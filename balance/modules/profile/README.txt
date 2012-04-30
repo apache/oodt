@@ -37,7 +37,7 @@ Dependencies
 ------------
 
  CAS-Single Sign On ( For LDAP users )
-: If LDAP is used for authentication and/or authorization, the [CAS-SSO](http://oodt.jpl.nasa.gov/repo/framework/cas-sso/trunk/src/php/pear/) 
+: If LDAP is used for authentication and/or authorization, the [CAS-SSO](https://svn.apache.org/repos/asf/oodt/tags/0.3/sso/src/main/php/pear/) 
   library must be available on the host environment to allow the module to communicate 
    with LDAP through this library.  
 
@@ -58,7 +58,7 @@ Developer Guide
 In general, the Profile Manager needs to be available on each application view. To avoid 
 having to load the module at the top of each view, it is possible to include the module once,
 in the Balance index.php at the root of your application. Simply add the following 
-lines to the 'index.php' file where it says 'Initialize any global modules':
+lines to the 'index.php' file where it says 'Initialize any globally required modules here':
 
 // Profile Manager initialization
 $module = App::Get()->loadModule('NAME_OF_PROFILE_DIRECTORY');

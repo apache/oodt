@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-447 changed reference to CAS-SSO directory in the profile management module README.txt (skhudiky)
+
 * OODT-450 Crawler being able to delete a non-empty product directory
   upon successful product ingestion (luca)
 
