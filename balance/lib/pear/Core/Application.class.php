@@ -187,6 +187,10 @@ class Org_Apache_Oodt_Balance_Core_Application {
 				$ini = str_replace('[MODULE_PATH]',  $modClass->modulePath,   $ini);
 				$ini = str_replace('[MODULE_ROOT]',  $modClass->moduleRoot,   $ini);
 				$ini = str_replace('[MODULE_STATIC]',$modClass->moduleStatic, $ini);
+
+				$ini = str_replace('[HOME]', HOME, $ini);
+				$ini = str_replace('[SITE_ROOT]', SITE_ROOT, $ini);
+
 				// Parse the env-replaced content
 				$moduleSettings   = parse_ini_string($ini);
 				// Append (union) with global settings. += ensures that

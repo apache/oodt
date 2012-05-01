@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-445 Extend env replace support introduced in OODT-343 (ahart)
+
 * OODT-444 Utils class missing from Balance cas-browser module (ahart)
 
 * OODT-448 added missing character (skhudiky)
