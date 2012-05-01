@@ -36,6 +36,7 @@ public class PgeConfig {
     private String exeDir;
     private String shellType;
     private List<String> exeCmds;
+    private FileStagingInfo fileStagingInfo;
 
     public PgeConfig() {
         shellType = "sh";
@@ -93,5 +94,13 @@ public class PgeConfig {
     public Object[] getPropertyAdderCustomArgs() {
         return propertyAdderCustomArgs != null ? propertyAdderCustomArgs
                 : new Object[0];
+    }
+
+    public void setFileStagingInfo(FileStagingInfo fileStagingInfo) {
+       this.fileStagingInfo = fileStagingInfo;
+    }
+
+    public FileStagingInfo getFileStagingInfo() {
+       return fileStagingInfo;
     }
 }

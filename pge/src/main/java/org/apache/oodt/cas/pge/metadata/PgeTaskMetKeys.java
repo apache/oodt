@@ -57,6 +57,14 @@ public enum PgeTaskMetKeys {
          "PGETask/PropertyAdders",
          "PGETask_PropertyAdderClasspath",
          true),
+
+   /**
+    * {@link FileStager}s classpath.
+    */
+   FILE_STAGER(
+         "PGETask/FileStager",
+         "PGETask/FileStager"),
+
    /**
     * List of {@link ConfigFilePropertyAdder}s classpaths to be run.
     */
