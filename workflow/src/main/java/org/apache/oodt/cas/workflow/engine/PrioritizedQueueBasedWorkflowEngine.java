@@ -61,6 +61,7 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
   private Thread queuerThread;
   private WorkflowInstanceRepository repo;  
   private PrioritySorter prioritizer;
+  private WorkflowProcessorQueue processorQueue;
   private URL wmgrUrl;  
   private long conditionWait;
   
@@ -86,7 +87,7 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
     }*/
     
     // Task QUEUER thread
-    queuerThread = new Thread(new TaskQuerier());
+    queuerThread = new Thread(new TaskQuerier(processorQueue, prioritizer));
     queuerThread.start();
   }
   
