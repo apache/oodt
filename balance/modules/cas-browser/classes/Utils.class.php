@@ -15,345 +15,89 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- * $Id$
- * 
- * CAS-Browser Module
- * 
- * This module provides applications a means for browsing a CAS File 
- * Manager catalog and obtaining products from a CAS File Manager repository.
- * 
- * For complete functionality, the following configuration variables
- * are expected to be present in the module's config.ini file:
- * 
- * browser_filemgr_url    - filemanager host (e.g.: http://somehost:9000)
- * browser_filemgr_path   - filemanager url on server (e.g.: /)  
- * browser_datadeliv_url  - the base url to use when downloading products
- *   
- * NOTE: This module has a dependency upon the CAS-Filemgr PHP classes
- * (https://svn.apache.org/repos/asf/oodt/trunk/filemgr/src/main/php)
- *      
- *      To build this dependency, check out the above project and then:
- *      1) cd into the checked out project (you should see a package.xml file)
- *      2) pear package
- *      3) (sudo) pear install --force CAS_Filemgr...tar.gz
- *   
- * @author ahart
- * @author resneck
- *
- */
-// Require CAS Filemgr Classes
-require_once("CAS/Filemgr/BooleanQueryCriteria.class.php");
-require_once("CAS/Filemgr/Element.class.php");
-require_once("CAS/Filemgr/Metadata.class.php");
-require_once("CAS/Filemgr/Product.class.php");
-require_once("CAS/Filemgr/ProductType.class.php");
-require_once("CAS/Filemgr/ProductPage.class.php");
-require_once("CAS/Filemgr/Query.class.php");
-require_once("CAS/Filemgr/RangeQueryCriteria.class.php");
-require_once("CAS/Filemgr/TermQueryCriteria.class.php");
-require_once("CAS/Filemgr/XmlRpcFilemgrClient.class.php");
-require_once(dirname(__FILE__) . "/Utils.class.php");
 
+require_once("CasBrowser.class.php");
 
-class CasBrowser {
+class Utils{
 	
-	const VIS_INTERPRET_HIDE     = 'hide';
-	const VIS_INTERPRET_SHOW     = 'show';
-	const VIS_AUTH_ANONYMOUS     = false;
-	const VIS_AUTH_AUTHENTICATED = true;
-	const VIS_ALL                = 'all';
-	const VIS_LIMIT              = 'limit';
-	const VIS_NONE               = 'deny';
-	const VIS_DENY               = 'deny';
-	
-	public $client;
-	
-	public function __construct() {
-		try {
-			$this->client = new CAS_Filemgr_XmlRpcFilemgrClient(
-				App::Get()->settings['browser_filemgr_url'],
-				App::Get()->settings['browser_filemgr_path']);
-		} catch (Exception $e) {
-			App::Get()->fatal("Unable to instantiate a connection to "
-				. App::Get()->settings['browser_filemgr_url']
-				. App::Get()->settings['browser_filemgr_path']);
-		}
-	}
-	
-	public function getClient() {
-		return $this->client;
-	}
-	
-	/**
-	 * Use the rules in element-ordering.ini to determine the display order
-	 * for product type metadata elements. See element-ordering.ini for more
-	 * information on how to specify element order rules.
-	 * 
-	 * @param integer $productTypeId  The id of the product type to get met for
-	 * @param array   $metadataTouse  An optional array of metadata key/vals to sort. If
-	 *                this is not provided, the product type metadata will be used.
-	 */
-	public function getSortedMetadata($productTypeId,$metadataToUse = null, $orderingAttribute) {
-		
-		if (!is_array($metadataToUse)) {
-			$pt = $this->client
-				->getProductTypeById($productTypeId)
-				->toAssocArray();
-			$metadataAsArray = $pt['typeMetadata'];
-		} else {
-			$metadataAsArray = $metadataToUse;
-		}
-		
-		$orderingPolicyFilePath = dirname(dirname(__FILE__)) . '/element-ordering.ini';
-		if (file_exists($orderingPolicyFilePath)) {
-			$orderPolicy = parse_ini_file($orderingPolicyFilePath,true);
+	public static $acceptedReturnTypes = array('html', 'json');
 
-			$first    = isset($orderPolicy[$productTypeId][$orderingAttribute . '.element.ordering.first']) 
-				? $orderPolicy[$productTypeId][$orderingAttribute . '.element.ordering.first']
-				: $orderPolicy['*'][$orderingAttribute . '.element.ordering.first'];
-			$last     = isset($orderPolicy[$productTypeId][$orderingAttribute . '.element.ordering.last']) 
-				? $orderPolicy[$productTypeId][$orderingAttribute . '.element.ordering.last']
-				: $orderPolicy['*'][$orderingAttribute . '.element.ordering.last'];
-								
-			// Using the odering policy, determine the order in which the metadata will be listed
-			return $this->sortMetadata($metadataAsArray,$first,$last);	
-		} else {
-			return $metadataAsArray;
-		}
-	}
-	
 	/**
-	 * Retreives the set of metadata for the provided productTypeId that should be visible
-	 * to the current user. This function also applies the sorting policy (if it is defined)
-	 * specified in element.ordering.ini.
-	 * 
-	 * @param string $productTypeId - the unique productType identifier
+	 * @param types
+	 *		An array of PoductTypes.
+	 *
+	 * @return 
+	 *		An array of unique names of Metadata and Elements associated with the given 
+	 *		ProductTypes.
 	 */
-	public function getVisibleMetadataForProductType($productTypeId) {
-		// Get the metadata for the product type
-		$pt = $this->client
-			->getProductTypeById($productTypeId)
-			->toAssocArray();
-			
-		// Determine which metadata should be visible to the current user
-		$visibleMetadata = $this->getVisibleMetadata($pt['typeMetadata'], $productTypeId);
-		
-		// Sort the visible metadata according to the ordering policy
-		$result  = $this->getSortedMetadata($productTypeId,$visibleMetadata, 'pt');
-		
-		return $result;
-	}
-	
-	
-	/**
-	 * Retrieves the set of metadata for the provided productId that should be visible to 
-	 * the current user
-	 * 
-	 * @param string  $productId - the unique product identifier
-	 * @param boolean $authState - whether or not the current user is authenticated
-	 */
-	public function getVisibleMetadataForProduct($productId) {
-		$p  = $this->client->getProductById($productId);
-		$productTypeInfo = $p->getType()->toAssocArray();
-		$productTypeId   = $productTypeInfo[App::Get()->settings['browser_pt_id_key']];
-		$productMetadata = $this->client->getMetadata($p);
-		
-		// Determine which metadata should be visible to the current user
-		$visibleMetadata = $this->getVisibleMetadata($productMetadata->toAssocArray(), $productTypeId);
-				
-		// Sort the visible metadata according to the ordering policy
-		$result  = $this->getSortedMetadata($productTypeId,$visibleMetadata, 'p');
-		
-		return $result;		
-	}
-	
-	
-	/**
-	 * Determine the visibility level for the current product type and current user.
-	 * The level returned is one of VIS_ALL,VIS_LIMIT,VIS_NONE
-	 * 
-	 * @param string $productTypeId - the unique product type identifier
-	 */
-	public function getProductTypeVisibilityLevel( $productTypeId ) {
-		// If the configuration explicitly states that this dataset is to be ignored,
-		// ignore it:
-		if (in_array($productTypeId,App::Get()->settings['browser_dataset_ignores'])) {
-			return CasBrowser::VIS_NONE;
-		}
-		
-		// Get the metadata for the product type
-		$typeInfo = $this->client
-			->getProductTypeById($productTypeId)
-			->toAssocArray();
-		
-		if ( App::Get()->getAuthenticationProvider() ) {
-			
-			// Does the product type define a metadata element matching
-			// the `browser_data_access_key` config setting?
-			$accessKeyExists = isset($typeInfo['typeMetadata'][App::Get()->settings['browser_data_access_key']]);
-			
-			// Obtain the groups for the current resource
-			$resourceGroups = ($accessKeyExists)
-				? $typeInfo['typeMetadata'][App::Get()->settings['browser_data_access_key']]
-				: array();
-			
-			return $this->getResourceVisibility($resourceGroups,
-				App::Get()->settings['browser_pt_auth_policy']);
-		} else {
-			// No authentication provider, everything is public
-			return CasBrowser::VIS_ALL;
-		}
-	}
-	
-	public function getProductVisibilityLevel( $productId ) {
-		
-		$product = $this->client->getProductById( $productId );
-		$productMetadata = $this->client->getMetadata($product);
-
-		// Get metadata for product and productType as associative arrays
-		$productTypeInfo = $product->getType()->toAssocArray();
-		$productInfo     = $productMetadata->toAssocArray();
-		
-		if ( App::Get()->getAuthenticationProvider() ) {
-			
-			// Does the product type define a metadata element matching
-			// the `browser_data_access_key` config setting?
-			$accessKeyExists = isset($productInfo[App::Get()->settings['browser_data_access_key']]);
-			 
-			// Obtain the groups for the current resource
-			$resourceGroups = ($accessKeyExists)
-				? $productInfo[App::Get()->settings['browser_data_access_key']]
-				: array();
-			
-			return $this->getResourceVisibility($resourceGroups, 
-				App::Get()->settings['browser_p_auth_policy']);
-		} else {
-			// No authentication provider, everything is public
-			return CasBrowser::VIS_ALL;
-		}
-	}
-	
-	
-	/**
-	 * Internal helper function for sorting(ordering) a metadata array according to policy. 
-	 * 
-	 * @param array $unsortedMetadata An associative array of unsorted metadta key/(multi)values
-	 * @param array $sortFirst        A scalar array of metadata keys that must be ordered first
-	 * @param array $sortLast         A scalar array of metadata keys that must be ordered last
-	 * @returns array An associative array of sorted(ordered) metadata key/(multi)values
-	 */
-	protected function sortMetadata($unsortedMetadata,$sortFirst,$sortLast) {
-		$orderedMetadata = array();
-		foreach ($sortFirst as $key) {
-			if (isset($unsortedMetadata[$key])) {
-				$orderedMetadata[$key] = $unsortedMetadata[$key];
-				unset($unsortedMetadata[$key]);
+	public static function getMetadataElements($types){
+		$cb = new CasBrowser();
+		$client = $cb->getClient();
+		$metadataNames = array();
+		foreach($types as $type){
+			foreach(array_keys($type->getTypeMetadata()->toAssocArray()) as $metadata){
+				if(!in_array($metadata, $metadataNames)){
+					array_push($metadataNames, $metadata);
+				}
+			}
+			foreach($client->getElementsByProductType($type) as $element){
+				$elementName = $element->getElementName();
+				if(!in_array($elementName, $metadataNames)){
+					array_push($metadataNames, $elementName);
+				}
 			}
 		}
-		$lastMetadata = array();
-		foreach ($sortLast as $key) {
-			if (isset($unsortedMetadata[$key])) {
-				$lastMetadata[$key] = $unsortedMetadata[$key];
-				unset($unsortedMetadata[$key]);
-			}
-		}
-		$orderedMetadata += $unsortedMetadata;
-		$orderedMetadata += $lastMetadata;
-		
-		return $orderedMetadata;
+		return $metadataNames;
 	}
 	
 	/**
-	 * Internal helper function for, given an array of metadata, a productTypeID, and an indication of whether or not the 
-	 * current user is authenticated, returning the subset of metadata that should be visible to
-	 * the user. 
-	 * 
-	 * @param array   $metadataAsArray
-	 * @param string  $productTypeId
-	 * @param boolean $longinState - one of VIS_AUTH_AUTHENTICATED|VIS_AUTH_ANONYMOUS
+	 * @param productType
+	 *		The productType of the ProductPage desired.
+	 *
+	 * @param pageNum
+	 *		The number of the page desired in the set of ProductPages of that ProductType.
+	 *
+	 * @return
+	 *		The requested ProductPage object.
 	 */
-	protected function getVisibleMetadata($metadataAsArray, $productTypeId) {
+	public static function getPage($productType, $pageNum){
+		$cb = new CasBrowser();
+		$client = $cb->getClient();
 		
-		// Determine whether the user is authenticated
-		$authState = (($ap = App::Get()->getAuthenticationProvider()) && $ap->isLoggedIn());
-		
-		$visibilityPolicyFilePath = dirname(dirname(__FILE__)) . '/element-visibility.ini';
-		if (file_exists($visibilityPolicyFilePath)) {
-			$visibilityPolicy = parse_ini_file($visibilityPolicyFilePath,true);
+		// Iterate until the proper page is reached
+		for($page = $client->getFirstPage($productType);
+			$page->getPageNum() < $pageNum && $page->getPageNum() < $page->getTotalPages();
+			$page = $client->getNextPage($productType, $page)){}
 			
-			$interpretation = $visibilityPolicy['interpretation.policy'];
-			$globalVisibilityPolicy = $visibilityPolicy['*'];
-			$productTypeVisibilityPolicy = isset($visibilityPolicy[$productTypeId])
-				? $visibilityPolicy[$productTypeId]
-				: array("visibility.always" => array(),
-						"visibility.anonymous" => array(),
-						"visibility.authenticated" => array());
-
-			// The visibility of a given metadata element is dependent upon
-			//   (1) the authentication status of the user (VIS_AUTH_AUTHENTICATED|VIS_AUTH_ANONYMOUS)
-			//   (2) the interpretation of the visibility policy (VIS_INTERPRET_SHOW|VIS_INTERPRET_HIDE)
-			//   
-			//   Using these values, determine which metadata to display:
-			switch ($interpretation) {
-				// If the policy defines only those metadata which should be hidden:
-				case self::VIS_INTERPRET_HIDE:
-					$displayMet = $metadataAsArray;                                     // everything is shown unless explicitly hidden via the policy
-					foreach ($globalVisibilityPolicy['visibility.always'] as $elm)      // iterate through the global 'always hide' array...
-						unset($displayMet[$elm]);                                       // and remove all listed elements
-					foreach ($productTypeVisibilityPolicy['visibility.always'] as $elm) // now iterate through the product-type 'always hide' array...
-						unset($displayMet[$elm]);                                       // and remove all listed elements
-							
-					// Determine what to hide given the user's login state 
-					switch ($authState) {                                                             // check the login status of the user
-						case self::VIS_AUTH_ANONYMOUS:                                                 // if the user is anonymous...
-							foreach($globalVisibilityPolicy['visibility.anonymous'] as $elm)           // iterate through the global 'anonymous hide' array...
-								unset($displayMet[$elm]);                                              // and remove all listed elements
-							foreach ($productTypeVisibilityPolicy['visibility.anonymous'] as $elm)     // now iterate through the product-type 'anonymous hide' array...
-								unset($displayMet[$elm]);                                              // and remove all listed elements
-							break;                                                                     // done.
-						case self::VIS_AUTH_AUTHENTICATED:                                             // if the user is authenticated...
-							foreach($globalVisibilityPolicy['visibility.authenticated'] as $elm)       // iterate through the global 'authenticated hide' array...
-								unset($displayMet[$elm]);                                              // and remove all listed elements
-							foreach ($productTypeVisibilityPolicy['visibility.authenticated'] as $elm) // now iterate through the product-type 'authenticated hide' array...
-								unset($displayMet[$elm]);                                              // and remove all listed elements
-							break;                                                                     // done.
-					}
-
-					break;
-				
-				// If the policy defines only those metadata which should be shown:
-				case self::VIS_INTERPRET_SHOW:
-					$displayMet = $globalVisibilityPolicy['visibility.always']                         // merge the global 'always show' array
-						+ $productTypeVisibilityPolicy['visibility.always'];                           // with the product-type specific 'always show' array
-					switch ($authState) {                                                              // check the login status of the user
-						case self::VIS_AUTH_ANONYMOUS:                                                 // if the user is anonymous...
-							$displayMet += $globalVisibilityPolicy['visibility.anonymous'];            // merge the global 'anonymous show' array
-							$displayMet += $productTypeVisibilityPolicy['visibility.anonymous'];       // and the product-type specific 'anonymous show' array
-							break;                                                                     // done.
-						case self::VIS_AUTH_AUTHENTICATED:                                             // if the user is authenticated...
-							$displayMet += $globalVisibilityPolicy['visibility.authenticated'];        // merge the global 'authenticated show' array 
-							$displayMet += $productTypeVisibilityPolicy['visibility.authenticated'];   // and the product-type specific 'authenticated show' array
-							break;                                                                     // done.
-					}
-			}
-			
-			return $displayMet;	
-				
-		} else {
-			return $metadataAsArray;
-		}
+		return $page;
 	}
-		
-	/**
-	 * Internal helper function to determine the visibility level of a given resource given
-	 * its array of security groups. The value returned is one of VIS_ALL,VIS_LIMIT,VIS_NONE.
-	 * 
-	 * @param array $resourceGroups - an array of security groups for the resource
-	 * @param string $policy        - one of VIS_LIMIT or VIS_DENY
-	 */	
-	protected function getResourceVisibility( $resourceGroups, $policy = CasBrowser::VIS_DENY ) {
+	
+	public static function getRequestedReturnType($requestedType){
+		$lowerRequestedType = strtolower($requestedType);
+		if(!in_array($lowerRequestedType, self::$acceptedReturnTypes)){
+			throw new CasBrowserException('Error: The requested return type of '. $requestedType . 'is not accepted.');
+		}
+		return $lowerRequestedType;
+	}
+	
+	public static function getProductListMetadata($products){
+		$payload = array();
+		foreach($products as $p){
+			$cb = new CasBrowser();
+			$client = $cb->getClient();
+			$met = $client->getMetadata($p);
+			$payload[$p->getId()] = $met;
+		}
+		return $payload;
+	}
+	
+	// What kind of access should the currently authenticated user have, given the 
+	// provided groups (aka roles, permissions) associated with the resource?
+	//
+	// Possible values are: CasBrowser::{VIS_ALL, VIS_LIMIT, VIS_NONE}. It is up to the 
+	// caller to determine what to do based on the return value
+	//
+	public static function ResourceVisibility( $resourceGroups ) {
 		
 		// Is the resource considered "public"?
  		if (in_array(App::Get()->settings['browser_data_public_access'],$resourceGroups)) { 
@@ -378,42 +122,34 @@ class CasBrowser {
 				
 			 	// Is the user currently logged in?
 			 	if ( $username ) {
-	 				
-			 		if ( $authorization = App::Get()->getAuthorizationProvider() ) {
-				 		// Obtain the groups for the current user
-				 		$userGroups = $authorization->retrieveGroupsForUser($username);
-				 		
-				 		// Perform a comparison via array intersection to determine overlap
-				 		$x = array_intersect($userGroups,$resourceGroups);
-				 		
-				 		if (empty($x)) { // No intersection found between user and resource groups
-				
-				 			// Examine the policy to determine how to handle the failure
-				 			switch ($policy) {
-				 				case CasBrowser::VIS_LIMIT:
-				 					// Allow the user to proceed, the metadata visibility policy
-				 					// will be used to determine what is visible to non-authorized
-				 					// users.
-				 					return CasBrowser::VIS_LIMIT;
-				 				default:
-				 					// Kick the user out at this point, deny all access. 
-					 				return CasBrowser::VIS_NONE;
-				 			}
-				 		} else {
-				 			// We have an authorized user
-				 			$authorizedUser = true;
-				 		}
+	 		
+			 		// Obtain the groups for the current user
+			 		$userGroups = App::Get()->getAuthorizationProvider()->retrieveGroupsForUser($username);
+			 			 		
+			 		// Perform a comparison via array intersection to determine overlap
+			 		$x = array_intersect($userGroups,$resourceGroups);
+			 		
+			 		if (empty($x)) { // No intersection found between user and resource groups
+			
+			 			// Examine `browser_pt_auth_policy` to determine how to handle the failure
+			 			switch (strtoupper(App::Get()->settings['browser_pt_auth_policy'])) {
+			 				case "LIMIT":
+			 					// Allow the user to proceed, the metadata visibility policy
+			 					// will be used to determine what is visible to non-authorized
+			 					// users.
+			 					return CasBrowser::VIS_LIMIT;				
+			 				case "DENY":
+			 				default:
+			 					// Kick the user out at this point, deny all access. 
+				 				return CasBrowser::VIS_NONE;
+			 			}
 			 		} else {
-			 			
-						// If no authorization provider information exists in the application
-					 	// configuration file, it is assumed that every user is authorized once
-					 	// logged in.
-					 	return CasBrowser::VIS_ALL;				 			
+			 			// We have an authorized user
+			 			$authorizedUser = true;
 			 		}
 			 	} else {
-			 		
 			 		// If no logged in user, and policy says DENY, kick the user
-			 		if ($policy == CasBrowser::VIS_DENY) {
+			 		if (strtoupper(App::Get()->settings[$metType]) == "DENY") {
 			 			return CasBrowser::VIS_NONE;
  			 		} else {
 			 			return CasBrowser::VIS_LIMIT;
@@ -437,11 +173,10 @@ class CasBrowser {
 			 		return CasBrowser::VIS_ALL; // We have an authorized user
 			 	} else {
 			 		// If no logged in user, and policy says DENY, kick the user
-			 		if ($policy == CasBrowser::VIS_DENY) {
+			 		if (strtoupper(App::Get()->settings[$metType]) == "DENY") {
 			 			return CasBrowser::VIS_NONE;
-			 		} else {
-			 			return CasBrowser::VIS_LIMIT;
 			 		}
+			 		return CasBrowser::VIS_LIMIT;
 			 	}
 		 	} else {
 			 	// If no authentication provider information exists in the application
@@ -452,4 +187,202 @@ class CasBrowser {
 			}
  		}
 	}
+	
+	// Create a criteria subtree that will search for the value at the given criteriaIndex across all 
+	// metadata elements associated with the given productTypes.
+	public static function createBasicSearchSubtree($criteriaIndex, $queryTypes){
+		$criterion = new CAS_Filemgr_BooleanQueryCriteria();
+		$criterion->setOperator(CAS_Filemgr_BooleanQueryCriteria::$OR_OP);
+		$metadataNames = getMetadataElements($queryTypes);
+		foreach($metadataNames as $name){
+			$term = new CAS_Filemgr_TermQueryCriteria();
+			$term->setElementName($name);
+			$term->setValue($_POST['Criteria'][$criteriaIndex]['Value']);
+			$criterion->addTerm($term);
+		}
+		return $criterion;
+	}
+	
+	public static function createTermCriteria($criteriaIndex, $queryTypes){
+		if(!isset($_POST['Criteria'][$criteriaIndex]['ElementName'])){
+			throw new CasBrowserException("Query Term criterion " . $criteriaIndex . " does not contain 'ElementName' specification");
+		}
+		if(!isset($_POST['Criteria'][$criteriaIndex]['Value'])){
+			throw new CasBrowserException("Query Term criterion " . $criteriaIndex . " does not contain 'Value' specification");
+		}
+		if($_POST['Criteria'][$criteriaIndex]['ElementName'] == '*'){
+			$criterion = self::createBasicSearchSubtree($criteriaIndex, $queryTypes);
+		}else{
+			$criterion = new CAS_Filemgr_TermQueryCriteria();
+			$criterion->setElementName($_POST['Criteria'][$criteriaIndex]['ElementName']);
+			$criterion->setValue($_POST['Criteria'][$criteriaIndex]['Value']);
+		}
+		return $criterion;
+	}
+	
+	public static function createRangeCriteria($criteriaIndex){
+		if(!isset($_POST['Criteria'][$criteriaIndex]['ElementName'])){
+			throw new CasBrowserException("Query Term criterion " . $criteriaIndex . " does not contain 'ElementName' specification");
+		}
+		if(!isset($_POST['Criteria'][$criteriaIndex]['Min'])){
+			throw new CasBrowserException("Query Range criterion " . $criteriaIndex . " does not contain 'Min' specification");
+		}
+		if(!isset($_POST['Criteria'][$criteriaIndex]['Max'])){
+			throw new CasBrowserException("Query Range criterion " . $criteriaIndex . " does not contain 'Max' specification");
+		}
+		$criterion = new CAS_Filemgr_RangeQueryCriteria();
+		$criterion->setElementName($_POST['Criteria'][$criteriaIndex]['ElementName']);
+		$criterion->setStartValue($_POST['Criteria'][$criteriaIndex]['Min']);
+		$criterion->setEndValue($_POST['Criteria'][$criteriaIndex]['Max']);
+		if(isset($_POST['Criteria'][$criteriaIndex]['Inclusive'])){
+			$criterion->setInclusive($_POST['Criteria'][$criteriaIndex]['Inclusive']);
+		}
+		return $criterion;
+	}
+	
+	public static function createBooleanCriteria($criteriaIndex, $queryTypes, $createdIndices){
+		if(!isset($_POST['Criteria'][$criteriaIndex]['Operator'])){
+			throw new CasBrowserException("Query Boolean criterion " . $criteriaIndex . " does not contain 'Operator' specification");
+		}
+		if(!isset($_POST['Criteria'][$criteriaIndex]['CriteriaTerms'])){
+			throw new CasBrowserException("Query Boolean criterion " . $criteriaIndex . " does not contain 'CriteriaTerms' specification");
+		}
+		if(!count($_POST['Criteria'][$criteriaIndex]['CriteriaTerms'])){
+			throw new CasBrowserException("Query Boolean criterion " . $criteriaIndex . " does not contain any terms");
+		}
+		$criterion = new CAS_Filemgr_BooleanQueryCriteria();
+		$operator = trim(strtoupper($_POST['Criteria'][$criteriaIndex]['Operator']));
+		if($operator == 'AND'){
+			$criterion->setOperator(CAS_Filemgr_BooleanQueryCriteria::$AND_OP);
+		}elseif($operator == 'OR'){
+			$criterion->setOperator(CAS_Filemgr_BooleanQueryCriteria::$OR_OP);
+		}elseif($operator == 'NOT'){
+			if(count($_POST['Criteria'][$criteriaIndex]['CriteriaTerms']) != 1){
+				throw new CasBrowserException("Query Boolean criterion " . $criteriaIndex . " cannot negate more than one term");
+			}
+			$criterion->setOperator(CAS_Filemgr_BooleanQueryCriteria::$NOT_OP);
+		}else{
+			throw new CasBrowserException("Error: Query Boolean criterion " . $criteriaIndex . " tries to use undefined operator '" . $operator . "'");
+		}
+		foreach(array_map("intval", $_POST['Criteria'][$criteriaIndex]['CriteriaTerms']) as $childIndex){
+			if(in_array($childIndex, $createdIndices)){		// Check for loops in criteria tree
+				throw new CasBrowserException("Criterion " . $criteriaIndex . " lists " . $childIndex . "as a child, making a loop.");
+			}
+			array_push($createdIndices, $childIndex);
+			$child = self::createCriteriaTree($childIndex, $queryTypes);
+			$criterion->addTerm($child);
+		}
+		return $criterion;
+	}
+	
+	public static function createCriteriaTree($criteriaIndex, $queryTypes, $createdIndices=null){
+		if(!isset($createdIndices)){
+			$createdIndices = array();
+		}
+		if(!isset($_POST['Criteria'][$criteriaIndex])){
+			throw new CasBrowserException("Query Boolean criterion " . $criteriaIndex . " does not exist.");
+		}
+		$type = strtolower($_POST['Criteria'][$criteriaIndex]['CriteriaType']);
+		if($type == 'term'){
+			$criterion = self::createTermCriteria($criteriaIndex, $queryTypes);
+		}elseif($type == 'range'){
+			$criterion = self::createRangeCriteria($criteriaIndex);
+		}elseif($type == 'boolean'){
+			$criterion = self::createBooleanCriteria($criteriaIndex, $queryTypes, $createdIndices);
+		}else{
+			throw new CasBrowserException("Query criterion " . $criteriaIndex . " contains an unknown type " . $type . ".  Please use one of 'term', 'range' or 'boolean'");
+		}
+		return $criterion;
+	}
+	
+	public static function getMetadataNamesForTypeProducts($type){
+		$cb = new CasBrowser();
+		$client = $cb->getClient();
+		$elementNames = array();
+		foreach($client->getElementsByProductType($type) as $e){
+			array_push($elementNames, $e->getElementName());
+		}
+		foreach(array_keys($type->getTypeMetadata()->toAssocArray()) as $typeElementName){
+			if(!in_array($typeElementName, $elementNames)){
+				array_push($elementNames, $typeElementName);
+			}
+		}
+		return $elementNames;
+	}
+	
+	public static function getFacets(){
+		$cb = new CasBrowser();
+		$client = $cb->getClient();
+		$types = $client->getProductTypes();
+		$facets = self::getMetadataNamesForTypeProducts(array_pop($types));
+		if(count($types) == 0){
+			return $facets;	// In case there is only one product type
+		}
+		foreach($types as $type){
+			$elementNames = self::getMetadataNamesForTypeProducts($type);
+			$facets = array_intersect($facets, $elementNames);
+		}
+		return $facets;
+	}
+	
+	public static function paginate($allProducts, $pageNum, $pageSize){
+		if(count($allProducts) == 0){
+			return array();
+		}
+		if($pageSize <= 0){
+			throw new CasBrowserException("The given PageSize (" . $pageSize . ") was zero or less.");
+		}
+		$startIndex = ($pageNum - 1) * $pageSize;
+		if($startIndex >= count($allProducts)){
+			throw new CasBrowserException("The starting index of the requested page (" .
+					$startIndex . ") is greater than the last index of all products (" .
+					count($allProducts) . ").");
+		}
+		$endIndex = $startIndex + $pageSize - 1;
+		$endIndex = min($endIndex, count($allProducts) - 1);
+		$requestedProducts = array();
+		for($i = $startIndex; $i <= $endIndex; $i++){
+			array_push($requestedProducts, $allProducts[$i]);
+		}
+		return $requestedProducts;
+	}
+	
+	public static function formatResults($products){
+		$cb = new CasBrowser();
+		$client = $cb->getClient();
+		$results = array();
+		foreach($products as $product){
+			try{
+				$p = array('id'=>$product['product']->getId(),
+						'name'=>urlDecode($product['product']->getName()),
+						'metadata'=>$client->getMetadata($product['product'])->toAssocArray());
+				if(isset($product['typeName'])){
+					$p['type'] = $product['typeName'];
+				}
+				array_push($results, $p);
+			}catch(Exception $e){
+				throw new CasBrowserException("An error occured while formatting product [" .
+						$product['product']->getId() . "] metadata: " . $e->getMessage());
+			}
+		}
+		return $results;
+	}
+	
+	public static function reportError($message, $outputFormat){
+		if($outputFormat == 'html'){
+			echo '<div class="error">' . $message . '</div>';
+		}elseif($outputFormat == 'json'){
+			$payload = array();
+			$payload['Error'] = 1;
+			$payload['ErrorMsg'] = $message;
+			$payload = json_encode($payload);
+			echo $payload;
+		}
+		exit();
+	}
+	
 }
+
+class CasBrowserException extends Exception{}
+
+?>
