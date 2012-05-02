@@ -111,7 +111,7 @@ public final class WorkflowLifecyclesReader implements WorkflowLifecycleMetKeys 
             for (int i = 0; i < stagesNodes.getLength(); i++) {
                 Element stageElem = (Element) stagesNodes.item(i);
                 WorkflowLifecycleStage stage = new WorkflowLifecycleStage();
-                stage.setName(STAGE_TAG_NAME_ATTR);
+                stage.setName(stageElem.getAttribute(STAGE_TAG_NAME_ATTR));
                 stage.setOrder(i+1);
                 stage.setStates(readStates(stageElem, stage));
                 lifecycle.addStage(stage);

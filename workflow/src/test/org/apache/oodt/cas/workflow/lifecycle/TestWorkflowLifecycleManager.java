@@ -49,6 +49,7 @@ public class TestWorkflowLifecycleManager extends TestCase {
     WorkflowLifecycleStage category = this.lifecycle.getDefaultLifecycle()
         .getCategoryByName("Null");
     assertNotNull(category);
+    assertEquals("Null", category.getName());
     for (WorkflowState state : (List<WorkflowState>) category.getStates()) {
       if (state.getName().equals("Null")) {
         gotNull = true;
