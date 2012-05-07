@@ -16,13 +16,11 @@
  */
 package org.apache.oodt.cas.pge.staging;
 
-//OODT static imports
-import static org.apache.oodt.cas.pge.staging.TestFileStager.ProductIdMatcher.eqProductId;
-
 //EasyMock static imports
 import static org.easymock.EasyMock.createStrictMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reportMatcher;
 import static org.easymock.EasyMock.verify;
 
 //JDK imports
@@ -49,6 +47,9 @@ import com.google.common.collect.Lists;
 
 //JUnit imports
 import junit.framework.TestCase;
+
+//OODT static imports
+import static org.apache.oodt.cas.pge.staging.TestFileStager.ProductIdMatcher.eqProductId;
 
 /**
  * Test class for {@link FileStager}.
@@ -153,7 +154,7 @@ public class TestFileStager extends TestCase {
       }
 
       public static Product eqProductId(String productId) {
-         EasyMock.reportMatcher(new ProductIdMatcher(productId));
+         reportMatcher(new ProductIdMatcher(productId));
          return null;
       }
    }

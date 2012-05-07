@@ -515,10 +515,10 @@ public class TestPGETaskInstance extends TestCase {
       replay(pc);
 
       pgeTask.logger = createMock(Logger.class);
-      pgeTask.logger.log(Level.INFO, "Verifying ingests successful...");
-      pgeTask.logger.log(Level.WARNING,
+      pgeTask.logger.info("Verifying ingests successful...");
+      pgeTask.logger.warning(
             "Product was not ingested [file='/tmp/dir1',result='PRECONDS_FAILED',msg='Preconditions failed']");
-      pgeTask.logger.log(Level.INFO, "Ingests were successful");
+      pgeTask.logger.info("Ingests were successful");
       replay(pgeTask.logger);
 
       pgeTask.verifyIngests(pc);
@@ -547,8 +547,8 @@ public class TestPGETaskInstance extends TestCase {
       replay(pc);
 
       pgeTask.logger = createMock(Logger.class);
-      pgeTask.logger.log(Level.INFO, "Verifying ingests successful...");
-      pgeTask.logger.log(Level.INFO, "Ingests were successful");
+      pgeTask.logger.info("Verifying ingests successful...");
+      pgeTask.logger.info("Ingests were successful");
       replay(pgeTask.logger);
 
       pgeTask.verifyIngests(pc);
