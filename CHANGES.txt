@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-455 Small CSS tweak for the OPSUI Wicket App (cgoodale)
+
 * OODT-451 Implemented CAS metadata precondition class to check for existence of given marker file
            within product directory (luca)
 
