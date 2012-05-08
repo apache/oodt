@@ -274,7 +274,7 @@ public class ThreddsMetadataExtractor implements MetadataExtractor {
     	// add opendap access URL
     	if (type.equalsIgnoreCase(ServiceType.OPENDAP.toString())) {
     		// store opendap URL
-    		ProfileUtils.addIfNotNull(met,"OpendapUrl",url+".dods");
+    		ProfileUtils.addIfNotNull(met,"OpendapUrl",url);
     	  // note: special processing of opendap endpoints since URL in thredds catalog is unusable without a suffix
     		ProfileUtils.addIfNotNull(met,"Access", this.encodeAccessTuple(url+".html", ProfileUtils.MIME_TYPE_OPENDAP_HTML, type));
     	} 
