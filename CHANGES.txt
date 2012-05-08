@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-451 Implemented CAS metadata precondition class to check for existence of given marker file
+           within product directory (luca)
+
 * OODT-445 Extend env replace support introduced in OODT-343 (ahart)
 
 * OODT-444 Utils class missing from Balance cas-browser module (ahart)
