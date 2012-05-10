@@ -48,9 +48,6 @@ import com.google.common.collect.Lists;
 //JUnit imports
 import junit.framework.TestCase;
 
-//OODT static imports
-import static org.apache.oodt.cas.pge.staging.TestFileStager.ProductIdMatcher.eqProductId;
-
 /**
  * Test class for {@link FileStager}.
  * 
@@ -101,7 +98,7 @@ public class TestFileStager extends TestCase {
       ref2.setDataStoreReference(uri2);
 
       XmlRpcFileManagerClient fmClient = createStrictMock(XmlRpcFileManagerClient.class);
-      expect(fmClient.getProductReferences(eqProductId(productId))).andReturn(
+      expect(fmClient.getProductReferences(ProductIdMatcher.eqProductId(productId))).andReturn(
             Lists.newArrayList(ref1, ref2));
       replay(fmClient);
 

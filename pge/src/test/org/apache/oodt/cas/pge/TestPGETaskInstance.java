@@ -38,6 +38,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+//JDK imports
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -50,9 +51,13 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//JUnit imports
 import junit.framework.TestCase;
 
+//Apache imports
 import org.apache.commons.io.FileUtils;
+
+//OODT imports
 import org.apache.oodt.cas.crawl.AutoDetectProductCrawler;
 import org.apache.oodt.cas.crawl.ProductCrawler;
 import org.apache.oodt.cas.crawl.action.CrawlerAction;
@@ -71,6 +76,7 @@ import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 
+//Google imports
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -558,7 +564,7 @@ public class TestPGETaskInstance extends TestCase {
    }
 
    private PGETaskInstance createTestInstance() throws Exception {
-      return createTestInstance(Long.toString(System.currentTimeMillis()));
+      return createTestInstance(UUID.randomUUID().toString());
    }
 
    private PGETaskInstance createTestInstance(String workflowInstId)
