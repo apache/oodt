@@ -81,7 +81,8 @@ class ProductTypeListWidget
 			$str .= "</tr>\r\n";
 		}
 		$str .= "</tbody></table>";	
-
+		$str .= "<br>";
+			
 		if ($bEcho) {
 			echo $str;
 		} else {
