@@ -103,6 +103,7 @@ public class DasMetadataExtractor implements MetadataExtractor {
         			|| attName.equalsIgnoreCase("lon") || attName.equalsIgnoreCase("longitude")
         			|| attName.equalsIgnoreCase("time")
         			|| attName.equalsIgnoreCase("alt") || attName.equalsIgnoreCase("altitude")
+        			|| attName.equalsIgnoreCase("lev") || attName.equalsIgnoreCase("level")
         			|| attName.equalsIgnoreCase("depth")
         			) {
         		
