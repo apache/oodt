@@ -110,7 +110,7 @@ public class DasMetadataExtractor implements MetadataExtractor {
           	// store coordinate name
           	ProfileUtils.addIfNotNull(metadata, OpendapProfileMetKeys.COORDINATES, attName);
           	
-        	} else if (attName.startsWith("time_")) {
+        	} else if (attName.toLowerCase().startsWith("time_") || attName.toLowerCase().endsWith("_time")) {
         		
         		// ignore for now - it's not a coordinate neither a variable you would want to search on
         		
