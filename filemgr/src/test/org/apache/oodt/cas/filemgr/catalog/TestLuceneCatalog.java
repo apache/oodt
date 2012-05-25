@@ -118,7 +118,7 @@ public class TestLuceneCatalog extends TestCase {
         // now override the val layer ones
         System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
                 "file://"
-                        + new File("./src/main/resources/examples")
+                        + new File("./src/main/resources/examples/core")
                                 .getAbsolutePath());
 
     }
