@@ -4,6 +4,18 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-402: Provided default File Manager policy and RSS configuration for 
+products with location metadata.  See subtasks OODT-449, 452 and 453. (rlaidlaw)
+
+* OODT-449: Added default GeoRSS configuration file for the CAS REST RSS service. (rlaidlaw)
+
+* OODT-452: Moved File Manager policy files for GenericFile type (elements.xml, product-types.xml, 
+product-type-element-map.xml) to filemgr/src/main/resources/examples/core subdirectory.  
+Updated six unit tests to use the new subdirectory. (rlaidlaw)
+
+* OODT-453: Added File Manager policy files for simple LocationAwareProduct
+(elements.xml, product-types.xml, product-type-element-map.xml). (rlaidlaw)
+
 * OODT-457: add missing Datatables images for paging through Cas-browser index page (skhudiky)
 
 * OODT-455 Small CSS tweak for the OPSUI Wicket App (cgoodale)
