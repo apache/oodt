@@ -40,7 +40,7 @@
     </description>
     <dcElement />
   </element>
-  <element id="urn:oodt:FileName" name="FileName">
+  <element id="urn:oodt:Filename" name="Filename">
     <description>
       The names of the files that represent a product.
     </description>
