@@ -33,6 +33,10 @@ import org.apache.oodt.cas.workflow.util.WorkflowUtils;
  * 
  */
 public class ParallelProcessor extends WorkflowProcessor {
+  
+  public ParallelProcessor(){
+    this(null);
+  }
 
   public ParallelProcessor(WorkflowLifecycleManager lifecycleMgr) {
     super(lifecycleMgr);

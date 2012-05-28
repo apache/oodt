@@ -40,6 +40,10 @@ public class TaskProcessor extends WorkflowProcessor {
 
   private Class<? extends WorkflowTaskInstance> instanceClass;
   private String jobId;
+  
+  public TaskProcessor(){
+    this(null);
+  }
 
   public TaskProcessor(WorkflowLifecycleManager lifecycleManager) {
     super(lifecycleManager);

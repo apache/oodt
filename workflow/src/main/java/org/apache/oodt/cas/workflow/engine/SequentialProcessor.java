@@ -33,6 +33,10 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
  */
 public class SequentialProcessor extends WorkflowProcessor {
   
+  public SequentialProcessor(){
+    this(null);
+  }
+  
   public SequentialProcessor(WorkflowLifecycleManager lifecycleManager){
     super(lifecycleManager);
   }

@@ -73,6 +73,7 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
   protected WorkflowLifecycleManager lifecycleManager;
 
   public WorkflowProcessor(WorkflowLifecycleManager lifecycleManager) {
+    this.subProcessors = new Vector<WorkflowProcessor>();
     this.listeners = new Vector<WorkflowProcessorListener>();
     this.ProcessorDateTimeInfo = new ProcessorDateTimeInfo();
     this.staticMetadata = new Metadata();

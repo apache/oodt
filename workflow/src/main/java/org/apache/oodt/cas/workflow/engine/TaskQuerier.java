@@ -79,26 +79,25 @@ public class TaskQuerier implements Runnable {
   public void run() {
     while (running) {
       List<WorkflowProcessor> processors = processorQueue.getProcessors();
-      synchronized (runnableProcessors) {
-        runnableProcessors.clear();
-      }
+      List<WorkflowProcessor> processorsToRun = new Vector<WorkflowProcessor>();
+
       for (WorkflowProcessor processor : processors) {
         // OK now get its lifecycle
         WorkflowLifecycle lifecycle = getLifecycleForProcessor(processor);
         if (!(processor.getState().getCategory().getName().equals("done") || processor
             .getState().getCategory().getName().equals("holding"))) {
-          for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
-            synchronized (runnableProcessors) {
+            for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
               tp.setState(lifecycle.createState("Executing", "running",
                   "Added to Runnable queue"));
-              runnableProcessors.add(processor);
+              System.out.println("Added processor with priority: ["+tp.getPriority()+"]");
+              processorsToRun.add(processor);
             }
-          }
-
-          // now prioritize the runnable processors
-          synchronized (runnableProcessors) {
-            prioritizer.sort(runnableProcessors);
-          }
+            
+            prioritizer.sort(processorsToRun);
+            
+            synchronized(runnableProcessors){
+              runnableProcessors = processorsToRun;
+            }
 
         } else {
           continue;
@@ -125,7 +124,7 @@ public class TaskQuerier implements Runnable {
   /**
    * @return the runnableProcessors
    */
-  public synchronized List<WorkflowProcessor> getRunnableProcessors() {
+  public List<WorkflowProcessor> getRunnableProcessors() {
     return runnableProcessors;
   }
 
