@@ -42,14 +42,14 @@ public class TestWorkflowLifecycleManager extends TestCase {
     assertEquals(this.lifecycle.getDefaultLifecycle().getStages().size(), 7);
   }
 
-  public void readNewStateFormat() {
+  public void testReadNewStateFormat() {
     assertNotNull(this.lifecycle.getDefaultLifecycle());
     assertNotNull(this.lifecycle.getDefaultLifecycle().getStages());
     boolean gotNull = false, gotLoaded = false;
     WorkflowLifecycleStage category = this.lifecycle.getDefaultLifecycle()
-        .getCategoryByName("Null");
+        .getCategoryByName("initial");
     assertNotNull(category);
-    assertEquals("Null", category.getName());
+    assertEquals("initial", category.getName());
     for (WorkflowState state : (List<WorkflowState>) category.getStates()) {
       if (state.getName().equals("Null")) {
         gotNull = true;
@@ -65,7 +65,7 @@ public class TestWorkflowLifecycleManager extends TestCase {
     assertTrue(gotNull && gotLoaded);
   }
 
-  public void readOldStateFormat() throws InstantiationException {
+  public void testReadOldStateFormat() throws InstantiationException {
     this.lifecycle = new WorkflowLifecycleManager("./src/main/resources"
         + "/examples/workflow-lifecycle.xml");
     assertNotNull(this.lifecycle);
