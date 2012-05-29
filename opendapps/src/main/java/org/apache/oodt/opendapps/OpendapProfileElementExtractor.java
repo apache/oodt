@@ -68,32 +68,38 @@ public class OpendapProfileElementExtractor {
     while (attributeNames.hasMoreElements()) {
       String attrName = (String) attributeNames.nextElement();
       Attribute attr = attTable.getAttribute(attrName);
-      Enumeration attrValues = null;
-      try {
-        attrValues = attr.getValues();
-      } catch (NoSuchAttributeException e) {
-        e.printStackTrace();
-        LOG.log(Level.WARNING, "Attempt to resolve attribute: [" + attrName
-            + "] failed: Message: " + e.getMessage());
-        continue;
-      }
-
-      while (attrValues.hasMoreElements()) {
-        String attrValue = (String) attrValues.nextElement();
-        if (attrName.equals(ACTUAL_RANGE)) {
-          elem.setMinValue(attrValue);
-          if (attrValues.hasMoreElements()) {
-            elem.setMaxValue((String) attrValues.nextElement());
+     
+      if (!attr.isContainer()) {
+      	 Enumeration attrValues = null;
+        
+        	try {
+            attrValues = attr.getValues();
+          } catch (NoSuchAttributeException e) {
+            e.printStackTrace();
+            LOG.log(Level.WARNING, "Attempt to resolve attribute: [" + attrName
+                + "] failed: Message: " + e.getMessage());
+            continue;
+         }
+  
+        while (attrValues.hasMoreElements()) {
+          String attrValue = (String) attrValues.nextElement();
+          if (attrName.equals(ACTUAL_RANGE)) {
+            elem.setMinValue(attrValue);
+            if (attrValues.hasMoreElements()) {
+              elem.setMaxValue((String) attrValues.nextElement());
+            }
+          } else if (attrName.equals(UNITS)) {
+            elem.setUnit(attrValue);
+          } else if (attrName.equals(START)) {
+            elem.setMinValue(attrValue);
+          } else if (attrName.equals(END)) {
+            elem.setMaxValue(attrValue);
           }
-        } else if (attrName.equals(UNITS)) {
-          elem.setUnit(attrValue);
-        } else if (attrName.equals(START)) {
-          elem.setMinValue(attrValue);
-        } else if (attrName.equals(END)) {
-          elem.setMaxValue(attrValue);
         }
       }
-    }
+      
+    } // not a container attribute
+    
     return elem;
   }
 
