@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-463: Ignore container-type DAS attributes when parsing metadata in opendap-ps module (luca)
+
 * OODT-402: Provided default File Manager policy and RSS configuration for 
 products with location metadata.  See subtasks OODT-449, 452 and 453. (rlaidlaw)
 
