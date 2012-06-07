@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.opendapps.config.OpendapConfig;
 
 /**
  * Implementation of {@link MetadataExtractor} that parses an NcML XML document.
@@ -45,7 +46,7 @@ public class NcmlMetadataExtractor implements MetadataExtractor {
   /**
    * Stub implementation of interface method.
    */
-  public void extract(Metadata metadata) {
+  public void extract(Metadata metadata, OpendapConfig config) {
 
     LOG.log(Level.FINE, "Parsing NcML metadata from: " + ncmlUrl);
 

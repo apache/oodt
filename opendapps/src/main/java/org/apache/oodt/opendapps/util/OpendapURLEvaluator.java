@@ -20,7 +20,6 @@ package org.apache.oodt.opendapps.util;
 //JDK imports
 import java.io.IOException;
 
-//APACHE imports
 import org.apache.oodt.opendapps.DatasetExtractor;
 import org.apache.oodt.xmlquery.XMLQuery;
 
@@ -37,7 +36,7 @@ public class OpendapURLEvaluator {
     String catalogUrl = args[1];
 
     DatasetExtractor gen = new DatasetExtractor(getQuery(), catalogUrl,
-        datasetUrl);
+        datasetUrl, null);
     System.out.println(gen.getDapUrls());
   }
 

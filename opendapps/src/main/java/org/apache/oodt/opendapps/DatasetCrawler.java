@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.opendapps.config.OpendapConfig;
 import org.apache.oodt.opendapps.extractors.MetadataExtractor;
 import org.apache.oodt.opendapps.extractors.ThreddsMetadataExtractor;
 
@@ -51,10 +52,13 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
   private Map<String, Metadata> datasetMet;
 
   private String datasetURL = null;
+  
+  private OpendapConfig conf = null;
 
-  public DatasetCrawler(String datasetURL) {
+  public DatasetCrawler(String datasetURL, OpendapConfig conf) {
     this.datasetURL = datasetURL.endsWith("/") ? datasetURL : datasetURL + "/";
     this.datasetMet = new HashMap<String, Metadata>();
+    this.conf = conf;
   }
 
   /*
@@ -93,7 +97,7 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
           // extract metadata from THREDDS catalog
           MetadataExtractor extractor = new ThreddsMetadataExtractor(dd);
           Metadata met = new Metadata();
-          extractor.extract(met);
+          extractor.extract(met, conf);
           // index metadata by opendap access URL
           this.datasetMet.put(opendapurl, met);
           this.urls.add(opendapurl);

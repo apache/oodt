@@ -35,12 +35,15 @@ public class OpendapConfig {
   private List<ConstantSpec> constSpecs;
 
   private List<DatasetMetElem> datasetMetSpecs;
+  
+  private ProcessingInstructions processingInstructions;
 
   public OpendapConfig() {
     this.roots = new Vector<DapRoot>();
     this.rewriteSpecs = new Vector<RewriteSpec>();
     this.constSpecs = new Vector<ConstantSpec>();
     this.datasetMetSpecs = new Vector<DatasetMetElem>();
+    this.processingInstructions = new ProcessingInstructions();
   }
 
   /**
@@ -101,6 +104,25 @@ public class OpendapConfig {
    */
   public void setDatasetMetSpecs(List<DatasetMetElem> datasetMetSpecs) {
     this.datasetMetSpecs = datasetMetSpecs;
+  }
+  
+  /**
+   * Returns all processing instructions.
+   * 
+   * @return the processingInstructions
+   */
+  public ProcessingInstructions getProcessingInstructions() {
+  	return this.processingInstructions;
+  }
+  
+  /**
+   * Adds a processing instruction.
+   * 
+   * @param key
+   * @param value
+   */
+  public void addProcessingInstruction(String key, String value) {
+  	this.processingInstructions.addInstruction(key, value);
   }
 
 }

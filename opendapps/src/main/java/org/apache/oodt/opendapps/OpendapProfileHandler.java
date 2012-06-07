@@ -99,7 +99,7 @@ public class OpendapProfileHandler implements ProfileHandler {
     	LOG.log(Level.INFO,"Parsing DapRoot="+root.getDatasetUrl());
 
       DatasetExtractor d = new DatasetExtractor(xmlQuery, root.getCatalogUrl()
-          .toExternalForm(), root.getDatasetUrl().toExternalForm());
+          .toExternalForm(), root.getDatasetUrl().toExternalForm(), conf);
       if (d.getDapUrls() != null) {
         for (String opendapUrl : d.getDapUrls()) {
         	
@@ -124,14 +124,14 @@ public class OpendapProfileHandler implements ProfileHandler {
             
             // extract DAS metadata
             MetadataExtractor dasExtractor = new DasMetadataExtractor(dConn);
-            dasExtractor.extract(datasetMet);
+            dasExtractor.extract(datasetMet, conf);
             
             // extract NcML metadata, if available
            if (datasetMet.containsKey(ThreddsMetadataExtractor.SERVICE_TYPE_NCML)) {
             	// retrieve URL of NcML document, previously stored
             	final String ncmlUrl = datasetMet.getMetadata(ThreddsMetadataExtractor.SERVICE_TYPE_NCML);
             	MetadataExtractor ncmlExtractor = new NcmlMetadataExtractor(ncmlUrl);
-            	ncmlExtractor.extract(datasetMet);
+            	ncmlExtractor.extract(datasetMet, conf);
             }
             
             // debug: write out all metadata entries

@@ -19,6 +19,7 @@ package org.apache.oodt.opendapps.extractors;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.opendapps.config.OpendapConfig;
 
 /**
  * Interface for extracting metadata from a generic web accessible resource into
@@ -31,11 +32,12 @@ import org.apache.oodt.cas.metadata.Metadata;
 public interface MetadataExtractor {
 
   /**
-   * Method to (further) populate the metadata container. Any extracted metadata
-   * is added to the current metadata content.
+   * Method to (further) populate the metadata container. 
+   * Any extracted metadata is added to the current metadata content.
    * 
    * @param metadata
+   * @param config
    */
-  void extract(Metadata metadata);
+  void extract(Metadata metadata, OpendapConfig config);
 
 }

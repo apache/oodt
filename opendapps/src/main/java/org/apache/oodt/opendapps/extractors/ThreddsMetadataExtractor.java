@@ -26,7 +26,9 @@ import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.opendapps.config.OpendapConfig;
 import org.apache.oodt.opendapps.util.ProfileUtils;
+
 
 //Spring imports
 import org.springframework.util.StringUtils;
@@ -69,7 +71,7 @@ public class ThreddsMetadataExtractor implements MetadataExtractor {
     this.dataset = dataset;
   }
 
-  public void extract(Metadata met) {
+  public void extract(Metadata met, OpendapConfig config) {
 
     LOG.log(Level.INFO, "Crawling catalog URL=" + dataset.getCatalogUrl()
         + " dataset ID=" + dataset.getID());
@@ -282,7 +284,7 @@ public class ThreddsMetadataExtractor implements MetadataExtractor {
     // add TREDDS XML catalog URL
     String url = dataset.getCatalogUrl(); // catalog_url.xml#dataset_id
     ProfileUtils.addIfNotNull(met,"Access", this.encodeAccessTuple(url, ProfileUtils.MIME_TYPE_THREDDS, "Catalog/XML"));
-    ProfileUtils.addIfNotNull(met,"Access", this.encodeAccessTuple(url.replaceAll("\\.xml#", ".html?dataset="), ProfileUtils.MIME_TYPE_HTML, "Catalog/HTML"));
+    ProfileUtils.addIfNotNull(met,"Access", this.encodeAccessTuple(url.replaceAll("\\.xml", ".html"), ProfileUtils.MIME_TYPE_HTML, "Catalog/HTML"));
 
   }
   

@@ -29,15 +29,16 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//OODT imports
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.opendapps.config.OpendapConfig;
+import org.apache.oodt.xmlquery.XMLQuery;
+
 //NetCDF-Java imports
 import thredds.catalog.crawl.CatalogCrawler;
 import ucar.nc2.util.CancelTask;
 import opendap.dap.DConnect;
 import opendap.dap.DataDDS;
-
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.xmlquery.XMLQuery;
 
 /**
  * 
@@ -65,11 +66,14 @@ public class DatasetExtractor {
   private List<String> allUrls;
 
   private Map<String, Metadata> datasetMet;
+  
+  private OpendapConfig conf;
 
-  public DatasetExtractor(XMLQuery q, String mainCatalogURL, String datasetURL) {
+  public DatasetExtractor(XMLQuery q, String mainCatalogURL, String datasetURL, OpendapConfig conf) {
     this.q = q.getKwdQueryString().trim();
     this.mainCatalogURL = mainCatalogURL;
     this.datasetURL = datasetURL;
+    this.conf = conf;
     this.initExtraction();
   }
 
@@ -91,7 +95,7 @@ public class DatasetExtractor {
   }
 
   private void initExtraction() {
-    DatasetCrawler listener = new DatasetCrawler(this.datasetURL);
+    DatasetCrawler listener = new DatasetCrawler(this.datasetURL, this.conf);
     CancelTask ignore = new CancelTask() {
       public boolean isCancel() {
         return false;
