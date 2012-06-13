@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.4: Current Development
 --------------------------------------------
 
+* OODT-446 Addition of Puny module to Balance (skhudiky)
+
 * OODT-462: Include support for special processing instructions in opendap-ps configuration file (luca)
 
 * OODT-463: Ignore container-type DAS attributes when parsing metadata in opendap-ps module (luca)
