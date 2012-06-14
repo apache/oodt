@@ -22,7 +22,7 @@ $Id$
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.4-SNAPSHOT</version>
   </parent>
   <build>
     <plugins>
