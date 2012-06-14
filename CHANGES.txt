@@ -1,8 +1,9 @@
 Apache OODT Change Log
 ======================
 
-Release 0.4: Current Development
+Release 0.4
 --------------------------------------------
+Release Date: June 13th, 2012
 
 * OODT-446 Addition of Puny module to Balance (skhudiky)
 
