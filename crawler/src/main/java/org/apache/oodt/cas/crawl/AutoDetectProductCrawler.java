@@ -57,7 +57,7 @@ import org.springframework.beans.factory.annotation.Required;
  * <code>./src/resources/examples/mime-extractor-map.xml</code> for an example
  * of the structure of this file. </li>
  * <li><code>mimetypes.xml</code> - An <a
- * href="http://incubator.apache.org/tika/">Apache Tika</a> style mimetypes
+ * href="http://tika.apache.org/">Apache Tika</a> style mimetypes
  * file, augmented with the ability to have arbitrary regular expressions that
  * define a particular {@link Product} {@link MimeType}. This {@link MimeType}
  * is then mapped to an extractor vai the <code>mime-extractor-map.xml</code>

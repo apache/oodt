@@ -211,11 +211,11 @@ the License.
        also check out the resource trunk project from the OODT subversion repository. You can browse 
        the repository using ViewCVS, located at:</p>
        
-       <screen>http://svn.apache.org/viewvc/incubator/oodt/</screen>
+       <screen>http://svn.apache.org/viewvc/oodt/</screen>
        
        <p>The actual web url for the repository is located at:</p>
        
-       <screen>https://svn.apache.org/repos/asf/incubator/oodt/trunk/resource</screen>
+       <screen>https://svn.apache.org/repos/asf/oodt/trunk/resource</screen>
 
        <p>To check out the Resource Manager, use your favorite Subversion client.</p>   
       

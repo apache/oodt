@@ -236,11 +236,11 @@ the License.
        also check out the cas-crawler trunk project from the Apache OODT subversion repository. You can browse 
        the repository using ViewCVS, located at:</p>
        
-       <screen>http://svn.apache.org/viewvc/incubator/oodt/</screen>
+       <screen>http://svn.apache.org/viewvc/oodt/</screen>
        
        <p>The actual web url for the repository is located at:</p>
        
-       <screen>https://svn.apache.org/repos/asf/incubator/oodt</screen>
+       <screen>https://svn.apache.org/repos/asf/oodt</screen>
 
        <p>To check out the Crawler Framework, use your favorite Subversion client.</p>
       

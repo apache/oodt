@@ -21,7 +21,7 @@ OODT is a set of software components that permit the discovery, correlation,
 search, and retrieval of data and metadata.  For more information, see the
 OODT web site_.
 
-.. _site: http://incubator.apache.org/projects/oodt.html
+.. _site: http://oodt.apache.org/
 '''
 
 __docformat__ = 'restructuredtext'

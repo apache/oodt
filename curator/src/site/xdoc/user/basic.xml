@@ -46,7 +46,7 @@ the License.
     <a name="section1"/>
     <section name="Download And Build">
       <p>The most recent CAS-Curator project can be downloaded from
-      the OODT <a href="http://incubator.apache.org/oodt">website</a> or it can
+      the OODT <a href="http://oodt.apache.org/">website</a> or it can
       be checked out from the OODT repository using Subversion. The 
       We recommend checking
       out the latest released version (v1.0.0 at the time of writing).
@@ -206,8 +206,7 @@ docBase="/usr/local/src/cas-curator-v1.0.0/target/cas-curator-1.0.0.war">
     <source>
 > mkdir /usr/local/staging/products/mp3
 > cd /usr/local/staging/products/mp3
-> curl http://incubator.apache.org/oodt/components/curator/media/Bach-SuiteNo2.mp3 > \
-        Bach-SuiteNo2.mp3
+> curl -LO http://oodt.apache.org/components/maven/curator/media/Bach-SuiteNo2.mp3
     </source>
     
     <p>We should note that this music file was produced by the 

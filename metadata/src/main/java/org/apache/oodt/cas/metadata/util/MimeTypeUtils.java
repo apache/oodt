@@ -41,7 +41,7 @@ import org.apache.tika.mime.MimeTypesFactory;
  * 
  * <p>
  * This is a facade class to insulate CAS Metadata from its underlying Mime Type
- * substrate library, <a href="http://incubator.apache.org/tika/">Apache Tika</a>.
+ * substrate library, <a href="http://tika.apache.org/">Apache Tika</a>.
  * Any mime handling code should be placed in this utility class, and hidden
  * from the CAS Metadata classes that rely on it.
  * </p>
