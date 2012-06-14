@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-core</artifactId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.4</version>
         <relativePath>../core/pom.xml</relativePath>
     </parent>
     <artifactId>oodt-product</artifactId>
@@ -35,9 +35,9 @@
         without impacting local stores or operations.
     </description>
     <scm>
-   		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/product</connection>
-   		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/product</developerConnection>
-   		<url>http://svn.apache.org/viewvc/oodt/trunk/product</url>
+   		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/product</connection>
+   		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/product</developerConnection>
+   		<url>http://svn.apache.org/viewvc/oodt/tags/oodt-0.4/product</url>
     </scm>
     <build>
         <resources>

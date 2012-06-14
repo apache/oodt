@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-profile</artifactId>
@@ -32,9 +32,9 @@
     The Profile Service catalogs metadata descriptions and provides
     creating, updating, and querying capabilities.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/profile</url>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/profile</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/profile</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/oodt-0.4/profile</url>
   </scm>
   <build>
     <resources>
