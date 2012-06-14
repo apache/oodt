@@ -25,7 +25,7 @@ the License.
 	</parent>    
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.4</version>
+    <version>0.5-SNAPSHOT</version>
     <name>OODT Core</name>
     <packaging>pom</packaging>
     <properties>
@@ -257,9 +257,9 @@ the License.
         <url>http://oodt.apache.org/</url>
     </organization>
     <scm>
-    	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/core</connection>
-    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.4/core</developerConnection>
-    	<url>http://svn.apache.org/viewvc/oodt/tags/oodt-0.4/core</url>
+    	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</connection>
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</developerConnection>
+    	<url>http://svn.apache.org/viewvc/oodt/trunk/core</url>
     </scm>
     <build>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
