@@ -31,10 +31,10 @@ import com.google.common.collect.Sets;
  */
 public class FileStagingInfo {
 
-   private String stagingDir;
-   private boolean forceStaging;
-   private Set<String> filePaths;
-   private Set<String> productIds;
+   private final String stagingDir;
+   private final boolean forceStaging;
+   private final Set<String> filePaths;
+   private final Set<String> productIds;
 
    public FileStagingInfo(String stagingDir) {
       this(stagingDir, false);
@@ -52,7 +52,7 @@ public class FileStagingInfo {
    }
 
    public void addFilePaths(List<String> filePaths) {
-      filePaths.addAll(filePaths);
+      this.filePaths.addAll(filePaths);
    }
 
    public List<String> getFilePaths() {

@@ -83,13 +83,14 @@ import com.google.common.collect.Sets;
 
 /**
  * Test class for {@link PGETaskInstance}.
- * 
+ *
  * @author bfoster (Brian Foster)
  */
 public class TestPGETaskInstance extends TestCase {
 
-   private List<File> tmpDirs = Lists.newArrayList();
+   private final List<File> tmpDirs = Lists.newArrayList();
 
+   @Override
    public void tearDown() throws Exception {
       for (File tmpDir : tmpDirs) {
          FileUtils.forceDelete(tmpDir);
@@ -199,7 +200,7 @@ public class TestPGETaskInstance extends TestCase {
             @Override
             public boolean accept(File pathname) {
                return pathname.getName().endsWith(".log");
-            } 
+            }
          })[0], "UTF-8");
       assertEquals("INFO: pge1 message1", messages.get(1));
       assertEquals("INFO: pge1 message2", messages.get(3));
@@ -211,7 +212,7 @@ public class TestPGETaskInstance extends TestCase {
             @Override
             public boolean accept(File pathname) {
                return pathname.getName().endsWith(".log");
-            } 
+            }
          })[0], "UTF-8");
       assertEquals("SEVERE: pge2 message1", messages.get(1));
    }
@@ -220,6 +221,7 @@ public class TestPGETaskInstance extends TestCase {
       final Map<String, String> args = Maps.newHashMap();
       PGETaskInstance pgeTask = createTestInstance();
       pgeTask.wm = new XmlRpcWorkflowManagerClient(null) {
+         @Override
          public boolean updateWorkflowInstanceStatus(String instanceId,
                String status) {
             args.put("InstanceId", instanceId);
@@ -239,7 +241,7 @@ public class TestPGETaskInstance extends TestCase {
       final String KEY = "TestKey";
       final String VALUE = "TestValue";
       File pgeConfigFile = new File(createTmpDir(), "pgeConfig.xml");
-      FileUtils.writeLines(pgeConfigFile, "UTF-8", 
+      FileUtils.writeLines(pgeConfigFile, "UTF-8",
             Lists.newArrayList(
                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
                "<pgeConfig>",
@@ -394,7 +396,7 @@ public class TestPGETaskInstance extends TestCase {
    }
 
    public void testRunIngestCrawler() throws Exception {
-      // Case: UpdateStatus Success, VerifyIngest Success, 
+      // Case: UpdateStatus Success, VerifyIngest Success,
       PGETaskInstance pgeTask = createTestInstance();
       pgeTask.pgeConfig.addOuputDirAndExpressions(new OutputDir("/tmp/dir1", true));
       pgeTask.pgeConfig.addOuputDirAndExpressions(new OutputDir("/tmp/dir2", true));

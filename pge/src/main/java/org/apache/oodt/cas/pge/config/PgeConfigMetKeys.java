@@ -35,9 +35,9 @@ public interface PgeConfigMetKeys {
     public static final String METADATA_TAG = "metadata";
 
     public static final String KEYREF_ATTR = "key-ref";
-    
+
     public static final String KEY_GEN_ATTR = "key-gen";
-    
+
     public static final String KEY_ATTR = "key";
 
     public static final String VAL_ATTR = "val";
@@ -45,11 +45,11 @@ public interface PgeConfigMetKeys {
     public static final String ENV_REPLACE_ATTR = "envReplace";
 
     public static final String ENV_REPLACE_NO_RECUR_ATTR = "envReplace-NoRecur";
-    
+
     public static final String SPLIT_ATTR = "split";
 
     public static final String WORKFLOW_MET_ATTR = "workflowMet";
-    
+
     public static final String DYN_INPUT_FILES_TAG = "dynInputFiles";
 
     public static final String FILE_TAG = "file";
@@ -73,4 +73,12 @@ public interface PgeConfigMetKeys {
     public static final String DIR_TAG = "dir";
 
     public static final String CREATE_BEFORE_EXEC_ATTR = "createBeforeExe";
+
+    public static final String FILE_STAGING_TAG = "fileStaging";
+
+    public static final String STAGE_FILES_TAG = "stageFiles";
+
+    public static final String METADATA_KEY_ATTR = "metadataKey";
+
+    public static final String FORCE_ATTR = "force";
 }

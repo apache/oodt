@@ -21,7 +21,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 /**
  * PGETaskInstance Reserved Metadata keys.
- * 
+ *
  * @author bfoster (Brian Foster)
  */
 public enum PgeTaskMetKeys {
@@ -57,14 +57,12 @@ public enum PgeTaskMetKeys {
          "PGETask/PropertyAdders",
          "PGETask_PropertyAdderClasspath",
          true),
-
    /**
     * {@link FileStager}s classpath.
     */
    FILE_STAGER(
          "PGETask/FileStager",
          "PGETask/FileStager"),
-
    /**
     * List of {@link ConfigFilePropertyAdder}s classpaths to be run.
     */
