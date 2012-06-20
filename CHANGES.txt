@@ -1,6 +1,11 @@
 Apache OODT Change Log
 ======================
 
+Release 0.5
+--------------------------------------------
+
+* OODT-464 Add file staging support to CAS-PGE's XmlFilePgeConfigBuilder (bfoster)
+
 Release 0.4
 --------------------------------------------
 Release Date: June 13th, 2012
