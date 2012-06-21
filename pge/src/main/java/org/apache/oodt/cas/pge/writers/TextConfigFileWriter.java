@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.logging.Logger;
 
 //Google imports
 import com.google.common.annotations.VisibleForTesting;
@@ -41,13 +42,13 @@ import org.apache.oodt.cas.metadata.Metadata;
  *
  * @author bfoster (Brian Foster)
  */
-public class TextConfigFileWriter implements SciPgeConfigFileWriter {
+public class TextConfigFileWriter implements DynamicConfigFileWriter {
 
    private static final int TEMPLATE_INDEX = 0;
 
    @Override
-   public File createConfigFile(String sciPgeConfigFilePath,
-         Metadata inputMetadata, Object... customArgs) throws IOException {
+   public File generateFile(String filePath, Metadata metadata, Logger logger,
+         Object... customArgs) throws Exception {
       checkArgument(customArgs.length > 0,
             TextConfigFileWriter.class.getCanonicalName()
                   + " has no args specified");
@@ -56,7 +57,7 @@ public class TextConfigFileWriter implements SciPgeConfigFileWriter {
                   + TEMPLATE_INDEX + "'");
 
       try {
-         return writeTextFile(sciPgeConfigFilePath, fillIn(template, inputMetadata));
+         return writeTextFile(filePath, fillIn(template, metadata));
       } catch (Exception e) {
          throw new IOException(e);
       }

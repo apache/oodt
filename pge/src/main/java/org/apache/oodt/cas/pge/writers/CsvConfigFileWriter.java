@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.logging.Logger;
 
 //Google imports
 import com.google.common.annotations.VisibleForTesting;
@@ -64,7 +65,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  *
  * @author bfoster (Brian Foster)
  */
-public class CsvConfigFileWriter implements SciPgeConfigFileWriter {
+public class CsvConfigFileWriter implements DynamicConfigFileWriter {
 
    private static final int HEADER_INDEX = 0;
    private static final int DELIM_INDEX = 0;
@@ -72,8 +73,8 @@ public class CsvConfigFileWriter implements SciPgeConfigFileWriter {
    private static final String DEFAULT_DELIM = ",";
 
    @Override
-   public File createConfigFile(String sciPgeConfigFilePath,
-         Metadata inputMetadata, Object... customArgs) throws IOException {
+   public File generateFile(String filePath, Metadata metadata, Logger logger,
+         Object... customArgs) throws Exception {
       checkArgument(customArgs.length > 0,
             CsvConfigFileWriter.class.getCanonicalName()
                   + " has no args specified");
@@ -86,8 +87,8 @@ public class CsvConfigFileWriter implements SciPgeConfigFileWriter {
          delim = (String) customArgs[DELIM_INDEX];
       }
 
-      return writeCsvFile(sciPgeConfigFilePath, header,
-            generateRows(header, inputMetadata), delim);
+      return writeCsvFile(filePath, header, generateRows(header, metadata),
+            delim);
    }
 
    @VisibleForTesting

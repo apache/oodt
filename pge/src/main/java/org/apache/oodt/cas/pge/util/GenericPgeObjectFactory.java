@@ -25,7 +25,7 @@ import org.apache.oodt.cas.pge.ConfigFilePropertyAdder;
 import org.apache.oodt.cas.pge.PGETaskInstance;
 import org.apache.oodt.cas.pge.config.PgeConfigBuilder;
 import org.apache.oodt.cas.pge.staging.FileStager;
-import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
+import org.apache.oodt.cas.pge.writers.DynamicConfigFileWriter;
 
 /**
  * Factory for creating {@link Object}s.
@@ -80,12 +80,12 @@ public class GenericPgeObjectFactory {
       }
    }
 
-   public static SciPgeConfigFileWriter createSciPgeConfigFileWriter(
+   public static DynamicConfigFileWriter createDynamicConfigFileWriter(
          String clazz, Logger logger) {
       try {
-         return (SciPgeConfigFileWriter) Class.forName(clazz).newInstance();
+         return (DynamicConfigFileWriter) Class.forName(clazz).newInstance();
       } catch (Exception e) {
-         logger.log(Level.SEVERE, "Failed to create SciPgeConfigFileWriter ["
+         logger.log(Level.SEVERE, "Failed to create DynamicConfigFileWriter ["
                + clazz + "] : " + e.getMessage(), e);
          return null;
       }

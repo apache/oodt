@@ -40,7 +40,7 @@ import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.RUNNING_PGE;
 import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createConfigFilePropertyAdder;
 import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createFileStager;
 import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createPgeConfigBuilder;
-import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createSciPgeConfigFileWriter;
+import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createDynamicConfigFileWriter;
 
 //JDK imports
 import java.io.File;
@@ -71,7 +71,7 @@ import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 import org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys;
 import org.apache.oodt.cas.pge.staging.FileManagerFileStager;
 import org.apache.oodt.cas.pge.staging.FileStager;
-import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
+import org.apache.oodt.cas.pge.writers.DynamicConfigFileWriter;
 import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
@@ -91,7 +91,7 @@ import com.google.common.collect.Lists;
 /**
  * Runs a CAS-style Product Generation Executive based on the PCS Wrapper
  * Architecture from mattmann et al. on OCO.
- * 
+ *
  * @author mattmann (Chris Mattmann)
  * @author bfoster (Brian Foster)
  */
@@ -105,6 +105,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 
    protected PGETaskInstance() {}
 
+   @Override
    public void run(Metadata metadata, WorkflowTaskConfiguration config)
          throws WorkflowTaskInstanceException {
       try {
@@ -123,7 +124,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
          createExeDir();
          createOuputDirsIfRequested();
          updateStatus(CONF_FILE_BUILD.getWorkflowStatusName());
-         createSciPgeConfigFiles();
+         createDynamicConfigFiles();
          stageFiles();
 
          // Run the PGE.
@@ -274,7 +275,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
          new SerializableMetadata(pgeMetadata.asMetadata())
                .writeMetadataToXmlStream(new FileOutputStream(
                      getDumpMetadataPath()));
-      }      
+      }
    }
 
    protected String getDumpMetadataPath() throws Exception {
@@ -333,41 +334,41 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       }
    }
 
-   protected void createSciPgeConfigFiles() throws Exception {
-      logger.info("Starting creation of science PGE files...");
+   protected void createDynamicConfigFiles() throws Exception {
+      logger.info("Starting creation of dynamic config files...");
       for (DynamicConfigFile dynamicConfigFile : pgeConfig
             .getDynamicConfigFiles()) {
-         createSciPgeConfigFile(dynamicConfigFile);
+         createDynamicConfigFile(dynamicConfigFile);
       }
-      logger.info("Successfully wrote all science PGE files!");
+      logger.info("Successfully wrote all dynamic config files!");
    }
 
-   protected void createSciPgeConfigFile(DynamicConfigFile dynamicConfigFile)
+   protected void createDynamicConfigFile(DynamicConfigFile dynamicConfigFile)
          throws Exception {
       Validate.notNull(dynamicConfigFile, "dynamicConfigFile cannot be null");
-      logger.fine("Starting creation of science PGE file ["
+      logger.fine("Starting creation of dynamic config file ["
             + dynamicConfigFile.getFilePath() + "]...");
 
       // Create parent directory if it doesn't exist.
       File parentDir = new File(dynamicConfigFile.getFilePath())
             .getParentFile();
       if (!(parentDir.exists() || parentDir.mkdirs())) {
-         throw new Exception("Failed to create directory where science PGE file ["
+         throw new Exception("Failed to create directory where dynamic config file ["
                + dynamicConfigFile.getFilePath() + "] was to be written");
       }
 
       // Load writer and write file.
-      logger.fine("Loading writer class for science PGE file ["
+      logger.fine("Loading writer class for dynamic config file ["
             + dynamicConfigFile.getFilePath() + "]...");
-      SciPgeConfigFileWriter writer = createSciPgeConfigFileWriter(
+      DynamicConfigFileWriter writer = createDynamicConfigFileWriter(
             dynamicConfigFile.getWriterClass(), logger);
       logger.fine("Loaded writer [" + writer.getClass().getCanonicalName()
-            + "] for science PGE file [" + dynamicConfigFile.getFilePath()
+            + "] for dynamic config file [" + dynamicConfigFile.getFilePath()
             + "]...");
-      logger.info("Writing science PGE file [" + dynamicConfigFile.getFilePath()
+      logger.info("Writing dynamic config file [" + dynamicConfigFile.getFilePath()
                   + "]...");
-      File configFile = writer.createConfigFile(dynamicConfigFile.getFilePath(),
-            pgeMetadata.asMetadata(), dynamicConfigFile.getArgs());
+      File configFile = writer.generateFile(dynamicConfigFile.getFilePath(),
+            pgeMetadata.asMetadata(), logger, dynamicConfigFile.getArgs());
       if (!configFile.exists()) {
          throw new Exception("Writer failed to create config file ["
                + configFile + "], exists returned false");

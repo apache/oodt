@@ -71,7 +71,7 @@ import org.apache.oodt.cas.pge.config.PgeConfig;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 import org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys;
 import org.apache.oodt.cas.pge.metadata.PgeTaskStatus;
-import org.apache.oodt.cas.pge.writers.MockSciPgeConfigFileWriter;
+import org.apache.oodt.cas.pge.writers.MockDynamicConfigFileWriter;
 import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
@@ -312,17 +312,17 @@ public class TestPGETaskInstance extends TestCase {
       assertFalse(outputDir3.exists());
    }
 
-   public void testCreateSciPgeConfigFile() throws Exception {
+   public void testCreateDynamicConfigFile() throws Exception {
       File tmpDir = createTmpDir();
       FileUtils.forceDelete(tmpDir);
       assertFalse(tmpDir.exists());
       PGETaskInstance pgeTask = createTestInstance();
-      File sciPgeConfigFile = new File(tmpDir, "SciPgeConfig.xml");
-      assertFalse(sciPgeConfigFile.exists());
-      pgeTask.createSciPgeConfigFile(new DynamicConfigFile(sciPgeConfigFile.getAbsolutePath(),
-            MockSciPgeConfigFileWriter.class.getCanonicalName(),
+      File dynamicConfigFile = new File(tmpDir, "DynamicConfig.xml");
+      assertFalse(dynamicConfigFile.exists());
+      pgeTask.createDynamicConfigFile(new DynamicConfigFile(dynamicConfigFile.getAbsolutePath(),
+            MockDynamicConfigFileWriter.class.getCanonicalName(),
             new Object[] {}));
-      assertTrue(sciPgeConfigFile.exists());
+      assertTrue(dynamicConfigFile.exists());
    }
 
    public void testDumpMetadataIfRequested() throws Exception {

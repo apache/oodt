@@ -19,6 +19,7 @@ package org.apache.oodt.cas.pge.writers;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 //Apache imports
 import org.apache.commons.io.FileUtils;
@@ -27,15 +28,16 @@ import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 
 /**
- * Mock implementation of {@link SciPgeConfigFileWriter}.
+ * Mock implementation of {@link DynamicConfigFileWriter}.
  *
  * @author bfoster (Brian Foster)
  */
-public class MockSciPgeConfigFileWriter implements SciPgeConfigFileWriter {
+public class MockDynamicConfigFileWriter implements DynamicConfigFileWriter {
 
-   public File createConfigFile(String sciPgeConfigFilePath,
-         Metadata inputMetadata, Object... customArgs) throws IOException {
-      File configFile = new File(sciPgeConfigFilePath);
+   @Override
+   public File generateFile(String filePath, Metadata metadata, Logger logger,
+         Object... customArgs) throws IOException {
+      File configFile = new File(filePath);
       configFile.getParentFile().mkdirs();
       FileUtils.touch(configFile);
       return configFile;

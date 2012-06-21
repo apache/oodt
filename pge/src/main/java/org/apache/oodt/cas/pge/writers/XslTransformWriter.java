@@ -17,8 +17,11 @@
 package org.apache.oodt.cas.pge.writers;
 
 //JDK imports
+import static java.lang.Boolean.parseBoolean;
+
+//JDK imports
 import java.io.File;
-import java.io.IOException;
+import java.util.logging.Logger;
 
 //JavaX imports.
 import javax.xml.transform.OutputKeys;
@@ -40,34 +43,27 @@ import org.apache.oodt.cas.metadata.SerializableMetadata;
  *
  * @author bfoster (Brian Foster)
  */
-public class XslTransformWriter implements SciPgeConfigFileWriter {
+public class XslTransformWriter implements DynamicConfigFileWriter {
 
    @Override
-   public File createConfigFile(String sciPgeConfigFilePath,
-         Metadata inputMetadata, Object... customArgs) throws IOException {
-      try {
-         File sciPgeConfigFile = new File(sciPgeConfigFilePath);
+   public File generateFile(String filePath, Metadata metadata, Logger logger,
+         Object... args) throws Exception {
+      File file = new File(filePath);
 
-         String xsltFilePath = (String) customArgs[0];
-         Source xsltSource = new StreamSource(new File(xsltFilePath));
-         Result result = new StreamResult(sciPgeConfigFile);
+      String xsltFilePath = (String) args[0];
+      Source xsltSource = new StreamSource(new File(xsltFilePath));
+      Result result = new StreamResult(file);
 
-         TransformerFactory transFact = TransformerFactory.newInstance();
-         Transformer trans = transFact.newTransformer(xsltSource);
-         boolean useCDATA = customArgs.length > 1 ? ((String) customArgs[1])
-               .toLowerCase().equals("true") : false;
-         Source xmlSource = new DOMSource((new SerializableMetadata(
-               inputMetadata, trans.getOutputProperty(OutputKeys.ENCODING),
-               useCDATA)).toXML());
+      TransformerFactory transFact = TransformerFactory.newInstance();
+      Transformer trans = transFact.newTransformer(xsltSource);
+      boolean useCDATA = args.length > 1 ? parseBoolean((String) args[1])
+            : false;
+      Source xmlSource = new DOMSource((new SerializableMetadata(metadata,
+            trans.getOutputProperty(OutputKeys.ENCODING), useCDATA)).toXML());
 
-         trans.setOutputProperty(OutputKeys.INDENT, "yes");
-         trans.transform(xmlSource, result);
+      trans.setOutputProperty(OutputKeys.INDENT, "yes");
+      trans.transform(xmlSource, result);
 
-         return sciPgeConfigFile;
-      } catch (Exception e) {
-         e.printStackTrace();
-         throw new IOException("Failed to create science PGE config file '"
-               + sciPgeConfigFilePath + "' : " + e.getMessage());
-      }
+      return file;
    }
 }

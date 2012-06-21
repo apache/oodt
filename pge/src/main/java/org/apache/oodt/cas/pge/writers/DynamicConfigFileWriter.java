@@ -18,7 +18,7 @@ package org.apache.oodt.cas.pge.writers;
 
 //JDK imports
 import java.io.File;
-import java.io.IOException;
+import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
@@ -29,8 +29,8 @@ import org.apache.oodt.cas.metadata.Metadata;
  *
  * @author bfoster (Brian Foster)
  */
-public interface SciPgeConfigFileWriter {
+public interface DynamicConfigFileWriter {
 
-    public File createConfigFile(String sciPgeConfigFilePath,
-            Metadata inputMetadata, Object... customArgs) throws IOException;
+   public File generateFile(String filePath, Metadata metadata, Logger logger,
+         Object... args) throws Exception;
 }
