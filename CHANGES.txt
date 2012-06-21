@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-467 Change SciPgeConfigFileWriter to DynamicConfigFileWriter (bfoster)
+
 * OODT-464 Add file staging support to CAS-PGE's XmlFilePgeConfigBuilder (bfoster)
 
 Release 0.4
