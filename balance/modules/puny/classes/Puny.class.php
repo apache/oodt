@@ -121,8 +121,9 @@ class Puny {
 	  if ( !self::$commonResourcesLoaded ) {
 	    $js = "\r\n"
 	      . "var puny_module_root   = '" . trim(App::Get()->settings['puny_module_root']) . "'\r\n"
-	      . "    puny_module_static = '" . trim(App::Get()->settings['puny_module_static']) ."';\r\n";
-	    App::Get()->response->addJavascript( $js, true ); // raw Javascript
+	      . "    puny_module_static = '" . trim(App::Get()->settings['puny_module_static']) ."'\r\n"
+	      . "    puny_current_url = '" . $_SERVER['HTTP_REFERER'] ."';\r\n";
+	      App::Get()->response->addJavascript( $js, true ); // raw Javascript
 	    
 	    // Add puny default styles
 	    $staticPath = trim(App::Get()->settings['puny_module_static']);

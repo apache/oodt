@@ -42,7 +42,7 @@ function punyInitEditor ( elmt ) {
 };
 
 function punyCancel() {
-	window.location = site_root;
+	window.location = puny_current_url;
 }
 
 function punyPersistChanges(event) {
@@ -51,6 +51,6 @@ function punyPersistChanges(event) {
 		'resourceId' : editingResourceId
 		, 'content'  : $('#gollum-editor-body').val()
 	},function( data ) {
-		window.location = site_root;
+		window.location = puny_current_url;
 	}, 'json');
 }
