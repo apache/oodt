@@ -31,11 +31,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //APACHE imports
+import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeTypesFactory;
 
 //OODT imports
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.product.handlers.ofsn.metadata.OFSNMetKeys;
+import org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLConfigMetKeys;
 import org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLMetKeys;
 import org.apache.oodt.product.handlers.ofsn.metadata.XMLQueryMetKeys;
 import org.apache.oodt.product.handlers.ofsn.util.OFSNObjectFactory;
@@ -57,7 +59,7 @@ import org.apache.oodt.xmlquery.XMLQuery;
  * @version $Revision$
  */
 public class OFSNFileHandler implements LargeProductQueryHandler,
-    XMLQueryMetKeys, OFSNXMLMetKeys, OFSNMetKeys {
+    XMLQueryMetKeys, OFSNXMLMetKeys, OFSNMetKeys, OFSNXMLConfigMetKeys {
 
   private static final Logger LOG = Logger.getLogger(OFSNFileHandler.class
       .getName());
@@ -130,12 +132,28 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     } else if (isGetCmd(cmd)) {
       OFSNGetHandler handler = getGetHandler(cmd, cfg.getClassName());
       String rtAndPath = cmd + CMD_SEPARATOR + realPath;
-
+      String mimeType;
+      
+      // check for and use mimetype conf property if available
+      if (cfg.getHandlerConf().containsKey(PROPERTY_MIMETYPE_ATTR)) {
+    	  MediaType mediaType = MediaType.parse(cfg.getHandlerConf()
+    			  .getProperty(PROPERTY_MIMETYPE_ATTR));
+    	  if (mediaType == null) {
+    		  LOG.log(Level.WARNING, "MIME type ["
+    				  +cfg.getHandlerConf().getProperty(PROPERTY_MIMETYPE_ATTR)+"] specified "
+    				  +"for handler ["+cfg.getClassName()+"] invalid. Defaulting to MIME type ["
+    				  +MediaType.OCTET_STREAM.toString()+"]");
+    		  mediaType = MediaType.OCTET_STREAM;
+    	  }
+    	  mimeType = mediaType.toString();
+      } else { // use default mimetype of product on disk
+    	  mimeType = MimeTypesFactory.create().getMimeType(new File(realPath)).getName();
+      }
+      
       xmlQuery.getResults().add(
-          new LargeResult(/* id */rtAndPath,/* mimeType */
-          MimeTypesFactory.create().getMimeType(new File(realPath)).getName(), /* profileID */
-          null, /* resourceID */new File(realPath).getName(),
-              Collections.EMPTY_LIST, handler.sizeOf(realPath)));
+          new LargeResult(/* id */rtAndPath,/* mimeType */ mimeType, /* profileID */null, 
+        		  /* resourceID */new File(realPath).getName(), Collections.EMPTY_LIST, 
+        		  handler.sizeOf(realPath)));
     } else {
       throw new ProductException("return type: [" + cmd + "] is unsupported!");
     }
