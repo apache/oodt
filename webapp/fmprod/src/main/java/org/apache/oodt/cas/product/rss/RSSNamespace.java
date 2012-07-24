@@ -20,32 +20,41 @@ package org.apache.oodt.cas.product.rss;
 
 /**
  * 
- * Met keys used by the {@link RSSConfigReader}.
+ * RSS namespace definition to include in an RSS feed as defined by the
+ * {@link RSSProductServlet}'s {@link RSSConfig}.
  * 
- * @author mattmann
+ * @author rlaidlaw
  * @version $Revision$
- * 
  */
-public interface RSSConfigReaderMetKeys {
-  
-  public static final String CHANNEL_LINK_ATTR = "channelLink";
-  
-  public static final String NAMESPACE_TAG = "namespace";
-  
-  public static final String NAMESPACE_ATTR_PREFIX = "prefix";
-  
-  public static final String NAMESPACE_ATTR_URI = "uri";
+public class RSSNamespace 
+{
+  private String prefix;
+  private String uri;
 
-  public static final String TAG_TAG = "tag";
+  /**
+   * Default constructor.
+   */
+  public RSSNamespace() { }
 
-  public static final String TAG_ATTR_NAME = "name";
+  /**
+   * @return the prefix
+   */
+  public String getPrefix() { return prefix; }
 
-  public static final String TAG_ATTR_SOURCE = "source";
+  /**
+   * @param prefix
+   *          the prefix to set
+   */
+  public void setPrefix(String prefix) { this.prefix = prefix;}
 
-  public static final String ATTRIBUTE_TAG = "attribute";
+  /**
+   * @return the uri
+   */
+  public String getUri() { return uri; }
 
-  public static final String ATTRIBUTE_ATTR_NAME = "name";
-
-  public static final String ATTRIBUTE_ATTR_VALUE = "value";
-
+  /**
+   * @param uri
+   *          the uri to set
+   */
+  public void setUri(String uri) { this.uri = uri; }
 }

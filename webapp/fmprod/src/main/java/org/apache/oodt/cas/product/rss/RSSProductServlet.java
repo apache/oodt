@@ -83,18 +83,12 @@ public class RSSProductServlet extends HttpServlet {
   /* our log stream */
   private Logger LOG = Logger.getLogger(RSSProductServlet.class.getName());
 
-  private static final Map NS_MAP = new HashMap();
-
   public static final String COPYRIGHT_BOILER_PLATE = "Copyright 2010: Apache Software Foundation";
 
   public static final String RSS_FORMAT_STR = "E, dd MMM yyyy HH:mm:ss z";
 
   public static final SimpleDateFormat dateFormatter = new SimpleDateFormat(
       RSS_FORMAT_STR);
-
-  static {
-    NS_MAP.put("cas", "http://oodt.jpl.nasa.gov/1.0/cas");
-  }
 
   /**
    * Default constructor.
@@ -206,8 +200,13 @@ public class RSSProductServlet extends HttpServlet {
 
         Element rss = XMLUtils.addNode(doc, doc, "rss");
         XMLUtils.addAttribute(doc, rss, "version", "2.0");
-        XMLUtils
-            .addAttribute(doc, rss, "xmlns:cas", (String) NS_MAP.get("cas"));
+        
+        // add namespace attributes from config file to rss tag
+        for (RSSNamespace namespace : this.conf.getNamespaces()) 
+        {
+          XMLUtils.addAttribute(doc, rss, "xmlns:" + namespace.getPrefix(), namespace.getUri());
+        }
+        
         Element channel = XMLUtils.addNode(doc, rss, "channel");
 
         XMLUtils.addNode(doc, channel, "title", productTypeName);

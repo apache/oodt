@@ -56,8 +56,22 @@ public class RSSConfigReader implements RSSConfigReaderMetKeys {
     Element rootElem = doc.getDocumentElement();
     conf.setChannelLink(rootElem.getAttribute(CHANNEL_LINK_ATTR));
 
+    readNamespaces(rootElem, conf);
     readTags(rootElem, conf);
     return conf;
+  }
+  
+  protected static void readNamespaces(Element root, RSSConfig conf) {
+    NodeList namespaceList = root.getElementsByTagName(NAMESPACE_TAG);
+    if (namespaceList != null && namespaceList.getLength() > 0) {
+      for (int i = 0; i < namespaceList.getLength(); i++) {
+        Element namespaceElem = (Element) namespaceList.item(i);
+        RSSNamespace namespace = new RSSNamespace();
+        namespace.setPrefix(namespaceElem.getAttribute(NAMESPACE_ATTR_PREFIX));
+        namespace.setUri(namespaceElem.getAttribute(NAMESPACE_ATTR_URI));
+        conf.getNamespaces().add(namespace);
+      }
+    }
   }
 
   protected static void readTags(Element root, RSSConfig conf) {
