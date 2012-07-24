@@ -23,7 +23,7 @@ the License.
   compatible tags.  This file contains example GeoRSS tags.
 -->
 
-<cas:rssconf xmlns:cas="http://oodt.apache.org/components/cas">
+<rss:rssconf xmlns:rss="http://oodt.apache.org/ns/rss">
 
   <!--
     An option "channelLink" attribute may be set on the above outer tag to set
@@ -60,12 +60,9 @@ the License.
     assuming that you have indexed met fields named Latitude and Longitude for
     your product (update as appropriate otherwise).
 
-    <tag name="geo:lat" source="[Latitude]">
-      <attribute name="xmlns:geo" value="http://www.w3.org/2003/01/geo/wgs84_pos#" />
-    </tag>
-    <tag name="geo:long" source="[Longitude]">
-      <attribute name="xmlns:geo" value="http://www.w3.org/2003/01/geo/wgs84_pos#" />
-    </tag>
+    <namespace prefix="geo" uri="http://www.w3.org/2003/01/geo/wgs84_pos#" />    
+    <tag name="geo:lat" source="[Latitude]" />
+    <tag name="geo:long" source="[Longitude]" />
   -->
   
   <!--
@@ -74,12 +71,12 @@ the License.
     have indexed met fields named Latitude and Longitude for your product
     (update as appropriate otherwise).
     
-    <tag name="georss:point" source="[Latitude] [Longitude]">
-      <attribute name="xmlns:georss" value="http://www.georss.org/georss" />
-    </tag>
+    <namespace prefix="georss" uri="http://www.georss.org/georss" />   
+    <tag name="georss:point" source="[Latitude] [Longitude]" />
   -->
-    
+
+  <namespace prefix="cas" uri="http://oodt.apache.org/ns/cas" />    
   <tag name="cas:source" source="[ProductType]" />
   <tag name="source" source="[ProductType]" />
 
-</cas:rssconf>
+</rss:rssconf>

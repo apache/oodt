@@ -20,8 +20,7 @@ the License.
 	main aspects of this file are the ability to recast a product's 
 	metadata as relevant RSS compatiable tags.
 -->
-<!-- FIXME: adjust namespace URI? -->
-<cas:rssconf xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+<rss:rssconf xmlns:rss="http://oodt.apache.org/ns/rss">
   <!-- 
     An option "channelLink" attribute may be set on the above outer tag to 
     set the channel's link attribute.
@@ -72,10 +71,12 @@ the License.
     named Latitude and Longitude for your product (update as 
     appropriate otherwise).
     
-    <tag name="georss:point" source="[Latitude] [Longitude]"/>
+    <namespace prefix="georss" uri="http://www.georss.org/georss" />   
+    <tag name="georss:point" source="[Latitude] [Longitude]" />
     -->
     
-    <tag name="cas:source" source="[ProductType]"/>
-    <tag name="source" source="[ProductType]"/>
+    <namespace prefix="cas" uri="http://oodt.apache.org/ns/cas" />    
+    <tag name="cas:source" source="[ProductType]" />
+    <tag name="source" source="[ProductType]" />
 
-</cas:rssconf>
+</rss:rssconf>
