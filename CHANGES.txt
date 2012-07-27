@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-476: RemoteSiteFile doesn't always set RemoteSite (bfoster)
+
 * OODT-477: CommonsNetFtpProtocol throws exception on successful download (bfoster)
 
 * OODT-329: OODT PEAR Channel (Gavin McDonald via mattmann)
