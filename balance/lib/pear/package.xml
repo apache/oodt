@@ -28,9 +28,9 @@
   xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0.xsd
          http://pear.php.net/dtd/package-2.0
          http://pear.php.net/dtd/package-2.0.xsd">
-  <name>Org_Apache_Oodt_Balance</name>
-  <uri>http://balance.jpl.nasa.gov</uri>
-  <!-- <channel/>-->
+  <name>Apache_OODT_Balance</name>
+  <uri>http://oodt.apache.org</uri>
+  <channel>pear.apache.org/oodt</channel>
   <summary>OODT Balance Webapp Base Package</summary>
   <description>
     This package provides the OODT Balance webapp-base package required
@@ -42,10 +42,10 @@
     <email>ahart@apache.org</email>
     <active>yes</active>
   </lead>
-  <date>2011-04-23</date>
+  <date>{ current-date() }</date>
   <version>
-    <release>0.3.0</release>
-    <api>0.3.0</api>
+    <release>0.4</release>
+    <api>0.4</api>
   </version>
   <stability>
     <release>beta</release>

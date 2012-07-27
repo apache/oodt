@@ -28,9 +28,9 @@
   xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0.xsd
          http://pear.php.net/dtd/package-2.0
          http://pear.php.net/dtd/package-2.0.xsd">
-  <name>Org_Apache_Oodt_Security</name>
-  <uri>http://oodt.apache.org</uri>
-  <!-- <channel/>-->
+  <name>Apache_OODT_Security</name>
+  <uri>http://oodt.apache.org/components/maven/sso/</uri>
+  <channel>pear.apache.org/oodt</channel>
   <summary>OODT Single Sign On Package</summary>
   <description>
     This package provides a PHP library for single sign-on for 
@@ -43,10 +43,10 @@
     <email>andrew.f.hart@jpl.nasa.gov</email>
     <active>yes</active>
   </lead>
-  <date>2011-04-14</date>
+  <date>{ current-date() }</date>
   <version>
-    <release>0.3.0</release>
-    <api>0.3.0</api>
+    <release>0.4</release>
+    <api>0.4</api>
   </version>
   <stability>
     <release>stable</release>
