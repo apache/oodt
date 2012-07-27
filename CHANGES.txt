@@ -4,11 +4,13 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
-* OODT-472 Puny Module - Return to previous page once the user is done editing  (skhudiky)
+* OODT-329: OODT PEAR Channel (Gavin McDonald via mattmann)
 
-* OODT-467 Change SciPgeConfigFileWriter to DynamicConfigFileWriter (bfoster)
+* OODT-472: Puny Module - Return to previous page once the user is done editing  (skhudiky)
 
-* OODT-464 Add file staging support to CAS-PGE's XmlFilePgeConfigBuilder (bfoster)
+* OODT-467: Change SciPgeConfigFileWriter to DynamicConfigFileWriter (bfoster)
+
+* OODT-464: Add file staging support to CAS-PGE's XmlFilePgeConfigBuilder (bfoster)
 
 Release 0.4
 --------------------------------------------
