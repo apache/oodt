@@ -37,13 +37,13 @@ import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
  * This class is responsible for FTP transfers. It is built as a wrapper around
  * Apache's FTPClient class in order to connect it into the Crawler's Protocol
  * infrastructure.
- * 
+ *
  * @author bfoster
- * 
+ *
  */
 public class CommonsNetFtpProtocol implements Protocol {
 
-	private FTPClient ftp;
+	private final FTPClient ftp;
 	private String homeDir;
 
 	/**
@@ -157,15 +157,15 @@ public class CommonsNetFtpProtocol implements Protocol {
 		OutputStream os = null;
 		try {
 			os = new FileOutputStream(toFile);
-			if (ftp.retrieveFile(fromFile.getName(), os))// {
+			if (!ftp.retrieveFile(fromFile.getName(), os)) {
 				throw new ProtocolException("Failed to download file "
 						+ fromFile.getName());
-			// }
+			}
 		} catch (Exception e) {
 			// download failed
 			toFile.delete();
 			throw new ProtocolException("FAILED to download: " + fromFile.getName()
-					+ " : " + e.getMessage());
+					+ " : " + e.getMessage(), e);
 		} finally {
 			// close output stream
 			if (os != null)
@@ -174,7 +174,7 @@ public class CommonsNetFtpProtocol implements Protocol {
 				} catch (Exception e) {
 					toFile.delete();
 					throw new ProtocolException("Failed to close outputstream : "
-							+ e.getMessage());
+							+ e.getMessage(), e);
 				}
 		}
 	}
