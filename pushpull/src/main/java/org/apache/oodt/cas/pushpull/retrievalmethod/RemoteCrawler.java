@@ -49,10 +49,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * @author bfoster
  * @version $Revision$
- * 
+ *
  * <p>
  * Describe your class here
  * </p>.
@@ -65,12 +65,13 @@ public class RemoteCrawler implements RetrievalMethod {
     /**
      * Starts the crawler and creates a default DirStruct if null was supplied
      * in constructor
-     * 
+     *
      * @throws MalformedURLException
      * @throws ProtocolException
      * @throws ProtocolFileException
      */
-    public void processPropFile(FileRetrievalSystem frs, Parser propFileParser,
+    @Override
+   public void processPropFile(FileRetrievalSystem frs, Parser propFileParser,
             File propFile, DataFilesInfo dfi, DataFileToPropFileLinker linker)
             throws Exception {
         RemoteSite remoteSite;
@@ -104,7 +105,7 @@ public class RemoteCrawler implements RetrievalMethod {
 
         // add starting directory to stack
         Stack<RemoteSiteFile> files = new Stack<RemoteSiteFile>();
-        files.add(new RemoteSiteFile(frs.getCurrentFile(remoteSite)));
+        files.add(new RemoteSiteFile(frs.getCurrentFile(remoteSite), remoteSite));
 
         // start crawling
         while (!files.isEmpty()) {
@@ -116,8 +117,9 @@ public class RemoteCrawler implements RetrievalMethod {
                     // get next page worth of children
                     List<RemoteSiteFile> children = frs.getNextPage(file,
                             new ProtocolFileFilter() {
-                                public boolean accept(ProtocolFile pFile) {
-                                    return FileRestrictions.isAllowed(new 
+                                @Override
+                              public boolean accept(ProtocolFile pFile) {
+                                    return FileRestrictions.isAllowed(new
                                         ProtocolPath(pFile
                                             .getPath(), pFile.isDir()), vf);
                                 }
@@ -156,7 +158,7 @@ public class RemoteCrawler implements RetrievalMethod {
                 linker.markAsFailed(propFile, e.getMessage());
                 throw new Exception("Uknown error accured while downloading "
                         + file + " from " + remoteSite + " -- bailing out : "
-                        + e.getMessage());
+                        + e.getMessage(), e);
             }
         }
     }

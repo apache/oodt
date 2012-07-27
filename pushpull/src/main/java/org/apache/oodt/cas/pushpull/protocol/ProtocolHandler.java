@@ -52,27 +52,27 @@ import java.util.logging.Logger;
  * 'allowReuse' to false then a new Protocol object will be created and
  * returned.<br>
  * <br>
- * 
+ *
  * @author bfoster
  */
 public class ProtocolHandler {
 
-  private HashMap<URL, ProtocolFactory> urlAndProtocolFactory;
+  private final HashMap<URL, ProtocolFactory> urlAndProtocolFactory;
 
-  private HashMap<URL, Protocol> reuseProtocols;
+  private final HashMap<URL, Protocol> reuseProtocols;
 
-  private HashMap<RemoteSiteFile, PagingInfo> pageInfos;
+  private final HashMap<RemoteSiteFile, PagingInfo> pageInfos;
 
-  private HashMap<RemoteSiteFile, List<RemoteSiteFile>> pathAndFileListMap;
+  private final HashMap<RemoteSiteFile, List<RemoteSiteFile>> pathAndFileListMap;
 
-  private ProtocolInfo pi;
+  private final ProtocolInfo pi;
 
   private static final Logger LOG = Logger.getLogger(ProtocolHandler.class
       .getName());
 
   /**
    * Creates a new ProtocolHandler for the given Config object
-   * 
+   *
    * @param config
    *          The Config object that guides this ProtocolHandler in making class
    *          instanciations
@@ -87,7 +87,7 @@ public class ProtocolHandler {
 
   /**
    * Returns the appropriate protocol for the given Path
-   * 
+   *
    * @param ProtocolPath
    *          Used to determine the appropriate Protocol to be returned and the
    *          path to navigate on if navigateToPathLoc is set to true.
@@ -113,7 +113,7 @@ public class ProtocolHandler {
         if (pFile.isDir())
           this.cd(protocol, pFile);
         else
-          this.cd(protocol, (RemoteSiteFile) pFile.getParent());
+          this.cd(protocol, new RemoteSiteFile(pFile.getParent(), pFile.getSite()));
       }
       return protocol;
     } catch (Exception e) {
@@ -174,9 +174,9 @@ public class ProtocolHandler {
     return protocol;
   }
 
-  public synchronized List<RemoteSiteFile> nextPage(Protocol protocol)
+  public synchronized List<RemoteSiteFile> nextPage(RemoteSite site, Protocol protocol)
       throws RemoteConnectionException, ProtocolException {
-    return nextPage(protocol, null);
+    return nextPage(site, protocol, null);
   }
 
   /**
@@ -185,25 +185,25 @@ public class ProtocolHandler {
    * @throws RemoteConnectionException
    * @throws ProtocolException
    */
-  public synchronized List<RemoteSiteFile> nextPage(Protocol protocol,
+  public synchronized List<RemoteSiteFile> nextPage(RemoteSite site, Protocol protocol,
       ProtocolFileFilter filter) throws RemoteConnectionException,
       ProtocolException {
 
-    PagingInfo pgInfo = this.getPagingInfo(this.pwd(protocol));
+    PagingInfo pgInfo = this.getPagingInfo(this.pwd(site, protocol));
     try {
       System.out.println("PageSize: " + pi.getPageSize() + " PageLoc: "
           + pgInfo.getPageLoc());
-      List<RemoteSiteFile> fileList = this.ls(protocol);
+      List<RemoteSiteFile> fileList = this.ls(site, protocol);
       System.out.println("FileList size: " + fileList.size());
 
-      if (this.getDynamicFileList(protocol) == null
+      if (this.getDynamicFileList(site, protocol) == null
           && !this.passesDynamicDetection(pgInfo, fileList)) {
         LOG.log(
             Level.SEVERE,
             "Remote directory '"
-                + this.pwd(protocol)
+                + this.pwd(site, protocol)
                 + "' file list size has changed -- setting directory as dynamic and resetting page location");
-        this.putDynamicFileList(protocol, fileList);
+        this.putDynamicFileList(site, protocol, fileList);
         pgInfo.updatePageInfo(0, fileList);
       }
 
@@ -271,13 +271,13 @@ public class ProtocolHandler {
     } catch (Exception e) {
       downloadFile.delete();
       throw new RemoteConnectionException("Failed to download file " + fromFile
-          + " : " + e.getMessage());
+          + " : " + e.getMessage(), e);
     }
   }
 
   /**
    * Connects the given Protocol to the given URL
-   * 
+   *
    * @param protocol
    *          The Protocol that will be connected
    * @param url
@@ -347,8 +347,8 @@ public class ProtocolHandler {
           + " . . . this may take a few minutes . . .");
       // test ls, cd, and pwd
       this.cdToHOME(protocol);
-      RemoteSiteFile home = this.pwd(protocol);
-      this.ls(protocol);
+      RemoteSiteFile home = this.pwd(remoteSite, protocol);
+      this.ls(remoteSite, protocol);
       if (remoteSite.getCdTestDir() != null)
         this.cd(protocol, new RemoteSiteFile(home, remoteSite.getCdTestDir(),
             true, remoteSite));
@@ -384,9 +384,9 @@ public class ProtocolHandler {
     protocol.cd(file);
   }
 
-  public RemoteSiteFile getProtocolFileFor(Protocol protocol, String file,
+  public RemoteSiteFile getProtocolFileFor(RemoteSite site, Protocol protocol, String file,
       boolean isDir) throws ProtocolException {
-    return this.getProtocolFileByProtocol(protocol, file, isDir);
+    return this.getProtocolFileByProtocol(site, protocol, file, isDir);
   }
 
   public synchronized boolean delete(Protocol protocol, RemoteSiteFile file)
@@ -426,50 +426,50 @@ public class ProtocolHandler {
     return pgInfo;
   }
 
-  public RemoteSiteFile pwd(Protocol protocol) throws ProtocolException {
-    return new RemoteSiteFile(protocol.pwd());
+  public RemoteSiteFile pwd(RemoteSite site, Protocol protocol) throws ProtocolException {
+    return new RemoteSiteFile(protocol.pwd(), site);
   }
 
   public List<RemoteSiteFile> ls(Protocol protocol, RemoteSiteFile dir)
       throws ProtocolException {
-    List<RemoteSiteFile> fileList = this.getDynamicFileList(protocol);
+    List<RemoteSiteFile> fileList = this.getDynamicFileList(dir.getSite(), protocol);
     if (fileList == null) {
       protocol.cd(dir);
-      fileList = toRemoteSiteFiles(protocol.ls());
+      fileList = toRemoteSiteFiles(protocol.ls(), dir.getSite());
     }
     return fileList;
   }
 
-  public List<RemoteSiteFile> ls(Protocol protocol) throws ProtocolException {
-    List<RemoteSiteFile> fileList = this.getDynamicFileList(protocol);
+  public List<RemoteSiteFile> ls(RemoteSite site, Protocol protocol) throws ProtocolException {
+    List<RemoteSiteFile> fileList = this.getDynamicFileList(site, protocol);
     if (fileList == null)
-      fileList = toRemoteSiteFiles(protocol.ls());
+      fileList = toRemoteSiteFiles(protocol.ls(), site);
     return fileList;
   }
 
-  public List<RemoteSiteFile> ls(Protocol protocol, ProtocolFileFilter filter)
+  public List<RemoteSiteFile> ls(RemoteSite site, Protocol protocol, ProtocolFileFilter filter)
       throws ProtocolException {
-    List<RemoteSiteFile> fileList = this.getDynamicFileList(protocol);
+    List<RemoteSiteFile> fileList = this.getDynamicFileList(site, protocol);
     if (fileList == null)
-      fileList = toRemoteSiteFiles(protocol.ls(filter));
+      fileList = toRemoteSiteFiles(protocol.ls(filter), site);
     return fileList;
   }
 
-  private synchronized List<RemoteSiteFile> getDynamicFileList(Protocol protocol)
+  private synchronized List<RemoteSiteFile> getDynamicFileList(RemoteSite site, Protocol protocol)
       throws ProtocolException {
     return (List<RemoteSiteFile>) (List<?>) this.pathAndFileListMap.get(this
-        .pwd(protocol));
+        .pwd(site, protocol));
   }
 
-  private synchronized void putDynamicFileList(Protocol protocol,
+  private synchronized void putDynamicFileList(RemoteSite site, Protocol protocol,
       List<RemoteSiteFile> fileList) throws ProtocolException {
-    this.pathAndFileListMap.put(this.pwd(protocol), fileList);
+    this.pathAndFileListMap.put(this.pwd(site, protocol), fileList);
   }
 
-  public synchronized RemoteSiteFile getHomeDir(Protocol protocol) {
+  public synchronized RemoteSiteFile getHomeDir(RemoteSite site, Protocol protocol) {
     try {
       protocol.cdHome();
-      return new RemoteSiteFile(protocol.pwd());
+      return new RemoteSiteFile(protocol.pwd(), site);
     } catch (Exception e) {
       e.printStackTrace();
       return null;
@@ -488,19 +488,17 @@ public class ProtocolHandler {
 
   /**
    * Disconnects and logs out the given Protocol
-   * 
+   *
    * @param protocol
    *          The Protocol to be logout out and disconnected
    * @throws RemoteConnectionException
    */
   public void disconnect(Protocol protocol) throws RemoteConnectionException {
-    URL url = null;
     try {
-      url = ((RemoteSiteFile) protocol.pwd()).getSite().getURL();
-      LOG.log(Level.INFO, "Disconnecting protocol from " + url);
+      LOG.log(Level.INFO, "Disconnecting protocol " + protocol.getClass().getName());
       protocol.close();
     } catch (Exception e) {
-      throw new RemoteConnectionException("Error disconnecting from " + url
+      throw new RemoteConnectionException("Error disconnecting " + protocol.getClass().getName()
           + " : " + e.getMessage());
     }
   }
@@ -508,7 +506,7 @@ public class ProtocolHandler {
   /**
    * Disconnects all waiting Protocols and clears the waiting lists. Also clears
    * the current Protocol
-   * 
+   *
    * @throws RemoteConnectionException
    */
   public void close() throws RemoteConnectionException {
@@ -523,24 +521,24 @@ public class ProtocolHandler {
   }
 
   private synchronized RemoteSiteFile getProtocolFileByProtocol(
-      Protocol protocol, String file, boolean isDir) throws ProtocolException {
+      RemoteSite site, Protocol protocol, String file, boolean isDir) throws ProtocolException {
     try {
       if (!file.startsWith("/")) {
         protocol.cdHome();
         file = protocol.pwd().getPath() + "/" + file;
       }
-      return new RemoteSiteFile(file, isDir, null);
+      return new RemoteSiteFile(file, isDir, site);
     } catch (Exception e) {
       throw new ProtocolException("Failed to create protocol for " + file
           + " : " + e.getMessage());
     }
   }
 
-  private List<RemoteSiteFile> toRemoteSiteFiles(List<ProtocolFile> files) {
+  private List<RemoteSiteFile> toRemoteSiteFiles(List<ProtocolFile> files, RemoteSite site) {
     List<RemoteSiteFile> newFiles = new Vector<RemoteSiteFile>();
     if (files != null) {
       for (ProtocolFile file : files) {
-        newFiles.add(new RemoteSiteFile(file));
+        newFiles.add(new RemoteSiteFile(file, site));
       }
     }
     return newFiles;

@@ -54,38 +54,40 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.base.Preconditions;
+
 /**
  * <pre>
- *    Will crawl external directory structures and will download the files within these structures. 
- *    
+ *    Will crawl external directory structures and will download the files within these structures.
+ *
  *    This class's settings are set using a java .properties file which can be read in and parsed by Config.java.
  *    This .properties file should have the following properties set:
- *     
+ *
  *   	{@literal #list of sites to crawl
  *   	protocol.external.sources=&lt;path-to-xml-file&gt;
- *   
+ *
  *   	#protocol types
  *   	protocolfactory.types=&lt;list-of-protocols-separated-by-commas&gt; (e.g. ftp,http,https,sftp)
- *   
+ *
  *   	#Protocol factories per types (must have one for each protocol mention in protocolfactory.types -- the property must be name
  *    	# as such: protocolfactory.&lt;name-of-protocol-type&gt;
  *   	protocolfactory.ftp=&lt;path-to-java-protocolfactory-class&gt; (e.g. org.apache.oodt.cas.protocol.ftp.FtpClientFactory)
  *   	protocolfactory.http=&lt;path-to-java-protocolfactory-class&gt;
  *   	protocolfactory.https=&lt;path-to-java-protocolfactory-class&gt;
  *   	protocolfactory.sftp=&lt;path-to-java-protocolfactory-class&gt;
- *   
+ *
  *   	#configuration to make java.net.URL accept unsupported protocols -- must exist just as shown
  *   	java.protocol.handler.pkgs=org.apache.oodt.cas.url.handlers
  *    }
- *    
- *    In order to specify which external sites to crawl you must create a XML file which contains the 
+ *
+ *    In order to specify which external sites to crawl you must create a XML file which contains the
  *    the site and necessary information needed to crawl the site, such as username and password.
  *    protocol.external.sources must contain the path to this file so the crawl knows where to find it.
  *    You can also train this class on how to crawl each given site.  This is also specified in an XML
  *    file, whose path must be given in the first mentioned XML file which contians the username and password.
- *    
+ *
  *    Then schema for the external sites XML file is as such:
- *    
+ *
  *    	{@literal &lt;sources&gt;
  *    	   &lt;source url=&quot;url-of-server&quot;&gt;
  *    	      &lt;username&gt;username&lt;/username&gt;
@@ -97,7 +99,7 @@ import java.util.logging.Logger;
  *    	   ...
  *    	   ...
  *    	&lt;/sources\&gt;}
- *    
+ *
  *    You may specify as many sources as you would like by specifying multiple {@literal &lt;source&gt;} tags.
  *    In the {@literal &lt;source&gt;} tag, the parameter 'url' must be specified.  This is the url of the server
  *    you want the crawler to connect to.  It should be of the following format:
@@ -110,7 +112,7 @@ import java.util.logging.Logger;
  *    element is optional.  If no {@literal &lt;dirStruct&gt;} is given, then every directory will be crawled on the site
  *    and every encountered file will be downloaded.
  * </pre>
- * 
+ *
  * @author bfoster
  */
 public class FileRetrievalSystem {
@@ -132,7 +134,7 @@ public class FileRetrievalSystem {
      */
     private int max_sessions;
 
-    private int absMaxAllowedSessions = 50;
+    private final int absMaxAllowedSessions = 50;
 
     /**
      * This is just for clarity purposes. . .I only create the amount of threads
@@ -181,7 +183,7 @@ public class FileRetrievalSystem {
     /**
      * Creates a Crawler based on the URL, DirStruct, and Config objects passed
      * in. If no DirStruct is needed then set it to null.
-     * 
+     *
      * @param url
      *            The URL for which you want this Crawler to crawl
      * @param dirStruct
@@ -223,7 +225,7 @@ public class FileRetrievalSystem {
 
     /**
      * Initializes variables that must be reset when more than one crawl is done
-     * 
+     *
      * @throws ThreadEvaluatorException
      */
     void resetVariables() throws ThreadEvaluatorException {
@@ -258,10 +260,11 @@ public class FileRetrievalSystem {
             final ProtocolFileFilter filter) throws RemoteConnectionException {
         for (int i = 0; i < 3; i++) {
             try {
-                return protocolHandler.nextPage(protocolHandler
+                return protocolHandler.nextPage(dir.getSite(), protocolHandler
                         .getAppropriateProtocol(dir, true, true),
                         new ProtocolFileFilter() {
-                            public boolean accept(ProtocolFile file) {
+                            @Override
+                           public boolean accept(ProtocolFile file) {
                                 return filter.accept(file)
                                         && !FileRetrievalSystem.this
                                                 .isDownloading(file);
@@ -269,7 +272,7 @@ public class FileRetrievalSystem {
                         });
             } catch (Exception e) {
                 LOG.log(Level.WARNING, "Retrying to get next page for " + dir
-                        + " because operation failed : " + e.getMessage());
+                        + " because operation failed : " + e.getMessage(), e);
             }
         }
         throw new RemoteConnectionException("Failed to get next page for "
@@ -298,7 +301,7 @@ public class FileRetrievalSystem {
             throws MalformedURLException, ProtocolException {
         if (validate(remoteSite))
             this
-                    .changeToDir(protocolHandler.getProtocolFileFor(
+                    .changeToDir(protocolHandler.getProtocolFileFor(remoteSite,
                             protocolHandler.getAppropriateProtocolBySite(
                                     remoteSite, true), dir, true));
         else
@@ -318,7 +321,7 @@ public class FileRetrievalSystem {
     public ProtocolFile getHomeDir(RemoteSite remoteSite)
             throws ProtocolException {
         if (validate(remoteSite))
-            return protocolHandler.getHomeDir(protocolHandler
+            return protocolHandler.getHomeDir(remoteSite, protocolHandler
                     .getAppropriateProtocolBySite(remoteSite, true));
         else
             throw new ProtocolException("Not a valid remote site " + remoteSite);
@@ -327,7 +330,7 @@ public class FileRetrievalSystem {
     public ProtocolFile getProtocolFile(RemoteSite remoteSite, String file,
             boolean isDir) throws ProtocolException {
         if (validate(remoteSite))
-            return protocolHandler.getProtocolFileFor(protocolHandler
+            return protocolHandler.getProtocolFileFor(remoteSite, protocolHandler
                     .getAppropriateProtocolBySite(remoteSite, true), file,
                     isDir);
         else
@@ -338,7 +341,7 @@ public class FileRetrievalSystem {
             throws ProtocolFileException, ProtocolException,
             MalformedURLException {
         if (validate(remoteSite))
-            return protocolHandler.pwd(protocolHandler
+            return protocolHandler.pwd(remoteSite, protocolHandler
                     .getAppropriateProtocolBySite(remoteSite, true));
         else
             throw new ProtocolException("Not a valid remote site " + remoteSite);
@@ -355,7 +358,7 @@ public class FileRetrievalSystem {
         if (validate(remoteSite)) {
             if (!file.startsWith("/"))
                 file = "/" + file;
-            return addToDownloadQueue(protocolHandler.getProtocolFileFor(
+            return addToDownloadQueue(protocolHandler.getProtocolFileFor(remoteSite,
                     protocolHandler.getAppropriateProtocolBySite(remoteSite,
                             true), file, false), renamingString, downloadToDir,
                     uniqueMetadataElement, deleteAfterDownload);
@@ -364,6 +367,7 @@ public class FileRetrievalSystem {
     }
 
     public boolean validate(RemoteSite remoteSite) {
+        Preconditions.checkNotNull(remoteSite);
         LinkedList<RemoteSite> remoteSites = this.siteInfo
                 .getPossibleRemoteSites(remoteSite.getAlias(), remoteSite
                         .getURL(), remoteSite.getUsername(), remoteSite
@@ -409,12 +413,12 @@ public class FileRetrievalSystem {
                     + "' because it is already on the download queue");
             return false;
         }
-        
+
         RemoteFile remoteFile = new RemoteFile(file);
         remoteFile.addMetadata(RemoteFile.RENAMING_STRING, renamingString);
         remoteFile.addMetadata(RemoteFile.DELETE_AFTER_DOWNLOAD,
                 deleteAfterDownload + "");
-        
+
         String mimeType = this.mimeTypeDetection.getMimeType(file.getName());
         if (mimeType != null
                 && !mimeType.equals("application/octet-stream")) {
@@ -428,7 +432,7 @@ public class FileRetrievalSystem {
                 for (String field : description.split("\\&\\&")) {
                   String[] keyval = field.split("\\=");
                   remoteFile.addMetadata(keyval[0].trim(), keyval[1].trim());
-                }                   
+                }
               }
               else{
                 // it's the ProductType
@@ -447,15 +451,15 @@ public class FileRetrievalSystem {
                 + downloadToDir.getPath());
         if (!this.isStagingAreaInitialized(downloadToDir))
             this.initializeStagingArea(downloadToDir);
-        
+
         remoteFile.addMetadata(RemoteFile.DOWNLOAD_TO_DIR, downloadToDir.getAbsolutePath());
-        
+
     	if (remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR) != null) {
     		remoteFile.addMetadata(RemoteFile.PRODUCT_NAME, RenamingConvention.rename(remoteFile.getProtocolFile(), remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR)));
     	}else {
     		remoteFile.setUniqueMetadataElement(uniqueMetadataElement == null ? RemoteFile.FILENAME : uniqueMetadataElement);
     	}
-        
+
         if (!isAlreadyInDatabase(remoteFile)) {
 
             // get download location
@@ -522,7 +526,8 @@ public class FileRetrievalSystem {
         LOG.log(Level.INFO, "Preparing staging area " + stagingArea);
         if (stagingArea.exists()) {
             File[] failedDownloads = stagingArea.listFiles(new FileFilter() {
-                public boolean accept(File pathname) {
+                @Override
+               public boolean accept(File pathname) {
                     return pathname.getName().startsWith("Downloading_");
                 }
             });
@@ -574,7 +579,7 @@ public class FileRetrievalSystem {
 
     /**
      * Sleeps the crawling thread
-     * 
+     *
      * @throws InterruptedException
      */
     synchronized void waitMainThread() throws InterruptedException {
@@ -602,7 +607,7 @@ public class FileRetrievalSystem {
     /**
      * Gets an available downloading session Protocol. Returns null if none are
      * available
-     * 
+     *
      * @param path
      *            The session returned will be checked against the Path passed
      *            in and if not presently connected to the Path's URL, it will
@@ -652,7 +657,8 @@ public class FileRetrievalSystem {
                 if (file.isDir())
                     protocolHandler.cd(session, file);
                 else
-                    protocolHandler.cd(session, new RemoteSiteFile(file.getParent()));
+                    protocolHandler.cd(session,
+                          new RemoteSiteFile(file.getParent(), file.getSite()));
             } catch (Exception e) {
                 e.printStackTrace();
                 try {
@@ -668,7 +674,7 @@ public class FileRetrievalSystem {
 
     /**
      * Puts a session in the available session list
-     * 
+     *
      * @param session
      *            The Protocol session to be added to the available list
      */
@@ -678,7 +684,7 @@ public class FileRetrievalSystem {
 
     /**
      * Removes a session from the available list and returns it
-     * 
+     *
      * @return An available downloading Protocol session
      */
     synchronized Protocol getAvailableSession() {
@@ -692,7 +698,7 @@ public class FileRetrievalSystem {
     /**
      * Registers a downloading session with the threadpoolexecutor to begin
      * downloading the specified ProtocolFile to the local File location
-     * 
+     *
      * @param session
      *            The downloading Protocol session to be used to download the
      *            ProtocolFile
@@ -705,6 +711,7 @@ public class FileRetrievalSystem {
             final RemoteFile remoteFile, final File newFile) {
         this.addToDownloadingList(remoteFile.getProtocolFile());
         threadController.execute(new Runnable() {
+            @Override
             public void run() {
                 boolean successful = false;
                 int retries = 0;
@@ -797,7 +804,7 @@ public class FileRetrievalSystem {
                             LOG.log(Level.WARNING, "Retrying to download file "
                                     + remoteFile.getProtocolFile()
                                     + " because download failed : "
-                                    + e.getMessage());
+                                    + e.getMessage(), e);
                             try {
                                 protocolHandler.disconnect(curSession);
                             } catch (Exception exc) {
@@ -811,7 +818,7 @@ public class FileRetrievalSystem {
                                         "Failed to reconnect protocol to retry download of file "
                                                 + remoteFile.getProtocolFile()
                                                 + " -- aborting retry : "
-                                                + e.getMessage());
+                                                + e.getMessage(), e);
                             }
                         } else {
                             LOG
@@ -821,7 +828,7 @@ public class FileRetrievalSystem {
                                                     + remoteFile
                                                             .getProtocolFile()
                                                     + " do to too many previous download failures : "
-                                                    + e.getMessage());
+                                                    + e.getMessage(), e);
                             if (FileRetrievalSystem.this.dListener != null)
                                 FileRetrievalSystem.this.dListener
                                         .downloadFailed(remoteFile
@@ -924,7 +931,7 @@ public class FileRetrievalSystem {
      * list. The ThreadPoolExecutor needs to be completely shutdown before this
      * method should be called. Otherwise some Protocols might not be
      * disconnected or left downloading.
-     * 
+     *
      * @return True if successful, false otherwise
      * @throws RemoteConnectionException
      */

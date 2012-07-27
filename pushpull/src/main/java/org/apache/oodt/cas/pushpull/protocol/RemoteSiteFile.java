@@ -21,19 +21,19 @@ package org.apache.oodt.cas.pushpull.protocol;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 
 /**
- * 
+ *
  * Extends {@link ProtocolFile} and links it to a {@link RemoteSite}.
- * 
+ *
  * @author mattmann
  * @version $Revision$
- * 
+ *
  */
 public class RemoteSiteFile extends ProtocolFile {
 
   private RemoteSite site;
-  
-  public RemoteSiteFile(ProtocolFile file){
-    this(file.getPath(), file.isDir(), null);
+
+  public RemoteSiteFile(ProtocolFile file, RemoteSite site){
+     this(file.getPath(), file.isDir(), site);
   }
 
   /**
@@ -78,7 +78,8 @@ public class RemoteSiteFile extends ProtocolFile {
     return new RemoteSiteFile(parent.getPath(), parent.isDir(), this.site);
   }
 
-  public RemoteSiteFile getAbsoluteFile() {
+  @Override
+public RemoteSiteFile getAbsoluteFile() {
     ProtocolFile parent = super.getAbsoluteFile();
     return new RemoteSiteFile(parent.getPath(), parent.isDir(), this.site);
   }

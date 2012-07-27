@@ -44,27 +44,27 @@ import org.apache.oodt.cas.pushpull.retrievalmethod.RetrievalMethod;
 import org.apache.oodt.cas.pushpull.retrievalsystem.FileRetrievalSystem;
 
 /**
- * 
+ *
  * @author bfoster
  * @version $Revision$
- * 
+ *
  * <p>
  * Describe your class here
  * </p>.
  */
 public class RetrievalSetup {
 
-    private Config config;
+    private final Config config;
 
-    private HashSet<File> alreadyProcessedPropFiles;
+    private final HashSet<File> alreadyProcessedPropFiles;
 
-    private HashMap<Class<RetrievalMethod>, RetrievalMethod> classToRmMap;
+    private final HashMap<Class<RetrievalMethod>, RetrievalMethod> classToRmMap;
 
     private boolean downloadingProps;
 
-    private SiteInfo siteInfo;
+    private final SiteInfo siteInfo;
 
-    private DataFileToPropFileLinker linker;
+    private final DataFileToPropFileLinker linker;
 
     private final static Logger LOG = Logger.getLogger(RetrievalSetup.class
             .getName());
@@ -110,7 +110,7 @@ public class RetrievalSetup {
                                 linker);
                     } catch (ParserException e) {
                         LOG.log(Level.SEVERE, "Failed to parse property file "
-                                + propFile + " : " + e.getMessage());
+                                + propFile + " : " + e.getMessage(), e);
                         linker.markAsFailed(propFile,
                                 "Failed to parse property file " + propFile
                                         + " : " + e.getMessage());
@@ -118,7 +118,7 @@ public class RetrievalSetup {
                         LOG.log(Level.SEVERE,
                                 "Failed to finish downloading per property files "
                                         + propFile.getAbsolutePath() + " : "
-                                        + e.getMessage());
+                                        + e.getMessage(), e);
                         linker.markAsFailed(propFile,
                                 "Error while downloading per property file "
                                         + propFile.getAbsolutePath() + " : "
@@ -160,7 +160,8 @@ public class RetrievalSetup {
             this.downloadingProps = true;
             new Thread(new Runnable() {
 
-                public void run() {
+                @Override
+               public void run() {
                     FileRetrievalSystem frs = null;
                     try {
                         (frs = new FileRetrievalSystem(
@@ -217,6 +218,7 @@ public class RetrievalSetup {
 
     private File[] getCurrentlyDownloadedPropFiles(final PropFilesInfo pfi) {
         File[] files = pfi.getLocalDir().listFiles(new FileFilter() {
+            @Override
             public boolean accept(File pathname) {
                 return pfi.getParserForFile(pathname) != null
                         && !(pathname.getName().startsWith("Downloading_")
@@ -247,7 +249,7 @@ public class RetrievalSetup {
         File newLoc = new File(moveToDir, dirstructFile.getName());
         dirstructFile.renameTo(newLoc);
         new File(dirstructFile.getAbsolutePath() + "." + config.getMetFileExtension())
-                .renameTo(new File(newLoc.getAbsolutePath() + "." 
+                .renameTo(new File(newLoc.getAbsolutePath() + "."
                 		+ config.getMetFileExtension()));
         if (errorMsgs != null) {
             File errorFile = new File(newLoc.getParentFile(), dirstructFile
