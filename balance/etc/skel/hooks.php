@@ -45,6 +45,14 @@
  */
 
 /**
+ * hook_before_all
+ *
+ * This hook is executed before any other hooks. It can be used for any
+ * pre-processing logic.
+ */
+function hook_before_all() {}
+
+/**
  * hook_before_header
  *
  * This hook is executed before the contents of the header file are processed.

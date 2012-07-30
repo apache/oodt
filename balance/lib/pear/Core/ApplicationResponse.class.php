@@ -86,16 +86,21 @@ class Org_Apache_Oodt_Balance_Core_ApplicationResponse {
 		);
 		$options += $defaults;
 		
+		if (!$options['skipHooks']) {
+		   // Include the appropriate hooks.php file
+		   include ((App::Get()->request->isModule
+		   	   ? App::Get()->request->modulePath
+			   : HOME ) . '/hooks.php');
+
+		   // Run 'before_all' hook for all requests
+		   if (function_exists('hook_before_all')) {
+		      hook_before_all();
+		   }
+		}
+
 		// Preprocessing for a view
 		if (!$this->request->isScript) {
 			ob_start();	// Start buffering the output
-			
-			// Include the appropriate hooks.php file
-			if (!$options['skipHooks']) {
-				include ((App::Get()->request->isModule 
-                          ? App::Get()->request->modulePath 
-                          : HOME ) . '/hooks.php');
-			}
 			
 			// Check that the requested view exists
 			if (file_exists($this->request->viewPath)) {

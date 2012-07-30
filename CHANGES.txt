@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-478: Balance: New hook for hooks.php (nhidalgo via ahart)
+
 * OODT-476: RemoteSiteFile doesn't always set RemoteSite (bfoster)
 
 * OODT-477: CommonsNetFtpProtocol throws exception on successful download (bfoster)
