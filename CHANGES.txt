@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-474: Fixed the probem having in a configuration file 
+  ProtocolFactoryInfo.xml (mattmann, YunHee Kang)
+
 * OODT-478: Balance: New hook for hooks.php (nhidalgo via ahart)
 
 * OODT-476: RemoteSiteFile doesn't always set RemoteSite (bfoster)
