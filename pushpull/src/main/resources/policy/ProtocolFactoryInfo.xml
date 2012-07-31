@@ -18,24 +18,24 @@
 <protocols>
     
     <protocol type="ftp">
-        <protocolFactory class="org.apache.oodt.cas.protocol.ftp.CogJGlobusFtpClientFactory"/>
-        <protocolFactory class="org.apache.oodt.cas.protocol.ftp.CommonsNetFtpClientFactory"/>
+        <protocolFactory class="org.apache.oodt.cas.protocol.ftp.CogJGlobusFtpProtocolFactory"/>
+        <protocolFactory class="org.apache.oodt.cas.protocol.ftp.CommonsNetFtpProtocolFactory"/>
     </protocol>
     
     <protocol type="http">
-        <protocolFactory class="org.apache.oodt.cas.protocol.http.HttpClientFactory"/>
+        <protocolFactory class="org.apache.oodt.cas.protocol.http.HttpProtocolFactory"/>
     </protocol>
     
     <protocol type="sftp">
-        <protocolFactory class="org.apache.oodt.cas.protocol.sftp.JschSftpClientFactory"/>
+        <protocolFactory class="org.apache.oodt.cas.protocol.sftp.JschSftpProtocolFactory"/>
     </protocol>
     
     <protocol type="imaps">
-        <protocolFactory class="org.apache.oodt.cas.protocol.imaps.ImapsClientFactory"/>
+        <protocolFactory class="org.apache.oodt.cas.protocol.imaps.ImapsProtocolFactory"/>
     </protocol>
     
     <protocol type="file">
-        <protocolFactory class="org.apache.oodt.cas.protocol.local.LocalClientFactory"/>    
+        <protocolFactory class="org.apache.oodt.cas.protocol.local.LocalProtocolFactory"/>    
     </protocol>
     
 </protocols>
