@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-481: CAS-Pushpull uniqueMetadataElement is being loaded as empty String instead of null (bfoster)
+
 * OODT-474: Fixed the probem having in a configuration file 
   ProtocolFactoryInfo.xml (mattmann, YunHee Kang)
 
