@@ -55,6 +55,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 /**
  * <pre>
@@ -113,7 +114,7 @@ import com.google.common.base.Preconditions;
  *    and every encountered file will be downloaded.
  * </pre>
  *
- * @author bfoster
+ * @author bfoster (Brian Foster)
  */
 public class FileRetrievalSystem {
 
@@ -419,31 +420,33 @@ public class FileRetrievalSystem {
         remoteFile.addMetadata(RemoteFile.DELETE_AFTER_DOWNLOAD,
                 deleteAfterDownload + "");
 
-        String mimeType = this.mimeTypeDetection.getMimeType(file.getName());
-        if (mimeType != null
-                && !mimeType.equals("application/octet-stream")) {
-        	remoteFile.addMetadata(RemoteFile.MIME_TYPE, mimeType);
-            remoteFile.addMetadata(RemoteFile.SUPER_TYPE, this.mimeTypeDetection
-                    .getSuperTypeForMimeType(mimeType));
-            String description = this.mimeTypeDetection
-                    .getDescriptionForMimeType(mimeType);
-            if (description != null) {
-              if(description.indexOf("&") != -1){
-                for (String field : description.split("\\&\\&")) {
-                  String[] keyval = field.split("\\=");
-                  remoteFile.addMetadata(keyval[0].trim(), keyval[1].trim());
-                }
-              }
-              else{
-                // it's the ProductType
-                remoteFile.addMetadata(RemoteFile.PRODUCT_TYPE, description);
-              }
-            	if (remoteFile.getMetadata(RemoteFile.UNIQUE_ELEMENT) != null)
-            		uniqueMetadataElement = remoteFile.getMetadata(RemoteFile.UNIQUE_ELEMENT);
-            }
-        } else if (config.onlyDownloadDefinedTypes()) {
-            throw new UndefinedTypeException("File '" + file
+        if (config.onlyDownloadDefinedTypes()) {
+           String mimeType = this.mimeTypeDetection.getMimeType(file.getName());
+           if (mimeType != null
+                   && !mimeType.equals("application/octet-stream")) {
+               remoteFile.addMetadata(RemoteFile.MIME_TYPE, mimeType);
+               remoteFile.addMetadata(RemoteFile.SUPER_TYPE, this.mimeTypeDetection
+                       .getSuperTypeForMimeType(mimeType));
+               String description = this.mimeTypeDetection
+                       .getDescriptionForMimeType(mimeType);
+               if (!Strings.isNullOrEmpty(description)) {
+                 if(description.indexOf("&") != -1){
+                   for (String field : description.split("\\&\\&")) {
+                     String[] keyval = field.split("\\=");
+                     remoteFile.addMetadata(keyval[0].trim(), keyval[1].trim());
+                   }
+                 } else{
+                   // it's the ProductType
+                   remoteFile.addMetadata(RemoteFile.PRODUCT_TYPE, description);
+                 }
+                 if (remoteFile.getMetadata(RemoteFile.UNIQUE_ELEMENT) != null) {
+                    uniqueMetadataElement = remoteFile.getMetadata(RemoteFile.UNIQUE_ELEMENT);
+                 }
+               }
+           } else {
+              throw new UndefinedTypeException("File '" + file
                     + "' is not a defined type");
+           }
         }
 
         downloadToDir = new File(downloadToDir.isAbsolute() ? downloadToDir

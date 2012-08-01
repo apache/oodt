@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.pushpull.config;
 
 //OODT imports
@@ -33,18 +31,19 @@ import java.io.FileInputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+//DOM imports
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+//Google imports
+import com.google.common.base.Strings;
+
 /**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
- * Describe your class here
- * </p>.
+ * Remote Site Crawling specifications.
+ *
+ * @author bfoster (Brian Foster)
  */
 public class RemoteSpecs implements ConfigParserMetKeys {
 
@@ -218,10 +217,10 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                     if (afterUseList.getLength() > 0) {
                         Element afterUse = (Element) afterUseList.item(0);
                         File onSuccessDir = new File(PathUtils
-                                .replaceEnvVariables(((Element) afterUse)
+                                .replaceEnvVariables(afterUse
                                         .getAttribute(MOVEON_TO_SUCCESS_ATTR)));
                         File onFailDir = new File(PathUtils
-                                .replaceEnvVariables(((Element) afterUse)
+                                .replaceEnvVariables(afterUse
                                         .getAttribute(MOVEON_TO_FAIL_ATTR)));
                         pfi.setAfterUseEffects(onSuccessDir, onFailDir);
                     }
@@ -238,11 +237,18 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                 DataFilesInfo dfi = null;
                 if (dataInfoList.getLength() > 0) {
                     Node dataInfo = dataInfoList.item(0);
-                    String queryElement = PathUtils
-                            .replaceEnvVariables(((Element) dataInfo)
-                                    .getAttribute(QUERY_ELEM_ATTR));
+                    String queryElement = ((Element) dataInfo)
+                           .getAttribute(QUERY_ELEM_ATTR);
+                    if (Strings.isNullOrEmpty(queryElement)) {
+                       queryElement = null;
+                    } else {
+                       queryElement = PathUtils.replaceEnvVariables(queryElement);
+                    }
                     String renamingConv = ((Element) dataInfo)
                             .getAttribute(RENAMING_CONV_ATTR);
+                    if (Strings.isNullOrEmpty(renamingConv)) {
+                       renamingConv = null;
+                    }
                     boolean allowAliasOverride = PathUtils.replaceEnvVariables(
                             ((Element) dataInfo)
                                     .getAttribute(ALLOW_ALIAS_OVERRIDE_ATTR))
