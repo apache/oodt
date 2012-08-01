@@ -71,7 +71,7 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
       prioritizer;
     this.wmgrUrl = null;
     this.conditionWait = conditionWait;
-    //this.processorQueue = Collections.synchronizedMap(new HashMap<String, CachedWorkflowProcessor>());
+    this.processorQueue = new WorkflowProcessorQueue();
     this.runnableTasks = new Vector<WorkflowProcessor>();
     this.executingTasks = Collections.synchronizedMap(new HashMap<String, WorkflowProcessor>());
     //this.processorLock = new WorkflowProcessorLock();

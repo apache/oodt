@@ -45,6 +45,9 @@ public class WorkflowProcessorBuilder {
 
   private WorkflowProcessorBuilder() {
     subProcessors = Lists.newArrayList();
+    this.id = null;
+    this.priority = -1;
+    this.lifecycleManager = null;
   }
 
   public static WorkflowProcessorBuilder aWorkflowProcessor() {
@@ -77,10 +80,10 @@ public class WorkflowProcessorBuilder {
   public WorkflowProcessor build(Class<? extends WorkflowProcessor> clazz)
       throws InstantiationException, IllegalAccessException {
     WorkflowProcessor wp = clazz.newInstance();
-    wp.getWorkflowInstance().setId(id);
-    wp.setLifecycleManager(lifecycleManager);
-    wp.setPriority(Priority.getPriority(priority));
-    wp.setSubProcessors(subProcessors);
+    if(this.id != null) wp.getWorkflowInstance().setId(id);
+    if(this.lifecycleManager != null) wp.setLifecycleManager(lifecycleManager);
+    if(this.priority != -1) wp.setPriority(Priority.getPriority(priority));
+    if(this.subProcessors != null) wp.setSubProcessors(subProcessors);
     return wp;
   }
 }

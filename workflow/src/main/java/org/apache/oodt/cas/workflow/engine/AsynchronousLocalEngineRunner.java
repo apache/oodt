@@ -133,4 +133,13 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.engine.EngineRunner#hasOpenSlots(org.apache.oodt.cas.workflow.structs.WorkflowTask)
+   */
+  @Override
+  public boolean hasOpenSlots(WorkflowTask workflowTask) throws Exception {
+    // TODO Auto-generated method stub
+    return true;
+  }
+
 }

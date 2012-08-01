@@ -57,5 +57,15 @@ public abstract class EngineRunner {
    * 
    */
   public abstract void shutdown() throws Exception;
+  
+  /**
+   * Decides whether or not there are available slots within this runner
+   * to execute the provided {@link WorkflowTask}.
+   * 
+   * @param workflowTask The {@link WorkflowTask} to execute.
+   * @return True if there is an open slot, false otherwise.
+   * @throws Exception If any error occurs.
+   */
+  public abstract boolean hasOpenSlots(WorkflowTask workflowTask) throws Exception;  
 
 }

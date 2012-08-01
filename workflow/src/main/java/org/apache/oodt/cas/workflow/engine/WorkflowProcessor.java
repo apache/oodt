@@ -84,6 +84,7 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
     this.timesBlocked = 0;
     this.workflowInstance = new WorkflowInstance();
     this.lifecycleManager = lifecycleManager;
+    this.priority = Priority.getDefault();
   }
 
   /**

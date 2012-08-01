@@ -90,13 +90,13 @@ public class TaskQuerier implements Runnable {
               tp.setState(lifecycle.createState("Executing", "running",
                   "Added to Runnable queue"));
               System.out.println("Added processor with priority: ["+tp.getPriority()+"]");
-              processorsToRun.add(processor);
+              processorsToRun.add(tp);
             }
             
             prioritizer.sort(processorsToRun);
             
             synchronized(runnableProcessors){
-              runnableProcessors = processorsToRun;
+              if(running) runnableProcessors = processorsToRun;
             }
 
         } else {
@@ -126,6 +126,19 @@ public class TaskQuerier implements Runnable {
    */
   public List<WorkflowProcessor> getRunnableProcessors() {
     return runnableProcessors;
+  }
+  
+  /**
+   * Gets the next available {@link TaskProcessor} from the {@link List}
+   * of {@link #runnableProcessors}. Removes that {@link TaskProcessor}
+   * from the actual {@link #runnableProcessors} {@link List}.
+   * 
+   * @return The next available {@link TaskProcessor} from the {@link List}
+   * of {@link #runnableProcessors}.
+   */
+  public TaskProcessor getNext(){
+    if(getRunnableProcessors().size() == 0) return null;
+    return (TaskProcessor)getRunnableProcessors().remove(0);
   }
 
   private WorkflowLifecycle getLifecycleForProcessor(WorkflowProcessor processor) {

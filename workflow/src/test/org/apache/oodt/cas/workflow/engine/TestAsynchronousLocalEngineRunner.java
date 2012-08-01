@@ -20,16 +20,15 @@ package org.apache.oodt.cas.workflow.engine;
 //JDK imports
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
+
+//APACHE imports
+import org.apache.commons.io.FileUtils;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.commons.util.DateConvert;
 
@@ -53,21 +52,14 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
   private AsynchronousLocalEngineRunner runner;
 
   protected File testDir;
+  
+  private QuerierAndRunnerUtils utils;
 
   public void testRun() {
-    WorkflowTask task = new WorkflowTask();
-    task.setConditions(Collections.emptyList());
-    task.setRequiredMetFields(Collections.emptyList());
-    task.setTaskId("urn:cas:workflow:tester");
-    task.setTaskInstanceClassName(SimpleTester.class.getName());
-    task.setTaskName("Tester");
-    WorkflowTaskConfiguration config = new WorkflowTaskConfiguration();
-    config.addConfigProperty("TestDirPath",
-        testDir.getAbsolutePath().endsWith("/") ? testDir.getAbsolutePath()
-            : testDir.getAbsolutePath() + "/");
-    task.setTaskConfig(config);
+    WorkflowTask task = utils.getTask(testDir);
     Metadata met = new Metadata();
-    met.addMetadata("StartDateTime", DateUtils.toString(Calendar.getInstance()));
+    met.addMetadata("StartDateTime", DateUtils.toString(Calendar.getInstance()));   
+
     try {
       runner.execute(task, met);
       runner.execute(task, met);
@@ -84,12 +76,7 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
     for (File f : this.testDir.listFiles()) {
       BufferedReader br = null;
       try {
-        br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-        String line = null;
-        while ((line = br.readLine()) != null) {
-
-        }
-
+        String line = FileUtils.readFileToString(f);
         String[] toks = line.split(",");
         Date dateTime = DateConvert.isoParse(toks[1]);
         Seconds seconds = Seconds.secondsBetween(new DateTime(dateTime),
@@ -130,6 +117,7 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
     testDir = new File(testJobDirPath);
     testDir.mkdirs();
     this.runner = new AsynchronousLocalEngineRunner();
+    this.utils = new QuerierAndRunnerUtils();
   }
 
   /*
