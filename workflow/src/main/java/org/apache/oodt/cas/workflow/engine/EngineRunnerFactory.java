@@ -17,17 +17,11 @@
 package org.apache.oodt.cas.workflow.engine;
 
 /**
- * A factory interface for creating {@link WorkflowEngine} objects.
+ * Factory which creates {@link EngineRunner}s.
  *
- * @author mattmann (Chris Mattmann)
  * @author bfoster (Brian Foster)
  */
-public interface WorkflowEngineFactory {
+public interface EngineRunnerFactory {
 
-   /**
-    * Method which creates {@link WorkflowEngine}s.
-    *
-    * @return An implementation of the {@link WorkflowEngine} interface
-    */
-   public WorkflowEngine createWorkflowEngine();
+   public EngineRunner createEngineRunner();
 }

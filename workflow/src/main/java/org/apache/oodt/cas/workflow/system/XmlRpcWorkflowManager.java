@@ -14,19 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.workflow.system;
 
-//APACHE imports
+//OODT static imports
+import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getEngineRunnerFromClassName;
+import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getWorkflowEngineFromClassName;
+import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getWorkflowRepositoryFromClassName;
+
+//Apache imports
 import org.apache.xmlrpc.WebServer;
 
 //OODT imports
 import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
-import org.apache.oodt.cas.workflow.engine.WorkflowEngineFactory;
+import org.apache.oodt.cas.workflow.engine.EngineRunner;
+import org.apache.oodt.cas.workflow.engine.SynchronousLocalEngineRunner;
+import org.apache.oodt.cas.workflow.engine.ThreadPoolWorkflowEngine;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngine;
+import org.apache.oodt.cas.workflow.repository.DataSourceWorkflowRepositoryFactory;
 import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
-import org.apache.oodt.cas.workflow.repository.WorkflowRepositoryFactory;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
@@ -40,6 +45,8 @@ import org.apache.oodt.cas.metadata.Metadata;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -49,113 +56,67 @@ import java.util.logging.Logger;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 import java.util.Vector;
 
+//Google imports
+import com.google.common.base.Preconditions;
+
 /**
- * @author mattmann
- * @version $Revision$
- * 
- * <p>
  * An XML RPC-based Workflow manager.
- * </p>
- * 
+ *
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
 public class XmlRpcWorkflowManager {
 
-    /* the port to run the XML RPC web server on, default is 2000 */
-    private int webServerPort = 2000;
+   private static final Logger LOG = Logger.getLogger(XmlRpcWorkflowManager.class.getName());
 
-    /* our log stream */
-    private Logger LOG = Logger
-            .getLogger(XmlRpcWorkflowManager.class.getName());
+   public static final int DEFAULT_WEB_SERVER_PORT = 9001;
+   public static final String XML_RPC_HANDLER_NAME = "workflowmgr";
 
-    /* our xml rpc web server */
-    private WebServer webServer = null;
+   public static final String PROPERTIES_FILE_PROPERTY = "org.apache.oodt.cas.workflow.properties";
+   public static final String WORKFLOW_ENGINE_FACTORY_PROPERTY = "workflow.engine.factory";
+   public static final String ENGINE_RUNNER_FACTORY_PROPERTY = "workflow.engine.runner.factory";
+   public static final String WORKFLOW_REPOSITORY_FACTORY_PROPERTY = "workflow.repo.factory";
 
-    /* our workflow engine */
-    private WorkflowEngine engine = null;
+   private final int webServerPort;
+   private WebServer webServer;
+   private final WorkflowEngine engine;
+   private final EngineRunner runner;
+   private final WorkflowRepository repo;
 
-    /* our workflow repository */
-    private WorkflowRepository repo = null;
+   public XmlRpcWorkflowManager() {
+      this(DEFAULT_WEB_SERVER_PORT);
+   }
 
-    /**
-     * 
-     * @param port
-     *            The web server port to run the XML Rpc server on, defaults to
-     *            2000.
-     */
-    public XmlRpcWorkflowManager(int port) throws Exception {
-        Class engineFactoryClass = null, repositoryFactoryClass = null;
+   public XmlRpcWorkflowManager(int port) {
+      Preconditions.checkArgument(port > 0, "Must specify a port greater than 0");
+      webServerPort = port;
 
-        WorkflowEngineFactory engineFactory = null;
-        WorkflowRepositoryFactory repoFactory = null;
+      runner = getEngineRunnerFromProperty();
+      engine = getWorkflowEngineFromProperty();
+      engine.setEngineRunner(runner);
+      engine.setWorkflowManagerUrl(safeGetUrlFromString("http://"
+            + getHostname() + ":" + this.webServerPort));
+      repo = getWorkflowRepositoryFromProperty();
 
-        // load properties from workflow manager properties file, if specified
-        if (System.getProperty("org.apache.oodt.cas.workflow.properties") != null) {
-            String configFile = System
-                    .getProperty("org.apache.oodt.cas.workflow.properties");
-            LOG.log(Level.INFO,
-                    "Loading Workflow Manager Configuration Properties from: ["
-                            + configFile + "]");
-            System.getProperties().load(
-                    new FileInputStream(new File(configFile)));
-        }
+      // start up the web server
+      webServer = new WebServer(webServerPort);
+      webServer.addHandler(XML_RPC_HANDLER_NAME, this);
+      webServer.start();
 
-        String engineClassStr = System
-                .getProperty("workflow.engine.factory",
-                        "org.apache.oodt.cas.workflow.engine.DataSourceWorkflowEngineFactory");
-        String repositoryClassStr = System
-                .getProperty("workflow.repo.factory",
-                        "org.apache.oodt.cas.workflow.repository.DataSourceWorkflowRepositoryFactory");
+      LOG.log(Level.INFO, "Workflow Manager started by "
+            + System.getProperty("user.name", "unknown"));
+   }
 
-        try {
-            engineFactoryClass = Class.forName(engineClassStr);
-            engineFactory = (WorkflowEngineFactory) engineFactoryClass
-                    .newInstance();
-            engine = engineFactory.createWorkflowEngine();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new Exception("Unable to load workflow engine factory class "
-                    + engineClassStr);
-        }
-
-        webServerPort = port;
-
-        // set the corresponding workflow manager url
-        engine.setWorkflowManagerUrl(safeGetUrlFromString("http://"
-                + getHostname() + ":" + this.webServerPort));
-
-        try {
-            repositoryFactoryClass = Class.forName(repositoryClassStr);
-            repoFactory = (WorkflowRepositoryFactory) repositoryFactoryClass
-                    .newInstance();
-            repo = repoFactory.createRepository();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new Exception(
-                    "Unable to load workflow repository factory class "
-                            + repositoryClassStr);
-        }
-
-        // start up the web server
-        webServer = new WebServer(webServerPort);
-        webServer.addHandler("workflowmgr", this);
-        webServer.start();
-
-        LOG.log(Level.INFO, "Workflow Manager started by "
-                + System.getProperty("user.name", "unknown"));
-
-    }
-
-  public boolean shutdown() {
-    if (this.webServer != null) {
-      webServer.shutdown();
-      webServer = null;
-      return true;
-    } else
-      return false;
-  }
+   public boolean shutdown() {
+      if (webServer != null) {
+         webServer.shutdown();
+         webServer = null;
+         return true;
+      } else
+         return false;
+   }
 
   public String executeDynamicWorkflow(Vector<String> taskIds, Hashtable metadata)
       throws RepositoryException, EngineException {
@@ -172,7 +133,7 @@ public class XmlRpcWorkflowManager {
             + "] is not defined!");
       dynamicWorkflow.getTasks().add(task);
     }
-    
+
     dynamicWorkflow.setId(this.repo.addWorkflow(dynamicWorkflow));
     dynamicWorkflow.setName("Dynamic Workflow-" + dynamicWorkflow.getId());
 
@@ -193,7 +154,7 @@ public class XmlRpcWorkflowManager {
 
             if (events != null) {
                 for (Iterator i = events.iterator(); i.hasNext();) {
-                    eventsVector.add((String) i.next());
+                    eventsVector.add(i.next());
                 }
 
             }
@@ -644,6 +605,7 @@ public class XmlRpcWorkflowManager {
             System.exit(1);
         }
 
+        loadProperties();
         XmlRpcWorkflowManager manager = new XmlRpcWorkflowManager(portNum);
 
         for (;;)
@@ -651,6 +613,35 @@ public class XmlRpcWorkflowManager {
                 Thread.currentThread().join();
             } catch (InterruptedException ignore) {
             }
+    }
+
+    public static void loadProperties() throws FileNotFoundException, IOException {
+       String configFile = System.getProperty(PROPERTIES_FILE_PROPERTY);
+       if (configFile != null) {
+          LOG.log(Level.INFO,
+                "Loading Workflow Manager Configuration Properties from: ["
+                      + configFile + "]");
+          System.getProperties().load(new FileInputStream(new File(
+                configFile)));
+       }
+    }
+
+    private static WorkflowEngine getWorkflowEngineFromProperty() {
+       return getWorkflowEngineFromClassName(System.getProperty(
+             WORKFLOW_ENGINE_FACTORY_PROPERTY,
+             ThreadPoolWorkflowEngine.class.getCanonicalName()));
+    }
+
+    private static EngineRunner getEngineRunnerFromProperty() {
+       return getEngineRunnerFromClassName(System.getProperty(
+             ENGINE_RUNNER_FACTORY_PROPERTY,
+             SynchronousLocalEngineRunner.class.getCanonicalName()));
+    }
+
+    private static WorkflowRepository getWorkflowRepositoryFromProperty() {
+       return getWorkflowRepositoryFromClassName(System.getProperty(
+             WORKFLOW_REPOSITORY_FACTORY_PROPERTY,
+             DataSourceWorkflowRepositoryFactory.class.getCanonicalName()));
     }
 
     private String getHostname() {

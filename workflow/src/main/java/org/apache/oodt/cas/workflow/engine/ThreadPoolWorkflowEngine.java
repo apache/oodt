@@ -46,14 +46,14 @@ import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 import EDU.oswego.cs.dl.util.concurrent.ThreadedExecutor;
 
 /**
- * 
+ *
  * The ThreadPooling portion of the WorkflowEngine. This class is meant to be an
  * extension point for WorkflowEngines that want to implement ThreadPooling.
  * This WorkflowEngine provides everything needed to manage a ThreadPool using
  * Doug Lea's wonderful java.util.concurrent package that made it into JDK5.
- * 
+ *
  * @author mattmann
- * 
+ *
  */
 public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus {
 
@@ -71,12 +71,12 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
   private WorkflowInstanceRepository instRep = null;
 
   /* the URL pointer to the parent Workflow Manager */
-  private URL wmgrUrl = null;
+  private final URL wmgrUrl = null;
 
   /* how long to wait before checking whether a condition is satisfied. */
-  private long conditionWait;
+  private final long conditionWait;
 
-  private ConditionProcessor condProcessor;
+  private final ConditionProcessor condProcessor;
 
   private EngineRunner runner;
 
@@ -84,7 +84,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   /**
    * Default Constructor.
-   * 
+   *
    * @param instRep
    *          The WorkflowInstanceRepository to be used by this engine.
    * @param queueSize
@@ -100,17 +100,13 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    * @param unlimitedQueue
    *          Whether or not to use a queue whose bounds are dictated by the
    *          physical memory of the underlying hardware.
-   * @param resUrl
-   *          A URL pointer to a resource manager. If this is set Tasks will be
-   *          wrapped as Resource Manager {@link Job}s and sent through the
-   *          Resource Manager. If this parameter is not set, local execution
-   *          (the default) will be used
    */
   public ThreadPoolWorkflowEngine(WorkflowInstanceRepository instRep,
       int queueSize, int maxPoolSize, int minPoolSize,
-      long threadKeepAliveTime, boolean unlimitedQueue, URL resUrl) {
+      long threadKeepAliveTime, boolean unlimitedQueue) {
 
     this.instRep = instRep;
+
     Channel c = null;
     if (unlimitedQueue) {
       c = new LinkedQueue();
@@ -124,12 +120,6 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
     workerMap = new HashMap();
 
-    if (resUrl != null) {
-      this.runner = new ResourceRunner(resUrl);
-    } else {
-      this.runner = new AsynchronousLocalEngineRunner();
-    }
-
     this.conditionWait = Long.getLong(
         "org.apache.oodt.cas.workflow.engine.preConditionWaitTime", 10)
         .longValue();
@@ -137,9 +127,14 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     this.condProcessor = new ConditionProcessor(lifecycleManager);
   }
 
+  @Override
+  public void setEngineRunner(EngineRunner runner) {
+     this.runner = runner;
+  }
+
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#startWorkflow(org.apache
    * .oodt.cas.workflow.structs.Workflow, org.apache.oodt.cas.metadata.Metadata)
@@ -155,7 +150,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
     WorkflowInstance wInst = new WorkflowInstance();
     wInst.setWorkflow(workflow);
-    wInst.setCurrentTaskId(((WorkflowTask) workflow.getTasks().get(0))
+    wInst.setCurrentTaskId((workflow.getTasks().get(0))
         .getTaskId());
     wInst.setSharedContext(metadata);
     wInst.setStatus(CREATED);
@@ -178,7 +173,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#stopWorkflow(java.lang
    * .String)
@@ -191,7 +186,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#pauseWorkflowInstance
    * (java.lang.String)
@@ -204,7 +199,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#resumeWorkflowInstance
    * (java.lang.String)
@@ -217,7 +212,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getInstanceRepository()
    */
@@ -228,7 +223,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#updateMetadata(java.
    * lang.String, org.apache.oodt.cas.metadata.Metadata)
@@ -241,7 +236,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#setWorkflowManagerUrl
    * (java.net.URL)
@@ -254,7 +249,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWallClockMinutes(
    * java.lang.String)
@@ -267,7 +262,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#
    * getCurrentTaskWallClockMinutes(java.lang.String)
    */
@@ -279,7 +274,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWorkflowInstanceMetadata
    * (java.lang.String)
