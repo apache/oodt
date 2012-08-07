@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-485: Factory out EngineRunner and WorkflowProcessor classes into their own packages (bfoster)
+
 * OODT-481: CAS-Pushpull uniqueMetadataElement is being loaded as empty String instead of null (bfoster)
 
 * OODT-474: Fixed the probem having in a configuration file 
