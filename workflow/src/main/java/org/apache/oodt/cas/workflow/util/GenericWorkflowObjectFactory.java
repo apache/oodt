@@ -17,10 +17,10 @@
 package org.apache.oodt.cas.workflow.util;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.engine.EngineRunner;
-import org.apache.oodt.cas.workflow.engine.EngineRunnerFactory;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngine;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngineFactory;
+import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
+import org.apache.oodt.cas.workflow.engine.runner.EngineRunnerFactory;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepositoryFactory;
 import org.apache.oodt.cas.workflow.repository.WorkflowRepository;

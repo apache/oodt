@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //OODT imports
+import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.structs.FILOPrioritySorter;
 
 //Junit imports

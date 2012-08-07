@@ -14,21 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.workflow.engine;
-
-//OODT imports
-import org.apache.oodt.cas.workflow.engine.WorkflowProcessor;
+package org.apache.oodt.cas.workflow.engine.runner;
 
 /**
- * @author bfoster
- * @version $Revision$
+ * Factory which creates {@link EngineRunner}s.
  *
- * <p>
- * Notification Interface for WorkflowProcessors
- * <p>
+ * @author bfoster (Brian Foster)
  */
-public interface WorkflowProcessorListener {
+public interface EngineRunnerFactory {
 
-	public void notifyChange(WorkflowProcessor processor, ChangeType changeType);
-	
+   public EngineRunner createEngineRunner();
 }

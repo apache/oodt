@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.engine.WorkflowProcessor;
+import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 
 /**
  * 

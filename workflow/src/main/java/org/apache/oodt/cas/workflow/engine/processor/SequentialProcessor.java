@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.workflow.engine;
+package org.apache.oodt.cas.workflow.engine.processor;
 
 //JDK imports
 import java.util.Collections;

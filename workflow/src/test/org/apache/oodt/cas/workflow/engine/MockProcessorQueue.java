@@ -22,6 +22,9 @@ package org.apache.oodt.cas.workflow.engine;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
+import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorQueue;
+
 /**
  *
  * A mock {@link WorkflowProcessorQueue} object for use in testing.

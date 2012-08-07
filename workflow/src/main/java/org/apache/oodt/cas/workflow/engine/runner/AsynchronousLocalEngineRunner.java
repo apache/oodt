@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.workflow.engine;
+package org.apache.oodt.cas.workflow.engine.runner;
 
 //JDK imports
 import java.util.HashMap;
@@ -35,26 +35,27 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 /**
- * 
  * Runs a local version of a {@link WorkflowTask} asynchronously.
- * 
- * @author mattmann
- * @version $Revision$
- * 
+ *
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
 public class AsynchronousLocalEngineRunner extends EngineRunner {
 
   private static final Logger LOG = Logger
       .getLogger(AsynchronousLocalEngineRunner.class.getName());
 
-  private ThreadPoolExecutor executor;
+  public static final int DEFAULT_NUM_THREADS = 25;
 
-  private Map<String, Thread> workerMap;
-
-  private final int NUM_THREADS = 25;
+  private final ThreadPoolExecutor executor;
+  private final Map<String, Thread> workerMap;
 
   public AsynchronousLocalEngineRunner() {
-    this.executor = new ThreadPoolExecutor(NUM_THREADS, NUM_THREADS, 30,
+     this(DEFAULT_NUM_THREADS);
+  }
+
+  public AsynchronousLocalEngineRunner(int numThreads) {
+    this.executor = new ThreadPoolExecutor(numThreads, numThreads, 30,
         TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
         new RejectedExecutionHandler() {
 
@@ -70,7 +71,7 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.apache.oodt.cas.workflow.engine.EngineRunner#execute(org.apache.oodt
    * .cas.workflow.structs.WorkflowTask, org.apache.oodt.cas.metadata.Metadata)
@@ -97,7 +98,7 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
 
       /*
        * (non-Javadoc)
-       * 
+       *
        * @see java.lang.Thread#interrupt()
        */
       @SuppressWarnings("deprecation")
@@ -119,7 +120,7 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.apache.oodt.cas.workflow.engine.EngineRunner#shutdown()
    */
   @Override

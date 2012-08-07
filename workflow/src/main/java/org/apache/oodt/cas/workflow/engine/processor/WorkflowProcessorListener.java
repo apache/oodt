@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,40 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.workflow.engine;
+package org.apache.oodt.cas.workflow.engine.processor;
 
-//OODT import
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
-import org.apache.oodt.cas.workflow.structs.Priority;
+//OODT imports
+import org.apache.oodt.cas.workflow.engine.ChangeType;
+import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 
 /**
- * 
  * @author bfoster
  * @version $Revision$
- * 
+ *
  * <p>
- * WorkflowProcessor which handles Workflow Pre/Post Conditions
- * </p>.
+ * Notification Interface for WorkflowProcessors
+ * <p>
  */
-public class ConditionProcessor extends TaskProcessor {
+public interface WorkflowProcessorListener {
 
-	public ConditionProcessor(WorkflowLifecycleManager lifecycleManager) {
-		super(lifecycleManager);
-		this.setConditionProcessor(true);
-	}
-	
-	public void setPriority(Priority priority) {
-		super.setPriority(Priority.getPriority(priority.getValue() - 0.1));
-	}
-	
-	@Override
-	public void setPreConditions(WorkflowProcessor preConditions) {
-		//not allowed
-	}
-	
-	@Override
-	public void setPostConditions(WorkflowProcessor postConditions) {
-		//not allowed
-	}
+	public void notifyChange(WorkflowProcessor processor, ChangeType changeType);
 	
 }

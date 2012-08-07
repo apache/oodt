@@ -28,6 +28,9 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
+import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorQueue;
+import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.structs.HighestFIFOPrioritySorter;
 import org.apache.oodt.cas.workflow.structs.PrioritySorter;

@@ -22,44 +22,47 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
+import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
+import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
 import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 
 /**
- * 
+ *
  * Implements the TaskRunner framework. Acts as a thread that works with the
  * TaskQuerier to take the next sorted (aka ones that have been sorted with the
  * Workflow PrioritySorter) task and then leverage the Engine's Runner to
  * execute the task.
- * 
+ *
  * The TaskRunner thread first pops a task off the list using
  * {@link TaskQuerier#getNext()} and then so long as the thread's
  * {@link #runner} has open slots as returned by
  * {@link EngineRunner#hasOpenSlots(WorkflowTask)}, and {@link #isPause()} is
  * false and {@link #isRunning()} is true, then the task is handed off to the
  * runner for execution.
- * 
+ *
  * The TaskRunner thread can be paused during which time it waits
  * {@link #waitSeconds} seconds, wakes up to see if it's unpaused, and then goes
  * back to sleep if not, otherwise, resumes executing if it was unpaused.
- * 
+ *
  * @since Apache OODT 0.5
- * 
+ *
  * @author mattmann
  * @author bfoster
  * @version $Revision$
- * 
+ *
  */
+//TODO(bfoster): Rename... Runner is missleading.
 public class TaskRunner implements Runnable {
 
   private boolean running;
 
   private boolean pause;
 
-  private TaskQuerier taskQuerier;
+  private final TaskQuerier taskQuerier;
 
-  private EngineRunner runner;
+  private final EngineRunner runner;
 
   private int waitSeconds;
 
@@ -77,7 +80,7 @@ public class TaskRunner implements Runnable {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see java.lang.Runnable#run()
    */
   @Override
@@ -88,7 +91,7 @@ public class TaskRunner implements Runnable {
     while (running) {
       try {
         if (nextTaskProcessor == null){
-          nextTaskProcessor = taskQuerier.getNext();          
+          nextTaskProcessor = taskQuerier.getNext();
           nextTask = extractTaskFromProcessor(nextTaskProcessor);
         }
         while (running && !pause && nextTask != null

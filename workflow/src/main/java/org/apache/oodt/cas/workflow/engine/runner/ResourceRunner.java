@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.workflow.engine;
+package org.apache.oodt.cas.workflow.engine.runner;
 
 //JDK imports
 import java.net.URL;

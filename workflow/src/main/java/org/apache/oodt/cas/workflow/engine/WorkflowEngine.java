@@ -20,6 +20,7 @@ package org.apache.oodt.cas.workflow.engine;
 import java.net.URL;
 
 //OODT imports
+import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.Workflow;

@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,41 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.workflow.engine;
+
+package org.apache.oodt.cas.workflow.engine.processor;
 
 //JDK imports
 import java.util.List;
 
-//OODT imports
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
-import org.apache.oodt.cas.workflow.util.WorkflowUtils;
+import org.apache.oodt.cas.workflow.engine.TaskQuerier;
 
 /**
  * 
- * WorkflowProcessor which handles running sub-workflow processors in parallel.
+ * The queue of available {@link WorkflowTask}s, that will be fed into the
+ * {@link TaskQuerier}.
  * 
- * @author bfoster
  * @author mattmann
  * @version $Revision$
  * 
  */
-public class ParallelProcessor extends WorkflowProcessor {
-  
-  public ParallelProcessor(){
-    this(null);
-  }
+public class WorkflowProcessorQueue {
 
-  public ParallelProcessor(WorkflowLifecycleManager lifecycleMgr) {
-    super(lifecycleMgr);
-  }
-
-  public List<WorkflowProcessor> getRunnableSubProcessors() {
-    return this.getSubProcessors();
-  }
-
-  public void handleSubProcessorMetadata(WorkflowProcessor workflowProcessor) {
-    this.setDynamicMetadata(mergeMetadata(this.getDynamicMetadata(),
-        workflowProcessor.getPassThroughDynamicMetadata()));
+  /**
+   * Should return the list of available, Queued, {@link WorkflowProcessor}s.
+   * 
+   * @return the list of available, Queued, {@link WorkflowProcessor}s.
+   */
+  public synchronized List<WorkflowProcessor> getProcessors() {
+    return null;
   }
 
 }

@@ -14,14 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.workflow.engine;
+package org.apache.oodt.cas.workflow.engine.runner;
 
 /**
- * Factory which creates {@link EngineRunner}s.
+ * A {@link EngineRunnerFactory} which creates {@link AsynchronousLocalEngineRunner}s.
  *
  * @author bfoster (Brian Foster)
  */
-public interface EngineRunnerFactory {
+public class AsynchronousLocalEngineRunnerFactory implements
+      EngineRunnerFactory {
 
-   public EngineRunner createEngineRunner();
+   private static final String NUM_THREADS_PROPERTY = "org.apache.oodt.cas.workflow.engine.asynchronous.runner.num.threads";
+
+   private int numThreads;
+
+   public AsynchronousLocalEngineRunnerFactory() {
+      numThreads = Integer.getInteger(NUM_THREADS_PROPERTY,
+            AsynchronousLocalEngineRunner.DEFAULT_NUM_THREADS);
+   }
+
+   @Override
+   public AsynchronousLocalEngineRunner createEngineRunner() {
+      return new AsynchronousLocalEngineRunner(numThreads);
+   }
+
+   public void setNumThreads(int numThreads) {
+      this.numThreads = numThreads;
+   }
 }

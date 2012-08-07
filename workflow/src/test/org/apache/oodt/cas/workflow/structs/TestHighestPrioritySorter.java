@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Vector;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.engine.SequentialProcessor;
-import org.apache.oodt.cas.workflow.engine.WorkflowProcessor;
+import org.apache.oodt.cas.workflow.engine.processor.SequentialProcessor;
+import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 
 //Junit imports

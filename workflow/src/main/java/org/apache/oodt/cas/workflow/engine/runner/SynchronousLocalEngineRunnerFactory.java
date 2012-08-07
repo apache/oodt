@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,30 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.oodt.cas.workflow.engine;
-
-//JDK imports
-import java.util.List;
+package org.apache.oodt.cas.workflow.engine.runner;
 
 /**
- * 
- * The queue of available {@link WorkflowTask}s, that will be fed into the
- * {@link TaskQuerier}.
- * 
- * @author mattmann
- * @version $Revision$
- * 
+ * A {@link EngineRunnerFactory} which creates {@link SynchronousLocalEngineRunner}s.
+ *
+ * @author bfoster (Brian Foster)
  */
-public class WorkflowProcessorQueue {
+public class SynchronousLocalEngineRunnerFactory implements
+      EngineRunnerFactory {
 
-  /**
-   * Should return the list of available, Queued, {@link WorkflowProcessor}s.
-   * 
-   * @return the list of available, Queued, {@link WorkflowProcessor}s.
-   */
-  public synchronized List<WorkflowProcessor> getProcessors() {
-    return null;
-  }
-
+   @Override
+   public SynchronousLocalEngineRunner createEngineRunner() {
+      return new SynchronousLocalEngineRunner();
+   }
 }

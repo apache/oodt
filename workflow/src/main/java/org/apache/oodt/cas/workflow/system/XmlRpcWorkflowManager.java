@@ -26,10 +26,10 @@ import org.apache.xmlrpc.WebServer;
 
 //OODT imports
 import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
-import org.apache.oodt.cas.workflow.engine.EngineRunner;
-import org.apache.oodt.cas.workflow.engine.SynchronousLocalEngineRunner;
-import org.apache.oodt.cas.workflow.engine.ThreadPoolWorkflowEngine;
+import org.apache.oodt.cas.workflow.engine.ThreadPoolWorkflowEngineFactory;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngine;
+import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
+import org.apache.oodt.cas.workflow.engine.runner.SynchronousLocalEngineRunnerFactory;
 import org.apache.oodt.cas.workflow.repository.DataSourceWorkflowRepositoryFactory;
 import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
 import org.apache.oodt.cas.workflow.structs.Workflow;
@@ -629,13 +629,13 @@ public class XmlRpcWorkflowManager {
     private static WorkflowEngine getWorkflowEngineFromProperty() {
        return getWorkflowEngineFromClassName(System.getProperty(
              WORKFLOW_ENGINE_FACTORY_PROPERTY,
-             ThreadPoolWorkflowEngine.class.getCanonicalName()));
+             ThreadPoolWorkflowEngineFactory.class.getCanonicalName()));
     }
 
     private static EngineRunner getEngineRunnerFromProperty() {
        return getEngineRunnerFromClassName(System.getProperty(
              ENGINE_RUNNER_FACTORY_PROPERTY,
-             SynchronousLocalEngineRunner.class.getCanonicalName()));
+             SynchronousLocalEngineRunnerFactory.class.getCanonicalName()));
     }
 
     private static WorkflowRepository getWorkflowRepositoryFromProperty() {

@@ -23,7 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.engine.WorkflowProcessor;
+import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 
 /**
  * 

@@ -14,35 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.oodt.cas.workflow.engine.processor;
 
-package org.apache.oodt.cas.workflow.structs;
-
-//JDK imports
-import java.util.List;
-
-//OODT imports
-import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
+//OODT import
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.workflow.structs.Priority;
 
 /**
  * 
- * Interface specifying a method to sort and prioritize
- * {@link WorkflowProcessor}s.
- * 
  * @author bfoster
- * @author mattmann
  * @version $Revision$
  * 
+ * <p>
+ * WorkflowProcessor which handles Workflow Pre/Post Conditions
+ * </p>.
  */
-public interface PrioritySorter {
+public class ConditionProcessor extends TaskProcessor {
 
-  /**
-   * Sorts the {@link List} of {@link WorkflowProcessor}s that are ready to run
-   * in a particular order specified by the sub-class implementing this method.
-   * 
-   * @param candidates
-   *          The {@link List} of {@link WorkflowProcessor}s to sort in priority
-   *          order.
-   */
-  public void sort(List<WorkflowProcessor> candidates);
-
+	public ConditionProcessor(WorkflowLifecycleManager lifecycleManager) {
+		super(lifecycleManager);
+		this.setConditionProcessor(true);
+	}
+	
+	public void setPriority(Priority priority) {
+		super.setPriority(Priority.getPriority(priority.getValue() - 0.1));
+	}
+	
+	@Override
+	public void setPreConditions(WorkflowProcessor preConditions) {
+		//not allowed
+	}
+	
+	@Override
+	public void setPostConditions(WorkflowProcessor postConditions) {
+		//not allowed
+	}
+	
 }

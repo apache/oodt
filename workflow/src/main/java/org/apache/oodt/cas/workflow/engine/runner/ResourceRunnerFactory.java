@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.workflow.engine;
+package org.apache.oodt.cas.workflow.engine.runner;
 
 //JDK imports
 import java.net.MalformedURLException;
@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 //Google imports
 import com.google.common.base.Preconditions;
+
 
 /**
  * Factory which creates {@link ResourceRunner}s.

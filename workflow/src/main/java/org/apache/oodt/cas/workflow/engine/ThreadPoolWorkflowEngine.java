@@ -20,6 +20,9 @@ package org.apache.oodt.cas.workflow.engine;
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.resource.structs.Job;
+import org.apache.oodt.cas.workflow.engine.processor.ConditionProcessor;
+import org.apache.oodt.cas.workflow.engine.processor.SequentialProcessor;
+import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.structs.Workflow;

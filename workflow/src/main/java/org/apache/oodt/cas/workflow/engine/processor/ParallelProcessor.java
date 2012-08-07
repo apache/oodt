@@ -14,59 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.oodt.cas.workflow.engine;
+package org.apache.oodt.cas.workflow.engine.processor;
 
 //JDK imports
-import java.util.Date;
+import java.util.List;
+
+//OODT imports
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.workflow.util.WorkflowUtils;
 
 /**
  * 
- * Store WorkflowProcessor critical dates.
+ * WorkflowProcessor which handles running sub-workflow processors in parallel.
  * 
  * @author bfoster
  * @author mattmann
  * @version $Revision$
+ * 
  */
-public class ProcessorDateTimeInfo {
-
-  private Date creationDate;
-  private Date readyDate;
-  private Date executionDate;
-  private Date completionDate;
-
-  ProcessorDateTimeInfo() {
-    this.creationDate = new Date();
+public class ParallelProcessor extends WorkflowProcessor {
+  
+  public ParallelProcessor(){
+    this(null);
   }
 
-  public Date getCreationDate() {
-    return creationDate;
+  public ParallelProcessor(WorkflowLifecycleManager lifecycleMgr) {
+    super(lifecycleMgr);
   }
 
-  public Date getReadyDate() {
-    return readyDate;
+  public List<WorkflowProcessor> getRunnableSubProcessors() {
+    return this.getSubProcessors();
   }
 
-  void markReadyDate() {
-    if (this.readyDate == null)
-      this.readyDate = new Date();
-  }
-
-  public Date getExecutionDate() {
-    return executionDate;
-  }
-
-  void markExecutionDate() {
-    if (this.executionDate == null)
-      this.executionDate = new Date();
-  }
-
-  public Date getCompletionDate() {
-    return completionDate;
-  }
-
-  void markCompletionDate() {
-    if (this.completionDate == null)
-      this.completionDate = new Date();
+  public void handleSubProcessorMetadata(WorkflowProcessor workflowProcessor) {
+    this.setDynamicMetadata(mergeMetadata(this.getDynamicMetadata(),
+        workflowProcessor.getPassThroughDynamicMetadata()));
   }
 
 }
