@@ -3,6 +3,12 @@ Apache OODT Change Log
 
 Release 0.5
 --------------------------------------------
+* OODT-483: Fix to prevent NumberFormatException in XmlRpcStructFactory (rlaidlaw)
+
+* OODT-471: Added namespace definitions to RSS config files for CAS REST API (rlaidlaw)
+
+* OODT-469: Modified RSSProductServlet to remove hard-coded namespaces and allow 
+configurable namespaces via RSS config files (rlaidlaw)
 
 * OODT-485: Factory out EngineRunner and WorkflowProcessor classes into their own packages (bfoster)
 
