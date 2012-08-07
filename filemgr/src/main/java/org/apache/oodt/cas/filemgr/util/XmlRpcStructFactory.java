@@ -72,7 +72,7 @@ public final class XmlRpcStructFactory {
     public static Hashtable<String, Object> getXmlRpcFileTransferStatus(
             FileTransferStatus status) {
         Hashtable<String, Object> statusHash = new Hashtable<String, Object>();
-        statusHash.put("bytesTransferred",Long.toBinaryString(status
+        statusHash.put("bytesTransferred",Long.toString(status
                 .getBytesTransferred()));
         statusHash.put("parentProduct", getXmlRpcProduct(status
                 .getParentProduct()));
