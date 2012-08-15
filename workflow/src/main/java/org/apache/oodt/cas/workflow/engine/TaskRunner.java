@@ -89,25 +89,26 @@ public class TaskRunner implements Runnable {
     TaskProcessor nextTaskProcessor = null;
 
     while (running) {
-      try {
-        if (nextTaskProcessor == null){
-          nextTaskProcessor = taskQuerier.getNext();
-          nextTask = extractTaskFromProcessor(nextTaskProcessor);
-        }
-        while (running && !pause && nextTask != null
+      try {          
+        nextTaskProcessor = taskQuerier.getNext();
+        nextTask = nextTaskProcessor != null ? 
+            extractTaskFromProcessor(nextTaskProcessor):null;        
+        
+        while (running && !pause && nextTask != null 
             && runner.hasOpenSlots(nextTask)) {
-          // TODO: set Workflow met here?
+              
+          // TODO: set Workflow met here?          
           runner.execute(nextTask, nextTaskProcessor.getDynamicMetadata());
           nextTaskProcessor = taskQuerier.getNext();
-          nextTask = extractTaskFromProcessor(nextTaskProcessor);
-
-          // take a breather
-          try{
-            Thread.currentThread().sleep(1000); //FIXME: make this configurable
-          }
-          catch (Exception ignore) {}
+          nextTask = nextTaskProcessor != null ? 
+              extractTaskFromProcessor(nextTaskProcessor):null;
         }
-      } catch (Exception e) {
+      } 
+       catch(InterruptedException e){
+         this.running = false;
+         break;
+       }
+      catch (Exception e) {
         LOG.log(
             Level.SEVERE,
             "Engine failed while submitting jobs to its runner : "
@@ -132,6 +133,7 @@ public class TaskRunner implements Runnable {
       } catch (Exception ignore) {
       }
     }
+    
   }
 
   /**
