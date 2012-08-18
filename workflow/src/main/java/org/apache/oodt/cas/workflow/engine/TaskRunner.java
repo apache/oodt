@@ -29,42 +29,38 @@ import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 
 /**
- *
+ * 
  * Implements the TaskRunner framework. Acts as a thread that works with the
  * TaskQuerier to take the next sorted (aka ones that have been sorted with the
  * Workflow PrioritySorter) task and then leverage the Engine's Runner to
  * execute the task.
- *
+ * 
  * The TaskRunner thread first pops a task off the list using
  * {@link TaskQuerier#getNext()} and then so long as the thread's
  * {@link #runner} has open slots as returned by
  * {@link EngineRunner#hasOpenSlots(WorkflowTask)}, and {@link #isPause()} is
  * false and {@link #isRunning()} is true, then the task is handed off to the
  * runner for execution.
- *
+ * 
  * The TaskRunner thread can be paused during which time it waits
  * {@link #waitSeconds} seconds, wakes up to see if it's unpaused, and then goes
  * back to sleep if not, otherwise, resumes executing if it was unpaused.
- *
+ * 
  * @since Apache OODT 0.5
- *
+ * 
  * @author mattmann
  * @author bfoster
  * @version $Revision$
- *
+ * 
  */
-//TODO(bfoster): Rename... Runner is missleading.
+// TODO(bfoster): Rename... Runner is missleading.
 public class TaskRunner implements Runnable {
 
   private boolean running;
 
-  private boolean pause;
-
   private final TaskQuerier taskQuerier;
 
   private final EngineRunner runner;
-
-  private int waitSeconds;
 
   private static final Logger LOG = Logger
       .getLogger(TaskRunner.class.getName());
@@ -72,15 +68,13 @@ public class TaskRunner implements Runnable {
   public TaskRunner(TaskQuerier taskQuerier, EngineRunner runner,
       int waitSeconds) {
     this.running = true;
-    this.pause = false;
     this.taskQuerier = taskQuerier;
     this.runner = runner;
-    this.waitSeconds = waitSeconds;
   }
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see java.lang.Runnable#run()
    */
   @Override
@@ -89,66 +83,29 @@ public class TaskRunner implements Runnable {
     TaskProcessor nextTaskProcessor = null;
 
     while (running) {
-      try {          
-        nextTaskProcessor = taskQuerier.getNext();
-        nextTask = nextTaskProcessor != null ? 
-            extractTaskFromProcessor(nextTaskProcessor):null;        
-        
-        while (running && !pause && nextTask != null 
-            && runner.hasOpenSlots(nextTask)) {
-              
-          // TODO: set Workflow met here?          
+      nextTaskProcessor = taskQuerier.getNext();
+      nextTask = nextTaskProcessor != null ? extractTaskFromProcessor(nextTaskProcessor)
+          : null;
+
+      try {
+        if (nextTaskProcessor != null && runner.hasOpenSlots(nextTask)) {
+          // TODO: set Workflow met here?
           runner.execute(nextTask, nextTaskProcessor.getDynamicMetadata());
-          nextTaskProcessor = taskQuerier.getNext();
-          nextTask = nextTaskProcessor != null ? 
-              extractTaskFromProcessor(nextTaskProcessor):null;
         }
-      } 
-       catch(InterruptedException e){
-         this.running = false;
-         break;
-       }
-      catch (Exception e) {
+      } catch (Exception e) {
+        e.printStackTrace();
         LOG.log(
             Level.SEVERE,
             "Engine failed while submitting jobs to its runner : "
                 + e.getMessage(), e);
         if (nextTask != null) {
-          nextTaskProcessor.setState(nextTaskProcessor
-              .getLifecycleManager()
-              .getDefaultLifecycle()
-              .createState("Failure", "done",
-                  "Failed while submitting job to Runner : " + e.getMessage()));
+          this.flagProcessorAsFailed(nextTaskProcessor, e.getMessage());
           nextTask = null;
           nextTaskProcessor = null;
         }
       }
-
-      try {
-        synchronized (this) {
-          do {
-            this.wait(waitSeconds * 1000);
-          } while (pause);
-        }
-      } catch (Exception ignore) {
-      }
     }
-    
-  }
 
-  /**
-   * @return the waitSeconds
-   */
-  public int getWaitSeconds() {
-    return waitSeconds;
-  }
-
-  /**
-   * @param waitSeconds
-   *          the waitSeconds to set
-   */
-  public void setWaitSeconds(int waitSeconds) {
-    this.waitSeconds = waitSeconds;
   }
 
   /**
@@ -166,21 +123,6 @@ public class TaskRunner implements Runnable {
     this.running = running;
   }
 
-  /**
-   * @return the pause
-   */
-  public boolean isPause() {
-    return pause;
-  }
-
-  /**
-   * @param pause
-   *          the pause to set
-   */
-  public void setPause(boolean pause) {
-    this.pause = pause;
-  }
-
   protected WorkflowTask extractTaskFromProcessor(TaskProcessor taskProcessor) {
     WorkflowInstance inst = taskProcessor.getWorkflowInstance();
     ParentChildWorkflow workflow = inst.getParentChildWorkflow();
@@ -192,6 +134,15 @@ public class TaskRunner implements Runnable {
     }
 
     return null;
+  }
+
+  private void flagProcessorAsFailed(TaskProcessor nextTaskProcessor, String msg) {
+    nextTaskProcessor.setState(nextTaskProcessor
+        .getLifecycleManager()
+        .getDefaultLifecycle()
+        .createState("Failure", "done",
+            "Failed while submitting job to Runner : " + msg));
+
   }
 
 }

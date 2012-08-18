@@ -20,6 +20,8 @@ package org.apache.oodt.cas.workflow.engine;
 //JDK imports
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
@@ -49,6 +51,8 @@ public class TaskQuerier implements Runnable {
   private List<WorkflowProcessor> runnableProcessors;
 
   private PrioritySorter prioritizer;
+  
+  private static final Logger LOG = Logger.getLogger(TaskQuerier.class.getName());
 
   /**
    * Constructs a new TaskQuerier with the given {@link WorkflowProcessorQueue},
@@ -92,7 +96,7 @@ public class TaskQuerier implements Runnable {
             for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
               tp.setState(lifecycle.createState("Executing", "running",
                   "Added to Runnable queue"));
-              System.out.println("Added processor with priority: ["+tp.getPriority()+"]");
+              LOG.log(Level.INFO, "Added processor with priority: ["+tp.getPriority()+"]");
               processorsToRun.add(tp);
             }
             

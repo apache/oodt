@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
@@ -26,35 +25,40 @@ import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorQueue;
 
 /**
- *
+ * 
  * A mock {@link WorkflowProcessorQueue} object for use in testing.
- *
+ * 
  * @author mattmann
  * @version $Revision$
- *
+ * 
  */
 public class MockProcessorQueue extends WorkflowProcessorQueue {
-  
+
   private QuerierAndRunnerUtils utils;
-  
-  public MockProcessorQueue(){
+
+  private boolean consumed;
+
+  public MockProcessorQueue() {
     this.utils = new QuerierAndRunnerUtils();
+    this.consumed = false;
   }
 
   /*
    * (non-Javadoc)
    * 
    * @see
-   * org.apache.oodt.cas.workflow.engine.WorkflowProcessorQueue#getProcessors
-   * ()
+   * org.apache.oodt.cas.workflow.engine.WorkflowProcessorQueue#getProcessors ()
    */
   @Override
   public synchronized List<WorkflowProcessor> getProcessors() {
     List<WorkflowProcessor> processors = new Vector<WorkflowProcessor>();
     try {
-      processors.add(utils.getProcessor(10.0, "Success", "done"));
-      processors.add(utils.getProcessor(2.0, "Loaded", "initial"));
-      processors.add(utils.getProcessor(7.0, "Loaded", "initial"));
+      if (!consumed) {
+        processors.add(utils.getProcessor(10.0, "Success", "done"));
+        processors.add(utils.getProcessor(2.0, "Loaded", "initial"));
+        processors.add(utils.getProcessor(7.0, "Loaded", "initial"));
+        this.consumed = true;
+      }
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);

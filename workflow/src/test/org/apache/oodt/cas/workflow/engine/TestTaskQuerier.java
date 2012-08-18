@@ -18,7 +18,10 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //OODT imports
+import java.util.List;
+
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
+import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 import org.apache.oodt.cas.workflow.structs.FILOPrioritySorter;
 
 //Junit imports
@@ -43,18 +46,22 @@ public class TestTaskQuerier extends TestCase {
   public void testGetNext(){
     FILOPrioritySorter prioritizer = new FILOPrioritySorter();
     MockProcessorQueue processorQueue = new MockProcessorQueue();
-    assertNotNull(processorQueue.getProcessors());
-    assertEquals(3, processorQueue.getProcessors().size());
+    List<WorkflowProcessor> queued = null;
+    assertNotNull(queued = processorQueue.getProcessors());
+    assertEquals(3, queued.size());
+    processorQueue = new MockProcessorQueue();
     TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer);
     Thread querierThread = new Thread(querier);
     querierThread.start();
-    while (querier.getRunnableProcessors().size() != 2) {
-      assertNotNull(querier.getRunnableProcessors());
+    List<WorkflowProcessor> runnables = null;
+    while ((runnables = querier.getRunnableProcessors()) != null && 
+        runnables.size() < 2) {
+      assertNotNull(runnables);
     }
 
     querier.setRunning(false);
-    assertNotNull(querier.getRunnableProcessors());
-    assertEquals(2, querier.getRunnableProcessors().size());
+    assertNotNull(runnables);
+    assertEquals(2, runnables.size());
     TaskProcessor next = querier.getNext();
     assertNotNull(next);
     assertEquals(1, querier.getRunnableProcessors().size());
@@ -62,24 +69,28 @@ public class TestTaskQuerier extends TestCase {
 
   public void testGetRunnableProcessors() {
     FILOPrioritySorter prioritizer = new FILOPrioritySorter();
-    MockProcessorQueue processorQueue = new MockProcessorQueue();
-    assertNotNull(processorQueue.getProcessors());
-    assertEquals(3, processorQueue.getProcessors().size());
+    MockProcessorQueue processorQueue = new MockProcessorQueue();    
+    List<WorkflowProcessor> queued = null;
+    assertNotNull(queued = processorQueue.getProcessors());
+    assertEquals(3, queued.size());
+    processorQueue = new MockProcessorQueue();
     TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer);
     Thread querierThread = new Thread(querier);
     querierThread.start();
-    while (querier.getRunnableProcessors().size() != 2) {
-      assertNotNull(querier.getRunnableProcessors());
+    List<WorkflowProcessor> runnables = null;
+    while ((runnables = querier.getRunnableProcessors()) != null && 
+        runnables.size() < 2) {
+      assertNotNull(runnables);
     }
 
     querier.setRunning(false);
-    assertNotNull(querier.getRunnableProcessors());
-    assertEquals(2, querier.getRunnableProcessors().size());
-    assertNotNull(querier.getRunnableProcessors().get(0));
-    assertNotNull(querier.getRunnableProcessors().get(0).getPriority());
-    assertEquals(2.1, querier.getRunnableProcessors().get(0).getPriority()
+    assertNotNull(runnables);
+    assertEquals(2, runnables.size());
+    assertNotNull(runnables.get(0));
+    assertNotNull(runnables.get(0).getPriority());
+    assertEquals(2.1, runnables.get(0).getPriority()
         .getValue()); // extra .1 since it's a task
-    assertEquals(7.1, querier.getRunnableProcessors().get(1).getPriority()
+    assertEquals(7.1, runnables.get(1).getPriority()
         .getValue()); // extra .1 since it's a task
     try{
       querierThread.join();

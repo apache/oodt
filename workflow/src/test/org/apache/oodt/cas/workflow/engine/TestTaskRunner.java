@@ -74,7 +74,7 @@ public class TestTaskRunner extends TestCase {
     runnerThread.start();
 
     while (!testDir.exists()
-        || (testDir.exists() && testDir.listFiles().length < 2)) {
+        || (testDir.exists() && testDir.listFiles().length != 2)) {
     }
 
     querier.setRunning(false);
