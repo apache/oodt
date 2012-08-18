@@ -21,10 +21,8 @@ package org.apache.oodt.cas.workflow.engine.runner;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,7 +45,7 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
 
   public static final int DEFAULT_NUM_THREADS = 25;
 
-  private final ThreadPoolExecutor executor;
+  private final ExecutorService executor;
   private final Map<String, Thread> workerMap;
 
   public AsynchronousLocalEngineRunner() {
@@ -55,17 +53,7 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
   }
 
   public AsynchronousLocalEngineRunner(int numThreads) {
-    this.executor = new ThreadPoolExecutor(numThreads, numThreads, 30,
-        TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
-        new RejectedExecutionHandler() {
-
-          @Override
-          public void rejectedExecution(Runnable workflow,
-              ThreadPoolExecutor executor) {
-            // TODO Auto-generated method stub
-
-          }
-        });
+    this.executor = Executors.newFixedThreadPool(DEFAULT_NUM_THREADS);
     this.workerMap = new HashMap<String, Thread>();
   }
 
@@ -110,7 +98,7 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
 
     };
 
-    String id = "";
+    String id = UUID.randomUUID().toString();
     synchronized (id) {
       id = UUID.randomUUID().toString();
       this.workerMap.put(id, worker);

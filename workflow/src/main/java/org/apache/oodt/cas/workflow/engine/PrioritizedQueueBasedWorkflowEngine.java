@@ -42,26 +42,20 @@ import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.commons.util.DateConvert;
 
 /**
- *
+ * 
  * Describe your class here.
+ * 
  * @author mattmann
  * @author bfoster
  * @version $Revision$
- *
+ * 
  */
 public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
 
-
-  private static final Logger LOG = Logger.getLogger(PrioritizedQueueBasedWorkflowEngine.class.getName());
-
-  //private Map<String, WorkflowPro> processorQueue;
-  private final List<WorkflowProcessor> runnableTasks;
-  private final Map<String, WorkflowProcessor> executingTasks;
-  //private WorkflowProcessorLock processorLock;
-  private List<String> metadataKeysToCache;
-  private boolean debugMode;
-  private final boolean allowQueuerToWork;
+  private static final Logger LOG = Logger
+      .getLogger(PrioritizedQueueBasedWorkflowEngine.class.getName());
   private final Thread queuerThread;
+  private final Thread runnerThread;
   private final WorkflowInstanceRepository repo;
   private final PrioritySorter prioritizer;
   private WorkflowProcessorQueue processorQueue;
@@ -69,49 +63,60 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
   private final long conditionWait;
   private EngineRunner runner;
 
-  public PrioritizedQueueBasedWorkflowEngine(WorkflowInstanceRepository repo, PrioritySorter prioritizer, long conditionWait){
+  public PrioritizedQueueBasedWorkflowEngine(WorkflowInstanceRepository repo,
+      PrioritySorter prioritizer, long conditionWait) {
     this.repo = repo;
-    this.prioritizer = prioritizer != null ? new HighestFIFOPrioritySorter(1, 50, 1/*secondsBetweenBoosts, boostAmount, boostCap*/):
-      prioritizer;
+    this.prioritizer = prioritizer != null ? new HighestFIFOPrioritySorter(1,
+        50, 1) : prioritizer;
     this.wmgrUrl = null;
     this.conditionWait = conditionWait;
     this.processorQueue = new WorkflowProcessorQueue();
-    this.runnableTasks = new Vector<WorkflowProcessor>();
-    this.executingTasks = Collections.synchronizedMap(new HashMap<String, WorkflowProcessor>());
-    //this.processorLock = new WorkflowProcessorLock();
-    if (metadataKeysToCache != null)
-      this.metadataKeysToCache = new Vector<String>(metadataKeysToCache);
-//    this.debugMode = debugMode;
-    this.allowQueuerToWork = true;
 
-   /* try {
-      this.loadProcessorRepo();
-    }catch (Exception e) {
-      e.printStackTrace();
-    }*/
 
     // Task QUEUER thread
-    queuerThread = new Thread(new TaskQuerier(processorQueue, prioritizer));
+    TaskQuerier querier = new TaskQuerier(processorQueue, this.prioritizer);
+    queuerThread = new Thread(querier);
     queuerThread.start();
+
+    // Task Runner thread
+    runnerThread = new Thread(new TaskRunner(querier, runner));
+    runnerThread.start();
+
   }
 
   @Override
   public void setEngineRunner(EngineRunner runner) {
-     this.runner = runner;
+    this.runner = runner;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#startWorkflow(org.apache.oodt.cas.workflow.structs.Workflow, org.apache.oodt.cas.metadata.Metadata)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#startWorkflow(org.apache
+   * .oodt.cas.workflow.structs.Workflow, org.apache.oodt.cas.metadata.Metadata)
    */
   @Override
   public WorkflowInstance startWorkflow(Workflow workflow, Metadata metadata)
       throws EngineException {
     // TODO Auto-generated method stub
+    
+    //looks like the work to do here is
+    // create a new WorkflowInstance
+    // create a new WorkflowProcessor around it
+    // set it in Queued status
+    // commit it to workflow instance repo and it will get picked up 
+    // by the runner thread
+    
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#stopWorkflow(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#stopWorkflow(java.lang
+   * .String)
    */
   @Override
   public void stopWorkflow(String workflowInstId) {
@@ -119,8 +124,12 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
 
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#pauseWorkflowInstance(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#pauseWorkflowInstance
+   * (java.lang.String)
    */
   @Override
   public void pauseWorkflowInstance(String workflowInstId) {
@@ -128,8 +137,12 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
 
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#resumeWorkflowInstance(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#resumeWorkflowInstance
+   * (java.lang.String)
    */
   @Override
   public void resumeWorkflowInstance(String workflowInstId) {
@@ -137,17 +150,23 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
 
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#getInstanceRepository()
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getInstanceRepository()
    */
   @Override
   public WorkflowInstanceRepository getInstanceRepository() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.repo;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#updateMetadata(java.lang.String, org.apache.oodt.cas.metadata.Metadata)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#updateMetadata(java.
+   * lang.String, org.apache.oodt.cas.metadata.Metadata)
    */
   @Override
   public boolean updateMetadata(String workflowInstId, Metadata met) {
@@ -155,8 +174,12 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#setWorkflowManagerUrl(java.net.URL)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#setWorkflowManagerUrl
+   * (java.net.URL)
    */
   @Override
   public void setWorkflowManagerUrl(URL url) {
@@ -164,8 +187,12 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
 
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWallClockMinutes(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWallClockMinutes(
+   * java.lang.String)
    */
   @Override
   public double getWallClockMinutes(String workflowInstId) {
@@ -173,8 +200,11 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
     return 0;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#getCurrentTaskWallClockMinutes(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#
+   * getCurrentTaskWallClockMinutes(java.lang.String)
    */
   @Override
   public double getCurrentTaskWallClockMinutes(String workflowInstId) {
@@ -182,8 +212,12 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
     return 0;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWorkflowInstanceMetadata(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWorkflowInstanceMetadata
+   * (java.lang.String)
    */
   @Override
   public Metadata getWorkflowInstanceMetadata(String workflowInstId) {
@@ -191,8 +225,6 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
     return null;
   }
 
+  // FIXME: add in methods from WEngine
 
-   //FIXME: add in methods from WEngine
-
-  }
-
+}

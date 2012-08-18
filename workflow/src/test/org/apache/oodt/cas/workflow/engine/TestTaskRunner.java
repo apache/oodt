@@ -63,7 +63,7 @@ public class TestTaskRunner extends TestCase {
     assertNotNull(runnables);
     assertEquals(2, runnables.size());
     runner = new AsynchronousLocalEngineRunner();
-    taskRunner = new TaskRunner(querier, runner, 2);
+    taskRunner = new TaskRunner(querier, runner);
     assertNotNull(taskRunner);
     Thread runnerThread = new Thread(taskRunner);
     WorkflowTask task = taskRunner

@@ -65,8 +65,7 @@ public class TaskRunner implements Runnable {
   private static final Logger LOG = Logger
       .getLogger(TaskRunner.class.getName());
 
-  public TaskRunner(TaskQuerier taskQuerier, EngineRunner runner,
-      int waitSeconds) {
+  public TaskRunner(TaskQuerier taskQuerier, EngineRunner runner) {
     this.running = true;
     this.taskQuerier = taskQuerier;
     this.runner = runner;
@@ -89,7 +88,6 @@ public class TaskRunner implements Runnable {
 
       try {
         if (nextTaskProcessor != null && runner.hasOpenSlots(nextTask)) {
-          // TODO: set Workflow met here?
           runner.execute(nextTask, nextTaskProcessor.getDynamicMetadata());
         }
       } catch (Exception e) {
