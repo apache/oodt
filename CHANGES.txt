@@ -3,6 +3,9 @@ Apache OODT Change Log
 
 Release 0.5
 --------------------------------------------
+* OODT-486: WorkflowInstance tries to cast null strings into dates causing
+  exceptions on getters/setters (mattmann)
+
 * OODT-483: Fix to prevent NumberFormatException in XmlRpcStructFactory (rlaidlaw)
 
 * OODT-471: Added namespace definitions to RSS config files for CAS REST API (rlaidlaw)

@@ -33,23 +33,24 @@ import org.apache.oodt.commons.util.DateConvert;
  * status, and in general are data structures intended to be used as a means for
  * monitoring the status of an executing {@link Workflow}.
  * 
- * As of Apache OODT 0.4, the internal {@link Workflow} implementation uses 
- * {@link ParentChildWorkflow}, introduced as part of OODT-70, and the 
- * PackagedWorkflowRepository. {@link Workflow} instances given to the class will 
- * automatically convert to {@link ParentChildWorkflow} implementations internally,
- * and the existing {@link #getWorkflow()} and {@link #setWorkflow(Workflow)} methods
- * have been depcreated in favor of {@link #getParentChildWorkflow()} and 
- * {@link #setParentChildWorkflow(ParentChildWorkflow)} which will supersede 
+ * As of Apache OODT 0.4, the internal {@link Workflow} implementation uses
+ * {@link ParentChildWorkflow}, introduced as part of OODT-70, and the
+ * PackagedWorkflowRepository. {@link Workflow} instances given to the class
+ * will automatically convert to {@link ParentChildWorkflow} implementations
+ * internally, and the existing {@link #getWorkflow()} and
+ * {@link #setWorkflow(Workflow)} methods have been depcreated in favor of
+ * {@link #getParentChildWorkflow()} and
+ * {@link #setParentChildWorkflow(ParentChildWorkflow)} which will supersede
  * those methods, and eventually turn into their concrete implementations.
  * 
- * In addition, as of Apache OODT 0.4 the internal {@link #state} member variable
- * now uses {@link WorkflowState} for representation. This requires the use of
- * {@link WorkflowLifecycle} which has now moved from being simply a UI utility
- * class for the Worklow Monitor web application to actually being fully integrated
- * with the Workflow Manager. For backwards compatibility the {@link #setStatus(String)} 
- * and {@link #getStatus()} methods are still supported, but are deprecated. Developers
- * using this class should move towards using {@link #setState(WorkflowState)} and 
- * {@link #getState()}.
+ * In addition, as of Apache OODT 0.4 the internal {@link #state} member
+ * variable now uses {@link WorkflowState} for representation. This requires the
+ * use of {@link WorkflowLifecycle} which has now moved from being simply a UI
+ * utility class for the Worklow Monitor web application to actually being fully
+ * integrated with the Workflow Manager. For backwards compatibility the
+ * {@link #setStatus(String)} and {@link #getStatus()} methods are still
+ * supported, but are deprecated. Developers using this class should move
+ * towards using {@link #setState(WorkflowState)} and {@link #getState()}.
  * 
  * @author mattmann
  * @author bfoster
@@ -78,7 +79,6 @@ public class WorkflowInstance {
 
   private Priority priority;
 
-
   /**
    * Default Constructor.
    * 
@@ -92,7 +92,7 @@ public class WorkflowInstance {
       String currentTaskId, Date startDate, Date endDate, Date taskStartDate,
       Date taskEndDate, Metadata sharedContext, Priority priority) {
     this.workflow = workflow != null && workflow instanceof ParentChildWorkflow ? (ParentChildWorkflow) workflow
-        : new ParentChildWorkflow(workflow != null ? workflow:new Workflow());
+        : new ParentChildWorkflow(workflow != null ? workflow : new Workflow());
     this.id = id;
     this.state = state;
     this.currentTaskId = currentTaskId;
@@ -124,17 +124,17 @@ public class WorkflowInstance {
    */
   @Deprecated
   public String getStatus() {
-    return state != null ? state.getName():"Null";
+    return state != null ? state.getName() : "Null";
   }
-  
+
   /**
-   * Sets the current {@link WorkflowState} 
-   * to the provided status.
+   * Sets the current {@link WorkflowState} to the provided status.
    * 
-   * @param status The provided status to set.
+   * @param status
+   *          The provided status to set.
    */
   @Deprecated
-  public void setStatus(String status){
+  public void setStatus(String status) {
     WorkflowState state = new WorkflowState();
     state.setName(status);
     this.state = state;
@@ -172,8 +172,9 @@ public class WorkflowInstance {
     if (workflow != null && workflow instanceof ParentChildWorkflow) {
       this.workflow = (ParentChildWorkflow) workflow;
     } else {
-      if(workflow == null) workflow = new Workflow();
-        this.workflow = new ParentChildWorkflow(workflow);
+      if (workflow == null)
+        workflow = new Workflow();
+      this.workflow = new ParentChildWorkflow(workflow);
     }
   }
 
@@ -336,11 +337,13 @@ public class WorkflowInstance {
    */
   @Deprecated
   public void setEndDateTimeIsoStr(String endDateTimeIsoStr) {
-    try {
-      this.endDate = DateConvert.isoParse(endDateTimeIsoStr);
-    } catch (ParseException e) {
-      e.printStackTrace();
-      // fail silently besides this: it's just a setter
+    if (endDateTimeIsoStr != null && !endDateTimeIsoStr.equals("")) {
+      try {
+        this.endDate = DateConvert.isoParse(endDateTimeIsoStr);
+      } catch (ParseException e) {
+        e.printStackTrace();
+        // fail silently besides this: it's just a setter
+      }
     }
   }
 
@@ -359,11 +362,13 @@ public class WorkflowInstance {
    */
   @Deprecated
   public void setStartDateTimeIsoStr(String startDateTimeIsoStr) {
-    try {
-      this.startDate = DateConvert.isoParse(startDateTimeIsoStr);
-    } catch (ParseException e) {
-      e.printStackTrace();
-      // fail silently besides this: it's just a setter
+    if (startDateTimeIsoStr != null && !startDateTimeIsoStr.equals("")) {
+      try {
+        this.startDate = DateConvert.isoParse(startDateTimeIsoStr);
+      } catch (ParseException e) {
+        e.printStackTrace();
+        // fail silently besides this: it's just a setter
+      }
     }
   }
 
@@ -383,11 +388,14 @@ public class WorkflowInstance {
   @Deprecated
   public void setCurrentTaskEndDateTimeIsoStr(
       String currentTaskEndDateTimeIsoStr) {
-    try {
-      this.taskEndDate = DateConvert.isoParse(currentTaskEndDateTimeIsoStr);
-    } catch (ParseException e) {
-      e.printStackTrace();
-      // fail silently besides this: it's just a setter
+    if (currentTaskEndDateTimeIsoStr != null
+        && !currentTaskEndDateTimeIsoStr.equals("")) {
+      try {
+        this.taskEndDate = DateConvert.isoParse(currentTaskEndDateTimeIsoStr);
+      } catch (ParseException e) {
+        e.printStackTrace();
+        // fail silently besides this: it's just a setter
+      }
     }
   }
 
@@ -407,11 +415,15 @@ public class WorkflowInstance {
   @Deprecated
   public void setCurrentTaskStartDateTimeIsoStr(
       String currentTaskStartDateTimeIsoStr) {
-    try {
-      this.taskStartDate = DateConvert.isoParse(currentTaskStartDateTimeIsoStr);
-    } catch (ParseException e) {
-      e.printStackTrace();
-      // fail silently besides this: it's just a setter
+    if (currentTaskStartDateTimeIsoStr != null
+        && !currentTaskStartDateTimeIsoStr.equals("")) {
+      try {
+        this.taskStartDate = DateConvert
+            .isoParse(currentTaskStartDateTimeIsoStr);
+      } catch (ParseException e) {
+        e.printStackTrace();
+        // fail silently besides this: it's just a setter
+      }
     }
   }
 
