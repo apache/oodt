@@ -40,6 +40,7 @@ public class ParentChildWorkflow extends Workflow {
   }
 
   public ParentChildWorkflow(Graph graph) {
+    super();
     this.graph = graph;
   }
 

@@ -27,7 +27,9 @@ import java.util.logging.Logger;
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorQueue;
+import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.cas.workflow.structs.PrioritySorter;
 
 /**
@@ -51,8 +53,11 @@ public class TaskQuerier implements Runnable {
   private List<WorkflowProcessor> runnableProcessors;
 
   private PrioritySorter prioritizer;
-  
-  private static final Logger LOG = Logger.getLogger(TaskQuerier.class.getName());
+
+  private WorkflowInstanceRepository repo;
+
+  private static final Logger LOG = Logger.getLogger(TaskQuerier.class
+      .getName());
 
   /**
    * Constructs a new TaskQuerier with the given {@link WorkflowProcessorQueue},
@@ -63,13 +68,18 @@ public class TaskQuerier implements Runnable {
    *          The associated set of queued Workflow Tasks.
    * @param prioritizer
    *          The prioritizer to use to sort the ready-to-run Workflow Tasks.
+   * 
+   * @param repo
+   *          The {@link WorkflowInstanceRepository} to save the state of
+   *          WorkflowInstances.
    */
   public TaskQuerier(WorkflowProcessorQueue processorQueue,
-      PrioritySorter prioritizer) {
+      PrioritySorter prioritizer, WorkflowInstanceRepository repo) {
     this.running = true;
     this.processorQueue = processorQueue;
     this.runnableProcessors = new Vector<WorkflowProcessor>();
     this.prioritizer = prioritizer;
+    this.repo = repo;
   }
 
   /**
@@ -93,18 +103,32 @@ public class TaskQuerier implements Runnable {
         WorkflowLifecycle lifecycle = getLifecycleForProcessor(processor);
         if (!(processor.getState().getCategory().getName().equals("done") || processor
             .getState().getCategory().getName().equals("holding"))) {
-            for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
-              tp.setState(lifecycle.createState("Executing", "running",
-                  "Added to Runnable queue"));
-              LOG.log(Level.INFO, "Added processor with priority: ["+tp.getPriority()+"]");
-              processorsToRun.add(tp);
+          for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
+            WorkflowState state = lifecycle.createState("Executing", "running",
+                "Added to Runnable queue");
+            tp.setState(state);
+            tp.getWorkflowInstance().setState(state);
+            if (this.repo != null) {
+              try {
+                this.repo.updateWorkflowInstance(tp.getWorkflowInstance());
+              } catch (Exception e) {
+                e.printStackTrace();
+                LOG.log(Level.WARNING, "Unable to update workflow instance: ["
+                    + tp.getWorkflowInstance().getId()
+                    + "] status to Executing. Message: " + e.getMessage());
+              }
             }
-            
-            prioritizer.sort(processorsToRun);
-            
-            synchronized(runnableProcessors){
-              if(running) runnableProcessors = processorsToRun;
-            }
+            LOG.log(Level.INFO,
+                "Added processor with priority: [" + tp.getPriority() + "]");
+            processorsToRun.add(tp);
+          }
+
+          prioritizer.sort(processorsToRun);
+
+          synchronized (runnableProcessors) {
+            if (running)
+              runnableProcessors = processorsToRun;
+          }
 
         } else {
           continue;
@@ -134,18 +158,19 @@ public class TaskQuerier implements Runnable {
   public List<WorkflowProcessor> getRunnableProcessors() {
     return runnableProcessors;
   }
-  
+
   /**
-   * Gets the next available {@link TaskProcessor} from the {@link List}
-   * of {@link #runnableProcessors}. Removes that {@link TaskProcessor}
-   * from the actual {@link #runnableProcessors} {@link List}.
+   * Gets the next available {@link TaskProcessor} from the {@link List} of
+   * {@link #runnableProcessors}. Removes that {@link TaskProcessor} from the
+   * actual {@link #runnableProcessors} {@link List}.
    * 
-   * @return The next available {@link TaskProcessor} from the {@link List}
-   * of {@link #runnableProcessors}.
+   * @return The next available {@link TaskProcessor} from the {@link List} of
+   *         {@link #runnableProcessors}.
    */
-  public TaskProcessor getNext(){
-    if(getRunnableProcessors().size() == 0) return null;
-    return (TaskProcessor)getRunnableProcessors().remove(0);
+  public TaskProcessor getNext() {
+    if (getRunnableProcessors().size() == 0)
+      return null;
+    return (TaskProcessor) getRunnableProcessors().remove(0);
   }
 
   private WorkflowLifecycle getLifecycleForProcessor(WorkflowProcessor processor) {

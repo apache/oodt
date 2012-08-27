@@ -39,6 +39,7 @@ public class MockProcessorQueue extends WorkflowProcessorQueue {
   private boolean consumed;
 
   public MockProcessorQueue() {
+    super(null,null,null);
     this.utils = new QuerierAndRunnerUtils();
     this.consumed = false;
   }

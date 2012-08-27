@@ -25,6 +25,7 @@ import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepositoryFactory;
 import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
 import org.apache.oodt.cas.workflow.repository.WorkflowRepositoryFactory;
+import org.apache.oodt.cas.workflow.structs.PrioritySorter;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
@@ -338,6 +339,34 @@ public final class GenericWorkflowObjectFactory {
 			}
 		} else
 			return null;
+	}
+	
+	public static PrioritySorter getPrioritySorterFromClassName(String className){
+	  if(className != null){
+	    try{
+	      Class<PrioritySorter> sorterClass = (Class<PrioritySorter>)Class.forName(className);	      
+	      return sorterClass.newInstance();
+	    }
+	    catch (ClassNotFoundException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING, "Unable to locate workflow prioritizer class: "
+            + className + ": cannot instantiate!");
+        return null;
+      } catch (InstantiationException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "Unable to instantiate workflow prioritizer class: " + className
+                + ": Reason: " + e.getMessage() + " !");
+        return null;
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "IllegalAccessException when instantiating workflow prioritizer class: "
+                + className + ": cannot instantiate!");
+        return null;
+      }
+	  }
+	  else return null;
 	}
 
 	public static List copyWorkflows(List workflows){

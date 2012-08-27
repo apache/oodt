@@ -50,7 +50,7 @@ public class TestTaskQuerier extends TestCase {
     assertNotNull(queued = processorQueue.getProcessors());
     assertEquals(3, queued.size());
     processorQueue = new MockProcessorQueue();
-    TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer);
+    TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer, null);
     Thread querierThread = new Thread(querier);
     querierThread.start();
     List<WorkflowProcessor> runnables = null;
@@ -74,7 +74,7 @@ public class TestTaskQuerier extends TestCase {
     assertNotNull(queued = processorQueue.getProcessors());
     assertEquals(3, queued.size());
     processorQueue = new MockProcessorQueue();
-    TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer);
+    TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer, null);
     Thread querierThread = new Thread(querier);
     querierThread.start();
     List<WorkflowProcessor> runnables = null;

@@ -45,7 +45,7 @@ public class MetSetterTaskQuerier extends TaskQuerier {
    */
   public MetSetterTaskQuerier(WorkflowProcessorQueue processorQueue,
       PrioritySorter prioritizer) {
-    super(processorQueue, prioritizer);
+    super(processorQueue, prioritizer, null);
   }
 
   /*

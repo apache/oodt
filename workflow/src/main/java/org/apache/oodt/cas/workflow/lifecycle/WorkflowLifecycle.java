@@ -227,7 +227,7 @@ public class WorkflowLifecycle {
         if (stage.getStates() != null) {
           for (WorkflowState state : (List<WorkflowState>) stage.getStates()) {
             if (state.getName().equals(stateName)) {
-              return state;
+              return makeCopy(state);
             }
           }
         }
@@ -256,5 +256,18 @@ public class WorkflowLifecycle {
     state.setMessage(message);
     return state;
   }
+
+  private WorkflowState makeCopy(WorkflowState state){
+    WorkflowState newState = new WorkflowState();
+    newState.setCategory(state.getCategory());
+    newState.setDescription(state.getDescription());
+    newState.setMessage(state.getMessage());
+    newState.setName(state.getName());
+    newState.setPrevState(state.getPrevState());
+    newState.setStartTime(state.getStartTime());
+    newState.setSubStates(state.getSubStates());    
+    return newState;
+  }
+  
 
 }

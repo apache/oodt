@@ -20,6 +20,8 @@ package org.apache.oodt.cas.workflow.instrepo;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleStage;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.cas.workflow.structs.Priority;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
@@ -31,6 +33,7 @@ import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryExcepti
 //JDK imports
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -479,8 +482,32 @@ public class LuceneWorkflowInstanceRepository extends
         // store the workflow instance info first
         doc.add(new Field("workflow_inst_id", workflowInst.getId(),
                 Field.Store.YES, Field.Index.UN_TOKENIZED));
+        
+        // will leave this for back compat, but will also store 
+        // category 
         doc.add(new Field("workflow_inst_status", workflowInst.getStatus(),
                 Field.Store.YES, Field.Index.UN_TOKENIZED));
+        
+        if(workflowInst.getState() != null){
+          WorkflowState state = workflowInst.getState();
+        
+          if(state.getDescription() != null){
+            doc.add(new Field("workflow_inst_state_desc",
+                state.getDescription(), Field.Store.YES, Field.Index.UN_TOKENIZED));
+          }
+          
+          if(state.getMessage() != null){
+            doc.add(new Field("workflow_inst_state_message",
+                state.getMessage(), Field.Store.YES, Field.Index.UN_TOKENIZED));
+          }
+          
+          if(state.getCategory() != null && state.getCategory().getName() != null){
+            doc.add(new Field("workflow_inst_state_category",
+                state.getCategory().getName(), Field.Store.YES, Field.Index.UN_TOKENIZED));
+            System.out.println("Indexing category: ["+state.getCategory().getName()+"]");
+          }
+        }        
+        
         doc
                 .add(new Field("workflow_inst_current_task_id", workflowInst
                         .getCurrentTaskId(), Field.Store.YES,
@@ -623,7 +650,25 @@ public class LuceneWorkflowInstanceRepository extends
 
         // first read all the instance info
         inst.setId(doc.get("workflow_inst_id"));
-        inst.setStatus(doc.get("workflow_inst_status"));
+        
+        // try and construct a state
+        WorkflowState state = new WorkflowState();
+        state.setName(doc.get("workflow_inst_status"));
+        if(doc.get("workflow_inst_state_category") != null){
+          WorkflowLifecycleStage category = new WorkflowLifecycleStage();
+          category.setName(doc.get("workflow_inst_state_category"));
+          System.out.println("unserializing category: ["+category.getName()+"]");
+          state.setCategory(category);
+        }
+        
+        if(doc.get("workflow_inst_state_desc") != null){
+          state.setDescription(doc.get("workflow_inst_state_desc"));
+        }
+        
+        if(doc.get("workflow_inst_state_message") != null){
+          state.setMessage(doc.get("workflow_inst_state_message"));
+        }        
+        inst.setState(state);
         inst.setCurrentTaskId(doc.get("workflow_inst_current_task_id"));
         inst.setCurrentTaskStartDateTimeIsoStr(doc
                 .get("workflow_inst_currenttask_startdatetime"));

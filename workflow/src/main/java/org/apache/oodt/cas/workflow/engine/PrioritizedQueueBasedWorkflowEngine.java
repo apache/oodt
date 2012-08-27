@@ -17,29 +17,29 @@
 
 package org.apache.oodt.cas.workflow.engine;
 
+//JDK imports
 import java.net.URL;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Calendar;
 import java.util.UUID;
-import java.util.Vector;
 import java.util.logging.Logger;
 
+//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorQueue;
 import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
+import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
 import org.apache.oodt.cas.workflow.structs.HighestFIFOPrioritySorter;
+import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
+import org.apache.oodt.cas.workflow.structs.Priority;
 import org.apache.oodt.cas.workflow.structs.PrioritySorter;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
-import org.apache.oodt.commons.util.DateConvert;
+import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 
 /**
  * 
@@ -57,24 +57,26 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
   private final Thread queuerThread;
   private final Thread runnerThread;
   private final WorkflowInstanceRepository repo;
+  private final WorkflowRepository modelRepo;
+  private final WorkflowLifecycleManager lifecycle;
   private final PrioritySorter prioritizer;
   private WorkflowProcessorQueue processorQueue;
-  private final URL wmgrUrl;
-  private final long conditionWait;
+  private URL wmgrUrl;
   private EngineRunner runner;
 
   public PrioritizedQueueBasedWorkflowEngine(WorkflowInstanceRepository repo,
-      PrioritySorter prioritizer, long conditionWait) {
+      PrioritySorter prioritizer, WorkflowLifecycleManager lifecycle, EngineRunner runner, WorkflowRepository modelRepo) {
     this.repo = repo;
     this.prioritizer = prioritizer != null ? new HighestFIFOPrioritySorter(1,
         50, 1) : prioritizer;
-    this.wmgrUrl = null;
-    this.conditionWait = conditionWait;
-    this.processorQueue = new WorkflowProcessorQueue();
+    this.lifecycle = lifecycle;
+    this.modelRepo = modelRepo;
+    this.processorQueue = new WorkflowProcessorQueue(repo, lifecycle, modelRepo);
+    this.runner = runner;
 
 
     // Task QUEUER thread
-    TaskQuerier querier = new TaskQuerier(processorQueue, this.prioritizer);
+    TaskQuerier querier = new TaskQuerier(processorQueue, this.prioritizer, this.repo);
     queuerThread = new Thread(querier);
     queuerThread.start();
 
@@ -106,9 +108,31 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
     // create a new WorkflowProcessor around it
     // set it in Queued status
     // commit it to workflow instance repo and it will get picked up 
-    // by the runner thread
+        
+    WorkflowInstance inst = new WorkflowInstance();
+    inst.setParentChildWorkflow(workflow instanceof ParentChildWorkflow ? 
+        (ParentChildWorkflow)workflow:new ParentChildWorkflow(workflow));
+    inst.setStartDate(Calendar.getInstance().getTime());
+    inst.setCurrentTaskId(workflow.getTasks().get(0).getTaskId());
+    inst.setId(UUID.randomUUID().toString());
+    inst.setSharedContext(metadata);
+    inst.setPriority(Priority.getDefault());
+    WorkflowLifecycle cycle = 
+      lifecycle.getLifecycleForWorkflow(workflow) != null ? 
+          lifecycle.getLifecycleForWorkflow(workflow):
+            lifecycle.getDefaultLifecycle();
+    WorkflowState state = cycle.getStateByName("Queued");
+    state.setMessage("Workflow started and Queued.");
+    inst.setState(state);  
+    System.out.println("CATEGORY NAME: ["+inst.getState().getCategory().getName()+"]");
+    try {
+      this.repo.addWorkflowInstance(inst);
+    } catch (InstanceRepositoryException e) {
+      e.printStackTrace();
+      throw new EngineException(e.getMessage());
+    }
     
-    return null;
+    return inst;
   }
 
   /*
@@ -183,7 +207,7 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
    */
   @Override
   public void setWorkflowManagerUrl(URL url) {
-    // TODO Auto-generated method stub
+    this.wmgrUrl = url;
 
   }
 
