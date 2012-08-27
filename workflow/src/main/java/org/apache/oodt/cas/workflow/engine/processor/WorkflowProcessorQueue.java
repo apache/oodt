@@ -90,8 +90,6 @@ public class WorkflowProcessorQueue {
       if ((inst.getState() == null)
           || (inst.getState() != null && inst.getState().getCategory() == null)) {
         WorkflowLifecycle cycle = getLifecycle(inst.getWorkflow());
-        System.out.println("I AM SETTING the state to get state by name: ["
-            + inst.getStatus() + "]");
         WorkflowState state = cycle.getStateByName(inst.getStatus());
         state.setMessage("Queued by WorkflowProcessorQueue.");
         inst.setState(state);
@@ -106,9 +104,6 @@ public class WorkflowProcessorQueue {
                   + e.getMessage());
         }
 
-      } else {
-        System.out.println("NOT CHANGING state: info for inst: "
-            + inst.getState());
       }
       processors.add(fromWorkflowInstance(inst));
     }
@@ -158,7 +153,6 @@ public class WorkflowProcessorQueue {
     processor.setConditionProcessor(false);
     processor.setDynamicMetadata(inst.getSharedContext());
     processor.setPriority(inst.getPriority());
-    System.out.println("processor state: [" + processor.getState() + "]");
     ProcessorDateTimeInfo dateTimeInfo = new ProcessorDateTimeInfo();
     processor.setProcessorDateTimeInfo(dateTimeInfo);
     processor.setStaticMetadata(new Metadata());

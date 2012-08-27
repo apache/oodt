@@ -124,7 +124,6 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
     WorkflowState state = cycle.getStateByName("Queued");
     state.setMessage("Workflow started and Queued.");
     inst.setState(state);  
-    System.out.println("CATEGORY NAME: ["+inst.getState().getCategory().getName()+"]");
     try {
       this.repo.addWorkflowInstance(inst);
     } catch (InstanceRepositoryException e) {
