@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 0.5
 --------------------------------------------
+* OODT-487: MetadataBasedProductMover to handle when the source and destinations match (cgoodale)
+
 * OODT-488: Enhanced Solr Indexer capabilities (pramirez)
 
 * OODT-390: Removal of optimize call in Lucene Workflow Instance Repository (pramirez)
