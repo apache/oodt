@@ -3,6 +3,10 @@ Apache OODT Change Log
 
 Release 0.5
 --------------------------------------------
+* OODT-488: Enhanced Solr Indexer capabilities (pramirez)
+
+* OODT-390: Removal of optimize call in Lucene Workflow Instance Repository (pramirez)
+
 * OODT-486: WorkflowInstance tries to cast null strings into dates causing
   exceptions on getters/setters (mattmann)
 
