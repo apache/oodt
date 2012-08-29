@@ -459,7 +459,6 @@ public class LuceneWorkflowInstanceRepository extends
 
             Document doc = toDoc(wInst);
             writer.addDocument(doc);
-            writer.optimize();
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Unable to index workflow instance: ["
                     + wInst.getId() + "]: Message: " + e.getMessage());
