@@ -18,15 +18,17 @@
 package org.apache.oodt.cas.filemgr.tools;
 
 //JDK imports
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -47,11 +49,11 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.core.CoreContainer;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
@@ -59,362 +61,644 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 
 /**
- * 
- * Indexes the File Manager Catalog to Solr. Uses an associated config file,
- * indexer.properties to specify how to perform the indexing. See
- * indexer.properties in the src/main/resources directory of file manager for
+ * Indexes products from the File Manager catalog to a Solr instance. Uses an
+ * associated config file, indexer.properties to specify how to perform the
+ * indexing. See indexer.properties in the src/main/resources directory for
  * specific documentation.
- * 
  */
 public class SolrIndexer {
-  private final static String SOLR_INDEXER_CONFIG = "SOLR_INDEXER_CONFIG";
-  private final static String SOLR_URL = "solr.url";
-  private final static String FILEMGR_URL = "filemgr.url";
-  private IndexerConfig config = null;
-  private final SolrServer server;
-  private CoreContainer coreContainer;
-  private String fmUrl;
-  private String solrUrl;
-  private static Logger LOG = Logger.getLogger(SolrIndexer.class.getName());
+	private final static String SOLR_INDEXER_CONFIG = "SOLR_INDEXER_CONFIG";
+	private final static String SOLR_URL = "solr.url";
+	private final static String FILEMGR_URL = "filemgr.url";
+	private final static String ACCESS_KEY = "access.key";
+	private final static String ACCESS_URL = "access.url";
+	private IndexerConfig config = null;
+	private final SolrServer server;
+	private String fmUrl;
+	private String solrUrl;
+	private static Logger LOG = Logger.getLogger(SolrIndexer.class.getName());
+	private final static SimpleDateFormat solrFormat = new SimpleDateFormat(
+	    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-  public SolrIndexer(String solrUrl, String fmUrl)
-      throws InstantiationException {
-    InputStream input = null;
-    String filename = null;
+	/**
+	 * Constructor reads in the configuration and initiates the connection to the
+	 * Solr instance.
+	 * 
+	 * @param solrUrl
+	 *          URL for the Solr instance.
+	 * @param fmUrl
+	 *          URL for the File Manager instance.
+	 */
+	public SolrIndexer(String solrUrl, String fmUrl)
+	    throws InstantiationException {
+		InputStream input = null;
+		String filename = null;
 
-    try {
-      LOG.info("System property " + SOLR_INDEXER_CONFIG + " set to "
-          + System.getProperty(SOLR_INDEXER_CONFIG));
-      filename = System.getProperty(SOLR_INDEXER_CONFIG);
-      if (filename != null) {
-        LOG.info("Reading config from " + filename);
-        input = new FileInputStream(filename);
-      } else {
-        LOG.info("Config file not found reading config from classpath");
-        input = SolrIndexer.class.getResourceAsStream("indexer.properties");
-      }
-      config = new IndexerConfig(input);
-    } catch (IOException e) {
-      LOG.severe("Could not read in configuration for indexer from classpath or file");
-      throw new InstantiationException(e.getMessage());
-    } finally {
-      if (input != null) {
-        try {
-          input.close();
-        } catch (IOException e) {
-          // no op
-        }
-      }
-    }
+		try {
+			LOG.info("System property " + SOLR_INDEXER_CONFIG + " set to "
+			    + System.getProperty(SOLR_INDEXER_CONFIG));
+			filename = System.getProperty(SOLR_INDEXER_CONFIG);
+			if (filename != null) {
+				LOG.info("Reading config from " + filename);
+				input = new FileInputStream(filename);
+			} else {
+				LOG.info("Config file not found, reading config from classpath");
+				input = SolrIndexer.class.getResourceAsStream("/indexer.properties");
+			}
+			config = new IndexerConfig(input);
+		} catch (IOException e) {
+			LOG
+			    .severe("Could not read in configuration for indexer from classpath or file");
+			throw new InstantiationException(e.getMessage());
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					// no op
+				}
+			}
+		}
 
-    this.solrUrl = solrUrl;
-    if (this.solrUrl == null) {
-      this.solrUrl = config.getProperty(SOLR_URL);
-    }
+		this.solrUrl = solrUrl;
+		if (this.solrUrl == null) {
+			this.solrUrl = config.getProperty(SOLR_URL);
+		}
 
-    this.fmUrl = fmUrl;
-    if (this.fmUrl == null) {
-      this.fmUrl = config.getProperty(FILEMGR_URL);
-    }
+		this.fmUrl = fmUrl;
+		if (this.fmUrl == null) {
+			this.fmUrl = config.getProperty(FILEMGR_URL);
+		}
 
-    LOG.info("Using Solr: " + this.solrUrl + " FileManager: " + this.fmUrl);
+		LOG.info("Using Solr: " + this.solrUrl + " FileManager: " + this.fmUrl);
 
-    try {
-      server = new CommonsHttpSolrServer(this.solrUrl);
-    } catch (MalformedURLException e) {
-      LOG.severe("Could not connect to Solr server " + this.solrUrl);
-      throw new InstantiationException(e.getMessage());
-    }
+		try {
+			server = new CommonsHttpSolrServer(this.solrUrl);
+		} catch (MalformedURLException e) {
+			LOG.severe("Could not connect to Solr server " + this.solrUrl);
+			throw new InstantiationException(e.getMessage());
+		}
 
-  }
+	}
 
-  public void shutdown() {
-    coreContainer.shutdown();
-  }
+	/**
+	 * This method deletes all entries from the Solr index.
+	 */
+	public void delete() throws SolrServerException, IOException {
+		server.deleteByQuery("*:*");
+	}
 
-  public void commit() throws SolrServerException, IOException {
-    server.commit();
-  }
+	/**
+	 * This method commits all of the modifications to the Solr index.
+	 */
+	public void commit() throws SolrServerException, IOException {
+		server.commit();
+	}
 
-  public void optimize() throws SolrServerException, IOException {
-    server.optimize();
-  }
+	/**
+	 * This method optimizes the Solr index.
+	 */
+	public void optimize() throws SolrServerException, IOException {
+		server.optimize();
+	}
 
-  @SuppressWarnings("unchecked")
-  private SolrInputDocument getSolrDocument(Metadata metadata) {
-    SolrInputDocument doc = new SolrInputDocument();
+	/**
+	 * This method transforms the product metadata into a Solr document.
+	 * 
+	 * @param metadata
+	 *          The metadata object for the product to index.
+	 * @return Returns the SolrInputDocument containing product metadata.
+	 */
+	private SolrInputDocument getSolrDocument(Metadata metadata) {
+		SolrInputDocument doc = new SolrInputDocument();
+		// Only grab metadata which have a mapping in the indexer.properties
+		for (Object objKey : config.getMapProperties().keySet()) {
+			// The key in the metadata object
+			String key = (String) objKey;
+			// The solr field name this metadata key will be mapped to
+			String fieldName = config.getMapProperties().getProperty(key);
+			List<String> values = metadata.getAllMetadata(key);
+			for (String value : values) {
+				// Add each metadata value into the
+				if (value != null && !config.getIgnoreValues().contains(value.trim())) {
+					LOG.fine("Adding field: " + fieldName + " value: " + value);
+					doc.addField(fieldName, value);
+				}
+			}
+		}
+		return doc;
+	}
 
-    for (Object objKey : config.getMapProperties().keySet()) {
-      String key = (String) objKey;
-      if (metadata.isMultiValued(key)) {
-        List<String> values = metadata.getAllMetadata(key);
-        for (String value : values) {
-          if (value != null && !config.getIgnoreValues().contains(value.trim())) {
-            LOG.fine("Adding field: "
-                + config.getMapProperties().getProperty(key) + " value: "
-                + value);
-            doc.addField(config.getMapProperties().getProperty(key), value);
-          }
-        }
-      } else {
-        String value = metadata.getMetadata(key);
-        if (value != null && !config.getIgnoreValues().contains(value.trim())) {
-          LOG.fine("Adding field: "
-              + config.getMapProperties().getProperty(key) + " value: " + value);
-          doc.addField(config.getMapProperties().getProperty(key), value);
-        }
-      }
-    }
+	/**
+	 * This method adds a single product extracted from a metadata file to the
+	 * Solr index.
+	 * 
+	 * @param file
+	 *          The file containing product metadata.
+	 * @param delete
+	 *          Flag indicating whether the entry should be deleted from the
+	 *          index.
+	 * @throws SolrServerException
+	 *           When an error occurs communicating with the Solr server instance.
+	 */
+	public void indexMetFile(File file, boolean delete)
+	    throws InstantiationException, FileNotFoundException, IOException,
+	    SolrServerException {
+		LOG.info("Attempting to index product from metadata file.");
+		try {
+			SerializableMetadata metadata = new SerializableMetadata("UTF-8", false);
+			metadata.loadMetadataFromXmlStream(new FileInputStream(file));
+			metadata.addMetadata("id", metadata.getMetadata("CAS."
+			    + CoreMetKeys.PRODUCT_ID));
+			metadata.addMetadata(config.getProperty(ACCESS_KEY), config
+			    .getProperty(ACCESS_URL)
+			    + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
+			if (delete) {
+				server
+				    .deleteById(metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
+			}
+			server.add(this.getSolrDocument(metadata));
+			LOG.info("Indexed product: "
+			    + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
+		} catch (InstantiationException e) {
+			LOG.severe("Could not instantiate metadata object: " + e.getMessage());
+		} catch (FileNotFoundException e) {
+			LOG.severe("Could not find metadata file: " + e.getMessage());
+		} catch (IOException e) {
+			LOG.severe("Could not delete product from index: " + e.getMessage());
+		}
+	}
 
-    return doc;
-  }
+	/**
+	 * This method indexes all product types retrieved from the File Manager to
+	 * the Solr index.
+	 * 
+	 * @param delete
+	 *          Flag indicating whether each product type retrieved from the File
+	 *          Manager should be deleted from the index.
+	 * @throws SolrServerException
+	 *           When an error occurs communicating with the Solr server instance.
+	 */
+	public void indexProductTypes(boolean delete) {
+		LOG.info("Indexing product types...");
+		try {
+			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
+			    this.fmUrl));
+			LOG.info("Retrieving list of product types.");
+			List<ProductType> types = fmClient.getProductTypes();
+			for (ProductType type : types) {
+				if (!config.getIgnoreTypes().contains(type.getName().trim())) {
+					Metadata metadata = new Metadata();
+					metadata.addMetadata("id", type.getProductTypeId());
+					metadata.addMetadata("CAS.ProductTypeId", type.getProductTypeId());
+					metadata.addMetadata("CAS.ProductTypeDescription", type
+					    .getDescription());
+					metadata.addMetadata("CAS.ProductTypeRepositoryPath", type
+					    .getProductRepositoryPath());
+					metadata.addMetadata("CAS.ProductTypeVersioner", type.getVersioner());
+					metadata.addMetadata("CAS.ProductTypeName", type.getName());
+					metadata.addMetadata("ProductType", "ProductType");
+					metadata.replaceMetadata(type.getTypeMetadata());
+					if (delete) {
+						try {
+							server.deleteById(type.getProductTypeId());
+						} catch (Exception e) {
+							LOG.severe("Could not delete product type " + type.getName()
+							    + " from index: " + e.getMessage());
+						}
+					}
+					try {
+						performSubstitution(metadata);
+						server.add(this.getSolrDocument(metadata));
+						LOG.info("Indexed product type: " + type.getName());
+					} catch (Exception e) {
+						LOG.severe("Could not index " + type.getName() + ": "
+						    + e.getMessage());
+					}
+				} else {
+					LOG.info("Ignoring product type: " + type.getName());
+				}
+			}
+		} catch (MalformedURLException e) {
+			LOG.severe("File Manager URL is malformed: " + e.getMessage());
+		} catch (ConnectionException e) {
+			LOG.severe("Could not connect to File Manager: " + e.getMessage());
+		} catch (RepositoryManagerException e) {
+			LOG.severe("Could not retrieve product types from File Manager: "
+			    + e.getMessage());
+		}
+		LOG.info("Finished indexing product types.");
+	}
 
-  public void indexMetFile(File file, boolean delete)
-      throws InstantiationException, FileNotFoundException, IOException,
-      SolrServerException {
-    SerializableMetadata metadata = new SerializableMetadata("UTF-8", false);
-    metadata.loadMetadataFromXmlStream(new FileInputStream(file));
-    if (delete) {
-      server.deleteById(metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
-    }
-    server.add(this.getSolrDocument(metadata));
-  }
+	/**
+	 * This method indexes all products retrieved from the File Manager to the
+	 * Solr index. Metadata from the product's associated ProductType is also
+	 * included.
+	 * 
+	 * @param delete
+	 *          Flag indicating whether each product retrieved from the File
+	 *          Manager should be deleted from the index.
+	 * @throws SolrServerException
+	 *           When an error occurs communicating with the Solr server instance.
+	 */
+	public void indexAll(boolean delete) {
+		LOG.info("Indexing products...");
+		try {
+			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
+			    this.fmUrl));
+			LOG.info("Retrieving list of product types.");
+			List<ProductType> types = fmClient.getProductTypes();
+			for (ProductType type : types) {
+				if (!config.getIgnoreTypes().contains(type.getName().trim())) {
+					LOG.info("Paging through products for product type: "
+					    + type.getName());
+					for (ProductPage page = fmClient.getFirstPage(type); page
+					    .isLastPage(); page = fmClient.getNextPage(type, page)) {
+						for (Product product : page.getPageProducts()) {
+							try {
+								this.indexProduct(product.getProductId(), fmClient
+								    .getMetadata(product), type.getTypeMetadata(), delete);
+							} catch (Exception e) {
+								LOG.severe("Could not index " + product.getProductId() + ": "
+								    + e.getMessage());
+							}
+						}
+					}
+				}
+			}
+		} catch (MalformedURLException e) {
+			LOG.severe("File Manager URL is malformed: " + e.getMessage());
+		} catch (ConnectionException e) {
+			LOG.severe("Could not connect to File Manager: " + e.getMessage());
+		} catch (CatalogException e) {
+			LOG.severe("Could not retrieve product from File Manager: "
+			    + e.getMessage());
+		} catch (RepositoryManagerException e) {
+			LOG.severe("Could not retrieve product types from File Manager: "
+			    + e.getMessage());
+		}
+		LOG.info("Finished indexing products.");
+	}
 
-  public void indexAll(boolean delete) throws SolrServerException {
-    LOG.info("Indexing");
-    try {
-      XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
-          this.fmUrl));
-      if (delete) {
-        server.deleteByQuery("*:*");
-      }
-      LOG.info("Looking up product types");
-      List<ProductType> types = fmClient.getProductTypes();
-      for (ProductType type : types) {
-        if (!config.getIgnoreTypes().contains(type.getName().trim())) {
-          LOG.info("Looking up products for product type: " + type.getName());
-          List<Product> products = fmClient.getProductsByProductType(type);
-          for (Product product : products) {
-            LOG.info("Looking up metadata for ProductId "
-                + product.getProductId());
-            Metadata metadata = fmClient.getMetadata(product);
-            if (metadata != null) {
-              LOG.info("Found metadata for product ID "
-                  + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
-            } else {
-              LOG.info("Could not find metadata for product "
-                  + product.getProductId());
-            }
-            if (metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID) != null) {
-              if (metadata.getMetadata("Deleted") == null
-                  || !"true".equals(metadata.getMetadata("Deleted"))) {
-                try {
-                  server.add(this.getSolrDocument(metadata));
-                  server.commit();
-                  LOG.info("Indexed " + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
-                } catch (Exception e) {
-                  LOG.severe("Could not index " + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID)
-                      + " " + e.getMessage());
-                }
-              } else {
-                LOG.info("Skipping Deleted: " + metadata.getMetadata("CAS." + CoreMetKeys.PRODUCT_ID));
-              }
-            }
-          }
-        } else {
-          LOG.info("Ignoring product type " + type.getName());
-        }
-      }
-    } catch (MalformedURLException e) {
-      LOG.severe("File Manager URL is malformed: " + e.getMessage());
-    } catch (ConnectionException e) {
-      LOG.severe("Could not connect to File Manager: " + e.getMessage());
-    } catch (IOException e) {
-      LOG.severe("Could not delete all: " + e.getMessage());
-    } catch (RepositoryManagerException e) {
-      LOG.severe("Could not look up product types: " + e.getMessage());
-    } catch (CatalogException e) {
-      LOG.severe("Query to File Manager failed: " + e.getMessage());
-    }
-    LOG.info("Finished Indexing");
-  }
+	/**
+	 * This method adds a single product retrieved from the File Manager by its
+	 * product identifier to the Solr index. Metadata from the ProductType is also
+	 * included.
+	 * 
+	 * @param productId
+	 *          The identifier of the product (CAS.ProductId).
+	 * @param delete
+	 *          Flag indicating whether the entry should be deleted from the
+	 *          index.
+	 * @throws SolrServerException
+	 *           When an error occurs communicating with the Solr server instance.
+	 */
+	public void indexProduct(String productId, boolean delete)
+	    throws SolrServerException {
+		LOG.info("Attempting to index product: " + productId);
+		try {
+			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
+			    this.fmUrl));
+			Product product = fmClient.getProductById(productId);
+			Metadata productMetadata = fmClient.getMetadata(product);
+			indexProduct(product.getProductId(), productMetadata, product
+			    .getProductType().getTypeMetadata(), delete);
+		} catch (MalformedURLException e) {
+			LOG.severe("File Manager URL is malformed: " + e.getMessage());
+		} catch (ConnectionException e) {
+			LOG.severe("Could not connect to File Manager: " + e.getMessage());
+		} catch (CatalogException e) {
+			LOG.severe("Could not retrieve product from File Manager: "
+			    + e.getMessage());
+		} catch (java.text.ParseException e) {
+			LOG.severe("Could not format date: " + e.getMessage());
+		}
+	}
 
-  public void indexProduct(String productId, boolean delete)
-      throws SolrServerException, IOException, ConnectionException,
-      CatalogException {
-    XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
-        this.fmUrl));
-    if (delete) {
-      server.deleteById(productId);
-    }
+	private void indexProduct(String productId, Metadata productMetadata,
+	    Metadata typeMetadata, boolean delete) throws SolrServerException,
+	    java.text.ParseException {
+		Metadata metadata = new Metadata();
+		metadata.addMetadata("id", productId);
+		// Add in product type metadata
+		if (typeMetadata != null) {
+			metadata.addMetadata(typeMetadata);
+		}
+		if (productMetadata != null) {
+			String accessKey = config.getProperty(ACCESS_KEY);
+			// Product metadata takes precedence
+			metadata.replaceMetadata(productMetadata);
+			// If there is an access url configured add it to the metadata
+			if (config.getProperty(ACCESS_URL) != null) {
+				metadata.addMetadata(accessKey, config.getProperty(ACCESS_URL));
+			}
+			// Replace values for metadata keys specified in config. This allows
+			// for metadata substitution. For instance, if a key named "product_url"
+			// has a value of
+			// http://localhost:8080/cas-product/data?productID=[CAS.ProductId]
+			// the value in brakets will be updated with the value from the
+			// CAS.ProductId.
+			performSubstitution(metadata);
+			if (delete) {
+				try {
+					server.deleteById(productId);
+				} catch (Exception e) {
+					LOG.severe("Could not delete product from index: " + e.getMessage());
+				}
+			}
+			try {
+				server.add(this.getSolrDocument(metadata));
+				LOG.info("Indexed product: " + productId);
+			} catch (IOException e) {
+				LOG.severe("Could not index product: " + productId);
+			}
+		} else {
+			LOG.info("Could not find metadata for product: " + productId);
+		}
+	}
 
-    Product product = fmClient.getProductById(productId);
-    Metadata metadata = fmClient.getMetadata(product);
-    server.add(this.getSolrDocument(metadata));
-  }
+	/**
+	 * Quick helper method to do substitution on the keys specified in the config
+	 * 
+	 * @param metadata
+	 *          to substitute on
+	 * @throws java.text.ParseException
+	 */
+	private void performSubstitution(Metadata metadata)
+	    throws java.text.ParseException {
+		// Do metadata replacement
+		for (String key : config.getReplacementKeys()) {
+			List<String> values = metadata.getAllValues(key);
+			if (values != null) {
+				List<String> newValues = new ArrayList<String>();
+				for (String value : values) {
+					newValues.add(PathUtils.replaceEnvVariables(value, metadata));
+				}
+				metadata.removeMetadata(key);
+				metadata.addMetadata(key, newValues);
+			}
+		}
+		// Format dates
+		for (Object key : config.getFormatProperties().keySet()) {
+			String keyString = (String) key;
+			List<String> values = metadata.getAllValues(keyString);
+			if (metadata.containsKey(keyString)) {
+				List<String> newValues = new ArrayList<String>();
+				SimpleDateFormat format = new SimpleDateFormat(config
+				    .getFormatProperties().getProperty(keyString).trim());
+				for (String value : values) {
+					newValues.add(formatDate(format, value));
+				}
+				metadata.removeMetadata(keyString);
+				metadata.addMetadata(keyString, newValues);
+			}
+		}
+	}
 
-  @SuppressWarnings("static-access")
-  public static Options buildCommandLine() {
-    Options options = new Options();
+	private String formatDate(SimpleDateFormat format, String value)
+	    throws java.text.ParseException {
+		// Ignore formating if its an ignore value
+		if (config.getIgnoreValues().contains(value.trim()))
+			return value;
+		return solrFormat.format(format.parse(value));
+	}
 
-    options.addOption(new Option("h", "help", false, "Print this message"));
-    options.addOption(new Option("o", "optimize", false,
-        "Optimize the Solr index when done"));
-    options.addOption(new Option("d", "delete", false,
-        "Delete items before indexing"));
-    options.addOption(OptionBuilder.withArgName("Solr URL").hasArg()
-        .withDescription("URL to the Solr server").withLongOpt("solrUrl")
-        .create("su"));
-    options.addOption(OptionBuilder.withArgName("Filemgr URL").hasArg()
-        .withDescription("URL to the CAS FileManager").withLongOpt("fmUrl")
-        .create("fmu"));
+	/**
+	 * This method builds the command-line options.
+	 * 
+	 * @return Returns the supported Options.
+	 */
+	@SuppressWarnings("static-access")
+	public static Options buildCommandLine() {
+		Options options = new Options();
 
-    OptionGroup group = new OptionGroup();
-    Option all = new Option("a", "all", false, "Index all items in catalog");
-    Option met = OptionBuilder.withArgName("file").hasArg()
-        .withDescription("Index this met file").withLongOpt("metFile")
-        .create("mf");
-    Option query = OptionBuilder.withArgName("query").hasArg()
-        .withDescription("Not yet implemented").withLongOpt("catalogQuery")
-        .create("cq");
-    Option product = OptionBuilder.withArgName("productId").hasArg()
-        .withDescription("Product id to index").withLongOpt("product")
-        .create("p");
+		options.addOption(new Option("h", "help", false, "Print this message"));
+		options.addOption(new Option("o", "optimize", false,
+		    "Optimize the Solr index"));
+		options.addOption(new Option("d", "delete", false,
+		    "Delete item before indexing"));
+		options.addOption(OptionBuilder.withArgName("Solr URL").hasArg()
+		    .withDescription("URL to the Solr instance").withLongOpt("solrUrl")
+		    .create("su"));
+		options.addOption(OptionBuilder.withArgName("Filemgr URL").hasArg()
+		    .withDescription("URL to the File Manager").withLongOpt("fmUrl")
+		    .create("fmu"));
 
-    group.addOption(all);
-    group.addOption(met);
-    group.addOption(query);
-    group.addOption(product);
-    options.addOptionGroup(group);
+		OptionGroup group = new OptionGroup();
+		Option all = new Option("a", "all", false,
+		    "Index all products from the File Manager");
+		Option product = OptionBuilder.withArgName("productId").hasArg()
+		    .withDescription("Index the product from the File Manager")
+		    .withLongOpt("product").create("p");
+		Option met = OptionBuilder.withArgName("file").hasArg().withDescription(
+		    "Index the product from a metadata file").withLongOpt("metFile")
+		    .create("mf");
+		Option read = new Option("r", "read", false,
+		    "Index all products based on a list of product identifiers passed in");
+		Option types = new Option("t", "types", false,
+		    "Index all product types from the File Manager");
+		Option deleteAll = new Option("da", "deleteAll", false,
+		    "Delete all products/types from the Solr index");
 
-    return options;
-  }
+		group.addOption(all);
+		group.addOption(product);
+		group.addOption(met);
+		group.addOption(read);
+		group.addOption(types);
+		group.addOption(deleteAll);
+		options.addOptionGroup(group);
 
-  public static void main(String[] args) throws Exception {
-    Options options = SolrIndexer.buildCommandLine();
-    CommandLineParser parser = new GnuParser();
-    CommandLine line = null;
+		return options;
+	}
 
-    try {
-      line = parser.parse(options, args);
-    } catch (ParseException e) {
-      LOG.severe("Could not parse command line: " + e.getMessage());
-    }
+	/**
+	 * The main method. Execution without argument displays help message.
+	 * 
+	 * @param args
+	 *          Command-line arguments.
+	 */
+	public static void main(String[] args) throws Exception {
+		Options options = SolrIndexer.buildCommandLine();
+		CommandLineParser parser = new GnuParser();
+		CommandLine line = null;
 
-    if (line == null || line.hasOption("help") || line.getOptions().length == 0) {
-      HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("java " + SolrIndexer.class.getName(), options);
-    } else if (line.hasOption("all") || line.hasOption("product")
-        || line.hasOption("metFile") || line.hasOption("catalogQuery")) {
-      SolrIndexer indexer = null;
-      String solrUrl = null;
-      String fmUrl = null;
-      if (line.hasOption("solrUrl")) {
-        solrUrl = line.getOptionValue("solrUrl");
-      }
-      if (line.hasOption("fmUrl")) {
-        fmUrl = line.getOptionValue("fmUrl");
-      }
-      try {
-        indexer = new SolrIndexer(solrUrl, fmUrl);
-        if (line.hasOption("all")) {
-          indexer.indexAll(line.hasOption("delete"));
-        } else if (line.hasOption("product")) {
-          indexer.indexProduct(line.getOptionValue("product"),
-              line.hasOption("delete"));
-        } else if (line.hasOption("metFile")) {
-          indexer.indexMetFile(new File(line.getOptionValue("metFile")),
-              line.hasOption("delete"));
-        } else {
-          LOG.info("Catalog query not yet implemented.");
-        }
-        indexer.commit();
-        if (line.hasOption("optimize")) {
-          indexer.optimize();
-        }
-      } catch (Exception ex) {
-        LOG.severe("Did not complete indexing: " + ex.getMessage());
-        ex.printStackTrace();
-      }
-    }
+		try {
+			line = parser.parse(options, args);
+		} catch (ParseException e) {
+			LOG.severe("Could not parse command line: " + e.getMessage());
+		}
 
-  }
+		if (line == null || line.hasOption("help") || line.getOptions().length == 0) {
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp("java " + SolrIndexer.class.getName(), options);
+		} else if (line.hasOption("all") || line.hasOption("product")
+		    || line.hasOption("metFile") || line.hasOption("read")
+		    || line.hasOption("types") || line.hasOption("deleteAll")) {
+			SolrIndexer indexer = null;
+			String solrUrl = null;
+			String fmUrl = null;
+			if (line.hasOption("solrUrl")) {
+				solrUrl = line.getOptionValue("solrUrl");
+			}
+			if (line.hasOption("fmUrl")) {
+				fmUrl = line.getOptionValue("fmUrl");
+			}
+			try {
+				indexer = new SolrIndexer(solrUrl, fmUrl);
+				if (line.hasOption("all")) {
+					indexer.indexAll(line.hasOption("delete"));
+				} else if (line.hasOption("product")) {
+					indexer.indexProduct(line.getOptionValue("product"), line
+					    .hasOption("delete"));
+				} else if (line.hasOption("metFile")) {
+					indexer.indexMetFile(new File(line.getOptionValue("metFile")), line
+					    .hasOption("delete"));
+				} else if (line.hasOption("read")) {
+					for (String productId : readProductIdsFromStdin()) {
+						indexer.indexProduct(productId, line.hasOption("delete"));
+					}
+				} else if (line.hasOption("types")) {
+					indexer.indexProductTypes(line.hasOption("delete"));
+				} else if (line.hasOption("deleteAll")) {
+					indexer.delete();
+				} else {
+					LOG.severe("Option not supported.");
+				}
+				indexer.commit();
+				if (line.hasOption("optimize")) {
+					indexer.optimize();
+				}
+			} catch (Exception e) {
+				LOG.severe("An error occurred indexing: " + e.getMessage());
+				LOG
+				    .severe("If the above message is related to accessing the Solr instance, see the Application Server's log for additional information.");
+			}
+		}
+	}
 
-  public class IndexerConfig {
-    private final static String PREFIX_CONFIG = "config.";
-    private final static String PREFIX_MET = "map.";
-    private Properties properties = new Properties();
-    private Properties mapProperties = new Properties();
-    private HashMap<String, Properties> xmlMapProperties = new HashMap<String, Properties>();
-    private List<String> xmlKeys = new ArrayList<String>();
-    private List<String> xmlMultiKeys = new ArrayList<String>();
-    private List<String> ignoreTypes = new ArrayList<String>();
-    private List<String> ignoreValues = new ArrayList<String>();
+	/**
+	 * This method reads product identifiers from the standard input.
+	 * 
+	 * @return Returns a List of product identifiers.
+	 */
+	private static List<String> readProductIdsFromStdin() {
+		List<String> productIds = new ArrayList<String>();
+		BufferedReader br = null;
 
-    public IndexerConfig(InputStream inputStream) throws IOException {
-      Properties props = new Properties();
-      props.load(inputStream);
-      for (Object objKey : props.keySet()) {
-        String key = (String) objKey;
-        if (key.startsWith(PREFIX_CONFIG)) {
-          properties.put(key.substring(PREFIX_CONFIG.length()),
-              props.getProperty(key));
-        } else if (key.startsWith(PREFIX_MET)) {
-          mapProperties.put(key.substring(PREFIX_MET.length()),
-              props.getProperty(key));
-        }
-      }
+		br = new BufferedReader(new InputStreamReader(System.in));
+		String line = null;
 
-      if (properties.getProperty("ignore.types") != null) {
-        String[] values = properties.getProperty("ignore.types").trim()
-            .split(",");
-        for (String value : values) {
-          ignoreTypes.add(value);
-        }
-      }
-      if (properties.getProperty("ignore.values") != null) {
-        String[] values = properties.getProperty("ignore.values").trim()
-            .split(",");
-        for (String value : values) {
-          ignoreValues.add(value);
-        }
-      }
-    }
+		try {
+			while ((line = br.readLine()) != null) {
+				productIds.add(line);
+			}
+		} catch (IOException e) {
+			LOG.severe("Error reading product id: line: [" + line + "]: Message: "
+			    + e.getMessage());
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (Exception ignore) {
+				}
+				br = null;
+			}
+		}
+		return productIds;
+	}
 
-    public String getProperty(String key) {
-      return properties.getProperty(key);
-    }
+	/**
+	 * This class manages the Indexer configuration.
+	 */
+	public class IndexerConfig {
+		private final static String PREFIX_CONFIG = "config.";
+		private final static String PREFIX_MET = "map.";
+		private final static String PREFIX_FORMAT = "format.";
+		private final static String IGNORE_TYPES = "ignore.types";
+		private final static String IGNORE_VALUES = "ignore.values";
+		private final static String REPLACEMENT_KEYS = "replacement.keys";
+		// Used to hold general properties for indexer configuration
+		private Properties properties = new Properties();
+		// Used to hold mappings for filemanager -> solr for keys
+		private Properties mapProperties = new Properties();
+		// Used to define the date format for a field
+		private Properties formatProperties = new Properties();
+		private List<String> ignoreTypes = new ArrayList<String>();
+		private List<String> ignoreValues = new ArrayList<String>();
+		private List<String> replacementKeys = new ArrayList<String>();
 
-    public String getProperty(String key, String defaultValue) {
-      return properties.getProperty(key, defaultValue);
-    }
+		public IndexerConfig(InputStream inputStream) throws IOException {
+			Properties props = new Properties();
+			props.load(inputStream);
+			for (Object objKey : props.keySet()) {
+				String key = (String) objKey;
+				if (key.startsWith(PREFIX_CONFIG)) {
+					properties.put(key.substring(PREFIX_CONFIG.length()), props
+					    .getProperty(key));
+				} else if (key.startsWith(PREFIX_MET)) {
+					mapProperties.put(key.substring(PREFIX_MET.length()), props
+					    .getProperty(key));
+				} else if (key.startsWith(PREFIX_FORMAT)) {
+					formatProperties.put(key.substring(PREFIX_FORMAT.length()), props
+					    .getProperty(key));
+				}
+			}
 
-    public Properties getMapProperties() {
-      return mapProperties;
-    }
+			if (properties.getProperty(IGNORE_TYPES) != null) {
+				String[] values = properties.getProperty(IGNORE_TYPES).trim()
+				    .split(",");
+				for (String value : values) {
+					ignoreTypes.add(value);
+				}
+			}
 
-    public Properties getXmlMapProperties(String name) {
-      return xmlMapProperties.get(name);
-    }
+			if (properties.getProperty(IGNORE_VALUES) != null) {
+				String[] values = properties.getProperty(IGNORE_VALUES).trim().split(
+				    ",");
+				for (String value : values) {
+					ignoreValues.add(value);
+				}
+			}
 
-    public List<String> getXmlKeys() {
-      return this.xmlKeys;
-    }
+			if (properties.getProperty(REPLACEMENT_KEYS) != null) {
+				String[] values = properties.getProperty(REPLACEMENT_KEYS).trim()
+				    .split(",");
+				for (String value : values) {
+					replacementKeys.add(value);
+				}
+			}
+		}
 
-    public List<String> getXmlMultiKeys() {
-      return this.xmlMultiKeys;
-    }
+		public String getProperty(String key) {
+			return properties.getProperty(key);
+		}
 
-    public List<String> getIgnoreTypes() {
-      return this.ignoreTypes;
-    }
+		public String getProperty(String key, String defaultValue) {
+			return properties.getProperty(key, defaultValue);
+		}
 
-    public List<String> getIgnoreValues() {
-      return this.ignoreValues;
-    }
+		public Properties getMapProperties() {
+			return mapProperties;
+		}
 
-  }
+		public Properties getFormatProperties() {
+			return formatProperties;
+		}
+
+		public List<String> getIgnoreTypes() {
+			return this.ignoreTypes;
+		}
+
+		public List<String> getIgnoreValues() {
+			return this.ignoreValues;
+		}
+
+		public List<String> getReplacementKeys() {
+			return this.replacementKeys;
+		}
+	}
 
 }
