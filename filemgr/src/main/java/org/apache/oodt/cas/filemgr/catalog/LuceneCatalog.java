@@ -634,7 +634,7 @@ public class LuceneCatalog implements Catalog {
     public List<String> query(Query query, ProductType type) throws CatalogException {
         // paginate products returns full products, but the query method
         // is expected to return product ids
-        List<Product> fullProducts = paginateQuery(query, type, -1);
+        List<Product> fullProducts = paginateQuery(query, type, -1, null);
         List<String> productIds = null;
 
         if (fullProducts != null && fullProducts.size() > 0) {
@@ -721,7 +721,7 @@ public class LuceneCatalog implements Catalog {
         Query query = new Query();
 
         for (int pageNum = 1; pageNum < numPages + 1; pageNum++) {
-            List<Product> pageProducts = paginateQuery(query, type, pageNum);
+            List<Product> pageProducts = paginateQuery(query, type, pageNum, null);
             products.addAll(pageProducts);
         }
 
@@ -756,12 +756,15 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.util.Pagination#getFirstPage(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public ProductPage getFirstPage(ProductType type) {
-        ProductPage firstPage = null;
+        ProductPage firstPage = new ProductPage();
         List<Product> products = null;
         Query query = new Query();
-
+        
+        // now construct the page
+        firstPage.setPageNum(1);
+        firstPage.setPageSize(pageSize);
         try {
-            products = paginateQuery(query, type, 1);
+          products = paginateQuery(query, type, 1, firstPage);
         } catch (CatalogException e) {
             LOG.log(Level.WARNING,
                     "CatalogException getting first page for product type: ["
@@ -769,27 +772,12 @@ public class LuceneCatalog implements Catalog {
                             + "] from catalog: Message: " + e.getMessage());
             return null;
         }
-
+        // There are no products and thus no first page
         if (products == null || (products != null && products.size() == 0)) {
-            return firstPage;
-        } else {
-            // now construct the page
-            firstPage = new ProductPage();
-            firstPage.setPageNum(1);
-            firstPage.setPageSize(pageSize);
-            try {
-                firstPage.setTotalPages(PaginationUtils.getTotalPage(
-                        getNumHits(query, type), pageSize));
-            } catch (Exception e) {
-                LOG.log(Level.WARNING,
-                        "Exception getting total pages for query: [" + query
-                                + "]: Message: " + e.getMessage());
-                firstPage.setTotalPages(-1);
-            }
-
-            firstPage.setPageProducts(products);
-
+        		return null;
         }
+
+        firstPage.setPageProducts(products);
 
         return firstPage;
     }
@@ -800,32 +788,28 @@ public class LuceneCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.util.Pagination#getLastProductPage(org.apache.oodt.cas.filemgr.structs.ProductType)
      */
     public ProductPage getLastProductPage(ProductType type) {
-        ProductPage lastPage = null;
+        ProductPage lastPage = new ProductPage();
         ProductPage firstPage = getFirstPage(type);
         List<Product> products = null;
         Query query = new Query();
-
+        
+        // now construct the page
+        lastPage.setPageNum(firstPage.getTotalPages());
+        lastPage.setPageSize(pageSize);
         try {
-            products = paginateQuery(query, type, firstPage.getTotalPages());
+            products = paginateQuery(query, type, firstPage.getTotalPages(), lastPage);
         } catch (CatalogException e) {
-            LOG.log(Level.WARNING,
-                    "CatalogException getting last page for product type: ["
-                            + type.getProductTypeId()
-                            + "] from catalog: Message: " + e.getMessage());
-            return null;
+          	LOG.log(Level.WARNING,
+                  "CatalogException getting last page for product type: ["
+                          + type.getProductTypeId()
+                          + "] from catalog: Message: " + e.getMessage());
+          	return null;
         }
-
+        // There are no products thus there is no last page
         if (products == null || (products != null && products.size() == 0)) {
-            return lastPage;
-        } else {
-            // now construct the page
-            lastPage = new ProductPage();
-            lastPage.setPageNum(firstPage.getTotalPages());
-            lastPage.setPageSize(pageSize);
-            lastPage.setTotalPages(firstPage.getTotalPages());
-            lastPage.setPageProducts(products);
-
+        	  return null;
         }
+        lastPage.setPageProducts(products);
 
         return lastPage;
     }
@@ -846,30 +830,26 @@ public class LuceneCatalog implements Catalog {
         }
 
         List<Product> products = null;
-        ProductPage nextPage = null;
+        ProductPage nextPage = new ProductPage();
         Query query = new Query();
 
+        // now construct the page
+        nextPage.setPageNum(currentPage.getPageNum() + 1);
+        nextPage.setPageSize(pageSize);
         try {
-            products = paginateQuery(query, type, currentPage.getPageNum() + 1);
+            products = paginateQuery(query, type, currentPage.getPageNum() + 1, nextPage);
         } catch (CatalogException e) {
             LOG.log(Level.WARNING,
-                    "CatalogException getting next page for product type: ["
-                            + type.getProductTypeId()
-                            + "] from catalog: Message: " + e.getMessage());
+                  "CatalogException getting next page for product type: ["
+                          + type.getProductTypeId()
+                          + "] from catalog: Message: " + e.getMessage());
             return null;
         }
-
+        // There are no products and thus no next page
         if (products == null || (products != null && products.size() == 0)) {
-            return nextPage;
-        } else {
-            // now construct the page
-            nextPage = new ProductPage();
-            nextPage.setPageNum(currentPage.getPageNum() + 1);
-            nextPage.setPageSize(pageSize);
-            nextPage.setTotalPages(currentPage.getTotalPages());
-            nextPage.setPageProducts(products);
-
+        	  return null;
         }
+        nextPage.setPageProducts(products);
 
         return nextPage;
     }
@@ -889,11 +869,15 @@ public class LuceneCatalog implements Catalog {
             return currentPage;
         }
         List<Product> products = null;
-        ProductPage prevPage = null;
+        ProductPage prevPage = new ProductPage();
         Query query = new Query();
 
+        // now construct the page
+        prevPage = new ProductPage();
+        prevPage.setPageNum(currentPage.getPageNum() - 1);
+        prevPage.setPageSize(pageSize);
         try {
-            products = paginateQuery(query, type, currentPage.getPageNum() - 1);
+            products = paginateQuery(query, type, currentPage.getPageNum() - 1, prevPage);
         } catch (CatalogException e) {
             LOG.log(Level.WARNING,
                     "CatalogException getting prev page for product type: ["
@@ -901,18 +885,12 @@ public class LuceneCatalog implements Catalog {
                             + "] from catalog: Message: " + e.getMessage());
             return null;
         }
-
+        
+        // There are no products and thus no pages
         if (products == null || (products != null && products.size() == 0)) {
-            return prevPage;
-        } else {
-            // now construct the page
-            prevPage = new ProductPage();
-            prevPage.setPageNum(currentPage.getPageNum() - 1);
-            prevPage.setPageSize(pageSize);
-            prevPage.setTotalPages(currentPage.getTotalPages());
-            prevPage.setPageProducts(products);
-
+        	  return null;
         }
+        prevPage.setPageProducts(products);
 
         return prevPage;
     }
@@ -929,9 +907,7 @@ public class LuceneCatalog implements Catalog {
             ProductPage retPage = new ProductPage();
             retPage.setPageNum(pageNum);
             retPage.setPageSize(pageSize);
-            retPage.setTotalPages(PaginationUtils.getTotalPage(getNumHits(
-                    query, type), pageSize));
-            retPage.setPageProducts(paginateQuery(query, type, pageNum));
+            retPage.setPageProducts(paginateQuery(query, type, pageNum, retPage));
             return retPage;
         } catch (Exception e) {
             e.printStackTrace();
@@ -1229,11 +1205,9 @@ public class LuceneCatalog implements Catalog {
             for (QueryCriteria queryCriteria : query.getCriteria()) 
                 booleanQuery.add(this.getQuery(queryCriteria), BooleanClause.Occur.MUST);
 
-            Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
-                    SortField.STRING, true));
             LOG.log(Level.FINE, "Querying LuceneCatalog: q: [" + booleanQuery
                     + "]");
-            Hits hits = searcher.search(booleanQuery, sort);
+            Hits hits = searcher.search(booleanQuery);
             numHits = hits.length();
         } catch (IOException e) {
             LOG.log(Level.WARNING,
@@ -1254,7 +1228,7 @@ public class LuceneCatalog implements Catalog {
         return numHits;
     }
 
-    private List<Product> paginateQuery(Query query, ProductType type, int pageNum)
+    private List<Product> paginateQuery(Query query, ProductType type, int pageNum, ProductPage page)
             throws CatalogException {
         List<Product> products = null;
         IndexSearcher searcher = null;
@@ -1285,6 +1259,12 @@ public class LuceneCatalog implements Catalog {
             LOG.log(Level.FINE, "Querying LuceneCatalog: q: [" + booleanQuery
                     + "]");
             Hits hits = searcher.search(booleanQuery, sort);
+            
+            // Calculate page size and set it while we have the results
+            if (page != null) {
+            	page.setTotalPages(PaginationUtils.getTotalPage(hits.length(), pageSize));
+            }
+            
             if (hits.length() > 0) {
 
                 int startNum = (pageNum - 1) * pageSize;
