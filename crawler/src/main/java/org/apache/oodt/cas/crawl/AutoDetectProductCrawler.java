@@ -70,6 +70,8 @@ import org.springframework.beans.factory.annotation.Required;
 public class AutoDetectProductCrawler extends ProductCrawler implements
       CoreMetKeys {
 
+   public static final String MIME_TYPES_HIERARCHY = "MimeTypesHierarchy"; 
+
    private MimeExtractorRepo mimeExtractorRepo;
 
    @Override

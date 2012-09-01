@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-432: Add FileSize to know metadata fields set by CAS-Crawler 
+  (bfoster via mattmann)
+
 * OODT-381: Create Runner framework to allow flexible WorkflowTask 
   execution on different runtimes (mattmann, bfoster)
 

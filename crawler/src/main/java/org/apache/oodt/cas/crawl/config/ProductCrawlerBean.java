@@ -59,8 +59,6 @@ public abstract class ProductCrawlerBean implements
 
     private Metadata globalMetadata;
     
-    public static final String MIME_TYPES_HIERARCHY = "MimeTypesHierarchy"; 
-    
     public ProductCrawlerBean() {
         this.actionIds = new LinkedList<String>();
         this.requiredMetadata = new HashSet<String>();

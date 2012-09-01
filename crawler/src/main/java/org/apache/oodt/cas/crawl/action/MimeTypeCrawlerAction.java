@@ -17,7 +17,7 @@
 package org.apache.oodt.cas.crawl.action;
 
 //OODT static imports
-import static org.apache.oodt.cas.crawl.config.ProductCrawlerBean.MIME_TYPES_HIERARCHY;
+import static org.apache.oodt.cas.crawl.AutoDetectProductCrawler.MIME_TYPES_HIERARCHY;
 
 //Apache imports
 import org.apache.commons.lang.Validate;

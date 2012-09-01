@@ -262,18 +262,22 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
    @VisibleForTesting void addKnownMetadata(File product,
          Metadata productMetadata) {
       // Add ProductName if not specified.
-      if (productMetadata.getMetadata(CoreMetKeys.PRODUCT_NAME) == null) {
-         productMetadata.addMetadata(
-               CoreMetKeys.PRODUCT_NAME, product.getName());
+      if (!productMetadata.containsKey(PRODUCT_NAME)) {
+         productMetadata.addMetadata(PRODUCT_NAME, product.getName());
       }
       // Add Filename if not specified.
-      if (productMetadata.getMetadata(CoreMetKeys.FILENAME) == null) {
-         productMetadata.addMetadata(CoreMetKeys.FILENAME, product.getName());
+      if (!productMetadata.containsKey(FILENAME)) {
+         productMetadata.addMetadata(FILENAME, product.getName());
       }
       // Add FileLocation if not specified.
-      if (productMetadata.getMetadata(CoreMetKeys.FILE_LOCATION) == null) {
-         productMetadata.addMetadata(CoreMetKeys.FILE_LOCATION, product
+      if (!productMetadata.containsKey(FILE_LOCATION)) {
+         productMetadata.addMetadata(FILE_LOCATION, product
                .getAbsoluteFile().getParentFile().getAbsolutePath());
+      }
+      // Add FileSize if not specified
+      if (!productMetadata.containsKey(FILE_SIZE)) {
+         productMetadata.addMetadata(FILE_SIZE,
+               Long.toString(product.length()));
       }
    }
 
