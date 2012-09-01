@@ -3,6 +3,14 @@ Apache OODT Change Log
 
 Release 0.5
 --------------------------------------------
+
+* OODT-381: Create Runner framework to allow flexible WorkflowTask 
+  execution on different runtimes (mattmann, bfoster)
+
+* OODT-215: Workflow2 Architecture (mattmann, bfoster, sherylj)
+
+* OODT-310: Port WEngine to trunk (mattmann, bfoster, sherylj)
+
 * OODT-487: MetadataBasedProductMover to handle when the source and destinations match (cgoodale)
 
 * OODT-488: Enhanced Solr Indexer capabilities (pramirez)
