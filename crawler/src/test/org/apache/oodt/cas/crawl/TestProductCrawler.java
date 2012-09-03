@@ -377,11 +377,12 @@ public class TestProductCrawler extends TestCase {
       Metadata m = new Metadata();
       ProductCrawler pc = createDummyCrawler();
       pc.addKnownMetadata(p, m);
-      assertEquals(3, m.getAllKeys().size());
+      assertEquals(4, m.getAllKeys().size());
       assertEquals(p.getName(), m.getMetadata(CoreMetKeys.PRODUCT_NAME));
       assertEquals(p.getName(), m.getMetadata(CoreMetKeys.FILENAME));
       assertEquals(p.getParentFile().getAbsolutePath(),
             m.getMetadata(CoreMetKeys.FILE_LOCATION));
+      assertEquals(p.length(), m.getMetadata(CoreMetKeys.FILE_SIZE));
    }
 
    public void testCreateIngestStatus() {
