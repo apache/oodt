@@ -368,6 +368,7 @@ public class TestProductCrawler extends TestCase {
       m.replaceMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
       m.replaceMetadata(CoreMetKeys.FILENAME, "TestFile.txt");
       m.replaceMetadata(CoreMetKeys.FILE_LOCATION, "/tmp/dir");
+      m.replaceMetadata(CoreMetKeys.FILE_SIZE, "0");
       assertTrue(pc.containsRequiredMetadata(m));
       assertFalse(pc.containsRequiredMetadata(new Metadata()));
    }
@@ -382,7 +383,7 @@ public class TestProductCrawler extends TestCase {
       assertEquals(p.getName(), m.getMetadata(CoreMetKeys.FILENAME));
       assertEquals(p.getParentFile().getAbsolutePath(),
             m.getMetadata(CoreMetKeys.FILE_LOCATION));
-      assertEquals(p.length(), m.getMetadata(CoreMetKeys.FILE_SIZE));
+      assertEquals(String.valueOf(p.length()), m.getMetadata(CoreMetKeys.FILE_SIZE));
    }
 
    public void testCreateIngestStatus() {
