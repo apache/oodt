@@ -91,19 +91,20 @@ public class QuerierAndRunnerUtils {
     SequentialProcessor processor = (SequentialProcessor) builder
         .build(SequentialProcessor.class);
     processor.setWorkflowInstance(inst);
-    processor.setState(lifecycleManager.getDefaultLifecycle().createState(
+    processor.getWorkflowInstance().setState(lifecycleManager.getDefaultLifecycle().createState(
         stateName, categoryName, ""));
     List<WorkflowProcessor> runnables = new Vector<WorkflowProcessor>();
     TaskProcessor taskProcessor = (TaskProcessor) builder
         .build(TaskProcessor.class);
-    taskProcessor.setState(lifecycleManager.getDefaultLifecycle().createState(
-        "Queued", "waiting", ""));
     ParentChildWorkflow taskWorkflow = new ParentChildWorkflow(new Graph());    
     taskWorkflow.getTasks().add(getTask(getTmpPath()));
     WorkflowInstance taskWorkflowInst = new WorkflowInstance();
+    taskWorkflowInst.setPriority(Priority.getPriority(priority));
     taskWorkflowInst.setWorkflow(taskWorkflow);
     taskWorkflowInst.setCurrentTaskId(taskWorkflow.getTasks().get(0).getTaskId());
     taskProcessor.setWorkflowInstance(taskWorkflowInst);
+    taskProcessor.getWorkflowInstance().setState(lifecycleManager.getDefaultLifecycle().createState(
+        "Queued", "waiting", ""));    
     runnables.add(taskProcessor);
     processor.setSubProcessors(runnables);
     return processor;

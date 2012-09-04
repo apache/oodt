@@ -101,12 +101,11 @@ public class TaskQuerier implements Runnable {
       for (WorkflowProcessor processor : processors) {
         // OK now get its lifecycle
         WorkflowLifecycle lifecycle = getLifecycleForProcessor(processor);
-        if (!(processor.getState().getCategory().getName().equals("done") || processor
-            .getState().getCategory().getName().equals("holding"))) {
+        if (!(processor.getWorkflowInstance().getState().getCategory().getName().equals("done") || processor
+            .getWorkflowInstance().getState().getCategory().getName().equals("holding"))) {
           for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
             WorkflowState state = lifecycle.createState("Executing", "running",
                 "Added to Runnable queue");
-            tp.setState(state);
             tp.getWorkflowInstance().setState(state);
             if (this.repo != null) {
               try {
@@ -119,7 +118,7 @@ public class TaskQuerier implements Runnable {
               }
             }
             LOG.log(Level.INFO,
-                "Added processor with priority: [" + tp.getPriority() + "]");
+                "Added processor with priority: [" + tp.getWorkflowInstance().getPriority() + "]");
             processorsToRun.add(tp);
           }
 

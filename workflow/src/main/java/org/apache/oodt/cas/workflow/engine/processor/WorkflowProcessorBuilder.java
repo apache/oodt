@@ -82,7 +82,7 @@ public class WorkflowProcessorBuilder {
     WorkflowProcessor wp = clazz.newInstance();
     if(this.id != null) wp.getWorkflowInstance().setId(id);
     if(this.lifecycleManager != null) wp.setLifecycleManager(lifecycleManager);
-    if(this.priority != -1) wp.setPriority(Priority.getPriority(priority));
+    if(this.priority != -1) wp.getWorkflowInstance().setPriority(Priority.getPriority(priority));
     if(this.subProcessors != null) wp.setSubProcessors(subProcessors);
     return wp;
   }

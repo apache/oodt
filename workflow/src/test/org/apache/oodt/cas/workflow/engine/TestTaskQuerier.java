@@ -87,10 +87,10 @@ public class TestTaskQuerier extends TestCase {
     assertNotNull(runnables);
     assertEquals(2, runnables.size());
     assertNotNull(runnables.get(0));
-    assertNotNull(runnables.get(0).getPriority());
-    assertEquals(2.1, runnables.get(0).getPriority()
+    assertNotNull(runnables.get(0).getWorkflowInstance().getPriority());
+    assertEquals(2.1, runnables.get(0).getWorkflowInstance().getPriority()
         .getValue()); // extra .1 since it's a task
-    assertEquals(7.1, runnables.get(1).getPriority()
+    assertEquals(7.1, runnables.get(1).getWorkflowInstance().getPriority()
         .getValue()); // extra .1 since it's a task
     try{
       querierThread.join();

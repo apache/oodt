@@ -71,26 +71,24 @@ public class WorkflowInstance {
 
   private Date endDate;
 
-  private Date taskStartDate;
-
-  private Date taskEndDate;
-
   private Metadata sharedContext;
 
   private Priority priority;
+
+  private int timesBlocked;
 
   /**
    * Default Constructor.
    * 
    */
   public WorkflowInstance() {
-    this(null, null, null, null, new Date(), null, null, null, new Metadata(),
-        Priority.getDefault());
+    this(null, null, null, null, new Date(), null, new Metadata(),
+        0, Priority.getDefault());
   }
 
   public WorkflowInstance(Workflow workflow, String id, WorkflowState state,
-      String currentTaskId, Date startDate, Date endDate, Date taskStartDate,
-      Date taskEndDate, Metadata sharedContext, Priority priority) {
+      String currentTaskId, Date startDate, Date endDate, 
+      Metadata sharedContext, int timesBlocked, Priority priority) {
     this.workflow = workflow != null && workflow instanceof ParentChildWorkflow ? (ParentChildWorkflow) workflow
         : new ParentChildWorkflow(workflow != null ? workflow : new Workflow());
     this.id = id;
@@ -98,9 +96,8 @@ public class WorkflowInstance {
     this.currentTaskId = currentTaskId;
     this.startDate = startDate;
     this.endDate = endDate;
-    this.taskStartDate = taskStartDate;
-    this.taskEndDate = taskEndDate;
     this.sharedContext = sharedContext;
+    this.timesBlocked = timesBlocked;
     this.priority = priority;
   }
 
@@ -294,36 +291,6 @@ public class WorkflowInstance {
   }
 
   /**
-   * @return the taskStartDate
-   */
-  public Date getTaskStartDate() {
-    return taskStartDate;
-  }
-
-  /**
-   * @param taskStartDate
-   *          the taskStartDate to set
-   */
-  public void setTaskStartDate(Date taskStartDate) {
-    this.taskStartDate = taskStartDate;
-  }
-
-  /**
-   * @return the taskEndDate
-   */
-  public Date getTaskEndDate() {
-    return taskEndDate;
-  }
-
-  /**
-   * @param taskEndDate
-   *          the taskEndDate to set
-   */
-  public void setTaskEndDate(Date taskEndDate) {
-    this.taskEndDate = taskEndDate;
-  }
-
-  /**
    * @return the endDateTimeIsoStr
    */
   @Deprecated
@@ -377,8 +344,10 @@ public class WorkflowInstance {
    */
   @Deprecated
   public String getCurrentTaskEndDateTimeIsoStr() {
-    return this.taskEndDate != null ? DateConvert.isoFormat(this.taskEndDate)
-        : null;
+    return this.getTaskById(currentTaskId) != null ? 
+        (this.getTaskById(currentTaskId).getEndDate() != null ? 
+            DateConvert.isoFormat(this.getTaskById(currentTaskId).getEndDate())
+        : null):null;
   }
 
   /**
@@ -389,9 +358,11 @@ public class WorkflowInstance {
   public void setCurrentTaskEndDateTimeIsoStr(
       String currentTaskEndDateTimeIsoStr) {
     if (currentTaskEndDateTimeIsoStr != null
-        && !currentTaskEndDateTimeIsoStr.equals("")) {
+        && !currentTaskEndDateTimeIsoStr.equals("") && 
+        this.getTaskById(currentTaskId) != null) {
       try {
-        this.taskEndDate = DateConvert.isoParse(currentTaskEndDateTimeIsoStr);
+        this.getTaskById(currentTaskId).
+          setEndDate(DateConvert.isoParse(currentTaskEndDateTimeIsoStr));
       } catch (ParseException e) {
         e.printStackTrace();
         // fail silently besides this: it's just a setter
@@ -404,8 +375,9 @@ public class WorkflowInstance {
    */
   @Deprecated
   public String getCurrentTaskStartDateTimeIsoStr() {
-    return this.taskStartDate != null ? DateConvert
-        .isoFormat(this.taskStartDate) : null;
+    return this.getTaskById(currentTaskId) != null ? 
+        (this.getTaskById(currentTaskId).getStartDate() != null ? DateConvert
+        .isoFormat(this.getTaskById(currentTaskId).getStartDate()) : null):null;
   }
 
   /**
@@ -416,15 +388,58 @@ public class WorkflowInstance {
   public void setCurrentTaskStartDateTimeIsoStr(
       String currentTaskStartDateTimeIsoStr) {
     if (currentTaskStartDateTimeIsoStr != null
-        && !currentTaskStartDateTimeIsoStr.equals("")) {
+        && !currentTaskStartDateTimeIsoStr.equals("") && 
+        this.getTaskById(currentTaskId) != null) {
       try {
-        this.taskStartDate = DateConvert
-            .isoParse(currentTaskStartDateTimeIsoStr);
+        this.getTaskById(currentTaskId).setStartDate(DateConvert
+            .isoParse(currentTaskStartDateTimeIsoStr));
       } catch (ParseException e) {
         e.printStackTrace();
         // fail silently besides this: it's just a setter
       }
     }
   }
+  
+  /**
+   * Returns the currently executing {@link WorkflowTask}
+   * part of this instance.
+   * 
+   * @return The currently executing {@link WorkflowTask}
+   * part of this instance.
+   */
+  public WorkflowTask getCurrentTask(){
+    return getTaskById(currentTaskId);
+  }
+  
+
+  /**
+   * @return the timesBlocked
+   */
+  public int getTimesBlocked() {
+    return timesBlocked;
+  }
+
+  /**
+   * @param timesBlocked the timesBlocked to set
+   */
+  public void setTimesBlocked(int timesBlocked) {
+    this.timesBlocked = timesBlocked;
+  }
+  
+  
+  private WorkflowTask getTaskById(String taskId){
+    if(this.workflow.getTasks() != null && 
+        this.workflow.getTasks().size() > 0){
+      for(WorkflowTask task: this.workflow.getTasks()){
+        if(task.getTaskId().equals(taskId)){
+          return task;
+        }
+      }
+      
+      return null;
+    }
+    else return null;
+  }
+
 
 }

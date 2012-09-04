@@ -59,7 +59,7 @@ public class MetSetterTaskQuerier extends TaskQuerier {
     if(taskProcessor == null) return null;
     Metadata met = new Metadata();
     met.addMetadata("StartDateTime", DateUtils.toString(Calendar.getInstance()));
-    taskProcessor.setDynamicMetadata(met);
+    taskProcessor.getWorkflowInstance().setSharedContext(met);
     return taskProcessor;
   }
 

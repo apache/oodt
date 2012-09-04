@@ -32,12 +32,12 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
  * @version $Revision$
  */
 public class SequentialProcessor extends WorkflowProcessor {
-  
-  public SequentialProcessor(){
+
+  public SequentialProcessor() {
     this(null);
   }
-  
-  public SequentialProcessor(WorkflowLifecycleManager lifecycleManager){
+
+  public SequentialProcessor(WorkflowLifecycleManager lifecycleManager) {
     super(lifecycleManager);
   }
 
@@ -52,16 +52,13 @@ public class SequentialProcessor extends WorkflowProcessor {
 
   @Override
   public void handleSubProcessorMetadata(WorkflowProcessor workflowProcessor) {
-    this.setDynamicMetadata(workflowProcessor.getPassThroughDynamicMetadata());
-    WorkflowProcessor nextWP = this.getNext();
-    if (nextWP != null)
-      nextWP.setDynamicMetadataRecur(workflowProcessor
-          .getPassThroughDynamicMetadata());
+    // do nothing
   }
 
   private WorkflowProcessor getNext() {
     for (WorkflowProcessor wp : this.getSubProcessors())
-      if (!wp.getState().getCategory().getName().equals("done"))
+      if (!wp.getWorkflowInstance().getState().getCategory().getName()
+          .equals("done"))
         return wp;
     return null;
   }

@@ -25,6 +25,7 @@ import java.util.Vector;
 //OODT imports
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.structs.Priority;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 
 /**
@@ -40,8 +41,8 @@ public class TaskProcessor extends WorkflowProcessor {
 
   private Class<? extends WorkflowTaskInstance> instanceClass;
   private String jobId;
-  
-  public TaskProcessor(){
+
+  public TaskProcessor() {
     this(null);
   }
 
@@ -67,17 +68,19 @@ public class TaskProcessor extends WorkflowProcessor {
   }
 
   @Override
-  public void setPriority(Priority priority) {
-    super.setPriority(Priority.getPriority(priority.getValue() + 0.1));
+  public void setWorkflowInstance(WorkflowInstance instance) {
+    instance.setPriority(Priority
+        .getPriority(instance.getPriority().getValue() + 0.1));
+    super.setWorkflowInstance(instance);
   }
 
   @Override
   public List<TaskProcessor> getRunnableWorkflowProcessors() {
     List<TaskProcessor> tps = super.getRunnableWorkflowProcessors();
     if (tps.size() == 0) {
-      if (this.getState().getName().equals("Blocked")) {
-        String requiredBlockTimeElapseString = this.getStaticMetadata()
-            .getMetadata("BlockTimeElapse");
+      if (this.getWorkflowInstance().getState().getName().equals("Blocked")) {
+        String requiredBlockTimeElapseString = this.getWorkflowInstance()
+            .getCurrentTask().getTaskConfig().getProperty("BlockTimeElapse");
         int requiredBlockTimeElapse = 2;
         if (requiredBlockTimeElapseString != null) {
           try {
@@ -87,14 +90,16 @@ public class TaskProcessor extends WorkflowProcessor {
           }
         }
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(this.getState().getStartTime());
+        calendar.setTime(this.getWorkflowInstance().getState().getStartTime());
         long elapsedTime = ((System.currentTimeMillis() - calendar
             .getTimeInMillis()) / 1000) / 60;
         if (elapsedTime >= requiredBlockTimeElapse)
           tps.add(this);
-      } else if (this.getState().getName().equals("Queued")
+      } else if (this.getWorkflowInstance().getState().getName()
+          .equals("Queued")
           && this.passedPreConditions()
-          || this.getState().getName().equals("PreConditionSuccess")) {
+          || this.getWorkflowInstance().getState().getName()
+              .equals("PreConditionSuccess")) {
         tps.add(this);
       }
     }

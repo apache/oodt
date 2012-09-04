@@ -21,7 +21,6 @@ import java.util.List;
 
 //OODT imports
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
-import org.apache.oodt.cas.workflow.util.WorkflowUtils;
 
 /**
  * 
@@ -33,8 +32,8 @@ import org.apache.oodt.cas.workflow.util.WorkflowUtils;
  * 
  */
 public class ParallelProcessor extends WorkflowProcessor {
-  
-  public ParallelProcessor(){
+
+  public ParallelProcessor() {
     this(null);
   }
 
@@ -46,9 +45,17 @@ public class ParallelProcessor extends WorkflowProcessor {
     return this.getSubProcessors();
   }
 
-  public void handleSubProcessorMetadata(WorkflowProcessor workflowProcessor) {
-    this.setDynamicMetadata(mergeMetadata(this.getDynamicMetadata(),
-        workflowProcessor.getPassThroughDynamicMetadata()));
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor#
+   * handleSubProcessorMetadata
+   * (org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor)
+   */
+  @Override
+  protected void handleSubProcessorMetadata(WorkflowProcessor workflowProcessor) {
+    // TODO Auto-generated method stub
+
   }
 
 }

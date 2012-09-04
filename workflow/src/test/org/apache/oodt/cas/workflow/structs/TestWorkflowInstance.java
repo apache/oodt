@@ -42,8 +42,8 @@ public class TestWorkflowInstance extends TestCase {
 
     assertNull(inst.getEndDate());
     assertNotNull(inst.getStartDate()); // only one initially set to new Date()
-    assertNull(inst.getTaskStartDate());
-    assertNull(inst.getTaskEndDate());
+    assertNull(inst.getCurrentTaskStartDateTimeIsoStr());
+    assertNull(inst.getCurrentTaskEndDateTimeIsoStr());
   }
 
 }

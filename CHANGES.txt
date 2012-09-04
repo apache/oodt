@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-490: Refactor WorkflowProcessor to push all of its state information 
+  into Workflow Instance (mattmann)
+
 * OODT-432: Add FileSize to know metadata fields set by CAS-Crawler 
   (bfoster via mattmann)
 

@@ -19,35 +19,45 @@ package org.apache.oodt.cas.workflow.engine.processor;
 //OODT import
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.structs.Priority;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 
 /**
  * 
+ * WorkflowProcessor which handles Workflow Pre/Post Conditions.
+ * 
  * @author bfoster
+ * @author mattmann
  * @version $Revision$
  * 
- * <p>
- * WorkflowProcessor which handles Workflow Pre/Post Conditions
- * </p>.
  */
 public class ConditionProcessor extends TaskProcessor {
 
-	public ConditionProcessor(WorkflowLifecycleManager lifecycleManager) {
-		super(lifecycleManager);
-		this.setConditionProcessor(true);
-	}
-	
-	public void setPriority(Priority priority) {
-		super.setPriority(Priority.getPriority(priority.getValue() - 0.1));
-	}
-	
-	@Override
-	public void setPreConditions(WorkflowProcessor preConditions) {
-		//not allowed
-	}
-	
-	@Override
-	public void setPostConditions(WorkflowProcessor postConditions) {
-		//not allowed
-	}
-	
+  public ConditionProcessor(WorkflowLifecycleManager lifecycleManager) {
+    super(lifecycleManager);
+  }
+
+  @Override
+  public void setPreConditions(WorkflowProcessor preConditions) {
+    // not allowed
+  }
+
+  @Override
+  public void setPostConditions(WorkflowProcessor postConditions) {
+    // not allowed
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.processor.TaskProcessor#setWorkflowInstance
+   * (org.apache.oodt.cas.workflow.structs.WorkflowInstance)
+   */
+  @Override
+  public void setWorkflowInstance(WorkflowInstance instance) {
+    instance.setPriority(Priority
+        .getPriority(instance.getPriority().getValue() - 0.1));
+    super.setWorkflowInstance(instance);
+  }
+
 }

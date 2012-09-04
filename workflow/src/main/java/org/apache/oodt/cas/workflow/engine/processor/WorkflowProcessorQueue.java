@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.TaskQuerier;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
@@ -116,7 +115,6 @@ public class WorkflowProcessorQueue {
     if (inst.getParentChildWorkflow().getTasks() != null
         && inst.getParentChildWorkflow().getTasks().size() > 1) {
       processor = new SequentialProcessor();
-      processor.setExecutionType("sequential");
       processor.setWorkflowInstance(inst); 
       
       for (WorkflowTask task : inst.getParentChildWorkflow().getTasks()) {
@@ -141,21 +139,14 @@ public class WorkflowProcessorQueue {
         WorkflowProcessor subProcessor = fromWorkflowInstance(instance);
         processor.getSubProcessors().add(subProcessor);        
       }      
-      processor.setState(inst.getState());
+      processor.getWorkflowInstance().setState(inst.getState());
     }
     else{
       processor = new TaskProcessor();
-      processor.setExecutionType("task");
       processor.setWorkflowInstance(inst);
-      processor.setState(inst.getState());
+      processor.getWorkflowInstance().setState(inst.getState());
     }
-    
-    processor.setConditionProcessor(false);
-    processor.setDynamicMetadata(inst.getSharedContext());
-    processor.setPriority(inst.getPriority());
-    ProcessorDateTimeInfo dateTimeInfo = new ProcessorDateTimeInfo();
-    processor.setProcessorDateTimeInfo(dateTimeInfo);
-    processor.setStaticMetadata(new Metadata());
+
     processor.setLifecycleManager(lifecycle);
     
     return processor;

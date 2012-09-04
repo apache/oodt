@@ -88,7 +88,7 @@ public class TaskRunner implements Runnable {
 
       try {
         if (nextTaskProcessor != null && runner.hasOpenSlots(nextTask)) {
-          runner.execute(nextTask, nextTaskProcessor.getDynamicMetadata());
+          runner.execute(nextTask, nextTaskProcessor.getWorkflowInstance().getSharedContext());
         }
       } catch (Exception e) {
         e.printStackTrace();
@@ -135,7 +135,7 @@ public class TaskRunner implements Runnable {
   }
 
   private void flagProcessorAsFailed(TaskProcessor nextTaskProcessor, String msg) {
-    nextTaskProcessor.setState(nextTaskProcessor
+    nextTaskProcessor.getWorkflowInstance().setState(nextTaskProcessor
         .getLifecycleManager()
         .getDefaultLifecycle()
         .createState("Failure", "done",
