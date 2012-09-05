@@ -103,12 +103,13 @@ public class DataSourceWorkflowInstanceRepository extends
             startWorkflowSql = "INSERT INTO workflow_instances "
                     + "(workflow_instance_status, workflow_id, current_task_id,"
                     + "start_date_time, end_date_time, current_task_start_date_time,"
-                    + "current_task_end_date_time, priority) " + "VALUES ('"
+                    + "current_task_end_date_time, priority, times_blocked) " + "VALUES ('"
                     + wInst.getStatus() + "', " + workflowIdField + ","
                     + taskIdField + ", '" + wInst.getStartDateTimeIsoStr()
                     + "','" + wInst.getEndDateTimeIsoStr() + "','"
                     + wInst.getCurrentTaskStartDateTimeIsoStr() + "','"
-                    + wInst.getCurrentTaskEndDateTimeIsoStr() + "', "+wInst.getPriority().getValue()+")";
+                    + wInst.getCurrentTaskEndDateTimeIsoStr() + "', "+wInst.getPriority().getValue()+", "
+                    + wInst.getTimesBlocked() + ")";
 
             LOG.log(Level.FINE, "sql: Executing: " + startWorkflowSql);
             statement.execute(startWorkflowSql);
@@ -212,6 +213,8 @@ public class DataSourceWorkflowInstanceRepository extends
                     + wInst.getCurrentTaskEndDateTimeIsoStr()
                     + "',priority="
                     + wInst.getPriority().getValue()
+                    + ",times_blocked="
+                    + wInst.getTimesBlocked()
                     +" WHERE workflow_instance_id = " + wInst.getId();
 
             LOG.log(Level.FINE, "updateStatusSql: Executing: "

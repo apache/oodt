@@ -482,6 +482,10 @@ public class LuceneWorkflowInstanceRepository extends
         doc.add(new Field("workflow_inst_id", workflowInst.getId(),
                 Field.Store.YES, Field.Index.UN_TOKENIZED));
         
+        doc.add(new Field("workflow_inst_timesblocked", 
+            String.valueOf(workflowInst.getTimesBlocked()), Field.Store.YES, 
+            Field.Index.UN_TOKENIZED));
+        
         // will leave this for back compat, but will also store 
         // category 
         doc.add(new Field("workflow_inst_status", workflowInst.getStatus(),
@@ -649,6 +653,9 @@ public class LuceneWorkflowInstanceRepository extends
 
         // first read all the instance info
         inst.setId(doc.get("workflow_inst_id"));
+        
+        inst.setTimesBlocked(Integer.parseInt(doc.get("workflow_inst_timesblocked") != 
+          null ? doc.get("workflow_inst_timesblocked"):"0"));
         
         // try and construct a state
         WorkflowState state = new WorkflowState();

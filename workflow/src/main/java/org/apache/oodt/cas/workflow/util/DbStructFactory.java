@@ -57,6 +57,7 @@ public final class DbStructFactory {
     public static WorkflowInstance getWorkflowInstance(ResultSet rs)
             throws SQLException {
         WorkflowInstance workflowInst = new WorkflowInstance();
+        workflowInst.setTimesBlocked(rs.getInt("times_blocked"));
         workflowInst.setStatus(rs.getString("workflow_instance_status"));
         workflowInst.setId(rs.getString("workflow_instance_id"));
         workflowInst.setCurrentTaskId(rs.getString("current_task_id"));

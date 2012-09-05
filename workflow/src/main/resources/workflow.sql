@@ -44,7 +44,8 @@ start_date_time varchar(255),
 end_date_time varchar(255),
 current_task_start_date_time varchar(255),
 current_task_end_date_time varchar(255),
-priority float);
+priority float,
+times_blocked int DEFAULT 0);
 
 -- use this definition if you would like
 -- to use quoteFields (string versions of

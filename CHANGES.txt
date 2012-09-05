@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-492: Refactor Workflow Instance repo to store/retrieve that state 
+  information (mattmann)
+
 * OODT-490: Refactor WorkflowProcessor to push all of its state information 
   into Workflow Instance (mattmann)
 
