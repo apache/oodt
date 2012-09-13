@@ -62,7 +62,7 @@ public class HighestFIFOPrioritySorter implements PrioritySorter {
    * org.apache.oodt.cas.workflow.structs.PrioritySorter#sort(java.util.List)
    */
   @Override
-  public void sort(List<WorkflowProcessor> candidates) {
+  public synchronized void sort(List<WorkflowProcessor> candidates) {
 
     Collections.sort(candidates, new Comparator<WorkflowProcessor>() {
       public int compare(WorkflowProcessor o1, WorkflowProcessor o2) {

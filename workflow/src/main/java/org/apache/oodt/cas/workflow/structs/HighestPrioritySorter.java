@@ -44,7 +44,7 @@ public class HighestPrioritySorter implements PrioritySorter {
    * org.apache.oodt.cas.workflow.structs.PrioritySorter#sort(java.util.List)
    */
   @Override
-  public void sort(List<WorkflowProcessor> candidates) {
+  public synchronized void sort(List<WorkflowProcessor> candidates) {
     Collections.sort(candidates, new Comparator<WorkflowProcessor>() {
 
       @Override
