@@ -32,8 +32,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
  */
 public class ConditionProcessor extends TaskProcessor {
 
-  public ConditionProcessor(WorkflowLifecycleManager lifecycleManager) {
-    super(lifecycleManager);
+  public ConditionProcessor(WorkflowLifecycleManager lifecycleManager, WorkflowInstance inst) {
+    super(lifecycleManager, inst);
   }
 
   @Override

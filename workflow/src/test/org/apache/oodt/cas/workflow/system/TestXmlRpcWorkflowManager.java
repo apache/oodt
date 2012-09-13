@@ -132,10 +132,13 @@ public class TestXmlRpcWorkflowManager extends TestCase {
     System
         .setProperty("org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath",
             luceneCatLoc);
+    
 
     try {
       System.setProperty("org.apache.oodt.cas.workflow.repo.dirs", "file://"
           + new File("./src/main/resources/examples").getCanonicalPath());
+      System.setProperty("org.apache.oodt.cas.workflow.lifecycle.filePath", 
+          new File("./src/main/resources/examples/workflow-lifecycle.xml").getCanonicalPath());      
     } catch (Exception e) {
       fail(e.getMessage());
     }
@@ -143,6 +146,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
     try {
       wmgr = new XmlRpcWorkflowManager(WM_PORT);
     } catch (Exception e) {
+      e.printStackTrace();
       fail(e.getMessage());
     }
 

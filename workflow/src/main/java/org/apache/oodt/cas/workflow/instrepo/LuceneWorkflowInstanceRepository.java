@@ -507,7 +507,6 @@ public class LuceneWorkflowInstanceRepository extends
           if(state.getCategory() != null && state.getCategory().getName() != null){
             doc.add(new Field("workflow_inst_state_category",
                 state.getCategory().getName(), Field.Store.YES, Field.Index.UN_TOKENIZED));
-            System.out.println("Indexing category: ["+state.getCategory().getName()+"]");
           }
         }        
         
@@ -663,7 +662,6 @@ public class LuceneWorkflowInstanceRepository extends
         if(doc.get("workflow_inst_state_category") != null){
           WorkflowLifecycleStage category = new WorkflowLifecycleStage();
           category.setName(doc.get("workflow_inst_state_category"));
-          System.out.println("unserializing category: ["+category.getName()+"]");
           state.setCategory(category);
         }
         

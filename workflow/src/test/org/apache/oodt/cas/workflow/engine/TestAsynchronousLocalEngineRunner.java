@@ -20,6 +20,7 @@ package org.apache.oodt.cas.workflow.engine;
 //JDK imports
 import java.io.BufferedReader;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -79,6 +80,7 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
       try {
         String line = FileUtils.readFileToString(f);
         String[] toks = line.split(",");
+        assertEquals("Toks not equal to 2: toks=["+Arrays.asList(toks)+"]", 2, toks.length);
         Date dateTime = DateConvert.isoParse(toks[1]);
         Seconds seconds = Seconds.secondsBetween(new DateTime(dateTime),
             new DateTime());

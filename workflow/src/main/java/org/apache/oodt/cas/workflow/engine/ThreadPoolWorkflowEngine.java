@@ -19,7 +19,6 @@ package org.apache.oodt.cas.workflow.engine;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.workflow.engine.processor.ConditionProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.SequentialProcessor;
 import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
@@ -28,7 +27,6 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.commons.util.DateConvert;
@@ -46,7 +44,6 @@ import EDU.oswego.cs.dl.util.concurrent.BoundedBuffer;
 import EDU.oswego.cs.dl.util.concurrent.Channel;
 import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
-import EDU.oswego.cs.dl.util.concurrent.ThreadedExecutor;
 
 /**
  *
@@ -106,7 +103,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    */
   public ThreadPoolWorkflowEngine(WorkflowInstanceRepository instRep,
       int queueSize, int maxPoolSize, int minPoolSize,
-      long threadKeepAliveTime, boolean unlimitedQueue) {
+      long threadKeepAliveTime, boolean unlimitedQueue, WorkflowLifecycleManager lifecycleManager) {
 
     this.instRep = instRep;
 
@@ -120,6 +117,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     pool = new PooledExecutor(c, maxPoolSize);
     pool.setMinimumPoolSize(minPoolSize);
     pool.setKeepAliveTime(1000 * 60 * threadKeepAliveTime);
+    this.lifecycleManager = lifecycleManager;
 
     workerMap = new HashMap();
 
@@ -127,7 +125,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
         "org.apache.oodt.cas.workflow.engine.preConditionWaitTime", 10)
         .longValue();
 
-    this.condProcessor = new ConditionProcessor(lifecycleManager);
+    this.condProcessor = new ConditionProcessor(lifecycleManager, new WorkflowInstance());
   }
 
   @Override
@@ -159,7 +157,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     wInst.setStatus(CREATED);
     persistWorkflowInstance(wInst);
 
-    SequentialProcessor worker = new SequentialProcessor(this.lifecycleManager);
+    SequentialProcessor worker = new SequentialProcessor(this.lifecycleManager, wInst);
     worker.setWorkflowInstance(wInst);
     workerMap.put(wInst.getId(), worker);
 

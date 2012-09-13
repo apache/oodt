@@ -22,62 +22,72 @@ import static java.lang.Integer.getInteger;
 import static java.lang.Long.getLong;
 
 //OODT imports
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 /**
  * A Factory class for creating {@link ThreadPoolWorkflowEngine}s.
- *
+ * 
  * @author mattmann (Chris Mattmann)
  * @author bfoster (Brian Foster)
  */
 public class ThreadPoolWorkflowEngineFactory implements WorkflowEngineFactory {
 
-   private static final String INSTANCE_REPO_FACTORY_PROPERTY = "workflow.engine.instanceRep.factory";
-   private static final String QUEUE_SIZE_PROPERTY = "org.apache.oodt.cas.workflow.engine.queueSize";
-   private static final String MAX_POOL_SIZE_PROPERTY = "org.apache.oodt.cas.workflow.engine.maxPoolSize";
-   private static final String MIN_POOL_SIZE_PROPERTY = "org.apache.oodt.cas.workflow.engine.minPoolSize";
-   private static final String THREAD_KEEP_ALIVE_PROPERTY = "org.apache.oodt.cas.workflow.engine.threadKeepAlive.minutes";
-   private static final String UNLIMITED_QUEUE_PROPERTY = "org.apache.oodt.cas.workflow.engine.unlimitedQueue";
+  private static final String INSTANCE_REPO_FACTORY_PROPERTY = "workflow.engine.instanceRep.factory";
+  private static final String QUEUE_SIZE_PROPERTY = "org.apache.oodt.cas.workflow.engine.queueSize";
+  private static final String MAX_POOL_SIZE_PROPERTY = "org.apache.oodt.cas.workflow.engine.maxPoolSize";
+  private static final String MIN_POOL_SIZE_PROPERTY = "org.apache.oodt.cas.workflow.engine.minPoolSize";
+  private static final String THREAD_KEEP_ALIVE_PROPERTY = "org.apache.oodt.cas.workflow.engine.threadKeepAlive.minutes";
+  private static final String UNLIMITED_QUEUE_PROPERTY = "org.apache.oodt.cas.workflow.engine.unlimitedQueue";
+  private static final String LIFECYCLES_FILE_PATH_PROPERTY = "org.apache.oodt.cas.workflow.lifecycle.filePath";
 
-   private static final int DEFAULT_QUEUE_SIZE = 10;
-   private static final int DEFAULT_MAX_POOL_SIZE = 10;
-   private static final int DEFAULT_MIN_POOL_SIZE = 4;
-   private static final long DEFAULT_THREAD_KEEP_ALIVE_MINS = 5;
+  private static final int DEFAULT_QUEUE_SIZE = 10;
+  private static final int DEFAULT_MAX_POOL_SIZE = 10;
+  private static final int DEFAULT_MIN_POOL_SIZE = 4;
+  private static final long DEFAULT_THREAD_KEEP_ALIVE_MINS = 5;
 
-   @Override
-   public WorkflowEngine createWorkflowEngine() {
-      return new ThreadPoolWorkflowEngine(getWorkflowInstanceRepository(),
-                                          getQueueSize(),
-                                          getMaxPoolSize(),
-                                          getMinPoolSize(),
-                                          getThreadKeepAliveMinutes(),
-                                          isUnlimitedQueue());
-   }
+  @Override
+  public WorkflowEngine createWorkflowEngine() {
+    return new ThreadPoolWorkflowEngine(getWorkflowInstanceRepository(),
+        getQueueSize(), getMaxPoolSize(), getMinPoolSize(),
+        getThreadKeepAliveMinutes(), isUnlimitedQueue(), getWorkflowLifecycle());
+  }
 
-   protected WorkflowInstanceRepository getWorkflowInstanceRepository() {
-      return GenericWorkflowObjectFactory
-            .getWorkflowInstanceRepositoryFromClassName(System
-                  .getProperty(INSTANCE_REPO_FACTORY_PROPERTY));
-   }
+  protected WorkflowInstanceRepository getWorkflowInstanceRepository() {
+    return GenericWorkflowObjectFactory
+        .getWorkflowInstanceRepositoryFromClassName(System
+            .getProperty(INSTANCE_REPO_FACTORY_PROPERTY));
+  }
 
-   protected int getQueueSize() {
-      return getInteger(QUEUE_SIZE_PROPERTY, DEFAULT_QUEUE_SIZE);
-   }
+  protected WorkflowLifecycleManager getWorkflowLifecycle() {
+    try {
+      return new WorkflowLifecycleManager(PathUtils.replaceEnvVariables(System
+          .getProperty(LIFECYCLES_FILE_PATH_PROPERTY)));
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-   protected int getMaxPoolSize() {
-      return getInteger(MAX_POOL_SIZE_PROPERTY, DEFAULT_MAX_POOL_SIZE);
-   }
+  protected int getQueueSize() {
+    return getInteger(QUEUE_SIZE_PROPERTY, DEFAULT_QUEUE_SIZE);
+  }
 
-   protected int getMinPoolSize() {
-      return getInteger(MIN_POOL_SIZE_PROPERTY, DEFAULT_MIN_POOL_SIZE);
-   }
+  protected int getMaxPoolSize() {
+    return getInteger(MAX_POOL_SIZE_PROPERTY, DEFAULT_MAX_POOL_SIZE);
+  }
 
-   protected long getThreadKeepAliveMinutes() {
-      return getLong(THREAD_KEEP_ALIVE_PROPERTY, DEFAULT_THREAD_KEEP_ALIVE_MINS);
-   }
+  protected int getMinPoolSize() {
+    return getInteger(MIN_POOL_SIZE_PROPERTY, DEFAULT_MIN_POOL_SIZE);
+  }
 
-   protected boolean isUnlimitedQueue() {
-      return getBoolean(UNLIMITED_QUEUE_PROPERTY);
-   }
+  protected long getThreadKeepAliveMinutes() {
+    return getLong(THREAD_KEEP_ALIVE_PROPERTY, DEFAULT_THREAD_KEEP_ALIVE_MINS);
+  }
+
+  protected boolean isUnlimitedQueue() {
+    return getBoolean(UNLIMITED_QUEUE_PROPERTY);
+  }
 }

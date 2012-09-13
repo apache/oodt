@@ -20,6 +20,7 @@ package org.apache.oodt.cas.workflow.engine;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -72,7 +73,7 @@ public class QuerierAndRunnerUtils {
 
   public WorkflowProcessor getProcessor(double priority, String stateName,
       String categoryName) throws InstantiationException,
-      IllegalAccessException, IOException {
+      IllegalAccessException, IOException, IllegalArgumentException, SecurityException, InvocationTargetException, NoSuchMethodException {
     WorkflowLifecycleManager lifecycleManager = new WorkflowLifecycleManager(
         "./src/main/resources/examples/wengine/wengine-lifecycle.xml");
     WorkflowInstance inst = new WorkflowInstance();
@@ -80,34 +81,21 @@ public class QuerierAndRunnerUtils {
     sd.setTime(sd.getTime() + (this.dateGen * 5000));
     this.dateGen++;
     inst.setStartDate(sd);
-    inst.setId("winst-" + priority);
+    inst.setId("task-winst-" + priority);
     ParentChildWorkflow workflow = new ParentChildWorkflow(new Graph());
-    workflow.setTasks(Collections.EMPTY_LIST);
-    inst.setWorkflow(workflow);
+    workflow.getTasks().add(getTask(getTmpPath()));
+    inst.setParentChildWorkflow(workflow);
     inst.setPriority(Priority.getPriority(priority));
+    inst.setCurrentTaskId(workflow.getTasks().get(0).getTaskId());
+    inst.setParentChildWorkflow(workflow);
     WorkflowProcessorBuilder builder = WorkflowProcessorBuilder
         .aWorkflowProcessor().withLifecycleManager(lifecycleManager)
-        .withPriority(priority);
-    SequentialProcessor processor = (SequentialProcessor) builder
-        .build(SequentialProcessor.class);
-    processor.setWorkflowInstance(inst);
-    processor.getWorkflowInstance().setState(lifecycleManager.getDefaultLifecycle().createState(
-        stateName, categoryName, ""));
-    List<WorkflowProcessor> runnables = new Vector<WorkflowProcessor>();
+        .withPriority(priority).withInstance(inst);
     TaskProcessor taskProcessor = (TaskProcessor) builder
         .build(TaskProcessor.class);
-    ParentChildWorkflow taskWorkflow = new ParentChildWorkflow(new Graph());    
-    taskWorkflow.getTasks().add(getTask(getTmpPath()));
-    WorkflowInstance taskWorkflowInst = new WorkflowInstance();
-    taskWorkflowInst.setPriority(Priority.getPriority(priority));
-    taskWorkflowInst.setWorkflow(taskWorkflow);
-    taskWorkflowInst.setCurrentTaskId(taskWorkflow.getTasks().get(0).getTaskId());
-    taskProcessor.setWorkflowInstance(taskWorkflowInst);
     taskProcessor.getWorkflowInstance().setState(lifecycleManager.getDefaultLifecycle().createState(
-        "Queued", "waiting", ""));    
-    runnables.add(taskProcessor);
-    processor.setSubProcessors(runnables);
-    return processor;
+        stateName, categoryName, ""));    
+    return taskProcessor;
   }
   
   private File getTmpPath() throws IOException{

@@ -48,6 +48,10 @@ import org.apache.commons.lang.StringUtils;
 public class WorkflowProcessorHelper {
 
   private WorkflowLifecycleManager lifecycle;
+  
+  public WorkflowProcessorHelper(){
+    this(null);
+  }
 
   public WorkflowProcessorHelper(WorkflowLifecycleManager lifecycle) {
     this.lifecycle = lifecycle;
@@ -354,6 +358,15 @@ public class WorkflowProcessorHelper {
     if (host == null)
       return "Unknown";
     return host;
+  }
+  
+  public WorkflowLifecycle getLifecycleForProcessor(WorkflowProcessor processor) {
+    if (processor.getWorkflowInstance() != null
+        && processor.getWorkflowInstance().getParentChildWorkflow() != null) {
+      return processor.getLifecycleManager().getLifecycleForWorkflow(
+          processor.getWorkflowInstance().getParentChildWorkflow());
+    } else
+      return processor.getLifecycleManager().getDefaultLifecycle();
   }
 
   private WorkflowLifecycle getLifecycle(ParentChildWorkflow model) {

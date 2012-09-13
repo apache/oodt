@@ -57,14 +57,6 @@ the License.
       <description>Waiting for resource to execute</description>   
    </status>
   </stage>
-  <stage name="holding">
-   <status name="Unknown">
-      <description>State is Unknown</description>
-   </status>
-   <status name="Paused">
-      <description>Has been manually paused</description>
-   </status>
-  </stage>
   <stage name="transition">
    <status name="PreConditionSuccess">  
       <description>All PreCondition Finished Successfully</description>
@@ -73,6 +65,14 @@ the License.
       <description>Execution Completed Successfully</description>
    </status>
   </stage>
+  <stage name="holding">
+   <status name="Unknown">
+      <description>State is Unknown</description>
+   </status>
+   <status name="Paused">
+      <description>Has been manually paused</description>
+   </status>
+  </stage>  
   <stage name="running">
    <status name="PreConditionEval">
       <description>Executing PreConditions</description>
@@ -84,6 +84,17 @@ the License.
       <description>Executing PostConditions</description>
    </status>
   </stage>
+  <stage name="results">
+    <status name="ResultsSuccess">
+      <description>Notification of success</description>
+    </status>
+    <status name="ResultsFailure">
+      <description>Notification of failure</description>
+    </status>
+    <status name="ResultsBail">
+      <description>Notification to bail workflow</description>
+    </status>
+  </stage>  
   <stage name="done">
     <status name="Stopped">
       <description>Force Killed</description>
@@ -97,19 +108,7 @@ the License.
     <status name="Success">
       <description>Successfully Completed</description>
     </status>
-  </stage>
-  <stage name="results">
-    <status name="ResultsSuccess">
-      <description>Notification of success</description>
-    </status>
-    <status name="ResultsFailure">
-      <description>Notification of failure</description>
-    </status>
-    <status name="ResultsBail">
-      <description>Notification to bail workflow</description>
-    </status>
-  </stage>
- 
+  </stage> 
  </default>
 <!-- 
   Lifecycles can also be specified at the 

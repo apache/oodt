@@ -76,10 +76,10 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
         try {
           inst.run(dynMetadata, workflowTask.getTaskConfig());
         } catch (Exception e) {
+          e.printStackTrace();
           LOG.log(Level.WARNING,
               "Exception executing task: [" + workflowTask.getTaskName()
                   + "]: Message: " + e.getMessage());
-          e.printStackTrace();
         }
 
       }

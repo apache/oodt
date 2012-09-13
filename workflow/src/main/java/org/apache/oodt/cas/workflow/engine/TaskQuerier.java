@@ -26,11 +26,13 @@ import java.util.logging.Logger;
 //OODT imports
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
+import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorHelper;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorQueue;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.cas.workflow.structs.PrioritySorter;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 
 /**
  * 
@@ -98,31 +100,32 @@ public class TaskQuerier implements Runnable {
       List<WorkflowProcessor> processors = processorQueue.getProcessors();
       List<WorkflowProcessor> processorsToRun = new Vector<WorkflowProcessor>();
 
+      System.out.println("HERE HERE HERE!");
       for (WorkflowProcessor processor : processors) {
         // OK now get its lifecycle
-        WorkflowLifecycle lifecycle = getLifecycleForProcessor(processor);
-        if (!(processor.getWorkflowInstance().getState().getCategory().getName().equals("done") || processor
-            .getWorkflowInstance().getState().getCategory().getName().equals("holding"))) {
+        WorkflowProcessorHelper helper = new WorkflowProcessorHelper(
+            processor.getLifecycleManager());
+        WorkflowLifecycle lifecycle = helper
+            .getLifecycleForProcessor(processor);
+        System.out.println("TESTING STATE!");
+        if (!(processor.getWorkflowInstance().getState().getCategory()
+            .getName().equals("done") || processor.getWorkflowInstance()
+            .getState().getCategory().getName().equals("holding")) && 
+            !processor.getWorkflowInstance().getState().getName().equals("Executing")) {
+          System.out.println("Checking for RUNNABLE TASK PROCESSORS");
           for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
             WorkflowState state = lifecycle.createState("Executing", "running",
                 "Added to Runnable queue");
             tp.getWorkflowInstance().setState(state);
-            if (this.repo != null) {
-              try {
-                this.repo.updateWorkflowInstance(tp.getWorkflowInstance());
-              } catch (Exception e) {
-                e.printStackTrace();
-                LOG.log(Level.WARNING, "Unable to update workflow instance: ["
-                    + tp.getWorkflowInstance().getId()
-                    + "] status to Executing. Message: " + e.getMessage());
-              }
-            }
-            LOG.log(Level.INFO,
-                "Added processor with priority: [" + tp.getWorkflowInstance().getPriority() + "]");
+            persist(tp.getWorkflowInstance());
+            LOG.log(Level.INFO, "Added processor with priority: ["
+                + tp.getWorkflowInstance().getPriority() + "]");
             processorsToRun.add(tp);
           }
 
-          prioritizer.sort(processorsToRun);
+          if(processorsToRun != null && processorsToRun.size() > 1){
+            prioritizer.sort(processorsToRun);
+          }
 
           synchronized (runnableProcessors) {
             if (running)
@@ -130,7 +133,12 @@ public class TaskQuerier implements Runnable {
           }
 
         } else {
-          continue;
+          // simply call nextState and persist it
+          LOG.log(Level.FINE, "Processor for workflow instance: ["
+              + processor.getWorkflowInstance().getId()
+              + "] not ready to Execute or already Executing: advancing it to next state.");
+          processor.nextState();
+          persist(processor.getWorkflowInstance());
         }
       }
     }
@@ -172,13 +180,17 @@ public class TaskQuerier implements Runnable {
     return (TaskProcessor) getRunnableProcessors().remove(0);
   }
 
-  private WorkflowLifecycle getLifecycleForProcessor(WorkflowProcessor processor) {
-    if (processor.getWorkflowInstance() != null
-        && processor.getWorkflowInstance().getParentChildWorkflow() != null) {
-      return processor.getLifecycleManager().getLifecycleForWorkflow(
-          processor.getWorkflowInstance().getParentChildWorkflow());
-    } else
-      return processor.getLifecycleManager().getDefaultLifecycle();
+  private void persist(WorkflowInstance instance) {
+    if (this.repo != null) {
+      try {
+        this.repo.updateWorkflowInstance(instance);
+      } catch (Exception e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING, "Unable to update workflow instance: ["
+            + instance.getId() + "] status to " + instance.getState().getName()
+            + "]. Message: " + e.getMessage());
+      }
+    }
   }
 
 }

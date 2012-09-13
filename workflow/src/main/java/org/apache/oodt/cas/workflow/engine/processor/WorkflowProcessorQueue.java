@@ -18,7 +18,9 @@
 package org.apache.oodt.cas.workflow.engine.processor;
 
 //JDK imports
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -58,12 +60,15 @@ public class WorkflowProcessorQueue {
   private WorkflowRepository modelRepo;
 
   private WorkflowLifecycleManager lifecycle;
+  
+  private Map<String, WorkflowProcessor> processorCache;
 
   public WorkflowProcessorQueue(WorkflowInstanceRepository repo,
       WorkflowLifecycleManager lifecycle, WorkflowRepository modelRepo) {
     this.repo = repo;
     this.lifecycle = lifecycle;
     this.modelRepo = modelRepo;
+    this.processorCache = new HashMap<String, WorkflowProcessor>();
   }
 
   /**
@@ -74,7 +79,7 @@ public class WorkflowProcessorQueue {
   public synchronized List<WorkflowProcessor> getProcessors() {
     WorkflowInstancePage page = null;
     try {
-      page = repo.getPagedWorkflows(1, "Queued");
+      page = repo.getPagedWorkflows(1);
     } catch (Exception e) {
       e.printStackTrace();
       LOG.log(Level.WARNING, "Unable to load workflow processors: Message: "
@@ -83,28 +88,12 @@ public class WorkflowProcessorQueue {
     }
 
     List<WorkflowProcessor> processors = new Vector<WorkflowProcessor>(
-        page.getPageSize());
+        page.getPageWorkflows() != null ? page.getPageWorkflows().size():0);
     for (WorkflowInstance inst : (List<WorkflowInstance>) (List<?>) page
         .getPageWorkflows()) {
-      if ((inst.getState() == null)
-          || (inst.getState() != null && inst.getState().getCategory() == null)) {
-        WorkflowLifecycle cycle = getLifecycle(inst.getWorkflow());
-        WorkflowState state = cycle.getStateByName(inst.getStatus());
-        state.setMessage("Queued by WorkflowProcessorQueue.");
-        inst.setState(state);
-        try {
-          this.repo.updateWorkflowInstance(inst);
-        } catch (Exception e) {
-          e.printStackTrace();
-          LOG.log(
-              Level.WARNING,
-              "Unable to update workflow instance: [" + inst.getId()
-                  + "] with status: [" + inst.getStatus() + "]: Message: "
-                  + e.getMessage());
-        }
-
+      if(!inst.getState().getCategory().getName().equals("done")){         
+         processors.add(fromWorkflowInstance(inst));
       }
-      processors.add(fromWorkflowInstance(inst));
     }
 
     return processors;
@@ -112,44 +101,82 @@ public class WorkflowProcessorQueue {
 
   private WorkflowProcessor fromWorkflowInstance(WorkflowInstance inst) {
     WorkflowProcessor processor = null;
-    if (inst.getParentChildWorkflow().getTasks() != null
-        && inst.getParentChildWorkflow().getTasks().size() > 1) {
-      processor = new SequentialProcessor();
-      processor.setWorkflowInstance(inst); 
-      
-      for (WorkflowTask task : inst.getParentChildWorkflow().getTasks()) {
-        WorkflowInstance instance = new WorkflowInstance();
-        instance.setState(inst.getState());
-        instance.setCurrentTaskId(task.getTaskId());
-        ParentChildWorkflow workflow = new ParentChildWorkflow(new Graph());
-        workflow.setId("task-workflow-"+UUID.randomUUID().toString());
-        workflow.setName("Task Workflow-"+task.getTaskName());
-        workflow.getTasks().add(task);
-        workflow.getGraph().setTask(task);
-        instance.setId(UUID.randomUUID().toString());
-        instance.setParentChildWorkflow(workflow);
-        if(modelRepo != null){
-          try {
-            modelRepo.addWorkflow(workflow);
-          } catch (RepositoryException e) {
-            e.printStackTrace();
-          }
-        }
-        
-        WorkflowProcessor subProcessor = fromWorkflowInstance(instance);
-        processor.getSubProcessors().add(subProcessor);        
-      }      
-      processor.getWorkflowInstance().setState(inst.getState());
+    if(processorCache.containsKey(inst.getId())){
+      return processorCache.get(inst.getId());
     }
     else{
-      processor = new TaskProcessor();
-      processor.setWorkflowInstance(inst);
-      processor.getWorkflowInstance().setState(inst.getState());
+      if (inst.getParentChildWorkflow().getTasks() != null
+          && inst.getParentChildWorkflow().getTasks().size() > 1) {
+        processor = new SequentialProcessor(lifecycle, inst);
+        WorkflowState seqProcessorState =  
+          getLifecycle(inst.getParentChildWorkflow()).
+             createState("Loaded", "initial", "Sequential Workflow instance with id: ["
+                 + inst.getId()+"] loaded by processor queue.");
+        inst.setState(seqProcessorState);
+        persist(inst);        
+        
+        for (WorkflowTask task : inst.getParentChildWorkflow().getTasks()) {
+          WorkflowInstance instance = new WorkflowInstance();
+          WorkflowState taskWorkflowState = 
+             lifecycle.getDefaultLifecycle().createState("Null", "initial",
+                 "Sub Task Workflow created by Workflow Processor Queue for workflow instance: " +
+                 "["+inst.getId()+"]");
+          instance.setState(taskWorkflowState);
+          instance.setPriority(inst.getPriority());
+          instance.setCurrentTaskId(task.getTaskId());
+          ParentChildWorkflow workflow = new ParentChildWorkflow(new Graph());
+          String taskWorkflowId = UUID.randomUUID().toString();
+          workflow.setId("task-workflow-"+ taskWorkflowId);
+          workflow.setName("Task Workflow-"+task.getTaskName());
+          workflow.getTasks().add(task);
+          workflow.getGraph().setTask(task);
+          instance.setId(taskWorkflowId);
+          instance.setParentChildWorkflow(workflow);
+          this.addToModelRepo(workflow);     
+          persist(inst);
+          WorkflowProcessor subProcessor = fromWorkflowInstance(instance);
+          processor.getSubProcessors().add(subProcessor);        
+        }              
+      }
+      else{
+        processor = new TaskProcessor(lifecycle, inst);
+        WorkflowState taskProcessorState =  
+          getLifecycle(inst.getParentChildWorkflow()).
+             createState("Loaded", "initial", "Task Workflow instance with id: ["
+                 + inst.getId()+"] loaded by processor queue.");
+        inst.setState(taskProcessorState);   
+        persist(inst);
+      }
+      
+      synchronized(processorCache){
+        processorCache.put(inst.getId(), processor);
+      }
+      return processor;      
     }
 
-    processor.setLifecycleManager(lifecycle);
-    
-    return processor;
+  }
+  
+  private void addToModelRepo(Workflow workflow){
+    if(modelRepo != null){
+      try {
+        modelRepo.addWorkflow(workflow);
+      } catch (RepositoryException e) {
+        e.printStackTrace();
+      }
+    }    
+  }
+  
+  private void persist(WorkflowInstance instance){
+    try {
+      this.repo.updateWorkflowInstance(instance);
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.log(
+          Level.WARNING,
+          "Unable to update workflow instance: [" + instance.getId()
+              + "] with status: [" + instance.getState().getName() + "]: Message: "
+              + e.getMessage());
+    }    
   }
 
   private WorkflowLifecycle getLifecycle(Workflow workflow) {

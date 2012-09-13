@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -58,6 +59,12 @@ public class SimpleTester implements WorkflowTaskInstance {
     try {
       String jobFilePath = config.getProperty("TestDirPath") + "task-"
           + metadata.getMetadata("StartDateTime") + ".job";
+      int n=0;
+      while(new File(jobFilePath).exists()){
+        jobFilePath = config.getProperty("TestDirPath") + "task-" 
+        + n + metadata.getMetadata("StartDateTime") + ".job";
+        n++;
+      }
       LOG.log(Level.INFO, "Creating job file: [" + jobFilePath + "]");
       pw = new PrintWriter(new FileOutputStream(jobFilePath));
       pw.println("StartDateTime=" + metadata.getMetadata("StartDateTime"));

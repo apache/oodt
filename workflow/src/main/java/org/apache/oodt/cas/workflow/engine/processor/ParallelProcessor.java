@@ -21,6 +21,7 @@ import java.util.List;
 
 //OODT imports
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 
 /**
  * 
@@ -33,12 +34,8 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
  */
 public class ParallelProcessor extends WorkflowProcessor {
 
-  public ParallelProcessor() {
-    this(null);
-  }
-
-  public ParallelProcessor(WorkflowLifecycleManager lifecycleMgr) {
-    super(lifecycleMgr);
+  public ParallelProcessor(WorkflowLifecycleManager lifecycleMgr, WorkflowInstance instance) {
+    super(lifecycleMgr, instance);
   }
 
   public List<WorkflowProcessor> getRunnableSubProcessors() {

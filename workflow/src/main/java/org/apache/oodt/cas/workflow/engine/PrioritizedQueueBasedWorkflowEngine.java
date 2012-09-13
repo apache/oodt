@@ -114,23 +114,13 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
         (ParentChildWorkflow)workflow:new ParentChildWorkflow(workflow));
     inst.setStartDate(Calendar.getInstance().getTime());
     inst.setCurrentTaskId(workflow.getTasks().get(0).getTaskId());
-    inst.setId(UUID.randomUUID().toString());
+    inst.setId(UUID.randomUUID().toString()); //TODO: decide whether or not this ID setting makes sense
     inst.setSharedContext(metadata);
-    inst.setPriority(Priority.getDefault());
-    WorkflowLifecycle cycle = 
-      lifecycle.getLifecycleForWorkflow(workflow) != null ? 
-          lifecycle.getLifecycleForWorkflow(workflow):
-            lifecycle.getDefaultLifecycle();
-    WorkflowState state = cycle.getStateByName("Queued");
-    state.setMessage("Workflow started and Queued.");
+    inst.setPriority(Priority.getDefault()); //FIXME: this should be sensed or passed in
+    WorkflowLifecycle cycle = getLifecycleForWorkflow(workflow);
+    WorkflowState state = cycle.createState("Null", "initial", "Workflow created by Engine.");
     inst.setState(state);  
-    try {
-      this.repo.addWorkflowInstance(inst);
-    } catch (InstanceRepositoryException e) {
-      e.printStackTrace();
-      throw new EngineException(e.getMessage());
-    }
-    
+    persist(inst);    
     return inst;
   }
 
@@ -247,7 +237,20 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
     // TODO Auto-generated method stub
     return null;
   }
+  
+  private void persist(WorkflowInstance inst) throws EngineException{
+    try {
+      this.repo.addWorkflowInstance(inst);
+    } catch (InstanceRepositoryException e) {
+      e.printStackTrace();
+      throw new EngineException(e.getMessage());
+    }    
+  }
 
-  // FIXME: add in methods from WEngine
+  private WorkflowLifecycle getLifecycleForWorkflow(Workflow workflow){
+    return lifecycle.getLifecycleForWorkflow(workflow) != null ? 
+        lifecycle.getLifecycleForWorkflow(workflow):
+          lifecycle.getDefaultLifecycle();    
+  }
 
 }

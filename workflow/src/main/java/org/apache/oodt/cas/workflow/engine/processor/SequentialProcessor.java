@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 
 /**
  * 
@@ -33,12 +34,8 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
  */
 public class SequentialProcessor extends WorkflowProcessor {
 
-  public SequentialProcessor() {
-    this(null);
-  }
-
-  public SequentialProcessor(WorkflowLifecycleManager lifecycleManager) {
-    super(lifecycleManager);
+  public SequentialProcessor(WorkflowLifecycleManager lifecycleManager, WorkflowInstance instance) {
+    super(lifecycleManager, instance);
   }
 
   @Override
@@ -58,7 +55,7 @@ public class SequentialProcessor extends WorkflowProcessor {
   private WorkflowProcessor getNext() {
     for (WorkflowProcessor wp : this.getSubProcessors())
       if (!wp.getWorkflowInstance().getState().getCategory().getName()
-          .equals("done"))
+          .equals("done") && !wp.getWorkflowInstance().getState().getName().equals("Executing"))
         return wp;
     return null;
   }

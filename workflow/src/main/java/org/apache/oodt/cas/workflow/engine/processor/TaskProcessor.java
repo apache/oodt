@@ -41,13 +41,9 @@ public class TaskProcessor extends WorkflowProcessor {
 
   private Class<? extends WorkflowTaskInstance> instanceClass;
   private String jobId;
-
-  public TaskProcessor() {
-    this(null);
-  }
-
-  public TaskProcessor(WorkflowLifecycleManager lifecycleManager) {
-    super(lifecycleManager);
+  
+  public TaskProcessor(WorkflowLifecycleManager lifecycleManager, WorkflowInstance instance) {
+    super(lifecycleManager, instance);
   }
 
   public Class<? extends WorkflowTaskInstance> getInstanceClass() {
@@ -95,9 +91,11 @@ public class TaskProcessor extends WorkflowProcessor {
             .getTimeInMillis()) / 1000) / 60;
         if (elapsedTime >= requiredBlockTimeElapse)
           tps.add(this);
-      } else if (this.getWorkflowInstance().getState().getName()
-          .equals("Queued")
-          && this.passedPreConditions()
+      } else if (((this.getWorkflowInstance().getState().getName()
+          .equals("Queued") || this.getWorkflowInstance().getState()
+          .getName().equals("Loaded") || this.getWorkflowInstance().getState()
+          .getName().equals("Executing"))
+          && this.passedPreConditions())
           || this.getWorkflowInstance().getState().getName()
               .equals("PreConditionSuccess")) {
         tps.add(this);
