@@ -100,19 +100,16 @@ public class TaskQuerier implements Runnable {
       List<WorkflowProcessor> processors = processorQueue.getProcessors();
       List<WorkflowProcessor> processorsToRun = new Vector<WorkflowProcessor>();
 
-      System.out.println("HERE HERE HERE!");
       for (WorkflowProcessor processor : processors) {
         // OK now get its lifecycle
         WorkflowProcessorHelper helper = new WorkflowProcessorHelper(
             processor.getLifecycleManager());
         WorkflowLifecycle lifecycle = helper
             .getLifecycleForProcessor(processor);
-        System.out.println("TESTING STATE!");
         if (!(processor.getWorkflowInstance().getState().getCategory()
             .getName().equals("done") || processor.getWorkflowInstance()
             .getState().getCategory().getName().equals("holding")) && 
             !processor.getWorkflowInstance().getState().getName().equals("Executing")) {
-          System.out.println("Checking for RUNNABLE TASK PROCESSORS");
           for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
             WorkflowState state = lifecycle.createState("Executing", "running",
                 "Added to Runnable queue");
