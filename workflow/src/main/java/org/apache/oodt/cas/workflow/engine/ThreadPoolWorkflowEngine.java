@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,16 +19,15 @@ package org.apache.oodt.cas.workflow.engine;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.engine.processor.ConditionProcessor;
-import org.apache.oodt.cas.workflow.engine.processor.SequentialProcessor;
-import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
-import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+import org.apache.oodt.cas.workflow.engine.IterativeWorkflowProcessorThread;
+import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
@@ -46,14 +45,15 @@ import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
 /**
- *
+ * 
  * The ThreadPooling portion of the WorkflowEngine. This class is meant to be an
  * extension point for WorkflowEngines that want to implement ThreadPooling.
  * This WorkflowEngine provides everything needed to manage a ThreadPool using
  * Doug Lea's wonderful java.util.concurrent package that made it into JDK5.
- *
+ * 
  * @author mattmann
- *
+ * @version $Revsion$
+ * 
  */
 public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus {
 
@@ -70,21 +70,15 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
   /* our instance repository */
   private WorkflowInstanceRepository instRep = null;
 
+  /* our resource manager client */
+  private XmlRpcResourceManagerClient rClient = null;
+
   /* the URL pointer to the parent Workflow Manager */
-  private final URL wmgrUrl = null;
-
-  /* how long to wait before checking whether a condition is satisfied. */
-  private final long conditionWait;
-
-  private final ConditionProcessor condProcessor;
-
-  private EngineRunner runner;
-
-  private WorkflowLifecycleManager lifecycleManager;
+  private URL wmgrUrl = null;
 
   /**
    * Default Constructor.
-   *
+   * 
    * @param instRep
    *          The WorkflowInstanceRepository to be used by this engine.
    * @param queueSize
@@ -100,13 +94,17 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
    * @param unlimitedQueue
    *          Whether or not to use a queue whose bounds are dictated by the
    *          physical memory of the underlying hardware.
+   * @param resUrl
+   *          A URL pointer to a resource manager. If this is set Tasks will be
+   *          wrapped as Resource Manager {@link Job}s and sent through the
+   *          Resource Manager. If this parameter is not set, local execution
+   *          (the default) will be used
    */
   public ThreadPoolWorkflowEngine(WorkflowInstanceRepository instRep,
       int queueSize, int maxPoolSize, int minPoolSize,
-      long threadKeepAliveTime, boolean unlimitedQueue, WorkflowLifecycleManager lifecycleManager) {
+      long threadKeepAliveTime, boolean unlimitedQueue, URL resUrl) {
 
     this.instRep = instRep;
-
     Channel c = null;
     if (unlimitedQueue) {
       c = new LinkedQueue();
@@ -117,32 +115,79 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     pool = new PooledExecutor(c, maxPoolSize);
     pool.setMinimumPoolSize(minPoolSize);
     pool.setKeepAliveTime(1000 * 60 * threadKeepAliveTime);
-    this.lifecycleManager = lifecycleManager;
 
     workerMap = new HashMap();
 
-    this.conditionWait = Long.getLong(
-        "org.apache.oodt.cas.workflow.engine.preConditionWaitTime", 10)
-        .longValue();
-
-    this.condProcessor = new ConditionProcessor(lifecycleManager, new WorkflowInstance());
-  }
-
-  @Override
-  public void setEngineRunner(EngineRunner runner) {
-     this.runner = runner;
+    if (resUrl != null)
+      rClient = new XmlRpcResourceManagerClient(resUrl);
   }
 
   /*
    * (non-Javadoc)
-   *
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#pauseWorkflowInstance
+   * (java.lang.String)
+   */
+  public synchronized void pauseWorkflowInstance(String workflowInstId) {
+    // okay, try and look up that worker thread in our hash map
+    IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
+        .get(workflowInstId);
+    if (worker == null) {
+      LOG.log(Level.WARNING,
+          "WorkflowEngine: Attempt to pause workflow instance id: "
+              + workflowInstId
+              + ", however, this engine is not tracking its execution");
+      return;
+    }
+
+    // otherwise, all good
+    worker.pause();
+
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#resumeWorkflowInstance
+   * (java.lang.String)
+   */
+  public synchronized void resumeWorkflowInstance(String workflowInstId) {
+    // okay, try and look up that worker thread in our hash map
+    IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
+        .get(workflowInstId);
+    if (worker == null) {
+      LOG.log(Level.WARNING,
+          "WorkflowEngine: Attempt to resume workflow instance id: "
+              + workflowInstId + ", however, this engine is "
+              + "not tracking its execution");
+      return;
+    }
+
+    // also check to make sure that the worker is currently paused
+    // only can resume WorkflowInstances that are paused, right?
+    if (!worker.isPaused()) {
+      LOG.log(Level.WARNING,
+          "WorkflowEngine: Attempt to resume a workflow that "
+              + "isn't paused currently: instance id: " + workflowInstId);
+      return;
+    }
+
+    // okay, all good
+    worker.resume();
+
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#startWorkflow(org.apache
    * .oodt.cas.workflow.structs.Workflow, org.apache.oodt.cas.metadata.Metadata)
    */
-  @Override
-  public WorkflowInstance startWorkflow(Workflow workflow, Metadata metadata)
-      throws EngineException {
+  public synchronized WorkflowInstance startWorkflow(Workflow workflow,
+      Metadata metadata) throws EngineException {
     // to start the workflow, we create a default workflow instance
     // populate it
     // persist it
@@ -151,139 +196,161 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
     WorkflowInstance wInst = new WorkflowInstance();
     wInst.setWorkflow(workflow);
-    wInst.setCurrentTaskId((workflow.getTasks().get(0))
+    wInst.setCurrentTaskId(((WorkflowTask) workflow.getTasks().get(0))
         .getTaskId());
     wInst.setSharedContext(metadata);
     wInst.setStatus(CREATED);
     persistWorkflowInstance(wInst);
 
-    SequentialProcessor worker = new SequentialProcessor(this.lifecycleManager, wInst);
-    worker.setWorkflowInstance(wInst);
+    IterativeWorkflowProcessorThread worker = new IterativeWorkflowProcessorThread(
+        wInst, instRep, this.wmgrUrl);
+    worker.setRClient(rClient);
     workerMap.put(wInst.getId(), worker);
 
     wInst.setStatus(QUEUED);
     persistWorkflowInstance(wInst);
 
-    /*
-     * try { pool.execute(new ThreadedExecutor(worker, this.condProcessor)); }
-     * catch (InterruptedException e) { throw new EngineException(e); }
-     */
+    try {
+      pool.execute(worker);
+    } catch (InterruptedException e) {
+      throw new EngineException(e);
+    }
 
     return wInst;
-  }
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see
-   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#stopWorkflow(java.lang
-   * .String)
-   */
-  @Override
-  public void stopWorkflow(String workflowInstId) {
-    // TODO Auto-generated method stub
 
   }
 
   /*
    * (non-Javadoc)
-   *
-   * @see
-   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#pauseWorkflowInstance
-   * (java.lang.String)
-   */
-  @Override
-  public void pauseWorkflowInstance(String workflowInstId) {
-    // TODO Auto-generated method stub
-
-  }
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see
-   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#resumeWorkflowInstance
-   * (java.lang.String)
-   */
-  @Override
-  public void resumeWorkflowInstance(String workflowInstId) {
-    // TODO Auto-generated method stub
-
-  }
-
-  /*
-   * (non-Javadoc)
-   *
+   * 
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getInstanceRepository()
    */
-  @Override
   public WorkflowInstanceRepository getInstanceRepository() {
     return this.instRep;
   }
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#updateMetadata(java.
    * lang.String, org.apache.oodt.cas.metadata.Metadata)
    */
-  @Override
-  public boolean updateMetadata(String workflowInstId, Metadata met) {
-    // TODO Auto-generated method stub
-    return false;
+  public synchronized boolean updateMetadata(String workflowInstId, Metadata met) {
+    // okay, try and look up that worker thread in our hash map
+    IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
+        .get(workflowInstId);
+    if (worker == null) {
+      LOG.log(Level.WARNING,
+          "WorkflowEngine: Attempt to update metadata context "
+              + "for workflow instance id: " + workflowInstId
+              + ", however, this engine is " + "not tracking its execution");
+      return false;
+    }
+
+    worker.getWorkflowInstance().setSharedContext(met);
+    try {
+      persistWorkflowInstance(worker.getWorkflowInstance());
+    } catch (Exception e) {
+      LOG.log(
+          Level.WARNING,
+          "Exception persisting workflow instance: ["
+              + worker.getWorkflowInstance().getId() + "]: Message: "
+              + e.getMessage());
+      return false;
+    }
+
+    return true;
   }
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#setWorkflowManagerUrl
    * (java.net.URL)
    */
-  @Override
   public void setWorkflowManagerUrl(URL url) {
-    // TODO Auto-generated method stub
-
+    this.wmgrUrl = url;
   }
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see
-   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWallClockMinutes(
-   * java.lang.String)
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#stopWorkflow(java.lang
+   * .String)
    */
-  @Override
-  public double getWallClockMinutes(String workflowInstId) {
-    // TODO Auto-generated method stub
-    return 0;
+  public synchronized void stopWorkflow(String workflowInstId) {
+    // okay, try and look up that worker thread in our hash map
+    IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
+        .get(workflowInstId);
+    if (worker == null) {
+      LOG.log(Level.WARNING,
+          "WorkflowEngine: Attempt to stop workflow instance id: "
+              + workflowInstId + ", however, this engine is "
+              + "not tracking its execution");
+      return;
+    }
+
+    worker.stop();
   }
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see org.apache.oodt.cas.workflow.engine.WorkflowEngine#
    * getCurrentTaskWallClockMinutes(java.lang.String)
    */
-  @Override
   public double getCurrentTaskWallClockMinutes(String workflowInstId) {
-    // TODO Auto-generated method stub
-    return 0;
+    // get the workflow instance that we're talking about
+    WorkflowInstance inst = safeGetWorkflowInstanceById(workflowInstId);
+    return getCurrentTaskWallClockMinutes(inst);
   }
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see
    * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWorkflowInstanceMetadata
    * (java.lang.String)
    */
-  @Override
   public Metadata getWorkflowInstanceMetadata(String workflowInstId) {
-    // TODO Auto-generated method stub
-    return null;
+    // okay, try and look up that worker thread in our hash map
+    IterativeWorkflowProcessorThread worker = (IterativeWorkflowProcessorThread) workerMap
+        .get(workflowInstId);
+    if (worker == null) {
+      // try and get the metadata
+      // from the workflow instance repository (as it was persisted)
+      try {
+        WorkflowInstance inst = instRep.getWorkflowInstanceById(workflowInstId);
+        return inst.getSharedContext();
+      } catch (InstanceRepositoryException e) {
+        LOG.log(Level.FINEST, "WorkflowEngine: Attempt to get metadata "
+            + "for workflow instance id: " + workflowInstId
+            + ", however, this engine is "
+            + "not tracking its execution and the id: [" + workflowInstId
+            + "] " + "was never persisted to " + "the instance repository");
+        e.printStackTrace();
+        return new Metadata();
+      }
+    }
+
+    return worker.getWorkflowInstance().getSharedContext();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.WorkflowEngine#getWallClockMinutes(
+   * java.lang.String)
+   */
+  public double getWallClockMinutes(String workflowInstId) {
+    // get the workflow instance that we're talking about
+    WorkflowInstance inst = safeGetWorkflowInstanceById(workflowInstId);
+    return getWallClockMinutes(inst);
   }
 
   protected static double getWallClockMinutes(WorkflowInstance inst) {
@@ -366,15 +433,6 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     return diffMins;
   }
 
-  private static Date safeDateConvert(String isoTimeStr) {
-    try {
-      return DateConvert.isoParse(isoTimeStr);
-    } catch (Exception ignore) {
-      ignore.printStackTrace();
-      return null;
-    }
-  }
-
   private synchronized void persistWorkflowInstance(WorkflowInstance wInst)
       throws EngineException {
 
@@ -396,7 +454,21 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
   }
 
-  // FIXME: add back in the ThreadPoolWorkflowEngine implementation,
-  // after the sub-modules are fixed.
+  private WorkflowInstance safeGetWorkflowInstanceById(String workflowInstId) {
+    try {
+      return instRep.getWorkflowInstanceById(workflowInstId);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  private static Date safeDateConvert(String isoTimeStr) {
+    try {
+      return DateConvert.isoParse(isoTimeStr);
+    } catch (Exception ignore) {
+      ignore.printStackTrace();
+      return null;
+    }
+  }
 
 }

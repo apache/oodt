@@ -16,15 +16,14 @@
  */
 package org.apache.oodt.cas.workflow.engine;
 
-//JDK static imports
+//JDK imports
 import static java.lang.Boolean.getBoolean;
 import static java.lang.Integer.getInteger;
 import static java.lang.Long.getLong;
+import java.net.URL;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 /**
@@ -41,7 +40,7 @@ public class ThreadPoolWorkflowEngineFactory implements WorkflowEngineFactory {
   private static final String MIN_POOL_SIZE_PROPERTY = "org.apache.oodt.cas.workflow.engine.minPoolSize";
   private static final String THREAD_KEEP_ALIVE_PROPERTY = "org.apache.oodt.cas.workflow.engine.threadKeepAlive.minutes";
   private static final String UNLIMITED_QUEUE_PROPERTY = "org.apache.oodt.cas.workflow.engine.unlimitedQueue";
-  private static final String LIFECYCLES_FILE_PATH_PROPERTY = "org.apache.oodt.cas.workflow.lifecycle.filePath";
+  private static final String RESMGR_URL_PROPERTY = "org.apache.oodt.cas.workflow.engine.resourcemgr.url";
 
   private static final int DEFAULT_QUEUE_SIZE = 10;
   private static final int DEFAULT_MAX_POOL_SIZE = 10;
@@ -52,7 +51,7 @@ public class ThreadPoolWorkflowEngineFactory implements WorkflowEngineFactory {
   public WorkflowEngine createWorkflowEngine() {
     return new ThreadPoolWorkflowEngine(getWorkflowInstanceRepository(),
         getQueueSize(), getMaxPoolSize(), getMinPoolSize(),
-        getThreadKeepAliveMinutes(), isUnlimitedQueue(), getWorkflowLifecycle());
+        getThreadKeepAliveMinutes(), isUnlimitedQueue(), getResmgrUrl());
   }
 
   protected WorkflowInstanceRepository getWorkflowInstanceRepository() {
@@ -61,10 +60,9 @@ public class ThreadPoolWorkflowEngineFactory implements WorkflowEngineFactory {
             .getProperty(INSTANCE_REPO_FACTORY_PROPERTY));
   }
 
-  protected WorkflowLifecycleManager getWorkflowLifecycle() {
+  protected URL getResmgrUrl() {
     try {
-      return new WorkflowLifecycleManager(PathUtils.replaceEnvVariables(System
-          .getProperty(LIFECYCLES_FILE_PATH_PROPERTY)));
+      return new URL(System.getProperty(RESMGR_URL_PROPERTY));
     } catch (Exception e) {
       e.printStackTrace();
       return null;
