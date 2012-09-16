@@ -82,7 +82,6 @@ public class XmlRpcWorkflowManager {
    private final int webServerPort;
    private WebServer webServer;
    private final WorkflowEngine engine;
-   private final EngineRunner runner;
    private final WorkflowRepository repo;
 
    public XmlRpcWorkflowManager() {
@@ -93,9 +92,7 @@ public class XmlRpcWorkflowManager {
       Preconditions.checkArgument(port > 0, "Must specify a port greater than 0");
       webServerPort = port;
 
-      runner = getEngineRunnerFromProperty();
       engine = getWorkflowEngineFromProperty();
-      engine.setEngineRunner(runner);
       engine.setWorkflowManagerUrl(safeGetUrlFromString("http://"
             + getHostname() + ":" + this.webServerPort));
       repo = getWorkflowRepositoryFromProperty();
@@ -630,12 +627,6 @@ public class XmlRpcWorkflowManager {
        return getWorkflowEngineFromClassName(System.getProperty(
              WORKFLOW_ENGINE_FACTORY_PROPERTY,
              ThreadPoolWorkflowEngineFactory.class.getCanonicalName()));
-    }
-
-    private static EngineRunner getEngineRunnerFromProperty() {
-       return getEngineRunnerFromClassName(System.getProperty(
-             ENGINE_RUNNER_FACTORY_PROPERTY,
-             SynchronousLocalEngineRunnerFactory.class.getCanonicalName()));
     }
 
     private static WorkflowRepository getWorkflowRepositoryFromProperty() {
