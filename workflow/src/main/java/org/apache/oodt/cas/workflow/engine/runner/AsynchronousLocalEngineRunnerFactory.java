@@ -24,7 +24,7 @@ package org.apache.oodt.cas.workflow.engine.runner;
 public class AsynchronousLocalEngineRunnerFactory implements
       EngineRunnerFactory {
 
-   private static final String NUM_THREADS_PROPERTY = "org.apache.oodt.cas.workflow.engine.asynchronous.runner.num.threads";
+   private static final String NUM_THREADS_PROPERTY = "org.apache.oodt.cas.workflow.wengine.asynchronous.runner.num.threads";
 
    private int numThreads;
 

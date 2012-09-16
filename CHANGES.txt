@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-500: Rename property for max threads in AsyncLocalEngineRunner (mattmann)
+
 * OODT-497: Make WorkflowProcessor PrioritySorters thread-safe (mattmann)
 
 * OODT-492: Refactor Workflow Instance repo to store/retrieve that state 
