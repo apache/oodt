@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 //OODT imports
 import org.apache.oodt.cas.workflow.engine.ChangeType;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleStage;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 
@@ -301,8 +302,8 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
 
       if (nextState != null) {
         this.workflowInstance.setState(nextState);
-      } 
-      
+      }
+
     } else {
       this.workflowInstance.setState(helper.getLifecycleForProcessor(this)
           .createState(
@@ -313,6 +314,47 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
                   + "had a null state"));
     }
   }
+  
+  /**
+   * Evaluates whether or not this processor's {@link WorkflowState}
+   * is in any of the provided state names.
+   * 
+   * @param states The names of states to check this processor's 
+   * {@link WorkflowState} against.
+   * 
+   * @return True, if any of the state names provided is the name of
+   * this processor's internal {@link WorkflowState}, False otherwise.
+   */
+  public boolean isAnyState(String... states) {
+    for (String state : states) {
+      if (this.getWorkflowInstance().getState().getName().equals(state)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Evaluates whether or not this processor's {@link WorkflowLifecycleStage}
+   * is in any of the provided category names.
+   * 
+   * @param categories The names of categories to check this processor's 
+   * {@link WorkflowLifecycleStage} against.
+   * 
+   * @return True, if any of the category names provided is the name of
+   * this processor's internal {@link WorkflowLifecycleStage}, False otherwise.
+   */
+  public boolean isAnyCategory(String... categories) {
+    for (String category : categories) {
+      if (this.getWorkflowInstance().getState().getCategory().getName()
+          .equals(category)) {
+        return true;
+      }
+    }
+
+    return false;
+  }  
 
   protected boolean passedPreConditions() {
     if (this.getPreConditions() != null) {
@@ -379,16 +421,6 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
         "results",
         "All sub-processors for Workflow Processor handling workflow id: ["
             + workflowInstance.getId() + "] are " + "not complete");
-  }
-
-  protected boolean isAnyState(String... states) {
-    for (String state : states) {
-      if (this.getWorkflowInstance().getState().getName().equals(state)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   /**

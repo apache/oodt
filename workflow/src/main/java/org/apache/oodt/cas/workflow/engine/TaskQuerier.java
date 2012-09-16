@@ -111,11 +111,8 @@ public class TaskQuerier implements Runnable {
             + processor.getWorkflowInstance().getId() + "]: state: "
             + processor.getWorkflowInstance().getState());
 
-        if (!(processor.getWorkflowInstance().getState().getCategory()
-            .getName().equals("done") || processor.getWorkflowInstance()
-            .getState().getCategory().getName().equals("holding"))
-            && !processor.getWorkflowInstance().getState().getName()
-            .equals("Executing") && processor.getRunnableWorkflowProcessors() != null
+        if (!processor.isAnyCategory("done", "holding")
+            && !processor.isAnyState("Executing")
             && processor.getRunnableWorkflowProcessors().size() > 0) {
           for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
             WorkflowState state = lifecycle.createState("Executing", "running",
@@ -142,7 +139,8 @@ public class TaskQuerier implements Runnable {
               Level.FINE,
               "Processor for workflow instance: ["
                   + processor.getWorkflowInstance().getId()
-                  + "] not ready to Execute or already Executing: advancing it to next state.");
+                  + "] not ready to Execute or already Executing: " +
+                  		"advancing it to next state.");
           processor.nextState();
           persist(processor.getWorkflowInstance());
         }

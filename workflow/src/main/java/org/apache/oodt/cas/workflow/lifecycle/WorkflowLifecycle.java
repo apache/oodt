@@ -265,7 +265,6 @@ public class WorkflowLifecycle {
     newState.setName(state.getName());
     newState.setPrevState(state.getPrevState());
     newState.setStartTime(state.getStartTime());
-    newState.setSubStates(state.getSubStates());    
     return newState;
   }
   
