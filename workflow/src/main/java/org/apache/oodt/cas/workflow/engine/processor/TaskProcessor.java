@@ -91,13 +91,8 @@ public class TaskProcessor extends WorkflowProcessor {
             .getTimeInMillis()) / 1000) / 60;
         if (elapsedTime >= requiredBlockTimeElapse)
           tps.add(this);
-      } else if (((this.getWorkflowInstance().getState().getName()
-          .equals("Queued") || this.getWorkflowInstance().getState()
-          .getName().equals("Loaded") || this.getWorkflowInstance().getState()
-          .getName().equals("Executing"))
-          && this.passedPreConditions())
-          || this.getWorkflowInstance().getState().getName()
-              .equals("PreConditionSuccess")) {
+      } else if (this.isAnyState("Loaded", "Queued", "PreConditionSuccess") && 
+          !this.isAnyState("Executing") && this.passedPreConditions()){
         tps.add(this);
       }
     }

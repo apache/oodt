@@ -106,10 +106,17 @@ public class TaskQuerier implements Runnable {
             processor.getLifecycleManager());
         WorkflowLifecycle lifecycle = helper
             .getLifecycleForProcessor(processor);
+
+        LOG.log(Level.FINE, "TaskQuerier: dispositioning processor with id: ["
+            + processor.getWorkflowInstance().getId() + "]: state: "
+            + processor.getWorkflowInstance().getState());
+
         if (!(processor.getWorkflowInstance().getState().getCategory()
             .getName().equals("done") || processor.getWorkflowInstance()
-            .getState().getCategory().getName().equals("holding")) && 
-            !processor.getWorkflowInstance().getState().getName().equals("Executing")) {
+            .getState().getCategory().getName().equals("holding"))
+            && !processor.getWorkflowInstance().getState().getName()
+            .equals("Executing") && processor.getRunnableWorkflowProcessors() != null
+            && processor.getRunnableWorkflowProcessors().size() > 0) {
           for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
             WorkflowState state = lifecycle.createState("Executing", "running",
                 "Added to Runnable queue");
@@ -120,7 +127,7 @@ public class TaskQuerier implements Runnable {
             processorsToRun.add(tp);
           }
 
-          if(processorsToRun != null && processorsToRun.size() > 1){
+          if (processorsToRun != null && processorsToRun.size() > 1) {
             prioritizer.sort(processorsToRun);
           }
 
@@ -131,9 +138,11 @@ public class TaskQuerier implements Runnable {
 
         } else {
           // simply call nextState and persist it
-          LOG.log(Level.FINE, "Processor for workflow instance: ["
-              + processor.getWorkflowInstance().getId()
-              + "] not ready to Execute or already Executing: advancing it to next state.");
+          LOG.log(
+              Level.FINE,
+              "Processor for workflow instance: ["
+                  + processor.getWorkflowInstance().getId()
+                  + "] not ready to Execute or already Executing: advancing it to next state.");
           processor.nextState();
           persist(processor.getWorkflowInstance());
         }

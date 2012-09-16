@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -34,14 +34,12 @@ public class WorkflowState {
   private String name;
   private String description;
 	private String message;
-	private Vector<WorkflowState> subStates;
 	private Date startTime;
 	private WorkflowLifecycleStage category;
 	private WorkflowState prevState;
 	
 	
 	public WorkflowState(){
-	  this.subStates = new Vector<WorkflowState>();
 	  this.startTime = null;
 	  this.name = null;
 	  this.description = null;
@@ -80,7 +78,7 @@ public class WorkflowState {
 	}
 		
 	public String toString() {
-		return this.getName() + " : " + this.getMessage();
+		return this.getName() + " ["+this.getCategory()+"] : " + this.getMessage();
 	}
 
   /**
@@ -109,20 +107,6 @@ public class WorkflowState {
    */
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  /**
-   * @return the subStates
-   */
-  public Vector<WorkflowState> getSubStates() {
-    return subStates;
-  }
-
-  /**
-   * @param subStates the subStates to set
-   */
-  public void setSubStates(Vector<WorkflowState> subStates) {
-    this.subStates = subStates;
   }
 
   /**

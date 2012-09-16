@@ -50,14 +50,19 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
   private WorkflowInstance workflowInstance;
   private WorkflowProcessor preConditions;
   private WorkflowProcessor postConditions;
-  private List<String> excusedSubProcessorIds; //FIXME: read this in PackagedRepo: flow through instance
+  private List<String> excusedSubProcessorIds; // FIXME: read this in
+                                               // PackagedRepo: flow through
+                                               // instance
   private List<WorkflowProcessor> subProcessors;
   private List<WorkflowProcessorListener> listeners;
-  private int minReqSuccessfulSubProcessors; //FIXME: read this in PackagedRepo: flow through instance
+  private int minReqSuccessfulSubProcessors; // FIXME: read this in
+                                             // PackagedRepo: flow through
+                                             // instance
   protected WorkflowLifecycleManager lifecycleManager;
   protected WorkflowProcessorHelper helper;
-  
-  public WorkflowProcessor(WorkflowLifecycleManager lifecycleManager, WorkflowInstance workflowInstance){
+
+  public WorkflowProcessor(WorkflowLifecycleManager lifecycleManager,
+      WorkflowInstance workflowInstance) {
     this.subProcessors = new Vector<WorkflowProcessor>();
     this.listeners = new Vector<WorkflowProcessorListener>();
     this.excusedSubProcessorIds = new Vector<String>();
@@ -65,7 +70,9 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
     this.lifecycleManager = lifecycleManager;
     this.workflowInstance = workflowInstance;
     this.helper = new WorkflowProcessorHelper(lifecycleManager);
-    WorkflowState initState = helper.getLifecycleForProcessor(this).createState("Null", "initial", "Instance created by workflow processor.");
+    WorkflowState initState = helper.getLifecycleForProcessor(this)
+        .createState("Null", "initial",
+            "Instance created by workflow processor.");
     this.workflowInstance.setState(initState);
   }
 
@@ -143,7 +150,7 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
   public void setMinReqSuccessfulSubProcessors(int minReqSuccessfulSubProcessors) {
     this.minReqSuccessfulSubProcessors = minReqSuccessfulSubProcessors;
   }
-  
+
   /**
    * @return the lifecycleManager
    */
@@ -152,12 +159,12 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
   }
 
   /**
-   * @param lifecycleManager the lifecycleManager to set
+   * @param lifecycleManager
+   *          the lifecycleManager to set
    */
   public void setLifecycleManager(WorkflowLifecycleManager lifecycleManager) {
     this.lifecycleManager = lifecycleManager;
-  }  
-  
+  }
 
   /**
    * @return the preConditions
@@ -166,14 +173,13 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
     return preConditions;
   }
 
-
   /**
-   * @param preConditions the preConditions to set
+   * @param preConditions
+   *          the preConditions to set
    */
   public void setPreConditions(WorkflowProcessor preConditions) {
     this.preConditions = preConditions;
   }
-
 
   /**
    * @return the postConditions
@@ -182,13 +188,13 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
     return postConditions;
   }
 
-
   /**
-   * @param postConditions the postConditions to set
+   * @param postConditions
+   *          the postConditions to set
    */
   public void setPostConditions(WorkflowProcessor postConditions) {
     this.postConditions = postConditions;
-  }  
+  }
 
   /*
    * (non-Javadoc)
@@ -197,8 +203,8 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
    */
   @Override
   public int compareTo(WorkflowProcessor workflowProcessor) {
-    return this.getWorkflowInstance().getPriority().
-       compareTo(workflowProcessor.getWorkflowInstance().getPriority());
+    return this.getWorkflowInstance().getPriority()
+        .compareTo(workflowProcessor.getWorkflowInstance().getPriority());
   }
 
   /*
@@ -245,10 +251,73 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
     return runnableTasks;
   }
 
+  /**
+   * Advances this WorkflowProcessor to its next {@link WorkflowState}.
+   */
+  public void nextState() {
+    if (this.workflowInstance != null
+        && this.workflowInstance.getState() != null) {
+      WorkflowState currState = this.workflowInstance.getState();
+      WorkflowState nextState = null;
+      if (currState.getName().equals("Null")) {
+        nextState = this.helper.getLifecycleForProcessor(this).createState(
+            "Loaded",
+            "initial",
+            "Workflow Processor: nextState: " + "loading workflow instance: ["
+                + this.workflowInstance.getId() + "]");
+      } else if (currState.getName().equals("Loaded")) {
+        nextState = this.helper.getLifecycleForProcessor(this).createState(
+            "Queued",
+            "initial",
+            "Workflow Processor: nextState: " + "queueing instance: ["
+                + this.workflowInstance.getId() + "]");
+      } else if (currState.getName().equals("Queued")) {
+        if (!this.passedPreConditions()) {
+          nextState = this.helper.getLifecycleForProcessor(this).createState(
+              "PreConditionEval",
+              "running",
+              "Workflow Processor: nextState: "
+                  + "running preconditiosn for workflow instance: ["
+                  + this.workflowInstance.getId() + "]");
+        } else {
+          if (this.getRunnableWorkflowProcessors() != null
+              && this.getRunnableWorkflowProcessors().size() == 0
+              && this.passedPostConditions()) {
+            nextState = this.helper.getLifecycleForProcessor(this).createState(
+                "Success",
+                "done",
+                "Workflow Processor: nextState: " + "workflow instance: ["
+                    + this.workflowInstance.getId()
+                    + "] completed successfully");
+          }
+        }
+      } else if (currState.getName().equals("Executing")) {
+        nextState = this.helper.getLifecycleForProcessor(this).createState(
+            "Success",
+            "done",
+            "Workflow Processor: nextState: " + "workflow instance: ["
+                + this.workflowInstance.getId() + "] completed successfully");
+      }
+
+      if (nextState != null) {
+        this.workflowInstance.setState(nextState);
+      } 
+      
+    } else {
+      this.workflowInstance.setState(helper.getLifecycleForProcessor(this)
+          .createState(
+              "Unknown",
+              "holding",
+              "The Workflow Processor for instance : ["
+                  + this.getWorkflowInstance().getId() + "] "
+                  + "had a null state"));
+    }
+  }
+
   protected boolean passedPreConditions() {
     if (this.getPreConditions() != null) {
-      return this.getPreConditions().getWorkflowInstance().
-         getState().getName().equals("Success");
+      return this.getPreConditions().getWorkflowInstance().getState().getName()
+          .equals("Success");
     } else {
       return true;
     }
@@ -256,8 +325,8 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
 
   protected boolean passedPostConditions() {
     if (this.getPostConditions() != null) {
-      return this.getPostConditions().getWorkflowInstance().
-         getState().getName().equals("Success");
+      return this.getPostConditions().getWorkflowInstance().getState()
+          .getName().equals("Success");
     } else {
       return true;
     }
@@ -280,12 +349,13 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
    */
   protected WorkflowState isDone() {
     if (this.helper.containsCategory(this.getSubProcessors(), "done")) {
-      List<WorkflowProcessor> failedSubProcessors = this.helper.getWorkflowProcessorsByState(
-          this.getSubProcessors(), "Failure");
+      List<WorkflowProcessor> failedSubProcessors = this.helper
+          .getWorkflowProcessorsByState(this.getSubProcessors(), "Failure");
       if (this.minReqSuccessfulSubProcessors != -1
           && failedSubProcessors.size() > (this.getSubProcessors().size() - this.minReqSuccessfulSubProcessors))
-        return lifecycleManager.getDefaultLifecycle().createState("ResultsFailure",
-            "results", "More than the allowed number of sub-processors failed");
+        return lifecycleManager.getDefaultLifecycle().createState(
+            "ResultsFailure", "results",
+            "More than the allowed number of sub-processors failed");
       for (WorkflowProcessor subProcessor : failedSubProcessors) {
         if (!this.getExcusedSubProcessorIds().contains(
             subProcessor.getWorkflowInstance().getId())) {
@@ -296,7 +366,8 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
                   + "] failed.");
         }
       }
-      if (this.helper.allProcessorsSameCategory(this.getSubProcessors(), "done"))
+      if (this.helper
+          .allProcessorsSameCategory(this.getSubProcessors(), "done"))
         return lifecycleManager.getDefaultLifecycle().createState(
             "ResultsSuccess",
             "results",
@@ -309,53 +380,16 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
         "All sub-processors for Workflow Processor handling workflow id: ["
             + workflowInstance.getId() + "] are " + "not complete");
   }
-  
-  
-  public void nextState(){
-    if(this.workflowInstance != null && this.workflowInstance.getState() != null){
-        WorkflowState currState = this.workflowInstance.getState();
-        WorkflowState nextState = null;
-        if(currState.getName().equals("Null")){
-           nextState = this.helper.getLifecycleForProcessor(this)
-           .createState("Loaded", "initial", "Workflow Processor: nextState: " +
-           		"loading workflow instance: ["+this.workflowInstance.getId()+"]");           
-        }
-        else if(currState.getName().equals("Loaded")){
-          nextState = this.helper.getLifecycleForProcessor(this)
-          .createState("Queued", "initial", "Workflow Processor: nextState: " +
-             "queueing instance: ["+this.workflowInstance.getId()+"]");            
-        }
-        else if(currState.getName().equals("Queued")){
-          if(!this.passedPreConditions()){
-            nextState = this.helper.getLifecycleForProcessor(this)
-            .createState("PreConditionEval", "running", "Workflow Processor: nextState: " +
-               "running preconditiosn for workflow instance: ["+this.workflowInstance.getId()+"]");            
-          }
-        }
-        else if(currState.getName().equals("Executing")){
-          nextState = this.helper.getLifecycleForProcessor(this)
-          .createState("Success", "done", "Workflow Processor: nextState: " +
-             "workflow instance: ["+this.workflowInstance.getId()+"] completed successfully");             
-        }
-        
-        if(nextState != null){
-          this.workflowInstance.setState(nextState);
-        }
-        else{
-          nextState = this.helper.getLifecycleForProcessor(this)
-             .createState("Unknown", "holding", "Unable to determine next state " +
-             		"for workflow processor for instance: ["+this.workflowInstance.getId()+"]: " +
-             				"current state: ["+currState.getName()+"]");
-        }
-        this.workflowInstance.setState(nextState);
-    }
-    else{
-      this.workflowInstance.setState(helper.getLifecycleForProcessor(this).createState("Unknown", 
-          "holding", "The Workflow Processor for instance : ["+this.getWorkflowInstance().getId()+"] " +
-          		"had a null state"));
-    }
-  }
 
+  protected boolean isAnyState(String... states) {
+    for (String state : states) {
+      if (this.getWorkflowInstance().getState().getName().equals(state)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   /**
    * This is the core method of the WorkflowProcessor class in the new Wengine
