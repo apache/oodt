@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-505: Remove synchronous Runner (mattmann)
+
 * OODT-498: Overwrite and bring back 0.3 ThreadPoolWorkflowEngine plus 
   patches (mattmann)
 
