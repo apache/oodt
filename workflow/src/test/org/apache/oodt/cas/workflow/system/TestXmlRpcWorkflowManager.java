@@ -55,14 +55,21 @@ public class TestXmlRpcWorkflowManager extends TestCase {
       .getLogger(TestXmlRpcWorkflowManager.class.getName());
 
   public void testGetWorkflowInstances() {
+
     Vector workflowInsts = null;
-    try {
-      workflowInsts = wmgr.getWorkflowInstances();
-    } catch (Exception e) {
-      e.printStackTrace();
+
+    int numInsts = -1;
+    while (numInsts != 2) {
+      try {
+        workflowInsts = wmgr.getWorkflowInstances();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      assertNotNull(workflowInsts);
+      numInsts = workflowInsts.size();
     }
 
-    assertNotNull(workflowInsts);
     assertEquals(2, workflowInsts.size());
   }
 
@@ -132,13 +139,13 @@ public class TestXmlRpcWorkflowManager extends TestCase {
     System
         .setProperty("org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath",
             luceneCatLoc);
-    
 
     try {
       System.setProperty("org.apache.oodt.cas.workflow.repo.dirs", "file://"
           + new File("./src/main/resources/examples").getCanonicalPath());
-      System.setProperty("org.apache.oodt.cas.workflow.lifecycle.filePath", 
-          new File("./src/main/resources/examples/workflow-lifecycle.xml").getCanonicalPath());      
+      System.setProperty("org.apache.oodt.cas.workflow.lifecycle.filePath",
+          new File("./src/main/resources/examples/workflow-lifecycle.xml")
+              .getCanonicalPath());
     } catch (Exception e) {
       fail(e.getMessage());
     }

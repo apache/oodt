@@ -21,6 +21,8 @@ import static java.lang.Boolean.getBoolean;
 import static java.lang.Integer.getInteger;
 import static java.lang.Long.getLong;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
@@ -33,6 +35,9 @@ import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
  * @author bfoster (Brian Foster)
  */
 public class ThreadPoolWorkflowEngineFactory implements WorkflowEngineFactory {
+
+  private static final Logger LOG = Logger
+      .getLogger(ThreadPoolWorkflowEngineFactory.class.getName());
 
   private static final String INSTANCE_REPO_FACTORY_PROPERTY = "workflow.engine.instanceRep.factory";
   private static final String QUEUE_SIZE_PROPERTY = "org.apache.oodt.cas.workflow.engine.queueSize";
@@ -64,7 +69,10 @@ public class ThreadPoolWorkflowEngineFactory implements WorkflowEngineFactory {
     try {
       return new URL(System.getProperty(RESMGR_URL_PROPERTY));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(
+          Level.INFO,
+          "No Resource Manager URL provided or malformed URL: executing jobs " +
+          "locally. URL: ["+System.getProperty(RESMGR_URL_PROPERTY)+"]");
       return null;
     }
   }
