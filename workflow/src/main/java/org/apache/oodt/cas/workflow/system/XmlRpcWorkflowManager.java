@@ -17,7 +17,6 @@
 package org.apache.oodt.cas.workflow.system;
 
 //OODT static imports
-import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getEngineRunnerFromClassName;
 import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getWorkflowEngineFromClassName;
 import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getWorkflowRepositoryFromClassName;
 
@@ -28,8 +27,6 @@ import org.apache.xmlrpc.WebServer;
 import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
 import org.apache.oodt.cas.workflow.engine.ThreadPoolWorkflowEngineFactory;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngine;
-import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
-import org.apache.oodt.cas.workflow.engine.runner.SynchronousLocalEngineRunnerFactory;
 import org.apache.oodt.cas.workflow.repository.DataSourceWorkflowRepositoryFactory;
 import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
 import org.apache.oodt.cas.workflow.structs.Workflow;
