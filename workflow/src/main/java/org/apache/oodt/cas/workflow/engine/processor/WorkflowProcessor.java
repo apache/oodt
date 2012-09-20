@@ -281,9 +281,7 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
                   + "running preconditiosn for workflow instance: ["
                   + this.workflowInstance.getId() + "]");
         } else {
-          if (this.getRunnableWorkflowProcessors() != null
-              && this.getRunnableWorkflowProcessors().size() == 0
-              && this.passedPostConditions()) {
+          if (this.isDone().getName().equals("ResultsSuccess")) {
             nextState = this.helper.getLifecycleForProcessor(this).createState(
                 "Success",
                 "done",
@@ -293,11 +291,13 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
           }
         }
       } else if (currState.getName().equals("Executing")) {
+        if(this.isDone().getName().equals("ResultsSuccess")){
         nextState = this.helper.getLifecycleForProcessor(this).createState(
             "Success",
             "done",
             "Workflow Processor: nextState: " + "workflow instance: ["
                 + this.workflowInstance.getId() + "] completed successfully");
+        }
       }
 
       if (nextState != null) {

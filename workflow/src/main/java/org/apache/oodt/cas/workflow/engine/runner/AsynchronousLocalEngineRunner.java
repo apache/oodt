@@ -27,18 +27,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
+import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 /**
- * Runs a local version of a {@link WorkflowTask} asynchronously.
- *
+ * Runs a local version of a {@link TaskProcessor} asynchronously.
+ * 
  * @author mattmann (Chris Mattmann)
  * @author bfoster (Brian Foster)
  */
-public class AsynchronousLocalEngineRunner extends EngineRunner {
+public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
 
   private static final Logger LOG = Logger
       .getLogger(AsynchronousLocalEngineRunner.class.getName());
@@ -49,44 +52,58 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
   private final Map<String, Thread> workerMap;
 
   public AsynchronousLocalEngineRunner() {
-     this(DEFAULT_NUM_THREADS);
+    this(DEFAULT_NUM_THREADS, null);
   }
 
-  public AsynchronousLocalEngineRunner(int numThreads) {
-    this.executor = Executors.newFixedThreadPool(DEFAULT_NUM_THREADS);
+  public AsynchronousLocalEngineRunner(int numThreads,
+      WorkflowInstanceRepository instRep) {
+    super(instRep);
+    this.executor = Executors.newFixedThreadPool(numThreads);
     this.workerMap = new HashMap<String, Thread>();
   }
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see
-   * org.apache.oodt.cas.workflow.engine.EngineRunner#execute(org.apache.oodt
-   * .cas.workflow.structs.WorkflowTask, org.apache.oodt.cas.metadata.Metadata)
+   * org.apache.oodt.cas.workflow.engine.runner.EngineRunner#execute(org.apache
+   * .oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public void execute(final WorkflowTask workflowTask,
-      final Metadata dynMetadata) throws Exception {
+  public void execute(final TaskProcessor taskProcessor) throws Exception {
     Thread worker = new Thread() {
 
       @Override
       public void run() {
+        WorkflowLifecycle lifecycle = getLifecycle(taskProcessor);
+        WorkflowTask workflowTask = getTaskFromProcessor(taskProcessor);
         WorkflowTaskInstance inst = GenericWorkflowObjectFactory
             .getTaskObjectFromClassName(workflowTask.getTaskInstanceClassName());
         try {
-          inst.run(dynMetadata, workflowTask.getTaskConfig());
+          inst.run(taskProcessor.getWorkflowInstance().getSharedContext(),
+              workflowTask.getTaskConfig());
+          String msg = "Task: [" + workflowTask.getTaskName()
+              + "] for instance id: ["
+              + taskProcessor.getWorkflowInstance().getId()
+              + "] completed successfully";
+          WorkflowState state = lifecycle.createState("ExecutionComplete", "transition", msg);
+          taskProcessor.getWorkflowInstance().setState(state);
+          persist(taskProcessor.getWorkflowInstance());
         } catch (Exception e) {
           e.printStackTrace();
-          LOG.log(Level.WARNING,
-              "Exception executing task: [" + workflowTask.getTaskName()
-                  + "]: Message: " + e.getMessage());
+          String msg = "Exception executing task: ["
+              + workflowTask.getTaskName() + "]: Message: " + e.getMessage();
+          LOG.log(Level.WARNING, msg);
+          WorkflowState state = lifecycle.createState("Failure", "done", msg);
+          taskProcessor.getWorkflowInstance().setState(state);
+          persist(taskProcessor.getWorkflowInstance());
         }
 
       }
 
       /*
        * (non-Javadoc)
-       *
+       * 
        * @see java.lang.Thread#interrupt()
        */
       @SuppressWarnings("deprecation")
@@ -108,7 +125,7 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see org.apache.oodt.cas.workflow.engine.EngineRunner#shutdown()
    */
   @Override
@@ -122,11 +139,15 @@ public class AsynchronousLocalEngineRunner extends EngineRunner {
 
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.EngineRunner#hasOpenSlots(org.apache.oodt.cas.workflow.structs.WorkflowTask)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.oodt.cas.workflow.engine.runner.EngineRunner#hasOpenSlots(org
+   * .apache.oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public boolean hasOpenSlots(WorkflowTask workflowTask) throws Exception {
+  public boolean hasOpenSlots(TaskProcessor taskProcessor) throws Exception {
     // TODO Auto-generated method stub
     return true;
   }

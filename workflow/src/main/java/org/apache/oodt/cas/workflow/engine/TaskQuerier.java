@@ -115,7 +115,7 @@ public class TaskQuerier implements Runnable {
             && !processor.isAnyState("Executing")
             && processor.getRunnableWorkflowProcessors().size() > 0) {
           for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
-            WorkflowState state = lifecycle.createState("Executing", "running",
+            WorkflowState state = lifecycle.createState("WaitingOnResources", "waiting",
                 "Added to Runnable queue");
             tp.getWorkflowInstance().setState(state);
             persist(tp.getWorkflowInstance());

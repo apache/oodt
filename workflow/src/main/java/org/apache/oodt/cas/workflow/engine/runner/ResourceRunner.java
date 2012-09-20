@@ -23,10 +23,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
+import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
+import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.TaskJobInput;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
@@ -40,7 +41,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTask;
  * @version $Revision$
  * 
  */
-public class ResourceRunner extends EngineRunner implements CoreMetKeys,
+public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetKeys,
     WorkflowStatus {
 
   private static final Logger LOG = Logger.getLogger(ResourceRunner.class
@@ -52,21 +53,18 @@ public class ResourceRunner extends EngineRunner implements CoreMetKeys,
 
   private String currentJobId;
 
-  public ResourceRunner(URL resUrl) {
+  public ResourceRunner(URL resUrl, WorkflowInstanceRepository instRep) {
+    super(instRep);
     this.rClient = new XmlRpcResourceManagerClient(resUrl);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.oodt.cas.workflow.engine.EngineRunner#execute(org.apache.oodt
-   * .cas.workflow.structs.WorkflowTask, org.apache.oodt.cas.metadata.Metadata)
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.engine.runner.EngineRunner#execute(org.apache.oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public void execute(WorkflowTask workflowTask, Metadata dynMetadata)
-      throws Exception {
+  public void execute(TaskProcessor taskProcessor) throws Exception {
     Job workflowTaskJob = new Job();
+    WorkflowTask workflowTask = getTaskFromProcessor(taskProcessor);
     workflowTaskJob.setName(workflowTask.getTaskId());
     workflowTaskJob
         .setJobInstanceClassName("org.apache.oodt.cas.workflow.structs.TaskJob");
@@ -83,7 +81,7 @@ public class ResourceRunner extends EngineRunner implements CoreMetKeys,
     }
 
     TaskJobInput in = new TaskJobInput();
-    in.setDynMetadata(dynMetadata);
+    in.setDynMetadata(taskProcessor.getWorkflowInstance().getSharedContext());
     in.setTaskConfig(workflowTask.getTaskConfig());
     in.setWorkflowTaskInstanceClassName(workflowTask.getTaskInstanceClassName());
 
@@ -110,10 +108,10 @@ public class ResourceRunner extends EngineRunner implements CoreMetKeys,
   
 
   /* (non-Javadoc)
-   * @see org.apache.oodt.cas.workflow.engine.EngineRunner#hasOpenSlots(org.apache.oodt.cas.workflow.structs.WorkflowTask)
+   * @see org.apache.oodt.cas.workflow.engine.runner.EngineRunner#hasOpenSlots(org.apache.oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public boolean hasOpenSlots(WorkflowTask workflowTask) throws Exception {
+  public boolean hasOpenSlots(TaskProcessor taskProcessor) throws Exception {
     // TODO Auto-generated method stub
     return false;
   }
@@ -140,5 +138,6 @@ public class ResourceRunner extends EngineRunner implements CoreMetKeys,
     } else
       return false;
   }
+
 
 }

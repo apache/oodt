@@ -22,6 +22,9 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+
 //Google imports
 import com.google.common.base.Preconditions;
 
@@ -30,6 +33,7 @@ import com.google.common.base.Preconditions;
  * Factory which creates {@link ResourceRunner}s.
  *
  * @author bfoster (Brian Foster)
+ * @author mattmann (Chris Mattmann)
  */
 public class ResourceRunnerFactory implements EngineRunnerFactory{
 
@@ -37,6 +41,8 @@ public class ResourceRunnerFactory implements EngineRunnerFactory{
 
    private static final String RESOURCE_MANAGER_URL_PROPERTY = "org.apache.oodt.cas.workflow.engine.resourcemgr.url";
 
+   private static final String INSTANCE_REPO_FACTORY_PROPERTY = "workflow.engine.instanceRep.factory";
+   
    private String resUrl;
 
    public ResourceRunnerFactory() {
@@ -49,7 +55,7 @@ public class ResourceRunnerFactory implements EngineRunnerFactory{
          Preconditions.checkNotNull(resUrl,
                "Must specify Resource Manager URL [property = "
                      + RESOURCE_MANAGER_URL_PROPERTY + "]");
-         return new ResourceRunner(new URL(resUrl));
+         return new ResourceRunner(new URL(resUrl), getWorkflowInstanceRepository());
       } catch (MalformedURLException e) {
          LOG.log(Level.SEVERE, "Failed to load ResourceRunner : " + e.getMessage(), e);
          return null;
@@ -59,4 +65,10 @@ public class ResourceRunnerFactory implements EngineRunnerFactory{
    public void setResourceManagerUrl(String resUrl) {
       this.resUrl = resUrl;
    }
+   
+   protected WorkflowInstanceRepository getWorkflowInstanceRepository() {
+     return GenericWorkflowObjectFactory
+         .getWorkflowInstanceRepositoryFromClassName(System
+             .getProperty(INSTANCE_REPO_FACTORY_PROPERTY));
+   }   
 }

@@ -16,29 +16,44 @@
  */
 package org.apache.oodt.cas.workflow.engine.runner;
 
+//OODT imports
+import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+
 /**
- * A {@link EngineRunnerFactory} which creates {@link AsynchronousLocalEngineRunner}s.
- *
+ * A {@link EngineRunnerFactory} which creates
+ * {@link AsynchronousLocalEngineRunner}s.
+ * 
  * @author bfoster (Brian Foster)
+ * @author mattmann (Chris Mattmann)
  */
 public class AsynchronousLocalEngineRunnerFactory implements
-      EngineRunnerFactory {
+    EngineRunnerFactory {
 
-   private static final String NUM_THREADS_PROPERTY = "org.apache.oodt.cas.workflow.wengine.asynchronous.runner.num.threads";
+  private static final String NUM_THREADS_PROPERTY = "org.apache.oodt.cas.workflow.wengine.asynchronous.runner.num.threads";
 
-   private int numThreads;
+  private static final String INSTANCE_REPO_FACTORY_PROPERTY = "workflow.engine.instanceRep.factory";
 
-   public AsynchronousLocalEngineRunnerFactory() {
-      numThreads = Integer.getInteger(NUM_THREADS_PROPERTY,
-            AsynchronousLocalEngineRunner.DEFAULT_NUM_THREADS);
-   }
+  private int numThreads;
 
-   @Override
-   public AsynchronousLocalEngineRunner createEngineRunner() {
-      return new AsynchronousLocalEngineRunner(numThreads);
-   }
+  public AsynchronousLocalEngineRunnerFactory() {
+    numThreads = Integer.getInteger(NUM_THREADS_PROPERTY,
+        AsynchronousLocalEngineRunner.DEFAULT_NUM_THREADS);
+  }
 
-   public void setNumThreads(int numThreads) {
-      this.numThreads = numThreads;
-   }
+  @Override
+  public AsynchronousLocalEngineRunner createEngineRunner() {
+    return new AsynchronousLocalEngineRunner(numThreads,
+        getWorkflowInstanceRepository());
+  }
+
+  public void setNumThreads(int numThreads) {
+    this.numThreads = numThreads;
+  }
+
+  protected WorkflowInstanceRepository getWorkflowInstanceRepository() {
+    return GenericWorkflowObjectFactory
+        .getWorkflowInstanceRepositoryFromClassName(System
+            .getProperty(INSTANCE_REPO_FACTORY_PROPERTY));
+  }
 }

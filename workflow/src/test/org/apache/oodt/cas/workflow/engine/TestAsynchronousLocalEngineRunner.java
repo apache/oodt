@@ -29,8 +29,9 @@ import org.apache.commons.io.FileUtils;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.engine.runner.AsynchronousLocalEngineRunner;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.Priority;
 import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.commons.util.DateConvert;
 
@@ -54,17 +55,31 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
   private AsynchronousLocalEngineRunner runner;
 
   protected File testDir;
-  
+
   private QuerierAndRunnerUtils utils;
 
   public void testRun() {
-    WorkflowTask task = utils.getTask(testDir);
-    Metadata met = new Metadata();
-    met.addMetadata("StartDateTime", DateUtils.toString(Calendar.getInstance()));   
+    TaskProcessor taskProcessor1 = null;
+    TaskProcessor taskProcessor2 = null;
 
     try {
-      runner.execute(task, met);
-      runner.execute(task, met);
+      taskProcessor1 = (TaskProcessor) utils.getProcessor(Priority.getDefault()
+          .getValue(), "Executing", "running");
+      taskProcessor2 = (TaskProcessor) utils.getProcessor(Priority.getDefault()
+          .getValue(), "Executing", "running");
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    Metadata met = new Metadata();
+    met.addMetadata("StartDateTime", DateUtils.toString(Calendar.getInstance()));
+
+    taskProcessor1.getWorkflowInstance().getSharedContext().addMetadata(met);
+    taskProcessor2.getWorkflowInstance().getSharedContext().addMetadata(met);
+
+    try {
+      runner.execute(taskProcessor1);
+      runner.execute(taskProcessor2);
       assertTrue(ranFast());
     } catch (Exception e) {
       e.printStackTrace();
@@ -80,7 +95,8 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
       try {
         String line = FileUtils.readFileToString(f);
         String[] toks = line.split(",");
-        assertEquals("Toks not equal to 2: toks=["+Arrays.asList(toks)+"]", 2, toks.length);
+        assertEquals("Toks not equal to 2: toks=[" + Arrays.asList(toks) + "]",
+            2, toks.length);
         Date dateTime = DateConvert.isoParse(toks[1]);
         Seconds seconds = Seconds.secondsBetween(new DateTime(dateTime),
             new DateTime());
@@ -114,8 +130,9 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
    */
   @Override
   protected void setUp() throws Exception {
-    String parentPath = File.createTempFile("test", "txt").getParentFile().getAbsolutePath();
-    parentPath = parentPath.endsWith("/") ? parentPath:parentPath + "/";
+    String parentPath = File.createTempFile("test", "txt").getParentFile()
+        .getAbsolutePath();
+    parentPath = parentPath.endsWith("/") ? parentPath : parentPath + "/";
     String testJobDirPath = parentPath + "jobs";
     testDir = new File(testJobDirPath);
     testDir.mkdirs();

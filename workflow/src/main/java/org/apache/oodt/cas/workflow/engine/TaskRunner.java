@@ -78,17 +78,14 @@ public class TaskRunner implements Runnable {
    */
   @Override
   public void run() {
-    WorkflowTask nextTask = null;
     TaskProcessor nextTaskProcessor = null;
 
     while (running) {
       nextTaskProcessor = taskQuerier.getNext();
-      nextTask = nextTaskProcessor != null ? extractTaskFromProcessor(nextTaskProcessor)
-          : null;
 
       try {
-        if (nextTaskProcessor != null && runner.hasOpenSlots(nextTask)) {
-          runner.execute(nextTask, nextTaskProcessor.getWorkflowInstance().getSharedContext());
+        if (nextTaskProcessor != null && runner.hasOpenSlots(nextTaskProcessor)) {
+          runner.execute(nextTaskProcessor);
         }
       } catch (Exception e) {
         e.printStackTrace();
@@ -96,9 +93,8 @@ public class TaskRunner implements Runnable {
             Level.SEVERE,
             "Engine failed while submitting jobs to its runner : "
                 + e.getMessage(), e);
-        if (nextTask != null) {
+        if (nextTaskProcessor != null) {
           this.flagProcessorAsFailed(nextTaskProcessor, e.getMessage());
-          nextTask = null;
           nextTaskProcessor = null;
         }
       }
@@ -140,6 +136,7 @@ public class TaskRunner implements Runnable {
         .getDefaultLifecycle()
         .createState("Failure", "done",
             "Failed while submitting job to Runner : " + msg));
+    //TODO: persist me?
 
   }
 
