@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-511: Solr Indexer Date Formatting Removes Metadata (pramirez)
+
 * OODT-510: SolrIndexer fails on ProductTypes that have 0 products (pramirez, ahart)
 
 * OODT-496: Convert EngineRunner interface to take TaskProcessor (mattmann)
