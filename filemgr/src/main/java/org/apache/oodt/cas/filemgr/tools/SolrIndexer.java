@@ -181,11 +181,13 @@ public class SolrIndexer {
 			// The solr field name this metadata key will be mapped to
 			String fieldName = config.getMapProperties().getProperty(key);
 			List<String> values = metadata.getAllMetadata(key);
-			for (String value : values) {
-				// Add each metadata value into the
-				if (value != null && !config.getIgnoreValues().contains(value.trim())) {
-					LOG.fine("Adding field: " + fieldName + " value: " + value);
-					doc.addField(fieldName, value);
+			if (values != null) {
+				for (String value : values) {
+					// Add each metadata value into the
+					if (value != null && !config.getIgnoreValues().contains(value.trim())) {
+						LOG.fine("Adding field: " + fieldName + " value: " + value);
+						doc.addField(fieldName, value);
+					}
 				}
 			}
 		}
@@ -292,6 +294,19 @@ public class SolrIndexer {
 		}
 		LOG.info("Finished indexing product types.");
 	}
+	
+	/**
+	 * Suppresses exception that occurred with older file managers. 
+	 */
+	private ProductPage safeFirstPage(XmlRpcFileManagerClient fmClient, ProductType type) {
+		ProductPage page = null;
+		try {
+			page = fmClient.getFirstPage(type);
+		} catch (Exception e) {
+			LOG.info("No products found for: " + type.getName());
+		}
+		return page;
+	}
 
 	/**
 	 * This method indexes all products retrieved from the File Manager to the
@@ -315,7 +330,7 @@ public class SolrIndexer {
 				if (!config.getIgnoreTypes().contains(type.getName().trim())) {
 					LOG.info("Paging through products for product type: "
 					    + type.getName());
-					for (ProductPage page = fmClient.getFirstPage(type); page
+					for (ProductPage page = safeFirstPage(fmClient, type); page != null && !page
 					    .isLastPage(); page = fmClient.getNextPage(type, page)) {
 						for (Product product : page.getPageProducts()) {
 							try {
@@ -329,18 +344,18 @@ public class SolrIndexer {
 					}
 				}
 			}
+			LOG.info("Finished indexing products.");
 		} catch (MalformedURLException e) {
 			LOG.severe("File Manager URL is malformed: " + e.getMessage());
 		} catch (ConnectionException e) {
 			LOG.severe("Could not connect to File Manager: " + e.getMessage());
 		} catch (CatalogException e) {
-			LOG.severe("Could not retrieve product from File Manager: "
+			LOG.severe("Could not retrieve products from File Manager: "
 			    + e.getMessage());
 		} catch (RepositoryManagerException e) {
 			LOG.severe("Could not retrieve product types from File Manager: "
 			    + e.getMessage());
 		}
-		LOG.info("Finished indexing products.");
 	}
 
 	/**
