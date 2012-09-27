@@ -446,7 +446,7 @@ public class SolrIndexer {
 	    throws java.text.ParseException {
 		// Do metadata replacement
 		for (String key : config.getReplacementKeys()) {
-			List<String> values = metadata.getAllValues(key);
+			List<String> values = metadata.getAllMetadata(key);
 			if (values != null) {
 				List<String> newValues = new ArrayList<String>();
 				for (String value : values) {
@@ -459,16 +459,18 @@ public class SolrIndexer {
 		// Format dates
 		for (Object key : config.getFormatProperties().keySet()) {
 			String keyString = (String) key;
-			List<String> values = metadata.getAllValues(keyString);
 			if (metadata.containsKey(keyString)) {
-				List<String> newValues = new ArrayList<String>();
-				SimpleDateFormat format = new SimpleDateFormat(config
-				    .getFormatProperties().getProperty(keyString).trim());
-				for (String value : values) {
-					newValues.add(formatDate(format, value));
+				List<String> values = metadata.getAllMetadata(keyString);
+				if (values != null) {
+					List<String> newValues = new ArrayList<String>();
+					SimpleDateFormat format = new SimpleDateFormat(config
+					    .getFormatProperties().getProperty(keyString).trim());
+					for (String value : values) {
+						newValues.add(formatDate(format, value));
+					}
+					metadata.removeMetadata(keyString);
+					metadata.addMetadata(keyString, newValues);
 				}
-				metadata.removeMetadata(keyString);
-				metadata.addMetadata(keyString, newValues);
 			}
 		}
 	}
