@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-501: Method to create Processor from Instance should be based on 
+  Graph structure (mattmann)
+
 * OODT-511: Solr Indexer Date Formatting Removes Metadata (pramirez)
 
 * OODT-510: SolrIndexer fails on ProductTypes that have 0 products (pramirez, ahart)

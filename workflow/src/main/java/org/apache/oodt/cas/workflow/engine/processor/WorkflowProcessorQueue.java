@@ -93,7 +93,8 @@ public class WorkflowProcessorQueue {
     for (WorkflowInstance inst : (List<WorkflowInstance>) (List<?>) page
         .getPageWorkflows()) {
       if (!inst.getState().getCategory().getName().equals("done")) {
-        processors.add(fromWorkflowInstance(inst));
+        WorkflowProcessor processor = fromWorkflowInstance(inst);
+        if(processor != null) processors.add(processor);
       }
     }
 
@@ -105,16 +106,22 @@ public class WorkflowProcessorQueue {
     if (processorCache.containsKey(inst.getId())) {
       return processorCache.get(inst.getId());
     } else {
-      if (inst.getParentChildWorkflow().getTasks() != null
-          && inst.getParentChildWorkflow().getTasks().size() > 1) {
+      if (inst.getParentChildWorkflow().getGraph() == null) {
+        LOG.log(Level.SEVERE,
+            "Unable to process Graph for workflow instance: [" + inst.getId()
+                + "]");
+        return processor;        
+      }
+      
+      if (isCompositeProcessor(inst)){
         processor = getProcessorFromInstanceGraph(inst, lifecycle);
-        WorkflowState seqProcessorState = getLifecycle(
+        WorkflowState processorState = getLifecycle(
             inst.getParentChildWorkflow()).createState(
             "Loaded",
             "initial",
             "Sequential Workflow instance with id: [" + inst.getId()
                 + "] loaded by processor queue.");
-        inst.setState(seqProcessorState);
+        inst.setState(processorState);
         persist(inst);
 
         for (WorkflowCondition cond : inst.getParentChildWorkflow()
@@ -133,7 +140,10 @@ public class WorkflowProcessorQueue {
           instance.setState(taskWorkflowState);
           instance.setPriority(inst.getPriority());
           instance.setCurrentTaskId(task.getTaskId());
-          ParentChildWorkflow workflow = new ParentChildWorkflow(new Graph());
+          Graph taskGraph = new Graph();
+          taskGraph.setExecutionType("task");
+          taskGraph.setTask(task);
+          ParentChildWorkflow workflow = new ParentChildWorkflow(taskGraph);
           String taskWorkflowId = UUID.randomUUID().toString();
           workflow.setId("task-workflow-" + taskWorkflowId);
           workflow.setName("Task Workflow-" + task.getTaskName());
@@ -191,6 +201,12 @@ public class WorkflowProcessorQueue {
   private WorkflowLifecycle getLifecycle(Workflow workflow) {
     return lifecycle.getLifecycleForWorkflow(workflow) != null ? lifecycle
         .getLifecycleForWorkflow(workflow) : lifecycle.getDefaultLifecycle();
+  }
+  
+  private boolean isCompositeProcessor(WorkflowInstance instance){
+    return instance.getParentChildWorkflow().getGraph() != null && 
+    instance.getParentChildWorkflow().getGraph().getExecutionType().equals("parallel") || 
+    instance.getParentChildWorkflow().getGraph().getExecutionType().equals("sequential");
   }
 
   private WorkflowProcessor getProcessorFromInstanceGraph(
