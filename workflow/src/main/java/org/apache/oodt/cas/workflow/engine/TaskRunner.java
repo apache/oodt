@@ -95,7 +95,6 @@ public class TaskRunner implements Runnable {
                 + e.getMessage(), e);
         if (nextTaskProcessor != null) {
           this.flagProcessorAsFailed(nextTaskProcessor, e.getMessage());
-          nextTaskProcessor = null;
         }
       }
     }

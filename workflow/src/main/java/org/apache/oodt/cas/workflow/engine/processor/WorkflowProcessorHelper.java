@@ -45,6 +45,7 @@ import org.apache.commons.lang.StringUtils;
  * @version $Revision$
  * 
  */
+//TODO: go through me and find all the methods that aren't used and remove them
 public class WorkflowProcessorHelper {
 
   private WorkflowLifecycleManager lifecycle;

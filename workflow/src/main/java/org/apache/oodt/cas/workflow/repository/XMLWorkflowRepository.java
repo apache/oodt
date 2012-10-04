@@ -266,6 +266,33 @@ public class XMLWorkflowRepository implements WorkflowRepository {
     
 
     /* (non-Javadoc)
+     * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#addTask(org.apache.oodt.cas.workflow.structs.WorkflowTask)
+     */
+    @Override
+    public String addTask(WorkflowTask task) throws RepositoryException {
+      // check its conditions
+      if(task.getPreConditions() != null && task.getPreConditions().size() > 0){
+        for(WorkflowCondition cond: task.getPreConditions()){
+          if(!this.conditionMap.containsKey(cond.getConditionId())){
+            throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined pre condition ith id: ["+cond.getConditionId()+"]");            
+          }          
+        }
+        
+        for(WorkflowCondition cond: task.getPostConditions()){
+          if(!this.conditionMap.containsKey(cond.getConditionId())){
+            throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined post condition ith id: ["+cond.getConditionId()+"]");            
+          }              
+        }
+      }
+      
+        String taskId = task.getTaskId() != null ? 
+             task.getTaskId():UUID.randomUUID().toString();
+        this.taskMap.put(taskId, task);
+        return taskId;
+    }
+    
+
+    /* (non-Javadoc)
      * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#addWorkflow(org.apache.oodt.cas.workflow.structs.Workflow)
      */
     @Override
@@ -309,6 +336,15 @@ public class XMLWorkflowRepository implements WorkflowRepository {
          		"["+workflowId+"] that does not exist!");
       
       return ((Workflow)this.workflowMap.get(workflowId)).getConditions();
+    }    
+    
+
+    /* (non-Javadoc)
+     * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#getTaskById(java.lang.String)
+     */
+    @Override
+    public WorkflowTask getTaskById(String taskId) throws RepositoryException {
+      return (WorkflowTask)this.taskMap.get(taskId);
     }    
 
     /**

@@ -245,5 +245,26 @@ public interface WorkflowRepository {
    */
   public List<WorkflowCondition> getConditionsByWorkflowId(String workflowId)
       throws RepositoryException;
+  
+  
+  /**
+   * Adds the provided new {@link WorkflowTask} to the model repository.
+   * 
+   * @param task The new {@link WorkflowTask} to add.
+   * @return The identifier of the new {@link WorkflowTask}. Calling this
+   * function and providing a task with its identifier already set will cause
+   * this function to return that same identifier back.
+   * @throws RepositoryException If any error occurs.
+   */
+  public String addTask(WorkflowTask task) throws RepositoryException;
+  
+  /**
+   * Returns the {@link WorkflowTask} identified by the given taskId.
+   * 
+   * @param taskId The identifier for the {@link WorkflowTask} to return.
+   * @return The {@link WorkflowTask} identified by the given taskId.
+   * @throws RepositoryException If any error occurs.
+   */
+  public WorkflowTask getTaskById(String taskId) throws RepositoryException;
 
 }

@@ -299,6 +299,13 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
                 + this.workflowInstance.getId() + "] completed successfully");
         }
       }
+      else if(currState.getName().equals("ExecutionComplete")){
+        nextState = this.helper.getLifecycleForProcessor(this).createState(
+            "Success",
+            "done",
+            "Workflow Processor: nextState: " + "workflow instance: ["
+                + this.workflowInstance.getId() + "] completed successfully");        
+      }
 
       if (nextState != null) {
         this.workflowInstance.setState(nextState);

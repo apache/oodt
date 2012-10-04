@@ -54,7 +54,7 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
   private String currentJobId;
 
   public ResourceRunner(URL resUrl, WorkflowInstanceRepository instRep) {
-    super(instRep);
+    super();
     this.rClient = new XmlRpcResourceManagerClient(resUrl);
   }
 
@@ -115,6 +115,17 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
     // TODO Auto-generated method stub
     return false;
   }
+  
+
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.engine.runner.EngineRunner#setInstanceRepository(org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository)
+   */
+  @Override
+  public void setInstanceRepository(WorkflowInstanceRepository instRep) {
+    // TODO Auto-generated method stub
+    
+  }
+  
   
 
   protected boolean safeCheckJobComplete(String jobId) {

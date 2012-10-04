@@ -20,6 +20,7 @@ package org.apache.oodt.cas.workflow.repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 //OODT imports
 import org.apache.commons.lang.Validate;
@@ -38,6 +39,7 @@ import com.google.common.collect.Maps;
  * A mock {@link WorkflowRepository}.
  *
  * @author bfoster (Brian Foster)
+ * @author mattmann (Chris Mattmann)
  */
 public class MockWorkflowRepository implements WorkflowRepository {
 
@@ -311,4 +313,38 @@ public class MockWorkflowRepository implements WorkflowRepository {
       }
       return conditions;
    }
+
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#addTask(org.apache.oodt.cas.workflow.structs.WorkflowTask)
+   */
+  @Override
+  public String addTask(WorkflowTask task) throws RepositoryException {
+    // check its conditions
+    if(task.getPreConditions() != null && task.getPreConditions().size() > 0){
+      for(WorkflowCondition cond: task.getPreConditions()){
+        if(!this.conditions.containsKey(cond.getConditionId())){
+          throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined pre condition ith id: ["+cond.getConditionId()+"]");            
+        }          
+      }
+      
+      for(WorkflowCondition cond: task.getPostConditions()){
+        if(!this.conditions.containsKey(cond.getConditionId())){
+          throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined post condition ith id: ["+cond.getConditionId()+"]");            
+        }              
+      }
+    }
+    
+    String taskId = task.getTaskId() != null ? 
+        task.getTaskId():UUID.randomUUID().toString();
+   this.tasks.put(taskId, task);
+   return taskId;    
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#getTaskById(java.lang.String)
+   */
+  @Override
+  public WorkflowTask getTaskById(String taskId) throws RepositoryException {
+    return tasks.get(taskId);
+  }
 }

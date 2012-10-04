@@ -33,6 +33,7 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.cas.workflow.structs.PrioritySorter;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 
 /**
  * 
@@ -57,6 +58,8 @@ public class TaskQuerier implements Runnable {
   private PrioritySorter prioritizer;
 
   private WorkflowInstanceRepository repo;
+  
+  private long waitSeconds;
 
   private static final Logger LOG = Logger.getLogger(TaskQuerier.class
       .getName());
@@ -74,14 +77,18 @@ public class TaskQuerier implements Runnable {
    * @param repo
    *          The {@link WorkflowInstanceRepository} to save the state of
    *          WorkflowInstances.
+   *          
+   * @param waitSeconds The default amount of seconds to wait while dispositioning
+   *        processors
    */
   public TaskQuerier(WorkflowProcessorQueue processorQueue,
-      PrioritySorter prioritizer, WorkflowInstanceRepository repo) {
+      PrioritySorter prioritizer, WorkflowInstanceRepository repo, long waitSeconds) {
     this.running = true;
     this.processorQueue = processorQueue;
     this.runnableProcessors = new Vector<WorkflowProcessor>();
     this.prioritizer = prioritizer;
     this.repo = repo;
+    this.waitSeconds = waitSeconds;
   }
 
   /**
@@ -96,6 +103,7 @@ public class TaskQuerier implements Runnable {
    * {@link #prioritizer}.
    */
   public void run() {
+    LOG.log(Level.FINE, "TaskQuerier configured with wait seconds: ["+this.waitSeconds+"]");
     while (running) {
       List<WorkflowProcessor> processors = processorQueue.getProcessors();
       List<WorkflowProcessor> processorsToRun = new Vector<WorkflowProcessor>();
@@ -115,8 +123,8 @@ public class TaskQuerier implements Runnable {
             && !processor.isAnyState("Executing")
             && processor.getRunnableWorkflowProcessors().size() > 0) {
           for (TaskProcessor tp : processor.getRunnableWorkflowProcessors()) {
-            WorkflowState state = lifecycle.createState("WaitingOnResources", "waiting",
-                "Added to Runnable queue");
+            WorkflowState state = lifecycle.createState("WaitingOnResources",
+                "waiting", "Added to Runnable queue");
             tp.getWorkflowInstance().setState(state);
             persist(tp.getWorkflowInstance());
             LOG.log(Level.INFO, "Added processor with priority: ["
@@ -135,16 +143,20 @@ public class TaskQuerier implements Runnable {
 
         } else {
           // simply call nextState and persist it
-          LOG.log(
-              Level.FINE,
-              "Processor for workflow instance: ["
-                  + processor.getWorkflowInstance().getId()
-                  + "] not ready to Execute or already Executing: " +
-                  		"advancing it to next state.");
+          LOG.log(Level.FINE, "Processor for workflow instance: ["
+              + processor.getWorkflowInstance().getId()
+              + "] not ready to Execute or already Executing: "
+              + "advancing it to next state.");
           processor.nextState();
           persist(processor.getWorkflowInstance());
         }
       }
+      
+      try{
+        Thread.currentThread().sleep(waitSeconds*1000);
+      }
+      catch(InterruptedException ignore){}
+      
     }
   }
 
@@ -184,14 +196,22 @@ public class TaskQuerier implements Runnable {
     return (TaskProcessor) getRunnableProcessors().remove(0);
   }
 
-  private void persist(WorkflowInstance instance) {
+  private synchronized void persist(WorkflowInstance instance) {
     if (this.repo != null) {
       try {
-        this.repo.updateWorkflowInstance(instance);
-      } catch (Exception e) {
+        if (instance.getId() == null
+            || (instance.getId() != null && instance.getId().equals(""))) {
+          // we have to persist it by adding it
+          // rather than updating it
+          repo.addWorkflowInstance(instance);
+        } else {
+          // persist by update
+          repo.updateWorkflowInstance(instance);
+        }
+      } catch (InstanceRepositoryException e) {
         e.printStackTrace();
         LOG.log(Level.WARNING, "Unable to update workflow instance: ["
-            + instance.getId() + "] status to " + instance.getState().getName()
+            + instance.getId() + "] status to [" + instance.getState().getName()
             + "]. Message: " + e.getMessage());
       }
     }

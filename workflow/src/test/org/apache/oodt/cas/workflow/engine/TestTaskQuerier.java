@@ -38,6 +38,8 @@ import junit.framework.TestCase;
 public class TestTaskQuerier extends TestCase {
   
   private int dateGen;
+  
+  private static final long WAIT_SECS = 1;
 
   public TestTaskQuerier() {
     this.dateGen = 0;
@@ -50,7 +52,7 @@ public class TestTaskQuerier extends TestCase {
     assertNotNull(queued = processorQueue.getProcessors());
     assertEquals(3, queued.size());
     processorQueue = new MockProcessorQueue();
-    TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer, null);
+    TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer, null, WAIT_SECS);
     Thread querierThread = new Thread(querier);
     querierThread.start();
     List<WorkflowProcessor> runnables = null;
@@ -74,7 +76,7 @@ public class TestTaskQuerier extends TestCase {
     assertNotNull(queued = processorQueue.getProcessors());
     assertEquals(3, queued.size());
     processorQueue = new MockProcessorQueue();
-    TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer, null);
+    TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer, null, WAIT_SECS);
     Thread querierThread = new Thread(querier);
     querierThread.start();
     List<WorkflowProcessor> runnables = null;

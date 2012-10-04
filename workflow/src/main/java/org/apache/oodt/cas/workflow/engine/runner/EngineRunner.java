@@ -19,6 +19,7 @@ package org.apache.oodt.cas.workflow.engine.runner;
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
+import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 
 /**
@@ -65,5 +66,8 @@ public abstract class EngineRunner {
    * @throws Exception If any error occurs.
    */
   public abstract boolean hasOpenSlots(TaskProcessor taskProcessor) throws Exception;  
+  
+  
+  public abstract void setInstanceRepository(WorkflowInstanceRepository instRep);
 
 }

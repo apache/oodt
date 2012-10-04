@@ -52,12 +52,11 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
   private final Map<String, Thread> workerMap;
 
   public AsynchronousLocalEngineRunner() {
-    this(DEFAULT_NUM_THREADS, null);
+    this(DEFAULT_NUM_THREADS);
   }
 
-  public AsynchronousLocalEngineRunner(int numThreads,
-      WorkflowInstanceRepository instRep) {
-    super(instRep);
+  public AsynchronousLocalEngineRunner(int numThreads) {
+    super();
     this.executor = Executors.newFixedThreadPool(numThreads);
     this.workerMap = new HashMap<String, Thread>();
   }
@@ -86,6 +85,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
               + "] for instance id: ["
               + taskProcessor.getWorkflowInstance().getId()
               + "] completed successfully";
+          LOG.log(Level.INFO, msg);
           WorkflowState state = lifecycle.createState("ExecutionComplete", "transition", msg);
           taskProcessor.getWorkflowInstance().setState(state);
           persist(taskProcessor.getWorkflowInstance());
@@ -115,7 +115,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
 
     };
 
-    String id = UUID.randomUUID().toString();
+    String id = "";
     synchronized (id) {
       id = UUID.randomUUID().toString();
       this.workerMap.put(id, worker);
@@ -150,6 +150,14 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
   public boolean hasOpenSlots(TaskProcessor taskProcessor) throws Exception {
     // TODO Auto-generated method stub
     return true;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.engine.runner.EngineRunner#setInstanceRepository(org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository)
+   */
+  @Override
+  public void setInstanceRepository(WorkflowInstanceRepository instRep) {
+    this.instRep = instRep;    
   }
 
 }

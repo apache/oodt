@@ -1159,6 +1159,32 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
     return events;
   }
+  
+
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#addTask(org.apache.oodt.cas.workflow.structs.WorkflowTask)
+   */
+  @Override
+  public String addTask(WorkflowTask task) throws RepositoryException {
+    List<WorkflowCondition> allConditions = getConditions();
+    // check its conditions
+    if(task.getPreConditions() != null && task.getPreConditions().size() > 0){
+      for(WorkflowCondition cond: task.getPreConditions()){
+        if(!this.hasConditionId(allConditions, cond.getConditionId())){
+          throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined pre condition ith id: ["+cond.getConditionId()+"]");            
+        }          
+      }
+      
+      for(WorkflowCondition cond: task.getPostConditions()){
+        if(!this.hasConditionId(allConditions, cond.getConditionId())){
+          throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined post condition ith id: ["+cond.getConditionId()+"]");            
+        }              
+      }
+    }
+    
+    String taskId = this.commitTask(null, task);
+    return taskId;
+  }
 
   /*
    * (non-Javadoc)
@@ -1294,6 +1320,87 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
     return conditions;
   }
+  
+
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#getTaskById(java.lang.String)
+   */
+  @Override
+  public WorkflowTask getTaskById(String taskId) throws RepositoryException {
+    Connection conn = null;
+    Statement statement = null;
+    ResultSet rs = null;
+
+    WorkflowTask task = null;
+
+    try {
+      conn = dataSource.getConnection();
+      statement = conn.createStatement();
+
+      String getTasksSql = "SELECT * "
+          + "FROM workflow_tasks "
+          + "WHERE workflow_task_id = " + taskId;
+
+      LOG.log(Level.FINE, "getTaskById: Executing: " + getTasksSql);
+      rs = statement.executeQuery(getTasksSql);
+     
+
+      while (rs.next()) {
+        // get an instance of the class name
+
+        task = DbStructFactory.getWorkflowTask(rs, true);
+
+        if (task != null) {
+          task.setConditions(getConditionsByTaskId(task.getTaskId()));
+          task.setTaskConfig(getConfigurationByTaskId(task.getTaskId()));
+        }
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING, "Exception getting tasks for workflow. Message: "
+          + e.getMessage());
+      try {
+        conn.rollback();
+      } catch (SQLException e2) {
+        LOG.log(Level.SEVERE,
+            "Unable to rollback getTasksByWorkflowId transaction. Message: "
+                + e2.getMessage());
+      }
+      throw new RepositoryException(e.getMessage());
+    } finally {
+
+      if (rs != null) {
+        try {
+          rs.close();
+        } catch (SQLException ignore) {
+        }
+
+        rs = null;
+      }
+
+      if (statement != null) {
+        try {
+          statement.close();
+        } catch (SQLException ignore) {
+        }
+
+        statement = null;
+      }
+
+      if (conn != null) {
+        try {
+          conn.close();
+
+        } catch (SQLException ignore) {
+        }
+
+        conn = null;
+      }
+    }
+
+    return task;
+  }    
 
   private String commitWorkflow(Workflow workflow) throws RepositoryException {
     Connection conn = null;
@@ -1375,7 +1482,8 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
     return workflowId;
   }
 
-  private String commitTask(Workflow workflow, WorkflowTask task) throws RepositoryException {
+  private String commitTask(Workflow workflow, WorkflowTask task)
+      throws RepositoryException {
     Connection conn = null;
     Statement statement = null;
     ResultSet rs = null;
@@ -1385,31 +1493,38 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       conn = dataSource.getConnection();
       conn.setAutoCommit(false);
       statement = conn.createStatement();
-      
+
       String sql = "SELECT MAX(workflow_task_id) AS max_id FROM workflow_tasks";
       LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
       rs = statement.executeQuery(sql);
 
       while (rs.next()) {
         taskId = String.valueOf(rs.getInt("max_id"));
-      }      
-      
-      synchronized(taskId){
-        taskId = String.valueOf(new Integer(taskId)+1);
+      }
+
+      synchronized (taskId) {
+        taskId = String.valueOf(new Integer(taskId) + 1);
       }
 
       task.setTaskId(taskId);
-      sql = "INSERT INTO workflow_tasks (workflow_task_id, workflow_task_name, workflow_task_class) VALUES ("+taskId+", '"
-          + task.getTaskName() + "', '"+task.getTaskInstanceClassName()+"')";
+      sql = "INSERT INTO workflow_tasks (workflow_task_id, workflow_task_name, workflow_task_class) VALUES ("
+          + taskId
+          + ", '"
+          + task.getTaskName()
+          + "', '"
+          + task.getTaskInstanceClassName() + "')";
 
       LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
       statement.execute(sql);
 
-      // task to workflow map
-      sql = "INSERT INTO workflow_task_map (workflow_id, workflow_task_id, task_order) VALUES ("
-          + workflow.getId() + ","+taskId+",1)";
-      LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
-      statement.execute(sql);
+      if (workflow != null) {
+        // task to workflow map
+        sql = "INSERT INTO workflow_task_map (workflow_id, workflow_task_id, task_order) VALUES ("
+            + workflow.getId() + "," + taskId + ",1)";
+        LOG.log(Level.FINE, "commitTaskToDB: Executing: " + sql);
+        statement.execute(sql);
+      }
+
       conn.commit();
 
     } catch (Exception e) {
@@ -1419,10 +1534,8 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       try {
         conn.rollback();
       } catch (SQLException e2) {
-        LOG.log(
-            Level.SEVERE,
-            "Unable to rollback task transaction. Message: "
-                + e2.getMessage());
+        LOG.log(Level.SEVERE, "Unable to rollback task transaction. Message: "
+            + e2.getMessage());
       }
       throw new RepositoryException(e.getMessage());
     } finally {
@@ -1458,6 +1571,83 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
     return taskId;
   }
+  
+  public List<WorkflowCondition> getConditions() throws RepositoryException {
+    Connection conn = null;
+    Statement statement = null;
+    ResultSet rs = null;
+
+    List<WorkflowCondition> conditions = null;
+
+    try {
+      conn = dataSource.getConnection();
+      statement = conn.createStatement();
+
+      String getConditionsSql = "SELECT workflow_conditions.* "
+          + "FROM workflow_conditions "
+          + "ORDER BY condition_id";
+
+      LOG.log(Level.FINE, "getConditions: Executing: "
+          + getConditionsSql);
+      rs = statement.executeQuery(getConditionsSql);
+      conditions = new Vector<WorkflowCondition>();
+
+      while (rs.next()) {
+        // get an instance of the class name
+        WorkflowCondition condition = DbStructFactory.getWorkflowCondition(rs,
+            true);
+        conditions.add(condition);
+      }
+
+      if (conditions.size() == 0) {
+        conditions = null;
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING, "Exception getting conditions. Message: "
+          + e.getMessage());
+      try {
+        conn.rollback();
+      } catch (SQLException e2) {
+        LOG.log(Level.SEVERE,
+            "Unable to rollback getConditions transaction. Message: "
+                + e2.getMessage());
+      }
+      throw new RepositoryException(e.getMessage());
+    } finally {
+
+      if (rs != null) {
+        try {
+          rs.close();
+        } catch (SQLException ignore) {
+        }
+
+        rs = null;
+      }
+
+      if (statement != null) {
+        try {
+          statement.close();
+        } catch (SQLException ignore) {
+        }
+
+        statement = null;
+      }
+
+      if (conn != null) {
+        try {
+          conn.close();
+
+        } catch (SQLException ignore) {
+        }
+
+        conn = null;
+      }
+    }
+
+    return conditions;
+  }  
   
   private List<WorkflowTask> getTasks() throws RepositoryException {
     Connection conn = null;
@@ -1591,5 +1781,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
     task.setTaskId(this.commitTask(workflow, task));
     return task;
   }
+
 
 }

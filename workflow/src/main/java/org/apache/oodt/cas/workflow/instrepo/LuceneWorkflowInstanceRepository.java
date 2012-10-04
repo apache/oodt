@@ -33,7 +33,6 @@ import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryExcepti
 //JDK imports
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -51,7 +50,6 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
@@ -222,7 +220,7 @@ public class LuceneWorkflowInstanceRepository extends
                 LOG.log(Level.WARNING, "The workflow instance: ["
                         + workflowInstId + "] is not being "
                         + "managed by this " + "workflow engine, or "
-                        + "is not unique in the catalog!");
+                        + "is not unique in the catalog: num hits: ["+hits.length()+"]");
                 return null;
             } else {
                 Document instDoc = hits.doc(0);
@@ -420,6 +418,7 @@ public class LuceneWorkflowInstanceRepository extends
                             + inst.getId() + "]");
             reader.deleteDocuments(new Term("workflow_inst_id", inst.getId()));
         } catch (IOException e) {
+            e.printStackTrace();
             LOG
                     .log(Level.WARNING,
                             "Exception removing workflow instance: ["
@@ -783,7 +782,7 @@ public class LuceneWorkflowInstanceRepository extends
         if (condNames == null) {
             return condList;
         }
-
+        
         if (condNames.length != condClasses.length
                 || condNames.length != condOrders.length
                 || condNames.length != condIds.length 
@@ -794,7 +793,7 @@ public class LuceneWorkflowInstanceRepository extends
                             + "rebuilding from given Document");
             return null;
         }
-
+        
         for (int i = 0; i < condNames.length; i++) {
             WorkflowCondition cond = new WorkflowCondition();
             cond.setConditionId(condIds[i]);
@@ -807,8 +806,9 @@ public class LuceneWorkflowInstanceRepository extends
             if(condOptionals != null){
               cond.setOptional(Boolean.valueOf(condOptionals[i]));
             }
+            condList.add(cond);
         }
-
+        
         return condList;
     }
 

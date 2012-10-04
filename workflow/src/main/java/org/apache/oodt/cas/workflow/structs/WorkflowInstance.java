@@ -38,7 +38,7 @@ import org.apache.oodt.commons.util.DateConvert;
  * PackagedWorkflowRepository. {@link Workflow} instances given to the class
  * will automatically convert to {@link ParentChildWorkflow} implementations
  * internally, and the existing {@link #getWorkflow()} and
- * {@link #setWorkflow(Workflow)} methods have been depcreated in favor of
+ * {@link #setWorkflow(Workflow)} methods have been deprecated in favor of
  * {@link #getParentChildWorkflow()} and
  * {@link #setParentChildWorkflow(ParentChildWorkflow)} which will supersede
  * those methods, and eventually turn into their concrete implementations.

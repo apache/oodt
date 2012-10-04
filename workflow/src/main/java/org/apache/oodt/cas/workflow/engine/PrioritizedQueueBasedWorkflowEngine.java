@@ -20,7 +20,6 @@ package org.apache.oodt.cas.workflow.engine;
 //JDK imports
 import java.net.URL;
 import java.util.Calendar;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 //OODT imports
@@ -65,7 +64,8 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
   private EngineRunner runner;
 
   public PrioritizedQueueBasedWorkflowEngine(WorkflowInstanceRepository repo,
-      PrioritySorter prioritizer, WorkflowLifecycleManager lifecycle, EngineRunner runner, WorkflowRepository modelRepo) {
+      PrioritySorter prioritizer, WorkflowLifecycleManager lifecycle,
+      EngineRunner runner, WorkflowRepository modelRepo, long querierWaitSeconds) {
     this.repo = repo;
     this.prioritizer = prioritizer != null ? new HighestFIFOPrioritySorter(1,
         50, 1) : prioritizer;
@@ -73,10 +73,11 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
     this.modelRepo = modelRepo;
     this.processorQueue = new WorkflowProcessorQueue(repo, lifecycle, modelRepo);
     this.runner = runner;
-
+    this.runner.setInstanceRepository(repo);
 
     // Task QUEUER thread
-    TaskQuerier querier = new TaskQuerier(processorQueue, this.prioritizer, this.repo);
+    TaskQuerier querier = new TaskQuerier(processorQueue, this.prioritizer,
+        this.repo, querierWaitSeconds);
     queuerThread = new Thread(querier);
     queuerThread.start();
 
@@ -101,25 +102,26 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
   public WorkflowInstance startWorkflow(Workflow workflow, Metadata metadata)
       throws EngineException {
     // TODO Auto-generated method stub
-    
-    //looks like the work to do here is
+
+    // looks like the work to do here is
     // create a new WorkflowInstance
     // create a new WorkflowProcessor around it
     // set it in Queued status
-    // commit it to workflow instance repo and it will get picked up 
-        
+    // commit it to workflow instance repo and it will get picked up
+
     WorkflowInstance inst = new WorkflowInstance();
-    inst.setParentChildWorkflow(workflow instanceof ParentChildWorkflow ? 
-        (ParentChildWorkflow)workflow:new ParentChildWorkflow(workflow));
+    inst.setParentChildWorkflow(workflow instanceof ParentChildWorkflow ? (ParentChildWorkflow) workflow
+        : new ParentChildWorkflow(workflow));
     inst.setStartDate(Calendar.getInstance().getTime());
     inst.setCurrentTaskId(workflow.getTasks().get(0).getTaskId());
-    inst.setId(UUID.randomUUID().toString()); //TODO: decide whether or not this ID setting makes sense
     inst.setSharedContext(metadata);
-    inst.setPriority(Priority.getDefault()); //FIXME: this should be sensed or passed in
+    inst.setPriority(Priority.getDefault()); // FIXME: this should be sensed or
+                                             // passed in
     WorkflowLifecycle cycle = getLifecycleForWorkflow(workflow);
-    WorkflowState state = cycle.createState("Null", "initial", "Workflow created by Engine.");
-    inst.setState(state);  
-    persist(inst);    
+    WorkflowState state = cycle.createState("Null", "initial",
+        "Workflow created by Engine.");
+    inst.setState(state);
+    persist(inst);
     return inst;
   }
 
@@ -236,20 +238,27 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
     // TODO Auto-generated method stub
     return null;
   }
-  
-  private void persist(WorkflowInstance inst) throws EngineException{
+
+  private synchronized void persist(WorkflowInstance inst) throws EngineException {
     try {
-      this.repo.addWorkflowInstance(inst);
+      if (inst.getId() == null
+          || (inst.getId() != null && inst.getId().equals(""))) {
+        // we have to persist it by adding it
+        // rather than updating it
+        repo.addWorkflowInstance(inst);
+      } else {
+        // persist by update
+        repo.updateWorkflowInstance(inst);
+      }
     } catch (InstanceRepositoryException e) {
       e.printStackTrace();
       throw new EngineException(e.getMessage());
-    }    
+    }
   }
 
-  private WorkflowLifecycle getLifecycleForWorkflow(Workflow workflow){
-    return lifecycle.getLifecycleForWorkflow(workflow) != null ? 
-        lifecycle.getLifecycleForWorkflow(workflow):
-          lifecycle.getDefaultLifecycle();    
+  private WorkflowLifecycle getLifecycleForWorkflow(Workflow workflow) {
+    return lifecycle.getLifecycleForWorkflow(workflow) != null ? lifecycle
+        .getLifecycleForWorkflow(workflow) : lifecycle.getDefaultLifecycle();
   }
 
 }

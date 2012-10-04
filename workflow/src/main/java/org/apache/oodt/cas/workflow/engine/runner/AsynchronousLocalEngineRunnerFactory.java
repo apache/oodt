@@ -32,8 +32,6 @@ public class AsynchronousLocalEngineRunnerFactory implements
 
   private static final String NUM_THREADS_PROPERTY = "org.apache.oodt.cas.workflow.wengine.asynchronous.runner.num.threads";
 
-  private static final String INSTANCE_REPO_FACTORY_PROPERTY = "workflow.engine.instanceRep.factory";
-
   private int numThreads;
 
   public AsynchronousLocalEngineRunnerFactory() {
@@ -43,17 +41,11 @@ public class AsynchronousLocalEngineRunnerFactory implements
 
   @Override
   public AsynchronousLocalEngineRunner createEngineRunner() {
-    return new AsynchronousLocalEngineRunner(numThreads,
-        getWorkflowInstanceRepository());
+    return new AsynchronousLocalEngineRunner(numThreads);
   }
 
   public void setNumThreads(int numThreads) {
     this.numThreads = numThreads;
   }
 
-  protected WorkflowInstanceRepository getWorkflowInstanceRepository() {
-    return GenericWorkflowObjectFactory
-        .getWorkflowInstanceRepositoryFromClassName(System
-            .getProperty(INSTANCE_REPO_FACTORY_PROPERTY));
-  }
 }

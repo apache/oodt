@@ -39,13 +39,15 @@ import org.apache.oodt.commons.date.DateUtils;
  */
 public class MetSetterTaskQuerier extends TaskQuerier {
 
+  private static final long WAIT_SECS=1;
+  
   /**
    * @param processorQueue
    * @param prioritizer
    */
   public MetSetterTaskQuerier(WorkflowProcessorQueue processorQueue,
       PrioritySorter prioritizer) {
-    super(processorQueue, prioritizer, null);
+    super(processorQueue, prioritizer, null, WAIT_SECS);
   }
 
   /*

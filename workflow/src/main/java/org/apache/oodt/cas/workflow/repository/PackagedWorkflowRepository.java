@@ -260,6 +260,32 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   public List getRegisteredEvents() throws RepositoryException {
     return Arrays.asList(this.eventWorkflowMap.keySet().toArray());
   }
+  
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#addTask(org.apache.oodt.cas.workflow.structs.WorkflowTask)
+   */
+  @Override
+  public String addTask(WorkflowTask task) throws RepositoryException {
+    // check its conditions
+    if(task.getPreConditions() != null && task.getPreConditions().size() > 0){
+      for(WorkflowCondition cond: task.getPreConditions()){
+        if(!this.conditions.containsKey(cond.getConditionId())){
+          throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined pre condition ith id: ["+cond.getConditionId()+"]");            
+        }          
+      }
+      
+      for(WorkflowCondition cond: task.getPostConditions()){
+        if(!this.conditions.containsKey(cond.getConditionId())){
+          throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined post condition ith id: ["+cond.getConditionId()+"]");            
+        }              
+      }
+    }
+    
+      String taskId = task.getTaskId() != null ? 
+        task.getTaskId():UUID.randomUUID().toString();
+      this.tasks.put(taskId, task);
+      return taskId;
+  }  
 
   /*
    * (non-Javadoc)
@@ -330,6 +356,15 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
 
     return this.workflows.get(workflowId).getConditions();
   }
+  
+
+  /* (non-Javadoc)
+   * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#getTaskById(java.lang.String)
+   */
+  @Override
+  public WorkflowTask getTaskById(String taskId) throws RepositoryException {
+    return this.tasks.get(taskId);
+  }  
 
   private void init() throws RepositoryException {
     this.workflows = new HashMap<String, ParentChildWorkflow>();
@@ -715,6 +750,5 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     this.tasks.put(task.getTaskId(), task);
     return task;
   }
-
   
 }

@@ -49,6 +49,8 @@ public class PrioritizedQueueBasedWorkflowEngineFactory implements
 
   private static final String ENGINE_RUNNER_CLASS = "workflow.wengine.runner.factory";
 
+  private static final String WAIT_SECS_PROPERTY = "org.apache.oodt.cas.workflow.wengine.taskquerier.waitSeconds";
+
   /*
    * (non-Javadoc)
    * 
@@ -61,7 +63,8 @@ public class PrioritizedQueueBasedWorkflowEngineFactory implements
     try {
       return new PrioritizedQueueBasedWorkflowEngine(
           getWorkflowInstanceRepository(), getPrioritizer(),
-          getWorkflowLifecycle(), getEngineRunner(), getModelRepository());
+          getWorkflowLifecycle(), getEngineRunner(), getModelRepository(),
+          getWaitSeconds());
     } catch (Exception e) {
       e.printStackTrace();
       return null;
@@ -72,6 +75,10 @@ public class PrioritizedQueueBasedWorkflowEngineFactory implements
     return GenericWorkflowObjectFactory
         .getWorkflowRepositoryFromClassName(System
             .getProperty(MODEL_REPO_FACTORY_PROPERTY));
+  }
+
+  protected long getWaitSeconds() {
+    return Long.getLong(WAIT_SECS_PROPERTY, 2);
   }
 
   protected EngineRunner getEngineRunner() {
