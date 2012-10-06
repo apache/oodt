@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-516: Add WorkflowLifecycle tests that check pctComplete for 
+  wengine and w1 style lifecycles (mattmann)
+
 * OODT-501: Method to create Processor from Instance should be based on 
   Graph structure (mattmann)
 

@@ -175,8 +175,10 @@ public class WorkflowLifecycle {
     if (this.stages != null && this.stages.size() > 0) {
       for (Iterator i = this.stages.iterator(); i.hasNext();) {
         WorkflowLifecycleStage stage = (WorkflowLifecycleStage) i.next();
-        if (stage.getStates().contains(status)) {
-          return stage;
+        for(WorkflowState state: stage.getStates()){
+          if(state.getName().equals(status)){
+            return stage;
+          }
         }
       }
 

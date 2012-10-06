@@ -21,6 +21,10 @@ package org.apache.oodt.cas.workflow.lifecycle;
 import java.io.File;
 import java.util.List;
 
+import org.apache.oodt.cas.workflow.structs.Graph;
+import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+
 //Junit imports
 import junit.framework.TestCase;
 
@@ -36,6 +40,36 @@ public class TestWorkflowLifecycleManager extends TestCase {
 
   private WorkflowLifecycleManager lifecycle;
 
+  public void testPctCompleteWengineStages(){
+    ParentChildWorkflow workflow = new ParentChildWorkflow(new Graph());
+    WorkflowState successState = lifecycle.getDefaultLifecycle().createState("Success", "done", "All done.");
+    WorkflowInstance instance = new WorkflowInstance();
+    instance.setState(successState);
+    instance.setParentChildWorkflow(workflow);
+    double pct = lifecycle.getPercentageComplete(instance);
+    assertNotNull(pct);
+    assertEquals(1.0, pct);
+  }
+  
+  public void testPctCompleteWorkflow1Stages() throws InstantiationException{
+    this.lifecycle = new WorkflowLifecycleManager("./src/main/resources"
+        + "/examples/workflow-lifecycle.xml");
+    assertNotNull(this.lifecycle);
+    assertNotNull(this.lifecycle.getDefaultLifecycle());
+    assertNotNull(this.lifecycle.getDefaultLifecycle().getStages());
+    ParentChildWorkflow workflow = new ParentChildWorkflow(new Graph());
+    WorkflowState successState = lifecycle.getDefaultLifecycle().createState("FINISHED", "done", "All done.");
+    WorkflowInstance instance = new WorkflowInstance();
+    instance.setState(successState);
+    instance.setParentChildWorkflow(workflow);
+    double pct = lifecycle.getPercentageComplete(instance);
+    assertNotNull(pct);
+    assertEquals(1.0, pct);
+    
+    
+  }
+  
+  
   public void testStages() {
     assertNotNull(this.lifecycle.getDefaultLifecycle());
     assertNotNull(this.lifecycle.getDefaultLifecycle().getStages());
