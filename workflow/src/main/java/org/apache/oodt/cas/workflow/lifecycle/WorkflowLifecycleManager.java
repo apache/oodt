@@ -212,9 +212,16 @@ public class WorkflowLifecycleManager {
      */
     public int getLastCompletedStageNum(WorkflowInstance inst) {  
         int currStageNum = getStageNum(inst);
+        if(inst.getState().getCategory() == null){
+          WorkflowLifecycleStage category = null;
+          if((category = getStage(inst)) != null){
+            inst.getState().setCategory(category);
+          }          
+        }
+        
         if ((inst.getStatus().equals(WorkflowStatus.FINISHED) || 
-            (inst.getState().getCategory() != null && 
-             inst.getState().getCategory().getName().equals("done")))
+             inst.getState().getCategory() != null && 
+             inst.getState().getCategory().getName().equals("done"))
                 && currStageNum == getNumStages(inst.getWorkflow())) {
             return currStageNum;
         } else
