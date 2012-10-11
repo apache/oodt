@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-502: Support pre and post conditions in Workflow Processor 
+  Queue (mattmann)
+
 * OODT-516: Add WorkflowLifecycle tests that check pctComplete for 
   wengine and w1 style lifecycles (mattmann)
 
