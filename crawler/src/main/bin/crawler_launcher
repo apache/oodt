@@ -30,4 +30,5 @@ $JAVA_HOME/bin/java \
         -Dorg.apache.oodt.cas.crawl.bean.repo=../policy/crawler-config.xml \
         -Dorg.apache.oodt.cas.cli.action.spring.config=../policy/cmd-line-actions.xml \
         -Dorg.apache.oodt.cas.cli.option.spring.config=../policy/cmd-line-options.xml \
+		-Dorg.apache.oodt.cas.filemgr.properties=/path/to/filemgr/properties \
         org.apache.oodt.cas.crawl.CrawlerLauncher $*

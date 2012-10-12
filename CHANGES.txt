@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-520 Default Crawler launcher doesn't reference FileManager 
+  properties (Mike Joyce via mattmann)
+
 * OODT-502: Support pre and post conditions in Workflow Processor 
   Queue (mattmann)
 
