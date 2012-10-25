@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-272 Enable Removal of Finished Ingestion Tasks
+  (Michael Joyce via mattmann)
+
 * OODT-328 Remove jpl.nasa.gov references from code 
   (Michael Joyce via mattmann)
 

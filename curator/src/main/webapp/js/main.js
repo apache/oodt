@@ -110,6 +110,13 @@ function createIngestionTaskRow(data) {
     $('#ingestionTaskListItems > tbody').replace(data);
 }
 
+function removeIngestionTask(id) {
+	$.get('./services/ingest/remove',
+			{ 'taskId' : id },
+			refreshIngestTaskList()
+			);
+}
+
 function startIngestionTask(id) {
 	$.get('./services/ingest/start',
 			{ 'taskId' : id },
@@ -118,8 +125,6 @@ function startIngestionTask(id) {
 				refreshIngestTaskList();
 			});
 }
-
-
 
 /********************************************************************
  * DRAG AND DROP INITIALIZATION AND CONFIGURATION
