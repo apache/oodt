@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-328 Remove jpl.nasa.gov references from code 
+  (Michael Joyce via mattmann)
+
 * OODT-520 Default Crawler launcher doesn't reference FileManager 
   properties (Mike Joyce via mattmann)
 

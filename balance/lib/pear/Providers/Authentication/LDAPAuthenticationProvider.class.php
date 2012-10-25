@@ -22,13 +22,9 @@
  * 
  * Implementation of iApplicationAuthenticationProvider, which extends SingleSignOn.
  * 
- * Note: This class has a dependency on the OODT CAS-SSO package 
- *      (http://oodt.jpl.nasa.gov/repo/framework/cas-sso/trunk/src/php/pear)
- *      
- *      To build this dependency, check out the above project and then:
- *      1) cd into the checked out project (you should see a package.xml file)
- *      2) pear package
- *      3) (sudo) pear install --force Org_Apache...tar.gz
+ * Note: This class has a dependency on the OODT CAS-SSO package.
+ *		The necessary files can be found at http://pear.apache.org/oodt/
+ *		along with installation instructions.
  * 
  * @author s.khudikyan
  * @author ahart
