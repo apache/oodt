@@ -485,7 +485,7 @@ public class MetadataResource extends CurationService {
     System.getProperties().load(
         new FileInputStream(CurationService.config.getFileMgrProps()));
     Catalog catalog = GenericFileManagerObjectFactory
-        .getCatalogServiceFromFactory("org.apache.oodt.cas.curation.util.CuratorLuceneCatalogFactory");
+        .getCatalogServiceFromFactory("org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory");
     
     Metadata oldMetadata = catalog.getMetadata(product);
     List<Reference> references = catalog.getProductReferences(product);
