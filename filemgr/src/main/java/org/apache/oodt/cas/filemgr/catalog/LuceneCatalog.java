@@ -241,10 +241,13 @@ public class LuceneCatalog implements Catalog {
             // haven't cached this product yet, so let's cache it
             CompleteProduct completeProduct = new CompleteProduct();
 
-            synchronized (completeProduct) {
-                // now generate a unique ID for the product
-                UUID prodUUID = generator.generateTimeBasedUUID();
-                product.setProductId(prodUUID.toString());
+            // NOTE: reuse existing ID if possible
+            if (product.getProductId() == null) {
+	            synchronized (completeProduct) {
+	                // now generate a unique ID for the product
+	                UUID prodUUID = generator.generateTimeBasedUUID();
+	                product.setProductId(prodUUID.toString());
+	            }
             }
 
             completeProduct.setProduct(product);
