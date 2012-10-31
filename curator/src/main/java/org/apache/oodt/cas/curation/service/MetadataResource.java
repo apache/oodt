@@ -258,9 +258,6 @@ public class MetadataResource extends CurationService {
     Product prod;
     Metadata metadata = this.getMetadataFromMap(formParams);
     
-    //FIXME: when https://issues.apache.org/jira/browse/CXF-3274
-    //is addressed
-    if (id == null) id = formParams.getFirst("id");
     String productId = id.substring(id.lastIndexOf("/") + 1);
 
     try {
