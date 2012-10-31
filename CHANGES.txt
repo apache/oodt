@@ -4,6 +4,10 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-528 Merge back changed to CuratorLuceneCatalog into File Manager LuceneCatalog,
+           and change Curator to use mainstream File Manager Lucene Catalog
+           (luca)
+
 * OODT-272 Enable Removal of Finished Ingestion Tasks
   (Michael Joyce via mattmann)
 
