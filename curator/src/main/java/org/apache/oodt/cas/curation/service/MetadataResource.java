@@ -18,6 +18,40 @@
 
 package org.apache.oodt.cas.curation.service;
 
+//JDK imports
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+//JAX-RS imports
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
+
+//JSON imports
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+
 //OODT imports
 import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 import org.apache.oodt.cas.curation.util.CurationXmlStructFactory;
@@ -36,38 +70,8 @@ import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
 
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.Iterator;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-//JAX-RS imports
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.Consumes;
-
-//JSON imports
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
+//SPRING imports
+import org.springframework.util.StringUtils;
 
 @Path("metadata")
 /**
@@ -83,12 +87,15 @@ public class MetadataResource extends CurationService {
   UriInfo uriInfo;
 
   private static final long serialVersionUID = 1930946924218765724L;
+  private final static String CATALOG_FACTORY_CLASS = "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory";
 
   public static final String STAGING = "staging";
 
   public static final String CATALOG = "catalog";
 
   public static final String PRODUCT_TYPE = "productType";
+  
+  public static final String UPDATE = "update";
   
   public MetadataResource(){
     
@@ -463,6 +470,75 @@ public class MetadataResource extends CurationService {
     serMet.writeMetadataToXmlStream(new FileOutputStream(new File(config
         .getMetAreaPath(), id + config.getMetExtension())));
   }
+  
+  /**
+   * Method to update the catalog metadata for a given product. 
+   * All current metadata fields will be preserved, 
+   * except those specified in the HTTP POST request as 'metadata.<field_name>=<field_value>'.
+   * 
+   * @param id
+   * 	identifier of CAS product - either 'id' or 'name' must be specified
+   * @param name
+   * 	name of CAS product - either 'id' or 'name' must be specified
+   * @param formParams
+   * 	HTTP (name, value) form parameters. The parameter names MUST start with "metadata."
+   * @param replace
+   * 	optional flag set to false to add the new metadata values to the existing values, for the given flags
+   */
+  @POST
+  @Path(UPDATE)
+  @Consumes("application/x-www-form-urlencoded")
+  @Produces("text/plain")
+  public String updateMetadata(MultivaluedMap<String, String> formParams, 
+		  @FormParam("id") String id, 
+		  @FormParam("name") String name, 
+		  @DefaultValue("true") @FormParam("replace") boolean replace) {
+	      
+  	// new metadata from HTTP POST request
+    Metadata newMetadata = this.getMetadataFromMap(formParams);
+ 
+    // empty metadata
+    Metadata metadata = new Metadata();
+    
+    try {
+    
+      // retrieve product from catalog
+      Product product = null;
+      if (StringUtils.hasText(id)) {
+    	  id = id.substring(id.lastIndexOf("/") + 1);
+    	  product = CurationService.config.getFileManagerClient().getProductById(id);
+      } else if (StringUtils.hasText(name)) {
+    	  product = CurationService.config.getFileManagerClient().getProductByName(name);
+      } else {
+    	  throw new Exception("Either the HTTP parameter 'id' or the HTTP parameter 'name' must be specified");
+      }
+      
+      System.getProperties().load( new FileInputStream(CurationService.config.getFileMgrProps()) );
+      Catalog catalog = GenericFileManagerObjectFactory
+    	               .getCatalogServiceFromFactory(CATALOG_FACTORY_CLASS);
+      
+      // retrieve existing metadata
+      metadata = catalog.getMetadata(product);
+      
+      // merge new and existing metadata
+      metadata.addMetadata(newMetadata);
+      
+      // replace metadata values for keys specified in HTTP request (not others)
+      if (replace) {
+    	  for (String key : newMetadata.getAllKeys()) {
+    		  metadata.replaceMetadata(key, newMetadata.getAllMetadata(key));
+    	  }
+      }
+      
+      this.updateCatalogMetadata(product, metadata);
+          
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "<div class=\"error\">" + e.getMessage() + "</div>";
+    }
+
+    return this.getMetadataAsHTML(metadata);
+  }
 
   /**
    * Updates the cataloged {@link Metadata} for a {@link Product} in the CAS
@@ -482,7 +558,7 @@ public class MetadataResource extends CurationService {
     System.getProperties().load(
         new FileInputStream(CurationService.config.getFileMgrProps()));
     Catalog catalog = GenericFileManagerObjectFactory
-        .getCatalogServiceFromFactory("org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory");
+        .getCatalogServiceFromFactory(CATALOG_FACTORY_CLASS);
     
     Metadata oldMetadata = catalog.getMetadata(product);
     List<Reference> references = catalog.getProductReferences(product);
