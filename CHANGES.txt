@@ -4,6 +4,14 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-522 Provided additional Curator REST endpoint: "/metadata/update" that updated product metadata in place,
+           i.e. preserves all existing catalog metadata
+           (luca)
+
+* OODT-523 Updated Curator CXF dependency to 2.6.0 
+           and removed FIXME patch to extract "id" from "/metadata/catalog" request
+           (luca)
+
 * OODT-528 Merge back changed to CuratorLuceneCatalog into File Manager LuceneCatalog,
            and change Curator to use mainstream File Manager Lucene Catalog
            (luca)
