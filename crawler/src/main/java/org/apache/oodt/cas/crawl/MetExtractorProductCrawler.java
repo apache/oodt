@@ -25,6 +25,7 @@ import org.apache.oodt.cas.metadata.preconditions.PreConditionComparator;
 
 //JDK imports
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 //Spring imports
@@ -46,7 +47,7 @@ public class MetExtractorProductCrawler extends ProductCrawler {
 
     private String metExtractorConfig;
 
-    private List<String> preCondIds;
+    private List<String> preCondIds = new ArrayList<String>();
 
     private String namingConventionId;
 
