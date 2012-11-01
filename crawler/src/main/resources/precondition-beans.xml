@@ -29,6 +29,7 @@ the License.
     <property name="properties">
       <props>
         <prop key="crawler.pushpull.met.file.ext">[PUSHPULL_MET_FILE_EXT]</prop>
+        <prop key="crawler.filemgr.url">[FILEMGR_URL]</prop>
       </props>
     </property>
   </bean>
@@ -57,5 +58,6 @@ the License.
 			<value type="java.lang.Boolean">false</value>
 		</property>
 		<property name="type" value="equal_to" />
+		<property name="filemgrUrl" value="${crawler.filemgr.url}" />
 	</bean>
 </beans>
