@@ -117,7 +117,7 @@
 			<bean class="org.apache.oodt.cas.crawl.cli.option.handler.CrawlerBeansPropHandler">
 				<property name="properties">
 					<list>
-						<value>MoveMetadataToFailureDir.toDir</value>
+						<value>MoveMetadataFileToFailureDir.toDir</value>
 						<value>MovePushpullMetFileToFailureDir.toDir</value>
 						<value>MoveDataFileToFailureDir.toDir</value>
 					</list>
@@ -324,7 +324,14 @@
 		<property name="shortOption" value="nr" />
 		<property name="longOption" value="noRecur" />
 		<property name="description" value="Turns off recursive crawling - will only process files in productPath directory" />
-		<property name="hasArgs" value="false" />
+		<property name="type" value="boolean" />
+        <property name="hasArgs" value="false" />
+        <property name="staticArgs">
+	        <list>
+				<value>true</value>
+	        </list>
+        </property>
+        <property name="required" value="false" />
 		<property name="requirementRules">
 			<list>
 				<bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
@@ -352,7 +359,13 @@
 		<property name="shortOption" value="cfd" />
 		<property name="longOption" value="crawlForDirs" />
 		<property name="description" value="Will crawl for directories instead of files" />
-		<property name="hasArgs" value="false" />
+		<property name="type" value="boolean" />
+        <property name="hasArgs" value="false" />
+        <property name="staticArgs">
+	        <list>
+				<value>true</value>
+	        </list>
+        </property>
 		<property name="required" value="false" />
 		<property name="requirementRules">
 			<list>
