@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-//COMMONS imports
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -43,14 +42,6 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
-//Solr imports
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.apache.solr.common.SolrInputDocument;
-
-//OODT imports
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
@@ -62,6 +53,11 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.common.SolrInputDocument;
+import org.springframework.util.StringUtils;
 
 /**
  * Indexes products from the File Manager catalog to a Solr instance. Uses an
@@ -75,6 +71,7 @@ public class SolrIndexer {
 	private final static String FILEMGR_URL = "filemgr.url";
 	private final static String ACCESS_KEY = "access.key";
 	private final static String ACCESS_URL = "access.url";
+	private final static String PRODUCT_NAME = "CAS.ProductName";
 	private IndexerConfig config = null;
 	private final SolrServer server;
 	private String fmUrl;
@@ -381,6 +378,58 @@ public class SolrIndexer {
 			Metadata productMetadata = fmClient.getMetadata(product);
 			indexProduct(product.getProductId(), productMetadata, product
 			    .getProductType().getTypeMetadata(), delete);
+		} catch (MalformedURLException e) {
+			LOG.severe("File Manager URL is malformed: " + e.getMessage());
+		} catch (ConnectionException e) {
+			LOG.severe("Could not connect to File Manager: " + e.getMessage());
+		} catch (CatalogException e) {
+			LOG.severe("Could not retrieve product from File Manager: "
+			    + e.getMessage());
+		} catch (java.text.ParseException e) {
+			LOG.severe("Could not format date: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * This method adds a single product retrieved from the File Manager by its
+	 * product name to the Solr index. Metadata from the ProductType is also
+	 * included.
+	 * 
+	 * @param productId
+	 *          The identifier of the product (CAS.ProductId).
+	 * @param delete
+	 *          Flag indicating whether the entry should be deleted from the
+	 *          index.
+	 * @throws SolrServerException
+	 *           When an error occurs communicating with the Solr server instance.
+	 */
+	public void indexProductByName(String productName, boolean delete) throws SolrServerException {
+		
+		LOG.info("Attempting to index product: " + productName);
+		try {
+			
+			// Try to delete product by name 
+			// Note: the standard field "CAS.ProductName" must be mapped to some Solr field in file indexer.properties
+			if (delete) {
+				try {
+					String productNameField = config.mapProperties.getProperty(PRODUCT_NAME);
+					if (StringUtils.hasText(productNameField)) {
+						server.deleteByQuery(productNameField+":"+productName);
+					} else {
+						LOG.warning("Metadata field "+PRODUCT_NAME+" is not mapped to any Solr field, cannot delete product by name");
+					}
+				} catch(Exception e) {
+					LOG.warning("Could not delete product: "+productName+" from Solr index");
+				}
+			}
+			
+			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
+			    this.fmUrl));
+			Product product = fmClient.getProductByName(productName);
+			Metadata productMetadata = fmClient.getMetadata(product);
+			// NOTE: delete (by id) is now false
+			indexProduct(product.getProductId(), productMetadata, product.getProductType().getTypeMetadata(), false); 
+			
 		} catch (MalformedURLException e) {
 			LOG.severe("File Manager URL is malformed: " + e.getMessage());
 		} catch (ConnectionException e) {
