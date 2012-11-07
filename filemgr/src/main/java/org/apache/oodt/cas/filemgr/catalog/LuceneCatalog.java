@@ -20,33 +20,14 @@ package org.apache.oodt.cas.filemgr.catalog;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-//OODT imports
-import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.Element;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Query;
-import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
-import org.apache.oodt.commons.pagination.PaginationUtils;
-import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
-import org.apache.oodt.cas.metadata.Metadata;
-
-//JUG imports
-import org.safehaus.uuid.UUID;
-import org.safehaus.uuid.UUIDGenerator;
 
 //Lucene imports
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -65,9 +46,31 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 
+//OODT imports
+import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.Element;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Query;
+import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
+import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.commons.pagination.PaginationUtils;
+
+//JUG imports
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 /**
  * @author mattmann
  * @author bfoster
+ * @author luca
  * @version $Revision$
  * 
  * <p>
@@ -180,7 +183,7 @@ public class LuceneCatalog implements Catalog {
     public synchronized void removeMetadata(Metadata m, Product product)
             throws CatalogException {
         CompleteProduct p = CATALOG_CACHE.get(product.getProductId());
-
+        
         if (p == null) {
             // not in local cache, get doc and rewrite index
             String prodId = product.getProductId();
@@ -198,21 +201,28 @@ public class LuceneCatalog implements Catalog {
         }
 
         Metadata currMet = p.getMetadata();
-        List<Element> metadataTypes = null;
+        List<String> metadataTypes = new ArrayList<String>();
 
-        try {
-            metadataTypes = valLayer.getElements(product.getProductType());
-        } catch (ValidationLayerException e) {
-            e.printStackTrace();
-            throw new CatalogException(
-                    "ValidationLayerException when trying to obtain element list for product type: "
-                            + product.getProductType().getName()
-                            + ": Message: " + e.getMessage());
+        if (valLayer!=null) {
+	        try {
+	        		// remove metadata elements specified by validation layer
+	        		for (Element element : valLayer.getElements(product.getProductType())) {
+	        			metadataTypes.add(element.getElementName());
+	        		}
+	        } catch (ValidationLayerException e) {
+	            e.printStackTrace();
+	            throw new CatalogException(
+	                    "ValidationLayerException when trying to obtain element list for product type: "
+	                            + product.getProductType().getName()
+	                            + ": Message: " + e.getMessage());
+	        }
+        } else {
+        	// remove all metadata
+        	metadataTypes = currMet.getAllKeys();
         }
 
-        for (Iterator<Element> i = metadataTypes.iterator(); i.hasNext();) {
-            Element element = i.next();
-            currMet.removeMetadata(element.getElementName());
+        for (String name : metadataTypes) {
+            currMet.removeMetadata(name);
         }
 
         p.setMetadata(currMet);
@@ -380,9 +390,10 @@ public class LuceneCatalog implements Catalog {
             Hits hits = searcher.search(query);
 
             // should be exactly 1 hit
-            if (hits.length() != 1) {
-                throw new CatalogException("Product: [" + productId
-                        + "] is not unique in the catalog!");
+            if (hits.length() == 0) {
+            	throw new CatalogException("Product: [" + productId + "] NOT found in the catalog!");
+            } else if (hits.length() > 1) {
+                throw new CatalogException("Product: [" + productId+ "] is not unique in the catalog!");
             }
 
             Document productDoc = hits.doc(0);
@@ -1017,31 +1028,43 @@ public class LuceneCatalog implements Catalog {
         product.setProductType(type);
 
         if (getMetadata) {
-            List<Element> elements = null;
+            List<String> names = new ArrayList<String>();
 
-            try {
-                elements = valLayer.getElements(type);
-            } catch (ValidationLayerException e) {
-                LOG.log(Level.WARNING,
-                        "Unable to obtain metadata for product: ["
-                                + product.getProductName() + "]: Message: "
-                                + e.getMessage());
+            if (valLayer!=null) {
+            	// only add metadata elements specified by validation layer
+	            try {
+	                for (Element element : valLayer.getElements(type)) {
+	                	names.add(element.getElementName());
+	                }
+	            } catch (ValidationLayerException e) {
+	                LOG.log(Level.WARNING,
+	                        "Unable to obtain metadata for product: ["
+	                                + product.getProductName() + "]: Message: "
+	                                + e.getMessage());
+	            }
+            } else {
+            	// add all metadata elements found in document
+            	Enumeration<Field> fields = doc.fields();
+            	while (fields.hasMoreElements()) {
+            		Field field = fields.nextElement();
+            		if (!names.contains(field.name())) {
+            				names.add(field.name());
+            		}
+            	}
+            	
             }
 
-            if (elements != null) {
-                for (Iterator<Element> i = elements.iterator(); i.hasNext();) {
-                    Element element = (Element) i.next();
-
-                    String[] elemValues = doc.getValues(element
-                            .getElementName());
-
-                    if (elemValues != null && elemValues.length > 0) {
-                        for (int j = 0; j < elemValues.length; j++) {
-                            metadata.addMetadata(element.getElementName(),
-                                    elemValues[j]);
-                        }
-                    }
-                }
+            // loop over field names to add to metadata
+            for (String name : names) {
+            		if (metadata.getAllMetadata(name)==null || metadata.getAllMetadata(name).size()==0) {
+	                String[] elemValues = doc.getValues(name);
+	                	
+	                if (elemValues != null && elemValues.length > 0) {
+	                    for (int j = 0; j < elemValues.length; j++) {
+	                        metadata.addMetadata(name, elemValues[j]);
+	                    }
+	                }
+            		}
             }
 
             completeProduct.setMetadata(metadata);
@@ -1114,13 +1137,30 @@ public class LuceneCatalog implements Catalog {
         doc.add(new Field("product_type_versioner", product.getProductType()
                 .getVersioner() != null ? product.getProductType()
                 .getVersioner() : "", Field.Store.YES, Field.Index.NO));
+        
+        // write metadata fields to the Lucene document
+        List<String> keys = new ArrayList<String>();
+        // validation layer: add only specifically configured keys
+        if (valLayer!=null) {
+        	List<Element> elements = quietGetElements(product.getProductType());
+        	for (Iterator<Element> i = elements.iterator(); i.hasNext();) {
+                Element element = i.next();
+                String key = element.getElementName();
+                keys.add(key);
+        	}
+        // no validation layer: add all keys that are NOT already in doc
+        // (otherwise some keys such as the product_* keys are duplicated)
+        } else {
+        	for (String key : metadata.getAllKeys()) {
+        		if (doc.getField(key)==null) {
+        				keys.add(key);
+        		}
+        	}
+        }
 
-        List<Element> elements = quietGetElements(product.getProductType());
 
-        for (Iterator<Element> i = elements.iterator(); i.hasNext();) {
-            Element element = i.next();
-            String key = element.getElementName();
-            List<String> values = metadata.getAllMetadata(key);
+        for (String key : keys) {
+          List<String> values = metadata.getAllMetadata(key);
 
             if (values == null) {
                 LOG
