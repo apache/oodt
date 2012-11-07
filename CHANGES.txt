@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-533 Allow SolrIndexer to query and ingest products from the File Manager catalog by name.
+           (luca)
+
 * OODT-534 Better error message when a product is looked by id in the catalog and not found,
            (luca)
                       
