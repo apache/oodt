@@ -43,8 +43,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 //JSON imports
@@ -531,13 +533,18 @@ public class MetadataResource extends CurationService {
       }
       
       this.updateCatalogMetadata(product, metadata);
+      
+      // return product id to downstream processors
+      return "id="+product.getProductId();
           
     } catch (Exception e) {
+    	
       e.printStackTrace();
-      return "<div class=\"error\">" + e.getMessage() + "</div>";
+      // return error message
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+
     }
 
-    return this.getMetadataAsHTML(metadata);
   }
 
   /**
