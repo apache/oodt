@@ -494,7 +494,8 @@ public class MetadataResource extends CurationService {
   public String updateMetadata(MultivaluedMap<String, String> formParams, 
 		  @FormParam("id") String id, 
 		  @FormParam("name") String name, 
-		  @DefaultValue("true") @FormParam("replace") boolean replace) {
+		  @DefaultValue("true") @FormParam("replace") boolean replace,
+		  @DefaultValue("false") @FormParam("remove") boolean remove) {
 	      
   	// new metadata from HTTP POST request
     Metadata newMetadata = this.getMetadataFromMap(formParams);
@@ -530,6 +531,13 @@ public class MetadataResource extends CurationService {
     	  for (String key : newMetadata.getAllKeys()) {
     		  metadata.replaceMetadata(key, newMetadata.getAllMetadata(key));
     	  }
+      }
+      
+      // remove metadata tags
+      if (remove) {
+	      for (String key : newMetadata.getAllKeys()) {
+	      	metadata.removeMetadata(key);
+	      }
       }
       
       this.updateCatalogMetadata(product, metadata);
