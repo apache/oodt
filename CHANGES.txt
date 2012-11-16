@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-535 Provide capability to remove metadata tags through Curator web app.
+           (luca)
+
 * OODT-533 Allow SolrIndexer to query and ingest products from the File Manager catalog by name.
            (luca)
 
