@@ -523,6 +523,12 @@ public class MetadataResource extends CurationService {
       // retrieve existing metadata
       metadata = catalog.getMetadata(product);
       
+      // remove product references (as they will be added later)
+      metadata.removeMetadata("reference_orig");
+      metadata.removeMetadata("reference_data_store");
+      metadata.removeMetadata("reference_fileSize");
+      metadata.removeMetadata("reference_mimeType");
+      
       // merge new and existing metadata
       metadata.addMetadata(newMetadata);
       
