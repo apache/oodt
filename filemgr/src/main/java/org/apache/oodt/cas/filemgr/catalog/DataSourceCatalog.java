@@ -1290,11 +1290,8 @@ public class DataSourceCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getValidationLayer()
      */
     public ValidationLayer getValidationLayer() throws CatalogException {
-        if (validationLayer == null) {
-            throw new CatalogException("Validation Layer is null!");
-        } else {
-            return validationLayer;
-        }
+    	// note that validationLayer may be null to allow for leniency in subclasses
+    	return validationLayer;
     }
 
     private synchronized void addMetadataValue(Element element,
@@ -1651,7 +1648,7 @@ public class DataSourceCatalog implements Catalog {
         return retPage;
     }
 
-    private int getResultListSize(Query query, ProductType type)
+    protected int getResultListSize(Query query, ProductType type)
             throws CatalogException {
         Connection conn = null;
         Statement statement = null;
