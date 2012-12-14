@@ -4,43 +4,41 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
-* OODT-535 Provide capability to remove metadata tags through Curator web app.
-           (luca)
+* OODT-542 Need to update logging.properties for all servers post CAS CLI
+  (mattmann)
 
-* OODT-533 Allow SolrIndexer to query and ingest products from the File Manager catalog by name.
-           (luca)
+* OODT-535 Provide capability to remove metadata tags through Curator 
+  web app. (luca)
 
-* OODT-534 Better error message when a product is looked by id in the catalog and not found,
-           (luca)
+* OODT-533 Allow SolrIndexer to query and ingest products from the File 
+  Manager catalog by name. (luca)
+
+* OODT-534 Better error message when a product is looked by id in the catalog 
+  and not found. (luca)
                       
 * OODT-529 Allow Lucene Catalog to be "lenient" with respect to XML validation,
-           i.e. allow handling of dynamically named fields if the "lenient" flag is set (defaults to false).
-           (luca)
+  i.e. allow handling of dynamically named fields if the "lenient" flag is set 
+  (defaults to false). (luca)
 
-* OODT-530 Bug fix: crawler MetExtractorProductCrawler had a list of precondition beans that was not initialized
-           to an empty list, with would cause a Spring initialization exception when more than one preconditions
-           was injected.
-           (luca)
+* OODT-530 Bug fix: crawler MetExtractorProductCrawler had a list of precondition 
+  beans that was not initialized to an empty list, with would cause a Spring 
+  initialization exception when more than one preconditions was injected. (luca)
            
-* OODT-531 Bug fix: the legacy Spring configuration file legacy-cmd-line-options.xml was missing some required
-           configuration for the beans "noRecur" and "crawlForDirs".
-           (luca)
+* OODT-531 Bug fix: the legacy Spring configuration file legacy-cmd-line-options.xml 
+  was missing some required configuration for the beans "noRecur" and "crawlForDirs".
+  (luca)
            
-* OODT-532 Bug fix: pre-condition bean "AprioriUniquessCheckWithFilemgr" was missing the filemgrUrl property,
-           which was therefore never set at initialization.
-           (luca)
+* OODT-532 Bug fix: pre-condition bean "AprioriUniquessCheckWithFilemgr" was missing 
+ the filemgrUrl property, which was therefore never set at initialization. (luca)
 
-* OODT-522 Provided additional Curator REST endpoint: "/metadata/update" that updated product metadata in place,
-           i.e. preserves all existing catalog metadata
-           (luca)
+* OODT-522 Provided additional Curator REST endpoint: "/metadata/update" that updated 
+  product metadata in place, i.e. preserves all existing catalog metadata (luca)
 
-* OODT-523 Updated Curator CXF dependency to 2.6.0 
-           and removed FIXME patch to extract "id" from "/metadata/catalog" request
-           (luca)
+* OODT-523 Updated Curator CXF dependency to 2.6.0 and removed FIXME patch to 
+  extract "id" from "/metadata/catalog" request (luca)
 
 * OODT-528 Merged back changed to CuratorLuceneCatalog into File Manager LuceneCatalog,
-           and change Curator to use mainstream File Manager Lucene Catalog
-           (luca)
+  and change Curator to use mainstream File Manager Lucene Catalog (luca)
 
 * OODT-272 Enable Removal of Finished Ingestion Tasks
   (Michael Joyce via mattmann)
