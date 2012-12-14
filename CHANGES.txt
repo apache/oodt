@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-543 Update ExpImpCatalog tool to allow core Metadata to pass through 
+  when Embedded Catalogs are used (mattmann, cinquini)
+
 * OODT-542 Need to update logging.properties for all servers post CAS CLI
   (mattmann)
 

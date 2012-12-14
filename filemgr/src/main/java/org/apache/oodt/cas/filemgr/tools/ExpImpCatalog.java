@@ -247,10 +247,13 @@ public class ExpImpCatalog {
                                         + "]: Met Extraction and "
                                         + "Reference Extraction successful: writing to dest file manager");
 
-                // remove the default CAS fields for metadata
-                met.removeMetadata("CAS.ProductId");
-                met.removeMetadata("CAS.ProductReceivedTime");
-                met.removeMetadata("CAS.ProductName");
+                // OODT-543
+                if(sourceClient != null){
+                  // remove the default CAS fields for metadata
+                  met.removeMetadata("CAS.ProductId");
+                  met.removeMetadata("CAS.ProductReceivedTime");
+                  met.removeMetadata("CAS.ProductName");
+                }
 
                 Product destProduct = new Product();
                 // copy through
