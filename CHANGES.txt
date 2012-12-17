@@ -4,6 +4,10 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-545 Allow Curator web app to use a configurable CAS Catalog Factory 
+  as specified in curator.xml.
+  (luca)
+
 * OODT-543 Update ExpImpCatalog tool to allow core Metadata to pass through 
   when Embedded Catalogs are used (mattmann, cinquini)
 
