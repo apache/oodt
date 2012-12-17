@@ -1996,15 +1996,31 @@ public class DataSourceCatalog implements Catalog {
                     ResultSet.CONCUR_READ_ONLY);
 
             String getProductSql = null;
-            if (query.getCriteria().size() == 0) {
-                getProductSql = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata";
-            }else if (query.getCriteria().size() == 1) {
+            
+            if (!productIdString) {
+            	
+	            if (query.getCriteria().size() == 0) {
+	                getProductSql = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata";
+	            }else if (query.getCriteria().size() == 1) {
+	                getProductSql = this.getSqlQuery(query.getCriteria().get(0), type);
+	            }else {
+	                getProductSql = this.getSqlQuery(new BooleanQueryCriteria(query.getCriteria(), BooleanQueryCriteria.AND), type);
+	            }
+	            getProductSql += " ORDER BY product_id DESC ";
+            
+            } else {
+            	
+              if (query.getCriteria().size() == 0) {
+                getProductSql = "SELECT DISTINCT products.product_id FROM products, " + type.getName() + "_metadata"
+                				      + " WHERE products.product_id="+type.getName() + "_metadata.product_id";
+              }	else if (query.getCriteria().size() == 1) {
                 getProductSql = this.getSqlQuery(query.getCriteria().get(0), type);
-            }else {
+              }	else {
                 getProductSql = this.getSqlQuery(new BooleanQueryCriteria(query.getCriteria(), BooleanQueryCriteria.AND), type);
+              }
+              getProductSql += " ORDER BY products.product_datetime DESC ";
             }
-            getProductSql += " ORDER BY product_id DESC ";
-
+            
             LOG.log(Level.FINE, "catalog query: executing: " + getProductSql);
 
             rs = statement.executeQuery(getProductSql);
@@ -2100,8 +2116,14 @@ public class DataSourceCatalog implements Catalog {
         String sqlQuery = null;
         if (queryCriteria instanceof BooleanQueryCriteria) {
             BooleanQueryCriteria bqc = (BooleanQueryCriteria) queryCriteria;
-            if (bqc.getOperator() == BooleanQueryCriteria.NOT) {
-                sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")";
+            if (bqc.getOperator() == BooleanQueryCriteria.NOT) {            	
+            		if (!this.productIdString) {
+            			sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")";
+            		} else {
+            			sqlQuery = "SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
+            							 + " WHERE products.product_id="+type.getName() + "_metadata.product_id" 
+            							 + " AND products.product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")";
+            		}
             }else {
                 sqlQuery = "(" + this.getSqlQuery(bqc.getTerms().get(0), type);
                 String op = bqc.getOperator() == BooleanQueryCriteria.AND ? "INTERSECT" : "UNION";
@@ -2113,7 +2135,13 @@ public class DataSourceCatalog implements Catalog {
         	  String elementIdStr = this.validationLayer.getElementByName(queryCriteria.getElementName()).getElementId();
             if (fieldIdStringFlag) 
                 elementIdStr = "'" + elementIdStr + "'";
-            sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE element_id = " + elementIdStr + " AND ";
+            if (!this.productIdString) {
+            	sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE element_id = " + elementIdStr + " AND ";
+            } else {
+            	sqlQuery = "SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
+            	         + " WHERE products.product_id="+type.getName() + "_metadata.product_id" 
+            			     + " AND element_id = " + elementIdStr + " AND ";
+            }
             if (queryCriteria instanceof TermQueryCriteria) {
                 sqlQuery += "metadata_value = '" + ((TermQueryCriteria) queryCriteria).getValue() + "'";
             } else if (queryCriteria instanceof RangeQueryCriteria) {

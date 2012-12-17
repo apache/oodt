@@ -753,8 +753,14 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
       if (queryCriteria instanceof BooleanQueryCriteria) {
           BooleanQueryCriteria bqc = (BooleanQueryCriteria) queryCriteria;
           if (bqc.getOperator() == BooleanQueryCriteria.NOT) {
-              sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")";
-          }else {
+          	  if (!this.productIdString) {
+          	  	sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")";
+          	  } else {
+               	sqlQuery = "SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
+               					 + " WHERE products.product_id="+type.getName() + "_metadata.product_id" 
+          	  			     + " AND products.product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")";
+          	  }
+          } else {
               sqlQuery = "(" + this.getSqlQuery(bqc.getTerms().get(0), type);
               String op = bqc.getOperator() == BooleanQueryCriteria.AND ? "INTERSECT" : "UNION";
               for (int i = 1; i < bqc.getTerms().size(); i++) 
@@ -769,7 +775,13 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
           
           if (fieldIdStringFlag) 
               elementIdStr = "'" + elementIdStr + "'";
-          sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE element_id = " + elementIdStr + " AND ";
+          if (!this.productIdString) {
+          	sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE element_id = " + elementIdStr + " AND ";
+          } else {
+          	sqlQuery = "SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
+          	         + " WHERE products.product_id="+type.getName() + "_metadata.product_id" 
+          			     + " AND element_id = " + elementIdStr + " AND ";
+          }
           if (queryCriteria instanceof TermQueryCriteria) {
               sqlQuery += "metadata_value = '" + ((TermQueryCriteria) queryCriteria).getValue() + "'";
           } else if (queryCriteria instanceof RangeQueryCriteria) {
