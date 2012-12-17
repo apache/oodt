@@ -50,4 +50,7 @@ public interface CuratorConfMetKeys {
   final String MET_EXTENSION = "org.apache.oodt.cas.curator.metExtension";
   
   final String FM_PROPS = "org.apache.oodt.cas.curator.fmProps";
+  
+  final String CATALOG_FACTORY_CLASS = "org.apache.oodt.cas.curator.catalogFactoryClass";
+  
 }

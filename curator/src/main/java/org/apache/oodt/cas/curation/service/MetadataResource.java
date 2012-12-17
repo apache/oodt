@@ -87,9 +87,11 @@ public class MetadataResource extends CurationService {
   
   @Context
   UriInfo uriInfo;
+  
+  @Context 
+  private ServletContext context;
 
   private static final long serialVersionUID = 1930946924218765724L;
-  private final static String CATALOG_FACTORY_CLASS = "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory";
 
   public static final String STAGING = "staging";
 
@@ -98,13 +100,13 @@ public class MetadataResource extends CurationService {
   public static final String PRODUCT_TYPE = "productType";
   
   public static final String UPDATE = "update";
-  
+    
   public MetadataResource(){
     
   }
 
   public MetadataResource(@Context ServletContext context) {
-
+  	
   }
 
   @GET
@@ -264,6 +266,7 @@ public class MetadataResource extends CurationService {
   @Produces("text/plain")
   public String setCatalogMetadata(MultivaluedMap<String, String> formParams,
       @FormParam("id") String id) {
+  	
     Product prod;
     Metadata metadata = this.getMetadataFromMap(formParams);
     
@@ -518,7 +521,7 @@ public class MetadataResource extends CurationService {
       
       System.getProperties().load( new FileInputStream(CurationService.config.getFileMgrProps()) );
       Catalog catalog = GenericFileManagerObjectFactory
-    	               .getCatalogServiceFromFactory(CATALOG_FACTORY_CLASS);
+    	               .getCatalogServiceFromFactory(this.getCatalogFactoryClass());
       
       // retrieve existing metadata
       metadata = catalog.getMetadata(product);
@@ -579,7 +582,7 @@ public class MetadataResource extends CurationService {
     System.getProperties().load(
         new FileInputStream(CurationService.config.getFileMgrProps()));
     Catalog catalog = GenericFileManagerObjectFactory
-        .getCatalogServiceFromFactory(CATALOG_FACTORY_CLASS);
+        .getCatalogServiceFromFactory(this.getCatalogFactoryClass());
     
     Metadata oldMetadata = catalog.getMetadata(product);
     List<Reference> references = catalog.getProductReferences(product);
@@ -641,5 +644,13 @@ public class MetadataResource extends CurationService {
       retStr += "/";
     }
     return retStr;
+  }
+  
+  private String getCatalogFactoryClass() {
+  	String catalogFactoryClass = this.context.getInitParameter(CATALOG_FACTORY_CLASS);
+  	// preserve backward compatibility
+  	if (!StringUtils.hasText(catalogFactoryClass))
+  		catalogFactoryClass = "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory";
+  	return catalogFactoryClass;
   }
 }

@@ -43,5 +43,8 @@ the License.
 	    
 	<Parameter name="org.apache.oodt.security.sso.implClass"
 	          value="org.apache.oodt.security.sso.DummyImpl"/>
+	          
+	<Parameter name="org.apache.oodt.cas.curator.catalogFactoryClass" 
+			   value="org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory" />
 
 </Context>
