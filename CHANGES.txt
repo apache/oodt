@@ -4,6 +4,14 @@ Apache OODT Change Log
 Release 0.5
 --------------------------------------------
 
+* OODT-541 Implement a LenientDataSourceCatalog that allows for dynamically named
+  metadata fields, effectively bypassing the validation layer.
+  (luca)
+
+* OODT-544 Implement a DataSourceCatalog back-end to the CAS FileManager 
+  where the "product_id" column is of type string.
+  (luca)
+
 * OODT-545 Allow Curator web app to use a configurable CAS Catalog Factory 
   as specified in curator.xml.
   (luca)
