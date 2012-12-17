@@ -53,13 +53,17 @@ public final class DbStructFactory {
     }
 
     public static Product getProduct(ResultSet rs) throws SQLException {
-        return getProduct(rs, true);
+        return getProduct(rs, true, false);
     }
 
-    public static Product getProduct(ResultSet rs, boolean getType)
+    public static Product getProduct(ResultSet rs, boolean getType, boolean productIdString)
             throws SQLException {
         Product product = new Product();
-        product.setProductId(String.valueOf(rs.getInt("product_id")));
+        if (productIdString) {
+        	product.setProductId(rs.getString("product_id"));
+        } else {
+        	product.setProductId(String.valueOf(rs.getInt("product_id")));
+        }
         product.setProductName(rs.getString("product_name"));
         product.setProductStructure(rs.getString("product_structure"));
         product.setTransferStatus(rs.getString("product_transfer_status"));

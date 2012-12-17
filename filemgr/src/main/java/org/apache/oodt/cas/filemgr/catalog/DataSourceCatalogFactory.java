@@ -53,6 +53,14 @@ public class DataSourceCatalogFactory implements CatalogFactory {
 
     /* the amount of minutes to allow between updating the product cache */
     protected long cacheUpdateMinutes = -1L;
+    
+  	/* Whether or not to enforce strict definition of metadata fields:
+  	 * 'lenient=false' means that all metadata fields need to be explicitly defined in the XML configuration file */
+  	protected boolean lenientFields = false;
+  	
+    /* Flag to indicate whether the "product_id" key type should be treated as a string */
+  	protected boolean productIdString = false;
+
 
     /**
      * <p>
@@ -60,6 +68,8 @@ public class DataSourceCatalogFactory implements CatalogFactory {
      * </p>.
      */
     public DataSourceCatalogFactory() {
+    	
+    	  // instantiate data source
         String jdbcUrl = null, user = null, pass = null, driver = null;
 
         jdbcUrl = PathUtils
@@ -78,22 +88,8 @@ public class DataSourceCatalogFactory implements CatalogFactory {
         dataSource = DatabaseConnectionBuilder.buildDataSource(user, pass,
                 driver, jdbcUrl);
 
-        String validationLayerFactoryClass = System
-                .getProperty("filemgr.validationLayer.factory",
-                        "org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory");
-        validationLayer = GenericFileManagerObjectFactory
-                .getValidationLayerFromFactory(validationLayerFactoryClass);
-        fieldIdStr = Boolean
-                .getBoolean("org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields");
+        this.configure();
 
-        pageSize = Integer
-                .getInteger(
-                        "org.apache.oodt.cas.filemgr.catalog.datasource.pageSize",
-                        20).intValue();
-        cacheUpdateMinutes = Long
-                .getLong(
-                        "org.apache.oodt.cas.filemgr.catalog.datasource.cacheUpdateMinutes",
-                        5L).longValue();
     }
 
     /**
@@ -105,12 +101,42 @@ public class DataSourceCatalogFactory implements CatalogFactory {
      *            The DataSource to construct this factory from.
      */
     public DataSourceCatalogFactory(DataSource ds) {
-        this.dataSource = ds;
-        String validationLayerFactoryClass = System
-        .getProperty("filemgr.validationLayer.factory",
-                "org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory");
-        validationLayer = GenericFileManagerObjectFactory
-                .getValidationLayerFromFactory(validationLayerFactoryClass);
+       
+    		this.dataSource = ds;
+        
+     		this.configure();
+    		
+    }
+    
+    /** Method to configure the factory (and validation layer) from the environment properties,
+     *  before any Catalog instance is created 
+     **/
+    private void configure() {
+    
+  		lenientFields = Boolean.parseBoolean( System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.lenientFields", "false") );
+  		if (!lenientFields) {
+	        String validationLayerFactoryClass = System
+                .getProperty("filemgr.validationLayer.factory",
+                        "org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory");
+	        validationLayer = GenericFileManagerObjectFactory
+              .getValidationLayerFromFactory(validationLayerFactoryClass);
+  		} 
+  		
+      fieldIdStr = Boolean
+      	.getBoolean("org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields");
+
+			pageSize = Integer
+			      .getInteger(
+			              "org.apache.oodt.cas.filemgr.catalog.datasource.pageSize",
+			              20).intValue();
+			cacheUpdateMinutes = Long
+			      .getLong(
+			              "org.apache.oodt.cas.filemgr.catalog.datasource.cacheUpdateMinutes",
+			              5L).longValue();
+			
+			productIdString = Boolean.parseBoolean( 
+				System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.productId.string", "false") );
+  		
     }
 
     /*
@@ -119,8 +145,13 @@ public class DataSourceCatalogFactory implements CatalogFactory {
      * @see org.apache.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
      */
     public Catalog createCatalog() {
+    	if (validationLayer==null) {
+    			return new LenientDataSourceCatalog(dataSource, validationLayer, fieldIdStr,
+            pageSize, cacheUpdateMinutes, productIdString);
+    	} else {
         return new DataSourceCatalog(dataSource, validationLayer, fieldIdStr,
-                pageSize, cacheUpdateMinutes);
+                pageSize, cacheUpdateMinutes, productIdString);
+    	}
     }
 
 }
