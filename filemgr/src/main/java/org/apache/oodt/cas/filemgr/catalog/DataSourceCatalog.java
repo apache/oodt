@@ -294,7 +294,7 @@ public class DataSourceCatalog implements Catalog {
 							
 							// generate a new UUID string, insert in database
             	String productId = UUID.randomUUID().toString();
-            	addProductSql = "INSERT INTO products (product_id, product_name, product_structure, product_transfer_status, product_type_id) "
+            	addProductSql = "INSERT INTO products (product_id, product_name, product_structure, product_transfer_status, product_type_id, product_datetime) "
                     + "VALUES ('"
                     + productId
                     + "', '"
@@ -305,6 +305,7 @@ public class DataSourceCatalog implements Catalog {
                     + product.getTransferStatus()
                     + "', "
                     + productTypeIdStr
+                    +", now()"
                     + ")";                       
 
             	LOG.log(Level.FINE, "addProduct: Executing: " + addProductSql);
