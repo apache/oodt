@@ -1,8 +1,9 @@
 Apache OODT Change Log
 ======================
 
-Release 0.5
+Release 0.5 
 --------------------------------------------
+Release Date: December 18, 2012
 
 * OODT-541 Implement a LenientDataSourceCatalog that allows for dynamically named
   metadata fields, effectively bypassing the validation layer.
