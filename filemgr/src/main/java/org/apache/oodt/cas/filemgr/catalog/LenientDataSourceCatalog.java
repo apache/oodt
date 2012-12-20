@@ -36,6 +36,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,6 +59,13 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
 
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(LenientDataSourceCatalog.class.getName());
+    
+    // ISO date/time format for CAS.ProductReceivedTime 
+		private SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		
+		// date/time format for database
+		private SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
 
     /**
      * <p>
@@ -435,6 +443,16 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                     .log(Level.FINE, "addMetadataValue: Executing: "
                             + metaIngestSql);
             statement.execute(metaIngestSql);
+            
+            // synchronize CAS.ProductReceivedTime with products.product_datetime
+            if (key.equals("CAS.ProductReceivedTime") && this.productIdString) {
+            		// convert from "2012-12-18T09:00:14.068-08:00" --> "2012-12-18T09:00:14.068-0800" --> "2012-12-18T10:00:14"
+            		String datetime = dbFormat.format( isoFormat.parse( value.replaceAll(":00$", "00") ));
+            		String updateDateTimeSql = "UPDATE products SET product_datetime='"+datetime+"' WHERE product_id="+quoteIt(product.getProductId());
+            		LOG.log(Level.FINE, "addMetadataValue: Executing: "+updateDateTimeSql);
+            		statement.execute(updateDateTimeSql);
+            }
+            
             conn.commit();
         } catch (Exception e) {
             e.printStackTrace();

@@ -36,6 +36,9 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.pagination.PaginationUtils;
 import org.apache.oodt.commons.util.DateConvert;
 
+//SPRING imports
+import org.springframework.util.StringUtils;
+
 //JDK imports
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -292,8 +295,10 @@ public class DataSourceCatalog implements Catalog {
 							
 						} else {
 							
-							// generate a new UUID string, insert in database
-            	String productId = UUID.randomUUID().toString();
+							// reuse the existing product id if possible, or generate a new UUID string
+            	String productId = product.getProductId();
+            	if (!StringUtils.hasText(productId)) productId = UUID.randomUUID().toString();
+            	// insert product in database
             	addProductSql = "INSERT INTO products (product_id, product_name, product_structure, product_transfer_status, product_type_id, product_datetime) "
                     + "VALUES ('"
                     + productId
@@ -2020,6 +2025,7 @@ public class DataSourceCatalog implements Catalog {
                 getProductSql = this.getSqlQuery(new BooleanQueryCriteria(query.getCriteria(), BooleanQueryCriteria.AND), type);
               }
               getProductSql += " ORDER BY products.product_datetime DESC ";
+              
             }
             
             LOG.log(Level.FINE, "catalog query: executing: " + getProductSql);
