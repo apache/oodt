@@ -65,6 +65,7 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -100,6 +101,9 @@ public class MetadataResource extends CurationService {
   public static final String PRODUCT_TYPE = "productType";
   
   public static final String UPDATE = "update";
+  
+  // single instance of CAS catalog shared among all requests
+  private Catalog catalog = null;
     
   public MetadataResource(){
     
@@ -499,9 +503,12 @@ public class MetadataResource extends CurationService {
 		  @FormParam("name") String name, 
 		  @DefaultValue("true") @FormParam("replace") boolean replace,
 		  @DefaultValue("false") @FormParam("remove") boolean remove) {
-	      
+  		      
   	// new metadata from HTTP POST request
     Metadata newMetadata = this.getMetadataFromMap(formParams);
+    
+    // client for interacting with remote File Manager
+    XmlRpcFileManagerClient fmClient = CurationService.config.getFileManagerClient();
  
     // empty metadata
     Metadata metadata = new Metadata();
@@ -512,20 +519,16 @@ public class MetadataResource extends CurationService {
       Product product = null;
       if (StringUtils.hasText(id)) {
     	  id = id.substring(id.lastIndexOf("/") + 1);
-    	  product = CurationService.config.getFileManagerClient().getProductById(id);
+    	  product = fmClient.getProductById(id);
       } else if (StringUtils.hasText(name)) {
-    	  product = CurationService.config.getFileManagerClient().getProductByName(name);
+    	  product = fmClient.getProductByName(name);
       } else {
     	  throw new Exception("Either the HTTP parameter 'id' or the HTTP parameter 'name' must be specified");
       }
-      
-      System.getProperties().load( new FileInputStream(CurationService.config.getFileMgrProps()) );
-      Catalog catalog = GenericFileManagerObjectFactory
-    	               .getCatalogServiceFromFactory(this.getCatalogFactoryClass());
-      
+            
       // retrieve existing metadata
-      metadata = catalog.getMetadata(product);
-      
+      metadata = fmClient.getMetadata(product);
+
       // remove product references (as they will be added later)
       metadata.removeMetadata("reference_orig");
       metadata.removeMetadata("reference_data_store");
@@ -548,8 +551,18 @@ public class MetadataResource extends CurationService {
 	      	metadata.removeMetadata(key);
 	      }
       }
+            
+      // remove existing product
+      fmClient.removeProduct(product);
       
-      this.updateCatalogMetadata(product, metadata);
+      // insert same product
+      fmClient.catalogProduct(product);
+      
+      // insert same refereces
+      fmClient.addProductReferences(product);    
+      
+      // insert old and new metadata
+      fmClient.updateMetadata(product, metadata);
       
       // return product id to downstream processors
       return "id="+product.getProductId();
@@ -581,8 +594,7 @@ public class MetadataResource extends CurationService {
       throws CatalogException, FileNotFoundException, IOException {
     System.getProperties().load(
         new FileInputStream(CurationService.config.getFileMgrProps()));
-    Catalog catalog = GenericFileManagerObjectFactory
-        .getCatalogServiceFromFactory(this.getCatalogFactoryClass());
+    Catalog catalog = this.getCatalog();
     
     Metadata oldMetadata = catalog.getMetadata(product);
     List<Reference> references = catalog.getProductReferences(product);
@@ -646,11 +658,18 @@ public class MetadataResource extends CurationService {
     return retStr;
   }
   
-  private String getCatalogFactoryClass() {
-  	String catalogFactoryClass = this.context.getInitParameter(CATALOG_FACTORY_CLASS);
-  	// preserve backward compatibility
-  	if (!StringUtils.hasText(catalogFactoryClass))
-  		catalogFactoryClass = "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory";
-  	return catalogFactoryClass;
+  // Method to instantiate the CAS catalog, if not done already.
+  private synchronized Catalog getCatalog() {
+  	
+  	if (catalog==null) {
+  		String catalogFactoryClass = this.context.getInitParameter(CATALOG_FACTORY_CLASS);
+  		// preserve backward compatibility
+  		if (!StringUtils.hasText(catalogFactoryClass))
+  			catalogFactoryClass = "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory";
+  		catalog = GenericFileManagerObjectFactory.getCatalogServiceFromFactory(catalogFactoryClass);
+  	}
+  	
+  	return catalog;
   }
+  
 }
