@@ -159,6 +159,7 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
             for (Iterator<String> i = mapping.getTableNames().iterator(); i
                     .hasNext();) {
                 String tableName = i.next();
+                if(tableName.equals(mapping.getDefaultTable())) continue;
                 DatabaseTable tbl = mapping.getTableByName(tableName);
                 sqlBuf.append("INNER JOIN ");
                 sqlBuf.append(tbl.getName());

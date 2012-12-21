@@ -349,7 +349,7 @@ public class XMLPSProductHandler implements QueryHandler {
                 MappingField fld = mapping.getFieldByLocalName(qe.getValue());
                 if (fld != null) {
                     DatabaseTable t = mapping.getTableByName(fld.getTableName());
-                    if (t != null && !tables.contains(t)) {
+                    if (t != null && !tables.contains(t) && !t.getName().equals(mapping.getDefaultTable())) {
                         tables.add(t);
                     }
                 }
@@ -361,7 +361,7 @@ public class XMLPSProductHandler implements QueryHandler {
                 MappingField fld = mapping.getFieldByLocalName(qe.getValue());
                 if (fld != null) {
                     DatabaseTable t = mapping.getTableByName(fld.getTableName());
-                    if (t != null && !tables.contains(t)) {
+                    if (t != null && !tables.contains(t) && !t.getName().equals(mapping.getDefaultTable())) {
                         tables.add(t);
                     }
                 }
@@ -376,7 +376,7 @@ public class XMLPSProductHandler implements QueryHandler {
             // recursively add all join tables until we get to either
             // (a) the mapping default table (join == null)
             // (b) or a table already found (moreTables.contains(join))
-            while (join != null && !moreTables.contains(join)) {
+            while (join != null && !moreTables.contains(join) && !join.getName().equals(mapping.getDefaultTable())) {
                 moreTables.add(join);
                 join = mapping.getTableByName(join.getDefaultTableJoin());
             }
