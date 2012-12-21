@@ -1,14 +1,19 @@
 Apache OODT Change Log
 ======================
-
-Release 0.5 
+Release 0.6 - Current Development
 --------------------------------------------
-Release Date: December 18, 2012
+
+* OODT-546 XMLPS inner-joins default table with itself (mattmann,joyce)
 
 * OODT-547 Switch newest Curator upudate metadata method to use XML-RPC FileManager client.
            Switch oler Curator update metadata method to use shared instance of Catalog Factory 
            to minimize use of resources.
            (luca)
+
+
+Release 0.5 
+--------------------------------------------
+Release Date: December 18, 2012
 
 * OODT-541 Implement a LenientDataSourceCatalog that allows for dynamically named
   metadata fields, effectively bypassing the validation layer.

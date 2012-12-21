@@ -18,9 +18,16 @@ limitations under the License.
 <!-- Example XML mapping configuration file -->
 <oodt:xmlps xmlns:oodt="http://incubator.apache.org/oodt/0.1-incubating"
 	name="Example Query Handler" id="project:subproject:exampleps">
+	<!-- 
+	 attribute:
+	   default (required): This is the name of the master table part of the
+	          from clause in the generated query. The default table *does not*
+	          require a definition in the underlying <table.. tags below, though
+	          post OODT-548 these will be silently ignored.	
+	 -->
 	<tables default="Table1">
-		<table name="Table1" join="join_key" tofld="base_table_join_key" />
 		<table name="Table2" join="join_key" tofld="base_table_join_key" />
+		<table name="Table3" join="join_key" tofld="base_table_join_key" />
 	</tables>
 	<!-- 
 		field:
