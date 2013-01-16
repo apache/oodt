@@ -226,7 +226,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
 
             String metadataSql = "SELECT * FROM "
                     + product.getProductType().getName() + "_metadata "
-                    + " WHERE product_id = '" + product.getProductId()+"'";
+                    + "WHERE product_id = '" + product.getProductId()+"' ORDER BY pkey" ;
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
@@ -358,7 +358,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             }
             String metadataSql = "SELECT element_id,metadata_value FROM "
                     + product.getProductType().getName() + "_metadata"
-                    + " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds;
+                    + " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds + " ORDER BY pkey";
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);

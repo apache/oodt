@@ -17,7 +17,7 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
-// OODT imports
+//OODT imports
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -824,7 +824,7 @@ public class DataSourceCatalog implements Catalog {
 
             String getProductRefSql = "SELECT * FROM "
                     + product.getProductType().getName() + "_reference"
-                    + " WHERE product_id = " + quoteIt(product.getProductId());
+                    + " WHERE product_id = " + quoteIt(product.getProductId()) + " ORDER BY pkey";
 
             LOG.log(Level.FINE, "getProductReferences: Executing: "
                     + getProductRefSql);
@@ -1060,8 +1060,8 @@ public class DataSourceCatalog implements Catalog {
             statement = conn.createStatement();
 
             String metadataSql = "SELECT * FROM "
-                    + product.getProductType().getName() + "_metadata "
-                    + " WHERE product_id = " + quoteIt(product.getProductId());
+                    + product.getProductType().getName() + "_metadata"
+                    + " WHERE product_id = " + quoteIt(product.getProductId())+" ORDER BY pkey";
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
@@ -1152,7 +1152,8 @@ public class DataSourceCatalog implements Catalog {
             }
             String metadataSql = "SELECT element_id,metadata_value FROM "
                     + product.getProductType().getName() + "_metadata"
-                    + " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds;
+                    + " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds
+                    + " ORDER BY pkey";
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
