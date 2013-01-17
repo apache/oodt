@@ -16,7 +16,6 @@
 
 CREATE TABLE YourProductTypeName_metadata
 (
-  pkey int(10) unsigned primary KEY AUTO_INCREMENT, 
   product_id int NOT NULL,
   element_id varchar(1000) NOT NULL,
   metadata_value varchar(2500) NOT NULL
