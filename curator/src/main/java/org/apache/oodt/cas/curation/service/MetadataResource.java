@@ -55,6 +55,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 //OODT imports
+import org.apache.oodt.cas.curation.service.CurationService;
 import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 import org.apache.oodt.cas.curation.util.CurationXmlStructFactory;
 import org.apache.oodt.cas.curation.util.ExtractorConfigReader;
@@ -101,6 +102,8 @@ public class MetadataResource extends CurationService {
   public static final String PRODUCT_TYPE = "productType";
   
   public static final String UPDATE = "update";
+  
+  public static final String DELETE = "delete";
   
   // single instance of CAS catalog shared among all requests
   private Catalog catalog = null;
@@ -612,6 +615,64 @@ public class MetadataResource extends CurationService {
     catalog.addMetadata(newMetadata, newProduct);
   }
 
+  /**
+   * Method to delete a specific product from the catalog
+   * 
+   * @param id
+   * 	identifier of CAS product - either 'id' or 'name' must be specified
+   * @param name
+   * 	name of CAS product - either 'id' or 'name' must be specified
+   * @return the product ID of the deleted product if deletion successful
+   */
+  @POST
+  @Path(DELETE)
+  @Consumes("application/x-www-form-urlencoded")
+  @Produces("text/plain")
+  public String deleteCatalogMetadata(
+		  @FormParam("id") String id, 
+		  @FormParam("name") String name) {
+
+	  try {
+		  // retrieve product from catalog
+		  Product product = null;
+		  if (StringUtils.hasText(id)) {
+			  id = id.substring(id.lastIndexOf("/") + 1);
+			  product = CurationService.config.getFileManagerClient().getProductById(id);
+		  } else if (StringUtils.hasText(name)) {
+			  product = CurationService.config.getFileManagerClient().getProductByName(name);
+		  } else {
+			  throw new Exception("Either the HTTP parameter 'id' or the HTTP parameter 'name' must be specified");
+		  }
+
+		  // remove product from catalog
+		  this.deleteCatalogProduct(product);
+
+		  // return product id to downstream processors
+		  return "id="+product.getProductId();
+
+	  } catch (Exception e) {
+
+		  e.printStackTrace();
+		  // return error message
+		  throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+
+	  }
+  }  
+
+  /**
+   * Deletes a given product from the catalog
+   * 
+   * @param product
+   *          The {@link Product} to delete
+   * @throws FileNotFoundException
+   * @throws IOException
+   * @throws CatalogException
+   *           If any error occurs during this delete operation.
+   */
+  public void deleteCatalogProduct(Product product) 
+  throws FileNotFoundException, IOException, CatalogException {
+	  CurationService.config.getFileManagerClient().removeProduct(product);
+  }  
 
   private Metadata getProductTypeMetadataForPolicy(String policy,
       String productTypeName) throws MalformedURLException,
