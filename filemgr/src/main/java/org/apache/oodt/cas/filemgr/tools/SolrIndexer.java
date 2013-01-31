@@ -485,6 +485,45 @@ public class SolrIndexer {
 	}
 
 	/**
+	 * This method deletes a single product identified by a productID from the Solr index
+	 * 
+	 * @param productId
+	 * @throws IOException
+	 * @throws SolrServerException
+	 */
+	public void deleteProduct(String productId) throws IOException, SolrServerException {
+		LOG.info("Attempting to delete product: " + productId);
+		this.deleteProductFromIndex(productId);
+	}
+
+	/**
+	 * This method deletes a product(s) from the Solr index identified by a given name
+	 * 
+	 * @param productName
+	 * @throws IOException
+	 * @throws SolrServerException
+	 */
+	public void deleteProductByName(String productName) throws IOException, SolrServerException {
+		LOG.info("Attempting to delete product: " + productName);
+
+		try {
+			String productNameField = config.mapProperties.getProperty(PRODUCT_NAME);
+			if (StringUtils.hasText(productNameField)) {
+				server.deleteByQuery(productNameField+":"+productName);
+			} else {
+				LOG.warning("Metadata field "+PRODUCT_NAME+" is not mapped to any Solr field, cannot delete product by name");
+			}
+		} catch(Exception e) {
+			LOG.warning("Could not delete product: "+productName+" from Solr index");
+		}
+
+	}
+
+	private void deleteProductFromIndex(String productId) throws IOException, SolrServerException {
+		server.deleteById(productId);
+	}
+	
+	/**
 	 * Quick helper method to do substitution on the keys specified in the config
 	 * 
 	 * @param metadata
