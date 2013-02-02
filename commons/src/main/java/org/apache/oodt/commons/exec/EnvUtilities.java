@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +32,7 @@ import java.util.logging.Logger;
 /**
  * @author mattmann
  * @author bfoster
+ * @author mstarch
  * @version $Revision$
  * 
  * <p>
@@ -54,37 +56,19 @@ public final class EnvUtilities {
      * @return The environment variable value, as a String.
      */
     public static String getEnv(String envVarName) {
-        Properties props = getEnv();
-
-        return (props != null) ? props.getProperty(envVarName) : null;
+        return System.getenv(envVarName);
     }
 
     /**
      * This method does exactly the same thing as {@link #getEnvUsingWaitFor()},
-     * except it uses {@link ExecHelper} rather than traditional Java
-     * {@link Process} creation ( and
-     * 
-     * @link {@link Process#waitFor()}) and termination.
-     * 
+     * except it uses System.getenv()
      * 
      * @return The user's current environment, in a {@link Properties} object.
      */
     public static Properties getEnv() {
-        String commandLine = "env";
-
-        Properties envProps = null;
-        ExecHelper exec;
-        try {
-            exec = ExecHelper.exec(new String[] { commandLine });
-            envProps = new Properties();
-            envProps.load(preProcessInputStream(new ByteArrayInputStream(exec
-                    .getOutput().getBytes())));
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING, "Error executing env command: Message: "
-                    + e.getMessage());
-        }
-
+        Properties envProps = new Properties();
+        for (Map.Entry<String, String> entry : System.getenv().entrySet())
+            envProps.setProperty(entry.getKey(), entry.getValue());
         return envProps;
     }
 

@@ -3,6 +3,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-553 Update org.apache.oodt.commons.exec.EnvUtilities to Use System.getEnvironment 
+  (Michael Starch via mattmann)
+
 * OODT-551 Insert primary key in metadata table for database-based File Manager, to always return metadata values in proper order
            (luca)
 
