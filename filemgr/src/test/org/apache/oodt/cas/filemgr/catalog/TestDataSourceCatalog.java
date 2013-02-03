@@ -50,7 +50,7 @@ import junit.framework.TestCase;
  */
 public class TestDataSourceCatalog extends TestCase {
 
-    private Catalog myCat;
+    protected Catalog myCat;
 
     private String tmpDirPath = null;
 

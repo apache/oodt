@@ -17,7 +17,7 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
-// OODT imports
+//OODT imports
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -86,6 +86,8 @@ public class DataSourceCatalog implements Catalog {
     /* flag to indicate whether the "product_id" key type should be treated as a string */
     boolean productIdString = false;
 
+    protected boolean orderedValues = false;
+
     /*
      * cache of products per product type: [productTypeId]=>([ISO8601 time of
      * last update]=>[List of products])
@@ -105,13 +107,14 @@ public class DataSourceCatalog implements Catalog {
      * @throws  
      */
     public DataSourceCatalog(DataSource ds, ValidationLayer valLayer,
-            boolean fieldId, int pageSize, long cacheUpdateMin, boolean productIdString) {
+			     boolean fieldId, int pageSize, long cacheUpdateMin, boolean productIdString, boolean orderedValues) {
         this.dataSource = ds;
         this.validationLayer = valLayer;
         fieldIdStringFlag = fieldId;
         this.pageSize = pageSize;
         cacheUpdateMinutes = cacheUpdateMin;
         this.productIdString = productIdString;
+        this.orderedValues = orderedValues;
     }
     
     /**
@@ -125,7 +128,7 @@ public class DataSourceCatalog implements Catalog {
      */
     public DataSourceCatalog(DataSource ds, ValidationLayer valLayer,
         boolean fieldId, int pageSize, long cacheUpdateMin) {
-    	this(ds, valLayer, fieldId, pageSize, cacheUpdateMin, false);
+    	this(ds, valLayer, fieldId, pageSize, cacheUpdateMin, false, false);
     }
 
     /*
@@ -824,7 +827,9 @@ public class DataSourceCatalog implements Catalog {
 
             String getProductRefSql = "SELECT * FROM "
                     + product.getProductType().getName() + "_reference"
-                    + " WHERE product_id = " + quoteIt(product.getProductId());
+		+ " WHERE product_id = " + quoteIt(product.getProductId());
+
+            if(this.orderedValues) getProductRefSql += " ORDER BY pkey";
 
             LOG.log(Level.FINE, "getProductReferences: Executing: "
                     + getProductRefSql);
@@ -1060,8 +1065,10 @@ public class DataSourceCatalog implements Catalog {
             statement = conn.createStatement();
 
             String metadataSql = "SELECT * FROM "
-                    + product.getProductType().getName() + "_metadata "
-                    + " WHERE product_id = " + quoteIt(product.getProductId());
+                    + product.getProductType().getName() + "_metadata"
+		+ " WHERE product_id = " + quoteIt(product.getProductId());
+ 
+	    if(this.orderedValues) metadataSql += " ORDER BY pkey";
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
@@ -1152,7 +1159,8 @@ public class DataSourceCatalog implements Catalog {
             }
             String metadataSql = "SELECT element_id,metadata_value FROM "
                     + product.getProductType().getName() + "_metadata"
-                    + " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds;
+		+ " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds;
+            if(this.orderedValues) metadataSql += " ORDER BY pkey";
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);

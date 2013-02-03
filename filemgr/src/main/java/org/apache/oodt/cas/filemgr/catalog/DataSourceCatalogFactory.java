@@ -54,13 +54,14 @@ public class DataSourceCatalogFactory implements CatalogFactory {
     /* the amount of minutes to allow between updating the product cache */
     protected long cacheUpdateMinutes = -1L;
     
-  	/* Whether or not to enforce strict definition of metadata fields:
+    /* Whether or not to enforce strict definition of metadata fields:
   	 * 'lenient=false' means that all metadata fields need to be explicitly defined in the XML configuration file */
-  	protected boolean lenientFields = false;
+    protected boolean lenientFields = false;
   	
     /* Flag to indicate whether the "product_id" key type should be treated as a string */
-  	protected boolean productIdString = false;
+    protected boolean productIdString = false;
 
+    protected boolean orderedValues = false;
 
     /**
      * <p>
@@ -136,7 +137,8 @@ public class DataSourceCatalogFactory implements CatalogFactory {
 			
 			productIdString = Boolean.parseBoolean( 
 				System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.productId.string", "false") );
-  		
+  	
+			orderedValues = Boolean.parseBoolean(System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.orderedValues"));
     }
 
     /*
@@ -147,10 +149,10 @@ public class DataSourceCatalogFactory implements CatalogFactory {
     public Catalog createCatalog() {
     	if (validationLayer==null) {
     			return new LenientDataSourceCatalog(dataSource, validationLayer, fieldIdStr,
-            pageSize, cacheUpdateMinutes, productIdString);
+							    pageSize, cacheUpdateMinutes, productIdString, orderedValues);
     	} else {
         return new DataSourceCatalog(dataSource, validationLayer, fieldIdStr,
-                pageSize, cacheUpdateMinutes, productIdString);
+				     pageSize, cacheUpdateMinutes, productIdString, orderedValues);
     	}
     }
 
