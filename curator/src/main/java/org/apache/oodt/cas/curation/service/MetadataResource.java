@@ -554,15 +554,6 @@ public class MetadataResource extends CurationService {
 	      	metadata.removeMetadata(key);
 	      }
       }
-            
-      // remove existing product
-      fmClient.removeProduct(product);
-      
-      // insert same product
-      fmClient.catalogProduct(product);
-      
-      // insert same refereces
-      fmClient.addProductReferences(product);    
       
       // insert old and new metadata
       fmClient.updateMetadata(product, metadata);
