@@ -3,6 +3,11 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-555, OODT-557 - Changed behavior of Lucene Catalog update methods to retrieve a product from the index to the cache, 
+  instead of failing if it is not found in the cache. At the same time, simplify the Curator updateMetadata() method to just update
+  the metadata, without removing and re-inserting the product before that.
+  (luca, rishi, mattmann)
+
 * OODT-553 Update org.apache.oodt.commons.exec.EnvUtilities to Use System.getEnvironment 
   (Michael Starch via mattmann)
 
