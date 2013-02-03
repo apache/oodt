@@ -3,6 +3,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-369 Building with Maven3 (mattmann, Adam Estrada)
+
 * OODT-555, OODT-557 - Changed behavior of Lucene Catalog update methods to retrieve a product from the index to the cache, 
   instead of failing if it is not found in the cache. At the same time, simplify the Curator updateMetadata() method to just update
   the metadata, without removing and re-inserting the product before that.

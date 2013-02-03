@@ -123,11 +123,6 @@
       <version>2.6.3</version>
     </dependency>
     <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xerces</artifactId>
-      <version>1.4.4</version>
-    </dependency>
-    <dependency>
       <groupId>com.ibm.icu</groupId>
       <artifactId>icu4j</artifactId>
       <version>3.4.4</version>

@@ -39,6 +39,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
         <version>2.4.3</version>
         <configuration>
           <forkMode>pertest</forkMode>
@@ -219,6 +220,10 @@
           <exclusion>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-lucene-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <artifactId>wstx-asl</artifactId>
+            <groupId>woodstox</groupId>
           </exclusion>
         </exclusions>
         <scope>compile</scope>
