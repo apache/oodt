@@ -157,10 +157,17 @@ public class LuceneCatalog implements Catalog {
         CompleteProduct p = CATALOG_CACHE.get(product.getProductId());
 
         if (p == null) {
-            throw new CatalogException(
-                    "Attempt to add metadata to a product: ["
-                            + product.getProductName()
-                            + "] that isn't the local cache!");
+        	// move product from index to cache
+        	// it will be moved back after metadata is added
+        	p = getCompleteProductById(product.getProductId(), true, true);
+        	LOG.log(Level.FINE, "Product not found in local cache, retrieved from index");
+        	removeProduct(product);        		
+        }
+        
+        if (p == null) {
+            throw new CatalogException("Product ["+ product.getProductName()
+            		                     + "] not found either in local cache or in index");
+
         } else {
             p.setMetadata(m);
             if (hasMetadataAndRefs(p)) {
@@ -336,10 +343,17 @@ public class LuceneCatalog implements Catalog {
                 .getProductId());
 
         if (p == null) {
-            throw new CatalogException(
-                    "Attempt to add references to a product: ["
-                            + product.getProductName()
-                            + "] that isn't the local cache!");
+        	// move product from index to cache
+        	// it will be moved back after metadata is added
+        	p = getCompleteProductById(product.getProductId(), true, true);
+        	LOG.log(Level.FINE, "Product not found in local cache, retrieved from index");
+        	removeProduct(product);        		
+        }
+        
+        if (p == null) {
+            throw new CatalogException("Product ["+ product.getProductName()
+            		                     + "] not found either in local cache or in index");
+ 
         } else {
             p.getProduct().setProductReferences(product.getProductReferences());
             if (hasMetadataAndRefs(p)) {
