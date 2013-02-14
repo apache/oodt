@@ -17,19 +17,24 @@
 
 package org.apache.oodt.xmlps.structs;
 
-//JDK imports
+//OODT imports
 import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.MappingField;
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
+import org.apache.oodt.xmlquery.QueryElement;
 import org.apache.oodt.xmlquery.Result;
 
+//JDK imports
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * A {@link Result} that wraps a {@link ResultSet} and returns rows as Strings,
@@ -46,11 +51,16 @@ public class CDEResult extends Result {
   private final Connection con;
   private Mapping mapping;
   private List<CDEValue> constValues;
+  private List<QueryElement> orderedFields;
 
   public CDEResult(ResultSet rs, Connection con) {
     this.rs = rs;
     this.con = con;
     setMimeType("text/plain");
+  }
+  
+  public void setOrderedFields(List<QueryElement> orderedFields){
+    this.orderedFields = orderedFields;    
   }
 
   public void setMapping(Mapping mapping) {
@@ -85,8 +95,11 @@ public class CDEResult extends Result {
       CDERow row = createCDERow();
       if (mapping != null)
         applyMappingFuncs(row);
-      if (constValues != null)
+      if (this.constValues != null && 
+          ((this.orderedFields == null) || 
+          (this.orderedFields != null && this.orderedFields.size() == 0))){
         addConstValues(row);
+      }
       // if there is some kind of configurable response writer,
       // here would be a nice place to put it...
       return row.toString() + ROW_TERMINATOR;
@@ -98,15 +111,36 @@ public class CDEResult extends Result {
     CDERow row = new CDERow();
     ResultSetMetaData met = rs.getMetaData();
     int count = met.getColumnCount();
+    Map<String, CDEValue> dbValMap = new HashMap<String, CDEValue>();
+    Map<String, CDEValue> constValMap = cdeListToMap(this.constValues);
+    List<CDEValue> orderedDbVals = new Vector<CDEValue>();
+    
     for (int i = 1; i <= count; i++) {
       // since the SQL query was built with "SELECT ${fieldlocalname} as ${fieldname}"
       // we know that ResultSet column names equal CDE field names
       // and appear in the correct order as well
-      String colName = met.getColumnName(i);
+      String fieldLocalColName = met.getColumnLabel(i);
       String colValue = rs.getString(i);
-      CDEValue val = new CDEValue(colName, colValue);
-      row.getVals().add(val);
+      CDEValue val = new CDEValue(fieldLocalColName, colValue);
+      dbValMap.put(fieldLocalColName, val);
+      orderedDbVals.add(val);
     }
+    
+    // now have the constant values, and the db values, order the row
+    if(this.orderedFields != null){
+      for(QueryElement qe: this.orderedFields){
+        String qeCdeVal = this.mapping.getFieldByLocalName(qe.getValue()).getName();
+        if(dbValMap.containsKey(qeCdeVal)){
+          row.getVals().add(dbValMap.get(qeCdeVal));
+        }
+        else if(constValMap.containsKey(qeCdeVal)){
+          row.getVals().add(constValMap.get(qeCdeVal));
+        }
+      }
+    }
+    else row.getVals().addAll(orderedDbVals);
+    
+    
     return row;
   }
 
@@ -121,9 +155,20 @@ public class CDEResult extends Result {
       }
     }
   }
-
+  
   private void addConstValues(CDERow row) {
     row.getVals().addAll(constValues);
+  }  
+  
+  private Map<String, CDEValue> cdeListToMap(List<CDEValue> vals){
+    Map<String, CDEValue> map = new HashMap<String, CDEValue>();
+    if(vals != null){
+      for(CDEValue val: vals){
+        map.put(val.getCdeName(), val);
+      }
+    }
+    
+    return map;
   }
 
 }

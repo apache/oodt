@@ -3,6 +3,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-564 XMLPS should provided ordered results based on 
+  requested fields (mattmann, joyce)
+
 * OODT-369 Building with Maven3 (mattmann, Adam Estrada)
 
 * OODT-555, OODT-557 - Changed behavior of Lucene Catalog update methods to retrieve a product from the index to the cache, 

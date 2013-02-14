@@ -229,6 +229,7 @@ public class XMLPSProductHandler implements QueryHandler {
         if (executor != null) {
             try {
                 CDEResult res = executor.executeLocalQuery(sqlBuf.toString());
+                res.setOrderedFields(query.getSelectElementSet());
                 res.setMapping(mapping);
                 res.setConstValues(getConstValuesForQuery(query));
                 query.getResults().add(res);
