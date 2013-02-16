@@ -8,7 +8,7 @@ import sys
 import datetime
 import numpy
 import numpy.ma as ma 
-import rcmes.toolkit.plots
+import rcmes.toolkit.plots as plots
 
 import rcmes.storage.db as db
 import rcmes.storage.files as files
@@ -80,13 +80,7 @@ def do_rcmes(settings, params, model, mask, options):
                    "precip": Boolean }
 
     Output: image files of plots + possibly data
-    
     '''
-
-
-
-    print "%s is type of params['startTime']" % type(params['startTime'])
-
 
     # check the number of model data files
     if len(settings['fileList']) < 1:         # no input data file
@@ -95,22 +89,12 @@ def do_rcmes(settings, params, model, mask, options):
     # assign parameters that must be preserved throughout the process
     if options['mask'] == True: 
         options['seasonalCycle'] = True
-
-    print 'start & end eval period = %s to %s' % ( params['startTime'].strftime("%Y%m"),
-                                                   params['endTime'].strftime("%Y%m") )
     
-    print(params['obsDatasetId'], params['obsParamId'], params['latMin'],
-          params['latMax'], params['lonMin'], params['lonMax'], params['startTime'],
-          params['endTime'], settings['cacheDir'])
-
     ###########################################################################
     # Part 1: retrieve observation data from the database
     #         NB. automatically uses local cache if already retrieved.
     ###########################################################################
     rcmedData = getDataFromRCMED( params, settings )
-
-
-    #extract climo data
 
     ###########################################################################
     # Part 2: load in model data from file(s)
@@ -136,14 +120,14 @@ def do_rcmes(settings, params, model, mask, options):
     #        but the user may have selected to only analyse data between 2003 and 2004.  
     ##################################################################################################################
 
-    # make list of indices where modelData['times'] are between params['startTime'] and params['endTime']
+    # Make list of indices where modelData['times'] are between params['startTime'] and params['endTime']
     modelTimeOverlap = numpy.logical_and((numpy.array(modelData['times'])>=params['startTime']), 
                                            (numpy.array(modelData['times'])<=params['endTime'])) 
 
-    # make subset of modelData['times'] using full list of times and indices calculated above
+    # Make subset of modelData['times'] using full list of times and indices calculated above
     modelData['times'] = list(numpy.array(modelData['times'])[modelTimeOverlap])
 
-    # make subset of modelData['data'] using full model data and indices calculated above 
+    # Make subset of modelData['data'] using full model data and indices calculated above 
     modelData['data'] = modelData['data'][modelTimeOverlap, :, :]
 
     ##################################################################################################################
@@ -318,41 +302,41 @@ def do_rcmes(settings, params, model, mask, options):
     if options['mask'] == True:  # i.e. define regular lat/lon box for area-averaging
         print 'Using Latitude/Longitude Mask for Area Averaging'
 
-    ###############################################################################################################
-    # Define mask using regular lat/lon box specified by users (i.e. ignore regions where mask = True)
-    ###############################################################################################################
-    mask = numpy.logical_or(numpy.logical_or(lats<=mask['latMin'], lats>=mask['latMax']), 
+        ###############################################################################################################
+        # Define mask using regular lat/lon box specified by users (i.e. ignore regions where mask = True)
+        ###############################################################################################################
+        mask = numpy.logical_or(numpy.logical_or(lats<=mask['latMin'], lats>=mask['latMax']), 
                             numpy.logical_or(lons<=mask['lonMin'], lons>=mask['lonMax']))
 
-    ###############################################################################################################
-    # Calculate area-weighted averages within this region and store in new lists
-    ###############################################################################################################
-    modelStore = []
-    timeCount = modelData['data'].shape[0]
-    for t in numpy.arange(timeCount):
-        modelStore.append(process.calc_area_mean(modelData['data'][t, :, :], lats, lons, mymask=mask))
+        ######################m########################################################################################
+        # Calculate area-weighted averages within this region and store in new lists
+        ###############################################################################################################
+        modelStore = []
+        timeCount = modelData['data'].shape[0]
+        for t in numpy.arange(timeCount):
+            modelStore.append(process.calc_area_mean(modelData['data'][t, :, :], lats, lons, mymask=mask))
 
-    obsStore = []
-    timeCount = rcmedData['data'].shape[0]
-    for t in numpy.arange(timeCount):
-        obsStore.append(process.calc_area_mean(rcmedData['data'][t, :, :], lats, lons, mymask=mask))
+        obsStore = []
+        timeCount = rcmedData['data'].shape[0]
+        for t in numpy.arange(timeCount):
+            obsStore.append(process.calc_area_mean(rcmedData['data'][t, :, :], lats, lons, mymask=mask))
   
-    ###############################################################################################################
-    # Now overwrite data arrays with the area-averaged values
-    ###############################################################################################################
-    modelData['data'] = ma.array(modelStore)
-    rcmedData['data'] = ma.array(obsStore)
+        ###############################################################################################################
+        # Now overwrite data arrays with the area-averaged values
+        ###############################################################################################################
+        modelData['data'] = ma.array(modelStore)
+        rcmedData['data'] = ma.array(obsStore)
 
-    ###############################################################################################################
-    # Free-up some memory by overwriting big variables
-    ###############################################################################################################
-    obsStore = 0
-    modelStore = 0
+        ###############################################################################################################
+        # Free-up some memory by overwriting big variables
+        ###############################################################################################################
+        obsStore = 0
+        modelStore = 0
 
-    ##############################################################################################################
-    # NB. if area-averaging has been performed then the dimensions of the data arrays will have changed from 3D to 1D
-    #           i.e. only one value per time.
-    ##############################################################################################################
+        ##############################################################################################################
+        # NB. if area-averaging has been performed then the dimensions of the data arrays will have changed from 3D to 1D
+        #           i.e. only one value per time.
+        ##############################################################################################################
 
     ##############################################################################################################
     # (Optional) Part 6: seasonal cycle compositing
@@ -380,7 +364,6 @@ def do_rcmes(settings, params, model, mask, options):
     #
     ##################################################################################################################
     if options['seasonalCycle'] == True:
-
         print 'Compositing data to calculate seasonal cycle'
 
         modelData['data'] = metrics.calc_annual_cycle_means(modelData['data'], modelData['times'])
@@ -416,9 +399,9 @@ def do_rcmes(settings, params, model, mask, options):
         metricData = metrics.calc_difference(modelData['data'], rcmedData['data'])
         metricTitle = 'Difference'
 
-    if options['metric'] == 'patcor':
-        metricData = metrics.calc_pat_cor(modelData['data'], rcmedData['data'])
-        metricTitle = 'Pattern Correlation'
+    #if options['metric'] == 'patcor':
+        #metricData = metrics.calc_pat_cor2D(modelData['data'], rcmedData['data'])
+        #metricTitle = 'Pattern Correlation'
 
     if options['metric'] == 'acc':
         metricData = metrics.calc_anom_cor(modelData['data'], rcmedData['data'])
@@ -440,6 +423,7 @@ def do_rcmes(settings, params, model, mask, options):
         metricData = metrics.calc_stdev(modelData['data'])
         data2 = metrics.calc_stdev(rcmedData['data'])
         metricTitle = 'Standard Deviation'
+
     ##################################################################################################################
     # Part 8: Plot production
     #
@@ -460,60 +444,59 @@ def do_rcmes(settings, params, model, mask, options):
         yearLabels = True
         #   mytitle = 'Area-average model v obs'
 
-    ################################################################################################################
-    # If producing seasonal cycle plots, don't want to put year labels on the time series plots.
-    ################################################################################################################
-    if options['seasonalCycle'] == True:
-        yearLabels = False
-        mytitle = 'Annual cycle: area-average  model v obs'
-        # Create a list of datetimes to represent the annual cycle, one per month.
-        times = []
-        for m in xrange(12):
-            times.append(datetime.datetime(2000, m+1, 1, 0, 0, 0, 0))
-
-    ###############################################################################################
-    # Special case for pattern correlation plots. TODO: think of a cleaner way of doing this.
-    # Only produce these plots if the metric is NOT pattern correlation.
-    ###############################################################################################
-
-    # TODO - Clean up this if statement.  We can use a list of values then ask if not in LIST...
-    #KDW: change the if statement to if else to accommodate the 2D timeseries plots
-    if (options['metric'] != 'patcor')&(options['metric'] != 'acc')&(options['metric'] != 'nacc')&(options['metric'] != 'coe')&(options['metric'] != 'pdf'):
-        # for anomaly and pattern correlation,
-        # can't plot time series of model, obs as these are 3d fields
-        # ^^ This is the reason modelData['data'] has been swapped for metricData in
-        # the following function
-        # TODO: think of a cleaner way of dealing with this.
-
-        ###########################################################################################
-        # Produce the time series plots with two lines: obs and model
-        ###########################################################################################
-        print 'two line timeseries'
-        #     mytitle = options['plotTitle']
-        mytitle = 'Area-average model v obs'
-        if options['plotTitle'] == 'default':
-            mytitle = metricTitle+' model & obs'
-        #plots.draw_time_series_plot(modelData['data'],times,options['plotFilename']+'both',
-        #                                           settings['workDir'],data2=rcmedData['data'],mytitle=mytitle,
-        #                                           ytitle='Y',xtitle='time',
-        #                                           year_labels=yearLabels)
-        
-        plots.draw_time_series_plot(metricData, times, options['plotFilename']+'both',
-                                                   settings['workDir'], data2, mytitle=mytitle, 
-                                                   ytitle='Y', xtitle='time',
-                                                   year_labels=yearLabels)
-
-    else: 
-    ###############################################################################################
-    # Produce the metric time series plot (one line only)
-    ###############################################################################################
-        mytitle = options['plotTitle']
-        if options['plotTitle'] == 'default':
-            mytitle = metricTitle+' model v obs'
-        print 'one line timeseries'
-        plots.draw_time_series_plot(metricData, times, options['plotFilename'], 
-                                                   settings['workDir'], mytitle=mytitle, ytitle='Y', xtitle='time',
-                                                   year_labels=yearLabels)
+        ################################################################################################################
+        # If producing seasonal cycle plots, don't want to put year labels on the time series plots.
+        ################################################################################################################
+        if options['seasonalCycle'] == True:
+            yearLabels = False
+            mytitle = 'Annual cycle: area-average  model v obs'
+            # Create a list of datetimes to represent the annual cycle, one per month.
+            times = []
+            for m in xrange(12):
+                times.append(datetime.datetime(2000, m+1, 1, 0, 0, 0, 0))
+    
+        ###############################################################################################
+        # Special case for pattern correlation plots. TODO: think of a cleaner way of doing this.
+        # Only produce these plots if the metric is NOT pattern correlation.
+        ###############################################################################################
+    
+        # TODO - Clean up this if statement.  We can use a list of values then ask if not in LIST...
+        #KDW: change the if statement to if else to accommodate the 2D timeseries plots
+        if (options['metric'] != 'patcor')&(options['metric'] != 'acc')&(options['metric'] != 'nacc')&(options['metric'] != 'coe')&(options['metric'] != 'pdf'):
+            # for anomaly and pattern correlation,
+            # can't plot time series of model, obs as these are 3d fields
+            # ^^ This is the reason modelData['data'] has been swapped for metricData in
+            # the following function
+            # TODO: think of a cleaner way of dealing with this.
+    
+            ###########################################################################################
+            # Produce the time series plots with two lines: obs and model
+            ###########################################################################################
+            print 'two line timeseries'
+            #     mytitle = options['plotTitle']
+            mytitle = 'Area-average model v obs'
+            if options['plotTitle'] == 'default':
+                mytitle = metricTitle+' model & obs'
+            #plots.draw_time_series_plot(modelData['data'],times,options['plotFilename']+'both',
+            #                                           settings['workDir'],data2=rcmedData['data'],mytitle=mytitle,
+            #                                           ytitle='Y',xtitle='time',
+            #                                           year_labels=yearLabels)
+            plots.draw_time_series_plot(metricData, times, options['plotFilename']+'both',
+                                                       settings['workDir'], data2, mytitle=mytitle, 
+                                                       ytitle='Y', xtitle='time',
+                                                       year_labels=yearLabels)
+    
+        else: 
+            ###############################################################################################
+            # Produce the metric time series plot (one line only)
+            ###############################################################################################
+            mytitle = options['plotTitle']
+            if options['plotTitle'] == 'default':
+                mytitle = metricTitle+' model v obs'
+            print 'one line timeseries'
+            plots.draw_time_series_plot(metricData, times, options['plotFilename'], 
+                                                       settings['workDir'], mytitle=mytitle, ytitle='Y', xtitle='time',
+                                                       year_labels=yearLabels)
 
     ###############################################################################################
     # 2 dimensional data, e.g. Maps
@@ -676,7 +659,7 @@ def getDataFromRCMED( params, settings ):
                       "data": masked numpy arrays of data values}
     """
     rcmedData = {}
-    obsLats, obsLons, obsLevs, obsTimes, obsData =  db.extract_data_from_db(params['obsDatasetId'],
+    obsLats, obsLons, obsLevs, obsTimes, obsData =  db.extractData(params['obsDatasetId'],
                                                                                  params['obsParamId'],
                                                                                  params['latMin'],
                                                                                  params['latMax'],
