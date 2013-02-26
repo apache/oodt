@@ -7,7 +7,7 @@
   <version>0.4-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
 
-  <name>opsui-archetype</name>
+  <name>OODT :: Archetypes :: OpsUI</name>
 
   <build>
     <extensions>
