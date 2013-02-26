@@ -12,7 +12,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <oodt.version>0.4-SNAPSHOT</oodt.version>
+    <oodt.version>${oodt}</oodt.version>
   </properties>
 
   <repositories>
