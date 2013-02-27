@@ -3,6 +3,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-491 Add nextState (determineNextState) function to 
+  WorkflowProcessor (mattmann)
+
 * OODT-558 Introducing optional web-grid servlet init parameter "org.apache.oodt.grid.GridServlet.config" that can be used to read/write its configuration
            to a location external to the web app directory (luca).
 
