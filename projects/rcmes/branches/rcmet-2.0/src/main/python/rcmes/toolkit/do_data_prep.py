@@ -44,6 +44,7 @@ def prep_data(settings, obsDatasetList, gridBox, modelList):
     obsDatasetId = [str(x['dataset_id']) for x in obsDatasetList]
     # obsDatasetList ['paramter_id'] list
     obsParameterId = [str(x['parameter_id']) for x in obsDatasetList]
+    obsTimestep = [str(x['timestep']) for x in obsDatasetList]
     mdlList = [model.filename for model in modelList]
     
     # Since all of the model objects in the modelList have the same Varnames and Precip Flag, I am going to merely 
@@ -172,7 +173,7 @@ def prep_data(settings, obsDatasetList, gridBox, modelList):
                                                         latMin, latMax,
                                                         lonMin, lonMax,
                                                         settings.startDate, settings.endDate,
-                                                        cachedir)
+                                                        cachedir, obsTimestep[n])
         
         # TODO: modify this if block with new metadata usage.
         if precipFlag == True and obsList[n][0:3] == 'CRU':
@@ -218,7 +219,7 @@ def prep_data(settings, obsDatasetList, gridBox, modelList):
 
 
     """ all obs datasets have been read-in and regridded. convert the regridded obs data from 'list' to 'array'
-    also finalize 'obsTimes', the time cooridnate values of the regridded obs data.
+    also finalize 'obsTimes', the time coordinate values of the regridded obs data.
     NOTE: using 'list_to_array' assigns values to the missing points; this has become a problem in handling the CRU data.
           this problem disappears by using 'ma.array'."""
 
@@ -340,21 +341,21 @@ def prep_data(settings, obsDatasetList, gridBox, modelList):
     # TODO: Add in Kyo's code here as well
     # TODO:  Commented out until I can talk with Jinwon about this
     # compute the simple multi-model ensemble if multiple models are evaluated
-#    if numMDLs > 1:
-#        mdlData=modelData
-#        modelData=ma.zeros((numMDLs+1,nT,ngrdY,ngrdX))
-#        avg=ma.zeros((nT,ngrdY,ngrdX))
-#        for i in np.arange(numMDLs):
-#            modelData[i,:,:,:]=mdlData[i,:,:,:]
-#            avg[:,:,:]=avg[:,:,:]+mdlData[i,:,:,:]
-#        avg=avg/float(numMDLs)
-#        modelData[numMDLs,:,:,:]=avg[:,:,:]     # store the model-ensemble data
-#        # THESE ARE NOT USED.  WILL DELETE AFTER TESTING
-#        # i0mdl=0
-#        # i1mdl=numMDLs
-#        numMDLs=numMDLs+1 
-#        mdlName.append('ENS')
-#        print 'Eval mdl-mean timeseries for the obs periods: modelData.shape= ',modelData.shape
+    if numMDLs > 1:
+        mdlData=modelData
+        modelData=ma.zeros((numMDLs+1,nT,ngrdY,ngrdX))
+        avg=ma.zeros((nT,ngrdY,ngrdX))
+        for i in np.arange(numMDLs):
+            modelData[i,:,:,:]=mdlData[i,:,:,:]
+            avg[:,:,:]=avg[:,:,:]+mdlData[i,:,:,:]
+        avg=avg/float(numMDLs)
+        modelData[numMDLs,:,:,:]=avg[:,:,:]     # store the model-ensemble data
+        # THESE ARE NOT USED.  WILL DELETE AFTER TESTING
+        # i0mdl=0
+        # i1mdl=numMDLs
+        numMDLs=numMDLs+1
+        mdlList.append('ENS-MODEL')
+        print 'Eval mdl-mean timeseries for the obs periods: modelData.shape= ',modelData.shape
     # GOODALE:  This ensemble code should be refactored into process.py module since it's purpose is data processing
 
     # Processing complete

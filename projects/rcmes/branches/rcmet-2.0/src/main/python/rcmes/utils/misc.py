@@ -76,9 +76,9 @@ def parseSubRegions(subRegionConfig):
         subRegionConfig - ConfigParser object
     
     Output::
-        subRegions - If able to parse the userConfig then return path/to/subRegions/file, else return False.
+        subRegions - List of SubRegion Objects.  This could return an empty List if unable to parse subRegionConfig
     """
-    subRegions = False
+    subRegions = []
     try:
         if os.path.exists(subRegionConfig['subRegionFile']):
             subRegions = readSubRegionsFile(subRegionConfig['subRegionFile'])
@@ -256,6 +256,35 @@ def read_total_precip_from_filelist(myfilelist):
     precip[precip < 0] = 0.0
 
     return lat, lon, times, precip
+
+
+def isDirGood(directory):
+    """
+    Purpose::
+        This function will check if a directory exists and is writeable.  If the directory doesn't exist it is created.
+    Input::
+        directory - Path we need to check 
+    Output::
+        directoryStatus - Boolean
+    """
+    directoryStatus = False
+    
+    if os.path.exists(directory):
+        directoryStatus = os.access(directory, os.W_OK | os.X_OK)
+        if directoryStatus:
+            pass
+        else:
+            raise OSError("Unable to access the directory: %s.  Check that you have the proper permissions to read and write to that directory." % directory)
+            #directoryStatus = False
+    else:
+        try:
+            os.mkdir(directory)
+            directoryStatus = True
+        except OSError:
+            raise
+
+    return directoryStatus
+    
 
 def read_trmm_3b42_files(filelist, latMin, latMax, lonMin, lonMax):
     '''
@@ -966,25 +995,34 @@ def userDefinedStartEndTimes(obsList, modelList):
     # Compute Overlap
     maxstartTimes=max(startTimes)
     minendTimes=min(endTimes)
-    if maxstartTimes.month != 1:
-        maxstartTimes = datetime.datetime(maxstartTimes.year+1,1,maxstartTimes.day)
-    if minendTimes.month != 12:
-        minendTimes = datetime.datetime(minendTimes.year-1,12,minendTimes.day)
+    # TODO:  Do we need to start on JAN and end on DEC?  Do we know someone is doing ANNUAL analysis at this point?
+#    if maxstartTimes.month != 1:
+#        maxstartTimes = datetime.datetime(maxstartTimes.year+1,1,maxstartTimes.day)
+#    if minendTimes.month != 12:
+#        minendTimes = datetime.datetime(minendTimes.year-1,12,minendTimes.day)
     if minendTimes.year < maxstartTimes.year:
         print 'Not enough data for overlapping years'
         sys.exit()
-    overLap = (maxstartTimes.strftime('%Y-%b-%d'), minendTimes.strftime('%Y-%b-%d'))
+    overLap = (maxstartTimes.strftime('%Y-%m-%d'), minendTimes.strftime('%Y-%m-%d'))
     # Present default overlap to user as default value
     print 'Standard Overlap in the selected datasets are %s through %s' % (overLap)
     # Enter Start Date
+    defaultTime = datetime.datetime.strptime(overLap[0],'%Y-%m-%d')
+    startTime = raw_input("Please Enter a Start Date [%s]: " % defaultTime.strftime('%Y-%m-%d'))
+    if not startTime:
+        startTime = defaultTime
+    else:
+        startTime = datetime.datetime.strptime(startTime, '%Y-%m-%d')
     
     # Enter End Date
-    return datetime.datetime.strptime(overLap[0],'%Y-%b-%d'),datetime.datetime.strptime(overLap[1],'%Y-%b-%d')  
-    #sys.exit()
-        
-    
-    
-    #return startTime, endTime
+    defaultTime = datetime.datetime.strptime(overLap[1],'%Y-%m-%d')
+    endTime = raw_input("Please Enter an End Date [%s]: " % defaultTime.strftime('%Y-%m-%d'))
+    if not endTime:
+        endTime = defaultTime
+    else:
+        endTime = datetime.datetime.strptime(endTime, '%Y-%m-%d')
+
+    return startTime, endTime
 
 
 def select_timOpt():

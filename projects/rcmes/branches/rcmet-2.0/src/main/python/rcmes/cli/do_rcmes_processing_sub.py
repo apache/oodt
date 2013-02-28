@@ -8,17 +8,13 @@ import sys
 import datetime
 import numpy
 import numpy.ma as ma 
-import rcmes.toolkit.plots as plots
+import toolkit.plots as plots
 
-import rcmes.storage.db as db
-import rcmes.storage.files as files
-import rcmes.toolkit.process as process
-import rcmes.toolkit.metrics as metrics
+import storage.db as db
+import storage.files as files
+import toolkit.process as process
+import toolkit.metrics as metrics
 
-# NOT USED?
-# global mmt1
-# global sigma_tt1
-# import rcmes.fortranfile
 
 def do_rcmes(settings, params, model, mask, options):
     '''
@@ -94,7 +90,7 @@ def do_rcmes(settings, params, model, mask, options):
     # Part 1: retrieve observation data from the database
     #         NB. automatically uses local cache if already retrieved.
     ###########################################################################
-    rcmedData = getDataFromRCMED( params, settings )
+    rcmedData = getDataFromRCMED( params, settings, options )
 
     ###########################################################################
     # Part 2: load in model data from file(s)
@@ -403,10 +399,6 @@ def do_rcmes(settings, params, model, mask, options):
         #metricData = metrics.calc_pat_cor2D(modelData['data'], rcmedData['data'])
         #metricTitle = 'Pattern Correlation'
 
-    if options['metric'] == 'acc':
-        metricData = metrics.calc_anom_cor(modelData['data'], rcmedData['data'])
-        metricTitle = 'Anomaly Correlation'
-
     if options['metric'] == 'nacc':
         metricData = metrics.calc_anom_corn(modelData['data'], rcmedData['data'])
         metricTitle = 'Anomaly Correlation'
@@ -647,9 +639,9 @@ def do_rcmes(settings, params, model, mask, options):
                                                        niceValues=True, nsteps=24)
 
 
-def getDataFromRCMED( params, settings ):
+def getDataFromRCMED( params, settings, options ):
     """
-    This function takes in the params and settings dictionaries and will return an rcmedData dictionary.
+    This function takes in the params, settings, and options dictionaries and will return an rcmedData dictionary.
     
     return:
         rcmedData = {"lats": 1-d numpy array of latitudes,
@@ -667,7 +659,8 @@ def getDataFromRCMED( params, settings ):
                                                                                  params['lonMax'],
                                                                                  params['startTime'],
                                                                                  params['endTime'],
-                                                                                 settings['cacheDir'])
+                                                                                 settings['cacheDir'],
+										 options['timeRegrid'])
     rcmedData['lats'] = obsLats
     rcmedData['lons'] = obsLons
     rcmedData['levels'] = obsLevs
