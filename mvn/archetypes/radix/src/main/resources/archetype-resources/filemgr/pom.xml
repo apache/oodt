@@ -44,18 +44,13 @@
       <artifactId>${rootArtifactId}-extensions</artifactId>
       <version>${project.parent.version}</version>
       <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-      <version>${oodt.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-metadata</artifactId>
-      <version>${oodt.version}</version>
-      <type>jar</type>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.oodt</groupId>
+          <artifactId>cas-filemgr</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
