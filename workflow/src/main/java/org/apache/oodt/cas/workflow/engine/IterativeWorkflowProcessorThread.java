@@ -397,7 +397,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
    *          The fWorkflowInst to set.
    */
   public void setWorkflowInst(WorkflowInstance workflowInst) {
-    workflowInst = workflowInst;
+    this.workflowInst = workflowInst;
   }
 
   /**
@@ -412,7 +412,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
    *          The waitForConditionSatisfy to set.
    */
   public void setWaitforConditionSatisfy(long waitforConditionSatisfy) {
-    waitForConditionSatisfy = waitforConditionSatisfy;
+    this.waitForConditionSatisfy = waitforConditionSatisfy;
   }
 
   /**

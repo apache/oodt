@@ -2,6 +2,8 @@ Apache OODT Change Log
 ======================
 Release 0.6 - Current Development
 --------------------------------------------
+* OODT-571 Updated assignments in setWorkflowInst and setWaitforConditionSatisfy
+methods in IterativeWorkflowProcessorThread class (rlaidlaw)
 
 * OODT-574 RADiX POM Parent References (Arni Sumarlidason via mattmann)
 
