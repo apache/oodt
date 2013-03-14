@@ -753,10 +753,7 @@ public class LuceneCatalog implements Catalog {
             products.addAll(pageProducts);
         }
 
-        if (products != null) {
-            return products;
-        } else
-            return null;
+        return products;
     }
 
     /*

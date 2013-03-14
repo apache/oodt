@@ -2,6 +2,9 @@ Apache OODT Change Log
 ======================
 Release 0.6 - Current Development
 --------------------------------------------
+* OODT-573 Refactored the return statement in the getTopNProducts method in the
+LuceneCatalog class (rlaidlaw)
+
 * OODT-571 Updated assignments in setWorkflowInst and setWaitforConditionSatisfy
 methods in IterativeWorkflowProcessorThread class (rlaidlaw)
 
