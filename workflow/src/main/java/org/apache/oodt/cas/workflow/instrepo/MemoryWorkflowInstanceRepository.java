@@ -24,7 +24,6 @@ import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryExcepti
 import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -221,26 +220,6 @@ public class MemoryWorkflowInstanceRepository extends
         }
 
         return cnt;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository#getWorkflowInstancesByCategory(java.lang.String)
-     */
-   // @Override
-    public List<WorkflowInstance> getWorkflowInstancesByCategory(
-        String categoryName) throws InstanceRepositoryException {
-      List<WorkflowInstance> instances = new Vector<WorkflowInstance>();
-      for(WorkflowInstance inst: 
-        (List<WorkflowInstance>)(List<?>)Arrays.asList(workflowInstMap.
-            values().toArray())){
-        if(inst.getState() != null && 
-            inst.getState().getCategory().getName().equals(categoryName)){
-          instances.add(inst);
-        }
-        
-      }
-      
-      return instances;
     }
 
 }

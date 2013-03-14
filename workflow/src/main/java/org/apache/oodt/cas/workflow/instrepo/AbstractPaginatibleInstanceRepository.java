@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package org.apache.oodt.cas.workflow.instrepo;
 
@@ -31,203 +32,182 @@ import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryExcepti
 import org.apache.oodt.commons.pagination.PaginationUtils;
 
 /**
- * Abstract base class containing functionality required for 
- * WorkflowInstance paging.
- * 
  * @author mattmann
  * @version $Revision$
+ * 
+ * <p>
+ * Describe your class here
+ * </p>.
  */
 public abstract class AbstractPaginatibleInstanceRepository implements
-    WorkflowInstanceRepository {
+        WorkflowInstanceRepository {
 
-  protected int pageSize = -1;
+    protected int pageSize = -1;
 
-  /* our log stream */
-  private static final Logger LOG = Logger
-      .getLogger(AbstractPaginatibleInstanceRepository.class.getName());
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.oodt.cas.workflow.util.Pagination#getFirstPage()
-   */
-  public WorkflowInstancePage getFirstPage() {
-    WorkflowInstancePage firstPage = null;
-
-    try {
-      firstPage = getPagedWorkflows(1);
-    } catch (Exception e) {
-      e.printStackTrace();
-      LOG.log(Level.WARNING,
-          "Exception getting first page: Message: " + e.getMessage());
-    }
-    return firstPage;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.oodt.cas.workflow.util.Pagination#getLastPage()
-   */
-  public WorkflowInstancePage getLastPage() {
-    WorkflowInstancePage lastPage = null;
-    WorkflowInstancePage firstPage = getFirstPage();
-
-    try {
-      lastPage = getPagedWorkflows(firstPage.getTotalPages());
-    } catch (Exception e) {
-      LOG.log(Level.WARNING,
-          "Exception getting last page: Message: " + e.getMessage());
-    }
-
-    return lastPage;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.oodt.cas.workflow.util.Pagination#getNextPage(org.apache.oodt
-   * .cas.workflow.structs.WorkflowInstancePage)
-   */
-  public WorkflowInstancePage getNextPage(WorkflowInstancePage currentPage) {
-    if (currentPage == null) {
-      return getFirstPage();
-    }
-
-    if (currentPage.isLastPage()) {
-      return currentPage;
-    }
-
-    WorkflowInstancePage nextPage = null;
-
-    try {
-      nextPage = getPagedWorkflows(currentPage.getPageNum() + 1);
-    } catch (Exception e) {
-      LOG.log(Level.WARNING,
-          "Exception getting next page: Message: " + e.getMessage());
-    }
-
-    return nextPage;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.oodt.cas.workflow.util.Pagination#getPrevPage(org.apache.oodt
-   * .cas.workflow.structs.WorkflowInstancePage)
-   */
-  public WorkflowInstancePage getPrevPage(WorkflowInstancePage currentPage) {
-    if (currentPage == null) {
-      return getFirstPage();
-    }
-
-    if (currentPage.isLastPage()) {
-      return currentPage;
-    }
-
-    WorkflowInstancePage nextPage = null;
-
-    try {
-      nextPage = getPagedWorkflows(currentPage.getPageNum() - 1);
-    } catch (Exception e) {
-      LOG.log(Level.WARNING,
-          "Exception getting next page: Message: " + e.getMessage());
-    }
-
-    return nextPage;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.oodt.cas.workflow.util.Pagination#getPagedWorkflows(int)
-   */
-  public WorkflowInstancePage getPagedWorkflows(int pageNum)
-      throws InstanceRepositoryException {
-    return getPagedWorkflows(pageNum, null);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.oodt.cas.workflow.util.Pagination#getPagedWorkflows(int,
-   * java.lang.String)
-   */
-  public WorkflowInstancePage getPagedWorkflows(int pageNum, String status)
-      throws InstanceRepositoryException {
-    int totalPages = PaginationUtils.getTotalPage(
-        status != null ? getNumWorkflowInstancesByStatus(status)
-            : getNumWorkflowInstances(), this.pageSize);
+    /* our log stream */
+    private static final Logger LOG = Logger
+            .getLogger(AbstractPaginatibleInstanceRepository.class.getName());
 
     /*
-     * if there are 0 total pages in the result list size then don't bother
-     * returning a valid product page instead, return blank ProductPage
+     * (non-Javadoc)
+     * 
+     * @see org.apache.oodt.cas.workflow.util.Pagination#getFirstPage()
      */
-    if (totalPages == 0 || pageNum > totalPages || pageNum <= 0) {
-      return WorkflowInstancePage.blankPage();
+    public WorkflowInstancePage getFirstPage() {
+        WorkflowInstancePage firstPage = null;
+
+        try {
+            firstPage = getPagedWorkflows(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.log(Level.WARNING, "Exception getting first page: Message: "
+                    + e.getMessage());
+        }
+        return firstPage;
     }
 
-    WorkflowInstancePage retPage = new WorkflowInstancePage();
-    retPage.setPageNum(pageNum);
-    retPage.setPageSize(this.pageSize);
-    retPage.setTotalPages(totalPages);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.oodt.cas.workflow.util.Pagination#getLastPage()
+     */
+    public WorkflowInstancePage getLastPage() {
+        WorkflowInstancePage lastPage = null;
+        WorkflowInstancePage firstPage = getFirstPage();
 
-    List wInstIds = paginateWorkflows(pageNum, status);
+        try {
+            lastPage = getPagedWorkflows(firstPage.getTotalPages());
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, "Exception getting last page: Message: "
+                    + e.getMessage());
+        }
 
-    if (wInstIds != null && wInstIds.size() > 0) {
-      List workflowInstances = new Vector(wInstIds.size());
-
-      for (Iterator i = wInstIds.iterator(); i.hasNext();) {
-        String workflowInstId = (String) i.next();
-        WorkflowInstance inst = getWorkflowInstanceById(workflowInstId);
-        workflowInstances.add(inst);
-      }
-
-      retPage.setPageWorkflows(workflowInstances);
+        return lastPage;
     }
 
-    return retPage;
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.oodt.cas.workflow.util.Pagination#getNextPage(org.apache.oodt.cas.workflow.structs.WorkflowInstancePage)
+     */
+    public WorkflowInstancePage getNextPage(WorkflowInstancePage currentPage) {
+        if (currentPage == null) {
+            return getFirstPage();
+        }
 
-  /**
-   * 
-   * @param pageNum
-   * @return
-   * @throws InstanceRepositoryException
-   */
-  protected List paginateWorkflows(int pageNum)
-      throws InstanceRepositoryException {
-    return paginateWorkflows(pageNum, null);
-  }
+        if (currentPage.isLastPage()) {
+            return currentPage;
+        }
 
-  /**
-   * 
-   * @param pageNum
-   * @param status
-   * @return
-   * @throws InstanceRepositoryException
-   */
-  protected abstract List paginateWorkflows(int pageNum, String status)
-      throws InstanceRepositoryException;
+        WorkflowInstancePage nextPage = null;
 
-  /**
-   * 
-   * @param pageNum
-   * @param categoryName
-   * @return
-   */
- /* protected abstract List<WorkflowInstance> paginateWorkflowsByCategory(int pageNum,
-      String categoryName);*/
+        try {
+            nextPage = getPagedWorkflows(currentPage.getPageNum() + 1);
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, "Exception getting next page: Message: "
+                    + e.getMessage());
+        }
 
-  /**
-   * 
-   * @param pageNum
-   * @param categoryName
-   * @return
-   */
-  /*protected abstract List<WorkflowInstance> paginateWorkflowsNotInCategory(int pageNum,
-      String categoryName);*/
+        return nextPage;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.oodt.cas.workflow.util.Pagination#getPrevPage(org.apache.oodt.cas.workflow.structs.WorkflowInstancePage)
+     */
+    public WorkflowInstancePage getPrevPage(WorkflowInstancePage currentPage) {
+        if (currentPage == null) {
+            return getFirstPage();
+        }
+
+        if (currentPage.isLastPage()) {
+            return currentPage;
+        }
+
+        WorkflowInstancePage nextPage = null;
+
+        try {
+            nextPage = getPagedWorkflows(currentPage.getPageNum() - 1);
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, "Exception getting next page: Message: "
+                    + e.getMessage());
+        }
+
+        return nextPage;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.oodt.cas.workflow.util.Pagination#getPagedWorkflows(int)
+     */
+    public WorkflowInstancePage getPagedWorkflows(int pageNum)
+            throws InstanceRepositoryException {
+        return getPagedWorkflows(pageNum, null);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.oodt.cas.workflow.util.Pagination#getPagedWorkflows(int,
+     *      java.lang.String)
+     */
+    public WorkflowInstancePage getPagedWorkflows(int pageNum, String status)
+            throws InstanceRepositoryException {
+        int totalPages = PaginationUtils.getTotalPage(
+                status != null ? getNumWorkflowInstancesByStatus(status)
+                        : getNumWorkflowInstances(), this.pageSize);
+
+        /*
+         * if there are 0 total pages in the result list size then don't bother
+         * returning a valid product page instead, return blank ProductPage
+         */
+        if (totalPages == 0 || pageNum > totalPages || pageNum <= 0) {
+            return WorkflowInstancePage.blankPage();
+        }
+
+        WorkflowInstancePage retPage = new WorkflowInstancePage();
+        retPage.setPageNum(pageNum);
+        retPage.setPageSize(this.pageSize);
+        retPage.setTotalPages(totalPages);
+
+        List wInstIds = paginateWorkflows(pageNum, status);
+
+        if (wInstIds != null && wInstIds.size() > 0) {
+            List workflowInstances = new Vector(wInstIds.size());
+
+            for (Iterator i = wInstIds.iterator(); i.hasNext();) {
+                String workflowInstId = (String) i.next();
+                WorkflowInstance inst = getWorkflowInstanceById(workflowInstId);
+                workflowInstances.add(inst);
+            }
+
+            retPage.setPageWorkflows(workflowInstances);
+        }
+
+        return retPage;
+    }
+
+    /**
+     * 
+     * @param pageNum
+     * @return
+     * @throws InstanceRepositoryException
+     */
+    protected List paginateWorkflows(int pageNum)
+            throws InstanceRepositoryException {
+        return paginateWorkflows(pageNum, null);
+    }
+
+    /**
+     * 
+     * @param pageNum
+     * @param status
+     * @return
+     * @throws InstanceRepositoryException
+     */
+    protected abstract List paginateWorkflows(int pageNum, String status)
+            throws InstanceRepositoryException;
 
 }

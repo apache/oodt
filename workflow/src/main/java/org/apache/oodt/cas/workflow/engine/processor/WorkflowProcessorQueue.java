@@ -83,7 +83,7 @@ public class WorkflowProcessorQueue {
   public synchronized List<WorkflowProcessor> getProcessors() {
     WorkflowInstancePage page = null;
     try {
-      //page = repo.getPagedWorkflowsNotInCategory(1, "done");
+      page = repo.getPagedWorkflows(1);
     } catch (Exception e) {
       e.printStackTrace();
       LOG.log(Level.WARNING, "Unable to load workflow processors: Message: "

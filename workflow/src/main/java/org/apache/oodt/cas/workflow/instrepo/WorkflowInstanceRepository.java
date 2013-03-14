@@ -22,9 +22,7 @@ package org.apache.oodt.cas.workflow.instrepo;
 import java.util.List;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleStage;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.cas.workflow.util.Pagination;
 
@@ -139,20 +137,5 @@ public interface WorkflowInstanceRepository extends Pagination {
      * @throws InstanceRepositoryException If there is any error that occurs.
      */
     public int getNumWorkflowInstancesByStatus(String status) throws InstanceRepositoryException;
-    
-    
-    /**
-     * Returns a {@link List} of {@link WorkflowInstance}s with a given 
-     * {@link WorkflowLifecycleStage} name (aka "categoryName").
-     * 
-     * @param categoryName The name of the {@link WorkflowLifecycleStage} to look
-     * up associated {@link WorkflowInstance}s.
-     * @return A {@link List} of {@link WorkflowInstance}s with a given
-     * {@link WorkflowLifecycleStage}.
-     * 
-     * @throws InstanceRepositoryException If any error occurs.
-     */
-  /*  public List<WorkflowInstance> getWorkflowInstancesByCategory(String categoryName) 
-           throws InstanceRepositoryException;*/
-    
+
 }
