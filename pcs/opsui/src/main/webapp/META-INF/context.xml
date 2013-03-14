@@ -27,10 +27,13 @@ the License.
 	    value="[RESMGR_URL]"/>
 
 	<Parameter name="org.apache.oodt.pcs.opsui.workflow.lifecycleFilePath"
-	    value="[WORKFLOW_HOME]/policy/workflow-lifecycle.xml"/>
+	    value="[WORKFLOW_HOME]/policy/wengine/wengine-lifecycle.xml"/>
 	    
 	<Parameter name="org.apache.oodt.pcs.opsui.winst.statuses"
-	    value="QUEUED, RSUBMIT, BUILDING CONFIG FILE, PGE EXEC, CRAWLING, STAGING INPUT, FINISHED, STARTED, PAUSED"/>
+	    value="Null, Loaded, Queued, Blocked, WaitingOnResources, PreConditionSuccess, ExecutionComplete, Unknown, Paused, PreConditionEval, Executing, PostConditionEval, ResultsSuccess, ResultsFailure, ResultsBail, Stopped, Off, Failure, Success"/>
+	
+	<!-- <Parameter name="org.apache.oodt.pcs.opsui.winst.statuses"
+	    value="QUEUED, RSUBMIT, BUILDING CONFIG FILE, PGE EXEC, CRAWLING, STAGING INPUT, FINISHED, STARTED, PAUSED"/>-->
 	    
 	<Parameter name="org.apache.oodt.pcs.opsui.winst.metFields.filePath"
 	    value="[WORKFLOW_HOME]/policy/workflow-instance-met.xml"/>   
