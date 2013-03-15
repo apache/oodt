@@ -61,6 +61,27 @@
            <property name="replace" value="true"/>
         </configuration>
       </extractor>
+      
+      <!-- 
+        The below enables the FilenameRegexMetExtractor.
+        It allows a user to specify a filename pattern with Java Regex that identifies groups 
+        within a particular file name. Those groups are then mapped to Metadata key names, and 
+        extracted as metadta from a file's name.
+        
+        In the example below, there are two groups, Filename, and ProductId, for files
+        of the form:
+        
+        Filename_ProductId.txt
+        
+        <extractor class="org.apache.oodt.cas.filemgr.metadata.extrctors.examples.FilenameRegexMetExtractor">
+          <configuration>
+            <property name="filenamePattern" value="(\\w*)_(\\d*)\\.txt"/>
+            <property name="metadataKeys" value="Filename,ProductId"/>
+          </configuration>
+        
+        </extractor>
+      
+       -->
     </metExtractors>
   </type>
 </cas:producttypes>
