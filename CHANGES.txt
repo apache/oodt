@@ -3,6 +3,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-578 Workflow Monitor experiences runtime exception (NPE) out 
+  of the box with RADIX (Arni Sumarlidason via mattmann)
+
 * OODT-575 Metadata extractor for parsing filename based on regex 
   (Nga Chung via mattmann)
 

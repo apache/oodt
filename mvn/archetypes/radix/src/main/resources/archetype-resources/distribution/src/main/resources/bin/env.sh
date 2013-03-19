@@ -87,10 +87,12 @@ fi
 
 if [ -z "$OODT_BASE" ]; then
   OODT_BASE="$OODT_HOME"
+  export OODT_BASE
 fi
 
 if [ -z "$OODT_OUT" ] ; then
   OODT_OUT="$OODT_BASE"/logs/oodt.out
+  export OODT_OUT
 fi
 
 if [ -z "$FILEMGR_HOME" ]; then
@@ -111,30 +113,37 @@ fi
 if [ -z "$OODT_TMPDIR" ]; then
   # Define the java.io.tmpdir to use for OODT
   OODT_TMPDIR="$OODT_BASE"/temp
+  export OODT_TMPDIR
 fi
 
 if [ -z "$FILEMGR_PORT" ]; then
   FILEMGR_PORT=9000
+  export FILEMGR_PORT
 fi
 
 if [ -z "$CRAWLER_PORT" ]; then
   CRAWLER_PORT=9100
+  export CRAWLER_PORT
 fi 
 
 if [ -z "$WORKFLOW_PORT" ]; then
   WORKFLOW_PORT=9200
+  export WORKFLOW_PORT
 fi
 
 if [ -z "$RESMGR_PORT" ]; then
   RESMGR_PORT=9300
+  export RESMGR_PORT
 fi
 
 if [ -z "$TOMCAT_PORT" ]; then
   TOMCAT_PORT=8080
+  export TOMCAT_PORT
 fi
 
 if [ -z "$OODT_SERVICES_HOST" ]; then
   OODT_SERVICES_HOST=localhost
+  export OODT_SERVICES_HOST
 fi
 
 if [ -z "$FILEMGR_URL" ]; then
