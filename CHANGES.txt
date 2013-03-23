@@ -3,6 +3,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-583 Added JUnit test class for RSSConfigReader (rlaidlaw)
+
 * OODT-582 Fix for oodt.cas.product.rss.RSSConfigReader.readTags() for detection
   of source attribute for tags defined in the RSS configuration file (rlaidlaw)
 
