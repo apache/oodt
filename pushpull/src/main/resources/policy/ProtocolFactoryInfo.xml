@@ -34,8 +34,12 @@
         <protocolFactory class="org.apache.oodt.cas.protocol.imaps.ImapsProtocolFactory"/>
     </protocol>
     
+    <!--
+    Note: hasn't been implemented yet, see OODT-537 
+     
     <protocol type="file">
         <protocolFactory class="org.apache.oodt.cas.protocol.local.LocalProtocolFactory"/>    
     </protocol>
+    -->
     
 </protocols>

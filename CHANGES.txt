@@ -3,6 +3,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-537 Push/Pull NullPointerException on startup (mattmann, joyce)
+
 * OODT-578 Workflow Monitor experiences runtime exception (NPE) out 
   of the box with RADIX (Arni Sumarlidason via mattmann)
 
