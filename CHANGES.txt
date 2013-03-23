@@ -3,6 +3,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-576 Used try...finally in oodt.commons.database.SqlScript.loadScript() to
+  close BufferedReader (rlaidlaw)
+
 * OODT-537 Push/Pull NullPointerException on startup (mattmann, joyce)
 
 * OODT-578 Workflow Monitor experiences runtime exception (NPE) out 
