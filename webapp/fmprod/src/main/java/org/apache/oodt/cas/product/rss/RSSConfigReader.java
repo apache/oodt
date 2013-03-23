@@ -83,7 +83,7 @@ public class RSSConfigReader implements RSSConfigReaderMetKeys {
         tag.setName(tagElem.getAttribute(TAG_ATTR_NAME));
 
         // check to see if it has a source
-        if (tagElem.getAttribute(TAG_ATTR_SOURCE) != null) {
+        if (tagElem.getAttributeNode(TAG_ATTR_SOURCE) != null) {
           tag.setSource(tagElem.getAttribute(TAG_ATTR_SOURCE));
         }
 

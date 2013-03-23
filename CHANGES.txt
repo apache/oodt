@@ -3,6 +3,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-582 Fix for oodt.cas.product.rss.RSSConfigReader.readTags() for detection
+  of source attribute for tags defined in the RSS configuration file (rlaidlaw)
+
 * OODT-576 Used try...finally in oodt.commons.database.SqlScript.loadScript() to
   close BufferedReader (rlaidlaw)
 
