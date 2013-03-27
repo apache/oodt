@@ -97,7 +97,7 @@ import com.google.common.collect.Lists;
  */
 public class PGETaskInstance implements WorkflowTaskInstance {
 
-   protected Logger logger;
+   protected Logger logger = Logger.getLogger(PGETaskInstance.class.getName());
    protected XmlRpcWorkflowManagerClient wm;
    protected String workflowInstId;
    protected PgeMetadata pgeMetadata;
@@ -115,7 +115,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
          runPropertyAdders();
          wm = createWorkflowManagerClient();
          workflowInstId = getWorkflowInstanceId();
-         logger = createLogger();
+         logger = createLogger(); // use workflow ID specific logger from now on 
 
          // Write out PgeMetadata.
          dumpMetadataIfRequested();
