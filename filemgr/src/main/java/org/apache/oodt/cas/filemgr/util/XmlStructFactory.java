@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.util;
 
 //JDK imports
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -239,25 +240,39 @@ public final class XmlStructFactory {
             root.setAttribute("xmlns:cas", "http://oodt.jpl.nasa.gov/1.0/cas");
             document.appendChild(root);
 
-            for (Iterator<String> i = productTypeMap.keySet().iterator(); i.hasNext();) {
+            // Also print types without elements but just with parents
+            ArrayList<String> allTypes = new ArrayList<String>(productTypeMap.keySet());
+            for(String type: subToSuperMap.keySet()) {
+                if(!allTypes.contains(type))
+                    allTypes.add(type);
+            }
+            
+            for (Iterator<String> i = allTypes.iterator(); i.hasNext();) {
                 String typeId = i.next();
 
                 Element typeElem = document.createElement("type");
                 typeElem.setAttribute("id", typeId);
 
+                boolean hasParent = false;
                 if (subToSuperMap.containsKey(typeId)) {
                     typeElem.setAttribute("parent", subToSuperMap
                             .get(typeId));
+                    hasParent = true;
                 }
 
                 List<org.apache.oodt.cas.filemgr.structs.Element> elementIds = productTypeMap.get(typeId);
+                if(!hasParent && (elementIds == null || elementIds.size() == 0)) {
+                    // If no parent, and no elements, don't add this type to the xml
+                    continue;
+                }
+                if(elementIds != null) {
+                    for (Iterator<org.apache.oodt.cas.filemgr.structs.Element> j = elementIds.iterator(); j.hasNext();) {
+                        String elementId = j.next().getElementId();
 
-                for (Iterator<org.apache.oodt.cas.filemgr.structs.Element> j = elementIds.iterator(); j.hasNext();) {
-                    String elementId = j.next().getElementId();
-
-                    Element elementElem = document.createElement("element");
-                    elementElem.setAttribute("id", elementId);
-                    typeElem.appendChild(elementElem);
+                        Element elementElem = document.createElement("element");
+                        elementElem.setAttribute("id", elementId);
+                        typeElem.appendChild(elementElem);
+                    }
                 }
 
                 root.appendChild(typeElem);

@@ -3,6 +3,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-560 XmlStructFactory::getProductTypeMapXmlDocument does not 
+  output virtual product types (Varun Ratnakar via mattmann)
+
 * OODT-583 Added JUnit test class for RSSConfigReader (rlaidlaw)
 
 * OODT-582 Fix for oodt.cas.product.rss.RSSConfigReader.readTags() for detection
