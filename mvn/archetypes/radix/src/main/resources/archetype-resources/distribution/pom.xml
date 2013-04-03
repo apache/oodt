@@ -42,6 +42,20 @@
     </dependency>
     <dependency>
       <groupId>${groupId}</groupId>
+      <artifactId>${rootArtifactId}-pcs</artifactId>
+      <version>${project.parent.version}</version>
+      <type>tar.gz</type>
+      <classifier>bin</classifier>
+    </dependency>
+    <dependency>
+      <groupId>${groupId}</groupId>
+      <artifactId>${rootArtifactId}-resmgr</artifactId>
+      <version>${project.parent.version}</version>
+      <type>tar.gz</type>
+      <classifier>bin</classifier>
+    </dependency>
+    <dependency>
+      <groupId>${groupId}</groupId>
       <artifactId>${rootArtifactId}-extensions</artifactId>
       <version>${project.parent.version}</version>
       <type>tar.gz</type>

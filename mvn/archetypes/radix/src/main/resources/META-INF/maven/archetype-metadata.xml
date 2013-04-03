@@ -16,6 +16,22 @@
         </fileSet>
       </fileSets>
     </module>
+    <module id="resmgr" dir="resmgr" name="resmgr">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="pcs" dir="pcs" name="pcs">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
     <module id="filemgr" dir="filemgr" name="filemgr">
       <fileSets>
         <fileSet>
