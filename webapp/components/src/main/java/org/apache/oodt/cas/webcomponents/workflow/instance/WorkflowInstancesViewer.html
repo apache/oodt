@@ -25,26 +25,30 @@
 
    <p>Workflows <b wicket:id="start_idx">1</b>-<b wicket:id="end_idx">20</b> of <b wicket:id="num_insts">20</b> total</p>
      <table id="workflow_inst_tbl">
-       <tr class="centered">
-         <td>Workflow</td>
-         <td>Progress</td>
-         <td>Status</td>
-         <td>Execution Time (min)</td>
-         <td>Current Task Execution Time (min)</td>
-         <td>Current Task</td>
-       </tr>
-
-       <tr wicket:id="workflow_insts">
-         <td><a href="#" wicket:id="workflow_link"><span wicket:id="workflow_name">Test Workflow</span></a>
-         <br/>
-         <p class="smaller" wicket:id="inst_met_display">ProcessingNode:localhost,WorkflowInstanceId:1</p>
-         </td>
-         <td class="centered"><script wicket:id="winst_display">display('./percentImage.png', 'winst_1_progress', 66, 1);</script></td>
-         <td class="centered" wicket:id="winst_status">RSUBMIT</td>
-         <td class="centered" wicket:id="winst_wallclock_mins">5.22</td>
-         <td class="centered" wicket:id="winst_task_wallclock_mins">2.5</td>
-         <td class="centered"><a href="#" wicket:id="task_link"><span wicket:id="task_name">Hello World</span></a></td>
-        </tr>
+       <thead class="centered">
+         <tr>
+	         <th>Workflow</th>
+	         <th>Progress</th>
+	         <th>Status</th>
+	         <th>Execution Time (min)</th>
+	         <th>Current Task Execution Time (min)</th>
+	         <th>Current Task</th> 
+         </tr>
+       </thead>
+		
+		<tbody>
+	       <tr wicket:id="workflow_insts">
+	         <td><a href="#" wicket:id="workflow_link"><span wicket:id="workflow_name">Test Workflow</span></a>
+	         <br/>
+	         <p class="smaller" wicket:id="inst_met_display">ProcessingNode:localhost,WorkflowInstanceId:1</p>
+	         </td>
+	         <td class="centered"><script wicket:id="winst_display">display('./percentImage.png', 'winst_1_progress', 66, 1);</script></td>
+	         <td class="centered" wicket:id="winst_status">RSUBMIT</td>
+	         <td class="centered" wicket:id="winst_wallclock_mins">5.22</td>
+	         <td class="centered" wicket:id="winst_task_wallclock_mins">2.5</td>
+	         <td class="centered"><a href="#" wicket:id="task_link"><span wicket:id="task_name">Hello World</span></a></td>
+	        </tr>
+        </tbody>
     </table>
     <p>&nbsp;</p>
     <p>&nbsp;</p>

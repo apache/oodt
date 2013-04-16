@@ -89,7 +89,7 @@ public class WorkflowViewer extends Panel {
           }
         };
         String taskName = summarizeWords(item.getModelObject().getTaskName(),
-            7, 16);
+            16, 16);
         taskLink.add(new Label("task_name", taskName).setRenderBodyOnly(true));
         item.add(taskLink);
 
@@ -132,9 +132,13 @@ public class WorkflowViewer extends Panel {
           .length())));
       summarizedString.append(" ");
     }
-
-    return summarizedString.substring(0,
-        Math.min(maxLengthTotal, summarizedString.length())).toString();
+    
+    // add '...' to end of summarized string if applicable
+    if (summarizedString.length() > maxLengthTotal) {
+    	return summarizedString.substring(0,
+    	        Math.min(maxLengthTotal, summarizedString.length()) - 3).toString() + "...";
+    } else
+    	return summarizedString.toString();
   }
 
 }
