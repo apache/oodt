@@ -24,6 +24,7 @@ the License.
   <Parameter name="filemgr.url" value="http://localhost:9000" override="false" />
   <Parameter name="filemgr.rdfconf.file" value="/path/to/rdfconf.xml" override="false"/>
   <Parameter name="filemgr.rssconf.file" value="/path/to/rssconf.xml" override="false"/>
+  <Parameter name="filemgr.rss-transfer-conf.file" value="/path/to/rss-transfer-conf.xml" override="false"/>
   <Parameter name="filemgr.working.dir" value="/tmp" override="false" />
 
 </Context>
