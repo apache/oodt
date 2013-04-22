@@ -34,7 +34,7 @@ import org.apache.wicket.markup.html.link.Link;
  * @version $Revision$
  *
  */
-public class BasePage extends WebPage {
+public class BasePage extends OPSUIWebPage {
   
   protected OpsuiApp app;
   
