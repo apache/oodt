@@ -1,3 +1,15 @@
+/*
+ bg             #334455
+ borders-top    #2e3e4e
+ border-left    #304050
+*/
+
+body {
+    background-color:#FFF;
+    margin:0px;
+    padding:0px;
+    font-family: verdana, arial,  sans-serif;
+}
 
 #splash {
     position:absolute;
@@ -5,7 +17,7 @@
     top:50%;
     margin:-180px 0 0 -370px;
     height:260px;    
-    width:730px;
+    width:800px;
     z-index:0;
 }
 #splash_branding {
@@ -26,7 +38,14 @@
 #splash_nav a {
     display:block;
     padding:10px;
+    text-decoration: none;
+    color:#193678;
+    font-weight: bolder;
 }  
+#splash_nav a:hover {
+    color:#4965A6;
+    text-decoration: none;
+}
 
 
 .border {
@@ -44,6 +63,9 @@
   border-top:solid 1px #2e3e4e;
   color:#234;
   font-size:90%;
+}
+#footer a {
+  color:#193678;
 }
 
 #footer p {

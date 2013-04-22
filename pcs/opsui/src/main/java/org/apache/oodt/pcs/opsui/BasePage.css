@@ -1,17 +1,3 @@
-/*
- bg             #334455
- borders-top    #2e3e4e
- border-left    #304050
- bg-text        #162636
- link-text      #c0c0c0
-*/
-
-body {
-    background-color:#345;
-    margin:0px;
-    padding:0px;
-    font-family: arial, verdana, sans-serif;
-}
 
 #header {
     width:100%;
@@ -26,7 +12,6 @@ body {
 #user_status {
     float:right;
     padding:10px;
-    color:#162636;
 }
 
 #nav {
@@ -44,11 +29,6 @@ body {
 #nav a.last {
     border-right:none;
 }
-#nav a:hover {
-    text-decoration:underline;
-    color:#fff;
-    background-color:#2e3e4e;
-}
 
 #footer{
   position:fixed;
@@ -58,15 +38,9 @@ body {
   padding:5px 0px;
   border-spacing:0px;
   border-top:solid 1px #2e3e4e;
-  color:#234;
-  background-color:#364656;
   font-size:90%;
   z-index:10000;
 }
-#footer a {
-  color:#aaa;
-}
-
 #footer p {
   width:100%;
   padding:5px 15px;
@@ -83,18 +57,5 @@ body {
   margin-left:-30px;
 }
 
-
-a{
-    color:#c0c0c0;
-	text-decoration:none;
-}
-
-a:hover{
-	text-decoration:underline;
-}
-
-a img,  {
-    border:none;
-}
 
 
