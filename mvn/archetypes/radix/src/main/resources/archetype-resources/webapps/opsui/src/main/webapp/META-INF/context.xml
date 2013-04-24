@@ -44,6 +44,16 @@ the License.
 	<Parameter name="ganglia.url" value="[GANGLIA_URL]"/>
 	<Parameter name="contact.email" value="user@oodt.apache.org"/>
 	
-	<Parameter name="opsui.skin" value=""/>
-	<Parameter name="opsui.homepage" value="org.apache.oodt.pcs.opsui.HomePage"/>   
+        <!-- OPSUI SKINNING
+                Directions: Set the 'opsui.skin' property's value attribute. 
+                Supported skins:
+                        ""           => No skin
+                        "cleanwhite" => Clean, white background OODT base skin
+                        "navyblue"   => Darker, blue background OODT base skin
+                        "classic"    => The original, OCO (Orbiting Carbon Observatory) skin for OPSUI
+                OR add your own!
+        -->
+        <Parameter name="opsui.skin" value="cleanwhite"/>
+        <Parameter name="opsui.homepage" value="org.apache.oodt.pcs.opsui.HomePage"/>
+
 </Context>
