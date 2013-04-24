@@ -110,6 +110,11 @@ if [ -z "$RESMGR_HOME" ]; then
   export RESMGR_HOME
 fi
 
+if [ -z "$PCS_HOME" ]; then
+  PCS_HOME="$OODT_HOME"/pcs
+  export PCS_HOME
+fi
+
 if [ -z "$CRAWLER_HOME" ]; then
   CRAWLER_HOME="$OODT_HOME"/crawler
   export CRAWLER_HOME
