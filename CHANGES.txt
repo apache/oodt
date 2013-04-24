@@ -3,6 +3,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-586 RADiX archetype does not properly deploy crawler (riverma)
+
 * OODT-603 Enable Resource Manager start/stop within RADiX (riverma)
 
 * OODT-600 Modularize old OPSUI theme into a separate Wicket "skin" (riverma)
