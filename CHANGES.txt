@@ -3,6 +3,18 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-603 Enable Resource Manager start/stop within RADiX (riverma)
+
+* OODT-600 Modularize old OPSUI theme into a separate Wicket "skin" (riverma)
+
+* OODT-599 Modularize new theme into a stand-alone Wicket "skin" (riverma)
+
+* OODT-597 Improve theme/styling of OPSUI (riverma)
+
+* OODT-596 Fix opsui webapp's wicket 'Page Expired' error (riverma)
+
+* OODT-595 Improve styling of Workflow Viewer (webapp/components) (riverma)
+
 * OODT-602 Load not settable for WorkflowTaskJobs in 
   IterativeWorkflowProcessThread (mattmann)
 
