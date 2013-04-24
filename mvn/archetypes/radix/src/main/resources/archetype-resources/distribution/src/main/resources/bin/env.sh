@@ -105,6 +105,11 @@ if [ -z "$WORKFLOW_HOME" ]; then
   export WORKFLOW_HOME
 fi
 
+if [ -z "$RESMGR_HOME" ]; then
+  RESMGR_HOME="$OODT_HOME"/resmgr
+  export RESMGR_HOME
+fi
+
 if [ -z "$CRAWLER_HOME" ]; then
   CRAWLER_HOME="$OODT_HOME"/crawler
   export CRAWLER_HOME
@@ -154,6 +159,11 @@ fi
 if [ -z "$WORKFLOW_URL" ]; then
   WORKFLOW_URL=http://"$OODT_SERVICES_HOST":"$WORKFLOW_PORT"
   export WORKFLOW_URL
+fi
+
+if [ -z "$RESMGR_URL" ]; then
+  RESMGR_URL=http://"$OODT_SERVICES_HOST":"$RESMGR_PORT"
+  export RESMGR_URL
 fi
 
 if [ -z "$CRAWLER_URL" ]; then

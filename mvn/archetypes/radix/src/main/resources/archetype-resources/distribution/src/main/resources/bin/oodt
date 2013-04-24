@@ -63,6 +63,7 @@ if [ $have_tty -eq 1 ]; then
 fi
 
 WORKFLOW_EXEC=wmgr
+RESMGR_EXEC=resmgr
 FILEMGR_EXEC=filemgr
 TOMCAT_EXEC=catalina.sh
 
@@ -81,6 +82,13 @@ if [ ! -x "$WORKFLOW_HOME"/bin/"$WORKFLOW_EXEC" ]; then
 fi
 
 # Check that target executable exists
+if [ ! -x "$RESMGR_HOME"/bin/"$RESMGR_EXEC" ]; then
+  echo "Cannot find $RESMGR_HOME/bin/$RESMGR_EXEC"
+  echo "This file is needed to run this program"
+  exit 1
+fi
+
+# Check that target executable exists
 if [ ! -x "$OODT_BASE"/tomcat/bin/"$TOMCAT_EXEC" ]; then
   echo "Cannot find $OODT_BASE/tomcat/bin/$TOMCAT_EXEC"
   echo "This file is needed to run this program"
@@ -90,10 +98,12 @@ fi
 if [ "$1" = "start" ]; then
   exec "$FILEMGR_HOME"/bin/"$FILEMGR_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &
   exec "$WORKFLOW_HOME"/bin/"$WORKFLOW_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &
+  exec "$RESMGR_HOME"/bin/"$RESMGR_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &  
   exec "$OODT_BASE"/tomcat/bin/"$TOMCAT_EXEC" start "$@" >> "$OODT_OUT" 2>&1 &
 elif [ "$1" = "stop" ]; then
   exec "$FILEMGR_HOME"/bin/"$FILEMGR_EXEC" stop "$@" >> "$OODT_OUT" 2>&1  &
   exec "$WORKFLOW_HOME"/bin/"$WORKFLOW_EXEC" stop "$@" >> "$OODT_OUT" 2>&1 &
+  exec "$RESMGR_HOME"/bin/"$RESMGR_EXEC" stop "$@" >> "$OODT_OUT" 2>&1 &
   exec "$OODT_BASE"/tomcat/bin/"$TOMCAT_EXEC" stop "$@" >> "$OODT_OUT" 2>&1 &
 else
   echo "Usage: oodt.sh ( commands ... )"
