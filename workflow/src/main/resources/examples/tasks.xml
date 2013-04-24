@@ -133,4 +133,16 @@
 	     <metfield name="numSeconds"/>
 	  </requiredMetFields>
 	</task>
+	<task id="urn:oodt:TaskWithLoad" name="Task with Load"
+	   class="org.apache.oodt.cas.workflow.examples.LongTask">
+	   <conditions>
+	   </conditions> 
+	   <configuration>
+	      <!--  now settable since OODT-602
+	            controls the load value of this task when running
+	            Workflow Manager with connection to the Resource Manager.
+	       -->
+	      <property name="TaskLoad" value="2"/>
+	   </configuration>  
+	</task>
 </cas:tasks>

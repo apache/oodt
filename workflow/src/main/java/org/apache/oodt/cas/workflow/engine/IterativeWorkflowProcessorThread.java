@@ -243,7 +243,8 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
             .setJobInstanceClassName("org.apache.oodt.cas.workflow.structs.TaskJob");
         taskJob
             .setJobInputClassName("org.apache.oodt.cas.workflow.structs.TaskJobInput");
-        taskJob.setLoadValue(new Integer(2));
+        taskJob.setLoadValue(task.getTaskConfig().getProperty(TASK_LOAD) != null ? 
+            Integer.parseInt(task.getTaskConfig().getProperty(TASK_LOAD)):new Integer(2));
         taskJob
             .setQueueName(task.getTaskConfig().getProperty(QUEUE_NAME) != null ? task
                 .getTaskConfig().getProperty(QUEUE_NAME) : DEFAULT_QUEUE_NAME);
