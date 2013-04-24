@@ -2,11 +2,12 @@ Apache OODT Change Log
 ======================
 Release 0.6 - Current Development
 --------------------------------------------
-* OODT-470 Enabled RSSProductTransferServlet to be configured using an XML
-configuration file (rlaidlaw)
 
 * OODT-602 Load not settable for WorkflowTaskJobs in 
   IterativeWorkflowProcessThread (mattmann)
+
+* OODT-470 Enabled RSSProductTransferServlet to be configured using an XML
+  configuration file (rlaidlaw)
 
 * OODT-560 XmlStructFactory::getProductTypeMapXmlDocument does not 
   output virtual product types (Varun Ratnakar via mattmann)
