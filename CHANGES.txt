@@ -3,6 +3,10 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-590 modify pcs references in opsui webapp (riverma)
+
+* OODT-589 add pcs_home env variable to env script (riverma)
+
 * OODT-586 RADiX archetype does not properly deploy crawler (riverma)
 
 * OODT-603 Enable Resource Manager start/stop within RADiX (riverma)
