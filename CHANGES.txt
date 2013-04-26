@@ -3,6 +3,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-592 Provide Solr-based implementation of CAS File Manager (luca)
+
 * OODT-590 modify pcs references in opsui webapp (riverma)
 
 * OODT-589 add pcs_home env variable to env script (riverma)
