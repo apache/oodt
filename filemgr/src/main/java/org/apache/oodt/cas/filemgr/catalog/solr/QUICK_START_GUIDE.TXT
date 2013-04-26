@@ -1,0 +1,258 @@
+NOTE: THIS FILE WILL NOT BE CHECKED IN, RATHER TRANSFORMED INTO AN APACHE WIKI PAGE
+===================================================================================
+
+SOLR FILE MANAGER QUICK START GUIDE
+===================================
+
+This document is intended as a guide to quickly deploy and test a system composed of the OODT File Manager and Solr.
+For a more in-depth discussion of the Solr File manager architecture and customization, see the complete OODT Solr guide.
+
+We assume the system is deployed on a Unix platform (including Mac-OSX), and that the user has basic familiarity with the Unix operating system.
+The installation can take place in any directory on the system to where the user has access, for example under '/usr/local/oodt'. To install under any other
+directory, simply replace '/usr/local/oodt' with your custom path in the instructions below.
+
+
+Step 1: Deploy Solr within Tomcat or Jetty
+--------------------------------------------------------
+
+Detailed instructions on how to deploy Solr within a servlet container such as Tomcat or Jetty can be found on the Solr web site. 
+In short, choosing to install Solr within a Tomcat servlet container:
+
+o Download and install a fairly recent version of Tomcat (at the time of this writing, apache-tomcat-7.0.34.tar):
+
+cp apache-tomcat-7.0.34.tar /usr/local/oodt/.
+cd /usr/local/oodt
+tar xvf apache-tomcat-7.0.34.tar
+ln -s ln -s ./apache-tomcat-7.0.34 ./apache-tomcat
+
+o Download and install a Solr version of 4.X or above:
+
+cp solr-4.2.0.tar /usr/local/oodt/.
+cd /usr/local/oodt
+tar xvf solr-4.2.0.tar
+ln -s ./solr-4.2.0 ./solr
+
+o install the Solr war file into the Tomcat directory:
+cp /usr/local/oodt/solr/dist/solr-4.2.0.war /usr/local/oodt/apache-tomcat/webapps/solr.war
+
+(IMPORTANT: the Solr distribution MUST be renamed to solr.war as in the example command above)
+
+o copy the example Solr configuration directory to another location for subsequent modifications:
+cp -R /usr/local/oodt/solr/example/solr /usr/local/oodt/solr-home
+
+o test your installation by starting Tomcat with a pointer to the Solr home directory:
+
+export CATALINA_OPTS='-Dsolr.solr.home=/usr/local/oodt/solr-home'
+cd /usr/local/oodt/apache-tomcat/bin
+./catalina.sh start
+
+The Solr admin home page should be available at the following URL:
+http://localhost:8080/solr
+
+o stop Tomcat
+./catalina.sh stop
+
+
+Step 2: Deploy and configure the OODT File manager
+------------------------------------
+
+o Download and install the latest version of the OODT File Manager:
+
+cp cas-filemgr-0.6-SNAPSHOT-dist.tar.gz /usr/local/oodt/.
+cd /usr/local/oodt
+tar xvfz cas-filemgr-0.6-SNAPSHOT-dist.tar.gz
+ln -s cas-filemgr-0.6-SNAPSHOT ./cas-filemgr
+
+o Configure the File Manager installation to use a Solr back-end:
+
+edit the file /usr/local/oodt/cas-filemgr/etc/filemgr.properties and make the following changes:
+
+# use a SolrCatalogFactory
+filemgr.catalog.factory=org.apache.oodt.cas.filemgr.catalog.solr.SolrCatalogFactory 
+
+# point to the base URL of the Solr web application within the Tomcat container
+org.apache.oodt.cas.filemgr.catalog.solr.url=http://localhost:8080/solr
+
+o Configure the File Manager for ingesting products of type 'GenericFile':
+
+Still inside filemgr.properties, define the following properties:
+
+# point to the policy and mime-type specificiations for a 'GenericFile' type
+org.apache.oodt.cas.filemgr.repositorymgr.dirs=file:///usr/local/oodt/cas-filemgr/policy/core
+org.apache.oodt.cas.filemgr.validation.dirs=file:///usr/local/oodt/cas-filemgr/policy/core
+org.apache.oodt.cas.filemgr.mime.type.repository=file:///usr/local/oodt/cas-filemgr/etc/mime-types.xml
+
+Additionally, edit the file /usr/local/oodt/cas-filemgr/policy/core/product-types.xml and set the repository
+path for 'GenericFile' products to an existing location on your system, for example:
+
+<repository path="file:///usr/local/oodt/archive"/>
+
+Create the directory if not existing:
+
+mkdir -p /usr/local/oodt/archive
+
+o start the File manager
+
+cd /usr/local/oodt/cas-filemgr/bin
+./filemgr start
+
+Step 3: Configure Solr to use the default File Manager metadata schema
+----------------------------------------------------------------------
+
+o stop Tomcat if not done already:
+
+cd /usr/local/apache-tomcat/bin
+./catalina.sh stop
+
+o copy the OODT default schema.xml to the Solr configuration directory:
+cp /usr/local/oodt/cas-filemgr/etc/schema.xml /usr/local/oodt/solr-home/collection1/conf/schema.xml
+
+o restart Tomcat:
+
+export CATALINA_OPTS='-Dsolr.solr.home=/usr/local/oodt/solr-home'
+cd /usr/local/apache-tomcat/bin
+./catalina.sh start
+
+
+Step 4: Archive a test product
+------------------------------
+
+o Generate a sample file and associated metadata:
+
+echo 'Test File' > /tmp/test.txt
+touch /tmp/test.txt.met
+edit the file  /tmp/test.txt.met and insert the following content:
+
+<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+ <keyval>
+   <key>topic</key>
+   <val>computer science</val>
+ </keyval>
+</cas:metadata>
+
+o Request the File Manager to archive the file and associated metadata:
+
+cd /usr/local/oodt/cas-filemgr/bin
+./filemgr-client --url http://localhost:9000 --operation --ingestProduct --productName test.txt --productStructure Flat --productTypeName GenericFile --metadataFile file:///tmp/test.txt.met --refs file:///tmp/test.txt
+
+o Verify that the product has been archived:
+
+list the content of the archive directory:
+ls -lR /usr/local/oodt/archive/
+there should be a single sub-directory 'test.txt' containing a single file 'test.txt'
+
+in a browser, issue a query to Solr for all records in the index:
+http://localhost:8080/solr/select?q=*:*
+a single document should be returned, containing all the available metadata for the product just archived.
+Note how the metadata fields include the product id, the core CAS fields (starting with 'CAS....'), and additional fields parsed from the metadata file such as 'topic'.
+
+The response XML after ingesting one such document is reported below as an example:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">62</int>
+  <lst name="params">
+    <str name="indent">true</str>
+    <str name="q">*:*</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">137b60bb-da75-404b-a790-1f5adbd65324</str>
+    <str name="CAS.ProductId">137b60bb-da75-404b-a790-1f5adbd65324</str>
+    <str name="CAS.ProductTypeName">GenericFile</str>
+    <date name="CAS.ProductReceivedTime">2013-04-12T07:57:16Z</date>
+    <str name="CAS.ProductTransferStatus">RECEIVED</str>
+    <str name="CAS.ProductName">test.txt</str>
+    <str name="CAS.ProductTypeId">urn:oodt:GenericFile</str>
+    <str name="CAS.ProductStructure">Flat</str>
+    <arr name="topic">
+      <str>computer science</str>
+    </arr>
+    <arr name="FileLocation">
+      <str>/usr/local/oodt/archive/test.txt</str>
+    </arr>
+    <arr name="MimeType">
+      <str>text/plain</str>
+      <str>text</str>
+      <str>plain</str>
+    </arr>
+    <arr name="Filename">
+      <str>test.txt</str>
+    </arr>
+    <arr name="CAS.ReferenceFileSize">
+      <long>10</long>
+    </arr>
+    <arr name="CAS.ReferenceMimeType">
+      <str>text/plain</str>
+    </arr>
+    <arr name="CAS.ReferenceDatastore">
+      <str>file:/usr/local/oodt/archive/test.txt/test.txt</str>
+    </arr>
+    <arr name="CAS.ReferenceOriginal">
+      <str>file:///tmp/test.txt</str>
+    </arr>
+    <long name="_version_">1432118925052608512</long></doc>
+</result>
+</response>
+
+Step 5: Additional client commands examples
+-------------------------------------------
+
+o Querying the CAS catalog direcly through Solr with a browser:
+
+http://localhost:8080/solr/select/?q=*:*
+
+http://localhost:8080/solr/select/?q=science
+
+http://localhost:8080/solr/select/?q=CAS.ProductTypeName:GenericFile
+
+http://localhost:8080/solr/select/?q=CAS.ProductName:test.txt
+
+o Using the OODT query tool:
+
+cd /usr/local/oodt/cas-filemgr/bin
+
+./query_tool --url http://localhost:9000 --lucene -query 'CAS.ProductStructure:Flat'
+
+./query_tool --url http://localhost:9000 --lucene -query 'CAS.ProductTypeName:GenericFile'
+
+./query_tool --url http://localhost:9000 --sql -query 'SELECT * FROM GenericFile'
+
+./query_tool --url http://localhost:9000 --lucene -query 'CAS.ProductStructure:Flat AND CAS.ProductTransferStatus:RECEIVED'
+
+./query_tool --url http://localhost:9000 --lucene -query 'CAS.ProductName:test.txt'
+
+o Using the cas-filemgr-client:
+
+cd /usr/local/oodt/cas-filemgr/bin
+
+./filemgr-client --url http://localhost:9000 --operation --ingestProduct --productName test.txt --productStructure Flat --productTypeName GenericFile --metadataFile file:///tmp/test.txt.met --refs file:///tmp/test.txt
+
+./filemgr-client -op --deleteProductByName --productName test.txt --url http://localhost:9000
+
+./filemgr-client -op --deleteProductById --productId 14324704-2afe-4267-acad-503baf3af1d4 --url http://localhost:9000
+
+./filemgr-client -op --hasProduct --productName test.txt  --url http://localhost:9000
+
+./filemgr-client -op --getProductTypeByName --productTypeName GenericFile --url http://localhost:9000
+
+./filemgr-client -op --getNumProducts --productTypeName GenericFile --url http://localhost:9000
+
+./filemgr-client -op --getProductByName --productName test.txt --url http://localhost:9000
+
+./filemgr-client -op --getProductById --productId d749a67d-d012-4f55-b5ec-b53b6a91c676 --url http://localhost:9000
+
+./filemgr-client -op --dumpMetadata --productId d749a67d-d012-4f55-b5ec-b53b6a91c676 --url http://localhost:9000
+
+./filemgr-client -op --getFirstPage --productTypeName GenericFile --url http://localhost:9000
+
+./filemgr-client -op --getNextPage --curPage 1 --productTypeName GenericFile --url http://localhost:9000
+
+./filemgr-client -op --getPrevPage --curPage 2 --productTypeName GenericFile --url http://localhost:9000
+
+./filemgr-client -op --getLastPage --productTypeName GenericFile --url http://localhost:9000

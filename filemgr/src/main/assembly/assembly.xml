@@ -62,6 +62,7 @@ $Id$
       <outputDirectory>etc</outputDirectory>
       <includes>
         <include>mime-types.xml</include>
+        <include>schema.xml</include>
       </includes>
     </fileSet>
     <fileSet>
