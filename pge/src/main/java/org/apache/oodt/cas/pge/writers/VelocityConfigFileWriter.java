@@ -56,24 +56,23 @@ public class VelocityConfigFileWriter implements DynamicConfigFileWriter {
       Object... args) throws Exception {
     File configFile = new File(filePath);
     VelocityMetadata velocityMetadata = new VelocityMetadata(metadata);
-    try {
-      // Velocity requires you to set a path of where to look for
-      // templates. This path defaults to . if not set.
-      int slashIndex = ((String) args[0]).lastIndexOf('/');
-      String templatePath = ((String) args[0]).substring(0, slashIndex);
-      Velocity.setProperty("file.resource.loader.path", templatePath);
-      Velocity.init();
-      VelocityContext context = new VelocityContext();
-      context.put("metadata", velocityMetadata);
-      context.put("env", System.getenv());
-      String templateName = ((String) args[0]).substring(slashIndex);
-      Template template = Velocity.getTemplate(templateName);
-      StringWriter sw = new StringWriter();
-      template.merge(context, sw);
-      FileUtils.writeStringToFile(configFile, sw.toString());
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    // Velocity requires you to set a path of where to look for
+    // templates. This path defaults to . if not set.
+    int slashIndex = ((String) args[0]).lastIndexOf('/');
+    String templatePath = ((String) args[0]).substring(0, slashIndex);
+    Velocity.setProperty("file.resource.loader.path", templatePath);
+    // Initialize Velocity and set context up
+    Velocity.init();
+    VelocityContext context = new VelocityContext();
+    context.put("metadata", velocityMetadata);
+    context.put("env", System.getenv());
+    // Load template from templatePath
+    String templateName = ((String) args[0]).substring(slashIndex);
+    Template template = Velocity.getTemplate(templateName);
+    // Fill out template and write to file
+    StringWriter sw = new StringWriter();
+    template.merge(context, sw);
+    FileUtils.writeStringToFile(configFile, sw.toString());
     return configFile;
   }
 
