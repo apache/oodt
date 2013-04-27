@@ -26,9 +26,10 @@ the License.
   </parent>
   <artifactId>cas-pge</artifactId>
   <name>CAS PGE Adaptor Framework</name>
-  <description>Allows data processing jobs not written in comformance with the
+  <description>Allows data processing jobs not written in conformance with the
         PCS PGE interface to be run within the PCS.</description>
  <build>
+    <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory> 
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -135,6 +136,16 @@ the License.
       <artifactId>commons-lang</artifactId>
       <version>2.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.5</version>
+    </dependency>    
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.2.1</version>
+    </dependency>    
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon-dom</artifactId>

@@ -18,8 +18,8 @@ import junit.framework.TestCase;
 
 public class TestXmlHelper extends TestCase {
 
-   private static final String BLANK_PGE_CONFIG = "src/main/testdata/blank-pge-config.xml";
-   private static final String IMPORTS_ONLY_PGE_CONFIG = "src/main/testdata/imports-only-pge-config.xml";
+   private static final String BLANK_PGE_CONFIG = "src/test/resources/blank-pge-config.xml";
+   private static final String IMPORTS_ONLY_PGE_CONFIG = "src/test/resources/imports-only-pge-config.xml";
 
    // Tests that only root node is required.
    public void testLoadBlankXmlFile() throws FileNotFoundException {

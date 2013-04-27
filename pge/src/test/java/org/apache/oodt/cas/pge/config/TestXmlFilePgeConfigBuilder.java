@@ -40,14 +40,14 @@ import junit.framework.TestCase;
  */
 public class TestXmlFilePgeConfigBuilder extends TestCase {
 
-   public static final String CONFIG_FILE = "src/main/testdata/pge-config.xml";
+   public static final String CONFIG_FILE = "src/test/resources/pge-config.xml";
 
    public void testBuild() throws IOException {
       XmlFilePgeConfigBuilder builder = new XmlFilePgeConfigBuilder();
       PgeMetadata pgeMetadata = new PgeMetadata();
       pgeMetadata.replaceMetadata(CONFIG_FILE_PATH, CONFIG_FILE);
-      pgeMetadata.replaceMetadata("INPUT_FILE_1", "src/main/testdata/data-file-1.txt");
-      pgeMetadata.replaceMetadata("INPUT_FILE_2", "src/main/testdata/data-file-2.txt");
+      pgeMetadata.replaceMetadata("INPUT_FILE_1", "src/test/resources/data-file-1.txt");
+      pgeMetadata.replaceMetadata("INPUT_FILE_2", "src/test/resources/data-file-2.txt");
       pgeMetadata.replaceMetadata("WORKING_DIR", "/tmp");
       pgeMetadata.markAsDynamicMetadataKey();
       pgeMetadata.commitMarkedDynamicMetadataKeys();
@@ -56,8 +56,8 @@ public class TestXmlFilePgeConfigBuilder extends TestCase {
       // Verify metadata checks out.
       assertEquals(40, pgeMetadata.asMetadata().getAllKeys().size());
       assertEquals(CONFIG_FILE, pgeMetadata.getMetadata(CONFIG_FILE_PATH));
-      assertEquals("src/main/testdata/data-file-1.txt", pgeMetadata.getMetadata("INPUT_FILE_1"));
-      assertEquals("src/main/testdata/data-file-2.txt", pgeMetadata.getMetadata("INPUT_FILE_2"));
+      assertEquals("src/test/resources/data-file-1.txt", pgeMetadata.getMetadata("INPUT_FILE_1"));
+      assertEquals("src/test/resources/data-file-2.txt", pgeMetadata.getMetadata("INPUT_FILE_2"));
       assertEquals("/tmp", pgeMetadata.getMetadata("WORKING_DIR"));
       assertEquals(">", pgeMetadata.getMetadata("commons/GreaterThan"));
       assertEquals("<", pgeMetadata.getMetadata("commons/LessThan"));
@@ -74,8 +74,8 @@ public class TestXmlFilePgeConfigBuilder extends TestCase {
       assertEquals("Simple", pgeMetadata.getMetadata("GreetingEnum"));
       assertEquals("Custom", pgeMetadata.getMetadata("CustomGreetingEnum"));
       assertEquals("<Custom Greeting Here>", pgeMetadata.getMetadata("CustomGreetingEnumValue"));
-      assertEquals("src/main/testdata/data-file-1.txt", pgeMetadata.getMetadata("InputFile1"));
-      assertEquals("src/main/testdata/data-file-2.txt", pgeMetadata.getMetadata("InputFile2"));
+      assertEquals("src/test/resources/data-file-1.txt", pgeMetadata.getMetadata("InputFile1"));
+      assertEquals("src/test/resources/data-file-2.txt", pgeMetadata.getMetadata("InputFile2"));
       assertEquals("true", pgeMetadata.getMetadata("ForceStaging"));
       assertEquals(Lists.newArrayList("/tmp/staging/data-file-1.txt", "/tmp/staging/data-file-2.txt"), pgeMetadata.getAllMetadata("InputFiles"));
       assertEquals("/tmp/config", pgeMetadata.getMetadata("ConfigDir"));
@@ -109,14 +109,14 @@ public class TestXmlFilePgeConfigBuilder extends TestCase {
       assertEquals(5, pgeConfig.getExeCmds().size());
       assertEquals("echo /tmp/config/dyn-input.txt > PgeOutput.txt", pgeConfig.getExeCmds().get(0));
       assertEquals("echo /tmp/config/dyn-input.csv >> PgeOutput.txt", pgeConfig.getExeCmds().get(1));
-      assertEquals("if ( ! -e src/main/testdata/data-file-1.txt || ! -e src/main/testdata/data-file-2.txt ) then", pgeConfig.getExeCmds().get(2));
+      assertEquals("if ( ! -e src/test/resources/data-file-1.txt || ! -e src/test/resources/data-file-2.txt ) then", pgeConfig.getExeCmds().get(2));
       assertEquals("  exit 1", pgeConfig.getExeCmds().get(3));
       assertEquals("endif", pgeConfig.getExeCmds().get(4));
       assertEquals("/tmp", pgeConfig.getExeDir());
       assertEquals("csh", pgeConfig.getShellType());
 
       FileStagingInfo fileStagingInfo = pgeConfig.getFileStagingInfo();
-      assertEquals(Lists.newArrayList("src/main/testdata/data-file-1.txt", "src/main/testdata/data-file-2.txt"), fileStagingInfo.getFilePaths());
+      assertEquals(Lists.newArrayList("src/test/resources/data-file-2.txt", "src/test/resources/data-file-1.txt"), fileStagingInfo.getFilePaths());
       assertEquals("/tmp/staging", fileStagingInfo.getStagingDir());
       assertEquals(true, fileStagingInfo.isForceStaging());
 
