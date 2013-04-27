@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<pgeConfig>
-
-	<customMetadata>
-	  <metadata key="TextWriter" val="org.apache.oodt.cas.pge.writers.TextConfigFileWriter" />
-	  <metadata key="CsvWriter" val="org.apache.oodt.cas.pge.writers.CsvConfigFileWriter" />
-	</customMetadata>
-
-</pgeConfig>
