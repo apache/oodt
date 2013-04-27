@@ -43,14 +43,13 @@ public class VelocityConfigFileWriterTest extends TestCase {
     metadata.addMetadata("conference", "ApacheCon");
     File config = File.createTempFile("config", ".out");
     try {
-      vcfw.generateFile(config.toString(), metadata, LOG, url.getFile()
-          .substring(0, url.getFile().lastIndexOf('/')), "test-config.vm");
+      vcfw.generateFile(config.toString(), metadata, LOG, url.getFile());
     } catch (Exception e) {
       e.printStackTrace();
       fail(e.getMessage());
     }
     String output = FileUtils.readFileToString(config);
-    assertEquals("Welcome to ApacheCon Chris Paul!", output);
+    assertEquals(System.getenv().get("USER") + " Welcomes to ApacheCon Chris Paul!", output);
     config.delete();
   }
 
