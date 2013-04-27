@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Only imports other PgeConfig XML file for testing purposes.
+-->
+<pgeConfig>
+    
+    <import namespace="blank" file="blank-pge-config.xml"/>
+    <import file="pge-config.xml"/>
+
+</pgeConfig>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Only customMetadata other PgeConfig XML file for testing purposes.
+-->
+<pgeConfig>
+
+	<customMetadata>
+		<metadata key="GreaterThan" val="&gt;" />
+		<metadata key="LessThan" val="&lt;" />
+    <metadata key="Ampersand" val="&amp;" />
+    <metadata key="Apostrophe" val="&apos;" />
+    <metadata key="QuotationMark" val="&quot;" />		
+	</customMetadata>
+
+</pgeConfig>
