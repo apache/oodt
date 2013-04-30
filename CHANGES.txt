@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-408 Drop Spring logging levels from WARNING to SEVERE (Lewis John McGibbney
+  via mattmann, bfoster)
+
 * OODT-607 SciPgeWriter that is a simple MetKey template replacer (mattmann)
 
 * OODT-606 SciPgeWriter that uses ApacheVelocity (mattmann, pramirez)
