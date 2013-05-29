@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-615 Fixed bug in SolrCatalog that would throw exception if no matching products are found
+           (luca)
+
 * OODT-408 Drop Spring logging levels from WARNING to SEVERE (Lewis John McGibbney
   via mattmann, bfoster)
 
