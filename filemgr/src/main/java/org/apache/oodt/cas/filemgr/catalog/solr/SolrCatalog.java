@@ -515,7 +515,7 @@ public class SolrCatalog implements Catalog {
 		if (numFound>1) {
 			throw new CatalogException("Product query returned "+numFound+" results instead of 1!");
 		} else if (numFound==0) {
-			throw new CatalogException("No products found in response document");
+			return null; // no product found
 		} else {
 			return queryResponse.getCompleteProducts().get(0);
 		}
