@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-572 Replace mkdir with more multi-thread resilient forceMkdir in 
+  LocalDataTransferer (Tom Barber via mattmann)
+
 * OODT-559 Unit test failure in testDoDynamicReplacement for "Europe/London" 
   timezone (Tom Barber via mattmann)
 

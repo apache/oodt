@@ -277,19 +277,23 @@ public class LocalDataTransferer implements DataTransfer {
                && (fileRef.list() != null && fileRef.list().length == 0)) {
             // if it's a directory and it doesn't exist yet, we should
             // create it
-            // just in case there's no files in it
-            File dest = new File(directory, fileRef.getName());
-            if (!new File(new URI(dest.getAbsolutePath())).exists()) {
-               LOG.log(Level.FINER, "Directory: [" + dest.getAbsolutePath()
-                     + "] doesn't exist: creating it");
-               if (!new File(new URI(dest.getAbsolutePath())).mkdirs()) {
-                  LOG.log(
-                        Level.WARNING,
-                        "Unable to create directory: ["
-                              + dest.getAbsolutePath()
-                              + "] in local data transferer");
-               }
-            }
+             // just in case there's no files in it
+             File dest = new File(directory, fileRef.getName());
+             if (!new File(new URI(dest.getAbsolutePath())).exists()) {
+                 LOG.log(Level.FINER, "Directory: [" + dest.getAbsolutePath()
+                         + "] doesn't exist: creating it");
+                 try {
+                     FileUtils.forceMkdir(new File(new URI(dest.getAbsolutePath())));
+                 }
+                 catch(IOException e){
+                     LOG.log(
+                             Level.WARNING,
+                             "Unable to create directory: ["
+                                     + dest.getAbsolutePath()
+                                     + "] in local data transferer");
+
+                 }
+             }
          }
       }
    }
@@ -318,17 +322,20 @@ public class LocalDataTransferer implements DataTransfer {
             // if it's a directory and it doesn't exist yet, we should
             // create it
             // just in case there's no files in it
-            if (!new File(new URI(r.getDataStoreReference())).exists()) {
-               LOG.log(Level.FINER, "Directory: [" + r.getDataStoreReference()
-                     + "] doesn't exist: creating it");
-               if (!new File(new URI(r.getDataStoreReference())).mkdirs()) {
-                  LOG.log(
-                        Level.WARNING,
-                        "Unable to create directory: ["
-                              + r.getDataStoreReference()
-                              + "] in local data transferer");
-               }
-            }
+             if (!new File(new URI(r.getDataStoreReference())).exists()) {
+                 LOG.log(Level.FINER, "Directory: [" + r.getDataStoreReference()
+                         + "] doesn't exist: creating it");
+                 try {
+                     FileUtils.forceMkdir(new File(new URI(r.getDataStoreReference())));
+                 }
+                 catch(IOException e){
+                     LOG.log(
+                             Level.WARNING,
+                             "Unable to create directory: ["
+                                     + r.getDataStoreReference()
+                                     + "] in local data transferer");
+                 }
+             }
          }
       }
 
