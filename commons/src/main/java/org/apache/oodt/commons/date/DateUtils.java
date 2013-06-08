@@ -206,7 +206,7 @@ public class DateUtils {
     }
     
     public static long getTimeInMillis(Calendar cal, Calendar epoch) throws Exception {
-        long epochDiffInMilli = epoch.getTimeInMillis() - julianEpoch.getTimeInMillis() ;
+        long epochDiffInMilli = epoch.getTimeInMillis() - (julianEpoch.getTimeInMillis()+julianEpoch.getTimeZone().getOffset(julianEpoch.getTimeInMillis())) ;
         if (cal.getTimeZone().getID().equals("TAI"))
             epochDiffInMilli += getLeapSecsForDate(epoch) * 1000;
         long milliseconds = cal.getTimeInMillis();

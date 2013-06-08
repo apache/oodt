@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-559 Unit test failure in testDoDynamicReplacement for "Europe/London" 
+  timezone (Tom Barber via mattmann)
+
 * OODT-615 Fixed bug in SolrCatalog that would throw exception if no matching products are found
            (luca)
 
