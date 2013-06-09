@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-622 Updated svn:ignore properties for several modules to add Eclipse
+  configuration files to the ignore lists (rlaidlaw)
+
 * OODT-572 Replace mkdir with more multi-thread resilient forceMkdir in 
   LocalDataTransferer (Tom Barber via mattmann)
 
