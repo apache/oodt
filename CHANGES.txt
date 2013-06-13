@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-610 Added new empty package oodt.cas.product.service for future JAX-RS
+  classes (rlaidlaw)
+
 * OODT-609 Added Apache CXF dependency to the CAS-Product POM (rlaidlaw)
 
 * OODT-624 Updated maven-javadoc-plugin to v2.9 (rlaidlaw)
