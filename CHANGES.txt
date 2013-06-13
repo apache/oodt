@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-618 Implement ganglia XML parser (Rajith Siriwardana via mattmann)
+
 * OODT-625 Bake TraceableFile product policy into FM (mattmann)
 
 * OODT-622 Updated svn:ignore properties for several modules to add Eclipse
