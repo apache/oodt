@@ -23,6 +23,7 @@ $Id$
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
     <version>0.6-SNAPSHOT</version>
+    <relativePath>../core/pom.xml</relativePath>
   </parent>
   <build>
     <plugins>
