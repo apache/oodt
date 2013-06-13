@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-624 Updated maven-javadoc-plugin to v2.9 (rlaidlaw)
+
 * OODT-623 Addition of relativePath to the opendapps/pom.xml to help it locate
   the oodt-core POM (rlaidlaw)
 
