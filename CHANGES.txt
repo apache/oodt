@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-625 Bake TraceableFile product policy into FM (mattmann)
+
 * OODT-622 Updated svn:ignore properties for several modules to add Eclipse
   configuration files to the ignore lists (rlaidlaw)
 
