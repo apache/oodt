@@ -144,7 +144,7 @@ public class DBMSExecutor {
           for (Iterator<MappingFunc> j = fld.getFuncs().iterator(); j.hasNext();) {
             MappingFunc func = j.next();
             CDEValue origVal = new CDEValue(fld.getName(), elemDbVal);
-            CDEValue newVal = func.inverseTranslate(origVal);
+            CDEValue newVal = func.translate(origVal);
             elemDbVal = newVal.getVal();
           }
 

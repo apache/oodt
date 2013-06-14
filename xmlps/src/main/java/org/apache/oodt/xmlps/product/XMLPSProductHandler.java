@@ -330,7 +330,7 @@ public class XMLPSProductHandler implements QueryHandler {
                         MappingFunc func = j.next();
                         CDEValue origVal = new CDEValue(fld.getName(),
                                 litElem.getValue());
-                        CDEValue newVal = func.translate(origVal);
+                        CDEValue newVal = func.inverseTranslate(origVal);
                         litElem.setValue(newVal.getVal());
                     }
 

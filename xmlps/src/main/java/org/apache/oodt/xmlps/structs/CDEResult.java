@@ -149,7 +149,7 @@ public class CDEResult extends Result {
       MappingField fld = mapping.getFieldByName(value.getCdeName());
       if (fld != null) {
         for (MappingFunc func : fld.getFuncs()) {
-          CDEValue newValue = func.inverseTranslate(value);
+          CDEValue newValue = func.translate(value);
           value.setVal(newValue.getVal());
         }
       }
