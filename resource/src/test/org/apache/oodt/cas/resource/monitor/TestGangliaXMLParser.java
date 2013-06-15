@@ -139,4 +139,14 @@ public class TestGangliaXMLParser extends TestCase {
         assertEquals("Total free disk space", extraData.get(GangliaMetKeys.DESC));
         assertEquals("Disk Space Available", extraData.get(GangliaMetKeys.TITLE));
     }
+
+    /**
+     * test the clusters in the grid
+     */
+    public void testGridClusters(){
+        Cluster localCluster = gridConfiguration.get(0);
+        Cluster remoteCluster = gridConfiguration.get(1);
+        assertEquals("localcluster", localCluster.getName());
+        assertEquals("remotecluster", remoteCluster.getName());
+    }
 }

@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-628 Multiple cluster Ganglia xml parse error (Rajith Siriwardana via mattmann)
+
 * OODT-610 Added new empty package oodt.cas.product.service for future JAX-RS
   classes (rlaidlaw)
 

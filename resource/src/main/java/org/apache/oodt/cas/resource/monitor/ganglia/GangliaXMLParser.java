@@ -48,13 +48,6 @@ public class GangliaXMLParser extends DefaultHandler implements GangliaMetKeys {
     /**
      * {@inheritDoc}
      */
-    public void endDocument() throws SAXException {
-        this.grid.add(currentCluster);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public void endElement(String uri, String localName, String name) throws SAXException {
         if (name.equals(METRIC)) {
             this.currentMetric.setExtraData(extraData);
@@ -66,6 +59,7 @@ public class GangliaXMLParser extends DefaultHandler implements GangliaMetKeys {
 
         } else if (name.equals(CLUSTER)) {
             this.currentCluster.setHosts(currentClusterHosts);
+            this.grid.add(currentCluster);
         }
     }
 
