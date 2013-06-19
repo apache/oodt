@@ -196,8 +196,13 @@ public class SolrCatalog implements Catalog {
 	public Product getProductByName(String productName) throws CatalogException {
 		
 		CompleteProduct cp = getCompleteProductByName(productName);	
-		LOG.info("Found product name="+productName+" id="+cp.getProduct().getProductId());
-		return cp.getProduct();
+		if (cp!=null) {
+		    LOG.info("Found product name="+productName+" id="+cp.getProduct().getProductId());
+		    return cp.getProduct();
+		} else {
+		    LOG.info("Product with name="+productName+" not found");
+		    return null;
+		}
 		
 	}
 
