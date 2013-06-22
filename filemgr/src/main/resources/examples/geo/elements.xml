@@ -16,62 +16,13 @@
   limitations under the License.
 -->
 <cas:elements xmlns:cas="http://oodt.apache.org/components/cas">
-  <element id="urn:oodt:ProductId" name="CAS.ProductId">
-    <dcElement>Identifier</dcElement>
+  <element id="urn:oodt:Latitude" name="Latitude">
     <!--
       You can optionally specify a 'trim' tag to identify whether or not you
       want newlines trimmed from the element description. To turn off trimming
       (now done by default), include the following with your description
       definition: trim="false"
     -->
-    <description>
-      A product's unique identifier within the CAS namespace.
-    </description>
-  </element>
-  <element id="urn:oodt:ProductName" name="CAS.ProductName">
-    <dcElement>Title</dcElement>
-    <description>
-      A product's name within the CAS namespace.
-    </description>
-  </element>
-  <element id="urn:oodt:ProductReceivedTime" name="CAS.ProductReceivedTime">
-    <description>
-      The ISO 8601 formatted time that a product was received.
-    </description>
-    <dcElement />
-  </element>
-  <element id="urn:oodt:Filename" name="Filename">
-    <description>
-      The names of the files that represent a product.
-    </description>
-    <dcElement />
-  </element>
-  <element id="urn:oodt:FileLocation" name="FileLocation">
-    <description>
-      The locations of the files that represent a product.
-    </description>
-    <dcElement />
-  </element>
-  <element id="urn:oodt:ProductType" name="ProductType">
-    <description>
-      Type of product, as specified by, e.g. a data bible.
-    </description>
-    <dcElement />
-  </element>
-  <element id="urn:oodt:ProductStructure" name="ProductStructure">
-    <description>
-      Whether or not a product is flat, e.g. a set of independent files, or
-      hierarchical, e.g. a directory structure.
-    </description>
-    <dcElement />
-  </element>
-  <element id="urn:oodt:MimeType" name="MimeType">
-    <description>
-      The IETF MIME type of a product.
-    </description>
-    <dcElement />
-  </element>
-  <element id="urn:oodt:Latitude" name="Latitude">
     <description>
       Geographical latitude data for a product.
     </description>
@@ -80,12 +31,6 @@
   <element id="urn:oodt:Longitude" name="Longitude">
     <description>
       Geographical longitude data for a product.
-    </description>
-    <dcElement />
-  </element>
-  <element id="urn:test:DataVersion" name="DataVersion">
-    <description>
-      The version of a data product.
     </description>
     <dcElement />
   </element>

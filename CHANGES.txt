@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-637 Geo Product Type policy includes duplicative elements (mattmann)
+
 * OODT-635 Fix trivial errors in Basic CAS Curation Example (lewismc via mattmann, Bill Rideout)
 
 * OODT-636 Fixed Javadoc warnings in CAS-Product (rlaidlaw)
