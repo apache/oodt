@@ -55,7 +55,7 @@ import javax.servlet.ServletException;
 public class DataDeliveryServlet extends HttpServlet implements
     DataDeliveryKeys {
 
-  /** {@inheridDoc} */
+  /** {@inheritDoc} */
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
@@ -87,7 +87,7 @@ public class DataDeliveryServlet extends HttpServlet implements
     }
   }
 
-  /** {@inheridDoc} */
+  /** {@inheritDoc} */
   public void doGet(HttpServletRequest req, HttpServletResponse res)
       throws ServletException, IOException {
     doPut(req, res);
@@ -101,7 +101,7 @@ public class DataDeliveryServlet extends HttpServlet implements
    * 
    * In addition, an optional <code>format</code> option can be specified to
    * indicate that the product data be zipped up and delivered back as a
-   * {@link ZipFile}.
+   * zip file.
    * 
    * @param req
    *          Servlet request

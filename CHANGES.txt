@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-636 Fixed Javadoc warnings in CAS-Product (rlaidlaw)
+
 * OODT-634 Fixed lingering bug in Solr Catalog implementation that would still not return null
            if no matching product is found (luca)
 
