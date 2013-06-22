@@ -40,6 +40,13 @@
         <key>ProductType</key>
         <val>LocationAwareProduct</val>
       </keyval>
+      <!-- if you are using the org.apache.oodt.cas.filemgr.versioning.ProductTypeMetVersioner 
+           you can set a met key like below to define your filePathSpec
+      <keyval>
+        <key>filePathSpec</key>
+        <val>/[Filename]</val>
+      </keyval>
+      -->      
     </metadata>
     <metExtractors>
       <extractor
