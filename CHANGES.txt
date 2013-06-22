@@ -4,11 +4,12 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-635 Fix trivial errors in Basic CAS Curation Example (lewismc via mattmann, Bill Rideout)
+
 * OODT-636 Fixed Javadoc warnings in CAS-Product (rlaidlaw)
 
 * OODT-634 Fixed lingering bug in Solr Catalog implementation that would still not return null
            if no matching product is found (luca)
-
 * OODT-628 Multiple cluster Ganglia xml parse error (Rajith Siriwardana via mattmann)
 
 * OODT-610 Added new empty package oodt.cas.product.service for future JAX-RS
