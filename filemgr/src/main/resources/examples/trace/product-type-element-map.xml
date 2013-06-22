@@ -22,5 +22,16 @@
   <type id="urn:oodt:TraceableFile" parent="urn:oodt:GenericFile">
        <element id="urn:oodt:InputFiles"/>
        <element id="urn:oodt:OutputFiles"/>
+       <element id="urn:oodt:JobId"/>
+       <element id="urn:oodt:ProductionDateTime"/>
+       <element id="urn:oodt:ExecutablePathnames"/> 
+       <element id="urn:oodt:ExecutableVersions"/>
+       <element id="urn:oodt:ApplicationSuccessFlag"/>
+       <element id="urn:oodt:TaskSuccessFlag" />
+       <element id="urn:oodt:JobSuccessFlag"/>
+       <element id="urn:oodt:PGEVersion"/>
+       <element id="urn:oodt:ProcessingNode"/>
+       <element id="urn:oodt:ExecutionTime" />
+       <element id="urn:oodt:CmdLineParameters"/>       
   </type>
 </cas:producttypemap>
