@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-640 Added version number for maven-war-plugin to CAS-Product POM
+  (rlaidlaw)
+
 * OODT-639 Add a versioner based on Product Type Metadata (mattmann)
 
 * OODT-638 Include more provenance metadata in trace product type (mattmann)
