@@ -27,7 +27,6 @@
          http://pear.php.net/dtd/package-2.0
          http://pear.php.net/dtd/package-2.0.xsd">
   <name>Apache_OODT_CAS_Filemgr</name>
-  <uri>http://oodt.apache.org/components/maven/webapp/filemgr</uri>
   <channel>pear.apache.org/oodt</channel>
   <summary>PHP CAS Filemgr Client and supporting API classes</summary>
   <description>
@@ -41,10 +40,10 @@
     <email>chris.mattmann@jpl.nasa.gov</email>
     <active>yes</active>
   </lead>
-  <date>{ current-date() }</date>
+  <date>2013-06-29</date>
   <version>
-    <release>0.4</release>
-    <api>0.4</api>
+    <release>0.6.0</release>
+    <api>0.6.0</api>
   </version>
   <stability>
     <release>stable</release>
