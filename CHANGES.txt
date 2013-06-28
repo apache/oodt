@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.6 - Current Development
 --------------------------------------------
 
+* OODT-633 Update PEAR package.xml files for upcoming release. (gmcdonald)
+
 * OODT-640 Added version number for maven-war-plugin to CAS-Product POM
   (rlaidlaw)
 
