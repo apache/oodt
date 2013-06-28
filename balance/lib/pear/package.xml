@@ -57,36 +57,36 @@
   </notes>
   <contents>
     <dir name="/" baseinstalldir="Org/Apache/Oodt/Balance">
-      <dir name="Boot">
-        <file name="bootstrap.php" role="php"/>
+    <dir name="Boot">
+      <file name="bootstrap.php" role="php"/>
+    </dir>
+    <dir name="Core">
+      <file name="Application.class.php" role="php"/>
+      <file name="ApplicationDataResponse.class.php" role="php"/>
+      <file name="ApplicationRequest.class.php" role="php"/>
+      <file name="ApplicationResponse.class.php" role="php"/>
+    </dir>
+    <dir name="Interfaces">
+      <file name="IApplicationAuthenticationProvider.php" role="php"/>
+      <file name="IApplicationAuthorizationProvider.php"  role="php"/>
+      <file name="IApplicationDataProvider.php" role="php"/>
+      <file name="IApplicationErrorProvider.php" role="php"/>
+      <file name="IApplicationWidget.php" role="php"/>
+    </dir>
+    <dir name="Providers">
+      <dir name="Authentication">
+        <file name="LDAPAuthenticationProvider.class.php" role="php"/>
       </dir>
-      <dir name="Core">
-		<file name="Application.class.php" role="php"/>
-        <file name="ApplicationDataResponse.class.php" role="php"/>
-		<file name="ApplicationRequest.class.php" role="php"/>
-		<file name="ApplicationResponse.class.php" role="php"/>
+      <dir name="Authorization">
+        <file name="LDAPAuthorizationProvider.class.php" role="php"/>
       </dir>
-      <dir name="Interfaces">
-        <file name="IApplicationAuthenticationProvider.php" role="php"/>
-        <file name="IApplicationAuthorizationProvider.php"  role="php"/>
-        <file name="IApplicationDataProvider.php" role="php"/>
-        <file name="IApplicationErrorProvider.php" role="php"/>
-        <file name="IApplicationWidget.php" role="php"/>
-      </dir>
-      <dir name="Providers">
-        <dir name="Authentication">
-          <file name="LDAPAuthenticationProvider.class.php" role="php"/>
-        </dir>
-        <dir name="Authorization">
-          <file name="LDAPAuthorizationProvider.class.php" role="php"/>
-        </dir>
-        <dir name="Data">
-          <file name="MySqlDataProvider.class.php" role="php"/>
-        </dir>    
-        <dir name="Error">
-          <file name="DefaultErrorProvider.class.php" role="php"/>
-        </dir> 
-      </dir>
+      <dir name="Data">
+        <file name="MySqlDataProvider.class.php" role="php"/>
+      </dir>    
+      <dir name="Error">
+        <file name="DefaultErrorProvider.class.php" role="php"/>
+      </dir> 
+    </dir>
     </dir><!-- / -->
   </contents>
   <dependencies>
