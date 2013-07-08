@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <requiredProperties>
     <requiredProperty key="oodt">
-      <defaultValue>0.6-SNAPSHOT</defaultValue>
+      <defaultValue>0.6</defaultValue>
     </requiredProperty>
   </requiredProperties>
   <modules>
