@@ -4,7 +4,7 @@
 
   <groupId>org.apache.oodt</groupId>
   <artifactId>radix-archetype</artifactId>
-  <version>0.6-SNAPSHOT</version>
+  <version>0.6</version>
   <packaging>maven-archetype</packaging>
 
   <name>OODT :: Archetypes :: RADiX</name>
