@@ -1,7 +1,7 @@
 Apache OODT Change Log
 ======================
 
-Release 0.6 - Current Development
+Release 0.6 - 07/08/2013
 --------------------------------------------
 
 * OODT-633 Update PEAR package.xml files for upcoming release. (gmcdonald)
