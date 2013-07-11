@@ -18,7 +18,7 @@
 package org.apache.oodt.cas.resource.monitor;
 
 import junit.framework.TestCase;
-import org.apache.oodt.cas.resource.monitor.exceptions.MonitoringException;
+import org.apache.oodt.cas.resource.monitor.exceptions.GangliaMonitorException;
 import org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys;
 import org.apache.oodt.cas.resource.monitor.ganglia.GangliaXMLParser;
 import org.apache.oodt.cas.resource.monitor.ganglia.configuration.Cluster;
@@ -47,12 +47,13 @@ public class TestGangliaXMLParser extends TestCase {
      * {@inheritDoc}
      * Read gangliaXMLdump.xml and build the grid configuration
      */
-    protected void setUp() throws MonitoringException {
+    protected void setUp() throws GangliaMonitorException, IOException {
         StringBuilder stringBuffer = new StringBuilder();
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader("." + File.separator +
-                    "src" + File.separator + "testdata" + File.separator + "gangliaXMLdump.xml"));
+                    "src" + File.separator + "testdata" + File.separator + "resourcemon"
+                    + File.separator + "gangliaXMLdump.xml"));
             String line = reader.readLine();
             while (line != null) {
                 stringBuffer.append(line);
@@ -60,7 +61,7 @@ public class TestGangliaXMLParser extends TestCase {
             }
             reader.close();
         } catch (IOException e) {
-            throw new MonitoringException("Unable to read the sample monitoring report from the file: "
+            throw new IOException("Unable to read the sample monitoring report from the file: "
                     + e.getMessage());
         }
 
@@ -74,11 +75,11 @@ public class TestGangliaXMLParser extends TestCase {
             parser.parse(new InputSource(new StringReader(buffer)), gangliaXMLParser);
             gridConfiguration = gangliaXMLParser.getGridConfiguration();
         } catch (ParserConfigurationException e) {
-            throw new MonitoringException("Error while parsing: " + e.getMessage());
+            throw new GangliaMonitorException("Error while parsing: " + e.getMessage());
         } catch (SAXException e) {
-            throw new MonitoringException("Error while parsing the XML: " + e.getMessage());
+            throw new GangliaMonitorException("Error while parsing the XML: " + e.getMessage());
         } catch (IOException e) {
-            throw new MonitoringException("I/O error: " + e.getMessage());
+            throw new GangliaMonitorException("I/O error: " + e.getMessage());
         }
     }
 

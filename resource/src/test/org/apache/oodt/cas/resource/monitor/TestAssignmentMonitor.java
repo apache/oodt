@@ -24,6 +24,8 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 //JDK imports
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -36,6 +38,7 @@ import junit.framework.TestCase;
 /**
  * @author mattmann
  * @author bfoster
+ * @author rajith
  * @version $Revision$
  * 
  * <p>
@@ -46,11 +49,8 @@ public class TestAssignmentMonitor extends TestCase {
 
     private AssignmentMonitor assgnMon = null;
 
-    protected void setUp() {
-        System.setProperty("org.apache.oodt.cas.resource.nodes.dirs",
-                "file:"
-                        + new File("./src/main/resources/examples")
-                                .getAbsolutePath());
+    protected void setUp() throws IOException {
+        generateTestConfig();
         assgnMon = new AssignmentMonitorFactory().createMonitor();
     }
 
@@ -132,6 +132,25 @@ public class TestAssignmentMonitor extends TestCase {
         
         assertTrue(nodes.containsAll(this.assgnMon.getNodes())
                 && this.assgnMon.getNodes().containsAll(nodes));
+    }
+
+    public void testGetLoad() throws MonitorException {
+        ResourceNode resourceNode = assgnMon.getNodeById("localhost");
+
+        /*since the Gmetad is offline load value from the ResourceMonitor
+        * should be node's capacity, therefore AssignmentMonitors
+        * load value is 0*/
+        assertEquals(0, assgnMon.getLoad(resourceNode));
+    }
+
+    private void generateTestConfig() throws IOException {
+        String propertiesFile = "." + File.separator + "src" + File.separator +
+                "testdata" + File.separator + "test.resource.properties";
+        System.getProperties().load(new FileInputStream(new File(propertiesFile)));
+        System.setProperty("org.apache.oodt.cas.resource.nodes.dirs",
+                "file:" + new File("." + File.separator + "src" + File.separator +
+                        "main" + File.separator + "resources" + File.separator +
+                        "examples").getAbsolutePath());
     }
 
 }

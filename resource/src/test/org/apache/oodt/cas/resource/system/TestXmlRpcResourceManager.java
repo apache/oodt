@@ -20,6 +20,8 @@ package org.apache.oodt.cas.resource.system;
 //JDK imports
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
@@ -33,12 +35,13 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import junit.framework.TestCase;
 
 /**
- * 
+ *
  * Test harness for the {@link XmlRpcResourceManager}.
- * 
+ *
  * @author mattmann
+ * @author rajith
  * @version $Revision$
- * 
+ *
  */
 public class TestXmlRpcResourceManager extends TestCase {
 
@@ -79,7 +82,7 @@ public class TestXmlRpcResourceManager extends TestCase {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see junit.framework.TestCase#setUp()
    */
   @Override
@@ -90,7 +93,7 @@ public class TestXmlRpcResourceManager extends TestCase {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see junit.framework.TestCase#tearDown()
    */
   @Override
@@ -113,34 +116,12 @@ public class TestXmlRpcResourceManager extends TestCase {
 
   }
 
-  private void generateTestConfiguration() {
+    private void generateTestConfiguration() throws IOException {
     Properties config = new Properties();
-    config.setProperty("resource.batchmgr.factory",
-        "org.apache.oodt.cas.resource.batchmgr.XmlRpcBatchMgrFactory");
-    config.setProperty("resource.monitor.factory",
-        "org.apache.oodt.cas.resource.monitor.AssignmentMonitorFactory");
-    config.setProperty("resource.scheduler.factory",
-        "org.apache.oodt.cas.resource.scheduler.LRUSchedulerFactory");
-    config.setProperty("resource.jobqueue.factory",
-        "org.apache.oodt.cas.resource.jobqueue.JobStackJobQueueFactory");
-    config.setProperty("resource.jobrepo.factory",
-        "org.apache.oodt.cas.resource.jobrepo.MemoryJobRepositoryFactory");
-    config.setProperty("org.apache.oodt.cas.resource.nodes.repo.factory",
-        "org.apache.oodt.cas.resource.noderepo.XmlNodeRepositoryFactory");
-    config.setProperty("org.apache.oodt.cas.resource.queues.repo.factory",
-        "org.apache.oodt.cas.resource.queuerepo.XmlQueueRepositoryFactory");
 
-    config.setProperty(
-        "org.apache.oodt.cas.resource.jobqueue.jobstack.maxstacksize", "1000");
-    config.setProperty("org.apache.oodt.cas.resource.scheduler.wait.seconds",
-        "20");
-
-    config.setProperty(
-        "org.apache.oodt.cas.resource.system.xmlrpc.requestTimeout.minutes",
-        "20");
-    config.setProperty(
-        "org.apache.oodt.cas.resource.system.xmlrpc.connectionTimeout.minutes",
-        "60");
+    String propertiesFile = "." + File.separator + "src" + File.separator +
+            "testdata" + File.separator + "test.resource.properties";
+    System.getProperties().load(new FileInputStream(new File(propertiesFile)));
 
     // stage policy
     File tmpPolicyDir = null;

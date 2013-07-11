@@ -1,6 +1,13 @@
 Apache OODT Change Log
 ======================
 
+Release 0.7 - Current Development
+---------------------------------
+
+* OODT-619 Implement the capability to pull status of resource 
+  nodes from ganglia (Rajith Siriwardana via mattmann)
+
+
 Release 0.6 - 07/08/2013
 --------------------------------------------
 

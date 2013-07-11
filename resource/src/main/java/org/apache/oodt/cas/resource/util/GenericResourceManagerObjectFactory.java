@@ -31,6 +31,10 @@ import org.apache.oodt.cas.resource.jobrepo.JobRepository;
 import org.apache.oodt.cas.resource.jobrepo.JobRepositoryFactory;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.monitor.MonitorFactory;
+import org.apache.oodt.cas.resource.monitor.ResourceMonitor;
+import org.apache.oodt.cas.resource.monitor.ResourceMonitorFactory;
+import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator;
+import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculatorFactory;
 import org.apache.oodt.cas.resource.noderepo.NodeRepository;
 import org.apache.oodt.cas.resource.noderepo.NodeRepositoryFactory;
 import org.apache.oodt.cas.resource.queuerepo.QueueRepository;
@@ -44,7 +48,7 @@ import org.apache.oodt.cas.resource.structs.JobInstance;
  * @author mattmann
  * @author bfoster
  * @version $Revision$
- * 
+ *
  * <p>
  * Generic object creation facilities for the Resource Manager.
  * </p>
@@ -62,7 +66,7 @@ public final class GenericResourceManagerObjectFactory {
   /**
    * Constructs a new {@link JobInput} implementation from the given
    * <code>className</code>.
-   * 
+   *
    * @param className
    *          The implementation class for the {@link JobInput}
    * @return A new {@link JobInput} implementation.
@@ -94,7 +98,7 @@ public final class GenericResourceManagerObjectFactory {
   /**
    * Constructs a new {@link JobInstance} implementation from the given
    * <code>className</code>.
-   * 
+   *
    * @param className
    *          The name of the implementation class for the {@link JobInstance}
    *          to construct.
@@ -127,7 +131,7 @@ public final class GenericResourceManagerObjectFactory {
   /**
    * Creates a new {@link QueueRepository} implementation from the given
    * {@link QueueRepositoryFactory} class name.
-   * 
+   *
    * @param serviceFactory
    *          The class name of the {@link QueueRepositoryFactory} to use to create new
    *          {@link QueueRepository}s.
@@ -160,11 +164,11 @@ public final class GenericResourceManagerObjectFactory {
 
     return null;
   }
-  
+
   /**
    * Creates a new {@link NodeRepository} implementation from the given
    * {@link QueueRepositoryFactory} class name.
-   * 
+   *
    * @param serviceFactory
    *          The class name of the {@link NodeRepositoryFactory} to use to create new
    *          {@link QueueRepository}s.
@@ -197,11 +201,11 @@ public final class GenericResourceManagerObjectFactory {
 
     return null;
   }
-  
+
   /**
    * Creates a new {@link JobQueue} implementation from the given
    * {@link JobQueueFactory} class name.
-   * 
+   *
    * @param serviceFactory
    *          The class name of the {@link JobQueueFactory} to use to create new
    *          {@link JobQueue}s.
@@ -234,11 +238,11 @@ public final class GenericResourceManagerObjectFactory {
 
     return null;
   }
-  
+
   /**
    * Creates a new Batchmgr implementation from a given String name of the
    * corresponding {@link BatchmgrFactory}.
-   * 
+   *
    * @param serviceFactory
    *          The name of the {@link BatchmgrFactory} class to use to create
    *          {@link Batchmgr}s.
@@ -275,7 +279,7 @@ public final class GenericResourceManagerObjectFactory {
   /**
    * Creates a new {@link Monitor} implementation from the given String name of
    * the {@link MonitorFactory}.
-   * 
+   *
    * @param serviceFactory
    *          The name of the {@link MonitorFactory} class to use to create
    *          {@link Monitor}s.
@@ -313,7 +317,7 @@ public final class GenericResourceManagerObjectFactory {
   /**
    * Creates a new {@link Scheduler} from the given String name of the
    * {@link SchedulerFactory}.
-   * 
+   *
    * @param serviceFactory
    *          The class name of the {@link SchedulerFactory} to use to create
    *          the new {@link Scheduler}.
@@ -346,7 +350,7 @@ public final class GenericResourceManagerObjectFactory {
 
     return null;
   }
-  
+
   /**
    * Creates a new {@link JobRepository} implementation from the given
    * name of the {@link JobRepositoryFactory}.
@@ -381,5 +385,80 @@ public final class GenericResourceManagerObjectFactory {
 
     return null;
   }
+
+
+    /**
+     * Creates a new {@link org.apache.oodt.cas.resource.monitor.ResourceMonitor} implementation from the given String name of
+     * the {@link org.apache.oodt.cas.resource.monitor.ResourceMonitorFactory}.
+     *
+     * @param serviceFactory
+     *          The name of the {@link org.apache.oodt.cas.resource.monitor.ResourceMonitorFactory} class to use to create
+     *          {@link org.apache.oodt.cas.resource.monitor.ResourceMonitor}s.
+     * @return A new {@link org.apache.oodt.cas.resource.monitor.ResourceMonitor} implementation.
+     */
+    public static ResourceMonitor getResourceMonitorFromServiceFactory(String serviceFactory){
+        Class clazz;
+        ResourceMonitorFactory factory;
+
+        try {
+            clazz = Class.forName(serviceFactory);
+            factory = (ResourceMonitorFactory) clazz.newInstance();
+            return factory.createResourceMonitor();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            LOG.log(Level.WARNING,
+                    "ClassNotFoundException when loading resource monitor factory class "
+                            + serviceFactory + " Message: " + e.getMessage());
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            LOG.log(Level.WARNING,
+                    "InstantiationException when loading resource monitor factory class "
+                            + serviceFactory + " Message: " + e.getMessage());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            LOG.log(Level.WARNING,
+                    "IllegalAccessException when loading resource monitor factory class "
+                            + serviceFactory + " Message: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * Creates a new {@link org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator} implementation from the given String name of
+     * the {@link ResourceMonitorFactory}.
+     *
+     * @param serviceFactory
+     *          The name of the {@link org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculatorFactory} class to use to create
+     *          {@link org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator}s.
+     * @return A new {@link org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator} implementation.
+     */
+    public static LoadCalculator getLoadCalculatorFromServiceFactory(String serviceFactory){
+        Class clazz;
+        LoadCalculatorFactory factory;
+
+        try {
+            clazz = Class.forName(serviceFactory);
+            factory = (LoadCalculatorFactory) clazz.newInstance();
+            return factory.createLoadCalculator();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            LOG.log(Level.WARNING,
+                    "ClassNotFoundException when loading load calculator factory class "
+                            + serviceFactory + " Message: " + e.getMessage());
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            LOG.log(Level.WARNING,
+                    "InstantiationException when loading load calculator factory class "
+                            + serviceFactory + " Message: " + e.getMessage());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            LOG.log(Level.WARNING,
+                    "IllegalAccessException when loading load calculator factory class "
+                            + serviceFactory + " Message: " + e.getMessage());
+        }
+
+        return null;
+    }
 
 }

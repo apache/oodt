@@ -584,7 +584,7 @@
         </CLUSTER>
         <CLUSTER NAME="remotecluster" LOCALTIME="1370183645" OWNER="oodt" LATLONG="N42.87 W117.32"
                  URL="http://www.my2cluster.org/">
-            <HOST NAME="localhost" IP="127.0.0.1" REPORTED="1370187637" TN="10" TMAX="20" DMAX="0" LOCATION="0,0,0"
+            <HOST NAME="remotenode" IP="127.0.0.1" REPORTED="1370187637" TN="10" TMAX="20" DMAX="0" LOCATION="0,0,0"
                   GMOND_STARTED="1370186237">
                 <METRIC NAME="disk_free" VAL="307.790" TYPE="double" UNITS="GB" TN="143" TMAX="180" DMAX="0"
                         SLOPE="both" SOURCE="gmond">

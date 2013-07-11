@@ -15,20 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.resource.monitor.exceptions;
+package org.apache.oodt.cas.resource.monitor;
 
 /**
  * @author rajith
  * @version $Revision$
+ *
+ * reates new {@link ResourceMonitor} implementations.
  */
-public class MonitoringException extends Exception {
+public interface ResourceMonitorFactory {
 
     /**
-     * Make a new exception.
-     *
-     * @param message the error message
+     * @return A new implementation of the {@link ResourceMonitor} interface.
      */
-    public MonitoringException(String message) {
-        super(message);
-    }
+    public ResourceMonitor createResourceMonitor();
 }

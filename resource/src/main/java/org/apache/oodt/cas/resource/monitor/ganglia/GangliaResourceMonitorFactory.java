@@ -15,58 +15,46 @@
  * limitations under the License.
  */
 
+package org.apache.oodt.cas.resource.monitor.ganglia;
 
-package org.apache.oodt.cas.resource.monitor;
-
-//OODT imports
+import org.apache.oodt.cas.resource.monitor.ResourceMonitor;
+import org.apache.oodt.cas.resource.monitor.ResourceMonitorFactory;
+import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 
-//JDK imports
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author woollard
- * @author bfoster
  * @author rajith
  * @version $Revision$
- *
- * <p>
- * Creates implementations of {@link AssignmentMonitor}s.
- * </p>
- *
  */
-public class AssignmentMonitorFactory implements MonitorFactory {
+public class GangliaResourceMonitorFactory implements ResourceMonitorFactory {
 
-    private static final Logger LOG = Logger
-            .getLogger(AssignmentMonitorFactory.class.getName());
+    private static final Logger LOG = Logger.getLogger(GangliaResourceMonitorFactory.class.getName());
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * gov.nasa.jpl.oodt.cas.resource.monitor.MonitorFactory#createMonitor()
+    /**
+     * {@inheritDoc}
      */
-    public AssignmentMonitor createMonitor() {
+    @Override
+    public ResourceMonitor createResourceMonitor() {
         try {
-            String nodeRepoFactoryStr = System.getProperty(
-                    "org.apache.oodt.cas.resource.nodes.repo.factory");
-            String resourceMonitorStr = System
-                    .getProperty("org.apache.oodt.cas.resource.monitor.factory");
+            String loadCalculatorFactoryStr =  System
+                    .getProperty("org.apache.oodt.cas.resource.monitor.loadcalc.factory");
+            String nodeRepoFactoryStr = System
+                    .getProperty("org.apache.oodt.cas.resource.nodes.repo.factory");
 
             List<ResourceNode> resourceNodes = GenericResourceManagerObjectFactory
                     .getNodeRepositoryFromFactory(nodeRepoFactoryStr).loadNodes();
-            ResourceMonitor resourceMonitor = GenericResourceManagerObjectFactory
-                    .getResourceMonitorFromServiceFactory(resourceMonitorStr);
+            LoadCalculator loadCalculator = GenericResourceManagerObjectFactory
+                    .getLoadCalculatorFromServiceFactory(loadCalculatorFactoryStr);
 
-            return new AssignmentMonitor(resourceNodes, resourceMonitor);
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed to create Assignment Monitor : "
-                    + e.getMessage(), e);
+            return new GangliaResourceMonitor(loadCalculator, resourceNodes);
+        } catch (Exception e){
+            LOG.log(Level.SEVERE, "Failed to create Resource Monitor : " + e.getMessage(), e);
             return null;
         }
     }
-
 }
