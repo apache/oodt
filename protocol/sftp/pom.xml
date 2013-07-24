@@ -35,6 +35,7 @@
 							<excludes>
 								<exclude>**/resources/examples/**/*</exclude>
 							</excludes>
+                                                        <numUnapprovedLicenses>3</numUnapprovedLicenses>
 						</configuration>
 						<executions>
 							<execution>

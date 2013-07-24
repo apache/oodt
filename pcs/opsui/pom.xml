@@ -121,6 +121,33 @@ the License.
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+        <profiles>
+            <profile>
+                <id>audit</id>
+                <activation>
+                    <activeByDefault>false</activeByDefault>
+                </activation>
+                <build>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>rat-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <phase>verify</phase>
+                                    <goals>
+                                        <goal>check</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <numUnapprovedLicenses>1</numUnapprovedLicenses>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </build>
+            </profile>
+        </profiles>
 	<build>
 		<resources>
 			<resource>

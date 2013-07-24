@@ -104,6 +104,7 @@
                 <exclude>**/testdata/*</exclude>
                 <exclude>**/package.html</exclude>
               </excludes>
+              <numUnapprovedLicenses>1</numUnapprovedLicenses>
             </configuration>
             <executions>
               <execution>

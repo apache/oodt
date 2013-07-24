@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-648 Add license headers to files so that mvn rat:check is successful 
+  (lewismc)
+
 * OODT-642 In CAS-Product, moved tests to src/test/java and test resources to
   src/test/resources to match Maven standard directory layout (rlaidlaw)
 

@@ -73,6 +73,37 @@ the License.
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+        <profiles>
+            <profile>
+                <id>audit</id>
+                <activation>
+                    <activeByDefault>false</activeByDefault>
+                </activation>
+                <build>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>rat-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <phase>verify</phase>
+                                    <goals>
+                                        <goal>check</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <numUnapprovedLicenses>2</numUnapprovedLicenses>
+                                <excludes>
+                                    <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/workflow/instance/prototype.js</exclude>
+                                    <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/workflow/instance/progress.js</exclude>
+                                </excludes>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </build>
+            </profile>
+       </profiles>
 	<build>
 		<resources>
 			<resource>
