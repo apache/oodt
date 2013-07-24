@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-642 In CAS-Product, moved tests to src/test/java and test resources to
+  src/test/resources to match Maven standard directory layout (rlaidlaw)
+
 * OODT-619 Implement the capability to pull status of resource 
   nodes from ganglia (Rajith Siriwardana via mattmann)
 
