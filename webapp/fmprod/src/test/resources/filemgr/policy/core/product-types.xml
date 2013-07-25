@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+<type id="urn:oodt:GenericFile" name="GenericFile">
+<description>The default product type for any kind of file.</description>
+<repository path="file:///usr/local/src/oodt/webapp/fmprod/src/test/resources/filemgr/repository"/>
+<versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner"/>
+</type>
+<type id="urn:oodt:LocationAwareProduct" name="LocationAwareProduct">
+<description>A product type with location metadata.</description>
+<repository path="file:///usr/local/src/oodt/webapp/fmprod/src/test/resources/filemgr/repository"/>
+<versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner"/>
+</type>
+</cas:producttypes>
