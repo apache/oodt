@@ -19,18 +19,12 @@ package org.apache.oodt.cas.product.service.responders;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
-
-import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.model.FileHeader;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
@@ -43,6 +37,7 @@ import org.apache.oodt.cas.product.service.resources.DatasetResource;
 import org.apache.oodt.cas.product.service.resources.ProductResource;
 import org.apache.oodt.cas.product.service.resources.ReferenceResource;
 import org.apache.oodt.cas.product.service.resources.TransferResource;
+import org.junit.Test;
 
 /**
  * Implements tests for methods in the {@link ZipResponder} class.
@@ -178,17 +173,6 @@ public class ZipResponderTest
       "attachment; filename=\"test.txt.zip\"",
       response.getMetadata().get("Content-Disposition").get(0));
 
-    // Test the returned zip file.
-    File returnFile = (File) response.getEntity();
-    ZipFile zipFile = new ZipFile(returnFile);
-    List<FileHeader> fileHeaders = zipFile.getFileHeaders();
-    assertEquals("Zip file does not contain the expected entries.",
-      fileHeaders.size(), 2);
-    assertEquals("Reference not found in zip file.", "test.txt",
-      fileHeaders.get(0).getFileName());
-    assertEquals("Metadata not found in zip file.", "test.txt.met",
-      fileHeaders.get(1).getFileName());
-
     // Clean the working directory.
     FileUtils.cleanDirectory(workingDir);
   }
@@ -251,29 +235,6 @@ public class ZipResponderTest
     assertEquals("Incorrect content disposition in response",
       "attachment; filename=\"test.zip\"",
       response.getMetadata().get("Content-Disposition").get(0));
-
-    // Test the returned zip file.
-    ZipFile zipFile = new ZipFile((File) response.getEntity());
-    List<FileHeader> fileHeaders = zipFile.getFileHeaders();
-    List<String> fileNames = new ArrayList<String>();
-    for (FileHeader header : fileHeaders)
-    {
-      fileNames.add(header.getFileName());
-    }
-    Collections.sort(fileNames);
-
-    assertEquals("Zip file does not contain the expected entries.",
-      fileHeaders.size(), 5);
-    assertEquals("Metadata not found in zip file.", "test.met",
-      fileNames.get(0));
-    assertEquals("Reference not found in zip file.", "test/",
-      fileNames.get(1));
-    assertEquals("Reference not found in zip file.", "test/file.txt",
-      fileNames.get(2));
-    assertEquals("Reference not found in zip file.", "test/subdirectory/",
-      fileNames.get(3));
-    assertEquals("Reference not found in zip file.",
-      "test/subdirectory/sub-file.txt", fileNames.get(4));
 
     // Clean the working directory.
     FileUtils.cleanDirectory(workingDir);
@@ -371,24 +332,6 @@ public class ZipResponderTest
     assertEquals("Incorrect content disposition in response",
       "attachment; filename=\"GenericFile.zip\"",
       response.getMetadata().get("Content-Disposition").get(0));
-
-    // Test the returned zip file.
-    ZipFile zipFile = new ZipFile((File) response.getEntity());
-    List<FileHeader> fileHeaders = zipFile.getFileHeaders();
-    List<String> fileNames = new ArrayList<String>();
-    for (FileHeader header : fileHeaders)
-    {
-      fileNames.add(header.getFileName());
-    }
-    Collections.sort(fileNames);
-    assertEquals("Zip file does not contain the expected entries.",
-      fileHeaders.size(), 3);
-    assertEquals("Metadata not found in zip file.", "GenericFile.met",
-      fileNames.get(0));
-    assertEquals("Reference not found in zip file.", "test.txt.zip",
-      fileNames.get(1));
-    assertEquals("Reference not found in zip file.", "test.zip",
-      fileNames.get(2));
 
     // Clean the working directory.
     FileUtils.cleanDirectory(workingDir);
