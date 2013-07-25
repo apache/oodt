@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-611 Implement JAX-RS services to access File Manager products as raw
+  data (rlaidlaw)
+
 * OODT-648 Add license headers to files so that mvn rat:check is successful 
   (lewismc)
 
