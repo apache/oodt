@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.product.service.exceptions.BadRequestException;
 import org.apache.oodt.cas.product.service.exceptions.NotFoundException;
 import org.apache.oodt.cas.product.service.responders.Responder;
@@ -79,12 +80,14 @@ public class DatasetResource
 
     try
     {
-      XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(new URL(
-        context.getInitParameter("filemgr.url")));
+      XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(
+        new URL(PathUtils.replaceEnvVariables(
+          context.getInitParameter("filemgr.url"))));
       productType = client.getProductTypeById(typeID);
 
       // Set a working directory to store product files.
-      setWorkingDirPath(context.getInitParameter("filemgr.working.dir"));
+      setWorkingDirPath(PathUtils.replaceEnvVariables(
+        context.getInitParameter("filemgr.working.dir")));
       String productDirPath = getWorkingDirPath();
       productDirPath += productDirPath.endsWith("/") ? "" : "/";
       productDirPath += productType.getName();

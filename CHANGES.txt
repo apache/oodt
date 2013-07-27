@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-649 Add PathUtils.replaceEnvVariables wrapper around calls to
+  context.getInitParameter to process environment variables (rlaidlaw)
+
 * OODT-611 Implement JAX-RS services to access File Manager products as raw
   data (rlaidlaw)
 

@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.product.service.exceptions.NotFoundException;
 import org.apache.oodt.cas.product.service.responders.Responder;
 import org.apache.oodt.cas.product.service.responders.ResponderFactory;
@@ -98,9 +99,11 @@ public class ProductResource
   {
     try
     {
-      setWorkingDirPath(context.getInitParameter("filemgr.working.dir"));
-      XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(new URL(
-        context.getInitParameter("filemgr.url")));
+      setWorkingDirPath(PathUtils.replaceEnvVariables(
+        context.getInitParameter("filemgr.working.dir")));
+      XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(
+        new URL(PathUtils.replaceEnvVariables(
+          context.getInitParameter("filemgr.url"))));
       product = client.getProductById(productID);
       product.setProductReferences(client.getProductReferences(product));
       metadata = client.getMetadata(product);

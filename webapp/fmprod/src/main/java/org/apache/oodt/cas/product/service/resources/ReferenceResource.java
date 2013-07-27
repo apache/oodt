@@ -30,6 +30,7 @@ import javax.ws.rs.core.Response;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.product.service.exceptions.NotFoundException;
 import org.apache.oodt.cas.product.service.responders.Responder;
 import org.apache.oodt.cas.product.service.responders.ResponderFactory;
@@ -70,9 +71,11 @@ public class ReferenceResource
   {
     try
     {
-      setWorkingDirPath(context.getInitParameter("filemgr.working.dir"));
-      XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(new URL(
-        context.getInitParameter("filemgr.url")));
+      setWorkingDirPath(PathUtils.replaceEnvVariables(
+        context.getInitParameter("filemgr.working.dir")));
+      XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(
+        new URL(PathUtils.replaceEnvVariables(
+          context.getInitParameter("filemgr.url"))));
       Product product = client.getProductById(productID);
       List<Reference> references = client.getProductReferences(product);
       this.reference = references.get(refIndex);
