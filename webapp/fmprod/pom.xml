@@ -39,9 +39,13 @@
   <build>
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
     <plugins>
+      <!--
+        For plugins by Maven we don't need a groupId specification because
+        the groupId org.apache.maven.plugins is assumed by default.
+      -->
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
-        <version>2.1.1</version>
+        <version>2.4</version>
         <configuration>
           <webResources>
             <resource>
@@ -54,17 +58,9 @@
               <targetPath>META-INF/</targetPath>
             </resource>
           </webResources>
-          <warSourceDirectory>src/main/webapp</warSourceDirectory>
-          <containerConfigXML>
-            src/main/resources/cas-product-tomcat-5.5.9.xml
-          </containerConfigXML>
         </configuration>
       </plugin>
       <plugin>
-        <!--
-          NOTE: We don't need a groupId specification because the group is
-          org.apache.maven.plugins ...which is assumed by default.
-        -->
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptorRefs>
