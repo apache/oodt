@@ -243,6 +243,16 @@ the License.
                 <role>committer</role>
             </roles>
         </developer>
+        <developer>
+            <id>siriwardana</id>
+            <name>Rajith Siriwardana</name>
+            <email>siriwardana@apache.org</email>
+            <organization>Independent Consultant</organization>
+            <timezone>+5:30</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
     </developers>
     <licenses>
         <license>
