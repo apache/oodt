@@ -41,7 +41,8 @@ import org.junit.Test;
 public class FileResponderTest
 {
   /**
-   * Tests the {@link Response} returned by the createResponse method when a
+   * Tests the {@link Response} returned by the
+   * {@link FileResponder#createResponse createResponse} method when a
    * {@link ReferenceResource} is supplied as the argument, where the reference
    * has both a file extension and a MIME type.
    * @throws Exception (IOException) if getCanonicalPath fails.  This would be
@@ -73,7 +74,8 @@ public class FileResponderTest
 
 
   /**
-   * Tests the {@link Response} returned by the createResponse method when a
+   * Tests the {@link Response} returned by the
+   * {@link FileResponder#createResponse createResponse} method when a
    * {@link ReferenceResource} is supplied as the argument, where the reference
    * has a file extension but no MIME type.
    * @throws Exception (IOException) if getCanonicalPath fails.  This would be
@@ -104,7 +106,8 @@ public class FileResponderTest
 
 
   /**
-   * Tests the {@link Response} returned by the createResponse method when a
+   * Tests the {@link Response} returned by the
+   * {@link FileResponder#createResponse createResponse} method when a
    * {@link ReferenceResource} is supplied as the argument, where the reference
    * has a MIME type but no file extension.
    * @throws Exception (IOException) if getCanonicalPath fails.  This would be
@@ -136,7 +139,8 @@ public class FileResponderTest
 
 
   /**
-   * Tests the {@link Response} returned by the createResponse method when a
+   * Tests the {@link Response} returned by the
+   * {@link FileResponder#createResponse createResponse} method when a
    * {@link ReferenceResource} is supplied as the argument, where the reference
    * has neither a MIME type nor a file extension.
    * @throws Exception (IOException) if getCanonicalPath fails.  This would be
@@ -169,8 +173,8 @@ public class FileResponderTest
 
   /**
    * Tests the status code and content of the {@link Response} returned by the
-   * createResponse method when a {@link ProductResource} is supplied as the
-   * argument.
+   * {@link FileResponder#createResponse createResponse} method when a
+   * {@link ProductResource} is supplied as the argument.
    * @throws Exception (IOException) if getCanonicalPath fails.  This would be
    * considered a test failure, so it is propagated upwards for JUnit to handle
    */
@@ -223,8 +227,9 @@ public class FileResponderTest
 
   /**
    * Tests the status code and message of the {@link Response} returned by the
-   * createResponse method when a {@link ProductResource} is supplied as the
-   * argument and the requested reference does not exist.
+   * {@link FileResponder#createResponse createResponse} method when a
+   * {@link ProductResource} is supplied as the argument and the requested
+   * reference does not exist.
    */
   @Test
   public void testCreateResponseProductResourceNoReferences()
@@ -254,8 +259,8 @@ public class FileResponderTest
 
   /**
    * Tests the status code and message of the {@link Response} returned by the
-   * createResponse method when a {@link DatasetResource} is supplied as the
-   * argument.
+   * {@link FileResponder#createResponse createResponse} method when a
+   * {@link DatasetResource} is supplied as the argument.
    */
   @Test
   public void testCreateResponseDatasetResource()
@@ -272,8 +277,8 @@ public class FileResponderTest
 
   /**
    * Tests the status code and message of the {@link Response} returned by the
-   * createResponse method when a {@link TransferResource} is supplied as the
-   * argument.
+   * {@link FileResponder#createResponse createResponse} method when a
+   * {@link TransferResource} is supplied as the argument.
    */
   @Test
   public void testCreateResponseTransferResource()

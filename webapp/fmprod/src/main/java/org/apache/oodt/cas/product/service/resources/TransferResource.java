@@ -27,7 +27,7 @@ import javax.ws.rs.core.Response;
  * @version $Revision$
  */
 @Path("/transfer")
-public class TransferResource
+public class TransferResource extends Resource
 {
   // Additional response status constant not found in Response.Status class.
   private static final int RESPONSE_STATUS_NOT_IMPLEMENTED = 501;

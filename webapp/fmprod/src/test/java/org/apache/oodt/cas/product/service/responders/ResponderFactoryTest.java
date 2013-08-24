@@ -29,8 +29,9 @@ import org.junit.Test;
 public class ResponderFactoryTest
 {
   /**
-   * Tests that the createResponder method returns a {@link NullResponder} when
-   * null is supplied as the argument.
+   * Tests that the {@link ResponderFactory#createResponder createResponder}
+   * method returns a {@link NullResponder} when null is supplied as the
+   * argument.
    */
   @Test
   public void testCreateNullResponder()
@@ -42,9 +43,9 @@ public class ResponderFactoryTest
 
 
   /**
-   * Tests that the createResponder method returns an
-   * {@link UnrecognizedFormatResponder} when an unrecognized string is supplied
-   * as the argument.
+   * Tests that the {@link ResponderFactory#createResponder createResponder}
+   * method returns an {@link UnrecognizedFormatResponder} when an unrecognized
+   * string is supplied as the argument.
    */
   @Test
   public void testCreateUnrecognizedFormatResponder()
@@ -57,8 +58,9 @@ public class ResponderFactoryTest
 
 
   /**
-   * Tests that the createResponder method returns a {@link FileResponder} when
-   * "file" is supplied as the argument.
+   * Tests that the {@link ResponderFactory#createResponder createResponder}
+   * method returns a {@link FileResponder} when "file" is supplied as the
+   * argument.
    */
   @Test
   public void testCreateFileResponder()
@@ -70,8 +72,9 @@ public class ResponderFactoryTest
 
 
   /**
-   * Tests that the createResponder method returns a {@link ZipResponder} when
-   * "zip" is supplied as the argument.
+   * Tests that the {@link ResponderFactory#createResponder createResponder}
+   * method returns a {@link ZipResponder} when "zip" is supplied as the
+   * argument.
    */
   @Test
   public void testCreateZipResponder()

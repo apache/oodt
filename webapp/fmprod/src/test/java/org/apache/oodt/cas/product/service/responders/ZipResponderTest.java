@@ -48,8 +48,8 @@ public class ZipResponderTest
 {
   /**
    * Tests the status code and message of the {@link Response} returned by the
-   * createResponse method when a {@link ReferenceResource} is supplied as the
-   * argument.
+   * {@link ZipResponder#createResponse createResponse} method when a
+   * {@link ReferenceResource} is supplied as the argument.
    * @throws Exception (IOException) and this would be considered a test
    * failure, so it's propagated upwards for JUnit to handle
    */
@@ -66,7 +66,7 @@ public class ZipResponderTest
 
     ReferenceResource resource = new ReferenceResource();
     resource.setReference(reference);
-    resource.setWorkingDirPath(workingDir.getCanonicalPath());
+    resource.setWorkingDir(new File(workingDir.getCanonicalPath()));
 
     Responder responder = new ZipResponder();
     Response response = responder.createResponse(resource);
@@ -85,8 +85,8 @@ public class ZipResponderTest
 
   /**
    * Tests the status code and message of the {@link Response} returned by the
-   * createResponse method when a {@link ReferenceResource} is supplied as the
-   * argument.
+   * {@link ZipResponder#createResponse createResponse} method when a
+   * {@link ReferenceResource} is supplied as the argument.
    * @throws Exception (IOException) and this would be considered a test
    * failure, so it's propagated upwards for JUnit to handle
    */
@@ -103,7 +103,7 @@ public class ZipResponderTest
 
     ReferenceResource resource = new ReferenceResource();
     resource.setReference(reference);
-    resource.setWorkingDirPath(workingDir.getCanonicalPath());
+    resource.setWorkingDir(new File(workingDir.getCanonicalPath()));
 
     Responder responder = new ZipResponder();
     Response response = responder.createResponse(resource);
@@ -122,8 +122,8 @@ public class ZipResponderTest
 
   /**
    * Tests the status code and message of the {@link Response} returned by the
-   * createResponse method when a {@link ProductResource} is supplied as the
-   * argument.
+   * {@link ZipResponder#createResponse createResponse} method when a
+   * {@link ProductResource} is supplied as the argument.
    * @throws Exception (FileNotFoundException, IOException, ZipException) and
    * any of these would be considered test failures, so they're propagated
    * upwards for JUnit to handle
@@ -161,7 +161,7 @@ public class ZipResponderTest
     ProductResource resource = new ProductResource();
     resource.setProduct(product);
     resource.setMetadata(metadata);
-    resource.setWorkingDirPath(workingDir.getCanonicalPath());
+    resource.setWorkingDir(new File(workingDir.getCanonicalPath()));
 
     // Test the response.
     Responder responder = new ZipResponder();
@@ -181,8 +181,8 @@ public class ZipResponderTest
 
   /**
    * Tests the status code and message of the {@link Response} returned by the
-   * createResponse method when a {@link ProductResource} is supplied as the
-   * argument.
+   * {@link ZipResponder#createResponse createResponse} method when a
+   * {@link ProductResource} is supplied as the argument.
    * @throws Exception (FileNotFoundException, IOException, ZipException) and
    * any of these would be considered test failures, so they're propagated
    * upwards for JUnit to handle
@@ -224,7 +224,7 @@ public class ZipResponderTest
     ProductResource resource = new ProductResource();
     resource.setProduct(product);
     resource.setMetadata(metadata);
-    resource.setWorkingDirPath(workingDir.getCanonicalPath());
+    resource.setWorkingDir(new File(workingDir.getCanonicalPath()));
 
     // Test the response.
     Responder responder = new ZipResponder();
@@ -244,8 +244,8 @@ public class ZipResponderTest
 
   /**
    * Tests the status code and message of the {@link Response} returned by the
-   * createResponse method when a {@link DatasetResource} is supplied as the
-   * argument.
+   * {@link ZipResponder#createResponse createResponse} method when a
+   * {@link DatasetResource} is supplied as the argument.
    * @throws Exception (FileNotFoundException, IOException, ZipException) and
    * any of these would be considered test failures, so they're propagated
    * upwards for JUnit to handle
@@ -314,13 +314,13 @@ public class ZipResponderTest
     // Create a dataset resource and add the products to it.
     DatasetResource resource = new DatasetResource();
     resource.setProductType(productType);
-    resource.setWorkingDirPath(workingDir.getCanonicalPath());
-    String productDirPath = resource.getWorkingDirPath() + "/"
-      + productType.getName();
+    String workingDirPath = workingDir.getCanonicalPath();
+    resource.setWorkingDir(new File(workingDirPath));
+    File productDir = new File(workingDirPath + "/" + productType.getName());
 
     List<ProductResource> resources = new ArrayList<ProductResource>();
-    resources.add(new ProductResource(hProd, hMeta, productDirPath));
-    resources.add(new ProductResource(fProd, fMeta, productDirPath));
+    resources.add(new ProductResource(hProd, hMeta, productDir));
+    resources.add(new ProductResource(fProd, fMeta, productDir));
     resource.setProductResources(resources);
 
     // Test the zip response for the dataset product.
@@ -341,8 +341,8 @@ public class ZipResponderTest
 
   /**
    * Tests the status code and message of the {@link Response} returned by the
-   * createResponse method when a {@link TransferResource} is supplied as the
-   * argument.
+   * {@link ZipResponder#createResponse createResponse} method when a
+   * {@link TransferResource} is supplied as the argument.
    */
   @Test
   public void testCreateResponseTransferResource()

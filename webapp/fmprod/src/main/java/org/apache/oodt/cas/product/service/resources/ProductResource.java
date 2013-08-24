@@ -17,19 +17,18 @@
 
 package org.apache.oodt.cas.product.service.resources;
 
-import java.net.URL;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.product.service.exceptions.NotFoundException;
 import org.apache.oodt.cas.product.service.responders.Responder;
 import org.apache.oodt.cas.product.service.responders.ResponderFactory;
@@ -39,8 +38,11 @@ import org.apache.oodt.cas.product.service.responders.ResponderFactory;
  * @author rlaidlaw
  * @version $Revision$
  */
-public class ProductResource
+public class ProductResource extends Resource
 {
+  private static final Logger LOGGER = Logger.getLogger(ProductResource.class
+    .getName());
+
   // The product associated with the resource.
   private Product product;
 
@@ -49,13 +51,6 @@ public class ProductResource
 
   // The index of the reference within the product's reference list (default 0).
   private int index;
-
-  // The path to the working directory used to store temporary files for
-  // responses.
-  private String workingDirPath;
-
-  @Context
-  private ServletContext context;
 
 
 
@@ -71,14 +66,14 @@ public class ProductResource
    * ProductResource instances.
    * @param product the product associated with the resource
    * @param metadata the metadata associated with the resource
-   * @param workingDirPath the working directory for streaming files
+   * @param workingDir the working directory for streaming files
    */
   public ProductResource(Product product, Metadata metadata,
-    String workingDirPath)
+    File workingDir)
   {
     this.product = product;
     this.metadata = metadata;
-    this.workingDirPath = workingDirPath;
+    setWorkingDir(workingDir);
   }
 
 
@@ -99,11 +94,8 @@ public class ProductResource
   {
     try
     {
-      setWorkingDirPath(PathUtils.replaceEnvVariables(
-        context.getInitParameter("filemgr.working.dir")));
-      XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(
-        new URL(PathUtils.replaceEnvVariables(
-          context.getInitParameter("filemgr.url"))));
+      setWorkingDir(getContextWorkingDir());
+      XmlRpcFileManagerClient client = getContextClient();
       product = client.getProductById(productID);
       product.setProductReferences(client.getProductReferences(product));
       metadata = client.getMetadata(product);
@@ -114,8 +106,9 @@ public class ProductResource
     }
     catch (Exception e)
     {
-      throw new NotFoundException("The requested resource could not be found. "
-        + e.getMessage());
+      String message = "Unable to find the requested resource.";
+      LOGGER.log(Level.FINE, message, e);
+      throw new NotFoundException(message + " " + e.getMessage());
     }
   }
 
@@ -155,17 +148,6 @@ public class ProductResource
 
 
   /**
-   * Gets the working directory path.
-   * @return the workingDirPath
-   */
-  public String getWorkingDirPath()
-  {
-    return workingDirPath;
-  }
-
-
-
-  /**
    * Sets the product.
    * @param product the product to set
    */
@@ -194,27 +176,5 @@ public class ProductResource
   public void setIndex(int index)
   {
     this.index = index;
-  }
-
-
-
-  /**
-   * Sets the working directory path.
-   * @param workingDirPath the workingDirPath to set
-   */
-  public void setWorkingDirPath(String workingDirPath)
-  {
-    this.workingDirPath = workingDirPath;
-  }
-
-
-
-  /**
-   * Sets the servlet context.
-   * @param context the servlet context to set.
-   */
-  public void setServletContext(ServletContext context)
-  {
-    this.context = context;
   }
 }

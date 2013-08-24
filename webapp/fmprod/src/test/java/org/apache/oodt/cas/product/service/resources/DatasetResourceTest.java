@@ -17,17 +17,12 @@
 
 package org.apache.oodt.cas.product.service.resources;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import javax.servlet.ServletContext;
 import javax.ws.rs.core.Response;
 
-import org.apache.cxf.endpoint.Server;
-import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.transport.local.LocalConduit;
-import org.apache.cxf.transport.local.LocalTransportFactory;
-import org.easymock.EasyMock;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,38 +34,13 @@ import org.junit.Test;
  */
 public class DatasetResourceTest extends ResourceTestBase
 {
-  // The web server.
-  private static Server server;
-
-
-
   /**
-   * Starts a web server using the local transport protocol.  Uses a mock
-   * servlet context to inject context parameters into the JAX-RS resource.
+   * Starts up the web server.
    */
   @BeforeClass
-  public static void startWebServer()
+  public static void setUpBeforeClass()
   {
-    // The JAX-RS resource to test.
-    DatasetResource resource = new DatasetResource();
-
-    // Create a web server for testing using local transport.
-    JAXRSServerFactoryBean sf = new JAXRSServerFactoryBean();
-    sf.setTransportId(LocalTransportFactory.TRANSPORT_ID);
-    sf.setServiceBean(resource);
-    sf.setAddress("local://service");
-    server = sf.create();
-
-    // Use a mock servlet context for the resource.
-    // This is done after creating the server to avoid being overwritten by
-    // the server's default context.
-    ServletContext mockContext = EasyMock.createNiceMock(ServletContext.class);
-    EasyMock.expect(mockContext.getInitParameter("filemgr.url"))
-      .andReturn(getFileManagerUrl()).anyTimes();
-    EasyMock.expect(mockContext.getInitParameter("filemgr.working.dir"))
-      .andReturn(getWorkingDirLocation()).anyTimes();
-    EasyMock.replay(mockContext);
-    resource.setServletContext(mockContext);
+    startWebServer(new DatasetResource());
   }
 
 
@@ -79,11 +49,9 @@ public class DatasetResourceTest extends ResourceTestBase
    * Shuts down the web server.
    */
   @AfterClass
-  public static void stopWebServer()
+  public static void tearDownAfterClass()
   {
-    // Stop the server.
-    server.stop();
-    server.destroy();
+    stopWebServer();
   }
 
 
@@ -95,7 +63,7 @@ public class DatasetResourceTest extends ResourceTestBase
   @Test
   public void testGetZipResponseGenericFileDataset()
   {
-    WebClient client = WebClient.create("local://service");
+    WebClient client = WebClient.create(SERVER_URL);
     WebClient.getConfig(client).getRequestContext()
       .put(LocalConduit.DIRECT_DISPATCH, Boolean.TRUE);
     client.accept("application/zip");
@@ -121,7 +89,7 @@ public class DatasetResourceTest extends ResourceTestBase
   @Test
   public void testGetZipResponseLocationAwareDataset()
   {
-    WebClient client = WebClient.create("local://service");
+    WebClient client = WebClient.create(SERVER_URL);
     WebClient.getConfig(client).getRequestContext()
       .put(LocalConduit.DIRECT_DISPATCH, Boolean.TRUE);
     client.accept("application/zip");

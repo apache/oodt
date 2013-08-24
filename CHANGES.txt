@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-651 Improve parameter initialization, validation and logging for
+  CAS-Product web application (rlaidlaw)
+
 * OODT-650 Remove duplicate context container example from CAS-Product web
   application (rlaidlaw)
 

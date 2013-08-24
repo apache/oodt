@@ -23,30 +23,6 @@
 
   <display-name>CAS Product Server</display-name>
 
-
-  <context-param>
-    <param-name>filemgr.url</param-name>
-    <param-value>http://localhost:9000</param-value>
-  </context-param>
-
-  <context-param>
-    <param-name>filemgr.ns</param-name>
-    <param-value>
-      cas|urn:oodt:|rdf|http://www.w3.org/1999/02/22-rdf-syntax-ns#
-    </param-value>
-  </context-param>
-
-  <context-param>
-    <param-name>filemgr.ns.default</param-name>
-    <param-value>cas</param-value>
-  </context-param>
-
-  <context-param>
-    <param-name>filemgr.working.dir</param-name>
-    <param-value>/tmp</param-value>
-  </context-param>
-
-
   <servlet>
     <servlet-name>RSSServlet</servlet-name>
     <servlet-class>
@@ -92,7 +68,7 @@
   <servlet>
     <servlet-name>CXFServlet</servlet-name>
     <servlet-class>
-      org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet
+      org.apache.oodt.cas.product.service.servlets.CasProductJaxrsServlet
     </servlet-class>
     <init-param>
       <param-name>jaxrs.serviceClasses</param-name>
@@ -107,6 +83,7 @@
       <param-name>jaxrs.scope</param-name>
       <param-value>prototype</param-value>
     </init-param>
+    <load-on-startup>1</load-on-startup>
   </servlet>
 
 

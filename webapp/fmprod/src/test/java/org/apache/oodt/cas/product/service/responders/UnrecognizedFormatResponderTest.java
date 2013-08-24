@@ -37,8 +37,8 @@ public class UnrecognizedFormatResponderTest
 {
   /**
    * Tests the status code of the {@link Response} returned by the
-   * createResponse method when a {@link ReferenceResource} is supplied as the
-   * argument.
+   * {@link UnrecognizedFormatResponder#createResponse createResponse} method
+   * when a {@link ReferenceResource} is supplied as the argument.
    */
   @Test
   public void testCreateResponseReferenceResource()
@@ -54,8 +54,8 @@ public class UnrecognizedFormatResponderTest
 
   /**
    * Tests the status code of the {@link Response} returned by the
-   * createResponse method when a {@link ProductResource} is supplied as the
-   * argument.
+   * {@link UnrecognizedFormatResponder#createResponse createResponse} method
+   * when a {@link ProductResource} is supplied as the argument.
    */
   @Test
   public void testCreateResponseProductResource()
@@ -71,8 +71,8 @@ public class UnrecognizedFormatResponderTest
 
   /**
    * Tests the status code of the {@link Response} returned by the
-   * createResponse method when a {@link DatasetResource} is supplied as the
-   * argument.
+   * {@link UnrecognizedFormatResponder#createResponse createResponse} method
+   * when a {@link DatasetResource} is supplied as the argument.
    */
   @Test
   public void testCreateResponseDatasetResource()
@@ -88,8 +88,8 @@ public class UnrecognizedFormatResponderTest
 
   /**
    * Tests the status code of the {@link Response} returned by the
-   * createResponse method when a {@link TransferResource} is supplied as the
-   * argument.
+   * {@link UnrecognizedFormatResponder#createResponse createResponse} method
+   * when a {@link TransferResource} is supplied as the argument.
    */
   @Test
   public void testCreateResponseTransferResource()

@@ -17,21 +17,20 @@
 
 package org.apache.oodt.cas.product.service.resources;
 
-import java.net.URL;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.product.service.exceptions.BadRequestException;
 import org.apache.oodt.cas.product.service.exceptions.NotFoundException;
 import org.apache.oodt.cas.product.service.responders.Responder;
@@ -44,21 +43,17 @@ import org.apache.oodt.cas.product.service.responders.ResponderFactory;
  * @version $Revision$
  */
 @Path("/dataset")
-public class DatasetResource
+public class DatasetResource extends Resource
 {
+  private static final Logger LOGGER = Logger.getLogger(DatasetResource.class
+    .getName());
+
   // The product type associated with the resource.
   private ProductType productType;
 
   // The list of product resources associated with the resource.
   private List<ProductResource> productResources =
     new ArrayList<ProductResource>();
-
-  // The path to the working directory used to store temporary files for
-  // responses.
-  private String workingDirPath;
-
-  @Context
-  private ServletContext context;
 
 
 
@@ -80,24 +75,18 @@ public class DatasetResource
 
     try
     {
-      XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(
-        new URL(PathUtils.replaceEnvVariables(
-          context.getInitParameter("filemgr.url"))));
+      setWorkingDir(getContextWorkingDir());
+      XmlRpcFileManagerClient client = getContextClient();
       productType = client.getProductTypeById(typeID);
-
-      // Set a working directory to store product files.
-      setWorkingDirPath(PathUtils.replaceEnvVariables(
-        context.getInitParameter("filemgr.working.dir")));
-      String productDirPath = getWorkingDirPath();
-      productDirPath += productDirPath.endsWith("/") ? "" : "/";
-      productDirPath += productType.getName();
+      String productDirPath = getContextWorkingDir().getCanonicalPath()
+        + "/" + productType.getName();
 
       // Add all products of the chosen type to the dataset.
       for (Product product : client.getProductsByProductType(productType))
       {
         product.setProductReferences(client.getProductReferences(product));
         productResources.add(new ProductResource(product,
-          client.getMetadata(product), productDirPath));
+          client.getMetadata(product), new File(productDirPath)));
       }
 
       Responder responder = ResponderFactory.createResponder(format);
@@ -105,8 +94,9 @@ public class DatasetResource
     }
     catch (Exception e)
     {
-      throw new NotFoundException("The requested resource could not be found. "
-        + e.getMessage());
+      String message = "Unable to find the requested resource.";
+      LOGGER.log(Level.FINE, message, e);
+      throw new NotFoundException(message + " " + e.getMessage());
     }
   }
 
@@ -135,17 +125,6 @@ public class DatasetResource
 
 
   /**
-   * Gets the working directory path.
-   * @return the workingDirPath
-   */
-  public String getWorkingDirPath()
-  {
-    return workingDirPath;
-  }
-
-
-
-  /**
    * Sets the productType.
    * @param productType the productType to set
    */
@@ -163,27 +142,5 @@ public class DatasetResource
   public void setProductResources(List<ProductResource> productResources)
   {
     this.productResources = productResources;
-  }
-
-
-
-  /**
-   * Sets the working directory path.
-   * @param workingDirPath the workingDirPath to set
-   */
-  public void setWorkingDirPath(String workingDirPath)
-  {
-    this.workingDirPath = workingDirPath;
-  }
-
-
-
-  /**
-   * Sets the servlet context.
-   * @param context the servlet context to set
-   */
-  public void setServletContext(ServletContext context)
-  {
-    this.context = context;
   }
 }

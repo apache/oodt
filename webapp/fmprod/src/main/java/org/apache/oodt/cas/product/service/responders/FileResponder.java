@@ -21,6 +21,8 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -42,6 +44,9 @@ import org.apache.tika.mime.MimeType;
  */
 public class FileResponder implements Responder
 {
+  private static final Logger LOGGER = Logger.getLogger(FileResponder.class
+    .getName());
+
   @Override
   public Response createResponse(ReferenceResource resource)
   {
@@ -108,8 +113,11 @@ public class FileResponder implements Responder
       File file = new File(new URI(dataStoreReference));
       if (!file.exists() || file.isDirectory())
       {
+        String message =
+          "Unable to locate the reference source file(s) in the data store.";
+        LOGGER.log(Level.FINE, message);
         return Response.status(Response.Status.BAD_REQUEST)
-          .entity("The requested reference is not a valid file.").build();
+          .entity(message).build();
       }
 
       ResponseBuilder response = Response.ok(file);
@@ -120,8 +128,10 @@ public class FileResponder implements Responder
     }
     catch (URISyntaxException e)
     {
-      throw new NotFoundException("The source file(s) for the reference could" +
-        " not be found at the intended location. " + e.getMessage());
+      String message =
+        "Problem with the data store URI for the reference source file(s).";
+      LOGGER.log(Level.FINE, message, e);
+      throw new NotFoundException(message + " " + e.getMessage());
     }
   }
 }

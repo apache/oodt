@@ -70,8 +70,9 @@ public class ZipResponder implements Responder
     }
     catch (Exception e)
     {
-      throw new NotFoundException("A representation of the requested resource" +
-        " in the requested format could not be found. " + e.getMessage());
+      throw new NotFoundException(
+        "Unable to get the requested resource in application/zip format. "
+          + e.getMessage());
     }
   }
 
@@ -91,8 +92,9 @@ public class ZipResponder implements Responder
     }
     catch (Exception e)
     {
-      throw new NotFoundException("A representation of the requested resource" +
-        " in the requested format could not be found. " + e.getMessage());
+      throw new NotFoundException(
+        "Unable to get the requested resource in application/zip format. "
+          + e.getMessage());
     }
   }
 
@@ -112,8 +114,9 @@ public class ZipResponder implements Responder
     }
     catch (Exception e)
     {
-      throw new NotFoundException("A representation of the requested resource" +
-        " in the requested format could not be found. " + e.getMessage());
+      throw new NotFoundException(
+        "Unable to get the requested resource in application/zip format. "
+          + e.getMessage());
     }
   }
 
@@ -136,12 +139,13 @@ public class ZipResponder implements Responder
   private File createZipFile(ReferenceResource resource) throws Exception
   {
     // Create the working directory if it doesn't already exist.
-    String workingDirPath = resource.getWorkingDirPath();
-    workingDirPath += workingDirPath.endsWith("/") ? "" : "/";
-    File workingDir = new File(workingDirPath);
+    File workingDir = resource.getWorkingDir();
     if (!workingDir.exists() && !workingDir.mkdirs())
     {
-      throw new IOException("Unable to create working directory.");
+      String message = "Unable to create the working directory ("
+        + workingDir.getAbsolutePath() + ") to build the zip file.";
+      LOGGER.log(Level.FINE, message);
+      throw new IOException(message);
     }
 
     // Retrieve the reference file.
@@ -154,10 +158,12 @@ public class ZipResponder implements Responder
     }
 
     // Try to remove previously created zip files that have the same name.
+    String workingDirPath = workingDir.getCanonicalPath();
+    workingDirPath += workingDirPath.endsWith("/") ? "" : "/";
     File file = new File(workingDirPath + refFile.getName() + ".zip");
     if (file.exists() && !file.delete())
     {
-      LOGGER.log(Level.FINE, "Could not delete an existing zip file ("
+      LOGGER.log(Level.FINE, "Unable to delete an existing zip file ("
         + file.getAbsolutePath()
         + ") before creating a new zip file with the same name.");
     }
@@ -183,21 +189,23 @@ public class ZipResponder implements Responder
   private File createZipFile(ProductResource resource) throws Exception
   {
     // Create the working directory if it doesn't already exist.
-    String workingDirPath = resource.getWorkingDirPath();
-    workingDirPath += workingDirPath.endsWith("/") ? "" : "/";
-    File workingDir = new File(workingDirPath);
+    File workingDir = resource.getWorkingDir();
     if (!workingDir.exists() && !workingDir.mkdirs())
     {
-      throw new IOException("Unable to create working directory.");
+      String message = "Unable to create the working directory ("
+        + workingDir.getAbsolutePath() + ") to build the zip file.";
+      LOGGER.log(Level.FINE, message);
+      throw new IOException(message);
     }
 
     Product product = resource.getProduct();
 
     // Try to remove previously created zip files that have the same name.
-    File file = new File(workingDirPath + product.getProductName() + ".zip");
+    File file = new File(workingDir.getCanonicalPath() + "/"
+      + product.getProductName() + ".zip");
     if (file.exists() && !file.delete())
     {
-      LOGGER.log(Level.FINE, "Could not delete an existing zip file ("
+      LOGGER.log(Level.FINE, "Unable to delete an existing zip file ("
         + file.getAbsolutePath()
         + ") before creating a new zip file with the same name.");
     }
@@ -246,21 +254,23 @@ public class ZipResponder implements Responder
   private File createZipFile(DatasetResource resource) throws Exception
   {
     // Create the working directory if it doesn't already exist.
-    String workingDirPath = resource.getWorkingDirPath();
-    workingDirPath += workingDirPath.endsWith("/") ? "" : "/";
-    File workingDir = new File(workingDirPath);
+    File workingDir = resource.getWorkingDir();
     if (!workingDir.exists() && !workingDir.mkdirs())
     {
-      throw new IOException("Unable to create working directory.");
+      String message = "Unable to create the working directory ("
+        + workingDir.getAbsolutePath() + ") to build the zip file.";
+      LOGGER.log(Level.FINE, message);
+      throw new IOException(message);
     }
 
     ProductType productType = resource.getProductType();
 
     // Try to remove a previously created zip file with the same name.
-    File file = new File(workingDirPath + productType.getName() + ".zip");
+    File file = new File(workingDir.getCanonicalPath() + "/"
+      + productType.getName() + ".zip");
     if (file.exists() && !file.delete())
     {
-      LOGGER.log(Level.FINE, "Could not delete an existing zip file ("
+      LOGGER.log(Level.FINE, "Unable to delete an existing zip file ("
         + file.getAbsolutePath()
         + ") before creating a new zip file with the same name.");
     }
@@ -278,9 +288,9 @@ public class ZipResponder implements Responder
       zipFile.addFile(refFile, parameters);
       if (refFile.exists() && !refFile.delete())
       {
-        LOGGER.log(Level.FINE, "Could not delete a temporary product zip ("
-            + refFile.getAbsolutePath()
-            + ") after adding it to the dataset zip.");
+        LOGGER.log(Level.FINE, "Unable to delete a temporary product zip ("
+          + refFile.getAbsolutePath()
+          + ") after adding it to the dataset zip.");
       }
     }
 

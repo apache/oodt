@@ -17,20 +17,18 @@
 
 package org.apache.oodt.cas.product.service.resources;
 
-import java.net.URL;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.product.service.exceptions.NotFoundException;
 import org.apache.oodt.cas.product.service.responders.Responder;
 import org.apache.oodt.cas.product.service.responders.ResponderFactory;
@@ -41,17 +39,13 @@ import org.apache.oodt.cas.product.service.responders.ResponderFactory;
  * @version $Revision$
  */
 @Path("/reference")
-public class ReferenceResource
+public class ReferenceResource extends Resource
 {
+  private static final Logger LOGGER = Logger.getLogger(ReferenceResource.class
+    .getName());
+
   // The reference associated with the resource.
   private Reference reference;
-
-  // The path to the working directory used to store temporary files for
-  // responses.
-  private String workingDirPath;
-
-  @Context
-  private ServletContext context;
 
 
 
@@ -71,21 +65,20 @@ public class ReferenceResource
   {
     try
     {
-      setWorkingDirPath(PathUtils.replaceEnvVariables(
-        context.getInitParameter("filemgr.working.dir")));
-      XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(
-        new URL(PathUtils.replaceEnvVariables(
-          context.getInitParameter("filemgr.url"))));
+      setWorkingDir(getContextWorkingDir());
+      XmlRpcFileManagerClient client = getContextClient();
       Product product = client.getProductById(productID);
       List<Reference> references = client.getProductReferences(product);
-      this.reference = references.get(refIndex);
+      reference = references.get(refIndex);
+
       Responder responder = ResponderFactory.createResponder(format);
       return responder.createResponse(this);
     }
     catch (Exception e)
     {
-      throw new NotFoundException("The requested resource could not be found. "
-        + e.getMessage());
+      String message = "Unable to find the requested resource.";
+      LOGGER.log(Level.FINE, message, e);
+      throw new NotFoundException(message + " " + e.getMessage());
     }
   }
 
@@ -93,34 +86,11 @@ public class ReferenceResource
 
   /**
    * Gets the reference.
-   *
    * @return the reference
    */
   public Reference getReference()
   {
     return reference;
-  }
-
-
-
-  /**
-   * Gets the working directory path.
-   * @return the workingDirPath
-   */
-  public String getWorkingDirPath()
-  {
-    return workingDirPath;
-  }
-
-
-
-  /**
-   * Sets the servlet context.
-   * @param context the servlet context to set.
-   */
-  public void setServletContext(ServletContext context)
-  {
-    this.context = context;
   }
 
 
@@ -132,16 +102,5 @@ public class ReferenceResource
   public void setReference(Reference reference)
   {
     this.reference = reference;
-  }
-
-
-
-  /**
-   * Sets the working directory path.
-   * @param workingDirPath the workingDirPath to set
-   */
-  public void setWorkingDirPath(String workingDirPath)
-  {
-    this.workingDirPath = workingDirPath;
   }
 }
