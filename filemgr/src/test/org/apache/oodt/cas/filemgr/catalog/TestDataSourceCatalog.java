@@ -61,14 +61,19 @@ public class TestDataSourceCatalog extends TestCase {
         System.setProperty("java.util.logging.config.file", new File(
                 "./src/main/resources/logging.properties").getAbsolutePath());
 
+        if(System.getProperty("overrideProperties") == null){
+
+            try {
+                System.getProperties().load(
+                        new FileInputStream(
+                                "./src/main/resources/filemgr.properties"));
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+
+
         // first load the example configuration
-        try {
-            System.getProperties().load(
-                    new FileInputStream(
-                            "./src/main/resources/filemgr.properties"));
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+
 
         // get a temp directory
         File tempDir = null;
@@ -103,7 +108,16 @@ public class TestDataSourceCatalog extends TestCase {
         System.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver",
                 "org.hsqldb.jdbcDriver");
-
+        }
+        else{
+            try {
+                System.getProperties().load(
+                        new FileInputStream(
+                                System.getProperty("overrideProperties")));
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
         // now override the val layer ones
         System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
                 "file://"

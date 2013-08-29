@@ -261,5 +261,12 @@
       <version>2.2-beta1</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.26</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 </project>
