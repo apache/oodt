@@ -20,11 +20,11 @@
   product transfers.  It allows metadata for a product being transferred to be
   assigned to RSS compatible tags.
 -->
-<rss:rssconf xmlns:rss="http://oodt.apache.org/ns/rss">
+<cas:rssconf xmlns:cas="http://oodt.apache.org/ns/cas">
 
   <namespace prefix="cas" uri="http://oodt.apache.org/ns/cas"/>
   <tag name="cas:bytesTransferred" source="[BytesTransferred]"/>
   <tag name="cas:totalBytes" source="[TotalBytes]"/>
   <tag name="cas:percentComplete" source="[PercentComplete]"/>
 
-</rss:rssconf>
+</cas:rssconf>

@@ -3,6 +3,11 @@ Apache OODT Change Log
 
 Release 0.7 - Current Development
 ---------------------------------
+* OODT-613 CAS Product web application - configurable content writers for RDF
+  and RSS (rlaidlaw)
+
+* OODT-612 CAS Product web application - add content writers for XML, JSON, RDF,
+  RSS (rlaidlaw)
 
 * OODT-652 New TikaCmdLineMetExtractor (riverma)
 

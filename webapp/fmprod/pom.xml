@@ -28,7 +28,7 @@
   </parent>
   <artifactId>cas-product</artifactId>
   <packaging>war</packaging>
-  <name>CAS Product Server</name>
+  <name>CAS Product Server Web Application</name>
   <description>
     This project builds on top of the CAS file management component and exposes
     its underlying data delivery capabilities using the OODT ProductServer
@@ -40,8 +40,8 @@
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
     <plugins>
       <!--
-        For plugins by Maven we don't need a groupId specification because
-        the groupId org.apache.maven.plugins is assumed by default.
+        For plugins by Maven we don't need to specify a groupId because the
+        groupId org.apache.maven.plugins is assumed by default.
       -->
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
@@ -121,6 +121,11 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.2.5</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-core</artifactId>
       <version>0.8</version>
@@ -139,6 +144,16 @@
       <groupId>net.lingala.zip4j</groupId>
       <artifactId>zip4j</artifactId>
       <version>1.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+      <version>1.3.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-rs-extension-providers</artifactId>
+      <version>2.6.8</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -162,6 +177,17 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>1.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.7</version>
     </dependency>
   </dependencies>
 </project>

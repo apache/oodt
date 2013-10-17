@@ -16,8 +16,8 @@ License for the specific language governing permissions and limitations under
 the License.
 -->
 
-<Context path="/fmprod" docBase="/path/to/cas-product.war" debug="5"
-  reloadable="true" crossContext="true">
+<Context docBase="/path/to/cas-product.war" reloadable="true"
+  crossContext="true">
 
   <Valve className="org.apache.catalina.valves.AccessLogValve"
     prefix="fmprod_access_log." suffix=".txt" pattern="common"/>
@@ -44,4 +44,15 @@ the License.
   <Parameter name="filemgr.rss-transfer-conf.file"
     value="[FMPROD_HOME]/rss-transfer-conf.xml" override="false"/>
 
+  <Parameter name="configuration.rdf.example"
+    value="[FMPROD_HOME]/rdfconf.xml" override="false"/>
+
+  <Parameter name="configuration.rss.example"
+    value="[FMPROD_HOME]/rssconf.xml" override="false"/>
+
+  <Parameter name="configuration.rss.georss"
+    value="[FMPROD_HOME]/georss-config.xml" override="false"/>
+
+  <Parameter name="configuration.rss.transfer"
+    value="[FMPROD_HOME]/rss-transfer-conf.xml" override="false"/>
 </Context>
