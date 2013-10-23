@@ -30,7 +30,6 @@ import java.util.logging.Logger;
 import org.apache.oodt.product.ProductException;
 import org.apache.oodt.product.handlers.ofsn.AbstractCrawlLister;
 import org.apache.oodt.product.handlers.ofsn.OFSNGetHandler;
-import org.apache.oodt.product.handlers.ofsn.util.OFSNUtils;
 
 /**
   * A {@link OFSNGetHandler} for returning a URL listing pointing to files within an OFSN
@@ -131,10 +130,6 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 	public byte[] retrieveChunk(String filepath, long offset, int length)
 			throws ProductException {
 	  
-	    if (!OFSNUtils.validateOFSN(filepath)) {
-	        throw new ProductException("OFSN is invalid");
-	    }
-	    
 		LOG.info("Retrieving chunk of URL listing for path: ["+filepath+"] at offset "
 	    			+ offset+" for "+length+" bytes");
 

@@ -23,7 +23,6 @@ import java.io.File;
 import java.util.Properties;
 
 import org.apache.oodt.product.ProductException;
-import org.apache.oodt.product.handlers.ofsn.util.OFSNUtils;
 
 /**
  * 
@@ -58,11 +57,8 @@ public class SingleFileListHandler implements OFSNListHandler {
   public File[] getListing(String ofsn) throws ProductException {
     if (!new File(ofsn).exists()) {
       throw new ProductException("file: [" + ofsn + "] does not exist!");
-    } else if (!OFSNUtils.validateOFSN(ofsn)) {
-        throw new ProductException("OFSN is invalid");
-    } else {
-        return new File[] { new File(ofsn) };
     }
+    return new File[] { new File(ofsn) };
   }
 
 }

@@ -24,7 +24,6 @@ import java.util.Properties;
 
 //OODT imports
 import org.apache.oodt.product.ProductException;
-import org.apache.oodt.product.handlers.ofsn.util.OFSNUtils;
 
 /**
  *
@@ -52,14 +51,10 @@ public class RawSizeListHandler implements OFSNListHandler {
    */
   public File[] getListing(String ofsn) throws ProductException {
     if (!new File(ofsn).exists()) {
-        throw new ProductException("file: [" + ofsn
+          throw new ProductException("file: [" + ofsn
                   + "] does not exist!");
-    } else if (!OFSNUtils.validateOFSN(ofsn)) {
-        throw new ProductException("OFSN is invalid");
-    } else {
-        return new File[] { new File(ofsn) };
-    }
-        
+      }
+      return new File[] { new File(ofsn) };
   }
 
 }

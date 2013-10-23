@@ -32,7 +32,6 @@ import org.apache.commons.io.FileUtils;
 
 //OODT imports
 import org.apache.oodt.product.ProductException;
-import org.apache.oodt.product.handlers.ofsn.util.OFSNUtils;
 
 /**
  * 
@@ -76,11 +75,6 @@ public class MD5GetHandler implements OFSNGetHandler {
    */
   public byte[] retrieveChunk(String filepath, long offset, int length)
       throws ProductException {
-      
-    if (!OFSNUtils.validateOFSN(filepath)) {
-        throw new ProductException("OFSN is invalid");
-    }
-      
     try {
       String hash = this.hashData(FileUtils.readFileToByteArray(new File(
           filepath)));
