@@ -72,6 +72,8 @@ public class SingleZipFileListHandler implements OFSNListHandler {
   public File[] getListing(String ofsn) throws ProductException {
     if (!new File(ofsn).exists()) {
       throw new ProductException("file: [" + ofsn + "] does not exist!");
+    } else if (!OFSNUtils.validateOFSN(ofsn)) {
+        throw new ProductException("OFSN is invalid");
     }
 
     String zipFilePath = this.cacheRoot + new File(ofsn).getName() + ".zip";

@@ -24,6 +24,7 @@ import java.util.Properties;
 
 //OODT imports
 import org.apache.oodt.product.ProductException;
+import org.apache.oodt.product.handlers.ofsn.util.OFSNUtils;
 
 /**
  *
@@ -50,7 +51,10 @@ public class FileListNonRecursiveHandler extends AbstractCrawlLister {
    */
   @Override
   public File[] getListing(String ofsn) throws ProductException {
-    return crawlFiles(new File(ofsn), false, false);
+      if (OFSNUtils.validateOFSN(ofsn))
+          return crawlFiles(new File(ofsn), false, false);
+      else
+          throw new ProductException("OFSN is invalid");
   }
 
 }

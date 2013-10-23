@@ -171,6 +171,14 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
 
   }
 
+  public static boolean validateOFSN(String ofsn) {
+      if (ofsn == null) {
+          return false;
+      } else {
+          return !ofsn.equals("") && !ofsn.matches(".*\\.\\..*");
+      }
+  }
+  
   private static String toOFSN(String absolutePath, String productRootPath) {
     if (absolutePath.startsWith(productRootPath)) {
       return absolutePath.substring(productRootPath.length());
