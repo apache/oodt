@@ -19,6 +19,7 @@ package org.apache.oodt.cas.filemgr.util;
 
 //JDK imports
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -368,6 +369,51 @@ public final class XmlStructFactory {
                 versionerClassPathElem.setAttribute("class", type
                         .getVersioner());
                 typeElem.appendChild(versionerClassPathElem);
+
+                // add extractor info
+                Element metExtractorsElem = document.createElement("metExtractors");
+                for (Object specObject : type.getExtractors()) {
+                    ExtractorSpec spec = (ExtractorSpec) specObject;
+                    Element extractorElem = document.createElement("extractor");
+                    extractorElem.setAttribute("class", spec.getClassName());
+                    
+                    if (spec.getConfiguration() != null) {
+                        Element extractorConfigElem = document.createElement("configuration");
+                        Enumeration e = spec.getConfiguration().propertyNames();
+                        
+                        while (e.hasMoreElements()) {
+                            String key = (String) e.nextElement();
+                            
+                            Element propertyElem = document.createElement("property");
+                            propertyElem.setAttribute("name", key);
+                            propertyElem.setAttribute("value", spec.getConfiguration().getProperty(key));
+                            
+                            extractorConfigElem.appendChild(propertyElem);
+                        }
+                        
+                        extractorElem.appendChild(extractorConfigElem);
+                    }
+                    
+                    metExtractorsElem.appendChild(extractorElem);
+                }
+                typeElem.appendChild(metExtractorsElem);
+                
+                // add type metadata
+                Element metElem = document.createElement("metadata");
+                for (String key : type.getTypeMetadata().getAllKeys()) {
+                    Element keyValElem = document.createElement("keyval");
+                    Element keyElem = document.createElement("key");
+                    Element valElem = document.createElement("val");
+                    
+                    keyElem.appendChild(document.createTextNode(key));
+                    valElem.appendChild(document.createTextNode(
+                            type.getTypeMetadata().getMetadata(key)));
+                    keyValElem.appendChild(keyElem);
+                    keyValElem.appendChild(valElem);
+                    
+                    metElem.appendChild(keyValElem);
+                }
+                typeElem.appendChild(metElem);
 
                 root.appendChild(typeElem);
             }
