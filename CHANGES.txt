@@ -3,6 +3,10 @@ Apache OODT Change Log
 
 Release 0.7 - Current Development
 ---------------------------------
+
+* OODT-656 Provide alternative implementation of QueryServlet that is able 
+  to construct queries from non DIS-style parameters (luca)
+
 * OODT-613 CAS Product web application - configurable content writers for RDF
   and RSS (rlaidlaw)
 
