@@ -102,7 +102,7 @@ public class CommonsNetFtpProtocol implements Protocol {
 
 	public List<ProtocolFile> ls() throws ProtocolException {
 		try {
-      String path = this.pwd().getPath();
+			String path = this.pwd().getPath();
 			FTPFile[] files = ftp.listFiles();
 			List<ProtocolFile> returnFiles = new LinkedList<ProtocolFile>();
 			for (int i = 0; i < files.length; i++) {
