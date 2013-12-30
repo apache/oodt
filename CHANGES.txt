@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-661 Enabled case-insensitive specification of "OFSN" and "RT" parameter names
+  (not values!) when issuing a request to the Product Server (luca)
+
 * OODT-656 Provide alternative implementation of QueryServlet that is able 
   to construct queries from non DIS-style parameters (luca)
 
