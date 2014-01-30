@@ -3,7 +3,7 @@
      here:
 
      http://svn.apache.org/repos/asf/oodt/trunk/pge/src/main/java/org/apache/oodt/cas/pge/metadata/PgeTaskMetKeys.java
--->
+--> 
 <cas:workflowtasks xmlns:cas="http://oodt.apache.org/1.0/cas">
 <task id="urn:oodt:casPgeTask" name="CAS PGE" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
       <conditions/>
