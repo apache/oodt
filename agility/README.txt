@@ -7,7 +7,7 @@ extend; simpler to integrate by; and faster to use.
 .. For installation instructions, see docs/INSTALL.txt.
 
 .. References:
-.. _`Object Oriented Data Technology`: http://incubator.apache.org/projects/oodt.html
+.. _`Object Oriented Data Technology`: http://oodt.apache.org/
 
 .. meta::
     :keywords: OODT, data, object, OO, discovery, metadata,

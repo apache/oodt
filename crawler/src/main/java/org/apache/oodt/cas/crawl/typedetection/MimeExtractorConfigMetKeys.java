@@ -37,6 +37,8 @@ public interface MimeExtractorConfigMetKeys {
 
     public static final String EXTRACTOR_TAG = "extractor";
 
+    public static final String NAMING_CONVENTION_TAG = "namingConvention";
+
     public static final String EXTRACTOR_CLASS_TAG = "extractorClass";
 
     public static final String EXTRACTOR_CONFIG_TAG = "config";

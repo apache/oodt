@@ -14,23 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.workflow.engine;
 
 /**
- * @author mattmann
- * @version $Revision$
- * 
- * <p>
  * A factory interface for creating {@link WorkflowEngine} objects.
- * </p>
- * 
+ *
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
 public interface WorkflowEngineFactory {
 
-    /**
-     * @return An implementation of the {@link WorkflowEngine} interface.
-     */
-    public WorkflowEngine createWorkflowEngine();
+   /**
+    * Method which creates {@link WorkflowEngine}s.
+    *
+    * @return An implementation of the {@link WorkflowEngine} interface
+    */
+   public WorkflowEngine createWorkflowEngine();
 }

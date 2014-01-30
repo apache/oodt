@@ -60,6 +60,7 @@ import org.apache.lucene.search.TermQuery;
  * A tool to return product ids given a {@link Query} against the File Manager.
  * </p>
  */
+@Deprecated
 public final class QueryTool {
 
     private static String freeTextBlock = "__FREE__";
@@ -69,7 +70,7 @@ public final class QueryTool {
     private static enum QueryType { LUCENE, SQL }; 
     
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(QueryTool.class.getName());
+    private static final Logger LOG = Logger.getLogger(QueryTool.class.getName());
 
     public QueryTool(URL fmUrl) throws InstantiationException {
         try {

@@ -55,7 +55,7 @@ public class SpringCatalogRepository implements CatalogRepository {
 	        appContext.refresh();
 	        return new HashSet<Catalog>(appContext.getBeansOfType(Catalog.class).values());
 		} catch (Exception e) {
-			throw new CatalogRepositoryException("", e);
+			throw new CatalogRepositoryException(e.getMessage(), e);
 		}
 	}
 

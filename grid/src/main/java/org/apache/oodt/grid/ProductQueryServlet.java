@@ -94,6 +94,7 @@ public class ProductQueryServlet extends QueryServlet {
 			int num;						       // And a place to count data
 			while ((num = in.read(buf)) != -1)			       // While we read
 				res.getOutputStream().write(buf, 0, num);	       // We write
+			res.getOutputStream().flush();				       // Flush to commit response
 		} finally {							       // And finally
 			if (in != null) try {					       // If we opened it
 				in.close();					       // Close it
@@ -111,7 +112,8 @@ public class ProductQueryServlet extends QueryServlet {
 		String contentType = result.getMimeType();			       // Grab the content type
 		res.setContentType(contentType);				       // Set it
 		long size = result.getSize();					       // Grab the size
-		res.addHeader("Content-Length", String.valueOf(size));		       // Don't use setContentLength(int)
+		if (size >= 0)
+			res.addHeader("Content-Length", String.valueOf(size));	       // Don't use setContentLength(int)
 		if (!displayable(contentType))					       // Finally, if a browser can't show it
 			suggestFilename(result.getResourceID(), res);		       // Then suggest a save-as filename
 	}

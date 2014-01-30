@@ -20,12 +20,17 @@ package org.apache.oodt.commons.exec;
 //JDK imports
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Properties;
+
+//Apache Commons
+import org.apache.commons.lang.SystemUtils;
 
 //Junit imports
 import junit.framework.TestCase;
 
 /**
  * @author mattmann
+ * @author mstarch
  * @version $Revision$
  * 
  * <p>
@@ -62,5 +67,61 @@ public class TestEnvUtilities extends TestCase {
         assertEquals(translatedEnvStr, expectedVarStr);
 
     }
-
+    /**
+     * Tests two environment variables that should exist in any build 
+     * environment. USER, HOME
+     * By calling (EnvUtilities.getEnv(String))
+     */
+    public void testSetEnvironmentVar() {
+        //Test if an only if HOME and USER is defined (Assumed to be true on unix)
+        if (SystemUtils.IS_OS_UNIX) {
+            //Makes the assumption that System.properties() is correct.
+            String userHomeTruth = System.getProperty("user.home");
+            String userNameTruth = System.getProperty("user.name");
+            //Test values
+            String userHomeTest = EnvUtilities.getEnv("HOME");
+            String userNameTest = EnvUtilities.getEnv("USER");
+            //Check all three tests
+            assertEquals(userHomeTruth,userHomeTest);
+            assertEquals(userNameTruth,userNameTest);
+        } 
+    }
+    /**
+     * Tests two environment variables that should exist in any build 
+     * environment. USER, HOME
+     * By getting the environment (EnvUtilities.getEnv()) and reading from this.
+     */
+    public void testGetEnvironment() {
+        //Test if an only if HOME and USER is defined (Assumed to be true on unix)
+        if (SystemUtils.IS_OS_UNIX) {
+            //Makes the assumption that System.properties() is correct.
+            String userHomeTruth = System.getProperty("user.home");
+            String userNameTruth = System.getProperty("user.name");
+            Properties env = EnvUtilities.getEnv();
+            //Test values
+            String userHomeTest = env.getProperty("HOME");
+            String userNameTest = env.getProperty("USER");
+            //Check all three tests
+            assertEquals(userHomeTruth,userHomeTest);
+            assertEquals(userNameTruth,userNameTest);
+        } 
+    }
+    /**
+     * Tests for consistency between the two methods for getting environment variables
+     * in EnvUtilities calling getEnv(String) and calling getEnv().getProperty(String).
+     */
+    public void testGetEnvironmentConsistency() {
+        //Test if an only if HOME and USER is defined (Assumed to be true on unix)
+        if (SystemUtils.IS_OS_UNIX) {
+            Properties env = EnvUtilities.getEnv();
+            //Test values
+            String userHomeTest1 = env.getProperty("HOME");
+            String userNameTest1 = env.getProperty("USER");
+            String userHomeTest2 = EnvUtilities.getEnv("HOME");
+            String userNameTest2 = EnvUtilities.getEnv("USER");
+            //Check all three tests
+            assertEquals(userHomeTest1,userHomeTest2);
+            assertEquals(userNameTest1,userNameTest2);
+        }
+    }
 }

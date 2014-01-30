@@ -14,13 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.workflow.util;
 
 //OODT imports
+import org.apache.oodt.cas.workflow.engine.WorkflowEngine;
+import org.apache.oodt.cas.workflow.engine.WorkflowEngineFactory;
+import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
+import org.apache.oodt.cas.workflow.engine.runner.EngineRunnerFactory;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepositoryFactory;
+import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
+import org.apache.oodt.cas.workflow.repository.WorkflowRepositoryFactory;
+import org.apache.oodt.cas.workflow.structs.PrioritySorter;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
@@ -28,6 +33,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 
 //JDK imports
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
@@ -35,11 +42,10 @@ import java.util.Vector;
 import java.util.Iterator;
 
 /**
- * @author mattmann
- * @version $Revision$
+ * Generic Workflow object construction utilities.
  *
- * <p>Generic Workflow object construction utilities.</p>
- *
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
 public final class GenericWorkflowObjectFactory {
 
@@ -51,8 +57,67 @@ public final class GenericWorkflowObjectFactory {
 		throw new InstantiationException(
 		"Don't instantiate XML Struct Factories!");
 	}
-	
-	
+
+   public static WorkflowEngine getWorkflowEngineFromClassName(String engineFactory) {
+      try {
+         return ((WorkflowEngineFactory) Class.forName(engineFactory)
+               .newInstance()).createWorkflowEngine();
+      } catch (ClassNotFoundException e) {
+         LOG.log(Level.WARNING, "ClassNotFoundException when "
+               + "loading workflow engine factory class "
+               + engineFactory + " Message: " + e.getMessage());
+      } catch (InstantiationException e) {
+         LOG.log(Level.WARNING, "InstantiationException when "
+               + "loading workflow engine factory class "
+               + engineFactory + " Message: " + e.getMessage());
+      } catch (IllegalAccessException e) {
+         LOG.log(Level.WARNING, "IllegalAccessException when loading "
+               + "workflow engine factory class "
+               + engineFactory + " Message: " + e.getMessage());
+      }
+      return null;
+   }
+
+	public static EngineRunner getEngineRunnerFromClassName(String engineFactory) {
+	   try {
+         return ((EngineRunnerFactory) Class.forName(engineFactory)
+               .newInstance()).createEngineRunner();
+      } catch (ClassNotFoundException e) {
+         LOG.log(Level.WARNING, "ClassNotFoundException when "
+               + "loading engine runner factory class "
+               + engineFactory + " Message: " + e.getMessage());
+      } catch (InstantiationException e) {
+         LOG.log(Level.WARNING, "InstantiationException when "
+               + "loading engine runner factory class "
+               + engineFactory + " Message: " + e.getMessage());
+      } catch (IllegalAccessException e) {
+         LOG.log(Level.WARNING, "IllegalAccessException when loading "
+               + "engine runner factory class "
+               + engineFactory + " Message: " + e.getMessage());
+      }
+      return null;
+	}
+
+   public static WorkflowRepository getWorkflowRepositoryFromClassName(String repositoryFactory) {
+      try {
+         return ((WorkflowRepositoryFactory) Class.forName(repositoryFactory)
+               .newInstance()).createRepository();
+      } catch (ClassNotFoundException e) {
+         LOG.log(Level.WARNING, "ClassNotFoundException when "
+               + "loading engine runner factory class "
+               + repositoryFactory + " Message: " + e.getMessage());
+      } catch (InstantiationException e) {
+         LOG.log(Level.WARNING, "InstantiationException when "
+               + "loading engine runner factory class "
+               + repositoryFactory + " Message: " + e.getMessage());
+      } catch (IllegalAccessException e) {
+         LOG.log(Level.WARNING, "IllegalAccessException when loading "
+               + "engine runner factory class "
+               + repositoryFactory + " Message: " + e.getMessage());
+      }
+      return null;
+   }
+
 	public static WorkflowInstanceRepository getWorkflowInstanceRepositoryFromClassName(
 			String serviceFactory) {
 		WorkflowInstanceRepositoryFactory factory = null;
@@ -81,13 +146,13 @@ public final class GenericWorkflowObjectFactory {
 
 		return null;
 	}
-	
+
 	/**
 	 * <p>
 	 * Constructs a {@link WorkflowTaskInstance} from the given implementation
 	 * class name.
 	 * </p>
-	 * 
+	 *
 	 * @param className
 	 *            The String name of the class (including package qualifiers)
 	 *            that implements the WorkflowTaskInstance interface to
@@ -128,12 +193,73 @@ public final class GenericWorkflowObjectFactory {
 			return null;
 	}
 
+  /**
+   * <p>
+   * Constructs a {@link WorkflowTaskInstance} from the given implementation
+   * class name.
+   * </p>
+   *
+   * @param className
+   *            The String name of the inner class (including package qualifiers)
+   *            that implements the WorkflowTaskInstance interface to
+   *            construct.
+   * @return A new {@link WorkflowTaskInstance} implementation specified by
+   *         its class name.
+   */
+  public static WorkflowTaskInstance getTaskObjectFromInnerClassName(Class<?> enclosingInstance, String className) {
+
+    if (className != null) {
+      WorkflowTaskInstance taskInstance = null;
+
+      try {
+        Class workflowTaskClass = Class.forName(className);
+        Constructor construct = workflowTaskClass.getConstructor(enclosingInstance);
+        taskInstance = (WorkflowTaskInstance) construct.newInstance();
+
+        return taskInstance;
+
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "ClassNotFound, Unable to locate task class: "
+                + className + ": cannot instantiate!");
+        return null;
+      } catch (InstantiationException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING, "Unable to instantiate task class: "
+            + className + ": Reason: " + e.getMessage() + " !");
+        return null;
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "IllegalAccessException when instantiating task class: "
+                + className + ": cannot instantiate!");
+        return null;
+      }
+      catch (NoSuchMethodException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "NoSuchMethodException when instantiating task class: "
+                + className + ": cannot instantiate!");
+        return null;
+      }
+      catch (InvocationTargetException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "InvocationTargetException when instantiating task class: "
+                + className + ": cannot instantiate!");
+        return null;
+      }
+    } else
+      return null;
+  }
+
 	/**
 	 * <p>
 	 * Constructs a {@link WorkflowConditionInstance} from the given implementation
 	 * class name.
 	 * </p>
-	 * 
+	 *
 	 * @param className
 	 *            The String name of the class (including package qualifiers)
 	 *            that implements the WorkflowConditionInstance interface to construct.
@@ -171,13 +297,13 @@ public final class GenericWorkflowObjectFactory {
 		} else
 			return null;
 	}
-	
+
 	/**
 	 * <p>
 	 * Constructs a {@link Workflow} instance from the given implementation
 	 * class name.
 	 * </p>
-	 * 
+	 *
 	 * @param className
 	 *            The String name of the class (including package qualifiers)
 	 *            that implements the Workflow interface to construct.
@@ -212,9 +338,37 @@ public final class GenericWorkflowObjectFactory {
 				return null;
 			}
 		} else
-			return null;		
+			return null;
 	}
 	
+	public static PrioritySorter getPrioritySorterFromClassName(String className){
+	  if(className != null){
+	    try{
+	      Class<PrioritySorter> sorterClass = (Class<PrioritySorter>)Class.forName(className);	      
+	      return sorterClass.newInstance();
+	    }
+	    catch (ClassNotFoundException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING, "Unable to locate workflow prioritizer class: "
+            + className + ": cannot instantiate!");
+        return null;
+      } catch (InstantiationException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "Unable to instantiate workflow prioritizer class: " + className
+                + ": Reason: " + e.getMessage() + " !");
+        return null;
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+        LOG.log(Level.WARNING,
+            "IllegalAccessException when instantiating workflow prioritizer class: "
+                + className + ": cannot instantiate!");
+        return null;
+      }
+	  }
+	  else return null;
+	}
+
 	public static List copyWorkflows(List workflows){
 		if(workflows != null){
 			List newWorkflows = new Vector(workflows.size());
@@ -223,60 +377,60 @@ public final class GenericWorkflowObjectFactory {
 				Workflow newWorkflow = copyWorkflow(w);
 				newWorkflows.add(newWorkflow);
 			}
-			
+
 			return newWorkflows;
 		}
 		else return null;
 	}
-	
+
 	/**
-	 * <p>Creates an exact copy of the specified {@link Workflow} <code>w</code>, 
+	 * <p>Creates an exact copy of the specified {@link Workflow} <code>w</code>,
 	 * allocating new memory for the new object, and then returning it. The Workflow's
 	 * {@link WorkflowTask}s and {@link WorkflowCondition}s on those tasks are also constructed
 	 * anew, and copied from their original instances.</p>
-	 * 
+	 *
 	 * @param w The Workflow object to create a copy of.
 	 * @return A copy of the specified Workflow.
 	 */
 	public static Workflow copyWorkflow(Workflow w){
 		Workflow newWorkflow = null;
-		
-		
+
+
 		newWorkflow = getWorkflowObjectFromClassName(w.getClass().getName());
-		
-		
+
+
 		//copy through
 		newWorkflow.setName(w.getName());
 		newWorkflow.setId(w.getId());
 		newWorkflow.setTasks(copyTasks(w.getTasks()));
-		
+
 		return newWorkflow;
 	}
-	
+
 	/**
 	 * <p>Creates copies of each {@link WorkflowTask} within the specified
 	 * {@link List} of WorkflowTasks specified by <code>taskList</code>. The new
 	 * List of WorkflowTasks is returned.</p>
-	 * 
+	 *
 	 * @param taskList The original List of WorkflowTasks to copy.
 	 * @return A new List of WorkflowTasks, copied from the original one specified.
 	 */
 	public static List copyTasks(List taskList){
 		if(taskList != null){
-			
+
 			List newTaskList = new Vector(taskList.size());
-			
+
 			for(Iterator i = taskList.iterator(); i.hasNext(); ){
 				WorkflowTask t = (WorkflowTask)i.next();
 				WorkflowTask newTask = copyTask(t);
 				newTaskList.add(newTask);
 			}
-			
+
 			return newTaskList;
 		}
 		else return null;
 	}
-	
+
 	public static WorkflowTask copyTask(WorkflowTask t){
 		WorkflowTask newTask = new WorkflowTask();
 		newTask.setTaskConfig(t.getTaskConfig());
@@ -292,25 +446,25 @@ public final class GenericWorkflowObjectFactory {
 	 * <p>Creates copies of each {@link WorkflowCondition} within the specified
 	 * {@link List} of WorkflowConditions specified by <code>conditionList</code>. The new
 	 * List of WorkflowConditions is returned.</p>
-	 * 
+	 *
 	 * @param conditionList The original List of WorkflowConditions to copy.
 	 * @return A new List of WorkflowConditions, copied from the original one specified.
 	 */
 	public static List copyConditions(List conditionList){
 		if(conditionList != null){
 			List newConditionList = new Vector(conditionList.size());
-			
+
 			for(Iterator i = conditionList.iterator(); i.hasNext(); ){
 				WorkflowCondition c = (WorkflowCondition)i.next();
 				WorkflowCondition newCondition = copyCondition(c);
 				newConditionList.add(newCondition);
 			}
-			
+
 			return newConditionList;
 		}
 		else return null;
 	}
-	
+
 	public static WorkflowCondition copyCondition(WorkflowCondition c){
 		WorkflowCondition newCondition = new WorkflowCondition();
 		newCondition.setConditionName(c.getConditionName());

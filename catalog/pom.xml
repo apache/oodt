@@ -15,24 +15,26 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>${oodt.version}</version>
+    <version>0.7-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-catalog</artifactId>
   <name>OODT CAS Virtual Catalog and Integration Service.</name>
-  <version>${oodt.version}</version>
   <description>CAS Catalog is an effort to virtualize underlying 
   catalogs for use in the CAS system. Heterogeneous catalog models 
   are mapped to a common dictionary, and then integrated locally so that
   they may be queried across and ingested into.
   </description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/trunk/catalog</url>
+  </scm>
   <profiles>
     <profile>
       <id>audit</id>
@@ -61,6 +63,30 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>tmpdir</id>
+      <activation>
+        <property>
+           <name>test.tmpdir</name>
+        </property>
+      </activation>
+       <build>
+        <plugins>
+         <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.4.3</version>
+          <configuration>
+          <systemProperties>
+             <property>
+               <name>java.io.tmpdir</name>
+               <value>${test.tmpdir}</value>
+              </property>
+           </systemProperties>
+           </configuration>
+         </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
   <build>
     <plugins>
@@ -72,7 +98,7 @@
           <descriptors>
             <descriptor>src/main/assembly/assembly.xml</descriptor>
           </descriptors>
-          <archive/>
+          <archive />
         </configuration>
         <executions>
           <execution>
@@ -113,12 +139,17 @@
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-commons</artifactId>
-      <version>${oodt.version}</version>    
+      <version>${project.parent.version}</version>    
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-cli</artifactId>
+      <version>${project.parent.version}</version>    
     </dependency>  
     <dependency>
       <groupId>commons-io</groupId>
@@ -164,4 +195,18 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+<!-- 
+  <reporting>
+  	<plugins>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-project-info-reports-plugin</artifactId>
+  			<version>2.4</version>
+  			<configuration>
+  				<checkoutDirectoryName>catalog</checkoutDirectoryName>
+  			</configuration>
+  		</plugin>
+  	</plugins>
+  </reporting>
+-->
 </project>

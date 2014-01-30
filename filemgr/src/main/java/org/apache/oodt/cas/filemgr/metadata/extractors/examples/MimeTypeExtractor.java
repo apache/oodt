@@ -67,9 +67,9 @@ public class MimeTypeExtractor extends AbstractFilemgrMetExtractor {
 
             extractMet.addMetadata(MIME_TYPE, prodRef.getMimeType().getName());
             extractMet.addMetadata(MIME_TYPE, prodRef.getMimeType()
-                    .getPrimaryType());
+                    .getType().getType());
             extractMet.addMetadata(MIME_TYPE, prodRef.getMimeType()
-                    .getSubType());
+                    .getType().getSubtype());
         }
 
         return extractMet;

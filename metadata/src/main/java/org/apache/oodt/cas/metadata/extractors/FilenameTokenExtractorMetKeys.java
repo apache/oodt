@@ -28,10 +28,20 @@ package org.apache.oodt.cas.metadata.extractors;
  */
 public interface FilenameTokenExtractorMetKeys {
   
-  String TIME_FORMAT_STRING_SCALAR = "TimeFormatString";
+  public static final String TIME_FORMAT_STRING_SCALAR = "TimeFormatString";
   
-  String SUBSTRING_OFFSET_GROUP = "SubstringOffsetGroup";
+  public static final String SUBSTRING_OFFSET_GROUP = "SubstringOffsetGroup";
+    
+  public static final String TOKEN_LIST_GROUP = "TokenNameListGroup";
   
-  String COMMON_METADATA_GROUP = "CommonMetadata";
+  public static final String TOKEN_DELIMETER_SCALAR = "Delimeter";
+
+  public static final String TOKEN_MET_KEYS_VECTOR = "TokenMetKeys";
+
+  public static final String PRODUCTION_DATE_TIME_GROUP = "ProductionDateTimeGroup";
+
+  public static final String DATETIME_SCALAR = "DateTimeFormat";
+
+  public static final String COMMON_METADATA_GROUP = "CommonMetadata";  
 
 }

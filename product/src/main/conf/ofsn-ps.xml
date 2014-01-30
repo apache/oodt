@@ -72,6 +72,13 @@ FIXME: Change XML namespace URI for oodt prefix?
        
        where some name is the name of the configuration property and some value is the
        value of the configuration property.
+       
+       Optional properties (for GET handlers):
+       
+       property name: mimeType
+       property value: the desired MIME type (also referred to as content-type) a handler should return
+       content as (eg. "text/plain"). More formally, any value of the form 
+       "type/subtype(; parameter=...)*" as defined in RFC 2045.
     -->
     
         
@@ -159,6 +166,36 @@ FIXME: Change XML namespace URI for oodt prefix?
    -->
    
    <handler name="MD5" type="get"
-       class="org.apache.oodt.product.handlers.ofsn.MD5GetHandler"/>
+       class="org.apache.oodt.product.handlers.ofsn.MD5GetHandler">
+       
+       <property name="mimeType" value="text/plain"/>
+       
+   </handler>
 
+
+  <!--  
+    The URL type returns a URL listing pointing to files within an OFSN
+    
+    (Optional) Use the below properties to customize the constructed URL returned:
+        1. prodServerHostname: the product server hostname
+        2. prodServerPort: the product server's port
+        3. prodServerContextRoot: the name of the product server webapp
+        4. productRoot: the root directory of the product server - identical
+                        to the root directory at the top of this XML file
+        5. returnType: the desired return type. i.e. RAW, MD5, etc.
+   -->
+  <handler name="URL" type="get"
+       class="org.apache.oodt.product.handlers.ofsn.URLGetHandler">
+       
+       <!-- the below values are the default if nothing specified
+       <property name="prodServerHostname" value="localhost"/>
+       <property name="prodServerPort" value="8080"/>
+       <property name="prodServerContextRoot" value="web-grid"/>
+       <property name="productRoot" value="/some/path"/>
+       <property name="returnType" value="RAW"/>
+       -->
+  	   
+       <property name="mimeType" value="text/plain"/>
+  	   
+  </handler>
 </oodt:ofsn>

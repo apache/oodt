@@ -1,0 +1,153 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<cas:workflows xmlns="http://oodt.jpl.nasa.gov/2.0/cas"
+	xmlns:cas="http://oodt.jpl.nasa.gov/2.0/cas" 
+	xmlns:p="http://oodt.jpl.nasa.gov/2.0/cas/property">
+
+	<parallel id="urn:oodt:TestParallel" name="TestParallel">
+		<sequential id="urn:oodt:SayHelloAndGoodBye" name="HelloGoodbye">
+			<task id-ref="urn:oodt:HelloWorld" />
+			<task id-ref="urn:oodt:GoodbyeWorld" />
+		</sequential>
+		
+		<conditions>
+		  <condition id-ref="urn:oodt:TimeoutCondition"/>
+		</conditions>
+
+		<task id-ref="urn:oodt:IntensiveTask" />
+	</parallel>
+
+	<task id="urn:oodt:HelloWorld" name="Hello World"
+		class="org.apache.oodt.cas.workflow.examples.HelloWorld">
+		<conditions execution="sequential">
+			<condition id-ref="urn:oodt:TrueCondition" />
+		</conditions>
+		<configuration>
+			<property name="Person" value="Chris" />
+		</configuration>
+	</task>
+	<task id="urn:oodt:GoodbyeWorld" name="Goodbye World"
+		class="org.apache.oodt.cas.workflow.examples.GoodbyeWorld">
+		<conditions execution="sequential">
+			<condition id-ref="urn:oodt:TrueCondition" />
+		</conditions>
+		<configuration>
+			<property name="Person" value="Chris" />
+		</configuration>
+	</task>
+	<task id="urn:oodt:YoureStuck" name="You're Stuck"
+		class="org.apache.oodt.cas.workflow.examples.GoodbyeWorld">
+		<conditions execution="sequential">
+			<condition id-ref="urn:oodt:FalseCondition" />
+		</conditions>
+		<configuration>
+			<property name="Person" value="Chris" />
+		</configuration>
+	</task>
+	<task id="urn:oodt:IntensiveTask" name="Processor Intensive Task"
+		class="org.apache.oodt.cas.workflow.examples.LongTask">
+		<conditions execution="sequential" />
+		<configuration />
+	</task>
+	<task id="urn:oodt:IntensiveTaskWithWait" name="Intensive Waiter"
+		class="org.apache.oodt.cas.workflow.examples.LongTask">
+		<conditions execution="sequential">
+			<condition id-ref="urn:oodt:LongCondition" />
+		</conditions>
+		<configuration />
+	</task>
+	<task id="urn:oodt:PropReplaceTask" name="PRTask"
+		class="org.apache.oodt.cas.workflow.examples.LongTask">
+		<conditions execution="sequential" />
+		<configuration>
+			<property name="PathToReplace" value="[HOME]/my/path"
+				envReplace="true" />
+			<property name="DontReplaceMe" value="[HOME]/my/path"
+				envReplace="false" />
+			<property name="DontReplaceMeNoSpec" value="[HOME]/my/path" />
+		</configuration>
+	</task>
+	<task id="urn:oodt:NumIncrementTask" name="Num Increment Task"
+		class="org.apache.oodt.cas.workflow.examples.NumIncrementTask">
+		<conditions execution="sequential" />
+		<configuration />
+	</task>
+	<task id="urn:oodt:RandomStatusUpdateTask" name="Random Status Update"
+		class="org.apache.oodt.cas.workflow.examples.RandomStatusUpdateTask">
+		<conditions execution="sequential" />
+		<configuration />
+	</task>
+	<task id="urn:oodt:TestMultiConditionTask" name="Test Multi Condition"
+		class="org.apache.oodt.cas.workflow.examples.HelloWorld">
+		<conditions execution="sequential">
+			<condition id-ref="urn:oodt:TrueCondition" />
+			<condition id-ref="urn:oodt:FalseCondition" />
+		</conditions>
+		<configuration>
+			<property name="Person" value="Chris" />
+		</configuration>
+	</task>
+	<task id="urn:oodt:TestReqMetFieldsTask" name="Test Met Fields"
+		class="org.apache.oodt.cas.workflow.examples.LongTask">
+		<conditions execution="sequential" />
+		<configuration />
+		<requiredMetFields>
+			<metfield name="numSeconds" />
+		</requiredMetFields>
+	</task>
+	<task id="urn:oodt:ExternalScriptTask" name="External Script Task"
+		class="org.apache.oodt.cas.workflow.examples.ExternScriptTaskInstance">
+		<conditions execution="sequential" />
+		<configuration>
+			<property name="ShellType" value="/bin/sh" /> <!-- or /bin/tcsh if you have tcsh shell envionment; or /usr/bin/ if you 
+				have a compiled program -->
+			<property name="PathToScript" value="/usr/local/sampleScript.sh" /> <!-- This should include the file name as well -->
+		</configuration>
+	</task>
+	<task id="urn:oodt:mailTask" name="Ingest e-Mail"
+		class="org.apache.oodt.cas.workflow.examples.MailTask">
+		<conditions execution="sequential" />
+		<configuration>
+			<property name="user.name" value="Costin" />
+			<property name="msg.subject" value="Ingest Notification" />
+			<property name="mail.to" value="chris.mattmann@jpl.nasa.gov" />
+			<property name="mail.from" value="oodt@jpl.nasa.gov" />
+		</configuration>
+	</task>
+
+	<condition id="urn:oodt:TrueCondition" name="True Condition"
+		class="org.apache.oodt.cas.workflow.examples.TrueCondition" />
+	<condition id="urn:oodt:FalseCondition" name="False Condition"
+		class="org.apache.oodt.cas.workflow.examples.FalseCondition" />
+	<condition id="urn:oodt:LongCondition" name="Long Condition"
+		class="org.apache.oodt.cas.workflow.examples.LongCondition" />
+	<condition id="urn:oodt:CheckForMetadataKeys" name="Metadata Key Check"
+		class="org.apache.oodt.cas.workflow.examples.CheckForMetadataKeys">
+		<configuration>
+			<property name="reqMetKeys" value="Met1,Met2,Met3" />
+		</configuration>
+	</condition>
+	<condition id="urn:oodt:TimeoutCondition" name="Timeout Condition" 
+	    class="org.apache.oodt.cas.workflow.examples.FalseCondition" timeout="30"/>
+	
+	<condition id="urn:oodt:OptionalCondition" name="Optional Condition" 
+	class="org.apache.oodt.cas.workflow.examples.FalseCondition" optional="true"/>
+	
+
+
+
+</cas:workflows>

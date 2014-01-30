@@ -47,7 +47,17 @@ public interface JobQueue {
    *           If there is any error queueing the {@link JobSpec}.
    */
   public String addJob(JobSpec spec) throws JobQueueException;
-
+  
+  /**
+   * Re-adds a {@link JobSpec} to the back of the queue.
+   * 
+   * @param spec
+   *          The {@link JobSpec} to re-add.
+   * @throws JobQueueException
+   *           If there is any error requeueing the {@link JobSpec}.
+   */
+  public String requeueJob(JobSpec spec) throws JobQueueException;
+  
   /**
    * Gets an ordered {@link List} of queued {@link JobSpec}s.
    * 

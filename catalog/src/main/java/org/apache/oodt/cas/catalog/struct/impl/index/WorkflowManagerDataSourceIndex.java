@@ -189,6 +189,75 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 		}
 	}
 	
+	public List<IngestReceipt> query(QueryExpression queryExpression, int startIndex, int endIndex) throws QueryServiceException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = this.dataSource.getConnection();
+			stmt = conn.createStatement();
+			String sqlQuery = "SELECT workflow_instance_id,start_date_time FROM workflow_instances WHERE workflow_instance_id IN (" + this.getSqlQuery(queryExpression) + ")";
+	        LOG.log(Level.INFO, "Performing Query: " + sqlQuery);
+			rs = stmt.executeQuery(sqlQuery);
+			
+			List<IngestReceipt> receipts = new Vector<IngestReceipt>();
+			int index = 0;
+			while (startIndex > index && rs.next()) index++;
+			while (rs.next() && index++ <= endIndex) 
+				receipts.add(new IngestReceipt(new LongTransactionIdFactory().createTransactionId(rs.getString("workflow_instance_id")), DateConvert.isoParse(rs.getString("start_date_time"))));
+			return receipts;
+		}catch (Exception e) {
+			throw new QueryServiceException("Failed to query Workflow Instances Database : " + e.getMessage(), e);
+		}finally {
+			try {
+				conn.close();
+			}catch(Exception e) {}
+			try {
+				stmt.close();
+			}catch(Exception e) {}
+			try {
+				rs.close();
+			}catch(Exception e) {}
+		}
+	}
+	
+	public int sizeOf(QueryExpression queryExpression)
+			throws QueryServiceException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = this.dataSource.getConnection();
+			stmt = conn.createStatement();
+			String sqlQuery = "SELECT COUNT(workflow_instance_id) AS numInstances FROM workflow_instances WHERE workflow_instance_id IN (" + this.getSqlQuery(queryExpression) + ")";
+			LOG.log(Level.INFO, "Performing Query: " + sqlQuery);
+			rs = stmt.executeQuery(sqlQuery);
+
+			int numInstances = 0;
+			while (rs.next())
+				numInstances = rs.getInt("numInstances");
+
+			return numInstances;
+		} catch (Exception e) {
+			throw new QueryServiceException(
+					"Failed to get size of query in Workflow Instances Database : "
+							+ e.getMessage(), e);
+		} finally {
+			try {
+				conn.close();
+			} catch (Exception e) {
+			}
+			try {
+				stmt.close();
+			} catch (Exception e) {
+			}
+			try {
+				rs.close();
+			} catch (Exception e) {
+			}
+		}
+	}
+	
     private String getSqlQuery(QueryExpression queryExpression) throws QueryServiceException, UnsupportedEncodingException {
         String sqlQuery = null;
         if (queryExpression instanceof QueryLogicalGroup) {

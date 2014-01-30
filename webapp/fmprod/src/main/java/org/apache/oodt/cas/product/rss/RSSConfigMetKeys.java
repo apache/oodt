@@ -30,4 +30,5 @@ package org.apache.oodt.cas.product.rss;
 public interface RSSConfigMetKeys {
 
   public static final String RSS_CONTEXT_CONF_KEY = "filemgr.rssconf.file";
+  public static final String RSS_TRANSFER_CONF_KEY = "filemgr.rss-transfer-conf.file";
 }

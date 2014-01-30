@@ -287,6 +287,33 @@ the License.
         </subsection>
       </section>
       
+      <section name="Use Cases">
+        <p>
+          The Workflow Manager was built to support several of the above capabilities. In particular there 
+          were several use cases that we wanted to support, some 
+          of which are described below.        
+        </p>
+      
+         <img src="../images/wm_use_case1.jpg" alt="Workflow Manager Event-based Execution Use Case"/>
+         
+         <p>The black numbers in the above Figure correspond to a sequence of steps that occurs and a 
+         series of interactions between the different Workflow Manager extension points in order to 
+         perform the workflow execution activity. In Step 1, an event is provided to the Workflow
+         Manager event listenter (the System extension point), along with required Metadata. The
+         Workflow Manager, in step 2, looks up if ther are any associated Workflow Repository models
+         associated with the provided Event. If so, in steps 3 and 4, the returned Workflow models
+         are sent to the WorkflowEngine, to be turned into executable Workflow Instances.Each 
+         WorkflowInstance is handed off to a WorkflowProcessorThread, taken from the ThreadPoolWorkflowEngine,
+         in steps 5 and 6. The WorkflowProcessorThread, in step 7, steps through each executable WorkflowTask,
+         checking to make sure that all necessary Workflow Conditions (if any) are satisfied. If all Workflow 
+         Conditions are satisfied, then the Workflow Task is executed, either locally, or if an Resource Manager
+         is defined, then the task is sent (in step 7) to the Resource Manager (labeled <code>Process Manager</code>
+         in the figure). In steps 8-13, the WorkflowTask is executed on remote resources using the Resource Manager,
+         and eventually completed, with the final notification being sent back to the corresponding Workflow Processor
+         Thread, which is stepping through the Workflow Instance, controlling its exectuion. </p>
+         
+      </section>      
+      
       <section name="Conclusion">
       <p>The aim of this document is to provide information relevant to developers
       about the CAS Worklfow Manager. Specifically, this document has described the Workflow 

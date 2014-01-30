@@ -661,7 +661,7 @@ public class TestTypeHandler extends TestCase {
             return productIds;
         }
 
-        private int getResultListSize(Query query, ProductType type)
+        protected int getResultListSize(Query query, ProductType type)
                 throws CatalogException {
             Connection conn = null;
             Statement statement = null;

@@ -35,7 +35,9 @@ public interface CoreMetKeys {
   public static final String FILE_LOCATION = "FileLocation";
   
   public static final String FILENAME = "Filename";
-  
+
+  public static final String FILE_SIZE = "FileSize";
+
   public static final String PRODUCT_TYPE = "ProductType";
   
   public static final String PRODUCT_STRUCTURE = "ProductStructure";

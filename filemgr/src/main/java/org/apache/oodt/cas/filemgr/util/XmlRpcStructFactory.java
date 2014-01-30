@@ -61,7 +61,7 @@ import java.util.logging.Logger;
 public final class XmlRpcStructFactory {
 
     /* our log stream */
-    private static Logger LOG = Logger
+    private static final Logger LOG = Logger
             .getLogger(XmlRpcStructFactory.class.getName());
     
     private XmlRpcStructFactory() throws InstantiationException {
@@ -72,7 +72,7 @@ public final class XmlRpcStructFactory {
     public static Hashtable<String, Object> getXmlRpcFileTransferStatus(
             FileTransferStatus status) {
         Hashtable<String, Object> statusHash = new Hashtable<String, Object>();
-        statusHash.put("bytesTransferred", new Integer((int) status
+        statusHash.put("bytesTransferred",Long.toString(status
                 .getBytesTransferred()));
         statusHash.put("parentProduct", getXmlRpcProduct(status
                 .getParentProduct()));
@@ -83,8 +83,8 @@ public final class XmlRpcStructFactory {
     public static FileTransferStatus getFileTransferStatusFromXmlRpc(
             Hashtable<String, Object> statusHash) {
         FileTransferStatus status = new FileTransferStatus();
-        status.setBytesTransferred((long) ((Integer) statusHash
-                .get("bytesTransferred")).intValue());
+        status.setBytesTransferred(Long.parseLong(statusHash
+                .get("bytesTransferred").toString()));
         status.setParentProduct(getProductFromXmlRpc((Hashtable<String, Object>) statusHash.get("parentProduct")));
         status.setFileRef(getReferenceFromXmlRpc((Hashtable<String, Object>) statusHash.get("fileRef")));
         return status;
@@ -241,29 +241,51 @@ public final class XmlRpcStructFactory {
     
     public static Hashtable<String, Object> getXmlRpcProduct(Product product) {
         Hashtable<String, Object> productHash = new Hashtable<String, Object>();
-        productHash.put("id", product.getProductId() != null ? product
-                .getProductId() : "");
-        productHash.put("name", product.getProductName());
-        productHash.put("type", getXmlRpcProductType(product.getProductType()));
-        productHash.put("structure", product.getProductStructure());
-        productHash.put("transferStatus",
-                product.getTransferStatus() != null ? product
-                        .getTransferStatus() : "");
-        productHash.put("references", getXmlRpcReferences(product
+        if (product.getProductId() != null) {
+           productHash.put("id", product.getProductId());
+        }
+        if (product.getProductName() != null) {
+           productHash.put("name", product.getProductName());
+        }
+        if (product.getProductType() != null) {
+           productHash.put("type", getXmlRpcProductType(product.getProductType()));
+        }
+        if (product.getProductStructure() != null) {
+           productHash.put("structure", product.getProductStructure());
+        }
+        if (product.getTransferStatus() != null) {
+           productHash.put("transferStatus", product.getTransferStatus());
+        }
+        if (product.getProductReferences() != null) {
+           productHash.put("references", getXmlRpcReferences(product
                 .getProductReferences()));
+        }
+        if (product.getRootRef() != null) {
+           productHash.put("rootReference", getXmlRpcReference(product
+                 .getRootRef()));
+        }
         return productHash;
     }
 
     public static Product getProductFromXmlRpc(Hashtable<String, Object> productHash) {
         Product product = new Product();
-
         product.setProductId((String) productHash.get("id"));
         product.setProductName((String) productHash.get("name"));
-        product.setProductType(getProductTypeFromXmlRpc((Hashtable<String, Object>) productHash.get("type")));
+        if (productHash.get("type") != null) {
+           product.setProductType(getProductTypeFromXmlRpc(
+                 (Hashtable<String, Object>) productHash.get("type")));
+        }
         product.setProductStructure((String) productHash.get("structure"));
         product.setTransferStatus((String) productHash.get("transferStatus"));
-        product.setProductReferences(getReferencesFromXmlRpc((Vector<Hashtable<String, Object>>) productHash
+        if (productHash.get("references") != null) {
+           product.setProductReferences(getReferencesFromXmlRpc(
+                 (Vector<Hashtable<String, Object>>) productHash
                         .get("references")));
+        }
+        if (productHash.get("rootReference") != null) {
+           product.setRootRef(getReferenceFromXmlRpc(
+                 (Hashtable<String, Object>) productHash.get("rootReference")));
+        }
         return product;
     }
 
@@ -323,28 +345,29 @@ public final class XmlRpcStructFactory {
 
     public static Hashtable<String, Object> getXmlRpcProductType(ProductType type) {
         Hashtable<String, Object> productTypeHash = new Hashtable<String, Object>();
+        // TODO(bfoster): ProductType ID is currently required by XmlRpcFileManager.
         productTypeHash.put("id", type.getProductTypeId());
-        productTypeHash.put("name", type.getName() != null ? type.getName()
-                : "");
-        productTypeHash.put("description", type.getDescription() != null ? type
-                .getDescription() : "");
-        productTypeHash.put("repositoryPath",
-                type.getProductRepositoryPath() != null ? type
-                        .getProductRepositoryPath() : "");
-        productTypeHash.put("versionerClass",
-                type.getVersioner() != null ? type.getVersioner() : "");
-        productTypeHash.put("typeMetadata",
-                type.getTypeMetadata() != null ? type.getTypeMetadata()
-                        .getHashtable() : new Hashtable<String, Object>());
-
-        productTypeHash.put("typeExtractors",
-                type.getExtractors() != null ? getXmlRpcTypeExtractors(type
-                        .getExtractors()) : new Vector<Hashtable<String, Object>>());
-        
-        productTypeHash.put("typeHandlers",
-                type.getHandlers() != null ? getXmlRpcTypeHandlers(type
-                        .getHandlers()) : new Vector<Hashtable<String, Object>>());
-
+        if (type.getName() != null) {
+           productTypeHash.put("name", type.getName());
+        }
+        if (type.getDescription() != null) {
+           productTypeHash.put("description", type.getDescription());  
+        }
+        if (type.getProductRepositoryPath() != null) {
+           productTypeHash.put("repositoryPath",type.getProductRepositoryPath());
+        }
+        if (type.getVersioner() != null) {
+           productTypeHash.put("versionerClass", type.getVersioner());
+        }
+        if (type.getTypeMetadata() != null) {
+           productTypeHash.put("typeMetadata", type.getTypeMetadata().getHashtable());
+        }
+        if (type.getExtractors() != null) {
+           productTypeHash.put("typeExtractors", getXmlRpcTypeExtractors(type.getExtractors()));
+        }
+        if (type.getHandlers() != null) {
+           productTypeHash.put("typeHandlers", getXmlRpcTypeHandlers(type.getHandlers()));
+        }
         return productTypeHash;
     }
 
@@ -352,28 +375,24 @@ public final class XmlRpcStructFactory {
         ProductType type = new ProductType();
         type.setDescription((String) productTypeHash.get("description"));
         type.setName((String) productTypeHash.get("name"));
-        type.setProductRepositoryPath((String) productTypeHash
-                .get("repositoryPath"));
+        type.setProductRepositoryPath((String) productTypeHash.get("repositoryPath"));
         type.setProductTypeId((String) productTypeHash.get("id"));
         type.setVersioner((String) productTypeHash.get("versionerClass"));
-        Metadata typeMet = new Metadata();
         if (productTypeHash.get("typeMetadata") != null) {
-            typeMet
-                    .addMetadata((Hashtable) productTypeHash.get("typeMetadata"));
+           Metadata typeMet = new Metadata();
+           typeMet.addMetadata((Hashtable) productTypeHash.get("typeMetadata"));
+           type.setTypeMetadata(typeMet);
         }
-
         if (productTypeHash.get("typeExtractors") != null) {
-            type
-                    .setExtractors(getTypeExtractorsFromXmlRpc((Vector<Hashtable<String, Object>>) productTypeHash
-                            .get("typeExtractors")));
+            type.setExtractors(getTypeExtractorsFromXmlRpc(
+                  (Vector<Hashtable<String, Object>>) productTypeHash
+                     .get("typeExtractors")));
         }
-        
         if (productTypeHash.get("typeHandlers") != null) {
-            type.setHandlers(getTypeHandlersFromXmlRpc((Vector<Hashtable<String, Object>>) productTypeHash
+            type.setHandlers(getTypeHandlersFromXmlRpc(
+                  (Vector<Hashtable<String, Object>>) productTypeHash
                         .get("typeHandlers")));
         }
-
-        type.setTypeMetadata(typeMet);
         return type;
     }
 
@@ -413,8 +432,10 @@ public final class XmlRpcStructFactory {
     
     public static Hashtable<String, Object> getXmlRpcTypeHandler(TypeHandler typeHandler) {
         Hashtable<String, Object> handlerHash = new Hashtable<String, Object>();
-        handlerHash.put("className", typeHandler.getClass().getCanonicalName());
-        handlerHash.put("elementName", typeHandler.getElementName());
+        handlerHash.put("className", typeHandler != null ? 
+            typeHandler.getClass().getCanonicalName():"");
+        handlerHash.put("elementName", typeHandler != null ? 
+            typeHandler.getElementName():"");
         return handlerHash;
     }
 
@@ -458,7 +479,8 @@ public final class XmlRpcStructFactory {
             Hashtable<String, Object> typeHandlerHash) {
         TypeHandler typeHandler = GenericFileManagerObjectFactory
             .getTypeHandlerFromClassName((String) typeHandlerHash.get("className"));
-        typeHandler.setElementName((String) typeHandlerHash.get("elementName"));
+        if(typeHandler != null)
+          typeHandler.setElementName((String) typeHandlerHash.get("elementName"));
         return typeHandler;
     }
 
@@ -521,7 +543,7 @@ public final class XmlRpcStructFactory {
                 .getDataStoreReference() != null ? reference
                 .getDataStoreReference() : "");
         referenceHash.put("fileSize",
-                new Integer((int) reference.getFileSize()));
+                Long.toString(reference.getFileSize()));
         referenceHash.put("mimeType", (reference.getMimeType() == null) ? ""
                 : reference.getMimeType().getName());
         return referenceHash;
@@ -532,8 +554,7 @@ public final class XmlRpcStructFactory {
         reference.setDataStoreReference((String) referenceHash
                 .get("dataStoreReference"));
         reference.setOrigReference((String) referenceHash.get("origReference"));
-        reference.setFileSize(((Integer) referenceHash.get("fileSize"))
-                .longValue());
+        reference.setFileSize(Long.parseLong(referenceHash.get("fileSize").toString()));
         reference.setMimeType((String) referenceHash.get("mimeType"));
         return reference;
     }

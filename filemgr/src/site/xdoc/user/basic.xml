@@ -30,53 +30,115 @@ the License.
       
       <p>This document serves as a basic user's guide for the CAS File Manager 
       project. The goal of the document is to allow users to check out, build, and 
-      install a base version of the CAS File Manager, as well as perform basic 
-      configuration tasks. For advanced topics, such as configuring the File 
+      install a base version of the CAS File Manager.  Additional information can
+      be found at the <a href="http://cwiki.apache.org/confluence/display/OODT/OODT+Filemgr+User+Guide">
+      Filemgr User Guide Wiki Page</a>. For advanced topics, such as configuring the File 
       Manager to Scale and other tips and tricks, please see our 
       <a href="../user/advanced.html">Advanced Guide.</a></p>
       
       <p>The remainder of this guide is separated into the following sections:</p>
       <ul>
-        <li><a href="#section1">Download and Build</a></li>
+        <li><a href="#section1">Download and Build OODT</a></li>
         <li><a href="#section2">Configuration in 2 Minutes or Less</a></li>
+        <!-- 
         <li><a href="#section3">Learn By Example</a></li>
+         -->
       </ul>  
       </section> 
      
       <a name="section1"/>
-      <section name="Download and Build">
-      <div class="warning">
-        <p><b>Pre-Requisite:</b> Before you can build a copy of the CAS-File Manager you will
-        need to check out and install the oodt-core project.  Installing the oodt-core project
-        will update your Maven2 repo with several files that are required for the CAS-File Manager.
-        In order to check out and install the core follow the steps outlined below:</p>
+      <section name="Download and Build OODT">
+      <div class="info">
+        <p><b>Pre-Requisite:</b> Maven 2.x installed on your machine and Java 1.6.
+        If you have the correct versions of Java and Maven installed then proceed
+        with the build process for OODT which will also build the File Manager
+        component.
+        </p>
+      </div>
+      
+      <div class="warning">  
+        <p><b>Mac OS X Users:</b> Apple is now upgrading their OS to include Maven 3
+        by default, which is not compatible with Apache OODT's build process.  For more 
+        information on Maven, see our <a href="../development/maven.html">Maven Guide.</a>
+        To determine which version of Maven is installed on your machine type the following 
+        command into a terminal.</p>
+        
+        <source>
+>mvn --version
+Apache Maven 2.2.1 (r801777; 2009-08-07 04:16:01+0900)
+Java version: 1.6.0_26
+		</source>
+		
+		<p>If your system returns Apache Maven 3.X then you will need to install Maven 2.2.1 using the
+		following steps:  (NOTE: This will replace Maven 3 with Maven 2.2.1 as your systems default Maven version)</p>
+		
+		<p>1. Download apache-maven-2.2.1-bin tar file from <a href="http://maven.apache.org/">http://maven.apache.org</a></p>
+  		<p>2. Install maven to /usr/share/</p> 
+  		<source>
+>sudo tar xzvf apache-maven-2.2.1-bin.tar.gz -C /usr/share
+  		</source>
+  		<p>3. Now hook it in as the default maven.</p>
+		<source>
+>sudo rm /usr/bin/mvn
+>sudo rm /usr/share/maven
+>sudo ln -s /usr/share/apache-maven-2.2.1 /usr/share/maven
+>sudo ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+		</source>
+		<p>4. Double check the maven version</p>
+		<source>
+>mvn --version
+Apache Maven 2.2.1 ...
+		</source>
+		<p><b>Now you can proceed with the check out and build of Apache OODT</b></p>
+      </div>
+      <br/>
+      <div id="checkout_build">
+      <p><b>Create a Directory to Checkout Source Code:</b></p>
         <source>
 >mkdir /usr/local/src
 >cd /usr/local/src        
->svn co https://svn.apache.org/repos/asf/incubator/oodt/trunk/core oodt-core
+		</source>
+		<p><b>Using a Tagged Release:</b></p>
+		<source>
+>svn co http://svn.apache.org/repos/asf/oodt/tags/{release_number}/ oodt
         </source>
-      <p>Once the subversion command completes you should have a directory at <code>/usr/local/src/oodt-core</code>
-      which will contain a couple files.  In order to build the project from this source, issue the following 
-      commands:</p>
+		<p><b>Using the Latest Development Trunk:</b></p>
+		<source>
+>svn co http://svn.apache.org/repos/asf/oodt/trunk/ oodt
+        </source>
+        <p>Once the subversion command completes you should have a directory at <code>/usr/local/src/oodt</code>
+        which will contain all of the source code for OODT.  In order to build the project from source, 
+        issue the following commands:</p>
         <source>
->cd /usr/local/src/oodt-core
+>cd /usr/local/src/oodt
 >mvn clean install        
         </source>
         <p>Once you get the Maven Build Successful message you can proceed with the installation 
-        of the CAS-File Manger</p>
+        of the CAS-FileManager.</p>
+        <source>
+>mkdir /usr/local/oodt
+>cd filemgr/target
+>tar xzvf cas-filemgr-{version#}-dist.tar.gz -C /usr/local/oodt
+>cd /usr/local/oodt
+>ln -s cas-filemgr-{version#}/ cas-filemgr
+        </source>
         </div>
-        <br/>
-        <br/>
+        <h3>
+        Our latest updated File Manager documentation has moved to the OODT wiki 
+        at <a href="http://cwiki.apache.org/confluence/display/OODT/OODT+Filemgr+User+Guide">OODT Filemgr
+        User Guide</a>
+        </h3>
         
-        <p>The most recent CAS-File Manager project can be downloaded from the Apache OODT
-        <a href="/">website</a> or it can be checked out 
-        from the OODT repository using Subversion. The CAS-File Manager project is 
-        located at <code>https://svn.apache.org/repos/asf/incubator/oodt/trunk/filemgr/</code>.</p>
-      
-        <p>Maven is the build management system used for OODT projects. We currently 
-        support Maven 2.0 and later. For more information on Maven, see our 
-        <a href="../development/maven.html">Maven Guide.</a></p>
-      
+      </section>
+        
+<!-- Previous Instructions might need to poach some of the text so commenting out for now     
+
+		This block no longer holds true.  You cannot just build the oodt-core then the filemgr component.
+		cgoodale tried on a clean m2 repo and it failed due to missing dependencies.  If this is still
+		desired, then it will need to be corrected and cleaned up.  Leaving the text here if that is
+		the final case.
+		
+		  
         <p>Assuming a *nix-like environment, with both Maven and Subversion 
         clients installed and on your path, an example of the checkout and 
         build process is presented below:</p>
@@ -84,7 +146,7 @@ the License.
          <source>
 > mkdir /usr/local/src
 > cd /usr/local/src
-> svn checkout https://svn.apache.org/repos/asf/incubator/oodt/trunk/filemgr
+> svn checkout https://svn.apache.org/repos/asf/oodt/trunk/filemgr
       </source>
         
       <p>After the Subversion command completes, you will have the source
@@ -116,11 +178,17 @@ the License.
 > tar -xvzf cas-filemgr-vX.Y.Z-dist.tar.gz
 > export FILEMGR_HOME=/usr/local/cas-filemgr-vX.Y.Z
       </source>       
-      
+
+
+
+-->
+	  <br/>
+	  <br/>
+	  <br/>
       <p>The resultant directory layout from the unpacked tarball is as follows:</p>
            
       <source>
-bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
+bin/ etc/ logs/ doc/ lib/ policy/
       </source>
       
       <p>A basic description of the files and subdirectories of the deployment is 
@@ -146,19 +214,13 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
          type policy in case the user is using the XML Repository Manager and/or the 
          XML Validation Layer.</li>
          
-         <li><strong>CHANGES.txt</strong> - contains the CHANGES present in this 
-         released version of the File Manager.</li>
-         
-         <li><strong>LICENSE.txt</strong> - the LICENSE for the File Manager 
-         project.</li>
        </ul>
       
-      <p>Now you have a built File Manager at <code>/usr/local/cas-filemgr-vX.Y.Z</code>.
+      <p>Now you have a built File Manager at <code>/usr/local/oodt/cas-filemgr</code>.
       In the next section, we will discuss how you can configure the File Manager for
       basic operations.</p>
       
-    </section>
-      
+
     <a name="section2"/>
     <section name="Configuration in 2 Minutes or Less">
       
@@ -249,14 +311,13 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
       command using the filemgr-client command below. First create a simple text file 
       called "blah.txt" and place it inside <code>$FILEMGR_HOME/bin</code> Then, create 
       a blank metadata file for the product, using the 
-      <a href="https://svn.apache.org/repos/asf/incubator/oodt/trunk/metadata/src/main/conf/cas.metadata.xsd">schema</a>
-      or  <a href="https://svn.apache.org/repos/asf/incubator/oodt/trunk/metadata/src/main/conf/cas.metadata.dtd">DTD</a>
+      <a href="http://svn.apache.org/repos/asf/oodt/trunk/metadata/src/main/conf/cas.metadata.xsd">schema</a>
+      or  <a href="http://svn.apache.org/repos/asf/oodt/trunk/metadata/src/main/conf/cas.metadata.dtd">DTD</a>
       provided in the <a href="../../metadata">CAS-Metadata</a>
       project. An example XML file might be:</p>
       
-      <!-- FIXME: change namespace URI? -->
       <source>
-        &lt;cas:metadata xmlns:cas=&quot;http://oodt.jpl.nasa.gov/1.0/cas&quot;&gt;
+        &lt;cas:metadata xmlns:cas=&quot;http://oodt.apache.org/1.0/cas&quot;&gt;
         &lt;/cas:metadata&gt;
       </source>
       
@@ -268,8 +329,8 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
 > ./filemgr-client --url http://localhost:9000 --operation \
    --ingestProduct --productName blah.txt --productStructure Flat \
    --productTypeName GenericFile \ 
-   --metadataFile file:///usr/local/cas-filemgr-v1.8.0/bin/blah.txt.met \
-   --refs file:///usr/local/cas-filemgr-v1.8.0/bin/blah.txt
+   --metadataFile file:///usr/local/oodt/cas-filemgr/bin/blah.txt.met \
+   --refs file:///usr/local/oodt/cas-filemgr/bin/blah.txt
       </source>
 
       <p>This command triggers the ingest process. You should see a response message that 
@@ -283,12 +344,13 @@ bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
       the CAS File Manager, hopefully in 2 minutes or less (and even if it took a little 
       more time, you have to admit it was by and large painless).</p>
       </section>
-      
+
+<!--      
       <a name="section3"/>
       <section name="Learn By Example">
       <p>Coming Soon...</p>
       </section>
-      
+-->      
       <section name="Conclusion">
       <p>In this Basic User Guide, we have covered a number of topics, including File 
       Manager installation, configuration, and a basic example of use. For more advanced 

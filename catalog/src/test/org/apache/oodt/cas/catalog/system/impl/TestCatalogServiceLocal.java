@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Vector;
 
 //OODT imports
+import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.catalog.exception.CatalogServiceException;
 import org.apache.oodt.cas.catalog.mapping.InMemoryIngestMapperFactory;
 import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
@@ -52,43 +53,63 @@ import junit.framework.TestCase;
  * 
  * @author bfoster
  * @version $Revision$
- *
+ * 
  */
 public class TestCatalogServiceLocal extends TestCase {
 
 	private CatalogServiceLocal cs;
+	private File testDir;
 	
-	public TestCatalogServiceLocal() throws ClassNotFoundException, InstantiationException, IllegalAccessException, CatalogServiceException, IOException, SQLException {
-        File tempFile = File.createTempFile("foo", "bar");
-        tempFile.deleteOnExit();
-        File tempDir = tempFile.getParentFile();
-        String tmpDirPath = tempDir.getAbsolutePath();
-		
-		CatalogServiceLocalFactory factory = new CatalogServiceLocalFactory();
-		factory.setCatalogRepositoryFactory(new MemoryBasedCatalogRepositoryFactory());
-		factory.setIngestMapperFactory(this.getOracleIngestMapperFactory(tmpDirPath));
-		factory.setOneCatalogFailsAllFail(true);
-		factory.setSimplifyQueries(true);
-		factory.setPluginStorageDir("/dev/null");
-		factory.setRestrictIngestPermissions(false);
-		factory.setRestrictQueryPermissions(false);
-		factory.setTransactionIdFactory(UuidTransactionIdFactory.class.getCanonicalName());
-		cs = factory.createCatalogService();
-		
-		CatalogFactory catalogFactory = new CatalogFactory();
-		catalogFactory.setCatalogId("TestCatalog1");
-		catalogFactory.setDictionaryFactories(null);
-		catalogFactory.setIndexFactory(getInMemoryDSFactory(tmpDirPath + "/1/"));
-		catalogFactory.setRestrictIngestPermissions(false);
-		catalogFactory.setRestrictQueryPermissions(false);
-		cs.addCatalog(catalogFactory.createCatalog());
-		catalogFactory.setCatalogId("TestCatalog2");
-		catalogFactory.setIndexFactory(getInMemoryDSFactory(tmpDirPath + "/2/"));
-		cs.addCatalog(catalogFactory.createCatalog());
+	public void setUp() {
+		try {
+			File tempFile = File.createTempFile("foo", "bar");
+			tempFile.deleteOnExit();
+			testDir = new File(tempFile.getParentFile(), "cas-catalog");
+	
+			CatalogServiceLocalFactory factory = new CatalogServiceLocalFactory();
+			factory
+					.setCatalogRepositoryFactory(new MemoryBasedCatalogRepositoryFactory());
+			factory.setIngestMapperFactory(this
+					.getOracleIngestMapperFactory(testDir.getAbsolutePath() + "/mapper"));
+			factory.setOneCatalogFailsAllFail(true);
+			factory.setSimplifyQueries(true);
+			factory.setPluginStorageDir("/dev/null");
+			factory.setRestrictIngestPermissions(false);
+			factory.setRestrictQueryPermissions(false);
+			factory.setTransactionIdFactory(UuidTransactionIdFactory.class
+					.getCanonicalName());
+			cs = factory.createCatalogService();
+	
+			CatalogFactory catalogFactory = new CatalogFactory();
+			catalogFactory.setCatalogId("TestCatalog1");
+			catalogFactory.setDictionaryFactories(null);
+			catalogFactory
+					.setIndexFactory(getInMemoryDSFactory(testDir.getAbsolutePath() + "/index/1/"));
+			catalogFactory.setRestrictIngestPermissions(false);
+			catalogFactory.setRestrictQueryPermissions(false);
+			cs.addCatalog(catalogFactory.createCatalog());
+			catalogFactory.setCatalogId("TestCatalog2");
+			catalogFactory
+					.setIndexFactory(getInMemoryDSFactory(testDir.getAbsolutePath() + "/index/2/"));
+			cs.addCatalog(catalogFactory.createCatalog());
+		}catch (Exception e) {
+			e.printStackTrace();
+			TestCase.fail(e.getMessage());
+		}
 	}
 	
-	public void testDataSourceCatalogIngestQueryAndDelete() throws CatalogServiceException, ParseException, TokenMgrError {
-		//test ingest
+	public void tearDown() {
+		try {
+			FileUtils.forceDelete(this.testDir);
+		} catch (IOException e) {
+			e.printStackTrace();
+			TestCase.fail(e.getMessage());
+		}
+	}
+
+	public void testDataSourceCatalogIngestQueryAndDelete()
+			throws CatalogServiceException, ParseException, TokenMgrError {
+		// test ingest
 		Metadata m = new Metadata();
 		m.addMetadata("testkey1", "testval1");
 		TransactionReceipt tr = cs.ingest(m);
@@ -100,8 +121,11 @@ public class TestCatalogServiceLocal extends TestCase {
 		assertEquals(ingestedMetadata.getMetadata("testkey1"), "testval1");
 		assertEquals(ingestedMetadata.getAllMetadata("testkey1").size(), 2);
 
-		//test ingest update
-		m.replaceMetadata(CatalogServiceLocal.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY.toString(), tr.getTransactionId().toString());
+		// test ingest update
+		m.replaceMetadata(
+				CatalogServiceLocal.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY
+						.toString(), tr.getTransactionId().toString());
+		m.replaceMetadata(CatalogServiceLocal.ENABLE_UPDATE_MET_KEY, "true");
 		tr = cs.ingest(m);
 		receipts = new Vector<TransactionReceipt>();
 		receipts.add(tr);
@@ -111,8 +135,9 @@ public class TestCatalogServiceLocal extends TestCase {
 		assertEquals(ingestedMetadata.getMetadata("testkey1"), "testval1");
 		assertEquals(ingestedMetadata.getAllMetadata("testkey1").size(), 2);
 
-		//test query using querypager
-		QueryExpression qe = QueryParser.parseQueryExpression("testkey1 == 'testval1'");
+		// test query using querypager
+		QueryExpression qe = QueryParser
+				.parseQueryExpression("testkey1 == 'testval1'");
 		QueryPager pager = cs.query(qe);
 		metadatas = cs.getNextPage(pager);
 		assertEquals(metadatas.size(), 1);
@@ -120,7 +145,7 @@ public class TestCatalogServiceLocal extends TestCase {
 		assertEquals(ingestedMetadata.getMetadata("testkey1"), "testval1");
 		assertEquals(ingestedMetadata.getAllMetadata("testkey1").size(), 2);
 
-		//test query using std paging
+		// test query using std paging
 		qe = QueryParser.parseQueryExpression("testkey1 == 'testval1'");
 		Page page = cs.getPage(new PageInfo(20, PageInfo.FIRST_PAGE), qe);
 		metadatas = cs.getMetadata(page);
@@ -129,53 +154,47 @@ public class TestCatalogServiceLocal extends TestCase {
 		assertEquals(ingestedMetadata.getMetadata("testkey1"), "testval1");
 		assertEquals(ingestedMetadata.getAllMetadata("testkey1").size(), 2);
 
-		//test query using std paging with catalog restriction
+		// test query using std paging with catalog restriction
 		qe = QueryParser.parseQueryExpression("testkey1 == 'testval1'");
-		page = cs.getPage(new PageInfo(20, PageInfo.FIRST_PAGE), qe, Collections.singleton("TestCatalog1"));
+		page = cs.getPage(new PageInfo(20, PageInfo.FIRST_PAGE), qe,
+				Collections.singleton("TestCatalog1"));
 		metadatas = cs.getMetadata(page);
 		assertEquals(metadatas.size(), 1);
 		ingestedMetadata = metadatas.get(0).getMetadata();
 		assertEquals(ingestedMetadata.getMetadata("testkey1"), "testval1");
 		assertEquals(ingestedMetadata.getAllMetadata("testkey1").size(), 1);
 
-		//test delete
+		// test delete
 		m = new Metadata();
-		m.addMetadata(CatalogServiceLocal.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY.toString(), tr.getTransactionId().toString());
+		m.addMetadata(
+				CatalogServiceLocal.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY
+						.toString(), tr.getTransactionId().toString());
 		cs.delete(m);
 		assertEquals(cs.getMetadata(Collections.singletonList(tr)).size(), 0);
 	}
-	
-	private InMemoryIngestMapperFactory getOracleIngestMapperFactory(String tmpDirPath) throws SQLException, IOException {
-        new File(tmpDirPath).deleteOnExit();
 
-//		OracleIngestMapperFactory factory = new OracleIngestMapperFactory();
+	private InMemoryIngestMapperFactory getOracleIngestMapperFactory(
+			String tmpDirPath) throws SQLException, IOException {
 		String user = "sa";
 		String pass = "";
 		String driver = "org.hsqldb.jdbcDriver";
-		String url = "jdbc:hsqldb:file:" + tmpDirPath + "/testMapperCat;shutdown=true";
-//        DataSource ds = DatabaseConnectionBuilder.buildDataSource(user, pass,
-//                driver, url);
-		InMemoryIngestMapperFactory factory = new InMemoryIngestMapperFactory();
+		String url = "jdbc:hsqldb:file:" + tmpDirPath + ";shutdown=true";
 
-//        SqlScript coreSchemaScript = new SqlScript(new File("./src/testdata/test-mapper-cat.sql").getAbsolutePath(), ds);
-//        coreSchemaScript.loadScript();
-//        coreSchemaScript.execute();
-        
+		InMemoryIngestMapperFactory factory = new InMemoryIngestMapperFactory();
 		factory.setDriver(driver);
 		factory.setJdbcUrl(url);
 		factory.setPass(pass);
-		factory.setUser(user);	
+		factory.setUser(user);
 		factory.setTablesFile("./src/testdata/test-mapper-cat.sql");
 		return factory;
 	}
-	
-	private DataSourceIndexFactory getInMemoryDSFactory(String tmpDirPath) throws IOException, SQLException {
-        new File(tmpDirPath).deleteOnExit();
-        
-        String user = "sa";
+
+	private DataSourceIndexFactory getInMemoryDSFactory(String tmpDirPath)
+			throws IOException, SQLException {
+		String user = "sa";
 		String pass = "";
 		String driver = "org.hsqldb.jdbcDriver";
-		String url = "jdbc:hsqldb:file:" + tmpDirPath + "/testIndexCat;shutdown=true";
+		String url = "jdbc:hsqldb:file:" + tmpDirPath + ";shutdown=true";
 
 		InMemoryIndexFactory indexFactory = new InMemoryIndexFactory();
 		indexFactory.setDriver(driver);
@@ -185,5 +204,5 @@ public class TestCatalogServiceLocal extends TestCase {
 		indexFactory.setTablesFile("./src/testdata/test-index-cat.sql");
 		return indexFactory;
 	}
-	
+
 }

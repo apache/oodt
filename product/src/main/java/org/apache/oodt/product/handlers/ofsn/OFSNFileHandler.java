@@ -31,11 +31,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //APACHE imports
+import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeTypesFactory;
 
 //OODT imports
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.product.handlers.ofsn.metadata.OFSNMetKeys;
+import org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLConfigMetKeys;
 import org.apache.oodt.product.handlers.ofsn.metadata.OFSNXMLMetKeys;
 import org.apache.oodt.product.handlers.ofsn.metadata.XMLQueryMetKeys;
 import org.apache.oodt.product.handlers.ofsn.util.OFSNObjectFactory;
@@ -57,7 +59,7 @@ import org.apache.oodt.xmlquery.XMLQuery;
  * @version $Revision$
  */
 public class OFSNFileHandler implements LargeProductQueryHandler,
-    XMLQueryMetKeys, OFSNXMLMetKeys, OFSNMetKeys {
+    XMLQueryMetKeys, OFSNXMLMetKeys, OFSNMetKeys, OFSNXMLConfigMetKeys {
 
   private static final Logger LOG = Logger.getLogger(OFSNFileHandler.class
       .getName());
@@ -66,6 +68,9 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
 
   // by default return dir size on listing commands
   private boolean computeDirSize = true;
+  
+  // by default return file size on listing commands
+  private boolean computeFileSize = true;
 
   private OFSNFileHandlerConfiguration conf;
 
@@ -75,6 +80,8 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     // init conf here
     String xmlConfigFilePath = System.getProperty(OFSN_XML_CONF_FILE_KEY);
     this.computeDirSize = Boolean.getBoolean(OFSN_COMPUTE_DIR_SIZE);
+    this.computeFileSize = Boolean.getBoolean(OFSN_COMPUTE_FILE_SIZE);
+
 
     if (xmlConfigFilePath == null) {
       throw new InstantiationException(
@@ -125,12 +132,28 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     } else if (isGetCmd(cmd)) {
       OFSNGetHandler handler = getGetHandler(cmd, cfg.getClassName());
       String rtAndPath = cmd + CMD_SEPARATOR + realPath;
-
+      String mimeType;
+      
+      // check for and use mimetype conf property if available
+      if (cfg.getHandlerConf().containsKey(PROPERTY_MIMETYPE_ATTR)) {
+    	  MediaType mediaType = MediaType.parse(cfg.getHandlerConf()
+    			  .getProperty(PROPERTY_MIMETYPE_ATTR));
+    	  if (mediaType == null) {
+    		  LOG.log(Level.WARNING, "MIME type ["
+    				  +cfg.getHandlerConf().getProperty(PROPERTY_MIMETYPE_ATTR)+"] specified "
+    				  +"for handler ["+cfg.getClassName()+"] invalid. Defaulting to MIME type ["
+    				  +MediaType.OCTET_STREAM.toString()+"]");
+    		  mediaType = MediaType.OCTET_STREAM;
+    	  }
+    	  mimeType = mediaType.toString();
+      } else { // use default mimetype of product on disk
+    	  mimeType = MimeTypesFactory.create().getMimeType(new File(realPath)).getName();
+      }
+      
       xmlQuery.getResults().add(
-          new LargeResult(/* id */rtAndPath,/* mimeType */
-          MimeTypesFactory.create().getMimeType(new File(realPath)).getName(), /* profileID */
-          null, /* resourceID */new File(realPath).getName(),
-              Collections.EMPTY_LIST, handler.sizeOf(realPath)));
+          new LargeResult(/* id */rtAndPath,/* mimeType */ mimeType, /* profileID */null, 
+        		  /* resourceID */new File(realPath).getName(), Collections.EMPTY_LIST, 
+        		  handler.sizeOf(realPath)));
     } else {
       throw new ProductException("return type: [" + cmd + "] is unsupported!");
     }
@@ -164,19 +187,23 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
 
     OFSNGetHandler handler = getGetHandler(rtType, this.conf
         .getHandlerClass(rtType));
+    
     return handler.retrieveChunk(filepath, offset, length);
   }
 
   private void generateOFSNXml(File[] mlsFileList, OFSNHandlerConfig cfg,
       OutputStream outStream) {
     XMLUtils.writeXmlToStream(OFSNUtils.getOFSNDoc(Arrays.asList(mlsFileList),
-        cfg, this.conf.getProductRoot(), this.computeDirSize), outStream);
+        cfg, this.conf.getProductRoot(), this.computeDirSize, this.computeFileSize),
+        outStream);
   }
 
   private void validate(String ofsn, String cmd) throws ProductException {
     if (ofsn == null || cmd == null || (ofsn != null && ofsn.equals(""))
         || (cmd != null && cmd.equals(""))) {
       throw new ProductException("must specify OFSN and RT parameters!");
+    } else if (!OFSNUtils.validateOFSN(ofsn)) {
+      throw new ProductException("OFSN is invalid");
     }
   }
 

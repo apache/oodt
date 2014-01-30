@@ -64,7 +64,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.shutdown();
 		}catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -81,7 +81,7 @@ public class CatalogServiceClient implements CatalogService {
 			}
 			return serverSideUrls;
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 		
@@ -89,7 +89,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.addCatalog(catalog);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -98,7 +98,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.replaceCatalog(catalog);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -107,7 +107,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.addCatalog(catalogId, index);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.addCatalog(catalogId, index, dictionaries);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -124,7 +124,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.addCatalog(catalogId, index, dictionaries, restrictQueryPermission, restrictIngestPermission);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -133,7 +133,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.addDictionary(catalogId, dictionary);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -141,7 +141,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.replaceDictionaries(catalogId, dictionaries);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -150,7 +150,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.modifyIngestPermission(catalogId, restrictIngestPermission);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -159,7 +159,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.modifyQueryPermission(catalogId, restrictQueryPermission);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -168,7 +168,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.replaceIndex(catalogId, index);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -176,7 +176,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.removeCatalog(catalogId);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -184,7 +184,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getPluginStorageDir();
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -192,7 +192,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getPluginUrls();
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -200,7 +200,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.addPluginUrls(this.transferToServerSide(urls));
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -208,7 +208,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			this.communicationChannelClient.delete(metadata);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -226,7 +226,7 @@ public class CatalogServiceClient implements CatalogService {
 			}
 			return metadata;
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -234,7 +234,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getCalalogProperties();
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -243,7 +243,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getCalalogProperties(catalogUrn);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -253,7 +253,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getCatalogServiceTransactionId(catalogTransactionId, catalogUrn);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -262,7 +262,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getCatalogServiceTransactionId(catalogReceipt, generateNew);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -272,7 +272,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getCatalogServiceTransactionIds(catalogTransactionIds, catalogUrn);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -280,7 +280,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getCurrentCatalogIds();
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -290,7 +290,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getMetadataFromTransactionIdStrings(catalogServiceTransactionIdStrings);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -300,7 +300,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getMetadataFromTransactionIds(catalogServiceTransactionIds);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -309,7 +309,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getNextPage(queryPager);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -317,7 +317,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getProperty(key);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -326,7 +326,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getTransactionIdsForAllPages(queryPager);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -335,7 +335,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.ingest(metadata);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -343,7 +343,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.isRestrictIngestPermissions();
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -351,7 +351,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.isRestrictQueryPermissions();
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -359,7 +359,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getNextPage(page);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -367,7 +367,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getPage(pageInfo, queryExpression);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -375,7 +375,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getPage(pageInfo, queryExpression, catalogIds);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -383,7 +383,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.getMetadata(page);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -392,7 +392,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.query(queryExpression);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -400,7 +400,7 @@ public class CatalogServiceClient implements CatalogService {
 		try {
 			return this.communicationChannelClient.query(queryExpression, catalogIds);
 		} catch (Exception e) {
-			throw new CatalogServiceException("", e);
+			throw new CatalogServiceException(e.getMessage(), e);
 		}
 	}
 

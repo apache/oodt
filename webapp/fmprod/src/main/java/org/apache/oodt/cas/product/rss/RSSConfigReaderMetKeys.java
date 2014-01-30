@@ -29,6 +29,12 @@ package org.apache.oodt.cas.product.rss;
 public interface RSSConfigReaderMetKeys {
   
   public static final String CHANNEL_LINK_ATTR = "channelLink";
+  
+  public static final String NAMESPACE_TAG = "namespace";
+  
+  public static final String NAMESPACE_ATTR_PREFIX = "prefix";
+  
+  public static final String NAMESPACE_ATTR_URI = "uri";
 
   public static final String TAG_TAG = "tag";
 

@@ -18,21 +18,9 @@ package org.apache.oodt.cas.catalog.server;
 
 //JDK imports
 import java.io.FileInputStream;
-import java.util.List;
 
 //OODT imports
-import org.apache.oodt.cas.catalog.server.action.CatalogServiceServerAction;
-import org.apache.oodt.cas.catalog.server.channel.CommunicationChannelServer;
-import org.apache.oodt.cas.catalog.server.channel.CommunicationChannelServerFactory;
-import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
-import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClientFactory;
-import org.apache.oodt.cas.catalog.util.Serializer;
-import org.apache.oodt.commons.option.CmdLineOptionInstance;
-import org.apache.oodt.commons.option.util.CmdLineOptionUtils;
-import org.apache.oodt.cas.metadata.util.PathUtils;
-
-//Spring imports
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.apache.oodt.cas.cli.CmdLineUtility;
 
 /**
  * @author bfoster
@@ -45,50 +33,17 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 public class CatalogServiceServerLauncher {
 		
 	private CatalogServiceServerLauncher() throws InstantiationException {}
-//	
-//	public static void startup(String beanId) throws Exception {
-//		String propertiesFile = System.getProperty("org.apache.oodt.cas.catalog.properties.file");
-//		if (propertiesFile != null)
-//			System.getProperties().load(new FileInputStream(propertiesFile));
-//        FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(PathUtils.doDynamicReplacement(System.getProperty("org.apache.oodt.cas.catalog.config.file", "classpath:/gov/nasa/jpl/oodt/cas/catalog/config/catserv-config.xml")));
-//        CommunicationChannelServerFactory serverFactory = (CommunicationChannelServerFactory) appContext.getBean(beanId, CommunicationChannelServerFactory.class);
-//        CommunicationChannelServer communicationChannelServer = serverFactory.createCommunicationChannelServer();
-//		communicationChannelServer.startup();
-//		System.out.println("\n---- Launched '" +  communicationChannelServer.getClass().getCanonicalName() + "' on port: " + communicationChannelServer.getPort() + " ----");
-//	}
 	
 	public static void main(String[] args) throws Exception {
-		String propertiesFile = System.getProperty("org.apache.oodt.cas.catalog.properties.file");
-		if (propertiesFile != null)
-			System.getProperties().load(new FileInputStream(propertiesFile));
-		String configFile = PathUtils.doDynamicReplacement(System.getProperty("org.apache.oodt.cas.catalog.server.config.file", "classpath:/org/apache/oodt/cas/catalog/config/catserv-server-config.xml"));
-		FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(new String[] { configFile }, false);
-		appContext.setClassLoader(new Serializer().getClassLoader());
-		appContext.refresh();
-        List<CmdLineOptionInstance> optionInstances = CmdLineOptionUtils.loadValidateAndHandleInstances(appContext, args);
-        CmdLineOptionInstance instance = CmdLineOptionUtils.getOptionInstanceByName("serverFactoryBeanId", optionInstances);
-        CommunicationChannelServerFactory serverFactory = (CommunicationChannelServerFactory) appContext.getBean(instance.getValues().get(0), CommunicationChannelServerFactory.class);
-        CommunicationChannelServer communicationChannelServer = serverFactory.createCommunicationChannelServer();
-		communicationChannelServer.startup();
-		System.out.println("\n---- Launched '" +  communicationChannelServer.getClass().getCanonicalName() + "' on port: " + communicationChannelServer.getPort() + " ----");
+      // Load Catalog Service properties.
+      String propertiesFile = System
+            .getProperty("org.apache.oodt.cas.catalog.properties.file");
+      if (propertiesFile != null) {
+         System.getProperties().load(new FileInputStream(propertiesFile));
+      }
 
-//		
-//		
-//		
-//		String beanId = null;
-//		for (int i = 0; i < args.length; i++) {
-//			if (args[i].equals("--serverFactoryBeanId")) 
-//				beanId = args[++i];
-//		}
-//		
-//		if (beanId == null) {
-//			System.out.println("Usage: " + CatalogServiceServerLauncher.class.getName() + "\n"
-//					+ " --serverFactoryBeanId <bean-id> \n");
-//			System.exit(1);
-//		}
-//
-//		CatalogServiceServerLauncher.startup(beanId);
-				
+      // Run Command line.
+      CmdLineUtility cmdLineUtility = new CmdLineUtility();
+      cmdLineUtility.run(args);
 	}
-
 }

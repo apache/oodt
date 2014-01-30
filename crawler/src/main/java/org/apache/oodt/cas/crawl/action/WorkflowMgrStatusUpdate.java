@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.crawl.action;
 
 //JDK imports
@@ -23,56 +21,62 @@ import java.io.File;
 import java.net.URL;
 
 //OODT imports
+import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 
+//Spring imports
 import org.springframework.beans.factory.annotation.Required;
 
 /**
- * 
- * @author bfoster
- * @author mattmann
- * @version $Revision$
- * 
- * <p>
  * Updates the Workflow Manager and notifies it that the crawled {@link Product}
- * has been ingested successfully
- * </p>.
+ * has been ingested successfully.
+ * 
+ * @author bfoster (Brian Foster)
+ * @author mattmann (Chris Mattmann)
  */
 public class WorkflowMgrStatusUpdate extends CrawlerAction implements
-        CoreMetKeys {
+      CoreMetKeys {
 
-    public String ingestSuffix;
+   private String ingestSuffix;
+   private String workflowMgrUrl;
 
-    public String workflowMgrUrl;
+   public WorkflowMgrStatusUpdate() {
+      ingestSuffix = "Ingest";
+   }
 
-    public WorkflowMgrStatusUpdate() {
-    	ingestSuffix = "Ingest";
-    }
+   public boolean performAction(File product, Metadata productMetadata)
+         throws CrawlerActionException {
+      try {
+         XmlRpcWorkflowManagerClient wClient = new XmlRpcWorkflowManagerClient(
+               new URL(this.workflowMgrUrl));
+         String ingestSuffix = this.ingestSuffix;
+         return wClient.sendEvent(productMetadata.getMetadata(PRODUCT_TYPE)
+               + ingestSuffix, productMetadata);
+      } catch (Exception e) {
+         throw new CrawlerActionException(
+               "Failed to update workflow manager : " + e.getMessage());
+      }
+   }
 
-    public boolean performAction(File product, Metadata productMetadata)
-            throws CrawlerActionException {
-        try {
-            XmlRpcWorkflowManagerClient wClient = new XmlRpcWorkflowManagerClient(
-                    new URL(this.workflowMgrUrl));
-            String ingestSuffix = this.ingestSuffix;
-            return wClient.sendEvent(productMetadata.getMetadata(PRODUCT_TYPE)
-                    + ingestSuffix, productMetadata);
-        } catch (Exception e) {
-            throw new CrawlerActionException(
-                    "Failed to update workflow manager : " + e.getMessage());
-        }
-    }
+   @Override
+   public void validate() throws CrawlerActionException {
+      super.validate();
+      try {
+         Validate.notNull(ingestSuffix, "Must specify ingestSuffix");
+      } catch (Exception e) {
+         throw new CrawlerActionException(e);
+      }
+   }
 
-    public void setIngestSuffix(String ingestSuffix) {
-        this.ingestSuffix = ingestSuffix;
-    }
+   public void setIngestSuffix(String ingestSuffix) {
+      this.ingestSuffix = ingestSuffix;
+   }
 
-    @Required
-    public void setWorkflowMgrUrl(String workflowMgrUrl) {
-        this.workflowMgrUrl = workflowMgrUrl;
-    }
-
+   @Required
+   public void setWorkflowMgrUrl(String workflowMgrUrl) {
+      this.workflowMgrUrl = workflowMgrUrl;
+   }
 }

@@ -21,6 +21,8 @@ package org.apache.oodt.cas.resource.batchmgr;
 //JDK imports
 import java.io.IOException;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.resource.structs.Job;
@@ -46,6 +48,8 @@ import org.apache.xmlrpc.XmlRpcException;
  */
 public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
 
+	private static final Logger LOG = Logger.getLogger(XmlRpcBatchMgrProxy.class.getName());
+	
     private JobSpec jobSpec;
 
     private ResourceNode remoteHost;
@@ -115,19 +119,17 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
             parent.jobExecuting(jobSpec);
             result = ((Boolean) client
                     .execute("batchstub.executeJob", argList)).booleanValue();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-            // throw new JobExecutionException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // throw new JobExecutionException(e);
+            if (result)
+            	parent.jobSuccess(jobSpec);
+            else
+            	throw new Exception("batchstub.executeJob returned false");
+        } catch (Exception e) {
+        	LOG.log(Level.SEVERE, "Job execution failed for jobId '" + jobSpec.getJob().getId() + "' : " + e.getMessage(), e);
+            parent.jobFailure(jobSpec);
+        }finally {
+            parent.notifyMonitor(remoteHost, jobSpec);
         }
 
-        // notify the monitor job has finished;
-        parent.notifyMonitor(remoteHost, jobSpec);
-
-        // notify the job repository that the job has finished
-        parent.jobComplete(jobSpec);
-    }
+   }
 
 }

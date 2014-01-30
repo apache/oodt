@@ -27,6 +27,7 @@ import org.apache.oodt.xmlquery.QueryElement;
 import org.apache.oodt.xmlquery.XMLQuery;
 
 //JDK imports
+import java.util.List;
 import java.util.Stack;
 
 //Junit imports
@@ -72,6 +73,39 @@ public class TestHandlerQueryParser extends TestCase {
     Expression parsedQuery = HandlerQueryParser.parse(queryStack, mapping);
     assertNotNull(parsedQuery);
     assertEquals(expected, parsedQuery.evaluate());    
+  }
+  
+  private Mapping createFooBarMapping() {
+    Mapping m = new Mapping();
+    MappingField foof = new MappingField();
+    foof.setName("foo");
+    foof.setDbName("foo");
+    foof.setString(true);
+    MappingField barf = new MappingField();
+    barf.setName("bar");
+    barf.setDbName("bar");
+    barf.setString(true);
+    m.addField("foo", foof);
+    m.addField("bar", barf);
+    return m;
+  }
+
+  public void testParseLiteralQuotesWithParen() {
+    Mapping m = createFooBarMapping();
+
+    String q = "(foo = 'yes' OR bar = 'no') AND RETURN = foo AND RETURN = bar";
+    String expected = "(bar = 'no' OR foo = 'yes')";
+
+    XMLQuery query = XMLQueryHelper.getDefaultQueryFromQueryString(q);
+    assertNotNull(query);
+    Stack<QueryElement> where = HandlerQueryParser.createQueryStack(query.getWhereElementSet());
+    assertNotNull(where);
+    List<QueryElement> select = query.getSelectElementSet();
+    assertNotNull(select);
+
+    Expression parsed = HandlerQueryParser.parse(where, m);
+    assertNotNull(parsed);
+    assertEquals(expected, parsed.evaluate());
   }
 
 }

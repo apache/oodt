@@ -52,12 +52,14 @@ public class CatalogServiceLocalFactory implements CatalogServiceFactory {
 	protected String pluginStorageDir = null;
 	protected boolean oneCatalogFailsAllFail = false;
 	protected boolean simplifyQueries = false;
+	protected boolean disableIntersectingCrossCatalogQueries = false;
+	protected int crossCatalogResultSortingThreshold = 200;
 	
 	public CatalogServiceLocalFactory() {} 
 	
 	public CatalogServiceLocal createCatalogService() {
 		try {
-			return new CatalogServiceLocal(this.catalogRepositoryFactory.createRepository(), this.ingestMapperFactory.createMapper(), new File(this.pluginStorageDir), this.transactionIdFactory, this.restrictQueryPermissions, this.restrictIngestPermissions, this.oneCatalogFailsAllFail, this.simplifyQueries);
+			return new CatalogServiceLocal(this.catalogRepositoryFactory.createRepository(), this.ingestMapperFactory.createMapper(), new File(this.pluginStorageDir), this.transactionIdFactory, this.restrictQueryPermissions, this.restrictIngestPermissions, this.oneCatalogFailsAllFail, this.simplifyQueries, this.disableIntersectingCrossCatalogQueries, this.crossCatalogResultSortingThreshold);
 		}catch (Exception e) {
 			LOG.log(Level.SEVERE, "Failed to create CatalogServiceLocal : " + e.getMessage(), e);
 			return null;
@@ -102,6 +104,17 @@ public class CatalogServiceLocalFactory implements CatalogServiceFactory {
 	@Required
 	public void setSimplifyQueries(boolean simplifyQueries) {
 		this.simplifyQueries = simplifyQueries;
+	}
+	
+	@Required
+	public void setDisableIntersectingCrossCatalogQueries(boolean disableIntersectingCrossCatalogQueries) {
+		this.disableIntersectingCrossCatalogQueries = disableIntersectingCrossCatalogQueries;
+	}
+
+	@Required
+	public void setCrossCatalogResultSortingThreshold(
+			int crossCatalogResultSortingThreshold) {
+		this.crossCatalogResultSortingThreshold = crossCatalogResultSortingThreshold;
 	}
 	
 }

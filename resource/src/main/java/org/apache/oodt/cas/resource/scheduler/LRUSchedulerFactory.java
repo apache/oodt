@@ -19,18 +19,19 @@
 package org.apache.oodt.cas.resource.scheduler;
 
 //JAVA imports
-import java.util.Arrays;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //OODT imports
+import org.apache.oodt.cas.resource.queuerepo.XmlQueueRepositoryFactory;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
-import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.resource.jobqueue.JobQueue;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
 
 /**
  * @author woollard
+ * @author bfoster
  * @version $Revision$
  * 
  * <p>
@@ -40,63 +41,67 @@ import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
  */
 public class LRUSchedulerFactory implements SchedulerFactory {
 
-  /*
-   * a list of URIs pointing to directories that have the
-   * node-to-queue-mapping.xml files
-   */
-  private List queuesDirList;
+	private static final Logger LOG = Logger
+			.getLogger(LRUSchedulerFactory.class.getName());
 
-  /* our monitor */
-  private Monitor mon = null;
+	/*
+	 * a list of URIs pointing to directories that have the
+	 * node-to-queue-mapping.xml files
+	 */
+	private LRUQueueManager queueManager;
 
-  /* our batchmgr */
-  private Batchmgr batcher = null;
-  
-  /* our job queue */
-  private JobQueue queue = null;
+	/* our monitor */
+	private Monitor mon = null;
 
-  public LRUSchedulerFactory() {
-    String queuesDirUris = System
-        .getProperty("org.apache.oodt.cas.resource.scheduler.nodetoqueues.dirs");
+	/* our batchmgr */
+	private Batchmgr batcher = null;
 
-    if (queuesDirUris != null) {
-      /* do env var replacement */
-      queuesDirUris = PathUtils.replaceEnvVariables(queuesDirUris);
-      String[] dirUris = queuesDirUris.split(",");
-      queuesDirList = Arrays.asList(dirUris);
-    }
+	/* our job queue */
+	private JobQueue queue = null;
 
-    String batchmgrClassStr = System.getProperty("resource.batchmgr.factory",
-        "org.apache.oodt.cas.resource.batchmgr.XmlRpcBatchmgrFactory");
-    String monitorClassStr = System.getProperty("resource.monitor.factory",
-        "org.apache.oodt.cas.resource.monitor.AssignmentMonitorFactory");
-    
-    String jobQueueClassStr = System.getProperty("resource.jobqueue.factory",
-        "org.apache.oodt.cas.resource.jobqueue.JobStackJobQueueFactory");
+	public LRUSchedulerFactory() {
+		String queueRepoFactoryClassStr = System.getProperty(
+				"org.apache.oodt.cas.resource.queues.repo.factory",
+				XmlQueueRepositoryFactory.class.getCanonicalName());
+		String batchmgrClassStr = System
+				.getProperty("resource.batchmgr.factory",
+						"org.apache.oodt.cas.resource.batchmgr.XmlRpcBatchmgrFactory");
+		String monitorClassStr = System
+				.getProperty("resource.monitor.factory",
+						"org.apache.oodt.cas.resource.monitor.AssignmentMonitorFactory");
 
-    batcher = GenericResourceManagerObjectFactory
-        .getBatchmgrServiceFromFactory(batchmgrClassStr);
-    mon = GenericResourceManagerObjectFactory
-        .getMonitorServiceFromFactory(monitorClassStr);
-    
-    queue = GenericResourceManagerObjectFactory.getJobQueueServiceFromFactory(
-        jobQueueClassStr);
-    
-    // set the monitor for this batcher
-    batcher.setMonitor(mon);
-    
-    // set the job repo for this batcher
-    batcher.setJobRepository(queue.getJobRepository());
+		String jobQueueClassStr = System
+				.getProperty("resource.jobqueue.factory",
+						"org.apache.oodt.cas.resource.jobqueue.JobStackJobQueueFactory");
 
+		try {
+			queueManager = new LRUQueueManager(
+					GenericResourceManagerObjectFactory
+							.getQueueRepositoryFromFactory(
+									queueRepoFactoryClassStr).loadQueues());
+		} catch (Exception e) {
+			LOG.log(Level.SEVERE, "Failed to create queue manager : "
+					+ e.getMessage(), e);
+			queueManager = null;
+		}
+		batcher = GenericResourceManagerObjectFactory
+				.getBatchmgrServiceFromFactory(batchmgrClassStr);
+		mon = GenericResourceManagerObjectFactory
+				.getMonitorServiceFromFactory(monitorClassStr);
 
-  }
+		queue = GenericResourceManagerObjectFactory
+				.getJobQueueServiceFromFactory(jobQueueClassStr);
 
-  public Scheduler createScheduler() {
-    if (queuesDirList != null) {
-      return new LRUScheduler(queuesDirList, mon, batcher, queue);
-    } else {
-      return null;
-    }
-  }
+		// set the monitor for this batcher
+		batcher.setMonitor(mon);
+
+		// set the job repo for this batcher
+		batcher.setJobRepository(queue.getJobRepository());
+
+	}
+
+	public Scheduler createScheduler() {
+		return new LRUScheduler(mon, batcher, queue, queueManager);
+	}
 
 }

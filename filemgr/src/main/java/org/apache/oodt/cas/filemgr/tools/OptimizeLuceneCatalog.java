@@ -44,7 +44,7 @@ public class OptimizeLuceneCatalog {
     private int mergeFactor = 20;
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(OptimizeLuceneCatalog.class
+    private static final Logger LOG = Logger.getLogger(OptimizeLuceneCatalog.class
             .getName());
 
     /**

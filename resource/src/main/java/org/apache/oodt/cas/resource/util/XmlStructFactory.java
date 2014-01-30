@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
 
 //OODT imports
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.JobSpec;
@@ -37,6 +38,7 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 
 /**
  * @author woollard
+ * @author bfoster
  * @version $Revsion$
  * 
  * <p>
@@ -64,7 +66,10 @@ public final class XmlStructFactory {
 
         try {
             id = resourceNodeRoot.getAttribute("nodeId");
-            ip = new URL(resourceNodeRoot.getAttribute("ip"));
+            ip = new URL(Boolean.parseBoolean(resourceNodeRoot
+					.getAttribute("envReplace")) ? PathUtils
+					.doDynamicReplacement(resourceNodeRoot.getAttribute("ip"))
+					: resourceNodeRoot.getAttribute("ip"));
             capacity = new Integer(resourceNodeRoot.getAttribute("capacity"))
                     .intValue();
         } catch (Exception e) {

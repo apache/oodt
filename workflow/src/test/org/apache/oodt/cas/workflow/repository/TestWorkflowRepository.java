@@ -60,6 +60,24 @@ public class TestWorkflowRepository extends TestCase {
                 .toString());
         workflowRepository = new XMLWorkflowRepository(workflowDirUris);
     }
+    
+    /**
+     * @since OODT-205
+     */
+    public void testWorkflowConditions(){
+      Workflow w = null;
+      try{
+        w = this.workflowRepository.getWorkflowById("urn:oodt:conditionsWorkflow");
+      }
+      catch(Exception e){
+        fail(e.getMessage());
+      }
+      
+      assertNotNull(w);
+      assertNotNull(w.getConditions());
+      assertTrue(w.getConditions().size() > 0);
+      assertEquals(w.getConditions().size(), 1);
+    }    
 
     public void testGetWorkflowByName() {
         Workflow w = null;
@@ -99,7 +117,7 @@ public class TestWorkflowRepository extends TestCase {
         }
 
         assertNotNull(workflows);
-        assertEquals(8, workflows.size());
+        assertEquals(11, workflows.size());
     }
 
     public void testGetWorkflowsForEvent() {
@@ -192,6 +210,38 @@ public class TestWorkflowRepository extends TestCase {
 
         validateTaskCondition(conditions);
     }
+    
+    /**
+     * @since OODT-207
+     */
+    public void testGetConditionTimeout(){
+      WorkflowCondition cond = null;
+      try{
+        cond = workflowRepository.getWorkflowConditionById("urn:oodt:TimeoutCondition");
+      }
+      catch(Exception e){
+        e.printStackTrace();
+        fail(e.getMessage());
+      }
+      
+      assertEquals(30L, cond.getTimeoutSeconds());
+    }
+    
+    /**
+     * @since OODT-208
+     */
+    public void testGetConditionOptional(){
+      WorkflowCondition cond = null;
+      try{
+        cond = workflowRepository.getWorkflowConditionById("urn:oodt:OptionalCondition");
+      }
+      catch(Exception e){
+        e.printStackTrace();
+        fail(e.getMessage());
+      }
+      
+      assertEquals(true, cond.isOptional());
+    }    
 
     public void testGetConfigurationByTaskId() {
         WorkflowTaskConfiguration config = null;
@@ -328,6 +378,8 @@ public class TestWorkflowRepository extends TestCase {
         assertEquals("urn:oodt:TrueCondition", c.getConditionId());
         assertEquals("True Condition", c.getConditionName());
         assertEquals(1, c.getOrder());
+        assertEquals(-1L, c.getTimeoutSeconds());
+        assertEquals(false, c.isOptional());
     }
 
     private void validateTaskConfiguration(WorkflowTaskConfiguration config) {

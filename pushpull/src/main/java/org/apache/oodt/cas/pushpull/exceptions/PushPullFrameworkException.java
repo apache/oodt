@@ -19,10 +19,10 @@
 package org.apache.oodt.cas.pushpull.exceptions;
 
 /**
- * 
+ *
  * @author bfoster
  * @version $Revision$
- * 
+ *
  * <p>
  * Describe your class here
  * </p>.
@@ -37,6 +37,10 @@ public class PushPullFrameworkException extends Exception {
 
     public PushPullFrameworkException(String msg) {
         super(PushPullFrameworkException.addCallingClassToMsg(msg));
+    }
+
+    public PushPullFrameworkException(String msg, Throwable t) {
+       super(PushPullFrameworkException.addCallingClassToMsg(msg), t);
     }
 
     private static String addCallingClassToMsg(String msg) {

@@ -174,7 +174,7 @@ public class XmlRpcBatchStub {
                     endThread = null;
             }
 
-            return true;
+            return runner.wasSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -211,9 +211,12 @@ public class XmlRpcBatchStub {
 
         private JobInstance job;
 
+        private boolean successful;
+        
         public RunnableJob(JobInstance job, JobInput in) {
             this.job = job;
             this.in = in;
+            this.successful = false;
         }
 
         /*
@@ -223,12 +226,16 @@ public class XmlRpcBatchStub {
          */
         public void run() {
             try {
-                job.execute(in);
+                this.successful = job.execute(in);
             } catch (JobInputException e) {
                 e.printStackTrace();
+                this.successful = false;
             }
 
         }
 
+        public boolean wasSuccessful() {
+        	return this.successful;
+        }
     }
 }

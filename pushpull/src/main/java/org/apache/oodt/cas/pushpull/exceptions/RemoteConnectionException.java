@@ -19,10 +19,10 @@
 package org.apache.oodt.cas.pushpull.exceptions;
 
 /**
- * 
+ *
  * @author bfoster
  * @version $Revision$
- * 
+ *
  * <p>
  * Describe your class here
  * </p>.
@@ -38,4 +38,8 @@ public class RemoteConnectionException extends PushPullFrameworkException {
     public RemoteConnectionException(String msg) {
         super(msg);
     }
+
+    public RemoteConnectionException(String msg, Throwable t) {
+       super(msg, t);
+   }
 }

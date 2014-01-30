@@ -20,12 +20,11 @@
     <parent>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-core</artifactId>
-        <version>${oodt.version}</version>
+        <version>0.7-SNAPSHOT</version>
         <relativePath>../core/pom.xml</relativePath>
     </parent>
     <artifactId>oodt-product</artifactId>
     <name>Product Service</name>
-    <version>${oodt.version}</version>
     <description>
         The Product Service provides access to data products.  Products can be
         scientific datasets, images, documents, or anything with an electronic
@@ -35,6 +34,11 @@
         formats and into Internet standard formats or run other transformations, all
         without impacting local stores or operations.
     </description>
+    <scm>
+   		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/product</connection>
+   		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/product</developerConnection>
+   		<url>http://svn.apache.org/viewvc/oodt/trunk/product</url>
+    </scm>
     <build>
         <resources>
             <resource>
@@ -84,7 +88,7 @@
         <dependency>
             <groupId>org.apache.oodt</groupId>
             <artifactId>oodt-commons</artifactId>
-            <version>${oodt.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -98,19 +102,20 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
-            <artifactId>tika</artifactId>
-            <version>0.2</version>
+            <artifactId>tika-core</artifactId>
+            <version>0.8</version>
         </dependency>
         <dependency>
             <groupId>org.apache.oodt</groupId>
             <artifactId>oodt-xmlquery</artifactId>
-            <version>${oodt.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>servletapi</groupId>
-            <artifactId>servletapi</artifactId>
-            <version>2.3</version>
-        </dependency>
+	    <dependency>
+	       <groupId>javax.servlet</groupId>
+	       <artifactId>servlet-api</artifactId>
+	       <version>2.4</version>
+	       <scope>provided</scope>
+	    </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -34,6 +34,7 @@ import java.util.Vector;
 public class RSSConfig {
 
   private List<RSSTag> tags;
+  private List<RSSNamespace> namespaces;
   
   private String channelLink;
 
@@ -43,6 +44,7 @@ public class RSSConfig {
   public RSSConfig() {
     this.channelLink = null;
     this.tags = new Vector<RSSTag>();
+    this.namespaces = new Vector<RSSNamespace>();
   }
 
   /**
@@ -58,6 +60,21 @@ public class RSSConfig {
    */
   public void setTags(List<RSSTag> tags) {
     this.tags = tags;
+  }
+  
+  /**
+   * @return the namespaces
+   */
+  public List<RSSNamespace> getNamespaces() { 
+    return namespaces; 
+  }
+  
+  /**
+   * @param namespaces
+   *          the namespaces to set
+   */
+  public void setNamespaces(List<RSSNamespace> namespaces) { 
+    this.namespaces = namespaces; 
   }
 
   /**

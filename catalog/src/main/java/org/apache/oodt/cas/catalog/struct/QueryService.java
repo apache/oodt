@@ -46,6 +46,24 @@ public interface QueryService {
 	public List<IngestReceipt> query(QueryExpression queryExpression) throws QueryServiceException;
 	
 	/**
+	 * Returns the results of the given query such that: [startIndex, endIndex)
+	 * @param queryExpression The query for which results will be returned
+	 * @param startIndex The start index of subset of results to be returned
+	 * @param endIndex The end index of the subset of results to be returned
+	 * @return The results of the given query such that: [startIndex, endIndex)
+	 * @throws QueryServiceException on an error
+	 */
+	public List<IngestReceipt> query(QueryExpression queryExpression, int startIndex, int endIndex) throws QueryServiceException;
+
+	/**
+	 * Returns the number of results found for the given query
+	 * @param queryExpression The query whose size in question
+	 * @return The number of results found for the given query
+	 * @throws QueryServiceException on an error
+	 */
+	public int sizeOf(QueryExpression queryExpression) throws QueryServiceException;
+	
+	/**
 	 * Returns a List of TermBuckets ingested for a given TransactionId
 	 * @param transactionId The TransactionId in question
 	 * @return A List of TermBuckets for the given TransactionId or empty list

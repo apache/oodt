@@ -14,24 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.crawl.action;
 
 /**
- * @author mattmann
- * @version $Revision$
- * 
- * <p>
- * Met keys defining the 3 key Crawler Phases
- * </p>.
+ * Supported Crawler Phases.
+ *
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
-public interface CrawlerActionPhases {
+public enum CrawlerActionPhases {
+   PRE_INGEST("preIngest"),
+   POST_INGEST_SUCCESS("postIngestSuccess"),
+   POST_INGEST_FAILURE("postIngestFailure");
 
-    public static final String PRE_INGEST = "preIngest";
+   private String name;
 
-    public static final String POST_INGEST_SUCCESS = "postIngestSuccess";
+   private CrawlerActionPhases(String name) {
+      this.name = name;
+   }
 
-    public static final String POST_INGEST_FAILURE = "postIngestFailure";
+   public String getName() {
+      return name;
+   }
 
+   public static CrawlerActionPhases getPhaseByName(String name) {
+      for (CrawlerActionPhases phase : CrawlerActionPhases.values()) {
+         if (phase.getName().equals(name)) {
+            return phase;
+         }
+      }
+      return null;
+   }
 }

@@ -20,6 +20,7 @@ require_once("XML/RPC.php");
 
 /**
  * @author ahart
+ * @author gabe
  * <p>The core file manager data structure, ported
  * to PHP.
  * </p>
@@ -42,8 +43,8 @@ class CAS_Filemgr_Product {
 			? $xmlRpcData['name'] 
 			: '';
 		$this->type = (isset($xmlRpcData['type']))
-			? new ProductType($xmlRpcData['type']) 
-			: new ProductType();
+			? new CAS_Filemgr_ProductType($xmlRpcData['type']) 
+			: new CAS_Filemgr_ProductType();
 		$this->structure = (isset($xmlRpcData['structure']))
 			? $xmlRpcData['structure'] 
 			: '';

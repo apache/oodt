@@ -14,16 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.crawl.structs.exceptions;
 
 /**
- * 
- * @author bfoster
- * @version $Revision$
+ * An Exception thrown by a {@link CrawlerAction}.
  *
- * <p>An Exception thrown by a {@link CrawlerAction}</p>.
+ * @author bfoster (Brian Foster)
  */
 public class CrawlerActionException extends Exception {
 
@@ -37,4 +33,11 @@ public class CrawlerActionException extends Exception {
         super(msg);
     }
 
+    public CrawlerActionException(Throwable t) {
+       super(t);
+    }
+
+    public CrawlerActionException(String msg, Throwable t) {
+       super(msg, t);
+    }
 }

@@ -67,7 +67,7 @@ public class MetExtractorSpec {
             this.preCondComparatorIds = preCondComparatorIds;
         } catch (Exception e) {
             throw new InstantiationException(
-                    "Failed to create MetExtractorSpec object : "
+                  "Failed to create MetExtractorSpec object : "
                             + e.getMessage());
         }
     }

@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.commons.exec;
 
 //OODT imports
@@ -24,146 +22,140 @@ import org.apache.oodt.commons.io.LoggerOutputStream;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author mattmann
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
  * Utilities for executing programs.
- * </p>.
+ * 
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
 public final class ExecUtils {
 
-    private ExecUtils() throws InstantiationException {
-        throw new InstantiationException("Don't construct utility classes!");
-    }
+   private ExecUtils() throws InstantiationException {
+      throw new InstantiationException("Don't construct utility classes!");
+   }
 
-    public static String printCommandLine(String[] args) {
-        StringBuffer cmdLine = new StringBuffer();
+   public static String printCommandLine(String[] args) {
+      StringBuffer cmdLine = new StringBuffer();
 
-        if (args != null && args.length > 0) {
-            for (int i = 0; i < args.length; i++) {
-                cmdLine.append(args[i]);
-                cmdLine.append(" ");
-            }
-        }
+      if (args != null && args.length > 0) {
+         for (int i = 0; i < args.length; i++) {
+            cmdLine.append(args[i]);
+            cmdLine.append(" ");
+         }
+      }
 
-        return cmdLine.toString();
-    }
+      return cmdLine.toString();
+   }
 
-    public static int callProgram(String commandLine, Logger logger)
-            throws IOException {
-        return callProgram(commandLine, logger, null);
-    }
+   public static int callProgram(String commandLine, Logger logger)
+         throws IOException {
+      return callProgram(commandLine, logger, null);
+   }
 
-    public static int callProgram(String commandLine, Logger logger,
-            File workDir) throws IOException {
-        Process progProcess = null;
-        StreamGobbler errorGobbler = null, outputGobbler = null;
-        int returnVal = -1;
-        try {
-            progProcess = (workDir == null) ? Runtime.getRuntime().exec(
-                    commandLine) : Runtime.getRuntime().exec(commandLine, null,
-                    workDir);
-            errorGobbler = new StreamGobbler(progProcess.getErrorStream(),
-                    "ERROR", new LoggerOutputStream(logger, Level.SEVERE));
-            outputGobbler = new StreamGobbler(progProcess.getInputStream(),
-                    "OUTPUT", new LoggerOutputStream(logger, Level.INFO));
-            errorGobbler.start();
-            outputGobbler.start();
-            returnVal = progProcess.waitFor();
-            return returnVal;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new IOException("Failed to run '" + commandLine
-                    + "' -- return val = " + returnVal + " : " + e.getMessage());
-        } finally {
-            if (errorGobbler != null)
-                errorGobbler.stopGobblingAndDie();
-            if (outputGobbler != null)
-                outputGobbler.stopGobblingAndDie();
-            try {
-                progProcess.getErrorStream().close();
-            } catch (Exception e) {
-            }
-            try {
-                progProcess.getInputStream().close();
-            } catch (Exception e) {
-            }
-            try {
-                progProcess.getOutputStream().close();
-            } catch (Exception e) {
-            }
-        }
-    }
+   public static int callProgram(String commandLine, OutputStream stdOutStream,
+         OutputStream stdErrStream) throws IOException {
+      return callProgram(commandLine, stdOutStream, stdErrStream, null);
+   }
 
-    public static int callProgram(String commandLine, File workDir)
-            throws IOException {
-        Process p = Runtime.getRuntime().exec(commandLine, null, workDir);
-        return processProgram(p);
-    }
+   public static int callProgram(String commandLine, Logger logger, File workDir)
+         throws IOException {
+      LoggerOutputStream loggerInfoStream = null;
+      LoggerOutputStream loggerSevereStream = null;
+      try {
+         return callProgram(
+               commandLine,
+               loggerInfoStream = new LoggerOutputStream(logger, Level.INFO),
+               loggerSevereStream = new LoggerOutputStream(logger, Level.SEVERE),
+               workDir);
+      } catch (Exception e) {
+         throw new IOException(e);
+      } finally {
+         try { loggerInfoStream.close(); } catch (Exception e) {}
+         try { loggerSevereStream.close(); } catch (Exception e) {}
+      }
+   }
 
-    public static int callProgram(String[] args, File workDir)
-            throws IOException {
-        Process p = Runtime.getRuntime().exec(args, null, workDir);
-        return processProgram(p);
-    }
+   public static int callProgram(String commandLine, OutputStream stdOutStream,
+         OutputStream stdErrStream, File workDir) throws IOException {
+      Process progProcess = null;
+      StreamGobbler errorGobbler = null, outputGobbler = null;
+      int returnVal = -1;
+      try {
+         progProcess = (workDir == null) ? Runtime.getRuntime().exec(
+               commandLine) : Runtime.getRuntime().exec(commandLine, null,
+               workDir);
+         errorGobbler = new StreamGobbler(progProcess.getErrorStream(),
+               "ERROR", stdErrStream);
+         outputGobbler = new StreamGobbler(progProcess.getInputStream(),
+               "OUTPUT", stdOutStream);
+         errorGobbler.start();
+         outputGobbler.start();
+         returnVal = progProcess.waitFor();
+         return returnVal;
+      } catch (Exception e) {
+         e.printStackTrace();
+         throw new IOException("Failed to run '" + commandLine
+               + "' -- return val = " + returnVal + " : " + e.getMessage());
+      } finally {
+         if (errorGobbler != null) {
+            errorGobbler.stopGobblingAndDie();
+         }
+         if (outputGobbler != null) {
+            outputGobbler.stopGobblingAndDie();
+         }
+         try { progProcess.getErrorStream().close(); } catch (Exception e) {}
+         try { progProcess.getInputStream().close(); } catch (Exception e) {}
+         try { progProcess.getOutputStream().close(); } catch (Exception e) {}
+      }
+   }
 
-    private static int processProgram(Process p) {
+   public static int callProgram(String commandLine, File workDir)
+         throws IOException {
+      Process p = Runtime.getRuntime().exec(commandLine, null, workDir);
+      return processProgram(p);
+   }
 
-        StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(),
-                "ERROR", System.err);
+   public static int callProgram(String[] args, File workDir)
+         throws IOException {
+      Process p = Runtime.getRuntime().exec(args, null, workDir);
+      return processProgram(p);
+   }
 
-        // any output?
-        StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(),
-                "OUTPUT", System.out);
+   private static int processProgram(Process p) {
 
-        errorGobbler.start();
-        outputGobbler.start();
-        int retVal = -1;
-        try {
-            retVal = p.waitFor();
-        } catch (InterruptedException ignore) {
-        } finally {
-            // first stop the threads
-            if (outputGobbler != null && outputGobbler.isAlive()) {
-                outputGobbler.stopGobblingAndDie();
-                outputGobbler = null;
-            }
+      StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(),
+            "ERROR", System.err);
 
-            if (errorGobbler != null && errorGobbler.isAlive()) {
-                errorGobbler.stopGobblingAndDie();
-                errorGobbler = null;
-            }
+      // any output?
+      StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(),
+            "OUTPUT", System.out);
 
-            if (p != null) {
-                if (p.getErrorStream() != null) {
-                    try {
-                        p.getErrorStream().close();
-                    } catch (Exception ignore) {
-                    }
+      errorGobbler.start();
+      outputGobbler.start();
+      int retVal = -1;
+      try {
+         retVal = p.waitFor();
+      } catch (InterruptedException ignore) {
+      } finally {
+         // first stop the threads
+         if (outputGobbler != null && outputGobbler.isAlive()) {
+            outputGobbler.stopGobblingAndDie();
+            outputGobbler = null;
+         }
 
-                }
+         if (errorGobbler != null && errorGobbler.isAlive()) {
+            errorGobbler.stopGobblingAndDie();
+            errorGobbler = null;
+         }
 
-                if (p.getOutputStream() != null) {
-                    try {
-                        p.getOutputStream().close();
-                    } catch (Exception ignore) {
-                    }
-                }
-
-                if (p.getInputStream() != null) {
-                    try {
-                        p.getInputStream().close();
-                    } catch (Exception ignore) {
-                    }
-                }
-            }
-        }
-        return retVal;
-    }
+         try { p.getErrorStream().close(); } catch (Exception ignore) {}
+         try { p.getOutputStream().close(); } catch (Exception ignore) {}
+         try { p.getInputStream().close(); } catch (Exception ignore) {}
+      }
+      return retVal;
+   }
 }

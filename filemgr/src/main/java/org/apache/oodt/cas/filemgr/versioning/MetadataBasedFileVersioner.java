@@ -51,7 +51,7 @@ public class MetadataBasedFileVersioner implements Versioner {
     private String filePathSpec = null;
 
     /* our log stream */
-    private static Logger LOG = Logger
+    private static final Logger LOG = Logger
             .getLogger(MetadataBasedFileVersioner.class.getName());
 
     /* whether or not we only handle flat products */

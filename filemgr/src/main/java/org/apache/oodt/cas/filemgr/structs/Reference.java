@@ -18,13 +18,18 @@
 package org.apache.oodt.cas.filemgr.structs;
 
 //JDK imports
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.mime.MimeType;
-import org.apache.oodt.cas.filemgr.structs.mime.MimeTypes;
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.mime.MimeType;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
+import org.apache.tika.mime.MimeTypesFactory;
 
 /**
  * @author mattmann
@@ -55,10 +60,14 @@ public class Reference {
 
     /* the static reference to the Mime-Type repository */
     static {
-        mimeTypeRepository = MimeTypes.buildRepository(PathUtils
-                .replaceEnvVariables(System.getProperty(
-                        "org.apache.oodt.cas.filemgr.mime.type.repository",
-                        "mime-types.xml")));
+        try {
+          mimeTypeRepository = MimeTypesFactory.create(new FileInputStream(new File(PathUtils
+                  .replaceEnvVariables(System.getProperty(
+                          "org.apache.oodt.cas.filemgr.mime.type.repository",
+                          "mime-types.xml")))));
+        } catch (Exception e){
+          mimeTypeRepository = TikaConfig.getDefaultConfig().getMimeRepository();
+        }
     }
 
     /**
@@ -200,7 +209,14 @@ public class Reference {
      *            the String name of the mimetype of this reference
      */
     public void setMimeType(String name) {
-        this.mimeType = mimeTypeRepository.forName(name);
+        if(name == null || (name != null && 
+            name.equals(""))) return;
+        
+        try {
+          this.mimeType = mimeTypeRepository.forName(name);
+        } catch (MimeTypeException e) {
+           e.printStackTrace();
+        }
     }
 
     /*

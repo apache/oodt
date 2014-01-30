@@ -50,7 +50,7 @@ import java.util.logging.Logger;
 public final class VersioningUtils {
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(VersioningUtils.class
+    private static final Logger LOG = Logger.getLogger(VersioningUtils.class
             .getName());
 
     // filter to only find directories when doing a listFiles

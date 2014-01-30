@@ -15,23 +15,21 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>${oodt.version}</version>
+    <version>0.7-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-pge</artifactId>
   <name>CAS PGE Adaptor Framework</name>
-  <version>${oodt.version}</version>
-  <description>Allows data processing jobs not written in comformance with the
+  <description>Allows data processing jobs not written in conformance with the
         PCS PGE interface to be run within the PCS.</description>
  <build>
+    <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory> 
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -73,6 +71,7 @@ the License.
               <excludes>
                 <exclude>**/resources/examples/**</exclude>
               </excludes>
+              <numUnapprovedLicenses>2</numUnapprovedLicenses>
             </configuration>
             <executions>
               <execution>
@@ -91,43 +90,74 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-commons</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>    
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-filemgr</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-workflow</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-crawler</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika</artifactId>
-      <version>0.3</version>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>2.5.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>2.5.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>2.5.4</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>10.0.1</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>2.1</version>
+      <version>2.6</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.7</version>
+    </dependency>    
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.2.1</version>
+    </dependency>    
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon-dom</artifactId>
       <version>8.7</version>      
-    </dependency>
+	  </dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>3.1</version>
+			<scope>test</scope>
+		</dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

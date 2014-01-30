@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //APACHE imports
+import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
@@ -40,7 +41,7 @@ import org.apache.tika.mime.MimeTypesFactory;
  * 
  * <p>
  * This is a facade class to insulate CAS Metadata from its underlying Mime Type
- * substrate library, <a href="http://incubator.apache.org/tika/">Apache Tika</a>.
+ * substrate library, <a href="http://tika.apache.org/">Apache Tika</a>.
  * Any mime handling code should be placed in this utility class, and hidden
  * from the CAS Metadata classes that rely on it.
  * </p>
@@ -76,8 +77,12 @@ public final class MimeTypeUtils {
     }
 
     public MimeTypeUtils(InputStream mimeIs, boolean magic) {
-        this.mimeTypes = MimeTypesFactory.create(mimeIs);
-        this.mimeMagic = magic;
+    	try {
+    		this.mimeTypes = MimeTypesFactory.create(mimeIs);
+    		this.mimeMagic = magic;
+    	}catch (Exception e) {
+    		LOG.log(Level.SEVERE, "Failed to load MimeType Registry : " + e.getMessage(), e);
+    	}
     }
 
     /**
@@ -288,7 +293,11 @@ public final class MimeTypeUtils {
 
     public String getSuperTypeForMimeType(String mimeType) {
     	try {
-    		return this.mimeTypes.forName(mimeType).getSuperType().getName();
+    		MediaType mediaType = this.mimeTypes.getMediaTypeRegistry().getSupertype(this.mimeTypes.forName(mimeType).getType());
+    		if (mediaType != null)
+    			return mediaType.getType() + "/" + mediaType.getSubtype();
+    		else
+    			return null;
     	}catch (Exception e) {
     		LOG.log(Level.WARNING, "Failed to get super-type for mimetype " 
     				+ mimeType + " : " + e.getMessage());

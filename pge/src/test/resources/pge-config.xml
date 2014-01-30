@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+
+TODO(bfoster): Make this a working example.
+-->
+<pgeConfig>
+
+  <import namespace="commons" file="common-metadata-pge-config.xml" />
+  <import namespace="writers" file="dyn-input-writers-pge-config.xml" />
+
+	<dynInputFiles>
+		<file path="[TextInputFile]" writerClass="[writers/TextWriter]" args="[TextFileTemplate]" />
+    <file path="[CsvInputFile]" writerClass="[writers/CsvWriter]" args="[CsvHeader]" />
+	</dynInputFiles>
+
+  <fileStaging dir="[StagingDir]" force="[ForceStaging]">
+    <stageFiles metadataKey="InputFiles" />
+  </fileStaging>
+
+	<exe dir="[WorkingDir]" shellType="csh">
+		<cmd>echo [TextInputFile] [commons/GreaterThan] [OutputFileName]</cmd>
+    <cmd>echo [CsvInputFile] [commons/GreaterThan][commons/GreaterThan] [OutputFileName]</cmd>
+    <cmd>if ( ! -e [InputFile1] || ! -e [InputFile2] ) then</cmd>
+    <cmd>  exit 1</cmd>
+    <cmd>endif</cmd>
+	</exe>
+
+	<output>
+		<dir path="[OutputDir]" createBeforeExe="true"/>
+	</output>
+
+	<customMetadata>
+    <!-- Defaults -->
+    <metadata key="GREETING_ENUM" val="Simple" />
+    <metadata key="FORCE_STAGING" val="true" />
+    <metadata key="CUSTOM_GREETING_ENUM" val="Custom" />
+    <metadata key="CUSTOM_GREETING_ENUM_VALUE" val="[commons/LessThan]Custom Greeting Here[commons/GreaterThan]" />
+    
+	  <!-- Remap externally set metadata so if name changes easy to update config file -->
+	  <metadata key="WorkingDir" key-ref="WORKING_DIR" />
+    <metadata key="GreetingEnum" key-ref="GREETING_ENUM" />
+    <metadata key="CustomGreetingEnum" key-ref="CUSTOM_GREETING_ENUM" />
+    <metadata key="CustomGreetingEnumValue" key-ref="CUSTOM_GREETING_ENUM_VALUE" />
+    <metadata key="InputFile1" key-ref="INPUT_FILE_1" />
+    <metadata key="InputFile2" key-ref="INPUT_FILE_2" />
+    <metadata key="ForceStaging" key-ref="FORCE_STAGING" />
+
+    <!-- Input Files -->
+    <metadata key="InputFiles" val="[InputFile1],[InputFile2]" split="true" />
+    
+    <!-- Working sub-directories -->
+    <metadata key="ConfigDir" val="[WorkingDir]/config" />
+    <metadata key="OutputDir" val="[WorkingDir]/output" />
+    <metadata key="StagingDir" val="[WorkingDir]/staging" />
+
+    <!-- Dynamically generated PGE input config files -->
+    <metadata key="DynInput/Text/Name" val="dyn-input.txt" />
+    <metadata key="DynInput/CSV/Name" val="dyn-input.csv" />
+    <metadata key="TextInputFile" val="[ConfigDir]/[DynInput/Text/Name]" />
+    <metadata key="CsvInputFile" val="[ConfigDir]/[DynInput/CSV/Name]" />
+
+    <!-- Output file names -->
+    <metadata key="OutputFileName" val="PgeOutput.txt" />
+
+    <!-- Text input file template metadata -->
+    <metadata key="TextFileTemplate" envReplace="false">
+      [Greeting],
+      This is a template for text file [TextInputFile].
+      This template was written at: [DATE.UTC].
+      [Signature]
+    </metadata>
+    <metadata key="SimpleGreeting" val="Hello" />
+    <metadata key="CasualGreeting" val="Hi" />    
+    <metadata key-gen="[CustomGreetingEnum]Greeting" val="[CustomGreetingEnumValue]" />
+    <metadata key="Greating" key-ref="[GreetingEnum]Greeting" />
+    <metadata key="Signature" val="-bfost" />
+
+    <!-- CSV input file metadata -->
+    <metadata key="AuxInputFiles" val="File1.txt,File2.dat,File3.xml" split="true" />
+    <metadata key="IsText" val="true,false,true" split="true" />
+    <metadata key="CsvHeader" val="AuxInputFiles,IsText" split="true" />
+	</customMetadata>
+
+</pgeConfig>

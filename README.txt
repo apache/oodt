@@ -1,5 +1,5 @@
 =============================================================
- Welcome to Apache OODT  <http://incubator.apache.org/oodt/>
+ Welcome to Apache OODT  <http://oodt.apache.org/>
 =============================================================
 
 OODT is a grid middleware framework used on a number of successful projects at
@@ -16,8 +16,8 @@ other research institutions and universities, specifically those part of the:
   Seawinds/QuickSCAT, the Orbiting Carbon Observatory, the NPP Sounder PEATE
   project, and the Soil Moisture Active Passive (SMAP) mission.
     
-OODT is a podling in the Apache Incubator <http://incubator.apache.org/>, a
-project of the Apache Software Foundation <http://www.apache.org/>.
+OODT is a Top Level project of the Apache Software Foundation 
+<http://www.apache.org/>.
 
 Getting Started
 ===============
@@ -34,7 +34,7 @@ For the Python components, see the "agility" subdirectory.
 License (see also LICENSE.txt)
 ==============================
 
-Collective work: Copyright 2010 The Apache Software Foundation.
+Collective work: Copyright 2010-2012 The Apache Software Foundation.
 
 Licensed to the Apache Software Foundation (ASF) under one or more
 contributor license agreements.  See the NOTICE file distributed with
@@ -108,19 +108,19 @@ Mailing Lists
 
 Discussion about OODT takes place on the following mailing lists:
 
-    oodt-dev@incubator.apache.org    - About using OODT and developing OODT
+    dev@oodt.apache.org    - About using OODT and developing OODT
 
 Notification on all code changes are sent to the following mailing list:
 
-    oodt-commits@incubator.apache.org
+    commits@oodt.apache.org
 
 The mailing lists are open to anyone and publicly archived.
 
 You can subscribe the mailing lists by sending a message to
-oodt-<LIST>-subscribe@incubator.apache.org (for example
-oodt-dev-subscribe@...).  To unsubscribe, send a message to
-oodt-<LIST>-unsubscribe@incubator.apache.org.  For more instructions, send a
-message to oodt-<LIST>-help@incubator.apache.org.
+<LIST>-subscribe@oodt.apache.org (for example
+dev-subscribe@oodt...).  To unsubscribe, send a message to
+<LIST>-unsubscribe@oodt.apache.org.  For more instructions, send a
+message to <LIST>-help@oodt.apache.org.
 
 Issue Tracker
 =============

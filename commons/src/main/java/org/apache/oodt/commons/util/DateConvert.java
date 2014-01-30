@@ -131,9 +131,9 @@ public class DateConvert {
 			}
 
 			// Determine the sign of the offset.
-			String sign = "-";
-			if (String.valueOf(tzOffsetMS).indexOf("+") != -1) {
-				sign = "+";
+			String sign = "+";
+			if (String.valueOf(tzOffsetMS).indexOf("-") != -1) {
+				sign = "-";
 			}
 
 			dateString = dateString.concat(sign + hourString + ":" + minuteString);
@@ -151,7 +151,7 @@ public class DateConvert {
 
 		@param inputString The string to be parsed.
 		@return The resulting Date object.
-		@throws ParseException If the string does not match the date/time
+		@throws ParseException If the string is null or does not match the date/time
 		format.
 	*/
 	public static Date isoParse(String inputString) throws ParseException {
@@ -161,8 +161,8 @@ public class DateConvert {
 		dateFormat.setLenient(false);
 
 		// The length of the input string should be at least 24 characters.
-		if (inputString.length() < 24) {
-			throw new ParseException("An exception occurred because the input date/time string was not at least 24 characters in length.", inputString.length());
+		if (inputString == null || inputString.length() < 24) {
+			throw new ParseException("An exception occurred because the input date/time string was null or under 24 characters in length.", inputString.length());
 		}
 
 		// Evaluate the the specified offset and set the time zone.

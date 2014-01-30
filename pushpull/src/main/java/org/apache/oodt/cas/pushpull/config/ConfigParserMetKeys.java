@@ -106,4 +106,6 @@ public interface ConfigParserMetKeys {
     
     public static final String CD_TEST_DIR_TAG = "cdTestDir";
 
+    public static final String MAX_CONN_TAG = "maxConn";
+
 }

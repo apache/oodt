@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+
+<Context docBase="/path/to/cas-product.war" reloadable="true"
+  crossContext="true">
+
+  <Valve className="org.apache.catalina.valves.AccessLogValve"
+    prefix="fmprod_access_log." suffix=".txt" pattern="common"/>
+
+  <Parameter name="filemgr.ns"
+    value="cas|urn:oodt:|rdf|http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    override="false"/>
+
+  <Parameter name="filemgr.ns.default"
+    value="cas" override="false"/>
+
+  <Parameter name="filemgr.url"
+    value="[FILEMGR_URL]" override="false"/>
+
+  <Parameter name="filemgr.working.dir"
+    value="[FILEMGR_WORKINGDIR]" override="false"/>
+
+  <Parameter name="filemgr.rdfconf.file"
+    value="[FMPROD_HOME]/rdfconf.xml" override="false"/>
+
+  <Parameter name="filemgr.rssconf.file"
+    value="[FMPROD_HOME]/rssconf.xml" override="false"/>
+
+  <Parameter name="filemgr.rss-transfer-conf.file"
+    value="[FMPROD_HOME]/rss-transfer-conf.xml" override="false"/>
+
+  <Parameter name="configuration.rdf.example"
+    value="[FMPROD_HOME]/rdfconf.xml" override="false"/>
+
+  <Parameter name="configuration.rss.example"
+    value="[FMPROD_HOME]/rssconf.xml" override="false"/>
+
+  <Parameter name="configuration.rss.georss"
+    value="[FMPROD_HOME]/georss-config.xml" override="false"/>
+
+  <Parameter name="configuration.rss.transfer"
+    value="[FMPROD_HOME]/rss-transfer-conf.xml" override="false"/>
+</Context>

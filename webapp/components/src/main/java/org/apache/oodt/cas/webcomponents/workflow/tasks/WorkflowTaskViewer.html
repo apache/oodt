@@ -1,0 +1,62 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<wicket:panel>
+<wicket:link>
+ <link rel="stylesheet" type="text/css" href="WorkflowTaskViewer.css"/>
+</wicket:link>
+
+
+<table id="workflow_task_table">
+  <tr>
+    <td class="header">Task ID</td>
+    <td class="value"><span wicket:id="workflow_task_id">urn:oodt:IntensiveTaskWithWait</span></td>
+  </tr>
+  <tr>       	    	          
+    <td class="header">Name</td>
+    <td class="value"><span wicket:id="workflow_task_name">Intensive Waiter</span></td>
+  </tr>
+  <tr>
+    <td class="header">Implementation Class</td>
+    <td class="value"><span wicket:id="workflow_task_class">gov.nasa.jpl.oodt.cas.workflow.examples.LongTask</span></td>
+  </tr>
+  <tr>
+    <td class="header">Configuration</td>
+    <td>
+      <table id="workflow_task_config_tbl">
+       <tr class="header">
+         <td>Property</td>
+         <td>Value</td>
+       </tr>
+       <tr wicket:id="workflow_config" id="workflow_config">
+  	     <td><span wicket:id="workflow_config_pname">numSeconds</span></td>
+  	     <td><span wicket:id="workflow_config_pvalue">60</span></td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+    <tr>
+      <td class="header">Conditions</td>
+      <td>
+        <table id="workflow_condition_tbl">
+       	 <tr wicket:id="workflow_conditions">
+       	   <td><a href="#" wicket:id="condition_page_link"><span wicket:id="condition_plink_name">Long Condition</span></a></td>
+       	 </tr>
+        </table>
+      </td>
+    </tr>
+ </table>
+ </wicket:panel>

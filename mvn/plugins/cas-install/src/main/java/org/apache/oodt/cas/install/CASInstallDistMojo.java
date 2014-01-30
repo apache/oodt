@@ -117,6 +117,40 @@ public class CASInstallDistMojo extends AbstractMojo {
                     + casDistributionFile + "] does not exist!");
         }
 
+        // remove cas installation libs directory and its contents if custom libs specified.
+        // this is to prevent legacy jars from polluting the cas installation libs directory
+        if (customLibs != null && customLibs.length > 0) {
+
+            File libDir = null;
+            
+            // get the lib dir
+            try {
+                libDir = new File(casInstallationDir.getCanonicalPath()
+                        + File.separator + LIB_DIR_NAME);
+
+            } catch (IOException e) {
+                getLog().warn(
+                        "Unable to detect lib dir: IO exception: "
+                                + e.getMessage());
+            }
+
+            // delete the lib dir
+            if (libDir != null) {
+
+                getLog().warn(
+                		"removing pre-existing CAS libraries directory ["
+                		+libDir.getAbsolutePath()+"] since custom CAS libraries have been specified");
+                
+                try {
+					FileUtils.deleteDirectory(libDir);
+				} catch (IOException e) {
+	                getLog().warn(
+	                        "Unable to delete lib dir ["+libDir.getAbsolutePath()+"]: "
+	                                + e.getMessage());
+				}    
+            }         
+        }
+        
         getLog().info(
                 "unpackaging distro: [" + casDistributionFile + "] to: ["
                         + casInstallationDir + "]");

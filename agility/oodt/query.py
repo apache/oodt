@@ -29,7 +29,7 @@ use the `Query` class, passing a string containing your keyword expression as
 the first constructor argument.  From there, you have a `Query` object you can
 pass around to profile servers, product servers, and so forth.
 
-.. _OODT: http://incubator.apache.org/projects/oodt.html
+.. _OODT: http://oodt.apache.org/
 '''
 
 __docformat__ = 'restructuredtext'

@@ -52,7 +52,7 @@ import org.apache.oodt.cas.filemgr.versioning.Versioner;
 public final class GenericFileManagerObjectFactory {
 
     /* our log stream */
-    private static Logger LOG = Logger
+    private static final Logger LOG = Logger
             .getLogger(GenericFileManagerObjectFactory.class.getName());
 
     private GenericFileManagerObjectFactory() throws InstantiationException {

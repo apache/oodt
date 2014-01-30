@@ -25,6 +25,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
+import org.apache.oodt.cas.filemgr.metadata.ProductMetKeys;
 import org.apache.oodt.cas.filemgr.metadata.extractors.FilemgrMetExtractor;
 import org.apache.oodt.cas.filemgr.repository.RepositoryManager;
 import org.apache.oodt.cas.filemgr.structs.Element;
@@ -52,6 +53,7 @@ import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory;
 import org.apache.oodt.cas.filemgr.versioning.Versioner;
+import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.oodt.cas.filemgr.datatransfer.TransferStatusTracker;
 
 //JDK imports
@@ -97,13 +99,16 @@ public class XmlRpcFileManager {
     private DataTransfer dataTransfer = null;
 
     /* our log stream */
-    private Logger LOG = Logger.getLogger(XmlRpcFileManager.class.getName());
+    private static final Logger LOG = Logger.getLogger(XmlRpcFileManager.class.getName());
 
     /* our xml rpc web server */
     private WebServer webServer = null;
 
     /* our data transfer status tracker */
     private TransferStatusTracker transferStatusTracker = null;
+    
+    /* whether or not to expand a product instance into met */
+    private boolean expandProductMet;
     
     /**
      * <p>
@@ -662,6 +667,17 @@ public class XmlRpcFileManager {
             throw new RepositoryManagerException(e.getMessage());
         }
     }
+    
+    public synchronized boolean updateMetadata(Hashtable<String, Object> productHash, 
+        Hashtable<String, Object> metadataHash) throws CatalogException{
+        Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
+        Metadata met = new Metadata();
+        met.addMetadata(metadataHash);
+        Metadata oldMetadata = catalog.getMetadata(product);
+        catalog.removeMetadata(oldMetadata, product);
+        catalog.addMetadata(met, product);
+        return true;
+    }
 
     public synchronized String catalogProduct(Hashtable<String, Object> productHash)
             throws CatalogException {
@@ -755,7 +771,32 @@ public class XmlRpcFileManager {
 
   }
 
-
+   public byte[] retrieveFile(String filePath, int offset, int numBytes)
+         throws DataTransferException {
+      FileInputStream is = null;
+      try {
+         byte[] fileData = new byte[numBytes];
+         (is = new FileInputStream(filePath)).skip(offset);
+         int bytesRead = is.read(fileData);
+         if (bytesRead != -1) {
+            byte[] fileDataTruncated = new byte[bytesRead];
+            System.arraycopy(fileData, 0, fileDataTruncated, 0, bytesRead);
+            return fileDataTruncated;
+         } else {
+            return new byte[0];
+         }
+      } catch (Exception e) {
+         LOG.log(Level.SEVERE, "Failed to read '" + numBytes
+               + "' bytes from file '" + filePath + "' at index '" + offset
+               + "' : " + e.getMessage(), e);
+         throw new DataTransferException("Failed to read '" + numBytes
+               + "' bytes from file '" + filePath + "' at index '" + offset
+               + "' : " + e.getMessage(), e);
+      } finally {
+         try { is.close(); } catch (Exception e) {}
+      }
+   }
+    
     public boolean transferFile(String filePath, byte[] fileData, int offset,
             int numBytes) {
         File outFile = new File(filePath);
@@ -1138,6 +1179,7 @@ public class XmlRpcFileManager {
             }else {
                 m = this.getMetadata(product);
             }
+            if(this.expandProductMet) m = this.buildProductMetadata(product, m);            
             return this.getOrigValues(m, product.getProductType());
         } catch (Exception e) {
             e.printStackTrace();
@@ -1152,6 +1194,7 @@ public class XmlRpcFileManager {
     private Metadata getMetadata(Product product) throws CatalogException {
         try {
             Metadata m = catalog.getMetadata(product);
+            if(this.expandProductMet) m = this.buildProductMetadata(product, m);
             return this.getOrigValues(m, product.getProductType());
         } catch (Exception e) {
             e.printStackTrace();
@@ -1229,15 +1272,52 @@ public class XmlRpcFileManager {
         return filteredQueryResults;
     }
 
-    private List<QueryResult> sortQueryResultList(
-            List<QueryResult> queryResults, String sortByMetKey) {
-        QueryResult[] resultsArray = queryResults
-                .toArray(new QueryResult[queryResults.size()]);
-        QueryResultComparator qrComparator = new QueryResultComparator();
-        qrComparator.setSortByMetKey(sortByMetKey);
-        Arrays.sort(resultsArray, qrComparator);
-        return Arrays.asList(resultsArray);
+    private List<QueryResult> sortQueryResultList(List<QueryResult> queryResults,
+      String sortByMetKey) {
+    QueryResult[] resultsArray = queryResults
+        .toArray(new QueryResult[queryResults.size()]);
+    QueryResultComparator qrComparator = new QueryResultComparator();
+    qrComparator.setSortByMetKey(sortByMetKey);
+    Arrays.sort(resultsArray, qrComparator);
+    return Arrays.asList(resultsArray);
+  }
+
+    private Metadata buildProductMetadata(Product product, Metadata metadata)
+      throws CatalogException {
+    Metadata pMet = new Metadata();
+    pMet.replaceMetadata(ProductMetKeys.PRODUCT_ID, product.getProductId() != null ? 
+        product.getProductId():"unknown");
+    pMet.replaceMetadata(ProductMetKeys.PRODUCT_NAME, product.getProductName() != null ? 
+        product.getProductName():"unknown");
+    pMet.replaceMetadata(ProductMetKeys.PRODUCT_STRUCTURE, product
+        .getProductStructure() != null ? product.getProductStructure():"unknown");
+    pMet.replaceMetadata(ProductMetKeys.PRODUCT_TRANSFER_STATUS, product
+        .getTransferStatus() != null ? product.getTransferStatus():"unknown");
+    pMet.replaceMetadata(ProductMetKeys.PRODUCT_ROOT_REFERENCE, product.getRootRef() != null ? 
+        VersioningUtils
+        .getAbsolutePathFromUri(product.getRootRef().getDataStoreReference()):"unknown");
+
+    List<Reference> refs = product.getProductReferences();
+
+    if (refs == null || (refs != null && refs.size() == 0)) {
+      refs = this.catalog.getProductReferences(product);
     }
+
+    for (Reference r : refs) {
+      pMet.replaceMetadata(ProductMetKeys.PRODUCT_ORIG_REFS, r.getOrigReference() != null
+          ? VersioningUtils
+          .getAbsolutePathFromUri(r.getOrigReference()):"unknown");
+      pMet.replaceMetadata(ProductMetKeys.PRODUCT_DATASTORE_REFS,
+          r.getDataStoreReference() != null ? 
+              VersioningUtils.getAbsolutePathFromUri(r.getDataStoreReference()):"unknown");
+      pMet.replaceMetadata(ProductMetKeys.PRODUCT_FILE_SIZES, String.valueOf(r
+          .getFileSize()));
+      pMet.replaceMetadata(ProductMetKeys.PRODUCT_MIME_TYPES,
+          r.getMimeType() != null ? r.getMimeType().getName() : "unknown");
+    }
+
+    return pMet;
+  }
     
     private void loadConfiguration() throws FileNotFoundException, IOException {
     // set up the configuration, if there is any
@@ -1274,6 +1354,9 @@ public class XmlRpcFileManager {
     // checks for a live server
     dataTransfer
         .setFileManagerUrl(new URL("http://localhost:" + webServerPort));
+
+    expandProductMet = Boolean
+        .getBoolean("org.apache.oodt.cas.filemgr.metadata.expandProduct");
   }
 
 }

@@ -118,6 +118,13 @@ public class IngestionResource extends CurationService {
   }
 
   @GET
+  @Path("remove")
+  @Produces("text/plain")
+  public void removeTask(@QueryParam("taskId") String ingestTaskId) {
+	  this.taskList.removeIngestionTask(ingestTaskId);
+  }
+
+  @GET
   @Path("list")
   @Produces("text/plain")
   public String getIngestTaskList(
@@ -200,12 +207,13 @@ public class IngestionResource extends CurationService {
       out.append(task.getStatus());
       out.append("</td>");
       if (!task.getStatus().equals(IngestionTask.FINISHED)) {
-        out
-            .append("<td><input type=\"button\" rel=\"_taskid_\" value=\"Start\" onclick=\"startIngestionTask('");
+        out.append("<td><input type=\"button\" rel=\"_taskid_\" value=\"Start\" onclick=\"startIngestionTask('");
         out.append(task.getId());
         out.append("')\"/></td>");
       } else {
-        out.append("<td>N/A</td>");
+		out.append("<td><input type=\"button\" rel=\"_taskid_\" value=\"Remove\" onclick=\"removeIngestionTask('");
+		out.append(task.getId());
+		out.append("')\"></td>");
       }
 
       out.append("</tr>");

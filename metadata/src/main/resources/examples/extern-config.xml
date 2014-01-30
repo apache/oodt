@@ -27,8 +27,13 @@ the License.
 	    the .met file will be generated in /path/to/file's parent directory. Otherwise, if the
 	    external command let met extractor doesn't honor working dir, then all bets
 	    are off.
+	    
+	    metFileExt: specifies the file extension for the extern met extractor to look for when 
+	    reading the generated met file into Java as an in-memory CAS metadata object. The met 
+	    file extension is appended to the full file path of the original data file. If not specified, 
+	    then the met file extension defaults to &quot;.met&quot;.
 	-->
-	<exec workingDir="">
+	<exec workingDir="" metFileExt="">
 		<!--  this path can be absolute or relative -->
 		<!--  you can optionally specify envReplace tag (=true) 
 		      to turn on environment variable replacement
@@ -61,8 +66,15 @@ the License.
 			      is not called. If called, all white spaces are replaced from the path
 			      (using the above regex), and replaced with the literal string
 			      "\ ".
+			      
+			      The appendExt parameter is used to augment an existing argument 
+			      with some specified extension. This is typically used on paths 
+			      to add another extension to an argument that's a path. For instance, 
+			      you could append the .cas metadata file extension to an existing 
+			      path, e.g., the data file path.
 			-->
 			<arg envReplace="true" isPath="true">[HOME]/test boo</arg>
+			<arg appendExt="cas">/full/path/to/somefile.txt</arg>
 		</args>
 	</exec>
 

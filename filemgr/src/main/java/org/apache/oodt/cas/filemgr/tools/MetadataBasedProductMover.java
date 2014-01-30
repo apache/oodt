@@ -99,7 +99,12 @@ public class MetadataBasedProductMover {
                     Reference r = ((Reference) p.getProductReferences().get(0));
                     String newLocPath = PathUtils.replaceEnvVariables(
                             this.pathSpec, met);
-
+                    
+                    if (locationsMatch(r.getDataStoreReference(), newLocPath)) {
+                    	LOG.log(Level.INFO, "Current and New locations match. "+p.getProductName()+" was not moved.");
+                    	continue;
+                    }
+                    
                     LOG.log(Level.INFO, "Moving product: ["
                             + p.getProductName() + "] from: ["
                             + new File(new URI(r.getDataStoreReference()))
@@ -120,6 +125,19 @@ public class MetadataBasedProductMover {
         }
     }
 
+    private boolean locationsMatch(String currentLocation, String newLocation) throws java.net.URISyntaxException {
+    	String currentLocationURI = new URI(currentLocation).getSchemeSpecificPart();
+    	String newLocationURI = new URI(newLocation).getSchemeSpecificPart();
+
+    	if (currentLocationURI.equals(newLocationURI)) {
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
+    	
+    }
+    
     public void moveProducts(String typeName) throws Exception {
         moveProducts(fmgrClient.getProductTypeByName(typeName));
     }
