@@ -61,7 +61,7 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
         .hasNext();) {
       QueryElement element = i.next();
       if (element.getRole().equals(XMLQUERY_QUERYELEM_ROLE_ELEM)
-          && element.getValue().equals(name)) {
+          && element.getValue().equalsIgnoreCase(name)) {
         // get the next element and ensure that it is a LITERAL, and
         // return that
         QueryElement litElement = i.next();
@@ -73,7 +73,7 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
   }
 
   public static Document getOFSNDoc(List<File> fileList, OFSNHandlerConfig cfg,
-      String productRoot, boolean showDirSize) {
+      String productRoot, boolean showDirSize, boolean showFileSize) {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware(true);
     Document document = null;
@@ -106,7 +106,9 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
             size = FileUtils.sizeOfDirectory(file);
           }
         } else {
-          size = file.length();
+          if (showFileSize) {
+            size = file.length();
+          }
         }
 
         if (size != Long.MIN_VALUE) {
@@ -169,6 +171,14 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
 
   }
 
+  public static boolean validateOFSN(String ofsn) {
+      if (ofsn == null) {
+          return false;
+      } else {
+          return !ofsn.equals("") && !ofsn.matches(".*\\.\\..*");
+      }
+  }
+  
   private static String toOFSN(String absolutePath, String productRootPath) {
     if (absolutePath.startsWith(productRootPath)) {
       return absolutePath.substring(productRootPath.length());

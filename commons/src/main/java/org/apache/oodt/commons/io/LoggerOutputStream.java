@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.commons.io;
 
 //JDK imports
@@ -26,59 +24,63 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * {@link OutputStream} wrapper around a java {@link Logger}.
  * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
- * Describe your class here
- * </p>.
+ * @author bfoster (Brian Foster)
  */
 public class LoggerOutputStream extends OutputStream {
 
-    private Logger logger;
+   public static final String NUM_BYTES_PER_WRITE_PROPERTY =
+         "org.apache.oodt.commons.io.logger.os.bytes.per.write";
+   private static final int NUM_BYTES_PER_WRITE = Integer.getInteger(
+         NUM_BYTES_PER_WRITE_PROPERTY, 512);
 
-    private CharBuffer buffer;
+   private Logger logger;
+   private CharBuffer buffer;
+   private Level logLevel;
 
-    private Level logLevel;
+   public LoggerOutputStream(Logger logger) throws InstantiationException {
+      this(logger, Level.INFO);
+   }
 
-    public LoggerOutputStream(Logger logger) throws InstantiationException {
-        this(logger, Level.INFO);
-    }
+   public LoggerOutputStream(Logger logger, Level logLevel)
+         throws InstantiationException {
+      this(logger, NUM_BYTES_PER_WRITE, logLevel);
+   }
 
-    public LoggerOutputStream(Logger logger, Level logLevel)
-            throws InstantiationException {
-        this(logger, 512, logLevel);
-    }
+   public LoggerOutputStream(Logger logger, int numOfBytesPerWrite)
+         throws InstantiationException {
+      this(logger, numOfBytesPerWrite, Level.INFO);
+   }
 
-    public LoggerOutputStream(Logger logger, int numOfBytesPerWrite)
-            throws InstantiationException {
-        this(logger, numOfBytesPerWrite, Level.INFO);
-    }
+   public LoggerOutputStream(Logger logger, int numOfBytesPerWrite,
+         Level logLevel) throws InstantiationException {
+      this.logger = logger;
+      this.buffer = CharBuffer.wrap(new char[numOfBytesPerWrite]);
+      this.logLevel = logLevel;
+   }
 
-    public LoggerOutputStream(Logger logger, int numOfBytesPerWrite,
-            Level logLevel) throws InstantiationException {
-        this.logger = logger;
-        this.buffer = CharBuffer.wrap(new char[numOfBytesPerWrite]);
-        this.logLevel = logLevel;
-    }
+   @Override
+   public void write(int b) throws IOException {
+      if (!buffer.hasRemaining()) {
+         flush();
+      }
+      buffer.put((char) b);
+   }
 
-    public void write(int b) throws IOException {
-        if (this.buffer.hasRemaining()) {
-            this.buffer.put((char) b);
-            if (!this.buffer.hasRemaining())
-                this.flush();
-        } else
-            this.logger.log(this.logLevel, ((char) b) + "");
-    }
+   @Override
+   public void flush() {
+      if (buffer.position() > 0) {
+         char[] flushContext = new char[buffer.position()];
+         System.arraycopy(buffer.array(), 0, flushContext, 0, buffer.position());
+         logger.log(logLevel, new String(flushContext));
+         buffer.clear();
+      }
+   }
 
-    public void flush() {
-        if (this.buffer.position() > 0) {
-        	char[] flushContext = new char[this.buffer.position()];
-        	System.arraycopy(this.buffer.array(), 0, flushContext, 0, this.buffer.position());
-            this.logger.log(this.logLevel, new String(flushContext));
-            this.buffer.clear();
-        }
-    }
-
+   @Override
+   public void close() throws IOException {
+      flush();
+      super.close();
+   }
 }

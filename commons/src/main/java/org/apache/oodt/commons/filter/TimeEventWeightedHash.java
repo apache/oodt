@@ -132,7 +132,7 @@ public class TimeEventWeightedHash {
       for (TimeEventNode parent : parentNodes) {
           possibleChildrenNodes.addAll(parent.getChildren());
           TimeEventNode curPCN = possibleChildrenNodes.get(0);
-          while (curPCN != null) {
+          while (curPCN != null && !parentNodes.contains(curPCN)) {
               if (happensBefore(newEvent, curPCN.getTimeEvent())) {
                   childrenNodes.add(curPCN);
               }else {
@@ -147,7 +147,7 @@ public class TimeEventWeightedHash {
   
   private boolean happensBefore(TimeEvent t1, TimeEvent t2) {
       long boundaryCheck = t2.getStartTime() - t1.getEndTime();
-      return (boundaryCheck + epsilon) > 0;
+      return t1.getStartTime() < t2.getStartTime() && (boundaryCheck + epsilon) > 0;
   }
   
   private WeightedNode getGreatestWeightedPath() {

@@ -44,6 +44,10 @@ public class ProductPage {
 
     /* the list of produdcts associated with this page */
     private List<Product> pageProducts = null;
+    
+    /* the computed number of total hits for the query */
+    private long numOfHits;
+
 
     /**
      * <p>
@@ -148,6 +152,21 @@ public class ProductPage {
         return pageNum == 1;
     }
 
+
+    /**
+     * @return the numOfHits
+     */
+    public long getNumOfHits() {
+      return numOfHits;
+    }
+
+    /**
+     * @param numOfHits the numOfHits to set
+     */
+    public void setNumOfHits(long numOfHits) {
+      this.numOfHits = numOfHits;
+    }    
+
     /**
      * 
      * @return A blank, unpopulated {@link ProductPage}.
@@ -159,5 +178,5 @@ public class ProductPage {
         blank.setPageSize(0);
         return blank;
     }
-
+    
 }

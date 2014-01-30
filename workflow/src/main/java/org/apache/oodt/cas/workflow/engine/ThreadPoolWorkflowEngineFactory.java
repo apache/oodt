@@ -14,106 +14,86 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.workflow.engine;
 
-//OODT imports
-import java.net.MalformedURLException;
+//JDK imports
+import static java.lang.Boolean.getBoolean;
+import static java.lang.Integer.getInteger;
+import static java.lang.Long.getLong;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.oodt.cas.metadata.util.PathUtils;
+//OODT imports
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 /**
- * @author mattmann
- * @version $Revision$
- * 
- * <p>
  * A Factory class for creating {@link ThreadPoolWorkflowEngine}s.
- * </p>.
+ * 
+ * @author mattmann (Chris Mattmann)
+ * @author bfoster (Brian Foster)
  */
 public class ThreadPoolWorkflowEngineFactory implements WorkflowEngineFactory {
 
-	/* default queue size */
-	private int queueSize = -1;
+  private static final Logger LOG = Logger
+      .getLogger(ThreadPoolWorkflowEngineFactory.class.getName());
 
-	/* default max pool size */
-	private int maxPoolSize = -1;
+  private static final String INSTANCE_REPO_FACTORY_PROPERTY = "workflow.engine.instanceRep.factory";
+  private static final String QUEUE_SIZE_PROPERTY = "org.apache.oodt.cas.workflow.engine.queueSize";
+  private static final String MAX_POOL_SIZE_PROPERTY = "org.apache.oodt.cas.workflow.engine.maxPoolSize";
+  private static final String MIN_POOL_SIZE_PROPERTY = "org.apache.oodt.cas.workflow.engine.minPoolSize";
+  private static final String THREAD_KEEP_ALIVE_PROPERTY = "org.apache.oodt.cas.workflow.engine.threadKeepAlive.minutes";
+  private static final String UNLIMITED_QUEUE_PROPERTY = "org.apache.oodt.cas.workflow.engine.unlimitedQueue";
+  private static final String RESMGR_URL_PROPERTY = "org.apache.oodt.cas.workflow.engine.resourcemgr.url";
 
-	/* the min pool size */
-	private int minPoolSize = -1;
+  private static final int DEFAULT_QUEUE_SIZE = 10;
+  private static final int DEFAULT_MAX_POOL_SIZE = 10;
+  private static final int DEFAULT_MIN_POOL_SIZE = 4;
+  private static final long DEFAULT_THREAD_KEEP_ALIVE_MINS = 5;
 
-	/*
-	 * the amount of minutes to keep each worker thread alive
-	 */
-	private long threadKeepAliveTime = -1L;
-
-	/*
-	 * whether or not an unlimited queue of worker threads should be allowed
-	 */
-	private boolean unlimitedQueue = false;
-	
-	/* the workflow instance repository */
-	private WorkflowInstanceRepository workflowInstRep = null;
-
- /* res mgr url */
- private URL resMgrUrl = null;
-
-	public ThreadPoolWorkflowEngineFactory() throws InstantiationException{
-		// need to get the values for some of the default thread pool values
-		queueSize = Integer.getInteger(
-				"org.apache.oodt.cas.workflow.engine.queueSize", 10)
-				.intValue();
-		maxPoolSize = Integer.getInteger(
-				"org.apache.oodt.cas.workflow.engine.maxPoolSize", 10)
-				.intValue();
-		minPoolSize = Integer.getInteger(
-				"org.apache.oodt.cas.workflow.engine.minPoolSize", 4)
-				.intValue();
-		threadKeepAliveTime = Long
-				.getLong(
-						"org.apache.oodt.cas.workflow.engine.threadKeepAlive.minutes",
-						5).longValue();
-		unlimitedQueue = Boolean
-				.getBoolean("org.apache.oodt.cas.workflow.engine.unlimitedQueue");
-		
-		String instRepClazzName = System
-				.getProperty("workflow.engine.instanceRep.factory");
-		if (instRepClazzName == null) {
-			throw new InstantiationException(
-					"instance repository factory not specified in workflow properties: failing!");
-		}
-
-    this.workflowInstRep = GenericWorkflowObjectFactory
-        .getWorkflowInstanceRepositoryFromClassName(instRepClazzName);
-
-    // see if we are using a resource manager or not
-    String resMgrUrlStr = System
-        .getProperty("org.apache.oodt.cas.workflow.engine.resourcemgr.url");
-    if (resMgrUrlStr != null) {
-      resMgrUrlStr = PathUtils.replaceEnvVariables(resMgrUrlStr);
-      resMgrUrl = safeGetUrlFromString(resMgrUrlStr);
-    }
+  @Override
+  public WorkflowEngine createWorkflowEngine() {
+    return new ThreadPoolWorkflowEngine(getWorkflowInstanceRepository(),
+        getQueueSize(), getMaxPoolSize(), getMinPoolSize(),
+        getThreadKeepAliveMinutes(), isUnlimitedQueue(), getResmgrUrl());
   }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apache.oodt.cas.workflow.engine.WorkflowEngineFactory#createWorkflowEngine()
-	 */
-	public WorkflowEngine createWorkflowEngine() {
-		return new ThreadPoolWorkflowEngine(workflowInstRep, queueSize, maxPoolSize,
-				minPoolSize, threadKeepAliveTime, unlimitedQueue, resMgrUrl);
-	}
+  protected WorkflowInstanceRepository getWorkflowInstanceRepository() {
+    return GenericWorkflowObjectFactory
+        .getWorkflowInstanceRepositoryFromClassName(System
+            .getProperty(INSTANCE_REPO_FACTORY_PROPERTY));
+  }
 
- private URL safeGetUrlFromString(String urlStr) {
+  protected URL getResmgrUrl() {
     try {
-      return new URL(urlStr);
-    } catch (MalformedURLException e) {
+      return new URL(System.getProperty(RESMGR_URL_PROPERTY));
+    } catch (Exception e) {
+      LOG.log(
+          Level.INFO,
+          "No Resource Manager URL provided or malformed URL: executing jobs " +
+          "locally. URL: ["+System.getProperty(RESMGR_URL_PROPERTY)+"]");
       return null;
     }
   }
 
+  protected int getQueueSize() {
+    return getInteger(QUEUE_SIZE_PROPERTY, DEFAULT_QUEUE_SIZE);
+  }
+
+  protected int getMaxPoolSize() {
+    return getInteger(MAX_POOL_SIZE_PROPERTY, DEFAULT_MAX_POOL_SIZE);
+  }
+
+  protected int getMinPoolSize() {
+    return getInteger(MIN_POOL_SIZE_PROPERTY, DEFAULT_MIN_POOL_SIZE);
+  }
+
+  protected long getThreadKeepAliveMinutes() {
+    return getLong(THREAD_KEEP_ALIVE_PROPERTY, DEFAULT_THREAD_KEEP_ALIVE_MINS);
+  }
+
+  protected boolean isUnlimitedQueue() {
+    return getBoolean(UNLIMITED_QUEUE_PROPERTY);
+  }
 }

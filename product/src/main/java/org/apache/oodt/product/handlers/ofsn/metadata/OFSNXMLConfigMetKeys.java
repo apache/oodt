@@ -50,5 +50,8 @@ public interface OFSNXMLConfigMetKeys {
   public static final String PROPERTY_NAME_ATTR = "name";
 
   public static final String PROPERTY_VALUE_ATTR = "value";
+  
+  /* optional handler property attributes supported by all handlers */
+  public static final String PROPERTY_MIMETYPE_ATTR = "mimeType"; 
 
 }

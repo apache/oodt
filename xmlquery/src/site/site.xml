@@ -27,6 +27,7 @@ the License.
     <menu name="User's Guide">
       <item name="Tutorial" href="tutorial/"/>
       <item name="DIS-Style Query" href="disquery/"/>
+      <item name="Query Servlet" href="servlet/"/>
     </menu>
   </body>
 </project>

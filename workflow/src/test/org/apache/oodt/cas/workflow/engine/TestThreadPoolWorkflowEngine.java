@@ -19,7 +19,10 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //OODT imports
+import org.apache.oodt.cas.workflow.structs.Graph;
+import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.commons.util.DateConvert;
 
 //JDK imports
@@ -50,6 +53,12 @@ public class TestThreadPoolWorkflowEngine extends TestCase {
     public void testCurrentTaskWallClockTime() {
         // at first, there is no start date time
         WorkflowInstance inst = new WorkflowInstance();
+        WorkflowTask task = new WorkflowTask();
+        task.setTaskId("urn:oodt:testTask");
+        ParentChildWorkflow workflow = new ParentChildWorkflow(new Graph());
+        workflow.getTasks().add(task);
+        inst.setParentChildWorkflow(workflow);
+        inst.setCurrentTaskId("urn:oodt:testTask");
         assertEquals(Double.valueOf(0.0), Double
                 .valueOf(ThreadPoolWorkflowEngine
                         .getCurrentTaskWallClockMinutes(inst)));
@@ -57,6 +66,7 @@ public class TestThreadPoolWorkflowEngine extends TestCase {
         // now set start date time, and assert that wall clock minutes > 0
         inst.setCurrentTaskStartDateTimeIsoStr(DateConvert
                 .isoFormat(new Date()));
+        System.out.println(ThreadPoolWorkflowEngine.getCurrentTaskWallClockMinutes(inst));
         assertTrue(ThreadPoolWorkflowEngine
                 .getCurrentTaskWallClockMinutes(inst) > 0.0);
 

@@ -52,7 +52,8 @@ public abstract class GridServlet extends HttpServlet {
 	 */
 	protected Configuration getConfiguration() throws ServletException, IOException {
 		if (configuration != null) return configuration;
-		String path = getServletContext().getRealPath("/WEB-INF/config.xml");
+		String path = getServletContext().getInitParameter("org.apache.oodt.grid.GridServlet.config");
+		if (path == null) path = getServletContext().getRealPath("/WEB-INF/config.xml");
 		if (path == null)
 			throw new ServletException("The config.xml file can't be accessed. Are we running from a war file!??!");
 		File file = new File(path);

@@ -20,13 +20,12 @@ package org.apache.oodt.xmlps.mapping;
 //OODT imports
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 
-//JDK imports
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
 /**
- * 
+ *
  * <p>
  * A field within a mapping.xml file that defines the relationship between CDEs
  * and the underlying attributes of a local site's DBMS.
@@ -51,8 +50,6 @@ public class MappingField {
 
   private boolean string;
 
-  private boolean appendTableName;
-
   /**
    * @param name
    * @param type
@@ -66,7 +63,7 @@ public class MappingField {
    */
   public MappingField(String name, FieldType type, String dbName,
       String tableName, String constantValue, FieldScope scope,
-      List<MappingFunc> funcs, boolean string, boolean appendTableName) {
+      List<MappingFunc> funcs, boolean string) {
     super();
     this.name = name;
     this.type = type;
@@ -76,11 +73,10 @@ public class MappingField {
     this.scope = scope;
     this.funcs = funcs;
     this.string = string;
-    this.appendTableName = appendTableName;
   }
 
   /**
-     * 
+     *
      */
   public MappingField() {
     this.name = null;
@@ -89,7 +85,6 @@ public class MappingField {
     this.constantValue = null;
     this.scope = null;
     this.string = false;
-    this.appendTableName = false;
     this.funcs = new Vector<MappingFunc>();
   }
 
@@ -198,6 +193,7 @@ public class MappingField {
     this.funcs = funcs;
   }
 
+  @Override
   public String toString() {
     StringBuffer rStr = new StringBuffer("[name=");
     rStr.append(this.name);
@@ -215,8 +211,6 @@ public class MappingField {
     rStr.append(printClassNames(this.funcs));
     rStr.append(",string=");
     rStr.append(String.valueOf(this.string));
-    rStr.append(",appendTableName=");
-    rStr.append(String.valueOf(this.appendTableName));
     rStr.append("]");
     return rStr.toString();
   }
@@ -255,16 +249,18 @@ public class MappingField {
   }
 
   /**
-   * @param appendTableName
-   *          determines whether the Mapping should append DB table name to
-   *          field name when constructing queries, retrieving results from
-   *          ResultSets, etc.
+   * If dbname exists and is not empty, it is used as the field name.
+   * If the table exists and is not empty,
+   * return tableName.fieldName, otherwise return fieldName.
+   * @return the column name understood by the local db
    */
-  public void setAppendTableName(boolean appendTableName) {
-    this.appendTableName = appendTableName;
+  public String getLocalName() {
+    String dbColName = getName();
+    if (getDbName() != null && !getDbName().isEmpty())
+      dbColName = getDbName();
+    if (getTableName() == null || getTableName().isEmpty())
+      return dbColName;
+    return getTableName() + "." + dbColName;
   }
 
-  public boolean isAppendTableName() {
-    return appendTableName;
-  }
 }

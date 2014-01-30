@@ -15,14 +15,12 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>${oodt.version}</version>
+    <version>0.7-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-resource</artifactId>
@@ -30,6 +28,11 @@ the License.
   <description>The resource management component of a Catalog and Archive Service. This component
      provides job management, and management of the underlying software system hardware
      and resources, such as disk space, computational resources, and shared identity.</description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/resource</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/resource</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/trunk/resource</url>
+  </scm>
   <build>
     <plugins>
       <plugin>
@@ -80,12 +83,17 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-commons</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>   
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-cli</artifactId>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
@@ -137,6 +145,18 @@ the License.
       <groupId>xmlrpc</groupId>
       <artifactId>xmlrpc</artifactId>
       <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.3.1</version>
+      <exclusions>
+        <exclusion>
+          <!-- xom is an optional dependency of xstream. Its also an Apache incompatible license -->
+          <groupId>xom</groupId>
+          <artifactId>xom</artifactId>
+        </exclusion> 
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

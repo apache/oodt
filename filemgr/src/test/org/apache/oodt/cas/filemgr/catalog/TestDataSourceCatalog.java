@@ -21,15 +21,7 @@ package org.apache.oodt.cas.filemgr.catalog;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 //OODT imports
@@ -38,15 +30,10 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
-import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
-import org.apache.oodt.commons.pagination.PaginationUtils;
 import org.apache.oodt.commons.database.SqlScript;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
-import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //Junit imports
@@ -63,7 +50,7 @@ import junit.framework.TestCase;
  */
 public class TestDataSourceCatalog extends TestCase {
 
-    private Catalog myCat;
+    protected Catalog myCat;
 
     private String tmpDirPath = null;
 
@@ -74,14 +61,19 @@ public class TestDataSourceCatalog extends TestCase {
         System.setProperty("java.util.logging.config.file", new File(
                 "./src/main/resources/logging.properties").getAbsolutePath());
 
+        if(System.getProperty("overrideProperties") == null){
+
+            try {
+                System.getProperties().load(
+                        new FileInputStream(
+                                "./src/main/resources/filemgr.properties"));
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+
+
         // first load the example configuration
-        try {
-            System.getProperties().load(
-                    new FileInputStream(
-                            "./src/main/resources/filemgr.properties"));
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+
 
         // get a temp directory
         File tempDir = null;
@@ -116,7 +108,16 @@ public class TestDataSourceCatalog extends TestCase {
         System.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver",
                 "org.hsqldb.jdbcDriver");
-
+        }
+        else{
+            try {
+                System.getProperties().load(
+                        new FileInputStream(
+                                System.getProperty("overrideProperties")));
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
         // now override the val layer ones
         System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
                 "file://"
@@ -242,7 +243,7 @@ public class TestDataSourceCatalog extends TestCase {
     public void testFirstProductOnlyOnFirstPage() {
         // add catPageSize of the test Product
         // then add a product called "ShouldBeFirstForPage.txt"
-        // make sure it's the first one on the 2nd page
+        // make sure it's the first one on the 1st page
 
         Product testProd = getTestProduct();
         Metadata met = getTestMetadata("test");
@@ -281,6 +282,8 @@ public class TestDataSourceCatalog extends TestCase {
         assertNotNull(myCat.getFirstPage(type).getPageProducts());
         assertEquals(catPageSize, myCat.getFirstPage(type).getPageProducts()
                 .size());
+        assertNotNull(myCat.getFirstPage(type).getPageProducts().get(0));
+        assertEquals("ShouldBeFirstForPage.txt", ((Product)myCat.getFirstPage(type).getPageProducts().get(0)).getProductName());
         ProductPage page = myCat.getNextPage(type, myCat.getFirstPage(type));
         assertNotNull(page);
         assertNotNull(page.getPageProducts());
@@ -288,7 +291,7 @@ public class TestDataSourceCatalog extends TestCase {
         assertEquals(2, page.getTotalPages());
         assertNotNull(page.getPageProducts().get(0));
         Product retProd = ((Product) page.getPageProducts().get(0));
-        assertEquals("ShouldBeFirstForPage.txt", retProd.getProductName());
+        assertEquals("test", retProd.getProductName());
 
     }
 
@@ -444,8 +447,7 @@ public class TestDataSourceCatalog extends TestCase {
     }
 
     private Catalog getCatalog() {
-        return (HsqlDbFriendlyDataSourceCatalog) new HsqlDbFriendlyDataSourceCatalogFatory()
-                .createCatalog();
+        return new DataSourceCatalogFactory().createCatalog();
     }
     
     private void createSchema() {
@@ -483,593 +485,6 @@ public class TestDataSourceCatalog extends TestCase {
         Metadata met = new Metadata();
         met.addMetadata("CAS.ProductName", prodName);
         return met;
-    }
-
-    class HsqlDbFriendlyDataSourceCatalogFatory extends
-            DataSourceCatalogFactory {
-
-        public HsqlDbFriendlyDataSourceCatalogFatory() {
-            super();
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.apache.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
-         */
-        public Catalog createCatalog() {
-            return new HsqlDbFriendlyDataSourceCatalog(dataSource,
-                    validationLayer, fieldIdStr, pageSize, cacheUpdateMinutes);
-        }
-    }
-
-    class HsqlDbFriendlyDataSourceCatalog extends DataSourceCatalog {
-
-        public HsqlDbFriendlyDataSourceCatalog(DataSource ds,
-                ValidationLayer valLayer, boolean fieldId, int pageSize,
-                long cacheUpdateMin) {
-            super(ds, valLayer, fieldId, pageSize, cacheUpdateMin);
-        }
-
-        private final Logger LOG = Logger
-                .getLogger(HsqlDbFriendlyDataSourceCatalog.class.getName());
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#pagedQuery(org.apache.oodt.cas.filemgr.structs.Query,
-         *      org.apache.oodt.cas.filemgr.structs.ProductType, int)
-         */
-        public ProductPage pagedQuery(Query query, ProductType type, int pageNum)
-                throws CatalogException {
-            int totalPages = PaginationUtils.getTotalPage(getResultListSize(
-                    query, type), this.pageSize);
-
-            /*
-             * if there are 0 total pages in the result list size then don't
-             * bother returning a valid product page instead, return blank
-             * ProductPage
-             */
-            if (totalPages == 0) {
-                return ProductPage.blankPage();
-            }
-
-            ProductPage retPage = new ProductPage();
-            retPage.setPageNum(pageNum);
-            retPage.setPageSize(this.pageSize);
-            retPage.setTotalPages(totalPages);
-
-            List productIds = paginateQuery(query, type, pageNum);
-
-            if (productIds != null && productIds.size() > 0) {
-                List products = new Vector(productIds.size());
-
-                for (Iterator i = productIds.iterator(); i.hasNext();) {
-                    String productId = (String) i.next();
-                    Product p = getProductById(productId);
-                    products.add(p);
-                }
-
-                retPage.setPageProducts(products);
-            }
-
-            return retPage;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#getFirstPage(org.apache.oodt.cas.filemgr.structs.ProductType)
-         */
-        public ProductPage getFirstPage(ProductType type) {
-            Query query = new Query();
-            ProductPage firstPage = null;
-
-            try {
-                firstPage = pagedQuery(query, type, 1);
-            } catch (CatalogException e) {
-                LOG.log(Level.WARNING,
-                        "Exception getting first page: Message: "
-                                + e.getMessage());
-            }
-            return firstPage;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog#getNextPage(org.apache.oodt.cas.filemgr.structs.ProductType,
-         *      org.apache.oodt.cas.filemgr.structs.ProductPage)
-         */
-        public ProductPage getNextPage(ProductType type, ProductPage currentPage) {
-            if (currentPage == null) {
-                return getFirstPage(type);
-            }
-
-            if (currentPage.isLastPage()) {
-                return currentPage;
-            }
-
-            ProductPage nextPage = null;
-            Query query = new Query();
-
-            try {
-                nextPage = pagedQuery(query, type, currentPage.getPageNum() + 1);
-            } catch (CatalogException e) {
-                LOG.log(Level.WARNING, "Exception getting next page: Message: "
-                        + e.getMessage());
-            }
-
-            return nextPage;
-        }
-
-        private List paginateQuery(Query query, ProductType type, int pageNum)
-                throws CatalogException {
-            Connection conn = null;
-            Statement statement = null;
-            ResultSet rs = null;
-
-            List productIds = null;
-            boolean doSkip = true;
-            int numResults = -1;
-
-            if (pageNum == -1) {
-                doSkip = false;
-            } else {
-                numResults = getResultListSize(query, type);
-            }
-
-            try {
-                conn = dataSource.getConnection();
-                statement = conn.createStatement(
-                        ResultSet.TYPE_SCROLL_INSENSITIVE,
-                        ResultSet.CONCUR_READ_ONLY);
-
-                String getProductSql = "";
-                String tableName = type.getName() + "_metadata";
-                String subSelectQueryBase = "SELECT product_id FROM "
-                        + tableName + " ";
-                StringBuffer selectClause = new StringBuffer(
-                        "SELECT DISTINCT p.product_id ");
-                StringBuffer fromClause = new StringBuffer("FROM " + tableName
-                        + " p ");
-                StringBuffer whereClause = new StringBuffer("WHERE ");
-
-                boolean gotFirstClause = false;
-                int clauseNum = 0;
-
-                if (query.getCriteria() != null
-                        && query.getCriteria().size() > 0) {
-                    for (Iterator i = query.getCriteria().iterator(); i
-                            .hasNext();) {
-                        QueryCriteria criteria = (QueryCriteria) i.next();
-                        clauseNum++;
-
-                        String elementIdStr = null;
-
-                        if (fieldIdStringFlag) {
-                            elementIdStr = "'"
-                                    + this.getValidationLayer()
-                                            .getElementByName(
-                                                    criteria.getElementName())
-                                            .getElementId() + "'";
-                        } else {
-                            elementIdStr = this
-                                    .getValidationLayer()
-                                    .getElementByName(criteria.getElementName())
-                                    .getElementId();
-                        }
-
-                        String clause = null;
-
-                        if (!gotFirstClause) {
-                            clause = "(p.element_id = " + elementIdStr
-                                    + " AND ";
-                            if (criteria instanceof TermQueryCriteria) {
-                                clause += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%') ";
-                            } else if (criteria instanceof RangeQueryCriteria) {
-                                String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
-                                String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
-                                boolean inclusive = ((RangeQueryCriteria) criteria)
-                                        .getInclusive();
-
-                                if ((startVal != null && !startVal.equals(""))
-                                        || (endVal != null && !endVal
-                                                .equals(""))) {
-                                    clause += " metadata_value ";
-
-                                    boolean gotStart = false;
-
-                                    if (startVal != null
-                                            && !startVal.equals("")) {
-                                        if (inclusive)
-                                            clause += ">= '" + startVal + "'";
-                                        else
-                                            clause += "> '" + startVal + "'";
-                                        gotStart = true;
-                                    }
-
-                                    if (endVal != null && !endVal.equals("")) {
-                                        if (gotStart) {
-                                            if (inclusive)
-                                                clause += " AND metadata_value <= '"
-                                                        + endVal + "'";
-                                            else
-                                                clause += " AND metadata_value < '"
-                                                        + endVal + "'";
-                                        } else if (inclusive)
-                                            clause += "<= '" + endVal + "'";
-                                        else
-                                            clause += "< '" + endVal + "'";
-                                    }
-
-                                    clause += ") ";
-                                }
-                            }
-
-                            whereClause.append(clause);
-                            gotFirstClause = true;
-                        } else {
-                            String subSelectTblName = "p" + clauseNum;
-                            String subSelectQuery = subSelectQueryBase
-                                    + "WHERE (element_id = " + elementIdStr
-                                    + " AND ";
-                            if (criteria instanceof TermQueryCriteria) {
-                                subSelectQuery += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%')";
-                            } else if (criteria instanceof RangeQueryCriteria) {
-                                String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
-                                String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
-
-                                if (startVal != null || endVal != null) {
-                                    subSelectQuery += " metadata_value ";
-
-                                    boolean gotStart = false;
-
-                                    if (startVal != null
-                                            && !startVal.equals("")) {
-                                        subSelectQuery += ">= '" + startVal
-                                                + "'";
-                                        gotStart = true;
-                                    }
-
-                                    if (endVal != null && !endVal.equals("")) {
-                                        if (gotStart) {
-                                            subSelectQuery += " AND metadata_value <= '"
-                                                    + endVal + "'";
-                                        } else
-                                            subSelectQuery += "<= '" + endVal
-                                                    + "'";
-                                    }
-
-                                    subSelectQuery += ") ";
-
-                                }
-                            }
-                            fromClause.append("INNER JOIN (" + subSelectQuery
-                                    + ") " + subSelectTblName + " ON "
-                                    + subSelectTblName
-                                    + ".product_id = p.product_id ");
-
-                        }
-                    }
-                }
-                getProductSql = selectClause.toString() + fromClause.toString();
-                if (gotFirstClause) {
-                    getProductSql += whereClause.toString();
-                }
-
-                LOG.log(Level.FINE, "catalog query: executing: "
-                        + getProductSql);
-
-                rs = statement.executeQuery(getProductSql);
-                productIds = new Vector();
-
-                if (doSkip) {
-                    int startNum = (pageNum - 1) * pageSize;
-
-                    if (startNum > numResults) {
-                        startNum = 0;
-                    }
-
-                    // must call next first, or else no relative cursor
-                    if (rs.next()) {
-                        // grab the first one
-                        int numGrabbed = -1;
-
-                        if (pageNum == 1) {
-                            numGrabbed = 1;
-                            productIds.add(rs.getString("product_id"));
-                        } else {
-                            numGrabbed = 0;
-                        }
-
-                        // now move the cursor to the correct position
-                        if (pageNum != 1) {
-                            rs.relative(startNum - 1);
-                        }
-
-                        // grab the rest
-                        while (rs.next() && numGrabbed < pageSize) {
-                            String productId = rs.getString("product_id");
-                            productIds.add(productId);
-                            numGrabbed++;
-                        }
-                    }
-
-                } else {
-                    while (rs.next()) {
-                        String productId = rs.getString("product_id");
-                        productIds.add(productId);
-                    }
-                }
-
-                if (productIds.size() == 0) {
-                    productIds = null;
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOG.log(Level.WARNING, "Exception performing query. Message: "
-                        + e.getMessage());
-                try {
-                    conn.rollback();
-                } catch (SQLException e2) {
-                    LOG.log(Level.SEVERE,
-                            "Unable to rollback query transaction. Message: "
-                                    + e2.getMessage());
-                }
-                throw new CatalogException(e.getMessage());
-            } finally {
-
-                if (rs != null) {
-                    try {
-                        rs.close();
-                    } catch (SQLException ignore) {
-                    }
-
-                    rs = null;
-                }
-
-                if (statement != null) {
-                    try {
-                        statement.close();
-                    } catch (SQLException ignore) {
-                    }
-
-                    statement = null;
-                }
-
-                if (conn != null) {
-                    try {
-                        conn.close();
-
-                    } catch (SQLException ignore) {
-                    }
-
-                    conn = null;
-                }
-            }
-
-            return productIds;
-        }
-
-        private int getResultListSize(Query query, ProductType type)
-                throws CatalogException {
-            Connection conn = null;
-            Statement statement = null;
-            ResultSet rs = null;
-
-            int resultCount = 0;
-
-            try {
-                conn = dataSource.getConnection();
-                statement = conn.createStatement();
-
-                String getProductSql = "";
-                String tableName = type.getName() + "_metadata";
-                String subSelectQueryBase = "SELECT product_id FROM "
-                        + tableName + " ";
-                StringBuffer selectClause = new StringBuffer(
-                        "SELECT COUNT(DISTINCT p.product_id) AS numResults ");
-                StringBuffer fromClause = new StringBuffer("FROM " + tableName
-                        + " p ");
-                StringBuffer whereClause = new StringBuffer("WHERE ");
-
-                boolean gotFirstClause = false;
-                int clauseNum = 0;
-
-                if (query.getCriteria() != null
-                        && query.getCriteria().size() > 0) {
-                    for (Iterator i = query.getCriteria().iterator(); i
-                            .hasNext();) {
-                        QueryCriteria criteria = (QueryCriteria) i.next();
-                        clauseNum++;
-
-                        String elementIdStr = null;
-
-                        if (fieldIdStringFlag) {
-                            elementIdStr = "'"
-                                    + this.getValidationLayer()
-                                            .getElementByName(
-                                                    criteria.getElementName())
-                                            .getElementId() + "'";
-                        } else {
-                            elementIdStr = this
-                                    .getValidationLayer()
-                                    .getElementByName(criteria.getElementName())
-                                    .getElementId();
-                        }
-
-                        String clause = null;
-
-                        if (!gotFirstClause) {
-                            clause = "(p.element_id = " + elementIdStr
-                                    + " AND ";
-                            if (criteria instanceof TermQueryCriteria) {
-                                clause += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%') ";
-                            } else if (criteria instanceof RangeQueryCriteria) {
-                                String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
-                                String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
-                                boolean inclusive = ((RangeQueryCriteria) criteria)
-                                        .getInclusive();
-
-                                if ((startVal != null && !startVal.equals(""))
-                                        || (endVal != null && !endVal
-                                                .equals(""))) {
-                                    clause += " metadata_value ";
-
-                                    boolean gotStart = false;
-
-                                    if (startVal != null
-                                            && !startVal.equals("")) {
-                                        if (inclusive)
-                                            clause += ">= '" + startVal + "'";
-                                        else
-                                            clause += "> '" + startVal + "'";
-                                        gotStart = true;
-                                    }
-
-                                    if (endVal != null && !endVal.equals("")) {
-                                        if (gotStart) {
-                                            if (inclusive)
-                                                clause += " AND metadata_value <= '"
-                                                        + endVal + "'";
-                                            else
-                                                clause += " AND metadata_value < '"
-                                                        + endVal + "'";
-                                        } else if (inclusive)
-                                            clause += "<= '" + endVal + "'";
-                                        else
-                                            clause += "< '" + endVal + "'";
-                                    }
-
-                                    clause += ") ";
-                                }
-                            }
-                            whereClause.append(clause);
-                            gotFirstClause = true;
-                        } else {
-                            String subSelectTblName = "p" + clauseNum;
-                            String subSelectQuery = subSelectQueryBase
-                                    + "WHERE (element_id = " + elementIdStr
-                                    + " AND ";
-                            if (criteria instanceof TermQueryCriteria) {
-                                subSelectQuery += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%')";
-                            } else if (criteria instanceof RangeQueryCriteria) {
-                                String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
-                                String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
-
-                                if (startVal != null || endVal != null) {
-                                    subSelectQuery += " metadata_value ";
-
-                                    boolean gotStart = false;
-
-                                    if (startVal != null
-                                            && !startVal.equals("")) {
-                                        subSelectQuery += ">= '" + startVal
-                                                + "'";
-                                        gotStart = true;
-                                    }
-
-                                    if (endVal != null && !endVal.equals("")) {
-                                        if (gotStart) {
-                                            subSelectQuery += " AND metadata_value <= '"
-                                                    + endVal + "'";
-                                        } else
-                                            subSelectQuery += "<= '" + endVal
-                                                    + "'";
-                                    }
-
-                                    subSelectQuery += ") ";
-
-                                }
-                            }
-
-                            fromClause.append("INNER JOIN (" + subSelectQuery
-                                    + ") " + subSelectTblName + " ON "
-                                    + subSelectTblName
-                                    + ".product_id = p.product_id ");
-
-                        }
-                    }
-                }
-
-                getProductSql = selectClause.toString() + fromClause.toString();
-                if (gotFirstClause) {
-                    getProductSql += whereClause.toString();
-                }
-
-                LOG.log(Level.FINE, "catalog get num results: executing: "
-                        + getProductSql);
-
-                rs = statement.executeQuery(getProductSql);
-
-                while (rs.next()) {
-                    resultCount = rs.getInt("numResults");
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOG.log(Level.WARNING,
-                        "Exception performing get num results. Message: "
-                                + e.getMessage());
-                try {
-                    conn.rollback();
-                } catch (SQLException e2) {
-                    LOG.log(Level.SEVERE,
-                            "Unable to rollback get num results transaction. Message: "
-                                    + e2.getMessage());
-                }
-                throw new CatalogException(e.getMessage());
-            } finally {
-
-                if (rs != null) {
-                    try {
-                        rs.close();
-                    } catch (SQLException ignore) {
-                    }
-
-                    rs = null;
-                }
-
-                if (statement != null) {
-                    try {
-                        statement.close();
-                    } catch (SQLException ignore) {
-                    }
-
-                    statement = null;
-                }
-
-                if (conn != null) {
-                    try {
-                        conn.close();
-
-                    } catch (SQLException ignore) {
-                    }
-
-                    conn = null;
-                }
-            }
-
-            return resultCount;
-        }
     }
 
 }

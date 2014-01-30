@@ -18,14 +18,6 @@
 
 package org.apache.oodt.cas.product.data;
 
-//OODT imports
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.SerializableMetadata;
-import org.apache.oodt.commons.xml.XMLUtils;
-
 //JDK imports
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,6 +34,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+//OODT imports
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
 
 /**
  * 
@@ -85,15 +84,15 @@ public final class DataUtils implements DataDeliveryKeys {
     // output stream: else that will cause the generated datset zip to be
     // included as well!
     File[] productZipFiles = new File(workingDirPath).listFiles(ZIP_FILTER);
+    if (productZipFiles == null || productZipFiles.length == 0)
+    {
+      throw new Exception("No product zip files to include in dataset: ["
+          + type.getName() + "]");
+    }
 
     // now get a reference to the zip file that we want to write
     ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
         datasetZipFilePath));
-
-    if (productZipFiles == null || productZipFiles.length == 0) {
-      throw new Exception("No product zip files to include in dataset: ["
-          + type.getName() + "]");
-    }
 
     for (int i = 0; i < productZipFiles.length; i++) {
       String filename = productZipFiles[i].getName();

@@ -68,3 +68,17 @@ CREATE TABLE `products` (
   PRIMARY KEY  (`product_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; 
 
+# Example of 'products' table using a 'product_id' column of type string
+# Host: spawn
+# Database: test_cas
+# Table: 'products'
+# 
+#CREATE TABLE `products` (
+#  `product_id` varchar(100) NOT NULL,
+#  `product_structure` varchar(20) NOT NULL default '',
+#  `product_type_id` int(11) NOT NULL default '0',
+#  `product_name` varchar(255) NOT NULL default '',
+#  `product_transfer_status` varchar(255) NOT NULL default 'TRANSFERING',
+#  `product_datetime` datetime NOT NULL,
+#  PRIMARY KEY  (`product_id`)
+#) ENGINE=MyISAM DEFAULT CHARSET=latin1; 

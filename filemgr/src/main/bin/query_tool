@@ -16,4 +16,8 @@
 # * limitations under the License.
 # */
 #
-$JAVA_HOME/bin/java -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.QueryTool $*
+############ README - IMPORTANT ############
+# NOTE: This has been deprecated... use SqlQuery and LuceneQuery actions instead.
+############################################
+
+$JAVA_HOME/bin/java -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.QueryTool "$@"

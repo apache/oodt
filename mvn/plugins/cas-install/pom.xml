@@ -15,19 +15,16 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>${oodt.version}</version>
+    <version>0.7-SNAPSHOT</version>
     <relativePath>../../../core/pom.xml</relativePath>
   </parent>
   <artifactId>maven-cas-install-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>2.1.0-dev</version>
   <name>CAS Installer Maven Mojo</name>
   <dependencies>
     <dependency>
@@ -38,7 +35,7 @@ the License.
    <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

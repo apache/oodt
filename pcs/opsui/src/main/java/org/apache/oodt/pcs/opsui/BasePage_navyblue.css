@@ -1,0 +1,350 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/*
+ bg             #334455
+ borders-top    #2e3e4e
+ border-left    #304050
+ bg-text        #162636
+ link-text      #c0c0c0
+*/
+
+body {
+    background-color:#345;
+    margin:0px;
+    padding:0px;
+    font-family: arial, verdana, sans-serif;
+}
+
+#header {
+    width:100%;
+    height:80px;
+    border-bottom: solid 1px #2e3e4e;
+}
+
+#project_logo {
+    float:left;
+}
+
+#user_status {
+    float:right;
+    padding:10px;
+    color:#162636;
+}
+
+#nav {
+    margin-top:10px;
+}
+
+#nav a {
+    color:#c0c0c0;
+    text-decoration:none;
+    border-right:solid 1px #456;
+    padding: 3px 20px;
+}
+#nav a.first {
+}
+#nav a.last {
+    border-right:none;
+}
+#nav a:hover {
+    text-decoration:underline;
+    color:#fff;
+    background-color:#2e3e4e;
+}
+
+#footer{
+  position:fixed;
+  bottom:0px;
+  width:100%;
+  height:80px;
+  padding:5px 0px;
+  border-spacing:0px;
+  border-top:solid 1px #2e3e4e;
+  color:#234;
+  background-color:#364656;
+  font-size:90%;
+  z-index:10000;
+}
+#footer a {
+  color:#aaa;
+}
+
+#footer p {
+  width:100%;
+  padding:5px 15px;
+  text-align:center;
+}
+
+#feedback {
+    margin:0px;
+    margin-top:-20px;
+    font-size:90%;
+}
+
+#powered,#feedback {
+  margin-left:-30px;
+}
+
+
+a{
+    color:#c0c0c0;
+	text-decoration:none;
+}
+
+a:hover{
+	text-decoration:underline;
+}
+
+a img,  {
+    border:none;
+}
+
+
+/**
+ * HEADERS 
+**/
+h1, h2, h3, h4, h5 {
+    background-color:#283848;
+    color:#eee;
+    border-top:solid 1px #2e3e4e;
+    border-bottom:solid 1px #233343;
+    padding:8px;
+}
+h1 {
+
+}
+
+h2 {
+
+}
+
+h3 {
+    
+}
+
+h4 {
+    background-color:transparent;
+    border-top:none;
+    margin:10px;
+}
+
+h5 {
+
+}
+
+/**
+ * TABLES
+**/
+table {
+  padding:2px;
+  width:100%;
+  border: none;
+}
+table tr {
+    
+}
+
+table tr th {
+
+}
+
+table tr td {
+    border-bottom:solid 1px #234;
+    border-right:solid 1px #234;
+    padding:5px;
+    color:#111;
+}
+
+table table td {
+    border-bottom:none;
+    border-right:none;
+}
+
+/**
+ * BREADCRUMBS
+ */
+div#breadcrumbs {
+    color:#777;
+    margin-left:20px;
+    margin-top:15px;
+}
+
+div#breadcrumbs a {
+
+}
+
+div#breadcrumbs span.divider {
+    padding:0px 5px;
+}
+
+
+
+
+
+
+/**
+ * FILE MANAGER: Types.css
+**/ 
+#cas_fm_browser_ptype_table{
+
+}
+
+#cas_fm_browser_ptype_table td{
+
+}
+
+/**
+ * FILE MANAGER: TypeBrowser.css
+**/ 
+
+#criteria_form_add_element_value{
+	font-weight:bold;
+}
+
+#product_table{
+
+}
+
+#product_table td{
+
+}
+
+#pagination_table{
+	border-spacing:3px;
+	width:100%;
+}
+
+#pagination_table_result_hdr{
+	width:100px;
+	white-space: nowrap;
+	font-weight:bold;
+}
+
+/**
+ * FILE MANAGER: ProductBrowser.css
+**/ 
+#met_table{
+
+}
+
+#met_elem_name{
+	
+}
+
+#met_values_table{
+
+}
+
+.nada{
+	
+}
+
+#ref_table{
+	
+}
+
+#ref_table_hdr{
+	
+}
+
+/**
+ * FILE MANAGER: ProductRefsBrowser.css
+**/ 
+ 
+.nada{
+	
+}
+
+#ref_table{
+	
+}
+
+#ref_table_hdr{
+	
+}
+
+/**
+ * FILE MANAGER: ProductPaginator.css
+**/ 
+#paginator-break{
+  border:2;
+  width:100%;
+}
+
+#container-div{
+  width:100%;
+}
+
+#paginator-table{
+  border-spacing:3;
+  width:100;
+}
+
+#paginator-table-header{
+  width:100%;
+  white-space:nowrap;
+  font-weight:bold;
+}
+
+
+#page_repeater{
+
+}
+
+a, a:hover, a:focus, a:active{
+	text-decoration: none;
+}
+
+.selected{
+  font-weight:bold;
+  color:red;
+}
+
+/**
+ * FILE MANAGER: MetadataBrowser.css
+**/ 
+
+#met_table{
+
+}
+
+#met_elem_name{
+	
+}
+
+#met_values_table{
+
+}
+
+.nada{
+	
+}
+
+/**
+ * WORKFLOW MANAGER: Workflow Instances 
+**/
+#instance_filter_header p {
+    padding-left:20px;
+}
+a.workflow_status {
+    border-right:solid 1px #ccc;
+    padding-left:15px;
+    padding-right:15px;
+}
+#workflow_model_tbl td.task_bubble {
+	background-color: #333 !important;	/* NOTE: This overrides oodt-webapp-components's CSS value */
+}

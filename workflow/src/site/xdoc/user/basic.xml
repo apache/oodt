@@ -63,7 +63,7 @@ the License.
          <source>
 > mkdir /usr/local/src
 > cd /usr/local/src
-> svn checkout https://svn.apache.org/repos/asf/incubator/oodt/trunk/workflow workflow
+> svn checkout https://svn.apache.org/repos/asf/oodt/trunk/workflow workflow
       </source>
         
       <p>After the Subversion command completes, you will have the source

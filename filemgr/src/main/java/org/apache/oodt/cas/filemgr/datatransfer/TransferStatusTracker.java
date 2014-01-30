@@ -54,7 +54,7 @@ public class TransferStatusTracker {
     private Catalog catalog = null;
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(TransferStatusTracker.class
+    private static final Logger LOG = Logger.getLogger(TransferStatusTracker.class
             .getName());
 
     /**

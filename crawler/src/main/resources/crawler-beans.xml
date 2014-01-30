@@ -16,23 +16,19 @@ License for the specific language governing permissions and limitations under
 the License.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">   
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean class="org.apache.oodt.cas.commons.spring.postprocessor.SetIdBeanPostProcessor"/>    
-    
-    <!-- Product Crawlers -->
-    
-    <bean id="StdProductCrawler" lazy-init="true" class="org.apache.oodt.cas.crawl.StdProductCrawler">
-        <description>Ingests data files based on existing metadata files</description>
-    </bean>
-    
-    <bean id="MetExtractorProductCrawler" lazy-init="true" class="org.apache.oodt.cas.crawl.MetExtractorProductCrawler">
-        <description>Ingests data files after generating a metadat file for it with a given metadata extractor</description>
-    </bean>
-    
-    <bean id="AutoDetectProductCrawler" lazy-init="true" class="org.apache.oodt.cas.crawl.AutoDetectProductCrawler">
-        <description>Ingests data files based on existing metadata files choosing metadata extractors based on mimetypes given in specified mimetype xml file</description>
-    </bean>
-    
+	<!-- Product Crawlers -->
+	<bean id="StdProductCrawler" lazy-init="true" class="org.apache.oodt.cas.crawl.StdProductCrawler">
+		<description>Ingests data files based on existing metadata files</description>
+	</bean>
+
+	<bean id="MetExtractorProductCrawler" lazy-init="true" class="org.apache.oodt.cas.crawl.MetExtractorProductCrawler">
+		<description>Ingests data files after generating a metadata file for it with a given metadata extractor</description>
+	</bean>
+
+	<bean id="AutoDetectProductCrawler" lazy-init="true" class="org.apache.oodt.cas.crawl.AutoDetectProductCrawler">
+		<description>Ingests data files by choosing metadata extractors based on mimetypes given in specified mimetype xml file</description>
+	</bean>
 </beans>

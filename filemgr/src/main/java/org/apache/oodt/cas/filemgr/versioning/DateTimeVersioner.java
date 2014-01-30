@@ -53,7 +53,7 @@ import java.net.URLEncoder;
 public class DateTimeVersioner implements Versioner {
 
     /* our log stream */
-    private Logger LOG = Logger.getLogger(DateTimeVersioner.class.getName());
+    private static final Logger LOG = Logger.getLogger(DateTimeVersioner.class.getName());
 
     /**
      * <p>

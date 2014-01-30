@@ -65,7 +65,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 			stmt = conn.createStatement();
 			stmt.execute("DELETE FROM CatalogServiceMapper WHERE CATALOG_ID = '" + catalogId + "'");
 		}catch (Exception e) {
-			throw new CatalogRepositoryException("", e);
+			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();
@@ -87,7 +87,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 			stmt.execute("DELETE FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '" + catalogServiceTransactionId + "'");
 			conn.commit();
 		}catch (Exception e) {
-			throw new CatalogRepositoryException("", e);
+			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();
@@ -109,7 +109,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 			stmt.execute("DELETE FROM CatalogServiceMapper WHERE CAT_TRANS_ID = '" + catalogTransactionId + "' AND CATALOG_ID = '" + catalogId + "'");
 			conn.commit();
 		}catch (Exception e) {
-			throw new CatalogRepositoryException("", e);
+			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();
@@ -136,7 +136,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 
 			return null;
 		}catch (Exception e) {
-			throw new CatalogRepositoryException("", e);
+			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();
@@ -166,7 +166,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 
 			return null;
 		}catch (Exception e) {
-			throw new CatalogRepositoryException("", e);
+			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();
@@ -197,7 +197,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 
 			return catalogIds;
 		}catch (Exception e) {
-			throw new CatalogRepositoryException("", e);
+			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();
@@ -233,7 +233,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 				
 			return transactionIds;
 		}catch (Exception e) {
-			throw new CatalogRepositoryException("", e);
+			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();
@@ -259,7 +259,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 			rs = stmt.executeQuery("SELECT CAT_SERV_TRANS_ID FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '"+ catalogServiceTransactionId + "'");
 			return rs.next();
 		}catch (Exception e) {
-			throw new CatalogRepositoryException("", e);
+			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();
@@ -295,7 +295,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 					+ catalogReceipt.getCatalogId() + "')");
 			conn.commit();
 		}catch (Exception e) {
-			throw new CatalogRepositoryException("", e);
+			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();
@@ -325,7 +325,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 				return null;
 			}
 		}catch (Exception e) {
-			throw new CatalogRepositoryException("", e);
+			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();

@@ -19,8 +19,8 @@
 package org.apache.oodt.cas.pushpull.config;
 
 //OODT imports
+import org.apache.oodt.cas.protocol.ProtocolFactory;
 import org.apache.oodt.cas.pushpull.exceptions.ConfigException;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFactory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
 

@@ -22,6 +22,7 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 
 //JDK imports
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -60,4 +61,15 @@ public interface DataTransfer {
 	public void transferProduct(Product product) throws DataTransferException,
 			IOException;
 
+	  /**
+    * Requires that the data store reference be set, nothing else is used
+    * @param product The product whose data store reference will be copied
+    * @param directory The directory where the data store reference will be copied to
+    * @throws DataTransferException
+    *             If a general error occurs during the transfer.
+    * @throws IOException
+    *             If there is an IO eerror when performing the transfer.
+    */
+   public void retrieveProduct(Product product, File directory) throws DataTransferException,
+         IOException;
 }

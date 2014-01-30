@@ -146,6 +146,7 @@ public class Product {
         productType = pType;
         productStructure = structure;
         references = refs;
+        this.transferStatus = transferStatus;
     }
 
     /**

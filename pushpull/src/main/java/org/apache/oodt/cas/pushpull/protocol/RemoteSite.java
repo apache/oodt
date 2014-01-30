@@ -31,8 +31,9 @@ import java.net.URL;
  * </p>.
  */
 public class RemoteSite {
+    
     private String alias, username, password, cdTestDir;
-
+    private int maxConnections;
     private URL url;
 
     public RemoteSite(String alias, URL url, String username, String password) {
@@ -40,11 +41,17 @@ public class RemoteSite {
         this.username = username;
         this.password = password;
         this.url = url;
+        this.maxConnections = -1;
     }
     
     public RemoteSite(String alias, URL url, String username, String password, String cdTestDir) {
         this(alias, url, username, password);
         this.cdTestDir = cdTestDir;
+    }
+    
+    public RemoteSite(String alias, URL url, String username, String password, String cdTestDir, int maxConnections) {
+        this(alias, url, username, password, cdTestDir);
+        this.maxConnections = maxConnections;
     }
 
     public String getAlias() {
@@ -67,12 +74,17 @@ public class RemoteSite {
         return this.cdTestDir;
     }
 
+    public int getMaxConnections() {
+    	return this.maxConnections;
+    }
+    
     public void copy(RemoteSite rs) {
         this.alias = rs.alias;
         this.url = rs.url;
         this.username = rs.username;
         this.password = rs.password;
         this.cdTestDir = rs.cdTestDir;
+        this.maxConnections = rs.maxConnections;
     }
 
     public boolean equals(Object obj) {
@@ -80,7 +92,7 @@ public class RemoteSite {
             RemoteSite rs = (RemoteSite) obj;
             return (rs.alias.equals(this.alias) && rs.url.equals(this.url)
                     && rs.username.equals(this.username) && rs.password
-                    .equals(this.password));
+                    .equals(this.password) && rs.maxConnections == this.maxConnections);
         } else
             return false;
     }
@@ -88,6 +100,6 @@ public class RemoteSite {
     public String toString() {
         return "RemoteSite: alias = '" + this.alias + "'  url = '" + this.url
                 + "'  username = '" + this.username + "' cdTestDir = '" 
-                + this.cdTestDir + "'";
+                + this.cdTestDir + "' maxConnections = '" + this.maxConnections + "'";
     }
 }

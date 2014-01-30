@@ -25,6 +25,7 @@ import org.apache.oodt.commons.xml.XMLUtils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.Collections;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -43,6 +44,16 @@ public class TestProduct extends TestCase {
   public TestProduct() {
     System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository",
         new File("./src/main/resources/mime-types.xml").getAbsolutePath());
+  }
+  
+  /**
+   * @since OODT-41
+   */
+  public void testSetTransferStatus() {
+    Product p = new Product("foo", new ProductType(), Product.STRUCTURE_FLAT,
+        Product.STATUS_TRANSFER, Collections.EMPTY_LIST);
+    assertNotNull(p);
+    assertEquals(p.getTransferStatus(), Product.STATUS_TRANSFER);
   }
 
   public void testReadWriteProductWithProductType() {

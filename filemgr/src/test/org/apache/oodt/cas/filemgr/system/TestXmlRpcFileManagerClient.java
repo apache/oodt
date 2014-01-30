@@ -133,6 +133,29 @@ public class TestXmlRpcFileManagerClient extends TestCase {
         assertEquals(m.getMetadata("Filename"), "test.txt");
         deleteAllFiles("/tmp/test-type");
     }
+
+    /**
+     * @since OODT-404
+     *
+     */
+    public void testMetadataPersistence() throws Exception {
+        Metadata prodMet = null;
+        StdIngester ingester = new StdIngester(transferServiceFacClass);
+        prodMet = new SerializableMetadata(new FileInputStream(
+            "./src/testdata/ingest/test-file-3.txt.met"));
+        // now add the right file location
+        prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
+            "./src/testdata/ingest").getCanonicalPath());
+        String productId = ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
+            "./src/testdata/ingest/test-file-3.txt"), prodMet);
+        XmlRpcFileManagerClient fmc = new XmlRpcFileManagerClient(new URL(
+                "http://localhost:" + FM_PORT));
+             
+        Metadata m = fmc.getMetadata(fmc.getProductById(productId));
+        assertEquals(m.getAllMetadata("TestElement").size(), 4);
+        assertEquals(m.getMetadata("TestElement"), "fe");
+    }
+
     
     public void testComplexQuery() throws Exception {
         StdIngester ingester = new StdIngester(transferServiceFacClass);

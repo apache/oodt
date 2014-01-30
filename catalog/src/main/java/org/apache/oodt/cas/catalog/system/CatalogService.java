@@ -49,6 +49,7 @@ public interface CatalogService {
 		
 	public static final String CATALOG_SERVICE_TRANSACTION_ID_MET_KEY = "urn:CatalogService:TransactionId";
 	public static final String CATALOG_IDS_MET_KEY = "urn:CatalogService:CatalogIds";
+	public static final String ENABLE_UPDATE_MET_KEY = "urn:CatalogService:EnableUpdate";
 	public static final String CATALOG_TRANSACTION_ID_MET_KEY = "urn:Catalog:TransactionId";
 	public static final String CATALOG_ID_MET_KEY = "urn:Catalog:Id";
 

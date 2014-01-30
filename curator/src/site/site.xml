@@ -26,6 +26,7 @@ the License.
     <menu name="Software Documentation">
       <item name="Basic User's Guide" href="user/basic.html"/>
       <item name="Advanced User's Guide" href="user/advanced.html"/>
+      <item name="REST API Guide" href="api/index.html"/>
     </menu>
   </body>
 </project>

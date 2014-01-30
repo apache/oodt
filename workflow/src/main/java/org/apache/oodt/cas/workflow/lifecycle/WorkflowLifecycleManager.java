@@ -33,7 +33,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
  * @version $Revision$
  * 
  * <p>
- * A Manager interface for the {@link WorkflowLifecycles} used by the webapp to
+ * A Manager interface for the {@link WorkflowLifecycles} to
  * determine status for a {@link WorkflowInstance}.
  * </p>.
  */
@@ -212,7 +212,16 @@ public class WorkflowLifecycleManager {
      */
     public int getLastCompletedStageNum(WorkflowInstance inst) {  
         int currStageNum = getStageNum(inst);
-        if (inst.getStatus().equals(WorkflowStatus.FINISHED)
+        if(inst.getState().getCategory() == null){
+          WorkflowLifecycleStage category = null;
+          if((category = getStage(inst)) != null){
+            inst.getState().setCategory(category);
+          }          
+        }
+        
+        if ((inst.getStatus().equals(WorkflowStatus.FINISHED) || 
+             (inst.getState().getCategory() != null && 
+             inst.getState().getCategory().getName().equals("done")))
                 && currStageNum == getNumStages(inst.getWorkflow())) {
             return currStageNum;
         } else

@@ -28,6 +28,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
+import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
@@ -271,6 +272,72 @@ public class XmlRpcResourceManager {
             return execNode;
     }
 
+    public List<String> getQueues() throws QueueManagerException {
+    	return new Vector<String>(this.scheduler.getQueueManager().getQueues());
+    }
+    
+    public boolean addQueue(String queueName) throws QueueManagerException {
+    	this.scheduler.getQueueManager().addQueue(queueName);
+    	return true;
+    }
+    
+    public boolean removeQueue(String queueName) throws QueueManagerException {
+    	this.scheduler.getQueueManager().removeQueue(queueName);
+    	return true;
+    }
+    
+    public boolean addNode(Hashtable hashNode) throws MonitorException {
+    	this.scheduler.getMonitor().addNode(XmlRpcStructFactory.getResourceNodeFromXmlRpc(hashNode));
+    	return true;
+    }
+    
+    public boolean removeNode(String nodeId) throws MonitorException {
+    	try{
+	    	for(String queueName: this.getQueuesWithNode(nodeId)){
+	    		this.removeNodeFromQueue(nodeId, queueName);
+	    	}
+	    	this.scheduler.getMonitor().removeNodeById(nodeId);
+    	}catch(Exception e){
+    		throw new MonitorException(e.getMessage(), e);
+    	}
+    	
+    	return true;
+    }
+    
+    public boolean addNodeToQueue(String nodeId, String queueName) throws QueueManagerException {
+    	this.scheduler.getQueueManager().addNodeToQueue(nodeId, queueName);
+    	return true;
+    }
+    
+    public boolean removeNodeFromQueue(String nodeId, String queueName) throws QueueManagerException {
+    	this.scheduler.getQueueManager().removeNodeFromQueue(nodeId, queueName);
+    	return true;
+    }
+    
+    public List<String> getNodesInQueue(String queueName) throws QueueManagerException {
+    	return new Vector<String>(this.scheduler.getQueueManager().getNodes(queueName));
+    }
+    
+    public List<String> getQueuesWithNode(String nodeId) throws QueueManagerException {
+    	return new Vector<String>(this.scheduler.getQueueManager().getQueues(nodeId));
+    }
+    
+    public boolean shutdown(){
+      if (this.webServer != null) {
+        this.webServer.shutdown();
+        this.webServer = null;
+        return true;
+    } else
+        return false;      
+    }
+    
+    public String getNodeLoad(String nodeId) throws MonitorException{
+    	ResourceNode node = this.scheduler.getMonitor().getNodeById(nodeId);
+    	int capacity = node.getCapacity();
+    	int load = (this.scheduler.getMonitor().getLoad(node)) * -1 + capacity;
+    	return load + "/" + capacity;
+    }
+    
     public static void main(String[] args) throws Exception {
         int portNum = -1;
         String usage = "XmlRpcResourceManager --portNum <port number for xml rpc service>\n";
@@ -293,6 +360,17 @@ public class XmlRpcResourceManager {
                 Thread.currentThread().join();
             } catch (InterruptedException ignore) {
             }
+    }
+    
+    public boolean setNodeCapacity(String nodeId, int capacity){
+    	try{
+    		this.scheduler.getMonitor().getNodeById(nodeId).setCapacity(capacity);
+    	}catch (MonitorException e){
+    		LOG.log(Level.WARNING, "Exception setting capacity on node "
+    				+ nodeId + ": " + e.getMessage());
+    		return false;
+    	}
+    	return true;
     }
 
     private String genericHandleJob(Hashtable jobHash, Object jobIn)

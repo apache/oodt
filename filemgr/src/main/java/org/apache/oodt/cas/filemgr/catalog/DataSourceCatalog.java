@@ -31,10 +31,13 @@ import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.util.DbStructFactory;
-import org.apache.oodt.commons.pagination.PaginationUtils;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.commons.pagination.PaginationUtils;
 import org.apache.oodt.commons.util.DateConvert;
+
+//SPRING imports
+import org.springframework.util.StringUtils;
 
 //JDK imports
 import java.sql.Connection;
@@ -45,6 +48,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,6 +57,7 @@ import javax.sql.DataSource;
 /**
  * @author mattmann
  * @author bfoster
+ * @author luca
  * @version $Revision$
  * 
  * <p>
@@ -67,7 +72,7 @@ public class DataSourceCatalog implements Catalog {
     protected DataSource dataSource = null;
 
     /* our log stream */
-    private Logger LOG = Logger.getLogger(DataSourceCatalog.class.getName());
+    private static final Logger LOG = Logger.getLogger(DataSourceCatalog.class.getName());
 
     /* our validation layer */
     private ValidationLayer validationLayer = null;
@@ -77,6 +82,11 @@ public class DataSourceCatalog implements Catalog {
 
     /* size of pages of products within the catalog */
     protected int pageSize = -1;
+    
+    /* flag to indicate whether the "product_id" key type should be treated as a string */
+    boolean productIdString = false;
+
+    protected boolean orderedValues = false;
 
     /*
      * cache of products per product type: [productTypeId]=>([ISO8601 time of
@@ -97,12 +107,28 @@ public class DataSourceCatalog implements Catalog {
      * @throws  
      */
     public DataSourceCatalog(DataSource ds, ValidationLayer valLayer,
-            boolean fieldId, int pageSize, long cacheUpdateMin) {
+			     boolean fieldId, int pageSize, long cacheUpdateMin, boolean productIdString, boolean orderedValues) {
         this.dataSource = ds;
         this.validationLayer = valLayer;
         fieldIdStringFlag = fieldId;
         this.pageSize = pageSize;
         cacheUpdateMinutes = cacheUpdateMin;
+        this.productIdString = productIdString;
+        this.orderedValues = orderedValues;
+    }
+    
+    /**
+     * Constructor that assumes productIdString=false
+     * to support current subclasses.
+     * @param ds
+     * @param valLayer
+     * @param fieldId
+     * @param pageSize
+     * @param cacheUpdateMin
+     */
+    public DataSourceCatalog(DataSource ds, ValidationLayer valLayer,
+        boolean fieldId, int pageSize, long cacheUpdateMin) {
+    	this(ds, valLayer, fieldId, pageSize, cacheUpdateMin, false, false);
     }
 
     /*
@@ -240,8 +266,46 @@ public class DataSourceCatalog implements Catalog {
                 productTypeIdStr = product.getProductType().getProductTypeId();
             }
 
-            addProductSql = "INSERT INTO products (product_name, product_structure, product_transfer_status, product_type_id) "
+						if (productIdString==false) {
+							
+	            addProductSql = "INSERT INTO products (product_name, product_structure, product_transfer_status, product_type_id) "
+	                + "VALUES ('"
+	                + product.getProductName()
+	                + "', '"
+	                + product.getProductStructure()
+	                + "', '"
+	                + product.getTransferStatus()
+	                + "', "
+	                + productTypeIdStr
+	                + ")";
+
+				        LOG.log(Level.FINE, "addProduct: Executing: " + addProductSql);
+				        statement.execute(addProductSql);
+				
+				        // read "product_id" value that was automatically assigned by the database
+				        String productId = new String();
+				
+				        String getProductIdSql = "SELECT MAX(product_id) AS max_id FROM products";
+				
+				        rs = statement.executeQuery(getProductIdSql);
+				
+				        while (rs.next()) {
+				            productId = String.valueOf(rs.getInt("max_id"));
+				        }
+				        
+		            product.setProductId(productId);
+		            conn.commit();
+							
+						} else {
+							
+							// reuse the existing product id if possible, or generate a new UUID string
+            	String productId = product.getProductId();
+            	if (!StringUtils.hasText(productId)) productId = UUID.randomUUID().toString();
+            	// insert product in database
+            	addProductSql = "INSERT INTO products (product_id, product_name, product_structure, product_transfer_status, product_type_id, product_datetime) "
                     + "VALUES ('"
+                    + productId
+                    + "', '"
                     + product.getProductName()
                     + "', '"
                     + product.getProductStructure()
@@ -249,23 +313,17 @@ public class DataSourceCatalog implements Catalog {
                     + product.getTransferStatus()
                     + "', "
                     + productTypeIdStr
-                    + ")";
+                    +", now()"
+                    + ")";                       
 
-            LOG.log(Level.FINE, "addProduct: Executing: " + addProductSql);
-            statement.execute(addProductSql);
+            	LOG.log(Level.FINE, "addProduct: Executing: " + addProductSql);
+            	statement.execute(addProductSql);
+            	
+              product.setProductId(productId);
+              conn.commit();
 
-            String productId = new String();
+						}
 
-            String getProductIdSql = "SELECT MAX(product_id) AS max_id FROM products";
-
-            rs = statement.executeQuery(getProductIdSql);
-
-            while (rs.next()) {
-                productId = String.valueOf(rs.getInt("max_id"));
-            }
-
-            product.setProductId(productId);
-            conn.commit();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -332,7 +390,7 @@ public class DataSourceCatalog implements Catalog {
                     + product.getProductStructure()
                     + "', product_transfer_status='"
                     + product.getTransferStatus() + "' "
-                    + "WHERE product_id = " + product.getProductId();
+                    + "WHERE product_id = " + quoteIt(product.getProductId());
 
             LOG
                     .log(Level.FINE, "modifyProduct: Executing: "
@@ -395,7 +453,7 @@ public class DataSourceCatalog implements Catalog {
             statement = conn.createStatement();
 
             String deleteProductSql = "DELETE FROM products WHERE product_id = "
-                    + product.getProductId();
+                    + quoteIt(product.getProductId());
 
             LOG
                     .log(Level.FINE, "removeProduct: Executing: "
@@ -403,14 +461,14 @@ public class DataSourceCatalog implements Catalog {
             statement.execute(deleteProductSql);
             deleteProductSql = "DELETE FROM "
                     + product.getProductType().getName() + "_metadata "
-                    + " WHERE product_id = " + product.getProductId();
+                    + " WHERE product_id = " + quoteIt(product.getProductId());
             LOG
                     .log(Level.FINE, "removeProduct: Executing: "
                             + deleteProductSql);
             statement.execute(deleteProductSql);
             deleteProductSql = "DELETE FROM "
                     + product.getProductType().getName() + "_reference "
-                    + " WHERE product_id = " + product.getProductId();
+                    + " WHERE product_id = " + quoteIt(product.getProductId());
             LOG
                     .log(Level.FINE, "removeProduct: Executing: "
                             + deleteProductSql);
@@ -470,7 +528,7 @@ public class DataSourceCatalog implements Catalog {
             String modifyProductSql = "UPDATE products SET product_transfer_status='"
                     + product.getTransferStatus()
                     + "' "
-                    + "WHERE product_id = " + product.getProductId();
+                    + "WHERE product_id = " + quoteIt(product.getProductId());
 
             LOG.log(Level.FINE, "setProductTransferStatus: Executing: "
                     + modifyProductSql);
@@ -541,7 +599,7 @@ public class DataSourceCatalog implements Catalog {
                         + " "
                         + "(product_id, product_orig_reference, product_datastore_reference, product_reference_filesize, product_reference_mimetype) "
                         + "VALUES ("
-                        + product.getProductId()
+                        + quoteIt(product.getProductId())
                         + ", '"
                         + r.getOrigReference()
                         + "', '"
@@ -622,13 +680,13 @@ public class DataSourceCatalog implements Catalog {
             statement = conn.createStatement();
 
             String getProductSql = "SELECT * " + "FROM products "
-                    + "WHERE product_id = " + productId;
+                    + "WHERE product_id = " + quoteIt(productId);
 
             LOG.log(Level.FINE, "getProductById: Executing: " + getProductSql);
             rs = statement.executeQuery(getProductSql);
 
             while (rs.next()) {
-                product = DbStructFactory.getProduct(rs, false);
+                product = DbStructFactory.getProduct(rs, false, productIdString);
             }
 
         } catch (Exception e) {
@@ -702,7 +760,7 @@ public class DataSourceCatalog implements Catalog {
             rs = statement.executeQuery(getProductSql);
 
             while (rs.next()) {
-                product = DbStructFactory.getProduct(rs, false);
+                product = DbStructFactory.getProduct(rs, false, productIdString);
             }
 
         } catch (Exception e) {
@@ -769,7 +827,9 @@ public class DataSourceCatalog implements Catalog {
 
             String getProductRefSql = "SELECT * FROM "
                     + product.getProductType().getName() + "_reference"
-                    + " WHERE product_id = " + product.getProductId();
+		+ " WHERE product_id = " + quoteIt(product.getProductId());
+
+            if(this.orderedValues) getProductRefSql += " ORDER BY pkey";
 
             LOG.log(Level.FINE, "getProductReferences: Executing: "
                     + getProductRefSql);
@@ -851,7 +911,7 @@ public class DataSourceCatalog implements Catalog {
             products = new Vector<Product>();
 
             while (rs.next()) {
-                Product product = DbStructFactory.getProduct(rs, false);
+                Product product = DbStructFactory.getProduct(rs, false, productIdString);
                 products.add(product);
             }
 
@@ -940,7 +1000,7 @@ public class DataSourceCatalog implements Catalog {
             products = new Vector<Product>();
 
             while (rs.next()) {
-                Product product = DbStructFactory.getProduct(rs, false);
+                Product product = DbStructFactory.getProduct(rs, false, productIdString);
                 products.add(product);
             }
 
@@ -1005,8 +1065,10 @@ public class DataSourceCatalog implements Catalog {
             statement = conn.createStatement();
 
             String metadataSql = "SELECT * FROM "
-                    + product.getProductType().getName() + "_metadata "
-                    + " WHERE product_id = " + product.getProductId();
+                    + product.getProductType().getName() + "_metadata"
+		+ " WHERE product_id = " + quoteIt(product.getProductId());
+ 
+	    if(this.orderedValues) metadataSql += " ORDER BY pkey";
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
@@ -1097,7 +1159,8 @@ public class DataSourceCatalog implements Catalog {
             }
             String metadataSql = "SELECT element_id,metadata_value FROM "
                     + product.getProductType().getName() + "_metadata"
-                    + " WHERE product_id = " + product.getProductId() + elementIds;
+		+ " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds;
+            if(this.orderedValues) metadataSql += " ORDER BY pkey";
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
@@ -1229,7 +1292,7 @@ public class DataSourceCatalog implements Catalog {
             products = new Vector<Product>();
 
             while (rs.next()) {
-                Product product = DbStructFactory.getProduct(rs, false);
+                Product product = DbStructFactory.getProduct(rs, false, productIdString);
                 products.add(product);
             }
 
@@ -1290,11 +1353,8 @@ public class DataSourceCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getValidationLayer()
      */
     public ValidationLayer getValidationLayer() throws CatalogException {
-        if (validationLayer == null) {
-            throw new CatalogException("Validation Layer is null!");
-        } else {
-            return validationLayer;
-        }
+    	// note that validationLayer may be null to allow for leniency in subclasses
+    	return validationLayer;
     }
 
     private synchronized void addMetadataValue(Element element,
@@ -1651,7 +1711,7 @@ public class DataSourceCatalog implements Catalog {
         return retPage;
     }
 
-    private int getResultListSize(Query query, ProductType type)
+    protected int getResultListSize(Query query, ProductType type)
             throws CatalogException {
         Connection conn = null;
         Statement statement = null;
@@ -1790,7 +1850,6 @@ public class DataSourceCatalog implements Catalog {
                 getProductSql += whereClause.toString();
             }
 
-            getProductSql += "ORDER BY p.product_id DESC ";
 
             LOG.log(Level.FINE, "catalog get num results: executing: "
                     + getProductSql);
@@ -1951,15 +2010,32 @@ public class DataSourceCatalog implements Catalog {
                     ResultSet.CONCUR_READ_ONLY);
 
             String getProductSql = null;
-            if (query.getCriteria().size() == 0) {
-                getProductSql = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata";
-            }else if (query.getCriteria().size() == 1) {
+            
+            if (!productIdString) {
+            	
+	            if (query.getCriteria().size() == 0) {
+	                getProductSql = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata";
+	            }else if (query.getCriteria().size() == 1) {
+	                getProductSql = this.getSqlQuery(query.getCriteria().get(0), type);
+	            }else {
+	                getProductSql = this.getSqlQuery(new BooleanQueryCriteria(query.getCriteria(), BooleanQueryCriteria.AND), type);
+	            }
+	            getProductSql += " ORDER BY product_id DESC ";
+            
+            } else {
+            	
+              if (query.getCriteria().size() == 0) {
+                getProductSql = "SELECT DISTINCT products.product_id FROM products, " + type.getName() + "_metadata"
+                				      + " WHERE products.product_id="+type.getName() + "_metadata.product_id";
+              }	else if (query.getCriteria().size() == 1) {
                 getProductSql = this.getSqlQuery(query.getCriteria().get(0), type);
-            }else {
+              }	else {
                 getProductSql = this.getSqlQuery(new BooleanQueryCriteria(query.getCriteria(), BooleanQueryCriteria.AND), type);
+              }
+              getProductSql += " ORDER BY products.product_datetime DESC ";
+              
             }
-            getProductSql += " ORDER BY product_id DESC ";
-
+            
             LOG.log(Level.FINE, "catalog query: executing: " + getProductSql);
 
             rs = statement.executeQuery(getProductSql);
@@ -2051,12 +2127,18 @@ public class DataSourceCatalog implements Catalog {
 
     }
     
-    private String getSqlQuery(QueryCriteria queryCriteria, ProductType type) throws ValidationLayerException, CatalogException {
+    protected String getSqlQuery(QueryCriteria queryCriteria, ProductType type) throws ValidationLayerException, CatalogException {
         String sqlQuery = null;
         if (queryCriteria instanceof BooleanQueryCriteria) {
             BooleanQueryCriteria bqc = (BooleanQueryCriteria) queryCriteria;
-            if (bqc.getOperator() == BooleanQueryCriteria.NOT) {
-                sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")";
+            if (bqc.getOperator() == BooleanQueryCriteria.NOT) {            	
+            		if (!this.productIdString) {
+            			sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")";
+            		} else {
+            			sqlQuery = "SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
+            							 + " WHERE products.product_id="+type.getName() + "_metadata.product_id" 
+            							 + " AND products.product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")";
+            		}
             }else {
                 sqlQuery = "(" + this.getSqlQuery(bqc.getTerms().get(0), type);
                 String op = bqc.getOperator() == BooleanQueryCriteria.AND ? "INTERSECT" : "UNION";
@@ -2065,10 +2147,16 @@ public class DataSourceCatalog implements Catalog {
                 sqlQuery += ")";
             }
         }else {
-            String elementIdStr = this.validationLayer.getElementByName(queryCriteria.getElementName()).getElementId();
+        	  String elementIdStr = this.validationLayer.getElementByName(queryCriteria.getElementName()).getElementId();
             if (fieldIdStringFlag) 
                 elementIdStr = "'" + elementIdStr + "'";
-            sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE element_id = " + elementIdStr + " AND ";
+            if (!this.productIdString) {
+            	sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE element_id = " + elementIdStr + " AND ";
+            } else {
+            	sqlQuery = "SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
+            	         + " WHERE products.product_id="+type.getName() + "_metadata.product_id" 
+            			     + " AND element_id = " + elementIdStr + " AND ";
+            }
             if (queryCriteria instanceof TermQueryCriteria) {
                 sqlQuery += "metadata_value = '" + ((TermQueryCriteria) queryCriteria).getValue() + "'";
             } else if (queryCriteria instanceof RangeQueryCriteria) {
@@ -2108,7 +2196,7 @@ public class DataSourceCatalog implements Catalog {
             // first remove the refs
             String deleteProductSql = "DELETE FROM "
                     + product.getProductType().getName() + "_reference "
-                    + " WHERE product_id = " + product.getProductId();
+                    + " WHERE product_id = " + quoteIt(product.getProductId());
             LOG.log(Level.FINE, "updateProductReferences: Executing: "
                     + deleteProductSql);
             statement.execute(deleteProductSql);
@@ -2179,6 +2267,20 @@ public class DataSourceCatalog implements Catalog {
             }
         }
 
+    }
+    
+    /**
+     * Utility method to quote the "productId" value 
+     * if the column type is "string".
+     * @param productId
+     * @return
+     */
+    protected String quoteIt(String productId) {
+    	if (this.productIdString) {
+    		return "'"+productId+"'";
+    	} else {
+    		return productId;
+    	}
     }
 
 }

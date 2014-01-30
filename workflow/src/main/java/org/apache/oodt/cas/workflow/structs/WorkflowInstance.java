@@ -15,214 +15,431 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.workflow.structs;
+
+//JDK imports
+import java.text.ParseException;
+import java.util.Date;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
+import org.apache.oodt.commons.util.DateConvert;
 
 /**
- * @author mattmann
- * @version $Revision$
- * 
- * <p>
  * A WorkflowInstance is an instantiation of the abstract description of a
  * Workflow provided by the {@link Workflow} class. WorkflowInstances have
  * status, and in general are data structures intended to be used as a means for
  * monitoring the status of an executing {@link Workflow}.
- * </p>
+ * 
+ * As of Apache OODT 0.4, the internal {@link Workflow} implementation uses
+ * {@link ParentChildWorkflow}, introduced as part of OODT-70, and the
+ * PackagedWorkflowRepository. {@link Workflow} instances given to the class
+ * will automatically convert to {@link ParentChildWorkflow} implementations
+ * internally, and the existing {@link #getWorkflow()} and
+ * {@link #setWorkflow(Workflow)} methods have been deprecated in favor of
+ * {@link #getParentChildWorkflow()} and
+ * {@link #setParentChildWorkflow(ParentChildWorkflow)} which will supersede
+ * those methods, and eventually turn into their concrete implementations.
+ * 
+ * In addition, as of Apache OODT 0.4 the internal {@link #state} member
+ * variable now uses {@link WorkflowState} for representation. This requires the
+ * use of {@link WorkflowLifecycle} which has now moved from being simply a UI
+ * utility class for the Worklow Monitor web application to actually being fully
+ * integrated with the Workflow Manager. For backwards compatibility the
+ * {@link #setStatus(String)} and {@link #getStatus()} methods are still
+ * supported, but are deprecated. Developers using this class should move
+ * towards using {@link #setState(WorkflowState)} and {@link #getState()}.
+ * 
+ * @author mattmann
+ * @author bfoster
+ * @version $Revision$
  * 
  */
 public class WorkflowInstance {
 
-    private Workflow workflow;
+  private ParentChildWorkflow workflow;
 
-    private String id;
+  private String id;
 
-    private String status;
+  private WorkflowState state;
 
-    private String currentTaskId;
+  private String currentTaskId;
 
-    private String startDateTimeIsoStr;
+  private Date startDate;
 
-    private String endDateTimeIsoStr;
+  private Date endDate;
 
-    private String currentTaskStartDateTimeIsoStr;
+  private Metadata sharedContext;
 
-    private String currentTaskEndDateTimeIsoStr;
+  private Priority priority;
 
-    private Metadata sharedContext;
+  private int timesBlocked;
 
-    /**
-     * Default Constructor.
-     * 
-     */
-    public WorkflowInstance() {
-        sharedContext = new Metadata();
+  /**
+   * Default Constructor.
+   * 
+   */
+  public WorkflowInstance() {
+    this(null, null, null, null, new Date(), null, new Metadata(),
+        0, Priority.getDefault());
+  }
+
+  public WorkflowInstance(Workflow workflow, String id, WorkflowState state,
+      String currentTaskId, Date startDate, Date endDate, 
+      Metadata sharedContext, int timesBlocked, Priority priority) {
+    this.workflow = workflow != null && workflow instanceof ParentChildWorkflow ? (ParentChildWorkflow) workflow
+        : new ParentChildWorkflow(workflow != null ? workflow : new Workflow());
+    this.id = id;
+    this.state = state;
+    this.currentTaskId = currentTaskId;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.sharedContext = sharedContext;
+    this.timesBlocked = timesBlocked;
+    this.priority = priority;
+  }
+
+  /**
+   * @return the id
+   */
+  public String getId() {
+    return id;
+  }
+
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  /**
+   * @return the status
+   */
+  @Deprecated
+  public String getStatus() {
+    return state != null ? state.getName() : "Null";
+  }
+
+  /**
+   * Sets the current {@link WorkflowState} to the provided status.
+   * 
+   * @param status
+   *          The provided status to set.
+   */
+  @Deprecated
+  public void setStatus(String status) {
+    WorkflowState state = new WorkflowState();
+    state.setName(status);
+    this.state = state;
+  }
+
+  /**
+   * @return the state
+   */
+  public WorkflowState getState() {
+    return state;
+  }
+
+  /**
+   * @param state
+   *          the state to set
+   */
+  public void setState(WorkflowState state) {
+    this.state = state;
+  }
+
+  /**
+   * @return the workflow
+   */
+  @Deprecated
+  public Workflow getWorkflow() {
+    return (Workflow) workflow;
+  }
+
+  /**
+   * @param workflow
+   *          the workflow to set
+   */
+  @Deprecated
+  public void setWorkflow(Workflow workflow) {
+    if (workflow != null && workflow instanceof ParentChildWorkflow) {
+      this.workflow = (ParentChildWorkflow) workflow;
+    } else {
+      if (workflow == null)
+        workflow = new Workflow();
+      this.workflow = new ParentChildWorkflow(workflow);
     }
+  }
 
-    /**
-     * @param workflow
-     * @param id
-     * @param status
-     * @param currentTaskId
-     * @param startDateTimeIsoStr
-     * @param endDateTimeIsoStr
-     * @param currentTaskStartDateTimeIsoStr
-     * @param currentTaskEndDateTimeIsoStr
-     * @param sharedContext
-     */
-    public WorkflowInstance(Workflow workflow, String id, String status,
-            String currentTaskId, String startDateTimeIsoStr,
-            String endDateTimeIsoStr, String currentTaskStartDateTimeIsoStr,
-            String currentTaskEndDateTimeIsoStr, Metadata sharedContext) {
-        super();
-        this.workflow = workflow;
-        this.id = id;
-        this.status = status;
-        this.currentTaskId = currentTaskId;
-        this.startDateTimeIsoStr = startDateTimeIsoStr;
-        this.endDateTimeIsoStr = endDateTimeIsoStr;
-        this.currentTaskStartDateTimeIsoStr = currentTaskStartDateTimeIsoStr;
-        this.currentTaskEndDateTimeIsoStr = currentTaskEndDateTimeIsoStr;
-        this.sharedContext = sharedContext;
-    }
+  /**
+   * 
+   * @return The workflow, with its parent/child relationships.
+   */
+  public ParentChildWorkflow getParentChildWorkflow() {
+    return this.workflow;
+  }
 
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
+  /**
+   * Sets the Parent Child workflow.
+   * 
+   * @param workflow
+   *          The workflow to set.
+   */
+  public void setParentChildWorkflow(ParentChildWorkflow workflow) {
+    this.workflow = workflow;
+  }
 
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+  /**
+   * @return the currentTaskId
+   */
+  public String getCurrentTaskId() {
+    return currentTaskId;
+  }
 
-    /**
-     * @return the status
-     */
-    public String getStatus() {
-        return status;
-    }
+  /**
+   * @param currentTaskId
+   *          the currentTaskId to set
+   */
+  public void setCurrentTaskId(String currentTaskId) {
+    this.currentTaskId = currentTaskId;
+  }
 
-    /**
-     * @param status
-     *            the status to set
-     */
-    public void setStatus(String status) {
-        this.status = status;
-    }
+  /**
+   * @return the sharedContext
+   */
+  public Metadata getSharedContext() {
+    return sharedContext;
+  }
 
-    /**
-     * @return the workflow
-     */
-    public Workflow getWorkflow() {
-        return workflow;
-    }
+  /**
+   * @param sharedContext
+   *          the sharedContext to set
+   */
+  public void setSharedContext(Metadata sharedContext) {
+    this.sharedContext = sharedContext;
+  }
 
-    /**
-     * @param workflow
-     *            the workflow to set
-     */
-    public void setWorkflow(Workflow workflow) {
-        this.workflow = workflow;
-    }
+  /**
+   * @return the priority
+   */
+  public Priority getPriority() {
+    return priority;
+  }
 
-    /**
-     * @return the currentTaskId
-     */
-    public String getCurrentTaskId() {
-        return currentTaskId;
-    }
+  /**
+   * @param priority
+   *          the priority to set
+   */
+  public void setPriority(Priority priority) {
+    this.priority = priority;
+  }
 
-    /**
-     * @param currentTaskId
-     *            the currentTaskId to set
-     */
-    public void setCurrentTaskId(String currentTaskId) {
-        this.currentTaskId = currentTaskId;
-    }
+  /**
+   * Convenience method to format and return the
+   * {@link #currentTaskStartDateTimeIsoStr} as a {@link Date}.
+   * 
+   * @return {@link Date} representation of
+   *         {@link #getCurrentTaskStartDateTimeIsoStr()}.
+   */
+  public Date getCreationDate() {
+    return this.startDate;
+  }
 
-    /**
-     * @return the endDateTimeIsoStr
-     */
-    public String getEndDateTimeIsoStr() {
-        return endDateTimeIsoStr;
-    }
+  /**
+   * Convenience method to format and return the
+   * {@link #currentTaskEndDateTimeIsoStr} as a {@link Date}.
+   * 
+   * @return {@link Date} representation of
+   *         {@link #getCurrentTaskEndDateTimeIsoStr()}.
+   */
+  public Date getFinishDate() {
+    return this.endDate;
+  }
 
-    /**
-     * @param endDateTimeIsoStr
-     *            the endDateTimeIsoStr to set
-     */
-    public void setEndDateTimeIsoStr(String endDateTimeIsoStr) {
-        this.endDateTimeIsoStr = endDateTimeIsoStr;
-    }
+  /**
+   * @return the startDate
+   */
+  public Date getStartDate() {
+    return startDate;
+  }
 
-    /**
-     * @return the startDateTimeIsoStr
-     */
-    public String getStartDateTimeIsoStr() {
-        return startDateTimeIsoStr;
-    }
+  /**
+   * @param startDate
+   *          the startDate to set
+   */
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
 
-    /**
-     * @param startDateTimeIsoStr
-     *            the startDateTimeIsoStr to set
-     */
-    public void setStartDateTimeIsoStr(String startDateTimeIsoStr) {
-        this.startDateTimeIsoStr = startDateTimeIsoStr;
-    }
+  /**
+   * @return the endDate
+   */
+  public Date getEndDate() {
+    return endDate;
+  }
 
-    /**
-     * @return the currentTaskEndDateTimeIsoStr
-     */
-    public String getCurrentTaskEndDateTimeIsoStr() {
-        return currentTaskEndDateTimeIsoStr;
-    }
+  /**
+   * @param endDate
+   *          the endDate to set
+   */
+  public void setEndDate(Date endDate) {
+    this.endDate = endDate;
+  }
 
-    /**
-     * @param currentTaskEndDateTimeIsoStr
-     *            the currentTaskEndDateTimeIsoStr to set
-     */
-    public void setCurrentTaskEndDateTimeIsoStr(
-            String currentTaskEndDateTimeIsoStr) {
-        this.currentTaskEndDateTimeIsoStr = currentTaskEndDateTimeIsoStr;
-    }
+  /**
+   * @return the endDateTimeIsoStr
+   */
+  @Deprecated
+  public String getEndDateTimeIsoStr() {
+    return this.endDate != null ? DateConvert.isoFormat(this.endDate) : null;
+  }
 
-    /**
-     * @return the currentTaskStartDateTimeIsoStr
-     */
-    public String getCurrentTaskStartDateTimeIsoStr() {
-        return currentTaskStartDateTimeIsoStr;
+  /**
+   * @param endDateTimeIsoStr
+   *          the endDateTimeIsoStr to set
+   */
+  @Deprecated
+  public void setEndDateTimeIsoStr(String endDateTimeIsoStr) {
+    if (endDateTimeIsoStr != null && !endDateTimeIsoStr.equals("")) {
+      try {
+        this.endDate = DateConvert.isoParse(endDateTimeIsoStr);
+      } catch (ParseException e) {
+        e.printStackTrace();
+        // fail silently besides this: it's just a setter
+      }
     }
+  }
 
-    /**
-     * @param currentTaskStartDateTimeIsoStr
-     *            the currentTaskStartDateTimeIsoStr to set
-     */
-    public void setCurrentTaskStartDateTimeIsoStr(
-            String currentTaskStartDateTimeIsoStr) {
-        this.currentTaskStartDateTimeIsoStr = currentTaskStartDateTimeIsoStr;
-    }
+  /**
+   * @return the startDateTimeIsoStr
+   */
+  @Deprecated
+  public String getStartDateTimeIsoStr() {
+    return this.startDate != null ? DateConvert.isoFormat(this.startDate)
+        : null;
+  }
 
-    /**
-     * @return the sharedContext
-     */
-    public Metadata getSharedContext() {
-        return sharedContext;
+  /**
+   * @param startDateTimeIsoStr
+   *          the startDateTimeIsoStr to set
+   */
+  @Deprecated
+  public void setStartDateTimeIsoStr(String startDateTimeIsoStr) {
+    if (startDateTimeIsoStr != null && !startDateTimeIsoStr.equals("")) {
+      try {
+        this.startDate = DateConvert.isoParse(startDateTimeIsoStr);
+      } catch (ParseException e) {
+        e.printStackTrace();
+        // fail silently besides this: it's just a setter
+      }
     }
+  }
 
-    /**
-     * @param sharedContext
-     *            the sharedContext to set
-     */
-    public void setSharedContext(Metadata sharedContext) {
-        this.sharedContext = sharedContext;
+  /**
+   * @return the currentTaskEndDateTimeIsoStr
+   */
+  @Deprecated
+  public String getCurrentTaskEndDateTimeIsoStr() {
+    return this.getTaskById(currentTaskId) != null ? 
+        (this.getTaskById(currentTaskId).getEndDate() != null ? 
+            DateConvert.isoFormat(this.getTaskById(currentTaskId).getEndDate())
+        : null):null;
+  }
+
+  /**
+   * @param currentTaskEndDateTimeIsoStr
+   *          the currentTaskEndDateTimeIsoStr to set
+   */
+  @Deprecated
+  public void setCurrentTaskEndDateTimeIsoStr(
+      String currentTaskEndDateTimeIsoStr) {
+    if (currentTaskEndDateTimeIsoStr != null
+        && !currentTaskEndDateTimeIsoStr.equals("") && 
+        this.getTaskById(currentTaskId) != null) {
+      try {
+        this.getTaskById(currentTaskId).
+          setEndDate(DateConvert.isoParse(currentTaskEndDateTimeIsoStr));
+      } catch (ParseException e) {
+        e.printStackTrace();
+        // fail silently besides this: it's just a setter
+      }
     }
+  }
+
+  /**
+   * @return the currentTaskStartDateTimeIsoStr
+   */
+  @Deprecated
+  public String getCurrentTaskStartDateTimeIsoStr() {
+    return this.getTaskById(currentTaskId) != null ? 
+        (this.getTaskById(currentTaskId).getStartDate() != null ? DateConvert
+        .isoFormat(this.getTaskById(currentTaskId).getStartDate()) : null):null;
+  }
+
+  /**
+   * @param currentTaskStartDateTimeIsoStr
+   *          the currentTaskStartDateTimeIsoStr to set
+   */
+  @Deprecated
+  public void setCurrentTaskStartDateTimeIsoStr(
+      String currentTaskStartDateTimeIsoStr) {
+    if (currentTaskStartDateTimeIsoStr != null
+        && !currentTaskStartDateTimeIsoStr.equals("") && 
+        this.getTaskById(currentTaskId) != null) {
+      try {
+        this.getTaskById(currentTaskId).setStartDate(DateConvert
+            .isoParse(currentTaskStartDateTimeIsoStr));
+      } catch (ParseException e) {
+        e.printStackTrace();
+        // fail silently besides this: it's just a setter
+      }
+    }
+  }
+  
+  /**
+   * Returns the currently executing {@link WorkflowTask}
+   * part of this instance.
+   * 
+   * @return The currently executing {@link WorkflowTask}
+   * part of this instance.
+   */
+  public WorkflowTask getCurrentTask(){
+    return getTaskById(currentTaskId);
+  }
+  
+
+  /**
+   * @return the timesBlocked
+   */
+  public int getTimesBlocked() {
+    return timesBlocked;
+  }
+
+  /**
+   * @param timesBlocked the timesBlocked to set
+   */
+  public void setTimesBlocked(int timesBlocked) {
+    this.timesBlocked = timesBlocked;
+  }
+  
+  
+  private WorkflowTask getTaskById(String taskId){
+    if(this.workflow.getTasks() != null && 
+        this.workflow.getTasks().size() > 0){
+      for(WorkflowTask task: this.workflow.getTasks()){
+        if(task.getTaskId().equals(taskId)){
+          return task;
+        }
+      }
+      
+      return null;
+    }
+    else return null;
+  }
+
 
 }

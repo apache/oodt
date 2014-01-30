@@ -63,7 +63,7 @@ public class XMLRepositoryManager implements RepositoryManager {
     private HashMap<String, ProductType> productTypeMap = new HashMap<String, ProductType>();
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(XMLRepositoryManager.class
+    private static final Logger LOG = Logger.getLogger(XMLRepositoryManager.class
             .getName());
 
     /**

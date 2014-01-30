@@ -113,4 +113,36 @@
 			<property name="mail.from" value="oodt@jpl.nasa.gov"/>
 		</configuration>
 	</task>	
+	<task id="urn:oodt:TestTimeoutTask" name="Test Timeout"
+		class="org.apache.oodt.cas.workflow.examples.LongTask">
+		<conditions>
+		   <condition id="urn:oodt:TimeoutCondition"/>
+		</conditions>
+		<configuration />
+		<requiredMetFields>
+			<metfield name="numSeconds" />
+		</requiredMetFields>
+	</task>	
+	<task id="urn:oodt:OptionalTask" name="Optional Task" 
+	    class="org.apache.oodt.cas.workflow.examples.LongTask">
+	  <conditions>
+	     <condition id="urn:oodt:OptionalCondition"/>
+	  </conditions>
+	  <configuration/>
+	  <requiredMetFields>
+	     <metfield name="numSeconds"/>
+	  </requiredMetFields>
+	</task>
+	<task id="urn:oodt:TaskWithLoad" name="Task with Load"
+	   class="org.apache.oodt.cas.workflow.examples.LongTask">
+	   <conditions>
+	   </conditions> 
+	   <configuration>
+	      <!--  now settable since OODT-602
+	            controls the load value of this task when running
+	            Workflow Manager with connection to the Resource Manager.
+	       -->
+	      <property name="TaskLoad" value="2"/>
+	   </configuration>  
+	</task>
 </cas:tasks>

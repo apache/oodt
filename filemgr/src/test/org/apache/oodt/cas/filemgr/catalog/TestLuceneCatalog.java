@@ -27,12 +27,17 @@ import java.util.Vector;
 import org.apache.oodt.cas.filemgr.catalog.LuceneCatalog;
 import org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.Metadata;
+
+import com.google.common.collect.Lists;
 
 //Junit imports
 import junit.framework.TestCase;
@@ -113,7 +118,7 @@ public class TestLuceneCatalog extends TestCase {
         // now override the val layer ones
         System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
                 "file://"
-                        + new File("./src/main/resources/examples")
+                        + new File("./src/main/resources/examples/core")
                                 .getAbsolutePath());
 
     }
@@ -152,6 +157,64 @@ public class TestLuceneCatalog extends TestCase {
             }
         }
 
+    }
+    
+    /**
+    * @since OODT-382
+    */
+    public void testNoCatalogDirectoryQueries() {
+        // Test querying against a catalog directory that has not yet been created or is empty. 
+        // The LuceneCatalogFactory should be creating the index directory if not there.
+        try {
+            myCat.getTopNProducts(10);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    public void testGetMetadata() throws CatalogException {
+       Product product = getTestProduct();
+       myCat.addProduct(product);
+       myCat.addProductReferences(product);
+       Metadata m = new Metadata();
+       m.addMetadata(CoreMetKeys.FILE_LOCATION, Lists.newArrayList("/loc/1", "/loc/2"));
+       myCat.addMetadata(m, product);
+       Metadata rndTripMet = myCat.getMetadata(product);
+
+       assertNotNull(rndTripMet);
+       assertEquals(2, rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
+       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/1"));
+       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/2"));
+    }
+    
+    public void testGetReducedMetadata() throws CatalogException {
+       Product product = getTestProduct();
+       myCat.addProduct(product);
+       myCat.addProductReferences(product);
+       Metadata m = new Metadata();
+       m.addMetadata(CoreMetKeys.FILE_LOCATION, Lists.newArrayList("/loc/1", "/loc/2"));
+       myCat.addMetadata(m, product);
+       Metadata rndTripMet = myCat.getReducedMetadata(product,
+             Lists.newArrayList(CoreMetKeys.FILE_LOCATION));
+
+       assertNotNull(rndTripMet);
+       assertEquals(2, rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).size());
+       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/1"));
+       assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/2"));
+    }
+
+    public void testGetReducedMetadataNull() throws CatalogException {
+	      Product p = getTestProduct();
+	      myCat.addProduct(p);
+	      myCat.addProductReferences(p);
+	      myCat.addMetadata(new Metadata(), p);
+
+	      // should not throw NPE here
+	      Metadata rndTripMet = myCat.getReducedMetadata(p, Lists.newArrayList(CoreMetKeys.FILENAME));
+
+	      assertNotNull(rndTripMet);
+	      // should return null if met key has no value
+	      assertNull(rndTripMet.getAllMetadata(CoreMetKeys.FILENAME));
     }
 
     public void testRemoveProduct() {
@@ -282,6 +345,22 @@ public class TestLuceneCatalog extends TestCase {
         Product retProd = ((Product) page.getPageProducts().get(0));
         assertEquals("ShouldBeFirstForPage.txt", retProd.getProductName());
     }
+    
+    /**
+     * @since OODT-141
+     */
+    public void testTopResults(){
+      Product testProduct = getTestProduct();
+      try{
+        myCat.addProduct(testProduct);
+        myCat.addMetadata(getTestMetadata("tempProduct"), testProduct);
+        myCat.getTopNProducts(20);
+      }
+      catch(Exception e){
+        e.printStackTrace();
+        fail(e.getMessage());
+      }
+    }
 
     public void testAddProduct() {
 
@@ -367,7 +446,73 @@ public class TestLuceneCatalog extends TestCase {
             fail(e.getMessage());
         }
     }
-
+    
+    public void testPagedQuery(){
+    	// Add a couple of Products and associated Metadata
+    	Product testProduct = null;
+    	for(int i = 0; i < catPageSize + 1; i++){
+    		testProduct = Product.getDefaultFlatProduct("test" + i,
+					"urn:oodt:GenericFile");
+    		testProduct.getProductType().setName("GenericFile");
+    		Reference ref = new Reference("file:///foo.txt", "file:///bar.txt", 100);
+            Vector<Reference> references = new Vector<Reference>();
+            references.add(ref);
+            testProduct.setProductReferences(references);
+    		Metadata met = new Metadata();
+    		met.addMetadata("Filename", "tempProduct" + i);
+    		met.addMetadata("ProductStructure", "Flat");
+    		try {
+                myCat.addProduct(testProduct);
+                myCat.addMetadata(met, testProduct);
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail(e.getMessage());
+            }
+    	}
+    	
+    	// Formulate a test query
+    	Query query = new Query();
+    	BooleanQueryCriteria bqc = new BooleanQueryCriteria();
+    	try{
+    		bqc.setOperator(BooleanQueryCriteria.AND);
+    	}catch (Exception e){
+    		e.printStackTrace();
+            fail(e.getMessage());
+    	}
+    	TermQueryCriteria tqc = new TermQueryCriteria();
+    	tqc.setElementName("ProductStructure");
+    	tqc.setValue("Flat");
+    	try{
+    		bqc.addTerm(tqc);
+    	}catch (Exception e){
+    		e.printStackTrace();
+            fail(e.getMessage());
+    	}
+    	tqc = new TermQueryCriteria();
+    	tqc.setElementName("Filename");
+    	tqc.setValue("tempProduct1");
+    	try{
+    		bqc.addTerm(tqc);
+    	}catch (Exception e){
+    		e.printStackTrace();
+            fail(e.getMessage());
+    	}
+    	query.addCriterion(bqc);
+    	
+    	// Perform the query and validate results
+    	ProductPage page = null;
+    	try{
+    		page = myCat.pagedQuery(query, testProduct.getProductType(), 1);
+    	}catch (Exception e){
+    		e.printStackTrace();
+            fail(e.getMessage());
+    	}
+    	assertEquals(page.getPageProducts().size(), 1);
+    	assertEquals(page.getPageProducts().get(0).getProductName(), "test1");
+    	assertEquals(page.getPageNum(), 1);
+    	assertEquals(page.getTotalPages(), 1);
+    }
+	
     private static Product getTestProduct() {
         Product testProduct = Product.getDefaultFlatProduct("test",
                 "urn:oodt:GenericFile");

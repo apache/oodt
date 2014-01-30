@@ -46,7 +46,7 @@ the License.
     <a name="section1"/>
     <section name="Download And Build">
       <p>The most recent CAS-Curator project can be downloaded from
-      the OODT <a href="http://incubator.apache.org/oodt">website</a> or it can
+      the OODT <a href="http://oodt.apache.org/">website</a> or it can
       be checked out from the OODT repository using Subversion. The 
       We recommend checking
       out the latest released version (v1.0.0 at the time of writing).
@@ -128,10 +128,14 @@ docBase="/usr/local/src/cas-curator-v1.0.0/target/cas-curator-1.0.0.war">
       ]]></source>
        
       <p>Save the context file to 
-      <code>$TOMCAT_HOME/conf/Catalina/localhost/curator.xml</code>. Now you 
+      <code>$TOMCAT_HOME/conf/Catalina/localhost/my-curator.xml</code>. Now you 
       can point a web browser to <a href="http://localhost:8080/my-curator/">
       http://localhost:8080/my-curator</a> and you should see a log-in screen
-      for CAS-Curator.</p> 
+      for CAS-Curator. <em>Note</em>: Tomcat will only use the path attribute 
+      if the context is defined in server.xml. Tomcat uses the xml file name 
+      instead. See the 
+      <a href="http://tomcat.apache.org/tomcat-5.5-doc/config/context.html" class="externalLink"> 
+      Tomcat documentation</a> for further information</p> 
       
       <img src="../images/basic_login.jpg"/>
       
@@ -202,8 +206,7 @@ docBase="/usr/local/src/cas-curator-v1.0.0/target/cas-curator-1.0.0.war">
     <source>
 > mkdir /usr/local/staging/products/mp3
 > cd /usr/local/staging/products/mp3
-> curl http://incubator.apache.org/oodt/components/curator/media/Bach-SuiteNo2.mp3 > \
-        Bach-SuiteNo2.mp3
+> curl -LO http://oodt.apache.org/components/maven/curator/media/Bach-SuiteNo2.mp3
     </source>
     
     <p>We should note that this music file was produced by the 
@@ -352,7 +355,7 @@ cmd += "</val></keyval>\"}' > "+fileName+".met"
 os.system(cmd)
 
 f = open(fileName+".met", 'a')
-f.write('<keyval><key>ProductType</key><val>'+productType)
+f.write('<keyval><key>ProductType</key><val>+productType)
 f.write('</val></keyval>\n<keyval><key>Filename</key><val>')
 f.write(fileName+'</val></keyval>\n'<keyval><key>FileLocation')
 f.write('</key><val>'+fileLocation+'</val></keyval>\n')
@@ -427,10 +430,8 @@ f.close()
     consist of the following parameters:</p>
 
 <source>
-extractor.classname=
-   org.apache.oodt.cas.metadata.extractors.ExternMetExtractor
-extractor.config.files=
-   /usr/local/extractors/mp3extractor/mp3PythonExtractor.config
+extractor.classname=org.apache.oodt.cas.metadata.extractors.ExternMetExtractor
+extractor.config.files=/usr/local/extractors/mp3extractor/mp3PythonExtractor.config
 </source>
 
     <p>To recap, we first created a Python script that calls

@@ -125,7 +125,7 @@ public abstract class QueryServlet extends GridServlet {
 	 * @return a <code>XMLQuery</code> value.
 	 * @throws IOException if an error occurs.
 	 */
-	private XMLQuery getQuery(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	protected XMLQuery getQuery(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		String xmlq = req.getParameter("xmlq");				       // Grab any xmlq
 		String q = req.getParameter("q");				       // Grab any q
 		String unp = req.getParameter("unp");				       // And grab any unp (pronounced "unp")

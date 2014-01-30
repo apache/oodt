@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+
+  <properties>
+    <title>Query Servlet</title>
+    <author email="Sean.Kelly@jpl.nasa.gov">Sean Kelly</author>
+  </properties>
+
+  <body>
+    <section name="Query Servlet">
+
+      <p>The query servlet enables you to inject generic queries into
+	the OODT framework using HTTP.  This enables you to query for
+	profiles and products without requiring a Java, RMI, or CORBA
+   enabled application.
+      </p>
+    </section>
+
+    <section name="Requirements">
+
+      <p>The query servlet accepts various parameters for a query and
+	turns them into an <code>XMLQuery</code> object.  It uses this
+	object internally to send the query around the network and to
+	gather results.  It then returns a <code>text/xml</code>
+	representation of the <code>XMLQuery</code> object (for product
+	queries) or a <code>text/xml</code> representation of all matching
+	profiles (for profile queries).
+      </p>
+
+      <p><strong>That means you must be able to process XML</strong> in
+	order to use the query servlet.  Luckily, this isn't an onerous
+	restriction, as many languages are more than capable of doing so.
+      </p>
+
+      <p>For more details, view the Javadocs for the
+	<code>jpl.oodt.servlets.QueryServlet</code> class.</p>
+    </section>
+
+    <section name="Using the Query Servlet">
+
+      <p>In order to use the query servlet, you need to specify three parameters:
+      </p>
+
+      <ol>
+	<li>You need to know the <strong>type of the query</strong> you
+	  want to make.  You will use a string value of
+	  <code>profile</code> to make a profile query, and
+	  <code>product</code> to make a product query.  You specify
+	  your choice in a parameter named <code>type</code>.
+	</li>
+
+	<li>You need to know the <strong>name of the object</strong>
+	  that should receive the query.  This takes the form of
+	  <code>urn:eda:<var>protocol</var>:<var>name</var></code> such
+	  as <code>urn:eda:corba:PDS.Profile</code> or
+	  <code>urn:eda:rmi:NCI-ImageServer</code>.  You specify the
+	  object name in a parameter named <code>object</code>.
+	</li>
+
+	<li>You need <strong>the actual query</strong> you want to
+	  send.  You can express this in two ways:
+
+	  <ol>
+	    <li>As an <strong>keyword query expression</strong> like
+	      <code>TARGET_NAME = MARS</code>.  You specify the
+	      query expression in a parameter named
+	      <code>keywordQuery</code>.
+	    </li>
+
+	    <li>As a <strong>text serialized <code>XMLQuery</code>
+		object</strong>.  You specify the XML document in a
+	      parameter named <code>query</code>.
+	    </li>
+	  </ol>
+
+	  <p>Using the latter enables you to fully specify all sorts of
+	    parameters in the query.  The former, though, is far
+	    easier to use.
+	  </p>
+
+	</li>
+      </ol>
+
+      <p>You then URL encode parameters' values and make either an HTTP
+	<code>GET</code> or <code>POST</code> request to the query
+	servlet.  If all goes according to plan, the servlet will execute
+	the query and return to you a <code>text/xml</code> document
+	describing the results.  You can then manipulate that document as
+	you see fit.  For profile queries, the return value is a
+	<code>&lt;profiles&gt;</code> document with zero or more matching
+	profiles.  For product queries, it's a <code>&lt;query&gt;</code>
+
+	document with the original <code>XMLQuery</code> object with any
+	product results in the <code>&lt;queryResults&gt;</code> section.
+      </p>
+
+    </section>
+
+    <section name="Query Examples">
+
+      <p>Let's look at a couple of concrete examples.  In the first
+	example, we'll run a profile query against some planetary data
+	servers; the second example will run a product query for cancer
+	biomarkers.
+      </p>
+
+      <subsection name="Planetary Profile Query">
+
+	<p>Suppose you wanted to know what PDS product servers supported
+	  the query element <code>ONLINE_FILE_SPECIFICATION_NAME</code>.
+	  You could pass that element to the PDS system profile server named
+	  <code>urn:eda:rmi:PDS.System.Profile</code> using the query
+	  servlet at
+	  <code>http://starbrite.jpl.nasa.gov/servlet/jpl.oodt.servlets.QueryServlet</code>.
+	  You can formulate the HTTP <code>GET</code> request in a URL as
+	  follows:
+	</p>
+
+	<p><code><a href="http://starbrite.jpl.nasa.gov/servlet/jpl.oodt.servlets.QueryServlet?object=urn:eda:rmi:PDS.System.Profile&amp;type=profile&amp;keywordQuery=ONLINE_FILE_SPECIFICATION_NAME+%3D+ANY">http://starbrite.jpl.nasa.gov/servlet/jpl.oodt.servlets.QueryServlet?<br/>  object=urn:eda:rmi:PDS.System.Profile&amp;<br/>  type=profile&amp;<br/>  keywordQuery=ONLINE_FILE_SPECIFICATION_NAME+%3D+ANY</a></code></p>
+
+	<p>Note that we've broken this URL into multiple lines for
+	  readability.  There should be no linebreaks in a real URL.  Note
+	  the following about this URL:
+	</p>
+
+	<ul>
+	  <li>The question-mark separates the request URI from its
+	    parameters.
+	  </li>
+
+	  <li>The parameters may come in any order.</li>
+
+	  <li>The <code>object</code> parameter names the target of the
+	    query; in this case, the RMI product server named
+	    <code>urn:eda:rmi:PDS.System.Profile</code>.
+	  </li>
+
+	  <li>The <code>type</code> parameter specifies that we're doing a
+	    <em>profile search</em>.</li>
+
+	  <li>The <code>keywordQuery</code> parameter identifies the query
+	    expression.  Note the URL encoding: the spaces become
+	    <code>+</code> symbols, and the equals sign become
+	    <code>%3D</code>.
+	  </li>
+	</ul>
+
+	<p>The response from such a query is an XML document; this XML
+	  document describes matching profiles and may take a form such as
+	  the following:</p>
+
+<source>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE profiles PUBLIC "-//JPL//DTD OODT Profile 1.1//EN"
+"http://starshine.jpl.nasa.gov:80/dtd/prof.dtd"&gt;
+
+&lt;profiles&gt;
+  &lt;profile&gt;
+    &lt;profAttributes&gt;
+      &lt;profId&gt;1.3.6.1.4.1.1306.2.1.1.7&lt;/profId&gt;
+      &lt;profType&gt;profile&lt;/profType&gt;
+      &lt;profStatusId&gt;active&lt;/profStatusId&gt;
+    &lt;/profAttributes&gt;
+    &lt;resAttributes&gt;
+      &lt;Identifier&gt;PDS.ASU.Product&lt;/Identifier&gt;
+      &lt;Title&gt;
+      PDS Arizona State University Data Node Product Server
+      &lt;/Title&gt;
+      &lt;Format&gt;text/html&lt;/Format&gt;
+      &lt;resContext&gt;NASA.PDS.ASU&lt;/resContext&gt;
+      &lt;resClass&gt;system.productServer&lt;/resClass&gt;
+      &lt;resLocation&gt;
+      http://starbrite.jpl.nasa.gov/servlet/
+      jpl.oodt.servlets.ProductServlet?object=PDS.ASU.Product
+      &lt;/resLocation&gt;
+      &lt;resLocation&gt;urn:eda:rmi:PDS.ASU.Product&lt;/resLocation&gt;
+    &lt;/resAttributes&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;ONLINE_FILE_SPECIFICATION_NAME&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;RETURN_TYPE&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemValue&gt;PDS_ZIP&lt;/elemValue&gt;
+      &lt;elemValue&gt;PDS_LABEL&lt;/elemValue&gt;
+      &lt;elemValue&gt;RAW&lt;/elemValue&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+  &lt;/profile&gt;
+
+  &lt;profile&gt;
+    &lt;profAttributes&gt;
+      &lt;profId&gt;1.3.6.1.4.1.1306.2.1.1.6&lt;/profId&gt;
+      &lt;profType&gt;profile&lt;/profType&gt;
+      &lt;profStatusId&gt;active&lt;/profStatusId&gt;
+    &lt;/profAttributes&gt;
+    &lt;resAttributes&gt;
+      &lt;Identifier&gt;PDS.RS.Product&lt;/Identifier&gt;
+      &lt;Title&gt;PDS Radio Science Product Server&lt;/Title&gt;
+      &lt;Format&gt;text/html&lt;/Format&gt;
+      &lt;resContext&gt;NASA.PDS.RS&lt;/resContext&gt;
+      &lt;resClass&gt;system.productServer&lt;/resClass&gt;
+      &lt;resLocation&gt;
+      http://starbrite.jpl.nasa.gov/servlet/
+      jpl.oodt.servlets.ProductServlet?object=PDS.RS.Product
+      &lt;/resLocation&gt;
+      &lt;resLocation&gt;urn:eda:rmi:PDS.RS.Product&lt;/resLocation&gt;
+    &lt;/resAttributes&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;ONLINE_FILE_SPECIFICATION_NAME&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;RETURN_TYPE&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemValue&gt;PDS_ZIP&lt;/elemValue&gt;
+      &lt;elemValue&gt;PDS_LABEL&lt;/elemValue&gt;
+      &lt;elemValue&gt;RAW&lt;/elemValue&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+  &lt;/profile&gt;
+
+  &lt;profile&gt;
+    &lt;profAttributes&gt;
+      &lt;profId&gt;1.3.6.1.4.1.1306.2.1.1.4&lt;/profId&gt;
+      &lt;profType&gt;profile&lt;/profType&gt;
+      &lt;profStatusId&gt;active&lt;/profStatusId&gt;
+    &lt;/profAttributes&gt;
+    &lt;resAttributes&gt;
+      &lt;Identifier&gt;PDS.Atmos.Product&lt;/Identifier&gt;
+      &lt;Title&gt;PDS Atmospheres Product Server&lt;/Title&gt;
+      &lt;Format&gt;text/html&lt;/Format&gt;
+      &lt;resContext&gt;NASA.PDS.Atmos&lt;/resContext&gt;
+      &lt;resClass&gt;system.productServer&lt;/resClass&gt;
+      &lt;resLocation&gt;
+      http://starbrite.jpl.nasa.gov/servlet/
+      jpl.oodt.servlets.ProductServlet?object=PDS.Atmos.Product
+      &lt;/resLocation&gt;
+      &lt;resLocation&gt;urn:eda:rmi:PDS.Atmos.Product&lt;/resLocation&gt;
+    &lt;/resAttributes&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;ONLINE_FILE_SPECIFICATION_NAME&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;RETURN_TYPE&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemValue&gt;PDS_ZIP&lt;/elemValue&gt;
+      &lt;elemValue&gt;PDS_LABEL&lt;/elemValue&gt;
+      &lt;elemValue&gt;RAW&lt;/elemValue&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+  &lt;/profile&gt;
+
+  &lt;profile&gt;
+    &lt;profAttributes&gt;
+      &lt;profId&gt;1.3.6.1.4.1.1306.2.1.1.3&lt;/profId&gt;
+      &lt;profType&gt;profile&lt;/profType&gt;
+      &lt;profStatusId&gt;active&lt;/profStatusId&gt;
+    &lt;/profAttributes&gt;
+    &lt;resAttributes&gt;
+      &lt;Identifier&gt;PDS.NAIF.Product&lt;/Identifier&gt;
+      &lt;Title&gt;PDS NAIF Product Server&lt;/Title&gt;
+      &lt;Format&gt;text/html&lt;/Format&gt;
+      &lt;resContext&gt;NASA.PDS.NAIF&lt;/resContext&gt;
+      &lt;resClass&gt;system.productServer&lt;/resClass&gt;
+      &lt;resLocation&gt;
+      http://starbrite.jpl.nasa.gov/servlet/
+      jpl.oodt.servlets.ProductServlet?object=PDS.NAIF.Product
+      &lt;/resLocation&gt;
+      &lt;resLocation&gt;urn:eda:rmi:PDS.NAIF.Product&lt;/resLocation&gt;
+    &lt;/resAttributes&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;ONLINE_FILE_SPECIFICATION_NAME&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;RETURN_TYPE&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemValue&gt;PDS_ZIP&lt;/elemValue&gt;
+      &lt;elemValue&gt;PDS_LABEL&lt;/elemValue&gt;
+      &lt;elemValue&gt;RAW&lt;/elemValue&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+  &lt;/profile&gt;
+
+  &lt;profile&gt;
+    &lt;profAttributes&gt;
+      &lt;profId&gt;1.3.6.1.4.1.1306.2.1.1.2&lt;/profId&gt;
+      &lt;profType&gt;profile&lt;/profType&gt;
+      &lt;profStatusId&gt;active&lt;/profStatusId&gt;
+    &lt;/profAttributes&gt;
+    &lt;resAttributes&gt;
+      &lt;Identifier&gt;PDS.Geo.Product&lt;/Identifier&gt;
+      &lt;Title&gt;PDS Geosciences Product Server&lt;/Title&gt;
+      &lt;Format&gt;text/html&lt;/Format&gt;
+      &lt;resContext&gt;NASA.PDS.GEO&lt;/resContext&gt;
+      &lt;resClass&gt;system.productServer&lt;/resClass&gt;
+      &lt;resLocation&gt;
+      http://starbrite.jpl.nasa.gov/servlet/
+      jpl.oodt.servlets.ProductServlet?object=PDS.Geo.Product
+      &lt;/resLocation&gt;
+      &lt;resLocation&gt;urn:eda:rmi:PDS.Geo.Product&lt;/resLocation&gt;
+    &lt;/resAttributes&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;ONLINE_FILE_SPECIFICATION_NAME&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;RETURN_TYPE&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemValue&gt;PDS_ZIP&lt;/elemValue&gt;
+      &lt;elemValue&gt;PDS_LABEL&lt;/elemValue&gt;
+      &lt;elemValue&gt;RAW&lt;/elemValue&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+  &lt;/profile&gt;
+
+  &lt;profile&gt;
+    &lt;profAttributes&gt;
+      &lt;profId&gt;1.3.6.1.4.1.1306.2.1.1.1&lt;/profId&gt;
+      &lt;profType&gt;profile&lt;/profType&gt;
+      &lt;profStatusId&gt;active&lt;/profStatusId&gt;
+    &lt;/profAttributes&gt;
+    &lt;resAttributes&gt;
+      &lt;Identifier&gt;PDS.CN.Product&lt;/Identifier&gt;
+      &lt;Title&gt;PDS Central Node Archive Product Server&lt;/Title&gt;
+      &lt;Format&gt;text/html&lt;/Format&gt;
+      &lt;resContext&gt;NASA.PDS.CN&lt;/resContext&gt;
+      &lt;resClass&gt;system.productServer&lt;/resClass&gt;
+      &lt;resLocation&gt;
+      http://starbrite.jpl.nasa.gov/servlet/
+      jpl.oodt.servlets.ProductServlet?object=PDS.CN.Product
+      &lt;/resLocation&gt;
+      &lt;resLocation&gt;urn:eda:rmi:PDS.CN.Product&lt;/resLocation&gt;
+    &lt;/resAttributes&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;ONLINE_FILE_SPECIFICATION_NAME&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;RETURN_TYPE&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemValue&gt;PDS_ZIP&lt;/elemValue&gt;
+      &lt;elemValue&gt;PDS_LABEL&lt;/elemValue&gt;
+      &lt;elemValue&gt;RAW&lt;/elemValue&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+  &lt;/profile&gt;
+
+  &lt;profile&gt;
+    &lt;profAttributes&gt;
+      &lt;profId&gt;1.3.6.1.4.1.1306.2.1.1.10&lt;/profId&gt;
+      &lt;profType&gt;profile&lt;/profType&gt;
+      &lt;profStatusId&gt;active&lt;/profStatusId&gt;
+    &lt;/profAttributes&gt;
+    &lt;resAttributes&gt;
+      &lt;Identifier&gt;PDS.CN.Profile&lt;/Identifier&gt;
+      &lt;Title&gt;PDS.CN.Profile&lt;/Title&gt;
+      &lt;Format&gt;text/html&lt;/Format&gt;
+      &lt;resContext&gt;NASA.PDS.CN&lt;/resContext&gt;
+      &lt;resClass&gt;system.productServer&lt;/resClass&gt;
+      &lt;resLocation&gt;
+      http://starbrite.jpl.nasa.gov/servlet/
+      jpl.oodt.servlets.ProductServlet?object=PDS.CN.Profile
+      &lt;/resLocation&gt;
+      &lt;resLocation&gt;urn:eda:rmi:PDS.CN.Profile&lt;/resLocation&gt;
+    &lt;/resAttributes&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;ONLINE_FILE_SPECIFICATION_NAME&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;RETURN_TYPE&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemValue&gt;PDS_ZIP&lt;/elemValue&gt;
+      &lt;elemValue&gt;PDS_LABEL&lt;/elemValue&gt;
+      &lt;elemValue&gt;RAW&lt;/elemValue&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+  &lt;/profile&gt;
+
+  &lt;profile&gt;
+    &lt;profAttributes&gt;
+      &lt;profId&gt;1.3.6.1.4.1.1306.2.1.1.9&lt;/profId&gt;
+      &lt;profType&gt;profile&lt;/profType&gt;
+      &lt;profStatusId&gt;active&lt;/profStatusId&gt;
+    &lt;/profAttributes&gt;
+    &lt;resAttributes&gt;
+      &lt;Identifier&gt;PDS.PPI.Product&lt;/Identifier&gt;
+      &lt;Title&gt;
+      PDS Planetary Plasma Interactions Product Server
+      &lt;/Title&gt;
+      &lt;Format&gt;text/html&lt;/Format&gt;
+      &lt;resContext&gt;NASA.PDS.PPI&lt;/resContext&gt;
+      &lt;resClass&gt;system.productServer&lt;/resClass&gt;
+      &lt;resLocation&gt;
+      http://starbrite.jpl.nasa.gov/servlet/
+      jpl.oodt.servlets.ProductServlet?object=PDS.PPI.Product
+      &lt;/resLocation&gt;
+      &lt;resLocation&gt;urn:eda:rmi:PDS.PPI.Product&lt;/resLocation&gt;
+    &lt;/resAttributes&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;ONLINE_FILE_SPECIFICATION_NAME&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;RETURN_TYPE&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemValue&gt;PDS_ZIP&lt;/elemValue&gt;
+      &lt;elemValue&gt;PDS_LABEL&lt;/elemValue&gt;
+      &lt;elemValue&gt;RAW&lt;/elemValue&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+  &lt;/profile&gt;
+
+  &lt;profile&gt;
+    &lt;profAttributes&gt;
+      &lt;profId&gt;1.3.6.1.4.1.1306.2.1.1.8&lt;/profId&gt;
+      &lt;profType&gt;profile&lt;/profType&gt;
+      &lt;profStatusId&gt;active&lt;/profStatusId&gt;
+    &lt;/profAttributes&gt;
+    &lt;resAttributes&gt;
+      &lt;Identifier&gt;PDS.Img.Product&lt;/Identifier&gt;
+      &lt;Title&gt;PDS Imaging Product Server&lt;/Title&gt;
+      &lt;Format&gt;text/html&lt;/Format&gt;
+      &lt;resContext&gt;NASA.PDS.Img&lt;/resContext&gt;
+      &lt;resClass&gt;system.productServer&lt;/resClass&gt;
+      &lt;resLocation&gt;
+      http://starbrite.jpl.nasa.gov/servlet/
+      jpl.oodt.servlets.ProductServlet?object=PDS.Img.Product
+      &lt;/resLocation&gt;
+      &lt;resLocation&gt;urn:eda:rmi:PDS.Img.Product&lt;/resLocation&gt;
+    &lt;/resAttributes&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;ONLINE_FILE_SPECIFICATION_NAME&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+    &lt;profElement&gt;
+      &lt;elemName&gt;RETURN_TYPE&lt;/elemName&gt;
+      &lt;elemType&gt;CHARACTER&lt;/elemType&gt;
+      &lt;elemEnumFlag&gt;T&lt;/elemEnumFlag&gt;
+      &lt;elemValue&gt;PDS_ZIP&lt;/elemValue&gt;
+      &lt;elemValue&gt;PDS_LABEL&lt;/elemValue&gt;
+      &lt;elemValue&gt;RAW&lt;/elemValue&gt;
+      &lt;elemMaxOccurrence&gt;0&lt;/elemMaxOccurrence&gt;
+    &lt;/profElement&gt;
+  &lt;/profile&gt;
+&lt;/profiles&gt;
+</source>
+
+      </subsection>
+
+      <subsection name="Biomarker Product Query">
+
+	<p>Suppose you had a query servlet available at
+	  <code>http://pancreas/qs</code>, and you want to query the CORBA
+	  product server <code>urn:eda:corba:TissueBank</code> with the
+	  query expression <code>SeverityLevel = 3</code>.  You can
+	  formulate the entire <code>GET</code> request as the following
+	  URL:
+	</p>
+
+	<source>
+  http://pancreas/qs?
+  type=product&amp;
+  object=urn:eda:corba:TissueBank&amp;
+  keywordQuery=SeverityLevel+%3D+3
+   </source>
+
+	<p>(Again, we've broken the URL for readability.)  The result to
+	  this query could be an XML document like the following:
+	</p>
+
+<source>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE query PUBLIC "-//JPL//DTD OODT Query 1.0//EN"
+                       "http://pancreas/dtd/query.dtd"&gt;
+
+&lt;query&gt;
+  &lt;queryAttributes&gt;
+    &lt;queryId&gt;UNKNOWN&lt;/queryId&gt;
+    &lt;queryTitle&gt;UNKNOWN&lt;/queryTitle&gt;
+    &lt;queryDesc&gt;UNKNOWN&lt;/queryDesc&gt;
+    &lt;queryType&gt;QUERY&lt;/queryType&gt;
+    &lt;queryStatusId&gt;ACTIVE&lt;/queryStatusId&gt;
+    &lt;querySecurityType&gt;UNKNOWN&lt;/querySecurityType&gt;
+    &lt;queryRevisionNote&gt;
+    1999-12-12 JSH V1.0 Under Development
+    &lt;/queryRevisionNote&gt;
+    &lt;queryDataDictId&gt;UNKNOWN&lt;/queryDataDictId&gt;
+  &lt;/queryAttributes&gt;
+  &lt;queryResultModeId&gt;ATTRIBUTE&lt;/queryResultModeId&gt;
+  &lt;queryPropogationType&gt;BROADCAST&lt;/queryPropogationType&gt;
+  &lt;queryPropogationLevels&gt;N/A&lt;/queryPropogationLevels&gt;
+  &lt;queryMimeAccept&gt;*/*&lt;/queryMimeAccept&gt;
+  &lt;queryMaxResults&gt;100&lt;/queryMaxResults&gt;
+  &lt;queryResults&gt;0&lt;/queryResults&gt;
+  &lt;queryKWQString&gt;SeverityLevel = 3&lt;/queryKWQString&gt;
+  &lt;querySelectSet&gt;
+    &lt;queryElement&gt;
+      &lt;tokenRole&gt;LITERAL&lt;/tokenRole&gt;
+      &lt;tokenValue&gt;3&lt;/tokenValue&gt;
+    &lt;/queryElement&gt;
+    &lt;queryElement&gt;
+      &lt;tokenRole&gt;elemName&lt;/tokenRole&gt;
+      &lt;tokenValue&gt;SeverityLevel&lt;/tokenValue&gt;
+    &lt;/queryElement&gt;
+    &lt;queryElement&gt;
+      &lt;tokenRole&gt;RELOP&lt;/tokenRole&gt;
+      &lt;tokenValue&gt;EQ&lt;/tokenValue&gt;
+    &lt;/queryElement&gt;
+  &lt;/querySelectSet&gt;
+  &lt;queryFromSet/&gt;
+  &lt;queryWhereSet/&gt;
+  &lt;queryResultSet&gt;
+    &lt;resultElement&gt;
+      &lt;resultId&gt;1&lt;/resultId&gt;
+      &lt;resultMimeType&gt;text/plain&lt;/resultMimeType&gt;
+      &lt;profId&gt;TissueBank&lt;/profId&gt;
+      &lt;identifier/&gt;
+      &lt;resultHeader&gt;
+        &lt;headerElement&gt;
+          &lt;elemName&gt;UNKNOWN&lt;/elemName&gt;
+          &lt;elemType&gt;TEXT&lt;/elemType&gt;
+        &lt;/headerElement&gt;
+      &lt;/resultHeader&gt;
+      &lt;Resultvalue xml:space="preserve"&gt;
+      PatientIDs=[1,2,4,7,11,19,22]&lt;/resultValue&gt;
+    &lt;/resultElement&gt;
+  &lt;/queryResultSet&gt;
+&lt;/query&gt;
+</source>
+
+	<p>Instead of using the <code>keywordQuery</code> parameter, you
+	  can create your own <code>XMLQuery</code> document and pass it in
+	  as the <code>query</code> parameter instead.  The query document
+	  would look like this:
+	</p>
+
+    <source>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE query PUBLIC "-//JPL//DTD OODT Query 1.0//EN"
+                       "http://pancreas:80/dtd/query.dtd"&gt;
+
+&lt;query&gt;
+  &lt;queryAttributes&gt;
+    &lt;queryId&gt;expr1&lt;/queryId&gt;
+    &lt;queryTitle&gt;Command-line Expression Query&lt;/queryTitle&gt;
+    &lt;queryDesc&gt;
+    The expression for this query came from the command-line.
+    &lt;/queryDesc&gt;
+    &lt;queryType&gt;QUERY&lt;/queryType&gt;
+    &lt;queryStatusId&gt;ACTIVE&lt;/queryStatusId&gt;
+    &lt;querySecurityType&gt;UNKNOWN&lt;/querySecurityType&gt;
+    &lt;queryRevisionNote&gt;
+    1999-12-12 JSH V1.0 Under Development
+    &lt;/queryRevisionNote&gt;
+    &lt;queryDataDictId&gt;UNKNOWN&lt;/queryDataDictId&gt;
+  &lt;/queryAttributes&gt;
+  &lt;queryResultModeId&gt;ATTRIBUTE&lt;/queryResultModeId&gt;
+  &lt;queryPropogationType&gt;BROADCAST&lt;/queryPropogationType&gt;
+  &lt;queryPropogationLevels&gt;N/A&lt;/queryPropogationLevels&gt;
+  &lt;queryMimeAccept&gt;*/*&lt;/queryMimeAccept&gt;
+  &lt;queryMaxResults&gt;100&lt;/queryMaxResults&gt;
+  &lt;queryResults&gt;0&lt;/queryResults&gt;
+  &lt;queryKWQString&gt;SeverityLevel = 3&lt;/queryKWQString&gt;
+  &lt;querySelectSet/&gt;
+  &lt;queryFromSet/&gt;
+  &lt;queryWhereSet&gt;
+    &lt;queryElement&gt;
+      &lt;tokenRole&gt;elemName&lt;/tokenRole&gt;
+      &lt;tokenValue&gt;SeverityLevel&lt;/tokenValue&gt;
+    &lt;/queryElement&gt;
+    &lt;queryElement&gt;
+      &lt;tokenRole&gt;LITERAL&lt;/tokenRole&gt;
+      &lt;tokenValue&gt;3&lt;/tokenValue&gt;
+    &lt;/queryElement&gt;
+    &lt;queryElement&gt;
+      &lt;tokenRole&gt;RELOP&lt;/tokenRole&gt;
+      &lt;tokenValue&gt;EQ&lt;/tokenValue&gt;
+    &lt;/queryElement&gt;
+  &lt;/queryWhereSet&gt;
+  &lt;queryResultSet/&gt;
+&lt;/query&gt;
+</source>
+
+	<p>Passing such a long string as a URL parameter in a
+	  <code>GET</code> request can be tricky, though.  For such long
+	  parameters, it's better to use a <code>POST</code> request
+	  instead.  See your HTTP API documentation for details on
+	  formulating <code>POST</code> requests.
+	</p>
+      </subsection>
+    </section>
+  </body>
+</document>

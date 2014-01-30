@@ -15,21 +15,24 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>${oodt.version}</version>
+    <version>0.7-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-commons</artifactId>
   <name>Common Utilities</name>
   <packaging>jar</packaging>
   <description>Apache OODT Common Utilities Project</description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/trunk/commons</url>
+  </scm>
   <build>
     <resources>
         <resource>
@@ -101,6 +104,7 @@
                 <exclude>**/testdata/*</exclude>
                 <exclude>**/package.html</exclude>
               </excludes>
+              <numUnapprovedLicenses>1</numUnapprovedLicenses>
             </configuration>
             <executions>
               <execution>
@@ -134,7 +138,7 @@
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>2.1</version>
+      <version>2.3</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
@@ -150,6 +154,12 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-hibernate3</artifactId>
       <version>2.0.8</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
         <groupId>xmlrpc</groupId>

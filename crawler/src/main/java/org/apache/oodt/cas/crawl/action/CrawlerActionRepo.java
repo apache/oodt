@@ -14,69 +14,79 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.crawl.action;
 
 //JDK imports
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 //Spring imports
 import org.springframework.context.ApplicationContext;
 
+import com.google.common.collect.Sets;
+
 /**
- * 
- * @author bfoster
- * @author mattmann
- * @version $Revision$
- * 
- * <p>
  * A repository and reader for {@link CrawlerAction}s associated with Crawler
- * lifecycle phases: preIngest, postIngestSuccess and postIngestFail
- * </p>.
+ * lifecycle phases: preIngest, postIngestSuccess and postIngestFail.
+ * 
+ * @author bfoster (Brian Foster)
+ * @author mattmann (Chris Mattmann)
  */
-public class CrawlerActionRepo implements CrawlerActionPhases {
+public class CrawlerActionRepo {
 
-    LinkedList<CrawlerAction> preIngestActions;
+   private LinkedList<CrawlerAction> preIngestActions;
+   private LinkedList<CrawlerAction> postIngestOnFailActions;
+   private LinkedList<CrawlerAction> postIngestOnSuccessActions;
 
-    LinkedList<CrawlerAction> postIngestOnFailActions;
+   public CrawlerActionRepo() {
+      this.preIngestActions = new LinkedList<CrawlerAction>();
+      this.postIngestOnFailActions = new LinkedList<CrawlerAction>();
+      this.postIngestOnSuccessActions = new LinkedList<CrawlerAction>();
+   }
 
-    LinkedList<CrawlerAction> postIngestOnSuccessActions;
+   public Set<CrawlerAction> getActions() {
+      Set<CrawlerAction> actions = Sets.newHashSet();
+      actions.addAll(preIngestActions);
+      actions.addAll(postIngestOnFailActions);
+      actions.addAll(postIngestOnSuccessActions);
+      return actions;
+   }
 
-    public CrawlerActionRepo() {
-        this.preIngestActions = new LinkedList<CrawlerAction>();
-        this.postIngestOnFailActions = new LinkedList<CrawlerAction>();
-        this.postIngestOnSuccessActions = new LinkedList<CrawlerAction>();
-    }
+   public List<CrawlerAction> getPreIngestActions() {
+      return this.preIngestActions;
+   }
 
-    public List<CrawlerAction> getPreIngestActions() {
-        return this.preIngestActions;
-    }
+   public List<CrawlerAction> getPostIngestOnFailActions() {
+      return this.postIngestOnFailActions;
+   }
 
-    public List<CrawlerAction> getPostIngestOnFailActions() {
-        return this.postIngestOnFailActions;
-    }
+   public List<CrawlerAction> getPostIngestOnSuccessActions() {
+      return this.postIngestOnSuccessActions;
+   }
 
-    public List<CrawlerAction> getPostIngestOnSuccessActions() {
-        return this.postIngestOnSuccessActions;
-    }
-
-    public void loadActionsFromBeanFactory(ApplicationContext context,
-            List<String> actionIds) {
-        for (String actionId : actionIds) {
-            CrawlerAction action = ((CrawlerAction) context.getBean(actionId,
-                    CrawlerAction.class));
-            List<String> phases = action.getPhases();
-            for (String phase : phases) {
-                if (phase.equals(PRE_INGEST))
-                    this.preIngestActions.add(action);
-                else if (phase.equals(POST_INGEST_SUCCESS))
-                    this.postIngestOnSuccessActions.add(action);
-                else if (phase.equals(POST_INGEST_FAILURE))
-                    this.postIngestOnFailActions.add(action);
+   public void loadActionsFromBeanFactory(ApplicationContext context,
+         List<String> actionIds) {
+      for (String actionId : actionIds) {
+         CrawlerAction action = ((CrawlerAction) context.getBean(actionId,
+               CrawlerAction.class));
+         List<String> phases = action.getPhases();
+         for (String phase : phases) {
+            switch (CrawlerActionPhases.getPhaseByName(phase)) {
+               case PRE_INGEST:
+                  preIngestActions.add(action);
+                  break;
+               case POST_INGEST_SUCCESS:
+                  postIngestOnSuccessActions.add(action);
+                  break;
+               case POST_INGEST_FAILURE:
+                  postIngestOnFailActions.add(action);
+                  break;
+               default:
+                  throw new RuntimeException("Phase '" + phase
+                        + "' is not supported");
             }
-        }
-    }
-
+         }
+      }
+   }
 }

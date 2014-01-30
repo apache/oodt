@@ -31,21 +31,22 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
 //OODT imports
+import static org.apache.oodt.cas.product.rss.RSSConfigMetKeys.RSS_TRANSFER_CONF_KEY;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
@@ -53,6 +54,7 @@ import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.util.DateConvert;
 
 /**
@@ -74,11 +76,12 @@ public class RSSProductTransferServlet extends HttpServlet {
     /* our client to the file manager */
     private static XmlRpcFileManagerClient fClient = null;
 
+    /* RSS config */
+    private RSSConfig rssconf;
+
     /* our log stream */
     private Logger LOG = Logger.getLogger(RSSProductTransferServlet.class
             .getName());
-
-    private static final Map NS_MAP = new HashMap();
 
     public static final String COPYRIGHT_BOILER_PLATE = "Copyright 2010: Apache Software Foundation";
 
@@ -86,10 +89,6 @@ public class RSSProductTransferServlet extends HttpServlet {
 
     public static final SimpleDateFormat dateFormatter = new SimpleDateFormat(
             RSS_FORMAT_STR);
-
-    static {
-        NS_MAP.put("cas", "http://oodt.jpl.nasa.gov/1.0/cas");
-    }
 
     /**
      * <p>
@@ -105,8 +104,13 @@ public class RSSProductTransferServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        String fileManagerUrl = config.getServletContext().getInitParameter(
-                "filemgr.url");
+        String fileManagerUrl = null;
+        try {
+          fileManagerUrl = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
+              "filemgr.url") );
+        } catch (Exception e) {
+          throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
+        }        
         if (fileManagerUrl == null) {
             // try the default port
             fileManagerUrl = "http://localhost:9000";
@@ -124,6 +128,17 @@ public class RSSProductTransferServlet extends HttpServlet {
             LOG.log(Level.SEVERE,
                     "Unable to initialize file manager url in RSS Servlet: [url="
                             + fileManagerUrl + "], Message: " + e.getMessage());
+        }
+
+        try
+        {
+          rssconf = RSSConfigReader.readConfig(new File(PathUtils
+              .replaceEnvVariables(config.getServletContext().getInitParameter(
+                  (RSS_TRANSFER_CONF_KEY)))));
+        }
+        catch (FileNotFoundException e)
+        {
+          throw new ServletException(e);
         }
     }
 
@@ -166,8 +181,14 @@ public class RSSProductTransferServlet extends HttpServlet {
 
                 Element rss = XMLUtils.addNode(doc, doc, "rss");
                 XMLUtils.addAttribute(doc, rss, "version", "2.0");
-                XMLUtils.addAttribute(doc, rss, "xmlns:cas", (String) NS_MAP
-                        .get("cas"));
+
+                // add namespace attributes from config file to rss tag
+                for (RSSNamespace namespace : rssconf.getNamespaces())
+                {
+                  XMLUtils.addAttribute(doc, rss,
+                      "xmlns:" + namespace.getPrefix(), namespace.getUri());
+                }
+
                 Element channel = XMLUtils.addNode(doc, rss, "channel");
 
                 XMLUtils.addNode(doc, channel, "title",
@@ -219,19 +240,22 @@ public class RSSProductTransferServlet extends HttpServlet {
                             XMLUtils.addNode(doc, item, "pubDate",
                                     dateFormatter.format(receivedTime));
                         }
+
+                        // set product transfer metadata
+                        m.addMetadata("BytesTransferred",
+                          "" + status.getBytesTransferred());
+                        m.addMetadata("TotalBytes",
+                          "" + status.getFileRef().getFileSize());
+                        m.addMetadata("PercentComplete",
+                          "" + status.computePctTransferred());
+
                     } catch (CatalogException ignore) {
                     }
 
-                    XMLUtils.addNode(doc, item, "source",
-                            "file manager transfers");
-                    XMLUtils.addNode(doc, item, "cas:source",
-                            "file manager transfers");
-                    XMLUtils.addNode(doc, item, "cas:bytesTransferred", ""
-                            + status.getBytesTransferred());
-                    XMLUtils.addNode(doc, item, "cas:totalBytes", ""
-                            + status.getFileRef().getFileSize());
-                    XMLUtils.addNode(doc, item, "cas:percentComplete", ""
-                            + status.computePctTransferred());
+                    // add additional elements from the RSSConfig
+                    for (RSSTag tag : rssconf.getTags()) {
+                      item.appendChild(RSSUtils.emitRSSTag(tag, m, doc, item));
+                    }
 
                 }
 

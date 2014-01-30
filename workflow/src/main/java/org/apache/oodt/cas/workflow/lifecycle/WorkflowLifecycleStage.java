@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.workflow.lifecycle;
 
 //JDK imports
@@ -23,100 +22,121 @@ import java.util.List;
 import java.util.Vector;
 
 /**
+ * 
+ * A particular step (or Stage) in a {@link WorkflowLifecycle}
+ * 
  * @author mattmann
  * @version $Revision$
  * 
- * <p>
- * A particular step (or Stage) in a {@link WorkflowLifecycle}
- * </p>.
  */
 public class WorkflowLifecycleStage {
 
-    private String name;
+  private String name;
 
-    private int order;
+  private int order;
 
-    private List states;
+  private List<WorkflowState> states;
 
-    /**
-     * Default Constructor.
-     * 
-     */
-    public WorkflowLifecycleStage() {
-        states = new Vector();
-    }
+  /**
+   * Default Constructor.
+   * 
+   */
+  public WorkflowLifecycleStage() {
+    states = new Vector<WorkflowState>();
+  }
 
-    /**
-     * Constructs a new WorkflowLifecycleSage with the given parameters.
-     * 
-     * @param name
-     *            The name of the WorkflowLifeCycleStage.
-     * @param states
-     *            The {@link List} of String states that are part of this
-     *            particular stage.
-     * 
-     * @param order
-     *            The ordering of this State in a {@List} of States that make up
-     *            a {@link WorkflowLifeCycle}.
-     */
-    public WorkflowLifecycleStage(String name, List states, int order) {
-        this.name = name;
-        this.states = states;
-        this.order = order;
-    }
+  /**
+   * Constructs a new WorkflowLifecycleSage with the given parameters.
+   * 
+   * @param name
+   *          The name of the WorkflowLifeCycleStage.
+   * @param states
+   *          The {@link List} of String states that are part of this particular
+   *          stage.
+   * 
+   * @param order
+   *          The ordering of this State in a {@List} of States that make
+   *          up a {@link WorkflowLifeCycle}.
+   */
+  public WorkflowLifecycleStage(String name, List<WorkflowState> states,
+      int order) {
+    this.name = name;
+    this.states = states;
+    this.order = order;
+  }
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
 
-    /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+  /**
+   * @param name
+   *          the name to set
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    /**
-     * @return the states
-     */
-    public List getStates() {
-        return states;
-    }
+  /**
+   * @return the states
+   */
+  public List<WorkflowState> getStates() {
+    return states;
+  }
 
-    /**
-     * @param states
-     *            the states to set
-     */
-    public void setStates(List states) {
-        this.states = states;
-    }
+  /**
+   * @param states
+   *          the states to set
+   */
+  public void setStates(List<WorkflowState> states) {
+    this.states = states;
+  }
 
-    /**
-     * @return the order
-     */
-    public int getOrder() {
-        return order;
-    }
+  /**
+   * @return the order
+   */
+  public int getOrder() {
+    return order;
+  }
 
-    /**
-     * @param order
-     *            the order to set
-     */
-    public void setOrder(int order) {
-        this.order = order;
-    }
+  /**
+   * @param order
+   *          the order to set
+   */
+  public void setOrder(int order) {
+    this.order = order;
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        return this.name.hashCode() + new Integer(this.order).hashCode();
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  public int hashCode() {
+    return this.name.hashCode() + new Integer(this.order).hashCode();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object stage) {
+    return this.name.equals(((WorkflowLifecycleStage) stage).getName());
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return this.name;
+  }
 
 }

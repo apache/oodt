@@ -16,35 +16,48 @@ License for the specific language governing permissions and limitations under
 the License.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-        
-    <bean class="org.apache.oodt.cas.commons.spring.postprocessor.SetIdBeanPostProcessor"/>    
-    
-    <!-- Precondition Comparators -->
-    
-    <bean id="CheckThatPushPullMetFileExists" lazy-init="true" class="org.apache.oodt.cas.metadata.preconditions.ExistanceCheckComparator">
-        <property name="description" value="Checks if the push-pull metadata file exists for the current data file"/>        
-        <property name="compareItem">
-            <value type="java.lang.Boolean">true</value>    
-        </property>
-        <property name="type" value="equal_to"/>
-    </bean>
-    
-    <bean id="CheckThatDataFileSizeIsGreaterThanZero" lazy-init="true" class="org.apache.oodt.cas.metadata.preconditions.FileSizeComparator">
-        <property name="description" value="Check if the current data file size is greater than zero"/>        
-        <property name="compareItem">
-            <value type="java.lang.Long">0</value>
-        </property>
-        <property name="type" value="greater_than"/>
-    </bean>
-    
-    <bean id="AprioriUniquessCheckWithFilemgr" lazy-init="true" class="org.apache.oodt.cas.crawl.comparator.FilemgrUniquenessCheckComparator">
-        <property name="description" value="Checks where the current data file existing in the filemgr based on its FILENAME"/>        
-        <property name="compareItem">
-            <value type="java.lang.Boolean">false</value>
-        </property>
-        <property name="type" value="equal_to"/>
-    </bean>
-    
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean class="org.apache.oodt.commons.spring.postprocessor.SetIdBeanPostProcessor" />
+  <bean class="org.apache.oodt.cas.crawl.util.CasPropertyPlaceholderConfigurer">
+
+    <!-- Allow for system-level properties to override all properties below -->
+    <property name="systemPropertiesMode" value="2" />
+
+    <!-- Default Properties -->
+    <property name="properties">
+      <props>
+        <prop key="crawler.pushpull.met.file.ext">[PUSHPULL_MET_FILE_EXT]</prop>
+        <prop key="crawler.filemgr.url">[FILEMGR_URL]</prop>
+      </props>
+    </property>
+  </bean>
+
+	<!-- Precondition Comparators -->
+	<bean id="CheckThatPushPullMetFileExists" lazy-init="true" class="org.apache.oodt.cas.metadata.preconditions.ExistanceCheckComparator">
+    <property name="fileExtension" value="${crawler.pushpull.met.file.ext}" />
+		<property name="description" value="Checks if the push-pull metadata file exists for the current data file" />
+		<property name="compareItem">
+			<value type="java.lang.Boolean">true</value>
+		</property>
+		<property name="type" value="equal_to" />
+	</bean>
+
+	<bean id="CheckThatDataFileSizeIsGreaterThanZero" lazy-init="true" class="org.apache.oodt.cas.metadata.preconditions.FileSizeComparator">
+		<property name="description" value="Check if the current data file size is greater than zero" />
+		<property name="compareItem">
+			<value type="java.lang.Long">0</value>
+		</property>
+		<property name="type" value="greater_than" />
+	</bean>
+
+	<bean id="AprioriUniquessCheckWithFilemgr" lazy-init="true" class="org.apache.oodt.cas.crawl.comparator.FilemgrUniquenessCheckComparator">
+		<property name="description" value="Checks where the current data file existing in the filemgr based on its FILENAME" />
+		<property name="compareItem">
+			<value type="java.lang.Boolean">false</value>
+		</property>
+		<property name="type" value="equal_to" />
+		<property name="filemgrUrl" value="${crawler.filemgr.url}" />
+	</bean>
 </beans>

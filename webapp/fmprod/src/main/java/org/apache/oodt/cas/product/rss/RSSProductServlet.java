@@ -56,6 +56,7 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.util.DateConvert;
 
 /**
@@ -82,18 +83,12 @@ public class RSSProductServlet extends HttpServlet {
   /* our log stream */
   private Logger LOG = Logger.getLogger(RSSProductServlet.class.getName());
 
-  private static final Map NS_MAP = new HashMap();
-
   public static final String COPYRIGHT_BOILER_PLATE = "Copyright 2010: Apache Software Foundation";
 
   public static final String RSS_FORMAT_STR = "E, dd MMM yyyy HH:mm:ss z";
 
   public static final SimpleDateFormat dateFormatter = new SimpleDateFormat(
       RSS_FORMAT_STR);
-
-  static {
-    NS_MAP.put("cas", "http://oodt.jpl.nasa.gov/1.0/cas");
-  }
 
   /**
    * Default constructor.
@@ -107,8 +102,13 @@ public class RSSProductServlet extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
 
-    String fileManagerUrl = config.getServletContext().getInitParameter(
-        "filemgr.url");
+    String fileManagerUrl;
+	try {
+		fileManagerUrl = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
+		    "filemgr.url") );
+	} catch (Exception e) {
+		throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
+	}
     if (fileManagerUrl == null) {
       // try the default port
       fileManagerUrl = "http://localhost:9000";
@@ -200,8 +200,13 @@ public class RSSProductServlet extends HttpServlet {
 
         Element rss = XMLUtils.addNode(doc, doc, "rss");
         XMLUtils.addAttribute(doc, rss, "version", "2.0");
-        XMLUtils
-            .addAttribute(doc, rss, "xmlns:cas", (String) NS_MAP.get("cas"));
+        
+        // add namespace attributes from config file to rss tag
+        for (RSSNamespace namespace : this.conf.getNamespaces()) 
+        {
+          XMLUtils.addAttribute(doc, rss, "xmlns:" + namespace.getPrefix(), namespace.getUri());
+        }
+        
         Element channel = XMLUtils.addNode(doc, rss, "channel");
 
         XMLUtils.addNode(doc, channel, "title", productTypeName);

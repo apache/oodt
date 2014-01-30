@@ -44,8 +44,14 @@ public interface RemoteFileMetKeys {
 
     public static final String PRODUCT_TYPE = "ProductType";
 
+    public static final String MIME_TYPE = "MimeType";
+    
     public static final String SUPER_TYPE = "SuperType";
 
     public static final String DELETE_AFTER_DOWNLOAD = "DeleteAfterDownload";
+    
+    public static final String PRODUCT_NAME_GENERATOR = "ProductNameGenerator";
+    
+    public static final String UNIQUE_ELEMENT = "UniqueElement";
 
 }

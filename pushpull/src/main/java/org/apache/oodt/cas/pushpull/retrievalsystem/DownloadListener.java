@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.pushpull.retrievalsystem;
 
 //OODT imports
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFile;
+import org.apache.oodt.cas.protocol.ProtocolFile;
 
 /**
  * 

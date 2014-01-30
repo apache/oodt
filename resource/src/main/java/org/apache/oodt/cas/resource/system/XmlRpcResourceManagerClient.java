@@ -24,6 +24,7 @@ import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
 //OODTimports
+import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.JobStatus;
@@ -31,6 +32,7 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
+import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 
 //JDK imports
@@ -112,146 +114,9 @@ public class XmlRpcResourceManagerClient {
         resMgrUrl = url;
     }
 
-    public static void main(String[] args) throws Exception {
-
-        String getNodeByIdOperation = "--getNodeById --nodeId <node id>\n";
-        String getNodesOperation = "--getNodes\n";
-        String submitJobOperation = "--submitJob --def <job def file> --input <job input constructor>\n";
-        String submitJobRemoteOperation = "--submitJob --def <job def file> --input <job input constructor> --url <url>\n";
-        String getJobInfoOperation = "--getJobInfo --id <job id>\n";
-        String killOperation = "--kill --id <job id>\n";
-        String getExecutionNodeOperation = "--getExecNode --id <job id>\n";
-
-        String usage = "resmgr-client --url <url to xml rpc service> --operation "
-                + "[<operation> [params]]\n"
-                + "operations:\n"
-                + getNodeByIdOperation
-                + getNodesOperation
-                + submitJobOperation
-                + submitJobRemoteOperation
-                + getJobInfoOperation
-                + killOperation + getExecutionNodeOperation;
-
-        String operation = null, url = null;
-
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equals("--operation")) {
-                operation = args[++i];
-            } else if (args[i].equals("--url")) {
-                url = args[++i];
-            }
-        }
-
-        if (operation == null) {
-            System.err.println(usage);
-            System.exit(1);
-        }
-
-        // create the client
-        XmlRpcResourceManagerClient client = new XmlRpcResourceManagerClient(
-                new URL(url));
-
-        if (operation.equals("--getNodes")) {
-            // no arguments to read, just call getNodes
-            List resNodes = client.getNodes();
-
-            if (resNodes != null && resNodes.size() > 0) {
-                for (Iterator i = resNodes.iterator(); i.hasNext();) {
-                    ResourceNode node = (ResourceNode) i.next();
-                    System.out.println("node: [id=" + node.getNodeId()
-                            + ",capacity=" + node.getCapacity() + ",url="
-                            + node.getIpAddr() + "]");
-                }
-            }
-
-        } else if (operation.equals("--getExecNode")) {
-            String jobId = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--id")) {
-                    jobId = args[++i];
-                }
-            }
-
-            if (jobId == null) {
-                System.err.println(getExecutionNodeOperation);
-                System.exit(1);
-
-            }
-
-            String execNode = client.getExecutionNode(jobId);
-            if (execNode == null || (execNode != null && execNode.equals(""))) {
-                System.out.println("Job: [" + jobId
-                        + "] not executing on any known node!");
-            } else {
-                System.out.println(execNode);
-            }
-        } else if (operation.equals("--kill")) {
-            String jobId = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--id")) {
-                    jobId = args[++i];
-                }
-            }
-
-            if (jobId == null) {
-                System.err.println(killOperation);
-                System.exit(1);
-
-            }
-
-            if (client.killJob(jobId)) {
-                System.out.println("Job: [" + jobId + "] successfully killed.");
-            } else {
-                System.out.println("Unable to kill job: [" + jobId + "]");
-            }
-
-        } else if (operation.equals("--getNodeById")) {
-            String nodeId = null;
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--nodeId")) {
-                    nodeId = args[++i];
-                }
-            }
-
-            if (nodeId == null) {
-                System.err.println(getNodeByIdOperation);
-                System.exit(1);
-            }
-
-            ResourceNode node = client.getNodeById(nodeId);
-
-            if (node != null) {
-                System.out.println("node: [id=" + node.getNodeId()
-                        + ",capacity=" + node.getCapacity() + ",url="
-                        + node.getIpAddr() + "]");
-            }
-        } else if (operation.equals("--getJobInfo")) {
-            String jobId = null;
-
-            for (int i = 4; i < args.length; i++) {
-                if (args[i].equals("--id")) {
-                    jobId = args[++i];
-                }
-            }
-
-            if (jobId == null) {
-                System.err.println(getJobInfoOperation);
-                System.exit(1);
-            }
-
-            Job jobInfo = client.getJobInfo(jobId);
-
-            System.out.println("Job: [id=" + jobId + ", status="
-                    + getReadableJobStatus(jobInfo.getStatus()) + ",name="
-                    + jobInfo.getName() + ",queue=" + jobInfo.getQueueName()
-                    + ",load=" + jobInfo.getLoadValue() + ",inputClass="
-                    + jobInfo.getJobInputClassName() + ",instClass="
-                    + jobInfo.getJobInstanceClassName() + "]");
-        } else
-            throw new IllegalArgumentException("Unknown Operation!");
-
+    public static void main(String[] args) {
+       CmdLineUtility cmdLineUtility = new CmdLineUtility();
+       cmdLineUtility.run(args);
     }
 
     public boolean isJobComplete(String jobId) throws JobRepositoryException {
@@ -264,9 +129,9 @@ public class XmlRpcResourceManagerClient {
             complete = ((Boolean) client.execute("resourcemgr.isJobComplete",
                     argList)).booleanValue();
         } catch (XmlRpcException e) {
-            throw new JobRepositoryException(e.getMessage());
+            throw new JobRepositoryException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new JobRepositoryException(e.getMessage());
+            throw new JobRepositoryException(e.getMessage(), e);
         }
 
         return complete;
@@ -282,9 +147,9 @@ public class XmlRpcResourceManagerClient {
             jobHash = (Hashtable) client.execute("resourcemgr.getJobInfo",
                     argList);
         } catch (XmlRpcException e) {
-            throw new JobRepositoryException(e.getMessage());
+            throw new JobRepositoryException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new JobRepositoryException(e.getMessage());
+            throw new JobRepositoryException(e.getMessage(), e);
         }
 
         return XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
@@ -371,9 +236,9 @@ public class XmlRpcResourceManagerClient {
         try {
             jobId = (String) client.execute("resourcemgr.handleJob", argList);
         } catch (XmlRpcException e) {
-            throw new JobExecutionException(e.getMessage());
+            throw new JobExecutionException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new JobExecutionException(e.getMessage());
+            throw new JobExecutionException(e.getMessage(), e);
         }
 
         return jobId;
@@ -393,9 +258,9 @@ public class XmlRpcResourceManagerClient {
             success = ((Boolean) client.execute("resourcemgr.handleJob",
                     argList)).booleanValue();
         } catch (XmlRpcException e) {
-            throw new JobExecutionException(e.getMessage());
+            throw new JobExecutionException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new JobExecutionException(e.getMessage());
+            throw new JobExecutionException(e.getMessage(), e);
         }
 
         return success;
@@ -411,9 +276,9 @@ public class XmlRpcResourceManagerClient {
             nodeVector = (Vector) client.execute("resourcemgr.getNodes",
                     argList);
         } catch (XmlRpcException e) {
-            throw new MonitorException(e.getMessage());
+            throw new MonitorException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new MonitorException(e.getMessage());
+            throw new MonitorException(e.getMessage(), e);
         }
 
         return XmlRpcStructFactory.getResourceNodeListFromXmlRpc(nodeVector);
@@ -430,9 +295,9 @@ public class XmlRpcResourceManagerClient {
             resNodeHash = (Hashtable) client.execute("resourcemgr.getNodeById",
                     argList);
         } catch (XmlRpcException e) {
-            throw new MonitorException(e.getMessage());
+            throw new MonitorException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new MonitorException(e.getMessage());
+            throw new MonitorException(e.getMessage(), e);
         }
 
         return XmlRpcStructFactory.getResourceNodeFromXmlRpc(resNodeHash);
@@ -454,18 +319,187 @@ public class XmlRpcResourceManagerClient {
         this.resMgrUrl = resMgrUrl;
     }
 
-    private static String getReadableJobStatus(String status) {
-        if (status.equals(JobStatus.COMPLETE)) {
-            return "COMPLETE";
-        } else if (status.equals(JobStatus.EXECUTED)) {
-            return "EXECUTED";
-        } else if (status.equals(JobStatus.QUEUED)) {
-            return "QUEUED";
-        } else if (status.equals(JobStatus.SCHEDULED)) {
-            return "SCHEDULED";
-        } else if (status.equals(JobStatus.KILLED)) {
-            return "KILLED";
-        } else
-            return null;
+    /**
+     * Creates a queue with the given name
+     * @param queueName The name of the queue to be created
+     * @throws QueueManagerException on any error
+     */
+    public void addQueue(String queueName) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(queueName);
+            client.execute("resourcemgr.addQueue", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
     }
+    
+    /**
+     * Removes the queue with the given name
+     * @param queueName The name of the queue to be removed
+     * @throws QueueManagerException on any error
+     */
+    public void removeQueue(String queueName) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(queueName);
+            client.execute("resourcemgr.removeQueue", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Adds a node
+     * @param node The node to be added
+     * @throws MonitorException on any error
+     */
+    public void addNode(ResourceNode node) throws MonitorException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(XmlRpcStructFactory.getXmlRpcResourceNode(node));
+            client.execute("resourcemgr.addNode", argList);
+        }catch (Exception e) {
+            throw new MonitorException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Removes the node with the given id
+     * @param nodeId The id of the node to be removed
+     * @throws MonitorException on any error
+     */
+    public void removeNode(String nodeId) throws MonitorException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(nodeId);
+            client.execute("resourcemgr.removeNode", argList);
+        }catch (Exception e) {
+            throw new MonitorException(e.getMessage(), e);
+        }
+    }
+    
+    public void setNodeCapacity(String nodeId, int capacity) throws MonitorException{
+    	try{
+    		Vector<Object> argList = new Vector<Object>();
+            argList.add(nodeId);
+            argList.add(new Integer(capacity));
+            client.execute("resourcemgr.setNodeCapacity", argList);
+    	}catch (Exception e){
+    		throw new MonitorException(e.getMessage(), e);
+    	}
+    }
+    
+    /**
+     * Addes the node with given id to the queue with the given name
+     * @param nodeId The id of the node to be added to the given queueName
+     * @param queueName The name of the queue to add the given node
+     * @throws QueueManagerException on any error
+     */
+    public void addNodeToQueue(String nodeId, String queueName) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(nodeId);
+            argList.add(queueName);
+            client.execute("resourcemgr.addNodeToQueue", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Remove the node with the given id from the queue with the given name
+     * @param nodeId The id of the node to be remove from the given queueName
+     * @param queueName The name of the queue from which to remove the given node
+     * @throws QueueManagerException on any error
+     */
+    public void removeNodeFromQueue(String nodeId, String queueName) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(nodeId);
+            argList.add(queueName);
+            client.execute("resourcemgr.removeNodeFromQueue", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Gets a list of currently supported queue names
+     * @return A list of currently supported queue names
+     * @throws QueueManagerException on any error
+     */
+    public List<String> getQueues() throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            return (List<String>) client.execute("resourcemgr.getQueues", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Gets a list of ids of the nodes in the given queue
+     * @param queueName The name of the queue to get node ids from
+     * @return List of node ids in the given queueName
+     * @throws QueueManagerException on any error
+     */
+    public List<String> getNodesInQueue(String queueName) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(queueName);
+            return (List<String>) client.execute("resourcemgr.getNodesInQueue", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Gets a list of queues which contain the node with the given nodeId
+     * @param nodeId The id of the node to get queues it belongs to
+     * @return List of queues which contain the give node
+     * @throws QueueManagerException on any error
+     */
+    public List<String> getQueuesWithNode(String nodeId) throws QueueManagerException {
+        try {
+            Vector<Object> argList = new Vector<Object>();
+            argList.add(nodeId);
+            return (List<String>) client.execute("resourcemgr.getQueuesWithNode", argList);
+        }catch (Exception e) {
+            throw new QueueManagerException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Report on the load of the requested node
+     * @param nodeId The id of the node to be polled
+     * @return A String showing a fraction of the loads node over its capacity
+     * @throws MonitorException on any error
+     */
+    public String getNodeLoad(String nodeId) throws MonitorException{
+    	try{
+	    	Vector<Object> argList = new Vector<Object>();
+	    	argList.add(nodeId);
+	    	return (String)client.execute("resourcemgr.getNodeLoad", argList);
+    	}catch(Exception e){
+    		throw new MonitorException(e.getMessage(), e);
+    	}
+    }
+
+  private static String getReadableJobStatus(String status) {
+    if (status.equals(JobStatus.SUCCESS)) {
+      return "SUCCESS";
+    } else if (status.equals(JobStatus.FAILURE)) {
+      return "FAILURE";
+    } else if (status.equals(JobStatus.EXECUTED)) {
+      return "EXECUTED";
+    } else if (status.equals(JobStatus.QUEUED)) {
+      return "QUEUED";
+    } else if (status.equals(JobStatus.SCHEDULED)) {
+      return "SCHEDULED";
+    } else if (status.equals(JobStatus.KILLED)) {
+      return "KILLED";
+    } else
+      return null;
+  }
 }

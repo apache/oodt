@@ -139,24 +139,8 @@ public abstract class AbstractFilemgrMetExtractor implements
 
     protected String getRootRefPath(List<Reference> refs,
             String productTypeRepoPath) throws URISyntaxException {
-        // product type repo: file://foo/path
-        // ref data store path: file:/foo/path/myproddir/dir1/file
-
-        String productTypeAbsPath = new File(new URI(productTypeRepoPath))
-                .getAbsolutePath();
-        String anyRefDataStorePath = new File(new URI(refs.get(0)
-                .getDataStoreReference())).getAbsolutePath();
-        String lastDirPath = anyRefDataStorePath;
-
-        while (!anyRefDataStorePath.equals(productTypeAbsPath)) {
-            lastDirPath = anyRefDataStorePath;
-            // chop off last dir
-            anyRefDataStorePath = anyRefDataStorePath.substring(0,
-                    anyRefDataStorePath.lastIndexOf("/"));
-        }
-
-        return lastDirPath;
-
+        return new File(new URI(refs.get(0)
+                .getOrigReference())).getAbsolutePath();
     }
 
 }

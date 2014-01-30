@@ -41,7 +41,7 @@ public class ProcessedPageInfo extends PageInfo {
 	}
 	
 	public boolean isLastPage() {
-		return this.pageNum == this.totalPages;
+		return this.pageNum >= this.totalPages;
 	}
 	
 }

@@ -333,6 +333,32 @@ the License.
          
       </section>
       
+      <section name="Use Cases">
+        <p>
+          The File Manager was built to support several of the above capabilities outlined in 
+          Section 3. In particular there were several use cases that we wanted to support, some 
+          of which are described below.        
+        </p>
+      
+         <img src="../images/fm_use_case1.png" alt="File Manager Ingest Use Case"/>
+         
+         <p>The red numbers in the above Figure correspond to a sequence of steps that occurs and a 
+         series of interactions between the different File Manager extension points in order to 
+         perform the file ingestion activity. In Step 1, a File Manager client is invoked for the 
+         ingest operation, which sends Metadata and References for a particular Product to ingest 
+         to the File Manager server’s System Interface extension point. The System Interface uses 
+         the information about Product Type policy made available by the Repository Manager in order 
+         to understand whether or not the product should be transferred, where it’s root repository 
+         path should be, and so on. The System Interface then catalogs the file References and Metadata 
+         using the Catalog extension point. During this catalog process, the Catalog extension point 
+         uses the Validation Layer to determine which Elements should be extracted for the particular 
+         Product, based upon its Product Type. After that, Data Transfer is initiated either at the 
+         client or server end, and the first step to Data Transfer is using the Product’s associated 
+         Versioner to generate final file References. After final file References have been determined, 
+         the file data is transferred by the server or by the client, using the Data Transfer extension 
+         point.</p>
+      </section>      
+      
       <section name="Conclusion">
       <p>The aim of this document is to provide information relevant to developers
       about the CAS File Manager. Specifically, this document has described the File 

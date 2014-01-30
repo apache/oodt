@@ -169,7 +169,7 @@ public class Catalog {
 				return null;
 			}
 		}catch (Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -193,7 +193,7 @@ public class Catalog {
 				return null;
 			}
 		}catch (Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -207,7 +207,7 @@ public class Catalog {
 				return false;
 			}
 		}catch (Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -227,7 +227,7 @@ public class Catalog {
 				return false;
 			}
 		}catch(Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 		
@@ -244,7 +244,39 @@ public class Catalog {
 				return Collections.emptyList();
 			}
 		}catch (Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
+		}
+	}
+	
+
+	public List<CatalogReceipt> query(QueryExpression queryExpression, int startIndex, int endIndex) throws CatalogException {
+		try {
+			if (this.isQueriable()) {
+				QueryService queryService = (QueryService) this.index;
+				List<CatalogReceipt> catalogReceipts = new Vector<CatalogReceipt>();
+				for (IngestReceipt ingestReceipt : queryService.query(queryExpression, startIndex, endIndex)) 
+					catalogReceipts.add(new CatalogReceipt(ingestReceipt, this.getId()));
+				return Collections.unmodifiableList(catalogReceipts);
+			}else {
+				LOG.log(Level.WARNING, "Catalog '" + this + "' is not queriable");
+				return Collections.emptyList();
+			}
+		}catch (Exception e) {
+			throw new CatalogException(e.getMessage(), e);
+		}
+	}
+	
+	public int sizeOf(QueryExpression queryExpression) throws CatalogException {
+		try {
+			if (this.isQueriable()) {
+				QueryService queryService = (QueryService) this.index;
+				return queryService.sizeOf(queryExpression);
+			}else {
+				LOG.log(Level.WARNING, "Catalog '" + this + "' is not queriable");
+				return 0;
+			}
+		}catch (Exception e) {
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -258,7 +290,7 @@ public class Catalog {
 				return new Metadata();
 			}
 		}catch(Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -275,7 +307,7 @@ public class Catalog {
 			}
 			return metadataMap;
 		}catch(Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	
@@ -290,7 +322,7 @@ public class Catalog {
 				return true;
 			}
 		}catch(Exception e) {
-			throw new CatalogException("", e);
+			throw new CatalogException(e.getMessage(), e);
 		}
 	}
 	

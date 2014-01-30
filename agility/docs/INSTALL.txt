@@ -22,7 +22,7 @@ Full Instructions
 -----------------
 
 Agile OODT requires the Python_ programming language.  We recommend version 2.4
-or later.  As of this writing, 2.6 is the latest stable version.  If Python is
+or later.  As of this writing, 2.7 is the latest stable version.  If Python is
 not yet installed on your system, you can find binary and and source
 distributions from the Python website.
 
@@ -32,7 +32,7 @@ To test if a correct version of Python is available on your system, run::
     
 You should see output similar to::
 
-    Python 2.6
+    Python 2.7
     
 indicating the version of Python installed.  You may then proceed to install
 Agile OODT.
@@ -76,9 +76,9 @@ Visit any of the following links for additional information, to ask questions,
 report bugs, and so forth:
 
 OODT Home Page
-    http://incubator.apache.org/projects/oodt.html
+    http://oodt.apache.org/
 Mailing List for OODT Development
-    mailto:oodt-dev@incubator.apache.org
+    mailto:dev@oodt.apache.org
 Package Page (Cheese Shop)
     http://pypi.python.org/pypi/oodt/
 Issue Tracker (submit bug reports here)

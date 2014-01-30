@@ -18,7 +18,44 @@
 
 package org.apache.oodt.cas.curation.service;
 
+//JDK imports
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+//JAX-RS imports
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+//JSON imports
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+
 //OODT imports
+import org.apache.oodt.cas.curation.service.CurationService;
 import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 import org.apache.oodt.cas.curation.util.CurationXmlStructFactory;
 import org.apache.oodt.cas.curation.util.ExtractorConfigReader;
@@ -29,6 +66,7 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -36,38 +74,8 @@ import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
 
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.Iterator;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-//JAX-RS imports
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.Consumes;
-
-//JSON imports
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
+//SPRING imports
+import org.springframework.util.StringUtils;
 
 @Path("metadata")
 /**
@@ -81,6 +89,9 @@ public class MetadataResource extends CurationService {
   
   @Context
   UriInfo uriInfo;
+  
+  @Context 
+  private ServletContext context;
 
   private static final long serialVersionUID = 1930946924218765724L;
 
@@ -90,12 +101,19 @@ public class MetadataResource extends CurationService {
 
   public static final String PRODUCT_TYPE = "productType";
   
+  public static final String UPDATE = "update";
+  
+  public static final String DELETE = "delete";
+  
+  // single instance of CAS catalog shared among all requests
+  private Catalog catalog = null;
+    
   public MetadataResource(){
     
   }
 
   public MetadataResource(@Context ServletContext context) {
-
+  	
   }
 
   @GET
@@ -255,8 +273,10 @@ public class MetadataResource extends CurationService {
   @Produces("text/plain")
   public String setCatalogMetadata(MultivaluedMap<String, String> formParams,
       @FormParam("id") String id) {
+  	
     Product prod;
     Metadata metadata = this.getMetadataFromMap(formParams);
+    
     String productId = id.substring(id.lastIndexOf("/") + 1);
 
     try {
@@ -462,6 +482,94 @@ public class MetadataResource extends CurationService {
     serMet.writeMetadataToXmlStream(new FileOutputStream(new File(config
         .getMetAreaPath(), id + config.getMetExtension())));
   }
+  
+  /**
+   * Method to update the catalog metadata for a given product. 
+   * All current metadata fields will be preserved, 
+   * except those specified in the HTTP POST request as 'metadata.<field_name>=<field_value>'.
+   * 
+   * @param id
+   * 	identifier of CAS product - either 'id' or 'name' must be specified
+   * @param name
+   * 	name of CAS product - either 'id' or 'name' must be specified
+   * @param formParams
+   * 	HTTP (name, value) form parameters. The parameter names MUST start with "metadata."
+   * @param replace
+   * 	optional flag set to false to add the new metadata values to the existing values, for the given flags
+   */
+  @POST
+  @Path(UPDATE)
+  @Consumes("application/x-www-form-urlencoded")
+  @Produces("text/plain")
+  public String updateMetadata(MultivaluedMap<String, String> formParams, 
+		  @FormParam("id") String id, 
+		  @FormParam("name") String name, 
+		  @DefaultValue("true") @FormParam("replace") boolean replace,
+		  @DefaultValue("false") @FormParam("remove") boolean remove) {
+  		      
+  	// new metadata from HTTP POST request
+    Metadata newMetadata = this.getMetadataFromMap(formParams);
+    
+    // client for interacting with remote File Manager
+    XmlRpcFileManagerClient fmClient = CurationService.config.getFileManagerClient();
+ 
+    // empty metadata
+    Metadata metadata = new Metadata();
+    
+    try {
+    
+      // retrieve product from catalog
+      Product product = null;
+      if (StringUtils.hasText(id)) {
+    	  id = id.substring(id.lastIndexOf("/") + 1);
+    	  product = fmClient.getProductById(id);
+      } else if (StringUtils.hasText(name)) {
+    	  product = fmClient.getProductByName(name);
+      } else {
+    	  throw new Exception("Either the HTTP parameter 'id' or the HTTP parameter 'name' must be specified");
+      }
+            
+      // retrieve existing metadata
+      metadata = fmClient.getMetadata(product);
+
+      // remove product references (as they will be added later)
+      metadata.removeMetadata("reference_orig");
+      metadata.removeMetadata("reference_data_store");
+      metadata.removeMetadata("reference_fileSize");
+      metadata.removeMetadata("reference_mimeType");
+      
+      // merge new and existing metadata
+      metadata.addMetadata(newMetadata);
+      
+      // replace metadata values for keys specified in HTTP request (not others)
+      if (replace) {
+    	  for (String key : newMetadata.getAllKeys()) {
+    		  metadata.replaceMetadata(key, newMetadata.getAllMetadata(key));
+    	  }
+      }
+      
+      // remove metadata tags
+      if (remove) {
+	      for (String key : newMetadata.getAllKeys()) {
+	      	metadata.removeMetadata(key);
+	      }
+      }
+      
+      // insert old and new metadata
+      fmClient.updateMetadata(product, metadata);
+      
+      // return product id to downstream processors
+      return "id="+product.getProductId();
+          
+    } catch (Exception e) {
+    	
+      e.printStackTrace();
+      // return error message
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+
+    }
+
+  }
 
   /**
    * Updates the cataloged {@link Metadata} for a {@link Product} in the CAS
@@ -480,8 +588,7 @@ public class MetadataResource extends CurationService {
       throws CatalogException, FileNotFoundException, IOException {
     System.getProperties().load(
         new FileInputStream(CurationService.config.getFileMgrProps()));
-    Catalog catalog = GenericFileManagerObjectFactory
-        .getCatalogServiceFromFactory("org.apache.oodt.cas.curation.util.CuratorLuceneCatalogFactory");
+    Catalog catalog = this.getCatalog();
     
     Metadata oldMetadata = catalog.getMetadata(product);
     List<Reference> references = catalog.getProductReferences(product);
@@ -499,6 +606,64 @@ public class MetadataResource extends CurationService {
     catalog.addMetadata(newMetadata, newProduct);
   }
 
+  /**
+   * Method to delete a specific product from the catalog
+   * 
+   * @param id
+   * 	identifier of CAS product - either 'id' or 'name' must be specified
+   * @param name
+   * 	name of CAS product - either 'id' or 'name' must be specified
+   * @return the product ID of the deleted product if deletion successful
+   */
+  @POST
+  @Path(DELETE)
+  @Consumes("application/x-www-form-urlencoded")
+  @Produces("text/plain")
+  public String deleteCatalogMetadata(
+		  @FormParam("id") String id, 
+		  @FormParam("name") String name) {
+
+	  try {
+		  // retrieve product from catalog
+		  Product product = null;
+		  if (StringUtils.hasText(id)) {
+			  id = id.substring(id.lastIndexOf("/") + 1);
+			  product = CurationService.config.getFileManagerClient().getProductById(id);
+		  } else if (StringUtils.hasText(name)) {
+			  product = CurationService.config.getFileManagerClient().getProductByName(name);
+		  } else {
+			  throw new Exception("Either the HTTP parameter 'id' or the HTTP parameter 'name' must be specified");
+		  }
+
+		  // remove product from catalog
+		  this.deleteCatalogProduct(product);
+
+		  // return product id to downstream processors
+		  return "id="+product.getProductId();
+
+	  } catch (Exception e) {
+
+		  e.printStackTrace();
+		  // return error message
+		  throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+
+	  }
+  }  
+
+  /**
+   * Deletes a given product from the catalog
+   * 
+   * @param product
+   *          The {@link Product} to delete
+   * @throws FileNotFoundException
+   * @throws IOException
+   * @throws CatalogException
+   *           If any error occurs during this delete operation.
+   */
+  public void deleteCatalogProduct(Product product) 
+  throws FileNotFoundException, IOException, CatalogException {
+	  CurationService.config.getFileManagerClient().removeProduct(product);
+  }  
 
   private Metadata getProductTypeMetadataForPolicy(String policy,
       String productTypeName) throws MalformedURLException,
@@ -544,4 +709,19 @@ public class MetadataResource extends CurationService {
     }
     return retStr;
   }
+  
+  // Method to instantiate the CAS catalog, if not done already.
+  private synchronized Catalog getCatalog() {
+  	
+  	if (catalog==null) {
+  		String catalogFactoryClass = this.context.getInitParameter(CATALOG_FACTORY_CLASS);
+  		// preserve backward compatibility
+  		if (!StringUtils.hasText(catalogFactoryClass))
+  			catalogFactoryClass = "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory";
+  		catalog = GenericFileManagerObjectFactory.getCatalogServiceFromFactory(catalogFactoryClass);
+  	}
+  	
+  	return catalog;
+  }
+  
 }

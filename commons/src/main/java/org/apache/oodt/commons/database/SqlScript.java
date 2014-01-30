@@ -109,21 +109,27 @@ public class SqlScript {
 
     }
 
-    public void loadScript() throws IOException, SQLException {
+    public void loadScript() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(script));
-        String line;
-        StringBuffer query = new StringBuffer();
-        boolean queryEnds = false;
 
-        while ((line = reader.readLine()) != null) {
-            if (isComment(line))
-                continue;
-            queryEnds = checkStatementEnds(line);
-            query.append(line);
-            if (queryEnds) {
-                statementList.add(query.toString());
-                query.setLength(0);
+        try {
+            String line = null;
+            StringBuffer query = new StringBuffer();
+            boolean queryEnds = false;
+
+            while ((line = reader.readLine()) != null) {
+                if (isComment(line))
+                    continue;
+                queryEnds = checkStatementEnds(line);
+                query.append(line);
+                if (queryEnds) {
+                    statementList.add(query.toString());
+                    query.setLength(0);
+                }
             }
+        }
+        finally {
+            reader.close();
         }
     }
 

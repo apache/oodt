@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 //OODT imports
+import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.catalog.exception.CatalogIndexException;
 import org.apache.oodt.cas.catalog.exception.IngestServiceException;
 import org.apache.oodt.cas.catalog.exception.QueryServiceException;
@@ -410,8 +411,80 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		}
 	}
 	
+	public List<IngestReceipt> query(QueryExpression queryExpression, int startIndex, int endIndex) throws QueryServiceException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = this.dataSource.getConnection();
+			stmt = conn.createStatement();
+			String sqlQuery = "SELECT DISTINCT transaction_id,transaction_date FROM transactions WHERE transaction_id IN (" + this.getSqlQuery(queryExpression) + ")";
+	        LOG.log(Level.INFO, "Performing Query: " + sqlQuery);
+			rs = stmt.executeQuery(sqlQuery);	
+
+			List<IngestReceipt> receipts = new Vector<IngestReceipt>();
+			int index = 0;
+			while (startIndex > index && rs.next()) index++;
+			while (rs.next() && index++ <= endIndex) 
+				receipts.add(new IngestReceipt(this.getTransactionIdFactory().createTransactionId(rs.getString("transaction_id")), DateUtils.toCalendar(rs.getString("transaction_date"), DateUtils.FormatType.LOCAL_FORMAT).getTime()));
+			return receipts;
+		}catch (Exception e) {
+			throw new QueryServiceException("Failed to query Workflow Instances Database : " + e.getMessage(), e);
+		}finally {
+			try {
+				conn.close();
+			}catch(Exception e) {}
+			try {
+				stmt.close();
+			}catch(Exception e) {}
+			try {
+				rs.close();
+			}catch(Exception e) {}
+		}
+	}
+
+	public int sizeOf(QueryExpression queryExpression)
+			throws QueryServiceException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = this.dataSource.getConnection();
+			stmt = conn.createStatement();
+			String sqlQuery = "SELECT COUNT(transaction_id) AS numTransactions FROM transactions WHERE transaction_id IN (" + this.getSqlQuery(queryExpression) + ")";
+	        LOG.log(Level.INFO, "Performing Query: " + sqlQuery);
+			rs = stmt.executeQuery(sqlQuery);	
+
+			int numTransactions = 0;
+            while (rs.next())
+            	numTransactions = rs.getInt("numTransactions");
+            
+			return numTransactions;
+		}catch (Exception e) {
+			throw new QueryServiceException("Failed to get size of query : " + e.getMessage(), e);
+		}finally {
+			try {
+				conn.close();
+			}catch(Exception e) {}
+			try {
+				stmt.close();
+			}catch(Exception e) {}
+			try {
+				rs.close();
+			}catch(Exception e) {}
+		}
+	}
+	
+	
     private String getSqlQuery(QueryExpression queryExpression) throws QueryServiceException, UnsupportedEncodingException {
         String sqlQuery = null;
+		String bucketNameFilter = "";
+		if (queryExpression.getBucketNames() != null) {
+			if (queryExpression.getBucketNames().size() == 1)
+				bucketNameFilter += "bucket_name = '" + queryExpression.getBucketNames().iterator().next() + "' AND ";
+			else if (queryExpression.getBucketNames().size() > 1)
+				bucketNameFilter += "(bucket_name = '" + StringUtils.join(queryExpression.getBucketNames().iterator(), "' OR bucket_name = '") + "') AND ";
+		}
         if (queryExpression instanceof QueryLogicalGroup) {
         	QueryLogicalGroup qlg = (QueryLogicalGroup) queryExpression;
             sqlQuery = "(" + this.getSqlQuery(qlg.getExpressions().get(0));
@@ -436,7 +509,7 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
                 throw new QueryServiceException("Invalid ComparisonQueryExpression Operator '" + cqe.getOperator() + "'");
             }
             
-            sqlQuery = "SELECT DISTINCT transaction_id FROM transaction_terms WHERE term_name = '" + cqe.getTerm().getName() + "' AND (";
+            sqlQuery = "SELECT DISTINCT transaction_id FROM transaction_terms WHERE " + bucketNameFilter + " term_name = '" + cqe.getTerm().getName() + "' AND (";
         	for (int i = 0; i < cqe.getTerm().getValues().size(); i++) {
         		String value = cqe.getTerm().getValues().get(i);
                 sqlQuery += "term_value " + operator + " '" + (this.useUTF8 ? URLEncoder.encode(value, "UTF-8") : value) + "'";
@@ -446,9 +519,9 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
         	sqlQuery += ")";
         }else if (queryExpression instanceof NotQueryExpression) {
         	NotQueryExpression nqe = (NotQueryExpression) queryExpression;
-            sqlQuery = "SELECT DISTINCT transaction_id FROM transaction_terms WHERE NOT (" + this.getSqlQuery(nqe.getQueryExpression()) + ")";
+            sqlQuery = "SELECT DISTINCT transaction_id FROM transaction_terms WHERE " + bucketNameFilter + " NOT (" + this.getSqlQuery(nqe.getQueryExpression()) + ")";
         }else if (queryExpression instanceof StdQueryExpression) {
-            sqlQuery = "SELECT DISTINCT transaction_id FROM transaction_terms";
+            sqlQuery = "SELECT DISTINCT transaction_id FROM transaction_terms " + bucketNameFilter;
         }else {
             throw new QueryServiceException("Invalid QueryExpression '" + queryExpression.getClass().getCanonicalName() + "'");
         }

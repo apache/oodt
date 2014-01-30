@@ -82,6 +82,23 @@ public class JobStack implements JobQueue {
 
   /*
    * (non-Javadoc)
+   * @see gov.nasa.jpl.oodt.cas.resource.jobqueue.JobQueue#requeueJob(gov.nasa.jpl.oodt.cas.resource.structs.JobSpec)
+   */
+  public String requeueJob(JobSpec spec) throws JobQueueException {
+	  try {
+	      queue.add(spec);
+	      spec.getJob().setStatus(JobStatus.QUEUED);
+	      safeUpdateJob(spec);
+	      return spec.getJob().getId();
+	  }catch (Exception e) {
+		  throw new JobQueueException("Failed to re-queue job '"
+                    + (spec != null ? spec.getJob().getId() : "null") + "' : "
+                    + e.getMessage(), e);
+	  }
+  }
+  
+  /*
+   * (non-Javadoc)
    * 
    * @see org.apache.oodt.cas.resource.jobqueue.JobQueue#getQueuedJobs()
    */

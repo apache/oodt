@@ -57,7 +57,7 @@ import org.xml.sax.InputSource;
 public class XMLValidationLayer implements ValidationLayer {
 
     /* our log stream */
-    private static Logger LOG = Logger.getLogger(XMLValidationLayer.class
+    private static final Logger LOG = Logger.getLogger(XMLValidationLayer.class
             .getName());
 
     /* product type ID to element map */
@@ -101,7 +101,13 @@ public class XMLValidationLayer implements ValidationLayer {
      * @see org.apache.oodt.cas.filemgr.validation.ValidationLayer#modifyElement(org.apache.oodt.cas.filemgr.structs.Element)
      */
     public void modifyElement(Element element) throws ValidationLayerException {
-        elementMap.put(element.getElementId(), element);
+        for(Element elem: elementMap.values()){
+           if(elem.getElementId().equals(element.getElementId())){
+             elem.setElementName(element.getElementName());
+             elem.setDescription(elem.getDescription());
+             elem.setDCElement(element.getDCElement());
+           }
+        }
         saveElementsAndMappings();
 
     }

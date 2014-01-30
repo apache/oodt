@@ -18,24 +18,28 @@
 <protocols>
     
     <protocol type="ftp">
-        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.ftp.CogJGlobusFtpClientFactory"/>
-        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.ftp.CommonsNetFtpClientFactory"/>
+        <protocolFactory class="org.apache.oodt.cas.protocol.ftp.CogJGlobusFtpProtocolFactory"/>
+        <protocolFactory class="org.apache.oodt.cas.protocol.ftp.CommonsNetFtpProtocolFactory"/>
     </protocol>
     
     <protocol type="http">
-        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.http.HttpClientFactory"/>
+        <protocolFactory class="org.apache.oodt.cas.protocol.http.HttpProtocolFactory"/>
     </protocol>
     
     <protocol type="sftp">
-        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.sftp.JschSftpClientFactory"/>
+        <protocolFactory class="org.apache.oodt.cas.protocol.sftp.JschSftpProtocolFactory"/>
     </protocol>
     
     <protocol type="imaps">
-        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.imaps.ImapsClientFactory"/>
+        <protocolFactory class="org.apache.oodt.cas.protocol.imaps.ImapsProtocolFactory"/>
     </protocol>
     
+    <!--
+    Note: hasn't been implemented yet, see OODT-537 
+     
     <protocol type="file">
-        <protocolFactory class="org.apache.oodt.cas.pushpull.protocol.local.LocalClientFactory"/>    
+        <protocolFactory class="org.apache.oodt.cas.protocol.local.LocalProtocolFactory"/>    
     </protocol>
+    -->
     
 </protocols>

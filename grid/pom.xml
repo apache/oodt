@@ -15,14 +15,12 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>${oodt.version}</version>
+    <version>0.7-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>web-grid</artifactId>
@@ -59,12 +57,17 @@ the License.
     profiles.  Further, it provides a password-protected mechanism to
     add new sets of product and profile query handlers, enabling
     seamless activation of additional capabilities.</description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/trunk/grid</url>
+  </scm>
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
-          <webResources/>
+          <webResources />
           <warSourceDirectory>src/main/webapp</warSourceDirectory>
         </configuration>
       </plugin>
@@ -74,22 +77,22 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-commons</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-profile</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-product</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-xmlquery</artifactId>
-      <version>${oodt.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
@@ -97,8 +100,8 @@ the License.
       <version>2.6.3</version>
     </dependency>
     <dependency>
-       <groupId>servletapi</groupId>
-       <artifactId>servletapi</artifactId>
+       <groupId>javax.servlet</groupId>
+       <artifactId>servlet-api</artifactId>
        <version>2.4</version>
        <scope>provided</scope>
     </dependency>
@@ -110,7 +113,7 @@ the License.
     </dependency>
     <dependency>
         <groupId>xerces</groupId>
-        <artifactId>xerces</artifactId>
+        <artifactId>xercesImpl</artifactId>
         <version>2.4.0</version>
     </dependency>
     <dependency>

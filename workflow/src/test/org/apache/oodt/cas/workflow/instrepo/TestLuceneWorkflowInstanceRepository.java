@@ -30,11 +30,13 @@ import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryExcepti
 
 //JDK imports
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+//Apache Imports
 import org.apache.commons.io.FileUtils;
 
 //Junit imports
@@ -52,9 +54,6 @@ import junit.framework.TestCase;
 public class TestLuceneWorkflowInstanceRepository extends TestCase implements
         WorkflowStatus {
 
-    private static final String catalogPath = new File(
-            "./target/instRepoTestCat").getAbsolutePath();
-
     private LuceneWorkflowInstanceRepository repo = null;
 
     private WorkflowInstance testInst = null;
@@ -65,25 +64,13 @@ public class TestLuceneWorkflowInstanceRepository extends TestCase implements
 
     private WorkflowCondition testCond;
     
-    private static final int defaultPgSz = 20;
+    private String tmpDirPath = null;
 
     public TestLuceneWorkflowInstanceRepository() {
         testInst = new WorkflowInstance();
         testWkflw = new Workflow();
         testTask = new WorkflowTask();
         testCond = new WorkflowCondition();
-
-        // check to see if catalog path exists: (it may b/c
-        // the user may run many unit tests)
-        // if it exists, blow it away
-        if (new File(catalogPath).exists()) {
-            try {
-                FileUtils.deleteDirectory(new File(catalogPath));
-            } catch (IOException e) {
-                fail(e.getMessage());
-            }
-        }
-        repo = new LuceneWorkflowInstanceRepository(catalogPath, defaultPgSz);
         testWkflw.setName("test.workflow");
         testWkflw.setId("test.id");
         List tasks = new Vector();
@@ -114,6 +101,82 @@ public class TestLuceneWorkflowInstanceRepository extends TestCase implements
         sharedContext.addMetadata("TestKey1", "TestVal2");
         sharedContext.addMetadata("TestKey2", "TestVal3");
         testInst.setSharedContext(sharedContext);
+    
+        // first load the example configuration
+        try {
+            System.getProperties().load(
+                    new FileInputStream("./src/main/resources/workflow.properties"));
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        // get a temp directory
+
+        File tempDir = null;
+        File tempFile = null;
+
+        try {
+            tempFile = File.createTempFile("foo", "bar");
+            tempFile.deleteOnExit();
+            tempDir = tempFile.getParentFile();
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        tmpDirPath = tempDir.getAbsolutePath();
+        if (!tmpDirPath.endsWith("/")) {
+            tmpDirPath += "/";
+        }
+
+        tmpDirPath += "testInstRepo/";
+
+        // now override the catalog ones
+        System.setProperty(
+                "org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath",
+                tmpDirPath);
+
+        System.setProperty(
+                "org.apache.oodt.cas.workflow.instanceRep.pageSize", "20");
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see junit.framework.TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        repo = (LuceneWorkflowInstanceRepository) new LuceneWorkflowInstanceRepositoryFactory().createInstanceRepository();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see junit.framework.TestCase#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        // now remove the temporary directory used
+        if (tmpDirPath != null) {
+            FileUtils.forceDelete(new File(tmpDirPath));
+        }
+        if (repo != null) {
+            repo = null;
+        }
+
+    }
+    
+    /**
+    * @since OODT-389
+    **/
+    public void testInstanceRepoInitialization() {
+        // Getting the number of workflow instances should not fail even on an empty index
+        try {
+            int count = repo.getNumWorkflowInstances();
+            // There should be no instances in the index at this point
+            assertEquals(0, count);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 
     public void testUpdateDocumentAndPreserveId() {
@@ -122,7 +185,6 @@ public class TestLuceneWorkflowInstanceRepository extends TestCase implements
         } catch (InstanceRepositoryException e) {
             fail(e.getMessage());
         }
-
        
         // preserve its id
         String wInstId = testInst.getId();

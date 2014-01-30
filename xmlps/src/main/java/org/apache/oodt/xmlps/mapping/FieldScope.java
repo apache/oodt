@@ -18,59 +18,18 @@
 package org.apache.oodt.xmlps.mapping;
 
 /**
- * 
+ *
  * <p>
  * Defines the scope of a {@link MappingField}.
  * </p>.
  */
-public abstract class FieldScope {
+public enum FieldScope {
 
-    public static FieldScope QUERY = new QueryFieldScope();
+  QUERY,
+  RETURN;
 
-    public static FieldScope RETURN = new ReturnFieldScope();
-
-    private static final String SCOPE_QUERY = "query";
-
-    private static final String SCOPE_RETURN = "return";
-
-    protected abstract String getType();
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof FieldScope)) {
-            return false;
-        }
-
-        FieldScope other = (FieldScope) o;
-        return this.getType().equals(other.getType());
-    }
-
-    private static final class QueryFieldScope extends FieldScope {
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.apache.oodt.xmlps.mapping.FieldScope#getType()
-         */
-        @Override
-        protected String getType() {
-            return SCOPE_QUERY;
-        }
-
-    }
-
-    private static final class ReturnFieldScope extends FieldScope {
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.apache.oodt.xmlps.mapping.FieldScope#getType()
-         */
-        @Override
-        protected String getType() {
-            return SCOPE_RETURN;
-        }
-
-    }
+  public String getType() {
+    return toString().toLowerCase();
+  }
 
 }

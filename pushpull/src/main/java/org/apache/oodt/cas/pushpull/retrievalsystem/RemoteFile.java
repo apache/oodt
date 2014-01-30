@@ -21,7 +21,7 @@ package org.apache.oodt.cas.pushpull.retrievalsystem;
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
-import org.apache.oodt.cas.pushpull.protocol.ProtocolFile;
+import org.apache.oodt.cas.pushpull.protocol.RemoteSiteFile;
 
 //JDK imports
 import java.io.FileOutputStream;
@@ -40,15 +40,14 @@ public class RemoteFile implements RemoteFileMetKeys {
 
     private Metadata metadata;
 
-    private ProtocolFile pFile;
+    private RemoteSiteFile pFile;
 
-    public RemoteFile(ProtocolFile pFile) {
+    public RemoteFile(RemoteSiteFile pFile) {
         this.pFile = pFile;
         this.metadata = new Metadata();
-        this.metadata.addMetadata(RETRIEVED_FROM_LOC, pFile.getProtocolPath()
-                .getPathString());
+        this.metadata.addMetadata(RETRIEVED_FROM_LOC, pFile.getPath());
         this.metadata.addMetadata(FILENAME, pFile.getName());
-        this.metadata.addMetadata(DATA_PROVIDER, pFile.getHostName());
+        this.metadata.addMetadata(DATA_PROVIDER, pFile.getSite().getURL().getHost());
     }
 
     public void setUniqueMetadataElement(String uniqueMetadataElement) {
@@ -68,7 +67,7 @@ public class RemoteFile implements RemoteFileMetKeys {
         return this.metadata;
     }
 
-    public ProtocolFile getProtocolFile() {
+    public RemoteSiteFile getProtocolFile() {
         return this.pFile;
     }
 
