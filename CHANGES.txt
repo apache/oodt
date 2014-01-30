@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-663 Sample CAS-PGE workflow task should be included in cas-pge (mattmann)
+
 * OODT-661 Enabled case-insensitive specification of "OFSN" and "RT" parameter names
   (not values!) when issuing a request to the Product Server (luca)
 
