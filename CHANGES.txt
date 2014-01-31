@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-664 RADIX deployment of opsui incorrectly uses /pcs-opsui as the web.xml context 
+  and omits 2 key PCS properties from context.xml (mattmann, pramirez, ahart)
+
 * OODT-663 Sample CAS-PGE workflow task should be included in cas-pge (mattmann)
 
 * OODT-661 Enabled case-insensitive specification of "OFSN" and "RT" parameter names
