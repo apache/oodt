@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -163,6 +166,10 @@ public class RdfConfiguration
   {
     // Apply the rewrite rules.
     String tagName = rewriteMap.containsKey(key) ? rewriteMap.get(key) : key;
+    if (tagName.indexOf(" ") != -1) {
+      tagName = StringUtils.join(WordUtils.capitalizeFully(tagName).split(
+          " "));
+    }
 
     // Get the tag's namespace or the default namespace.
     String namespace = keyNsMap.containsKey(key)
@@ -180,7 +187,7 @@ public class RdfConfiguration
     else
     {
       element = document.createElement(namespace + ":" + tagName);
-      element.appendChild(document.createTextNode(value));
+      element.appendChild(document.createTextNode(StringEscapeUtils.escapeXml(value)));
     }
 
     return element;

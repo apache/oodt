@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-665 CAS RDF and RSS product service doesn't allow product type met to have keys 
+  with spaces (mattmann)
+
 * OODT-664 RADIX deployment of opsui incorrectly uses /pcs-opsui as the web.xml context 
   and omits 2 key PCS properties from context.xml (mattmann, pramirez, ahart)
 

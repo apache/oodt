@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
@@ -147,14 +150,21 @@ public class RssConfiguration
   {
     for (RssTag tag : tagList)
     {
+      String tagName = tag.getName();
+      if (tagName.indexOf(" ") != -1) {
+        tagName = StringUtils.join(WordUtils.capitalizeFully(tagName).split(
+            " "));
+      }
+
+      
       // Create a new element for the tag.
-      Element element = XMLUtils.addNode(document, parent, tag.getName());
+      Element element = XMLUtils.addNode(document, parent, tagName);
 
       // Add a value for the tag from the tag source.
       if (tag.getSource() != null)
       {
-        element.appendChild(document.createTextNode(PathUtils
-          .replaceEnvVariables(tag.getSource(), metadata)));
+        element.appendChild(document.createTextNode(StringEscapeUtils.escapeXml(PathUtils
+          .replaceEnvVariables(tag.getSource(), metadata))));
       }
 
       // Add attributes to the tag as defined in the configuration.
