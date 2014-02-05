@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-217 CAS-PGE User Manual (rverma, bfoster, mattmann)
+
 * OODT-665 CAS RDF and RSS product service doesn't allow product type met to have keys 
   with spaces (mattmann)
 
