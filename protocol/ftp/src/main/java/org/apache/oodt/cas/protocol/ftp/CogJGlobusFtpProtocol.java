@@ -21,6 +21,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Vector;
 
+
+
 //Globus imports
 import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFile;
@@ -118,6 +120,7 @@ public class CogJGlobusFtpProtocol implements Protocol {
   public List<ProtocolFile> ls() throws ProtocolException {
       try {
           ftp.setActive(ftp.setLocalPassive());
+          @SuppressWarnings("unchecked")
           Vector<FileInfo> fileList = (Vector<FileInfo>) ftp.list("*", null);
           Vector<ProtocolFile> returnList = new Vector<ProtocolFile>();
           for (FileInfo file : fileList) {
@@ -133,6 +136,7 @@ public class CogJGlobusFtpProtocol implements Protocol {
 	public List<ProtocolFile> ls(ProtocolFileFilter filter) throws ProtocolException {
     try {
       ftp.setActive(ftp.setLocalPassive());
+      @SuppressWarnings("unchecked")
       Vector<FileInfo> fileList = (Vector<FileInfo>) ftp.list("*", null);
       Vector<ProtocolFile> returnList = new Vector<ProtocolFile>();
       for (FileInfo file : fileList) {

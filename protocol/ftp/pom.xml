@@ -49,19 +49,6 @@
 			</build>
 		</profile>
 	</profiles>
-  <repositories>
-           <repository>
-             <id>globus-repo</id>
-             <name>Globus Toolkit Internal Maven2 Repository</name>
-             <url>http://projects.iplantcollaborative.org/archiva/repository/internal</url>
-             <releases>
-               <enabled>true</enabled>
-             </releases>
-             <snapshots>
-               <enabled>true</enabled>
-             </snapshots>
-          </repository>
-  </repositories>
   <build>
     <resources>
       <resource>
@@ -80,9 +67,14 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.globus</groupId>
-			<artifactId>cog-jglobus</artifactId>
-			<version>1.8.0</version>
+			<groupId>org.jglobus</groupId>
+			<artifactId>JGlobus-GridFTP</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jglobus</groupId>
+			<artifactId>gss</artifactId>
+			<version>2.0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-net</groupId>
