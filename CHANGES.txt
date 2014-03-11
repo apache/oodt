@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-668 ProductQueryServlet will now rename zip attachments with proper ".zip" extension,
+  and the conventions used can be overridden by subclasses (luca)
+
 * OODT-217 CAS-PGE User Manual (rverma, bfoster, mattmann)
 
 * OODT-665 CAS RDF and RSS product service doesn't allow product type met to have keys 
