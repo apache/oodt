@@ -80,7 +80,7 @@ public class ProductQueryServlet extends QueryServlet {
 	 * @throws IOException if an error occurs.
 	 */
 	private void deliverResult(QueryHandler handler, Result result, HttpServletResponse res) throws IOException {
-		characterize(result, res);					       // First, describe it using HTTP headers
+		characterize(handler, result, res);					       // First, describe it using HTTP headers
 		if (result instanceof LargeResult) {				       // Is it a large result?
 			LargeResult lr = (LargeResult) result;			       // Yes, this is gonna take some special work
 			LargeProductQueryHandler lpqh = (LargeProductQueryHandler) handler; // First treat 'em as large
@@ -108,14 +108,14 @@ public class ProductQueryServlet extends QueryServlet {
 	 * @param result Result to characterize.
 	 * @param res HTTP response to set headers in.
 	 */
-	private static void characterize(Result result, HttpServletResponse res) {
+	private void characterize(QueryHandler handler, Result result, HttpServletResponse res) {
 		String contentType = result.getMimeType();			       // Grab the content type
 		res.setContentType(contentType);				       // Set it
 		long size = result.getSize();					       // Grab the size
 		if (size >= 0)
 			res.addHeader("Content-Length", String.valueOf(size));	       // Don't use setContentLength(int)
 		if (!displayable(contentType))					       // Finally, if a browser can't show it
-			suggestFilename(result.getResourceID(), res);		       // Then suggest a save-as filename
+			this.suggestFilename(handler, result, res);		       // Then suggest a save-as filename
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class ProductQueryServlet extends QueryServlet {
 	 * @param contentType MIME type.
 	 * @return a <code>boolean</code> value.
 	 */
-	private static boolean displayable(String contentType) {
+	protected static boolean displayable(String contentType) {
 		for (int i = 0; i < DISPLAYABLE_TYPES.length; ++i)		       // For each displayable type
 			if (DISPLAYABLE_TYPES[i].equals(contentType)) return true;     // Does it match?
 		return false;							       // None of 'em do, it's not displayable
@@ -135,13 +135,31 @@ public class ProductQueryServlet extends QueryServlet {
 	 * We can suggest a filename (if the client happens to be a browser) using a
 	 * content-disposition header.
 	 *
-	 * @param resource Resource name
 	 * @param res a <code>HttpServletResponse</code> value.
 	 */
-	private static void suggestFilename(String resource, HttpServletResponse res) {
-		if (resource == null || resource.length() == 0)
-			resource = "product.dat";
+	protected void suggestFilename(QueryHandler handler, Result result, HttpServletResponse res) {
+		
+		String resource = result.getResourceID();
+		if (resource == null || resource.length() == 0) resource = "product.dat";
+		
+		// suggest some names based on resource mime type
+		String contentType = res.getContentType();
+		
+		// "zip" mime types
+		if (contentType!=null) {
+			if (contentType.equals("application/x-compressed") || 
+				contentType.equals("application/x-zip-compressed") || 
+				contentType.equals("application/zip") || 
+				contentType.equals("multipart/x-zip") ) {
+				
+				// resource = resource.replaceAll("\\..+",".zip"); // replace extension with .zip 
+				resource = "products_" + resource + ".zip"; 				
+			}
+		}
+		
+		// set "Content-disposition" header
 		res.addHeader("Content-disposition", "attachment; filename=\"" + resource + "\"");
+		
 	}
 
 	/**
