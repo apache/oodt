@@ -21,6 +21,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -56,13 +58,14 @@ public class S3DataTransferer implements DataTransfer {
 	@Override
 	public void transferProduct(Product product) throws DataTransferException, IOException {
 		for (Reference ref : product.getProductReferences()) {
+      String origRef = stripProtocol(ref.getOrigReference(), false);
+		  String dataStoreRef = stripProtocol(ref.getDataStoreReference(), true);
 			try {
-				s3Client.putObject(new PutObjectRequest(bucketName, ref.getDataStoreReference(), new File(ref
-				    .getOrigReference())));
+				s3Client.putObject(new PutObjectRequest(bucketName, dataStoreRef, new File(origRef)));
 			} catch (AmazonClientException e) {
 				throw new DataTransferException(String.format(
-				    "Failed to upload product reference %s to S3 at %s", ref.getOrigReference(),
-				    ref.getDataStoreReference()), e);
+				    "Failed to upload product reference %s to S3 at %s", origRef,
+				    dataStoreRef), e);
 			}
 		}
 	}
@@ -71,7 +74,7 @@ public class S3DataTransferer implements DataTransfer {
 	public void retrieveProduct(Product product, File directory) throws DataTransferException,
 	    IOException {
 		for (Reference ref : product.getProductReferences()) {
-			GetObjectRequest request = new GetObjectRequest(bucketName, ref.getDataStoreReference());
+			GetObjectRequest request = new GetObjectRequest(bucketName, stripProtocol(ref.getDataStoreReference(), true));
 			S3Object file = s3Client.getObject(request);
 			stageFile(file, ref, directory);
 		}
@@ -83,7 +86,7 @@ public class S3DataTransferer implements DataTransfer {
 		try {
 			inStream = file.getObjectContent();
 			outStream = new FileOutputStream(new File(directory, new File(
-			    ref.getDataStoreReference()).getName()));
+			    stripProtocol(ref.getDataStoreReference(), false)).getName()));
 			IOUtils.copy(inStream, outStream);
 		} catch (IOException e) {
 			throw e;
@@ -91,5 +94,17 @@ public class S3DataTransferer implements DataTransfer {
 			try { inStream.close(); } catch (Exception e) {}
 			try { outStream.close(); } catch (Exception e) {}
 		}
+	}
+
+	private String stripProtocol(String ref, boolean stripLeadingSeparator) throws IOException {
+	  try {
+      String path = new URI(ref).getPath();
+      if (stripLeadingSeparator) {
+        path = path.replaceAll("^/", "");
+      }
+      return path;
+    } catch (URISyntaxException e) {
+      throw new IOException(e);
+    }
 	}
 }

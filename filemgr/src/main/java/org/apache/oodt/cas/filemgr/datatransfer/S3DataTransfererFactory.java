@@ -19,7 +19,6 @@ package org.apache.oodt.cas.filemgr.datatransfer;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 
 /**
@@ -39,15 +38,15 @@ public class S3DataTransfererFactory implements DataTransferFactory {
 			"org.apache.oodt.cas.filemgr.datatransfer.s3.secret.key";
 
 	@Override
-  public DataTransfer createDataTransfer() {
+  public S3DataTransferer createDataTransfer() {
 		String bucketName = System.getProperty(BUCKET_NAME_PROPERTY);
-		String region = System.getProperty(REGION_PROPERTY);
+		String region = System.getProperty(REGION_PROPERTY);		
 		String accessKey = System.getProperty(ACCESS_KEY_PROPERTY);
-		String secretKey = System.getProperty(SECRET_KEY_PROPERTY);
+    String secretKey = System.getProperty(SECRET_KEY_PROPERTY);
 
-		AmazonS3 s3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
+		AmazonS3Client s3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
     s3.setRegion(Region.getRegion(Regions.valueOf(region)));
 
-	  return new S3DataTransferer(s3, bucketName);
+    return new S3DataTransferer(s3, bucketName);
   }
 }
