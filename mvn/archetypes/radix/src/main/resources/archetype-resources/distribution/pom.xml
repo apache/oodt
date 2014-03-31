@@ -79,6 +79,13 @@
     </dependency>
     <dependency>
       <groupId>${groupId}</groupId>
+      <artifactId>${rootArtifactId}-solr</artifactId>
+      <version>${project.parent.version}</version>
+      <type>tar.gz</type>
+      <classifier>bin</classifier>
+    </dependency> 
+    <dependency>
+      <groupId>${groupId}</groupId>
       <artifactId>${rootArtifactId}-opsui</artifactId>
       <version>${project.parent.version}</version>
       <type>war</type>
@@ -92,6 +99,12 @@
     <dependency>
       <groupId>${groupId}</groupId>
       <artifactId>${rootArtifactId}-fmprod</artifactId>
+      <version>${project.parent.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${groupId}</groupId>
+      <artifactId>${rootArtifactId}-solr-webapp</artifactId>
       <version>${project.parent.version}</version>
       <type>war</type>
     </dependency>
@@ -140,6 +153,13 @@
                   <type>war</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/fmprod</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${groupId}</groupId>
+                  <artifactId>${parent.artifactId}-solr-webapp</artifactId>
+                  <type>war</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/solr</outputDirectory>
                 </artifactItem>
               </artifactItems>
             </configuration>

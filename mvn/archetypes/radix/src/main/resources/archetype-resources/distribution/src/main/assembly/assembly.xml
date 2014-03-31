@@ -102,6 +102,7 @@
         <exclude>${groupId}:${parent.artifactId}-opsui</exclude>
         <exclude>${groupId}:${parent.artifactId}-pcs-services</exclude>
         <exclude>${groupId}:${parent.artifactId}-fmprod</exclude>
+        <exclude>${groupId}:${parent.artifactId}-solr-webapp</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>

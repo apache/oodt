@@ -72,6 +72,14 @@
         </fileSet>
       </fileSets>
     </module>
+    <module id="solr" dir="solr" name="solr">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>    
     <module id="distribution" dir="distribution" name="distribution">
       <fileSets>
         <fileSet>
@@ -106,6 +114,14 @@
             </fileSet>
           </fileSets>
         </module>
+        <module id="solr-webapp" dir="solr-webapp" name="solr-webapp">
+          <fileSets>
+            <fileSet>
+              <directory></directory>
+              <includes/>
+            </fileSet>
+          </fileSets>
+        </module>        
       </modules>
     </module>
   </modules>

@@ -120,6 +120,11 @@ if [ -z "$CRAWLER_HOME" ]; then
   export CRAWLER_HOME
 fi
 
+if [ -z "$SOLR_HOME" ]; then
+  SOLR_HOME="$OODT_HOME"/solr
+  export SOLR_HOME
+fi
+
 if [ -z "$OODT_TMPDIR" ]; then
   # Define the java.io.tmpdir to use for OODT
   OODT_TMPDIR="$OODT_BASE"/temp
