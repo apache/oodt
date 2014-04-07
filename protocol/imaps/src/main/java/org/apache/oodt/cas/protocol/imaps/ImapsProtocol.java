@@ -106,7 +106,11 @@ public class ImapsProtocol implements Protocol {
   }
   
   public synchronized void cdHome() throws ProtocolException {
-  	currentFolder = homeFolder;
+    try {
+      cd(new ProtocolFile("", true));
+    } catch (Exception e) {
+      throw new ProtocolException("Failed to cd to home : " + e.getMessage(), e);
+    }
   }
   
   public synchronized void connect(String host, Authentication auth)
