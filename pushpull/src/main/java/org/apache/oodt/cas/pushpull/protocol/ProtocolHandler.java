@@ -360,7 +360,7 @@ public class ProtocolHandler {
     } catch (Exception e) {
       LOG.log(Level.SEVERE, "Protocol "
           + protocol.getClass().getCanonicalName()
-          + " failed compatibility test : " + e.getMessage());
+          + " failed compatibility test : " + e.getMessage(), e);
       return false;
     }
     return true;
