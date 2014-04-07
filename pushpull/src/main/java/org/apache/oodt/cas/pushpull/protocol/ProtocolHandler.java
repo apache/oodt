@@ -333,7 +333,7 @@ public class ProtocolHandler {
 
       } catch (Exception e) {
         LOG.log(Level.WARNING, "Error occurred while connecting to "
-            + remoteSite + " : " + e.getMessage());
+            + remoteSite + " : " + e.getMessage(), e);
       }
 
     }
