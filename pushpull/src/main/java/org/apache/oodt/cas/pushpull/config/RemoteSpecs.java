@@ -338,7 +338,7 @@ public class RemoteSpecs implements ConfigParserMetKeys {
             }
         } catch (Exception e) {
             throw new ConfigException("Failed to load external source info : "
-                    + e.getMessage());
+                    + e.getMessage(), e);
         }
     }
 
