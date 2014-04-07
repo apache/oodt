@@ -355,7 +355,7 @@ public class ProtocolHandler {
       else
         this.cdToROOT(protocol);
       this.cdToHOME(protocol);
-      if (home == null || !home.equals(protocol.pwd()))
+      if (home == null || !home.equals(this.pwd(remoteSite, protocol)))
         throw new ProtocolException("Home directory not the same after cd");
     } catch (Exception e) {
       LOG.log(Level.SEVERE, "Protocol "
