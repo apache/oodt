@@ -23,11 +23,9 @@ import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 
-
-import com.google.common.base.Strings;
 //Google imports
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-
 
 //JDK imports
 import java.io.FileInputStream;
@@ -127,6 +125,6 @@ public class GenericEmailParser implements Parser {
   }
   
   private String loadPathToRoot() {
-    return Strings.emptyToNull(System.getProperty(PATH_TO_ROOT_PROPERTY_NAME));
+    return Strings.nullToEmpty(System.getProperty(PATH_TO_ROOT_PROPERTY_NAME));
   }
 }
