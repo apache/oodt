@@ -119,7 +119,7 @@ public class ProtocolHandler {
     } catch (Exception e) {
       throw new RemoteConnectionException(
           "Failed to get appropriate protocol for " + pFile + " : "
-              + e.getMessage());
+              + e.getMessage(), e);
     }
   }
 
