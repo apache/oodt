@@ -636,7 +636,7 @@ public class FileRetrievalSystem {
             return session;
         } catch (Exception e) {
             throw new CrawlerException("Failed to get new session : "
-                    + e.getMessage());
+                    + e.getMessage(), e);
         }
     }
 

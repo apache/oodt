@@ -38,4 +38,8 @@ public class CrawlerException extends PushPullFrameworkException {
     public CrawlerException(String msg) {
         super(msg);
     }
+
+    public CrawlerException(String msg, Throwable t) {
+      super(msg, t);
+    }
 }
