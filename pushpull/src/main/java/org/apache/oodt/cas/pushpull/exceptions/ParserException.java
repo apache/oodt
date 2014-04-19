@@ -38,4 +38,8 @@ public class ParserException extends PushPullFrameworkException {
     public ParserException(String msg) {
         super(msg);
     }
+    
+    public ParserException(String msg, Throwable t) {
+      super(msg, t);
+    }
 }
