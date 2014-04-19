@@ -83,10 +83,10 @@ public class GenericEmailParser implements Parser {
     List<String> filePaths = generateFilePaths(emailText);
 
     for (String filePath : filePaths) {
-      new VirtualFile(root, filePath, false);
+      new VirtualFile(root, pathToRoot + filePath, false);
     }
 
-    return new VirtualFileStructure(pathToRoot != null ? pathToRoot : "/", root);
+    return new VirtualFileStructure("/", root);
   }
 
   private String readEmail(FileInputStream emailFile) {
