@@ -50,18 +50,23 @@ public class GenericEmailParser implements Parser {
       "org.apache.oodt.cas.pushpull.generic.email.parser.file.pattern";
   public static final String CHECK_FOR_PATTERN_PROPERTY_NAME =
       "org.apache.oodt.cas.pushpull.generic.email.parser.check.for.pattern";
+  public static final String PATH_TO_ROOT_PROPERTY_NAME =
+      "org.apache.oodt.cas.pushpull.generic.email.parser.path.to.root";
 
   private final String filePattern;
   private final String checkForPattern;
+  private final String pathToRoot;
 
   public GenericEmailParser() {
     filePattern = loadFilePattern();
     checkForPattern = loadCheckForPattern();
+    pathToRoot = loadPathToRoot();
   }
  
-  public GenericEmailParser(String filePattern, String checkForPattern) {
+  public GenericEmailParser(String filePattern, String checkForPattern, String pathToRoot) {
     this.filePattern = filePattern;
     this.checkForPattern = checkForPattern;
+    this.pathToRoot = pathToRoot;
   }
 
   @Override
@@ -80,7 +85,7 @@ public class GenericEmailParser implements Parser {
       new VirtualFile(root, filePath, false);
     }
 
-    return new VirtualFileStructure(null, "/", root);
+    return new VirtualFileStructure(pathToRoot != null ? pathToRoot : "/", root);
   }
 
   private String readEmail(FileInputStream emailFile) {
@@ -118,5 +123,9 @@ public class GenericEmailParser implements Parser {
   
   private String loadCheckForPattern() {
     return System.getProperty(CHECK_FOR_PATTERN_PROPERTY_NAME);    
+  }
+  
+  private String loadPathToRoot() {
+    return System.getProperty(PATH_TO_ROOT_PROPERTY_NAME);
   }
 }
