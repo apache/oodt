@@ -112,7 +112,7 @@ public class ProtocolHandler {
       if (protocol != null && navigateToPathLoc) {
         if (pFile.isDir())
           this.cd(protocol, pFile);
-        else
+        else if (pFile.getParent() != null)
           this.cd(protocol, new RemoteSiteFile(pFile.getParent(), pFile.getSite()));
       }
       return protocol;
