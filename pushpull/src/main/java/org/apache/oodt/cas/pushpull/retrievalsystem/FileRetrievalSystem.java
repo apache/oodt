@@ -491,7 +491,7 @@ public class FileRetrievalSystem {
                             this.failedDownloadList.add(file);
                             throw new RemoteConnectionException(
                                     "Failed to get session to download " + file
-                                            + " : " + e.getMessage());
+                                            + " : " + e.getMessage(), e);
                         }
                     }
                 }
