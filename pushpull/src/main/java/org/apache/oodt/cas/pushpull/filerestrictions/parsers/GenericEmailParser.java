@@ -17,13 +17,16 @@
 package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 
 //OODT imports
+import org.apache.log4j.Logger;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 
+
 //Google imports
 import com.google.common.collect.Lists;
+
 
 //JDK imports
 import java.io.FileInputStream;
@@ -40,6 +43,8 @@ import java.util.regex.Pattern;
  * @author bfoster@apache.org (Brian Foster)
  */
 public class GenericEmailParser implements Parser {
+
+  private static final Logger log = Logger.getLogger(GenericEmailParser.class);
 
   public static final String FILE_PATTERNS_PROPERTY_NAME =
       "org.apache.oodt.cas.pushpull.generic.email.parser.file.pattern";
@@ -61,6 +66,8 @@ public class GenericEmailParser implements Parser {
 
   @Override
   public VirtualFileStructure parse(FileInputStream emailFile) throws ParserException {
+    log.info("GenericEmailParser is parsing email: " + emailFile);
+
     VirtualFile root = VirtualFile.createRootDir();
 
     String emailText = readEmail(emailFile);
