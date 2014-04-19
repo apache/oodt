@@ -55,10 +55,18 @@ public class GenericEmailParserTest {
 
   @Test
   public void testGenericEmailParser() throws ParserException, FileNotFoundException {
-    GenericEmailParser parser = new GenericEmailParser("Wav File: ([^\\s]+)");
+    GenericEmailParser parser = new GenericEmailParser(
+        "Wav File: ([^\\s]+)", "Dear Lousy Customer,");
     VirtualFileStructure vfs = parser.parse(new FileInputStream(emailFile));
     List<String> filePaths = FileRestrictions.toStringList(vfs.getRootVirtualFile());
     assertThat(filePaths.size(), Matchers.is(1));
     assertThat(filePaths.get(0), Matchers.is("/some/path/to/a/wav/file.wav"));
+  }
+
+  @Test (expected = ParserException.class)
+  public void testFailedValidEmailCheck() throws ParserException, FileNotFoundException {
+    GenericEmailParser parser = new GenericEmailParser(
+        "Wav File: ([^\\s]+)", "Phrase Not Found");
+    parser.parse(new FileInputStream(emailFile));
   }
 }

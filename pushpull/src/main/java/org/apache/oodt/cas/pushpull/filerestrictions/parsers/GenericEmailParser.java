@@ -43,22 +43,31 @@ public class GenericEmailParser implements Parser {
 
   public static final String FILE_PATTERNS_PROPERTY_NAME =
       "org.apache.oodt.cas.pushpull.generic.email.parser.file.pattern";
+  public static final String CHECK_FOR_PATTERN_PROPERTY_NAME =
+      "org.apache.oodt.cas.pushpull.generic.email.parser.check.for.pattern";
 
   private final String filePattern;
+  private final String checkForPattern;
 
   public GenericEmailParser() {
     filePattern = loadFilePattern();
+    checkForPattern = loadCheckForPattern();
   }
  
-  public GenericEmailParser(String filePattern) {
+  public GenericEmailParser(String filePattern, String checkForPattern) {
     this.filePattern = filePattern;
+    this.checkForPattern = checkForPattern;
   }
 
   @Override
   public VirtualFileStructure parse(FileInputStream emailFile) throws ParserException {
     VirtualFile root = VirtualFile.createRootDir();
 
-    List<String> filePaths = generateFilePaths(readEmail(emailFile));
+    String emailText = readEmail(emailFile);
+    if (!isValidEmail(emailText)) {
+      throw new ParserException("Failed to find check for pattern in email: " + checkForPattern);
+    }
+    List<String> filePaths = generateFilePaths(emailText);
 
     for (String filePath : filePaths) {
       new VirtualFile(root, filePath, false);
@@ -90,7 +99,17 @@ public class GenericEmailParser implements Parser {
     return filePaths;
   }
 
+  private boolean isValidEmail(String emailText) {
+    Pattern pattern = Pattern.compile(checkForPattern);
+    Matcher m = pattern.matcher(emailText);
+    return m.find();
+  }
+  
   private String loadFilePattern() {
     return System.getProperty(FILE_PATTERNS_PROPERTY_NAME);
+  }
+  
+  private String loadCheckForPattern() {
+    return System.getProperty(CHECK_FOR_PATTERN_PROPERTY_NAME);    
   }
 }
