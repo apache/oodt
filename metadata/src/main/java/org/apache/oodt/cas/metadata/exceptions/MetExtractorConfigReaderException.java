@@ -14,17 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.oodt.cas.metadata.exceptions;
 
 /**
- * 
- * @author bfoster
- * @version $Revision$
+ * Exception throw when error occurs while parsing a config {@link File} into a
+ * {@link MetExtractorConfig}
  *
- * <p>Exception throw when error occurs while parsing a config 
- * {@link File} into a {@link MetExtractorConfig}</p>.
+ * @author bfoster@apache.org (Brian Foster)
  */
 public class MetExtractorConfigReaderException extends Exception {
 
@@ -36,5 +32,9 @@ public class MetExtractorConfigReaderException extends Exception {
 	
 	public MetExtractorConfigReaderException(String msg) {
 		super(msg);
+	}
+
+	public MetExtractorConfigReaderException(String msg, Throwable t) {
+	  super(msg, t);
 	}
 }
