@@ -54,7 +54,6 @@ public class DataSourceMetExtractor extends AbstractMetExtractor {
   protected Metadata extrMetadata(File file) throws MetExtractionException {
     String key = getKey(file);
     DataSourceMetExtractorConfig dsConfig = (DataSourceMetExtractorConfig) config;
-    insureLoadDriver(dsConfig.getDriver());
     DataSource dataSource = DatabaseConnectionBuilder.buildDataSource(dsConfig.getUserName(),
         dsConfig.getPassword(), dsConfig.getDriver(), dsConfig.getDatabaseUrl());
 
@@ -99,13 +98,5 @@ public class DataSourceMetExtractor extends AbstractMetExtractor {
       metadata.addMetadata(metKey, metVal);
     }
     return metadata;
-  }
-  
-  private void insureLoadDriver(String driver) throws MetExtractionException {
-    try {
-      Class.forName(driver);
-    } catch (ClassNotFoundException e) {
-      throw new MetExtractionException("Failed to load driver: " + driver, e);
-    }
   }
 }
