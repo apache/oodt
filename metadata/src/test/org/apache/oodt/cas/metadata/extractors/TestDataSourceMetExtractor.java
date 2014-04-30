@@ -75,11 +75,12 @@ public class TestDataSourceMetExtractor {
     when(conn.createStatement()).thenReturn(statement);
     when(statement.executeQuery(Mockito.<String>any())).thenReturn(rs);
     when(rs.getMetaData()).thenReturn(rsMet);
-    when(rs.getString(0)).thenReturn(DB_COL_VALUE_1);
-    when(rs.getString(1)).thenReturn(DB_COL_VALUE_2);
+    when(rs.next()).thenReturn(true);
+    when(rs.getString(1)).thenReturn(DB_COL_VALUE_1);
+    when(rs.getString(2)).thenReturn(DB_COL_VALUE_2);
     when(rsMet.getColumnCount()).thenReturn(2);
-    when(rsMet.getColumnName(0)).thenReturn(DB_COL_NAME_1);
-    when(rsMet.getColumnName(1)).thenReturn(DB_COL_NAME_2);
+    when(rsMet.getColumnName(1)).thenReturn(DB_COL_NAME_1);
+    when(rsMet.getColumnName(2)).thenReturn(DB_COL_NAME_2);
 
     extractor = new DataSourceMetExtractor();
   }
