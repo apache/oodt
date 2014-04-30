@@ -92,10 +92,14 @@ public class DataSourceMetExtractor extends AbstractMetExtractor {
 
   private Metadata getMetadata(ResultSet rs) throws SQLException {
     Metadata metadata = new Metadata();
-    for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
-      String metKey = rs.getMetaData().getColumnName(i);
-      String metVal = rs.getString(i);
-      metadata.addMetadata(metKey, metVal);
+    if (rs.next()) {
+      for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+        String metKey = rs.getMetaData().getColumnName(i+1);
+        String metVal = rs.getString(i+1);
+        metadata.addMetadata(metKey, metVal);
+      }
+    } else {
+      throw new SQLException("Failed to find metadata for result set");
     }
     return metadata;
   }
