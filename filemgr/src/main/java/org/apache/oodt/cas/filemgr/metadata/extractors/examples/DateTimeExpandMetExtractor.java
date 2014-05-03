@@ -69,14 +69,13 @@ public class DateTimeExpandMetExtractor extends AbstractFilemgrMetExtractor {
   public Metadata doExtract(Product product, Metadata metadata) throws MetExtractionException {
     String fullDateTime = getFullDateTime(metadata);
 
-    Metadata extractMetadata = new Metadata();
-    createDateField(extractMetadata, yearKey, fullDateTime, fullDateTimeFormat, "yyyy");
-    createDateField(extractMetadata, monthKey, fullDateTime, fullDateTimeFormat, "MM");
-    createDateField(extractMetadata, dayKey, fullDateTime, fullDateTimeFormat, "dd");
-    createDateField(extractMetadata, hourKey, fullDateTime, fullDateTimeFormat, "HH");
-    createDateField(extractMetadata, minuteKey, fullDateTime, fullDateTimeFormat, "mm");
-    createDateField(extractMetadata, secondKey, fullDateTime, fullDateTimeFormat, "ss");
-    return extractMetadata;
+    createDateField(metadata, yearKey, fullDateTime, fullDateTimeFormat, "yyyy");
+    createDateField(metadata, monthKey, fullDateTime, fullDateTimeFormat, "MM");
+    createDateField(metadata, dayKey, fullDateTime, fullDateTimeFormat, "dd");
+    createDateField(metadata, hourKey, fullDateTime, fullDateTimeFormat, "HH");
+    createDateField(metadata, minuteKey, fullDateTime, fullDateTimeFormat, "mm");
+    createDateField(metadata, secondKey, fullDateTime, fullDateTimeFormat, "ss");
+    return metadata;
   }
 
   private String getKey(String key) {

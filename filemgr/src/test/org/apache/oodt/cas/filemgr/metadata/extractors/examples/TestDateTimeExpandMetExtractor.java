@@ -51,8 +51,8 @@ public class TestDateTimeExpandMetExtractor {
   @Rule public ExpectedException expectedException = ExpectedException.none();
 
   @Mock private Properties configuration;
-  @Mock private Metadata metadata;
 
+  private Metadata metadata;
   private DateTimeExpandMetExtractor extractor;
 
   @Before
@@ -68,7 +68,8 @@ public class TestDateTimeExpandMetExtractor {
     when(configuration.getProperty("MinuteKey")).thenReturn("StartMinute");
     when(configuration.getProperty("SecondKey")).thenReturn("StartSecond");
 
-    when(metadata.getMetadata("StartDateTime")).thenReturn("2013-05-23 03:02:01");
+    metadata = new Metadata();
+    metadata.addMetadata("StartDateTime", "2013-05-23 03:02:01");
 
     extractor = new DateTimeExpandMetExtractor();
   }
