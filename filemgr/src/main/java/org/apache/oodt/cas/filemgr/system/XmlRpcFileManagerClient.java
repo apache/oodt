@@ -1223,6 +1223,8 @@ public class XmlRpcFileManagerClient {
                                               + e.getMessage());
                       throw e;
                   }
+                } else {
+                  product.setProductReferences(getProductReferences(product));
                 }
                 
                 // now transfer the product
