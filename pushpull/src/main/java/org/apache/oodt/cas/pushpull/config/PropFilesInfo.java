@@ -39,6 +39,8 @@ public class PropFilesInfo {
 
     private File localDir;
 
+    private boolean deleteOnSuccess;
+
     private File successLoc;
 
     private File failLoc;
@@ -114,6 +116,14 @@ public class PropFilesInfo {
 
     public File getLocalDir() {
         return this.localDir;
+    }
+
+    public void setDeleteOnSuccess(boolean deleteOnSuccess) {
+        this.deleteOnSuccess = deleteOnSuccess;
+    }
+
+    public boolean getDeleteOnSuccess() {
+      return deleteOnSuccess;
     }
 
     public String toString() {

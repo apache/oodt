@@ -84,6 +84,8 @@ public interface ConfigParserMetKeys {
 
     public static final String AFTER_USE_TAG = "afterUse";
 
+    public static final String DELETE_ON_SUCCESS_ATTR = "deleteOnSuccess";
+
     public static final String MOVEON_TO_SUCCESS_ATTR = "moveToOnSuccess";
 
     public static final String MOVEON_TO_FAIL_ATTR = "moveToOnFail";
