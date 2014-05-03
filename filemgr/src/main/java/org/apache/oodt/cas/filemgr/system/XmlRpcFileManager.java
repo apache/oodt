@@ -693,7 +693,7 @@ public class XmlRpcFileManager {
         Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
         Metadata m = new Metadata();
         m.addMetadata((Hashtable)metadata);
-        return addMetadata(p, m);
+        return addMetadata(p, m) != null;
     }
 
     public synchronized boolean addProductReferences(Hashtable<String, Object> productHash)
@@ -717,7 +717,7 @@ public class XmlRpcFileManager {
       // now add the metadata
       Metadata m = new Metadata();
       m.addMetadata((Hashtable)metadata);
-      addMetadata(p, m);
+      Metadata expandedMetdata = addMetadata(p, m);
 
       // version the product
       if (!clientTransfer || (clientTransfer
@@ -726,7 +726,7 @@ public class XmlRpcFileManager {
         try {
           versioner = GenericFileManagerObjectFactory
               .getVersionerFromClassName(p.getProductType().getVersioner());
-          versioner.createDataStoreReferences(p, m);
+          versioner.createDataStoreReferences(p, expandedMetdata);
         } catch (Exception e) {
           LOG.log(Level.SEVERE,
               "ingestProduct: VersioningException when versioning Product: "
@@ -1047,7 +1047,7 @@ public class XmlRpcFileManager {
         return p.getProductId();
     }
 
-    private synchronized boolean addMetadata(Product p, Metadata m)
+    private synchronized Metadata addMetadata(Product p, Metadata m)
             throws CatalogException {
         
         //apply handlers
@@ -1059,13 +1059,7 @@ public class XmlRpcFileManager {
         }
         
         // first do server side metadata extraction
-        Metadata metadata = null;
-
-        try {
-            metadata = runExtractors(p, m);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Metadata metadata = runExtractors(p, m);
 
         try {
             catalog.addMetadata(metadata, p);
@@ -1084,7 +1078,7 @@ public class XmlRpcFileManager {
             throw new CatalogException(e.getMessage());
         }
 
-        return true;
+        return metadata;
     }
 
     private Metadata runExtractors(Product product, Metadata metadata) {
