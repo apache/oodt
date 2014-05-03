@@ -112,7 +112,7 @@ public class GenericEmailParser implements Parser {
 
   private boolean isValidEmail(String emailText) {
     Pattern pattern = Pattern.compile(checkForPattern);
-    Matcher m = pattern.matcher(emailText);
+    Matcher m = pattern.matcher(emailText.replaceAll("\n", " "));
     return m.find();
   }
   
