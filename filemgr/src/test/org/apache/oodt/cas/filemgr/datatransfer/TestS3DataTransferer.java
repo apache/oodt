@@ -39,6 +39,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -54,8 +55,10 @@ import com.google.common.collect.Lists;
 public class TestS3DataTransferer {
 
 	private final static String S3_BUCKET_NAME = "TestBucket";
-	private final static String ORGINAL_REF = "/path/to/file";
-	private final static String DATA_STORE_REF = "/path/in/s3/storage/file";
+	private final static String ORGINAL_REF = "file:/path/to/file";
+	private final static String DATA_STORE_REF = "s3:/path/in/s3/storage/file";
+  private final static String EXPECTED_ORGINAL_REF = "/path/to/file";
+	private final static String EXPECTED_DATA_STORE_REF = "path/in/s3/storage/file";
 
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -93,8 +96,8 @@ public class TestS3DataTransferer {
 
 		PutObjectRequest request = argument.getValue();
 		assertThat(request.getBucketName(), is(S3_BUCKET_NAME));
-		assertThat(request.getKey(), is(DATA_STORE_REF));
-		assertThat(request.getFile().getAbsolutePath(), is(ORGINAL_REF));
+		assertThat(request.getKey(), is(EXPECTED_DATA_STORE_REF));
+		assertThat(request.getFile().getAbsolutePath(), is(EXPECTED_ORGINAL_REF));
 	}
 
 	@Test
@@ -106,6 +109,19 @@ public class TestS3DataTransferer {
 
 		GetObjectRequest request = argument.getValue();
 		assertThat(request.getBucketName(), is(S3_BUCKET_NAME));
-		assertThat(request.getKey(), is(DATA_STORE_REF));
+		assertThat(request.getKey(), is(EXPECTED_DATA_STORE_REF));
+	}
+
+	@Test
+	public void testDeleteProduct() throws DataTransferException, IOException {
+	  dataTransferer.deleteProduct(product);
+
+    ArgumentCaptor<DeleteObjectRequest> argument = ArgumentCaptor
+        .forClass(DeleteObjectRequest.class);
+	  verify(s3Client).deleteObject(argument.capture());
+
+	  DeleteObjectRequest request = argument.getValue();
+	  assertThat(request.getBucketName(), is(S3_BUCKET_NAME));
+	  assertThat(request.getKey(), is(EXPECTED_DATA_STORE_REF));
 	}
 }

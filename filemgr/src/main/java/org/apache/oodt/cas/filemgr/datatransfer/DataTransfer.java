@@ -72,4 +72,6 @@ public interface DataTransfer {
     */
    public void retrieveProduct(Product product, File directory) throws DataTransferException,
          IOException;
+   
+   public void deleteProduct(Product product) throws DataTransferException, IOException;
 }

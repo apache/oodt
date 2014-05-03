@@ -32,6 +32,7 @@ import org.apache.tika.io.IOUtils;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -74,11 +75,26 @@ public class S3DataTransferer implements DataTransfer {
 	public void retrieveProduct(Product product, File directory) throws DataTransferException,
 	    IOException {
 		for (Reference ref : product.getProductReferences()) {
-			GetObjectRequest request = new GetObjectRequest(bucketName, stripProtocol(ref.getDataStoreReference(), true));
+      GetObjectRequest request = new GetObjectRequest(bucketName, stripProtocol(
+          ref.getDataStoreReference(), true));
 			S3Object file = s3Client.getObject(request);
 			stageFile(file, ref, directory);
 		}
 	}
+
+  @Override
+  public void deleteProduct(Product product) throws DataTransferException, IOException {
+    for (Reference ref : product.getProductReferences()) {
+      DeleteObjectRequest request = new DeleteObjectRequest(bucketName, stripProtocol(
+          ref.getDataStoreReference(), true));
+      try {
+        s3Client.deleteObject(request);
+      } catch (AmazonClientException e) {
+        throw new DataTransferException(String.format(
+            "Failed to delete product reference %s from S3", ref.getDataStoreReference()), e);
+      }
+    }
+  }
 
 	private void stageFile(S3Object file, Reference ref, File directory) throws IOException {
 		S3ObjectInputStream inStream = null;

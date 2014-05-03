@@ -170,6 +170,17 @@ public class LocalDataTransferer implements DataTransfer {
       }
    }
 
+   @Override
+   public void deleteProduct(Product product) throws DataTransferException, IOException {
+     for (Reference ref : product.getProductReferences()) {
+       File dataFile = new File(URI.create(ref.getDataStoreReference()).toURL().getPath());
+       if (!dataFile.delete()) {
+        throw new IOException(String.format("Failed to delete file %s - delete returned false",
+            dataFile));
+       }
+     }
+   }
+   
    /**
     * @param args
     */
@@ -427,5 +438,4 @@ public class LocalDataTransferer implements DataTransfer {
          return;
       }
    }
-
 }

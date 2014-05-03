@@ -56,6 +56,9 @@ import org.apache.oodt.cas.filemgr.versioning.Versioner;
 import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.oodt.cas.filemgr.datatransfer.TransferStatusTracker;
 
+
+import com.google.common.collect.Lists;
+
 //JDK imports
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -926,8 +929,14 @@ public class XmlRpcFileManager {
                     "Moving of heirarhical products not supported yet");
     }
 
-    public boolean removeFile(String filePath) {
-        return new File(filePath).delete();
+    public boolean removeFile(String filePath) throws DataTransferException, IOException {
+      // TODO(bfoster): Clean this up so that it deletes by product not file.
+      Product product = new Product();
+      Reference r = new Reference();
+      r.setDataStoreReference(filePath);
+      product.setProductReferences(Lists.newArrayList(r));
+      dataTransfer.deleteProduct(product);
+      return true;
     }
 
     public boolean modifyProduct(Hashtable productHash) throws CatalogException {
