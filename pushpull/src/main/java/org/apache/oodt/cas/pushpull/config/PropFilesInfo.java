@@ -129,6 +129,7 @@ public class PropFilesInfo {
     public String toString() {
         return "PropFilesInfo\n" + "   " + "Local directory: " + this.localDir
                 + "\n" + "   " + "Patterns: " + this.patterns + "\n" + "   "
+                + "Delete on success: " + this.deleteOnSuccess + "\n"
                 + "Move to directory on success: " + this.successLoc + "\n"
                 + "   " + "Move to directory on fail: " + this.failLoc + "\n"
                 + "   " + this.di + "\n";
