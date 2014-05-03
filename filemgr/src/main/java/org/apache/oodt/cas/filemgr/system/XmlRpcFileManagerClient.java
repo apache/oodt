@@ -1183,10 +1183,6 @@ public class XmlRpcFileManagerClient {
                         "File Manager Client: clientTransfer enabled: "
                                 + "transfering product ["
                                 + product.getProductName() + "]");
-                
-                // OODT-682: Sync metadata with server to get possible MetExtracted metadata fields.
-                Metadata completeMetadata = new Metadata(metadata);
-                completeMetadata.replaceMetadata(getMetadata(product));
 
                 // we need to transfer the product ourselves
                 // make sure we have the product ID
@@ -1210,7 +1206,7 @@ public class XmlRpcFileManagerClient {
                 Versioner versioner = GenericFileManagerObjectFactory
                         .getVersionerFromClassName(product.getProductType()
                                 .getVersioner());
-                versioner.createDataStoreReferences(product, completeMetadata);
+                versioner.createDataStoreReferences(product, metadata);
                 
                 // add the newly versioned references to the data store
                 try {
