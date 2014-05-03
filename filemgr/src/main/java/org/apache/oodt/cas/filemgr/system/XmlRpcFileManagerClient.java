@@ -1202,25 +1202,27 @@ public class XmlRpcFileManagerClient {
 
                 product.setProductId(productId);
 
-                // version the product
-                Versioner versioner = GenericFileManagerObjectFactory
-                        .getVersionerFromClassName(product.getProductType()
-                                .getVersioner());
-                versioner.createDataStoreReferences(product, metadata);
-                
-                // add the newly versioned references to the data store
-                try {
-                    addProductReferences(product);
-                } catch (CatalogException e) {
-                    LOG
-                            .log(
-                                    Level.SEVERE,
-                                    "ingestProduct: RepositoryManagerException "
-                                            + "when adding Product References for Product : "
-                                            + product.getProductName()
-                                            + " to RepositoryManager: Message: "
-                                            + e.getMessage());
-                    throw e;
+                if (!Boolean.getBoolean("org.apache.oodt.cas.filemgr.serverside.versioning")) {
+                  // version the product
+                  Versioner versioner = GenericFileManagerObjectFactory
+                          .getVersionerFromClassName(product.getProductType()
+                                  .getVersioner());
+                  versioner.createDataStoreReferences(product, metadata);
+                  
+                  // add the newly versioned references to the data store
+                  try {
+                      addProductReferences(product);
+                  } catch (CatalogException e) {
+                      LOG
+                              .log(
+                                      Level.SEVERE,
+                                      "ingestProduct: RepositoryManagerException "
+                                              + "when adding Product References for Product : "
+                                              + product.getProductName()
+                                              + " to RepositoryManager: Message: "
+                                              + e.getMessage());
+                      throw e;
+                  }
                 }
                 
                 // now transfer the product

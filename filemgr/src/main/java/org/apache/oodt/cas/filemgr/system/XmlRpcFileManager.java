@@ -56,8 +56,8 @@ import org.apache.oodt.cas.filemgr.versioning.Versioner;
 import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.oodt.cas.filemgr.datatransfer.TransferStatusTracker;
 
-
 import com.google.common.collect.Lists;
+
 
 //JDK imports
 import java.util.logging.Level;
@@ -719,12 +719,9 @@ public class XmlRpcFileManager {
       m.addMetadata((Hashtable)metadata);
       addMetadata(p, m);
 
-      if (!clientTransfer) {
-        LOG.log(Level.FINEST,
-            "File Manager: ingest: no client transfer enabled, "
-                + "server transfering product: [" + p.getProductName() + "]");
-
-        // version the product
+      // version the product
+      if (!clientTransfer || (clientTransfer
+          && Boolean.getBoolean("org.apache.oodt.cas.filemgr.serverside.versioning"))) {
         Versioner versioner = null;
         try {
           versioner = GenericFileManagerObjectFactory
@@ -738,7 +735,12 @@ public class XmlRpcFileManager {
                   + e.getMessage());
           throw new VersioningException(e);
         }
+      }
 
+      if (!clientTransfer) {
+        LOG.log(Level.FINEST,
+              "File Manager: ingest: no client transfer enabled, "
+                  + "server transfering product: [" + p.getProductName() + "]");
         // add the newly versioned references to the data store
         addProductReferences(p);
 
@@ -1090,18 +1092,16 @@ public class XmlRpcFileManager {
             product.setProductType(repositoryManager.getProductTypeById(product
                     .getProductType().getProductTypeId()));
         } catch (RepositoryManagerException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, "Failed to load ProductType " + product
+              .getProductType().getProductTypeId(), e);
             return null;
         }
 
         Metadata met = new Metadata();
         met.addMetadata(metadata.getHashtable());
 
-        if (product.getProductType().getExtractors() != null
-                && product.getProductType().getExtractors().size() > 0) {
-            for (Iterator<ExtractorSpec> i = product.getProductType().getExtractors()
-                    .iterator(); i.hasNext();) {
-                ExtractorSpec spec = i.next();
+        if (product.getProductType().getExtractors() != null) {
+            for (ExtractorSpec spec: product.getProductType().getExtractors()) {
                 FilemgrMetExtractor extractor = GenericFileManagerObjectFactory
                         .getExtractorFromClassName(spec.getClassName());
                 extractor.configure(spec.getConfiguration());
@@ -1112,13 +1112,12 @@ public class XmlRpcFileManager {
                 try {
                     met = extractor.extractMetadata(product, met);
                 } catch (MetExtractionException e) {
-                    e.printStackTrace();
-                    LOG.log(Level.WARNING,
+                    LOG.log(Level.SEVERE,
                             "Exception extractor metadata from product: ["
                                     + product.getProductName()
                                     + "]: using extractor: ["
                                     + extractor.getClass().getName()
-                                    + "]: Message: " + e.getMessage());
+                                    + "]: Message: " + e.getMessage(), e);
                 }
             }
         }
