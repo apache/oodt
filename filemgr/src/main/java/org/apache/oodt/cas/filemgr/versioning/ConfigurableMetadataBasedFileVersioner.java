@@ -19,13 +19,11 @@ package org.apache.oodt.cas.filemgr.versioning;
 // JDK imports
 import java.util.Properties;
 
-
 // OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 import org.apache.oodt.cas.metadata.Metadata;
-
 
 // Google imports
 import com.google.common.base.Strings;
