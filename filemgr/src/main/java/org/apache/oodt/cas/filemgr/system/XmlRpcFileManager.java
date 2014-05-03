@@ -735,14 +735,15 @@ public class XmlRpcFileManager {
                   + e.getMessage());
           throw new VersioningException(e);
         }
+
+        // add the newly versioned references to the data store
+        addProductReferences(p);
       }
 
       if (!clientTransfer) {
         LOG.log(Level.FINEST,
               "File Manager: ingest: no client transfer enabled, "
                   + "server transfering product: [" + p.getProductName() + "]");
-        // add the newly versioned references to the data store
-        addProductReferences(p);
 
         // now transfer the product
         try {
