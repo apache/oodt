@@ -244,9 +244,9 @@ public class RetrievalSetup {
 
     private void movePropsFileToFinalDestination(PropFilesInfo pfi,
             File dirstructFile, String errorMsgs) throws IOException {
-        if (pfi.getDeleteOnSuccess()) {
-          dirstructFile.delete();
-          return;
+        if (pfi.getDeleteOnSuccess() && errorMsgs != null) {
+            dirstructFile.delete();
+            return;
         }
         File moveToDir = pfi.getFinalDestination(errorMsgs == null);
         moveToDir.mkdirs();
