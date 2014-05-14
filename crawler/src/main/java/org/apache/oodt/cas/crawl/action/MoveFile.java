@@ -28,6 +28,10 @@ import org.apache.oodt.cas.metadata.Metadata;
 //Spring imports
 import org.springframework.beans.factory.annotation.Required;
 
+//File.Utils import to handle NFS mounted directories
+import org.apache.commons.io.FileUtils;
+
+
 /**
  * Moves a {@link Product} file as a reponse to a Crawler lifecycle phase
  * 
@@ -61,7 +65,15 @@ public class MoveFile extends CrawlerAction {
             toFile.getParentFile().mkdirs();
          LOG.log(Level.INFO, "Moving file " + srcFile.getAbsolutePath()
                + " to " + toFile.getAbsolutePath());
-         return srcFile.renameTo(toFile);
+         if(!srcFile.renameTo(toFile)) {//If the file failed to copy
+        	 LOG.log(Level.INFO, "Moving failed, possibly because ingest dir is nfs mounted. Retrying to move " + srcFile.getAbsolutePath()
+                     + " to " + toFile.getAbsolutePath());
+        	 FileUtils.copyFileToDirectory(srcFile, toFile.getParentFile());
+        	 FileUtils.forceDelete(srcFile); //Need to delete the old file
+        	 return true; //File copied on second attempt
+         }
+         else
+        	 return true; //File copied
       } catch (Exception e) {
          throw new CrawlerActionException("Failed to move file from " + mvFile
                + " to " + this.toDir + " : " + e.getMessage());

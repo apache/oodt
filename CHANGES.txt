@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 ---------------------------------
 
+* OODT-674 MoveDatafileToFailureDir fails to move files off an NFS mounted directory (thomas)
+
 * OODT-662 Upgrade cog-jglobus dependency in protocol-ftp (lewismc)
 
 * OODT-668 ProductQueryServlet will now rename zip attachments with proper ".zip" extension,
