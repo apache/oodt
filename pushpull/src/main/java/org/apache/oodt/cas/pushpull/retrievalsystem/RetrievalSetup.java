@@ -244,17 +244,19 @@ public class RetrievalSetup {
 
     private void movePropsFileToFinalDestination(PropFilesInfo pfi,
             File dirstructFile, String errorMsgs) throws IOException {
+        File metFile = new File(
+            String.format("%s.%s", dirstructFile.getAbsolutePath(), config.getMetFileExtension()));
         if (pfi.getDeleteOnSuccess() && errorMsgs == null) {
             dirstructFile.delete();
+            metFile.delete();
             return;
         }
         File moveToDir = pfi.getFinalDestination(errorMsgs == null);
         moveToDir.mkdirs();
         File newLoc = new File(moveToDir, dirstructFile.getName());
         dirstructFile.renameTo(newLoc);
-        new File(dirstructFile.getAbsolutePath() + "." + config.getMetFileExtension())
-                .renameTo(new File(newLoc.getAbsolutePath() + "."
-                		+ config.getMetFileExtension()));
+        metFile.renameTo(new File(
+            String.format("%s.%s", newLoc.getAbsolutePath(), config.getMetFileExtension())));
         if (errorMsgs != null) {
             File errorFile = new File(newLoc.getParentFile(), dirstructFile
                     .getName()

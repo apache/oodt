@@ -65,7 +65,7 @@ public class GenericEmailParser implements Parser {
   public GenericEmailParser(String filePattern, String checkForPattern, String pathToRoot) {
     this.filePattern = filePattern;
     this.checkForPattern = checkForPattern;
-    this.pathToRoot = pathToRoot;
+    this.pathToRoot = Strings.nullToEmpty(pathToRoot);
   }
 
   @Override
