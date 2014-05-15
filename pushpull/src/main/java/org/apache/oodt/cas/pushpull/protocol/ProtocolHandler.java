@@ -28,8 +28,10 @@ import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 import org.apache.oodt.cas.pushpull.exceptions.RemoteConnectionException;
 
+
 //JDK imports
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -254,7 +256,10 @@ public class ProtocolHandler {
       protocol.get(fromFile, downloadFile);
 
       // rename file back to original name
-      downloadFile.renameTo(toFile);
+      if (!downloadFile.renameTo(toFile)) {
+        throw new IOException(
+            String.format("Failed to rename file %s to %s", downloadFile, toFile));
+      }
 
       // delete file is specified
       if (delete) {
