@@ -253,6 +253,9 @@ public class ProtocolHandler {
       // try to download the file
       protocol.get(fromFile, downloadFile);
 
+      // rename file back to original name
+      downloadFile.renameTo(toFile);
+
       // delete file is specified
       if (delete) {
         if (!this.delete(protocol, fromFile))
@@ -264,9 +267,6 @@ public class ProtocolHandler {
       }
 
       LOG.log(Level.INFO, "Finished downloading " + fromFile + " to " + toFile);
-
-      // rename file back to original name
-      downloadFile.renameTo(toFile);
 
     } catch (Exception e) {
       downloadFile.delete();
