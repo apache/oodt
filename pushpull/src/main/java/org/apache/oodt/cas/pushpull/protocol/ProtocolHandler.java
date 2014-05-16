@@ -246,8 +246,8 @@ public class ProtocolHandler {
       boolean delete) throws RemoteConnectionException {
 
     // rename file for download
-    File downloadFile = new File(toFile.getParent() + "/Downloading_"
-        + toFile.getName());
+    File downloadFile = new File(
+        String.format("%s/Downloading_%s", toFile.getParent(), toFile.getName()));
     toFile.renameTo(downloadFile);
 
     LOG.log(Level.INFO, "Starting to download " + fromFile);
@@ -415,7 +415,7 @@ public class ProtocolHandler {
         return false;
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, "Failed to delete file", e);
       return false;
     }
   }
