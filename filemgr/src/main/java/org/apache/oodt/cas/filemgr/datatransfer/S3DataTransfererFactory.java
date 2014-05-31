@@ -36,6 +36,8 @@ public class S3DataTransfererFactory implements DataTransferFactory {
 			"org.apache.oodt.cas.filemgr.datatransfer.s3.access.key";
 	private static final String SECRET_KEY_PROPERTY =
 			"org.apache.oodt.cas.filemgr.datatransfer.s3.secret.key";
+  private static final String ENCRYPT_PROPERTY =
+      "org.apache.oodt.cas.filemgr.datatransfer.s3.encrypt";
 
 	@Override
   public S3DataTransferer createDataTransfer() {
@@ -43,10 +45,11 @@ public class S3DataTransfererFactory implements DataTransferFactory {
 		String region = System.getProperty(REGION_PROPERTY);		
 		String accessKey = System.getProperty(ACCESS_KEY_PROPERTY);
     String secretKey = System.getProperty(SECRET_KEY_PROPERTY);
+    boolean encrypt = Boolean.getBoolean(ENCRYPT_PROPERTY);
 
 		AmazonS3Client s3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
     s3.setRegion(Region.getRegion(Regions.valueOf(region)));
 
-    return new S3DataTransferer(s3, bucketName);
+    return new S3DataTransferer(s3, bucketName, encrypt);
   }
 }

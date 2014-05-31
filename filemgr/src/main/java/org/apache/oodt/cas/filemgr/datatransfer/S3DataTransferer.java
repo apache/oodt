@@ -16,6 +16,7 @@
  */
 package org.apache.oodt.cas.filemgr.datatransfer;
 
+import static com.amazonaws.services.s3.model.ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
@@ -34,6 +35,7 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -47,10 +49,12 @@ public class S3DataTransferer implements DataTransfer {
 
 	private final AmazonS3 s3Client;
 	private final String bucketName;
+	private final boolean encrypt;
 
-	public S3DataTransferer(AmazonS3 s3Client, String bucketName) {
+	public S3DataTransferer(AmazonS3 s3Client, String bucketName, boolean encrypt) {
 		this.s3Client = checkNotNull(s3Client);
 		this.bucketName = checkNotNull(bucketName);
+		this.encrypt = encrypt;
 	}
 
 	@Override
@@ -62,7 +66,14 @@ public class S3DataTransferer implements DataTransfer {
       String origRef = stripProtocol(ref.getOrigReference(), false);
 		  String dataStoreRef = stripProtocol(ref.getDataStoreReference(), true);
 			try {
-				s3Client.putObject(new PutObjectRequest(bucketName, dataStoreRef, new File(origRef)));
+			  PutObjectRequest request = new PutObjectRequest(
+			      bucketName, dataStoreRef, new File(origRef));
+			  if (encrypt) {
+  				ObjectMetadata requestMetadata = new ObjectMetadata();
+  				requestMetadata.setServerSideEncryption(AES_256_SERVER_SIDE_ENCRYPTION);     
+  				request.setMetadata(requestMetadata);
+			  }
+        s3Client.putObject(request);
 			} catch (AmazonClientException e) {
 				throw new DataTransferException(String.format(
 				    "Failed to upload product reference %s to S3 at %s", origRef,

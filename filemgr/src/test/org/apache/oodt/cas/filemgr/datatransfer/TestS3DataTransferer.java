@@ -77,7 +77,7 @@ public class TestS3DataTransferer {
 		MockitoAnnotations.initMocks(this);
 
 		stagingDir = tempFolder.getRoot();
-		dataTransferer = new S3DataTransferer(s3Client, S3_BUCKET_NAME);
+		dataTransferer = new S3DataTransferer(s3Client, S3_BUCKET_NAME, true);
 
 		when(reference.getOrigReference()).thenReturn(ORGINAL_REF);
 		when(reference.getDataStoreReference()).thenReturn(DATA_STORE_REF);		

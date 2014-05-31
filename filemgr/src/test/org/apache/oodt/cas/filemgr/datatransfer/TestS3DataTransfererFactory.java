@@ -25,6 +25,8 @@ public class TestS3DataTransfererFactory {
       "org.apache.oodt.cas.filemgr.datatransfer.s3.access.key";
   private static final String SECRET_KEY_PROPERTY =
       "org.apache.oodt.cas.filemgr.datatransfer.s3.secret.key";
+  private static final String ENCRYPT_PROPERTY =
+      "org.apache.oodt.cas.filemgr.datatransfer.s3.encrypt";
 
   @Test
   public void testCreateDataTransferer() {
@@ -32,6 +34,7 @@ public class TestS3DataTransfererFactory {
     System.setProperty(REGION_PROPERTY, "US_WEST_1");
     System.setProperty(ACCESS_KEY_PROPERTY, "23123123123");
     System.setProperty(SECRET_KEY_PROPERTY, "00101010101");
+    System.setProperty(ENCRYPT_PROPERTY, "true");
 
     S3DataTransfererFactory factory = new S3DataTransfererFactory();
     S3DataTransferer transferer = factory.createDataTransfer();
