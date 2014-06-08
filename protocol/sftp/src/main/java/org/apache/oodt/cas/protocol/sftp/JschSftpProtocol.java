@@ -200,4 +200,7 @@ public class JschSftpProtocol implements Protocol {
     }
   }
 
+ public JschSftpProtocol createJschSftpProtocol(int port){
+        return new JschSftpProtocol(port);
+ }
 }

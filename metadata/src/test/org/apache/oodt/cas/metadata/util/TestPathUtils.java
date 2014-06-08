@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.metadata.util;
 
 //JDK imports
+import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -53,6 +54,9 @@ public class TestPathUtils extends TestCase {
     }
     
     public void testDoDynamicReplacement() throws Exception {
+
+        System.out.println("Timezone is :" + Calendar.getInstance().getTimeZone().getID());
+
         assertEquals("2008-01-20T16:30:28.000-000033", PathUtils
             .doDynamicReplacement("[UTC_TO_TAI(2008-01-20T16:29:55.000Z)]"));
         assertEquals("475000201.000",

@@ -206,7 +206,15 @@ public class DateUtils {
     }
     
     public static long getTimeInMillis(Calendar cal, Calendar epoch) throws Exception {
-        long epochDiffInMilli = epoch.getTimeInMillis() - julianEpoch.getTimeInMillis() ;
+        long epochDiffInMilli;
+        /**
+         * Fixes date conversion issues preventing tests passing in the UK but working elsewhere in the world.
+         */
+        if(julianEpoch.getTimeZone().getID().equals("Europe/London")){
+            epochDiffInMilli = epoch.getTimeInMillis() - (julianEpoch.getTimeInMillis()+julianEpoch.getTimeZone().getOffset(julianEpoch.getTimeInMillis())) ;
+        }else {
+            epochDiffInMilli = epoch.getTimeInMillis() - julianEpoch.getTimeInMillis() ;
+        }
         if (cal.getTimeZone().getID().equals("TAI"))
             epochDiffInMilli += getLeapSecsForDate(epoch) * 1000;
         long milliseconds = cal.getTimeInMillis();

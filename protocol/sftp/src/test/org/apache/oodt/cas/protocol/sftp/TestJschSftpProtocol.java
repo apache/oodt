@@ -50,6 +50,10 @@ import com.sshtools.j2ssh.configuration.ConfigurationLoader;
 
 //JUnit imports
 import junit.framework.TestCase;
+import org.mockito.*;
+
+import static org.mockito.Mockito.mock;
+
 /**
  * Test class for {@link JschSftpProtocol}.
  * 
@@ -119,6 +123,9 @@ public class TestJschSftpProtocol extends TestCase {
 		int port = context.getPort();
 		File pubKeyFile = createPubKeyForPort(port);
 		JschSftpProtocol sftpProtocol = new JschSftpProtocol(port);
+        JschSftpProtocol mockc = mock(JschSftpProtocol.class);
+
+        mockc
 		sftpProtocol.connect("localhost", new HostKeyAuthentication("bfoster", "",
 				pubKeyFile.getAbsoluteFile().getAbsolutePath()));
 		File bogusFile = File.createTempFile("bogus", "bogus");
