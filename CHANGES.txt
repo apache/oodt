@@ -1,8 +1,13 @@
 Apache OODT Change Log
 ======================
 
-Release 0.7 - Current Development
+Release 0.8 - Current Development
 ---------------------------------
+
+* OODT-703 DataUtil.createProductZipFile throws exception when creating a zipfile of a hierarchical product
+
+Release 0.7 - 08/06/2014
+--------------------------------------------
 
 * OODT-674 MoveDatafileToFailureDir fails to move files off an NFS mounted directory (thomas)
 
