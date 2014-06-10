@@ -56,9 +56,11 @@
       <directory>${basedir}/src/main/resources/etc</directory>
       <outputDirectory>filemgr/etc</outputDirectory>
       <includes>
-        <include>filemgr.properties</include>
         <include>**.xml</include>
       </includes>
+      <excludes>
+        <exclude>filemgr.properties</exclude>
+      </excludes>
       <fileMode>664</fileMode>
       <directoryMode>775</directoryMode>
     </fileSet>
@@ -78,6 +80,13 @@
       <excludes/>
     </fileSet>
   </fileSets>
+    <files>
+      <file>
+        <source>${basedir}/src/main/resources/etc/filemgr.fm-solr-catalog.properties</source>
+        <outputDirectory>filemgr/etc</outputDirectory>
+        <destName>filemgr.properties</destName>
+      </file>
+    </files>
   <dependencySets>
     <dependencySet>
       <outputDirectory>filemgr/lib</outputDirectory>
