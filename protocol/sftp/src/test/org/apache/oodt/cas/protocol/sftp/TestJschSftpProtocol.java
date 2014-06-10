@@ -124,8 +124,6 @@ public class TestJschSftpProtocol extends TestCase {
 		File pubKeyFile = createPubKeyForPort(port);
 		JschSftpProtocol sftpProtocol = new JschSftpProtocol(port);
         JschSftpProtocol mockc = mock(JschSftpProtocol.class);
-
-        mockc
 		sftpProtocol.connect("localhost", new HostKeyAuthentication("bfoster", "",
 				pubKeyFile.getAbsoluteFile().getAbsolutePath()));
 		File bogusFile = File.createTempFile("bogus", "bogus");
