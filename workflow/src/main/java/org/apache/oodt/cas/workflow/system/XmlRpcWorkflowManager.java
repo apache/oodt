@@ -165,7 +165,7 @@ public class XmlRpcWorkflowManager {
     }
 
     public Hashtable getFirstPage() {
-        WorkflowInstancePage page = engine.getInstanceRepository()
+    	WorkflowInstancePage page = engine.getInstanceRepository()
                 .getFirstPage();
         if (page != null) {
             populateWorkflows(page.getPageWorkflows());
@@ -174,7 +174,6 @@ public class XmlRpcWorkflowManager {
             return XmlRpcStructFactory
                     .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
                             .blankPage());
-
     }
 
     public Hashtable getNextPage(Hashtable currentPage) {
@@ -399,6 +398,12 @@ public class XmlRpcWorkflowManager {
                     // TODO: hack for now, fix this, we shouldn't have to cast
                     // here, bad
                     // design
+                    if(wDesc == null){
+                      //Possible dynamic workflow for instance
+                      //reconsitute it from cache
+                      wDesc = wInst.getWorkflow();
+
+                    }
                     wInst.setWorkflow(wDesc);
                     Hashtable workflowInstance = XmlRpcStructFactory
                             .getXmlRpcWorkflowInstance(wInst);
@@ -441,6 +446,12 @@ public class XmlRpcWorkflowManager {
                     // pick up the description of the workflow
                     Workflow wDesc = repo.getWorkflowById(wInst.getWorkflow()
                             .getId());
+                    if(wDesc == null){
+                      //possible dynamic workflow
+                      //reconsitute it from cached instance
+                      wDesc = wInst.getWorkflow();
+
+                    }
                     // TODO: hack for now, fix this, we shouldn't have to cast
                     // here, bad
                     // design
@@ -666,8 +677,13 @@ public class XmlRpcWorkflowManager {
         if (wInsts != null && wInsts.size() > 0) {
             for (Iterator i = wInsts.iterator(); i.hasNext();) {
                 WorkflowInstance wInst = (WorkflowInstance) i.next();
-                wInst.setWorkflow(safeGetWorkflowById(wInst.getWorkflow()
-                        .getId()));
+                if(wInst.getWorkflow() == null || 
+                	(wInst.getWorkflow() != null && 
+                	  (wInst.getWorkflow().getName() == null || 
+                	   wInst.getWorkflow().getId() == null))){
+                    wInst.setWorkflow(safeGetWorkflowById(wInst.getWorkflow()
+                            .getId()));                	
+                }
             }
         }
     }
