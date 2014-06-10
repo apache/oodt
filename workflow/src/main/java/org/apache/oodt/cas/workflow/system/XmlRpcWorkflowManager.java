@@ -402,7 +402,7 @@ public class XmlRpcWorkflowManager {
                       //Possible dynamic workflow for instance
                       //reconsitute it from cache
                       wDesc = wInst.getWorkflow();
-
+                      repo.addWorkflow(wDesc);
                     }
                     wInst.setWorkflow(wDesc);
                     Hashtable workflowInstance = XmlRpcStructFactory
@@ -450,6 +450,8 @@ public class XmlRpcWorkflowManager {
                       //possible dynamic workflow
                       //reconsitute it from cached instance
                       wDesc = wInst.getWorkflow();
+                      //now save it
+                      repo.addWorkflow(wDesc);
 
                     }
                     // TODO: hack for now, fix this, we shouldn't have to cast
@@ -683,6 +685,20 @@ public class XmlRpcWorkflowManager {
                 	   wInst.getWorkflow().getId() == null))){
                     wInst.setWorkflow(safeGetWorkflowById(wInst.getWorkflow()
                             .getId()));                	
+                }
+                else{
+                	// check to see if the workflow exists in the 
+                	// repo
+                	try {
+						if(repo.getWorkflowById(wInst.getWorkflow().getId()) == null){
+							repo.addWorkflow(wInst.getWorkflow());
+						}
+					} catch (RepositoryException e) {
+						LOG.log(Level.WARNING, "Attempting to look up workflow: ["+wInst.getWorkflow()
+								.getId()+"] in populate workflows. Message: "+e.getMessage());
+						e.printStackTrace();
+					}
+
                 }
             }
         }
