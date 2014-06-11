@@ -72,6 +72,14 @@
         </fileSet>
       </fileSets>
     </module>
+    <module id="pge" dir="pge" name="pge">
+      <fileSets>
+        <fileSet>
+          <directory></directory>
+          <includes/>
+        </fileSet>
+      </fileSets>
+    </module>
     <module id="crawler" dir="crawler" name="crawler">
       <fileSets>
         <fileSet>
