@@ -26,8 +26,8 @@
     <version>${version}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <name>Workflow Manager (Apache OODT)</name>
-  <artifactId>${rootArtifactId}-workflow</artifactId>
+  <name>PGE (Apache OODT)</name>
+  <artifactId>${rootArtifactId}-pge</artifactId>
   <packaging>jar</packaging>
 
   <build>
@@ -75,7 +75,7 @@
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-pge</artifactId>
-      <version>${oodt.pge.version}</version>
+      <version>0.3</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.oodt</groupId>

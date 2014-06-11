@@ -37,7 +37,7 @@ INSTALLATION:
   For other build configurations, add the following arguments:
   (default)           : bin, crawler, data, extensions,
                         filemgr (Lucene), logs, pcs, resmgr,
-                        tomcat, workflow
+                        tomcat, workflow, pge
 
   -Pfm-solr-catalog   : default components, filemgr (Solr),
                         solr, tomcat/webapps/solr
