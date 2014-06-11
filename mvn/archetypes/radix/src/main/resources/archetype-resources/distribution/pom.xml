@@ -62,6 +62,13 @@
             </dependency>
             <dependency>
                <groupId>${groupId}</groupId>
+               <artifactId>${rootArtifactId}-pge</artifactId>
+               <version>${project.parent.version}</version>
+               <type>tar.gz</type>
+               <classifier>bin</classifier>
+            </dependency>
+            <dependency>
+               <groupId>${groupId}</groupId>
                <artifactId>${rootArtifactId}-pcs</artifactId>
                <version>${project.parent.version}</version>
                <type>tar.gz</type>
@@ -191,6 +198,13 @@
             <dependency>
                <groupId>${groupId}</groupId>
                <artifactId>${rootArtifactId}-workflow</artifactId>
+               <version>${project.parent.version}</version>
+               <type>tar.gz</type>
+               <classifier>bin</classifier>
+            </dependency>
+            <dependency>
+               <groupId>${groupId}</groupId>
+               <artifactId>${rootArtifactId}-pge</artifactId>
                <version>${project.parent.version}</version>
                <type>tar.gz</type>
                <classifier>bin</classifier>
