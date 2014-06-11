@@ -38,25 +38,6 @@
       <fileMode>755</fileMode>
     </fileSet>
     <fileSet>
-      <directory>target</directory>
-      <outputDirectory>pge/logs</outputDirectory>
-      <excludes>
-        <exclude>**/*</exclude>
-      </excludes>
-    </fileSet>
-    <fileSet>
-      <directory>target</directory>
-      <outputDirectory>pge/run</outputDirectory>
-      <excludes>
-        <exclude>**/*</exclude>
-      </excludes>
-    </fileSet>
-    <fileSet>
-      <directory>${basedir}/src/main/resources/etc</directory>
-      <outputDirectory>pge/etc</outputDirectory>
-      <includes/>
-    </fileSet>
-    <fileSet>
       <directory>${basedir}/src/main/resources/policy</directory>
       <outputDirectory>pge/policy</outputDirectory>
       <includes/>
