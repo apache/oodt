@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 --------------------------------------------
 
+* OODT-708 Add PGE RADiX Archetype (skhudiky)
+
 * OODT-593 Dyn workflows in Workflow Manager cause NPEs on restart (mattmann)
 
 * OODT-705 RADIX one step script (mattmann)
