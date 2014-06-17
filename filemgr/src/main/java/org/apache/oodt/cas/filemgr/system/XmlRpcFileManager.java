@@ -59,6 +59,7 @@ import org.apache.oodt.cas.filemgr.datatransfer.TransferStatusTracker;
 import com.google.common.collect.Lists;
 
 
+
 //JDK imports
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -942,7 +943,7 @@ public class XmlRpcFileManager {
       return true;
     }
 
-    public boolean modifyProduct(Hashtable productHash) throws CatalogException {
+    public boolean modifyProduct(Hashtable<?, ?> productHash) throws CatalogException {
         Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
 
         try {
@@ -1013,8 +1014,6 @@ public class XmlRpcFileManager {
             System.err.println(usage);
             System.exit(1);
         }
-
-        XmlRpcFileManager manager = new XmlRpcFileManager(portNum);
 
         for (;;)
             try {
@@ -1245,6 +1244,7 @@ public class XmlRpcFileManager {
         return query;
     }
 
+    @SuppressWarnings("unchecked")
     private List<QueryResult> applyFilterToResults(
             List<QueryResult> queryResults, QueryFilter queryFilter)
             throws Exception {

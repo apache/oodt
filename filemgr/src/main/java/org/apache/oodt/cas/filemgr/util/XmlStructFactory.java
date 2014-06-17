@@ -28,9 +28,11 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -109,6 +111,7 @@ public final class XmlStructFactory {
                 Element keyValElem = (Element) keyValElems.item(i);
 
                 String elemName = XMLUtils.read(keyValElem, "key");
+                @SuppressWarnings("unchecked")
                 List<String> elemValues = XMLUtils.readMany(keyValElem, "val");
                 metHash.put(elemName, elemValues);
             }

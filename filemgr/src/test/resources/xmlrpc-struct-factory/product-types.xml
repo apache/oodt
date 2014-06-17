@@ -26,6 +26,12 @@
      description definition: trim="false"       
      -->
     <description>The default product type for any kind of file.</description>
+    
+    <!-- 
+      The metExtractors element is optional but included in OODT Unit testing for capability.
+      extractor property elements are extractor specific and located in 
+      AbstractFilemgrMetExtractor#doConfigure method.
+    -->
     <metExtractors>
       <extractor
         class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
@@ -38,6 +44,13 @@
         </configuration>
       </extractor>
     </metExtractors>
+    
+    <!-- 
+      The metadata element is optional but included in OODT Unit testing for testing capability.
+      TODO
+    -->
+    <metadata>
+    </metadata>
     <typeHandlers>
       <typeHandler class="org.apache.oodt.cas.filemgr.structs.type.examples.MajorMinorVersionTypeHandler" elementName="DataVersion"/>
     </typeHandlers>
