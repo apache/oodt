@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -59,6 +60,10 @@ import java.util.List;
  */
 public final class XmlRpcStructFactory {
 
+    /* our log stream */
+    private static final Logger LOG = Logger
+            .getLogger(XmlRpcStructFactory.class.getName());
+    
     private XmlRpcStructFactory() throws InstantiationException {
         throw new InstantiationException(
                 "Don't instantiate XmlRpcStructFactories!");
@@ -75,7 +80,6 @@ public final class XmlRpcStructFactory {
         return statusHash;
     }
 
-    @SuppressWarnings("unchecked")
     public static FileTransferStatus getFileTransferStatusFromXmlRpc(
             Hashtable<String, Object> statusHash) {
         FileTransferStatus status = new FileTransferStatus();
@@ -124,7 +128,6 @@ public final class XmlRpcStructFactory {
         return productPageHash;
     }
 
-    @SuppressWarnings("unchecked")
     public static ProductPage getProductPageFromXmlRpc(Hashtable<String, Object> productPageHash) {
         ProductPage page = new ProductPage();
         page.setPageNum(((Integer) productPageHash.get("pageNum")).intValue());
@@ -157,7 +160,6 @@ public final class XmlRpcStructFactory {
         return complexQueryHash;
     }
     
-    @SuppressWarnings("unchecked")
     public static ComplexQuery getComplexQueryFromXmlRpc(Hashtable<String, Object> complexQueryHash) {
         ComplexQuery complexQuery = new ComplexQuery();
         complexQuery.setCriteria(getQueryFromXmlRpc(complexQueryHash).getCriteria());
@@ -186,7 +188,6 @@ public final class XmlRpcStructFactory {
         String startDateTimeMetKey = (String) queryFilterHash.get("startDateTimeMetKey");
         String endDateTimeMetKey = (String) queryFilterHash.get("endDateTimeMetKey");
         String priorityMetKey = (String) queryFilterHash.get("priorityMetKey");
-        @SuppressWarnings("unchecked")
         FilterAlgor filterAlgor = getFilterAlgorFromXmlRpc((Hashtable<String, Object>) queryFilterHash.get("filterAlgor"));
         QueryFilter queryFilter = new QueryFilter(startDateTimeMetKey, endDateTimeMetKey, priorityMetKey, filterAlgor);
         queryFilter.setConverter(GenericFileManagerObjectFactory.getVersionConverterFromClassName((String) queryFilterHash.get("versionConverterClass")));
@@ -229,7 +230,6 @@ public final class XmlRpcStructFactory {
         return queryResultHash;
     }
     
-    @SuppressWarnings("unchecked")
     public static QueryResult getQueryResultFromXmlRpc(Hashtable<String, Object> queryResultHash) {
         Product product = getProductFromXmlRpc((Hashtable<String, Object>) queryResultHash.get("product"));
         Metadata metadata = new Metadata();
@@ -267,8 +267,7 @@ public final class XmlRpcStructFactory {
         return productHash;
     }
 
-    @SuppressWarnings("unchecked")
-    public static Product getProductFromXmlRpc(Hashtable<?, ?> productHash) {
+    public static Product getProductFromXmlRpc(Hashtable<String, Object> productHash) {
         Product product = new Product();
         product.setProductId((String) productHash.get("id"));
         product.setProductName((String) productHash.get("name"));
@@ -372,7 +371,6 @@ public final class XmlRpcStructFactory {
         return productTypeHash;
     }
 
-    @SuppressWarnings("unchecked")
     public static ProductType getProductTypeFromXmlRpc(Hashtable<String, Object> productTypeHash) {
         ProductType type = new ProductType();
         type.setDescription((String) productTypeHash.get("description"));
@@ -382,7 +380,7 @@ public final class XmlRpcStructFactory {
         type.setVersioner((String) productTypeHash.get("versionerClass"));
         if (productTypeHash.get("typeMetadata") != null) {
            Metadata typeMet = new Metadata();
-           typeMet.addMetadata((Hashtable<String, Object>) productTypeHash.get("typeMetadata"));
+           typeMet.addMetadata((Hashtable) productTypeHash.get("typeMetadata"));
            type.setTypeMetadata(typeMet);
         }
         if (productTypeHash.get("typeExtractors") != null) {
@@ -454,7 +452,6 @@ public final class XmlRpcStructFactory {
         return extractors;
     }
 
-    @SuppressWarnings("unchecked")
     public static ExtractorSpec getExtractorSpecFromXmlRpc(
             Hashtable<String, Object> extractorSpecHash) {
         ExtractorSpec spec = new ExtractorSpec();
@@ -615,7 +612,6 @@ public final class XmlRpcStructFactory {
 
     public static Query getQueryFromXmlRpc(Hashtable<String, Object> queryHash) {
         Query query = new Query();
-        @SuppressWarnings("unchecked")
         List<QueryCriteria> criteria = getQueryCriteriaListFromXmlRpc((Vector<Hashtable<String, Object>>) queryHash
                 .get("criteria"));
         query.setCriteria(criteria);
@@ -700,7 +696,6 @@ public final class XmlRpcStructFactory {
             } catch (QueryFormulationException e){
                 System.out.println("Error generating Boolean Query.");
             }
-            @SuppressWarnings("unchecked")
             List<Hashtable<String, Object>> terms = (List<Hashtable<String, Object>>) criteriaHash.get("terms");
             for(int i=0;i<terms.size();i++){
                 Hashtable<String, Object> term = terms.get(i);

@@ -21,8 +21,7 @@ package org.apache.oodt.cas.filemgr.structs.exceptions;
  * @author mattmann
  * @version $Revision$
  * 
- * <p>An exception thrown from the {@link org.apache.oodt.cas.filemgr.repository.RepositoryManager} 
- * interface.</p>
+ * <p>An exception thrown from the RepositoryManager interface.</p>
  * 
  */
 public class RepositoryManagerException extends Exception {

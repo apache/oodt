@@ -267,7 +267,7 @@ public class XMLRepositoryManager implements RepositoryManager {
         InputStream xmlInputStream = null;
 
         try {
-            xmlInputStream = new File(xmlFile).toURI().toURL().openStream();
+            xmlInputStream = new File(xmlFile).toURL().openStream();
         } catch (IOException e) {
             LOG.log(Level.WARNING,
                     "IOException when getting input stream from [" + xmlFile

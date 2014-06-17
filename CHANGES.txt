@@ -3,10 +3,6 @@ Apache OODT Change Log
 
 Release 0.7 - Current Development
 --------------------------------------------
- 
-* OODT-685 Fix OODT 0.7-SNAPSHOT Jenkins nightly build on Ubuntu 1st Pass (lewismc) includes 
-   OODT-688 filemgr jar should not ship with ALL resources, and (lewismc)
-   OODT-691 Remove inactive jglobus repository from pushpull pom.xml (lewismc)
 
 * OODT-708 Add PGE RADiX Archetype (skhudiky)
 

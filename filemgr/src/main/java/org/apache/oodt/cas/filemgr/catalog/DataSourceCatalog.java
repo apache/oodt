@@ -39,8 +39,6 @@ import org.apache.oodt.commons.util.DateConvert;
 //SPRING imports
 import org.springframework.util.StringUtils;
 
-
-
 //JDK imports
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -54,7 +52,6 @@ import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.sql.DataSource;
 
 /**
@@ -1946,8 +1943,7 @@ public class DataSourceCatalog implements Catalog {
 
     }
 
-    @SuppressWarnings("unchecked")
-	private List<Product> getProductsFromCache(String productTypeId) {
+    private List<Product> getProductsFromCache(String productTypeId) {
         List<Product> products = null;
 
         if (PRODUCT_CACHE.get(productTypeId) == null) {
@@ -1970,8 +1966,7 @@ public class DataSourceCatalog implements Catalog {
         PRODUCT_CACHE.put(productTypeId, productListAndUpdateTime);
     }
 
-    @SuppressWarnings("unused")
-	private List<Product> getProductsByProductTypeCached(ProductType type) {
+    private List<Product> getProductsByProductTypeCached(ProductType type) {
         List<Product> products = null;
         // check the product cache first
         if (stillFresh(type.getProductTypeId())) {

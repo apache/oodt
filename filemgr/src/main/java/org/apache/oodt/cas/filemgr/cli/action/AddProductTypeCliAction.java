@@ -56,6 +56,7 @@ public class AddProductTypeCliAction extends FileManagerCliAction {
                + getClient().addProductType(type));
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to add product type with "
+               + "name '" + productTypeName + "', description '"
                + productTypeDescription + "', repository '"
                + fileRepositoryPath + ", and versioner '" + versioner + "' : "
                + e.getMessage(), e);
