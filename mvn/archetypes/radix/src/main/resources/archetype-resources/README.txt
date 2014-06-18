@@ -32,9 +32,14 @@ REQUIREMENTS:
   see: http://oodt.apache.org/components/maven/filemgr/user/basic.html
 
 INSTALLATION:
-  $ mvn clean package <OPTIONAL PROFILES> -C /my/deployment/directory/oodt
+  # build oodt
+  $ mvn clean package <OPTIONAL PROFILES> # see optional build profiles below
 
-  For other build configurations, add the following arguments:
+  # deploy oodt
+  $ tar zxf distribution/target/${PROJECT_ARTIFACT_ID}-distribution-*-bin.tar.gz -C /my/deployment/directory/oodt
+  
+  ---
+  NOTE: For other build configurations, add the following arguments:
   (default)           : bin, crawler, data, extensions,
                         filemgr (Lucene), logs, pcs, resmgr,
                         tomcat, workflow, pge
