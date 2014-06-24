@@ -21,6 +21,13 @@ package org.apache.oodt.cas.filemgr.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+
+
+
+
+
+
 //OODT imports
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory;
@@ -71,6 +78,7 @@ public final class GenericFileManagerObjectFactory {
      *            provide DataTransfer objects.
      * @return A newly instantiated {@link DataTransfer} object.
      */
+    @SuppressWarnings("unchecked")
     public static DataTransfer getDataTransferServiceFromFactory(
             String serviceFactory) {
         DataTransferFactory dataTransferFactory = null;
@@ -111,6 +119,7 @@ public final class GenericFileManagerObjectFactory {
      *            RepositoryManager objects.
      * @return A newly constructed {@link RepositoryManager} object.
      */
+    @SuppressWarnings("unchecked")
     public static RepositoryManager getRepositoryManagerServiceFromFactory(
             String serviceFactory) {
         RepositoryManagerFactory factory = null;
@@ -151,6 +160,7 @@ public final class GenericFileManagerObjectFactory {
      *            Catalog objects.
      * @return A newly constructed {@link Catalog} object.
      */
+    @SuppressWarnings("unchecked")
     public static Catalog getCatalogServiceFromFactory(String serviceFactory) {
         CatalogFactory factory = null;
         Class<CatalogFactory> clazz = null;
@@ -191,6 +201,7 @@ public final class GenericFileManagerObjectFactory {
      * @return A new {@link ValidationLayer}, created from the specified
      *         ValidationLayerFactory.
      */
+    @SuppressWarnings("unchecked")
     public static ValidationLayer getValidationLayerFromFactory(
             String serviceFactory) {
         ValidationLayerFactory factory = null;
@@ -220,6 +231,7 @@ public final class GenericFileManagerObjectFactory {
         return null;
     }
     
+    @SuppressWarnings("unchecked")
     public static Cache getCacheFromFactory(String serviceFactory){
         CacheFactory factory = null;
         Class<CacheFactory> clazz = null;
@@ -260,6 +272,7 @@ public final class GenericFileManagerObjectFactory {
      */
     public static Versioner getVersionerFromClassName(String className) {
         try {
+            @SuppressWarnings("unchecked")
             Class<Versioner> versionerClass = (Class<Versioner>) Class.forName(className);
             return versionerClass.newInstance();
         } catch (ClassNotFoundException e) {
@@ -284,6 +297,7 @@ public final class GenericFileManagerObjectFactory {
 
     public static FilemgrMetExtractor getExtractorFromClassName(String className) {
         try {
+            @SuppressWarnings("unchecked")
             Class<FilemgrMetExtractor> extractorClass = (Class<FilemgrMetExtractor>) Class.forName(className);
             return extractorClass.newInstance();
         } catch (ClassNotFoundException e) {

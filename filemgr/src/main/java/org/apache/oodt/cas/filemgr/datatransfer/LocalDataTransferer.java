@@ -247,7 +247,7 @@ public class LocalDataTransferer implements DataTransfer {
       if (transferType.equals("dir")) {
          p.setProductStructure(Product.STRUCTURE_HIERARCHICAL);
          dirReference.setDataStoreReference(new File(new URI(productRepo))
-               .toURL().toExternalForm()
+               .toURI().toURL().toExternalForm()
                + URLEncoder.encode(p.getProductName(), "UTF-8") + "/");
          p.getProductReferences().add(dirReference);
          /* we'll do a simple versioning scheme ourselves: no versioning! */

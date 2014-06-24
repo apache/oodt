@@ -24,11 +24,8 @@ import org.apache.xmlrpc.XmlRpcClientException;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcTransport;
 import org.apache.xmlrpc.XmlRpcTransportFactory;
-
 //JDK imports
 import java.net.URL;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -37,7 +34,6 @@ import java.util.logging.Logger;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
-
 //OODT imports
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -354,6 +350,7 @@ public class XmlRpcFileManagerClient {
 
     }
 
+    @SuppressWarnings("unchecked")
     public FileTransferStatus getCurrentFileTransfer()
             throws DataTransferException {
         Vector<Object> argList = new Vector<Object>();
@@ -378,6 +375,7 @@ public class XmlRpcFileManagerClient {
         return status;
     }
 
+    @SuppressWarnings("unchecked")
     public List<FileTransferStatus> getCurrentFileTransfers()
             throws DataTransferException {
         Vector<Object> argList = new Vector<Object>();
@@ -450,6 +448,7 @@ public class XmlRpcFileManagerClient {
         return -1.0;
     }
 
+    @SuppressWarnings("unchecked")
     public ProductPage pagedQuery(Query query, ProductType type, int pageNum)
             throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
@@ -475,6 +474,7 @@ public class XmlRpcFileManagerClient {
         return XmlRpcStructFactory.getProductPageFromXmlRpc(pageHash);
     }
 
+    @SuppressWarnings("unchecked")
     public ProductPage getFirstPage(ProductType type) throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
         argList.add(XmlRpcStructFactory.getXmlRpcProductType(type));
@@ -499,6 +499,7 @@ public class XmlRpcFileManagerClient {
 
     }
 
+    @SuppressWarnings("unchecked")
     public ProductPage getLastPage(ProductType type) throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
         argList.add(XmlRpcStructFactory.getXmlRpcProductType(type));
@@ -522,6 +523,7 @@ public class XmlRpcFileManagerClient {
         return page;
     }
 
+    @SuppressWarnings("unchecked")
     public ProductPage getNextPage(ProductType type, ProductPage currPage)
             throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
@@ -547,6 +549,7 @@ public class XmlRpcFileManagerClient {
         return page;
     }
 
+    @SuppressWarnings("unchecked")
     public ProductPage getPrevPage(ProductType type, ProductPage currPage)
             throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
@@ -630,6 +633,7 @@ public class XmlRpcFileManagerClient {
         return numProducts.intValue();
     }
 
+    @SuppressWarnings("unchecked")
     public List<Product> getTopNProducts(int n) throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
         argList.add(new Integer(n));
@@ -650,6 +654,7 @@ public class XmlRpcFileManagerClient {
         return topNProductList;
     }
 
+    @SuppressWarnings("unchecked")
     public List<Product> getTopNProducts(int n, ProductType type)
             throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
@@ -760,6 +765,7 @@ public class XmlRpcFileManagerClient {
         return productId;
     }
 
+    @SuppressWarnings("unchecked")
     public Metadata getMetadata(Product product) throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
         Hashtable<String, Object> productHash = XmlRpcStructFactory
@@ -783,7 +789,8 @@ public class XmlRpcFileManagerClient {
 
     }
 
-    public Metadata getReducedMetadata(Product product, List elements)
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public Metadata getReducedMetadata(Product product, List<?> elements)
             throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
         Hashtable<String, Object> productHash = XmlRpcStructFactory
@@ -859,6 +866,7 @@ public class XmlRpcFileManagerClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<Product> getProductsByProductType(ProductType type)
             throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
@@ -884,6 +892,7 @@ public class XmlRpcFileManagerClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<Element> getElementsByProductType(ProductType type)
             throws ValidationLayerException {
         Vector<Object> argList = new Vector<Object>();
@@ -910,6 +919,7 @@ public class XmlRpcFileManagerClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Element getElementById(String elementId)
             throws ValidationLayerException {
         Vector<Object> argList = new Vector<Object>();
@@ -933,6 +943,7 @@ public class XmlRpcFileManagerClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Element getElementByName(String elementName)
             throws ValidationLayerException {
         Vector<Object> argList = new Vector<Object>();
@@ -956,6 +967,7 @@ public class XmlRpcFileManagerClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Element getElementByName(String elementName, ProductType type)
             throws ValidationLayerException {
         Vector<Object> argList = new Vector<Object>();
@@ -987,6 +999,7 @@ public class XmlRpcFileManagerClient {
                     .getXmlRpcComplexQuery(complexQuery);
             Vector<Object> argList = new Vector<Object>();
             argList.add(complexQueryHash);
+            @SuppressWarnings("unchecked")
             Vector<Hashtable<String, Object>> queryResultHashVector = (Vector<Hashtable<String, Object>>) client
                     .execute("filemgr.complexQuery", argList);
             return XmlRpcStructFactory
@@ -997,6 +1010,7 @@ public class XmlRpcFileManagerClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<Product> query(Query query, ProductType type)
             throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
@@ -1028,6 +1042,7 @@ public class XmlRpcFileManagerClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public ProductType getProductTypeByName(String productTypeName)
             throws RepositoryManagerException {
         Hashtable<String, Object> productTypeHash = new Hashtable<String, Object>();
@@ -1038,7 +1053,7 @@ public class XmlRpcFileManagerClient {
             productTypeHash = (Hashtable<String, Object>) client.execute(
                     "filemgr.getProductTypeByName", argList);
         } catch (XmlRpcException e) {
-            throw new RepositoryManagerException(e.getMessage());
+            throw new RepositoryManagerException(e.getLocalizedMessage());
         } catch (IOException e) {
             throw new RepositoryManagerException(e.getMessage());
         }
@@ -1050,6 +1065,7 @@ public class XmlRpcFileManagerClient {
                     .getProductTypeFromXmlRpc(productTypeHash);
     }
 
+    @SuppressWarnings("unchecked")
     public ProductType getProductTypeById(String productTypeId)
             throws RepositoryManagerException {
         Hashtable<String, Object> productTypeHash = new Hashtable<String, Object>();
@@ -1072,6 +1088,7 @@ public class XmlRpcFileManagerClient {
                     .getProductTypeFromXmlRpc(productTypeHash);
     }
 
+    @SuppressWarnings("unchecked")
     public List<ProductType> getProductTypes()
             throws RepositoryManagerException {
         Vector<Object> argList = new Vector<Object>();
@@ -1095,6 +1112,7 @@ public class XmlRpcFileManagerClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<Reference> getProductReferences(Product product)
             throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
@@ -1121,6 +1139,7 @@ public class XmlRpcFileManagerClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Product getProductById(String productId) throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
 
@@ -1143,6 +1162,7 @@ public class XmlRpcFileManagerClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Product getProductByName(String productName) throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
 
@@ -1286,6 +1306,7 @@ public class XmlRpcFileManagerClient {
 
     }
 
+    @SuppressWarnings("unchecked")
     public Metadata getCatalogValues(Metadata metadata, ProductType productType)
             throws XmlRpcException, IOException {
         Vector<Object> args = new Vector<Object>();
@@ -1299,6 +1320,7 @@ public class XmlRpcFileManagerClient {
         return m;
     }
 
+    @SuppressWarnings("unchecked")
     public Metadata getOrigValues(Metadata metadata, ProductType productType)
             throws XmlRpcException, IOException {
         Vector<Object> args = new Vector<Object>();
@@ -1312,6 +1334,7 @@ public class XmlRpcFileManagerClient {
         return m;
     }
 
+    @SuppressWarnings("unchecked")
     public Query getCatalogQuery(Query query, ProductType productType)
             throws XmlRpcException, IOException {
         Vector<Object> args = new Vector<Object>();

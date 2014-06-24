@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 --------------------------------------------
 
+* OODT-685 ix OODT 0.7-SNAPSHOT Jenkins nightly build on Ubuntu 1st Pass (lewismc)
+
 * OODT-716 Vagrant user on VM unable to start/stop oodt services (sherylj)
 
 * OODT-708 Add PGE RADiX Archetype (skhudiky)
