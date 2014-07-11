@@ -280,7 +280,10 @@ public class SolrClient {
 		try {
 			
 	    // send request
-			HttpClient httpClient = new HttpClient();
+	    HttpClient httpClient = new HttpClient();
+            // OODT-719 Prevent httpclient from spawning closewait tcp connections
+            method.setRequestHeader("Connection", "close");
+
 	    int statusCode = httpClient.executeMethod(method);	    
 	    
 	    // read response
