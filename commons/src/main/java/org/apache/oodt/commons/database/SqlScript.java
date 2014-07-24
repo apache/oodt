@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+
 package org.apache.oodt.commons.database;
 
 //JDK imports
@@ -28,7 +29,6 @@ import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
 import javax.sql.DataSource;
 
 /**
@@ -50,7 +50,7 @@ public class SqlScript {
 
     private boolean useBatch = true;
 
-    private List<String> statementList = null;
+    private List statementList = null;
 
     /**
      * @param args
@@ -59,7 +59,7 @@ public class SqlScript {
 
     public SqlScript(String scriptFileName, DataSource ds) throws SQLException {
         script = new File(scriptFileName);
-        statementList = new Vector<String>();
+        statementList = new Vector();
         this.ds = ds;
     }
 
@@ -138,7 +138,7 @@ public class SqlScript {
             doExecuteBatch();
         } else {
             if (statementList != null && statementList.size() > 0) {
-                for (Iterator<String> i = statementList.iterator(); i.hasNext();) {
+                for (Iterator i = statementList.iterator(); i.hasNext();) {
                     String sqlStatement = (String) i.next();
                     doExecuteIndividual(sqlStatement);
 
@@ -215,11 +215,11 @@ public class SqlScript {
         Statement statement = null;
 
         try {
-            if (this.statementList != null && this.statementList.size() > 0) {
+            if (statementList != null && statementList.size() > 0) {
                 conn = ds.getConnection();
                 statement = conn.createStatement();
 
-                for (Iterator<String> i = statementList.iterator(); i.hasNext();) {
+                for (Iterator i = statementList.iterator(); i.hasNext();) {
                     String sqlStatement = (String) i.next();
                     statement.addBatch(sqlStatement);
                 }
@@ -229,8 +229,10 @@ public class SqlScript {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Exception executing SQL batch statement: message: "
+            System.out
+                    .println("Exception executing SQL batch statement: message: "
                             + e.getMessage());
+
         } finally {
             if (statement != null) {
                 try {

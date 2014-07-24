@@ -15,15 +15,14 @@
  * limitations under the License.
  */
 
+
 package org.apache.oodt.cas.filemgr.catalog;
 
+//JDK imports
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
-import java.util.Properties;
-
 import javax.sql.DataSource;
-
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
@@ -36,12 +35,9 @@ import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
 import org.apache.oodt.commons.database.SqlScript;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.junit.After;
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
+//Junit imports
+import junit.framework.TestCase;
 
 /**
  * @author mattmann
@@ -52,426 +48,443 @@ import org.junit.Test;
  * {@link DataSourceCatalogFactory}.
  * </p>.
  */
-public class TestDataSourceCatalog {
+public class TestDataSourceCatalog extends TestCase {
 
-  protected Catalog myCat;
+    protected Catalog myCat;
 
-  private static String tmpDirPath = null;
+    private String tmpDirPath = null;
 
-  private static final int catPageSize = 20;
+    private static final int catPageSize = 20;
 
-  public TestDataSourceCatalog() {
-    Properties props = new Properties();
-    // set the log levels
-    props.put("java.util.logging.config.file", 
-        new File(TestDataSourceCatalog.class.getResource("/test.logging.properties").getFile()).getAbsolutePath());
+    public TestDataSourceCatalog() {
+        // set the log levels
+        System.setProperty("java.util.logging.config.file", new File(
+                "./src/main/resources/logging.properties").getAbsolutePath());
 
-    if(System.getProperty("overrideProperties") == null){
-      try {
-        props.load(TestDataSourceCatalog.class.getResourceAsStream("/filemgr.properties"));
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      // first load the example configuration
-      // get a temp directory
-      File tempDir = null;
-      File tempFile = null;
+        if(System.getProperty("overrideProperties") == null){
 
-      try {
-        tempFile = File.createTempFile("foo", "bar");
-        tempFile.deleteOnExit();
-        tempDir = tempFile.getParentFile();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+            try {
+                System.getProperties().load(
+                        new FileInputStream(
+                                "./src/main/resources/filemgr.properties"));
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
 
-      tmpDirPath = tempDir.getAbsolutePath();
-      if (!tmpDirPath.endsWith("/")) {
-        tmpDirPath += "/";
-      }
 
-      tmpDirPath += "testCat";
+        // first load the example configuration
 
-      // now override the catalog properties
-      props.put("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url",
-          "jdbc:hsqldb:file:" + tmpDirPath + "/testCat;shutdown=true");
 
-      props.put("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user", "sa");
+        // get a temp directory
+        File tempDir = null;
+        File tempFile = null;
 
-      props.put("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.pass", "");
-
-      props.put("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver",
-          "org.hsqldb.jdbcDriver");
-    } else{
-      try {
-        props.load(
-            new FileInputStream(
-                System.getProperty("overrideProperties")));
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    // now override the val layer ones
-    props.put("org.apache.oodt.cas.filemgr.validation.dirs",
-        new File(TestDataSourceCatalog.class.getResource("/xmlrpc-struct-factory").getFile()).getAbsolutePath());
-
-    // override quote fields
-    props.put("org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields",
-        "true");
-
-    System.setProperties(props);
-
-    myCat = getCatalog();
-    // now create the basic schema for the DB
-    createSchema();
-  }
-  @Before
-  public void setUp() throws Exception {
-      myCat = (DataSourceCatalog) new DataSourceCatalogFactory().createCatalog();
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    // now remove the temporary directory used
-    if (tmpDirPath != null) {
-      File tmpDir = new File(tmpDirPath);
-      File[] tmpFiles = tmpDir.listFiles();
-
-      if (tmpFiles != null && tmpFiles.length > 0) {
-        for (int i = 0; i < tmpFiles.length; i++) {
-          tmpFiles[i].delete();
+        try {
+            tempFile = File.createTempFile("foo", "bar");
+            tempFile.deleteOnExit();
+            tempDir = tempFile.getParentFile();
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
 
-        tmpDir.delete();
-      }
+        tmpDirPath = tempDir.getAbsolutePath();
+        if (!tmpDirPath.endsWith("/")) {
+            tmpDirPath += "/";
+        }
+
+        tmpDirPath += "testCat";
+
+        // now override the catalog ones
+        System.setProperty(
+                "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url",
+                "jdbc:hsqldb:file:" + tmpDirPath + "/testCat;shutdown=true");
+
+        System.setProperty(
+                "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user",
+                "sa");
+        System.setProperty(
+                "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.pass",
+                "");
+        System.setProperty(
+                "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver",
+                "org.hsqldb.jdbcDriver");
+        }
+        else{
+            try {
+                System.getProperties().load(
+                        new FileInputStream(
+                                System.getProperty("overrideProperties")));
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+        // now override the val layer ones
+        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
+                "file://"
+                        + new File("./src/testdata/xmlrpc-struct-factory")
+                                .getAbsolutePath());
+
+        // override quote fields
+        System.setProperty(
+                "org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields",
+                "true");
+
+        myCat = getCatalog();
 
     }
-  }
 
-  @Test
-  public void testRemoveProduct() {
-    Product productToRemove = getTestProduct();
-    // override name
-    productToRemove.setProductName("removeme");
-    try {
-      myCat.addProduct(productToRemove);
-    } catch (Exception e) {
-      fail(e.getMessage());
+    /*
+     * (non-Javadoc)
+     * 
+     * @see junit.framework.TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        // now create the basic schema for the DB
+        createSchema();
     }
 
-    Product retProduct = null;
-    ProductType type = new ProductType();
-    type.setName("GenericFile");
-    type.setProductTypeId("urn:oodt:GenericFile");
+    /*
+     * (non-Javadoc)
+     * 
+     * @see junit.framework.TestCase#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        // now remove the temporary directory used
+        if (tmpDirPath != null) {
+            File tmpDir = new File(tmpDirPath);
+            File[] tmpFiles = tmpDir.listFiles();
 
-    try {
-      retProduct = myCat.getProductByName("removeme");
-      retProduct.setProductType(type);
-    } catch (Exception e) {
-      fail(e.getMessage());
-    }
-    assertNotNull(retProduct);
+            if (tmpFiles != null && tmpFiles.length > 0) {
+                for (int i = 0; i < tmpFiles.length; i++) {
+                    tmpFiles[i].delete();
+                }
 
-    try {
-      myCat.removeProduct(retProduct);
-    } catch (Exception e) {
-      fail(e.getMessage());
-    }
+                tmpDir.delete();
+            }
 
-    Product retProdAfterRemove = null;
-    try {
-      retProdAfterRemove = myCat.getProductByName("removeme");
-    } catch (Exception e) {
-      fail(e.getMessage());
+        }
     }
 
-    assertNull(retProdAfterRemove);
+    public void testRemoveProduct() {
+        Product productToRemove = getTestProduct();
+        // override name
+        productToRemove.setProductName("removeme");
+        try {
+            myCat.addProduct(productToRemove);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
 
-  }
+        Product retProduct = null;
+        ProductType type = new ProductType();
+        type.setName("GenericFile");
+        type.setProductTypeId("urn:oodt:GenericFile");
 
-  @Test
-  public void testModifyProduct() {
-    Product testProduct = getTestProduct();
-    try {
-      myCat.addProduct(testProduct);
-    } catch (Exception e) {
-      fail(e.getMessage());
+        try {
+            retProduct = myCat.getProductByName("removeme");
+            retProduct.setProductType(type);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+        assertNotNull(retProduct);
+
+        try {
+            myCat.removeProduct(retProduct);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        Product retProdAfterRemove = null;
+        try {
+            retProdAfterRemove = myCat.getProductByName("removeme");
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        assertNull(retProdAfterRemove);
+
     }
 
-    assertNotNull(testProduct);
-    assertEquals("test", testProduct.getProductName());
-    // now change something
-    testProduct.setProductName("f002");
-    try {
-      myCat.modifyProduct(testProduct);
-    } catch (Exception e) {
-      fail(e.getMessage());
+    public void testModifyProduct() {
+        Product testProduct = getTestProduct();
+        try {
+            myCat.addProduct(testProduct);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        assertNotNull(testProduct);
+        assertEquals("test", testProduct.getProductName());
+        // now change something
+        testProduct.setProductName("f002");
+        try {
+            myCat.modifyProduct(testProduct);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        assertNotNull(testProduct);
+
+        Product retProduct;
+        try {
+            retProduct = myCat.getProductByName("f002");
+            assertNotNull(retProduct);
+            assertEquals("f002", retProduct.getProductName());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
     }
 
-    assertNotNull(testProduct);
+    /**
+     * @since OODT-133
+     * 
+     */
+    public void testFirstProductOnlyOnFirstPage() {
+        // add catPageSize of the test Product
+        // then add a product called "ShouldBeFirstForPage.txt"
+        // make sure it's the first one on the 1st page
 
-    Product retProduct;
-    try {
-      retProduct = myCat.getProductByName("f002");
-      assertNotNull(retProduct);
-      assertEquals("f002", retProduct.getProductName());
-    } catch (Exception e) {
-      fail(e.getMessage());
+        Product testProd = getTestProduct();
+        Metadata met = getTestMetadata("test");
+
+        for (int i = 0; i < this.catPageSize; i++) {
+            try {
+                myCat.addProduct(testProd);
+                myCat.addMetadata(met, testProd);
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+        }
+
+        testProd.setProductName("ShouldBeFirstForPage.txt");
+        met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+
+        try {
+            myCat.addProduct(testProd);
+            myCat.addMetadata(met, testProd);
+
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            assertNotNull(myCat.getProducts());
+            assertEquals(21, myCat.getProducts().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        ProductType type = new ProductType();
+        type.setProductTypeId("urn:oodt:GenericFile");
+        type.setName("GenericFile");
+        assertNotNull(myCat.getFirstPage(type));
+        assertNotNull(myCat.getFirstPage(type).getPageProducts());
+        assertEquals(catPageSize, myCat.getFirstPage(type).getPageProducts()
+                .size());
+        assertNotNull(myCat.getFirstPage(type).getPageProducts().get(0));
+        assertEquals("ShouldBeFirstForPage.txt", ((Product)myCat.getFirstPage(type).getPageProducts().get(0)).getProductName());
+        ProductPage page = myCat.getNextPage(type, myCat.getFirstPage(type));
+        assertNotNull(page);
+        assertNotNull(page.getPageProducts());
+        assertEquals(1, page.getPageProducts().size());
+        assertEquals(2, page.getTotalPages());
+        assertNotNull(page.getPageProducts().get(0));
+        Product retProd = ((Product) page.getPageProducts().get(0));
+        assertEquals("test", retProd.getProductName());
+
     }
 
-  }
+    public void testAddProduct() {
 
-  /**
-   * @since OODT-133
-   * 
-   */
-  @Test
-  public void testFirstProductOnlyOnFirstPage() {
-    // add catPageSize of the test Product
-    // then add a product called "ShouldBeFirstForPage.txt"
-    // make sure it's the first one on the 1st page
+        Product testProduct = getTestProduct();
+        try {
+            myCat.addProduct(testProduct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
 
-    Product testProd = getTestProduct();
-    Metadata met = getTestMetadata("test");
+        Product retProduct;
+        try {
+            retProduct = myCat.getProductByName("test");
+            assertNotNull(retProduct);
+            assertEquals("test", retProduct.getProductName());
+            assertEquals(Product.STRUCTURE_FLAT, retProduct
+                    .getProductStructure());
+            assertNotNull(retProduct.getProductType());
+            assertEquals("urn:oodt:GenericFile", retProduct.getProductType()
+                    .getProductTypeId());
+            assertEquals(Product.STATUS_TRANSFER, retProduct
+                    .getTransferStatus());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
 
-    for (int i = 0; i < TestDataSourceCatalog.catPageSize; i++) {
-      try {
-        myCat.addProduct(testProd);
-        myCat.addMetadata(met, testProd);
-      } catch (Exception e) {
-        fail(e.getMessage());
-      }
     }
 
-    testProd.setProductName("ShouldBeFirstForPage.txt");
-    met.replaceMetadata("CAS.ProdutName", "ShouldBeFirstForPage.txt");
+    public void testAddMetadata() {
+        Metadata met = new Metadata();
+        met.addMetadata("ProductStructure", Product.STRUCTURE_FLAT);
 
-    try {
-      myCat.addProduct(testProd);
-      myCat.addMetadata(met, testProd);
+        Product testProduct = getTestProduct();
+        testProduct.setProductId("1"); // need to link metadata to prod
 
-    } catch (Exception e) {
-      fail(e.getMessage());
+        try {
+            myCat.addMetadata(met, testProduct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+
+        try {
+            Metadata retMet = myCat.getMetadata(testProduct);
+            assertNotNull(retMet);
+            assertTrue(retMet.containsKey(CoreMetKeys.PRODUCT_STRUCTURE));
+            assertEquals(Product.STRUCTURE_FLAT, retMet
+                    .getMetadata(CoreMetKeys.PRODUCT_STRUCTURE));
+        } catch (CatalogException e) {
+            fail(e.getMessage());
+        }
+
     }
 
-    try {
-      assertNotNull(myCat.getProducts());
-      assertEquals(21, myCat.getProducts().size());
-    } catch (Exception e) {
-      fail(e.getMessage());
+    public void testRemoveMetadata() {
+        Metadata met = new Metadata();
+        met.addMetadata("Filename", "tempProduct");
+
+        Product testProduct = getTestProduct();
+        testProduct.setProductId("1"); // need to link metadata to prod
+
+        try {
+            myCat.addMetadata(met, testProduct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+
+        try {
+            myCat.removeMetadata(met, testProduct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+
+        try {
+            Metadata retMet = myCat.getMetadata(testProduct);
+            String retValue = retMet.getMetadata("Filename");
+            assertNull(retValue);
+        } catch (CatalogException e) {
+            fail(e.getMessage());
+        }
     }
 
-    ProductType type = new ProductType();
-    type.setProductTypeId("urn:oodt:GenericFile");
-    type.setName("GenericFile");
-    assertNotNull(myCat.getFirstPage(type));
-    assertNotNull(myCat.getFirstPage(type).getPageProducts());
-    assertEquals(catPageSize, myCat.getFirstPage(type).getPageProducts()
-        .size());
-    assertNotNull(myCat.getFirstPage(type).getPageProducts().get(0));
-    assertEquals("ShouldBeFirstForPage.txt", ((Product)myCat.getFirstPage(type).getPageProducts().get(0)).getProductName());
-    ProductPage page = myCat.getNextPage(type, myCat.getFirstPage(type));
-    assertNotNull(page);
-    assertNotNull(page.getPageProducts());
-    assertEquals(1, page.getPageProducts().size());
-    assertEquals(2, page.getTotalPages());
-    assertNotNull(page.getPageProducts().get(0));
-    Product retProd = ((Product) page.getPageProducts().get(0));
-    assertEquals("test", retProd.getProductName());
+    public void testQuery() throws Exception {
+        // ingest first file
+        Product testProduct = getTestProduct();
+        testProduct.setProductId("23");
+        Metadata prodMet = new Metadata();
+        prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
+                "./src/testdata/ingest").getCanonicalPath());
+        prodMet.addMetadata(CoreMetKeys.FILENAME, "test-file-1.txt");
+        prodMet.addMetadata("CAS.ProductName", "TestFile1");
+        prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
+        prodMet.addMetadata("NominalDate", "2008-01-20");
+        prodMet.addMetadata("DataVersion", "3.6");
+        myCat.addMetadata(prodMet, testProduct);
 
-  }
+        // ingest second file
+        testProduct.setProductId("24");
+        prodMet.replaceMetadata(CoreMetKeys.FILENAME, "test-file-2.txt");
+        prodMet.replaceMetadata("CAS.ProductName", "TestFile2");
+        myCat.addMetadata(prodMet, testProduct);
 
-  @Test
-  public void testAddProduct() {
+        // ingest thrid file
+        testProduct.setProductId("25");
+        prodMet.replaceMetadata(CoreMetKeys.FILENAME, "test-file-2.txt");
+        prodMet.replaceMetadata("CAS.ProductName", "TestFile3");
+        prodMet.replaceMetadata("DataVersion", "4.6");
+        myCat.addMetadata(prodMet, testProduct);
 
-    Product testProduct = getTestProduct();
-    try {
-      myCat.addProduct(testProduct);
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail(e.getMessage());
+        // perform first query
+        Query query = new Query();
+        query
+                .addCriterion(SqlParser
+                        .parseSqlWhereClause("CAS.ProductName != 'TestFile3' AND (Filename == 'test-file-1.txt' OR Filename == 'test-file-2.txt') AND CAS.ProductName != 'TestFile2'"));
+        System.out.println(query);
+        List<String> productIds = myCat.query(query, testProduct
+                .getProductType());
+        System.out.println(productIds);
+        assertEquals("[23]", productIds.toString());
+
+        // perform second query
+        query = new Query();
+        query
+                .addCriterion(SqlParser
+                        .parseSqlWhereClause("Filename == 'test-file-1.txt' OR (Filename == 'test-file-2.txt' AND CAS.ProductName != 'TestFile2')"));
+        System.out.println(query);
+        productIds = myCat.query(query, testProduct.getProductType());
+        System.out.println(productIds);
+        assertEquals("[25, 23]", productIds.toString());
+
+        // perform second query
+        query = new Query();
+        query
+                .addCriterion(SqlParser
+                        .parseSqlWhereClause("NominalDate == '2008-01-20' AND DataVersion >= '3.6' AND DataVersion <= '4.0'"));
+        System.out.println(query);
+        productIds = myCat.query(query, testProduct.getProductType());
+        System.out.println(productIds);
+        assertEquals("[24, 23]", productIds.toString());
     }
 
-    Product retProduct;
-    try {
-      retProduct = myCat.getProductByName("test");
-      assertNotNull(retProduct);
-      assertEquals("test", retProduct.getProductName());
-      assertEquals(Product.STRUCTURE_FLAT, retProduct
-          .getProductStructure());
-      assertNotNull(retProduct.getProductType());
-      assertEquals("urn:oodt:GenericFile", retProduct.getProductType()
-          .getProductTypeId());
-      assertEquals(Product.STATUS_TRANSFER, retProduct
-          .getTransferStatus());
-    } catch (Exception e) {
-      fail(e.getMessage());
+    protected String getSchemaPath() {
+        return "./src/testdata/testcat.sql";
+    }
+    
+    protected void setCatalog(Catalog cat){
+        this.myCat = cat;
     }
 
-  }
+    private Catalog getCatalog() {
+        return new DataSourceCatalogFactory().createCatalog();
+    }
+    
+    private void createSchema() {
+        String url = System
+                .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url");
+        String user = System
+                .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user");
+        String pass = System
+                .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.pass");
+        String driver = System
+                .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver");
 
-  @Test
-  public void testAddMetadata() {
-    Metadata met = new Metadata();
-    met.addMetadata("ProductStructure", Product.STRUCTURE_FLAT);
+        DataSource ds = DatabaseConnectionBuilder.buildDataSource(user, pass,
+                driver, url);
+        try {
+            SqlScript coreSchemaScript = new SqlScript(
+                    new File(getSchemaPath()).getAbsolutePath(), ds);
+            coreSchemaScript.loadScript();
+            coreSchemaScript.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
 
-    Product testProduct = getTestProduct();
-    testProduct.setProductId("1"); // need to link metadata to prod
-
-    try {
-      myCat.addMetadata(met, testProduct);
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail(e.getMessage());
     }
 
-    try {
-      Metadata retMet = myCat.getMetadata(testProduct);
-      assertNotNull(retMet);
-      assertTrue(retMet.containsKey(CoreMetKeys.PRODUCT_STRUCTURE));
-      assertEquals(Product.STRUCTURE_FLAT, retMet
-          .getMetadata(CoreMetKeys.PRODUCT_STRUCTURE));
-    } catch (CatalogException e) {
-      fail(e.getMessage());
-    }
-  }
-
-  @Test
-  public void testRemoveMetadata() {
-    Metadata met = new Metadata();
-    met.addMetadata("Filename", "tempProduct");
-
-    Product testProduct = getTestProduct();
-    testProduct.setProductId("1"); // need to link metadata to prod
-
-    try {
-      myCat.addMetadata(met, testProduct);
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail(e.getMessage());
+    private static Product getTestProduct() {
+        Product testProduct = Product.getDefaultFlatProduct("test",
+                "urn:oodt:GenericFile");
+        testProduct.getProductType().setName("GenericFile");
+        return testProduct;
     }
 
-    try {
-      myCat.removeMetadata(met, testProduct);
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail(e.getMessage());
+    private static Metadata getTestMetadata(String prodName) {
+        Metadata met = new Metadata();
+        met.addMetadata("CAS.ProductName", prodName);
+        return met;
     }
-
-    try {
-      Metadata retMet = myCat.getMetadata(testProduct);
-      String retValue = retMet.getMetadata("Filename");
-      assertNull(retValue);
-    } catch (CatalogException e) {
-      fail(e.getMessage());
-    }
-  }
-
-  @Test
-  public void testQuery() throws Exception {
-    // ingest first file
-    Product testProduct = getTestProduct();
-    testProduct.setProductId("23");
-    Metadata prodMet = new Metadata();
-    prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
-        getClass().getResource("/ingest").getFile()).getCanonicalPath());
-    prodMet.addMetadata(CoreMetKeys.FILENAME, "test-file-1.txt");
-    prodMet.addMetadata("CAS.ProductName", "TestFile1");
-    prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
-    prodMet.addMetadata("NominalDate", "2008-01-20");
-    prodMet.addMetadata("DataVersion", "3.6");
-    myCat.addMetadata(prodMet, testProduct);
-
-    // ingest second file
-    testProduct.setProductId("24");
-    prodMet.replaceMetadata(CoreMetKeys.FILENAME, "test-file-2.txt");
-    prodMet.replaceMetadata("CAS.ProductName", "TestFile2");
-    myCat.addMetadata(prodMet, testProduct);
-
-    // ingest thrid file
-    testProduct.setProductId("25");
-    prodMet.replaceMetadata(CoreMetKeys.FILENAME, "test-file-2.txt");
-    prodMet.replaceMetadata("CAS.ProductName", "TestFile3");
-    prodMet.replaceMetadata("DataVersion", "4.6");
-    myCat.addMetadata(prodMet, testProduct);
-
-    // perform first query
-    Query query = new Query();
-    query.addCriterion(SqlParser
-        .parseSqlWhereClause("CAS.ProductName != 'TestFile3' AND (Filename == "
-            + "'test-file-1.txt' OR Filename == 'test-file-2.txt') AND CAS.ProductName != 'TestFile2'"));
-    System.out.println(query);
-    List<String> productIds = myCat.query(query, testProduct
-        .getProductType());
-    System.out.println(productIds);
-    assertEquals("[23]", productIds.toString());
-
-    // perform second query
-    query = new Query();
-    query.addCriterion(SqlParser
-        .parseSqlWhereClause("Filename == 'test-file-1.txt' OR (Filename == "
-            + "'test-file-2.txt' AND CAS.ProductName != 'TestFile2')"));
-    System.out.println(query);
-    productIds = myCat.query(query, testProduct.getProductType());
-    System.out.println(productIds);
-    assertEquals("[25, 23]", productIds.toString());
-
-    // perform second query
-    query = new Query();
-    query.addCriterion(SqlParser.parseSqlWhereClause("NominalDate == "
-        + "'2008-01-20' AND DataVersion >= '3.6' AND DataVersion <= '4.0'"));
-    System.out.println(query);
-    productIds = myCat.query(query, testProduct.getProductType());
-    System.out.println(productIds);
-    assertEquals("[24, 23]", productIds.toString());
-  }
-
-  protected static String getSchemaPath() {
-    return TestDataSourceCatalog.class.getResource("/testcat.sql").getFile();
-  }
-
-  protected void setCatalog(Catalog cat){
-    myCat = cat;
-  }
-
-  private static Catalog getCatalog() {
-    return new DataSourceCatalogFactory().createCatalog();
-  }
-
-  private static void createSchema() {
-    String url = System
-        .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url");
-    String user = System
-        .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user");
-    String pass = System
-        .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.pass");
-    String driver = System
-        .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver");
-
-    DataSource ds = DatabaseConnectionBuilder.buildDataSource(user, pass,
-        driver, url);
-    try {
-      SqlScript coreSchemaScript = new SqlScript(
-          new File(getSchemaPath()).getAbsolutePath(), ds);
-      coreSchemaScript.loadScript();
-      coreSchemaScript.execute();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-  }
-
-  private static Product getTestProduct() {
-    Product testProduct = Product.getDefaultFlatProduct("test",
-        "urn:oodt:GenericFile");
-    testProduct.getProductType().setName("GenericFile");
-    return testProduct;
-  }
-
-  private static Metadata getTestMetadata(String prodName) {
-    Metadata met = new Metadata();
-    met.addMetadata("CAS.ProductName", prodName);
-    return met;
-  }
 
 }

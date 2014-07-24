@@ -34,9 +34,11 @@ public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
      */
     public TestMappedDataSourceCatalog() {
         super();
-        System.getProperties().setProperty(
-            "org.apache.oodt.cas.filemgr.catalog.mappeddatasource.mapFile",
-             getClass().getResource("/testcatalog.typemap.properties").getFile());
+        System
+                .getProperties()
+                .setProperty(
+                        "org.apache.oodt.cas.filemgr.catalog.mappeddatasource.mapFile",
+                        "./src/testdata/testcatalog.typemap.properties");
         setCatalog(getCatalog());
 
     }
@@ -55,8 +57,9 @@ public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.TestDataSourceCatalog#getSchemaPath()
      */
-    protected static String getSchemaPath() {
-        return TestMappedDataSourceCatalog.class.getResource("/testcat.mapped.sql").getFile();
+    @Override
+    protected String getSchemaPath() {
+        return "./src/testdata/testcat.mapped.sql";
     }
 
 }

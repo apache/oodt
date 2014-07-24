@@ -28,15 +28,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
-
 import javax.sql.DataSource;
-
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
-
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
@@ -99,7 +94,7 @@ public class ScienceDataCatalog implements Catalog {
       // that do not already exist in the database
       Metadata paramMetadata = getMetadataSubset(m, Pattern.compile("param_*"));
 
-      for (Enumeration<String> keys = paramMetadata.getHashtable().keys(); keys
+      for (Enumeration keys = paramMetadata.getHashtable().keys(); keys
           .hasMoreElements();) {
 
         String key = (String) keys.nextElement();
@@ -223,6 +218,7 @@ public class ScienceDataCatalog implements Catalog {
     try {
       conn = this.dataSource.getConnection();
       conn.setAutoCommit(true);
+      int count = 0;
       statement = conn.createStatement();
       ResultSet rs = statement.executeQuery(queryExists.toString());
       while (rs.next()) {
@@ -281,6 +277,7 @@ public class ScienceDataCatalog implements Catalog {
     try {
       conn = this.dataSource.getConnection();
       conn.setAutoCommit(true);
+      int count = 0;
       statement = conn.createStatement();
       ResultSet rs = statement.executeQuery(queryExists.toString());
       while (rs.next()) {
@@ -554,7 +551,7 @@ public class ScienceDataCatalog implements Catalog {
 
   public List<Reference> getProductReferences(Product product)
       throws CatalogException {
-    return Collections.emptyList();
+    return Collections.EMPTY_LIST;
   }
 
   public List<Product> getProducts() throws CatalogException {
@@ -1097,7 +1094,6 @@ public class ScienceDataCatalog implements Catalog {
     return size;
   }
 
-  @SuppressWarnings("unused")
   private String getStartDateTime(Product product) {
     String sql = "SELECT MIN(time) as start_date_time FROM dataPoint "
         + "          WHERE granule_id IN (SELECT granule_id FROM granule "
@@ -1150,7 +1146,6 @@ public class ScienceDataCatalog implements Catalog {
 
   }
 
-  @SuppressWarnings("unused")
   private String getEndDateTime(Product product) {
     String sql = "SELECT MAX(time) as end_date_time FROM dataPoint "
         + "          WHERE granule_id IN (SELECT granule_id FROM granule "

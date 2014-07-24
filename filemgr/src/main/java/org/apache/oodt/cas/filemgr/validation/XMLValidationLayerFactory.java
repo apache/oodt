@@ -20,7 +20,6 @@ package org.apache.oodt.cas.filemgr.validation;
 //JDk imports
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,13 +63,7 @@ public class XMLValidationLayerFactory implements ValidationLayerFactory {
      * @see org.apache.oodt.cas.filemgr.validation.ValidationLayerFactory#createValidationLayer()
      */
     public ValidationLayer createValidationLayer() {
-      XMLValidationLayer xmlValidationLayer = null;
-        try {
-          xmlValidationLayer = new XMLValidationLayer(dirList);
-        } catch (URISyntaxException e) {
-          e.printStackTrace();
-        }
-        return xmlValidationLayer;
+        return new XMLValidationLayer(dirList);
     }
 
 }
