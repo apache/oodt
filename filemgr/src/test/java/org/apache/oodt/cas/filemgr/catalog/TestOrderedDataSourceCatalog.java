@@ -17,8 +17,11 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
+import static org.junit.Assert.*;
+
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.junit.Test;
 
 /**
  * @author mattmann
@@ -57,11 +60,11 @@ public class TestOrderedDataSourceCatalog extends TestDataSourceCatalog {
    * @see
    * org.apache.oodt.cas.filemgr.catalog.TestDataSourceCatalog#getSchemaPath()
    */
-  @Override
-  protected String getSchemaPath() {
-    return "./src/testdata/testcat.ordered.sql";
+  protected static String getSchemaPath() {
+    return TestOrderedDataSourceCatalog.class.getResource("/testcat.ordered.sql").getFile();
   }
 
+  @Test
   public void testOrdering() {
     Product testProduct = getTestProduct();
     Metadata testMet = getTestMetadata("test");
@@ -74,7 +77,6 @@ public class TestOrderedDataSourceCatalog extends TestDataSourceCatalog {
       fail(e.getMessage());
     }
 
-    Product retProduct;
     try {
       Metadata retMet = myCat.getMetadata(testProduct);
       assertNotNull(retMet);

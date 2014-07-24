@@ -29,6 +29,11 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+
+
+
+
 //Lucene imports
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -384,6 +389,7 @@ public class LuceneCatalog implements Catalog {
         return prod.getProduct();
     }
 
+    @SuppressWarnings("unused")
     private CompleteProduct getCompleteProductById(String productId)
             throws CatalogException {
         return getCompleteProductById(productId, false);
@@ -1015,6 +1021,7 @@ public class LuceneCatalog implements Catalog {
 
     }
 
+    @SuppressWarnings("unused")
     private CompleteProduct toCompleteProduct(Document doc) {
         return toCompleteProduct(doc, true, true);
     }
@@ -1055,7 +1062,8 @@ public class LuceneCatalog implements Catalog {
 	            }
             } else {
             	// add all metadata elements found in document
-            	Enumeration<Field> fields = doc.fields();
+            	@SuppressWarnings("unchecked")
+              Enumeration<Field> fields = doc.fields();
             	while (fields.hasMoreElements()) {
             		Field field = fields.nextElement();
             		if (!names.contains(field.name())) {
@@ -1437,6 +1445,7 @@ public class LuceneCatalog implements Catalog {
 
         private Product product = null;
 
+        @SuppressWarnings("unused")
         public CompleteProduct(Metadata met, List<Reference> refs, Product p) {
             this.metadata = met;
             this.product = p;
@@ -1487,6 +1496,7 @@ public class LuceneCatalog implements Catalog {
          * @param references
          *            The references to set.
          */
+        @SuppressWarnings("unused")
         public void setReferences(List<Reference> references) {
             this.product.setProductReferences(references);
         }

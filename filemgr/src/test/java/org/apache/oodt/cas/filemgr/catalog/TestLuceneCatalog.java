@@ -15,13 +15,17 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.filemgr.catalog;
 
 //JDK imports
+import static org.junit.Assert.*;
+
 import java.io.File;
-import java.io.FileInputStream;
+import java.util.Properties;
 import java.util.Vector;
+
+
+
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.catalog.LuceneCatalog;
@@ -36,11 +40,11 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.common.collect.Lists;
-
-//Junit imports
-import junit.framework.TestCase;
 
 /**
  * @author woollard
@@ -52,7 +56,7 @@ import junit.framework.TestCase;
  * Test suite for the {@link LuceneCatalog} and {@link LuceneCatalogFactory}.
  * </p>.
  */
-public class TestLuceneCatalog extends TestCase {
+public class TestLuceneCatalog {
 
     private LuceneCatalog myCat;
 
@@ -61,14 +65,14 @@ public class TestLuceneCatalog extends TestCase {
     private static final int catPageSize = 20;
 
     public TestLuceneCatalog() {
+      Properties props = new Properties();
         // set the log levels
-        System.setProperty("java.util.logging.config.file", new File(
-                "./src/main/resources/logging.properties").getAbsolutePath());
+        props.setProperty("java.util.logging.config.file", new File(
+                TestLuceneCatalog.class.getResource("/test.logging.properties").getFile()).getAbsolutePath());
 
         // first load the example configuration
         try {
-            System.getProperties().load(
-                    new FileInputStream("./src/main/resources/filemgr.properties"));
+            props.load(TestLuceneCatalog.class.getResourceAsStream("/filemgr.properties"));
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -83,7 +87,7 @@ public class TestLuceneCatalog extends TestCase {
             tempFile.deleteOnExit();
             tempDir = tempFile.getParentFile();
         } catch (Exception e) {
-            fail(e.getMessage());
+            e.printStackTrace();
         }
 
         tmpDirPath = tempDir.getAbsolutePath();
@@ -94,50 +98,34 @@ public class TestLuceneCatalog extends TestCase {
         tmpDirPath += "testCat/";
 
         // now override the catalog ones
-        System.setProperty(
-                "org.apache.oodt.cas.filemgr.catalog.lucene.idxPath",
+        props.setProperty("org.apache.oodt.cas.filemgr.catalog.lucene.idxPath",
                 tmpDirPath);
 
-        System.setProperty(
-                "org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", "20");
+        props.setProperty("org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", "20");
 
-        System
-                .setProperty(
-                        "org.apache.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
+        props.setProperty("org.apache.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
                         "60");
 
-        System
-                .setProperty(
-                        "org.apache.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
+        props.setProperty("org.apache.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
                         "60");
 
-        System.setProperty(
-                "org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor",
+        props.setProperty("org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor",
                 "20");
 
         // now override the val layer ones
-        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
-                "file://"
-                        + new File("./src/main/resources/examples/core")
-                                .getAbsolutePath());
+        props.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
+                new File(TestLuceneCatalog.class.getResource("/examples/core").getFile()).getAbsolutePath());
 
+        System.setProperties(props);
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
+    
+    @Before
+    public void setUp() throws Exception {
         myCat = (LuceneCatalog) new LuceneCatalogFactory().createCatalog();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         // now remove the temporary directory used
 
         if (tmpDirPath != null) {
@@ -162,6 +150,7 @@ public class TestLuceneCatalog extends TestCase {
     /**
     * @since OODT-382
     */
+    @Test
     public void testNoCatalogDirectoryQueries() {
         // Test querying against a catalog directory that has not yet been created or is empty. 
         // The LuceneCatalogFactory should be creating the index directory if not there.
@@ -172,6 +161,7 @@ public class TestLuceneCatalog extends TestCase {
         }
     }
 
+    @Test
     public void testGetMetadata() throws CatalogException {
        Product product = getTestProduct();
        myCat.addProduct(product);
@@ -187,6 +177,7 @@ public class TestLuceneCatalog extends TestCase {
        assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/2"));
     }
     
+    @Test
     public void testGetReducedMetadata() throws CatalogException {
        Product product = getTestProduct();
        myCat.addProduct(product);
@@ -203,6 +194,7 @@ public class TestLuceneCatalog extends TestCase {
        assertTrue(rndTripMet.getAllMetadata(CoreMetKeys.FILE_LOCATION).contains("/loc/2"));
     }
 
+    @Test
     public void testGetReducedMetadataNull() throws CatalogException {
 	      Product p = getTestProduct();
 	      myCat.addProduct(p);
@@ -217,6 +209,7 @@ public class TestLuceneCatalog extends TestCase {
 	      assertNull(rndTripMet.getAllMetadata(CoreMetKeys.FILENAME));
     }
 
+    @Test
     public void testRemoveProduct() {
         Product productToRemove = getTestProduct();
 
@@ -259,6 +252,7 @@ public class TestLuceneCatalog extends TestCase {
 
     }
 
+    @Test
     public void testModifyProduct() {
         Product testProduct = getTestProduct();
         try {
@@ -295,6 +289,7 @@ public class TestLuceneCatalog extends TestCase {
      * @since OODT-133
      * 
      */
+    @Test
     public void testFirstProductOnlyOnFirstPage() {
         // add catPageSize of the test Product
         // then add a product called "ShouldBeFirstForPage.txt"
@@ -303,7 +298,7 @@ public class TestLuceneCatalog extends TestCase {
         Product testProd = getTestProduct();
         Metadata met = getTestMetadata("test");
 
-        for (int i = 0; i < this.catPageSize; i++) {
+        for (int i = 0; i < TestLuceneCatalog.catPageSize; i++) {
             try {
                 myCat.addProduct(testProd);
                 myCat.addMetadata(met, testProd);
@@ -349,6 +344,7 @@ public class TestLuceneCatalog extends TestCase {
     /**
      * @since OODT-141
      */
+    @Test
     public void testTopResults(){
       Product testProduct = getTestProduct();
       try{
@@ -362,6 +358,7 @@ public class TestLuceneCatalog extends TestCase {
       }
     }
 
+    @Test
     public void testAddProduct() {
 
         Product testProduct = getTestProduct();
@@ -391,6 +388,7 @@ public class TestLuceneCatalog extends TestCase {
 
     }
 
+    @Test
     public void testAddMetadata() {
         Metadata met = new Metadata();
         met.addMetadata("ProductStructure", Product.STRUCTURE_FLAT);
@@ -416,6 +414,7 @@ public class TestLuceneCatalog extends TestCase {
 
     }
 
+    @Test
     public void testRemoveMetadata() {
         Metadata met = new Metadata();
         met.addMetadata("Filename", "tempProduct");
@@ -447,6 +446,7 @@ public class TestLuceneCatalog extends TestCase {
         }
     }
     
+    @Test
     public void testPagedQuery(){
     	// Add a couple of Products and associated Metadata
     	Product testProduct = null;
@@ -513,6 +513,7 @@ public class TestLuceneCatalog extends TestCase {
     	assertEquals(page.getTotalPages(), 1);
     }
 	
+    @SuppressWarnings("unchecked")
     private static Product getTestProduct() {
         Product testProduct = Product.getDefaultFlatProduct("test",
                 "urn:oodt:GenericFile");
@@ -520,6 +521,7 @@ public class TestLuceneCatalog extends TestCase {
 
         // set references
         Reference ref = new Reference("file:///foo.txt", "file:///bar.txt", 100);
+        @SuppressWarnings("rawtypes")
         Vector references = new Vector();
         references.add(ref);
         testProduct.setProductReferences(references);

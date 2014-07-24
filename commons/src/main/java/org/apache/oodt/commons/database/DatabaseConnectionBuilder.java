@@ -15,18 +15,22 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.commons.database;
 
 //JDK imports
 import javax.sql.DataSource;
 
+
+
+
 //APACHE imports
-import org.apache.commons.dbcp.ConnectionFactory;
-import org.apache.commons.dbcp.DriverManagerConnectionFactory;
-import org.apache.commons.dbcp.PoolableConnectionFactory;
-import org.apache.commons.dbcp.PoolingDataSource;
-import org.apache.commons.pool.impl.GenericObjectPool;
+import org.apache.commons.dbcp2.ConnectionFactory;
+import org.apache.commons.dbcp2.DriverManagerConnectionFactory;
+import org.apache.commons.dbcp2.PoolableConnection;
+import org.apache.commons.dbcp2.PoolableConnectionFactory;
+import org.apache.commons.dbcp2.PoolingDataSource;
+import org.apache.commons.pool2.ObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPool;
 
 /**
  * @author mattmann
@@ -38,6 +42,14 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  */
 public final class DatabaseConnectionBuilder {
 
+  /**
+   * Static method which can be used to build the database connection.
+   * @param user the username associated with any connection
+   * @param pass the users password
+   * @param driver the JDBS driver class name to be used for making connections
+   * @param url the JDBC URL at which the databse end point resides.
+   * @return a configured {@link javax.sql.DataSource} which we can use to make connections to.
+   */
     public static final DataSource buildDataSource(String user, String pass,
             String driver, String url) {
 
@@ -48,13 +60,31 @@ public final class DatabaseConnectionBuilder {
         } catch (ClassNotFoundException ignore) {
         }
 
-        GenericObjectPool connectionPool = new GenericObjectPool(null);
-        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(
-                url, user, pass);
+        // First, we'll create a ConnectionFactory that the
+        // pool will use to create Connections.
+        // We'll use the DriverManagerConnectionFactory,
+        // using the connect string passed in the command line
+        // arguments.
+        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(url, user, pass);
+        
+        // Next we'll create the PoolableConnectionFactory, which wraps
+        // the "real" Connections created by the ConnectionFactory with
+        // the classes that implement the pooling functionality.
         PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(
-                connectionFactory, connectionPool, null, null, false, true);
+                connectionFactory, null);
 
-        ds = new PoolingDataSource(connectionPool);
+        // Now we'll need a ObjectPool that serves as the
+        // actual pool of connections.
+        // We'll use a GenericObjectPool instance, although
+        // any ObjectPool implementation will suffice.
+        ObjectPool<PoolableConnection> connectionPool = new GenericObjectPool<PoolableConnection>(poolableConnectionFactory); 
+        // Set the factory's pool property to the owning pool
+        poolableConnectionFactory.setPool(connectionPool);
+        // Finally, we create the PoolingDriver itself,
+        // passing in the object pool we created.
+        @SuppressWarnings("unused")
+        PoolingDataSource<PoolableConnection> dataSource =
+        new PoolingDataSource<PoolableConnection>(connectionPool);
 
         return ds;
     }

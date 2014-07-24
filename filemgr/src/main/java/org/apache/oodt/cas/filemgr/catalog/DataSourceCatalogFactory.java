@@ -73,9 +73,7 @@ public class DataSourceCatalogFactory implements CatalogFactory {
     	  // instantiate data source
         String jdbcUrl = null, user = null, pass = null, driver = null;
 
-        jdbcUrl = PathUtils
-                .replaceEnvVariables(System
-                        .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url"));
+        jdbcUrl = (System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url"));
         user = PathUtils
                 .replaceEnvVariables(System
                         .getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user"));
@@ -114,31 +112,26 @@ public class DataSourceCatalogFactory implements CatalogFactory {
      **/
     private void configure() {
     
-  		lenientFields = Boolean.parseBoolean( System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.lenientFields", "false") );
-  		if (!lenientFields) {
-	        String validationLayerFactoryClass = System
+      lenientFields = Boolean.parseBoolean( System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.lenientFields", "false") );
+      if (!lenientFields) {
+          String validationLayerFactoryClass = System
                 .getProperty("filemgr.validationLayer.factory",
                         "org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory");
-	        validationLayer = GenericFileManagerObjectFactory
+          validationLayer = GenericFileManagerObjectFactory
               .getValidationLayerFromFactory(validationLayerFactoryClass);
-  		} 
-  		
-      fieldIdStr = Boolean
-      	.getBoolean("org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields");
+      } 
 
-			pageSize = Integer
-			      .getInteger(
-			              "org.apache.oodt.cas.filemgr.catalog.datasource.pageSize",
-			              20).intValue();
-			cacheUpdateMinutes = Long
-			      .getLong(
-			              "org.apache.oodt.cas.filemgr.catalog.datasource.cacheUpdateMinutes",
-			              5L).longValue();
-			
-			productIdString = Boolean.parseBoolean( 
-				System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.productId.string", "false") );
-  	
-			orderedValues = Boolean.parseBoolean(System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.orderedValues"));
+      fieldIdStr = Boolean.getBoolean("org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields");
+
+      pageSize = Integer.getInteger(
+          "org.apache.oodt.cas.filemgr.catalog.datasource.pageSize", 20).intValue();
+      cacheUpdateMinutes = Long.getLong(
+          "org.apache.oodt.cas.filemgr.catalog.datasource.cacheUpdateMinutes", 5L).longValue();
+
+      productIdString = Boolean.parseBoolean(
+          System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.productId.string", "false") );
+
+      orderedValues = Boolean.parseBoolean(System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.orderedValues"));
     }
 
     /*
@@ -147,13 +140,13 @@ public class DataSourceCatalogFactory implements CatalogFactory {
      * @see org.apache.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
      */
     public Catalog createCatalog() {
-    	if (validationLayer==null) {
-    			return new LenientDataSourceCatalog(dataSource, validationLayer, fieldIdStr,
-							    pageSize, cacheUpdateMinutes, productIdString, orderedValues);
-    	} else {
-        return new DataSourceCatalog(dataSource, validationLayer, fieldIdStr,
-				     pageSize, cacheUpdateMinutes, productIdString, orderedValues);
-    	}
+        if (validationLayer==null) {
+            return new LenientDataSourceCatalog(dataSource, validationLayer, fieldIdStr, 
+                pageSize, cacheUpdateMinutes, productIdString, orderedValues);
+        } else {
+            return new DataSourceCatalog(dataSource, validationLayer, fieldIdStr,
+                pageSize, cacheUpdateMinutes, productIdString, orderedValues);
+        }
     }
 
 }
