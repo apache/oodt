@@ -25,6 +25,7 @@ import org.apache.oodt.commons.exec.EnvUtilities;
 
 //JDK imports
 import java.io.File;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -64,8 +65,8 @@ public class TestXMLRepositoryManager extends TestCase {
      * 
      */
     public TestXMLRepositoryManager() {
-        productTypeDirUris.add(new File("./src/testdata/repomgr").toURI()
-                .toString());
+        URL url = this.getClass().getResource("/repomgr");
+        productTypeDirUris.add(new File(url.getFile()).toURI().toString());
         try {
             repositoryManager = new XMLRepositoryManager(productTypeDirUris);
         } catch (InstantiationException e) {

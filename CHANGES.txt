@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 --------------------------------------------
 
+* OODT-722 Fix File Manager unit tests (step 2) - fix test class in 'repository'
+  package (rlaidlaw)
+
 * OODT-672 OODT Start script does not notify user of status (asumarlidason via mattmann)
 
 * OODT-721 Fix File Manager unit tests (step 1) - remove duplicate XML from test
