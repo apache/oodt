@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 --------------------------------------------
 
+* OODT-723 Fix File Manager unit tests (step 3) - fix test class in 'validation'
+  package (rlaidlaw)
+
 * OODT-722 Fix File Manager unit tests (step 2) - fix test class in 'repository'
   package (rlaidlaw)
 

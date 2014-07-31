@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -235,7 +236,8 @@ public class TestXMLValidationLayer extends TestCase {
     try {
       File tempDir = File.createTempFile("ignore", "txt").getParentFile();
       // copy the val layer policy into the temp dir
-      for (File f : new File("./src/testdata/vallayer")
+      URL url = this.getClass().getResource("/vallayer");
+      for (File f : new File(url.getFile())
           .listFiles(new FileFilter() {
 
             public boolean accept(File pathname) {
