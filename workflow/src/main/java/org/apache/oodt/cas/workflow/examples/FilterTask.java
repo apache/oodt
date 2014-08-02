@@ -63,13 +63,19 @@ public class FilterTask implements WorkflowTaskInstance {
 			if (configKeyName.startsWith("Rename")) {
 				String renameOrigKeyName = configKeyName.split("_")[1];
 				String renameKeyName = config.getProperty(configKeyName);
-				LOG.log(Level.INFO,
-						"Renaming key: [" + renameOrigKeyName + "] to ["
-								+ renameKeyName + "]: values: "
-								+ metadata.getAllMetadata(renameOrigKeyName));
-				metadata.addMetadata(renameKeyName,
-						metadata.getAllMetadata(renameOrigKeyName));
-				metadata.removeMetadata(renameOrigKeyName);
+				// check to see if key exists
+				if (metadata.containsKey(renameOrigKeyName)) {
+					LOG.log(Level.INFO, "Renaming key: [" + renameOrigKeyName
+							+ "] to [" + renameKeyName + "]: values: "
+							+ metadata.getAllMetadata(renameOrigKeyName));
+					metadata.addMetadata(renameKeyName,
+							metadata.getAllMetadata(renameOrigKeyName));
+					metadata.removeMetadata(renameOrigKeyName);
+				} else {
+					LOG.log(Level.WARNING, "Request to rename key: ["
+							+ renameOrigKeyName + "] to [" + renameKeyName
+							+ "]: orig key does not exist in dynamic metadata!");
+				}
 			}
 		}
 
@@ -77,11 +83,18 @@ public class FilterTask implements WorkflowTaskInstance {
 		if (config.getProperties().containsKey(REMOVE_KEY)) {
 			String removeMetKeyNames = config.getProperty(REMOVE_KEY);
 			for (String keyName : Arrays.asList(removeMetKeyNames.split(","))) {
-				LOG.log(Level.INFO,
-						"Removing key from workflow metadata: [" + keyName
-								+ "]: values: "
-								+ metadata.getAllMetadata(keyName));
-				metadata.removeMetadata(keyName);
+				// handle whitespace
+				keyName = keyName.trim();
+				if (metadata.containsKey(keyName)) {
+					LOG.log(Level.INFO,
+							"Removing key from workflow metadata: [" + keyName
+									+ "]: values: "
+									+ metadata.getAllMetadata(keyName));
+					metadata.removeMetadata(keyName);
+				} else {
+					LOG.log(Level.WARNING, "Request to remove key: [" + keyName
+							+ "]: key does not exist in workflow metadata!");  
+				}
 			}
 		}
 

@@ -120,5 +120,30 @@ public class TestFilterTask extends TestCase {
 		assertFalse(dynMet.containsKey("ProductionDateTime"));
 		
 	}
+	
+	public void testRemoveKeyThatDoesNotExist(){
+		config.addConfigProperty("Remove_Key", "FileLocation");
+		try {
+			task.run(dynMet, config);
+		} catch (WorkflowTaskInstanceException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		assertNotNull(dynMet);
+		assertFalse(dynMet.containsKey("FileLocation"));
+	}
+	
+	public void testRenameKeyThatDoesNotExist(){
+		config.addConfigProperty("Remove_FileLocation", "FooLocation");
+		try {
+			task.run(dynMet, config);
+		} catch (WorkflowTaskInstanceException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		assertNotNull(dynMet);
+		assertFalse(dynMet.containsKey("FileLocation"));
+		assertFalse(dynMet.containsKey("FooLocation"));
+	}
 
 }
