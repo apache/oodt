@@ -106,5 +106,19 @@ public class TestFilterTask extends TestCase {
 		assertFalse(dynMet.containsKey("Filename"));
 		assertFalse(dynMet.containsKey("FooName"));
 	}
+	
+	public void testRemoveMultipleKeys(){
+		config.addConfigProperty("Remove_Key", "Filename, ProductionDateTime");
+		try {
+			task.run(dynMet, config);
+		} catch (WorkflowTaskInstanceException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		assertNotNull(dynMet);
+		assertFalse(dynMet.containsKey("Filename"));
+		assertFalse(dynMet.containsKey("ProductionDateTime"));
+		
+	}
 
 }
