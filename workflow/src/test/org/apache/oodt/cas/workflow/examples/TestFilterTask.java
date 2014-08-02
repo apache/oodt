@@ -134,7 +134,7 @@ public class TestFilterTask extends TestCase {
 	}
 	
 	public void testRenameKeyThatDoesNotExist(){
-		config.addConfigProperty("Remove_FileLocation", "FooLocation");
+		config.addConfigProperty("Rename_FileLocation", "FooLocation");
 		try {
 			task.run(dynMet, config);
 		} catch (WorkflowTaskInstanceException e) {
