@@ -68,7 +68,7 @@ public class FilterTask implements WorkflowTaskInstance {
 					LOG.log(Level.INFO, "Renaming key: [" + renameOrigKeyName
 							+ "] to [" + renameKeyName + "]: values: "
 							+ metadata.getAllMetadata(renameOrigKeyName));
-					metadata.addMetadata(renameKeyName,
+					metadata.replaceMetadata(renameKeyName,
 							metadata.getAllMetadata(renameOrigKeyName));
 					metadata.removeMetadata(renameOrigKeyName);
 				} else {

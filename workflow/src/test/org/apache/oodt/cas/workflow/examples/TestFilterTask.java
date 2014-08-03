@@ -34,6 +34,7 @@ public class TestFilterTask extends TestCase {
 	private WorkflowTaskConfiguration config;
 	private static final String prodDateTime = "2014-04-07T00:00:00.000Z";
 	private static final String filename = "foo.txt";
+	private static final String fileLocation = "/tmp/somedir";
 
 	/*
 	 * (non-Javadoc)
@@ -106,8 +107,8 @@ public class TestFilterTask extends TestCase {
 		assertFalse(dynMet.containsKey("Filename"));
 		assertFalse(dynMet.containsKey("FooName"));
 	}
-	
-	public void testRemoveMultipleKeys(){
+
+	public void testRemoveMultipleKeys() {
 		config.addConfigProperty("Remove_Key", "Filename, ProductionDateTime");
 		try {
 			task.run(dynMet, config);
@@ -118,10 +119,10 @@ public class TestFilterTask extends TestCase {
 		assertNotNull(dynMet);
 		assertFalse(dynMet.containsKey("Filename"));
 		assertFalse(dynMet.containsKey("ProductionDateTime"));
-		
+
 	}
-	
-	public void testRemoveKeyThatDoesNotExist(){
+
+	public void testRemoveKeyThatDoesNotExist() {
 		config.addConfigProperty("Remove_Key", "FileLocation");
 		try {
 			task.run(dynMet, config);
@@ -132,8 +133,8 @@ public class TestFilterTask extends TestCase {
 		assertNotNull(dynMet);
 		assertFalse(dynMet.containsKey("FileLocation"));
 	}
-	
-	public void testRenameKeyThatDoesNotExist(){
+
+	public void testRenameKeyThatDoesNotExist() {
 		config.addConfigProperty("Rename_FileLocation", "FooLocation");
 		try {
 			task.run(dynMet, config);
@@ -144,6 +145,28 @@ public class TestFilterTask extends TestCase {
 		assertNotNull(dynMet);
 		assertFalse(dynMet.containsKey("FileLocation"));
 		assertFalse(dynMet.containsKey("FooLocation"));
+	}
+
+	public void testRenameToKeyWithExistingValues() {
+		dynMet.addMetadata("Prior_FileLocation", fileLocation);
+		dynMet.addMetadata("FileLocation", fileLocation + "/someotherdir");
+		config.addConfigProperty("Rename_FileLocation", "Prior_FileLocation");
+		try {
+			task.run(dynMet, config);
+		} catch (WorkflowTaskInstanceException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		assertNotNull(dynMet);
+		assertFalse(dynMet.containsKey("FileLocation"));
+		assertTrue(dynMet.containsKey("Prior_FileLocation"));
+		assertEquals("Expected: [1] value, actual was : ["
+				+ dynMet.getAllMetadata("Prior_FileLocation").size() + "]", 1,
+				dynMet.getAllMetadata("Prior_FileLocation").size());
+		assertEquals("Expected: [" + fileLocation + "/someotherdir"
+				+ "]: got: [" + dynMet.getMetadata("Prior_FileLocation") + "]",
+				fileLocation + "/someotherdir",
+				dynMet.getMetadata("Prior_FileLocation"));
 	}
 
 }
