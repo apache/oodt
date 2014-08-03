@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 --------------------------------------------
 
+* OODT-718 RADiX Build Failure (tpalsulich, goodale via mattmann)
+
 * OODT-726 Create MetFilter Task Example (mattmann)
 
 * OODT-724 Crawler action bean config refers to WORKFLOWMGR_URL (mattmann)
