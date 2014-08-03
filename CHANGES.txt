@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 --------------------------------------------
 
+* OODT-690 RADiX example policy for GenericFile missing "<metadata/>" node (rverma via mattmann)
+
 * OODT-718 RADiX Build Failure (tpalsulich, goodale via mattmann)
 
 * OODT-726 Create MetFilter Task Example (mattmann)
