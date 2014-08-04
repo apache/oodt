@@ -136,7 +136,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
       Metadata productMetadata = new Metadata();
       productMetadata.addMetadata(getGlobalMetadata());
       try {
-         productMetadata.addMetadata(getMetadataForProduct(product));
+         productMetadata.replaceMetadata(getMetadataForProduct(product));
       } catch (Exception e) {
          LOG.log(Level.SEVERE,
                "Failed to get metadata for product : " + e.getMessage(), e);
