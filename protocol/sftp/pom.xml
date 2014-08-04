@@ -50,6 +50,17 @@
 			</build>
 		</profile>
 	</profiles>
+        <build>
+	    <resources>
+	      <resource>
+		<targetPath>org/apache/oodt/cas/protocol/sftp</targetPath>
+		<directory>${basedir}/src/main/resources/policy</directory>
+		<includes>
+		  <include>sftp-protocol-config.xml</include>
+		</includes>
+	      </resource>
+	    </resources>
+        </build>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
