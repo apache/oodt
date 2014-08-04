@@ -29,7 +29,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="download" p:relation="OPTIONAL" />
+          p:actionName="Download" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -37,7 +37,7 @@
         <property name="applyToActions">
           <list>
             <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-              p:actionName="download" />
+              p:actionName="Download" />
           </list>
         </property>
       </bean>
@@ -53,7 +53,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="download" p:relation="OPTIONAL" />
+          p:actionName="Download" p:relation="OPTIONAL" />
       </list>
     </property>
     <property name="handler">
@@ -61,7 +61,7 @@
         <property name="applyToActions">
           <list>
             <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-              p:actionName="download" />
+              p:actionName="Download" />
           </list>
         </property>
       </bean>
@@ -77,7 +77,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="download" p:relation="REQUIRED" />
+          p:actionName="Download" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -85,7 +85,7 @@
         <property name="applyToActions">
           <list>
             <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
-              p:actionName="download" />
+              p:actionName="Download" />
           </list>
         </property>
       </bean>
@@ -101,7 +101,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="crossProtocolTransfer" p:relation="REQUIRED" />
+          p:actionName="CrossProtocolTransfer" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -125,7 +125,7 @@
     <property name="requirementRules">
       <list>
         <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
-          p:actionName="crossProtocolTransfer" p:relation="REQUIRED" />
+          p:actionName="CrossProtocolTransfer" p:relation="REQUIRED" />
       </list>
     </property>
     <property name="handler">
@@ -138,5 +138,29 @@
         </property>
       </bean>
     </property>
+	</bean>
+
+	<bean id="directoriesRegex" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+		<property name="shortOption" value="dr" />
+		<property name="longOption" value="dirsRegex" />
+		<property name="description" value="Directory regex of directories to delete" />
+		<property name="hasArgs" value="true" />
+		<property name="argsDescription" value="URL" />
+	    <property name="requirementRules">
+	      <list>
+	        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+	          p:actionName="DeleteEmptyDirectories" p:relation="REQUIRED" />
+	      </list>
+	    </property>
+	    <property name="handler">
+	      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+	        <property name="applyToActions">
+	          <list>
+	            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+	              p:actionName="DeleteEmptyDirectories" p:methodName="setDirectoryRegex" />
+	          </list>
+	        </property>
+	      </bean>
+	    </property>
 	</bean>
 </beans>
