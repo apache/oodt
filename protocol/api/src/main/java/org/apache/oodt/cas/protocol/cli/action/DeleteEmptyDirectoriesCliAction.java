@@ -20,10 +20,14 @@ package org.apache.oodt.cas.protocol.cli.action;
 import java.util.List;
 import java.util.regex.Pattern;
 
+
+
 // OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.protocol.Protocol;
+import org.apache.oodt.cas.protocol.ProtocolFactory;
 import org.apache.oodt.cas.protocol.ProtocolFile;
+import org.apache.oodt.cas.protocol.verify.ProtocolVerifierFactory;
 
 /**
  * {@link ProtocolAction} for deleting empty files from site.
@@ -33,15 +37,22 @@ import org.apache.oodt.cas.protocol.ProtocolFile;
 public class DeleteEmptyDirectoriesCliAction extends ProtocolCliAction {
 
   private String directoryRegex = ".+";
+  private ProtocolVerifierFactory verifierFactory;
 
   @Override
-  public void execute(ActionMessagePrinter arg0) throws CmdLineActionException {
+  public void execute(ActionMessagePrinter printer) throws CmdLineActionException {
     try {
-      Protocol protocol = getProtocolManager().getProtocolBySite(getSite(), getAuthentication(), null);
+      Protocol protocol = getProtocolManager().getProtocolBySite(
+          getSite(), getAuthentication(), verifierFactory.newInstance());
       List<ProtocolFile> files = protocol.ls();
       for (ProtocolFile file : files) {
         if (file.isDir() && Pattern.matches(directoryRegex, file.getName())) {
-          protocol.delete(file);
+          try {
+            protocol.delete(file);
+            printer.println("Success: " + file.getPath());
+          } catch (Exception e) {
+            printer.println("Failed: " + file.getPath());
+          }
         }
       }
     } catch (Exception e) {
@@ -52,4 +63,9 @@ public class DeleteEmptyDirectoriesCliAction extends ProtocolCliAction {
   public void setDirectoryRegex(String directoryRegex) {
     this.directoryRegex = directoryRegex;
   }
+
+  public void setVerifierFactory(ProtocolVerifierFactory verifierFactory) {
+    this.verifierFactory = verifierFactory;
+  }
 }
+

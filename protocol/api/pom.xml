@@ -101,6 +101,11 @@
       <artifactId>cas-cli</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-protocol-sftp</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
