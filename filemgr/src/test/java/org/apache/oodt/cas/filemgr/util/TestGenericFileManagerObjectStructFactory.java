@@ -18,10 +18,13 @@
 
 package org.apache.oodt.cas.filemgr.util;
 
-//OODT imports
+//JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URL;
+import java.util.Properties;
 
+//OODT imports
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.metadata.extractors.FilemgrMetExtractor;
@@ -54,23 +57,39 @@ public class TestGenericFileManagerObjectStructFactory extends TestCase {
 
     private static final String extractorClass = "org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor";
 
+    private Properties initialProperties = new Properties(
+        System.getProperties());
+
     /*
      * (non-Javadoc)
      * 
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        // set the log levels
-        System.setProperty("java.util.logging.config.file", new File(
-                "./src/main/resources/logging.properties").getAbsolutePath());
+
+        Properties properties = new Properties(System.getProperties());
+
+      // set the log levels
+        URL loggingPropertiesUrl = this.getClass().getResource(
+            "/test.logging.properties");
+        properties.setProperty("java.util.logging.config.file", new File(
+            loggingPropertiesUrl.getFile()).getAbsolutePath());
 
         // first load the example configuration
         try {
-            System.getProperties().load(
-                    new FileInputStream("./src/main/resources/filemgr.properties"));
+            URL filemgrPropertiesUrl = this.getClass().getResource(
+                "/filemgr.properties");
+            properties.load(new FileInputStream(
+                filemgrPropertiesUrl.getFile()));
         } catch (Exception e) {
             fail(e.getMessage());
         }
+
+        System.setProperties(properties);
+    }
+
+    protected void tearDown() throws Exception {
+        System.setProperties(initialProperties);
     }
 
     public void testGetDataTransferServiceFromFactory() {

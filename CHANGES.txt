@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 -------------------------------------------- 
 
+* OODT-729 Fix File Manager unit tests (step 4) - fix test classes in 'util'
+  package (rlaidlaw)
+
 * OODT-690 RADiX example policy for GenericFile missing "<metadata/>" node (rverma via mattmann)
 
 * OODT-718 RADiX Build Failure (tpalsulich, goodale via mattmann)

@@ -39,6 +39,7 @@ import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.Properties;
 
 //JUnit imports
 import junit.framework.TestCase;
@@ -52,8 +53,9 @@ import junit.framework.TestCase;
 public class TestXmlRpcStructFactory extends TestCase {
 
     final int FILEMGR_PORT = 9999;
-    
     XmlRpcFileManager fmServer;
+    private Properties initialProperties = new Properties(
+      System.getProperties());
 
     @Override
     protected void setUp() throws Exception {
@@ -65,6 +67,10 @@ public class TestXmlRpcStructFactory extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         fmServer.shutdown();
+
+        // Return system properties to their initial state from before this test
+        // was run.
+        System.setProperties(initialProperties);
     }
 
     public void testProductTypeMethods() throws RepositoryManagerException, MalformedURLException, ConnectionException {
@@ -161,45 +167,55 @@ public class TestXmlRpcStructFactory extends TestCase {
     }
 
     private void startXmlRpcFileManager() {
+
+        Properties properties = new Properties(System.getProperties());
+
         // first make sure to load properties for the file manager
         // and make sure to load logging properties as well
 
         // set the log levels
-        System.setProperty("java.util.logging.config.file", new File(
-                "./src/main/resources/logging.properties").getAbsolutePath());
+        URL loggingPropertiesUrl = this.getClass().getResource(
+            "/test.logging.properties");
+        properties.setProperty("java.util.logging.config.file",
+            new File(loggingPropertiesUrl.getFile()).getAbsolutePath());
 
         // first load the example configuration
         try {
-            System.getProperties().load(
-                    new FileInputStream("./src/main/resources/filemgr.properties"));
+            URL filemgrPropertiesUrl = this.getClass().getResource(
+                "/filemgr.properties");
+            properties.load(new FileInputStream(
+                filemgrPropertiesUrl.getFile()));
         } catch (Exception e) {
             fail(e.getMessage());
         }
-        
-        System.setProperty("filemgr.catalog.factory",
+
+        properties.setProperty("filemgr.catalog.factory",
                 "org.apache.oodt.cas.filemgr.catalog.MockCatalogFactory");
 
         // now override the repo mgr policy
+        URL structFactoryUrl = this.getClass().getResource(
+            "/xmlrpc-struct-factory");
         try {
-            System.setProperty(
-                    "org.apache.oodt.cas.filemgr.repositorymgr.dirs",
-                    "file://"
-                            + new File("./src/testdata/xmlrpc-struct-factory")
-                                    .getCanonicalPath());
+            properties.setProperty(
+              "org.apache.oodt.cas.filemgr.repositorymgr.dirs",
+              "file://" + new File(structFactoryUrl.getFile())
+                  .getCanonicalPath());
         } catch (Exception e) {
             fail(e.getMessage());
         }
 
         // now override the val layer ones
-        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
-                "file://"
-                        + new File("./src/testdata/xmlrpc-struct-factory")
-                                .getAbsolutePath());
+        properties.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
+            "file://" + new File(structFactoryUrl.getFile()).getAbsolutePath());
 
         // set up mime repo path
-        System.setProperty(
-                "org.apache.oodt.cas.filemgr.mime.type.repository", new File(
-                        "./src/main/resources/mime-types.xml").getAbsolutePath());
+        URL mimeTypesUrl = this.getClass().getResource("/mime-types.xml");
+        properties.setProperty(
+            "org.apache.oodt.cas.filemgr.mime.type.repository",
+            new File(mimeTypesUrl.getFile()).getAbsolutePath());
+
+        // Use the local properties object to set system properties.
+        System.setProperties(properties);
 
         try {
             fmServer = new XmlRpcFileManager(FILEMGR_PORT);
