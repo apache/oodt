@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 -------------------------------------------- 
 
+* OODT-732 Fix File Manager unit tests (step 6) - fix test classes in
+  'datatransfer' package (rlaidlaw)
+
 * OODT-731 Fix File Manager unit tests (step 5) - fix test classes in 'catalog'
   package (rlaidlaw)
 
