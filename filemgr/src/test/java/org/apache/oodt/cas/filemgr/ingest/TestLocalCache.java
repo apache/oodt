@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
 
 //OODT imports
@@ -78,6 +79,9 @@ public class TestLocalCache extends TestCase {
     private static String DATE_RANGE_END;
 
     private static List<String> cachedProductTypes = new Vector<String>();
+
+    private Properties initialProperties = new Properties(
+        System.getProperties());
 
     static {
         Date startDate = new Date();
@@ -171,20 +175,27 @@ public class TestLocalCache extends TestCase {
 
         // blow away test file
         deleteAllFiles("/tmp/test.txt");
+
+        // Reset the System properties to initial values.
+        System.setProperties(initialProperties);
     }
 
     private void doIngest() {
         Metadata prodMet = null;
 
         try {
+            URL ingestUrl = this.getClass().getResource("/ingest");
+            URL refUrl = this.getClass().getResource("/ingest/test.txt");
+            URL metUrl = this.getClass().getResource("/ingest/test.txt.met");
+
             prodMet = new SerializableMetadata(new FileInputStream(
-                    "./src/testdata/ingest/test.txt.met"));
+                new File(metUrl.getFile())));
 
             // now add the right file location
             prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
-                    "./src/testdata/ingest").getCanonicalPath());
+                ingestUrl.getFile()).getCanonicalPath());
             ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
-                    "./src/testdata/ingest/test.txt"), prodMet);
+                refUrl.getFile()), prodMet);
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -219,56 +230,67 @@ public class TestLocalCache extends TestCase {
     }
 
     private void startXmlRpcFileManager() {
+
+        Properties properties = new Properties(System.getProperties());
+
         // first make sure to load properties for the file manager
         // and make sure to load logging properties as well
 
         // set the log levels
-        System.setProperty("java.util.logging.config.file", new File(
-                "./src/main/resources/logging.properties").getAbsolutePath());
+        URL loggingPropertiesUrl = this.getClass().getResource(
+            "/test.logging.properties");
+        properties.setProperty("java.util.logging.config.file", new File(
+            loggingPropertiesUrl.getFile()).getAbsolutePath());
 
         // first load the example configuration
         try {
-            System.getProperties().load(
-                    new FileInputStream("./src/main/resources/filemgr.properties"));
+          URL filemgrPropertiesUrl = this.getClass().getResource(
+              "/filemgr.properties");
+          properties.load(
+              new FileInputStream(new File(filemgrPropertiesUrl.getFile())));
         } catch (Exception e) {
             fail(e.getMessage());
         }
 
         // override the catalog to use: we'll use lucene
         try {
-            luceneCatLoc = new File("./src/testdata/ingest/cat")
-                    .getCanonicalPath();
+            URL ingestUrl = this.getClass().getResource("/ingest");
+            luceneCatLoc = new File(ingestUrl.getFile()).getCanonicalPath()
+                + "/cat";
         } catch (Exception e) {
             fail(e.getMessage());
         }
 
-        System.setProperty("filemgr.catalog.factory",
+        properties.setProperty("filemgr.catalog.factory",
                 "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory");
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.lucene.idxPath",
                 luceneCatLoc);
 
         // now override the repo mgr policy
         try {
-            System.setProperty(
+            URL fmpolicyUrl = this.getClass().getResource("/ingest/fmpolicy");
+            properties.setProperty(
                     "org.apache.oodt.cas.filemgr.repositorymgr.dirs",
                     "file://"
-                            + new File("./src/testdata/ingest/fmpolicy")
-                                    .getCanonicalPath());
+                        + new File(fmpolicyUrl.getFile()).getCanonicalPath());
         } catch (Exception e) {
             fail(e.getMessage());
         }
 
         // now override the val layer ones
-        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
+        URL examplesCoreUrl = this.getClass().getResource("/examples/core");
+        properties.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
                 "file://"
-                        + new File("./src/main/resources/examples/core")
-                                .getAbsolutePath());
+                    + new File(examplesCoreUrl.getFile()).getAbsolutePath());
 
         // set up mime repo path
-        System.setProperty(
+        URL mimeTypesUrl = this.getClass().getResource("/mime-types.xml");
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.mime.type.repository", new File(
-                        "./src/main/resources/mime-types.xml").getAbsolutePath());
+                     mimeTypesUrl.getFile()).getAbsolutePath());
+
+        System.setProperties(properties);
 
         try {
             fm = new XmlRpcFileManager(FM_PORT);
