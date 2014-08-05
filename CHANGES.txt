@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 -------------------------------------------- 
 
+* OODT-731 Fix File Manager unit tests (step 5) - fix test classes in 'catalog'
+  package (rlaidlaw)
+
 * OODT-728 Figure out why certain metadata fields get set twice during pipeline processing (mattmann)
 
 * OODT-729 Fix File Manager unit tests (step 4) - fix test classes in 'util'

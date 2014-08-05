@@ -21,6 +21,8 @@ package org.apache.oodt.cas.filemgr.catalog;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URL;
+import java.util.Properties;
 import java.util.Vector;
 
 //OODT imports
@@ -36,7 +38,6 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.Metadata;
-
 import com.google.common.collect.Lists;
 
 //Junit imports
@@ -60,15 +61,25 @@ public class TestLuceneCatalog extends TestCase {
 
     private static final int catPageSize = 20;
 
-    public TestLuceneCatalog() {
+    private Properties initialProperties = new Properties(
+      System.getProperties());
+
+    public void setUpProperties() {
+
+        Properties properties = new Properties(System.getProperties());
+
         // set the log levels
-        System.setProperty("java.util.logging.config.file", new File(
-                "./src/main/resources/logging.properties").getAbsolutePath());
+        URL loggingPropertiesUrl = this.getClass().getResource(
+            "/test.logging.properties");
+        properties.setProperty("java.util.logging.config.file", new File(
+            loggingPropertiesUrl.getFile()).getAbsolutePath());
 
         // first load the example configuration
         try {
-            System.getProperties().load(
-                    new FileInputStream("./src/main/resources/filemgr.properties"));
+            URL filemgrPropertiesUrl = this.getClass().getResource(
+                "/filemgr.properties");
+            properties.load(new FileInputStream(
+                filemgrPropertiesUrl.getFile()));
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -94,33 +105,32 @@ public class TestLuceneCatalog extends TestCase {
         tmpDirPath += "testCat/";
 
         // now override the catalog ones
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.lucene.idxPath",
                 tmpDirPath);
 
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", "20");
 
-        System
-                .setProperty(
+        properties.setProperty(
                         "org.apache.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
                         "60");
 
-        System
-                .setProperty(
+        properties.setProperty(
                         "org.apache.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
                         "60");
 
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor",
                 "20");
 
         // now override the val layer ones
-        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
-                "file://"
-                        + new File("./src/main/resources/examples/core")
-                                .getAbsolutePath());
+        URL examplesCoreUrl = this.getClass().getResource(
+            "/examples/core");
+        properties.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
+            "file://" + new File(examplesCoreUrl.getFile()).getAbsolutePath());
 
+        System.setProperties(properties);
     }
 
     /*
@@ -129,6 +139,7 @@ public class TestLuceneCatalog extends TestCase {
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
+        setUpProperties();
         myCat = (LuceneCatalog) new LuceneCatalogFactory().createCatalog();
     }
 
@@ -157,6 +168,7 @@ public class TestLuceneCatalog extends TestCase {
             }
         }
 
+        System.setProperties(initialProperties);
     }
     
     /**

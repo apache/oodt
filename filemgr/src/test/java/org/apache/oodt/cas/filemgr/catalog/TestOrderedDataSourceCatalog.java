@@ -17,6 +17,9 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Properties;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -31,13 +34,16 @@ import org.apache.oodt.cas.metadata.Metadata;
  */
 public class TestOrderedDataSourceCatalog extends TestDataSourceCatalog {
 
-  /**
-     * 
-     */
-  public TestOrderedDataSourceCatalog() {
-    super();
-    System.setProperty(
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+
+    // Set additional properties.
+    Properties properties = new Properties(System.getProperties());
+    properties.setProperty(
         "org.apache.oodt.cas.filemgr.catalog.datasource.orderedValues", "true");
+    System.setProperties(properties);
+
     setCatalog(getCatalog());
 
   }
@@ -59,7 +65,10 @@ public class TestOrderedDataSourceCatalog extends TestDataSourceCatalog {
    */
   @Override
   protected String getSchemaPath() {
-    return "./src/testdata/testcat.ordered.sql";
+      URL url = this.getClass().getResource(
+          "/testcat.ordered.sql");
+
+      return new File(url.getFile()).getAbsolutePath();
   }
 
   public void testOrdering() {

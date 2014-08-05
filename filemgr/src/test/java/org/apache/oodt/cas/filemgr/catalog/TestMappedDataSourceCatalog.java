@@ -18,6 +18,10 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Properties;
+
 
 /**
  * @author mattmann
@@ -29,16 +33,19 @@ package org.apache.oodt.cas.filemgr.catalog;
  */
 public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
 
-    /**
-     * 
-     */
-    public TestMappedDataSourceCatalog() {
-        super();
-        System
-                .getProperties()
-                .setProperty(
-                        "org.apache.oodt.cas.filemgr.catalog.mappeddatasource.mapFile",
-                        "./src/testdata/testcatalog.typemap.properties");
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        // Get additional resources and set additional properties.
+        Properties properties = new Properties(System.getProperties());
+        URL url = this.getClass().getResource(
+          "/testcatalog.typemap.properties");
+        properties.setProperty(
+            "org.apache.oodt.cas.filemgr.catalog.mappeddatasource.mapFile",
+            new File(url.getFile()).getAbsolutePath());
+        System.setProperties(properties);
+
         setCatalog(getCatalog());
 
     }
@@ -59,7 +66,10 @@ public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
      */
     @Override
     protected String getSchemaPath() {
-        return "./src/testdata/testcat.mapped.sql";
+        URL url = this.getClass().getResource(
+            "/testcat.mapped.sql");
+
+        return new File(url.getFile()).getAbsolutePath();
     }
 
 }

@@ -21,7 +21,9 @@ package org.apache.oodt.cas.filemgr.catalog;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 import javax.sql.DataSource;
 
 //OODT imports
@@ -56,17 +58,26 @@ public class TestDataSourceCatalog extends TestCase {
 
     private static final int catPageSize = 20;
 
-    public TestDataSourceCatalog() {
-        // set the log levels
-        System.setProperty("java.util.logging.config.file", new File(
-                "./src/main/resources/logging.properties").getAbsolutePath());
+    private Properties initialProperties = new Properties(
+      System.getProperties());
 
-        if(System.getProperty("overrideProperties") == null){
+    public void setUpProperties() {
+
+        Properties properties = new Properties(System.getProperties());
+
+        // set the log levels
+        URL loggingPropertiesUrl = this.getClass().getResource(
+            "/test.logging.properties");
+        properties.setProperty("java.util.logging.config.file", new File(
+            loggingPropertiesUrl.getFile()).getAbsolutePath());
+
+        if(properties.getProperty("overrideProperties") == null){
 
             try {
-                System.getProperties().load(
-                        new FileInputStream(
-                                "./src/main/resources/filemgr.properties"));
+                URL filemgrPropertiesUrl = this.getClass().getResource(
+                    "/filemgr.properties");
+                properties.load(new FileInputStream(
+                    filemgrPropertiesUrl.getFile()));
             } catch (Exception e) {
                 fail(e.getMessage());
             }
@@ -95,42 +106,40 @@ public class TestDataSourceCatalog extends TestCase {
         tmpDirPath += "testCat";
 
         // now override the catalog ones
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url",
                 "jdbc:hsqldb:file:" + tmpDirPath + "/testCat;shutdown=true");
 
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user",
                 "sa");
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.pass",
                 "");
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver",
                 "org.hsqldb.jdbcDriver");
         }
         else{
             try {
-                System.getProperties().load(
-                        new FileInputStream(
-                                System.getProperty("overrideProperties")));
+                properties.load(new FileInputStream(
+                    properties.getProperty("overrideProperties")));
             } catch (Exception e) {
                 fail(e.getMessage());
             }
         }
         // now override the val layer ones
-        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
-                "file://"
-                        + new File("./src/testdata/xmlrpc-struct-factory")
-                                .getAbsolutePath());
+        URL structFactoryUrl = this.getClass().getResource(
+            "/xmlrpc-struct-factory");
+        properties.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
+            "file://" + new File(structFactoryUrl.getFile()).getAbsolutePath());
 
         // override quote fields
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields",
                 "true");
 
-        myCat = getCatalog();
-
+        System.setProperties(properties);
     }
 
     /*
@@ -139,6 +148,8 @@ public class TestDataSourceCatalog extends TestCase {
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
+        setUpProperties();
+        myCat = getCatalog();
         // now create the basic schema for the DB
         createSchema();
     }
@@ -163,6 +174,8 @@ public class TestDataSourceCatalog extends TestCase {
             }
 
         }
+
+        System.setProperties(initialProperties);
     }
 
     public void testRemoveProduct() {
@@ -384,8 +397,10 @@ public class TestDataSourceCatalog extends TestCase {
         Product testProduct = getTestProduct();
         testProduct.setProductId("23");
         Metadata prodMet = new Metadata();
+        URL ingestUrl = this.getClass().getResource(
+            "/ingest");
         prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
-                "./src/testdata/ingest").getCanonicalPath());
+            ingestUrl.getFile()).getCanonicalPath());
         prodMet.addMetadata(CoreMetKeys.FILENAME, "test-file-1.txt");
         prodMet.addMetadata("CAS.ProductName", "TestFile1");
         prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
@@ -439,7 +454,10 @@ public class TestDataSourceCatalog extends TestCase {
     }
 
     protected String getSchemaPath() {
-        return "./src/testdata/testcat.sql";
+        URL url = this.getClass().getResource(
+          "/testcat.sql");
+
+        return new File(url.getFile()).getAbsolutePath();
     }
     
     protected void setCatalog(Catalog cat){
