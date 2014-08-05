@@ -4,10 +4,10 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 -------------------------------------------- 
 
-* OODT-734 Fix File Manager unit tests (step 6) - fix test classes in 'system'
+* OODT-734 Fix File Manager unit tests (step 8) - fix test classes in 'system'
   package (rlaidlaw)
 
-* OODT-733 Fix File Manager unit tests (step 6) - fix test classes in 'ingest'
+* OODT-733 Fix File Manager unit tests (step 7) - fix test classes in 'ingest'
   package (rlaidlaw)
 
 * OODT-732 Fix File Manager unit tests (step 6) - fix test classes in
