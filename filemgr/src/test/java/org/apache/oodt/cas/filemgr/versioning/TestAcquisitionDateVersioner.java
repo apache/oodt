@@ -19,8 +19,10 @@ package org.apache.oodt.cas.filemgr.versioning;
 
 //JDK imports
 import java.io.File;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
 import java.util.TimeZone;
 
 //OODT imports
@@ -42,9 +44,18 @@ import junit.framework.TestCase;
  */
 public class TestAcquisitionDateVersioner extends TestCase {
 
-  public TestAcquisitionDateVersioner() {
-    System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository",
-        new File("./src/main/resources/mime-types.xml").getAbsolutePath());
+  private Properties initialProperties = new Properties(System.getProperties());
+
+  public void setUp() throws Exception {
+    Properties properties = new Properties(System.getProperties());
+    URL url = this.getClass().getResource("/mime-types.xml");
+    properties.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository",
+        new File(url.getFile()).getAbsolutePath());
+    System.setProperties(properties);
+  }
+
+  public void tearDown() throws Exception {
+    System.setProperties(initialProperties);
   }
 
   public void testVersionerWithNoStartDateTimeAndNoAcqDate() {

@@ -21,9 +21,11 @@ package org.apache.oodt.cas.filemgr.versioning;
 // JDK imports
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
 
 //OODT imports
@@ -32,7 +34,6 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 import org.apache.oodt.cas.metadata.Metadata;
-
 import org.apache.oodt.commons.util.DateConvert;
 
 //Junit imports
@@ -52,27 +53,19 @@ public class TestDateTimeVersioner extends TestCase {
 	/* the versioner that we're going to test out */
 	private DateTimeVersioner dateTimeVersioner = new DateTimeVersioner();
 
-	/**
-	 * 
-	 */
-	public TestDateTimeVersioner() {
-		super();
-		// TODO Auto-generated constructor stub
-		System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository", new File("./src/main/resources/mime-types.xml").getAbsolutePath());
-	}
+  private Properties initialProperties = new Properties(System.getProperties());
 
-	/**
-	 * @param arg0
-	 */
-	public TestDateTimeVersioner(String arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-		System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository", new File("./src/main/resources/mime-types.xml").getAbsolutePath());
-	}
+  public void setUp() throws Exception {
+    Properties properties = new Properties(System.getProperties());
+    URL url = this.getClass().getResource("/mime-types.xml");
+    properties.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository",
+        new File(url.getFile()).getAbsolutePath());
+    System.setProperties(properties);
+  }
 
-	protected void setUp() {
-
-	}
+  public void tearDown() throws Exception {
+    System.setProperties(initialProperties);
+  }
 
 	public void testFlat() {
 		Metadata metadata = new Metadata();
@@ -94,7 +87,8 @@ public class TestDateTimeVersioner extends TestCase {
 
 		List refs = new Vector();
 		try {
-			String refname = new File("src/testdata/test.txt").toURL().toExternalForm().toString();
+      URL url = this.getClass().getResource("/test.txt");
+      String refname = new File(url.getFile()).toURL().toExternalForm().toString();
 			refs.add(refname);
 		} catch (MalformedURLException e) {
 			fail(e.getMessage());

@@ -21,7 +21,9 @@ package org.apache.oodt.cas.filemgr.versioning;
 //JDK imports
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
 
 //OODT imports
@@ -48,12 +50,19 @@ public class TestBasicVersioner extends TestCase {
 	/* the BasicVersioner we're going to test out */
 	private BasicVersioner basicVersioner = new BasicVersioner();
 
-	public TestBasicVersioner() {
-		System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository", new File("./src/main/resources/mime-types.xml").getAbsolutePath());
-	}
+  private Properties initialProperties = new Properties(System.getProperties());
 
-	protected void setUp() {
-	}
+  public void setUp() throws Exception {
+    Properties properties = new Properties(System.getProperties());
+    URL url = this.getClass().getResource("/mime-types.xml");
+    properties.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository",
+        new File(url.getFile()).getAbsolutePath());
+    System.setProperties(properties);
+  }
+
+  public void tearDown() throws Exception {
+    System.setProperties(initialProperties);
+  }
 
 	public void testVersionFlat() {
 		Product p = new Product();
@@ -65,7 +74,8 @@ public class TestBasicVersioner extends TestCase {
 
 		List refs = new Vector();
 		try {
-			String refname = new File("src/testdata/test.txt").toURL().toExternalForm().toString();
+      URL url = this.getClass().getResource("/test.txt");
+      String refname = new File(url.getFile()).toURL().toExternalForm().toString();
 			refs.add(refname);
 		} catch (MalformedURLException e) {
 			fail(e.getMessage());
