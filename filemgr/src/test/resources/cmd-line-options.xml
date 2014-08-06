@@ -117,6 +117,30 @@
 		</property>
 	</bean>
 
+  <bean id="typeName" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="tn" />
+    <property name="longOption" value="typeName" />
+    <property name="description" value="ProductType name" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="product-type-name" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="addProductType" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="addProductType" p:methodName="setProductTypeName" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
   <bean id="typeDesc" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
     <property name="shortOption" value="td" />
     <property name="longOption" value="typeDesc" />

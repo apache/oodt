@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 -------------------------------------------- 
 
+* OODT-737 Copied over latest cmd-line-options.xml with typeName (rlaidlaw)
+
 * OODT-739 Fix File Manager unit tests (step 12) - fix test classes in
   'metadata' and 'versioning' packages (rlaidlaw)
 
