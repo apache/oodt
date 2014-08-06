@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 -------------------------------------------- 
 
+* OODT-738 Contribute workflow scripts to kill all by status or kill by instance ID (mattmann)
+
 * OODT-737 Fix File Manager unit tests (step 11) - fix test classes in 'cli'
   package (rlaidlaw)
 
