@@ -38,7 +38,6 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -51,14 +50,12 @@ import java.sql.Statement;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.sql.DataSource;
-
 import org.apache.xmlrpc.XmlRpcException;
-
 import junit.framework.TestCase;
 
 public class TestTypeHandler extends TestCase {
@@ -70,16 +67,26 @@ public class TestTypeHandler extends TestCase {
     XmlRpcFileManager fmServer;
     
     int FILEMGR_PORT = 9999;
-    
-    public TestTypeHandler() {
+
+    private Properties initialProperties = new Properties(
+        System.getProperties());
+
+    public void setUpProperties() {
+
+        Properties properties = new Properties(System.getProperties());
+
         // set the log levels
-        System.setProperty("java.util.logging.config.file", new File(
-                "./src/main/resources/logging.properties").getAbsolutePath());
+        URL loggingPropertiesUrl = this.getClass().getResource(
+            "/test.logging.properties");
+        properties.setProperty("java.util.logging.config.file", new File(
+            loggingPropertiesUrl.getFile()).getAbsolutePath());
 
         // first load the example configuration
         try {
-            System.getProperties().load(
-                    new FileInputStream("./src/main/resources/filemgr.properties"));
+            URL filemgrPropertiesUrl = this.getClass().getResource(
+                "/filemgr.properties");
+            properties.load(new FileInputStream(
+                filemgrPropertiesUrl.getFile()));
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -104,36 +111,35 @@ public class TestTypeHandler extends TestCase {
         tmpDirPath += "testCat";
 
         // now override the catalog ones
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url",
                 "jdbc:hsqldb:file:" + tmpDirPath + "/testCat;shutdown=true");
 
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.user",
                 "sa");
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.pass",
                 "");
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.driver",
                 "org.hsqldb.jdbcDriver");
 
         // now override the val layer ones
-        System.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
-                "file://"
-                        + new File("./src/testdata/xmlrpc-struct-factory")
-                                .getAbsolutePath());
+        URL structFactoryUrl = this.getClass().getResource(
+            "/xmlrpc-struct-factory");
+        properties.setProperty("org.apache.oodt.cas.filemgr.validation.dirs",
+            "file://" + new File(structFactoryUrl.getFile()).getAbsolutePath());
         
-        System.setProperty("org.apache.oodt.cas.filemgr.repositorymgr.dirs",
-                "file://"
-                        + new File("./src/testdata/xmlrpc-struct-factory")
-                                .getAbsolutePath());
+        properties.setProperty("org.apache.oodt.cas.filemgr.repositorymgr.dirs",
+            "file://" + new File(structFactoryUrl.getFile()).getAbsolutePath());
 
         // override quote fields
-        System.setProperty(
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields",
                 "true");
 
+        System.setProperties(properties);
     }
    
     public void testAddAndGetMetadata() throws SQLException, MalformedURLException, ConnectionException {
@@ -213,12 +219,13 @@ public class TestTypeHandler extends TestCase {
         assertEquals("04.00", ((TermQueryCriteria) query.getCriteria().get(0)).getValue());
     }
     
-    private static Product getTestProduct() throws MalformedURLException {
+    private Product getTestProduct() throws MalformedURLException {
         Product testProduct = Product.getDefaultFlatProduct("test",
                 "urn:oodt:GenericFile");
         List<Reference> refs = new LinkedList<Reference>();
+        URL refUrl = this.getClass().getResource("/ingest/test.txt");
         Reference ref = new Reference();
-        ref.setOrigReference(new File("./src/testdata/ingest/test.txt").toURL().toExternalForm());
+        ref.setOrigReference(new File(refUrl.getFile()).toURL().toExternalForm());
         ref.setFileSize(123);
         refs.add(ref);
         testProduct.setProductReferences(refs);
@@ -231,6 +238,7 @@ public class TestTypeHandler extends TestCase {
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
+        setUpProperties();
         createSchema();
         startXmlRpcFileManager();
     }
@@ -256,6 +264,8 @@ public class TestTypeHandler extends TestCase {
             }
 
         }
+
+        System.setProperties(initialProperties);
     }
     
     private void createSchema() {
@@ -271,8 +281,9 @@ public class TestTypeHandler extends TestCase {
         publicDataSource = DatabaseConnectionBuilder.buildDataSource(user, pass,
                 driver, url);
         try {
+            URL scriptUrl = this.getClass().getResource("/testcat.sql");
             SqlScript coreSchemaScript = new SqlScript(new File(
-                    "./src/testdata/testcat.sql").getAbsolutePath(), publicDataSource);
+                scriptUrl.getFile()).getAbsolutePath(), publicDataSource);
             coreSchemaScript.loadScript();
             coreSchemaScript.execute();
         } catch (Exception e) {

@@ -19,7 +19,8 @@ package org.apache.oodt.cas.filemgr.structs;
 
 //JDK imports
 import java.io.File;
-
+import java.net.URL;
+import java.util.Properties;
 //Junit imports
 import junit.framework.TestCase;
 
@@ -33,9 +34,20 @@ import junit.framework.TestCase;
  */
 public class TestReference extends TestCase {
 
-  public TestReference() {
-    System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository",
-        new File("./src/main/resources/mime-types.xml").getAbsolutePath());
+  private Properties initialProperties = new Properties(System.getProperties());
+
+  public void setUp() throws Exception {
+    Properties properties = new Properties(System.getProperties());
+
+    URL url = this.getClass().getResource("/mime-types.xml");
+    properties.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository",
+        new File(url.getFile()).getAbsolutePath());
+
+    System.setProperties(properties);
+  }
+
+  public void tearDown() throws Exception {
+    System.setProperties(initialProperties);
   }
 
   /**

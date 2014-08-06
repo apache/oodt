@@ -25,8 +25,9 @@ import org.apache.oodt.commons.xml.XMLUtils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URL;
 import java.util.Collections;
-
+import java.util.Properties;
 //Junit imports
 import junit.framework.TestCase;
 
@@ -41,11 +42,22 @@ import junit.framework.TestCase;
  */
 public class TestProduct extends TestCase {
 
-  public TestProduct() {
-    System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository",
-        new File("./src/main/resources/mime-types.xml").getAbsolutePath());
+  private Properties initialProperties = new Properties(System.getProperties());
+
+  public void setUp() throws Exception {
+    Properties properties = new Properties(System.getProperties());
+
+    URL url = this.getClass().getResource("/mime-types.xml");
+    properties.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository",
+        new File(url.getFile()).getAbsolutePath());
+
+    System.setProperties(properties);
   }
-  
+
+  public void tearDown() throws Exception {
+    System.setProperties(initialProperties);
+  }
+
   /**
    * @since OODT-41
    */
