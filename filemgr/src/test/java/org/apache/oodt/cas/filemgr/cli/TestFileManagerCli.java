@@ -20,7 +20,8 @@ package org.apache.oodt.cas.filemgr.cli;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-
+import java.net.URL;
+import java.util.Properties;
 //JUnit imports
 import junit.framework.TestCase;
 
@@ -53,20 +54,29 @@ import com.google.common.collect.Lists;
  */
 public class TestFileManagerCli extends TestCase {
 
-   static {
-      System.setProperty("org.apache.oodt.cas.cli.debug", "true");
-      System.setProperty("org.apache.oodt.cas.cli.action.spring.config",
-            "src/main/resources/cmd-line-actions.xml");
-      System.setProperty("org.apache.oodt.cas.cli.option.spring.config",
-            "src/main/resources/cmd-line-options.xml");
-   }
-
    private CmdLineUtility cmdLineUtility;
    private MockXmlRpcFileManagerClient client;
+   private Properties initialProperties = new Properties(
+     System.getProperties());
 
    @Override
    public void setUp() throws Exception {
       super.setUp();
+
+      Properties properties = new Properties(System.getProperties());
+
+      properties.setProperty("org.apache.oodt.cas.cli.debug", "true");
+
+      URL actionsUrl = this.getClass().getResource("/cmd-line-actions.xml");
+      properties.setProperty("org.apache.oodt.cas.cli.action.spring.config",
+        "file:" + new File(actionsUrl.getFile()).getAbsolutePath());
+
+      URL optionsUrl = this.getClass().getResource("/cmd-line-options.xml");
+      properties.setProperty("org.apache.oodt.cas.cli.option.spring.config",
+        "file:" + new File(optionsUrl.getFile()).getAbsolutePath());
+
+      System.setProperties(properties);
+
       cmdLineUtility = new CmdLineUtility();
       UseMockClientCmdLineActionStore actionStore = new UseMockClientCmdLineActionStore();
       client = actionStore.getClient();
@@ -76,6 +86,7 @@ public class TestFileManagerCli extends TestCase {
    @Override
    public void tearDown() throws Exception {
       OptionPropertyRegister.clearRegister();
+      System.setProperties(initialProperties);
    }
 
    public void testAddProductType() throws MalformedURLException,
@@ -142,13 +153,15 @@ public class TestFileManagerCli extends TestCase {
    }
 
    public void testGetFilePercentTransferred() {
+     URL refUrl = this.getClass().getResource("/ingest/test.txt");
+     String refPath = new File(refUrl.getFile()).getAbsolutePath();
       cmdLineUtility
             .run(("--url http://localhost:9000 --operation --getFilePctTransferred"
-                  + " --origRef src/testdata/test.txt").split(" "));
+                  + " --origRef " + refPath).split(" "));
       MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();
       assertEquals("getRefPctTransferred", methodCallDetails.getMethodName());
       assertTrue(((Reference) methodCallDetails.getArgs().get(0))
-            .getOrigReference().endsWith("src/testdata/test.txt"));
+            .getOrigReference().endsWith("test.txt"));
    }
 
    public void testGetFirstPage() {
@@ -269,13 +282,16 @@ public class TestFileManagerCli extends TestCase {
    }
 
    public void testIngestProduct() {
+     URL refUrl = this.getClass().getResource("/ingest/test.txt");
+     URL metUrl = this.getClass().getResource("/ingest/test.txt.met");
+
       String productName = "TestProductName";
       String structure = Product.STRUCTURE_FLAT;
       String productTypeName = "TestProductType";
-      String metadataFile = "src/testdata/ingest/test.txt.met";
+      String metadataFile = new File(metUrl.getFile()).getAbsolutePath();
       String dataTransferer = InPlaceDataTransferFactory.class
             .getCanonicalName();
-      String ref = "src/testdata/test.txt";
+      String ref = new File(refUrl.getFile()).getAbsolutePath();
       cmdLineUtility
             .run(("--url http://localhost:9000 --operation --ingestProduct"
                   + " --productName " + productName + " --productStructure "
