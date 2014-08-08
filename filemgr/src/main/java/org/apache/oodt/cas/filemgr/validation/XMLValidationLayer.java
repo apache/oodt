@@ -61,13 +61,13 @@ public class XMLValidationLayer implements ValidationLayer {
             .getName());
 
     /* product type ID to element map */
-    private static HashMap<String, List<Element>> productTypeElementMap = new HashMap<String, List<Element>>();
+    private HashMap<String, List<Element>> productTypeElementMap = new HashMap<String, List<Element>>();
 
     /* sub-type to super-type map */
-    private static HashMap<String, String> subToSuperMap = new HashMap<String, String>();
+    private HashMap<String, String> subToSuperMap = new HashMap<String, String>();
 
     /* element map */
-    private static HashMap<String, Element> elementMap = new HashMap<String, Element>();
+    private HashMap<String, Element> elementMap = new HashMap<String, Element>();
 
     /*
      * URIs pointing to directories with product-type-element-map.xml and
