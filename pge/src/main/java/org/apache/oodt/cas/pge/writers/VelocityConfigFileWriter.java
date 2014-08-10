@@ -41,7 +41,7 @@ import org.apache.velocity.app.Velocity;
  * name.
  * 
  */
-public class VelocityConfigFileWriter implements DynamicConfigFileWriter {
+public class VelocityConfigFileWriter extends DynamicConfigFileWriter {
 
   /*
    * (non-Javadoc)

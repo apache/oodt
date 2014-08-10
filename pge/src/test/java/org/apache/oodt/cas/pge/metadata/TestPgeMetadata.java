@@ -50,7 +50,7 @@ public class TestPgeMetadata extends TestCase {
       pgeMet.replaceMetadata(pgeMet2, "test");
 
       assertEquals("staticValue1", pgeMet.getMetadata("key1"));
-      assertEquals("dynValue2", pgeMet.getMetadata("key2"));
+      assertEquals("staticValue2", pgeMet.getMetadata("key2"));
       assertEquals("staticValue2",
             pgeMet.getMetadata("key2", PgeMetadata.Type.STATIC));
       assertEquals("staticValue3", pgeMet.getMetadata("key3"));

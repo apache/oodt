@@ -4,6 +4,9 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 -------------------------------------------- 
 
+* OODT-667 CAS-PGE no longer respects writers and file tags from 
+  earlier pgeConfig.xml files (mattmann)
+
 * OODT-741 Remove static modifier from elementMap, subToSuperMap and
   productTypeElementMap fields in XMLValidationLayer (rlaidlaw)
 

@@ -20,12 +20,14 @@ package org.apache.oodt.cas.pge.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 //OODT imports
 import org.apache.oodt.cas.pge.ConfigFilePropertyAdder;
 import org.apache.oodt.cas.pge.PGETaskInstance;
 import org.apache.oodt.cas.pge.config.PgeConfigBuilder;
 import org.apache.oodt.cas.pge.staging.FileStager;
 import org.apache.oodt.cas.pge.writers.DynamicConfigFileWriter;
+import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
 
 /**
  * Factory for creating {@link Object}s.
@@ -80,12 +82,12 @@ public class GenericPgeObjectFactory {
       }
    }
 
-   public static DynamicConfigFileWriter createDynamicConfigFileWriter(
+   public static SciPgeConfigFileWriter createSciPgeConfigFileWriter(
          String clazz, Logger logger) {
       try {
-         return (DynamicConfigFileWriter) Class.forName(clazz).newInstance();
+         return (SciPgeConfigFileWriter) Class.forName(clazz).newInstance();
       } catch (Exception e) {
-         logger.log(Level.SEVERE, "Failed to create DynamicConfigFileWriter ["
+         logger.log(Level.SEVERE, "Failed to create SciPgeConfigFileWriter ["
                + clazz + "] : " + e.getMessage(), e);
          return null;
       }

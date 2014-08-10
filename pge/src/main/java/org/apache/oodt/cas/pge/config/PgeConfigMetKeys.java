@@ -73,6 +73,18 @@ public interface PgeConfigMetKeys {
     public static final String DIR_TAG = "dir";
 
     public static final String CREATE_BEFORE_EXEC_ATTR = "createBeforeExe";
+    
+    public static final String FILES_TAG = "files";
+
+    public static final String REGEX_ATTR = "regExp";
+
+    public static final String NAME_ATTR = "name";
+
+    public static final String MET_FILE_WRITER_CLASS_ATTR = "metFileWriterClass";
+
+    public static final String RENAMING_CONV_TAG = "renamingConv";
+
+    public static final String NAMING_EXPR_ATTR = "namingExpr";    
 
     public static final String FILE_STAGING_TAG = "fileStaging";
 

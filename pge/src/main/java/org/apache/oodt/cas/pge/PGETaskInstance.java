@@ -27,6 +27,7 @@ import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.FILE_STAGER;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_CLIENT_TRANSFER_SERVICE_FACTORY;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.INGEST_FILE_MANAGER_URL;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.LOG_FILENAME_PATTERN;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.MET_FILE_EXT;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.NAME;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.MIME_EXTRACTOR_REPO;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.PGE_CONFIG_BUILDER;
@@ -37,14 +38,17 @@ import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.WORKFLOW_MANAGER_U
 import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.CONF_FILE_BUILD;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.CRAWLING;
 import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.RUNNING_PGE;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskStatus.STAGING_INPUT;
 import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createConfigFilePropertyAdder;
 import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createFileStager;
 import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createPgeConfigBuilder;
-import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createDynamicConfigFileWriter;
+import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createSciPgeConfigFileWriter;
 
 //JDK imports
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.LinkedList;
@@ -53,6 +57,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import java.util.regex.Pattern;
 
 //Apache imports
 import org.apache.commons.lang.Validate;
@@ -60,18 +65,22 @@ import org.apache.commons.lang.Validate;
 //OODT imports
 import org.apache.oodt.cas.crawl.AutoDetectProductCrawler;
 import org.apache.oodt.cas.crawl.ProductCrawler;
+import org.apache.oodt.cas.crawl.StdProductCrawler;
 import org.apache.oodt.cas.crawl.status.IngestStatus;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.apache.oodt.cas.metadata.filenaming.PathUtilsNamingConvention;
 import org.apache.oodt.cas.pge.config.DynamicConfigFile;
 import org.apache.oodt.cas.pge.config.OutputDir;
 import org.apache.oodt.cas.pge.config.PgeConfig;
+import org.apache.oodt.cas.pge.config.RegExprOutputFiles;
 import org.apache.oodt.cas.pge.config.XmlFilePgeConfigBuilder;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 import org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys;
 import org.apache.oodt.cas.pge.staging.FileManagerFileStager;
 import org.apache.oodt.cas.pge.staging.FileStager;
-import org.apache.oodt.cas.pge.writers.DynamicConfigFileWriter;
+import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
+import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
 import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
@@ -125,6 +134,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
          createOuputDirsIfRequested();
          updateStatus(CONF_FILE_BUILD.getWorkflowStatusName());
          createDynamicConfigFiles();
+         updateStatus(STAGING_INPUT.getWorkflowStatusName());
          stageFiles();
 
          // Run the PGE.
@@ -335,39 +345,39 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    }
 
    protected void createDynamicConfigFiles() throws Exception {
-      logger.info("Starting creation of dynamic config files...");
+      logger.info("Starting creation of sci pge config files...");
       for (DynamicConfigFile dynamicConfigFile : pgeConfig
             .getDynamicConfigFiles()) {
          createDynamicConfigFile(dynamicConfigFile);
       }
-      logger.info("Successfully wrote all dynamic config files!");
+      logger.info("Successfully wrote all sci pge config files!");
    }
 
    protected void createDynamicConfigFile(DynamicConfigFile dynamicConfigFile)
          throws Exception {
       Validate.notNull(dynamicConfigFile, "dynamicConfigFile cannot be null");
-      logger.fine("Starting creation of dynamic config file ["
+      logger.fine("Starting creation of sci pge config file ["
             + dynamicConfigFile.getFilePath() + "]...");
 
       // Create parent directory if it doesn't exist.
       File parentDir = new File(dynamicConfigFile.getFilePath())
             .getParentFile();
       if (!(parentDir.exists() || parentDir.mkdirs())) {
-         throw new Exception("Failed to create directory where dynamic config file ["
+         throw new Exception("Failed to create directory where sci pge config file ["
                + dynamicConfigFile.getFilePath() + "] was to be written");
       }
 
       // Load writer and write file.
-      logger.fine("Loading writer class for dynamic config file ["
+      logger.fine("Loading writer class for sci pge config file ["
             + dynamicConfigFile.getFilePath() + "]...");
-      DynamicConfigFileWriter writer = createDynamicConfigFileWriter(
+      SciPgeConfigFileWriter writer = createSciPgeConfigFileWriter(
             dynamicConfigFile.getWriterClass(), logger);
       logger.fine("Loaded writer [" + writer.getClass().getCanonicalName()
-            + "] for dynamic config file [" + dynamicConfigFile.getFilePath()
+            + "] for sci pge config file [" + dynamicConfigFile.getFilePath()
             + "]...");
-      logger.info("Writing dynamic config file [" + dynamicConfigFile.getFilePath()
+      logger.info("Writing sci pge config file [" + dynamicConfigFile.getFilePath()
                   + "]...");
-      File configFile = writer.generateFile(dynamicConfigFile.getFilePath(),
+      File configFile = writer.createConfigFile(dynamicConfigFile.getFilePath(),
             pgeMetadata.asMetadata(), logger, dynamicConfigFile.getArgs());
       if (!configFile.exists()) {
          throw new Exception("Writer failed to create config file ["
@@ -435,11 +445,72 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    protected boolean wasPgeSuccessful(int returnCode) {
       return returnCode == 0;
    }
+   
+   protected void processOutput() throws FileNotFoundException, IOException {
+     for (final OutputDir outputDir : this.pgeConfig.getOuputDirs()) {
+         File[] createdFiles = new File(outputDir.getPath()).listFiles();
+         for (File createdFile : createdFiles) {
+             Metadata outputMetadata = new Metadata();
+             for (RegExprOutputFiles regExprFiles : outputDir
+                     .getRegExprOutputFiles()) {
+                 if (Pattern.matches(regExprFiles.getRegExp(), createdFile
+                         .getName())) {
+                     try {
+                         PcsMetFileWriter writer = (PcsMetFileWriter) Class
+                                 .forName(regExprFiles.getConverterClass())
+                                 .newInstance();
+                         outputMetadata.replaceMetadata(this.getMetadataForFile(
+                 (regExprFiles.getRenamingConv() != null) 
+               ? createdFile = this.renameFile(createdFile, regExprFiles.getRenamingConv())
+               : createdFile, writer, regExprFiles.getArgs()));
+                     } catch (Exception e) {
+                         logger.severe(
+                                 "Failed to create metadata file for '"
+                                         + createdFile + "' : "
+                                         + e.getMessage());
+                     }
+                 }
+             }
+             if (outputMetadata.getAllKeys().size() > 0)
+               this.writeFromMetadata(outputMetadata, createdFile.getAbsolutePath() 
+                   + "." + this.pgeMetadata.getMetadata(MET_FILE_EXT));
+         }
+     }
+ }
 
-   protected ProductCrawler createProductCrawler() throws Exception {
+	protected File renameFile(File file, PathUtilsNamingConvention renamingConv)
+			throws Exception {
+		Metadata curMetadata = this.pgeMetadata.asMetadata();
+		curMetadata.replaceMetadata(renamingConv.getTmpReplaceMet());
+		return renamingConv.rename(file, curMetadata);
+	}
+
+	protected Metadata getMetadataForFile(File sciPgeCreatedDataFile,
+			PcsMetFileWriter writer, Object[] args) throws Exception {
+		return writer.getMetadataForFile(sciPgeCreatedDataFile,
+				this.pgeMetadata, args);
+	}
+
+	protected void writeFromMetadata(Metadata metadata, String toMetFilePath)
+			throws FileNotFoundException, IOException {
+		new SerializableMetadata(metadata, "UTF-8", false)
+				.writeMetadataToXmlStream(new FileOutputStream(toMetFilePath));
+	}
+
+	protected ProductCrawler createProductCrawler() throws Exception {
+     /* create a ProductCrawler based on whether or not the output dir specifies a MIME_EXTRACTOR_REPO */
       logger.info("Configuring ProductCrawler...");
-      AutoDetectProductCrawler crawler = new AutoDetectProductCrawler();
-      crawler.setMimeExtractorRepo(pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO));
+      ProductCrawler crawler = null;
+      if (pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO) != null && 
+    		  pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO).equals("")){
+          crawler = new AutoDetectProductCrawler();
+          ((AutoDetectProductCrawler)crawler).
+            setMimeExtractorRepo(pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO));    	  
+      }
+      else{
+    	  crawler = new StdProductCrawler();
+      }
+
       crawler.setClientTransferer(pgeMetadata
             .getMetadata(INGEST_CLIENT_TRANSFER_SERVICE_FACTORY));
       crawler.setFilemgrUrl(pgeMetadata.getMetadata(INGEST_FILE_MANAGER_URL));
@@ -466,7 +537,12 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    }
 
    protected void runIngestCrawler(ProductCrawler crawler) throws Exception {
-      // Determine directories to crawl.
+      // Determine if we need to create Metadata files
+	   if (crawler instanceof StdProductCrawler){
+		   this.processOutput();
+	   }
+	   
+	   // Determine directories to crawl.
       List<File> crawlDirs = new LinkedList<File>();
       for (OutputDir outputDir : pgeConfig.getOuputDirs()) {
          crawlDirs.add(new File(outputDir.getPath()));

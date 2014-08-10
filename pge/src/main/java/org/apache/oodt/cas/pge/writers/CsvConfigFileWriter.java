@@ -65,7 +65,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  *
  * @author bfoster (Brian Foster)
  */
-public class CsvConfigFileWriter implements DynamicConfigFileWriter {
+public class CsvConfigFileWriter extends DynamicConfigFileWriter {
 
    private static final int HEADER_INDEX = 0;
    private static final int DELIM_INDEX = 0;

@@ -18,6 +18,7 @@ package org.apache.oodt.cas.pge.writers;
 
 //JDK imports
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 //OODT imports
@@ -26,11 +27,52 @@ import org.apache.oodt.cas.metadata.Metadata;
 /**
  * Abstract interface for generating PGE config input files defining the input
  * necessary to run the underlying PGE.
- *
+ * 
  * @author bfoster (Brian Foster)
+ * @author mattmann (Chris Mattmann)
  */
-public interface DynamicConfigFileWriter {
+public abstract class DynamicConfigFileWriter implements SciPgeConfigFileWriter {
 
-   public File generateFile(String filePath, Metadata metadata, Logger logger,
-         Object... args) throws Exception;
+	private static final Logger logger = Logger
+			.getLogger(DynamicConfigFileWriter.class.getName());
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter#createConfigFile
+	 * (java.lang.String, org.apache.oodt.cas.metadata.Metadata,
+	 * java.lang.Object[])
+	 */
+	@Override
+	public File createConfigFile(String sciPgeConfigFilePath,
+			Metadata inputMetadata, Object... customArgs) throws IOException {
+		try {
+			return this.generateFile(sciPgeConfigFilePath, inputMetadata,
+					logger, customArgs);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new IOException(e);
+		}
+	}
+
+	/**
+	 * Generates a config file for CAS-PGE to use as PGE input with the given
+	 * default logger.
+	 * 
+	 * @param filePath
+	 *            The name of the config file to generate.
+	 * @param metadata
+	 *            Input CAS-PGE metadata.
+	 * @param logger
+	 *            The logger to write any status information to.
+	 * @param args
+	 *            Any custom parameters needed for the writer to write the input
+	 *            config file.
+	 * @return The newly generated CAS-PGE input config file.
+	 * @throws Exception
+	 *             If any error occurs.
+	 */
+	public abstract File generateFile(String filePath, Metadata metadata,
+			Logger logger, Object... args) throws Exception;
 }

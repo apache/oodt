@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,32 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.oodt.cas.pge.writers;
 
 //JDK imports
 import java.io.File;
-import java.io.IOException;
-import java.util.logging.Logger;
-
-//Apache imports
-import org.apache.commons.io.FileUtils;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.extractors.ExternConfigReader;
+import org.apache.oodt.cas.metadata.extractors.ExternMetExtractor;
+import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
 
 /**
- * Mock implementation of {@link DynamicConfigFileWriter}.
- *
- * @author bfoster (Brian Foster)
+ * 
+ * Wraps the OODT CAS {@link ExternMetExtractor} and exposes it as a CAS-PGE
+ * {@link PcsMetFileWriter}.
+ * 
  */
-public class MockDynamicConfigFileWriter extends DynamicConfigFileWriter {
+public class ExternExtractorMetWriter extends PcsMetFileWriter {
 
-   @Override
-   public File generateFile(String filePath, Metadata metadata, Logger logger,
-         Object... customArgs) throws IOException {
-      File configFile = new File(filePath);
-      configFile.getParentFile().mkdirs();
-      FileUtils.touch(configFile);
-      return configFile;
-   }
+  @Override
+  protected Metadata getSciPgeSpecificMetadata(File sciPgeConfigFilePath,
+      Metadata inputMetadata, Object... customArgs) throws Exception {
+    ExternMetExtractor extractor = new ExternMetExtractor();
+    extractor.setConfigFile(new ExternConfigReader().parseConfigFile(new File(
+        (String) customArgs[0])));
+    Metadata m = new Metadata();
+    m.addMetadata(extractor.extractMetadata(sciPgeConfigFilePath)
+        .getHashtable(), true);
+    return m;
+  }
+
 }

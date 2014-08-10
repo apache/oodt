@@ -16,6 +16,10 @@
  */
 package org.apache.oodt.cas.pge.config;
 
+//JDK imports
+import java.util.List;
+import java.util.Vector;
+
 //Apache imports
 import org.apache.commons.lang.Validate;
 
@@ -29,23 +33,24 @@ public class OutputDir {
 
    private String path;
    private boolean createBeforeExe;
+   private List<RegExprOutputFiles> regExprOutputFilesList;
 
    public OutputDir() {
-      path = null;
-      createBeforeExe = false;
+	  this(null, false);
    }
 
    public OutputDir(String path, boolean createBeforeExe) {
       setPath(path);
       setCreateBeforeExe(createBeforeExe);
+      this.regExprOutputFilesList = new Vector<RegExprOutputFiles>();
+
    }
 
    public void setPath(String path) {
       Validate.notNull(path, "path cannot be null");
-
       this.path = path;
    }
-
+      
    public String getPath() {
       return path;
    }
@@ -57,4 +62,13 @@ public class OutputDir {
    public boolean isCreateBeforeExe() {
       return createBeforeExe;
    }
+   
+   public void addRegExprOutputFiles(RegExprOutputFiles regExprOutputFiles) {
+     this.regExprOutputFilesList.add(regExprOutputFiles);
+   } 
+
+   public List<RegExprOutputFiles> getRegExprOutputFiles() {
+     return this.regExprOutputFilesList;
+ }
+
 }

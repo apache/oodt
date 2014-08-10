@@ -20,6 +20,8 @@ package org.apache.oodt.cas.metadata.filenaming;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.List;
+
 //Apache imports
 import org.apache.commons.lang.Validate;
 
@@ -32,11 +34,18 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
  * A {@link NamingConvention} which utilizes {@link PathUtils}.
  *
  * @author bfoster (Brian Foster)
+ * @author mattmann (Chris Mattmann)
  */
 public class PathUtilsNamingConvention implements NamingConvention {
 
    private String namingConv;
 
+   private Metadata tmpReplaceMet;
+   
+   public PathUtilsNamingConvention(){
+	   this.tmpReplaceMet = new Metadata();
+   }
+   
    public File rename(File file, Metadata metadata)
          throws NamingConventionException {
       try {
@@ -59,4 +68,12 @@ public class PathUtilsNamingConvention implements NamingConvention {
    public void setNamingConv(String namingConv) {
       this.namingConv = namingConv;
    }
+   
+	public void addTmpReplaceMet(String key, List<String> values) {
+		this.tmpReplaceMet.replaceMetadata(key, values);
+	}
+	
+	public Metadata getTmpReplaceMet() {
+		return this.tmpReplaceMet;
+	}
 }
