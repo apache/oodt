@@ -112,6 +112,10 @@ public class TestTypeHandler extends TestCase {
 
         // now override the catalog ones
         properties.setProperty(
+                "org.apache.oodt.cas.filemgr.catalog.lucene.idxPath",
+                tmpDirPath);
+
+        properties.setProperty(
                 "org.apache.oodt.cas.filemgr.catalog.datasource.jdbc.url",
                 "jdbc:hsqldb:file:" + tmpDirPath + "/testCat;shutdown=true");
 
