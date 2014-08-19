@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.7</version>
+    <version>0.8-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-catalog</artifactId>
@@ -31,9 +31,9 @@
   they may be queried across and ingested into.
   </description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.7/catalog</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.7/catalog</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/oodt-0.7/catalog</url>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/trunk/catalog</url>
   </scm>
   <profiles>
     <profile>
