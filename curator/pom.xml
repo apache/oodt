@@ -20,7 +20,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.7</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <groupId>org.apache.oodt</groupId>
@@ -29,9 +29,9 @@ the License.
   <name>CAS Curation Interface</name>
   <description>A web application for managing policy for products and files and metadata that have been ingested via the CAS component.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/curator</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/curator</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/curator</url>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.7/curator</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/oodt-0.7/curator</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/oodt-0.7/curator</url>
   </scm>
   <build>
     <plugins /> 
