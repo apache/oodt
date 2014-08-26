@@ -332,7 +332,7 @@ public class SolrIndexer {
 						for (Product product : page.getPageProducts()) {
 							try {
 								this.indexProduct(product.getProductId(), fmClient
-								    .getMetadata(product), type.getTypeMetadata(), delete);
+								    .getMetadata(product), type.getTypeMetadata());
 							} catch (Exception e) {
 								LOG.severe("Could not index " + product.getProductId() + ": "
 								    + e.getMessage());
@@ -362,13 +362,10 @@ public class SolrIndexer {
 	 * 
 	 * @param productId
 	 *          The identifier of the product (CAS.ProductId).
-	 * @param delete
-	 *          Flag indicating whether the entry should be deleted from the
-	 *          index.
 	 * @throws SolrServerException
 	 *           When an error occurs communicating with the Solr server instance.
 	 */
-	public void indexProduct(String productId, boolean delete)
+	public void indexProduct(String productId)
 	    throws SolrServerException {
 		LOG.info("Attempting to index product: " + productId);
 		try {
@@ -377,7 +374,7 @@ public class SolrIndexer {
 			Product product = fmClient.getProductById(productId);
 			Metadata productMetadata = fmClient.getMetadata(product);
 			indexProduct(product.getProductId(), productMetadata, product
-			    .getProductType().getTypeMetadata(), delete);
+			    .getProductType().getTypeMetadata());
 		} catch (MalformedURLException e) {
 			LOG.severe("File Manager URL is malformed: " + e.getMessage());
 		} catch (ConnectionException e) {
@@ -395,7 +392,7 @@ public class SolrIndexer {
 	 * product name to the Solr index. Metadata from the ProductType is also
 	 * included.
 	 * 
-	 * @param productId
+	 * @param productName
 	 *          The identifier of the product (CAS.ProductId).
 	 * @param delete
 	 *          Flag indicating whether the entry should be deleted from the
@@ -407,8 +404,8 @@ public class SolrIndexer {
 		
 		LOG.info("Attempting to index product: " + productName);
 		try {
-			
-			// Try to delete product by name 
+
+			// Try to delete product by name
 			// Note: the standard field "CAS.ProductName" must be mapped to some Solr field in file indexer.properties
 			if (delete) {
 				try {
@@ -422,13 +419,13 @@ public class SolrIndexer {
 					LOG.warning("Could not delete product: "+productName+" from Solr index");
 				}
 			}
-			
+
 			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
 			    this.fmUrl));
 			Product product = fmClient.getProductByName(productName);
 			Metadata productMetadata = fmClient.getMetadata(product);
 			// NOTE: delete (by id) is now false
-			indexProduct(product.getProductId(), productMetadata, product.getProductType().getTypeMetadata(), false); 
+			indexProduct(product.getProductId(), productMetadata, product.getProductType().getTypeMetadata());
 			
 		} catch (MalformedURLException e) {
 			LOG.severe("File Manager URL is malformed: " + e.getMessage());
@@ -443,7 +440,7 @@ public class SolrIndexer {
 	}
 
 	private void indexProduct(String productId, Metadata productMetadata,
-	    Metadata typeMetadata, boolean delete) throws SolrServerException,
+	    Metadata typeMetadata) throws SolrServerException,
 	    java.text.ParseException {
 		Metadata metadata = new Metadata();
 		metadata.addMetadata("id", productId);
@@ -466,13 +463,6 @@ public class SolrIndexer {
 			// the value in brakets will be updated with the value from the
 			// CAS.ProductId.
 			performSubstitution(metadata);
-			if (delete) {
-				try {
-					server.deleteById(productId);
-				} catch (Exception e) {
-					LOG.severe("Could not delete product from index: " + e.getMessage());
-				}
-			}
 			try {
 				server.add(this.getSolrDocument(metadata));
 				LOG.info("Indexed product: " + productId);
@@ -656,14 +646,13 @@ public class SolrIndexer {
 				if (line.hasOption("all")) {
 					indexer.indexAll(line.hasOption("delete"));
 				} else if (line.hasOption("product")) {
-					indexer.indexProduct(line.getOptionValue("product"), line
-					    .hasOption("delete"));
+					indexer.indexProduct(line.getOptionValue("product"));
 				} else if (line.hasOption("metFile")) {
 					indexer.indexMetFile(new File(line.getOptionValue("metFile")), line
 					    .hasOption("delete"));
 				} else if (line.hasOption("read")) {
 					for (String productId : readProductIdsFromStdin()) {
-						indexer.indexProduct(productId, line.hasOption("delete"));
+						indexer.indexProduct(productId);
 					}
 				} else if (line.hasOption("types")) {
 					indexer.indexProductTypes(line.hasOption("delete"));
