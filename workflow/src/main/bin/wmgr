@@ -52,7 +52,7 @@ case "$1" in
         -Djava.util.logging.config.file=${CAS_WORKFLOW_HOME}/etc/logging.properties \
         -Dorg.apache.oodt.cas.workflow.properties=${CAS_WORKFLOW_PROPS} \
         -Dorg.apache.oodt.cas.pge.task.metkeys.legacyMode="true" \
-        -Dorg.apache.oodt.cas.pge.task.status.legacyMode="true" \        
+        -Dorg.apache.oodt.cas.pge.task.status.legacyMode="true" \
         org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager --portNum $SERVER_PORT &       
         echo $! >${RUN_HOME}/cas.workflow.pid 
         echo "OK"
