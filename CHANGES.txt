@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 -------------------------------------------- 
 
+* OODT-745 Removed trailing spaces in the radix wmgr filex
+
 * OODT-473 Rremove "Deleted" Metadata Flag from Solr Indexer (magicaltrout)
 
 * OODT-736 Clean up test data left by TestTypeHandler test (rlaidlaw)
