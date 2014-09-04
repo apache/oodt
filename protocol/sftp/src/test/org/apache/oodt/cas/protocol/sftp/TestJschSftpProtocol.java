@@ -18,9 +18,6 @@ package org.apache.oodt.cas.protocol.sftp;
 
 //JUnit imports
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -156,7 +153,7 @@ public class TestJschSftpProtocol extends TestCase {
             public Object answer(InvocationOnMock invocationOnMock) throws IOException {
 
                 PrintWriter writer = new PrintWriter(tmpFile+"/testDownloadFile", "UTF-8");
-                writer.print(readFile("src/testdata/sshTestDir/sshTestFile", Charset.forName("UTF8")));
+                writer.print(readFile("src/testdata/sshTestDir/sshTestFile"));
                 writer.close();
 
                 return null;
@@ -170,12 +167,36 @@ public class TestJschSftpProtocol extends TestCase {
 
 		FileUtils.forceDelete(tmpFile);
 	}
-    static String readFile(String path, Charset encoding)
-            throws IOException
-    {
-        byte[] encoded = Files.readAllBytes(Paths.get(path));
-        return new String(encoded, encoding);
+
+    public String readFile(String path){
+        BufferedReader buffReader = null;
+        try{
+            buffReader = new BufferedReader (new FileReader(path));
+            String line = buffReader.readLine();
+            StringBuilder build = new StringBuilder();
+            while(line != null){
+                build.append(line);
+                build.append("\n");
+                System.out.println(line);
+                line = buffReader.readLine();
+
+
+            }
+            String str = build.toString();
+            return str;
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+        }finally{
+            try{
+                buffReader.close();
+            }catch(IOException ioe1){
+                //Leave It
+            }
+
+        }
+        return path;
     }
+
 	private static class TestServerConfiguration extends ServerConfiguration {
 		
 		int commandPort = AvailablePortFinder.getNextAvailable(12222);
