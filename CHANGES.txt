@@ -3,6 +3,7 @@ Apache OODT Change Log
 
 Release 0.7 - Current Development
 -------------------------------------------- 
+* OODT-644 Partial fix to stub SSH client so it doesn't fail when SSHD is running locally
 
 * OODT-745 Removed trailing spaces in the radix wmgr filex
 
