@@ -17,16 +17,20 @@
 
 package org.apache.oodt.cas.resource.monitor;
 
+//Junit imports
 import junit.framework.TestCase;
-import org.apache.oodt.cas.resource.monitor.exceptions.GangliaMonitorException;
+
+//OODT imports
+import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys;
 import org.apache.oodt.cas.resource.monitor.ganglia.GangliaXMLParser;
 import org.apache.oodt.cas.resource.monitor.ganglia.configuration.Cluster;
 import org.apache.oodt.cas.resource.monitor.ganglia.configuration.Host;
 import org.apache.oodt.cas.resource.monitor.ganglia.configuration.Metric;
+
+//JDK imports
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
@@ -35,6 +39,7 @@ import java.util.List;
 
 /**
  * @author rajith
+ * @author mattmann
  * @version $Revision$
  *
  * Test Suite for the {@link GangliaXMLParser}
@@ -47,7 +52,7 @@ public class TestGangliaXMLParser extends TestCase {
      * {@inheritDoc}
      * Read gangliaXMLdump.xml and build the grid configuration
      */
-    protected void setUp() throws GangliaMonitorException, IOException {
+    protected void setUp() throws MonitorException, IOException {
         StringBuilder stringBuffer = new StringBuilder();
 
         try {
@@ -75,11 +80,11 @@ public class TestGangliaXMLParser extends TestCase {
             parser.parse(new InputSource(new StringReader(buffer)), gangliaXMLParser);
             gridConfiguration = gangliaXMLParser.getGridConfiguration();
         } catch (ParserConfigurationException e) {
-            throw new GangliaMonitorException("Error while parsing: " + e.getMessage());
+            throw new MonitorException("Error while parsing: " + e.getMessage());
         } catch (SAXException e) {
-            throw new GangliaMonitorException("Error while parsing the XML: " + e.getMessage());
+            throw new MonitorException("Error while parsing the XML: " + e.getMessage());
         } catch (IOException e) {
-            throw new GangliaMonitorException("I/O error: " + e.getMessage());
+            throw new MonitorException("I/O error: " + e.getMessage());
         }
     }
 

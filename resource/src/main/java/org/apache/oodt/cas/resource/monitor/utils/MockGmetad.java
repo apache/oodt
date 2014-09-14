@@ -17,12 +17,18 @@
 
 package org.apache.oodt.cas.resource.monitor.utils;
 
-import java.io.*;
+//JDK imports
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
  * @author rajith
+ * @author mattmann
  * @version $Revision$
  *
  * Ganglia meta daemon mock server
@@ -77,5 +83,25 @@ public class MockGmetad implements Runnable {
             //Exception ignored
         }
 
+    }
+    
+    public static void main(String [] args) throws Exception{
+    	String xmlPath = null;
+    	int serverPort = -1;
+    	final String usage = "java MockGmetad <xml path> <port>\n";
+    	
+    	if (args.length != 2){
+    		System.err.println(usage);
+    		System.exit(1);
+    	}
+    	
+    	xmlPath = args[0];
+    	serverPort = Integer.valueOf(args[1]);
+    	
+    	MockGmetad gmetad = new MockGmetad(serverPort, xmlPath);
+    	ThreadLocal<MockGmetad> mockGmetad = new ThreadLocal<MockGmetad>();
+    	mockGmetad.set(gmetad);
+    	Thread mockGmetadServer = new Thread(mockGmetad.get());
+        mockGmetadServer.start();
     }
 }

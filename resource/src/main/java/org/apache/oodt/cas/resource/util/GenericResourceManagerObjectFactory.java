@@ -31,8 +31,6 @@ import org.apache.oodt.cas.resource.jobrepo.JobRepository;
 import org.apache.oodt.cas.resource.jobrepo.JobRepositoryFactory;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.monitor.MonitorFactory;
-import org.apache.oodt.cas.resource.monitor.ResourceMonitor;
-import org.apache.oodt.cas.resource.monitor.ResourceMonitorFactory;
 import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator;
 import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculatorFactory;
 import org.apache.oodt.cas.resource.noderepo.NodeRepository;
@@ -385,44 +383,6 @@ public final class GenericResourceManagerObjectFactory {
 
     return null;
   }
-
-
-    /**
-     * Creates a new {@link org.apache.oodt.cas.resource.monitor.ResourceMonitor} implementation from the given String name of
-     * the {@link org.apache.oodt.cas.resource.monitor.ResourceMonitorFactory}.
-     *
-     * @param serviceFactory
-     *          The name of the {@link org.apache.oodt.cas.resource.monitor.ResourceMonitorFactory} class to use to create
-     *          {@link org.apache.oodt.cas.resource.monitor.ResourceMonitor}s.
-     * @return A new {@link org.apache.oodt.cas.resource.monitor.ResourceMonitor} implementation.
-     */
-    public static ResourceMonitor getResourceMonitorFromServiceFactory(String serviceFactory){
-        Class clazz;
-        ResourceMonitorFactory factory;
-
-        try {
-            clazz = Class.forName(serviceFactory);
-            factory = (ResourceMonitorFactory) clazz.newInstance();
-            return factory.createResourceMonitor();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING,
-                    "ClassNotFoundException when loading resource monitor factory class "
-                            + serviceFactory + " Message: " + e.getMessage());
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING,
-                    "InstantiationException when loading resource monitor factory class "
-                            + serviceFactory + " Message: " + e.getMessage());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING,
-                    "IllegalAccessException when loading resource monitor factory class "
-                            + serviceFactory + " Message: " + e.getMessage());
-        }
-
-        return null;
-    }
 
     /**
      * Creates a new {@link org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator} implementation from the given String name of

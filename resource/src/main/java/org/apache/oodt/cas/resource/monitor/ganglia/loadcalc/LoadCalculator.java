@@ -17,29 +17,21 @@
 
 package org.apache.oodt.cas.resource.monitor.ganglia.loadcalc;
 
-import java.util.HashMap;
+//JDK imports
+import java.util.Map;
 
 /**
  * @author rajith
+ * @author mattmann
  * @version $Revision$
  */
 public interface LoadCalculator {
 
-    public static int MAXIMUM_FRACTION_DIGITS = 3;
-
-    /*Ganglia metric keys*/
-    public static String LOAD_ONE = "load_one";
-    public static String LOAD_FIVE = "load_five";
-    public static String LOAD_FIFTEEN = "load_fifteen";
-    public static String CPU_NUM = "cpu_num";
-
     /**
      * Calculate the load and normalize it within the given node's capacity
-     * @param nodeCapacity node's {@link org.apache.oodt.cas.resource.structs.ResourceNode}
-     *                     capacity
      * @param metrics status metrics of the resource node
      * @return An integer representation of the load within 0 and node's capacity
      */
-    public float calculateLoad(float nodeCapacity, HashMap<String, String> metrics);
+    public double calculateLoad(Map<String, String> metrics);
 
 }

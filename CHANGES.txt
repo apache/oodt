@@ -4,6 +4,8 @@ Apache OODT Change Log
 Release 0.7 - Current Development
 -------------------------------------------- 
 
+* OODT-669 Make Resource Manager work without Ganglia (mattmann, rajith)
+
 * OODT-644 Fix to FTP protocol tests, abstracting some of the logic to make the code better suited to mocking(magicaltrout)
 
 * OODT-644 Fix to stub FTP client protocol so it doesn't fail when the port is in use

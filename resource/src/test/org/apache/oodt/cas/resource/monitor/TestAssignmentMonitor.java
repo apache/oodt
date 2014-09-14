@@ -134,14 +134,6 @@ public class TestAssignmentMonitor extends TestCase {
                 && this.assgnMon.getNodes().containsAll(nodes));
     }
 
-    public void testGetLoad() throws MonitorException {
-        ResourceNode resourceNode = assgnMon.getNodeById("localhost");
-
-        /*since the Gmetad is offline load value from the ResourceMonitor
-        * should be node's capacity, therefore AssignmentMonitors
-        * load value is 0*/
-        assertEquals(0, assgnMon.getLoad(resourceNode));
-    }
 
     private void generateTestConfig() throws IOException {
         String propertiesFile = "." + File.separator + "src" + File.separator +

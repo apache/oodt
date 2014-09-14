@@ -17,20 +17,26 @@
 
 package org.apache.oodt.cas.resource.monitor;
 
+//Junit imports
 import junit.framework.TestCase;
+
+
+//OODT imports
 import org.apache.oodt.cas.resource.monitor.ganglia.GangliaResourceMonitor;
 import org.apache.oodt.cas.resource.monitor.ganglia.GangliaResourceMonitorFactory;
 import org.apache.oodt.cas.resource.monitor.utils.MockGmetad;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 
+
+//JDK imports
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.List;
 
 /**
  * @author rajith
+ * @author mattmann
  * @version $Revision$
  *
  * Test Suite for the {@link org.apache.oodt.cas.resource.monitor.ganglia.GangliaResourceMonitor}
@@ -46,7 +52,7 @@ public class TestGangliaResourceMonitor extends TestCase {
         runMockGmetad();
 
         gangliaResourceMonitor = (GangliaResourceMonitor)
-                new GangliaResourceMonitorFactory().createResourceMonitor();
+                new GangliaResourceMonitorFactory().createMonitor();
     }
 
     @Override
@@ -56,38 +62,70 @@ public class TestGangliaResourceMonitor extends TestCase {
 
     public void testGetLoad() {
         try {
-            ResourceNode resourceNode =
-                    new ResourceNode("localhost",new URL("http://localhost:9999"), 8);
-            assertEquals((float)1.556, gangliaResourceMonitor.getLoad(resourceNode));
-        } catch (MalformedURLException ignored) {
-            //Exception ignored
-        }
-    }
-
-    public void testUpdateLoad(){
-        try {
-            ResourceNode resourceNode =
-                    new ResourceNode("remotenode",new URL("http://localhost:9999"), 9);
-            assertEquals((float) 1.751, gangliaResourceMonitor.getLoad(resourceNode));
-
-            gangliaResourceMonitor.updateLoad("remotenode", 6);
-            assertEquals((float) 6, gangliaResourceMonitor.getLoad(resourceNode));
-        }  catch (MalformedURLException ignored) {
-            //Exception ignored
+            ResourceNode resourceNode = new ResourceNode();
+            resourceNode.setId("localhost");
+            assertEquals(1, gangliaResourceMonitor.getLoad(resourceNode));
+        } catch (Exception e) {
+        	e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
     public void testRemoveNodeById(){
         try {
-            ResourceNode resourceNode =
-                    new ResourceNode("remotenode",new URL("http://localhost:9999"), 9);
-
-            gangliaResourceMonitor.removeNodeById("remotenode");
-            /*since node is not available node's capacity is returned as the load*/
-            assertEquals((float) 9, gangliaResourceMonitor.getLoad(resourceNode));
-        } catch (MalformedURLException ignored) {
-            //Exception ignored
+            gangliaResourceMonitor.removeNodeById("localhost");
+            assertNull(gangliaResourceMonitor.getNodeById("remotenode"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
         }
+    }
+    
+    public void testGetNodes(){
+    	try{
+    		List<ResourceNode> nodes = gangliaResourceMonitor.getNodes();
+    		assertNotNull(nodes);
+    		assertEquals(3, nodes.size());
+    		boolean hasLocal = false;
+    		boolean hasLocal2 = false;
+    		boolean hasRemote = false;
+    		
+    		for(ResourceNode node: nodes){
+    			if(node.getNodeId().equals("localhost")){
+    				hasLocal = true;
+    			}
+    			else if(node.getNodeId().equals("localhost2")){
+    				hasLocal2 = true;
+    			}
+    			else if(node.getNodeId().equals("remotenode")){
+    				hasRemote = true;
+    			}
+    			
+    		}
+    		assertTrue(hasLocal&&hasLocal2&&hasRemote);
+    	}
+    	catch (Exception e){
+    		e.printStackTrace();
+    		fail(e.getMessage());
+    	}
+    }
+    
+    public void testGetNodeById(){
+    	try{
+    		ResourceNode node = gangliaResourceMonitor.getNodeById("localhost");
+    		assertNotNull(node);
+    		assertEquals("localhost", node.getNodeId());
+    		node = gangliaResourceMonitor.getNodeById("localhost2");
+    		assertNotNull(node);
+    		assertEquals("localhost2", node.getNodeId());
+    		node = gangliaResourceMonitor.getNodeById("remotenode");
+    		assertNotNull(node);
+    		assertEquals("remotenode", node.getNodeId());
+    	}
+    	catch(Exception e){
+    		e.printStackTrace();
+    		fail(e.getMessage());
+    	}
     }
 
     private void runMockGmetad() {
@@ -96,7 +134,6 @@ public class TestGangliaResourceMonitor extends TestCase {
         String sampleXMLfilePath = "." + File.separator + "src" + File.separator +
                 "testdata" + File.separator + "resourcemon" + File.separator + "gangliaXMLdump.xml";
         mockGmetad.set(new MockGmetad(port, sampleXMLfilePath));
-
         Thread mockGmetadServer = new Thread(mockGmetad.get());
         mockGmetadServer.start();
     }
@@ -105,9 +142,6 @@ public class TestGangliaResourceMonitor extends TestCase {
         String propertiesFile = "." + File.separator + "src" + File.separator +
                 "testdata" + File.separator + "test.resource.properties";
         System.getProperties().load(new FileInputStream(new File(propertiesFile)));
-        System.setProperty("org.apache.oodt.cas.resource.nodes.dirs",
-                "file:" + new File("." + File.separator + "src" + File.separator +
-                        "testdata" + File.separator + "resourcemon").getAbsolutePath());
     }
 
 }
