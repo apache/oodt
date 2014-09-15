@@ -21,13 +21,13 @@ the License.
 	<parent>
                 <groupId>org.apache.oodt</groupId>
                 <artifactId>oodt-core</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>0.7</version>
                 <relativePath>../../core/pom.xml</relativePath>
         </parent>
         <groupId>org.apache.oodt</groupId>
 	<artifactId>wmonitor</artifactId>
 	<packaging>war</packaging>
-	<version>0.7-SNAPSHOT</version>
+	<version>0.7</version>
 	<name>CAS Workflow Manager Monitor Web App</name>
 	<properties>
 		<wicket.version>1.4.17</wicket.version>
@@ -36,9 +36,9 @@ the License.
 		<log4j.version>1.2.14</log4j.version>
 	</properties>
 	<scm>
-   		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/webapp/wmonitor</connection>
-   		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/webapp/wmonitor</developerConnection>
-   		<url>http://svn.apache.org/viewvc/oodt/trunk/webapp/wmonitor</url>
+   		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.7/webapp/wmonitor</connection>
+   		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.7/webapp/wmonitor</developerConnection>
+   		<url>http://svn.apache.org/viewvc/oodt/tags/0.7/webapp/wmonitor</url>
   	</scm>
 	<dependencies>
 		<dependency>
@@ -49,7 +49,7 @@ the License.
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>oodt-webapp-components</artifactId>
-		  <version>0.7-SNAPSHOT</version>
+		  <version>0.7</version>
 		  <exclusions>
 		    <exclusion>
 		      <artifactId>cas-filemgr</artifactId>
