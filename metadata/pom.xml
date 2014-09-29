@@ -16,7 +16,7 @@ License for the specific language governing permissions and limitations under
 the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  
+
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
@@ -27,11 +27,11 @@ the License.
   <artifactId>cas-metadata</artifactId>
   <name>Catalog and Archive Service Generic Multi-valued Metadata Container</name>
   <description>A Multi-valued, generic Metadata container class. The class uses an internal
-	Map of string keys pointing to vectors of strings. The data 
-	structure looks like the following: 
-	
+	Map of string keys pointing to vectors of strings. The data
+	structure looks like the following:
+
 	[std:string key]⇒std:vector of std:strings
-	
+
 	The multi-valued nature of the class is handled transparently by this Metadata
 	container. Since all values are stored internally as string vectors, the difference
 	between a scalar value and a non-scalar is handled by determining whether the list of
@@ -56,10 +56,11 @@ the License.
         <targetPath>org/apache/oodt/cas/metadata</targetPath>
         <directory>${basedir}/src/testdata</directory>
         <includes>
-             <include>extern-config.xml</include>
              <include>copyandrewrite.test.conf</include>
              <include>extern-config.xml</include>
              <include>met_extr_preconditions.xml</include>
+             <include>product-type-patterns.xml</include>
+             <include>product-type-patterns-2.xml</include>
              <include>samplemet.xml</include>
              <include>testExtractor</include>
              <include>testfile.txt</include>

@@ -329,6 +329,56 @@ public class Metadata {
      <i>DataVersion</i>, <i>CollectionName</i>, and <i>DataProvider</i>.</p>
      
      </subsection>
+
+     <subsection name="Product Type Pattern Metadata Extractor">
+     <p>The <code>ProdTypePatternMetExtractor</code> can also be used to extract
+     metadata from the filename.  Unlike the <code>FilenameTokenMetExtractor</code>,
+     metadata elements do not have to be fixed-offset and fixed-length.  Instead,
+     metadata elements are represented by regular expressions.  These elements are
+     used in filename templates that, when matched, dynamically determine the
+     ProductType of the file.</p>
+
+     <p>Below is an example of a <code>product-type-patterns.xml</code> configuration
+     file used by the <code>ProdTypePatternMetExtractor:</code></p>
+
+<source><![CDATA[
+<config>
+  <!-- <element> MUST be defined before <product-type> so their patterns can be resolved -->
+  <!-- name MUST be an element defined in elements.xml (also only upper and lower case alpha chars) -->
+  <!-- regexp MUST be valid input to java.util.regex.Pattern.compile() -->
+  <element name="ISBN" regexp="[0-9]{10}"/>
+  <element name="Page" regexp="[0-9]*"/>
+
+  <!-- name MUST be a ProductType name defined in product-types.xml -->
+  <!-- metadata elements inside brackets MUST be mapped to the ProductType,
+       as defined in product-type-element-map.xml -->
+  <product-type name="Book" template="book-[ISBN].txt"/>
+  <product-type name="BookPage" template="page-[ISBN]-[Page].txt"/>
+</config>
+]]></source>
+
+     <p>This file defines a regular expression for the "ISBN" metadata element, in this case, a 10-digit number. Also, the
+     "Page" metadata element is defined as a sequence of 0 or more digits.
+     <p/>
+     Next, the file defines a filename pattern for the "Book" product type. The pattern is compiled into a regular
+     expression, substituting the previously defined regexes as capture groups. For example, "book-[ISBN].txt" compiles to
+     "book-([0-9]{10}).txt", and the ISBN met element is assigned to capture group 1. When the filename matches this
+     pattern, 2 metadata assignments occur: (1) the ISBN met element is set to the matched regex group, and (2) the
+     ProductType met element is set to "Book".
+     <p/>
+     Similarly, the second pattern sets ISBN, Page, and ProductType for files matching "page-([0-9]{10})-([0-9]*).txt".
+     <p/>
+     This achieves several things:
+     <ol>
+         <li>assigning met elements based on regular expressions</li>
+         <li>assigning product type based on easy-to-understand pattern with met elements clearly indicated</li>
+         <li>reuse of met element regular expressions</li>
+     </ol>
+     <p>See the <a href="../apidocs/org/apache/oodt/cas/metadata/extractors/ProdTypePatternMetExtractor.html">JavaDoc</a>
+     for more detailed information about using the <code>ProdTypePatternMetExtractor</code></p>
+     </p>
+     </subsection>
+
      <subsection name="Metadata Reader Extractor">
      
      <p>The <code>MetReaderExtractor</code>, part of the OODT CAS-Metadata project,
