@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 0.8 - Current Development
 
+* OODT-756 HttpClient NoClassDefFoundError For the url-downloader Script (Mengying Wang via mattmann)
+
 * OODT-754 Contribute ProdTypePatternMetExtractor (rickdn)
 
 * OODT-750 Issue with running mvn site:site due to old findbugs plugin (mattmann)
