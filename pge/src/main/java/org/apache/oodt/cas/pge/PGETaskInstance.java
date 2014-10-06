@@ -502,7 +502,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       logger.info("Configuring ProductCrawler...");
       ProductCrawler crawler = null;
       if (pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO) != null && 
-    		  pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO).equals("")){
+    		  !pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO).equals("")){
           crawler = new AutoDetectProductCrawler();
           ((AutoDetectProductCrawler)crawler).
             setMimeExtractorRepo(pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO));    	  

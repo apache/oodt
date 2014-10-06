@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 0.8 - Current Development
 
+* OODT-757 Fixed PGETaskInstance bug that prevented instantiation of AutoDetectProductCrawler (luca)
+
 * OODT-756 HttpClient NoClassDefFoundError For the url-downloader Script (Mengying Wang via mattmann)
 
 * OODT-754 Contribute ProdTypePatternMetExtractor (rickdn)
