@@ -26,11 +26,11 @@ public class ParentKeyDataSourceMetExtractor extends DataSourceMetExtractor {
   protected Metadata extrMetadata(File file) throws MetExtractionException {
     try {
       key = getPrimaryKey(file);
-      return extrMetadata(file);
+      return super.extrMetadata(file);
     } catch (MetExtractionException e) {
       key = getParentKey(file);
       if (key != null) {
-        return extrMetadata(file);
+        return super.extrMetadata(file);
       } else {
         throw e;
       }
