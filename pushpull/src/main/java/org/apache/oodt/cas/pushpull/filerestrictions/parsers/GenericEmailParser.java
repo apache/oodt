@@ -163,6 +163,6 @@ public class GenericEmailParser implements Parser {
   }
 
   private String loadMetadataKey(String key) {
-    return System.getProperty(METADATA_KEYS);
+    return System.getProperty(METADATA_KEY_PREFIX + key);
   }
 }
