@@ -467,7 +467,7 @@ public class FileRetrievalSystem {
         remoteFile.addMetadata(RemoteFile.DOWNLOAD_TO_DIR, downloadToDir.getAbsolutePath());
 
     	if (remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR) != null) {
-    		remoteFile.addMetadata(RemoteFile.PRODUCT_NAME, RenamingConvention.rename(remoteFile.getProtocolFile(), remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR)));
+    		remoteFile.addMetadata(RemoteFile.PRODUCT_NAME, RenamingConvention.rename(remoteFile, remoteFile.getMetadata(RemoteFile.PRODUCT_NAME_GENERATOR)));
     	}else {
     		remoteFile.setUniqueMetadataElement(uniqueMetadataElement == null ? RemoteFile.FILENAME : uniqueMetadataElement);
     	}
@@ -568,8 +568,7 @@ public class FileRetrievalSystem {
             File newFile = new File(remoteFile
                     .getMetadata(RemoteFile.DOWNLOAD_TO_DIR)
                     + "/"
-                    + RenamingConvention.rename(remoteFile.getProtocolFile(),
-                            renamingString));
+                    + RenamingConvention.rename(remoteFile, renamingString));
             if (!newFile.getParentFile().equals(
                     remoteFile.getMetadata(RemoteFile.DOWNLOAD_TO_DIR)))
                 newFile.getParentFile().mkdirs();
