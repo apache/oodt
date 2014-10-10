@@ -37,7 +37,9 @@ import org.apache.oodt.cas.pushpull.protocol.ProtocolHandler;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSiteFile;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.MimeTypeUtils;
+
 
 //JDK imports
 import java.io.File;
@@ -351,7 +353,7 @@ public class FileRetrievalSystem {
     // returns true if download was added to queue. . .false otherwise
     public boolean addToDownloadQueue(RemoteSite remoteSite, String file,
             String renamingString, File downloadToDir,
-            String uniqueMetadataElement, boolean deleteAfterDownload)
+            String uniqueMetadataElement, boolean deleteAfterDownload, Metadata fileMetadata)
             throws ToManyFailedDownloadsException, RemoteConnectionException,
             ProtocolFileException, ProtocolException,
             AlreadyInDatabaseException, UndefinedTypeException,
@@ -362,7 +364,7 @@ public class FileRetrievalSystem {
             return addToDownloadQueue(protocolHandler.getProtocolFileFor(remoteSite,
                     protocolHandler.getAppropriateProtocolBySite(remoteSite,
                             true), file, false), renamingString, downloadToDir,
-                    uniqueMetadataElement, deleteAfterDownload);
+                    uniqueMetadataElement, deleteAfterDownload, fileMetadata);
         } else
             throw new ProtocolException("Not a valid remote site " + remoteSite);
     }
@@ -398,11 +400,17 @@ public class FileRetrievalSystem {
         }
     }
 
-    public boolean addToDownloadQueue(RemoteSiteFile file, String renamingString,
-            File downloadToDir, String uniqueMetadataElement,
-            boolean deleteAfterDownload) throws ToManyFailedDownloadsException,
-            RemoteConnectionException, AlreadyInDatabaseException,
-            UndefinedTypeException, CatalogException, IOException {
+  public boolean addToDownloadQueue(RemoteSiteFile file,
+                                    String renamingString,
+                                    File downloadToDir,
+                                    String uniqueMetadataElement,
+                                    boolean deleteAfterDownload,
+                                    Metadata fileMetadata) throws ToManyFailedDownloadsException,
+                                                                  RemoteConnectionException,
+                                                                  AlreadyInDatabaseException,
+                                                                  UndefinedTypeException,
+                                                                  CatalogException,
+                                                                  IOException {
         if (this.failedDownloadList.size() > max_allowed_failed_downloads)
             throw new ToManyFailedDownloadsException(
                     "Number of failed downloads exceeds "
@@ -416,6 +424,7 @@ public class FileRetrievalSystem {
         }
 
         RemoteFile remoteFile = new RemoteFile(file);
+        remoteFile.addMetadata(fileMetadata);
         remoteFile.addMetadata(RemoteFile.RENAMING_STRING, renamingString);
         remoteFile.addMetadata(RemoteFile.DELETE_AFTER_DOWNLOAD,
                 deleteAfterDownload + "");

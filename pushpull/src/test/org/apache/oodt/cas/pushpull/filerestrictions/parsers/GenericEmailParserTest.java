@@ -19,6 +19,7 @@ package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 // JUnit static imports
 import static org.junit.Assert.assertThat;
 
+
 // JDK imports
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +27,8 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.List;
 
+
+import org.apache.oodt.cas.metadata.Metadata;
 // OODT imports
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 import org.apache.oodt.cas.pushpull.filerestrictions.FileRestrictions;
@@ -57,7 +60,7 @@ public class GenericEmailParserTest {
   public void testGenericEmailParser() throws ParserException, FileNotFoundException {
     GenericEmailParser parser = new GenericEmailParser(
         "Wav File: ([^\\s]+)", "Dear Lousy Customer,", null);
-    VirtualFileStructure vfs = parser.parse(new FileInputStream(emailFile));
+    VirtualFileStructure vfs = parser.parse(new FileInputStream(emailFile), new Metadata());
     List<String> filePaths = FileRestrictions.toStringList(vfs.getRootVirtualFile());
     assertThat(filePaths.size(), Matchers.is(1));
     assertThat(filePaths.get(0), Matchers.is("/some/path/to/a/wav/file.wav"));
@@ -67,6 +70,6 @@ public class GenericEmailParserTest {
   public void testFailedValidEmailCheck() throws ParserException, FileNotFoundException {
     GenericEmailParser parser = new GenericEmailParser(
         "Wav File: ([^\\s]+)", "Phrase Not Found", null);
-    parser.parse(new FileInputStream(emailFile));
+    parser.parse(new FileInputStream(emailFile), new Metadata());
   }
 }

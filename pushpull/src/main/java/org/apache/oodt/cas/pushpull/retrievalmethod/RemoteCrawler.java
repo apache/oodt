@@ -20,6 +20,7 @@ package org.apache.oodt.cas.pushpull.retrievalmethod;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.pushpull.config.DataFilesInfo;
 import org.apache.oodt.cas.pushpull.config.DownloadInfo;
 import org.apache.oodt.cas.pushpull.exceptions.AlreadyInDatabaseException;
@@ -38,6 +39,7 @@ import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSiteFile;
 import org.apache.oodt.cas.pushpull.retrievalsystem.DataFileToPropFileLinker;
 import org.apache.oodt.cas.pushpull.retrievalsystem.FileRetrievalSystem;
+
 
 //JDK imports
 import java.io.File;
@@ -77,8 +79,9 @@ public class RemoteCrawler implements RetrievalMethod {
         RemoteSite remoteSite;
 
         // parse property file
+        Metadata fileMetadata = new Metadata();
         VirtualFileStructure vfs = propFileParser.parse(new FileInputStream(
-                propFile));
+                propFile), fileMetadata);
 
         // determine RemoteSite
         DownloadInfo di = dfi.getDownloadInfo();
@@ -138,7 +141,7 @@ public class RemoteCrawler implements RetrievalMethod {
                     if (!frs.addToDownloadQueue(files.pop(), di
                             .getRenamingConv(), di.getStagingArea(), dfi
                             .getQueryMetadataElementName(), di
-                            .deleteFromServer()))
+                            .deleteFromServer(), fileMetadata))
                         linker.eraseLinks(propFile);
                 }
 

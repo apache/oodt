@@ -17,20 +17,25 @@
 package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 
 //OODT imports
-import org.apache.log4j.Logger;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 
 //Google imports
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 //JDK imports
 import java.io.FileInputStream;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,7 +48,7 @@ import java.util.regex.Pattern;
  */
 public class GenericEmailParser implements Parser {
 
-  private static final Logger log = Logger.getLogger(GenericEmailParser.class);
+  private static final Logger log = Logger.getLogger(GenericEmailParser.class.getCanonicalName());
 
   public static final String FILE_PATTERNS_PROPERTY_NAME =
       "org.apache.oodt.cas.pushpull.generic.email.parser.file.pattern";
@@ -51,7 +56,11 @@ public class GenericEmailParser implements Parser {
       "org.apache.oodt.cas.pushpull.generic.email.parser.check.for.pattern";
   public static final String PATH_TO_ROOT_PROPERTY_NAME =
       "org.apache.oodt.cas.pushpull.generic.email.parser.path.to.root";
-
+  public static final String METADATA_KEYS =
+      "org.apache.oodt.cas.pushpull.generic.email.parser.metadata.keys";
+  public static final String METADATA_KEY_PREFIX =
+      "org.apache.oodt.cas.pushpull.generic.email.parser.metadata.";      
+  
   private final String filePattern;
   private final String checkForPattern;
   private final String pathToRoot;
@@ -69,7 +78,8 @@ public class GenericEmailParser implements Parser {
   }
 
   @Override
-  public VirtualFileStructure parse(FileInputStream emailFile) throws ParserException {
+  public VirtualFileStructure parse(FileInputStream emailFile, Metadata metadata)
+      throws ParserException {
     log.info("GenericEmailParser is parsing email: " + emailFile);
 
     VirtualFile root = VirtualFile.createRootDir();
@@ -79,6 +89,7 @@ public class GenericEmailParser implements Parser {
       throw new ParserException("Failed to find check for pattern in email: " + checkForPattern);
     }
     List<String> filePaths = generateFilePaths(emailText);
+    readMetadata(emailText, metadata);
 
     for (String filePath : filePaths) {
       new VirtualFile(root, pathToRoot + filePath, false);
@@ -110,6 +121,24 @@ public class GenericEmailParser implements Parser {
     return filePaths;
   }
 
+  private void readMetadata(String emailText, Metadata metadata) {
+    Set<String> metadataKeys = loadMetadataKeys();
+    for (String metadataKey : metadataKeys) {
+      String metadataPattern = loadMetadataKey(metadataKey);
+      if (metadataPattern == null) {
+        log.log(Level.SEVERE, "Failed to load metadata pattern for key: " + metadataKey);
+      } else {
+        Pattern pattern = Pattern.compile(metadataPattern);
+        Matcher m = pattern.matcher(emailText);
+        if (m.find()) {
+          // Ignore index 0, as that is the matching string for pattern.
+          String metadatValue = m.group(1);
+          metadata.replaceMetadata(metadataKey, metadatValue);
+        }
+      }
+    }
+  }
+
   private boolean isValidEmail(String emailText) {
     Pattern pattern = Pattern.compile(checkForPattern);
     Matcher m = pattern.matcher(emailText.replaceAll("\n", " "));
@@ -126,5 +155,14 @@ public class GenericEmailParser implements Parser {
   
   private String loadPathToRoot() {
     return Strings.nullToEmpty(System.getProperty(PATH_TO_ROOT_PROPERTY_NAME));
+  }
+
+  private Set<String> loadMetadataKeys() {
+    return Sets.newHashSet(Splitter.on(",").split(
+        Strings.nullToEmpty(System.getProperty(METADATA_KEYS))));
+  }
+
+  private String loadMetadataKey(String key) {
+    return System.getProperty(METADATA_KEYS);
   }
 }

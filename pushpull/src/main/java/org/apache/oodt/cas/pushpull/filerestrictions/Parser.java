@@ -21,6 +21,8 @@ package org.apache.oodt.cas.pushpull.filerestrictions;
 //JDK imports
 import java.io.FileInputStream;
 
+
+import org.apache.oodt.cas.metadata.Metadata;
 //OODT imports
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 
@@ -35,7 +37,7 @@ import org.apache.oodt.cas.pushpull.exceptions.ParserException;
  */
 public interface Parser {
 
-    public VirtualFileStructure parse(FileInputStream inputFile)
+    public VirtualFileStructure parse(FileInputStream inputFile, Metadata metadata)
             throws ParserException;
 
 }

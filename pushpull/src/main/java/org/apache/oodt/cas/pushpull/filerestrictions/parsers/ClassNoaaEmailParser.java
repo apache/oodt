@@ -19,11 +19,13 @@
 package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 
 //OODT imports
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
+
 
 //JDK imports
 import java.io.FileInputStream;
@@ -43,7 +45,7 @@ public class ClassNoaaEmailParser implements Parser {
 
     public ClassNoaaEmailParser() {}
 
-    public VirtualFileStructure parse(FileInputStream emailFile)
+    public VirtualFileStructure parse(FileInputStream emailFile, Metadata metadata)
             throws ParserException {
         try {
             VirtualFile root = VirtualFile.createRootDir();

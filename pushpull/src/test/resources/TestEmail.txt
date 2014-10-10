@@ -3,6 +3,8 @@ Dear Lousy Customer,
 
 Your file is ready to download.
 
+File size: 12345
+
 Wav File: /some/path/to/a/wav/file.wav
 
 MDB Hash File: /some/path/to/a/md5/file.md5

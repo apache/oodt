@@ -19,6 +19,8 @@
 package org.apache.oodt.cas.pushpull.retrievalsystem;
 
 //JDK imports
+import static org.apache.oodt.cas.metadata.util.PathUtils.doDynamicReplacement;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
@@ -29,6 +31,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 //OODT imports
 import org.apache.oodt.cas.pushpull.config.Config;
@@ -42,6 +45,7 @@ import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.objectfactory.PushPullObjectFactory;
 import org.apache.oodt.cas.pushpull.retrievalmethod.RetrievalMethod;
 import org.apache.oodt.cas.pushpull.retrievalsystem.FileRetrievalSystem;
+import org.apache.oodt.commons.exec.ExecUtils;
 
 /**
  *
@@ -262,6 +266,7 @@ public class RetrievalSetup {
                     .getName()
                     + ".errors");
             errorFile.createNewFile();
+            
             PrintStream ps = new PrintStream(new FileOutputStream(errorFile));
             ps.print(errorMsgs);
             ps.println();
