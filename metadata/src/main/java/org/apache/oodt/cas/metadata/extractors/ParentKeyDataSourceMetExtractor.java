@@ -53,7 +53,7 @@ public class ParentKeyDataSourceMetExtractor extends DataSourceMetExtractor {
 
   private String getKeyAtIndex(File file, Index index) {
     String key = super.getKey(file);
-    List<String> splitKey = Lists.newArrayList(Splitter.on("-").split(key));
+    List<String> splitKey = Lists.newArrayList(Splitter.on("_").split(key));
     if (splitKey.size() == 2) {
       return splitKey.get(index.getNumeric());
     } else {
