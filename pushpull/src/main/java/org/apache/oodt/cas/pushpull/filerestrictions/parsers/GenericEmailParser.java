@@ -158,7 +158,7 @@ public class GenericEmailParser implements Parser {
   }
 
   private Set<String> loadMetadataKeys() {
-    return Sets.newHashSet(Splitter.on(",").split(
+    return Sets.newHashSet(Splitter.on(",").omitEmptyStrings().split(
         Strings.nullToEmpty(System.getProperty(METADATA_KEYS))));
   }
 
