@@ -51,25 +51,6 @@ the License.
         </includes>
       </resource>
     </resources>
-    <testResources>
-      <testResource>
-        <targetPath>org/apache/oodt/cas/metadata</targetPath>
-        <directory>${basedir}/src/testdata</directory>
-        <includes>
-             <include>copyandrewrite.test.conf</include>
-             <include>extern-config.xml</include>
-             <include>met_extr_preconditions.xml</include>
-             <include>product-type-patterns.xml</include>
-             <include>product-type-patterns-2.xml</include>
-             <include>samplemet.xml</include>
-             <include>testExtractor</include>
-             <include>testfile.txt</include>
-             <include>testfile2.txt.met</include>
-             <include>testfile2.txt</include>
-             <include>tika-mimetypes.xml</include>
-        </includes>
-      </testResource>
-    </testResources>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -162,7 +143,6 @@ the License.
     <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-core</artifactId>
-      <version>0.8</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

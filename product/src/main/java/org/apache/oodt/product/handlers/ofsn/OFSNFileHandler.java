@@ -147,7 +147,11 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     	  }
     	  mimeType = mediaType.toString();
       } else { // use default mimetype of product on disk
-    	  mimeType = MimeTypesFactory.create().getMimeType(new File(realPath)).getName();
+          try {
+              mimeType = MimeTypesFactory.create().getMimeType(new File(realPath)).getName();
+          } catch (Exception e) {
+              mimeType = null;
+          }
       }
       
       xmlQuery.getResults().add(

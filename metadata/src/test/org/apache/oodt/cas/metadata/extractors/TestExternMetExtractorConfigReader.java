@@ -26,10 +26,9 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 
 //JDK imports
 import java.io.File;
-import java.io.FileNotFoundException;
 
 //Junit imports
-import junit.framework.TestCase;
+
 
 /**
  * @author mattmann
@@ -50,7 +49,7 @@ public class TestExternMetExtractorConfigReader extends MetadataTestCase {
         super(name);
     }
     
-    private static final String configFilePath = "extern-config.xml";
+    private static final String configFilePath = "/extern-config.xml";
 
     private static final String expectedBinPathEnding = "/testExtractor";
 

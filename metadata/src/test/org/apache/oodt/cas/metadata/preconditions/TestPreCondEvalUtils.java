@@ -23,15 +23,14 @@ import org.apache.oodt.cas.metadata.MetadataTestCase;
 
 //JDK imports
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 
 //Spring imports
-import org.springframework.beans.BeansException;
+import org.junit.Before;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 //Junit imports
-import junit.framework.TestCase;
+
 
 /**
  * 
@@ -53,19 +52,20 @@ public class TestPreCondEvalUtils extends MetadataTestCase {
         super(name);
     }
 
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         this.preconditions = new LinkedList<String>();
         this.preconditions.add("CheckThatDataFileSizeIsGreaterThanZero");
         this.preconditions.add("CheckThatDataFileExists");
         this.preconditions.add("CheckDataFileMimeType");
-        File preCondFile = getTestDataFile("met_extr_preconditions.xml");
-        this.evalUtils = new PreCondEvalUtils(new FileSystemXmlApplicationContext(preCondFile.toURL().toExternalForm()));
+        File preCondFile = getTestDataFile("/met_extr_preconditions.xml");
+        this.evalUtils = new PreCondEvalUtils(new FileSystemXmlApplicationContext("file:" + preCondFile.getAbsolutePath()));
     }
 
     public void testEval() throws Throwable {
         // Test file is also the config file we used, neat!
-        File prodFile = getTestDataFile("met_extr_preconditions.xml");
+        File prodFile = getTestDataFile("/met_extr_preconditions.xml");
         assertTrue(this.evalUtils.eval(this.preconditions, prodFile));
     }
 }

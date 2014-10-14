@@ -86,12 +86,6 @@ public class MetadataTestCase extends TestCase {
      * @throws IOException If an I/O error occurs.
      */
     public File getTestDataFile(String name) throws IOException {
-        String[] entries = tmpDir.list();                                                   // Check the play area by
-        for (int i = 0; i < entries.length; ++i) {                                          // going through each entry
-            File candidate = new File(tmpDir, name);                                        // and making a File for each
-            if (candidate.exists())                                                         // Found it?
-                return candidate;                                                           // Wootness!
-        }
         InputStream in = MetadataTestCase.class.getResourceAsStream(name);                  // Not found? Try resource stream
         if (in == null)                                                                     // Still not found?  Bummer.
             throw new IllegalArgumentException("Unknown test data file `" + name + "`; not found in resource path");

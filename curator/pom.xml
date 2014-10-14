@@ -23,7 +23,6 @@ the License.
     <version>0.8-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <groupId>org.apache.oodt</groupId>
   <artifactId>cas-curator</artifactId>
   <packaging>war</packaging>
   <name>CAS Curation Interface</name>

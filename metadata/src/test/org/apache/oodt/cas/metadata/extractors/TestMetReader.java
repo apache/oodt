@@ -82,8 +82,8 @@ public class TestMetReader extends MetadataTestCase {
     @Override
     public void setUp() throws Exception {
       super.setUp();
-      String extractFilename = "testfile2.txt";      
-      String sampleMetFilename = "testfile2.txt.met";
+      String extractFilename = "/testfile2.txt";
+      String sampleMetFilename = "/testfile2.txt.met";
       this.extractFile = super.getTestDataFile(extractFilename);
       this.expectedFileLocation = this.extractFile.getParent();
       

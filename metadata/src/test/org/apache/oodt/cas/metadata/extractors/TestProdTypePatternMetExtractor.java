@@ -45,7 +45,7 @@ public class TestProdTypePatternMetExtractor {
 
     @Before
     public void setup() throws Exception {
-        URL url = getClass().getResource("/org/apache/oodt/cas/metadata/product-type-patterns.xml");
+        URL url = getClass().getResource("/product-type-patterns.xml");
         configFile = new File(url.toURI());
         extractor = new ProdTypePatternMetExtractor();
         extractor.setConfigFile(configFile);
@@ -60,7 +60,7 @@ public class TestProdTypePatternMetExtractor {
         Files.touch(page1);
         Files.touch(page2);
 
-        url = getClass().getResource("/org/apache/oodt/cas/metadata/product-type-patterns-2.xml");
+        url = getClass().getResource("/product-type-patterns-2.xml");
         configFile2 = new File(url.toURI());
         page1a = new File(tmpDir, "page-111-1234567890.txt");
         page2a = new File(tmpDir, "page-222-0987654321.txt");

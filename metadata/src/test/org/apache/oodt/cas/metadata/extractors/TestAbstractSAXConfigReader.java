@@ -42,7 +42,7 @@ public class TestAbstractSAXConfigReader {
 
     @Before
     public void setup() throws Exception {
-        URL url = getClass().getResource("/org/apache/oodt/cas/metadata/product-type-patterns.xml");
+        URL url = getClass().getResource("/product-type-patterns.xml");
         configFile = new File(url.toURI());
         configReader = new AbstractSAXConfigReader() {
             @Override
