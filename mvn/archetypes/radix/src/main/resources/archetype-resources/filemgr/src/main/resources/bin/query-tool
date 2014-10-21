@@ -42,7 +42,7 @@ done
 PRGDIR=`dirname "$PRG"`
 
 # Only set OODT_HOME if not already set
-[ -z "$OODT_HOME" ] && OODT_HOME=`cd "$PRGDIR/../../.." ; pwd`
+[ -z "$OODT_HOME" ] && OODT_HOME=`cd "$PRGDIR/../.." ; pwd`
 
 # Get OODT environment set up
 if [ -r "$OODT_HOME"/bin/env.sh ]; then
@@ -51,7 +51,7 @@ fi
 
 # Only set FILEMGR_HOME if not already set
 if [ -z "$FILEMGR_HOME" ]; then
-  FILEMGR_HOME="$OODT_HOME"/components/filemgr
+  FILEMGR_HOME="$OODT_HOME"/filemgr
   export FILEMGR_HOME
 fi
 
