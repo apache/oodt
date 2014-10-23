@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 0.8 - Current Development
 
+* OODT-763 Correcting path to OODT_HOME and FILEMGR_HOME (vishalhemnani via mattmann)
+
 * OODT-385, OODT-630, OODT-631, OODT-632. Upgraded Tika to version 1.6.
 
 * OODT-757 Fixed PGETaskInstance bug that prevented instantiation of AutoDetectProductCrawler (luca)
