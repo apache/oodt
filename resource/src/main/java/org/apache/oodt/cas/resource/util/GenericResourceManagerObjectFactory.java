@@ -33,6 +33,8 @@ import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.monitor.MonitorFactory;
 import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator;
 import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculatorFactory;
+import org.apache.oodt.cas.resource.mux.BackendRepository;
+import org.apache.oodt.cas.resource.mux.BackendRepositoryFactory;
 import org.apache.oodt.cas.resource.noderepo.NodeRepository;
 import org.apache.oodt.cas.resource.noderepo.NodeRepositoryFactory;
 import org.apache.oodt.cas.resource.queuerepo.QueueRepository;
@@ -162,7 +164,42 @@ public final class GenericResourceManagerObjectFactory {
 
     return null;
   }
+  /**
+   * Creates a new {@link BackendRepository} implementation from the given
+   * {@link BackendRepositoryFactory} class name.
+   *
+   * @param backendRepositoryFactory
+   *          The class name of the {@link BackendRepositoryFactory} to use to create new
+   *          {@link BackendRepository}s.
+   * @return A new implementation of a {@link BackendRepository}.
+   */
+  public static BackendRepository getBackendRepositoryFromFactory(String backendRepositoryFactory) {
+    Class clazz = null;
+    BackendRepositoryFactory factory = null;
 
+    try {
+      clazz = Class.forName(backendRepositoryFactory);
+      factory = (BackendRepositoryFactory) clazz.newInstance();
+      return factory.createBackendRepository();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "ClassNotFoundException when loading backend repository factory class "
+              + backendRepositoryFactory + " Message: " + e.getMessage());
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "InstantiationException when loading backend repository factory class "
+              + backendRepositoryFactory + " Message: " + e.getMessage());
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+      LOG.log(Level.WARNING,
+          "IllegalAccessException when loading backend repository factory class "
+              + backendRepositoryFactory + " Message: " + e.getMessage());
+    }
+
+    return null;
+  }
   /**
    * Creates a new {@link NodeRepository} implementation from the given
    * {@link QueueRepositoryFactory} class name.
