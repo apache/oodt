@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Release 0.8 - Current Development
 
+* OODT-699 Adding in cluster managment scripts for mesos.
+
 * OODT-764 Adding in multiplexing resource manager backend.
 
 * OODT-763 Correcting path to OODT_HOME and FILEMGR_HOME (vishalhemnani via mattmann)
