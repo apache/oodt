@@ -78,7 +78,7 @@ public class ProductResourceTest
     Product product = new Product();
     product.setProductId("123");
     product.setProductName("test.txt");
-    product.setProductStructure("flat");
+    product.setProductStructure(Product.STRUCTURE_FLAT);
     product.setProductType(productType);
 
     ProductResource resource = new ProductResource(product, metadata,

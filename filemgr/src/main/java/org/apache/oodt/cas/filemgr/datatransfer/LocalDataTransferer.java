@@ -123,6 +123,8 @@ public class LocalDataTransferer implements DataTransfer {
                         + e.getMessage());
             throw new DataTransferException(e);
          }
+      } else if (product.getProductStructure().equals(Product.STRUCTURE_STREAM)) {
+            LOG.log(Level.INFO,"Streaming products are not moved.");
       } else {
          throw new DataTransferException(
                "Cannot transfer product on unknown ProductStructure: "
@@ -163,6 +165,8 @@ public class LocalDataTransferer implements DataTransfer {
                         + e.getMessage());
             throw new DataTransferException(e);
          }
+      } else if (product.getProductStructure().equals(Product.STRUCTURE_STREAM)) {
+         LOG.log(Level.INFO,"Streaming products are not transfered.");
       } else {
          throw new DataTransferException(
                "Cannot transfer product on unknown ProductStructure: "

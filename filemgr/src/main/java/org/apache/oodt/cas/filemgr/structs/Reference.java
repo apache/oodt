@@ -60,6 +60,8 @@ public class Reference {
 
     private static MimeTypes mimeTypeRepository;
 
+    public static String STREAM_REFERENCE_DELIMITER = "-";
+
     /* the static reference to the Mime-Type repository */
     static {
         try {

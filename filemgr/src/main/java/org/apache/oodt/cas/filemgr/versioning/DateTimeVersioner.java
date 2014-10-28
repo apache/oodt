@@ -143,6 +143,9 @@ public class DateTimeVersioner implements Versioner {
                 }
 
             }
+        } else if (product.getProductStructure().equals(Product.STRUCTURE_STREAM)) {
+                VersioningUtils.createBasicDataStoreRefsStream(product.getProductName(), product.getProductType().getProductRepositoryPath(),
+                        product.getProductReferences(), productionDateTime);
         } else if (product.getProductStructure().equals(
                 Product.STRUCTURE_HIERARCHICAL)) {
             // if its heirarchical, then we'll version the files within the

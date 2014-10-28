@@ -931,7 +931,7 @@ public class XmlRpcFileManager {
             }
         } else
             throw new UnsupportedOperationException(
-                    "Moving of heirarhical products not supported yet");
+                    "Moving of heirarhical and stream products not supported yet");
     }
 
     public boolean removeFile(String filePath) throws DataTransferException, IOException {

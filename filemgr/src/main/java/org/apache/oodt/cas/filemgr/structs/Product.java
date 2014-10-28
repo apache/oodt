@@ -27,9 +27,11 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -88,6 +90,10 @@ public class Product {
     public static final String STRUCTURE_FLAT = "Flat";
 
     public static final String STRUCTURE_HIERARCHICAL = "Hierarchical";
+
+    public static final String STRUCTURE_STREAM = "Stream";
+
+    private static String[] VALID_STRUCTURES = new String[]{STRUCTURE_FLAT,STRUCTURE_HIERARCHICAL,STRUCTURE_STREAM};
 
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(Product.class.getName());
@@ -176,6 +182,9 @@ public class Product {
      *            The productStructure to set.
      */
     public void setProductStructure(String productStructure) {
+        //Guard clause, according to a unit test null is a valid value
+        if (!java.util.Arrays.asList(VALID_STRUCTURES).contains(productStructure) && productStructure != null)
+            throw new IllegalArgumentException("Undefined product structure: "+productStructure);
         this.productStructure = productStructure;
     }
 

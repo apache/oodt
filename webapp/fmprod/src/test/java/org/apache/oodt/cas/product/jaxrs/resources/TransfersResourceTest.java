@@ -76,7 +76,7 @@ public class TransfersResourceTest
     Product product1 = new Product();
     product1.setProductId("123");
     product1.setProductName("test product");
-    product1.setProductStructure("flat");
+    product1.setProductStructure(Product.STRUCTURE_FLAT);
     product1.setProductType(productType1);
 
     FileTransferStatus status1 = new FileTransferStatus(reference1, 1000, 100,
@@ -99,7 +99,7 @@ public class TransfersResourceTest
     Product product2 = new Product();
     product2.setProductId("456");
     product2.setProductName("test product 2");
-    product2.setProductStructure("hierarchical");
+    product2.setProductStructure(Product.STRUCTURE_HIERARCHICAL);
     product2.setProductType(productType2);
 
     FileTransferStatus status2 = new FileTransferStatus(reference2, 500, 200,

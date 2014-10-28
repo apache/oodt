@@ -71,7 +71,7 @@ public class SingleFileBasicVersioner implements Versioner {
             throw new VersioningException(
                     "SingleFileVersioner: unable to version" + " Product: ["
                             + product.getProductName()
-                            + "] with heirarchical structure");
+                            + "] with heirarchical/stream structure");
         }
 
         // we need the Filename Metadata parameter for this to work

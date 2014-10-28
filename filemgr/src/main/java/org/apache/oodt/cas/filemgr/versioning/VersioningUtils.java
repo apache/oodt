@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.versioning;
 
 //OODT imports
+import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.Product;
 
@@ -243,12 +244,24 @@ public final class VersioningUtils {
         }
 
     }
+    public static void createBasicDataStoreRefsStream(String productName,
+        String productRepoPath, List<Reference> references,String postfix) {
+        for (Iterator<Reference> i = references.iterator(); i.hasNext();) {
+            Reference r = i.next();
+            createDataStoreRefStream(productName,productRepoPath,r,postfix);
+        }
 
+    }
+    public static void createDataStoreRefStream(String pn, String productRepoPath, Reference ref, String postfix) {
+        URI uri = URI.create(ref.getOrigReference());
+        String[] parts = (postfix.equals(""))?new String[] {uri.toString()}:new String[] {uri.toString(),postfix};
+        ref.setDataStoreReference(StringUtils.join(parts,Reference.STREAM_REFERENCE_DELIMITER));
+    }
     public static void addRefsFromUris(Product p, List<String> uris) {
         // add the refs to the Product
         for (Iterator<String> i = uris.iterator(); i.hasNext();) {
             String ref = i.next();
-            Reference r = new Reference(ref, null, quietGetFileSizeFromUri(ref));
+            Reference r = new Reference(ref, null, (p.getProductStructure().equals(Product.STRUCTURE_STREAM)?-1:quietGetFileSizeFromUri(ref)));
             p.getProductReferences().add(r);
         }
     }

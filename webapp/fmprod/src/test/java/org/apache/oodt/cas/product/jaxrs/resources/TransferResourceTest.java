@@ -74,7 +74,7 @@ public class TransferResourceTest
     Product product = new Product();
     product.setProductId("123");
     product.setProductName("test product");
-    product.setProductStructure("flat");
+    product.setProductStructure(Product.STRUCTURE_FLAT);
     product.setProductType(productType);
 
     FileTransferStatus status = new FileTransferStatus(reference, 1000, 100,
