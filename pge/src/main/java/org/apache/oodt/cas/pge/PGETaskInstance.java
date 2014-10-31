@@ -170,6 +170,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
             + "." + workflowInstId);
       FileHandler handler = new FileHandler(
             new File(logDir, createLogFileName()).getAbsolutePath());
+      handler.setEncoding("UTF-8");
       handler.setFormatter(new SimpleFormatter());
       logger.addHandler(handler);
       return logger;
