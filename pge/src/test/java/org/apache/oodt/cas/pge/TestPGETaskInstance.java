@@ -202,9 +202,9 @@ public class TestPGETaskInstance extends TestCase {
                return pathname.getName().endsWith(".log");
             }
          })[0], "UTF-8");
-      assertEquals("INFO: pge1 message1", messages.get(1));
-      assertEquals("INFO: pge1 message2", messages.get(3));
-      assertEquals("INFO: pge1 message3", messages.get(5));
+      assertEquals(Level.INFO.getLocalizedName() + ": pge1 message1", messages.get(1));
+      assertEquals(Level.INFO.getLocalizedName() + ": pge1 message2", messages.get(3));
+      assertEquals(Level.INFO.getLocalizedName() + ": pge1 message3", messages.get(5));
       logDir = new File(pgeTask2.pgeConfig.getExeDir() + "/logs");
       assertTrue(logDir.exists());
       messages = FileUtils.readLines(logDir.listFiles(
@@ -214,7 +214,7 @@ public class TestPGETaskInstance extends TestCase {
                return pathname.getName().endsWith(".log");
             }
          })[0], "UTF-8");
-      assertEquals("SEVERE: pge2 message1", messages.get(1));
+      assertEquals(Level.SEVERE.getLocalizedName() + ": pge2 message1", messages.get(1));
    }
 
    public void testUpdateStatus() throws Exception {
