@@ -3,6 +3,8 @@ Apache OODT Change Log
  
 Release 0.8 - Current Development
 
+* OODT-777 Update fileconcatenator-pge.tar for building fileconcatenator-pge (threeears via mattmann)
+
 * OODT-776 Test fix: log messages can be different for different locales (Tom Tung via mattmann)
 
 * OODT-701 Adding in stream product structure for filemanager. Add in check for valid product structures, and fixed tests breaking from that check.
