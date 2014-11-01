@@ -1,6 +1,6 @@
 Apache OODT Change Log
 ======================
-
+ 
 Release 0.8 - Current Development
 
 * OODT-776 Test fix: log messages can be different for different locales (Tom Tung via mattmann)
