@@ -31,6 +31,28 @@ this directory:
 
 For the Python components, see the "agility" subdirectory.
 
+Contributing
+============
+To contribute a patch, follow these instructions (note that installing
+[Hub](http://hub.github.com) is not strictly required, but is recommended.
+
+```
+0. Download and install [Hub](hub.github.com)
+1. File JIRA issue for your fix at [The OODT JIRA issue tracker](https://issues.apache.org/jira/browse/OODT)
+- you will get issue id OODT-xxx where xxx is the issue ID.
+2. git clone http://github.com/apache/oodt.git 
+3. cd oodt
+4. git checkout -b OODT-xxx
+5. edit files
+6. git status (make sure it shows what files you expected to edit)
+7. git add <files>
+8. git commit -m “fix for OODT-xxx contributed by <your username>”
+9. git fork
+10. git push -u <your git username> OODT-xxx
+11. git pull-request
+```
+
+
 License (see also LICENSE.txt)
 ==============================
 
