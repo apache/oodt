@@ -37,8 +37,8 @@ To contribute a patch, follow these instructions (note that installing
 [Hub](http://hub.github.com) is not strictly required, but is recommended.
 
 ```
-0. Download and install [Hub](hub.github.com)
-1. File JIRA issue for your fix at [The OODT JIRA issue tracker](https://issues.apache.org/jira/browse/OODT)
+0. Download and install hub.github.com
+1. File JIRA issue for your fix at https://issues.apache.org/jira/browse/OODT
 - you will get issue id OODT-xxx where xxx is the issue ID.
 2. git clone http://github.com/apache/oodt.git 
 3. cd oodt
