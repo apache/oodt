@@ -3,7 +3,9 @@ Apache OODT Change Log
  
 Release 0.8 - Current Development
 
-* The wiki page command installs 0.6 version of the oodt radix installer (lewismc, Santosh SHankar)
+* OODT-782 Resource manager port number must be compatible with the one used in workflow.properties (Imran Mammaldi via mattmann)
+
+* OODT-769 The wiki page command installs 0.6 version of the oodt radix installer (lewismc, Santosh SHankar)
 
 * OODT-777 Update fileconcatenator-pge.tar for building fileconcatenator-pge (threeears via mattmann)
 
