@@ -34,7 +34,7 @@ For the Python components, see the "agility" subdirectory.
 Contributing
 ============
 To contribute a patch, follow these instructions (note that installing
-[Hub](http://hub.github.com) is not strictly required, but is recommended.
+[Hub](http://hub.github.com) is not strictly required, but is recommended).
 
 ```
 0. Download and install hub.github.com
