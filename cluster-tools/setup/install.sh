@@ -16,16 +16,21 @@
 
 #Variables are in the env_vars.sh file
 ENVS=$(dirname $(readlink -f ${BASH_SOURCE[0]}))/env-vars.sh
-if [ ! -f ./env-vars.sh ]
+HOSTS=$(dirname $(readlink -f ${BASH_SOURCE[0]}))/hosts
+if [ ! -f ${ENVS} ]
 then
     echo "${ENVS} not found. Please use ${ENVS}.tmpl as a template to create it."
+    exit 1
+elif [ ! -f ${HOSTS} ]
+then
+    echo "${HOSTS} not found. Please use create a hosts file."
     exit 1
 fi
 . ${ENVS}
 
 #Tell us what ya going to do
 echo "Installing the BDAS components:"
-echo "  Mesos version:   ${MESOS_VERSION:-ERROR: Version not set}"
+echo "  Mesos version:   ${APACHE_MESOS_VERSION:-ERROR: Version not set}"
 echo "  Scala version:   ${SCALA_VERSION:-ERROR: Version not set}"
 echo "  Kafka version:   ${KAFKA_VERSION:-ERROR: Version not set}"
 echo "  Spark version:   ${SPARK_VERSION:-ERROR: Version not set}"
@@ -38,7 +43,7 @@ echo " -----------------------------------------"
 echo "  Install directory:   ${INSTALL_DIR:-ERROR: Install dir not set}"
 
 #Checking versions
-if [ -z ${MESOS_VERSION} ] || [ -z ${SCALA_VERSION} ] || [ -z ${KAFKA_VERSION} ] || \
+if [ -z ${APACHE_MESOS_VERSION} ] || [ -z ${SCALA_VERSION} ] || [ -z ${KAFKA_VERSION} ] || \
    [ -z ${SPARK_VERSION} ] || [ -z ${TACHYON_VERSION} ] || [ -z ${HADOOP_VERSION} ] || \
    [ -z ${CLUSTER_TOOLS_VERSION} ] || [ -z ${INSTALL_DIR} ] || [ -z ${TMP_DIR} ]
 then
@@ -49,12 +54,6 @@ fi
 if [ ! -d ${INSTALL_DIR} ] || [ ! -d ${RUN_DIR} ] || [ ! -d ${TMP_DIR} ]
 then
     echo "ERROR: Needed directories don't exist"
-    exit 1
-fi
-#Cannot find scripts
-if [ ! -d ../scripts ]
-then
-    echo "ERROR: Cannot find scripts directory: ../scripts"
     exit 1
 fi
 #Check space
@@ -88,7 +87,7 @@ APACHE_MIRROR=http://archive.apache.org/dist/
 _KAFKA_VR=$(echo ${KAFKA_VERSION} | sed 's/^[^-]*-//')
 DOWNLOADS[0]=http://www.scala-lang.org/files/archive/scala-${SCALA_VERSION}.tgz
 DOWNLOADS[1]=${APACHE_MIRROR}/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
-DOWNLOADS[2]=${APACHE_MIRROR}/mesos/${MESOS_VERSION}/mesos-${MESOS_VERSION}.tar.gz
+DOWNLOADS[2]=${APACHE_MIRROR}/mesos/${APACHE_MESOS_VERSION}/mesos-${APACHE_MESOS_VERSION}.tar.gz
 DOWNLOADS[3]=${APACHE_MIRROR}/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.4.tgz
 DOWNLOADS[4]=${APACHE_MIRROR}/kafka/${_KAFKA_VR}/kafka_${KAFKA_VERSION}.tgz
 DOWNLOADS[5]=https://github.com/amplab/tachyon/releases/download/v${TACHYON_VERSION}/tachyon-${TACHYON_VERSION}-bin.tar.gz
@@ -137,25 +136,27 @@ do
           }
     fi
 done
-if [ -e ${INSTALL_DIR}/tools/scripts ]
+#Install scripts
+if [ -e ${INSTALL_DIR}/cluster-tools/scripts ]
 then
     echo "Cluster tools already installed"
 else
     echo "Exporting OODT-cluster tools" | tee -a ${INSTALL_LOG}
-    svn export https://svn.apache.org/repos/asf/oodt/${CLUSTER_TOOLS_VERSION}/cluster-tools/ ${INSTALL_DIR}/tools \
+    svn export https://svn.apache.org/repos/asf/oodt/${CLUSTER_TOOLS_VERSION}/cluster-tools/ ${INSTALL_DIR} \
     ||{ \
          echo "WARNING: Failed to export cluster-tools: ${CLUSTER_TOOLS_VERSION} Install manually." | tee -a ${INSTALL_LOG};\
             continue;\
           }
-    cp ./env-vars.sh ${INSTALL_DIR}/tools/setup
+    cp ${ENVS} ${ENV_VARS} 
+    cp ${HOSTS} ${HOSTS_FILE}
 fi
 echo "Building messos. This may take awhile" | tee -a ${INSTALL_LOG}
 #Mesos post processing
-if [ -e ${INSTALL_DIR}/mesos-${MESOS_VERSION}/build ]
+if [ -e ${INSTALL_DIR}/mesos-${APACHE_MESOS_VERSION}/build ]
 then
-    echo "Mesos already built at: ${INSTALL_DIR}/mesos-${MESOS_VERSION}/build"
+    echo "Mesos already built at: ${INSTALL_DIR}/mesos-${APACHE_MESOS_VERSION}/build"
 else
-    _MESOS_BUILD=${INSTALL_DIR}/mesos-${MESOS_VERSION}/build
+    _MESOS_BUILD=${INSTALL_DIR}/mesos-${APACHE_MESOS_VERSION}/build
     mkdir ${_MESOS_BUILD}
     cd ${_MESOS_BUILD}
     ../configure &>> ${INSTALL_LOG}

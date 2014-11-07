@@ -24,4 +24,5 @@ then
     printError "Cannot source this file."
     return 255
 fi
+mkdir -p ${RUN_DIR}/work/mesos
 ${MESOS_BUILD}/bin/mesos-master.sh --ip=${MESOS_MASTER_IP}

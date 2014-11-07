@@ -35,7 +35,7 @@ export RUN_DIR=/your/runtime/dir/goes/here
 #****************************
 # Set these versions of software 
 #****************************
-export MESOS_VERSION=0.19.0
+export APACHE_MESOS_VERSION=0.19.0
 export SCALA_VERSION=2.10.4
 export KAFKA_VERSION=2.10-0.8.1.1
 export SPARK_VERSION=1.1.0
@@ -58,8 +58,8 @@ export JAVA_HOME=${JAVA_HOME:-/usr/java/jdk1.7.0_45/}
 #(Following lines should be setup properly)
 ###
 # Hosts file
-export HOSTS_FILE="${INSTALL_DIR}/tools/setup/hosts"
-export ENV_VARS="${INSTALL_DIR}/tools/setup/env-vars.sh" 
+export HOSTS_FILE="${INSTALL_DIR}/cluster-tools/setup/hosts"
+export ENV_VARS="${INSTALL_DIR}/cluster-tools/setup/env-vars.sh" 
 # Hosts
 if [ -f ${HOSTS_FILE} ]
 then
@@ -77,7 +77,7 @@ then
 fi
 
 # Mesos variables
-export MESOS_BUILD="${INSTALL_DIR}/mesos-${MESOS_VERSION}/build/"
+export MESOS_BUILD="${INSTALL_DIR}/mesos-${APACHE_MESOS_VERSION}/build/"
 export MESOS_LOG_DIR="${RUN_DIR}/log/mesos/"
 export MESOS_WORK_DIR="${RUN_DIR}/work/mesos/"
 # Get mesos master ip
