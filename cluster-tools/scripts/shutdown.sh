@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 #Source environment and utilites
-ENVS=$(dirname $(readlink -f ${BASH_SOURCE[0]}))/env-vars.sh
+ENVS=$(dirname $(readlink -f ${BASH_SOURCE[0]}))/../setup/env-vars.sh
 . ${ENVS}
 if ! isScript
 then

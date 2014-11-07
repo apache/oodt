@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 #Wrapper to start-up mesos-master.
-ENVS=$(dirname $(readlink -f ${BASH_SOURCE[0]}))/../env-vars.sh
+ENVS=$(dirname $(readlink -f ${BASH_SOURCE[0]}))/../../setup/env-vars.sh
 . ${ENVS}
 #Don't source this
 if ! isScript
