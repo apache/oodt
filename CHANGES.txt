@@ -1,6 +1,6 @@
 Apache OODT Change Log
 ======================
- 
+  
 Release 0.8 - Current Development
 
 * OODT-785 Update batch stub with legacyMode set to true (meghamsh4 via mattmann)
