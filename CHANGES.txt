@@ -3,6 +3,8 @@ Apache OODT Change Log
  
 Release 0.8 - Current Development
 
+* OODT-785 Update batch stub with legacyMode set to true (meghamsh4 via mattmann)
+
 * OODT-783 RADiX Crawler action bean config refers to WORKFLOWMGR_URL (Angela Wang via mattmann)
 
 * OODT-782 Resource manager port number must be compatible with the one used in workflow.properties (Imran Mammaldi via mattmann)
