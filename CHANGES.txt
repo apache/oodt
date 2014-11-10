@@ -3,6 +3,8 @@ Apache OODT Change Log
   
 Release 0.8 - Current Development
 
+* OODT-786 Change shebang to bash for proper color output (Poojit Sharma via mattmann)
+
 * OODT-785 Update batch stub with legacyMode set to true (meghamsh4 via mattmann)
 
 * OODT-783 RADiX Crawler action bean config refers to WORKFLOWMGR_URL (Angela Wang via mattmann)
