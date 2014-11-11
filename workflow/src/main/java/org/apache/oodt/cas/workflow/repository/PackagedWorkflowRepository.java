@@ -334,13 +334,19 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
 		workflowId = UUID.randomUUID().toString();
 		workflow.setId(workflowId);
 	}
-
-    Graph graph = new Graph();
-    graph.setExecutionType("sequential");
-    ParentChildWorkflow pcw = new ParentChildWorkflow(graph);
-    pcw.setName(workflow.getName());
-    pcw.setTasks(workflow.getTasks());
-    pcw.setId(workflow.getId());
+      
+    ParentChildWorkflow pcw = null;
+    if(workflow instanceof ParentChildWorkflow) {
+        pcw = (ParentChildWorkflow) workflow;
+    }
+    else {
+        Graph graph = new Graph();
+        graph.setExecutionType("sequential");
+        pcw = new ParentChildWorkflow(graph);
+        pcw.setName(workflow.getName());
+        pcw.setTasks(workflow.getTasks());
+        pcw.setId(workflow.getId());
+    }
     this.workflows.put(pcw.getId(), pcw);
     this.eventWorkflowMap.put(workflowId, Collections.singletonList(pcw));
 
@@ -639,7 +645,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       graph.setCond(cond);
       if (graph.getParent() != null) {
         if (graph.getParent().getWorkflow() != null) {
-          System.out.println("Adding condition: [" + cond.getConditionName()
+          LOG.log(Level.FINEST, "Adding condition: [" + cond.getConditionName()
               + "] to parent workflow: ["
               + graph.getParent().getWorkflow().getName() + "]");
           graph.getParent().getWorkflow().getConditions().add(cond);

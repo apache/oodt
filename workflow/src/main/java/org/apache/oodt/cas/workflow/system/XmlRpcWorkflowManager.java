@@ -79,7 +79,7 @@ public class XmlRpcWorkflowManager {
    private final int webServerPort;
    private WebServer webServer;
    private final WorkflowEngine engine;
-   private final WorkflowRepository repo;
+   private WorkflowRepository repo;
 
    public XmlRpcWorkflowManager() {
       this(DEFAULT_WEB_SERVER_PORT);
@@ -110,6 +110,12 @@ public class XmlRpcWorkflowManager {
          return true;
       } else
          return false;
+   }
+
+   public boolean refreshRepository()
+       throws RepositoryException {
+     repo = getWorkflowRepositoryFromProperty();
+     return true;
    }
 
   public String executeDynamicWorkflow(Vector<String> taskIds, Hashtable metadata)
