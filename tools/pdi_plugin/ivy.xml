@@ -16,11 +16,16 @@
       <dependency org="org.json" name="json" rev="20140107"/>
       <dependency org="com.google.code.gson" name="gson" rev="2.2.4"/>
 
+
+      <dependency org="org.netbeans" name="jmiutils" rev="200507110943" />
+
+
+
       <!-- kettle dependencies -->
-    <dependency org="pentaho-kettle" name="kettle-core" rev="${project.revision}" transitive="false" changing="true"/>
-	<dependency org="pentaho-kettle" name="kettle-engine" rev="${project.revision}" transitive="false" changing="true"/>    
-	<dependency org="pentaho-kettle" name="kettle-ui-swt" rev="${project.revision}" transitive="false" changing="true"/>
-	<dependency org="pentaho" name="pentaho-metadata" rev="${dependency.pentaho-metadata.revision}" changing="true" />
+    <dependency org="pentaho-kettle" name="kettle-core" rev="TRUNK-SNAPSHOT" transitive="false" changing="true"/>
+	<dependency org="pentaho-kettle" name="kettle-engine" rev="TRUNK-SNAPSHOT" transitive="false" changing="true"/>
+	<dependency org="pentaho-kettle" name="kettle-ui-swt" rev="TRUNK-SNAPSHOT" transitive="false" changing="true"/>
+	<dependency org="pentaho" name="pentaho-metadata" rev="TRUNK-SNAPSHOT" changing="true" />
 
 	<!-- swt dependencies -->
 	<dependency org="org.eclipse.swt" name="swt-win32" rev="3.3.0.3346" transitive="false" changing="false"/>

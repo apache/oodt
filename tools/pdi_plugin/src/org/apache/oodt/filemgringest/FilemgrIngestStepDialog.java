@@ -19,16 +19,21 @@
 package org.apache.oodt.filemgringest;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.*;
 import org.pentaho.di.core.Const;
+import org.pentaho.di.core.exception.KettleStepException;
+import org.pentaho.di.core.row.RowMetaInterface;
+import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.BaseStepMeta;
 import org.pentaho.di.trans.step.StepDialogInterface;
+import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.ui.trans.step.BaseStepDialog;
 
 /**
@@ -64,12 +69,13 @@ public class FilemgrIngestStepDialog extends BaseStepDialog implements StepDialo
 	//private Text wHelloFieldName;
 
     // text field holding the name of the field to check the filename against
-    private Text wFilenameField;
+    private CCombo wFilenameField;
     private Text wServerURLField;
     private Text wResultField;
-    private Text wMetadataField;
+    private CCombo wMetadataField;
+  private Button m_getFieldsBut;
 
-    /**
+  /**
 	 * The constructor should simply invoke super() and save the incoming meta
 	 * object to a local variable, so it can conveniently read and write settings
 	 * from/to it.
@@ -165,16 +171,33 @@ public class FilemgrIngestStepDialog extends BaseStepDialog implements StepDialo
 		fdlValName.top = new FormAttachment(wStepname, margin);
 		wlValName.setLayoutData(fdlValName);
 
-		wFilenameField = new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+
+		wFilenameField = new CCombo(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
 		props.setLook(wFilenameField);
 		wFilenameField.addModifyListener(lsMod);
 		FormData fdValName = new FormData();
 		fdValName.left = new FormAttachment(middle, 0);
-		fdValName.right = new FormAttachment(100, 0);
+		///fdValName.right = new FormAttachment(m_getFieldsBut, -margin);
+	  fdValName.right = new FormAttachment(100,0);
 		fdValName.top = new FormAttachment(wStepname, margin);
 		wFilenameField.setLayoutData(fdValName);
 
 
+/*
+	  m_getFieldsBut = new Button(shell, SWT.PUSH | SWT.CENTER);
+	  props.setLook(m_getFieldsBut);
+	  m_getFieldsBut.setText(BaseMessages.getString(PKG,
+		  "SSTableOutputDialog.GetFields.Button"));
+	  FormData fd = new FormData();
+	  fd.right = new FormAttachment(100, 0);
+	  fdValName.top = new FormAttachment(wStepname, margin);
+	  m_getFieldsBut.setLayoutData(fd);
+	  m_getFieldsBut.addSelectionListener(new SelectionAdapter() {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+		  setupFieldsCombo();
+		}
+	  });*/
         // output field value
         Label wlMetadataName = new Label(shell, SWT.RIGHT);
         wlMetadataName.setText(BaseMessages.getString(PKG, "FilemgrIngest.MetadataFieldName.Label"));
@@ -185,7 +208,7 @@ public class FilemgrIngestStepDialog extends BaseStepDialog implements StepDialo
         fdlMetadataName.top = new FormAttachment(wFilenameField, margin);
         wlMetadataName.setLayoutData(fdlMetadataName);
 
-        wMetadataField = new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+        wMetadataField = new CCombo(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
         props.setLook(wMetadataField);
         wMetadataField.addModifyListener(lsMod);
         FormData fdMetadataName = new FormData();
@@ -293,6 +316,7 @@ public class FilemgrIngestStepDialog extends BaseStepDialog implements StepDialo
 	 * and puts it into the dialog controls.
 	 */
 	private void populateDialog() {
+	  setupFieldsCombo();
 		wStepname.selectAll();
 		wFilenameField.setText(meta.getFilenameField());
         wServerURLField.setText(meta.getServerURLField());
@@ -330,4 +354,35 @@ public class FilemgrIngestStepDialog extends BaseStepDialog implements StepDialo
 		// close the SWT dialog window
 		dispose();
 	}
+
+  protected void setupFieldsCombo() {
+
+	StepMeta stepMeta = transMeta.findStep(stepname);
+	if (stepMeta != null) {
+	  try {
+		RowMetaInterface row = transMeta.getPrevStepFields(stepMeta);
+
+		if (row.size() == 0) {
+		  /*MessageDialog.openError(shell, BaseMessages.getString(PKG,
+			  "SSTableOutputData.Message.NoIncomingFields.Title"), BaseMessages
+			  .getString(PKG, "SSTableOutputData.Message.NoIncomingFields"));*/
+		  return;
+		}
+		wFilenameField.removeAll();
+		for (int i = 0; i < row.size(); i++) {
+		  ValueMetaInterface vm = row.getValueMeta(i);
+		  wFilenameField.add(vm.getName());
+		}
+
+		wMetadataField.removeAll();
+		for (int i = 0; i < row.size(); i++) {
+		  ValueMetaInterface vm = row.getValueMeta(i);
+		  wMetadataField.add(vm.getName());
+		}
+
+	  } catch (KettleStepException e) {
+		e.printStackTrace();
+	  }
+	}
+  }
 }

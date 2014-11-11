@@ -19,12 +19,14 @@ package org.apache.oodt.filemgringest;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.IngestException;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.logging.Logger;
 
 /**
@@ -45,14 +47,18 @@ public class OODTProcesses {
         Gson gson=new Gson();
         Hashtable table = new Hashtable<String, String>();
         table = (Hashtable<String, String>) gson.fromJson(json, table.getClass());
+      Hashtable<String,Object> ht = new Hashtable<String,Object>();
 
         ArrayList l = (ArrayList) table.get("data");
+      if(l!=null) {
         LinkedTreeMap d = (LinkedTreeMap) l.get(0);
-        Hashtable<String,Object> ht = new Hashtable<String,Object>();
-
-
-
         ht.putAll(d);
+
+      }
+      else{
+        ht.putAll(table);
+      }
+
         Metadata m = new Metadata();
 
         m.addMetadata(ht);

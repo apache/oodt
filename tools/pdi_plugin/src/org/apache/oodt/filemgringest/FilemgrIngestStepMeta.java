@@ -63,7 +63,7 @@ import java.util.List;
 
 @Step(	
 		id = "FilemgrIngest",
-		image = "bi/meteorite/filemgringest/resources/oodt.jpg",
+		image = "org/apache/oodt/filemgrcheck/resources/check/oodt.jpg",
 		i18nPackageName="bi.meteorite.filemgringest",
 		name="FilemgrIngestStep.Name",
 		description = "FilemgrIngestStep.TooltipDesc",
@@ -136,10 +136,10 @@ public class FilemgrIngestStepMeta extends BaseStepMeta implements StepMetaInter
 	 */
 	public void setDefault() {
 		outputField = "demo_field";
-        filenameField = "fieldname";
+        filenameField = "";
         serverURLField = "http://localhost:9000";
         resultField = "result";
-        metadataField = "metadata";
+        metadataField = "";
 	}
 	
 	/**

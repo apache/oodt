@@ -60,7 +60,7 @@ import java.util.List;
 
 @Step(	
 		id = "FilemgrGet",
-        image = "bi/meteorite/filemgrget/resources/get/oodt.jpg",
+        image = "org/apache/oodt/filemgrcheck/resources/check/oodt.jpg",
 		i18nPackageName="bi.meteorite.filemgrget",
 		name="FilemgrGetStep.Name",
 		description = "FilemgrGetStep.TooltipDesc",

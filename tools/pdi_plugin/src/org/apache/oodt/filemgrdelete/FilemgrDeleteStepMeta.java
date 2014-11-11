@@ -63,7 +63,7 @@ import java.util.List;
 
 @Step(	
 		id = "FilemgrCheck",
-		image = "org/pentaho/di/sdk/samples/steps/demo/resources/icon.png",
+		image = "org/apache/oodt/filemgrcheck/resources/check/oodt.jpg",
 		i18nPackageName="bi.meteorite.filemgrcheck",
 		name="FilemgrCheckStep.Name",
 		description = "FilemgrCheckStep.TooltipDesc",

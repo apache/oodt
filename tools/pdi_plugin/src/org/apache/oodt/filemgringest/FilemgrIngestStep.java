@@ -96,7 +96,7 @@ public class FilemgrIngestStep extends BaseStep implements StepInterface {
             oodt.loadIngester(meta.getServerURLField());
         } catch (InstantiationException e) {
             logError(e.getMessage());
-            e.printStackTrace();
+
         }
 
         return super.init(meta, data);
@@ -165,10 +165,6 @@ public class FilemgrIngestStep extends BaseStep implements StepInterface {
             Metadata m = oodtproc.getMetadata((String)r[idx2]);
             oodtproc.ingest(oodt, new File((String)r[idx]), m);
 
-        } catch (Exception e) {
-            logError(ExceptionUtils.getStackTrace(e));
-            e.printStackTrace();
-        }
 
         // safely add the string "Hello World!" at the end of the output row
 		// the row array will be resized if necessary
@@ -183,7 +179,13 @@ public class FilemgrIngestStep extends BaseStep implements StepInterface {
 		}
 
 		// indicate that processRow() should be called again
-		return true;
+
+		} catch (Exception e) {
+		  logError(ExceptionUtils.getStackTrace(e));
+		  putError(getInputRowMeta(), r, 1L, e.getMessage(), null,
+			  "ERR_OODTINGEST_OUTPUT_01");
+		}
+	  return true;
 	}
 
 	/**
