@@ -127,9 +127,8 @@ public final class XmlStructFactory {
         if (extractorRoot != null) {
             NodeList extractorNodes = extractorRoot
                     .getElementsByTagName("extractor");
-
+            extractors = new Vector<ExtractorSpec>();
             if (extractorNodes != null && extractorNodes.getLength() > 0) {
-                extractors = new Vector<ExtractorSpec>();
                 for (int i = 0; i < extractorNodes.getLength(); i++) {
                     Element extractorElem = (Element) extractorNodes.item(i);
                     ExtractorSpec spec = new ExtractorSpec();

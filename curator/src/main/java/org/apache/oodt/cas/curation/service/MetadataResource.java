@@ -26,6 +26,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -36,11 +39,13 @@ import javax.servlet.http.HttpServletResponse;
 
 //JAX-RS imports
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -49,10 +54,14 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+
+
 //JSON imports
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
+
+
 
 //OODT imports
 import org.apache.oodt.cas.curation.service.CurationService;
@@ -61,13 +70,16 @@ import org.apache.oodt.cas.curation.util.CurationXmlStructFactory;
 import org.apache.oodt.cas.curation.util.ExtractorConfigReader;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager;
+import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
+import org.apache.oodt.cas.filemgr.validation.XMLValidationLayer;
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
@@ -301,9 +313,10 @@ public class MetadataResource extends CurationService {
     // this.sendRedirect("login.jsp", uriInfo, res);
 
     Metadata metadata;
-    String[] idParts = id.split("/");
+    String[] idParts = id.split("/", 3);
     String policy = idParts[1];
     String productType = idParts[2];
+    productType = productType.substring(0, productType.lastIndexOf("/"));
     try {
       metadata = getProductTypeMetadataForPolicy(policy, productType);
     } catch (Exception e) {
@@ -724,4 +737,236 @@ public class MetadataResource extends CurationService {
   	return catalog;
   }
   
+  @DELETE
+  @Path(PRODUCT_TYPE+"/remove")
+  @Produces("text/plain")
+  public boolean removeProductType(
+		  @FormParam("policy") String policy, 
+		  @FormParam("id") String id) {
+    XMLRepositoryManager xmlRepo = getRepo(policy);
+    try {
+      ProductType type = xmlRepo.getProductTypeById(id);
+      xmlRepo.removeProductType(type);
+      return true;
+    } catch (RepositoryManagerException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+  
+  @GET
+  @Path(PRODUCT_TYPE+"/parentmap")
+  @Produces("text/plain")
+  public String getParentTypeMap(
+      @FormParam("policy") String policy) {
+    XMLValidationLayer vLayer = getValidationLayer(policy);
+    return JSONSerializer.toJSON(vLayer.getSubToSuperMap()).toString();
+  }
+	 
+  @POST
+  @Path(PRODUCT_TYPE+"/parent/add")
+  @Produces("text/plain")
+  public boolean addParentForProductType(
+      @FormParam("policy") String policy, 
+      @FormParam("id") String id, 
+      @FormParam("parentId") String parentId) {
+    XMLValidationLayer vLayer = getValidationLayer(policy);
+    XMLRepositoryManager xmlRepo = getRepo(policy);
+    try {
+      ProductType type = xmlRepo.getProductTypeById(id);
+      vLayer.addParentForProductType(type, parentId);
+      return true;
+    } catch (RepositoryManagerException e) {
+      e.printStackTrace();
+    } catch (ValidationLayerException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+  
+  @DELETE
+  @Path(PRODUCT_TYPE+"/parent/remove")
+  @Produces("text/plain")
+  public boolean removeParentForProductType(
+      @FormParam("policy") String policy, 
+      @FormParam("id") String id) 
+          throws ValidationLayerException {
+    XMLValidationLayer vLayer = getValidationLayer(policy);
+    XMLRepositoryManager xmlRepo = getRepo(policy);
+    try {
+      ProductType type = xmlRepo.getProductTypeById(id);
+      vLayer.removeParentForProductType(type);
+      return true;
+    } catch (RepositoryManagerException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+  
+  @POST
+  @Path(PRODUCT_TYPE+"/elements/add")
+  @Produces("text/plain")
+  public boolean addElementsForProductType(
+		  @FormParam("policy") String policy, 
+		  @FormParam("id") String id,  
+		  @FormParam("elementIds") String elementIds) {
+    XMLValidationLayer vLayer = getValidationLayer(policy);
+    XMLRepositoryManager xmlRepo = getRepo(policy);
+    try {
+      ProductType type = xmlRepo.getProductTypeById(id);
+      for(String elementid: elementIds.split(",")) {
+        Element element = vLayer.getElementById(elementid);
+        if(element == null) {
+          element = new Element(elementid, elementid, "", "", "Automatically added", "");
+          vLayer.addElement(element);
+        }
+        vLayer.addElementToProductType(type, element);
+      }
+      return true;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+  
+  @GET
+  @Path(PRODUCT_TYPE+"/elements")
+  @Produces("text/plain")
+  public String getElementsForProductType(
+		  @FormParam("policy") String policy, 
+		  @FormParam("id") String id, 
+		  @FormParam("direct") boolean direct) {
+    XMLValidationLayer vLayer = getValidationLayer(policy);
+    XMLRepositoryManager xmlRepo = getRepo(policy);
+    try {
+      ProductType type = xmlRepo.getProductTypeById(id);
+      ArrayList<String> elementIds = new ArrayList<String>();
+      for(Element el : vLayer.getElements(type, direct)) {
+        elementIds.add(el.getElementId());
+      }
+      return JSONSerializer.toJSON(elementIds).toString();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+  
+  @DELETE
+  @Path(PRODUCT_TYPE+"/elements/remove/all")
+  @Produces("text/plain")
+  public boolean removeAllElementsForProductType(
+		  @FormParam("policy") String policy, 
+		  @FormParam("id") String id) {
+    XMLValidationLayer vLayer = getValidationLayer(policy);
+    XMLRepositoryManager xmlRepo = getRepo(policy);
+    try {
+      ProductType type = xmlRepo.getProductTypeById(id);
+      List<Element> elementList = vLayer.getElements(type);
+      for(Element element: elementList) {
+        vLayer.removeElementFromProductType(type, element);
+      }
+      this.removeUnusedElements(elementList, xmlRepo, vLayer);
+      return true;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  @DELETE
+  @Path(PRODUCT_TYPE+"/elements/remove")
+  @Produces("text/plain")
+  public boolean removeElementsForProductType(
+		  @FormParam("policy") String policy, 
+		  @FormParam("id") String id, 
+		  @FormParam("elementIds") String elementIds) {
+    XMLValidationLayer vLayer = getValidationLayer(policy);
+    XMLRepositoryManager xmlRepo = getRepo(policy);
+    try {
+      ProductType type = xmlRepo.getProductTypeById(id);
+      ArrayList<Element> elements = new ArrayList<Element>();
+      for(String elementId: elementIds.split(",")) {
+        Element element = vLayer.getElementById(elementId);
+        if(element != null) {
+          vLayer.removeElementFromProductType(type, element);
+          elements.add(element);
+        }
+      }
+      this.removeUnusedElements(elements, xmlRepo, vLayer);
+      return true;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+  
+  @GET
+  @Path(PRODUCT_TYPE+"/typeswithelement/{elementId}")
+  @Produces("text/plain")
+  public String getProductTypeIdsHavingElement(
+		  @FormParam("policy") String policy, 
+		  @PathParam("elementId") String elementId) {
+	  XMLValidationLayer vLayer = getValidationLayer(policy);
+	  XMLRepositoryManager xmlRepo = getRepo(policy);
+	  ArrayList<String> typeids = new ArrayList<String>();
+      try {
+    	  for(ProductType type : xmlRepo.getProductTypes()) {
+    		  for(Element el : vLayer.getElements(type)) {
+    			  if(el.getElementId().equals(elementId))
+    				  typeids.add(type.getProductTypeId());
+    		  }
+    	  }
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+      return JSONSerializer.toJSON(typeids).toString();
+  }
+  
+  
+  /*
+   * Private helper functions
+   */
+  private void removeUnusedElements(List<Element> elements, 
+		  XMLRepositoryManager xmlRepo, XMLValidationLayer vLayer) 
+				  throws ValidationLayerException, RepositoryManagerException {
+      // Remove Elements that aren't used in any product type
+      List<ProductType> ptypelist = xmlRepo.getProductTypes();
+      HashMap<String, Boolean> usedElementIds = new HashMap<String, Boolean>();
+      for(ProductType ptype: ptypelist) {
+          List<Element> ptypeElements = 
+              vLayer.getElements(ptype);
+          for(Element el: ptypeElements) {
+              usedElementIds.put(el.getElementId(), true);
+          }
+      }
+      for(Element el: elements) {
+          if(!usedElementIds.containsKey(el.getElementId()))
+             vLayer.removeElement(el);
+      }
+  }  
+
+	private XMLRepositoryManager getRepo(String policy) {
+		XMLRepositoryManager xmlRepo = null;
+		String url = "file://" + CurationService.config.getPolicyUploadPath() + "/" + policy;
+
+		try {
+			xmlRepo = new XMLRepositoryManager(Collections.singletonList(url));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return xmlRepo;
+	}
+
+	private XMLValidationLayer getValidationLayer(String policy) {
+		XMLValidationLayer vLayer = null;
+		String url = "file://" + CurationService.config.getPolicyUploadPath() + "/" + policy;
+
+		try {
+			vLayer = new XMLValidationLayer(Collections.singletonList(url));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return vLayer;
+	}
 }
