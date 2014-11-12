@@ -9,7 +9,7 @@
       <conditions/>
       <configuration>
          <property name="PGETask_Name" value="CAS PGE"/>
-         <property name="PGETask_ConfigFilePath" value="[PGE_HOME]/policy/pge-config.xml" envReplace="true"/>
+         <property name="PGETask_ConfigFilePath" value="[PGE_ROOT]/policy/pge-config.xml" envReplace="true"/>
          <property name="PGETask_DumpMetadata" value="true"/>
          <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
          <property name="PCS_FileManagerUrl" value="[FILEMGR_URL]" envReplace="true"/>
