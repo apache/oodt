@@ -120,9 +120,9 @@ if [ -z "$CRAWLER_HOME" ]; then
   export CRAWLER_HOME
 fi
 
-if [ -z "$PGE_HOME" ]; then
-  PGE_HOME="$OODT_HOME"/pge
-  export PGE_HOME
+if [ -z "$PGE_ROOT" ]; then
+  PGE_ROOT="$OODT_HOME"/pge
+  export PGE_ROOT
 fi
 
 if [ -z "$SOLR_HOME" ]; then

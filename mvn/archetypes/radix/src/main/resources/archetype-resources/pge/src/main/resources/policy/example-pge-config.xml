@@ -3,7 +3,7 @@
 
   <!-- How to run the PGE -->
   <exe dir="[JobDir]" shell="/bin/bash">
-    <cmd>[PGE_HOME]/bin/example-script.sh > /tmp/HelloWorldPGE-[ProductionDateTime].output.txt</cmd>
+    <cmd>[PGE_ROOT]/bin/example-script.sh > /tmp/HelloWorldPGE-[ProductionDateTime].output.txt</cmd>
   </exe>
 
   <!-- Files to ingest -->
