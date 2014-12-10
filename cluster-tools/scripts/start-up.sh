@@ -41,6 +41,8 @@ if [[ "${SCREEN}" != "" ]]
 then
     initScreen "${SCREEN}"
 fi
+#Start Hadoop HDFS 
+${HADOOP_HOME}/sbin/start-dfs.sh
 
 #Run all start-up commands
 for elem in "${starts[@]}"
@@ -50,7 +52,7 @@ do
     host=${2}
     cmd=${3}
     echo "Running: ${cmd} on ${host} via ${SCREEN:-ssh} (${tab})"
-
+    #Run in screen if set, or ssh if not set
     if [[ "${SCREEN}" != "" ]]
     then
         screenr ${tab} ${host} "${cmd}" || errorAndExit "Could not run ${cmd} on ${host} via ${SCREEN}"

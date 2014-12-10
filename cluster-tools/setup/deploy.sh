@@ -69,19 +69,6 @@ while true; do
         * ) echo "Please answer y or n.";;
     esac
 done
-#TAR=${TMP_DIR}/deploy.tar.gz
-#if [ -e ${TAR} ]
-#then
-#    echo "Tar exists, using it."
-#else
-#    #Make tar
-#    pushd ${INSTALL_DIR} || { \
-#           echo "ERROR: Failed to pushd to ${INSTALL_DIR} Exiting for safety."; \
-#           exit;
-#        }
-#    tar -czf ${TAR} *
-#    popd
-#fi
 #Put on all hosts
 for host in $(cat ${HOSTS_FILE} | grep -v "^#" | tail -n +2 )
 do
@@ -92,14 +79,4 @@ do
          continue;\
       }
     rsync -avz ${INSTALL_DIR}/* "${host}:${INSTALL_DIR}"
-#    scp ${TAR} ${host}:${INSTALL_DIR} \
-#    ||{ \
-#         echo "WARNING: Failed to scp ${TAR} to ${host}:${INSTALL_DIR} Deploy manually."; \
-#         continue;\
-#      }
-#    ssh ${host} "tar -xzf ${INSTALL_DIR}/$(basename ${TAR}) -C ${INSTALL_DIR}" \
-#    ||{ \
-#         echo "WARNING: Failed to untar $(basename ${TAR}) in ${host}:${INSTALL_DIR} Deploy manually."; \
-#         continue;\
-#      }
 done

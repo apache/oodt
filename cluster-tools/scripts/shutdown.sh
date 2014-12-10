@@ -42,3 +42,5 @@ if [[ "${SCREEN}" != "" ]]
 then
     screen -X -S ${SCREEN} quit
 fi
+#Shutdown Hadoop HDFS
+${HADOOP_HOME}/sbin/stop-dfs.sh

@@ -27,9 +27,13 @@ then
     exit 1
 fi
 . ${ENVS}
+#Setup hosts from bootstraped host file
+MESOS_HOST="$(cat ${HOSTS} | grep -v "^#" | head -1)"
+HADOOP_NAMENODE="${MESOS_HOST}"
 
 #Tell us what ya going to do
 echo "Installing the BDAS components:"
+echo " ----------- Software Versions -----------"
 echo "  Mesos version:   ${APACHE_MESOS_VERSION:-ERROR: Version not set}"
 echo "  Scala version:   ${SCALA_VERSION:-ERROR: Version not set}"
 echo "  Kafka version:   ${KAFKA_VERSION:-ERROR: Version not set}"
@@ -37,17 +41,34 @@ echo "  Spark version:   ${SPARK_VERSION:-ERROR: Version not set}"
 echo "  Tachyon version: ${TACHYON_VERSION:-ERROR: Version not set}"
 echo "  Hadoop version:  ${HADOOP_VERSION:-ERROR: Version not set}"
 echo "  Cluster Tools version:  ${CLUSTER_TOOLS_VERSION:-ERROR: Version not set}"
+echo " --------- Environment Variables ---------"
+echo "  Hosts file install:   ${HOSTS_FILE:-ERROR: No hosts file install location set}" 
+echo "  Environment install:  ${ENV_VARS:-ERROR: No environment variables file install location set}" 
+echo "  Hadoop namenode:      ${HADOOP_NAMENODE:-ERROR: No Hadoop namenode set}" 
+echo "  Hadoop namenode port: ${HADOOP_NAMENODE_PORT:-ERROR: No Hadoop namenode port set}" 
+echo " ------------ Support Software -----------"
+echo "  Maven home: ${M2_HOME:-ERROR: No maven home set}" 
+echo "  Java home:  ${JAVA_HOME:-ERROR: No maven home set}" 
+echo " ---------- Support Directories ----------"
 echo "  Temporary directory: ${TMP_DIR:-ERROR: Temp dir not set}"
-echo "  Running Directory:   ${RUN_DIR:-ERROR: Running dir not set}"
-echo " -----------------------------------------"
+echo "  Running directory:   ${RUN_DIR:-ERROR: Running dir not set}"
+echo " ----------- Install Directory -----------"
 echo "  Install directory:   ${INSTALL_DIR:-ERROR: Install dir not set}"
+#Checking installed software
+if [ -z ${M2_HOME} ] || [ -z ${JAVA_HOME} ] || [ ! -f ${M2_HOME}/bin/mvn ] || \
+   [ ! -f ${JAVA_HOME}/bin/java ]
+then
+    echo "ERROR: Needed software not found."
+    exit 1
+fi
 
 #Checking versions
 if [ -z ${APACHE_MESOS_VERSION} ] || [ -z ${SCALA_VERSION} ] || [ -z ${KAFKA_VERSION} ] || \
    [ -z ${SPARK_VERSION} ] || [ -z ${TACHYON_VERSION} ] || [ -z ${HADOOP_VERSION} ] || \
-   [ -z ${CLUSTER_TOOLS_VERSION} ] || [ -z ${INSTALL_DIR} ] || [ -z ${TMP_DIR} ]
+   [ -z ${CLUSTER_TOOLS_VERSION} ] || [ -z ${INSTALL_DIR} ] || [ -z ${TMP_DIR} ] || \
+   [ -z ${HADOOP_NAMENODE} ] || [ -z ${HADOOP_NAMENODE_PORT} ] || [ -z ${ENV_VARS} ] || [ -z ${HOSTS_FILE} ]
 then
-    echo "ERROR: Needed variables not set. Did you set the environment files?"
+    echo "ERROR: Needed variables not set. Did you source the environment files?"
     exit 1
 fi
 #Check directories exit
@@ -142,11 +163,10 @@ then
     echo "Cluster tools already installed"
 else
     echo "Exporting OODT-cluster tools" | tee -a ${INSTALL_LOG}
-    svn export https://svn.apache.org/repos/asf/oodt/${CLUSTER_TOOLS_VERSION}/cluster-tools/ ${INSTALL_DIR} \
+    svn export https://svn.apache.org/repos/asf/oodt/${CLUSTER_TOOLS_VERSION}/cluster-tools/ ${INSTALL_DIR}/cluster-tools/ \
     ||{ \
          echo "WARNING: Failed to export cluster-tools: ${CLUSTER_TOOLS_VERSION} Install manually." | tee -a ${INSTALL_LOG};\
-            continue;\
-          }
+      }
     cp ${ENVS} ${ENV_VARS} 
     cp ${HOSTS} ${HOSTS_FILE}
 fi
@@ -162,5 +182,16 @@ else
     ../configure &>> ${INSTALL_LOG}
     make &>> ${INSTALL_LOG} 
 fi
+
+#Hadoop namenode and configuration
+echo "Replacing host and port information in Hadoop Information" | tee -a ${INSTALL_LOG}
+sed -i -e "s/[INSTALL_DIR]/${INSTALL_DIR}/g" ${INSTALL_DIR}/cluster-tools/setup/hdfs-config/*.xml
+sed -i -e "s/[HDFS_HOST]/${HADOOP_NAMENODE}/g" ${INSTALL_DIR}/cluster-tools/setup/hdfs-config/*.xml
+sed -i -e "s/[HDFS_PORT]/${HADOOP_NAMENODE_PORT}/g" ${INSTALL_DIR}/cluster-tools/setup/hdfs-config/*.xml
+tail -n +2 ${HOSTS} > ${INSTALL_DIR}/cluster-tools/setup/hdfs-config/slaves
+echo "Moving ${INSTALL_DIR}/cluster-tools/setup/hdfs-config/ to ${HADOOP_HOME}/etc/hadoop/" | tee -a ${INSTALL_LOG}
+mv --backup=numbered --suffix=.bak ${INSTALL_DIR}/cluster-tools/setup/hdfs-config/* ${HADOOP_HOME}/etc/hadoop
+echo "Formating HDFS namenode" | tee -a ${INSTALL_LOG}
+${HADOOP_HOME}/bin/hdfs namenode -format
 
 echo "All done at $(date +"%Y-%m-%dT%H:%M:%S")" | tee -a ${INSTALL_LOG}
