@@ -26,7 +26,7 @@ from setuptools import find_packages, setup
 
 _name         = 'oodt'
 _version      = '0.8'
-_description  = 'Agile OODT'
+_description  = 'Apache OODT'
 _url          = 'http://oodt.apache.org/'
 _downloadURL  = 'http://pypi.python.org/pypi/oodt/'
 _author       = 'Sean Kelly'
