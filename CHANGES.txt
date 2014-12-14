@@ -5,6 +5,8 @@ Release 0.8 - Current Development
 
 * OODT-751 OPSUI pages constantly expire (Tom Barber, mattmann)
 
+* OODT-748 Fix Description in agility/setup.py
+
 * OODT-787 PGE_ROOT env variable does not work in PGEConfig.xml and tasks.xml (Yi Sun, Sneha Deshmukh via mattmann)
 
 * OODT-562 Exposing parent-child & element addition/deletion functionality for product types using cas-curator (varunr)
