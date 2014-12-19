@@ -162,13 +162,15 @@ public class FilemgrIngestStep extends BaseStep implements StepInterface {
         }*/
 
         try {
-            Metadata m = oodtproc.getMetadata((String)r[idx2]);
-            oodtproc.ingest(oodt, new File((String)r[idx]), m);
+
+		  System.setProperty("org.apache.oodt.cas.filemgr.mime.type.repository", "/tmp/mime-types.xml");
+		  Metadata m = oodtproc.getMetadata((String)r[idx2]);
+          String productid = oodtproc.ingest(oodt, new File((String)r[idx]), m);
 
 
         // safely add the string "Hello World!" at the end of the output row
 		// the row array will be resized if necessary
-		    Object[] outputRow = RowDataUtil.addValueData(r, data.outputRowMeta.size() - 1, "Hello World!");
+		    Object[] outputRow = RowDataUtil.addValueData(r, data.outputRowMeta.size() - 1, productid);
 
 		// put the row to the output row stream
 		putRow(data.outputRowMeta, outputRow);

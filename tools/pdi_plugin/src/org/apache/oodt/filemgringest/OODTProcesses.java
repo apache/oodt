@@ -66,7 +66,7 @@ public class OODTProcesses {
 
     }
 
-    boolean ingest(OODTConfig config, File product, Metadata productMetdata) throws IngestException {
+    String ingest(OODTConfig config, File product, Metadata productMetdata) throws IngestException {
        // try {
             String productId = config.getIngester().ingest(config.getFmUrl(),
                     product, productMetdata);
@@ -79,7 +79,7 @@ public class OODTProcesses {
                             + ": attempting to continue crawling", e);
             return false;
         }*/
-        return true;
+        return productId;
     }
 
 
