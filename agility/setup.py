@@ -16,7 +16,7 @@
 # under the License.    
 
 import os.path
-from distribute_setup import use_setuptools
+from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import find_packages, setup
 
@@ -90,7 +90,7 @@ setup(
     long_description=_longDescription,
     name=_name,
     namespace_packages=_namespaces,
-    packages=find_packages(),
+    packages=find_packages(exclude=['ez_setup']),
     test_suite=_testSuite,
     url=_url,
     version=_version,
