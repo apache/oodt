@@ -1,7 +1,8 @@
 Apache OODT Change Log
 ======================
   
-Release 0.8 - Current Development
+Release 0.8 - 12/19/2014
+--------------------------------------------
 
 * OODT-751 OPSUI pages constantly expire (Tom Barber, mattmann)
 
