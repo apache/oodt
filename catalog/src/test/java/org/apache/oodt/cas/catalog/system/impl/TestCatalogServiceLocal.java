@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
+import junit.framework.TestCase;
+
 //OODT imports
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.catalog.exception.CatalogServiceException;
@@ -42,12 +44,7 @@ import org.apache.oodt.cas.catalog.struct.impl.index.DataSourceIndexFactory;
 import org.apache.oodt.cas.catalog.struct.impl.index.InMemoryIndexFactory;
 import org.apache.oodt.cas.catalog.struct.impl.transaction.UuidTransactionIdFactory;
 import org.apache.oodt.cas.catalog.system.CatalogFactory;
-import org.apache.oodt.cas.catalog.system.impl.CatalogServiceLocal;
-import org.apache.oodt.cas.catalog.system.impl.CatalogServiceLocalFactory;
 import org.apache.oodt.cas.metadata.Metadata;
-
-//JUnit imports
-import junit.framework.TestCase;
 
 /**
  * 
@@ -123,8 +120,7 @@ public class TestCatalogServiceLocal extends TestCase {
 
 		// test ingest update
 		m.replaceMetadata(
-				CatalogServiceLocal.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY
-						.toString(), tr.getTransactionId().toString());
+				CatalogServiceLocal.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY, tr.getTransactionId().toString());
 		m.replaceMetadata(CatalogServiceLocal.ENABLE_UPDATE_MET_KEY, "true");
 		tr = cs.ingest(m);
 		receipts = new Vector<TransactionReceipt>();
@@ -166,9 +162,7 @@ public class TestCatalogServiceLocal extends TestCase {
 
 		// test delete
 		m = new Metadata();
-		m.addMetadata(
-				CatalogServiceLocal.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY
-						.toString(), tr.getTransactionId().toString());
+		m.addMetadata(CatalogServiceLocal.CATALOG_SERVICE_TRANSACTION_ID_MET_KEY, tr.getTransactionId().toString());
 		cs.delete(m);
 		assertEquals(cs.getMetadata(Collections.singletonList(tr)).size(), 0);
 	}
@@ -185,7 +179,7 @@ public class TestCatalogServiceLocal extends TestCase {
 		factory.setJdbcUrl(url);
 		factory.setPass(pass);
 		factory.setUser(user);
-		factory.setTablesFile("./src/testdata/test-mapper-cat.sql");
+		factory.setTablesFile("src/test/resources/test-mapper-cat.sql");
 		return factory;
 	}
 
@@ -201,7 +195,7 @@ public class TestCatalogServiceLocal extends TestCase {
 		indexFactory.setJdbcUrl(url);
 		indexFactory.setPass(pass);
 		indexFactory.setUser(user);
-		indexFactory.setTablesFile("./src/testdata/test-index-cat.sql");
+		indexFactory.setTablesFile("src/test/resources/test-index-cat.sql");
 		return indexFactory;
 	}
 
