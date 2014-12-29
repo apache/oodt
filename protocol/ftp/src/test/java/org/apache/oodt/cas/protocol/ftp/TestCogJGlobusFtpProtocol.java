@@ -54,7 +54,7 @@ public class TestCogJGlobusFtpProtocol extends TestCase {
 
 	private static final int PORT = 9000;
 	private FtpServer server;
-  private static final File USERS_FILE = new File("src/testdata/users.properties");
+  private static final File USERS_FILE = new File("src/test/resources/users.properties");
   
 	@Override
 	public void setUp() throws Exception {
@@ -98,7 +98,7 @@ public class TestCogJGlobusFtpProtocol extends TestCase {
 
         /** Mocking server responses to prevent server failure **/
 
-        Mockito.doReturn("testdata").when(ftpProtocol).getCurentDir();
+        Mockito.doReturn("test/resources").when(ftpProtocol).getCurentDir();
 
         Vector<FileInfo> vector = new Vector<FileInfo>();
         FileInfo file = new FileInfo();
@@ -122,14 +122,14 @@ public class TestCogJGlobusFtpProtocol extends TestCase {
         Mockito.doAnswer(new Answer() {
             public Object answer(InvocationOnMock invocation) {
                 return null;
-            }}).when(ftpProtocol).cd(new ProtocolFile("testdata", true));
+            }}).when(ftpProtocol).cd(new ProtocolFile("test/resources", true));
 
 
 
         ftpProtocol.connect("localhost", auth);
 
 
-		ftpProtocol.cd(new ProtocolFile("testdata", true));
+		ftpProtocol.cd(new ProtocolFile("test/resources", true));
 
 		List<ProtocolFile> lsResults = ftpProtocol.ls();
 		assertTrue(lsResults.contains(new ProtocolFile(ftpProtocol.pwd(), "users.properties", false)));
