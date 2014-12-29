@@ -50,7 +50,7 @@ public class DummyAuthenticationProvider extends NativeAuthenticationProvider {
 
 	@Override
 	public String getHomeDirectory(String username) throws IOException {
-		return new File("src/testdata").getAbsolutePath();
+		return new File("src/test/resources").getAbsolutePath();
 	}
 
 	@Override

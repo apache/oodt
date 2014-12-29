@@ -17,9 +17,9 @@
 -->
 <ServerConfiguration>
         <!-- this key needs generating by the provided keygen tool -->
-        <ServerHostKey PrivateKeyFile="src/testdata/sample-dsa.key"/>
+        <ServerHostKey PrivateKeyFile="src/test/resources/sample-dsa.key"/>
         <!--  Port>2023</Port -->
-        <!--  UserConfigDirectory>src/testdata</UserConfigDirectory -->
+        <!--  UserConfigDirectory>src/test/resources</UserConfigDirectory -->
         <!-- add other authentication methods as desired -->
         <AllowedAuthentication>password</AllowedAuthentication>
         <AllowedAuthentication>keyboard-interactive</AllowedAuthentication>

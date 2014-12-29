@@ -66,12 +66,12 @@ public class TestJschSftpProtocol extends TestCase {
   @Override
   public void setUp() {
     try {
-	  	publicKeysDir = new File("src/testdata/publicKeys");
+	  	publicKeysDir = new File("src/test/resources/publicKeys");
 			publicKeysDir.mkdirs();
 			FileUtils.forceDeleteOnExit(publicKeysDir);
-			FileUtils.copyFile(new File("src/testdata/authorization.xml"), new File("src/testdata/publicKeys/authorization.xml"));
-			FileUtils.copyFile(new File("src/testdata/server.xml"), new File("src/testdata/publicKeys/server.xml"));
-			FileUtils.copyFile(new File("src/testdata/platform.xml"), new File("src/testdata/publicKeys/platform.xml"));
+			FileUtils.copyFile(new File("src/test/resources/authorization.xml"), new File("src/test/resources/publicKeys/authorization.xml"));
+			FileUtils.copyFile(new File("src/test/resources/server.xml"), new File("src/test/resources/publicKeys/server.xml"));
+			FileUtils.copyFile(new File("src/test/resources/platform.xml"), new File("src/test/resources/publicKeys/platform.xml"));
 			ConfigurationLoader.initialize(true, context = new TestXmlServerConfigurationContext());
 		} catch (Exception e) {
 			fail("Failed to initialize server configuration");
@@ -153,7 +153,7 @@ public class TestJschSftpProtocol extends TestCase {
             public Object answer(InvocationOnMock invocationOnMock) throws IOException {
 
                 PrintWriter writer = new PrintWriter(tmpFile+"/testDownloadFile", "UTF-8");
-                writer.print(readFile("src/testdata/sshTestDir/sshTestFile"));
+                writer.print(readFile("src/test/resources/sshTestDir/sshTestFile"));
                 writer.close();
 
                 return null;
@@ -163,7 +163,7 @@ public class TestJschSftpProtocol extends TestCase {
 
         mockc.get(new ProtocolFile("sshTestFile", false), testDownloadFile);
 
-		assertTrue(FileUtils.contentEquals(new File("src/testdata/sshTestDir/sshTestFile"), testDownloadFile));
+		assertTrue(FileUtils.contentEquals(new File("src/test/resources/sshTestDir/sshTestFile"), testDownloadFile));
 
 		FileUtils.forceDelete(tmpFile);
 	}
@@ -230,12 +230,12 @@ public class TestJschSftpProtocol extends TestCase {
   	@Override
   	public void initialize() throws ConfigurationException {
   		try {
-  			serverConfig = new TestServerConfiguration(ConfigurationLoader.loadFile("src/testdata/publicKeys/server.xml"));
+  			serverConfig = new TestServerConfiguration(ConfigurationLoader.loadFile("src/test/resources/publicKeys/server.xml"));
   		} catch (Exception e) {
   			throw new ConfigurationException(e.getMessage());
   		}
   		try {
-        platformConfig = new PlatformConfiguration(ConfigurationLoader.loadFile("src/testdata/publicKeys/platform.xml")) {};
+        platformConfig = new PlatformConfiguration(ConfigurationLoader.loadFile("src/test/resources/publicKeys/platform.xml")) {};
   		} catch (Exception e) {
   			throw new ConfigurationException(e.getMessage());
   		}
@@ -273,7 +273,7 @@ public class TestJschSftpProtocol extends TestCase {
 		BufferedReader br = null;
 		try {
 			File publicKeyFile = new File(publicKeysDir, "sample-dsa.pub");
-			br = new BufferedReader(new FileReader(new File("src/testdata/sample-dsa.pub").getAbsoluteFile()));
+			br = new BufferedReader(new FileReader(new File("src/test/resources/sample-dsa.pub").getAbsoluteFile()));
 			ps = new PrintStream(new FileOutputStream(publicKeyFile));
 			String nextLine = null;
 			while ((nextLine = br.readLine()) != null) {
