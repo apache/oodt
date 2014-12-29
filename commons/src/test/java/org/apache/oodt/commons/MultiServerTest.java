@@ -41,7 +41,7 @@ public class MultiServerTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		testConfig = getClass().getResourceAsStream("test-multiserver.xml");
+		testConfig = getClass().getResourceAsStream("/test-multiserver.xml");
 		if (testConfig == null) throw new IOException("Cannot find `test-multiserver.xml'");
 		System.setProperty("my.other.setting", "Don't override");
 	}

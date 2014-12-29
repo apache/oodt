@@ -32,7 +32,7 @@ public class XMLTest extends TestCase {
 	}
 
 	protected void setUp() throws Exception {
-		reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("test.xml")));
+		reader = new BufferedReader(new InputStreamReader(XMLTest.class.getResourceAsStream("/test.xml")));
 		inputSource = new InputSource(reader);
 	}
 
