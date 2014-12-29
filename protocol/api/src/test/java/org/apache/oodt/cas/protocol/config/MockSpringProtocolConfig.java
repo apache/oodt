@@ -28,7 +28,7 @@ import org.apache.oodt.cas.protocol.ProtocolFactory;
  */
 public class MockSpringProtocolConfig extends SpringProtocolConfig {
 
-	private static final String CONFIG_FILE = "src/testdata/test-protocol-config.xml";
+	private static final String CONFIG_FILE = "src/test/resources/test-protocol-config.xml";
 
 	public MockSpringProtocolConfig() {
 		super(CONFIG_FILE);
