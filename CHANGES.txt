@@ -3,6 +3,8 @@ Apache OODT Change Log
 Release 0.9 - Current Development
 -------------------------------------------
 
+* OODT-771 Fix push_pull_framework.properties path reference for config.external.properties.files in incorrect with a patch from Lewis
+
 * OODT-770 Fix the RADIX Issues with a patch from Lewis McGibbney
 
   
