@@ -1,5 +1,10 @@
 Apache OODT Change Log
 ======================
+Release 0.9 - Current Development
+-------------------------------------------
+
+* OODT-770 Fix the RADIX Issues with a patch from Lewis McGibbney
+
   
 Release 0.8 - 12/19/2014
 --------------------------------------------
