@@ -30,6 +30,12 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <oodt.version>${oodt}</oodt.version>
     <oodt.pge.version>0.3</oodt.pge.version>
+   <!-- Maven plugin dependencies -->
+    <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>2.17</maven-surefire-plugin.version>
+    <maven-jar-plugin.version>2.5</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>2.10.1</maven-javadoc-plugin.version>
+    <maven-eclipse-plugin.version>2.9</maven-eclipse-plugin.version>
   </properties>
 
   <repositories>
@@ -63,15 +69,6 @@
       <url>scp://host/path/to/repo</url>
     </snapshotRepository>
   </distributionManagement>
-
-  <properties>
-    <!-- Maven plugin dependencies -->
-    <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
-    <maven-surefire-plugin.version>2.17</maven-surefire-plugin.version>
-    <maven-jar-plugin.version>2.5</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>2.10.1</maven-javadoc-plugin.version>
-    <maven-eclipse-plugin.version>2.9</maven-eclipse-plugin.version>
-  <properties>
 
   <build>
     <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
