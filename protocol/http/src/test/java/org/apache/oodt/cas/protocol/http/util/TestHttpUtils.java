@@ -42,7 +42,8 @@ public class TestHttpUtils extends TestCase {
 	private static final String APACHE_SVN_SITE = "http://svn.apache.org";
 	
 	private static final String PROTOCOL_HTTP_SVN_LOC = "/repos/asf/oodt/trunk/protocol/http";
-	private static final String PARENT_URL_OF_THIS_TEST = PROTOCOL_HTTP_SVN_LOC + "/src/test/org/apache/oodt/cas/protocol/http/util";
+	private static final String PARENT_URL_OF_THIS_TEST = PROTOCOL_HTTP_SVN_LOC +
+														  "/src/test/java/org/apache/oodt/cas/protocol/http/util";
 	private static final String URL_OF_THIS_TEST = PARENT_URL_OF_THIS_TEST + "/TestHttpUtils.java";
 	
 	public void testResolveUri() throws URISyntaxException {

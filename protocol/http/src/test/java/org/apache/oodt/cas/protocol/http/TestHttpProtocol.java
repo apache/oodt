@@ -65,7 +65,8 @@ public class TestHttpProtocol extends TestCase {
 		HttpProtocol httpProtocol = new HttpProtocol();
 		httpProtocol.connect("svn.apache.org", new NoAuthentication());
 		assertTrue(httpProtocol.connected());
-		ProtocolFile gotoDir = new ProtocolFile(httpProtocol.pwd(), "repos/asf/oodt/trunk/protocol/http/src/test/org/apache/oodt/cas/protocol/http", true);
+		ProtocolFile gotoDir = new ProtocolFile(httpProtocol.pwd(),
+			"repos/asf/oodt/trunk/protocol/http/src/test/java/org/apache/oodt/cas/protocol/http", true);
 		httpProtocol.cd(gotoDir);
 		ProtocolFile currentDir = httpProtocol.pwd();
 		System.out.println(gotoDir.getAbsoluteFile());
@@ -77,7 +78,8 @@ public class TestHttpProtocol extends TestCase {
 		HttpProtocol httpProtocol = new HttpProtocol();
 		httpProtocol.connect("svn.apache.org", new NoAuthentication());
 		assertTrue(httpProtocol.connected());
-		httpProtocol.cd(new ProtocolFile("repos/asf/oodt/trunk/protocol/http/src/test/org/apache/oodt/cas/protocol/http", true));
+		httpProtocol.cd(new ProtocolFile("repos/asf/oodt/trunk/protocol/http/src/test/java/org/apache/oodt/cas"
+										 + "/protocol/http", true));
 		File bogus = File.createTempFile("bogus", "bogus");
 		File tmpDir = new File(bogus.getParentFile(), "TestHttpProtocol");
 		bogus.delete();
@@ -92,7 +94,10 @@ public class TestHttpProtocol extends TestCase {
 		while(scanner.hasNextLine()) {
 			fileContent += scanner.nextLine();
 		}
-		assertEquals(fileContent, HttpUtils.readUrl(HttpUtils.connect(new URL("http://svn.apache.org/repos/asf/oodt/trunk/protocol/http/src/test/org/apache/oodt/cas/protocol/http/TestHttpProtocol.java"))));
+		assertEquals(fileContent, HttpUtils.readUrl(HttpUtils.connect(new URL("http://svn.apache.org/repos/asf/oodt/"
+																			  + "trunk/protocol/http/src/test/java/org/"
+																			  + "apache/oodt/cas/protocol/http/"
+																			  + "TestHttpProtocol.java"))));
 		FileUtils.forceDelete(tmpDir);
 	}
 }
