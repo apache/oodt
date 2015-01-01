@@ -18,19 +18,14 @@
 
 package org.apache.oodt.profile;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.Map;
 import org.apache.oodt.commons.util.XML;
-import junit.framework.TestCase;
 import org.w3c.dom.Document;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Map;
+
+import junit.framework.TestCase;
 
 /**
  * Unit test the Profile class.
@@ -130,6 +125,6 @@ public class ProfileTest extends TestCase {
 	private String oldProfNS;
 
 	/** Another (static) test profile, for use by other test cases. */
-	static Profile TEST_PROFILE = new Profile(ProfileAttributesTest.TEST_PROFILE_ATTRIBUTES,
-		ResourceAttributesTest.TEST_RESOURCE_ATTRIBUTES);
+	static Profile TEST_PROFILE = new Profile(org.apache.oodt.profile.ProfileAttributesTest.TEST_PROFILE_ATTRIBUTES,
+		org.apache.oodt.profile.ResourceAttributesTest.TEST_RESOURCE_ATTRIBUTES);
 }

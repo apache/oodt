@@ -18,22 +18,16 @@
 
 package org.apache.oodt.profile.handlers.lightweight;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import org.apache.oodt.commons.util.SAXParser;
-import org.apache.oodt.commons.util.XML;
 import org.apache.oodt.profile.ProfileElement;
 import org.apache.oodt.profile.ProfileException;
 import org.apache.oodt.xmlquery.XMLQuery;
+
+import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.TestCase;
-import org.w3c.dom.Document;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * Unit test the LightweightProfileServer class.
@@ -47,7 +41,8 @@ public class LightweightProfileServerTest extends TestCase {
 	}
 
 	protected void setUp() throws Exception {
-		server = new LightweightProfileServer(getClass().getResource("lightweightTest.xml"), "testing");
+	  URL url = getClass().getResource("lightweightTest.xml");
+		server = new LightweightProfileServer(url, "testing");
 	}
 	
 	/**
