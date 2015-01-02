@@ -2,6 +2,8 @@ Apache OODT Change Log
 ======================
 Release 0.9 - Current Development
 -------------------------------------------
+* OODT-802 Create Dockerfile for OODT Radix.
+
 * OODT-761 Update PGE version in Radix.
 
 * OODT-749 Remove old XercesImpl jar from grid pom.
