@@ -2,6 +2,9 @@ Apache OODT Change Log
 ======================
 Release 0.9 - Current Development
 -------------------------------------------
+
+* OODT-780 Spark backend to resource manager
+
 * OODT-802 Create Dockerfile for OODT Radix.
 
 * OODT-761 Update PGE version in Radix.
@@ -12,7 +15,6 @@ Release 0.9 - Current Development
 
 * OODT-770 Fix the RADIX Issues with a patch from Lewis McGibbney
 
-  
 Release 0.8 - 12/19/2014
 --------------------------------------------
 
