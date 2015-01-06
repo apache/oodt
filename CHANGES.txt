@@ -3,6 +3,8 @@ Apache OODT Change Log
 Release 0.9 - Current Development
 -------------------------------------------
 
+* OODT-699 Mesos cluster manager backend to resource manager
+
 * OODT-780 Spark backend to resource manager
 
 * OODT-802 Create Dockerfile for OODT Radix.
