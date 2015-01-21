@@ -51,10 +51,10 @@ public class TestDataUtils extends TestCase {
 		product.setProductId("TestProductId");
 		product.setProductName("TestProductName");
 		product.setProductReferences(Lists.newArrayList(
-			new Reference("file:///orig/data/", "file://" + cwd + "/src/testdata/data/", 4096),
-			new Reference("file:///orig/data/test-file-1.txt", "file://" + cwd + "/src/testdata/data/test-file-1.txt", 20),
-			new Reference("file:///orig/data/test-file-2.txt", "file://" + cwd + "/src/testdata/data/test-file-2.txt", 20),
-			new Reference("file:///orig/data/test-file-3.txt", "file://" + cwd + "/src/testdata/data/test-file-3.txt", 20)));
+			new Reference("file:///orig/data/", "file://" + cwd + "/src/test/resources/", 4096),
+			new Reference("file:///orig/data/test-file-1.txt", "file://" + cwd + "/src/test/resources/test-file-1.txt", 20),
+			new Reference("file:///orig/data/test-file-2.txt", "file://" + cwd + "/src/test/resources/test-file-2.txt", 20),
+			new Reference("file:///orig/data/test-file-3.txt", "file://" + cwd + "/src/test/resources/test-file-3.txt", 20)));
 		product.setProductStructure(Product.STRUCTURE_HIERARCHICAL);
 		product.setTransferStatus(Product.STATUS_RECEIVED);
 		ProductType pt = new ProductType();
