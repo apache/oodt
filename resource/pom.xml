@@ -104,11 +104,20 @@ the License.
           <groupId>com.sun.jersey</groupId>
           <artifactId>jersey-client</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.sun.jersey</groupId>
+          <artifactId>jersey-core</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-client</artifactId>
+      <version>1.14</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-core</artifactId>
       <version>1.14</version>
     </dependency>
     <dependency>
