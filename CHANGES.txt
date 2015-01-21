@@ -2,6 +2,7 @@ Apache OODT Change Log
 ======================
 Release 0.9 - Current Development
 -------------------------------------------
+* OODT-804 Broken trunk build on Jenkins
 
 * OODT-699 Mesos cluster manager backend to resource manager
 
