@@ -137,8 +137,10 @@ public class TestAssignmentMonitor extends TestCase {
 
     private void generateTestConfig() throws IOException {
         String propertiesFile = "." + File.separator + "src" + File.separator +
-                "testdata" + File.separator + "test.resource.properties";
+                "test" + File.separator + "resources" + File.separator + "test.resource.properties";
+
         System.getProperties().load(new FileInputStream(new File(propertiesFile)));
+
         System.setProperty("org.apache.oodt.cas.resource.nodes.dirs",
                 "file:" + new File("." + File.separator + "src" + File.separator +
                         "main" + File.separator + "resources" + File.separator +

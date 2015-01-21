@@ -57,7 +57,7 @@ public class TestGangliaXMLParser extends TestCase {
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader("." + File.separator +
-                    "src" + File.separator + "testdata" + File.separator + "resourcemon"
+                    "src" + File.separator + "test" + File.separator + "resources" + File.separator + "resourcemon"
                     + File.separator + "gangliaXMLdump.xml"));
             String line = reader.readLine();
             while (line != null) {

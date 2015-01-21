@@ -120,7 +120,7 @@ public class TestXmlRpcResourceManager extends TestCase {
     Properties config = new Properties();
 
     String propertiesFile = "." + File.separator + "src" + File.separator +
-            "testdata" + File.separator + "test.resource.properties";
+            "test" + File.separator + "resources" + File.separator + "test.resource.properties";
     System.getProperties().load(new FileInputStream(new File(propertiesFile)));
 
     // stage policy
@@ -130,7 +130,7 @@ public class TestXmlRpcResourceManager extends TestCase {
     } catch (Exception e) {
       fail(e.getMessage());
     }
-    for (File policyFile : new File("./src/testdata/policy")
+    for (File policyFile : new File("./src/test/resources/policy")
         .listFiles(new FileFilter() {
 
           @Override

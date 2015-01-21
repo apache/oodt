@@ -132,7 +132,7 @@ public class TestGangliaResourceMonitor extends TestCase {
         int port = Integer.valueOf(System
                 .getProperty("org.apache.oodt.cas.resource.monitor.ganglia.gemtad.host.port"));
         String sampleXMLfilePath = "." + File.separator + "src" + File.separator +
-                "testdata" + File.separator + "resourcemon" + File.separator + "gangliaXMLdump.xml";
+                "test" + File.separator + "resources" + File.separator + "resourcemon" + File.separator + "gangliaXMLdump.xml";
         mockGmetad.set(new MockGmetad(port, sampleXMLfilePath));
         Thread mockGmetadServer = new Thread(mockGmetad.get());
         mockGmetadServer.start();
@@ -140,7 +140,7 @@ public class TestGangliaResourceMonitor extends TestCase {
 
     private void generateTestConfig() throws IOException {
         String propertiesFile = "." + File.separator + "src" + File.separator +
-                "testdata" + File.separator + "test.resource.properties";
+                "test" + File.separator + "resources" + File.separator + "test.resource.properties";
         System.getProperties().load(new FileInputStream(new File(propertiesFile)));
     }
 
