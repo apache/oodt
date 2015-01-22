@@ -88,7 +88,7 @@ public class TestWorkflowDataSourceRepository extends TestCase {
      */
     protected void setUp() throws Exception {
         ds = DatabaseConnectionBuilder.buildDataSource("sa", "", "org.hsqldb.jdbcDriver", "jdbc:hsqldb:file:" + tmpDirPath + "/testCat;shutdown=true");
-        SqlScript coreSchemaScript = new SqlScript("src/testdata/workflow.sql", ds);
+        SqlScript coreSchemaScript = new SqlScript("src/test/resources/workflow.sql", ds);
         coreSchemaScript.loadScript();
         coreSchemaScript.execute();
         ds.getConnection().commit();

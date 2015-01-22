@@ -43,7 +43,7 @@ import org.apache.commons.io.FileUtils;
 public class TestExternScriptTaskInstance extends TestCase {
 
     private static final String testScriptPath = new File(
-            "./src/testdata/myScript.sh").getAbsolutePath();
+            "./src/test/resources/myScript.sh").getAbsolutePath();
 
     private ExternScriptTaskInstance myIns;
 
@@ -72,7 +72,7 @@ public class TestExternScriptTaskInstance extends TestCase {
         String outputFileStr = null;
         try {
             outputFileStr = FileUtils.readFileToString(new File(
-                    "./src/testdata/myScript-Output.txt"), outputFileStr);
+                    "./src/test/resources/myScript-Output.txt"), outputFileStr);
             String expectedStr = "Hi my first name is Faranak and my last name is Davoodi.";
             assertEquals(expectedStr.trim(), outputFileStr.trim());
         } catch (IOException e) {

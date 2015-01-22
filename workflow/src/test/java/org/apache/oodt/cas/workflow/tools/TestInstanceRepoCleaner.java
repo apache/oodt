@@ -83,7 +83,7 @@ public class TestInstanceRepoCleaner extends TestCase {
   protected void setUp() throws Exception {
     // get a temp directory path
     File tempDir = File.createTempFile("bogus", "txt").getParentFile();
-    FileUtils.copyDirectory(new File("./src/testdata/testinstrepo"), new File(
+    FileUtils.copyDirectory(new File("./src/test/resources/testinstrepo"), new File(
         tempDir.getAbsolutePath() + "/" + "testinstrepo"));
     instRepoPath = tempDir.getAbsolutePath().endsWith("/") ? (tempDir
         .getAbsolutePath() + "testinstrepo")
