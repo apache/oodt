@@ -22,8 +22,8 @@
 	<inputClass
 		name="org.apache.oodt.cas.resource.structs.NameValueJobInput">
 		<properties>
-			<property name="file" value="<input-file>" />
-			<property name="output" value="<output-file>" />
+			<property name="file" value="&lt;input-file&gt;" />
+			<property name="output" value="&lt;output-file&gt;" />
 		</properties>
 	</inputClass>
 	<queue>quick</queue>

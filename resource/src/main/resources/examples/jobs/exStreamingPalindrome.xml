@@ -22,9 +22,9 @@
 	<inputClass
 		name="org.apache.oodt.cas.resource.structs.NameValueJobInput">
 		<properties>
-			<property name="host" value="<host>" />
-			<property name="port" value="<port>" />
-			<property name="output" value="<output-file>" />
+			<property name="host" value="&lt;host&gt;" />
+			<property name="port" value="&lt;port&gt;" />
+			<property name="output" value="&lt;output-file&gt;" />
 		</properties>
 	</inputClass>
 	<queue>quick</queue>
