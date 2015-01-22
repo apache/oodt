@@ -117,7 +117,7 @@ the License.
           <artifactId>jersey-json</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>com.sun.jersey</groupId>
+          <groupId>com.sun.jersey.contribs</groupId>
           <artifactId>jersey-guice</artifactId>
         </exclusion>
       </exclusions>
@@ -143,7 +143,7 @@ the License.
       <version>1.14</version>
     </dependency>
     <dependency>
-      <groupId>com.sun.jersey</groupId>
+      <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-guice</artifactId>
       <version>1.14</version>
     </dependency>
