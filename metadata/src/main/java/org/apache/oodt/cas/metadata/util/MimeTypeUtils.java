@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 
 //APACHE imports
 import org.apache.tika.Tika;
+import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
@@ -54,13 +55,13 @@ public final class MimeTypeUtils {
     /* our Tika mime type registry */
     private MimeTypes mimeTypes;
 
-    private Tika tika = new Tika();
+    private Tika tika;
 
     /* whether or not magic should be employed or not */
     private boolean mimeMagic;
 
     /* static resource path for the mimeTypesFile */
-    public final static String MIME_FILE_RES_PATH = "tika-mimetypes.xml";
+    public final static String MIME_FILE_RES_PATH = "/tika-mimetypes.xml";
 
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(MimeTypeUtils.class
@@ -83,6 +84,7 @@ public final class MimeTypeUtils {
     	try {
     		this.mimeTypes = MimeTypesFactory.create(mimeIs);
     		this.mimeMagic = magic;
+    		this.tika = new Tika(new DefaultDetector(this.mimeTypes));
     	}catch (Exception e) {
     		LOG.log(Level.SEVERE, "Failed to load MimeType Registry : " + e.getMessage(), e);
     	}

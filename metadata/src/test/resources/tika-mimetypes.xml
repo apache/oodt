@@ -38,6 +38,9 @@
 -->
 <mime-info>
 
+    <mime-type type="test/example">
+        <glob pattern="*.testexample"/>
+    </mime-type>
     <mime-type type="application/activemessage"/>
     <mime-type type="application/andrew-inset">
         <glob pattern="*.ez"/>
