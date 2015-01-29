@@ -1,6 +1,6 @@
 Apache OODT Change Log
 ======================
-Release 0.9 - Current Development
+Release 0.8.1 - 01/28/2015
 -------------------------------------------
 * OODT-804 Broken trunk build on Jenkins
 
