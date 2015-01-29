@@ -20,10 +20,11 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.8.1</version>
+    <version>0.9-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>web-grid</artifactId>
+  <version>0.9-SNAPSHOT0.9-SNAPSHOT</version>
   <name>OODT Web Grid</name>
   <packaging>war</packaging>
   <description>The OODT grid services (product and profile services) use CORBA or
@@ -58,9 +59,9 @@ the License.
     add new sets of product and profile query handlers, enabling
     seamless activation of additional capabilities.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.8.1/grid</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.8.1/grid</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/0.8.1/grid</url>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/trunk/grid</url>
   </scm>
   <build>
     <plugins>
@@ -78,22 +79,22 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-commons</artifactId>
-      <version>${project.parent.version}</version>
+      <version>0.9-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-profile</artifactId>
-      <version>${project.parent.version}</version>
+      <version>0.9-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-product</artifactId>
-      <version>${project.parent.version}</version>
+      <version>0.9-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-xmlquery</artifactId>
-      <version>${project.parent.version}</version>
+      <version>0.9-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>

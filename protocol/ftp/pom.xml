@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>org.apache.oodt</groupId>
 		<artifactId>oodt-core</artifactId>
-		<version>0.8.1</version>
+		<version>0.9-SNAPSHOT</version>
 		<relativePath>../../core/pom.xml</relativePath>
 	</parent>
 	<artifactId>cas-protocol-ftp</artifactId>
@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>cas-protocol-api</artifactId>
-			<version>${project.parent.version}</version>
+			<version>0.9-SNAPSHOT0.9-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jglobus</groupId>
