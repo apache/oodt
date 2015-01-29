@@ -19,7 +19,7 @@
 		<relativePath>../../core/pom.xml</relativePath>
 	</parent>
 	<artifactId>cas-protocol-api</artifactId>
-  <version>0.9-SNAPSHOT0.9-SNAPSHOT</version>
+  <version>0.9-SNAPSHOT</version>
 	<name>CAS Protocol</name>
 	<profiles>
 		<profile>
