@@ -20,7 +20,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.8.1</version>
+    <version>0.8.2-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>web-grid</artifactId>
@@ -58,9 +58,9 @@ the License.
     add new sets of product and profile query handlers, enabling
     seamless activation of additional capabilities.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.8.1/grid</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.8.1/grid</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/0.8.1/grid</url>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/grid</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/grid</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/0.9-SNAPSHOT/grid</url>
   </scm>
   <build>
     <plugins>
