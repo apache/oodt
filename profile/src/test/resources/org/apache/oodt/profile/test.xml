@@ -1,7 +1,5 @@
 <!-- DO NOT put the XML processing instruction or DOCTYPE decl in this -->
 <!-- file!  They're added by the unit test automatically. -->
-<!-- Copyright 2000-2002 California Institute of Technology.  ALL -->
-<!-- RIGHTS RESERVED.  U.S. Government Sponsorship acknowledged. -->
 <!-- $Id: test.xml,v 1.1.1.1 2004/03/02 20:53:39 kelly Exp $ -->
 <profile>
   <profAttributes>
