@@ -15,11 +15,10 @@
 	<parent>
 		<groupId>org.apache.oodt</groupId>
 		<artifactId>oodt-core</artifactId>
-		<version>0.9-SNAPSHOT</version>
+		<version>0.8.1</version>
 		<relativePath>../../core/pom.xml</relativePath>
 	</parent>
 	<artifactId>cas-protocol-api</artifactId>
-  <version>0.9-SNAPSHOT</version>
 	<name>CAS Protocol</name>
 	<profiles>
 		<profile>
@@ -90,17 +89,17 @@
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>oodt-commons</artifactId>
-			<version>0.9-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>cas-metadata</artifactId>
-			<version>0.9-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 		</dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-cli</artifactId>
-      <version>0.9-SNAPSHOT</version>
+      <version>${project.parent.version}</version>
     </dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>

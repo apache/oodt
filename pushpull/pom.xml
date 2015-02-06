@@ -21,15 +21,15 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.8.1</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent> 
   <artifactId>cas-pushpull</artifactId>
   <name>CAS Push-Pull-Framework</name>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/pushpull</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/pushpull</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/pushpull</url>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.8.1/pushpull</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.8.1/pushpull</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/0.8.1/pushpull</url>
   </scm>
 
  <build>
@@ -102,7 +102,7 @@
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-protocol-api</artifactId>
-      <version>0.9-SNAPSHOT</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
