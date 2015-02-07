@@ -266,6 +266,11 @@ the License.
         <name>Apache OODT</name>
         <url>http://oodt.apache.org/</url>
     </organization>
+    <scm>
+      <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.8.1</connection>
+      <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.8.1</developerConnection>
+      <url>http://svn.apache.org/viewvc/oodt/branches/0.8.1</url>
+    </scm>
     <build>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
