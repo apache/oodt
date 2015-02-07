@@ -1,0 +1,62 @@
+#!/usr/bin/env perl
+#/*
+# * Licensed to the Apache Software Foundation (ASF) under one or more
+# * contributor license agreements.  See the NOTICE file distributed with
+# * this work for additional information regarding copyright ownership.
+# * The ASF licenses this file to You under the Apache License, Version 2.0
+# * (the "License"); you may not use this file except in compliance with
+# * the License.  You may obtain a copy of the License at
+# *
+# *     http://www.apache.org/licenses/LICENSE-2.0
+# *
+# * Unless required by applicable law or agreed to in writing, software
+# * distributed under the License is distributed on an "AS IS" BASIS,
+# * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# * See the License for the specific language governing permissions and
+# * limitations under the License.
+# */
+#
+# this tool migrates cas-filemgr 1.6 format specific to the versioner
+# and repository path to the 1.7 format
+# Author: John Tran
+#
+# usage:
+# ./migrate_xml_policy
+# 
+# in the directory where the product-types.xml file is located.
+
+`/bin/cp product-types.xml product-types.xml.save`;
+
+open(FP_IN, 'product-types.xml.save');
+open(FP_OUT, '>product-types.xml');
+
+while(<FP_IN>) {
+  $line = $_;
+  
+  if (/versionerClass/) {
+     $v = &GiveMeClean($line);
+     print FP_OUT "   <versioner class=\"$v\" />\n";
+  } elsif (/repositoryPath/) {
+     $p = &GiveMeClean($line);
+     print FP_OUT "   <repository path=\"$p\" />\n";
+  } else {
+     print FP_OUT $line;
+  }
+
+}
+
+close FP_IN;
+close FP_OUT;
+
+1;
+
+sub GiveMeClean {
+   $line = shift;
+   $line =~ s/\s//g;
+   $line =~ s/\>/ /g;
+   $line =~ s/\</ /g;
+
+   @a = split(/ /, $line);
+   print "LINE: $line \n";
+   return $a[2];
+}

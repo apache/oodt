@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+  @package CAS_Filemgr
+  @author Chris A. Mattmann
+-->
+<package version="2.0" xmlns="http://pear.php.net/dtd/package-2.0"
+  xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0.xsd
+         http://pear.php.net/dtd/package-2.0
+         http://pear.php.net/dtd/package-2.0.xsd">
+  <name>Apache_OODT_CAS_Filemgr</name>
+  <channel>pear.apache.org/oodt</channel>
+  <summary>PHP CAS Filemgr Client and supporting API classes</summary>
+  <description>
+    This package provides a PHP-based XML-RPC client for the CAS filemgr
+    component. Though incomplete, the long term goals are to support the same
+    command line and API access that the Java-based client provides.
+  </description>
+  <lead>
+    <name>Chris Mattmann</name>
+    <user>mattmann</user>
+    <email>chris.mattmann@jpl.nasa.gov</email>
+    <active>yes</active>
+  </lead>
+  <date>2013-06-29</date>
+  <version>
+    <release>0.6.0</release>
+    <api>0.6.0</api>
+  </version>
+  <stability>
+    <release>stable</release>
+    <api>stable</api>
+  </stability>
+  <license
+    uri="http://www.apache.org/licenses/LICENSE-2.0">
+    Apache License, Version 2.0
+  </license>
+  <notes>
+    This package provides a PHP-based XML-RPC client for the CAS filemgr
+    component. Though incomplete, the long term goals are to support the same
+    command line and API access that the Java-based client provides.
+  </notes>
+  <contents>
+    <dir name="/" baseinstalldir="CAS/Filemgr">
+      <file name="BooleanQueryCriteria.class.php" role="php" />
+      <file name="Element.class.php" role="php" />
+      <file name="Metadata.class.php" role="php" />
+      <file name="Product.class.php" role="php" />
+      <file name="ProductPage.class.php" role="php" />
+      <file name="ProductType.class.php" role="php" />
+      <file name="Query.class.php" role="php" />
+      <file name="RangeQueryCriteria.class.php" role="php" />
+      <file name="TermQueryCriteria.class.php" role="php" />
+      <file name="XmlRpcFilemgrClient.class.php" role="php" />
+    </dir><!-- / -->
+  </contents>
+  <dependencies>
+    <required>
+      <php>
+        <min>5.1.6</min>
+      </php>
+      <pearinstaller>
+        <min>1.6.1</min>
+      </pearinstaller>
+    </required>
+  </dependencies>
+  <phprelease />
+  <changelog>
+    <release>
+      <version>
+        <release>1.0.0</release>
+        <api>1.0.0</api>
+      </version>
+      <stability>
+        <release>stable</release>
+        <api>stable</api>
+      </stability>
+      <date>2008-10-24</date>
+      <license
+        uri="http://www.apache.org/licenses/LICENCE-2.0">
+        Apache License, Version 2.0
+      </license>
+      <notes>
+        This package provides a PHP-based XML-RPC client for the CAS filemgr
+        component. Though incomplete, the long term goals are to support the
+        same command line and API access that the Java-based client provides.
+      </notes>
+    </release>
+  </changelog>
+</package>

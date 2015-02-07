@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+  <properties>
+    <title>Using Maven</title>
+    <author email="woollard@jpl.nasa.gov">David Woollard</author>
+  </properties>
+
+  <body>
+    <section name="Using Maven">
+      <p>OODT uses <a href="http://maven.apache.org/">Maven</a> for 
+      managing our build environment. Maven is an open source product from the 
+      <a href="http://www.apache.org/">Apache Software Foundation</a> that improves 
+      on <a href="http://ant.apache.org/">Ant</a> in the area of build management, 
+      which it turn was an improvement on Make. This document describes the use of 
+      Maven for Apache OODT build management.</p>
+    </section>
+    
+    <section name="Setup">
+      <p>Maven can be downloaded from the 
+      <a href="http://maven.apache.org/download.html">Maven Download</a> 
+      page. OODT is using version 2.0 and above. Maven was developed in Java so it 
+      will run on the popular platforms (e.g., Windows, Mac OSX, etc.). Beyond 
+      making sure the <i>mvn</i> executable is in your path, there is very little 
+      setup required.</p>
+
+      <p>Maven is based on the concept of a Project Object Model (POM) which is 
+      contained in the <i>pom.xml</i> file found at the root of each project. 
+      The POM allows Maven to manage a project's build, reporting and documentation. 
+      For OODT, much of the default information for managing the projects is 
+      contained in a parent POM, which is located in the <i>oodt-core</i> project. So, 
+      in order to build any of the other projects (e.g., cas-curator, cas-filemgr, 
+      etc.) the parent POM must be downloaded from the OODT Maven repository. The 
+      local <i>pom.xml</i> files for each of the projects have been configured to 
+      retrieve the parent POM automatically.</p>
+      
+      <p>Once Maven has been setup, the first step to building a project with Maven 
+      is to checkout a project's source code into the developer's work area. See the 
+      <a href="../development/subversion.html">Using Subversion</a> document for how to 
+      check out projects from the CM repository.</p>
+    </section>
+    
+    <section name="Project Structure">
+      <p>In order for default Maven functions to operate properly, there is a 
+      suggested project directory structure. The structure is as follows:</p>
+      
+      <source>
+/
+  src/             Source Code (everything)
+    main/            Program Source
+      assembly/        Package Descriptor
+      java/            Java Source
+      resources/       Scripts, Config File, etc.
+        ...
+    test/            Test Source
+      java/
+      resources/
+        ...
+    site/            Site Documentation
+      apt/             Docs in APT Format
+        index.apt
+        ...
+      xdoc/            Docs in XDOC Format
+        index.xml
+        ...
+      resources/
+        images/
+      site.xml         Menu Structure
+
+  target/          Build Results (binaries, docs and packages)
+    ...
+
+  LICENSE.txt
+  README.txt
+  pom.xml          Project Object Model (POM)
+      </source>
+    </section>
+    
+    <section name="Standard Commands">
+    <p>There are few standard commands that developers will use on a daily basis 
+    and they are related to building and cleaning a project.</p>
+    <subsection name="Build a Project">
+      <p>Build the project's libraries and executables with the following 
+      command:</p>
+      <source>
+mvn compile
+      </source>
+      <p>The above command will generate the artifacts in the <i>target/</i> 
+      directory.</p>      
+    </subsection>
+    <subsection name="Install a Project">
+      <p>Install the project's artifacts locally with the following command:</p>
+      <source>
+mvn install
+      </source>
+      <p>Prior to installation, the above command will compile the source code, 
+      if necessary, and execute the unit tests. The result of the above command 
+      is to install the generated artifacts (e.g. pom, jar, etc.) in the user's 
+      local Maven repository ($HOME/.m2/repository/). This is useful when the 
+      artifact is a dependency for another project but has yet to be deployed 
+      to the Maven repository.</p>
+    </subsection>
+    <subsection name="Package a Project">
+      <p>Create the project's distribution package with the following command:</p>
+      <source>
+mvn package
+      </source>
+      <p>Prior to package creation, the above command will compile the source 
+      code, if necessary, and execute the unit tests. The above command will 
+      create the package(s) in the target/ directory.</p>
+    </subsection>
+    <subsection name="Build a Project's Web Site">
+      <p>Build the project's web site with the following command:</p>
+      <source>
+mvn site
+      </source>
+      <p>The above command will generate the web site in the <i>target/site/</i>
+      directory. View the site by pointing your web browser at the 
+      <i>index.html</i> file within that directory.</p>
+    </subsection> 
+    <subsection name="Clean a Project">
+      <p>Clean out the project directory of generated artifacts with the 
+      following command:</p>
+      <source>
+mvn clean
+      </source>
+      <p>The above command will remove the <i>target/</i> directory and its 
+      contents.</p>
+    </subsection>
+    <subsection name="Useful Command Arguments">
+      <p>There a couple of useful arguments which can be appended to the 
+      commands above to limit the scope of the command.</p>
+      <p>In order to skip unit test execution, add the following argument:</p>
+      <source>
+mvn [command] -Dmaven.test.skip=true
+      </source>
+      <p>The above command is most useful with the <i>install</i>, 
+      <i>package</i> and <i>site</i> commands.</p>
+      <p>When a project has modules defined in the POM, the command can be 
+      performed against the top level of the project instead of the modules by 
+      adding the following argument:</p>
+      <source>
+mvn [command] --non-recursive
+      </source>
+    </subsection>
+    </section>
+    <section name="Acknowledgments">
+      <p>Much of the material in this Maven guide was originally authored 
+      by Sean Hardman under the sponsorship of NASA Jet Propulsion 
+      Laboratory's Planetary Data System. </p>
+    </section>
+    <section name="References">
+      <p>Here is a list of Maven resources:</p>
+      <ul>
+        <li><a href="http://maven.apache.org/guides/index.html">Online 
+        Documentation Index</a></li>
+      </ul>
+    </section>
+  </body>
+</document>

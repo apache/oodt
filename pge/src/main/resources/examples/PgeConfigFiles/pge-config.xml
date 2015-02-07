@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+
+TODO(bfoster): Make this a working example.
+-->
+<pgeConfig>
+    
+    <import namespace="optional-NS" file="absolute-or-relative-to-this-file-another-pgeConfig-import-file-path"/>
+    
+    <!-- input file for science PGE that need to be created  -->
+    <dynInputFiles>
+        
+        <!-- one or more of these -->
+        <file path="path-with-name-to-create" writerClass="class-path-to-SciPgeConfigFileWriter" args="zero-or-more-args-comma-segregated"/>
+        
+    </dynInputFiles>
+    
+    <!-- how to run science PGE -->
+    <exe dir="set-working-dir-for-script" shellType="script-type">
+        
+        <!-- one or more of these -->
+        <cmd>line-in-script-file</cmd>
+        
+    </exe>
+    
+    <!-- files to ingest -->
+    <output>
+
+        <!-- one or more of these -->
+        <!-- if a dir path is specified WITHOUT specifying an associated 
+             set of files tags, along with the regExp and metFileWriterClass
+             and args required to produce metadata CAS-PGE will REQUIRE that 
+             you provide (as part of the tasks.xml definition for this task:
+             
+             PGETask/Ingest/MimeExtractorRepo - Path to AutoDetectProductCrawler's 
+                                                MimeExtractorRepo XML config
+                                                
+             And an AutoDetectProductCrawler will be created in lieu of the 
+             StdProductCrawler. In addition you will not see the extracted
+             metadata produced as .met files in the job working directory for
+             these CAS-PGE jobs as the extracted metadata won't be serialized.
+         -->
+        <dir path="path-to-an-output-dir" createBeforeExe="true-or-false" />
+        
+        <dir path="path-to-an-output-dir" createBeforeExe="true-or-false">
+          <!-- back compatability re-introduced in OODT-667
+            by specifying one or more files you cause CAS-PGE to generate a StdProductCrawler,
+            to crawl generated metadata files derived from calling the metFileWriterClass implementation
+            on files matching Java RegEx or file name (exact match) in path-to-an-output-dir. Met files are serialized and stored in the job
+            directory where the CAS-PGE job ran, and are then ingested into the file manager along
+            with the origin data file.
+            
+           -->
+          <files regExp="java-regex" 
+                 name="file-name"
+                 metFileWriterClass="org.apache.oodt.cas.pge.writers.PcsMetFileWriter.subclass" 
+                 args="zero-or-more-args-comma-segregated">
+                 
+             <!-- 
+               A convention for renaming the files as they are processed on output.
+               By default uses the PathUtilsNamingConvention.
+              -->
+             <renamingConv namingExpr="/[SomePathUtils]/[Metadata]" envReplace="true">
+               <metadata key="some-key" val="some-val"/>
+               <metadata key="some-other-key" val="zero-or-more-vals-comma-segregated"/>                 
+             </renamingConv>      
+          </files>
+        </dir>
+
+    </output>
+    
+    <!-- metadata keys you want to set -->
+    <customMetadata>
+        
+        <!-- one or more of these -->
+        <metadata key="name-of-metadata-field" val="metadata-value"/>
+        
+    </customMetadata>
+    
+</pgeConfig>

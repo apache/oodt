@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+   <properties>
+      <title>CAS PGE Basic Developer Guide</title>
+      <author email="holenoter@me.com">Brian Foster</author>
+      <author email="rverma@jpl.nasa.gov">Rishi Verma</author>
+   </properties>
+
+   <body>
+   
+      <section name="Introduction">
+        <p>
+          This is the developer guide for the Apache OODT Catalog and Archive Service (CAS) 
+          Program Generation Executable (PGE) component, or CAS-PGE for short. This guide 
+          explains the CAS-PGE architecture as well as its tailorable extension 
+          points. 
+         
+        <p>The remainder of this guide is separated into the following sections:</p>
+       <ul>
+        <li><a href="#section1">Project Description</a></li>
+        <li><a href="#section2">Architecture</a></li>
+        <li><a href="#section3">Extension Points</a></li>
+      </ul>
+        </p>
+      </section>
+    
+      <a name="section1"/>
+      <section name="Project Description">
+        <p>In order to fully understand the CAS-PGE component, it is helpful to have a solid grasp
+        of the CAS Workflow component. If you need some background on CAS Workflow, please
+        see our <a href="../../workflow/development/developer.html">CAS Workflow Developer Guide</a>.
+        With CAS Workflow in mind, it is often the case that CAS Workflow is used as part of a data 
+        processing system - where 
+        workflows are responsible for controlling the run order of different Product Generation 
+        Executables (PGEs). In circumstances like this, CAS-PGE can help wrap a PGE as part of a
+        CAS Workflow. One can think of a PGE as a piece of code, which given a set of inputs, 
+        generates output files. Thus, CAS-PGE is designed to help accomplish the most common actions 
+        required to run PGEs: ie. finding their input files, executing the PGE, and saving their output files. 
+        CAS-PGE performs some of these actions by interacting with a second CAS component as well: 
+        CAS File Manager.  The CAS File Manager can be part of this type of workflow-based data processing 
+        system, which manages data files, and can support metadata-filtering queries across those
+        files to allow for fast retrieval. In other words, CAS File Manger complements CAS-PGE by 
+        supporting file cataloging for files involved in PGE operations. </p>
+        <p>In summary, CAS-PGE's role is to provide tools for 
+        encapsulating PGEs; however, it also seeks to leverage and make the use of other CAS 
+        components to support the aforementioned goal.</p> 
+      </section>    
+      
+      <a name="section2"/>
+      <section name="Architecture">
+      <p>[TBD]</p>
+      </section>
+      
+      <a name="section3"/>
+      <section name="Extension Points">
+	  <p>PGEs usually need a method by which information is given to them on how
+		to run, what to run with (i.e. input files), and where to place the
+		output files as well as what to name them. CAS-PGE accomplishes this, and other tasks,
+		by making use of customizable extension points.
+	 </p>
+	 <p>The following is a description of the most common extension points</p>
+	 <ul>
+	   <li><b>SciPgeConfigFileWriter</b> - writes configuration files for describing how a 
+	   PGE will run, with which input files it will run with, and where the output will be placed</li>
+	   <li><b>PcsMetFileWriter</b> - controls which metadata should be sent to the CAS File 
+	   Manager (with each output file) for ingestion</li>
+	   <li><b>PGETaskInstance</b> - an extensible module which performs the most generic 
+	   and common actions required by typical PGEs. This module makes getting started with a
+	   default PGE configuration simple.</li>
+	   <li><b>PgeConfigBuilder</b> - builds a PgeConfig object, which has the ability to
+	   control how a CAS-PGE will run</li>
+	   </ul>
+	   
+	   <p>The relationship between these extension-points and other CAS-PGE components 
+	   is described in the below figure. </p>
+	   
+	   <p><img src="../images/pge_instance_plugin_points.png" 
+        alt="Extension Points"/></p>    
+	   
+	   <subsection name="Runtime Execution">
+	   <p>
+	   In terms of runtime execution, CAS-PGE makes use of two mediums to configure how a 
+	   PGE will run: metadata and a 
+	   PgeConfig object. Using these two pieces of information, CAS-PGE can configure how 
+	   many configuration files it should generate, which SciPgeConfigFileWriter(s) to use to create 
+	   these configuration files, which output files need which PcsMetFileWriter to generate their
+		metadata for CAS File Manager ingestion, how to run the PGE, which CAS File
+		Manager to talk to, etc.  For the first medium (metadata), there is a set of reserved metadata
+		fields that CAS-PGE expects, which affects the way CAS-PGE runs (i.e. which CAS
+		File Manager to ingest to).  For the second medium (PgeConfig), the PgeConfigBuilder builds up a 
+		PgeConfig object, which can also control how CAS-PGE runs. 
+      </p>
+      </subsection>
+      </section>
+      
+    
+   </body>
+</document>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<remoteSpecs>
+    
+    <aliasSpecs>
+        <aliasSpec file="[CAS_PP_RESOURCES]/examples/ExternalSourcesFiles/ExternalSources.xml"/>
+    </aliasSpecs>
+
+    <daemons>
+        
+        <daemon alias="DewFtp" active="no">
+            <runInfo firstRunDateTime="2007-12-01T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles">
+                <propFiles regExp="IASI\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="DewFtp" deleteFromServer="no"/>               
+        </daemon>
+        
+        <daemon alias="DewFtp" active="no">
+            <runInfo firstRunDateTime="2007-12-01T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_TEMP_PROPS]/WeatherSftp">
+                <downloadInfo alias="WeatherSftp" remoteDir="junkTest"/>
+                <propFiles regExp="IASI\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="DewFtp" deleteFromServer="no"/>
+        </daemon>
+        
+        <daemon alias="CalPolySftp" active="no">
+            <runInfo firstRunDateTime="2007-12-01T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles">
+                <propFiles regExp="CalPoly\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="CalPolySftp" deleteFromServer="no"/>
+        </daemon>
+        
+        <daemon alias="WeatherSftp" active="no">
+            <runInfo firstRunDateTime="2007-12-01T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles">
+                <propFiles regExp="IASI\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="WeatherSftp" deleteFromServer="no"/>            
+        </daemon>
+        
+        <daemon alias="WeatherSftp" active="no">
+            <runInfo firstRunDateTime="2007-12-01T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_TEMP_PROPS]/WeatherSftp">
+                <downloadInfo alias="WeatherSftp" remoteDir="junkTest"/>
+                <propFiles regExp="IASI\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="WeatherSftp" deleteFromServer="no" queryElement="RetrievedFromLoc"/>                
+        </daemon>
+        
+        <daemon alias="WeatherSftp" active="no">
+            <runInfo firstRunDateTime="2007-12-24T00:10:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/FileListParserFiles">
+                <propFiles regExp="DownloadList\.txt" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.FileListParser"/>
+            </propInfo>
+            <dataInfo stagingArea="WeatherSftp" deleteFromServer="no" queryElement="RetrievedFromLoc"/>
+        </daemon>
+        
+        <daemon alias="ClassFtp" active="no">
+            <runInfo firstRunDateTime="2007-12-01T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles">
+                <propFiles regExp="IASI_2.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="ClassFtp" deleteFromServer="no" queryElement="Filename"/>
+        </daemon>
+        
+        <daemon alias="ClassFtp" active="no">
+            <runInfo firstRunDateTime="2007-12-01T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/ClassNoaaEmailParserFiles">
+                <propFiles regExp="[^\.].*" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.ClassNoaaEmailParser"/>
+            </propInfo>
+            <dataInfo stagingArea="ClassFtp" deleteFromServer="no" queryElement="Filename"/>
+        </daemon>
+        
+        <daemon alias="ClassFtp" active="no">
+            <runInfo firstRunDateTime="2007-12-14T00:00:00Z" period="3m" epsilon="20s" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_TEMP_PROPS]/ClassFtp/Emails">
+                <downloadInfo alias="PeateImaps" deleteFromServer="yes" renamingConv="CLASS_[HOST]_[DATE.UTC]_[FILENAME].email">
+                    <propFile path="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles/CLASS_Email.xml" 
+                        parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+                </downloadInfo>
+                <propFiles regExp=".*\.email" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.ClassNoaaEmailParser"/>
+                <afterUse moveToOnSuccess="[CAS_PP_TEMP_PROPS]/ClassFtp/ProcessedEmails" 
+                    moveToOnFail="[CAS_PP_TEMP_PROPS]/ClassFtp/FailedEmails"/>
+            </propInfo>
+            <dataInfo stagingArea="ClassFtp" deleteFromServer="no" allowAliasOverride="yes" 
+                queryElement="Filename" renamingConv="[GREP_RM('^L\d{1,}?\.','[FILENAME]')]"/>
+        </daemon>
+        
+        <daemon alias="ClassFtp" active="yes">
+            <runInfo firstRunDateTime="2007-12-14T00:00:00Z" period="3m" epsilon="20s" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_TEMP_PROPS]/ClassFtp/Emails">
+                <downloadInfo alias="localhost" deleteFromServer="yes" renamingConv="CLASS_[HOST]_[DATE.UTC]_[FILENAME].email">
+                    <propFile path="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles/CLASS_Text_Email.xml" 
+                        parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+                </downloadInfo>
+                <propFiles regExp=".*\.email" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.ClassNoaaEmailParser"/>
+                <afterUse moveToOnSuccess="[CAS_PP_TEMP_PROPS]/ClassFtp/ProcessedEmails" 
+                    moveToOnFail="[CAS_PP_TEMP_PROPS]/ClassFtp/FailedEmails"/>
+            </propInfo>
+            <dataInfo stagingArea="ClassFtp" deleteFromServer="no" allowAliasOverride="yes" 
+                queryElement="Filename"/>
+        </daemon>
+        
+        <daemon alias="GfsFtp" active="no">
+            <runInfo firstRunDateTime="2007-11-27T00:00:00Z" period="3m" epsilon="20s" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles">
+                <propFiles regExp="GFS\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="GfsFtp" renamingConv="[PARENT_FILENAME]_[FILENAME]" queryElement="RetrievedFromLoc"/>
+        </daemon>
+        
+        <daemon alias="PolarNcepNoaaFtp" active="no">
+            <runInfo firstRunDateTime="2007-11-27T00:00:00Z" period="3m" epsilon="20s" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles">
+                <propFiles regExp="RTG_SST\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="RtgSstFtp" queryElement="Filename"/>
+        </daemon>
+
+        <daemon alias="ModisFtp" active="no">
+            <runInfo firstRunDateTime="2007-12-01T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles">
+                <propFiles regExp="MODIS\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="ModisFtp" deleteFromServer="no" queryElement="RetrievedFromLoc"/>
+        </daemon>
+        
+        <daemon alias="GdaacFtp" active="no">
+            <runInfo firstRunDateTime="2007-12-01T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles">
+                <propFiles regExp="AIRABRAD\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="GdaccFtp" deleteFromServer="no" queryElement="RetrievedFromLoc"/>
+        </daemon>
+        
+        <daemon alias="AcdiscGsfcFtp" active="no">
+            <runInfo firstRunDateTime="2007-12-01T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles">
+                <propFiles regExp="AIRS3STD\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+                <propFiles regExp="AIRS3ST8\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="AcdiscGsfcFtp" deleteFromServer="no" queryElement="RetrievedFromLoc"/>
+        </daemon>
+        
+        <daemon alias="Signal42ApacheMirrorHttp" active="no">
+            <runInfo firstRunDateTime="2007-12-01T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles">
+                <propFiles regExp="IBIBLIO\.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="Signal42ApacheMirrorHttp" deleteFromServer="no" queryElement="RetrievedFromLoc"/>
+        </daemon>
+        
+        <daemon alias="RimeSftp" active="no">
+            <runInfo firstRunDateTime="2008-02-19T00:00:00Z" period="3m" runOnReboot="yes"/>
+            <propInfo dir="[CAS_PP_RESOURCES]/examples/DirStructXmlParserFiles">
+                <propFiles regExp="RimeDIRSTRUCT.xml" parser="org.apache.oodt.cas.pushpull.filerestrictions.parsers.DirStructXmlParser"/>
+            </propInfo>
+            <dataInfo stagingArea="RimeSftp" renamingConv="[PATH_NO_FILENAME]/[FILENAME]" deleteFromServer="no" queryElement="RetrievedFromLoc"/>
+        </daemon>
+        
+    </daemons>
+    
+</remoteSpecs>

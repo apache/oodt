@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<cas:workflows 
+	xmlns="http://oodt.jpl.nasa.gov/2.0/cas"
+	xmlns:cas="http://oodt.jpl.nasa.gov/2.0/cas"
+	xmlns:p="http://oodt.jpl.nasa.gov/2.0/cas/property">
+	
+	<workflow id="TestWorkflow" execution="sequential">
+		<task id-ref="Orbit"/>
+		<workflow id="tester" execution="sequential">
+			<conditions execution="parallel">
+				<condition id-ref="cond1"/>
+				<condition id-ref="cond2"/>
+			</conditions>
+			
+			<parallel>
+				<workflow id="L0" execution="sequential">
+					<task id-ref="L0a"/>
+					<task id-ref="L0b"/>
+					<task id-ref="L0c"/>
+					<task id-ref="L0d"/>
+				</workflow> 
+				<workflow id-ref="L1a"/>
+			</parallel>
+			<sequential>
+				<task id-ref="Ane"/>
+				<parallel>
+					<workflow id-ref="GeoCal"/>
+					<workflow id-ref="Geo"/>             
+				</parallel>
+			</sequential>
+			
+			<conditions execution="sequential">
+				<condition id-ref="cond3"/>
+			</conditions>
+		</workflow>
+		<workflow id-ref="MSPI_L1_Workflow"/>
+	</workflow>
+	
+	<task id="Orbit" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	<task id="L0a" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance" p:validateKey="Orbit_key,cond1_key,cond2_key"/>
+	<task id="L0b" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance" p:validateKey="Orbit_key,cond1_key,cond2_key,L0a_key"/>
+	<task id="L0c" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance" p:validateKey="Orbit_key,cond1_key,cond2_key,L0a_key,L0b_key"/>
+	<task id="L0d" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance" p:validateKey="Orbit_key,cond1_key,cond2_key,L0a_key,L0b_key,L0c_key"/>
+	<task id="Ane" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance" p:validateKey="Orbit_key,cond1_key,cond2_key,L0a_key,L0b_key,L0c_key,L0d_key"/>
+	
+	<condition id="cond1" p:timeout="200" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	<condition id="cond2" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance"/>
+	<condition id="cond3" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance" p:validateKey="L0a_key,L0b_key,L0c_key,L0d_key,L1aTask_key,Ane_key,GeoCalTask_key,GeoTask_key,cond1_key,cond2_key"/>
+	
+	<sequential id="L1a">
+		<task id="L1aTask" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance" p:validateKey="Orbit_key,cond1_key,cond2_key"/>
+	</sequential>
+	
+	<workflow id="GeoCal" execution="sequential">
+		<task id="GeoCalTask" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance" p:validateKey="Orbit_key,Ane_key,cond1_key,cond2_key,L0b_key,L0c_key,L0d_key"/>
+	</workflow>
+	
+	<workflow id="Geo" execution="sequential">
+		<task id="GeoTask" class="gov.nasa.jpl.oodt.cas.workflow.instance.ValidateMetadataInstance" p:validateKey="Orbit_key,Ane_key,cond1_key,cond2_key,L0b_key,L0c_key,L0d_key"/>
+	</workflow>
+
+</cas:workflows>

@@ -1,0 +1,109 @@
+#!/bin/bash
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#****************************
+# Instructions:
+#   1. Copy this file to ./env-vars.sh
+#   2. Add execute permissions to ./env-vars.sh
+#   3. Change next three sections to configure installation
+#****************************
+
+#****************************
+# Set these directories:
+#  INSTALL_DIR - Directory used to install and run software.
+#  TMP_DIR - Temporary directory used as scratch space.
+#  RUN_DIR - Directory that will hold run-time artifacts from software.
+#****************************
+export RUN_DIR=/your/runtime/dir/goes/here
+export INSTALL_DIR=/your/install/dir/goes/here
+export TMP_DIR=/your/tmp/dir/goes/here
+
+#****************************
+# Set SCREEN if use of GNU Screen is desired
+#****************************
+#export SCREEN="soodt-screen"
+
+#****************************
+# Set Ports
+#****************************
+export HADOOP_NAMENODE_PORT=8090
+export MESOS_MASTER_PORT=5050
+
+#****************************
+# Set these versions of software 
+#****************************
+export APACHE_MESOS_VERSION=0.19.0
+export SCALA_VERSION=2.10.4
+export KAFKA_VERSION=2.10-0.8.1.1
+export SPARK_VERSION=1.1.0
+export TACHYON_VERSION=0.5.0
+export HADOOP_VERSION=2.4.0
+export CLUSTER_TOOLS_VERSION=trunk
+
+#****************************
+# Set JAVA_HOME (will use from environment if set)
+#****************************
+export JAVA_HOME=${JAVA_HOME:-/path/to/java/home/}
+
+###
+#Beyond This Line: Advanced Users Only
+#(Following lines should be setup properly)
+###
+# Hosts file
+export HOSTS_FILE="${INSTALL_DIR}/cluster-tools/setup/hosts"
+export ENV_VARS="${INSTALL_DIR}/cluster-tools/setup/env-vars.sh" 
+# Hosts
+if [ -f ${HOSTS_FILE} ]
+then
+    export MESOS_HOST="$(cat ${HOSTS_FILE} | grep -v "^#" | head -1)"
+    export HADOOP_NAMENODE="${MESOS_HOST}"
+fi
+export RESOURCEMGR_HOST=${MESOS_HOST}
+# HADOOP envs
+export HADOOP_HOME="${INSTALL_DIR}/hadoop-${HADOOP_VERSION}"
+export HADOOP_OPTS="-XX:-PrintWarnings"
+
+# Source utility function
+if [ -f $(dirname ${ENV_VARS})/../scripts/utilites.sh ]
+then
+    . $(dirname ${ENV_VARS})/../scripts/utilites.sh
+fi
+
+# Mesos variables
+export MESOS_BUILD="${INSTALL_DIR}/mesos-${APACHE_MESOS_VERSION}/build/"
+export MESOS_HOME="${MESOS_BUILD}"
+export MESOS_LOG_DIR="${RUN_DIR}/log/mesos/"
+export MESOS_WORK_DIR="${RUN_DIR}/work/mesos/"
+export MESOS_NATIVE_LIBRARY="${MESOS_BUILD}/src/.libs/libmesos.so"
+# Get mesos master ip
+if [ -n "${MESOS_HOST}" ]
+then
+    export MESOS_MASTER_IP="$(host ${MESOS_HOST} | awk '{print $NF}')"
+fi
+# For Spark
+export MASTER="mesos://${MESOS_MASTER_IP}:${MESOS_MASTER_PORT}"
+export SPARK_HOME="${INSTALL_DIR}/spark-${SPARK_VERSION}-bin-hadoop2.4"
+for lib in "${SPARK_HOME}/python/" "${SPARK_HOME}/python/build/"
+do
+    if [[ ${PYTHONPATH} != *${lib}* ]]
+    then
+        export PYTHONPATH=${PYTHONPATH}:${lib}
+    fi
+done
+# Resource manager
+export RESOURCE_HOST="${RESOURCEMGR_HOST}"
+export RESOURCE_HOME="${INSTALL_DIR}/oodt/resource" 

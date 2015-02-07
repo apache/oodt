@@ -1,0 +1,89 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<wicket:panel>
+<wicket:link>
+ <link rel="stylesheet" type="text/css" href="WorkflowInstancesViewer.css"/>
+ <link rel="stylesheet" type="text/css" href="progress_wicket.css"/>
+ <wicket:remove>
+  <link rel="stylesheet" type="text/css" href="progress.css"/> 
+ </wicket:remove>
+ <script type="text/javascript" language="Javascript" src="prototype.js"></script>
+ <script type="text/javascript" language="Javascript" src="progress.js"></script>
+</wicket:link>
+
+<div id="instance_filter_header">
+  <h4>Filter Workflows by Status:</h4>
+  <p>Select any of the following to display only workflow instances with the corresponding status:</p>
+  <wicket:container wicket:id="workflow_statuses">
+    <a class="workflow_status" wicket:id="wstatus_link" href="#"><span wicket:id="wstatus">STARTED</span></a>
+  </wicket:container> 
+    <wicket:remove>
+    <a class="workflow_status" href="#">FINISHED</a>&nbsp;|
+    <a class="workflow_status" href="#">METMISS</a>&nbsp;|            
+    <a class="workflow_status" href="#">PAUSED</a>&nbsp;|
+    <a class="workflow_status" href="#">ALL</a>&nbsp;|
+    </wicket:remove>
+</div>
+
+   <p>Workflows <b wicket:id="start_idx">1</b>-<b wicket:id="end_idx">20</b> of <b wicket:id="num_insts">20</b> total</p>
+     <table id="workflow_inst_tbl">
+       <thead class="centered">
+         <tr>
+	         <th>Workflow</th>
+	         <th>Progress</th>
+	         <th>Status</th>
+	         <th>Execution Time (min)</th>
+	         <th>Current Task Execution Time (min)</th>
+	         <th>Current Task</th> 
+         </tr>
+       </thead>
+		
+		<tbody>
+	       <tr wicket:id="workflow_insts">
+	         <td><a href="#" wicket:id="workflow_link"><span wicket:id="workflow_name">Test Workflow</span></a>
+	         <br/>
+	         <p class="smaller" wicket:id="inst_met_display">ProcessingNode:localhost,WorkflowInstanceId:1</p>
+	         </td>
+	         <td class="centered"><script wicket:id="winst_display">display('./percentImage.png', 'winst_1_progress', 66, 1);</script></td>
+	         <td class="centered" wicket:id="winst_status">RSUBMIT</td>
+	         <td class="centered" wicket:id="winst_wallclock_mins">5.22</td>
+	         <td class="centered" wicket:id="winst_task_wallclock_mins">2.5</td>
+	         <td class="centered"><a href="#" wicket:id="task_link"><span wicket:id="task_name">Hello World</span></a></td>
+	        </tr>
+        </tbody>
+    </table>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <span wicket:id="paginator"/>
+    
+    <wicket:remove>
+    <hr width="*">
+    <div align="center">
+      <table id="pagination_table">
+         <tr>
+           <td id="pagination_table_result_hdr">Result Page</td>
+         </tr>
+      </table>
+    </div>
+    </wicket:remove>
+
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</wicket:panel>
+
