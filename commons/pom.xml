@@ -28,11 +28,6 @@
   <name>Common Utilities</name>
   <packaging>jar</packaging>
   <description>Apache OODT Common Utilities Project</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/commons</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/commons</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/0.9-SNAPSHOT/commons</url>
-  </scm>
   <build>
     <resources>
         <resource>

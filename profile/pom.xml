@@ -31,11 +31,6 @@
     Dublin Core and ISO-11179 metadata as well as URIs for locations.
     The Profile Service catalogs metadata descriptions and provides
     creating, updating, and querying capabilities.</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/profile</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/profile</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/0.9-SNAPSHOT/profile</url>
-  </scm>
   <build>
     <resources>
       <resource>

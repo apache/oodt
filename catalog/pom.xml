@@ -30,11 +30,6 @@
   are mapped to a common dictionary, and then integrated locally so that
   they may be queried across and ingested into.
   </description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/catalog</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/catalog</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/0.9-SNAPSHOT/catalog</url>
-  </scm>
   <profiles>
     <profile>
       <id>audit</id>

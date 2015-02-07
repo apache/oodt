@@ -32,11 +32,6 @@ the License.
         Apache OODT is middleware for metadata.
     </description>
 
-    <scm>
-        <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT</developerConnection>
-        <url>http://svn.apache.org/viewvc/oodt/tags/0.9-SNAPSHOT</url>
-    </scm>
 
     <modules>
         <module>core</module>

@@ -27,11 +27,6 @@ the License.
   <packaging>war</packaging>
   <name>CAS Curation Interface</name>
   <description>A web application for managing policy for products and files and metadata that have been ingested via the CAS component.</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/curator</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/curator</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/0.9-SNAPSHOT/curator</url>
-  </scm>
   <build>
     <plugins /> 
   </build>

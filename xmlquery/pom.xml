@@ -34,11 +34,7 @@
     query.  It's used by many other components as the standard way to
     pass a query and its results between servers, clients, nodes, and
     other components.</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/xmlquery</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/xmlquery</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/0.9-SNAPSHOT/xmlquery</url>
-  </scm>
+
   <build>
     <resources>
       <resource>

@@ -28,11 +28,7 @@ the License.
   <description>The resource management component of a Catalog and Archive Service. This component
      provides job management, and management of the underlying software system hardware
      and resources, such as disk space, computational resources, and shared identity.</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/resource</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/resource</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/0.9-SNAPSHOT/resource</url>
-  </scm>
+
   <build>
     <plugins>
       <plugin>
