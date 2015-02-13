@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- FIXME: change namespace URI? -->
+<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+ <keyval>
+   <key>Filename</key>
+   <val>testfile.txt</val>
+ </keyval>
+ <keyval>
+   <key>FileLocation</key>
+   <val>[EXTRACT_FILE_LOC]</val>
+ </keyval>
+ <keyval>
+   <key>ProductType</key>
+   <val>GenericFile</val>
+ </keyval>
+</cas:metadata>

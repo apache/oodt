@@ -1,0 +1,21 @@
+#!/bin/sh
+
+export PROD_FILE=$1
+export MET_FILE=$2
+
+set PROD_FILE
+set MET_FILE
+
+#echo "PWD IS $PWD and CWD is $CWD"
+#echo "product file: $PROD_FILE, met file: $MET_FILE"
+
+export PROD_DIR=`dirname $PROD_FILE`
+set PROD_DIR
+export MET_DIR=`dirname $MET_FILE`
+set PROD_DIR
+
+
+if [ $PROD_DIR = $MET_DIR ]; then
+	# just copy the sample metadata
+	cp <TEST_SAMPLE_MET_PATH> $MET_FILE
+fi

@@ -1,0 +1,690 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+  <properties>
+    <title>Setting Up the CAS-Curator</title>
+    <author email="woollard@jpl.nasa.gov">David Woollard</author>
+  </properties>
+
+  <body>
+    <section name="Introduction">
+      <p>This document serves as a basic user's guide for the CAS-Curator
+      project. The goal of the document is to allow users to check out,
+      build, and install the base version of the CAS-Curator, as well
+      as perform basic configuration tasks. For advanced topics, such 
+      as customizing the look and feel of the CAS-Curator for your
+      project, please see our <a href="../user/advanced.html">Advanced 
+      Guide.</a></p>
+      
+      <p>The remainder of this guide is separated into the following 
+      sections:</p>
+      <ul>
+        <li><a href="#section1">Download and Build</a></li>
+        <li><a href="#section2">Tomcat Deployment</a></li>
+        <li><a href="#section3">Staging Area Setup</a></li>
+        <li><a href="#section4">Extractor Setup</a></li>
+        <li><a href="#section5">File Manager Configuration</a></li>
+      </ul>
+      
+    </section>
+    
+    <a name="section1"/>
+    <section name="Download And Build">
+      <p>The most recent CAS-Curator project can be downloaded from
+      the OODT <a href="http://oodt.apache.org/">website</a> or it can
+      be checked out from the OODT repository using Subversion. The 
+      We recommend checking
+      out the latest released version (v1.0.0 at the time of writing).
+      </p>
+      
+      <p>Maven is the build management system used for OODT projects. We
+      currently support Maven 2.0 and later. For more information on 
+      Maven, see our <a href="../development/maven.html">Maven Guide.</a>
+      </p>
+      
+      <p>Assuming a *nix-like environment, with both Maven and Subversion 
+      clients installed and on your path, an example of the checkout and 
+      build process is presented below:</p>
+      
+      <source>
+> mkdir /usr/local/src
+> cd /usr/local/src
+> svn checkout http://oodt/repo/cas-curator/tags/1_0_0_release \
+    cas-curator-v1.0.0       
+      </source>
+        
+      <p>After the Subversion command completes, you will have the source
+      for the CAS-Curator project in the <code>/usr/local/src/cas-curator-v1.0.0</code>
+      directory.</p>
+      
+      <p>In order to build the WAR (Web ARchive) file from this source,
+      issue the following commands:</p>
+      
+      <source>
+> cd /usr/local/src/cas-curator-v1.0.0
+> mvn package    
+      </source>   
+      
+      <p>Once the Maven command completes successfully, you should have a 
+      <code>target</code> directory under <code>cas-curator-v1.0.0/</code>. The 
+      WAR file, called <code>cas-curator-1.0.0.war</code>, can be found under 
+      <code>target/</code>.</p>
+      
+      <p>In the next section, we will discuss deploying this WAR file to
+      a Tomcat instance.</p>   
+      
+    </section> 
+    
+    <a name="section2"/>
+    <section name="Tomcat Deployment">
+      <p>Once you have built a war file, it is necessary to deploy the web
+      application using a servlet container such as 
+      <a href="http://tomcat.apache.org/">Tomcat</a> or 
+      <a href="http://www.mortbay.org/jetty/">Jetty</a>. For the purposes of 
+      this guide, we will assume that you are using Tomcat. Tomcat can be
+      installed in a user account or at the system level. The base configuration
+      launches a web server on port 8080. You can learn more about Tomcat and 
+      download the latest release from their 
+      <a href="http://tomcat.apache.org/">website</a>. NOTE: There are two
+      concurrent versions of Tomcat: 5.5.X and 6.0.X. CAS-Curator is compatible
+      with both versions.</p>
+      
+      <p>We will assume that you have downloaded Tomcat to an appropriate 
+      directory, are using the default configuration, and have taken the 
+      appropriate steps to allow access to port 8080. See your System 
+      Administrator is you have any questions about firewall security and policy
+      regarding port access. We will further assume that you have set an 
+      environment variable, <code>$TOMCAT_HOME</code>, to the base directory
+      of your Tomcat installation.</p>
+      
+      <p>There are a number of ways to deploy a WAR file to Tomcat, though we
+      recommend using a context file. A context file is a XML file that provides
+      Tomcat with "context" for using a particular web application. In order to 
+      create a context file for the CAS-Curator, open your favorite text editor
+      and copy and paste the following:</p>
+      
+      <source><![CDATA[<Context path="/my-curator"
+docBase="/usr/local/src/cas-curator-v1.0.0/target/cas-curator-1.0.0.war">  
+  <Parameter name="org.apache.oodt.security.sso.implClass"
+            value="org.apache.oodt.security.sso.DummyImpl"/>
+  <Parameter name="org.apache.oodt.cas.curator.projectName"
+        value="My Project"/>
+</Context>    
+      ]]></source>
+       
+      <p>Save the context file to 
+      <code>$TOMCAT_HOME/conf/Catalina/localhost/my-curator.xml</code>. Now you 
+      can point a web browser to <a href="http://localhost:8080/my-curator/">
+      http://localhost:8080/my-curator</a> and you should see a log-in screen
+      for CAS-Curator. <em>Note</em>: Tomcat will only use the path attribute 
+      if the context is defined in server.xml. Tomcat uses the xml file name 
+      instead. See the 
+      <a href="http://tomcat.apache.org/tomcat-5.5-doc/config/context.html" class="externalLink"> 
+      Tomcat documentation</a> for further information</p> 
+      
+      <img src="../images/basic_login.jpg"/>
+      
+      <p>The <code>org.apache.oodt.security.sso.implClass</code> parameter
+      that we set in the context file configures the CAS-Curator for a "dummy"
+      log-in to its Single Sign On service. Because of this, we are able to 
+      log into the web application with a blank user name and a blank password. 
+      For help in implementing security with CAS-Curator, see our 
+      <a href="../user/advanced.html">Advanced Guide.</a></p>
+      
+      <img src="../images/basic_page.jpg"/>
+      
+      <p>In the next sections, we will talk about setting up staging areas, 
+      metadata extractors, and launching a CAS-Filemgr instance into which 
+      CAS-Curator will ingest data products.</p>
+        
+    </section> 
+    
+    <a name="section3"/>
+    <section name="Staging Area Setup">
+      <p>Staging areas are directories on your local machine that hold data 
+      products to be curated. The staging area can have arbitrary structure. 
+      The only requirement that CAS-Curator has with regard to this structure 
+      is that the directory structure be mirrored in a metadata generation
+      area. This generation area is used by CAS-Curator to create metadata
+      files to associate with data products.</p>
+      
+      <p>For example, if there is a product, say an MP3 file of Bach's <i>Der 
+      Geist hilft unsrer Schwachheit auf</i>, in the staging area at:</p>
+      
+      <source> 
+[staging_area_base]/audio/classical/bach/Der_Geist_hilft.mp3   
+      </source>
+      
+      <p>Then the CAS-Curator will generate all associated metadata products
+      in <code>[metadata_gen_base]/audio/classical/bach/</code>.</p>
+      
+      <p>In order to set up the staging area and the metadata generation area,
+      we first create base directories for each, shown below:</p>
+      
+      <source>
+> mkdir /usr/local/staging
+> mkdir /usr/local/staging/products
+> mkdir /usr/local/staging/metadata
+      </source>
+      
+      <p>Next, we will set the following parameters in the CAS-Curator context file:</p>
+      
+<source><![CDATA[<Parameter name="org.apache.oodt.cas.curator.stagingAreaPath"
+        value="/usr/local/staging/products"/>
+    
+<Parameter name="org.apache.oodt.cas.curator.metAreaPath"
+        value="/usr/local/staging/metadata"/>
+    
+<Parameter name="org.apache.oodt.cas.curator.metExtension"
+        value=".met"/>]]></source>
+      
+    <p>The <code>org.apache.oodt.cas.curator.stagingAreaPath</code> parameter should 
+    be set to the product staging area and the 
+    <code>org.apache.oodt.cas.curator.metAreaPath</code> should be set to the metedata
+    generation area. Additionally, we specified the parameter 
+    <code>org.apache.oodt.cas.curator.metExtension</code> to be <code>.met</code>. 
+    This parameter specifies the extension for all of the metadata files produced in
+    the metadata generation area.</p>
+    
+    <p>For illustrative purposes, we will load an mp3 file into the staging area:</p>
+    
+    <source>
+> mkdir /usr/local/staging/products/mp3
+> cd /usr/local/staging/products/mp3
+> curl -LO http://oodt.apache.org/components/maven/curator/media/Bach-SuiteNo2.mp3
+    </source>
+    
+    <p>We should note that this music file was produced by the 
+    <a href="http://www.fuldaer-symphonisches-orchester.de/">Fulda Symphonic 
+    Orchestra</a> and is freely distributed under the
+    <a href="http://www.eff.org/about/">EFF Open Audio License</a>, version 1.0. We 
+    have edited the ID3 tag of this file (in order to make the later metadata extraction
+    example more interesting), but original authorship is retained. Now back to the 
+    tutorial...</p>
+    
+    <p>Remember that we need to mirror the product staging area and the metadata 
+    generation area, so will also need to create the matching directory structure 
+    there:</p>
+    
+    <source>
+> mkdir /usr/local/staging/metadata/mp3
+    </source>
+    
+    <p>Once you restart Tomcat, the changes you have made to the context file will be
+    used. The staging area will now be set to <code>/usr/local/staging/products</code>.
+    See the screenshot below:</p>
+ 
+    <img src="../images/basic_staging.jpg"/>    
+    
+    <p>Double-clicking on "mp3", we can see that the staging area path in the top left 
+    is now <code>/mp3</code> and <code>Bach-SuiteNo2.mp3</code> can be seen the main 
+    left staging pane. For the time-being, there is no metadata detected (as reported 
+    in the main right staging pane), but in the next section, we will be setting up a 
+    basic, command-line metadata extractor in order to show how extractors are 
+    integrated into CAS-Curator.</p>
+          
+    </section> 
+    
+    <a name="section4"/>
+    <section name="Extractor Setup">
+    <p>The CAS-Curator uses ancillary programs called metadata extractors to produce
+    the metadata that it associates with products. More information about metadata 
+    extractors can be found in the 
+    <a href="../../metadata/user/extractorBasics.html">
+    Extractor Basics</a> User's Guide.</p>
+    
+    <p>Like the staging area, we first need to set up an area in the file system for
+    metadata extractors. We will call this directory <code>extractors</code>:</p>
+    
+    <source>
+ > mkdir /usr/local/extractors   
+    </source> 
+    
+    <p>In order to register the metadata extractor path with the CAS-Curator, we will 
+    need to add another parameter to the web application's context file. Add the
+    following parameter:</p>
+    
+<source><![CDATA[<Parameter name="org.apache.oodt.cas.curator.metExtractorConf.uploadPath"
+		value="/usr/local/extractors" />    
+    ]]></source>
+    
+    <p>We are going to make a metadata extractor that will extractor ID3 tag metadata, 
+    such as author, title, resource type, etc from mp3s. As a first step, we will create 
+    a directory for the new extractor. The name of this directory is important, because
+    CAS-Curator will use the directory name to register the extractor. We will name this
+    directory <code>mp3extractor</code></p>
+    
+<source>
+> mkdir /usr/local/extractors/mp3extractor
+</source>
+
+    <p>While we could write a custom extractor in Java for the Cas-Curator, there are 
+    multiple existing software packages that read mp3 ID3 tags. For these situations,
+    where an external, command-line extractor exists, we have developed the 
+    <code>ExternMetExtractor</code> class in the CAS-Metadata project.</p>
+    
+    <p>For this example, we are going to leaverage an existing, open source mime-type
+    detector with text and metadata parsing capabilities called 
+    <a href="http://lucene.apache.org/tika/">Apache Tika</a>. Tika parses a number of 
+    different common data formats, including a number of audio formats like mp3.
+    I'll leave it to the reader of this guide to download and install Tika. We
+    will assume that the latest release of the tika-app jar is in the 
+    <code>mp3extractor</code> directory.</p>
+    
+    <p>We have a little work to do to convert the output of Tika into a metadata file
+    compatible with CAS-Curator. By default, Tika produces metadata in a "key: value"
+    format as shown in the command-line session below:</p>
+    
+<source><![CDATA[
+> java -jar tika-app-0.5-SNAPSHOT.jar -m \
+    /usr/local/staging/products/mp3/Bach-SuiteNo2.mp3
+Author: Johann Sebastian Bach
+Content-Type: audio/mpeg
+resourceName: Bach-SuiteNo2.mp3
+title: Bach Cello Suite No 2  
+    ]]></source>   
+    
+    <p>With a little AWK magic, we can convert this output to the Cas-Metadata xml
+    format:</p>
+    <!-- FIXME: change namespace URI? -->
+<source><![CDATA[
+> java -jar tika-app-0.5-SNAPSHOT.jar -m \
+  /usr/local/staging/products/mp3/Bach-SuiteNo2.mp3 | awk -F:\
+  'BEGIN \
+  {print "<cas:metadata xmlns:cas=\"http://oodt.jpl.nasa.gov/1.0/cas\">"}\
+  {print "<keyval><key>"$1"</key><val>"substr($2,2)"</val></keyval>"}\
+  END {print "</cas:metadata>"}'
+<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+<keyval><key>Author</key><val>Johann Sebastian Bach</val></keyval>
+<keyval><key>Content-Type</key><val>audio/mpeg</val></keyval>
+<keyval><key>resourceName</key><val>Bach-SuiteNo2.mp3</val></keyval>
+<keyval><key>title</key><val>Bach Cello Suite No 2</val></keyval>
+</cas:metadata>            
+    ]]></source> 
+    
+    <p>Cool as a one line format translater is, we are actually going to have to
+    do a little more work to create an extractor capable of producing metadata
+    for CAS-Curator. A requirement for metadata extractors that are to be integrated
+    with CAS-Curator is that they product three pieces of metadata:</p>
+    
+    <ul>
+      <li>ProductType</li>
+      <li>FileLocation</li>
+      <li>Filename</li>
+    </ul> 
+    
+    <p>We should note that this is NOT a general requirement of all metadata 
+    extractors, but a ramification of the current implementation of CAS-Curator.
+    In order to product this extra metadata, we will develop a small Python
+    script:</p> 
+
+<source><![CDATA[
+#!/usr/bin/python
+
+import os
+import sys
+
+fullPath = sys.argv[1]
+pathElements = fullPath.split("/");
+fileName = pathElements[len(pathElements)-1]
+fileLocation = fullPath[:(len(fullPath)-len(fileName))]
+productType = "MP3"
+
+cmd = "java -jar /Users/woollard/Desktop/extractors/mp3extractor/"
+cmd += "tika-app-0.5-SNAPSHOT.jar -m "+fullPath+" | awk -F:"
+cmd += " 'BEGIN {print \"<cas:metadata xmlns:cas="
+cmd += "\\\"http://oodt.jpl.nasa.gov/1.0/cas\\\">\"}"
+cmd += " {print \"<keyval><key>\"$1\"</key><val>\"substr($2,2)\""
+cmd += "</val></keyval>\"}' > "+fileName+".met"
+
+os.system(cmd)
+
+f = open(fileName+".met", 'a')
+f.write('<keyval><key>ProductType</key><val>+productType)
+f.write('</val></keyval>\n<keyval><key>Filename</key><val>')
+f.write(fileName+'</val></keyval>\n'<keyval><key>FileLocation')
+f.write('</key><val>'+fileLocation+'</val></keyval>\n')
+f.write('</cas:metadata>')
+f.close()
+]]></source>
+
+    <p>We'll assume that you have Python installed at <code>/usr/bin/python</code>
+    and you have named this script <code>mp3PythonExtractor.py</code> and placed
+    it in <code>/usr/local/extractors/mp3extractor</code>. We'll need
+    to make sure it is executable from the command-line:</p>
+
+<source><![CDATA[
+> cd /usr/local/extractors/mp3extractor
+> chmod +x mp3PythonExtractor.py
+> ./mp3PythonExtractor.py \
+ /usr/local/staging/products/mp3/Bach-SuiteNo2.mp3
+<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+<keyval><key>Author</key><val>Johann Sebastian Bach</val></keyval>
+<keyval><key>Content-Type</key><val>audio/mpeg</val></keyval>
+<keyval><key>resourceName</key><val>Bach-SuiteNo2.mp3</val></keyval>
+<keyval><key>title</key><val>Bach Cello Suite No 2</val></keyval>
+<keyval><key>ProductType</key><val>MP3</val></keyval>
+<keyval><key>Filename</key><val>Bach-SuiteNo2.mp3</val></keyval>
+<keyval><key>FileLocation</key><val>/usr/local/staging/products/mp3
+</val></keyval>
+</cas:metadata>
+]]></source>  
+    
+    <p>Now that we have a metadata extractor that meets our requirements (it's
+    callable from the command-line, it produces CAS-Metadata compatible XML, and
+    it extracts <i>ProductType</i>, <i>Filename</i>, and <i>FileLocation</i>),
+    the next step is to create an <code>ExternMetExtractor</code> configuration
+    file. This file will configure CAS-Metadata's <code>ExternMetExtractor</code>
+    to call the <code>mp3PythonExtractor.py</code> script correctly.</p> 
+    
+    <p>There is more information about <code>ExternMetExtractor</code> 
+    configuration available in CAS-Metadata's 
+    <a href="http://oodt.jpl.nasa.gov/cas-metadata/user/extractorBasics.html">
+    Extractor Basics</a> User's Guide. For the purposes of this guide, we will 
+    assume that the reader is familiar with configuration of this extractor, so we 
+    will just present the configuration below (we assume that you name this file 
+    <code>mp3PythonExtractor.config</code>):</p> 
+ 
+<source><![CDATA[    
+<?xml version="1.0" encoding="UTF-8"?>
+<cas:externextractor xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+   <exec workingDir="">
+      <extractorBinPath>
+/usr/local/extractors/mp3extractor/mp3PythonExtractor.py
+      </extractorBinPath>
+      <args>
+         <arg isDataFile="true"/>
+      </args>
+   </exec>
+</cas:externextractor>
+]]></source>    
+    
+    <p>The last step in configuring our mp3 metadata extractor is to provide a 
+    properties file for CAS-Curator so that it knows how to call the 
+    <code>ExternMetExtractor</code>. Each extractor used by CAS-Curator needs
+    a <code>config.properties</code> file. This file sets two properties:</p>
+    
+    <ul>
+      <li><code>extractor.classname</code></li>
+      <li><code>extractor.config.files</code></li>
+    </ul>  
+    
+    <p>Create a <code>config.properties</code> file (this name is important for 
+    CAS-Curator to pick up the cofiguration) in the 
+    <code>/usr/local/extractors/mp3extractor</code> directory. This file should
+    consist of the following parameters:</p>
+
+<source>
+extractor.classname=org.apache.oodt.cas.metadata.extractors.ExternMetExtractor
+extractor.config.files=/usr/local/extractors/mp3extractor/mp3PythonExtractor.config
+</source>
+
+    <p>To recap, we first created a Python script that calls
+    <a href="http://lucene.apache.org/tika/">Apache Tika</a> to extract metadata
+    from mp3 files. Then we created a configuration file that configures 
+    CAS-Metadata's <code>ExternMetExtractor</code> to call this python script.
+    Finally, we created a properties file for the CAS-Curator to call the 
+    <code>ExternMetExtractor</code>. To confirm the configuration of this 
+    extractor, we can long list the extractor directory:</p>
+    
+    <source>
+> cd /usr/local/extractors/mp3extractor
+> ls -l
+total 51448
+-rw-r--r--  1 -  -       167 Nov 27 13:50 config.properties
+-rw-r--r--  1 -  -       328 Nov 27 13:49 mp3PythonExtractor.config
+-rwxr-xr-x  1 -  -       702 Nov 27 13:49 mp3PythonExtractor.py
+-rw-r--r--  1 -  -  26325155 Nov 27 13:46 tika-app-0.5-SNAPSHOT.jar
+    </source>    
+
+    <p>Once you restart Tomcat, the change you have made to the context file will be
+    used. The extractor area will now be set to <code>/usr/local/extractors</code>.
+    See the screenshot below:</p>
+ 
+    <img src="../images/basic_extractor.jpg"/> 
+    
+    <p>In the above screenshot, we see that, upon clicking on the mp3 file, 
+    metadata produced by the <code>mp3extractor</code> is shown in the main right 
+    staging pane. Now staging and extraction are set up. In the next section, we
+    will set up a CAS-Filemgr instance and show how CAS-Curator can be used to 
+    ingest products.</p>
+    
+    </section>
+    
+    <a name="section5"/>
+    <section name="File Manager Configuration">
+    
+    <p>The final step in our basic configuration of CAS-Curator is to configure a 
+    CAS-Filemgr instance into which we will ingest our mp3s. There is a lot of
+    information on configuring the CAS-Filemgr in its
+    <a href="../../filemgr/user/">User's Guide</a>. We will 
+    assume familiarity with the CAS-Filemgr for the remainder of this guide.</p>
+    
+    <p>In this guide, we will focus on the basic configuration necessary to tailor
+    a vanilla build of the CAS-Filemgr for use with our CAS-Curator. We will assume 
+    that you have built the latest release of the CAS-Filemgr (v1.8.0 at the time of 
+    this writing) and installed it at:</p>
+    
+    <source>
+/usr/local/src/cas-filemgr-1.8.0/
+    </source>
+    
+    <p>The first step in configuring the CAS-Filemgr is to edit the 
+    <code>filemgr.properties</code> file in the <code>etc</code> directory. This 
+    file controls the basic configuration of the CAS-Filemgr, including its
+    various extension points. For this example, we are going to run the CAS-Filemgr
+    in a very basic configuration, with both its repository and validation layer
+    controlled by XML configuration, a local data transfer factory, and a 
+    <a href="http://lucene.apache.org/java/docs/">Lucene</a>-based metadata 
+    catalog.</p>
+    
+    <p>In order to create this configuration, we will change the following
+    parameters in the <code>filemgr.properties</code> file:</p>
+    
+    <ul>
+      <li>Set <code>org.apache.oodt.cas.filemgr.catalog.lucene.idxPath</code>
+      to <code>/usr/local/src/cas-filemgr-1.8.0/catalog</code>. This parameter
+      tells CAS-Filemgr where to create the Lucene index. The first time you start 
+      the CAS-Filemgr, make sure that this file does NOT exist. The CAS-Filemgr 
+      will take care of creating it and populating it with the appropriate files.
+      </li>
+      <li>Set <code>org.apache.oodt.cas.filemgr.repositorymgr.dirs</code> to
+      <code>file:///usr/local/src/cas-filemgr-1.8.0/policy/mp3</code>. The value needs
+      to be a URL and we are pointing to a policy folder we will create.</li>
+      <li>Set <code>org.apache.oodt.cas.filemgr.validation.dirs</code> to 
+      <code>file:///usr/local/src/cas-filemgr-1.8.0/policy/mp3</code>. Like the last 
+      parameter we configured, this parameter should be a URL and point to the 
+      same policy folder.</li>
+    </ul>
+    
+    <p>With these changes, you are ready to run the basic configuration of the 
+    CAS-Filemgr. In order to make this install of CAS-Filemgr work with our 
+    CAS-Curator, however, we will also need to augment the basic policy for both
+    the repository manager and validation layer.</p>
+    
+    <p>First, we will create a policy directory for our mp3 curator. We can do this
+    by moving the current policy files from the base <code>policy</code> directory to
+    a <code>mp3</code> directory:</p>
+    
+    <source>
+> cd /usr/local/src/cas-filemgr-1.8.0/policy
+> mkdir mp3
+> mv *.xml mp3/    
+    </source> 
+    
+    <p>Next, we will add a product type to our instance of the CAS-Filemgr. In order 
+    to do this, we will edit the <code>product-types.xml</code> file in the 
+    <code>policy/mp3</code> directory. We will add the following as a child of the 
+    <code>&lt;cas:producttypes&gt;</code> node (we purposefully elide any
+    commentary on the details of this configuration and leave it to the 
+    reader):</p>
+
+<source><![CDATA[ 
+<type id="urn:example:MP3" name="MP3">
+  <repository path="file:///usr/local/archive"/>
+  <versioner class="org.apache.oodt.cas.filemgr.versioning.BasicVersioner"/>
+  <description>A product type for mp3 audio files.</description>
+  <metExtractors>
+    <extractor
+   class="org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor">
+      <configuration>
+        <property name="nsAware" value="true" />
+        <property name="elementNs" value="CAS" />
+        <property name="elements"
+              value="ProductReceivedTime,ProductName,ProductId" />
+      </configuration>
+    </extractor>
+  </metExtractors>
+</type>
+]]></source>
+    
+    <p>Next, we will create a number of elements in the <code>elements.xml</code>
+    file. There will be an element node for each of the metadata elements we
+    want to associate with MP3 products. We can do this be adding the following 
+    as children nodes of <code>&lt;cas:elements&gt;</code> tag:</p>
+ 
+<source><![CDATA[     
+<element id="urn:example:FileLocation" name="FileLocation">
+  <dcElement/>
+  <description/>
+</element>
+<element id="urn:example:ProductType" name="ProductType">
+  <dcElement/>
+  <description/>
+</element>
+<element id="urn:example:Author" name="Author">
+  <dcElement/>
+  <description/>
+</element>
+<element id="urn:example:Filename" name="Filename">
+  <dcElement/>
+  <description/>
+</element>
+<element id="urn:example:resourceName" name="resourceName">
+  <dcElement/>
+  <description/>
+</element>
+<element id="urn:example:title" name="title">
+  <dcElement/>
+  <description/>
+</element>
+<element id="urn:example:Content-Type" name="tContent-Type">
+  <dcElement/>
+  <description/>
+</element> 
+]]></source>    
+
+    <p>After we have configured the new metadata elements, we will need to map 
+    these elements to our MP3 product. We do this by editing the 
+    <code>product-type-element-map.xml</code> file in the <code>policy/mp3</code>
+    directory to add the following as a child node to 
+    <code>&lt;cas:producttypemap&gt;</code>:</p>
+    
+<source><![CDATA[       
+<type id="urn:example:MP3">
+  <element id="urn:example:FileLocation"/>
+  <element id="urn:example:ProductType"/>
+  <element id="urn:example:Author"/>
+  <element id="urn:example:Filename"/>
+  <element id="urn:example:resourceName"/>
+  <element id="urn:example:title"/>
+  <element id="urn:example:Content-Type"/> 
+</type>
+]]></source> 
+    
+    <p>A final configuration step will be to create the archive area for the 
+    CAS-Filemgr (You'll remember that we set the repository path for MP3 products 
+    in the <code>product-types.xml</code> file). In order to do this, we will just 
+    make the directory:</p>
+    
+    <source>
+> mkdir /usr/local/archive
+    </source>
+    
+    <p>We will now start the CAS-Filemgr instance. This instance will run on
+    port 9000 by default. In order to start the Filemgr, we will issue the 
+    following commands:</p>
+    
+    <source>
+> cd /usr/local/src/cas-filemgr-1.8.0/bin
+> ./filemgr start
+    </source>
+    
+    <p>Now that we have started the CAS-Filemgr, we will need to configure the
+    CAS-Curator to use this Filemgr instance. In order to do this, we will add
+    the following parameters to the CAS-Curator context file:</p>
+    
+<source><![CDATA[    
+<Parameter name="org.apache.oodt.cas.fm.url"
+        value="http://localhost:9000"/>
+            
+<Parameter name="org.apache.oodt.cas.curator.dataDefinition.uploadPath"
+        value="/usr/local/src/cas-filemgr-1.8.0/policy" />
+
+<Parameter name="org.apache.oodt.cas.curator.fmProps"
+        value="/usr/local/src/cas-filemgr-1.8.0/etc/filemgr.properties"/>        
+]]></source>    
+    
+    <p>Once we restart Tomcat, the CAS-Curator will now recognize the policy
+    and properties of the configured CAS-Filemgr instance and use this 
+    instance during the ingest process.</p>
+    
+    <img src="../images/basic_filemgr.jpg"/>
+    
+    <p>From the above image, you can see that the CAS-Filemgr configuration
+    has been picked up by CAS-Curator. If you double-click on MP3 in the left
+    filemgr main pane, you will see the product types that are contained in
+    the mp3 policy: <code>GenericFile</code> which was part of the default
+    configuration, and <code>MP3</code> which we added. Clicking on MP3,
+    we bring up the ingest interface in the right filemgr main pane.</p> 
+    
+    <img src="../images/basic_ingest.jpg"/>
+    
+    <p>Once we drag the Bach-SuiteNo2.mp3 from the staging pane to the green
+    box in the right filemgr main pane, we can then select a metadata extractor
+    from the pulldown menu and click on the "Save as Ingestion Task." This will
+    add the Ingest task to the bottom pane as illustrated in the above 
+    screenshot. In order to test file ingestion, we will click on the "Start"
+    button.</p>
+    
+    <p>As a final step, we will confirm that the mp3 file was archived. We 
+    can do this by listing the archive:</p>
+    
+    <source>
+> ls -lR /usr/local/archive
+total 0
+drwxr-xr-x  3 -  - 102 Nov 27 23:53 Bach-SuiteNo2.mp3
+
+/usr/local/archive//Bach-SuiteNo2.mp3:
+total 9344
+-rw-r--r--  1 -  -  4781079 Nov 25 20:14 Bach-SuiteNo2.mp3
+    </source>
+    
+    <p>Worth noting is the fact that our configuration of the CAS-Filemgr
+    included a selection of the <code>BasicVersioner</code> as the MP3 
+    product type versioner. This means that mp3s are placed at
+    [archive_base]/[filename]/[filename] during ingest.</p>
+    
+    <p>We have now completed a base configuration of the CAS-Curator. In
+    the <a href="../user/advanced.html">Advanced Guide</a>, we will cover 
+    topics like changing the look and feel of the Curator, and security 
+    configuration.</p>
+    
+    </section>
+  </body>
+</document>

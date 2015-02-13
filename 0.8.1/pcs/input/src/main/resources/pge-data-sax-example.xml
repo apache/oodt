@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<!DOCTYPE pgedata [
+
+<!--define the internal DTD-->
+  <!ELEMENT pgedata (scalar*,vector*,matrix*)>
+  <!ELEMENT matrix (tr+)>
+  <!ELEMENT tr (td+)>
+  <!ELEMENT td (#PCDATA)>
+  <!ELEMENT scalar (#PCDATA)>
+  <!ATTLIST scalar name CDATA ''>
+  <!ATTLIST matrix name CDATA ''>
+  <!ATTLIST matrix rows CDATA ''>
+  <!ATTLIST matrix cols CDATA ''>
+  <!ELEMENT vector (element*)>
+  <!ATTLIST vector name CDATA ''>
+  <!ELEMENT element (#PCDATA)>
+
+<!--close the DOCTYPE declaration-->
+]>
+
+<pgedata>
+<scalar name="foo">bar</scalar>
+<vector name="solar_degrad_stddev_pixel_strong_co2">
+<element>7.156829408322501e-18</element>
+<element>1.001230034697944e-17</element>
+<element>2.516345810183765e-18</element>
+<element>5.094596673550921e-18</element>
+<element>3.255014963930512e-18</element>
+<element>5.462772487746047e-18</element>
+<element>4.855160146533748e-18</element>
+<element>9.933721983075038e-18</element>
+<element>6.690502587946044e-18</element>
+<element>9.151933719744191e-18</element>
+<element>5.650032685446839e-07</element>
+<element>5.650032683079101e-07</element>
+<element>5.650032675464667e-07</element>
+<element>5.650032673675753e-07</element>
+<element>5.650032682784805e-07</element>
+<element>5.650032672186995e-07</element>
+<element>5.650032673387105e-07</element>
+<element>5.650032679108124e-07</element>
+<element>5.650032677826825e-07</element>
+<element>5.650032673930709e-07</element>
+<element>5.650032675232457e-07</element>
+<element>5.650032685245339e-07</element>
+<element>5.650032680052611e-07</element>
+<element>5.65003268542033e-07</element>
+<element>5.650032679906624e-07</element>
+<element>5.650032673606469e-07</element>
+<element>5.650032675613922e-07</element>
+<element>5.650032683106426e-07</element>
+<element>5.650032689379945e-07</element>
+<element>5.650032676014303e-07</element>
+<element>5.65003266960909e-07</element>
+<element>5.650032677139583e-07</element>
+<element>5.650032674960097e-07</element>
+<element>5.650032681530792e-07</element>
+<element>5.650032675200847e-07</element>
+<element>5.650032686111758e-07</element>
+<element>5.650032686858376e-07</element>
+<element>5.65003268010127e-07</element>
+<element>5.650032682342422e-07</element>
+<element>5.650032678880181e-07</element>
+<element>5.650032682061757e-07</element>
+<element>5.65003267883388e-07</element>
+<element>5.650032675152441e-07</element>
+<element>5.650032682394885e-07</element>
+<element>5.650032674941117e-07</element>
+<element>5.650032684140377e-07</element>
+<element>5.650032683660305e-07</element>
+<element>5.650032682050788e-07</element>
+<element>5.650032687935118e-07</element>
+<element>5.650032683845967e-07</element>
+<element>5.650032676294086e-07</element>
+<element>5.650032679809725e-07</element>
+<element>5.650032676793177e-07</element>
+<element>5.65003268781788e-07</element>
+<element>5.650032684167456e-07</element>
+<element>5.650032680698273e-07</element>
+<element>5.650032682093531e-07</element>
+<element>5.650032668567917e-07</element>
+<element>5.650032684921305e-07</element>
+<element>5.650032678442659e-07</element>
+<element>5.650032683200177e-07</element>
+<element>5.650032674059403e-07</element>
+<element>5.650032675556752e-07</element>
+<element>5.650032672721777e-07</element>
+<element>5.65003268435877e-07</element>
+<element>5.65003268168295e-07</element>
+<element>5.650032672004772e-07</element>
+<element>5.65003268343149e-07</element>
+<element>5.650032672935149e-07</element>
+<element>5.650032673435717e-07</element>
+<element>5.650032676094195e-07</element>
+<element>5.650032684139997e-07</element>
+<element>5.650032685593072e-07</element>
+<element>5.65003268364404e-07</element>
+<element>5.650032679422686e-07</element>
+<element>5.650032675656163e-07</element>
+<element>5.650032684983817e-07</element>
+<element>5.650032677526585e-07</element>
+<element>5.650032675956273e-07</element>
+<element>5.650032687894096e-07</element>
+<element>5.650032678559322e-07</element>
+<element>5.650032682914911e-07</element>
+<element>5.650032679964352e-07</element>
+<element>5.650032684764378e-07</element>
+<element>5.650032674968119e-07</element>
+<element>5.650032681637797e-07</element>
+<element>5.650032681947215e-07</element>
+<element>5.650032678251767e-07</element>
+<element>5.650032690991248e-07</element>
+<element>5.650032690235313e-07</element>
+<element>5.650032680351119e-07</element>
+<element>5.650032676168338e-07</element>
+<element>5.647772123356515e-07</element>
+<element>4.376496495071942e-07</element>
+<element>4.376496497473271e-07</element>
+<element>4.376496497611925e-07</element>
+<element>4.376496496419958e-07</element>
+<element>4.376496499490122e-07</element>
+<element>4.376496491453507e-07</element>
+<element>4.376496496199902e-07</element>
+<element>4.376496496313135e-07</element>
+<element>4.376496493560163e-07</element>
+<element>4.37649649415751e-07</element>
+<element>4.376496487438027e-07</element>
+<element>4.376496490231489e-07</element>
+<element>4.376496487693666e-07</element>
+<element>4.376496497192663e-07</element>
+<element>4.376496495310717e-07</element>
+<element>4.37649648937335e-07</element>
+<element>4.376496500508244e-07</element>
+<element>4.376496494235092e-07</element>
+<element>4.376496487765641e-07</element>
+<element>4.376496502573037e-07</element>
+<element>4.376496491797974e-07</element>
+<element>4.376496499778206e-07</element>
+<element>4.376496500770006e-07</element>
+<element>4.376496494665307e-07</element>
+<element>4.376496491597167e-07</element>
+<element>4.376496489798316e-07</element>
+<element>4.376496494860262e-07</element>
+<element>4.37649649797094e-07</element>
+<element>4.376496497130217e-07</element>
+<element>4.376496486902971e-07</element>
+<element>4.376496495729736e-07</element>
+<element>4.376496496595051e-07</element>
+<element>4.376496499103306e-07</element>
+<element>4.376496500715821e-07</element>
+<element>4.37649648393365e-07</element>
+<element>4.376496484669906e-07</element>
+<element>4.376496492303731e-07</element>
+<element>4.376496495606573e-07</element>
+<element>4.376496490041646e-07</element>
+<element>4.37649649320577e-07</element>
+<element>4.376496495126756e-07</element>
+<element>4.376496494133791e-07</element>
+<element>4.376496502085632e-07</element>
+<element>4.376496503500403e-07</element>
+<element>4.376496494589024e-07</element>
+<element>4.376496498368655e-07</element>
+<element>4.376496500551011e-07</element>
+<element>4.376496497645193e-07</element>
+<element>4.376496500291563e-07</element>
+<element>4.376496502373919e-07</element>
+<element>4.376496509054261e-07</element>
+<element>4.376496493571226e-07</element>
+<element>4.376496494287977e-07</element>
+<element>4.376496480356845e-07</element>
+<element>4.376496498622485e-07</element>
+<element>4.376496492795068e-07</element>
+<element>4.376496493635472e-07</element>
+<element>4.376496495742711e-07</element>
+<element>4.376496492800899e-07</element>
+<element>4.376496486776432e-07</element>
+<element>4.376496491663729e-07</element>
+<element>4.376496487538479e-07</element>
+<element>4.376496505841974e-07</element>
+<element>4.376496494712244e-07</element>
+<element>4.376496507553076e-07</element>
+<element>4.376496496479507e-07</element>
+<element>4.376496489174097e-07</element>
+<element>4.376496506213675e-07</element>
+<element>4.376496492764853e-07</element>
+<element>4.376496503826606e-07</element>
+<element>4.376496497457357e-07</element>
+<element>4.376496500068803e-07</element>
+<element>4.376496491424506e-07</element>
+<element>4.376496490184349e-07</element>
+<element>4.376496499516555e-07</element>
+<element>4.376496508092893e-07</element>
+<element>4.376496497149663e-07</element>
+<element>4.376496490162042e-07</element>
+<element>4.376496497150526e-07</element>
+<element>4.376496496328375e-07</element>
+<element>4.376496508772949e-07</element>
+<element>4.376496494788424e-07</element>
+<element>4.376496495435055e-07</element>
+<element>4.376496488787512e-07</element>
+<element>4.376496496375363e-07</element>
+<element>4.376496496740998e-07</element>
+<element>4.37649649215851e-07</element>
+<element>4.376496489065544e-07</element>
+<element>4.376496492788316e-07</element>
+<element>4.376496490897931e-07</element>
+<element>4.37649649440043e-07</element>
+<element>4.376496498238065e-07</element>
+<element>4.376496494226082e-07</element>
+<element>4.376496497567646e-07</element>
+<element>4.376496493141858e-07</element>
+<element>4.37649648813068e-07</element>
+<element>4.376496501462642e-07</element>
+<element>4.376496497298497e-07</element>
+<element>4.376496492198953e-07</element>
+<element>4.376496503621545e-07</element>
+<element>4.376496508834365e-07</element>
+<element>4.37649649716903e-07</element>
+<element>4.376496497673743e-07</element>
+<element>4.376496492369553e-07</element>
+<element>4.376496488408098e-07</element>
+<element>4.376496497061842e-07</element>
+<element>4.376496492088419e-07</element>
+<element>4.376496505378924e-07</element>
+<element>4.376496500324374e-07</element>
+<element>4.376496505858961e-07</element>
+<element>4.376496483579881e-07</element>
+<element>4.376496492047949e-07</element>
+<element>4.37649650283361e-07</element>
+<element>4.37649649931959e-07</element>
+<element>4.37649650345139e-07</element>
+<element>4.376496499007843e-07</element>
+<element>4.376496490379377e-07</element>
+<element>1.061115853951698e-17</element>
+<element>1.044441840201302e-17</element>
+<element>4.957385254465431e-18</element>
+<element>4.329574642053506e-18</element>
+<element>7.235238887322188e-18</element>
+<element>6.979433064230618e-18</element>
+<element>1.100843453633496e-17</element>
+<element>7.519914554272377e-18</element>
+<element>4.874490654891152e-18</element>
+<element>1.716558331680342e-18</element>
+</vector>
+<matrix name="foomatrix" rows="2" cols="2">
+ <tr>
+   <td>194</td>
+   <td>192</td>
+ </tr>
+ <tr>
+   <td>1</td>
+   <td>2.2</td>
+ </tr>
+</matrix>
+</pgedata>

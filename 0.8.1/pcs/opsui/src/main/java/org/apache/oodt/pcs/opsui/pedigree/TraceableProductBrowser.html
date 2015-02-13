@@ -1,0 +1,64 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<wicket:panel>
+<wicket:remove>
+  <link rel="stylesheet" type="text/css" href="ProductBrowser.css"/>
+</wicket:remove>
+
+<h3>Product: <span wicket:id="product_name">foo.txt</span></h3>
+<p><form wicket:id="trace_form"><input type="submit" value="Trace" wicket:id="trace_button" id="trace_button"/></form></p>
+<p>Percent Transferred: <span wicket:id="product_pct_transfer">100%</span></p>
+<a href="#References">Jump to References</a>
+                
+<h3>Metadata</h3>
+  <table id="met_table">
+    <tr wicket:id="met_elem">
+      <td wicket:id="met_elem_name" id="met_elem_name">CAS.ProductName</td>
+      <td>
+         <table id="met_values_table">
+          <tr wicket:id="met_values_list">
+             <td wicket:id="met_value">foo.txt</td>
+          </tr>
+         </table>
+      </td>
+     </tr>
+   </table>
+   
+   <h3 wicket:id="no_prod_met_display" class="nada">No Product Metadata!</h3>
+   <p>&nbsp;</p>
+   <p>&nbsp;</p>
+   <a name="References"></a>
+
+<h3>References</h3>
+  <table id="ref_table">
+    <tr id="ref_table_hdr">
+      <td>File Location</td>
+      <td>File Size</td>
+      <td>Percent Transferred</td>
+    </tr>
+    <tr wicket:id="ref_list">
+      <td><a wicket:id="ref_file_path_link" href="#"><span wicket:id="ref_file_path">/home/files/foo.txt/foo.txt</span></a></td>
+      <td wicket:id="ref_file_size">4028</td>
+      <td wicket:id="ref_pct_transferred">100%</td>
+    </tr>
+  </table>
+
+  <h3 wicket:id="no_prod_ref_display" class="nada">No Product References!</h3>
+  
+
+<span wicket:id="pedigree"/>
+</wicket:panel>

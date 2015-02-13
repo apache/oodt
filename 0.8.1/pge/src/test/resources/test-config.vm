@@ -1,0 +1,1 @@
+$env.USER Welcomes to $metadata.conference#foreach($name in $metadata.getValues('name')) $name#end!

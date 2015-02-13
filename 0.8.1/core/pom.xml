@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+	  <groupId>org.apache</groupId>
+	  <artifactId>apache</artifactId>
+	  <version>16</version>
+	  <relativePath />
+	</parent>    
+    <groupId>org.apache.oodt</groupId>
+    <artifactId>oodt-core</artifactId>
+    <version>0.8.1</version>
+    <name>OODT Core</name>
+    <packaging>pom</packaging>
+    <properties>
+        <organizationLogo>http://www.apache.org/images/feather.gif</organizationLogo>
+        <logo>/images/${project.artifactId}.jpg</logo>
+        <xdocVersion>${project.version}</xdocVersion>
+        <genDownloadLinks>false</genDownloadLinks>
+        <docsSrc>${basedir}/src/site/xdoc</docsSrc>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+    <url>http://oodt.apache.org/</url>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://issues.apache.org/jira/browse/OODT</url>
+    </issueManagement>
+    <inceptionYear>1999</inceptionYear>
+    <mailingLists>
+        <mailingList>
+              <name>dev</name>
+              <subscribe>dev-subscribe@oodt.apache.org</subscribe>
+              <unsubscribe>dev-unsubscribe@oodt.apache.org</unsubscribe>
+              <post>dev@oodt.apache.org</post>
+              <archive>http://mail-archives.apache.org/mod_mbox/oodt-dev/</archive>
+        </mailingList>
+        <mailingList>
+              <name>commits</name>
+              <subscribe>commits-subscribe@oodt.apache.org</subscribe>
+              <unsubscribe>commits-unsubscribe@oodt.apache.org</unsubscribe>
+              <archive>http://mail-archives.apache.org/mod_mbox/oodt-commits/</archive>
+        </mailingList>
+        <mailingList>
+              <name>private</name>
+              <subscribe>private-subscribe@oodt.apache.org</subscribe>
+              <unsubscribe>private-unsubscribe@oodt.apache.org</unsubscribe>
+              <post>private@oodt.apache.org</post>
+        </mailingList>
+    </mailingLists>
+    <developers>
+        <developer>
+            <id>thomas</id>
+            <name>Thomas Bennett</name>
+            <email>thomas@apache.org</email>
+            <organization>SKA South Africa</organization>
+            <timezone>+2</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>    
+        <developer>
+            <id>crichton</id>
+            <name>Daniel Crichton</name>
+            <email>crichton@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>bfoster</id>
+            <name>Brian Foster</name>
+            <email>bfoster@apache.org</email>
+            <organization>Google</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>     
+        <developer>
+            <id>joshuaga</id>
+            <name>Joshua Garcia</name>
+            <email>joshuaga@apache.org</email>
+            <organization>University of Southern California</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>           
+        <developer>
+            <id>goodale</id>
+            <name>Cameron Goodale</name>
+            <email>goodale@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+            <properties>
+                <aim>nonflyt</aim>
+                <gtalk>sigep311@gmail.com</gtalk>
+            </properties>
+        </developer>
+        <developer>
+            <id>shardman</id>
+            <name>Sean Hardman</name>
+            <email>shardman@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>        
+        <developer>
+            <id>ahart</id>
+            <name>Andrew Hart</name>
+            <email>ahart@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>  
+        <developer>
+            <id>davekale</id>
+            <name>Dave Kale</name>
+            <email>davekale@apache.org</email>
+            <organization>Childrens Hospital Los Angeles</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>              
+        <developer>
+            <id>kelly</id>
+            <name>Sean Kelly</name>
+            <email>kelly@apache.org</email>
+            <url>http://seankelly.biz/</url>
+            <organization>Independent Consultant</organization>
+            <roles>
+                <role>committer</role>
+                <role>technologist</role>
+            </roles>
+            <timezone>-6</timezone>
+            <properties>
+                <picUrl>http://seankelly.biz/Members/kelly/sean-kelly/image</picUrl>
+                <blogUrl>http://seankelly.biz/blog</blogUrl>
+                <foaf>http://seankelly.biz/Members/kelly/sean-kellys-foaf</foaf>
+                <aim>InsanityPoet</aim>
+                <skype>InsanityPoet</skype>
+                <gtalk>sean.c.kelly@gmail.com</gtalk>
+                <mobileme>sean.c.kelly@me.com</mobileme>
+            </properties>
+        </developer>
+        <developer>
+            <id>mattmann</id>
+            <name>Chris Mattmann</name>
+            <email>Chris.Mattmann@jpl.nasa.gov</email>
+            <url>http://www-scf.usc.edu/~mattmann/</url>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+                <role>mentor</role>
+                <role>release engineer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>pramirez</id>
+            <name>Paul Ramirez</name>
+            <email>pramirez@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>smcclees</id>
+            <name>Sean McCleese</name>
+            <email>smcclees@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>gabe</id>
+            <name>Gabe Resneck</name>
+            <email>gabriel.m.resneck@jpl.nasa.gov</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>        
+        <developer>
+            <id>pvee</id>
+            <name>Paul Vee</name>
+            <email>pvee@apache.org</email>
+            <organization>Childrens Hospital Los Angeles</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>riverma</id>
+            <name>Rishi Verma</name>
+            <email>riverma@apache.org</email>
+            <organization>NASA Jet Propulsion Laboratory</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>woollard</id>
+            <name>David Woollard</name>
+            <email>woollard@apache.org</email>
+            <organization>Project WBS</organization>
+            <timezone>-8</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>siriwardana</id>
+            <name>Rajith Siriwardana</name>
+            <email>siriwardana@apache.org</email>
+            <organization>Independent Consultant</organization>
+            <timezone>+5:30</timezone>
+            <roles>
+                <role>committer</role>
+            </roles>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <comments>The standard OSI-approved Apache license, friendly to commercial interests yet open.</comments>
+            <distribution>manual</distribution>
+        </license>
+    </licenses>
+    <organization>
+        <name>Apache OODT</name>
+        <url>http://oodt.apache.org/</url>
+    </organization>
+    <scm>
+      <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.8.1/0.8.1</connection>
+      <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.8.1/0.8.1</developerConnection>
+      <url>http://svn.apache.org/viewvc/oodt/tags/0.8.1/0.8.1</url>
+    </scm>
+    <build>
+        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+        <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test*.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                            <goals>
+                                <goal>testCompile</goal>
+                            </goals>
+                        <phase>test-compile</phase>
+                    </execution>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.2.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>1.7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-parsers</artifactId>
+                <version>1.7</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.4</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <profiles>
+        <profile>
+            <id>audit</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>rat-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>    
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <reporting>
+        <plugins>
+            <!-- FIXME: currently produces a NullPointerException
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <component>12311070</component>
+                    <resolutionIds>1</resolutionIds>
+                    <statusIds>5,6</statusIds>
+                    <fixVersionIds>${jira.fix.version.ids}</fixVersionIds>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>jira-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin> -->
+            <!-- Produce JavaDoc -->
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                    <encoding>UTF-8</encoding>
+                    <aggregate>true</aggregate>
+                    <source>1.5</source>
+                </configuration>
+            </plugin>
+            <!-- Produce Source cross references -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin>
+            <!-- Unit tests report -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+            <!-- "Release Audit" report (checks license headers etc.) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rat-maven-plugin</artifactId>
+                <version>1.0-alpha-3</version>
+            </plugin>
+            <!-- FindBugs Report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <threshold>Normal</threshold>
+                    <effort>Default</effort>
+                </configuration>
+            </plugin>
+            <!-- Checkstyle report -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <!--configLocation>checkstyle.xml</configLocation-->
+                    <enableRulesSummary>false</enableRulesSummary>
+                </configuration>
+            </plugin>
+            <!-- Project website generation -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>2.0-beta-7</version>
+                <configuration>
+                    <outputEncoding>UTF-8</outputEncoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>

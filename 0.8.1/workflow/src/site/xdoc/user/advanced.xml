@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+   <properties>
+      <title>CAS Workflow Manager User Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+      <author email="woollard@jpl.nasa.gov">Dave Woollard</author>
+   </properties>
+
+   <body>
+   
+      <div class="warning">This document is in the process of being reorganized as
+      part of our ongoing documentation effort. Please check back for updates.</div>  
+   
+      <section name="Introduction">
+      
+      <p>In the CAS Workflow Manager Advanced User Guide, we will cover a number of 
+      advanced topics related to using the CAS Workflow Manager, including situations
+      that have arisen in the authors' experiences regarding the use alternative queuing 
+      strategies, addressing scaling issues, etc. Basic concepts, such as installation and 
+      configuration, can be found in the 
+      <a href="../user/basic.html">Basic User Guide</a>.</p>
+      
+      <p>The remainder of this guide is separated into the following sections:</p>
+      <ul>
+        <li><a href="#section1">Alternative Queuing</a></li>
+        <li><a href="#section2">Scaling Issues</a></li>
+      </ul>
+      
+      </section>
+      
+      <a name="section1"/>
+      <section name="Alternative Queuing">
+      <p>Coming Soon...</p>
+      </section>
+      
+      <a name="section2"/>
+      <section name="Scaling Issues">
+      <p>Coming Soon...</p>
+      </section>
+      
+   </body>
+</document> 

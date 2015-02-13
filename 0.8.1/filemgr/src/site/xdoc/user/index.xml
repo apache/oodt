@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+   <properties>
+      <title>CAS File Manager User Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+      <author email="woollard@jpl.nasa.gov">Dave Woollard</author>
+   </properties>
+
+   <body>
+  
+      <div class="warning">This document is in the process of being reorganized as
+      part of our ongoing documentation effort. Please follow the links below to find
+      information that has previously been hosted on this page.</div>
+ 
+
+      <p>We are in the process of upgrading OODT documentation. In the near
+      future, we hope to provide information for developers regarding each 
+      component, including its purpose, structure, interfaces, and 
+      configuration points in a <a href="../development/developer.html">Developer
+      Guide.</a></p>
+      
+      <p>Information for users, including installation and basic configuration,
+      as well as example usage are provided in a 
+      <a href="../user/basic.html">Basic User Guide.</a> Advanced topics, like
+      look and feel, lessons-learned, and best practices are provided in an
+      <a href="../user/advanced.html">Advanced User Guide.</a></p>
+      
+      <p>Finally, we are planning to provide a number of case studies in the 
+      future, in which multi-component deployments are configured to handle
+      common data and computation management scenarios.</p> 
+
+   </body>
+</document> 

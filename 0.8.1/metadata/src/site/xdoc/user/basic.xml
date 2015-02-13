@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+  <properties>
+    <title>CAS-Metadata Basic User Guide</title>
+    <author email="woollard@jpl.nasa.gov">David Woollard</author>
+  </properties>
+
+  <body>
+    <section name="Introduction">
+    
+    <p>The purpose of this guide is to instruct the user in the basic concepts 
+    behind the CAS-Metadata project, including the basics of metadata, how to write 
+    metadata extractors, and explanations of existing metadata extractors. In 
+    addition to this guide, some of these concepts are also covered in our
+    CAS-File Manager <a href="../../filemgr/user/">User Guide</a>
+    and in our CAS-Curator <a href="../../curator/user/basic.html">
+    Basic User Guide</a>. For advanced topics, including extracting techniques to allow
+    for type-based matching, see our <a href="../user/advanced.html">Advanced Guide.</a>
+    In the rest of this guide, we will cover the following topics:</p>
+
+    <ul>
+      <li><a href="#basics">Metadata Basics</a></li>
+      <li><a href="#extractors">Metadata Extractors</a></li>
+      <li><a href="#existing">Existing Implementations</a></li>
+      <li><a href="#filemgr">Relationship to CAS-Filemgr</a></li>
+    </ul>
+    </section>
+  
+    <a name="basics"/>
+    <section name="Metadata Basics">
+    
+    <p>Metadata is <i>data about data</i>. Simply put, metadata is information about data
+    that aids the user in finding what they are looking for and clarifying what they are 
+    looking at. There are many examples of metadata standards, including 
+    <a href="http://dublincore.org/">Dublin Core</a> and ISO 
+    <a href="http://metadata-stds.org/">Standards.</a></p>
+    
+    <p>Examples of metadata include filename, URL, data producer, start and stop datetime 
+    for temporal files, bounding polygons for geo-referenced data, etc. In the CAS-Metadata
+    project, and in all of OODT, Metadata Objects are considered a container for 
+    product-related metadata. Interfaces for the <code>Metadata</code> Object are shown 
+    below:</p>
+    
+<source><![CDATA[    
+public class Metadata {
+
+    public Metadata() {...}
+
+    public Metadata(InputStream is) throws Exception {...}
+
+    public void addMetadata(Hashtable metadata) {...}
+
+    public void addMetadata(Hashtable metadata, boolean replace) {...}
+
+    public void replaceMetadata(Hashtable metadata) {...}
+
+    public void addMetadata(String key, String value) {...}
+    
+    public void addMetadata(String key, List values) {...}
+
+    public void replaceMetadata(String key, List values) {...}
+
+    public void replaceMetadata(String key, String value) {...}
+
+    public Object removeMetadata(String key) {...}
+
+    public List getAllMetadata(String key) {...}
+
+    public String getMetadata(String key) {...}
+
+    public Hashtable getHashtable() {...}
+
+    public boolean containsKey(String key) {...}
+
+    public boolean isMultiValued(String key) {...}
+    
+    public boolean equals(Object obj) {....}
+
+    public Document toXML() throws Exception {...}
+
+    private void parse(Document document) throws Exception {...}
+}    
+]]></source>    
+    
+    <p>The CAS-Metadata <code>Metadata</code> object is a key-multivalue container.
+    Users can add metadata elements to the <code>Metadata</code> Object via 
+    InputStream, HashTable Object, key with an array of values, and a simple
+    key and signal value interface. All keys and values are represented as Strings. 
+    See our <a href="../user/advanced.html">Advanced Guide</a> for more information
+    about the ramification of this design decision during type-based metadata search
+    and comparison.</p>  
+    
+    <p>In addition to the accessor and modifier methods that work with simple Strings,
+    the <code>Metadata</code> Object can work with XML Documents. An example of 
+    metadata in the XML format is given below:</p>
+    <!-- FIXME: change namespace URI? -->
+    <source><![CDATA[<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+  <keyval>
+    <key>ProductType</key>
+    <val>MP3</val>
+  </keyval>
+  <keyval>
+    <key>Filename</key>
+    <val>blue_suede_shoes.mp3</val>
+  </keyval>
+  <keyval>
+    <key>Artist</key>
+    <val>The Beatles</val>
+  </keyval>
+  <keyval>
+    <key>Album</key>
+    <val>Revolver</val>
+  </keyval>
+  <keyval>
+    <key>SongName</key>
+    <val>Blue Suede Shoes</val>
+  </keyval>
+</cas:metadata>]]></source>
+    
+	<p>The above metadata example has been extracted from an MP3 file. There are a
+    number of metadata elements, including the Artist, Album, and SongName, as well 
+    as the product type (in this case, 'MP3'), and the name of the mp3 file. In 
+    addition, metadata elements can be multivalued. In this case, the 
+    <code>&lt;keyval&gt;</code> element can have multiple <code>&lt;val&gt;</code>
+    child elements.</p> 
+    </section>
+    
+    
+    <a name="extractors"/>
+    <section  name="Metadata Extractors">
+    <p>The role of a metadata extractor is extract metadata from one or more product 
+    <i>types</i>. In order to extract metadata, the extractor must understand the product 
+    type format, parse the product, and return metadata to be associated with the
+    product. CAS-Curator, for example, uses metadata extractors to generate metadata for 
+    products in its staging area, both as a preview to the curator, and also during the 
+    course of data ingestion.</p> 
+    
+    
+    <subsection name="Java API">
+    
+    <p>The CAS-Metadata project contains an interface class, 
+    <code>org.apache.oodt.cas.metadata.MetExtractor</code>. This API consists of
+    two primary methods (with multiple method signatures each). This API can be seen 
+    below:</p>
+    
+<source><![CDATA[public interface MetExtractor {
+
+    public Metadata extractMetadata(File f) 
+            throws MetExtractionException;
+
+    public Metadata extractMetadata(String filePath)
+            throws MetExtractionException;
+
+    public Metadata extractMetadata(URL fileUrl) 
+            throws MetExtractionException;
+
+    public Metadata extractMetadata(File f, File 
+            configFile) throws MetExtractionException;
+
+    public Metadata extractMetadata(File f, String 
+            configFilePath) throws MetExtractionException;
+
+    public Metadata extractMetadata(File f, 
+            MetExtractorConfig config) 
+            throws MetExtractionException;
+
+    public Metadata extractMetadata(URL fileUrl, 
+            MetExtractorConfig config) 
+            throws MetExtractionException;
+            
+    public void setConfigFile(File f) 
+            throws MetExtractionException;
+
+    public void setConfigFile(String filePath) 
+            throws MetExtractionException;
+
+    public void setConfigFile(MetExtractorConfig config);
+}]]></source>
+    
+    <p>In order to implement a new extractor, a developer may implement the
+    <code>MetExtractor</code> interface, or develop a metadata extractor 
+    that adheres to this interface in the development language of choice.</p>
+    
+    </subsection>
+    </section>
+    
+    <a name="existing"/>
+    <section name="Existing Implementations">
+      
+    <p>The CAS-Metadata project contains a number of existing metadata 
+    extractor implementations that the develop can directly leverage.</p>  
+    
+    <subsection name="External Metadata Extractor">
+    
+    <p>There are many situations in which developers are interested in using
+    a metadata extractor that is not written in Java. Perhaps there is an 
+    existing extractor written in a different programming language the source 
+    of which you do not have access, or perhaps there are functional or 
+    non-functional requirements that make a different language more 
+    appropriate.</p>
+      
+    <p>We have developed the <code>ExternMetExtractor</code> as part of the
+    CAS Metadata project to address this issue. The <code>ExternMetExtractor</code> 
+    uses a configuration file to specify the extractor working directory, the path 
+    to the executable, and any commandline arguments. This configuration file
+    is specified below:</p>  
+       
+<source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<cas:externextractor xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+  <exec workingDir="">
+    <extractorBinPath envReplace="true">[PWD]/extractor</extractorBinPath>
+      <args>
+         <arg isDataFile="true"/>
+         <arg isPath="true">/usr/local/etc/testExtractor.config</arg>
+      </args>
+   </exec>
+</cas:externextractor>]]></source>
+    
+    <p>There are a number of important elements to the external metadata extractor 
+    configuration file, including working directory (the <code>workingDir</code>
+    attribute on the <code>exec</code> tag), the path the the executable extractor
+    (the value of the <code>extractorBinPath</code> tag), and any arguments required
+    by the extractor (values of the <code>args</code> tags).</p>
+    
+    <p>The working directory (the directory in which the metadata file is to be 
+    generated), is assumed to be the directory in which the extractor is run. This 
+    is signaled by a null value.</p>
+    
+    <p>Command-line arguments are delivered to the external extractor in the order 
+    they are listed in the configuration file. In order words,</p>
+
+<source><![CDATA[
+  <args>
+    <arg>arg1</arg>
+    <arg>arg2</arg>
+    <arg>arg3</arg>
+  </args>
+]]></source>    
+    
+     <p>would be passed to the extractor as <code>arg1 arg2 arg3</code>.</p>
+     
+     <p>Additionally, there are a number of specializations of the 
+     <code>arg</code> tag that can be set with tag attributes. Specifically:</p>
+     
+     <ul>
+       <li><code>isDataFile="true"</code> - This attribute passes the full path to 
+       the product from which metadata is to be extracted as the argument.</li>
+       <li><code>isPath="true"</code> - This attribute passes the argument encoded
+       as a properly formed path (no char-set replacement, etc).</li>
+       <li><code>envReplace="true"</code> - This attribute replaces any part of
+       the value of the argument that is inside brackets (<code>[</code> and 
+       <code>]</code>) with the environment variable matching the text inside the 
+       brackets, if such an enviroment variable exists.</li>
+     </ul>
+     
+     <p>For an example of the use of this type of metadata extractor, we our 
+     CAS-Curator <a href="../../curator/user/basic.html">
+     Basic User Guide</a>.</p>
+     
+     </subsection>
+     <subsection name="The Filename Token Metadata Extractor">
+     
+     <p>In many cases, products that are to be ingested are named with metadata
+     that should be extracted from the product name and cataloged upon ingest. For
+     this type of situation, we have developed the 
+     <code>FilenameTokenMetExtractor</code>. This extractor uses a configuration
+     file that specifies, for each metadata element, the index of the start 
+     position in the name for this metadata and its character length.</p>
+     
+     <p>Below is an example configuration file used by the 
+     <code>FilenameTokenMetExtractor</code>. It assumes a product name formatted 
+     as follows:</p>
+     
+     <p><code>MissionName_Date_StartOrbitNumber_StopOrbitNumber.txt</code></p>
+     
+ <source><![CDATA[
+  <input>
+    <group name="SubstringOffsetGroup">
+      <vector name="MissionName">
+        <element>1</element>
+        <element>11</element>      
+      </vector>
+      <vector name="Date">
+        <element>13</element>
+        <element>4</element>
+      </vector>
+      <vector name="StartOrbitNumber">
+        <element>18</element>
+        <element>16</element>
+      </vector>
+      <vector name="StopOrbitNumber">
+        <element>35</element>
+        <element>15</element>
+      </vector>
+   </group>
+    
+    <group name="CommonMetadata">
+        <scalar name="DataVersion">1.0</scalar>
+        <scalar name="CollectionName">Test</scalar>
+        <scalar name="DataProvider">OODT</scalar>
+    </group>
+</input>
+]]></source> 
+     
+     <p>In this configuration, the <code>FilenameTokenMetExtractor</code> will 
+     produce four metadata elements from the product name: <i>MissionName</i>,
+     <i>Date</i>, <i>StartOrbitNumber</i>, and <i>StopOrbitNumber</i>. The first 
+     element of each of these groups is the start index (this assumes 1-indexed
+     strings). The second element is the substring length.</p>
+     
+     <p>Additionally, this configuration specifies that metadata for all products
+     additionally contain three comment metadata elements that are static: 
+     <i>DataVersion</i>, <i>CollectionName</i>, and <i>DataProvider</i>.</p>
+     
+     </subsection>
+
+     <subsection name="Product Type Pattern Metadata Extractor">
+     <p>The <code>ProdTypePatternMetExtractor</code> can also be used to extract
+     metadata from the filename.  Unlike the <code>FilenameTokenMetExtractor</code>,
+     metadata elements do not have to be fixed-offset and fixed-length.  Instead,
+     metadata elements are represented by regular expressions.  These elements are
+     used in filename templates that, when matched, dynamically determine the
+     ProductType of the file.</p>
+
+     <p>Below is an example of a <code>product-type-patterns.xml</code> configuration
+     file used by the <code>ProdTypePatternMetExtractor:</code></p>
+
+<source><![CDATA[
+<config>
+  <!-- <element> MUST be defined before <product-type> so their patterns can be resolved -->
+  <!-- name MUST be an element defined in elements.xml (also only upper and lower case alpha chars) -->
+  <!-- regexp MUST be valid input to java.util.regex.Pattern.compile() -->
+  <element name="ISBN" regexp="[0-9]{10}"/>
+  <element name="Page" regexp="[0-9]*"/>
+
+  <!-- name MUST be a ProductType name defined in product-types.xml -->
+  <!-- metadata elements inside brackets MUST be mapped to the ProductType,
+       as defined in product-type-element-map.xml -->
+  <product-type name="Book" template="book-[ISBN].txt"/>
+  <product-type name="BookPage" template="page-[ISBN]-[Page].txt"/>
+</config>
+]]></source>
+
+     <p>This file defines a regular expression for the "ISBN" metadata element, in this case, a 10-digit number. Also, the
+     "Page" metadata element is defined as a sequence of 0 or more digits.
+     <p/>
+     Next, the file defines a filename pattern for the "Book" product type. The pattern is compiled into a regular
+     expression, substituting the previously defined regexes as capture groups. For example, "book-[ISBN].txt" compiles to
+     "book-([0-9]{10}).txt", and the ISBN met element is assigned to capture group 1. When the filename matches this
+     pattern, 2 metadata assignments occur: (1) the ISBN met element is set to the matched regex group, and (2) the
+     ProductType met element is set to "Book".
+     <p/>
+     Similarly, the second pattern sets ISBN, Page, and ProductType for files matching "page-([0-9]{10})-([0-9]*).txt".
+     <p/>
+     This achieves several things:
+     <ol>
+         <li>assigning met elements based on regular expressions</li>
+         <li>assigning product type based on easy-to-understand pattern with met elements clearly indicated</li>
+         <li>reuse of met element regular expressions</li>
+     </ol>
+     <p>See the <a href="../apidocs/org/apache/oodt/cas/metadata/extractors/ProdTypePatternMetExtractor.html">JavaDoc</a>
+     for more detailed information about using the <code>ProdTypePatternMetExtractor</code></p>
+     </p>
+     </subsection>
+
+     <subsection name="Metadata Reader Extractor">
+     
+     <p>The <code>MetReaderExtractor</code>, part of the OODT CAS-Metadata project,
+     assumes that a metadata file with then nameing convention "&lt;Product Name&gt;.met"
+     is present in the same directory as the product. This extractor further 
+     assumes that the metadata is in the format specified in this document.</p>
+     
+     </subsection>
+     <subsection name="Copy And Rewrite Extractor">
+     
+     <p>The <code>CopyAndRewriteExtractor</code> is a metadata extractor, that,
+     like the <code>MetReaderExtractor</code>, assumes that a metadata file exists
+     for the product from which metadata is to be extracted. This extractor reads 
+     in the original metadata file and replaces particular metadata values in that 
+     metadata file.</p>
+     
+     <p>The <code>CopyAndRewriteExtractor</code> takes in a configuration file that 
+     is a java properties object with the following properties defined:</p>
+
+     <ul>
+       <li>numRewriteFields - The number of fields to rewrite within the original
+       metadata file.</li>
+       <li>rewriteFieldN - The name(s) of the fields to rewrite in the original 
+       metadata file.</li>
+       <li>orig.met.file.path - The original path to the metadata file from which 
+       to draw the original metadata fields.</li>
+	   <li>fieldN.pattern - The string specification that details which fields to
+	   replace and to use in building the new field value.</li>
+	 </ul>
+     
+     <p> An example of the configuration file is given below:</p>
+     
+<source><![CDATA[     
+numRewriteFields=2
+rewriteField1=ProductType
+rewriteField2=FileLocation
+orig.met.file.path=./src/resources/examples/samplemet.xml
+ProductType.pattern=NewProductType[ProductType]
+FileLocation.pattern=/new/loc/[FileLocation]    
+]]></source>
+
+     <p>In ths example configuration, two metadata elements will be rewritten, 
+     <i>ProductType</i> and <i>FileLocation</i>. The original metadata file is 
+     located on at <code>./src/resources/examples/samplemet.xml</code>. The 
+     Product Type will be rewritten as NewProductType&lt;original ProductType 
+     value&gt;. The File location will now be set to 
+     <code>/new/location./src/resources/examples/samplemet.xml</code>.</p>
+     
+     </subsection>
+    </section>
+    
+    <a name="filemgr"/>
+    <section name="Relationship to CAS-Filemgr">
+    
+    <p>The most common use-case of CAS-Metadata is to capture the output of a metadata
+    extractor for use in the CAS-Filemgr's ingestion process.</p>
+    
+    <p><img src="../images/metadata.jpg"/></p>
+    
+    <p>In the above diagram, a metadata object is producted by an extractor. The 
+    product and its associated metadata are both ingested into the CAS-Filemgr.
+    The metadata will go into the Filemgr's metadata catalog and the product will
+    go to the archive.</p>
+    
+    <p>Because metadata extractors and the CAS-Filemgr are not tightly-coupled,
+    there are a number of implicit design assumptions that effect how you design
+    metadata extractors in this use-case. For example, CAS-Filemgr differentiates 
+    between products based on product <i>type</i>. File type and product type are 
+    not necessarily identical, so you should write extractors to to produce 
+    metadata specific to product types (See the <a href="../user/advanced.html">
+    Advanced Guide</a> for information on mime-type detection).</p>
+    
+    <p>Along the same lines, remember that there is no mechanism to enforce the 
+    metadata extracted for a particular product type be ingested into the 
+    Filemgr's catalog. The command-line ingest client for the CAS-Filemgr is given 
+    below (note that the command-line interface and the API are equivelent):</p>
+
+<source><![CDATA[        
+filemgr-client --url <url to xml rpc service> --operation \
+--ingestProduct --productName <name> --productStructure <Hierarchical|Flat> 
+--productTypeName <name of product type> --metadataFile <file> \
+[--clienTransfer --dataTransfer <java class name of data transfer factory>] \
+--refs <ref1>...<refn>
+]]></source>    
+    
+    <p>In the above interface, the important feature to note is that the user
+    supplies not only the product, but also the metadata file (or Metadata 
+    Object in the case of the API), the Product Name, Structure and Type
+    <i>on ingest</i>. Since each of these pieces of information is independant, 
+    it is the user's responsibility to maintain consistancy of the product type 
+    metadata between the extraction process and the ingest process.</p>
+    
+    </section>
+    
+    <section name="Conclusion">
+      <p>This is intended to be a basic guide to users of the CAS-Metadata project. We
+      have purposely omitted the discussion of metadata stardards, though we strongly
+      encourage you to investigate the role of standards and ontology in your 
+      particular application. In our <a href="../user/advanced.html">Advanced Guide</a>,
+      we cover more topics regarding the nuences of metadata extraction, including 
+      the impact of String-based representation on metadata element comparisons.</p>
+    </section>
+    
+  </body>
+</document>

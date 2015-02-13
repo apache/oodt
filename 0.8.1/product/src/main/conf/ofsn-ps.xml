@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!--  
+Configures a new OODT OFSN style product server. This is a product server
+of the form:
+
+http://host/webgrid/prod?OFSN=/some/ofsn+AND+RT=sometype
+
+OFSN is an online file specification name, as defined by the PDS standards.
+RT is a transformation identifier, identifying a remote transformation to be applied
+at the given OFSN path.
+
+More more information on the OFSN style product servers, see the PDS original here:
+
+http://oodt/pds-client/guide/product
+   
+Required attributes:
+   id: defines a unique URN/id for this product server instance
+   name: defines a human readable name for this product server instance
+   productRoot: defines the root path in which the OFSN product server should start looking for 
+   paths based on a given OFSN
+
+FIXME: Change XML namespace URI for oodt prefix?
+-->
+<oodt:ofsn xmlns:oodt="http://oodt.jpl.nasa.gov/xml/namespaces/oodt/1.0"
+      id="urn:oodt:prod:ofsn"
+      name="OODT OFSN Style Product Handler"
+      productRoot="/some/path"
+      >
+      
+  <!--  defines a new OFSN handler. There are 2 valid types:
+     
+     listing: this type generates a list of files given an OFSN. The list will 
+     be returned and formatted in XML for easy parsing.
+     
+     get: this type returns the bits of the requested ofsn, after performing some
+     type of transformation on them.
+     
+     Required attributes:
+     
+     name: gives the handler type a identifiable name. This should be a valid RT name for use in the OODT
+     product server query, e.g., if you want the dir list non-recursive listing handler to be called on 
+     RT=DIRLIST1, then set name to "DIRLIST1", as below.
+     
+     type: either listing, or get, depending on the desired handler type.
+     
+     class: defines a class that implements either the org.apache.oodt.product.handlers.ofsn.OFSNListHandler
+     interface (for "listing" handlers), or the org.apache.oodt.product.handlers.ofsn.OFSNGetHandler (for
+     "get" handlers). Note that this class must be on the classpath in order for it to be referenced in
+     this configuration.
+  
+   -->
+   
+   <!-- 
+     Optionally, each handler can have its own configuration, specified on the form of
+       &lt;property name=&quot;some name&quot; value=&quot;some value&quot;/&gt;
+       
+       where some name is the name of the configuration property and some value is the
+       value of the configuration property.
+       
+       Optional properties (for GET handlers):
+       
+       property name: mimeType
+       property value: the desired MIME type (also referred to as content-type) a handler should return
+       content as (eg. "text/plain"). More formally, any value of the form 
+       "type/subtype(; parameter=...)*" as defined in RFC 2045.
+    -->
+    
+        
+   <!-- 
+   The DIRLIST1 type is identical to DIRLIST but does not recursively
+   descend into subdirectories.
+   -->
+  <handler name="DIRLIST1" type="listing" 
+       class="org.apache.oodt.product.handlers.ofsn.DirListNonRecursiveHandler"/>
+       
+       
+  <!-- 
+    The DIRLIST type returns an XML file with directory names (and only
+    directory names) and total size of files in each directory starting in
+    the requested directory and traversing into the subdirectories. 
+   -->
+  <handler name="DIRLIST" type="listing"
+       class="org.apache.oodt.product.handlers.ofsn.DirListRecursiveHandler"/>
+    
+
+  <!-- 
+    The DIRFILELIST1 is identical to DIRFILELIST except that it does not
+    recurse into subdirectories.
+   -->
+  <handler name="DIRFILELIST1" type="listing"
+       class="org.apache.oodt.product.handlers.ofsn.FileListNonRecursiveHandler"/>
+
+  <!-- 
+    The DIRFILELIST returns an XML document containing all of the filenames
+    (and only the files, not directories) and their sizes, recursing into
+    subdirectories.  
+   -->          
+  <handler name="DIRFILELIST" type="listing"
+       class="org.apache.oodt.product.handlers.ofsn.FileListRecursiveHandler"/>
+
+  <!-- 
+    The  RAW_SIZE  generates an XML document telling the size of the raw file that 
+    would be returned by the corresponding RAW type.  
+   -->     
+  <handler name="RAW_SIZE" type="listing"
+       class="org.apache.oodt.product.handlers.ofsn.RawSizeListHandler">
+     
+     <!-- 
+       Required attributes:
+          isSizeCmd: this value should be set to true in this handler to ensure that
+          only the size is printed in the OFSN doc.
+      -->
+     <property name="isSizeCmd" value="true"/>
+  </handler>
+
+   <!-- 
+    The FILELIST type returns an XML file naming the requested file and also
+    giving its size.   
+   -->
+  <handler name="FILE_LIST" type="listing"
+       class="org.apache.oodt.product.handlers.ofsn.SingleFileListHandler"/>
+    
+ 
+  <!-- 
+    The FILELISTZIP is similar to FILELIST except that it tells what the size
+    of the requested file would be if compressed into a ZIP archive.  
+  -->   
+  <handler name="FILE_LIST_ZIP" type="listing"
+       class="org.apache.oodt.product.handlers.ofsn.SingleZipFileListHandler">
+       
+       <!-- 
+        Optional attributes:
+          cacheDirRoot: defines the cache dir that the product server should use when asked to create temporary
+          files, e.g., by a listing or get handler. By default, if not specified, it defaults to /tmp
+       
+        -->
+       <property name="cacheDirRoot" value="/tmp"/>       
+  </handler>
+
+  <!-- 
+    The RAW type merely returns the requested file without any modification 
+    (MIME type application/octet-stream ). 
+  -->  
+  <handler name="RAW" type="get"
+       class="org.apache.oodt.product.handlers.ofsn.StdOFSNGetHandler"/>       
+       
+  
+  <!--  
+    The MD5 type returns an MD5 hash of the file bytes generated on the server side.
+   -->
+   
+   <handler name="MD5" type="get"
+       class="org.apache.oodt.product.handlers.ofsn.MD5GetHandler">
+       
+       <property name="mimeType" value="text/plain"/>
+       
+   </handler>
+
+
+  <!--  
+    The URL type returns a URL listing pointing to files within an OFSN
+    
+    (Optional) Use the below properties to customize the constructed URL returned:
+        1. prodServerHostname: the product server hostname
+        2. prodServerPort: the product server's port
+        3. prodServerContextRoot: the name of the product server webapp
+        4. productRoot: the root directory of the product server - identical
+                        to the root directory at the top of this XML file
+        5. returnType: the desired return type. i.e. RAW, MD5, etc.
+   -->
+  <handler name="URL" type="get"
+       class="org.apache.oodt.product.handlers.ofsn.URLGetHandler">
+       
+       <!-- the below values are the default if nothing specified
+       <property name="prodServerHostname" value="localhost"/>
+       <property name="prodServerPort" value="8080"/>
+       <property name="prodServerContextRoot" value="web-grid"/>
+       <property name="productRoot" value="/some/path"/>
+       <property name="returnType" value="RAW"/>
+       -->
+  	   
+       <property name="mimeType" value="text/plain"/>
+  	   
+  </handler>
+</oodt:ofsn>

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+   <properties>
+      <title>CAS File Manager Developer Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+      <author email="woollard@jpl.nasa.gov">Dave Woollard</author>
+   </properties>
+
+   <body>
+   
+      <section name="Introduction">
+        <p>
+          This is the developer guide for the OODT Catalog and Archive Service (CAS) 
+          Workflow Manager component, or Workflow Manager for short. Primarily, this guide 
+          will explain the Workflow Manager architecture and interfaces, including its 
+          tailorable extension points. For information on installation, configuration,
+          and examples, please see our <a href="../user/basic.html">User Guides.</a>
+          
+          <p>The remainder of this guide is separated into the following sections:</p>
+      <ul>
+        <li><a href="#section1">Project Description</a></li>
+        <li><a href="#section2">Architecture</a></li>
+        <li><a href="#section3">Extension Points</a></li>
+        <li><a href="#section4">Current Extension Point Implementations</a></li>
+      </ul>
+          
+        </p>     
+      </section>
+      
+      <a name="section1"/>
+      <section name="Project Description">
+      <p>The Workflow Manager component is responsible for description, execution, and 
+      monitoring of <i>Workflows</i>, using a client, and a server system. Workflows are 
+      typically considered to be sequences of tasks, joined together by control flow, and 
+      data flow, that must execute in some ordered fashion. Workflows typically generate 
+      output data, perform routine management tasks (such as email, etc.), or describe a 
+      business's internal routine practices. The Workflow Manager is an extensible 
+      software component that provides an XML-RPC external interface, and a fully 
+      tailorable Java-based API for workflow management.</p>
+      </section>
+      
+      <a name="section2"/>
+      <section name="Architecture">
+      
+      <p>In this section, we will describe the architecture of the Workflow Manager,
+      including its constituent components, object model, and key capabilities.</p>
+      
+        <subsection name="Components">
+        
+        <p>The major components of the Workflow Manager are the Client and Server, the 
+        Workflow Repository, the Workflow Engine,and the Workflow Instance Repository.
+        The relationship between all of these components are shown in the diagram 
+        below:</p>
+        
+        <p><img src="../images/wm_extension_points.png" alt="Workflow Manager Architecture"/></p>
+        
+        <p>The Workflow Manager Server contains both a Workflow Repository that manages 
+        workflow models, and Workflow Engine that processes workflow instances. The Workflow
+        Engine also has a persistence layer called a Workflow Instance Repository that is
+        responsible for saving workflow instance metadata and state.</p> 
+        
+        </subsection>
+        
+        <subsection name="Object Model">
+        <p>The critical objects managed by the Workflow Manager include:</p>
+        
+        <ul>
+         <li><strong>Events</strong> - are what trigger Workflows to be executed. Events 
+         are named, and contain dynamic Metadata information, passed in by the user.</li>
+         
+         <li><strong>Metadata</strong> - a dynamic set of properties, and values, provided 
+         to a WorkflowInstance via a user-triggered Event.</li>
+         
+         <li><strong>Workflow</strong> - a description of both the control flow, and data 
+         flow of a sequence of tasks (or <i>stages</i> that must be executed in some order.
+         </li>
+         
+         <li><strong>Workflow Instance</strong> - an instance of a Workflow, typically 
+         containing additional runtime descriptive information, such as start time, end 
+         time, task wall clock time, etc. A WorkflowInstance also contains a shared Metadata 
+         context, passed in by the user who triggered the Workflow. This context can be 
+         read/written to by the underlying WorkflowTasks, present in a Workflow.</li>
+         
+         <li><strong>Workflow Tasks</strong> - descriptions of data flow, and an underlying 
+         process, or stage, that is part of a Workflow.</li>
+         
+         <li><strong>Workflow Task Instances</strong> - the actual executing code, or 
+         process, that performs the work in the Workflow Task.</li>
+         
+         <li><strong>Workflow Task Configuration</strong> - static configuration properties, 
+         that <i>configure</i> a WorkflowTask.</li>
+         
+         <li><strong>Workflow Conditions</strong> - any pre (or post) conditions on the 
+         execution of a WorkflowTask.</li>
+         
+         <li><strong>Workflow Condition Instances</strong> - the actual executing code, 
+         or process, that performs the work in the Workflow Condition.</li>
+        </ul>
+
+        <p>Each Event kicks off 1 or more Workflow Instances, providing a Metadata context 
+        (submitted by an external user). Each Workflow Instance is a run-time execution model 
+        of a Workflow. Each Workflow contains 1 or more Workflow Tasks. Each Workflow Task 
+        contains a single Workflow Task Configuration, and one or more Workflow Conditions. 
+        Each Workflow Task has a corresponding Workflow Task Instance (that it models), 
+        as does each Workflow Condition have a corresponding Workflow Condition Instance. 
+        These relationships are shown in the below figure.</p>
+        
+        <p><img src="../images/wm_object_model.png" alt="Workflow Manager Object Model"/></p>
+        </subsection>
+      
+        <subsection name="Key Capabilities">
+        <p>The Workflow Manager is responsible for providing the necessary key capabilities 
+        for managing processing pipelines, data flow, and control flow. Each high level 
+        capability provided by the Workflow Manager is detailed below:</p>
+        
+		<p><strong>Explicit Modeling.</strong> The Workflow manager captures both
+        identified workflow patterns (control-flow) and data-flow between Workflow Task 
+        Instances. Workflows are directed graphs, allowing for true parallelism.</p>
+          
+        <p><strong>Persistence.</strong> Support for persistance of Workflow Instances 
+        to several backend repositories, including relational databases, and Apache 
+        <a href="http://lucene.apache.org">Lucene</a> flat file indices.</p>
+          
+        <p><strong>Standard Representations.</strong> The Workflow Manager represents 
+        Workflow models as XML documents.</p>
+          
+        <p><strong>Scalability.</strong> The Workflow Manager uses the popular 
+        client-server paradigm, allowing new Workflow Manager servers to be 
+        instantiated, as needed, without affecting the Workflow Manager clients, 
+        and vice-versa.</p>
+          
+        <p><strong>Standard communication protocols.</strong> The Workflow Manager uses 
+        XML-RPC as its main external interface between the File Manager client and 
+        server. XML-RPC, the little brother of SOAP, is fast, extensible, and uses 
+        the underlying HTTP protocol for data transfer.</p>
+          
+        <p><strong>Event-Driven Execution.</strong> Workflows are triggered by events 
+        that can include arbitrary Metadata parameters, provided as a shared context
+        between stages of the executing Workflow.</p>
+          
+        <p>This capability set is not exhaustive, and is meant to give the user a 
+        <i>feel</i> for what general features are provided by the Workflow Manager. 
+        Most likely the user will find that the Workflow Manager provides many other 
+        capabilities besides those described here.</p>
+        </subsection>
+      
+      </section>
+      
+      <a name="section3"/>
+      <section name="Extension Points">
+      
+        <p>We have constructed the Workflow Manager making use of the <i>factory 
+        method pattern</i> to provide multiple extension points for the Workflow 
+        Manager. An extension point is an interface within the Workflow Manager 
+        that can have many implementations. This is particularly useful when it 
+        comes to software component configuration because it allows different 
+        implementations of an existing interface to be selected at deployment 
+        time.</p> 
+          
+        <div class="info">The factory method pattern is a creational pattern common to
+        object oriented design. Each File Manager extension point involves the 
+        implementation of two interfaces: an <i>extension factory</i> and an 
+        <i>extension</i> implementation. At run-time, the File Manager loads a 
+        properties file specifies a factory class to use during extension point
+        instantiation. For example, the File Manager may communicate with a 
+        database-based Catalog and an XML-based Element Store (called a Validation 
+        Layer), or it may use a Lucene-based Catalog and a database-based Validation 
+        Layer.</div> 
+          
+        <p>Using extension points, it is fairly simple to support many different types 
+        of what are typically referred to as "plug-in architectures." Each of the core 
+        extension points for the Workflow Manager is described below:</p>
+       
+       <table>
+         <tr>
+           <td>Workflow Instance Repository</td>
+           <td>The Workflow Instance Repository extension point is responsible for 
+           storing all the instance data for Workflow Instances, including shared 
+           context metadata, runtime properties such as start date time, end date time, 
+           and task start/end date time.
+           </td>
+         </tr>
+         <tr>
+           <td>Workflow Repository</td>
+           <td>The Workflow Repository extension point is responsible for managing 
+           Workflow models, storing control flow, and Workflow Tasks, which model data 
+           flow. The Workflow Repository also stores Workflow Condition information, and 
+           Workflow Task Configuration. In essence, the Workflow Repository is a repository 
+           of abstract Workflow models, that get turned into Workflow Instances by the 
+           <code>Engine</code> extension point.
+           </td>
+         </tr>
+         <tr>
+           <td>Workflow Engine</td>
+           <td>The Workflow Engine's responsibility is to turn abstract Workflow models 
+           into executing Workflow Instances. The Workflow Engine tracks and monitors 
+           execution of Workflow Instances, and provides the ability to start, stop
+           and pause executing Workflow Instances. 
+           </td>
+         </tr>
+         <tr>
+           <td>System</td>
+           <td>The extension point that provides the external interface to the Workflow 
+           Manager services. This includes the Workflow Manager server interface, as well 
+           as the associated Workflow Manager client interface, that communicates with 
+           the server.
+           </td>
+         </tr>           
+        </table>
+      </section>
+       
+      <a name="section4"/>   
+      <section name="Current Extension Point Implementations">
+        
+        <p>There are at least two implementations of all of the aforementioned extension 
+        points for the Manager, with the exception of the ThreadPoolWorkflowEngine, which 
+        itself is meant to be an extension point. Each extension point implementation is 
+        detailed below:</p>
+
+        <subsection name="Workflow Instance Repository">
+          <ul>
+             <li><strong>Data Source based Workflow Instance Repository.</strong> An 
+             implementation of the Workflow Instance Repository  extension point 
+             interface that uses a JDBC accessible database backend.</li>
+             
+             <li><strong>Lucene based Workflow Instance Repository.</strong> An 
+             implementation of the Workflow Instance Repository extension point interface 
+             that uses the Lucene free text index system to store Workflow Instance 
+             information.</li>
+             
+             <li><strong>Memory based Workflow Instance Repository.</strong> An 
+             implementation of the Workflow Instance Repository extension point interface 
+             that stores Workflow Instance information in runtime memory.</li>
+          </ul>
+        </subsection>  
+           
+        <subsection name="Workflow Repository">
+          <ul>
+             <li><strong>Data Source based Workflow Repository.</strong> An 
+             implementation of the Workflow Repository extension point that stores 
+             Workflow model information in a JDBC accessible database.</li>
+             
+             <li><strong>XML based Workflow Repository.</strong> An implementation of the 
+             Workflow Repository extension point that stores Workflow model information 
+             in XML files ending in <code>*.workflow.xml</code>, as well as files named 
+             <code>tasks.xml</code>, <code>conditions.xml</code>, and 
+             <code>events.xml</code>.</li>
+          </ul>
+        </subsection> 
+         
+        <subsection name="Workflow Engine">
+          <ul>
+             <li><strong>ThreadPoolWorkflowEngine.</strong> An implementation of the 
+             Workflow Engine that itself is meant to be an extension point for 
+             WorkflowEngines that want to implement ThreadPooling. This WorkflowEngine 
+             provides everything needed to manage a ThreadPool using Doug Lea's wonderful 
+             java.util.concurrent package that made it into JDK5.</li>
+          </ul>
+        </subsection>
+        
+        <subsection name="System (Workflow Manager client and Workflow Manager server)">
+          <ul>
+             <li><strong>XML-RPC based Workflow Manager Server.</strong> An implementation 
+             of the external server interface for the Workflow Manager that uses XML-RPC 
+             as the transportation medium.</li>
+             
+             <li><strong>XML-RPC based Workflow Manager Client.</strong> An implementation 
+             of the client interface for the XML-RPC Workflow Manager server that uses 
+             XML-RPC as the transportation medium.</li>
+          </ul>
+        </subsection>
+      </section>
+      
+      <section name="Use Cases">
+        <p>
+          The Workflow Manager was built to support several of the above capabilities. In particular there 
+          were several use cases that we wanted to support, some 
+          of which are described below.        
+        </p>
+      
+         <img src="../images/wm_use_case1.jpg" alt="Workflow Manager Event-based Execution Use Case"/>
+         
+         <p>The black numbers in the above Figure correspond to a sequence of steps that occurs and a 
+         series of interactions between the different Workflow Manager extension points in order to 
+         perform the workflow execution activity. In Step 1, an event is provided to the Workflow
+         Manager event listenter (the System extension point), along with required Metadata. The
+         Workflow Manager, in step 2, looks up if ther are any associated Workflow Repository models
+         associated with the provided Event. If so, in steps 3 and 4, the returned Workflow models
+         are sent to the WorkflowEngine, to be turned into executable Workflow Instances.Each 
+         WorkflowInstance is handed off to a WorkflowProcessorThread, taken from the ThreadPoolWorkflowEngine,
+         in steps 5 and 6. The WorkflowProcessorThread, in step 7, steps through each executable WorkflowTask,
+         checking to make sure that all necessary Workflow Conditions (if any) are satisfied. If all Workflow 
+         Conditions are satisfied, then the Workflow Task is executed, either locally, or if an Resource Manager
+         is defined, then the task is sent (in step 7) to the Resource Manager (labeled <code>Process Manager</code>
+         in the figure). In steps 8-13, the WorkflowTask is executed on remote resources using the Resource Manager,
+         and eventually completed, with the final notification being sent back to the corresponding Workflow Processor
+         Thread, which is stepping through the Workflow Instance, controlling its exectuion. </p>
+         
+      </section>      
+      
+      <section name="Conclusion">
+      <p>The aim of this document is to provide information relevant to developers
+      about the CAS Worklfow Manager. Specifically, this document has described the Workflow 
+      Manager's architecture, including its constituent components, object model and
+      key capabilities. Additionally, this document provides an overview of the 
+      current implementations of the Workflow Manager's extension points.</p> 
+      
+      <p>In the <a href="../user/basic.html">Basic User Guide</a> and 
+      <a href="../user/advanced.html">Advanced User Guide</a>, we will cover topics
+      like installation, configuration, and example uses as well as advanced topics
+      like scaling and other tips and tricks.</p> 
+      
+      </section>
+   </body>
+</document>

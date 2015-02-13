@@ -1,0 +1,17 @@
+<cas:metadata xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
+<keyval type="scalar">
+  <key>Filename</key>
+  <val>test-file-3.txt</val>
+</keyval>
+<keyval type="scalar">
+  <key>ProductType</key>
+  <val>TestType</val>
+</keyval>
+<keyval type="scalar">
+  <key>TestElement</key>
+  <val>fe</val>
+  <val>fi</val>
+  <val>fo</val>
+  <val>fum</val>
+</keyval>
+</cas:metadata>
