@@ -101,7 +101,7 @@ public class TikaCmdLineMetExtractor extends CmdLineMetExtractor {
 
                 met.addMetadata(configMetKey, configMetKeyVal);
                 LOG.fine("Added config file met key [" + configMetKey + 
-                        "] with value [" + met.getMetadata(configMetKeyVal) + "]");
+                        "] with value [" + met.getMetadata(configMetKey) + "]");
             }
 
             return met;
