@@ -2,6 +2,8 @@ Apache OODT Change Log
 ======================
 Release 0.9 - Current Development
 
+* OODT-811 RADIX incorrectly sets up PCS REST services app config (mattmann)
+
 * OODT-810 Metadata PreCondition Comparators based on FileName and LastModified time (Luca Cinquini via mattmann)
 
 * OODT-809 A CrawlerAction that indexes to Solr (Luca Cinquini via mattmann)
