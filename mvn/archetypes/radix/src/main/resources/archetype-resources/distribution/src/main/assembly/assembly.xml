@@ -30,6 +30,11 @@
       <fileMode>775</fileMode>
     </fileSet>
     <fileSet>
+      <directory>${basedir}/src/main/resources/etc</directory>
+      <outputDirectory>data/met</outputDirectory>
+      <includes/>
+    </fileSet>    
+    <fileSet>
       <directory>target</directory>
       <outputDirectory>logs</outputDirectory>
       <excludes>
