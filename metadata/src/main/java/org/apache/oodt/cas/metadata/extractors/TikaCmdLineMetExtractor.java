@@ -109,7 +109,7 @@ public class TikaCmdLineMetExtractor extends CmdLineMetExtractor {
             
             // add standard OODT met
             met.addMetadata("Filename", StringEscapeUtils.escapeXml(file.getName()));
-            met.addMetadata("FileLocation", StringEscapeUtils.escapeXml(file.getAbsolutePath()));
+            met.addMetadata("FileLocation", StringEscapeUtils.escapeXml(file.getParentFile().getAbsolutePath()));
 
             return met;
 
