@@ -146,7 +146,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
                 || !check(fileLocation, FILE_LOCATION)
                 || !check(fileName, FILENAME)) {
             throw new IngestException("Must specify: " + PRODUCT_TYPE + " and "
-                    + FILENAME + "and " + FILE_LOCATION
+                    + FILENAME + " and " + FILE_LOCATION
                     + " within metadata file. Cannot ingest product: ["
                     + prodFile.getAbsolutePath() + "]");
         }
