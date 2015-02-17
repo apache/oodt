@@ -379,7 +379,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       logger.info("Writing sci pge config file [" + dynamicConfigFile.getFilePath()
                   + "]...");
       File configFile = writer.createConfigFile(dynamicConfigFile.getFilePath(),
-            pgeMetadata.asMetadata(), logger, dynamicConfigFile.getArgs());
+            pgeMetadata.asMetadata(), dynamicConfigFile.getArgs());
       if (!configFile.exists()) {
          throw new Exception("Writer failed to create config file ["
                + configFile + "], exists returned false");
