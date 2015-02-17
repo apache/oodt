@@ -24,6 +24,9 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.logging.Logger;
 
+//Apache imports
+import org.apache.commons.lang.StringEscapeUtils;
+
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
@@ -86,7 +89,7 @@ public class TikaCmdLineMetExtractor extends CmdLineMetExtractor {
 
             // copy tika met into oodt met
             for (String key : tikaMet.names()) {
-                met.addMetadata(key, tikaMet.get(key));
+                met.addMetadata(key, StringEscapeUtils.escapeXml(tikaMet.get(key)));
                 LOG.fine("Added tika met key [" + key + "] with value ["
                         + met.getMetadata(key) + "]");
             }
@@ -99,10 +102,14 @@ public class TikaCmdLineMetExtractor extends CmdLineMetExtractor {
                 String configMetKey = (String) configMetKeys.nextElement();
                 String configMetKeyVal = (String) myConfig.get(configMetKey);
 
-                met.addMetadata(configMetKey, configMetKeyVal);
+                met.addMetadata(configMetKey, StringEscapeUtils.escapeXml(configMetKeyVal));
                 LOG.fine("Added config file met key [" + configMetKey + 
                         "] with value [" + met.getMetadata(configMetKey) + "]");
             }
+            
+            // add standard OODT met
+            met.addMetadata("Filename", StringEscapeUtils.escapeXml(file.getName()));
+            met.addMetadata("FileLocation", StringEscapeUtils.escapeXml(file.getAbsolutePath()));
 
             return met;
 

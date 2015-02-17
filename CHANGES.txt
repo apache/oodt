@@ -2,6 +2,8 @@ Apache OODT Change Log
 ======================
 Release 0.9 - Current Development
 
+* OODT-817 TikaCmdLineExtractor needs to add Filename and FileLocation fields (mattmann)
+
 * OODT-813 CAS-PGE incorrectly passes varargs to DynamicConfigFile implementations (mattmann)
 
 * OODT-812 RADIX ingest script (mattmann)
