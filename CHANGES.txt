@@ -2,6 +2,8 @@ Apache OODT Change Log
 ======================
 Release 0.9 - Current Development
 
+* OODT-821 OODT-821 FMProd RDF conf shouldn't use EDRN as a default namespace for keys and for types (mattmann)
+
 * OODT-818 CmdLineIngester should log there was an exception and move on during ingest (mattmann)
 
 * OODT-817 TikaCmdLineExtractor needs to add Filename and FileLocation fields (mattmann)
