@@ -77,7 +77,7 @@
     You <b>must</b> declare a default ns in the default attribute in the
     keynsmap tag. This ns will be used if no key ns is declared in the nsmap.
   -->
-  <keynsmap default="edrn">
+  <keynsmap default="cas">
     <key name="CAS.ProductId" ns="cas"/>
     <key name="CAS.ProductName" ns="cas"/>
     <key name="CAS.ProductReceivedTime" ns="cas"/>
@@ -105,7 +105,7 @@
     You <b>must</b> declare a default ns in the default attribute in the
     typesnsmap tag. This ns will be used if no type ns is declared in the nsmap.
   -->
-  <typesnsmap default="edrn">
+  <typesnsmap default="cas">
     <type name="GenericFile" ns="cas"/>
   </typesnsmap>
 </cas:rdfconf>
