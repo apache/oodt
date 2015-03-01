@@ -26,6 +26,9 @@ the License.
   <artifactId>cas-curator</artifactId>
   <packaging>war</packaging>
   <name>CAS Curation Interface</name>
+  <properties>
+   <wicket.version>1.4.17</wicket.version>
+  </properties>  
   <description>A web application for managing policy for products and files and metadata that have been ingested via the CAS component.</description>
   <scm>
    	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.9-SNAPSHOT/curator</connection>
@@ -33,7 +36,58 @@ the License.
    	<url>http://svn.apache.org/viewvc/oodt/tags/0.9-SNAPSHOT/curator</url>
   </scm>
   <build>
-    <plugins /> 
+        <resources>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <filtering>false</filtering>
+                <directory>src/test/java</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
+        </testResources>  
+    <plugins>
+		<plugin>
+		    <groupId>org.apache.tomcat.maven</groupId>
+		    <artifactId>tomcat7-maven-plugin</artifactId>
+		    <version>2.2</version>
+		    <configuration>
+		        <port>8080</port>
+		        <systemProperties>
+		            <CATALINA_OPTS>-Djava.awt.headless=true -Dfile.encoding=UTF-8
+		                            -server -Xms1536m -Xmx1536m
+		                            -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m
+		                            -XX:MaxPermSize=512m -XX:+DisableExplicitGC
+		                            -XX:+UseConcMarkSweepGC
+		                            -XX:+CMSIncrementalMode
+		                            -XX:+CMSIncrementalPacing
+		                            -XX:CMSIncrementalDutyCycleMin=0
+		                            -XX:-TraceClassUnloading
+		            </CATALINA_OPTS>
+		        </systemProperties>
+		        <contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
+		        <path>/${project.build.finalName}</path>  
+		    </configuration>	    
+		</plugin>    
+    </plugins>
   </build>
   <profiles>
     <profile>
@@ -72,31 +126,30 @@ the License.
         </plugins>
       </build>
     </profile>
-  </profiles>
-  <repositories>
-    <repository>
-      <id>ibiblio</id>
-      <name>Ibiblio Repository</name>
-      <layout>default</layout>
-      <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>maven2-repository.dev.java.net</id>
-      <name>Java.net Repository for Maven</name>
-      <url>http://download.java.net/maven/2/</url>
-      <layout>default</layout>
-    </repository> 
-  </repositories>
-  
+  </profiles>  
   <dependencies>
+    <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket</artifactId>
+        <version>${wicket.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-extensions</artifactId>
+        <version>${wicket.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+        </exclusions>
+    </dependency>
 	<dependency>
 		<groupId>commons-fileupload</groupId>
 		<artifactId>commons-fileupload</artifactId>
@@ -126,6 +179,12 @@ the License.
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-filemgr</artifactId>
       <version>${project.parent.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
@@ -134,25 +193,26 @@ the License.
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-crawler</artifactId>
+      <artifactId>cas-metadata</artifactId>
       <version>${project.parent.version}</version>
       <exclusions>
         <exclusion>
-          <artifactId>tika</artifactId>
-          <groupId>org.apache.tika</groupId>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
         </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-metadata</artifactId>
-      <version>${project.parent.version}</version>
+      </exclusions>      
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>net.sf.json-lib</groupId>
-      <artifactId>json-lib</artifactId>
+      <artifactId>json-lib</artifactId>      
       <version>2.3</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>        
       <classifier>jdk15</classifier>
     </dependency>
    <dependency>

@@ -1,0 +1,645 @@
+/*
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
+@CHARSET "UTF-8";
+
+div.editor table tr td {
+    
+    position:relative;
+    padding-left:5px;
+    cursor:pointer;
+    _cursor:hand;
+    
+}
+
+div.editor table tr td img.pencil {
+    
+    position:relative;
+    left:0px;
+    cursor:pointer;
+    _cursor:hand;
+    
+}
+
+
+.ptwbMetadataList table {
+    border-top:solid 1px #ccc;
+}
+
+/* file tree */
+
+
+
+UL.fileTree {
+    font-family: Verdana, sans-serif;
+    font-size: 11px;
+    line-height: 18px;
+    padding: 0px;
+    margin: 0px;
+}
+
+LI.helper {
+    font-family: Verdana, sans-serif;
+    font-size:11px;
+    line-height:18px;
+}
+
+UL.fileTree LI, LI.helper {
+    list-style: none;
+    padding: 0px;
+    padding-left: 20px;
+    margin: 0px;
+    white-space: nowrap;
+}
+
+UL.fileTree A, LI.helper A {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    padding: 0px 2px;
+}
+
+UL.fileTree A:hover, LI.helper A {
+    background: #BDF;
+}
+
+/* Core Styles */
+.fileTree LI.directory, LI.helper.directory { background: url(../img/fileTree/directory.png) left top no-repeat; }
+.fileTree LI.expanded, LI.helper.expanded   { background: url(../img/fileTree/folder_open.png) left top no-repeat; }
+.fileTree LI.file, LI.helper.file           { background: url(../img/fileTree/file.png) left top no-repeat; }
+.fileTree LI.wait, LI.helper.wait           { background: url(../img/fileTree/spinner.gif) left top no-repeat; }
+/* File Extensions*/
+.fileTree LI.ext_3gp, LI.helper.ext_3gp { background: url(../img/fileTree/film.png) left top no-repeat; }
+.fileTree LI.ext_afp, LI.helper.ext_afp { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_afpa, LI.helper.ext_afpa { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_asp, LI.helper.ext_asp { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_aspx, LI.helper.ext_aspx { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_avi, LI.helper.ext_avi { background: url(../img/fileTree/film.png) left top no-repeat; }
+.fileTree LI.ext_bat, LI.helper.ext_bat { background: url(../img/fileTree/application.png) left top no-repeat; }
+.fileTree LI.ext_bmp, LI.helper.ext_bmp { background: url(../img/fileTree/picture.png) left top no-repeat; }
+.fileTree LI.ext_c, LI.helper.ext_c { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_cfm, LI.helper.ext_cfm { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_cgi, LI.helper.ext_cgi { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_com, LI.helper.ext_com { background: url(../img/fileTree/application.png) left top no-repeat; }
+.fileTree LI.ext_cpp, LI.helper.ext_cpp { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_css, LI.helper.ext_css { background: url(../img/fileTree/css.png) left top no-repeat; }
+.fileTree LI.ext_doc, LI.helper.ext_doc { background: url(../img/fileTree/doc.png) left top no-repeat; }
+.fileTree LI.ext_exe, LI.helper.ext_exe { background: url(../img/fileTree/application.png) left top no-repeat; }
+.fileTree LI.ext_gif, LI.helper.ext_gif { background: url(../img/fileTree/picture.png) left top no-repeat; }
+.fileTree LI.ext_fla, LI.helper.ext_fla { background: url(../img/fileTree/flash.png) left top no-repeat; }
+.fileTree LI.ext_h, LI.helper.ext_h { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_htm, LI.helper.ext_htm { background: url(../img/fileTree/html.png) left top no-repeat; }
+.fileTree LI.ext_html, LI.helper.ext_html { background: url(../img/fileTree/html.png) left top no-repeat; }
+.fileTree LI.ext_jar, LI.helper.ext_jar { background: url(../img/fileTree/java.png) left top no-repeat; }
+.fileTree LI.ext_jpg, LI.helper.ext_jpg { background: url(../img/fileTree/picture.png) left top no-repeat; }
+.fileTree LI.ext_jpeg, LI.helper.ext_jpeg { background: url(../img/fileTree/picture.png) left top no-repeat; }
+.fileTree LI.ext_js, LI.helper.ext_js { background: url(../img/fileTree/script.png) left top no-repeat; }
+.fileTree LI.ext_lasso, LI.helper.ext_lasso { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_log, LI.helper.ext_log { background: url(../img/fileTree/txt.png) left top no-repeat; }
+.fileTree LI.ext_m4p, LI.helper.ext_m4p { background: url(../img/fileTree/music.png) left top no-repeat; }
+.fileTree LI.ext_mov, LI.helper.ext_mov { background: url(../img/fileTree/film.png) left top no-repeat; }
+.fileTree LI.ext_mp3, LI.helper.ext_mp3 { background: url(../img/fileTree/music.png) left top no-repeat; }
+.fileTree LI.ext_mp4, LI.helper.ext_mp4 { background: url(../img/fileTree/film.png) left top no-repeat; }
+.fileTree LI.ext_mpg, LI.helper.ext_mpg { background: url(../img/fileTree/film.png) left top no-repeat; }
+.fileTree LI.ext_mpeg, LI.helper.ext_mpeg { background: url(../img/fileTree/film.png) left top no-repeat; }
+.fileTree LI.ext_ogg, LI.helper.ext_ogg { background: url(../img/fileTree/music.png) left top no-repeat; }
+.fileTree LI.ext_pcx, LI.helper.ext_pcx { background: url(../img/fileTree/picture.png) left top no-repeat; }
+.fileTree LI.ext_pdf, LI.helper.ext_pdf { background: url(../img/fileTree/pdf.png) left top no-repeat; }
+.fileTree LI.ext_php, LI.helper.ext_php { background: url(../img/fileTree/php.png) left top no-repeat; }
+.fileTree LI.ext_png, LI.helper.ext_png { background: url(../img/fileTree/picture.png) left top no-repeat; }
+.fileTree LI.ext_ppt, LI.helper.ext_ppt { background: url(../img/fileTree/ppt.png) left top no-repeat; }
+.fileTree LI.ext_psd, LI.helper.ext_psd { background: url(../img/fileTree/psd.png) left top no-repeat; }
+.fileTree LI.ext_pl, LI.helper.ext_pl { background: url(../img/fileTree/script.png) left top no-repeat; }
+.fileTree LI.ext_py, LI.helper.ext_py { background: url(../img/fileTree/script.png) left top no-repeat; }
+.fileTree LI.ext_rb, LI.helper.ext_rb { background: url(../img/fileTree/ruby.png) left top no-repeat; }
+.fileTree LI.ext_rbx, LI.helper.ext_rbx { background: url(../img/fileTree/ruby.png) left top no-repeat; }
+.fileTree LI.ext_rhtml, LI.helper.ext_rhtml { background: url(../img/fileTree/ruby.png) left top no-repeat; }
+.fileTree LI.ext_rpm, LI.helper.ext_rpm { background: url(../img/fileTree/linux.png) left top no-repeat; }
+.fileTree LI.ext_ruby, LI.helper.ext_ruby { background: url(../img/fileTree/ruby.png) left top no-repeat; }
+.fileTree LI.ext_sql, LI.helper.ext_sql { background: url(../img/fileTree/db.png) left top no-repeat; }
+.fileTree LI.ext_swf, LI.helper.ext_swf { background: url(../img/fileTree/flash.png) left top no-repeat; }
+.fileTree LI.ext_tif, LI.helper.ext_tif { background: url(../img/fileTree/picture.png) left top no-repeat; }
+.fileTree LI.ext_tiff, LI.helper.ext_tiff { background: url(../img/fileTree/picture.png) left top no-repeat; }
+.fileTree LI.ext_txt, LI.helper.ext_txt { background: url(../img/fileTree/txt.png) left top no-repeat; }
+.fileTree LI.ext_vb, LI.helper.ext_vb { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_wav, LI.helper.ext_wav { background: url(../img/fileTree/music.png) left top no-repeat; }
+.fileTree LI.ext_wmv, LI.helper.ext_wmv { background: url(../img/fileTree/film.png) left top no-repeat; }
+.fileTree LI.ext_xls, LI.helper.ext_xls { background: url(../img/fileTree/xls.png) left top no-repeat; }
+.fileTree LI.ext_xml, LI.helper.ext_xml { background: url(../img/fileTree/code.png) left top no-repeat; }
+.fileTree LI.ext_zip, LI.helper.ext_zip { background: url(../img/fileTree/zip.png) left top no-repeat; }
+
+/* MAIN.CSS */
+/**
+ * CAS Header Styles
+ *
+ * These describe the basic layout of the header code in /views/common/cas-curator-header.jsp
+ */
+
+/* DIV.CAS-HEADER */
+div#cas-header {
+    position:relative;
+    height:56px;
+    padding:5px;
+    text-align:right;
+    border-bottom:solid 1px #000;
+    overflow:none;
+    background:url(../../img/blackfade-syncd.jpg) scroll 0px 0px repeat-x;
+    background-color:#000;
+}
+
+/* DIV.CAS-LOGO-LEFT */
+div#cas-logo-left {
+    position:absolute;
+    top:0px;
+    left:0px;
+    height:67px;
+    width:500px;
+}
+/* DIV.CAS-LOGO-RIGHT */
+div#cas-logo-right {
+    position:absolute;
+    top:0px;
+    right:0px;
+    height:67px;
+    width:290px;
+}
+
+/* H2.APP-TITLE */
+h2.app-title {
+    position:absolute;
+    top:67px;
+    right:0px;
+    margin:0px;
+    width:100%;
+    padding:5px;
+    padding-left:0px;
+    font-weight:normal;
+    font-size:15px;
+    letter-spacing:0.03em;
+}
+/* DIV.USERDETAILS */
+div.userdetails {
+    position:absolute;
+    top:102px;
+    right:5px;
+    font-size:75%;
+    z-index:10
+}
+div.userdetails a {
+    
+}
+
+/* DIV#BREADCRUMBS */
+div#breadcrumbs {
+    position:relative;
+    margin-top:30px;
+    padding:4px;
+    padding-right:5px;
+    padding-left:5px;
+    padding-bottom:5px;
+    font-size:85%;
+}
+div#breadcrumbs ul {
+    list-style:none;
+    margin:0px;
+    padding:0px;
+}
+div#breadcrumbs ul li {
+    display:inline;
+}
+
+div#breadcrumbs ul li a {
+    font-weight:normal;
+    text-decoration:underline;  
+}
+
+/**
+ * CAS Footer Styles
+ *
+ * These describe the basic layout of the footer code in /views/common/cas-curator-footer.jsp
+ */
+ 
+div#footer {
+    font-size:90%;
+    text-align:center;
+    margin-top:35px;
+    border-top:solid 1px #ddd;
+    padding-top:15px;
+    padding-bottom:8px;
+}
+
+div#footer img {
+    border:none;
+    padding-left:2px;
+    margin-left:5px;    
+}
+
+
+
+
+
+
+
+/**
+ * CAS Interface Styles
+ *
+ * These describe the layout of the main curator interface located at /main.jsp
+ */
+ 
+ 
+ 
+/* DIV.ERROR
+ * A red 'error' box suitable for displaying error messages.
+ */
+div.error {
+    background-color:#fcc;
+    padding:5px;
+    margin-right:15px;
+    border:solid 1px #f44;
+}
+
+/* DIV.SUCCESS
+ * A green 'success' box suitable for displaying success messages.
+ */
+div.success  {
+    padding:5px;
+    border:solid 1px green;
+    background-color:#cfc;  
+    margin-right:10px;
+}
+
+/* HEADERS (H1,H2,H3,......) */
+h2.title {
+    padding:5px;
+    margin:0px;
+    border-top:solid 2px #900;
+    border-bottom:solid 1px #300;
+    font-weight:normal;
+    font-size:15px;
+}
+
+h4 {
+    border-bottom:dotted 1px #888;
+}
+
+
+/**
+ * PAGE STRUCTURE
+ *
+ */
+ 
+/* LOGIN FORM */
+form#login-form {
+    border:solid 0px #f66;
+    background-color:#fff;
+    margin:5px;
+    padding:3px;
+    text-align:center;
+}
+form#login-form h3 {
+    color:#333;
+    margin-top:0px;
+    border-bottom:dotted 0px #444;
+        
+}
+form#login-form input[type=text], form#login-form input[type=password] {
+    border:solid 1px #888;
+    padding:3px;
+    width:150px;
+}
+form#login-form table {
+    color:#333;
+    margin:5px;
+    margin-top:0px;
+    border:solid 1px #ccc;
+    width:242px;
+}
+form#login-form input[type=submit] {
+    padding:3px;
+}
+
+
+
+/* MAIN INTERFACE STRUCTURES */
+div.container {
+    position:relative;
+    border:solid 1px grey;
+    padding:5px;
+}
+
+div#browseStagingContainer, div#browseCatalogContainer {
+    position:relative;
+    width:47%;
+    border:solid 2px #ccc;
+    padding:2px;
+}
+div#browseStagingContainer {
+    position:relative;
+    float:left;
+}
+
+div#browseCatalogContainer {
+    position:relative;
+    float:right;
+}
+
+div#browseStaging {
+    position:relative;
+    float:left;
+    width:33%;
+    border:solid 1px #ccc;
+    overflow:scroll;    
+}
+div#browseCatalog {
+    position:relative;
+    float:left;
+    width:33%;
+    border:solid 1px #ccc;
+    overflow:scroll;    
+}
+div#stagingMetContainer {
+    position:relative;
+    float:right;
+    width:60%;
+    height:350px;
+    font-size:12px;
+}
+div#stagingMetExtractorSelection {
+    position:relative;
+    margin-bottom:3px;
+    display:none;
+}
+
+div#stagedMetadataWorkbenchContent {
+    position:relative;
+    height:323px;
+    background-color:#fff;
+    overflow:scroll;
+    border:solid 1px #ccc;  
+}
+div#catalogMetadataWorkbenchContent {
+    position:relative;
+    float:right;
+    width:60%;
+    height:350px;
+    background-color:#fff;
+    overflow:scroll;
+    border:solid 1px #ccc;  
+}
+
+.browser {
+    background:#FFFFFF none repeat scroll 0 0;
+    border-color:#BBBBBB #FFFFFF #FFFFFF #BBBBBB;
+    border-style:solid;
+    border-width:1px;
+    height:350px;
+    padding:5px;
+    width:200px;
+}
+.container.browsers, .container.tasks {
+    background-color:#EEEEEE;
+    border:solid 1px #ccc;
+    padding-top:18px;
+    margin:5px 0px;
+}
+.container h5 {
+    position:relative;
+    margin:-20px -4px 5px;
+    padding:0px;
+    font-family:arial,sans-serif;
+    text-transform:uppercase;
+    color:#999; 
+}
+
+.pathbar {
+    border:solid 1px #ccc;
+    background-color:#f4f4f4;
+    color:#222;
+    padding:3px;
+    margin-bottom:2px;  
+    font-family:courier,sans-serif;
+    font-size:11px;
+}
+
+
+/* METADATA EDITOR */
+div.editor {
+    position:relative;
+    padding:0px;    
+}
+
+div.editor.info {
+    padding:5px;    
+}
+
+div.editor table {
+    font-size:11px;
+    width:100%;
+}
+
+div.editor table tr {
+    
+}
+
+div.editor table tr th {
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+    padding:5px;
+    text-align:left;
+    background-color:#f6f6f6;
+    color:#555;
+}
+
+div.editor table tr td {
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+    padding:5px;
+}
+
+/* 
+ * INGESTION TASK LIST 
+ */
+
+
+.container.tasks {
+    padding:5px;
+    padding-top:20px;
+}
+.container.tasks h5 {
+    margin:-18px 0px 2px;
+}
+div#ingestionTaskList {
+    
+}
+div#ingestionTaskListContent {
+    background-color:#fff;
+    min-height:100px;
+    border:solid 1px #ccc;  
+}
+
+div#ingestionTaskListContent table {
+    font-size:11px;
+    width:100%;
+}
+
+div#ingestionTaskListContent table tr{
+
+}
+div#ingestionTaskListContent table tr th{
+    padding:4px;
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+    background-color:#f6f6f6;
+}
+div#ingestionTaskListContent table tr td{
+    padding:4px;
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+}
+
+
+/* PRODUCTTYPE WORKBENCH */
+
+div#productTypeWorkbenchLabel {
+    font-size:12px;
+    font-family:arial,sans-serif;
+    text-transform:uppercase;
+    color:#555;
+    font-weight:normal;
+    padding:1px 1px 1px 4px;    
+}
+
+div#ptwbAddProducts {
+    padding:5px;    
+}
+
+div#productTypeWorkbenchContents .instructions {
+    font-size:90%;
+    color:#444; 
+}
+
+div#ptwbMetadataList table {
+    border:solid 1px #ccc;  
+}
+
+div#droppedFileList {
+
+    overflow:scroll;
+    min-height:50px;
+        
+}
+
+div.ptwbSectionBox {
+    border:solid 1px #ccc;
+    padding:2px;
+    margin:5px 0px 2px 0px; 
+}
+
+div.ptwbSectionBox h5 {
+    margin:0 0 4px;
+    padding:0px;    
+}
+
+div#droppedFileTarget {
+    height:30px;
+    border-color:#bdb;
+    background-color:#dfd;  
+}
+
+div#itMetExtractorSelector {
+    
+}
+
+div#itCreateIngestionTaskButton {
+    margin-top:5px; 
+}
+
+/* INFORMATIONAL MESSAGES */
+/* all absolutely positioned infos are at z-index 1000-1100)
+ */
+div.info {
+    font-size:13px;
+    background-color:#acf;
+    font-family:arial,sans-serif;
+    color:#345; 
+    display:none;   
+}
+div.info input[type=button] {
+    padding:2px;
+    margin:5px 0px;
+}
+div#infoNoMetadataExtractorDefined {
+    position:absolute;
+    border:solid 1px #ccc;
+    top:28px;
+    right:-2px;
+    z-index:1000;
+    width:60%;  
+    line-height:18px;
+}
+div.infoContent {
+    padding:5px;    
+}
+
+/* LINKS */
+
+a {
+    color:#222;
+    text-decoration:none;
+}
+a:hover {
+    text-decoration:underline;
+}
+a.actionlink {
+    color:#48a;
+    padding-left:5px;   
+}
+div#breadcrumbs a {
+    color:#fff;
+}
+
+
+
+/**
+ * .CLR
+ * This is a utility which serves to reset things after a 
+ * series of floated elements
+ */
+.clr {
+    clear:both;
+}
+
+
+/* UI.TABS */
+.ui-tabs { padding: 0em; zoom: 1; font-size:11px; }
+.ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: 0px; }
+.ui-tabs .ui-tabs-nav li { position: relative; float: left; border-bottom-width: 0; margin: 0 .2em; padding: 0; }
+.ui-tabs .ui-tabs-nav li a { float: left; text-decoration: none; padding: .5em 1em; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 1px; border-bottom-width: 3px; border-bottom-color:#fff; margin-bottom:-2px; overflow:none; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
+.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+.ui-tabs .ui-tabs-panel { padding: 1em 0em; display: block; background: none; }
+.ui-tabs .ui-tabs-hide { display: none !important; }
+
+
+
+.ui-tabs .ui-tabs-nav li { border: solid 1px #ccc; background-color: #bbb; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected {  background-color: #fff; color: #555; }
+.ui-tabs .ui-tabs-nav li a { color: #fff; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a { color:  #555; }
+.ui-tabs .ui-tabs-nav {  }
+.ui-tabs .ui-tabs-panel { padding: 1em 0em; margin: 0em; border-top: solid 1px #ccc;}

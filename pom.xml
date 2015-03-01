@@ -56,7 +56,7 @@ the License.
         <module>workflow</module>
         <module>crawler</module>
         <module>resource</module>
-        <module>curator</module>
+        <!-- <module>curator</module> -->
         <module>pge</module>
         <module>mvn/plugins/cas-install</module>
         <module>mvn/archetypes</module>

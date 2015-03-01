@@ -15,6 +15,216 @@
   limitations under the License.
 */
 
+// File Tree
+
+var _staging = '/';	// current root path in staging area browser
+var _catalog = '/';	// current root path in catalog browser
+var _paths   = { "staging" :  '/', 
+                 "catalog" :  '/',
+                 "currentStagedFile" : '',
+                 "currentCatalogedFile" : '',
+                 "currentProductType" : ''}
+
+if(jQuery) (function($){
+	
+	$.extend($.fn, {
+		fileTree: function(o, h, i) {
+			// Defaults
+			if( !o ) var o = {};
+			if( o.root == undefined ) o.root = '/';
+			if( o.folderEvent == undefined ) o.folderEvent = 'dblclick';
+			if( o.expandSpeed == undefined ) o.expandSpeed= 500;
+			if( o.collapseSpeed == undefined ) o.collapseSpeed= 500;
+			if( o.expandEasing == undefined ) o.expandEasing = null;
+			if( o.collapseEasing == undefined ) o.collapseEasing = null;
+			if( o.multiFolder == undefined ) o.multiFolder = true;
+			if( o.loadMessage == undefined ) o.loadMessage = 'Loading...';
+			
+			// Understand which of the two browsers to apply nav actions to
+			if (o.which == undefined) { alert('please specify \'which\' (options are: "staging"|"catalog") '); o.which = "staging";}
+			
+			// Ensure a script has been provided
+			if (o.script == undefined) { alert('please specify a target script \'script\' in fileTree options'); }
+			
+			// Get a handle to the outer UL
+			o.outerContainer = '#' + $(this).attr('id');
+			if (o.outerContainer == undefined) { alert('container must have unique id') };
+			
+			$(this).each( function() {
+				
+				function showTree(c, t) {
+					$(c).addClass('wait');
+					$(".fileTree.start").remove();
+					$.get(o.script, { path: t }, function(data) {
+						$(c).find('.start').html('');
+						$(c).removeClass('wait').html(data);
+						if (o.which == "staging")
+							_paths.staging = escape(t);
+						else
+							_paths.catalog = escape(t);
+						bindTree(c);
+						updateNav(o.which);
+						clearMetadataWorkbenchContent(o.which);
+						initDraggables();
+					});
+				}
+				
+				function bindTree(t) {
+					$(o.outerContainer).find('UL LI A').bind('click', function() {
+						if ($(this).parent().hasClass('productType')) {
+							i($(this).attr('rel'));
+						} else if ($(this).parent().hasClass('file')) {
+							h($(this).attr('rel'));
+						}
+					}).bind('dblclick', function() {
+						if ($(this).parent().hasClass('directory') ) {
+							$(this).parent().find('UL').remove(); // cleanup
+							showTree( $(o.outerContainer), escape($(this).attr('rel')) );
+						}
+					});
+					
+					// Prevent A from triggering the # on non-click events
+					if( o.folderEvent.toLowerCase != 'click' ) $(t).find('LI A').bind('click', function() { return false; });
+				}
+				
+				// Loading message
+				$(this).html('<ul class="fileTree start"><li class="wait">' + o.loadMessage + '<li></ul>');
+				
+				// Get the initial file list
+				showTree( $(this), escape((o.which == "staging" ) ? _paths.staging : _paths.catalog) );
+			});
+		}
+	});
+})(jQuery);
+
+// Metadata editors
+function makeStagedMetadataEditable() {
+	makeMetadataEditable(
+		$("#stagedMetadataWorkbenchContent > table > tbody > tr >  td"),
+		updateStagedMetadata);
+}
+
+function makeProductMetadataEditable() {
+	makeMetadataEditable(
+		$("#catalogMetadataWorkbenchContent > table > tbody > tr > td"),
+		updateProductMetadata);		
+}
+
+function makeProductTypeMetadataEditable() {
+	makeMetadataEditable(
+		$("#liveProductTypeWorkbenchContents div.ptwbMetadataList > table > tbody > tr > td"),
+		updateProductTypeMetadata);
+}
+
+function updateStagedMetadata() {
+	// Data is the collection of <tr/> elements that contain metadata key/value pairs
+	var data = getMetadataFromSource($('#stagedMetadataWorkbenchContent > table > tbody > tr'));
+	var qstr = getQueryStringFromMetadata(_paths.currentStagedFile, data);
+	
+	$.post('./services/metadata/staging',
+		qstr,
+		function(data, textStatus) {
+			// alert(data);
+		}
+	);
+}
+
+function updateProductMetadata() {
+	// Data is the collection of <tr/> elements that contain metadata key/value pairs
+	var data = getMetadataFromSource($('#catalogMetadataWorkbenchContent > table > tbody > tr'));
+	var qstr = getQueryStringFromMetadata(_paths.currentCatalogedFile, data);
+
+	$.post('./services/metadata/catalog',
+		qstr,
+		function(data, textStatus) {
+			// alert(data);
+		}
+	);
+}
+
+function updateProductTypeMetadata() {
+	// Data is the collection of <tr/> elements that contain metadata key/value pairs
+	var data = getMetadataFromSource($('#liveProductTypeWorkbenchContents div.ptwbMetadataList > table > tbody > tr'));
+	var qstr = getQueryStringFromMetadata(_paths.currentProductType, data);
+
+	$.post('./services/metadata/productType',
+		qstr,
+		function(data, textStatus) {
+			// alert(data);
+		}
+	);
+}
+
+
+
+/**
+ * Utility functions to encapsulate common functionality
+ *
+ */
+
+// source:   the collection of <td/> objects containing metadata values
+// callback: the function to be called to persist the edits
+function makeMetadataEditable(source, callback) {
+	// Set up the i/f to display the icon only when the user is hovering over
+	// the field
+	source.click(function() {
+		var $met = $(this);
+		var metValue = $met; // the <td> itself
+			var metKey = $(this).prev().text();
+			jPromptMulti(
+					metKey,
+					metValue,
+					'Update Metadata',
+					function(r) {
+
+						if (r) {
+							// turn r into a comma-separated string of values
+							htmlResult = '<span>' + r.join('</span>, <span>') + '</span>';
+							// alert( 'You entered ' + htmlResult )
+							$met.html(htmlResult);
+							callback();
+						}
+					});
+		});
+}
+
+function getMetadataFromSource( source ) {
+	
+	// Keys are 1 per row in <th/> elements
+	// Values are 1 per row in <td/> elements
+	
+	var $table = source;
+	var data   = Array();
+	$table.each( function () {
+		// Create a key/value mapping of the staged metadata
+		var $valueElmt = $(this).children('td');
+		// All values are wrapped in <span/> elements and there can be
+		// an unlimited number of them, so build an array.
+		var $values    = $valueElmt.children('span');
+		var valueData  = Array();
+		for (var i = 0; i < $values.length; i ++ ) {
+			valueData.push($values[i].textContent);
+		}
+		// Assign the value data to the correct element
+		data.push( { 'key' : $(this).children('th').text(), 'value' : valueData } );
+	});
+	
+	return data;
+}
+
+function getQueryStringFromMetadata(id,data) {
+	// Build the query string that will be sent to the server
+	var qstr      = '';
+	qstr         += 'id=' + id;
+	for ( var i = 0; i < data.length; i++ ) {
+		for ( var j = 0; j < data[i].value.length; j++ ) {
+			qstr += '&metadata.' + data[i].key + '=' + data[i].value[j];
+		}
+	}
+	
+	return qstr;
+}
+
 
 /********************************************************************
  * INGESTION TASK SETUP
@@ -425,4 +635,5 @@ function displayProductTypeWorkbench(productType,data) {
 	makeProductTypeMetadataEditable();				// allow ptype met editing
 	updateIngestionTaskMetExtractorConfigIds();
 }
+
 

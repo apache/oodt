@@ -16,7 +16,7 @@
  */
 
 
-package org.apache.oodt.cas.curation.servlet;
+package org.apache.oodt.cas.curation.config;
 
 /**
  * 
