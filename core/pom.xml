@@ -318,6 +318,9 @@ the License.
                         <goals>
                             <goal>javadoc</goal>
                         </goals>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
