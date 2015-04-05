@@ -21,7 +21,7 @@ package org.apache.oodt.cas.resource.scheduler;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 
 //JDK imports
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class QueueManager {
 	protected Map<String, LinkedHashSet<String>> queueToNodesMapping;
 	
 	public QueueManager() {
-		this.queueToNodesMapping = new HashMap<String, LinkedHashSet<String>>();
+		this.queueToNodesMapping = new LinkedHashMap<String, LinkedHashSet<String>>();
 	}
 	
 	public synchronized boolean containsQueue(String queueName) {
