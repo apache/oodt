@@ -327,9 +327,9 @@ public class SolrIndexer {
 				if (!config.getIgnoreTypes().contains(type.getName().trim())) {
 					LOG.info("Paging through products for product type: "
 					    + type.getName());
-					for (ProductPage page = safeFirstPage(fmClient, type); page != null && !page
-					    .isLastPage(); page = fmClient.getNextPage(type, page)) {
-						for (Product product : page.getPageProducts()) {
+					ProductPage page = safeFirstPage(fmClient, type); 
+					while (page != null) {
+					    for (Product product : page.getPageProducts()) {
 							try {
 								this.indexProduct(product.getProductId(), fmClient
 								    .getMetadata(product), type.getTypeMetadata());
@@ -338,6 +338,10 @@ public class SolrIndexer {
 								    + e.getMessage());
 							}
 						}
+					    if (page.isLastPage()) {
+					        break;
+					    }
+					    page = fmClient.getNextPage(type, page);
 					}
 				}
 			}
