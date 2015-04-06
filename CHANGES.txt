@@ -1,7 +1,7 @@
 Apache OODT Change Log
 ======================
 Release 0.9 - Current Development
-
+ 
 * OODT-830 Queue Assertion failure of XmlQueueRepository under CAS Resource Manager (Aditya Dhulipala via mattmann)
 
 * OODT-823 OODT JDK8 Maven3 build errors (Aditya Dhulipala via mattmann)
