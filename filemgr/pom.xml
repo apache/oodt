@@ -151,6 +151,11 @@
   </repositories>
   <dependencies>
     <dependency>
+    <groupId>org.apache.tika</groupId>
+      <artifactId>tika-parsers</artifactId>
+      <version>1.7</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-commons</artifactId>
       <version>${project.parent.version}</version>    
