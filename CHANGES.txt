@@ -2,6 +2,8 @@ Apache OODT Change Log
 ======================
 Release 0.9 - Current Development
 
+* OODT-826 Add the capability to check external preconditions before ingesting a file.
+
 * OODT-832 Move streaming items to seperate top-level component (starchmd)
 
 * OODT-831 CAS PGE adapter framework build failed (Aditya Dhulipala via mattmann)

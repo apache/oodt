@@ -58,4 +58,13 @@ the License.
         </property>
         <property name="type" value="equal_to" />
     </bean>
+
+    <bean id="CheckThatDataFileIsComplete" lazy-init="true" class="org.apache.oodt.cas.metadata.preconditions.ExternPreconditionComparator">
+        <property name="description" value="Execute external script to check for file completeness." />
+        <property name="compareItem">
+            <value type="java.lang.Long">0</value>
+        </property>
+        <property name="type" value="equal_to" />
+        <property name="executeCommand" value="check-data-file-complete.pl" />
+    </bean>
 </beans>
