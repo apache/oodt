@@ -2,6 +2,8 @@ Apache OODT Change Log
 ======================
 Release 0.9 - Current Development
 
+* OODT-841 Update Maven instructions in README to include clean command (Ethan Wang via mattmann)
+
 * OODT-844 Scala maven plugin for streaming only (Jane Wyngaard via mattmann)
 
 * OODT-829 Implement an Apache Tika based Server Side Extractor (Radu Manole via mattmann)

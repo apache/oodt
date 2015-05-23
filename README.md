@@ -15,8 +15,8 @@ other research institutions and universities, specifically those part of the:
 * Various Earth Science data processing missions, including
   Seawinds/QuickSCAT, the Orbiting Carbon Observatory, the NPP Sounder PEATE
   project, and the Soil Moisture Active Passive (SMAP) mission.
-    
-OODT is a Top Level project of the Apache Software Foundation 
+
+OODT is a Top Level project of the Apache Software Foundation
 <http://www.apache.org/>.
 
 Getting Started
@@ -27,7 +27,7 @@ It requires Java 5 and uses the Maven 2 <http://maven.apache.org/> build
 system.  To build the Java components of OODT, use the following command in
 this directory:
 
-    mvn install
+    mvn clean install
 
 For the Python components, see the "agility" subdirectory.
 
@@ -40,7 +40,7 @@ To contribute a patch, follow these instructions (note that installing
 0. Download and install hub.github.com
 1. File JIRA issue for your fix at https://issues.apache.org/jira/browse/OODT
 - you will get issue id OODT-xxx where xxx is the issue ID.
-2. git clone http://github.com/apache/oodt.git 
+2. git clone http://github.com/apache/oodt.git
 3. cd oodt
 4. git checkout -b OODT-xxx
 5. edit files
@@ -110,9 +110,9 @@ Documentation
 You can build a local copy of the OODT documentation including JavaDocs using
 the following Maven 2 command in the OODT source directory:
 
-    mvn site 
+    mvn site
 
-You can then open the OODT Documentation in a web browser: 
+You can then open the OODT Documentation in a web browser:
 
     ./target/site/index.html
 
