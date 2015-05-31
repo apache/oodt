@@ -21,13 +21,13 @@ the License.
     <parent>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-core</artifactId>
-        <version>0.9</version>
+        <version>0.10-SNAPSHOT</version>
         <relativePath>../../core/pom.xml</relativePath>
     </parent>
 	<groupId>org.apache.oodt</groupId>
 	<artifactId>oodt-webapp-components</artifactId>
 	<packaging>jar</packaging>
-	<version>0.9</version>
+	<version>0.10-SNAPSHOT</version>
 	<name>OODT Wicket Web Components</name>
 	<dependencies>
 		<dependency>
@@ -38,12 +38,12 @@ the License.
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>cas-filemgr</artifactId>
-		  <version>0.9</version>
+		  <version>0.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>cas-workflow</artifactId>
-		  <version>0.9</version>
+		  <version>0.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>	
 		  <groupId>org.apache.oodt</groupId>
