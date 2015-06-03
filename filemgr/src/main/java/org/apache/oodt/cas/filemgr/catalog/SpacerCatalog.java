@@ -61,7 +61,7 @@ import java.util.logging.Logger;
  * </p>
  * 
  */
-public class SpacerCatalog implements Catalog {
+public abstract class SpacerCatalog implements Catalog {
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(DataSourceCatalog.class.getName());
 

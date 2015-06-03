@@ -32,7 +32,7 @@ import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
  * </p>
  * 
  */
-public class SpacerCatalogFactory implements CatalogFactory {
+public abstract class SpacerCatalogFactory implements CatalogFactory {
 
     private String catalogFactory;
     /* our log stream */
@@ -51,8 +51,12 @@ public class SpacerCatalogFactory implements CatalogFactory {
      * @see org.apache.oodt.cas.filemgr.catalog.CatalogFactory#createCatalog()
      */
     public Catalog createCatalog() {
-        Catalog subordinate = GenericFileManagerObjectFactory.getCatalogServiceFromFactory(this.catalogFactory);
-        return new SpacerCatalog(subordinate);
+        Catalog sub = GenericFileManagerObjectFactory.getCatalogServiceFromFactory(this.catalogFactory);
+        return this.getWrapper(sub);
     }
+    /**
+     * Forces user of Spacer Factory to provide their own catalog implementation.
+     */
+    protected abstract Catalog getWrapper(Catalog sub);
 
 }
