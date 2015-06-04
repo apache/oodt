@@ -83,7 +83,7 @@ public abstract class SpacerCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#addMetadata(org.apache.oodt.cas.metadata.Metadata,
      *      org.apache.oodt.cas.filemgr.structs.Product)
      */
-    public synchronized void addMetadata(Metadata m, Product product)
+    public void addMetadata(Metadata m, Product product)
             throws CatalogException {
         this.catalog.addMetadata(m,product);  
     }
@@ -94,7 +94,7 @@ public abstract class SpacerCatalog implements Catalog {
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#addMetadata(org.apache.oodt.cas.metadata.Metadata,
      *      org.apache.oodt.cas.filemgr.structs.Product)
      */
-    public synchronized void removeMetadata(Metadata m, Product product)
+    public void removeMetadata(Metadata m, Product product)
             throws CatalogException {
         this.catalog.removeMetadata(m,product); 
     }
@@ -104,7 +104,7 @@ public abstract class SpacerCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#addProduct(org.apache.oodt.cas.filemgr.structs.Product)
      */
-    public synchronized void addProduct(Product product)
+    public void addProduct(Product product)
             throws CatalogException {
         this.catalog.addProduct(product);
     }
@@ -114,7 +114,7 @@ public abstract class SpacerCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#modifyProduct(org.apache.oodt.cas.filemgr.structs.Product)
      */
-    public synchronized void modifyProduct(Product product)
+    public void modifyProduct(Product product)
             throws CatalogException {
         this.catalog.modifyProduct(product);
     }
@@ -124,7 +124,7 @@ public abstract class SpacerCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#removeProduct(org.apache.oodt.cas.filemgr.structs.Product)
      */
-    public synchronized void removeProduct(Product product)
+    public void removeProduct(Product product)
             throws CatalogException {
         this.catalog.removeProduct(product);
     }
@@ -134,9 +134,9 @@ public abstract class SpacerCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#setProductTransferStatus(org.apache.oodt.cas.filemgr.structs.Product)
      */
-    public synchronized void setProductTransferStatus(Product product)
+    public void setProductTransferStatus(Product product)
             throws CatalogException {
-        this.setProductTransferStatus(product);
+        this.catalog.setProductTransferStatus(product);
     }
 
     /*
@@ -144,7 +144,7 @@ public abstract class SpacerCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#addProductReferences(org.apache.oodt.cas.filemgr.structs.Product)
      */
-    public synchronized void addProductReferences(Product product)
+    public void addProductReferences(Product product)
             throws CatalogException {
         this.catalog.addProductReferences(product);
     }
@@ -240,7 +240,7 @@ public abstract class SpacerCatalog implements Catalog {
      */
     public List<Product> getTopNProducts(int n, ProductType type)
             throws CatalogException {
-        return this.getTopNProducts(n,type);
+        return this.catalog.getTopNProducts(n,type);
     }
 
     /*
