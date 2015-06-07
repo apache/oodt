@@ -1,5 +1,8 @@
 Apache OODT Change Log
 ======================
+Release 0.10 - Current Development
+
+
 Release 0.9 - 05/31/2015
 
 * OODT-841 Update Maven instructions in README to include clean command (Ethan Wang via mattmann)
