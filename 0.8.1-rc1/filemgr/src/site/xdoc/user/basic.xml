@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+   <properties>
+      <title>CAS File Manager User Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+      <author email="woollard@jpl.nasa.gov">Dave Woollard</author>
+   </properties>
+
+   <body>
+      <div class="warning">This document is in the process of being reorganized as
+      part of our ongoing documentation effort. Please check back for updates.</div>
+      
+      <section name="Introduction">
+      
+      <p>This document serves as a basic user's guide for the CAS File Manager 
+      project. The goal of the document is to allow users to check out, build, and 
+      install a base version of the CAS File Manager.  Additional information can
+      be found at the <a href="http://cwiki.apache.org/confluence/display/OODT/OODT+Filemgr+User+Guide">
+      Filemgr User Guide Wiki Page</a>. For advanced topics, such as configuring the File 
+      Manager to Scale and other tips and tricks, please see our 
+      <a href="../user/advanced.html">Advanced Guide.</a></p>
+      
+      <p>The remainder of this guide is separated into the following sections:</p>
+      <ul>
+        <li><a href="#section1">Download and Build OODT</a></li>
+        <li><a href="#section2">Configuration in 2 Minutes or Less</a></li>
+        <!-- 
+        <li><a href="#section3">Learn By Example</a></li>
+         -->
+      </ul>  
+      </section> 
+     
+      <a name="section1"/>
+      <section name="Download and Build OODT">
+      <div class="info">
+        <p><b>Pre-Requisite:</b> Maven 2.x installed on your machine and Java 1.6.
+        If you have the correct versions of Java and Maven installed then proceed
+        with the build process for OODT which will also build the File Manager
+        component.
+        </p>
+      </div>
+      
+      <div class="warning">  
+        <p><b>Mac OS X Users:</b> Apple is now upgrading their OS to include Maven 3
+        by default, which is not compatible with Apache OODT's build process.  For more 
+        information on Maven, see our <a href="../development/maven.html">Maven Guide.</a>
+        To determine which version of Maven is installed on your machine type the following 
+        command into a terminal.</p>
+        
+        <source>
+>mvn --version
+Apache Maven 2.2.1 (r801777; 2009-08-07 04:16:01+0900)
+Java version: 1.6.0_26
+		</source>
+		
+		<p>If your system returns Apache Maven 3.X then you will need to install Maven 2.2.1 using the
+		following steps:  (NOTE: This will replace Maven 3 with Maven 2.2.1 as your systems default Maven version)</p>
+		
+		<p>1. Download apache-maven-2.2.1-bin tar file from <a href="http://maven.apache.org/">http://maven.apache.org</a></p>
+  		<p>2. Install maven to /usr/share/</p> 
+  		<source>
+>sudo tar xzvf apache-maven-2.2.1-bin.tar.gz -C /usr/share
+  		</source>
+  		<p>3. Now hook it in as the default maven.</p>
+		<source>
+>sudo rm /usr/bin/mvn
+>sudo rm /usr/share/maven
+>sudo ln -s /usr/share/apache-maven-2.2.1 /usr/share/maven
+>sudo ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+		</source>
+		<p>4. Double check the maven version</p>
+		<source>
+>mvn --version
+Apache Maven 2.2.1 ...
+		</source>
+		<p><b>Now you can proceed with the check out and build of Apache OODT</b></p>
+      </div>
+      <br/>
+      <div id="checkout_build">
+      <p><b>Create a Directory to Checkout Source Code:</b></p>
+        <source>
+>mkdir /usr/local/src
+>cd /usr/local/src        
+		</source>
+		<p><b>Using a Tagged Release:</b></p>
+		<source>
+>svn co http://svn.apache.org/repos/asf/oodt/tags/{release_number}/ oodt
+        </source>
+		<p><b>Using the Latest Development Trunk:</b></p>
+		<source>
+>svn co http://svn.apache.org/repos/asf/oodt/trunk/ oodt
+        </source>
+        <p>Once the subversion command completes you should have a directory at <code>/usr/local/src/oodt</code>
+        which will contain all of the source code for OODT.  In order to build the project from source, 
+        issue the following commands:</p>
+        <source>
+>cd /usr/local/src/oodt
+>mvn clean install        
+        </source>
+        <p>Once you get the Maven Build Successful message you can proceed with the installation 
+        of the CAS-FileManager.</p>
+        <source>
+>mkdir /usr/local/oodt
+>cd filemgr/target
+>tar xzvf cas-filemgr-{version#}-dist.tar.gz -C /usr/local/oodt
+>cd /usr/local/oodt
+>ln -s cas-filemgr-{version#}/ cas-filemgr
+        </source>
+        </div>
+        <h3>
+        Our latest updated File Manager documentation has moved to the OODT wiki 
+        at <a href="http://cwiki.apache.org/confluence/display/OODT/OODT+Filemgr+User+Guide">OODT Filemgr
+        User Guide</a>
+        </h3>
+        
+      </section>
+        
+<!-- Previous Instructions might need to poach some of the text so commenting out for now     
+
+		This block no longer holds true.  You cannot just build the oodt-core then the filemgr component.
+		cgoodale tried on a clean m2 repo and it failed due to missing dependencies.  If this is still
+		desired, then it will need to be corrected and cleaned up.  Leaving the text here if that is
+		the final case.
+		
+		  
+        <p>Assuming a *nix-like environment, with both Maven and Subversion 
+        clients installed and on your path, an example of the checkout and 
+        build process is presented below:</p>
+        
+         <source>
+> mkdir /usr/local/src
+> cd /usr/local/src
+> svn checkout https://svn.apache.org/repos/asf/oodt/trunk/filemgr
+      </source>
+        
+      <p>After the Subversion command completes, you will have the source
+      for the CAS-Filemgr project in the <code>/usr/local/src/filemgr</code>
+      directory.</p>
+      
+      <p>In order to build the project from this source, issue the following 
+      commands:</p>
+      
+      <source>
+> cd /usr/local/src/filemgr
+> mvn package    
+      </source>   
+      
+      <p>Note that this command performs a number of tasks, including performing
+      unit tests which can take a long time depending on your system. It is not uncommon
+      for this build to last ten minutes or longer. At the end of the process,
+      you will see a Maven success banner.</p>
+      
+      <p>Once the Maven command completes successfully, you should have a 
+      <code>target</code> directory under <code>cas-filemgr-vX.Y.Z/</code>. 
+      The project has been built in this directory as a distribution tar ball.
+      In order to move the built project out of the source directory and unpack the
+      tar ball, issue the following commands:</p>
+      
+      <source>
+> cd /usr/local
+> mv src/filemgr/target/cas-filemgr-vX.Y.Z-dist.tar.gz ./
+> tar -xvzf cas-filemgr-vX.Y.Z-dist.tar.gz
+> export FILEMGR_HOME=/usr/local/cas-filemgr-vX.Y.Z
+      </source>       
+
+
+
+-->
+	  <br/>
+	  <br/>
+	  <br/>
+      <p>The resultant directory layout from the unpacked tarball is as follows:</p>
+           
+      <source>
+bin/ etc/ logs/ doc/ lib/ policy/
+      </source>
+      
+      <p>A basic description of the files and subdirectories of the deployment is 
+      presented below:</p>
+      <ul>
+         <li><strong>bin</strong> - contains scripts for running the File Manager, 
+         including the "filemgr" server script, and the "filemgr-client" client script.</li>
+         
+         <li><strong>etc</strong> - contains the logging.properties file for the 
+         File Manager, and the filemgr.properties file used to configure the server 
+         options.</li>
+         
+         <li><strong>logs</strong> - the default directory into which log files are 
+         written.</li>
+              
+         <li><strong>doc</strong> - contains Javadoc documentation, and user guides 
+         for using the File Manager.</li>
+         
+         <li><strong>lib</strong> - the required Java jar files to run the File 
+         Manager.</li>
+         
+         <li><strong>policy</strong> - the default XML-based element and product 
+         type policy in case the user is using the XML Repository Manager and/or the 
+         XML Validation Layer.</li>
+         
+       </ul>
+      
+      <p>Now you have a built File Manager at <code>/usr/local/oodt/cas-filemgr</code>.
+      In the next section, we will discuss how you can configure the File Manager for
+      basic operations.</p>
+      
+
+    <a name="section2"/>
+    <section name="Configuration in 2 Minutes or Less">
+      
+      <p>The reason for entitling this section "in 2 Minutes or Less" is to show that
+      in it's base deployment, with vary minimal configuration, we can have the File
+      Manager in a usable state, capable of archiving products and capturing basic 
+      metadata. For the record, I haven't timed it, but its pretty fast...</p>
+      
+      <p>We are going to set up the File Manager to use an XML-based Validation layer,
+      and XML product policy, and a Lucene metadata Catalog. The first step is to edit
+      the filemgr script in <code>$FILEMGR_HOME/bin</code>. Make the following 
+      changes:</p>
+     
+       <ul>
+         <li>Set the <code>SERVER_PORT</code> variable to the desired port on which 
+         you'd like to run the File Manager. Our default port is 9000.</li>
+         
+         <li>Set the <code>JAVA_HOME</code> variable to point to the location of your 
+         installed JRE runtime. If you do not know where this is, type <code>&gt; which 
+         java</code> and use that path.</li>
+         
+         <li>Set the <code>RUN_HOME</code> variable to point to the location to which
+         you'd like the File Manager PID file written. Typically this should default to 
+         <code>/var/run</code>, but not all system administrators allow users to write 
+         to <code>/var/run</code>.</li>
+       </ul>
+       
+       <p>The second step in configuration is to edit 
+       <code>$FILEMGR_HOME/bin/filemgr-client</code> script, making the following 
+       change:</p>
+       
+       <ul>
+          <li>Set the <code>JAVA_HOME</code> variable to point to the location of 
+          your installed JRE runtime.</li>
+       </ul>
+           
+       <p>In the third step of this configuration, you will set the File Manager's
+       various extension points. For more information about the functionality of
+       these extension points, see our 
+       <a href="../development/developer.html">Developer Guide.</a> By default, 
+       the File Manager is built to use the XML-based repository manager and 
+       validation layer extension points, the <a href="http://lucene.apache.org/">
+       Lucene</a>-based catalog extension point, and the local data transfer 
+       interface.</p> 
+       
+       <p>Make the following changes to 
+       <code>$FILEMGR_HOME/etc/filemgr.properties</code>:</p>
+       
+       
+       <ul>     
+         <li>Specify the path to the directory where the File Manager will create the
+         Lucene index and associated files by setting the 
+         <code>org.apache.oodt.cas.filemgr.catalog.lucene.idxPath</code> property
+         to <code>$FILEMGR_HOME/catalog</code>. Make sure that this directory does
+         NOT exist the first time you run the File Manager. If the File Manager does not find
+         a directory at the specified location, it will create all of the necessary 
+         directory structure and ancillary files.</li>
+         
+         <li>Specify the paths to the directories where the XML policy files are stored 
+         for the validation layer and for the repository manager. These paths are set by 
+         <code>org.apache.oodt.cas.filemgr.repositorymgr.dirs</code> and 
+         <code>org.apache.oodt.cas.filemgr.validation.dirs</code> respectively. The 
+         default location (and default policy files) are located at 
+         <code>$FILEMGR_HOME/policy</code> in the vanilla deployment of the File Manager.
+         Note that these properties need to be fully specified URLs (e.g., they should 
+         start with <code>file://</code>).</li>
+       </ul>
+
+       <div class="info">Optionally, you can change the default logging properties for
+       the CAS File Manager. This is done by editing 
+       <code>$FILEMGR_HOME/etc/logging.properties</code>. We have tried to select sensible
+       defaults for the average user, but if you would like more or less information 
+       generated in the File Manager logs, you can edit the levels of different catagories
+       of information in this proporties file. The following logging levels are available:
+       <code>INFO</code>, <code>WARNING</code>, <code>FINE</code>, <code>FINER</code>,
+       <code>FINEST</code>, and <code>ALL</code>.</div>
+   
+      <p>With this last step, you have configured the File Manager. In order to test your 
+      configuration, cd to <code>$FILEMGR_HOME/bin</code> and type:</p>
+
+      <source>
+> ./filemgr start
+      </source>
+
+
+      <p>This will startup the file manager XML-RPC server interface. Your File Manager 
+      is now ready to run! You can test out the file manager by running a simple ingest 
+      command using the filemgr-client command below. First create a simple text file 
+      called "blah.txt" and place it inside <code>$FILEMGR_HOME/bin</code> Then, create 
+      a blank metadata file for the product, using the 
+      <a href="http://svn.apache.org/repos/asf/oodt/trunk/metadata/src/main/conf/cas.metadata.xsd">schema</a>
+      or  <a href="http://svn.apache.org/repos/asf/oodt/trunk/metadata/src/main/conf/cas.metadata.dtd">DTD</a>
+      provided in the <a href="../../metadata">CAS-Metadata</a>
+      project. An example XML file might be:</p>
+      
+      <source>
+        &lt;cas:metadata xmlns:cas=&quot;http://oodt.apache.org/1.0/cas&quot;&gt;
+        &lt;/cas:metadata&gt;
+      </source>
+      
+      <p>Call this metadata file <code>blah.txt.met</code>, and place it also in 
+      <code>$FILEMGR_HOME/bin</code>. Then, run the command below, assuming that you 
+      started the File Manager on the default port of <code>9000</code>:</p>
+
+      <source>
+> ./filemgr-client --url http://localhost:9000 --operation \
+   --ingestProduct --productName blah.txt --productStructure Flat \
+   --productTypeName GenericFile \ 
+   --metadataFile file:///usr/local/oodt/cas-filemgr/bin/blah.txt.met \
+   --refs file:///usr/local/oodt/cas-filemgr/bin/blah.txt
+      </source>
+
+      <p>This command triggers the ingest process. You should see a response message that 
+      concludes with a line similar to:</p>
+
+      <source>
+      ingestProduct: Result: 3a812d86-148d-11db-a25a-f388f524a371
+      </source>
+
+      <p>If you see something similar to this message, you have successfully configured
+      the CAS File Manager, hopefully in 2 minutes or less (and even if it took a little 
+      more time, you have to admit it was by and large painless).</p>
+      </section>
+
+<!--      
+      <a name="section3"/>
+      <section name="Learn By Example">
+      <p>Coming Soon...</p>
+      </section>
+-->      
+      <section name="Conclusion">
+      <p>In this Basic User Guide, we have covered a number of topics, including File 
+      Manager installation, configuration, and a basic example of use. For more advanced 
+      topics, including the use of multiple catalogs and best practices for addressing
+      scaling issues, see our <a href="../user/advanced.html">Advanced Guide.</a></p>
+      </section>
+      
+   </body>
+</document> 

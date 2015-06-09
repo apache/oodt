@@ -1,0 +1,129 @@
+
+
+             NOAA  COMPREHENSIVE LARGE ARRAY-DATA STEWARDSHIP SYSTEM
+
+                          A SERVICE OF:
+                   NOAA NATIONAL DATA CENTERS
+
+
+The CLASS has processed your order number A1040663.  The total size of 
+this order is 1246002618 bytes.
+
+
+Items are available for you in the anonymous FTP area. 
+You may obtain them as follows:
+
+   ftp ftp.class.noaa.gov   - Logon to CLASS system
+   anonymous          - login userid
+   user@internet      - enter your internet address as a password
+   binary             - changes transfer mode to binary
+   cd A1040663        - changes to correct directory
+   get 
+IASI_xxx_1C_M02_20070803000257Z_20070803000553Z_N_O_20070803013826Z__20070803014
+346
+                      - copies data; size is 60242714 bytes
+   get 
+IASI_xxx_1C_M02_20070802235953Z_20070803000257Z_N_O_20070803013555Z__20070803014
+041
+                      - copies data; size is 62970482 bytes
+   get 
+IASI_xxx_1C_M02_20070803000553Z_20070803000857Z_N_O_20070803014058Z__20070803014
+616
+                      - copies data; size is 62970482 bytes
+   get 
+IASI_xxx_1C_M02_20070803000857Z_20070803000953Z_N_O_20070803014332Z__20070803014
+646
+                      - copies data; size is 19326194 bytes
+   get 
+IASI_xxx_1C_M02_20070803001218Z_20070803001457Z_N_O_20070803014438Z__20070803014
+957
+                      - copies data; size is 54787178 bytes
+   get 
+IASI_xxx_1C_M02_20070803001458Z_20070803001753Z_N_O_20070803014619Z__20070803015
+222
+                      - copies data; size is 60242714 bytes
+   get 
+IASI_xxx_1C_M02_20070803001754Z_20070803002057Z_N_O_20070803014825Z__20070803015
+507
+                      - copies data; size is 62970482 bytes
+   get 
+IASI_xxx_1C_M02_20070803002058Z_20070803002353Z_N_O_20070803015110Z__20070803015
+742
+                      - copies data; size is 60242714 bytes
+   get 
+IASI_xxx_1C_M02_20070803002354Z_20070803002657Z_N_O_20070803015337Z__20070803020
+042
+                      - copies data; size is 62970482 bytes
+   get 
+IASI_xxx_1C_M02_20070803002658Z_20070803002953Z_N_O_20070803015605Z__20070803020
+202
+                      - copies data; size is 60242714 bytes
+   get 
+IASI_xxx_1C_M02_20070803002954Z_20070803003257Z_N_O_20070803021709Z__20070803022
+207
+                      - copies data; size is 62970482 bytes
+   get 
+IASI_xxx_1C_M02_20070803004458Z_20070803004753Z_N_O_20070803022947Z__20070803023
+437
+                      - copies data; size is 60242714 bytes
+   get 
+IASI_xxx_1C_M02_20070803003554Z_20070803003857Z_N_O_20070803022252Z__20070803022
+802
+                      - copies data; size is 62970482 bytes
+   get 
+IASI_xxx_1C_M02_20070803003858Z_20070803004153Z_N_O_20070803022515Z__20070803023
+102
+                      - copies data; size is 60242714 bytes
+   get 
+IASI_xxx_1C_M02_20070803004154Z_20070803004457Z_N_O_20070803022746Z__20070803023
+352
+                      - copies data; size is 62970482 bytes
+   get 
+IASI_xxx_1C_M02_20070803003258Z_20070803003553Z_N_O_20070803021943Z__20070803022
+507
+                      - copies data; size is 60242714 bytes
+   get 
+IASI_xxx_1C_M02_20070803005058Z_20070803005353Z_N_O_20070803023436Z__20070803024
+017
+                      - copies data; size is 60242714 bytes
+   get 
+IASI_xxx_1C_M02_20070803005354Z_20070803005657Z_N_O_20070803023700Z__20070803024
+132
+                      - copies data; size is 62970482 bytes
+   get 
+IASI_xxx_1C_M02_20070803005658Z_20070803005953Z_N_O_20070803023936Z__20070803024
+357
+                      - copies data; size is 60242714 bytes
+   get 
+IASI_xxx_1C_M02_20070803005954Z_20070803010257Z_N_O_20070803024159Z__20070803024
+657
+                      - copies data; size is 62970482 bytes
+   get 
+IASI_xxx_1C_M02_20070803004754Z_20070803005057Z_N_O_20070803023212Z__20070803023
+737
+                      - copies data; size is 62970482 bytes
+   bye  (or quit)     - to end ftp session.
+
+Alternatively, you can also pick up your data set via 
+ftp://ftp.class.noaa.gov/A1040663/
+                                                   or 
+http://www.class.noaa.gov/download/A1040663
+
+NOTE: You must pick up your data within 120 hours of this notice.
+
+
+
+
+Thank you.
+
+
+<< DO NOT reply to this e-mail as it is automatically generated. >>
+<< Please direct questions to the Help Desk: >>
+
+
+                   NOAA/CLASS User Assistance
+                   National Climatic Data Center
+                   151 Patton Avenue
+                   Asheville, NC 28801-5001
+
+                   Internet: info@class.noaa.gov

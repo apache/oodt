@@ -1,0 +1,237 @@
+fileconcatenator-pge/000755 036164 000024 00000000000 11617101420 015601 5ustar00rvermastaff000000 000000 fileconcatenator-pge/.classpath000644 036164 000024 00000001273 11617055321 017577 0ustar00rvermastaff000000 000000 <?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
+fileconcatenator-pge/.project000644 036164 000024 00000001047 11617055320 017261 0ustar00rvermastaff000000 000000 <?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>fileconcatenator-pge</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.maven.ide.eclipse.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.maven.ide.eclipse.maven2Nature</nature>
+	</natures>
+</projectDescription>
+fileconcatenator-pge/.settings/000755 036164 000024 00000000000 11617101425 017524 5ustar00rvermastaff000000 000000 fileconcatenator-pge/pom.xml000644 036164 000024 00000001662 11617101305 017125 0ustar00rvermastaff000000 000000 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.oodt.pge</groupId>
+  <artifactId>fileconcatenator-pge</artifactId>
+  <version>1.0</version>
+  <name>FileConcatenatorPGE</name>
+  <description>Example file-concatenator project for learning about CAS-PGE</description>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.apache.oodt</groupId>
+  		<artifactId>cas-pge</artifactId>
+  		<version>0.3</version>
+  		<scope>compile</scope>
+  	</dependency>
+  </dependencies>
+</project>
+fileconcatenator-pge/src/000755 036164 000024 00000000000 11617054756 016413 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/000755 036164 000024 00000000000 11617054756 017337 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/test/000755 036164 000024 00000000000 11617054756 017372 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/test/java/000755 036164 000024 00000000000 11617054756 020313 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/test/resources/000755 036164 000024 00000000000 11617054756 021404 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/java/000755 036164 000024 00000000000 11617054756 020260 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/resources/000755 036164 000024 00000000000 11617054756 021351 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/resources/config/000755 036164 000024 00000000000 11617054756 022616 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/resources/extractors/000755 036164 000024 00000000000 11617054756 023547 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/resources/files/000755 036164 000024 00000000000 11617054756 022453 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/resources/files/concatenatingInputFile1.txt000644 036164 000024 00000001633 11617054756 027735 0ustar00rvermastaff000000 000000 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis nunc
+quam, vel laoreet libero. Pellentesque sit amet mauris ligula. Etiam sed
+metus vel elit feugiat accumsan at ac nisi. Cras a turpis scelerisque
+augue semper mollis. Proin rutrum sollicitudin est at scelerisque.
+Aenean ligula eros, luctus consequat gravida et, gravida in ligula. Nunc
+venenatis tellus in urna placerat accumsan. Ut vehicula adipiscing
+faucibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Phasellus id diam sed nulla venenatis laoreet at nec elit. Suspendisse
+et mauris nec tortor vehicula aliquet. Cras ornare dignissim vestibulum.
+Vestibulum aliquet magna nec diam gravida gravida. Duis semper, erat in
+ultrices convallis, lorem enim laoreet magna, eget sagittis ligula nunc
+eu quam. Nunc ac tempus orci. Pellentesque semper eleifend suscipit. Nam
+est nisi, scelerisque sodales bibendum eget, porttitor fringilla metus. fileconcatenator-pge/src/main/resources/files/concatenatingInputFile2.txt000644 036164 000024 00000001453 11617054756 027736 0ustar00rvermastaff000000 000000 
+
+Aenean vel nulla ut nulla tempus venenatis in eget est. Curabitur
+tincidunt mattis dolor rutrum gravida. Nunc vel dui eu diam luctus
+dictum non vitae leo. Morbi et velit neque. Phasellus placerat augue eu
+nisi convallis adipiscing. Donec sagittis tristique tellus, ut aliquet
+quam pellentesque ut. Ut tortor nibh, ultrices in bibendum vitae, mollis
+a justo. Nulla fermentum, urna sed bibendum tempor, ipsum leo tincidunt
+tellus, ac lacinia purus justo ut nibh. Pellentesque gravida, metus
+lobortis convallis egestas, erat dui ullamcorper leo, vitae aliquet
+justo nunc ac justo. Vivamus dapibus, quam in eleifend aliquet, erat
+nulla molestie lectus, ut gravida nunc augue vitae nulla. Nam vulputate
+arcu ut ante pharetra a dictum nunc tincidunt. Nunc tortor quam,
+convallis vel lacinia ac, dignissim sed sem. 
+fileconcatenator-pge/src/main/resources/extractors/concatenatingfilename.extractor.config.xml000644 036164 000024 00000001037 11617077706 034066 0ustar00rvermastaff000000 000000 <?xml version="1.0" encoding="UTF-8"?>
+  <input>
+    <group name="SubstringOffsetGroup">
+      <vector name="ConcatenatingInputFileName">
+        <element>1</element>
+        <element>33</element>      
+      </vector>
+   </group>
+    
+    <group name="CommonMetadata">
+        <scalar name="DataVersion">1.0</scalar>
+        <scalar name="CollectionName">File Concatenator product</scalar>
+        <scalar name="DataProvider">OODT-PGE</scalar>
+        <scalar name="ProductType">FileConcatenatorProductType</scalar>
+    </group>
+    
+</input>fileconcatenator-pge/src/main/resources/extractors/metlistwriter/000755 036164 000024 00000000000 11617054756 026465 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/resources/extractors/metlistwriter/metout.xml000644 036164 000024 00000000235 11617054756 030524 0ustar00rvermastaff000000 000000 <?xml version="1.0" encoding="UTF-8"?>
+<metadataList>
+    
+    <!-- one or more of these -->
+    <metadata key="JobId" value="[JobId]"/>
+    
+</metadataList>fileconcatenator-pge/src/main/resources/config/PGEConfig.xml000644 036164 000024 00000004375 11617077701 025105 0ustar00rvermastaff000000 000000 <?xml version="1.0" encoding="UTF-8"?>
+<pgeConfig>
+
+        <!-- How to run the PGE -->
+        <exe dir="[JobDir]" shell="/bin/bash">
+          <!-- cd to PGE root -->
+          <cmd>cd [PGE_ROOT]/file_concatenator</cmd>
+              	<cmd>cp [InputFile1] [OutputFile]</cmd>
+              	<cmd>cat [InputFile2] >> [OutputFile]</cmd>
+        </exe>
+
+	    <!-- Files to ingest -->
+	    <output>
+        	<!-- one or more of these -->
+       	 	<dir path="[JobDir]" createBeforeExe="false">
+            
+            	<!-- one or more of these ** regExp or name can be used-->
+            	<files regExp=".*\.txt" metFileWriterClass="org.apache.oodt.pge.examples.fileconcatenator.writers.ConcactenatingFilenameExtractorWriter"  args="[PGE_ROOT]/file_concatenator/extractors/concatenatingfilename.extractor.config.xml"/>
+                <files regExp=".*\.txt" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[PGE_ROOT]/file_concatenator/extractors/metlistwriter/metout.xml"/>
+            </dir>
+        </output>
+
+        <!-- Custom metadata to add to output files -->
+        <customMetadata>
+                <!-- helpful keys -->
+                <metadata key="LessThan" val="&#x3C;"/>
+                <metadata key="LessThanOrEqualTo" val="[LessThan]="/>
+                <metadata key="GreaterThan" val="&#x3E;"/>
+                <metadata key="GreaterThanOrEqualTo" val="[GreaterThan]="/>
+                <metadata key="Exclamation" val="&#33;"/>
+                <metadata key="Ampersand" val="&#38;"/>
+                <metadata key="NotEqualTo" val="[Ampersand]="/>
+                <metadata key="LogicalAnd" val="[Ampersand][Ampersand]"/>
+                <metadata key="CshPipeToStdOutAndError" val="[GreaterThan][Ampersand][Exclamation]"/>
+
+				<metadata key="ProductionDateTime" val="[DATE.UTC]"/>
+				<metadata key="JobDir" val="[PGE_ROOT]/file_concatenator/output/jobs/job-[ProductionDateTime]"/>
+				<metadata key="InputFile1" val="[PGE_ROOT]/file_concatenator/files/concatenatingInputFile1.txt"/>
+				<metadata key="InputFile2" val="[PGE_ROOT]/file_concatenator/files/concatenatingInputFile2.txt"/>
+				<metadata key="OutputFile" val="[JobDir]/concatenatedOutputFile-[ProductionDateTime].txt"/>        
+      </customMetadata>
+
+</pgeConfig>
+fileconcatenator-pge/src/main/java/org/000755 036164 000024 00000000000 11617054756 021047 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/java/org/apache/000755 036164 000024 00000000000 11617054756 022270 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/java/org/apache/oodt/000755 036164 000024 00000000000 11617054756 023235 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/java/org/apache/oodt/pge/000755 036164 000024 00000000000 11617054756 024010 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/java/org/apache/oodt/pge/examples/000755 036164 000024 00000000000 11617054756 025626 5ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/java/org/apache/oodt/pge/examples/fileconcatenator/000755 036164 000024 00000000000 11617054756 031146 5ustar00rvermastaff000000 000000 src/main/java/org/apache/oodt/pge/examples/fileconcatenator/FileConcatenatorPGETask.java000644 036164 000024 00000002420 11617054756 036327 0ustar00rvermastaff000000 000000 fileconcatenator-pgepackage org.apache.oodt.pge.examples.fileconcatenator;
+
+import org.apache.oodt.cas.pge.PGETaskInstance;
+import org.apache.oodt.cas.pge.metadata.PgeTaskMetadataKeys;
+
+public class FileConcatenatorPGETask extends PGETaskInstance {
+	  
+	/* PGE task statuses */
+	  public static final String STAGING_INPUT = "STAGING INPUT";
+	  
+	  public static final String CONF_FILE_BUILD = "BUILDING CONFIG FILE";
+	  
+	  public static final String RUNNING_PGE = "PGE EXEC";
+	  
+	  public static final String CRAWLING = "CRAWLING";
+
+	  /* (non-Javadoc)
+	   * @see org.apache.oodt.cas.pge.PGETaskInstance#updateStatus(java.lang.String)
+	   */
+	  @Override
+	  protected void updateStatus(String status) {
+	     String proteoStatus = this.convertStatus(status);
+	     super.updateStatus(proteoStatus);
+	  }
+
+	  private String convertStatus(String casPgeStatus) {
+	    if (casPgeStatus.equals(PgeTaskMetadataKeys.CONF_FILE_BUILD)) {
+	        return CONF_FILE_BUILD;
+	    } else if (casPgeStatus.equals(PgeTaskMetadataKeys.STAGING_INPUT)) {
+	        return STAGING_INPUT;
+	    } else if (casPgeStatus.equals(PgeTaskMetadataKeys.CRAWLING)) {
+	        return CRAWLING;
+	    } else if (casPgeStatus.equals(PgeTaskMetadataKeys.RUNNING_PGE)) {
+	        return RUNNING_PGE;
+	    } else
+	        return casPgeStatus;
+	}
+	  
+}
+fileconcatenator-pge/src/main/java/org/apache/oodt/pge/examples/fileconcatenator/writers/000755 036164 000024 00000000000 11617054756 032645 5ustar00rvermastaff000000 000000 org/apache/oodt/pge/examples/fileconcatenator/writers/ConcactenatingFilenameExtractorWriter.java000600 036164 000024 00000002125 11617077213 043064 0ustar00rvermastaff000000 000000 fileconcatenator-pge/src/main/javapackage org.apache.oodt.pge.examples.fileconcatenator.writers;
+
+import java.io.File;
+import java.util.logging.Logger;
+
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.extractors.FilenameTokenMetExtractor;
+import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
+
+public class ConcactenatingFilenameExtractorWriter extends PcsMetFileWriter {
+
+	private static final Logger LOG = Logger.getLogger(ConcactenatingFilenameExtractorWriter.class
+		      .getName());	
+	
+	@Override
+	protected Metadata getSciPgeSpecificMetadata(File sciPgeCreatedDataFile,
+			Metadata inputMetadata, Object... customArgs) throws Exception {
+
+		Metadata met = new Metadata();
+		met.addMetadata(inputMetadata);
+		met.addMetadata("ProductType", "GenericFile");
+		
+	    String metConfFilePath = String.valueOf(customArgs[0]);
+	    LOG.info("metConfFilePath = ["+metConfFilePath+"]");
+	    FilenameTokenMetExtractor extractor = new FilenameTokenMetExtractor();
+	    extractor.setConfigFile(metConfFilePath);
+	    met.addMetadata(extractor.extractMetadata(sciPgeCreatedDataFile));
+	    
+		return met;
+	}
+
+}
+fileconcatenator-pge/.settings/org.eclipse.jdt.core.prefs000644 036164 000024 00000000414 11617055320 024507 0ustar00rvermastaff000000 000000 #Fri Aug 05 14:04:16 PDT 2011
+eclipse.preferences.version=1
+org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.5
+org.eclipse.jdt.core.compiler.compliance=1.5
+org.eclipse.jdt.core.compiler.problem.forbiddenReference=warning
+org.eclipse.jdt.core.compiler.source=1.5
+fileconcatenator-pge/.settings/org.maven.ide.eclipse.prefs000644 036164 000024 00000000406 11617055300 024644 0ustar00rvermastaff000000 000000 #Fri Aug 05 14:04:00 PDT 2011
+activeProfiles=
+eclipse.preferences.version=1
+fullBuildGoals=process-test-resources
+includeModules=false
+resolveWorkspaceProjects=true
+resourceFilterGoals=process-resources resources\:testResources
+skipCompilerPlugin=true
+version=1

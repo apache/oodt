@@ -1,0 +1,192 @@
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+ 
+     http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ 
+Description: This file defines a set of information used by an OODT Profile Server 
+to extract and deliver back OODT Profile metadata from an underlying OPeNDAP/THREDDS 
+accessible data source. This configuration file builds on prior work that was only 
+configurable in Java code, but is now configurable via this file.
+
+-->
+<oodt:opendap xmlns:oodt="http://oodt.apache.org/1.0" id="urn:oodt:opendap:psid" name="OPeNDAP Handler">
+
+    <!-- 
+       A set of THREDDS catalog roots to derive datasets from. Must specify at least one root.
+       
+       datasetURL - the original URL to the THREDDS dataset.
+       catalogURL - the original URL to the THREDDS catalog.xml file used to obtain dataset metadata 
+                    and information from.
+       filter (optional) - defines an optional dataset filter for inclusion/exclusion.
+    
+     -->
+    <root datasetURL="http://thredds1.pfeg.noaa.gov/thredds/dodsC/" catalogURL="http://thredds1.pfeg.noaa.gov/thredds/Satellite/aggregsatMW/chla/catalog.xml" filter=".*" />
+    <root datasetURL="http://thredds1.pfeg.noaa.gov/thredds/dodsC/" catalogURL="http://thredds1.pfeg.noaa.gov/thredds/Satellite/aggregsatMH/chla/catalog.xml" filter=".*" />
+    <root datasetURL="http://thredds1.pfeg.noaa.gov/thredds/dodsC/" catalogURL="http://thredds1.pfeg.noaa.gov/thredds/Satellite/aggregsatSW/chla/catalog.xml" filter=".*" />
+    <root datasetURL="http://thredds1.pfeg.noaa.gov/thredds/dodsC/" catalogURL="http://thredds1.pfeg.noaa.gov/thredds/Satellite/aggregsatSA/chla/catalog.xml" filter=".*" />
+    <root datasetURL="http://thredds1.pfeg.noaa.gov/thredds/dodsC/" catalogURL="http://thredds1.pfeg.noaa.gov/thredds/Satellite/aggregsatAG/tanm/catalog.xml" filter=".*" />
+    <root datasetURL="http://thredds1.pfeg.noaa.gov/thredds/dodsC/" catalogURL="http://thredds1.pfeg.noaa.gov/thredds/Satellite/aggregsatAA/ssta/catalog.xml" filter=".*" />
+    <root datasetURL="http://thredds1.pfeg.noaa.gov/thredds/dodsC/" catalogURL="http://thredds1.pfeg.noaa.gov/thredds/Satellite/aggregsatMH/sstd/catalog.xml" filter=".*" />
+	
+	
+	<!-- 
+	   A set of specifications for how to rewrite the names of underlying OPeNDAP/THREDDS dataset variables 
+	   into profile elements within the generated OODT profile. These information are used only to transform 
+	   OPeNDAP variables into OODT profile elements. If an OPeNDAP element part of a dataset is not specified 
+	   in this rewrite block, the variable not be extracted.
+	   
+	   name: The original name of the OPeNDAP variable.
+	   rename (optional): What to rename the variable to in the OODT Profile Elements section.
+	   type: Either EnumeratedProfileElement or RangedProfileElement. EnumeratedProfileElement indicates this is 
+	   a variable with a select vocabulary of choices, with multiple values to specify those choices. RangedProfileElement 
+	   indicates this is an OPeNDAP variable with a specified min/max value.
+	
+	 -->
+	<rewrite>
+		<var name="altitude" type="RangedProfileElement"/>
+		<var name="lat" rename="latitude" type="RangedProfileElement"/>
+		<var name="lon" rename="longitude" type="RangedProfileElement"/>
+		<var name="time" type="RangedProfileElement"/>		
+	</rewrite>
+	
+	
+	<!-- 
+	  THREDDS Dataset metadata that you want to flow into the Profile 
+	  Elements portion of the profile. Each specified dataset metadata 
+	  will be turned into an EnumeratedProfileElement with 1 or more values.
+	  
+	  name: The name of the profile element.
+	  value: The dataset metadata element to extract the metadata from. The 
+	  extracted metadata is shoved into the generated EnumeratedProfileElement's
+	  value set.	
+	 -->
+	<datasetMetadata>
+	
+	   <!-- variable names -->
+	   <elem name="variable" value="Variables"/>
+	   <elem name="cf_standard_name" value="CF Standard Names"/>
+	   <elem name="variable_long_name" value="Variable Long Names"/>
+	   
+	   	<!-- geospatial coverage -->
+		<elem name="south_deegrees" value="GeospatialCoverageLatSouth"/>
+		<elem name="north_deegrees" value="GeospatialCoverageLatNorth"/>
+		<elem name="west_deegrees" value="GeospatialCoverageLonWest"/>
+		<elem name="east_deegrees" value="GeospatialCoverageLonEast"/>
+		<elem name="spatial_coverage" value="GeospatialCoverage"/>
+		<elem name="latitude_resolution" value="GeospatialCoverageLatitudeResolution"/>
+	    <elem name="longitude_resolution" value="GeospatialCoverageLongitudeResolution"/>
+	
+		<!-- temporal coverage -->
+		<elem name="datetime_start" value="StartDateTime"/>
+	   	<elem name="datetime_stop" value="EndDateTime"/>
+	    <elem name="temporal_resolution" value="TimeCoverageResolution"/>
+
+	</datasetMetadata>
+	
+	<!-- 
+	    A set of constant metadata to plumb through into the profile, either in the 
+	    profileAttributes section or the resourceAttributes section. The type parameter
+	    indicates the section name, and the rest of the attributes are fairly evident from there.
+	    Note: the value tag can use CAS/OODT based environment variable replacement, by specifying 
+	    values within the '[' and ']' delimiters, e.g., [PROFILE_REG_AUTHORITY].
+	    
+	    type: either profAttr, resAttr, or profElem to indicate what section in the profile the information 
+	    should be part of. If profElem is selected, then an EnumeratedProfileElement with the provided 
+	    values will be created and added to the profile.
+	    name: the name of the profileAttribute or resourceAttribute field.
+	    value: the value to be set.
+	    
+	    
+	    profAttr can be any of:
+	      profId
+	      profVersion
+	      profType
+	      profStatusId
+	      profSecurityType
+	      profParentId
+	      profRegAuthority
+	      profChildId
+	      profRevisionNote
+
+        resAttr can be any of:	
+          Identifier
+          Title
+          Description
+          Creator
+          Subject
+          Publisher
+          Contributor
+          Date
+          Type
+          Source
+          Language
+          Relation
+          Coverage
+          Rights
+          resContext
+          resAggregation
+          resClass
+          resLocation              
+	 -->
+	<constants>
+	
+	    <!-- profile attributes -->
+	    <const type="profAttr" name="profType" value="CMDS Ocean Dataset Profile"/>
+	    <const type="profAttr" name="profStatusId" value="active"/>
+	    <const type="profAttr" name="profRegAuthority" value="NASA Coastal Marine Data Discovery Service (CMDS)" />
+	    <const type="profAttr" name="profId" value="[UUID]"/>
+	    <const type="profAttr" name="profVersion" value="1.0"/>
+	    	    
+	    <!-- resource attributes -->
+	    <const type="resAttr" name="Identifier" value="[ID]|[Host]" />
+        <const type="resAttr" name="Title" value="[FullName]" />
+        <const type="resAttr" name="Description" value="[Summary]" />
+        <const type="resAttr" name="resLocation" value="[Access]"/>
+        <const type="resAttr" name="Rights" value="[Rights]" />       
+        <const type="resAttr" name="Relation" value="[Xlink]"/>
+		<const type="resAttr" name="Publisher" value="[Publisher]" />
+		<const type="resAttr" name="Creator" value="[Creator]" />
+		<const type="resAttr" name="Type" value="[DataType]"/>
+		<const type="resAttr" name="Format" value="[DataFormatType]"/>
+		<!-- dynamic keywords harvested from data -->
+		<const type="resAttr" name="Subject" value="[Keywords]" />
+		<!-- static keywords to supplement keywords harvested from data -->
+		<const type="resAttr" name="Subject" value="Coastal Marine Data" />
+		<const type="resAttr" name="Subject" value="Oceans" />
+		<const type="resAttr" name="Subject" value="Climate Change" />
+		<!-- OODT resource parameters -->
+		<const type="resAttr" name="resClass" value="data.dataSet" />
+		<const type="resAttr" name="resContext" value="Oceanography"/>
+		<const type="resAttr" name="resAggregation" value="dataSet"/>
+		
+		<!-- profile elements from DAS/NC_GLOBAL section -->
+		<const type="profElem" name="mission_name" value="[satellite]"/>
+		<const type="profElem" name="sensor" value="[sensor]"/>
+		<const type="profElem" name="source" value="[source]"/>
+		<const type="profElem" name="project" value="[project]"/>
+		<const type="profElem" name="processing_level" value="[processing_level]"/>
+		<!-- constant values -->
+		<const type="profElem" name="spatial_coverage" value="Global"/>
+		<const type="profElem" name="institute" value="NOAA CoastWatch"/>
+		
+		<!-- constants required by ESGF harvesting process -->
+		<const type="profElem" name="master_id" value="[ID]|[Host]"/>
+		<const type="profElem" name="type" value="Dataset"/>
+		<const type="profElem" name="data_node" value="[Host]"/>
+		<const type="profElem" name="index_node" value="cmds-esg.jpl.nasa.gov"/>
+		
+		
+	</constants>
+
+</oodt:opendap>

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+   <properties>
+      <title>CAS Push Pull Framework Developer Guide</title>
+      <author email="Brian.Foster@jpl.nasa.gov">Brian Foster</author>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+   </properties>
+
+   <body>
+   
+      <section name="Introduction">
+        <p>
+          This is the developer guide for the Apache OODT Catalog and Archive Service (CAS) 
+          Push Pull framework, or Push Pull for short. Primarily, this guide 
+          will explain the Push Pull architecture and interfaces, including its 
+          tailorable extension points. For information on installation, configuration,
+          and examples, please see our <a href="../user/basic.html">User Guides.</a>
+          
+          <p>The remainder of this guide is separated into the following sections:</p>
+      <ul>
+        <li><a href="#section1">Project Description</a></li>
+        <li><a href="#section2">Architecture</a></li>
+        <li><a href="#section3">Extension Points</a></li>
+        <li><a href="#section4">Current Extension Point Implementations</a></li>
+      </ul>
+          
+        </p>     
+      </section>
+      
+      <a name="section1"/>
+      <section name="Project Description">
+        <p>The Push Pull framework is responsible for downloading remote content (pull),
+        or accepting the delivery of remote content (push) to a local system staging area 
+        for use by the <a href="../../crawler">CAS Crawler Framework</a> to ingest into 
+        the <a href="../../filemgr">CAS File Manager</a>. The Push Pull framework is extensible 
+        and provides a fully tailorable Java-based API for the acquisition of remote content.</p> 
+      </section>
+      
+      <a name="section2"/>
+      <section name="Architecture">
+      
+        <p>In this section, we will describe the architecture of the Push Pull framework,
+        including its constituent components, object model, and key capabilities.</p>
+      
+        <subsection name="Components">
+        
+        <p>The major components of the Push Pull Framework are the Daemon Launcher, the Daemon, 
+        the Protocol Layer, and the File Retrieval System, to name a few.  The relationship between 
+        all of these components are shown in the diagram below:
+        </p>
+        
+        <p><img src="../images/pp_extension_points.png" alt="Push Pull Framework Architecture"/></p>
+        
+        <p>The Push Pull Framework provides a Daemon Launcher, responsible for creating new 
+        Daemon instances. Each Daemon has an associated Daemon Configuration, and has the 
+        ability to use a File Retrieval Setup extension point. This class is responsible for 
+        leveraging both a Protocol and a File Retrieval System to obtain ProtocolFiles, based on 
+        a File Restrictions Parser, that yields eventually a VirtualFileStructure (VFS) model. The 
+        VFS defines what files to accept and pull down from a remote site.
+        </p> 
+        
+        </subsection>
+        <subsection name="Object Model">
+        <p>The critical objects managed by the Push Pull Framework include:</p>
+        
+        <ul>
+          <li><strong>Protocol</strong> - A pluggable means of obtaining content over 
+          some file acquisition method, e.g., FTP, SCP, HTTP, etc.</li>
+          
+          <li><strong>Protocol File</strong> - Metadata information about a remote file, 
+          including its ProtocolPath.</li>
+          
+          <li><strong>Protocol Path</strong> - A pointer to a remote Product file's (or files') 
+          location, which can be used to derive metadata and determine where to place the file
+          in the local staging area built by the Push Pull Framework.</li>
+          
+          <li><strong>Remote Site</strong> - Descriptive information about a remote site, including 
+          the username/password combination, as well as a origin directory to start interrogating.</li>
+        </ul>
+
+        <p>Each Protocol delivers one or more Protocol Files. Each ProtocoFile is associated with a 
+        single RemoteSite, and each ProtocolFile is associated with a single ProtocolPath. These 
+        relationships are shown in the below figure.</p>
+        
+        <img src="../images/pp_object_model.png" alt="Push Pull Framework Object Model"/> 
+        </subsection> 
+      
+        <subsection name="Key Capabilities">
+        <p>The Push Pull Framework has been designed with a new of key capabilities in mind.
+        These capabilities include:</p>
+        
+        <p><strong>Flexibility</strong> - ability to plug in different Metadata Extractors, 
+        Data Protocols, Content Types, etc.</p>
+        
+        <p><strong>Support Push/Pull</strong> - Support of both &quot;Push&quot; and &quot;Pull&quot; 
+        style data transfers.</p>
+        
+        <p><strong>Extensibility</strong> - ability to add new, previously undiscovered Data Protocols, 
+        and &quot;plug&quot; them into the framework.</p>
+        
+        <p><strong>Java-based</strong> - Use of Java programming language and development kit for Multi-Platform 
+        deployment (using the Java Virtual Machine).</p>
+        
+        <p><strong>Fast Data-transfer</strong> - Support of Parallel File Transfers and Data Downloads.</p>
+        
+        <p><strong>Email-based Push</strong> - Support for Email-based Push Data Acceptance using IMAP, SMTP protocols.</p>
+        
+        <p><strong>Modeling of remote data sites</strong> - Ability to configure “Virtual” remote directories (based on Metadata 
+        such as Date/Time) to download files from.</p>
+        
+        <p><strong>Integration with other CAS components</strong> - Ability to &quot;plug-in&quot; to the CAS File Management 
+        and CAS Crawl Framework components for Data Ingestion.</p>         
+        </subsection>
+      </section>
+      
+      <a name="section3"/>
+      <section name="Extension Points">
+          <p>We have constructed the Push Pull Framework making use of the <i>factory 
+          method pattern</i> to provide multiple extension points for the Push Pull Framework. An 
+          extension point is an interface within the Push Pull Framework that can have many 
+          implementations. This is particularly useful when it comes to software 
+          component configuration because it allows different implementations of 
+          an existing interface to be selected at deployment time.</p> 
+          
+          <div class="info">The factory method pattern is a creational pattern common to
+          object oriented design. Each Push Pull Framework extension point involves the 
+          implementation of two interfaces: an <i>extension factory</i> and an 
+          <i>extension</i> implementation. At run-time, the Push Pull Framework loads a 
+          properties file specifies a factory class to use during extension point
+          instantiation. For example, the Push Pull Framework may communicate with a 
+          remote FTP site to obtain content, or it may use an IMAPS protocol plugin to 
+          accept email-push notifications of available files.
+          </div> 
+          
+          <p>Using extension points, it is fairly simple to support many different types 
+          of what are typically referred to as &quot;plug-in architectures&quot;. Each of the core 
+          extension points for the Push Pull Framework is described below:</p>
+          
+          <table>
+            <tr>
+              <td>Protocol</td>
+              <td>The Protocol extension point is the heart of the Push Pull framework, 
+              responsible for modeling remote sites, and for obtaining their content via 
+              different Retrieval Methods, using different File Restrictions Parsers.
+              </td>
+            </tr>
+            <tr>
+              <td>Retrieval Method</td>
+              <td>The Retrieval Method extension point is responsible for orchestrating 
+              download (pull) and acceptance (push) of remote content.
+              </td>
+            </tr>
+            <tr>
+              <td>File Restrictions Parser</td>
+              <td>The File Restrictions Parser extension point is responsible for defining 
+              how to accept or decline files encountered by a Retrieval Method, in essence 
+              modeling remote file and directory structures.
+              </td>
+            </tr>
+             <tr>
+              <td>System</td>
+              <td>The extension point that provides the external interface to the 
+              Push Pull Framework services. This includes the Daemon Launcher interface, 
+              as well as the associated Daemon interface, that 
+              is managed by with the Daemon Launcher.
+              </td>
+            </tr>          
+          
+          </table>
+       </section>
+       
+       <a name="section4"/>   
+       <section name="Current Extension Point Implementations">
+        
+         <p>There are at least two implementations of all of the aforementioned 
+         extension points for the Push Pull Framework. Each extension point implementation 
+         is detailed in this section.</p>
+
+         <subsection name="Protocol">
+            <ul>
+             <li><strong>Cog JGlobus FTP.</strong> An implementation of 
+             the Protocol extension point for FTP using 
+             <a href="http://dev.globus.org/wiki/CoG_jglobus">CoG jglobus</a>.
+             </li>
+             
+             <li><strong>Commons Net FTP.</strong> An implementation of the 
+             of the Protocol extension point for FTP using 
+             <a href="http://commons.apache.org/net/">Commons Net</a> FTP client.
+             </li>
+             
+             <li><strong>HTTP.</strong> An implementation of 
+             the Protocol extension point using Java's URL class, as well as 
+             <a href="http://tika.apche.org/">Apache Tika</a>'s HTMLParser.</li>
+             
+             <li><strong>IMAPS.</strong> An implementation of the 
+             Protocol extension point using IMAPS javax.mail classes from 
+             <a href="http://geronimo.apache.org">Apache Geronimo</a> and 
+             HTML parsing from <a href="http://tika.apache.org/">Apache Tika</a>.</li>
+
+             <li><strong>Local.</strong> An implementation of 
+             the Protocol extension point using Java NIO for local 
+             data acquisition.</li>
+             
+             <li><strong>SFTP.</strong> An implementation of the 
+             Protocol extension point using <a href="http://www.jcraft.org">JCraft</a>'s 
+             <a href="http://www.jcraft.org/jsch">JSch</a> library.</li>
+           </ul>
+         </subsection> 
+
+         <subsection name="Retrieval Method">
+            <ul>
+             <li><strong>Remote Crawler.</strong> An implementation of 
+             the Retrieval Method interface that uses an XML based set of 
+             policy files to determine which remote directories and files 
+             to crawl and obtain.</li>
+             
+             <li><strong>List Retriever.</strong> An implementation of the 
+             Retrieval Method interface that accepts a list of URLs that point 
+             to content to obtain.</li>
+           </ul>
+         </subsection> 
+
+         <subsection name="File Restrictions Parser">
+            <ul>
+             <li><strong>DirStructXml Parser.</strong> An implementation of 
+             the File Restrictions Parser interface that interprets an XML file 
+             specifying the remote directories and files to obtain.</li>
+             
+             <li><strong>FileList Parser.</strong> An implementation of the 
+             File Restrictions Parser interface that specifies an ASCII newline separated 
+             list of URLs pointing to remote directories and files to obtain.</li>
+
+             <li><strong>Class NOAA Email Parser.</strong> An implementation of the 
+             File Restrictions Parser interface that reads email files from NOAA's CLASS 
+             archive which specify lists of directory and file URLs to obtain.</li>
+           </ul>
+         </subsection>          
+         
+         
+         <subsection name="Daemon Launcher (Daemon client and Daemon server)">        
+             <ul>
+               <li><strong>Java RMI based server.</strong> An 
+               implementation of the external server interface for the Push Pull Framework that 
+               uses RMI as the transportation medium to launch Push Pull Daemons.</li>
+               
+               <li><strong>Push Pull Daemon.</strong> An 
+               implementation of the client interface for the Java RMI-based  
+               server that uses RMI as the transportation medium to manage and control the 
+               Push Pull services.</li>
+             </ul>
+         </subsection> 
+         
+      </section>
+      
+      <section name="Conclusion">
+      <p>The aim of this document is to provide information relevant to developers
+      about the CAS Push Pull Framework. Specifically, this document has described the 
+      Push Pull Framework's architecture, including its constituent components, object model and
+      key capabilities. Additionally, the this document provides an overview of the 
+      current implementations of the Push Pull Framework's extension points.</p> 
+      
+      <p>In the <a href="../user/basic.html">Basic User Guide</a> and 
+      <a href="../user/advanced.html">Advanced User Guide</a>, we will cover topics
+      like installation, configuration, and example uses as well as advanced topics
+      like scaling and other tips and tricks.</p> 
+      
+      </section>
+
+   </body>
+</document>

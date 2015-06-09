@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.oodt</groupId>
+    <artifactId>oodt-core</artifactId>
+    <version>0.8.1</version>
+    <relativePath>../core/pom.xml</relativePath>
+  </parent>
+  <artifactId>oodt-commons</artifactId>
+  <name>Common Utilities</name>
+  <packaging>jar</packaging>
+  <description>Apache OODT Common Utilities Project</description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.8.1/commons</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.8.1/commons</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/0.8.1/commons</url>
+  </scm>
+  <build>
+    <resources>
+        <resource>
+            <targetPath>org/apache/oodt/commons</targetPath>
+            <directory>${basedir}/src/main/resources/dtd</directory>
+            <includes>
+                <include>Configuration.dtd</include>
+            </includes>
+        </resource>
+        <resource>
+            <targetPath>org/apache/oodt/commons/util</targetPath>
+            <directory>${basedir}/src/main/resources/conf</directory>
+            <includes>
+                <include>entities.xml</include>
+            </includes>
+        </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <forkMode>pertest</forkMode>
+          <useSystemClassLoader>false</useSystemClassLoader>
+          <systemProperties>
+             <property>
+               <name>java.util.logging.config.file</name>
+               <value>${basedir}/src/test/resources/test.logging.properties</value>
+              </property>
+           </systemProperties>
+           <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
+           <redirectTestOutputToFile>true</redirectTestOutputToFile>
+            <includes>
+              <include>**/*Test*.java</include>
+            </includes>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+        </configuration>
+      </plugin>
+    </plugins> 
+  </build>
+  <profiles>
+    <profile>
+      <id>audit</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>rat-maven-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/test/resources/*</exclude>
+                <exclude>**/package.html</exclude>
+              </excludes>
+              <numUnapprovedLicenses>1</numUnapprovedLicenses>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>2.5.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-hibernate3</artifactId>
+      <version>2.0.8</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>xmlrpc</groupId>
+        <artifactId>xmlrpc</artifactId>
+        <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+    </dependency>
+    <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>2.9.1</version>
+    </dependency>
+  </dependencies>
+</project>

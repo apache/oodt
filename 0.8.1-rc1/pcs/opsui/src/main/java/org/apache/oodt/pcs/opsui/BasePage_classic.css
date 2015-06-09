@@ -1,0 +1,222 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+body{
+	background-color:#000000;
+	color:#000000;
+	margin-top: 0;
+	margin-left:0; 
+	margin-right:0; 
+	margin-bottom:0;
+	width:100%;
+	height:100%;
+}
+
+#opsui_header_tbl{
+  border:0px;
+  border-spacing:0px;
+  white-space:nowrap;
+  padding:0px;
+  width:100%;
+
+}
+
+#opsui_inner_header_tbl{
+  border:0px;
+  border-spacing:0px;
+  white-space:nowrap;
+  padding:0px;
+  width:100%;
+
+}
+
+#menu_inner_tbl{
+  padding:0px;
+  border-spacing:1px;
+  border:0px;
+  width:100%;
+  color:white; 
+}
+
+#menu_inner_tbl_home{
+  background-color:#666666;
+  height:23px;
+  width:20px;
+  text-align:center;
+}
+
+#menu_tbl_links{
+  padding:0px;
+  border-spacing:1px;
+  border:0px;
+  width:100%;
+  color:white; 
+}
+
+#menu_inner_tbl_links_fm{
+  background-color:#666666;
+  height:23px;
+  text-align:center;
+}
+
+#menu_inner_tbl_links_wm{
+  background-color:#666666;
+  height:23px;
+  text-align:center;
+}
+
+#menu_inner_tbl_links_rm{
+  background-color:#666666;
+  height:23px;
+  text-align:center;
+}
+
+#menu_inner_tbl_links_cfg{
+  background-color:#666666;
+  height:23px;
+  text-align:center;
+}
+
+#menu_inner_tbl_links_pcsstat{
+  background-color:#666666;
+  height:23px;
+  text-align:center;
+}
+
+#footer_tbl{
+  padding:4px;
+  border-spacing:0px;
+  width:730px;
+  border:0px;
+}
+
+.banner{
+  border:0px;
+  width:379px;
+  height:65px;  
+}
+
+.spacer{
+  width:730px;
+  height:2px;  
+}
+
+.tdspacer{
+  background-color:#666666;
+  height:23px;
+  width:20%;
+}
+
+.tight-noborder{
+  vertical-spacing:0px;
+  width:100%;
+  border:0px;
+}
+
+.white {
+  color:white;
+}
+
+.whitebg{
+	background-color:white;
+}
+
+.blackbg{
+	background-color:black;
+}
+
+.blackLink {
+  color:#000000;
+  line-height:18px;
+}
+
+.firstGovImg{
+  height:39px;
+  width:136px;
+  border:0px;
+}
+
+.nasaHomePageImg{
+  height:40px;
+  width:61px;
+  border:0px;
+}
+
+.feedback{
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:2px;
+}
+
+a{
+	text-decoration:none;
+}
+
+a:hover{
+	text-decoration:underline;
+}
+
+#criteria_form_add_element_value{
+	font-weight:bold;
+}
+
+#product_table{
+	border:1px;
+	border-spacing:2px;
+	border: 1px solid #000000;
+	width:800px;
+}
+
+#product_table td{
+  border: 1px solid #000000;
+  margin: 0; 
+  padding: 2px;
+}
+
+#pagination_table{
+	border-spacing:3px;
+	width:100%;
+}
+
+#pagination_table_result_hdr{
+	width:100px;
+	white-space: nowrap;
+	font-weight:bold;
+}
+
+#cas_fm_browser_ptype_table{
+  padding:2px;
+  border-spacing:2px;
+  width:800px;
+  border: 1px solid #000000;
+}
+
+#cas_fm_browser_ptype_table td{
+  border: 1px solid #000000;
+  margin: 0; 
+  padding: 2px;
+}
+
+.workflow_status{
+   border-left: 1px;
+   padding-left: 1px;
+   border-right: 1px;
+   padding-right: 1px;
+   border-width: 1px;
+   border-top:0px;
+   border-bottom:0px;
+   border-style:solid;
+   border-color:black;	
+}

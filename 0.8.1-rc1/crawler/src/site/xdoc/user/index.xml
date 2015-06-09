@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+   <properties>
+      <title>CAS Crawler User Guide</title>
+      <author email="Chris.Mattmann@jpl.nasa.gov">Chris Mattmann</author>
+   </properties>
+
+   <body>
+      <section name="User Guide">
+        <p>
+          This is the user guide for the OODT Catalog and Archive Service (CAS) Crawler Framework, 
+          or CAS Crawler for short. This guide explains the CAS Crawler architecture 
+          including its extension points. The guide also discusses available services provided 
+          by the CAS Crawler, how to utilize them, and the different APIs that exist. The guide 
+          concludes with a description of CAS Crawler use cases.
+        </p>     
+      </section>
+      <section name="Architecture">
+        <p>The CAS Crawler Framework represents an effort to standardize the common ingestion activities 
+        that occur in data acquisition and archival. These types of activities regularly involve identification 
+        of files and directories to crawl (based on e.g., mime type, regular expressions, or direct user 
+        input), satisfaction of ingestion pre-conditions (e.g., the current crawled file has not been 
+        previously ingested), followed by metadata extraction. After metadata extraction, crawled data follows 
+        a standard three state lifecycle:
+        </p>
+          <ol>
+           <li>preIngestion - where e.g., a file may be unzipped or pre-processed prior to ingestion;</li>
+           <li>postIngestion success, indicating a successful ingestion to the file management component has occurred 
+           and e.g., the origin data file from the ingest area should be deleted; and</li>
+           <li>postIngestion failure, indicating that ingestion was not successful and some corrective action, 
+           e.g., moving the failed file to a failure area for later examination, should occur.</li>
+          </ol>
+
+          <p><img src='../images/crawler_phases.png' alt='Crawler Phase Model'/></p>
+          <p><img src='../images/crawler-state-diagram.png' alt='Detailed Crawler Phase Model'/></p>
+          
+         <p>The critical objects managed by the CAS Crawler framework include:</p>
+        
+        <ul>
+         <li>Crawler Config - Configures a Product Crawler, providing specialized options, such as specifying
+         the Crawler Framework URL to talk to, specifying the Met Extractor to call (in the case of the Met Extractor Product
+         Crawler), or specifying some property for a Crawler Action.</li>
+         <li>Product Crawler - Crawlers crawl a starting product path, looking for Products, which are collections of 
+         one or more files, and an associated Metadata object. Metadata can be:
+           <ul>
+            <li>Provided ahead of time - in this case, the Product Crawler reads the Metadata file, looking for <code>Filename</code>, 
+            <code>FileLocation</code>, and <code>ProductType</code> met keys. The Crawler Framework provides a <code>StdProductCrawler</code>
+            for this scenario.</li>
+            <li>Generated on the fly, using a CAS Met Extractor - in this case, the Product Crawler calls a CAS Met Extractor, and configures
+            it with an associated Met Extractor Config File, and uses this mechanism to obtain the Metadata for a Product. After the Metadata is
+            obtained, the Product Crawler engages in the same procedure as for the StdProductCrawler case. The Crawler Framework provides a
+            <code>MetExtractorProductCrawler</code> for this scenario.</li>
+            <li>Generated on the fly, using a CAS Met Extractor defined by a particualr Product mime type, or regular expression identifier - in this
+            case, Met Extractors are called on the fly to generate a Product's metadata. The Met Extractors are called based on a Product's mime type association, 
+            or by a regular expression identifying the Product file(s)'s pattern. The Crawler Framework provides an <code>AutoDetectProductCrawler</code> for this
+            scenario.</li>
+           </ul>
+         </li>
+         <li>Action - Crawler Actions are tasks that the Crawler can perform that are associated with one of the three above phases. Each Action can be associated
+         with zero or more Crawler Phases. Examples of Crawler Actions are provided in the Appendix.</li>
+         <li>Crawler Phase - Crawler Phases are one of the three aforementioned phases of the Crawler lifecycle: preIngest, postIngestSuccess, or postIngestFailure. Each
+         Phase can have zero or more associated Crawler Actions.</li>
+        </ul>
+
+        <p>Each Product Crawler is configured by exactly one Crawler Config. Each Product Crawler has 1...* Crawler Actions
+        which are each associated with 1...* Crawler Phases. Each Product Crawler crawls 1...* Products, which are each associated
+        with exactly 1 Metadata object. These relationships are shown in the below figure.</p>
+        
+        <p><img src="../images/crawler-object-model.png" alt="Crawler Object Model"/></p>
+      
+        <subsection name="Extension Points">
+          <p>
+          There are several extension points for the Crawler Framework. An extension point is an interface 
+          within the crawler framework that can have many implementations. This is particularly useful when 
+          it comes to software component configuration because it allows different implementations of an 
+          existing interface to be selected at deployment time. So, the crawler framework may 
+          leverage a preIngest action that checks against a Crawler Framework Catalog to determine if a Product has
+          already been ingested, or the crawler may choose a preIngest action that performs an MD5 checksum
+          on the Product before ingesting. The selection of the actual component implementations is handled 
+          entirely by the extension point mechanism. Using extension points, it is fairly simple to support many 
+          different types of what are typically referred to as &quot;plug-in architectures&quot; Each of the core 
+          extension points for the Crawler Framework is described below:</p>
+          
+          <table>
+            <tr>
+              <td>Crawler Daemon</td>
+              <td>The Crawler Daemon extension point is responsible for periodically (as defined by the User) 
+              executing a particular ProductCrawler, as well as providing statistics on crawls (number of crawls,
+              average crawl time, etc.).
+              </td>
+            </tr>
+            <tr>
+              <td>Product Crawler</td>
+              <td>The Product Crawler extension point is responsible for defining the method in which Crawler
+              Preconditions are checked before ingestion, for managing the 3-phase ingestion process, and for dictating
+              the method by which Metadata is obtained for a particular product. In addition, the extension point
+              also specifies how Product files are crawled on disk.
+              </td>
+            </tr>
+            <tr>
+              <td>Mime Type Extractor Repository</td>
+              <td>The Mime Type Extractor Repository is an extension point that specifies how
+              Met Extractors are associated with mime types related to a Product file being ingested. 
+              </td>
+            </tr>
+            <tr>
+              <td>Crawler Action Repository</td>
+              <td>The Crawler Action Repository is a home for all Crawler Actions, mapping each Action
+              to a lifecycle phase (preIngest, postIngestSuccess, or postIngestFailure).
+              </td>
+            </tr>
+             <tr>
+              <td>Precondition Comparator</td>
+              <td>The Precondition Comparator extension point allows for the specification of preconditions
+              that must be satisfied before metadata is extracted for a particular crawled Product, and ultimately
+              which must be satisfied before ingestion.
+              </td>
+            </tr>
+             <tr>
+              <td>Met Extractor, Met Extractor Config, Met Extractor Config Reader</td>
+              <td>The Crawler Framework leverages CAS Metadata's Met Extractor, Met Extractor Config, and
+              Met Extractor Config Reader extension point. Each Met Extractor is provided a Met Extractor Config
+              file, which is read by an associated Met Extractor Config Reader, allowing a User to entirely customize
+              how Metadata is extracted for a particular Product file.
+              </td>
+            </tr>          
+          
+          </table>
+          
+          <p>The relationships between the extension points for the Crawler Framework are shown in the below
+          figure.
+          </p>
+          
+          <p><img width='600' src="../images/crawler-extension-points.png" alt="Crawler Extension Points"/></p>
+        
+        </subsection>
+        <subsection name="Key Capabilities">
+        <p>The Crawler Framework is responsible for providing the necessary key capabilities for manually 
+        and automatically ingesting files and metadata. Each high level capability provided by the 
+        Crawler Framework is detailed below:</p>
+        
+        <ol>
+          <li>Automatic and manual ingesting of Products - The Crawler Framework can easily be configured
+          as a Daemon process that periodically crawls a starting directory for Products, or as a 
+          standalone program, performing ingestion and then terminating.
+          </li>
+          <li>Command-line interface, as well as APIs - The Crawler Framework can be called from a simple
+          command line interface, allowing GNU-style options to configure a crawler, and start ingesting. In
+          addition, the Crawler also provides Java-based APIs that allows a user to integrate crawling into
+          her Java application with ease.
+          </li>
+          <li>Configurable Actions, and Action Extensibility Mechanism - The Crawler Framework ships with a set
+          of predefined actions out of the box (delete data file, after postIngestSuccess, delete met file, after
+          the same, check on pre ingest for product uniqueness, etc.) that provide an excellent starting point for
+          leveraging the Crawler Framework in a user's application. If more specific functionality is required, a
+          user has the ability to write her own Crawler Action by implementing the Crawler Action interface.</li>    
+          <li>Configurable and extensible Preconditions for Met Extraction - Much like Crawler Actions, Preconditions
+          allow a user to customize the Crawler Framework, specifying if, how, and when, Met Extractors should be called
+          by a Crawler to extract metadata from an underlying Product.
+          </li>
+          <li>Support for a wide variety of Product file identification mechanisms - The Crawler Framework provides three
+          different crawlers out of the box that enforce a particular Product file identification strategy, e.g., StdProductCrawler
+          looks for Metadata files, MetExtractorProductCrawler generates Metadata files on the fly, and AutoDetectProductCrawler
+          uses mime type information and file regular expressions to identify Prouct files to crawl. If more customized functionality
+          is required, the user can extend one of these existing ProductCrawlers, or write an entirely new crawler.</li>
+          <li>Ability to plug in Met Extraction rules - A user can leverage a custom developed Met Extractor to generate Product metadata
+          used by the crawler during the ingestion process. Met Extractors are easily plugged in using Java's class loading mechanism
+          the capabilities of the <a href="../../metadata/">CAS Metadata Framework</a>.</li>
+          <li>Communication over lightweight, standard protocols – The Crawler Framework uses XML-RPC, as its main 
+          external interface, when the Crawler runs in Daemon mode. XML-RPC, the little brother of SOAP, is 
+          fast, extensible, and uses the underlying HTTP protocol for data transfer.</li>
+         </ol>
+          
+          <p>This capability set is not exhaustive, and is meant to give the user a &quot;feel&quot; for what 
+          general features are provided by the Crawler Framework. Most likely the user will find that the 
+          Crawler Framework provides many other capabilities besides those described here.</p>
+          
+        </subsection>
+        <subsection name="Current Extension Point Implementations">
+        
+         <p>There is at least one implementation of all of the aforementioned extension points for 
+         Crawler Framework. Each existing extension point implementation is detailed below:</p>
+
+         <ul>
+           <li><b>Crawler Actions</b><br/>
+            <ol>
+             <li>Delete File – deletes an origin data file from its location in the staging area. Tied to
+             the postIngestSuccess stage.</li>
+             <li>FilemgrUniquenessChecker - Checks with the Crawler Framework after Metadata extraction has occured and
+             determines if the product has been ingested into the Crawler Framework. Tied to the preIngest stage.</li>
+             <li>MimeTypeCrawlerAction - Calls a specified Crawler Action is the Product matches a specified list of
+             mime-types. Tied to the preIngest stage.</li>
+             <li>WorkflowMgrStatusUpdate - Notifies the Workflow Manager that a file has been ingested into the File
+             Manager successfully. Tied to the postIngestSuccess stage.</li>
+           </ol>
+           </li>
+           <li><b>Crawler Precondition Comparators</b><br/>
+             <ol>
+               <li>FilemgrUniqunessCheckComparator - Determines, before Metadata extraction has occured, whether or not
+               a Product has been ingested into the Crawler Framework.
+               </li>
+             </ol>
+           </li>
+           <li><b>Crawler Daemons (Controller and Daemon)</b><br/>
+             <ol>
+               <li>XML-RPC – The default implementation of the Crawl Daemon Controller and the Crawler Daemon leverage
+               XML-RPC, the little brother of SOAP, as their mode of communication.
+               </li>
+             </ol>
+           </li>  	
+           </ul>  
+        
+        </subsection>
+      
+      </section>
+      <section name="Configuration and Installation">
+       <p>
+       To install the Crawler Framework, you need to download a release
+       of the software, available from its home web site. For bleeding-edge features, you can
+       also check out the cas-crawler trunk project from the Apache OODT subversion repository. You can browse 
+       the repository using ViewCVS, located at:</p>
+       
+       <screen>http://svn.apache.org/viewvc/oodt/</screen>
+       
+       <p>The actual web url for the repository is located at:</p>
+       
+       <screen>https://svn.apache.org/repos/asf/oodt</screen>
+
+       <p>To check out the Crawler Framework, use your favorite Subversion client.</p>
+      
+      <subsection name="Project Organization">
+        <p>
+       The cas-crawler project follows the traditional Subversion-style <code>trunk</code>, <code>tag</code>
+       and <code>branches</code> format. Trunk corresponds to the latest and greatest development on the
+       cas-crawler. Tags are official release versions of the project. Branches correspond to deviations 
+       from the trunk large enough to warrant a separate development tree. </p>
+
+       <p>For the purposes of this the User Guide, we'll assume you already have downloaded a built release
+       of the Crawler Framework, from its web site. If you were building cas-crawler from the trunk, a tagged release 
+       (or branch) the process would be quite similar. To build cas-crawler, you would need the Apache Maven 
+       software. Maven is an XML-based, project management system similar to Apache Ant, but with many extra 
+       bells and whistles. Maven makes cross-platform project development a snap. You can download Maven from:
+
+       <a href="http://maven.apache.org">http://maven.apache.org/</a>
+
+       All cas-crawler releases post 1.x.0 are now <b>Maven 2 compatible</b>. This is <b>very</b> important. 
+       That means that if you have any cas-crawler release > 1.x.0, you will need Maven 2 to compile the software, 
+       and Maven 1 will no longer work.</p>
+       
+       <p>Follow the procedures in the below Sections to build a fresh copy of the Crawler Framework. These procedures
+       are specifically targeted on using Maven 2 to build the software: 
+        </p>      
+      
+      </subsection>
+      
+      <subsection name="Building the Crawler Framework">
+        <p>
+          <ol>
+            <li>cd to cas-crawler, and then type:
+           <source># mvn package</source>
+           This will perform several tasks, including compiling the source code, downloading 
+           required jar files, running unit tests, and so on. When the command completes, cd 
+           to the <code>target</code> directory within cas-crawler. This will contain the build of the 
+           Crawler Framework component, of the following form:
+           
+           <source>
+            cas-crawler-${version}-dist.tar.gz
+           </source>
+           
+           This is a distribution tar ball, that you would copy to a deployment directory, such as
+           <code>/usr/local/</code>, and then unpack using <code># tar xvzf </code>. The resultant directory 
+           layout from the unpacked tarball is as follows:
+           
+           <source>
+            bin/ etc/ logs/ doc/ lib/ policy/ LICENSE.txt CHANGES.txt
+           </source>
+            <ul>
+              <li>bin - contains the &quot;crawler_launcher&quot; server script, and the &quot;crawlctl&quot; client script.</li>
+              <li>etc - contains the logging.properties file for the Crawler Framework.</li>
+              <li>logs - the default directory for log files to be written to.</li>
+              <li>doc - contains Javadoc documentation, and user guides for using the particular CAS component.</li>
+              <li>lib - the required Java jar files to run the Crawler Framework.</li>
+              <li>policy – the default Spring-XML based configuration for Crawler Actions, Preconditions, Command Line options, and Crawlers.</li>
+              <li>CHANGES.txt - contains the CHANGES present in this released version of the CAS component.</li>
+              <li>LICENSE.txt - the LICENSE for the CAS Crawler Framework project.</li>
+            </ul>
+          </li>
+         </ol>        
+        </p>
+      
+      </subsection>
+      <subsection name="Deploying the Crawler Framework">
+      <p>To deploy the Crawler Framework, you'll need to create an installation directory. Typically this 
+      would be somewhere in /usr/local (on *nix style systems), or C:\Program Files\ (on windows 
+      style systems). We'll assume that you're installing on a *nix style system though the Windows 
+      instructions are quite similar.</p>
+
+      <p>Follow the process below to deploy the Crawler Framework:</p>
+
+        <ol>
+         <li>Copy the binary distribution to the deployment directory
+         <source># cp -R cas-crawler/trunk/target/cas-crawler-${version}-dist.tar.gz /usr/local/</source>
+         </li>
+         <li>Untar the distribution
+         <source># cd /usr/local ; tar xvzf cas-crawler-${version}-dist.tar.gz</source>
+         </li>
+         <li>Set up a symlink
+         <source># ln -s /usr/local/cas-crawler-${version} /usr/local/crawler</source>
+         </li>
+         <li>Set your <code>JAVA_HOME</code> environment variable to point to the location of your 
+         installed JRE runtime.
+         </li>
+       </ol>
+   
+     <p>Other configuration options are possible: check the <a href="../apidocs">API documentation</a>, 
+     as well as the comments within the XML files in the policy directory to find out the rest of the configurable 
+     properties for the extension points you choose. A full listing of all the extension point factory 
+     class names are provided in the Appendix. After step 4, you are officially done configuring the Crawler
+     Framework for deployment.</p>   
+      
+      </subsection>
+      <subsection name="Running the Crawler Framework">
+      <p>To run the crawler_launcher, cd to <code>/usr/local/crawler/bin</code> and type:</p>
+
+      <source># ./crawler_launcher -h</source>
+
+      <p>This will print the help options for the Crawler launcher script. Your Crawler Framework 
+      is now ready to run! You can test out the Crawler Framework by running a simple ingest 
+      command shown below. Be sure that a separate File Manager instance is up and running on the default
+      port of 9000, running on localhost, before starting this test command (see the 
+      <a href="../../filemgr/user/">File Manager User Guide</a> for more information).
+      
+      First create a simple text file called &quot;blah.txt&quot; and place it inside a test directory, e.g., <code>/data/test</code>. Then, create a default 
+      metadata file for the product, using the schema or DTD
+      provided in the cas-metadata project. An example XML file might be:</p>
+      
+      <!-- FIXME: change namespace URI? -->
+      <source>
+        &lt;cas:metadata xmlns:cas=&quot;http://oodt.jpl.nasa.gov/1.0/cas&quot;&gt;
+         &lt;keyval&gt;
+           &lt;key&gt;Filename&lt;/key&gt;
+           &lt;val&gt;blah.txt&lt;/val&gt;
+         &lt;/keyval&gt;
+         &lt;keyval&gt;
+           &lt;key&gt;FileLocation&lt;/key&gt;
+           &lt;val&gt;/data/test&lt;/val&gt;
+         &lt;/keyval&gt;         
+         &lt;keyval&gt;
+           &lt;key&gt;ProductType&lt;/key&gt;
+           &lt;val&gt;GenericFile&lt;/val&gt;
+         &lt;/keyval&gt;   
+        &lt;/cas:metadata&gt;
+      </source>
+      
+      <p>Call this metadata file <code>blah.txt.met</code>, and place it also in <code>/data/test</code>. 
+      Then, run the below command, assuming that you started a File Manager on localhost on the default port of <code>9000</code>:</p>
+
+      <source># ./crawler_launcher \
+               --crawlerId StdProductCrawler \
+               --productPath /data/test \
+               --filemgrUrl http://localhost:9000/ \
+               --failureDir /tmp \
+               --actionIds DeleteDataFile MoveDataFileToFailureDir Unique \
+               --metFileExtension met \
+               --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory
+      </source>
+
+      <p>You should see a response message at the end similar to:</p>
+
+      <source>
+      log4j:WARN No appenders could be found for logger (org.springframework.context.support.FileSystemXmlApplicationContext).
+      log4j:WARN Please initialize the log4j system properly.
+      http://localhost:9000/
+      StdProductCrawler
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler crawl
+      INFO: Crawling /data/test
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler handleFile
+      INFO: Handling file /data/test/blah.txt
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.metadata.extractors.MetReaderExtractor extrMetadata
+      INFO: Reading metadata from /data/test/blah.txt.met
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler ingest
+      INFO: ProductCrawler: Ready to ingest product: [/data/test/blah.txt]: ProductType: [GenericFile]
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.ingest.StdIngester setFileManager
+      INFO: StdIngester: connected to file manager: [http://localhost:9000/]
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferer setFileManagerUrl
+      INFO: Local Data Transfer to: [http://localhost:9000/] enabled
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.ingest.StdIngester ingest
+      INFO: StdIngester: ingesting product: ProductName: [blah.txt]: ProductType: [GenericFile]: FileLocation: [/data/test/]
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.versioning.VersioningUtils createBasicDataStoreRefsFlat
+      FINE: VersioningUtils: Generated data store ref: file:/Users/mattmann/files/blah.txt/blah.txt from origRef: file:/data/test/blah.txt
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.system.XmlRpcFileManager runExtractors
+      INFO: Running Met Extractor: [org.apache.oodt.cas.filemgr.metadata.extractors.CoreMetExtractor] for product type: [GenericFile]
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.system.XmlRpcFileManager runExtractors
+      INFO: Running Met Extractor: [org.apache.oodt.cas.filemgr.metadata.extractors.examples.MimeTypeExtractor] for product type: [GenericFile]
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.catalog.LuceneCatalog toDoc
+      WARNING: No Metadata specified for product [blah.txt] for required field [DataVersion]: Attempting to continue processing metadata
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient ingestProduct
+      FINEST: File Manager Client: clientTransfer enabled: transfering product [blah.txt]
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferer moveFile
+      INFO: LocalDataTransfer: Moving File: file:/data/test/blah.txt to file:/Users/mattmann/files/blah.txt/blah.txt
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.filemgr.catalog.LuceneCatalog toDoc
+      WARNING: No Metadata specified for product [blah.txt] for required field [DataVersion]: Attempting to continue processing metadata
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler ingest
+      INFO: Successfully ingested product: [/data/test/blah.txt]: product id: 72db4bba-658a-11de-bedb-77f2d752c436
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler handleFile
+      INFO: Successful ingest of product: [/data/test/blah.txt]
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler performProductCrawlerActions
+      INFO: Performing action (id = DeleteDataFile : description = Deletes the current data file)
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.action.DeleteFile performAction
+      INFO: Deleting file /data/test/blah.txt
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler handleFile
+      INFO: Handling file /data/test/blah.txt.met
+      Jun 30, 2009 8:26:57 AM org.apache.oodt.cas.crawl.ProductCrawler handleFile
+      WARNING: Failed to pass preconditions for ingest of product: [/data/test/blah.txt.met]
+      </source>
+
+    <p>which means that everything installed okay!</p>
+
+      </subsection>
+      
+      </section>
+      <section name="Use Cases">
+        <p>
+          The Crawler Framework was built to support several of the above capabilities outlined in 
+          Section 3. In particular there were several use cases that we wanted to support, some 
+          of which are described below.        
+        </p>
+      
+         <p><img width='600' src="../images/crawler-use-case-1.png" alt="Crawler Framework Ingest Use Case"/></p>
+         
+         <p>The numbers in the above Figure correspond to a sequence of steps that occurs and a 
+         series of interactions between the different Crawler Framework extension points in order to 
+         perform the file ingestion activity. In Step 1, the Crawler Daemon determines if the Product 
+         file in the staging area matches a specified File Filter regular expression. In step 2, if the
+         Product file does match the desired filter, the Crawler Daemon checks with the File Manager 
+         (using the Ingester) to determine whether or not the Product file has been ingested. In step 3,
+         assuming that the Product file has <b>not</b> been ingested, then the Crawler Daemon ingests
+         the Product file into the File Manager using the Ingester interface. During the ingestion, 
+         Metadata is first extracted (in sub-step 1) and then the File Manager client interface is 
+         used (in sub-step 2) to ingest into the File Manager. During ingestion, the File Manager is
+         responsible for moving the Product file(s) into controlled access-storage and cataloging the
+         provided Product metadata.</p>
+         
+      </section>
+      <section name="Appendix">
+       <p>
+         Full list of Crawler Framework extension point classes and their associated property names from the 
+         Spring Bean XML files:       
+       </p>
+    
+       <table>
+         <tr>
+           <td>actions</td>
+           <td>org.apache.oodt.cas.crawl.action.DeleteFile<br/>
+               org.apache.oodt.cas.crawl.action.FilemgrUniquenessChecker<br/>
+               org.apache.oodt.cas.crawl.action.MimeTypeCrawlerAction<br/>
+               org.apache.oodt.cas.crawl.action.MoveFile<br/>
+               org.apache.oodt.cas.crawl.action.WorkflowMgrStatusUpdate
+           </td>
+         </tr>
+         <tr>
+           <td>preconditions</td>
+           <td>org.apache.oodt.cas.crawl.comparator.FilemgrUniquenessCheckComparator
+           </td>
+         </tr>
+       </table>
+      
+      </section>
+   </body>
+   
+</document>

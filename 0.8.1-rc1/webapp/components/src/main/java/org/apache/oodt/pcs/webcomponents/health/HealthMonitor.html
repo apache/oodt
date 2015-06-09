@@ -1,0 +1,194 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<wicket:panel>
+<wicket:remove>
+<link rel="stylesheet" type="text/css" href="HealthMonitor.css"/>
+</wicket:remove>
+
+<table id="widenoborder">
+	<tr>
+		<td><font style="font-size:16px;font-weight:bold;">PCS Status</font></td>
+		<td>
+		<table style="text-align:right:">
+			<tr>
+				<td style="text-align:right:">Current Information as of:</td>
+			</tr>
+			<tr>
+				<td style="text-align:right:" wicket:id="report_date" id="report_date">2011-01-01T00:00:00.000Z</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr style="vertical-align:top;">
+		<td>
+		<table>
+			<tr>
+				<td><font class="heading">Server Status:</font></td>
+			</tr>
+			<tr>
+				<td>
+				<div class="roundtable">
+				<table style="width:100px;">
+					<tr>
+						<td class="nowrap" id="fm_status">File Manager&nbsp;(<span wicket:id="fmurl">http://localhost:9000</span>)</td>
+						<td><img wicket:id="fmstatus_icon" src="icon_arrow_up.gif"/></td>
+					</tr>
+					<tr>
+						<td class="nowrap" id="wm_status">Wokflow Manager&nbsp;(<span wicket:id="wmurl">http://localhost:9001</span>)</td>
+						<td><img wicket:id="wmstatus_icon" src="icon_arrow_down.gif"></td>
+					</tr>
+					<tr>
+						<td class="nowrap" id="rm_status">Resource Manager&nbsp;(<span wicket:id="rmurl">http://localhost:9002</span>)</td>
+						<td><img wicket:id="rmstatus_icon" src="icon_arrow_down.gif"></td>
+					</tr>
+				</table>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td><font class="heading">Crawler Status:</font></td>
+			</tr>
+			<tr>
+				<td>
+				<div class="roundtable">
+				<table>
+				   <tr wicket:id="crawler_status_list">
+				     <td wicket:id="crawler_name_and_url" class="crawler_name_and_url">Local File Crawler (http://localhost:9091)</td>
+				     <td><img wicket:id="crawler_status_icon" src="icon_arrow_up.gif" /></td>
+				   </tr> 	
+				   <wicket:container wicket:id="crawler_toggler">
+				   <wicket:enclosure child="crawler_status_more">			   
+                    <tr>
+                      <td wicket:id="crawler_status_more" colspan="2">... ...</td>
+					</tr>
+					</wicket:enclosure>
+				    <tr id="crawler_status_options">
+					   <td><a wicket:id="crawler_status_showall" href="#">See All</a></td>
+					   <td><a wicket:id="crawler_status_hide" "href="#">Hide</a></td>
+					   <td><a wicket:id="crawler_status_sort" href="#">Sorting By Status</a></td>
+					   <td><a wicket:id="crawler_status_unsort" href="#">Unsort</a></td>
+					</tr>
+					</wicket:container>
+				</table>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td><font class="heading">Batch Stub Status:</font></td>
+			</tr>
+			<tr>
+				<td>
+				<div class="roundtable">
+				<table>
+					<tr wicket:id="batch_stub_list">
+						<td class="nowrap"><span wicket:id="batch_stub_url" class="batch_stub_url">http://compute-0-1:2001</span></td>
+						<td><img wicket:id="batch_stub_status_icon" src="icon_arrow_down.gif" /></td>
+				    </tr>
+				    <wicket:container wicket:id="batch_stub_toggler">
+				    <wicket:enclosure child="batch_stub_more">
+				    <tr>
+						<td wicket:id="batch_stub_more" colspan="2">... ...</td></tr><tr>				     
+				    </tr>
+				    </wicket:enclosure>
+					<tr id="batch_stub_options">
+						<td><a wicket:id="batch_stub_showall" href="#">See All</a></td>
+						<td><a wicket:id="batch_stub_hide" href="#">Hide</a></td>
+						<td><a wicket:id="batch_stub_sort" href="#">Sorting By Status</a></td>
+                        <td><a wicket:id="batch_stub_unsort" href="#">Unsort</a></td>
+					</tr>
+					</wicket:container>
+				</table>
+				</div>
+				</td>
+			</tr>
+		</table>
+		</td>
+		<td>
+		<table>
+			<tr>
+				<td><font class="heading">Job Processing Status:</font></td>
+			</tr>
+			<tr>
+				<td>
+				<div class="roundtable">
+				<table style="width:100px;">
+					<tr wicket:id="jobstatus_list">
+					  <td class="nowrap">
+						<span wicket:id="status_name" class="status_name">QUEUED</span> pipelines
+				      </td>
+					  <td style="text-align:right">	
+						<a href="#" wicket:id="jobstatus_count_link"><span id="status_num_jobs" wicket:id="status_num_jobs">250</span></a>
+					  </td>	
+					</tr>
+						<wicket:remove>
+						 <tr><td class="nowrap"><span class="status_name">STARTED</span> pipelines</td><td style="text-align:right"><a href="#">3</a></td></tr>
+						 <tr><td class="nowrap"><span class="status_name">RSUBMIT</span> pipelines</td><td style="text-align:right"><a href="#">45</a></td></tr>
+						 <tr><td class="nowrap"><span class="status_name">PGE_EXEC</span> pipelines</td><td style="text-align:right"><a href="#">1000</a></td></tr>
+						 <tr><td class="nowrap"><span class="status_name">CRAWLING</span> pipelines</td><td style="text-align:right"><a href="#">4</a></td></tr>
+						 <tr><td class="nowrap"><span class="status_name">FINISHED</span> pipelines</td><td style="text-align:right"><a href="#">10000</a></td></tr>
+						</wicket:remove>						
+				</table>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td><font class="heading">Latest Files Ingested:</font></td>
+			</tr>
+			<tr>
+				<td>
+				<div class="roundtable">
+				<table>
+                     <tr wicket:id="file_health_list">
+                       <td>
+						<a href="#" wicket:id="view_product_link"><span wicket:id="file_path" class="file_path">/data/archive/products/file1.txt</span></a> at <span wicket:id="file_ingest_datetime" class="file_ingest_datetime">2011-01-01T00:01:01.001Z</span>
+					   </td>
+					 </tr>
+				</table>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td><font class="heading">Crawler Statistics:</font></td>
+			</tr>
+			<tr>
+				<td>
+				<div class="roundtable">
+				<table>
+					 <tr wicket:id="crawler_health_list">
+						<td class="nowrap" colspan="2"><span wicket:id="crawler_name" class="crawler_name">Local File Crawler</span> Number of Crawls: <span wicket:id="num_crawls" class="num_crawls">32</span> Avg Time: <span wicket:id="avg_crawl_time" class="avg_crawl_time">5</span> sec
+						</td>
+					   </tr>
+					<wicket:container wicket:id="crawler_health_toggler">
+					<wicket:enclosure child="crawler_health_more">
+				    <tr>
+						<td colspan="2" wicket:id="crawler_health_more">... ...</td>
+				    </tr>
+				    </wicket:enclosure>
+				    <tr>
+						<td><a wicket:id="crawler_health_showall" href="#">See All</a></td>
+						<td><a wicket:id="crawler_health_hide" href="#">Hide</a></td>
+					</tr>
+					</wicket:container>
+				</table>
+				</div>
+				</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
+</wicket:panel>

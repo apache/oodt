@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<cas:workflows 
+	xmlns="http://oodt.jpl.nasa.gov/2.0/cas"
+	xmlns:cas="http://oodt.jpl.nasa.gov/2.0/cas"
+	xmlns:p="http://oodt.jpl.nasa.gov/2.0/cas/property">
+	
+	<sequential id="urn:npp:GranuleMaps">
+		<configuration>
+			
+			<!-- PCS properties -->
+			<property name="PGETask/Query/FileManagerUrl" value="[FILEMGR_URL]" envReplace="true"/>
+			<property name="PGETask/Ingest/FileManagerUrl" value="[FILEMGR_URL]" envReplace="true"/>
+			<property name="PGETask/Ingest/ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory"/>
+			<property name="PGETask/Ingest/MetFileExtension" value="cas"/>
+			<property name="PGETask/Ingest/CrawlerCrawlForDirs" value="false"/>
+			<property name="PGETask/Ingest/CrawlerRecur" value="false"/>
+			<property name="PGETask/Ingest/ActionsIds" value="RmDataFile"/>
+			<property name="PGETask/Ingest/ActionRepoFile" value="file:[PCS_HOME]/core/pge/policy/action-beans.xml" envReplace="true"/>
+			
+			<!-- Timeout properties -->
+			<property name="PGETask/Condition/Timeout" value="30000"/>
+			
+			<!-- metadata element names -->
+			<property name="PGETask/Condition/FilenameKey" value="Filename"/>
+			<property name="PGETask/Condition/StartDateTimeKey" value="StartDateTime"/>
+			<property name="PGETask/Condition/EndDateTimeKey" value="EndDateTime"/>
+			<property name="PGETask/Condition/SortByKey" value="StartDateTime"/>
+			<property name="PGETask/Condition/VersioningKey" value="ProductionDateTime"/>
+			
+			<!-- query properties -->
+			<property name="PGETask/Condition/FilterAlgorClass" value="org.apache.oodt.cas.filemgr.structs.query.filter.WeightedHashFilterAlgor"/>
+			<property name="PGETask/Condition/MinNumOfFiles" value="1"/>
+			<property name="PGETask/Condition/MaxGapSize" value="-1"/>
+			<property name="PGETask/Condition/EpsilonInMillis" value="0"/>			
+			
+			<!-- formatting properties for queries -->
+			<property name="PGETask/Condition/ResultFormat" value="$FileLocation/$Filename"/>
+			
+			<!-- Wait time between block and unblock in minutes -->
+			<property name="BlockTimeElapse" value="1"/>
+
+		</configuration>
+
+		<conditions execution="parallel" type="pre">
+			<condition id-ref="urn:npp:MOA_IASI_L1C_Daily"/>			
+			<condition id-ref="urn:npp:MOA_MHS_L1B_Daily"/>			
+			<condition id-ref="urn:npp:MOA_AMSUA_L1B_Daily"/>			
+		</conditions>
+		
+		<parallel>
+			<task id-ref="urn:npp:Orbits"/>
+			<task id-ref="urn:npp:MoaIasiGPolygon"/>
+			<task id-ref="urn:npp:MoaMhsGPolygon"/>
+			<task id-ref="urn:npp:MoaAmsuaGPolygon"/>			
+		</parallel>
+		
+		<parallel>		
+			<conditions execution="sequential" type="pre">
+				<condition id-ref="urn:npp:MOA_ORBITS_FileBased"/>
+			</conditions>
+			
+			<task id-ref="urn:npp:MoaIasiMap"/>
+			<task id-ref="urn:npp:MoaMhsMap"/>
+			<task id-ref="urn:npp:MoaAmsuaMap"/>
+			
+			<!--conditions execution="sequential" type="post">  
+				<condition id-ref="urn:npp:VerifyMapsExist" name="VerifyMapsExist"/>				
+			</conditions-->
+
+		</parallel>
+		
+	</sequential>
+
+
+	<!-- CONDITIONS -->
+	<condition id="urn:npp:MOA_IASI_L1C_Daily" name="MOA_IASI_L1C_Daily" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition" timeout="30">
+		<configuration>
+			<!-- query properties -->
+			<property name="PGETask/Condition/ProductTypeNames" value="MOA_IASI_L1C"/>
+			<property name="PGETask/Condition/ExpectedNumOfFiles" value="480"/>
+			<property name="PGETask/Condition/EpsilonInMillis" value="30000"/>
+			<!-- formatting properties for queries -->
+			<property name="PGETask/Condition/FormattedSqlQueryKey" value="Runtime/Condition/IASI_L1FormattedQuery"/> 
+			<property name="PGETask/Condition/FilenamesSqlQueryKey" value="Runtime/Condition/IASI_L1FilenamesQuery"/> 
+			<property name="QueueName" value="java"/>
+		</configuration>
+	</condition>			
+	<condition id="urn:npp:MOA_MHS_L1B_Daily" name="MOA_MHS_L1B_Daily" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+		<configuration>
+			<!-- query properties -->
+			<property name="PGETask/Condition/ProductTypeNames" value="MOA_MHS_L1B"/>
+			<property name="PGETask/Condition/ExpectedNumOfFiles" value="15"/>
+			<property name="PGETask/Condition/EpsilonInMillis" value="60000"/> <!--2mins-->
+			<!-- formatting properties for queries -->
+			<property name="PGETask/Condition/FormattedSqlQueryKey" value="Runtime/Condition/MHS_L1FormattedQuery"/> 
+			<property name="PGETask/Condition/FilenamesSqlQueryKey" value="Runtime/Condition/MHS_L1FilenamesQuery"/> 
+			<property name="QueueName" value="java"/>
+		</configuration>
+	</condition>		
+	<condition id="urn:npp:MOA_AMSUA_L1B_Daily" name="MOA_MHS_L1B_Daily" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+		<configuration>
+			<!-- query properties -->
+			<property name="PGETask/Condition/ProductTypeNames" value="MOA_AMSUA_L1B"/>
+			<property name="PGETask/Condition/ExpectedNumOfFiles" value="15"/>
+			<property name="PGETask/Condition/EpsilonInMillis" value="60000"/> <!--2mins-->
+			<!-- formatting properties for queries -->
+			<property name="PGETask/Condition/FormattedSqlQueryKey" value="Runtime/Condition/AMSUA_L1FormattedQuery"/> 
+			<property name="PGETask/Condition/FilenamesSqlQueryKey" value="Runtime/Condition/AMSUA_L1FilenamesQuery"/> 
+			<property name="QueueName" value="java"/>
+		</configuration>
+	</condition>	
+	<condition id="urn:npp:MOA_ORBITS_FileBased" name="MOA_ORBITS_FileBased" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition" optional="true">
+		<configuration>
+			<!-- query properties -->
+			<property name="PGETask/Condition/ProductTypeNames" value="MOA_ORBITS"/>
+			<property name="PGETask/Condition/ExpectedNumOfFiles" value="1"/>
+			<!-- formatting properties for queries -->
+			<property name="PGETask/Condition/FormattedSqlQueryKey" value="Runtime/Condition/OrbitsFormattedQuery"/> 
+			<property name="PGETask/Condition/FilenamesSqlQueryKey" value="Runtime/Condition/OrbitsFilenamesQuery"/>
+			<property name="QueueName" value="java"/>		
+		</configuration>	
+	</condition>	
+	<condition id="urn:npp:MOA_IASI_POLY_FileBased" name="MOA_IASI_POLY_FileBased" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+		<configuration>
+			<!-- query properties -->
+			<property name="PGETask/Condition/ProductTypeNames" value="MOA_IASI_POLY"/>
+			<property name="PGETask/Condition/ExpectedNumOfFiles" value="1"/>
+			<!-- formatting properties for queries -->
+			<property name="PGETask/Condition/FormattedSqlQueryKey" value="Runtime/Condition/IASI_GPolyFormattedQuery"/> 
+			<property name="PGETask/Condition/FilenamesSqlQueryKey" value="Runtime/Condition/IASI_GPolyFilenamesQuery"/>
+			<property name="QueueName" value="java"/>	
+		</configuration>	
+	</condition>			
+	<condition id="urn:npp:MOA_MHS_POLY_FileBased" name="MOA_MHS_POLY_FileBased" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+		<configuration>
+			<!-- query properties -->
+			<property name="PGETask/Condition/ProductTypeNames" value="MOA_MHS_POLY"/>
+			<property name="PGETask/Condition/ExpectedNumOfFiles" value="1"/>
+			<!-- formatting properties for queries -->
+			<property name="PGETask/Condition/FormattedSqlQueryKey" value="Runtime/Condition/MHS_GPolyFormattedQuery"/> 
+			<property name="PGETask/Condition/FilenamesSqlQueryKey" value="Runtime/Condition/MHS_GPolyFilenamesQuery"/>
+			<property name="QueueName" value="java"/>	
+		</configuration>	
+	</condition>			
+	<condition id="urn:npp:MOA_AMSUA_POLY_FileBased" name="MOA_AMSUA_POLY_FileBased" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+		<configuration>
+			<!-- query properties -->
+			<property name="PGETask/Condition/ProductTypeNames" value="MOA_AMSUA_POLY"/>
+			<property name="PGETask/Condition/ExpectedNumOfFiles" value="1"/>
+			<!-- formatting properties for queries -->
+			<property name="PGETask/Condition/FormattedSqlQueryKey" value="Runtime/Condition/AMSUA_GPolyFormattedQuery"/> 
+			<property name="PGETask/Condition/FilenamesSqlQueryKey" value="Runtime/Condition/AMSUA_GPolyFilenamesQuery"/>
+			<property name="QueueName" value="java"/>
+		</configuration>	
+	</condition>	
+	<!--condition id="urn:npp:VerifyMapsExist" name="VerifyMapsExist" class="org.apache.oodt.cas.pge.condition.PGETaskWorkflowCondition"/-->				
+	
+	
+	<!-- TASKS -->
+	<task id="urn:npp:Orbits" name="MoaOrbits" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+		<configuration>
+			<property name="PGETask/Name" value="MoaOrbits" />
+			<property name="PGETask/ConfigFilePath" value="[SPSS_CONFIG_HOME]/[MoaOrbits/SPSS_Version]/config/PgeConfig_MoaOrbits.xml"/>
+			<property name="Runtime/Condition/L1FormattedQuery" value="[Runtime/Condition/IASI_L1FormattedQuery]"/>
+			<property name="Runtime/Condition/L1FilenamesQuery" value="[Runtime/Condition/IASI_L1FilenamesQuery]"/>
+			<property name="Runtime/Condition/SharedMetout" value="[SPSS_CONFIG_HOME]/[MoaOrbits/SPSS_Version]/metout/AllProducts_metadata.xml,[SPSS_CONFIG_HOME]/[MoaOrbits/SPSS_Version]/metout/DailyProduct_metadata.xml"/> 
+			<property name="Instrument" value="MetOpS"/>
+			<property name="QueueName" value="idl"/>
+		</configuration>
+	</task>
+	<task id="urn:npp:MoaIasiGPolygon" name="MoaIasiGPolygon" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+		<configuration>
+			<property name="PGETask/Name" value="MoaIasiGPolygon"/>
+			<property name="PGETask/ConfigFilePath" value="[SPSS_CONFIG_HOME]/[MoaIasiGPolygon/SPSS_Version]/config/PgeConfig_MoaGPolygon.xml"/>
+			<property name="Runtime/Condition/L1FormattedQuery" value="[Runtime/Condition/IASI_L1FormattedQuery]"/>			
+			<property name="Runtime/Condition/L1FilenamesQuery" value="[Runtime/Condition/IASI_L1FilenamesQuery]"/>			
+			<property name="Runtime/Condition/SharedMetout" value="[SPSS_CONFIG_HOME]/[MoaIasiGPolygon/SPSS_Version]/metout/AllProducts_metadata.xml,[SPSS_CONFIG_HOME]/[MoaIasiGPolygon/SPSS_Version]/metout/DailyProduct_metadata.xml"/> 
+			<property name="Instrument" value="IASI"/>
+			<property name="QueueName" value="idl"/>
+		</configuration>
+	</task>
+	<task id="urn:npp:MoaMhsGPolygon" name="MoaMhsGPolygon" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+		<configuration>
+			<property name="PGETask/Name" value="MoaAmsuaGPolygon"/>
+			<property name="PGETask/ConfigFilePath" value="[SPSS_CONFIG_HOME]/[MoaAmsuaGPolygon/SPSS_Version]/config/PgeConfig_MoaGPolygon.xml"/>
+			<property name="Runtime/Condition/L1FormattedQuery" value="[Runtime/Condition/AMSUA_L1FormattedQuery]"/>						
+			<property name="Runtime/Condition/L1FilenamesQuery" value="[Runtime/Condition/AMSUA_L1FilenamesQuery]"/>						
+			<property name="Runtime/Condition/SharedMetout" value="[SPSS_CONFIG_HOME]/[MoaAmsuaGPolygon/SPSS_Version]/metout/AllProducts_metadata.xml,[SPSS_CONFIG_HOME]/[MoaAmsuaGPolygon/SPSS_Version]/metout/DailyProduct_metadata.xml"/> 
+			<property name="Instrument" value="AMSUA"/>
+			<property name="QueueName" value="idl"/>
+		</configuration>
+	</task>
+	<task id="urn:npp:MoaAmsuaGPolygon" name="MoaAmsuaGPolygon" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+		<configuration>
+			<property name="PGETask/Name" value="MoaMhsGPolygon"/>
+			<property name="PGETask/ConfigFilePath" value="[SPSS_CONFIG_HOME]/[MoaMhsGPolygon/SPSS_Version]/config/PgeConfig_MoaGPolygon.xml"/>
+			<property name="Runtime/Condition/L1FormattedQuery" value="[Runtime/Condition/MHS_L1FormattedQuery]"/>									
+			<property name="Runtime/Condition/L1FilenamesQuery" value="[Runtime/Condition/MHS_L1FilenamesQuery]"/>									
+			<property name="Runtime/Condition/SharedMetout" value="[SPSS_CONFIG_HOME]/[MoaMhsGPolygon/SPSS_Version]/metout/AllProducts_metadata.xml,[SPSS_CONFIG_HOME]/[MoaMhsGPolygon/SPSS_Version]/metout/DailyProduct_metadata.xml"/> 
+			<property name="Instrument" value="MHS"/>
+			<property name="QueueName" value="idl"/>
+		</configuration>
+	</task>
+	<task id="urn:npp:MoaIasiMap" name="MoaIasiMap" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+		<conditions execution="sequential" type="pre">
+			<condition id-ref="urn:npp:MOA_IASI_POLY_FileBased"/>			
+		</conditions>
+		<configuration>
+			<property name="PGETask/Name" value="MoaIasiMap"/>
+			<property name="PGETask/ConfigFilePath" value="[SPSS_CONFIG_HOME]/[MoaIasiMap/SPSS_Version]/config/PgeConfig_MoaMap.xml"/>
+			<property name="Runtime/Condition/GPolyFormattedQuery" value="[Runtime/Condition/IASI_GPolyFormattedQuery]"/>									
+			<property name="Runtime/Condition/GPolyFilenamesQuery" value="[Runtime/Condition/IASI_GPolyFilenamesQuery]"/>
+			<property name="Runtime/Condition/SharedMetout" value="[SPSS_CONFIG_HOME]/[MoaIasiMap/SPSS_Version]/metout/AllProducts_metadata.xml,[SPSS_CONFIG_HOME]/[MoaIasiMap/SPSS_Version]/metout/DailyProduct_metadata.xml"/> 
+			<property name="Instrument" value="IASI"/>
+			<property name="QueueName" value="idl"/>
+		</configuration>
+	</task>
+	<task id="urn:npp:MoaMhsMap" name="MoaMhsMap" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+		<conditions execution="sequential" type="pre">
+			<condition id-ref="urn:npp:MOA_MHS_POLY_FileBased"/>			
+		</conditions>
+		<configuration>
+			<property name="PGETask/Name" value="MoaMhsMap"/>
+			<property name="PGETask/ConfigFilePath" value="[SPSS_CONFIG_HOME]/[MoaMhsMap/SPSS_Version]/config/PgeConfig_MoaMap.xml"/>
+			<property name="Runtime/Condition/GPolyFormattedQuery" value="[Runtime/Condition/MHS_GPolyFormattedQuery]"/>									
+			<property name="Runtime/Condition/GPolyFilenamesQuery" value="[Runtime/Condition/MHS_GPolyFilenamesQuery]"/>
+			<property name="Runtime/Condition/SharedMetout" value="[SPSS_CONFIG_HOME]/[MoaMhsMap/SPSS_Version]/metout/AllProducts_metadata.xml,[SPSS_CONFIG_HOME]/[MoaMhsMap/SPSS_Version]/metout/DailyProduct_metadata.xml"/> 
+			<property name="Instrument" value="MHS"/>
+			<property name="QueueName" value="idl"/>
+		</configuration>
+	</task>
+	<task id="urn:npp:MoaAmsuaMap" name="MoaAmsuaMap" class="org.apache.oodt.cas.pge.StdPGETaskInstance">
+		<conditions execution="sequential" type="pre">
+			<condition id-ref="urn:npp:MOA_AMSUA_POLY_FileBased"/>			
+		</conditions>
+		<configuration>
+			<property name="PGETask/Name" value="MoaAmsuaMap"/>
+			<property name="PGETask/ConfigFilePath" value="[SPSS_CONFIG_HOME]/[MoaAmsuaMap/SPSS_Version]/config/PgeConfig_MoaMap.xml"/>
+			<property name="Runtime/Condition/GPolyFormattedQuery" value="[Runtime/Condition/AMSUA_GPolyFormattedQuery]"/>									
+			<property name="Runtime/Condition/GPolyFilenamesQuery" value="[Runtime/Condition/AMSUA_GPolyFilenamesQuery]"/>
+			<property name="Runtime/Condition/SharedMetout" value="[SPSS_CONFIG_HOME]/[MoaAmsuaMap/SPSS_Version]/metout/AllProducts_metadata.xml,[SPSS_CONFIG_HOME]/[MoaAmsuaMap/SPSS_Version]/metout/DailyProduct_metadata.xml"/> 
+			<property name="Instrument" value="AMSUA"/>
+			<property name="QueueName" value="idl"/>
+		</configuration>
+	</task>
+	
+</cas:workflows>

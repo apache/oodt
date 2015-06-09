@@ -1,0 +1,25 @@
+MONTHFOLDER= `date +%Y-%m-%d_%H `
+DUMMY= `test -d $MONTHFOLDER || mkdir -m g=rwx $MONTHFOLDER `
+
+CLASS_FOLDER= ${MONTHFOLDER}/class
+UNKNOWN_FOLDER= ${MONTHFOLDER}/unknown
+JPL_FOLDER= ${MONTHFOLDER}/jpl
+DUMMY= `test -d $CLASS_FOLDER || mkdir -m g=rwx $CLASS_FOLDER `
+DUMMY= `test -d $UNKNOWN_FOLDER || mkdir -m g=rwx $UNKNOWN_FOLDER `
+DUMMY= `test -d $JPL_FOLDER || mkdir -m g=rwx $JPL_FOLDER `
+
+:0 fw
+* 
+| formail -k -X From: -X Subject: 
+
+:0 :
+* ^From.*class\.noaa\.gov 
+${CLASS_FOLDER}
+
+:0 :
+* ^From.*jpl\.nasa\.gov
+${JPL_FOLDER}
+
+:0 :
+* 
+${UNKNOWN_FOLDER} 

@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+  <properties>
+    <title>Understanding the XMLQuery</title>
+    <author email="kelly@apache.org">Sean Kelly</author>
+  </properties>
+
+  <body>
+    <section name="Understanding the XMLQuery">
+      <p>Apache OODT's <a href="../../profile/">profile servers</a>, <a
+	  href="../../product/">product servers</a>, and other
+	components all use the same format for a query.  It's
+	encapsulated by the class
+	<code>org.apache.oodt.xmlquery.XMLQuery</code>.  In this tutorial,
+	we'll look at this class and see how it represents queries.
+	You'll need this knowledge both to make queries to OODT
+	servers, as well as to understand queries coming into OODT
+	servers.
+      </p>
+    </section>
+
+    <section name="Basic Query Concepts">
+      <p>Capturing various aspects of a query is difficult to do in
+	general, and OODT's implementation is not stellar or complete.
+	But, it has proved succesful in a variety of applications, so
+	let's see what concepts it encapsulates.
+      </p>
+
+      <subsection name="XML?">
+	<p>First, forget the fact that the XMLQuery has "XML" in its
+	  name.  It doesn't mean you can query only XML resources.
+	  It's called XMLQuery probably because the person who came up
+	  with it thought XML was pretty cool, or that you can
+	  represent an OODT query in XML format.
+	</p>
+
+	<p>While you <em>can</em> represent an XMLQuery in XML, you
+	  usually only use the Java representation, that is, you
+	  create and manipulate Java objects of the class
+	  <code>org.apache.oodt.xmlquery.XMLQuery</code>.
+	</p>
+      </subsection>
+
+      <subsection name="Generic Queries">
+	<p>In theory, the XMLQuery can represent <em>any</em> query
+	  for information.  It captures generic aspects of a query,
+	  such as the domain of the question being posed, the range in
+	  which the desired response should be formulated, and
+	  constraints on what selects the response.  In XMLQuery
+	  parlance, we call these the "from element set" (domain), the
+	  "select element set" (range), and the "where element set"
+	  (constraints).
+	</p>
+
+	<p>In practice, none of the current OODT implementations use
+	  any but the "where element set."  And indeed, for most
+	  problems presented to OODT, that is sufficient.  However,
+	  the framework is there to support more aspects of a query,
+	  and you're welcome to use them in your own deployments.
+	</p>
+      </subsection>
+
+      <subsection name="Query Metadata">
+	<p>The XMLQuery concept captures metadata about a query as
+	  well, such as the title for the query, whether the query
+	  itself is secret or classified, how many results to return
+	  at most, how to propagate the query through a network, and
+	  so forth.  In practice, though, none of these additional
+	  attributes are used in current deployments of OODT.
+	  Moreover, none of the current OODT components obey such
+	  settings such as maximum number of results or propagation
+	  types.
+	</p>
+
+	<p>As a result, you should ignore these aspects of the
+	  XMLQuery and merely use its default values.  We'll see these
+	  shortly.
+	</p>
+      </subsection>
+
+      <subsection name="XMLQuery Structure">
+	<p>The following diagram shows the XMLQuery and related classes (note the diagram is outdated; "jpl.eda.xmlquery"
+	    should read "org.apache.oodt.xmlquery"):</p>
+
+	<p><img src="../images/xmlquery.png" alt="Class diagram of XMLQuery"/></p>
+
+	<p>A single <code>XMLQuery</code> object has three separate
+	  lists of <code>QueryElement</code> objects, representing the
+	  "from", "select", and "where" element sets.  In practice,
+	  the "from" and "where" sets are empty, though, as mentioned.
+	  There's also a single <code>QueryHeader</code> object
+	  capturing query metadata.  Within the <code>XMLQuery</code>
+	  itself is additional query metadata.  Finally, there's
+	  exactly one <code>QueryResult</code> object which captures
+	  the results of the query so far.
+	</p>
+      </subsection>
+    </section>
+
+    <section name="Boolean Expressions">
+      <p>The XMLQuery class uses lists of <code>QueryElement</code>
+	objects to represent its "from", "select", and "where" element
+	sets.  The lists form a postfix boolean stack, with the
+	zeroth element of the list being the top of the stack.
+	Although you can populate these stacks by manipulating their
+	corresponding <code>java.util.List</code>s, the XMLQuery class
+	provides a boolean expression language that lets you directly
+	populate them.
+      </p>
+
+      <p>The XMLQuery class also respects that some queries just
+	cannot be formulated as a boolean expression.  In these cases,
+	you can pass in a string that the XMLQuery will otherwise
+	carry unparsed.  Note that your profile and product servers
+	will then have the responsibility of handling that string in
+	some appropriate way.
+      </p>
+
+      <subsection name="Query Language">
+	<p>The query language that XMLQuery uses to generate postfix
+	  boolean stacks is a series of infix, not postfix,
+	  element-and-value expression linked by boolean operators.
+	  Here's an example:
+	</p>
+
+	<source>temperature &gt; 36 AND latitude &lt; 45</source>
+
+	<p>As you can see, these are <em>triples</em> linked in a
+	  logical expression.  Each triple has the form
+	  (<var>element</var>, <var>relation</var>, <var>literal</var>).
+	  For example, the first triple has <var>element</var> =
+	  <code>temperature</code>, <var>relation</var> = GT
+	  (greater-than), and <var>literal</var> = 36.  That triple is
+	  linked to the next one with the boolean <code>AND</code>
+	  operator.
+	</p>
+
+	<p>The full set relation operators include: <code>=</code> (EQ),
+	  <code>!=</code> (NE), <code>&lt;</code> (LT),
+	  <code>&lt;=</code> (LE), <code>&gt;</code> (GT),
+	  <code>&gt;=</code> (GE), <code>LIKE</code>, and
+	  <code>NOTLIKE</code>.  The logical operators include
+	  <code>AND</code>, <code>&amp;</code>, <code>OR</code>,
+	  <code>|</code>, <code>NOT</code>, and <code>!</code>.  You can
+	  use parenthesis to group things too.
+	</p>
+
+	<p>Here are a few more examples:</p>
+
+	<source>specimen = Blood
+bac &gt; 0.05 AND priors = 3
+surname LIKE 'Simspon%' OR numChildren &lt;= 3 AND RETURN = numEpisodes</source>
+      </subsection>
+
+      <subsection name="Expression Stacks">
+	<p>The "where" element set is actually a
+	  <code>java.util.List</code> of
+	  <code>org.apache.oodt.xmlquery.QueryElement</code> objects, arranged
+	  in a boolean stack with the top of the stack as the zeroth
+	  element in the list.  <code>QueryElement</code> objects
+	  themselves have two attributes, a role and a value.
+	</p>
+
+	<p>The role tells what role the <code>QueryElement</code> is
+	  playing.  It can be <code>elemName</code> for the
+	  <var>element</var> part of a triple, <code>RELOP</code> for
+	  the <var>relation</var> part of a triple, <code>LITERAL</code>
+	  for the <var>literal</var> part of a triple, or
+	  <code>LOGOP</code> for a logical operator linking triples
+	  together.  The value tells what the element is, what the
+	  relational operator is, what literal value is being related,
+	  or what the logical operator is.
+	</p>
+
+	<p>The <code>XMLQuery</code> parses a query expression and
+	  generates a corresponding stack of <code>QueryElement</code>s.
+	  Let's look at a couple examples.  The expression
+	</p>
+	<source>latitude &gt; 45</source>
+	<p>generates the "where" stack</p>
+	<img src="../images/small-stack.png" alt="Stack of three query elements"/>
+
+	<p>While the expression</p>
+	<source>artist = Bach AND NOT album = Poem OR track != Aria</source>
+	<p>generates the "where" stack</p>
+	<p><img src="../images/large-stack.png" alt="Stack of a lot of query elements"/></p>
+      </subsection>
+
+      <subsection name="The RETURN Element">
+	<p>A special element is reserved by XMLQuery:
+	  <code>RETURN</code>.  It's used to indicate what to select,
+	  and so any value specified with <code>RETURN</code> goes
+	  into the "select" set, not the "where" set.
+	</p>
+
+	<p>Moreover, the <code>RETURN</code> element doesn't pay
+	  attention to how it's linked with boolean expressions in the
+	  rest of query, or what relational operator is used with the
+	  literal value being returned.  For example, that means
+	  <em>all</em> of the following expressions would generate
+	  <em>identical</em> XMLQueries:
+	</p>
+
+	<source>specimen = Blood AND RETURN = volume
+specimen = Blood OR RETURN = volume
+specimen = Blood AND RETURN != volume
+specimen = Blood AND RETURN &lt; volume
+specimen = Blood AND RETURN LIKE volume</source>
+
+	<p>All <code>QueryElements</code> from RETURN triples would go
+	  into the "select" instead of the "where" set.
+	</p>
+      </subsection>
+    </section>
+
+    <section name="Constructing a Query">
+      <p>To construct a query, you'll use a Java constructor of the
+	following form:
+      </p>
+      <source>XMLQuery(String keywordQuery, String id, String title,
+  String desc, String ddId, String resultModeId, String propType,
+  String propLevels, int maxResults, java.util.List mimeAccept,
+  boolean parseQuery)</source>
+
+      <p>The parameters are summarized below:</p>
+
+      <table>
+	<thead>
+	  <tr>
+	    <th>Parameter</th>
+	    <th>Purpose</th>
+	    <th>Sample values</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td>keywordQuery</td><td>A string representing your query
+	      expression, in the query language described above, or in
+	      some other application-sepcific
+	      language.</td><td><code>numDonuts = 3</code>,
+	      <code>select volume_remaining from specimens where
+	      specimen_type = 4</code></td>
+	  </tr>
+	  <tr>
+	    <td>id</td><td>An identifier for your query</td>
+	    <td>query-1, 1.3.6.1.1316.4.1, myQuery, urn:ibm:sys:0x39ad930a</td>
+	  </tr>
+	  <tr>
+	    <td>title</td><td>A title for your query</td>
+	    <td>My First Query, Query for Blood Specimens, Simpson's Query</td>
+	  </tr>
+	  <tr>
+	    <td>desc</td><td>Description of the query</td>
+	    <td>H.J. Simpson is looking for donut shops</td>
+	  </tr>
+	  <tr>
+	    <td>ddId</td><td>Data dictionary ID.  This identifies the
+	    data dictionary that provides definitions for the elements
+	    used in the query like "specimen" or "numDonuts".  It's
+	    not used by any current OODT deployment or the OODT
+	    framework.</td><td><code>null</code></td>
+	  </tr>
+	  <tr>
+	    <td>resultModeId</td> <td>Identifies what to return from
+	    the query.  Defaults to <code>ATTRIBUTE</code>.  Not used
+	    by any current OODT deployment or the OODT
+	    framework.</td><td><code>null</code></td>
+	  </tr>
+	  <tr>
+	    <td>propType</td><td>How to propagate the query, defaults
+	    to <code>BROADCAST</code>.  It's not used by any current
+	    OODT deployment or the OODT framework.</td><td><code>null</code></td>
+	  </tr>
+	  <tr>
+	    <td>propLevels</td> <td>How far to propagate the query,
+	    defaults to <code>N/A</code>.  Not used by any current
+	    OODT deployment or the OODT
+	    framework.</td><td><code>null</code></td>
+	  </tr>
+	  <tr>
+	    <td>maxResults</td>
+	    <td>At most how many results to return; not enforced by OODT framework.</td>
+	    <td>1, 100, <code>Integer.MAX_VALUE</code>, -6</td>
+	  </tr>
+	  <tr>
+	    <td>mimeAccept</td> <td>List of acceptable MIME types for
+	    returned products, defaults to <code>*/*</code></td><td><code>List types = new ArrayList(); types.add("text/xml"); types.add("text/html"); types.add("text/*");</code></td>
+	  </tr>
+	  <tr>
+	    <td>parseQuery</td><td>Should the class parse the query as
+	    a boolean expression?  True says to generate the boolean
+	    expression stacks.  False says to just save the expression
+	    string.</td>
+	    <td><code>true</code>, <code>false</code></td>
+	  </tr>
+	</tbody>
+      </table>
+
+      <p>All of the values above can be set to <code>null</code> to
+	use a default or non-specific value (except for
+	<code>maxResults</code> and <code>parseQuery</code>, which are
+	<code>int</code> and <code>boolean</code> types and can't be
+	assigned <code>null</code>).  For most applications, using
+	<code>null</code> is perfectly acceptable.  Since the OODT
+	framework doesn't use <code>maxResults</code>, you can use any
+	value.  However, specific profile servers' and product
+	servers' query handlers may pay attention to value if so
+	programmed.
+      </p>
+
+      <subsection name="Parsed or Unparsed Queries">
+	<p>The last parameter, <code>parseQuery</code>, tells if you
+	  want the <code>XMLQuery</code> class to parse your query and
+	  generate boolean expression stacks (discussed above) or not.
+	  Set to <code>true</code>, the class will parse the string as
+	  if in the XMLQuery language described above, and will generate
+	  the "from", "select", and "where" element boolean stacks.  Set
+	  it to <code>false</code> and the class won't parse the string
+	  or generate the stacks.  It will instead store the string for
+	  later use by a profile server's or product server's query
+	  handler.
+	</p>
+
+	<p>For example, if you pass in the XML query language
+	  expression,</p>
+
+	<source>donutsEaten &gt; 5 AND RETURN = episodeNumber</source>
+
+	<p>then set the <code>parseQuery</code>
+	  flag to <code>true</code>.  As another example, suppose the
+	  query expression is
+	</p>
+
+	<source>select episodeNumber from episodes where donutsEaten &gt; 5</source>
+
+	<p>This is an SQL expression, probably targeted to a product
+	  server than can handle SQL expressions.  In this case, set
+	  <code>parseQuery</code> to false.
+	</p>
+
+	<p>The current OODT deployments for the Planetary Data System
+	  and the Early Detection Research Network both use
+	  <em>parsed</em> queries.
+	</p>
+      </subsection>
+
+      <subsection name="Acceptable MIME Types">
+	<p>Internet standards for mail, web, and other applications
+	    use <abbr title='Multipurpose Internet Mail
+	    Extensions'>MIME</abbr> types (described in <a
+	    href="ftp://ftp.rfc-editor.org/in-notes/rfc2046.txt">RFC-2046</a>
+	    amongst other documents) to describe the content and media
+	    type of data.  So does OODT.  When you construct an
+	    <code>XMLQuery</code>, you can also pass in a list of MIME
+	    types that are acceptable to you for the format of any
+	    returned products, much in the same way your web browser
+	    tells a web server what media types it can display.
+	</p>
+
+	<p>The list of acceptable MIME types is only used for product
+	  queries since products can come in any shape and flavor.
+	  Profile queries ignore the list; profiles are always
+	  returned as a list of Java
+	  <code>org.apache.oodt.profile.Profile</code> objects.
+	</p>
+
+	<p>You've probably seen MIME types before, but here are some
+	  examples in case you haven't:
+	</p>
+
+	<ul>
+	  <li><code>text/plain</code> - a plain old text file</li>
+	  <li><code>text/html</code> - a hypertext document</li>
+	  <li><code>image/jpeg</code> - a picture in the JPEG/JFIF format</li>
+	  <li><code>image/gif</code> - a picture in the GIF format</li>
+	  <li><code>audio/mpeg</code> - an audio file, probably in the MP3 format</li>
+	  <li><code>video/mpeg</code> - a video file, probably in the MP2 format</li>
+	  <li><code>application/msword</code> - a Micro$oft Word document</li>
+	  <li><code>application/octet-stream</code> - binary data</li>
+	</ul>
+
+	<p>In the <code>XMLQuery</code> constructor, you can pass in a
+	  list of MIME types that shows your <em>preference</em> for
+	  returned products.  Product servers' query handlers examine
+	  the query to see if they can provide a matching product,
+	  <em>and</em> they examine the list of MIME types to see if
+	  they can provide matching products in the format you desire.
+	</p>
+
+	<p>As an example, suppose you create a MIME type list as follows:</p>
+
+	<source>List acceptableTypes = new ArrayList();
+acceptableTypes.add("image/tiff");
+acceptableTypes.add("image/png");
+acceptableTypes.add("image/jpeg");</source>
+
+	<p>and you pass <code>acceptableTypes</code> as the
+	  <code>mimeAccept</code> parameter of the
+	  <code>XMLQuery</code> constructor.  This tells query
+	  handlers receiving your query that you'd really prefer a
+	  TIFF format image.  However, failing that, you'll accept a
+	  PNG format image.  And, as a last resort, a JPEG will do.
+	</p>
+
+	<p>You can also use wildcards in your MIME types.  Suppose we
+	did the following:</p>
+
+	<source>List acceptableTypes = new ArrayList();
+acceptableTypes.add("image/tiff");
+acceptableTypes.add("image/png");
+acceptableTypes.add("image/*");</source>
+
+	<p>Now we tell query handlers in product servers that we
+	  really prefer TIFF format images.  If a query handler can't
+	  do that, then a PNG format will be OK.  And if a query
+	  handler can't do PNG, then <em>any</em> image format will be
+	  fine, even loathesome GIF.
+	</p>
+
+	<p>If you pass a <code>null</code> or an empty list in the
+	  <code>mimeAccept</code> parameter, the OODT framework will
+	  convert into a single item list: <code>*/*</code>, meaning
+	  any format is acceptable.
+	</p>
+      </subsection>
+    </section>
+
+    <section name='"Running" XMLQuery'>
+      <p>The <code>XMLQuery</code> class is also an executable class.
+	By running it from the command-line, you can see how it
+	generates its XML representation.  It also lets you pass in a
+	file containing an XML representation of an XMLQuery and
+	parses it for validity.
+      </p>
+
+      <p>Let's try just seeing that XML representation.  (In these
+	  examples, we'll be using a Unix <code>csh</code> like
+	  command environment.  Other shells and non-Unix users will
+	  have to adjust.)
+      </p>
+
+      <subsection name='Collecting the Components'>
+	<p>First up, we'll need two components:</p>
+
+	<ul>
+	  <li><a href="../../commons/">OODT Common Components</a>.  This
+	    is needed by all of OODT software; it contains general
+	    utilities for starting servers, parsing XML, logging, and
+	    more.
+	  </li>
+	  <li><a href="../../xmlquery/">OODT Query Expression</a>.  This
+	    contains the <code>XMLQuery</code> and related classes.
+	  </li>
+	</ul>
+
+	<p>Download the binary distribution of each of these packages
+	  and extract their contents.  Then, create a single directory
+	  and collect the jar files together in one place.
+	</p>
+
+      </subsection>
+
+      <subsection name='Generating the Query'>
+	<p>To generate the query, pass the command-line argument
+	  <code>-expr</code>.  That tells the XMLQuery that the rest
+	  of the command line is the query expression.  It will expect
+	  it to be in the XMLQuery query language (meaning that it
+	  will create an <code>XMLQuery</code> object with
+	  <code>parseQuery</code> set to <code>true</code>).
+	</p>
+
+	<p>Here's an example:</p>
+
+	<source>% <b>java -Djava.ext.dirs=. \
+  org.apache.oodt.xmlquery.XMLQuery \
+  -expr donutsEaten \&gt; 5 AND RETURN = episodeNumber</b>
+kwdQueryString: donutsEaten &gt; 5 AND RETURN = episodeNumber
+fromElementSet: []
+results: org.apache.oodt.xmlquery.QueryResult[list=[]]
+whereElementSet:
+[org.apache.oodt.xmlquery.QueryElement[role=elemName,value=donutsEaten],
+org.apache.oodt.xmlquery.QueryElement[role=LITERAL,value=5],
+org.apache.oodt.xmlquery.QueryElement[role=RELOP,value=GT]]
+selectElementSet:
+[org.apache.oodt.xmlquery.QueryElement[role=elemName,value=episodeNumber]]
+======doc string=======
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;query&gt; . . .</source>
+
+	<p>The program prints out some fields of the XMLQuery such as
+	  the "from" element set, the current results (which should
+	  always be empty since we haven't passed this query to any
+	  product servers), the "where" element set, and the "select"
+	  element set.  It then prints out the XML representation.
+	</p>
+
+	<p>If you examine the XML representation closely, you'll see
+	  things like the list of acceptable MIME types:
+	</p>
+	<source>&lt;queryMimeAccept&gt;*/*&lt;/queryMimeAccept&gt;</source>
+	<p>This says that any type is acceptable.  You'll also see the
+	passed in query string:</p>
+	<source>&lt;queryKWQString&gt;donutsEaten &amp;gt; 5 AND
+  RETURN = episodeNumber&lt;/queryKWQString&gt;</source>
+
+	<p>Regardless of whether you passed <code>true</code> or
+	  <code>false</code> in the <code>parseQuery</code> parameter,
+	  the <code>XMLQuery</code> always saves the original query
+	  string.  For unparsed queries, this is how the string is
+	  packaged on its way to a product server.  For parsed
+	  queries, product servers will use the boolean stacks.
+	  (Since this was a parsed query, you'll also see the boolean
+	  stacks in XML format if you look closely.  They're there.)
+	</p>
+      </subsection>
+    </section>
+
+    <section name='Getting Results'>
+      <p>Alert readers will have noticed that the results of a query
+	have a place in <code>XMLQuery</code> objects.  This actually
+	applies to product queries only.  After sending an
+	<code>XMLQuery</code> to a product server, the query object
+	comes back adorned with zero or more matching results.  You
+	then access the <code>XMLquery</code> object methods to
+	retrieve those results.
+      </p>
+
+      <p>The following class diagram demonstrates the relationship (again, the diagram is outdated;
+          "jpl.eda.xmquery" should read "org.apache.oodt.xmlquery"):</p>
+
+      <p><img src='../images/results.png' alt='Result class diagram'/></p>
+
+      <p>As you can see, a single query has a single
+	<code>org.apache.oodt.xmlquery.QueryResult</code>, which contains a
+	<code>java.util.List</code> of
+	<code>org.apache.oodt.xmlquery.Result</code> objects.
+	<code>Result</code> objects may have zero or more
+	<code>Header</code>s, and <code>Result</code> objects may
+	actually be <code>LargeResult</code> objects.
+      </p>
+
+      <p>To retrieve the list of <code>Result</code> objects, call the
+	<code>XMLQuery</code>'s <code>getResults</code> method, which
+	returns the <code>java.util.List</code> directly.
+      </p>
+
+      <p>Each result also includes</p>
+      <ul>
+	<li>An identifier.  In the case there's more than one matching
+	  results, this identifier (a string) should be unique amongst
+	  results.
+	</li>
+	<li>A MIME type.  This tells you what format the matching product is in.</li>
+	<li>A profile ID.  This is currently unused.</li>
+	<li>A resource ID.  This is also unused.</li>
+
+	<li>A validity period.  This is the number of milliseconds for
+	  which the product is considered valid.  You can use this
+	  information to decide how long to cache the product within
+	  your own program before having to retrieve it again.
+	</li>
+
+	<li>A flag indicating whether the product is classified.
+	  Classified or secret products shouldn't be cached or should
+	  otherwise be handled carefully by your application program.
+	</li>
+      </ul>
+
+      <subsection name='Result Headers'>
+	<p>The headers of a result are optional.  They're used for
+	  tabular style results to indicate column headings.  Each
+	  <code>Header</code> object captures three strings, a name, a
+	  data type, and units.
+	</p>
+
+	<p>For example, suppose you retrieved a product that was a
+	  table of temperatures at various locations on the Earth.
+	  There might be three headers in the headers list:
+	</p>
+
+	<table>
+	  <thead>
+	    <tr>
+	      <th rowspan="2">List Index</th>
+	      <th colspan="3">Header</th>
+	    </tr>
+	    <tr>
+	      <th>Name</th>
+	      <th>Data Type</th>
+	      <th>Units</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr><td>0</td><td>latitude</td><td>float</td><td>degrees</td></tr>
+	    <tr><td>1</td><td>longitude</td><td>float</td><td>degrees</td></tr>
+	    <tr><td>2</td><td>temperatuer</td><td>float</td><td>kelvins</td></tr>
+	  </tbody>
+	</table>
+
+	<p>Suppose the product you get back as a picture of a tissue
+	  specimen.  In this case, there would be <em>no</em> headers.
+	</p>
+      </subsection>
+
+      <subsection name='Getting the Product Data'>
+	<p>To retrieve the actual data comprising your product, call
+	  the <code>Result</code> object's <code>getInputStream</code>
+	  method.  This returns a standard
+	  <code>java.io.InputStream</code> that lets you access the
+	  data.  How you interpret that data, though, depends on the
+	  MIME type of the product, which you can get by calling the
+	  <code>Result</code>'s <code>getMIMEType</code> method.
+	</p>
+
+	<p>For example, if the MIME type was <code>text/plain</code>,
+	  then the byte stream would be a sequence of Unicode
+	  characters.  If it were <code>image/jpeg</code>, then the
+	  bytes would be image data in JPEG/JFIF format.
+	</p>
+      </subsection>
+    </section>
+
+    <section name='Conclusion'>
+      <p>In this tutorial, we learned about the structure of the
+	standard query component in OODT, the <code>XMLQuery</code>.
+	We saw the query language that XMLQuery supports and how it
+	generates postfix boolean expression stacks.  You can also
+	encode any query expression by using a special constructor
+	argument that tells XMLQuery to not parse the query string.
+	We also execute the <code>XMLQuery</code> class directly.
+	Finally, we saw how product data is embedded in the XMLQuery
+	and how to deal with such results.
+      </p>
+
+      <p>As a client of the OODT framework, you can now create
+	<code>XMLQuery</code> objects to query product servers from
+	within your Java applications.  As a server in the framework,
+	you know how to deal with incoming query objects.
+      </p>
+    </section>
+  </body>
+</document>
+
