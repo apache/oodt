@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.curation.service;
 
 //OODT imports
-import org.apache.oodt.cas.curation.config.CuratorConfMetKeys;
+import org.apache.oodt.cas.curation.servlet.CuratorConfMetKeys;
 import org.apache.oodt.cas.curation.util.SSOUtils;
 import org.apache.oodt.security.sso.SingleSignOn;
 
