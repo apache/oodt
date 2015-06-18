@@ -19,23 +19,30 @@
 package org.apache.oodt.cas.workflow.repository;
 
 //JDK imports
-import org.apache.oodt.cas.metadata.util.PathUtils;
-
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.commons.io.DirectorySelector;
+
+
 /**
  * @author mattmann
- * @version $Revsion$
+ * @author luca
+ * @version $Revision$
  * 
  * <p>A Factory class for creating {@link XMLWorkflowRepository}s.</p>
  */
 public class XMLWorkflowRepositoryFactory implements WorkflowRepositoryFactory {
 
 	/* list of dir uris specifying file paths to workflow directories */
-	private List workflowDirList = null;
+	private List<String> workflowDirList = null;
 	
 	/* our log stream */
 	private static Logger LOG = Logger.getLogger(XMLWorkflowRepositoryFactory.class.getName());
@@ -44,13 +51,49 @@ public class XMLWorkflowRepositoryFactory implements WorkflowRepositoryFactory {
 	 * <p>Default Constructor</p>.
 	 */
 	public XMLWorkflowRepositoryFactory() {
+		
 		String workflowDirUris = System.getProperty("org.apache.oodt.cas.workflow.repo.dirs");
+		
+        // only returns true if org.apache.oodt.cas.workflow.repo.dirs.recursive=true
+        boolean recursive = Boolean.parseBoolean( 
+        		System.getProperty("org.apache.oodt.cas.workflow.repo.dirs.recursive") );
 		
 		if(workflowDirUris != null){
 			/* do env var replacement */
 			workflowDirUris = PathUtils.replaceEnvVariables(workflowDirUris);
 			String [] dirUris = workflowDirUris.split(",");
-			workflowDirList = Arrays.asList(dirUris);
+			
+			// recursive directory listing
+			if (recursive) {
+				
+            	// empty list
+				workflowDirList = new ArrayList<String>();
+            	
+            	// loop over specified root directories,
+            	// add directories and sub-directories that contain all workflow related XML files
+            	for (String rootDir : dirUris) {
+            		try {
+            			
+            			DirectorySelector dirsel = new DirectorySelector(
+            					Arrays.asList( 
+            							new String[] {"events.xml", "tasks.xml", "conditions.xml"} ));
+            			workflowDirList.addAll( dirsel.traverseDir(new File(new URI(rootDir))) );
+            			
+            		} catch (URISyntaxException e) {
+            			LOG.log(Level.WARNING, "URISyntaxException when traversing directory: "+rootDir);
+            		}
+            	}        
+			
+			// non-recursive directory listing
+			} else {
+				workflowDirList = Arrays.asList(dirUris);
+			}
+			
+            LOG.log(Level.FINE,"Collecting XML workflows from the following directories:");
+            for (String pdir : workflowDirList) {
+            	LOG.log(Level.FINE, pdir);
+            }
+			
 		}
 		
 	}

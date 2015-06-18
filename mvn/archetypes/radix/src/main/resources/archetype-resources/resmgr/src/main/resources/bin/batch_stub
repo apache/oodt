@@ -27,5 +27,7 @@ if ( $#argv != 1 ) then
 else
         java -Djava.ext.dirs=../lib \
         org.apache.oodt.cas.resource.system.extern.XmlRpcBatchStub \
+        -Dorg.apache.oodt.cas.pge.task.metkeys.legacyMode="true" \
+        -Dorg.apache.oodt.cas.pge.task.status.legacyMode="true" \
         --portNum $1&
 endif
