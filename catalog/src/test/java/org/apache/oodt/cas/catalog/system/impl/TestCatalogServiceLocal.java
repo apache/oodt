@@ -179,7 +179,7 @@ public class TestCatalogServiceLocal extends TestCase {
 		factory.setJdbcUrl(url);
 		factory.setPass(pass);
 		factory.setUser(user);
-		factory.setTablesFile("src/test/resources/test-mapper-cat.sql");
+		factory.setTablesFile(this.getClass().getResource("/test-mapper-cat.sql").getPath());
 		return factory;
 	}
 
@@ -195,7 +195,7 @@ public class TestCatalogServiceLocal extends TestCase {
 		indexFactory.setJdbcUrl(url);
 		indexFactory.setPass(pass);
 		indexFactory.setUser(user);
-		indexFactory.setTablesFile("src/test/resources/test-index-cat.sql");
+		indexFactory.setTablesFile(this.getClass().getResource("/test-index-cat.sql").getPath());
 		return indexFactory;
 	}
 
