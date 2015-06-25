@@ -1,0 +1,20 @@
+
+<!-- Tree view template -->
+<script type="text/template" id="template-jstree">
+    <div id="<%= name %>">
+        YOLO!!!! <%= name %>
+    </div>
+</script>
+<!-- Upload template -->
+<script type="text/template" id="template-upload">
+    <div id="<%= name %>">Upload files here</div>
+</script>
+<!-- A table row to bind d3 stuff too -->
+<script type="text/template" id="template-table-row">
+    <%  for (var i = 0; i < headers.length; i++) {
+            if (header) %>
+                <th><%= headers[i] %></th>
+    <%      else %>
+                <td><%= object[headers[i]] %></td>
+    <%  }; %>
+</script>

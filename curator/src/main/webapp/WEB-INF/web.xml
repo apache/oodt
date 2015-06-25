@@ -25,11 +25,13 @@ the License.
 	 <init-param>
 	  <param-name>jaxrs.serviceClasses</param-name>
 	  <param-value>
-	    org.apache.oodt.cas.curation.service.DirectoryResource
+	    <!-- org.apache.oodt.cas.curation.service.DirectoryResource
 	    org.apache.oodt.cas.curation.service.IngestionResource
 	    org.apache.oodt.cas.curation.service.MetadataResource
 	    org.apache.oodt.cas.curation.service.PolicyResource
 	    org.apache.oodt.cas.curation.service.SystemResource
+	    org.apache.oodt.cas.curation.service.LocalFileUpload -->
+	    org.apache.oodt.cas.curation.rest.DirectoryBackend
 	  </param-value>
 	 </init-param>
 	<load-on-startup>1</load-on-startup>
