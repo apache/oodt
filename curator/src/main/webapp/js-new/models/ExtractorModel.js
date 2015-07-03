@@ -5,13 +5,10 @@
 define(["jquery",
         "underscore",
         "lib/backbone",
-        "js-new/config/Confiugration"],
+        "js-new/config/Configuration"],
     function($,_,Backbone,Config) {
-        return Backbone.collection.extend({
-                "url":Config.EXTRACTOR_REST_SERVICE,
-                "parse":function (response) {
-                    return response["extractors"];
-                }
+        return Backbone.Collection.extend({
+                "url":Config.EXTRACTOR_REST_SERVICE
             });
     }
 );

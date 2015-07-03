@@ -60,7 +60,6 @@ public class MetadataBackend {
      */
     public MetadataBackend() {
         handler = new FlatDirMetadataHandler();
-        loadMetadataExtractors();
     }
     @GET
     @Produces("application/json")
@@ -117,11 +116,8 @@ public class MetadataBackend {
      * @return - list of extractors
      */
     public String getExtractors() {
-        return gson.toJson(
-            new Object() {
-                @SuppressWarnings("unused")
-                public Set<String>extractors = MetadataBackend.this.extractors.keySet();
-            });
+        loadMetadataExtractors();
+        return gson.toJson(new String[]{"Friend","Hoss","Manfield Extracto"});//MetadataBackend.this.extractors.keySet());
     }
     /**
      * Loads the metadata extractors

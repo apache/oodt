@@ -15,9 +15,9 @@ define(["jquery",
                 var tmp = _.template($("script#template-upload").html());
                 this.$el.append(tmp({"name":this.name}));
                 //Configure dropzone
-                var dz = $("#"+this.name).dropzone(options.model);
+                var dz = $("#"+this.name).dropzone(options.upload);
                 dz.on("success",function(){
-                        _self.notify.render(true);
+                        _self.notify.fetch();
                     });
             }
         });

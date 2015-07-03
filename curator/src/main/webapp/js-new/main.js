@@ -11,27 +11,31 @@ require.config({
 //"jquery","underscore","backbone","i18n!js/nls/ui",
 require(["lib/domReady!",
          "jquery",
-         "js-new/DirectoryModel",
-         "js-new/MetadataModel",
-         "js-new/TreeView",
-         "js-new/UploadView",
-         "js-new/MetadataView",
+         "js-new/models/SetupModels",
+         "js-new/views/TreeView",
+         "js-new/views/UploadView",
+         "js-new/views/MetadataView",
+         "js-new/config/Configuration",
          "lib/text!templates/template.html"
-        ],function(doc,$,DirectoryModel,MetadataCollection,TreeView,UploadView,MetadataView,html) {
-    //Setup templates
-    $("body").append(html);
-    var coll = new MetadataCollection([],{"id":"metadata"});
-    coll.add({"id":"yolo1"});
-    var view = new TreeView({"el":$("#files"),"name":"tree-view","model":new DirectoryModel({"id":"files"})});
-    var upvw = new UploadView({"el":$("#files"),"name":"upload-view","notify":view});
-    var metv = new MetadataView({"el":$("#metadata"),"name":"metadata-view","collection":coll});
-
-    coll.each(function(model) {
-        model.fetch({"success":function() {
-            metv.render();
-        }});
-    });
-    setInterval(function() {view.render(true);},100000);
-});
+        ],
+    function(doc,$,Models,TreeView,UploadView,MetadataView,Config,html) {
+        //Setup templates
+        $("body").append(html);
+        //TODO: remove this
+        Models.metadata.add({"id":"yolo1"});
+        //Setup views
+        var tree = new TreeView({"el":$("#files"),"name":"tree-view","directory":Models.directory});
+        var upld = new UploadView({"el":$("#files"),"name":"upload-view","upload":Models.upload,"notify":Models.directory});
+        var meta = new MetadataView({"el":$("#metadata"),"name":"metadata-view","metadata":Models.metadata,
+                                     "extractors":Models.extractor});
+    
+        Models.metadata.each(function(model) {
+            model.fetch({"success":function() {
+                meta.render();
+            }});
+        });
+        setInterval(function() {Models.directory.fetch();Models.extractor.fetch();},Config.FILE_SYSTEM_REFRESH_INTERVAL);
+    }
+);
 
 

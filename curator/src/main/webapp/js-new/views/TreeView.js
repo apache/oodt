@@ -24,7 +24,7 @@ define(["jquery",
             initialize: function(options) {
                 var _self = this;
                 this.name = options.name;
-                this.model = options.model;
+                this.model = options.directory;
                 var tmp = _.template($("script#template-jstree").html());
                 this.$el.append(tmp({"name":this.name}));
                 $("#"+this.name).jstree(
@@ -34,16 +34,10 @@ define(["jquery",
                         }
                     }        
                 );
-                this.model.on("change:files",_self.render);
+                this.model.on("change:files",_self.render,_self);
                 this.render();
             },
             render: function(full) {
-                var _self = this;
-                //If full update, rerender on fetch
-                if (full !== "undefined" && full) {
-                    this.model.fetch();
-                    return;
-                }
                 var data = _.clone(this.model.get("files"));
                 remake(data);
                 $("#"+this.name).jstree(true).settings.core.data = data;
