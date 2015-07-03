@@ -31,6 +31,8 @@ the License.
 	    org.apache.oodt.cas.curation.service.PolicyResource
 	    org.apache.oodt.cas.curation.service.SystemResource
 	    org.apache.oodt.cas.curation.service.LocalFileUpload -->
+        org.apache.oodt.cas.curation.rest.UploadBackend
+        org.apache.oodt.cas.curation.rest.MetadataBackend
 	    org.apache.oodt.cas.curation.rest.DirectoryBackend
 	  </param-value>
 	 </init-param>

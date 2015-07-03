@@ -4,10 +4,17 @@
 		<title>New Curator</title>
 		<script src="lib/require.js" data-main="js-new/main.js"></script>
 		<link rel="stylesheet" type="text/css" href="css/style.css">
-        <link rel="stylesheet" href="lib/themes/default/style.min.css" />
+        <link rel="stylesheet" type="text/css" href="lib/themes/default/style.min.css" />
+        <link rel="stylesheet" type="text/css" href="lib/css/jquery.dataTables_themeroller.css" />
+        <link rel="stylesheet" type="text/css" href="lib/css/jquery.dataTables.css" />
+        <link rel="stylesheet" type="text/css" href="lib/css/dropzone.css" />
 	</head>
 	<body>
 		<h1>Welcome</h1>
-		<div id="files"></div>
+        <div id="wrapper" class="content">
+            <div id="files" class="panel"></div>
+            <div id="metadata" class="panel"></div>
+            <div id="ingest" class="panel"></div>
+        </div>
 	</body>
 </html>

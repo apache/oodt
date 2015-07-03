@@ -1,0 +1,177 @@
+package org.apache.oodt.cas.curation.rest;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import org.apache.oodt.cas.curation.configuration.Configuration;
+import org.apache.oodt.cas.curation.metadata.FlatDirMetadataHandler;
+import org.apache.oodt.cas.curation.metadata.MetadataHandler;
+import org.apache.oodt.cas.curation.structs.ExtractorConfig;
+import org.apache.oodt.cas.curation.util.ExtractorConfigReader;
+import org.apache.oodt.cas.metadata.MetExtractor;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
+
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+/**
+ * A backend that puts/gets the metadata of a given file.
+ *  
+ * @author starchmd
+ */
+@Path("metadata")
+public class MetadataBackend {
+
+    private static final Logger LOG = Logger.getLogger(MetadataBackend.class.getName());
+    //GSON serialization object using Google GSON
+    private Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy(){
+        @Override
+        public boolean shouldSkipClass(Class<?> clazz) {
+            return false;
+        }
+        @Override
+        public boolean shouldSkipField(FieldAttributes field) {
+            return field.getName().equals("parent");
+        }}).create();
+    private MetadataHandler handler;
+    private final Map<String,ExtractorConfig> extractors = new HashMap<String,ExtractorConfig>();
+    /**
+     * Construct a directory backend with hard-coded directories
+     */
+    public MetadataBackend() {
+        handler = new FlatDirMetadataHandler();
+        loadMetadataExtractors();
+    }
+    @GET
+    @Produces("application/json")
+    @Path("{file}")
+    /**
+     * Gets the metadata as JSON, refreshes using an extractor
+     * @param file - file to get metadata from
+     * @param extractor - if specified, this extractor will be run and replace existing metadata
+     */
+    public String getMetadata(@PathParam("file") String file,@QueryParam("extractor") String extractor) throws Exception {
+        Metadata met = null;
+        try {
+            met = handler.get(file);
+            //TODO: don't catch all exceptions, make it a specific excpetion
+        } catch(Exception e) {
+            met = new Metadata();
+        }
+        //If extractor is specified, then its metadata is considered "correct" and previous metadata is used only to fill filler
+        if (extractors.containsKey(extractor)) {
+            Metadata extracted = this.runExtractor(file, extractor);
+            met = this.merge(extracted, met, extractors.get(extractor).getFiller());
+            handler.set(file, met);
+            met.addMetadata(Configuration.FILLER_METDATA_KEY,extractors.get(extractor).getFiller());
+        }
+        return gson.toJson(met);
+    }
+
+    @PUT
+    @Consumes("application/json")
+    @Path("{file}")
+    /**
+     * Sets the metadata for a given file
+     * @param file - file to specify metadata for
+     * @param extractor - optional extractor to run
+     * @param json - new json for file
+     */
+    public Response putMetadata(@PathParam("file") String file,@QueryParam("extractor") String extractor,String json) throws Exception {
+        //TODO: Sanitize this input
+        Metadata met = gson.fromJson(json, Metadata.class);
+        met.removeMetadata(Configuration.FILLER_METDATA_KEY);
+        handler.set(file, met);
+        if (extractors.containsKey(extractor)) {
+            Metadata extracted = this.runExtractor(file, extractor);
+            met = this.merge(extracted, met, extractors.get(extractor).getFiller());
+            handler.set(file, met);
+        }
+        return Response.ok().build();
+    }
+    @GET
+    @Produces("application/json")
+    @Path("extractors")
+    /**
+     * Returns the list of extractors
+     * @return - list of extractors
+     */
+    public String getExtractors() {
+        return gson.toJson(
+            new Object() {
+                @SuppressWarnings("unused")
+                public Set<String>extractors = MetadataBackend.this.extractors.keySet();
+            });
+    }
+    /**
+     * Loads the metadata extractors
+     */
+    protected void loadMetadataExtractors() {
+        File directory = new File(Configuration.get(Configuration.EXTRACTOR_AREA_CONFIG));
+        //Load only sub-directories of the extractor config area 
+        FilenameFilter filter = new FilenameFilter() {
+            @Override
+            public boolean accept(File current, String name) {
+              return new File(current, name).isDirectory();
+            }
+        };
+        String[] subdirs = directory.list(filter);
+        for (String id : subdirs != null?subdirs:new String[]{}) {
+            try {
+                extractors.put(id,ExtractorConfigReader.readFromDirectory(directory, id));
+            } catch (IOException e) {
+                LOG.log(Level.WARNING, "Failed to load extractor confugred at:"+new File(directory,id).toString()+" Exception:", e);
+            }
+        }
+    }
+    /**
+     * Runs a metadata extractor on given file
+     * @param file - file to extract metadata from
+     * @param config - configuration to run this met extractor
+     * @return metadata extracted
+     * @throws MetExtractionException - exception thrown when failure to extract metadata
+     */
+    protected Metadata runExtractor(String file, String id) throws MetExtractionException {
+        ExtractorConfig config = extractors.get(id);
+        MetExtractor metExtractor = GenericMetadataObjectFactory.getMetExtractorFromClassName(config.getClassName());
+        metExtractor.setConfigFile(config.getConfigFiles().get(0));
+        return metExtractor.extractMetadata(file);
+    }
+    /**
+     * Fill primary with secondary metadata where primary is filler
+     * @param primary - primary metadata
+     * @param secondary - secondary metadata
+     * @return primary metadata object (which has been modified)
+     */
+    private Metadata merge(Metadata primary,Metadata secondary,String filler) {
+        for (String key : primary.getAllKeys()) {
+            List<String> values = primary.getAllMetadata(key);
+            if (values != null && (values.size() == 0 || values.get(0).equals(filler))) {
+                List<String> newVals = secondary.getAllMetadata(key);
+                if (newVals != null && newVals.size() > 0 && !newVals.get(0).equals(filler))
+                    primary.replaceMetadata(key, secondary.getValues(key));
+            }
+        }
+        return primary;
+    }
+}

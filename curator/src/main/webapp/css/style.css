@@ -1,6 +1,23 @@
-div {
-    border: 1px solid black;
-};
-.red {
-    background-color: red;
+div.panel {
+    float:left;
+    background-color: #dddddd;
+    border-radius: 1em;
+    padding: 0.5em;
+    
+}
+div.content {
+    overflow:hidden;
+    clear: both;
+    height:100%;
+}
+div.upload {
+    border-radius: 1em;
+    background-color:#ffffff;
+    border: 0.2em dashed #0087f6;
+    padding: 0.5em;
+}
+div.treeview {
+    border-radius: 1em;
+    background-color:#ffffff;
+    padding: 0.5em;
 }

@@ -19,36 +19,60 @@ package org.apache.oodt.cas.curation.structs;
 
 import java.io.File;
 import java.util.List;
-
+/**
+ * A class holding the configuration for metadata extractors
+ * 
+ * @author starchmd - cleanup only, original author unspecified
+ */
 public class ExtractorConfig {
-  
-  public final static String PROP_CLASS_NAME = "extractor.classname";
 
-  public final static String PROP_CONFIG_FILES = "extractor.config.files";
-  
-  private final List<File> configFiles;
+    public final static String PROP_CLASS_NAME = "extractor.classname";
+    public final static String PROP_CONFIG_FILES = "extractor.config.files";
+    public final static String PROP_FILLER = "extractor.filler";
 
-  private final String className;
-
-  private final String identifier;
-  
-  public ExtractorConfig(String identifier, String className,
-      List<File> configFiles) {
-    this.configFiles = configFiles;
-    this.className = className;
-    this.identifier = identifier;
-  }
-  
-  public List<File> getConfigFiles() {
-    return this.configFiles;
-  }
-  
-  public String getClassName() {
-    return this.className;
-  }
-  
-  public String getIdentifier() {
-    return this.identifier;
-  }
-  
+    private final List<File> configFiles;
+    private final String className;
+    private final String identifier;
+    private final String filler;
+    /**
+     * Creates a new extractor configuration object
+     * @param identifier - name of this extractor
+     * @param className - class name of extractor
+     * @param configFiles - list of config file for this extractor (Note: only the first is used)
+     * @param filler - fill string for unextracted fields
+     */
+    public ExtractorConfig(String identifier, String className, List<File> configFiles, String filler) {
+      this.configFiles = configFiles;
+      this.className = className;
+      this.identifier = identifier;
+      this.filler = filler;
+    }
+    /**
+     * Gets the list of configuration files (Note: only the first, index 0, is used)
+     * @return config files
+     */
+    public List<File> getConfigFiles() {
+      return this.configFiles;
+    }
+    /**
+     * Accessor - get class name of this extractor
+     * @return class name
+     */
+    public String getClassName() {
+      return this.className;
+    }
+    /**
+     * Accessor - get identifier (i.e. name) of this extractor
+     * @return identifier
+     */
+    public String getIdentifier() {
+      return this.identifier;
+    }
+    /**
+     * Accessor - get the filler string
+     * @return filler
+     */
+    public String getFiller() {
+        return this.filler;
+    }
 }

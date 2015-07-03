@@ -1,20 +1,35 @@
 
 <!-- Tree view template -->
 <script type="text/template" id="template-jstree">
-    <div id="<%= name %>">
-        YOLO!!!! <%= name %>
+    <div id="<%= name %>" class="treeview">
     </div>
 </script>
 <!-- Upload template -->
 <script type="text/template" id="template-upload">
-    <div id="<%= name %>">Upload files here</div>
+    <div id="<%= name %>" class="upload dropzone"></div>
 </script>
-<!-- A table row to bind d3 stuff too -->
-<script type="text/template" id="template-table-row">
-    <%  for (var i = 0; i < headers.length; i++) {
-            if (header) %>
-                <th><%= headers[i] %></th>
-    <%      else %>
-                <td><%= object[headers[i]] %></td>
-    <%  }; %>
+<!-- A table for metadata key/vals -->
+<script type="text/template" id="template-table">
+    Extractor:
+    <ul>
+        <li>No Extractor</li>
+    <% for (var i = 0; i < extractors.length; i++) {%>
+        <li><%= extractors[i];%></li>
+    <% }; %>
+    </ul>
+    <% var recurse = function recurseFn(sub) { %>
+           <table class="display" cellspacing="0" width="100%"><thead><tr><th>key</th><th>val</th></tr></thead><tbody>
+    <%     for (var key in sub.children) { 
+               var child = sub.children[key];%>
+               <tr><td><%= child.name %></td><td><%= child.values.join()%></td></tr>
+    <%         if (Object.keys(child.children).length != 0) { %>
+                   <tr><td>      
+    <%             recurseFn(child); %>
+                   </td></tr>
+    <%         };
+           }; %>
+           </tbody>
+           </table>
+    <% };
+       recurse(object);%>
 </script>

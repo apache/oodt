@@ -29,7 +29,6 @@ public class DirectoryBackend {
      */
     public DirectoryBackend() {
         //TODO: update this loading code to be user-configured
-        System.out.println("+++++\n+++++\n+++++\n+++++\n+++++\n+++++\n");
         types.put("files", new FileDirectory(Configuration.get(Configuration.STAGING_AREA_CONFIG)));
     }
     @GET

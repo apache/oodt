@@ -28,25 +28,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
+/**
+ * A class to read extractor config
+ * 
+ * @author starchmd - cleanup only
+ */
 public class ExtractorConfigReader {
-  public static ExtractorConfig readFromDirectory(File directory,
-      String configId) throws FileNotFoundException, IOException {
-    File propsFileDir = new File(directory, configId);
-    Properties props = new Properties();
-    props
-        .load(new FileInputStream(new File(propsFileDir,
-        "config.properties")));
-    
-    String identifier = configId;
-    String className = props.getProperty(ExtractorConfig.PROP_CLASS_NAME);
-    List<File> files = new ArrayList<File>();
-    String[] fileList = props.getProperty(ExtractorConfig.PROP_CONFIG_FILES)
-        .split(",");
-    for (int i = 0; i < fileList.length; i++) {
-      files.add(new File(PathUtils.replaceEnvVariables(fileList[0])));
+    public static final String EXTRACTOR_PROPS_FILENAME = "config.properties";
+    /**
+     * Read extractor configuration from directory
+     * @param directory - top-level directory to read config from
+     * @param identifier - id of this configuration (and subdirectory config is in)
+     * @return extractor config
+     * @throws FileNotFoundException - error when file is not found
+     * @throws IOException - io exception
+     */
+    public static ExtractorConfig readFromDirectory(File directory,String identifier) throws FileNotFoundException, IOException {
+        File propsFileDir = new File(directory, identifier);
+        Properties props = new Properties();
+        props.load(new FileInputStream(new File(propsFileDir,EXTRACTOR_PROPS_FILENAME)));
+
+        List<File> files = new ArrayList<File>();
+        String[] fileList = props.getProperty(ExtractorConfig.PROP_CONFIG_FILES).split(",");
+        for (int i = 0; i < fileList.length; i++) {
+            files.add(new File(PathUtils.replaceEnvVariables(fileList[i])));
+        }
+        return new ExtractorConfig(identifier, props.getProperty(ExtractorConfig.PROP_CLASS_NAME),files,ExtractorConfig.PROP_FILLER);
     }
-    
-    return new ExtractorConfig(identifier, className, files);
-  }
 }

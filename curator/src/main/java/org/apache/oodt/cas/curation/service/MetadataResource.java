@@ -186,7 +186,7 @@ public class MetadataResource extends CurationService {
   }
   
   protected String getExtractorConfigIdsAsJSON(String[] configIds) {
-    // TODO: Support JSON
+    // TODO: Support JSON WHY, OH WHY!!!
     return "Not Implemented...";
   }
 
