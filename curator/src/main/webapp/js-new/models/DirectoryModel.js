@@ -14,8 +14,7 @@ define(["jquery",
                     var tmp = this.get("files");
                     if (!_.isEqual(response,tmp))
                         return {"files":response};
-                    else
-                        return {};
+                    return {};
                 }
             });
     }

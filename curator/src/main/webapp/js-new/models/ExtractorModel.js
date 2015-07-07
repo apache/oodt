@@ -7,8 +7,14 @@ define(["jquery",
         "lib/backbone",
         "js-new/config/Configuration"],
     function($,_,Backbone,Config) {
-        return Backbone.Collection.extend({
-                "url":Config.EXTRACTOR_REST_SERVICE
+        return Backbone.Model.extend({
+                "url":Config.EXTRACTOR_REST_SERVICE,
+                "parse":function(result) {
+                    var tmp = this.get("extractors");
+                    if (!_.isEqual(tmp,result))
+                        return {"extractors":result};
+                    return {};
+                }
             });
     }
 );

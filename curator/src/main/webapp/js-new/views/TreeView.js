@@ -24,21 +24,35 @@ define(["jquery",
             initialize: function(options) {
                 var _self = this;
                 this.name = options.name;
-                this.model = options.directory;
+                this.selection = options.selection;
+                this.directory = options.directory;
                 var tmp = _.template($("script#template-jstree").html());
                 this.$el.append(tmp({"name":this.name}));
-                $("#"+this.name).jstree(
+                $("#"+this.name).on("changed.jstree",
+                    function(e,data) {
+                        _self.selection.reset();
+                        for (var i = 0; i < data.selected.length; i++) {
+                            var node = data.instance.get_node(data.selected[i]);
+                            var path = node.text;
+                            while (node.parent != "#") {
+                                node = data.instance.get_node(node.parent);
+                                path = node.text +"/"+path;
+                            }
+                            _self.selection.add({"id":path});
+                            _self.selection.trigger("change");
+                        }
+                    }).jstree(
                     {
                         "core" : {
                             "data" : ["Initial Fill Data"]
                         }
                     }        
                 );
-                this.model.on("change:files",_self.render,_self);
+                this.directory.on("change:files",_self.render,_self);
                 this.render();
             },
             render: function(full) {
-                var data = _.clone(this.model.get("files"));
+                var data = _.clone(this.directory.get("files"));
                 remake(data);
                 $("#"+this.name).jstree(true).settings.core.data = data;
                 $("#"+this.name).jstree(true).refresh();

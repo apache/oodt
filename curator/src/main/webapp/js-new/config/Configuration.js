@@ -12,7 +12,7 @@ define(["jquery"],
             "EXTRACTOR_REST_SERVICE":"services/metadata/extractors",
             //Dropzone requires full path
             "UPLOAD_REST_SERVICE":path.substr(0,path.lastIndexOf("/")+1)+"service/upload/file",
-            "FILE_SYSTEM_REFRESH_INTERVAL":1000
+            "FILE_SYSTEM_REFRESH_INTERVAL":100000
         };
     }
 );

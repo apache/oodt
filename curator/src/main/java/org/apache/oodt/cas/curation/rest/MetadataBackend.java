@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,7 +88,7 @@ public class MetadataBackend {
 
     @PUT
     @Consumes("application/json")
-    @Path("{file}")
+    @Path("{file:.+}")
     /**
      * Sets the metadata for a given file
      * @param file - file to specify metadata for
@@ -117,7 +116,7 @@ public class MetadataBackend {
      */
     public String getExtractors() {
         loadMetadataExtractors();
-        return gson.toJson(new String[]{"Friend","Hoss","Manfield Extracto"});//MetadataBackend.this.extractors.keySet());
+        return gson.toJson(MetadataBackend.this.extractors.keySet());
     }
     /**
      * Loads the metadata extractors

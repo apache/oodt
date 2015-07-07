@@ -16,15 +16,13 @@ require(["lib/domReady!",
          "js-new/views/UploadView",
          "js-new/views/MetadataView",
          "js-new/config/Configuration",
-         "lib/text!templates/template.html"
+         "lib/text!template.html"
         ],
     function(doc,$,Models,TreeView,UploadView,MetadataView,Config,html) {
         //Setup templates
         $("body").append(html);
-        //TODO: remove this
-        Models.metadata.add({"id":"yolo1"});
         //Setup views
-        var tree = new TreeView({"el":$("#files"),"name":"tree-view","directory":Models.directory});
+        var tree = new TreeView({"el":$("#files"),"name":"tree-view","directory":Models.directory,"selection":Models.metadata});
         var upld = new UploadView({"el":$("#files"),"name":"upload-view","upload":Models.upload,"notify":Models.directory});
         var meta = new MetadataView({"el":$("#metadata"),"name":"metadata-view","metadata":Models.metadata,
                                      "extractors":Models.extractor});
@@ -34,7 +32,9 @@ require(["lib/domReady!",
                 meta.render();
             }});
         });
-        setInterval(function() {Models.directory.fetch();Models.extractor.fetch();},Config.FILE_SYSTEM_REFRESH_INTERVAL);
+        Models.directory.fetch();
+        Models.extractor.fetch();
+        //setInterval(function() {Models.directory.fetch();Models.extractor.fetch();},Config.FILE_SYSTEM_REFRESH_INTERVAL);
     }
 );
 

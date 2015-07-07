@@ -11,17 +11,17 @@
 <!-- A table for metadata key/vals -->
 <script type="text/template" id="template-table">
     Extractor:
-    <ul>
-        <li>No Extractor</li>
+    <select>
+        <option value="none">No Extractor</option>
     <% for (var i = 0; i < extractors.length; i++) {%>
-        <li><%= extractors[i] %></li>
+        <option value="<%= extractors[i] %>"><%= extractors[i] %></option>
     <% }; %>
-    </ul>
+    </select>
     <% var recurse = function recurseFn(sub) { %>
            <table class="display" cellspacing="0" width="100%"><thead><tr><th>key</th><th>val</th></tr></thead><tbody>
     <%     for (var key in sub.children) { 
                var child = sub.children[key];%>
-               <tr><td><%= child.name %></td><td><%= child.values.join()%></td></tr>
+               <tr><td><%= child.name %></td><td><input type="text" name="values"><%= child.values.join()%></input></td></tr>
     <%         if (Object.keys(child.children).length != 0) { %>
                    <tr><td>      
     <%             recurseFn(child); %>
