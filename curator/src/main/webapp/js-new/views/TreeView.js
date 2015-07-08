@@ -7,8 +7,11 @@ define(["jquery",
         "lib/backbone",
         "lib/jstree"],
     function($,_,Backbone,jstree) {
-        //Remake recursively clones the object, and augments it for TreeView.js
-        var remake = function remakeRecurse(object) {
+        /**
+         * Recurse refining the directory tree for use for jsTree
+         * @param object - directory tree listing
+         */
+        function remakeRecurse(object) {
             if (!("name" in object))
                 return;
             object.text = object.name + (object.type == "DIRECTORY"?"/":"");
@@ -19,44 +22,72 @@ define(["jquery",
                     remakeRecurse(object.children[i]);
                 }
             }
-        }
+        };
+        /**
+         * Get selection update function
+         * @param selection - selection collection
+         * @return function to update collection with new selection
+         */
+        function getSelectionUpdater(selection,view){
+            /**
+             * Updates closed function to update given selection
+             * @param e - event
+             * @param data - new jsTree selection 
+             */
+            return function(e,data) {
+                selection.reset();
+                for (var i = 0; i < data.selected.length; i++) {
+                    var node = data.instance.get_node(data.selected[i]);
+                    var path = node.text;
+                    while (node.parent != "#") {
+                        node = data.instance.get_node(node.parent);
+                        path = node.text +path;
+                    }
+                    selection.add({"id":path});
+                    selection.trigger("change");
+                }
+                selection.each(function(elem) {
+                    elem.fetch({"success":
+                        function() {
+                            view.render();
+                        }
+                    });
+                });
+            };
+        };
+        /**
+         * Init function for Metadat tree view
+         * @param options - options for init
+         */
+        function init(options) {
+            //Replicate options locally
+            for (var key in options)
+                this[key] = options[key];
+            //Post templates
+            var tmp = _.template($("script#template-jstree").html());
+            this.$el.append(tmp({"name":this.name}));
+            //Setup inital jsTree
+            var core = {"core":{"data":[]}};
+            $("#"+this.name).on("changed.jstree",getSelectionUpdater(this.selection,this.metview)).jstree(core);
+            //Register view update on directory change
+            this.directory.on("change:files",this.render,this);
+            this.render();
+        };
+        /**
+         * Render this view
+         */
+        function render() {
+            var data = _.clone(this.directory.get("files"));
+            remakeRecurse(data);
+            $("#"+this.name).jstree(true).settings.core.data = data;
+            $("#"+this.name).jstree(true).refresh();
+        };
+        /**
+         * Tree view object
+         */
         return Backbone.View.extend({
-            initialize: function(options) {
-                var _self = this;
-                this.name = options.name;
-                this.selection = options.selection;
-                this.directory = options.directory;
-                var tmp = _.template($("script#template-jstree").html());
-                this.$el.append(tmp({"name":this.name}));
-                $("#"+this.name).on("changed.jstree",
-                    function(e,data) {
-                        _self.selection.reset();
-                        for (var i = 0; i < data.selected.length; i++) {
-                            var node = data.instance.get_node(data.selected[i]);
-                            var path = node.text;
-                            while (node.parent != "#") {
-                                node = data.instance.get_node(node.parent);
-                                path = node.text +"/"+path;
-                            }
-                            _self.selection.add({"id":path});
-                            _self.selection.trigger("change");
-                        }
-                    }).jstree(
-                    {
-                        "core" : {
-                            "data" : ["Initial Fill Data"]
-                        }
-                    }        
-                );
-                this.directory.on("change:files",_self.render,_self);
-                this.render();
-            },
-            render: function(full) {
-                var data = _.clone(this.directory.get("files"));
-                remake(data);
-                $("#"+this.name).jstree(true).settings.core.data = data;
-                $("#"+this.name).jstree(true).refresh();
-            }
+            initialize: init,
+            render: render
         });
     }
 );

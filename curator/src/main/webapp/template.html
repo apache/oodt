@@ -11,8 +11,8 @@
 <!-- A table for metadata key/vals -->
 <script type="text/template" id="template-table">
     Extractor:
-    <select>
-        <option value="none">No Extractor</option>
+    <select id="extractors">
+        <option value="">No Extractor</option>
     <% for (var i = 0; i < extractors.length; i++) {%>
         <option value="<%= extractors[i] %>"><%= extractors[i] %></option>
     <% }; %>
@@ -20,8 +20,9 @@
     <% var recurse = function recurseFn(sub) { %>
            <table class="display" cellspacing="0" width="100%"><thead><tr><th>key</th><th>val</th></tr></thead><tbody>
     <%     for (var key in sub.children) { 
-               var child = sub.children[key];%>
-               <tr><td><%= child.name %></td><td><input type="text" name="values"><%= child.values.join()%></input></td></tr>
+               var child = sub.children[key];
+               var disabled = (typeof(child.locked) == "undefined" || !child.locked) ? "" : "disabled";%>
+               <tr><td><%= child.name %></td><td><input type="text" name="<%= child.name %>" value="<%= child.values.join()%>" <%= disabled %>></input></td></tr>
     <%         if (Object.keys(child.children).length != 0) { %>
                    <tr><td>      
     <%             recurseFn(child); %>
@@ -32,4 +33,5 @@
            </table>
     <% };
        recurse(object);%>
+    <button id="ingest">Ingest Current Selection</button>
 </script>

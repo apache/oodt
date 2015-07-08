@@ -62,7 +62,7 @@ public class MetadataBackend {
     }
     @GET
     @Produces("application/json")
-    @Path("{file}")
+    @Path("{file:.+}")
     /**
      * Gets the metadata as JSON, refreshes using an extractor
      * @param file - file to get metadata from
@@ -81,8 +81,9 @@ public class MetadataBackend {
             Metadata extracted = this.runExtractor(file, extractor);
             met = this.merge(extracted, met, extractors.get(extractor).getFiller());
             handler.set(file, met);
-            met.addMetadata(Configuration.FILLER_METDATA_KEY,extractors.get(extractor).getFiller());
+            //met.addMetadata(Configuration.FILLER_METDATA_KEY,extractors.get(extractor).getFiller());
         }
+        met.addMetadata(Configuration.FILLER_METDATA_KEY,"--FILL ME--");
         return gson.toJson(met);
     }
 
@@ -150,7 +151,9 @@ public class MetadataBackend {
         ExtractorConfig config = extractors.get(id);
         MetExtractor metExtractor = GenericMetadataObjectFactory.getMetExtractorFromClassName(config.getClassName());
         metExtractor.setConfigFile(config.getConfigFiles().get(0));
-        return metExtractor.extractMetadata(file);
+        String parent = new File(Configuration.get(Configuration.STAGING_AREA_CONFIG)).getParent();
+        File full = new File(parent,file);
+        return metExtractor.extractMetadata(full.getAbsolutePath());
     }
     /**
      * Fill primary with secondary metadata where primary is filler

@@ -9,7 +9,7 @@ import java.util.Properties;
  */
 public class Configuration {
     //Config names
-    public static final String FILLER_METDATA_KEY = "filter.key";
+    public static final String FILLER_METDATA_KEY = "fill";
     public static final String UPLOAD_AREA_CONFIG = "upload.area";
     public static final String STAGING_AREA_CONFIG = "staging.area";
     public static final String METADATA_AREA_CONFIG = "metadata.area";

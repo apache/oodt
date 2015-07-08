@@ -34,6 +34,7 @@ the License.
         org.apache.oodt.cas.curation.rest.UploadBackend
         org.apache.oodt.cas.curation.rest.MetadataBackend
 	    org.apache.oodt.cas.curation.rest.DirectoryBackend
+	    org.apache.oodt.cas.curation.rest.IngestBackend
 	  </param-value>
 	 </init-param>
 	<load-on-startup>1</load-on-startup>
