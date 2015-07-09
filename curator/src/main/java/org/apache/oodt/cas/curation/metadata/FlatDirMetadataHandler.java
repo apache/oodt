@@ -44,6 +44,6 @@ public class FlatDirMetadataHandler implements MetadataHandler {
      * @return file representing location of the flat-file
      */
     private static File getLocation(String file) {
-        return new File(Configuration.get(Configuration.METADATA_AREA_CONFIG),file.replace(File.separatorChar, '_')+".met");
+        return new File(Configuration.getWithReplacement(Configuration.METADATA_AREA_CONFIG),file.replace(File.separatorChar, '_')+".met");
     }
 }

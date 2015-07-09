@@ -15,6 +15,7 @@ define(["jquery",
             if (!("name" in object))
                 return;
             object.text = object.name + (object.type == "DIRECTORY"?"/":"");
+            object.icon = (object.type == "DIRECTORY"?"icons/directory.png":"icons/file.png");
             if ("children" in object) {
                 object.children = _.clone(object.children);
                 for (var i = 0; i < object.children.length; i++) {
@@ -39,6 +40,9 @@ define(["jquery",
                 for (var i = 0; i < data.selected.length; i++) {
                     var node = data.instance.get_node(data.selected[i]);
                     var path = node.text;
+                    //Do NOT allow selection of directories
+                    if (node.original.type == "DIRECTORY")
+                        continue;
                     while (node.parent != "#") {
                         node = data.instance.get_node(node.parent);
                         path = node.text +path;
@@ -56,7 +60,7 @@ define(["jquery",
             };
         };
         /**
-         * Init function for Metadat tree view
+         * Init function for Metadata tree view
          * @param options - options for init
          */
         function init(options) {
@@ -67,7 +71,8 @@ define(["jquery",
             var tmp = _.template($("script#template-jstree").html());
             this.$el.append(tmp({"name":this.name}));
             //Setup inital jsTree
-            var core = {"core":{"data":[]}};
+            var core = {"core":{"data":[]},
+                        "plugins" : ["checkbox"]};
             $("#"+this.name).on("changed.jstree",getSelectionUpdater(this.selection,this.metview)).jstree(core);
             //Register view update on directory change
             this.directory.on("change:files",this.render,this);

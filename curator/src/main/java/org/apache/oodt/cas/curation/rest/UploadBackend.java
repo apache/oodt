@@ -42,13 +42,10 @@ import org.apache.oodt.cas.curation.configuration.Configuration;
  */
 @Path("upload")
 public class UploadBackend {
-    String upload = null;
     /**
      * Construct using configuration to determine upload area
      */
-    public UploadBackend() {
-        this.upload = Configuration.get(Configuration.UPLOAD_AREA_CONFIG);
-    }
+    public UploadBackend() {}
 
     @POST
     @Path("file")
@@ -65,7 +62,7 @@ public class UploadBackend {
             String filename = attachment.getContentDisposition().getParameter("filename");    
             try {
                 InputStream in = attachment.getDataHandler().getInputStream();
-                OutputStream os = new FileOutputStream(new File(upload,filename));
+                OutputStream os = new FileOutputStream(new File(Configuration.getWithReplacement(Configuration.UPLOAD_AREA_CONFIG),filename));
                 IOUtils.copy(in,os);
                 in.close();
                 os.close();

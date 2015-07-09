@@ -123,7 +123,7 @@ public class MetadataBackend {
      * Loads the metadata extractors
      */
     protected void loadMetadataExtractors() {
-        File directory = new File(Configuration.get(Configuration.EXTRACTOR_AREA_CONFIG));
+        File directory = new File(Configuration.getWithReplacement(Configuration.EXTRACTOR_AREA_CONFIG));
         //Load only sub-directories of the extractor config area 
         FilenameFilter filter = new FilenameFilter() {
             @Override
@@ -151,7 +151,7 @@ public class MetadataBackend {
         ExtractorConfig config = extractors.get(id);
         MetExtractor metExtractor = GenericMetadataObjectFactory.getMetExtractorFromClassName(config.getClassName());
         metExtractor.setConfigFile(config.getConfigFiles().get(0));
-        String parent = new File(Configuration.get(Configuration.STAGING_AREA_CONFIG)).getParent();
+        String parent = new File(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)).getParent();
         File full = new File(parent,file);
         return metExtractor.extractMetadata(full.getAbsolutePath());
     }

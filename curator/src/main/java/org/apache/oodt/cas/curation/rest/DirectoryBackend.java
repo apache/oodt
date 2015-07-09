@@ -27,16 +27,16 @@ public class DirectoryBackend {
     /**
      * Construct a directory backend with hard-coded directories
      */
-    public DirectoryBackend() {
-        //TODO: update this loading code to be user-configured
-        types.put("files", new FileDirectory(Configuration.get(Configuration.STAGING_AREA_CONFIG)));
-    }
+    public DirectoryBackend() {}
     @GET
     @Produces("application/json")
     /**
      * Get the types of directory backends.
      */
     public String getDirectoryTypes() {
+        //TODO: update this loading code to be user-configured and be fed off of "type"
+        if (types.get("files") == null)
+            types.put("files", new FileDirectory(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)));
         return gson.toJson(types.keySet());
     }
 
@@ -48,6 +48,9 @@ public class DirectoryBackend {
      * @param type - type of directory to list
      */
     public String list(@PathParam("type") String type) throws Exception {
+        //TODO: update this loading code to be user-configured and be fed off of "type"
+        if (types.get("files") == null)
+            types.put("files", new FileDirectory(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)));
         return gson.toJson(types.get(type).list());
     }
 }
