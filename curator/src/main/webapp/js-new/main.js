@@ -31,9 +31,9 @@ require(["lib/domReady!",
                 meta.render();
             }});
         });*/
-        Models.directory.fetch();
-        Models.extractor.fetch();
-        //setInterval(function() {Models.directory.fetch();Models.extractor.fetch();},Config.FILE_SYSTEM_REFRESH_INTERVAL);
+        //Models.directory.fetch();
+        //Models.extractor.fetch();
+        setInterval(function() {Models.directory.fetch();Models.extractor.fetch();},Config.FILE_SYSTEM_REFRESH_INTERVAL);
     }
 );
 
