@@ -5,25 +5,19 @@
 define(["jquery",
         "underscore",
         "lib/backbone",
-        "lib/jstree"],
-    function($,_,Backbone,jstree) {
+        "lib/jstree",
+        "js-new/utils/utils"],
+    function($,_,Backbone,jstree,utils) {
         /**
-         * Recurse refining the directory tree for use for jsTree
-         * @param object - directory tree listing
+         * Augments a given object for use with JS tree
+         * @param 
          */
-        function remakeRecurse(object) {
-            if (!("name" in object))
-                return;
-            object.text = object.name + (object.type == "DIRECTORY"?"/":"");
-            object.icon = (object.type == "DIRECTORY"?"icons/directory.png":"icons/file.png");
-            if ("children" in object) {
-                object.children = _.clone(object.children);
-                for (var i = 0; i < object.children.length; i++) {
-                    object.children[i] = _.clone(object.children[i]);
-                    remakeRecurse(object.children[i]);
-                }
+        function jsTreeAug(object) {
+            if ("name" in object && "type" in object) {
+                object.text = object.name + (object.type == "DIRECTORY"?"/":"");
+                object.icon = (object.type == "DIRECTORY"?"icons/directory.png":"icons/file.png");
             }
-        };
+        }
         /**
          * Get selection update function
          * @param selection - selection collection
@@ -82,8 +76,7 @@ define(["jquery",
          * Render this view
          */
         function render() {
-            var data = _.clone(this.directory.get("files"));
-            remakeRecurse(data);
+            var data = utils.deep(this.directory.get("files"),jsTreeAug);
             $("#"+this.name).jstree(true).settings.core.data = data;
             $("#"+this.name).jstree(true).refresh();
         };

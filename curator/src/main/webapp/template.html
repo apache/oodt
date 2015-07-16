@@ -8,8 +8,22 @@
 <script type="text/template" id="template-upload">
     <div id="<%= name %>" class="upload dropzone"></div>
 </script>
-<!-- A table for metadata key/vals -->
-<script type="text/template" id="template-table">
+<!-- An input record for use within the table -->
+<script type="text/template" id="template-input">
+    <% var disabled = ("locked" in record && record.locked) ? "disabled" : "";
+       var toDisp = "display" in record?record.display:record.values;
+       if ("choices" in record) { %>
+           <select name="<%= record.name %>" <%= disabled %>>
+    <%     for (var i = 0; i < record.choices.length; i++) { %>
+               <option value="<%= record.choices[i]%>"><%= record.choices[i]%></option>
+    <%     }; %>
+           </select>
+    <% } else { %>
+           <input type="text" name="<%= record.name %>" value="<%= toDisp.join()%>" <%= disabled %> ></input>
+    <% }; %>
+</script>
+<!-- Extractors list template -->
+<script type="text/template" id="template-extractor-list">
     Extractor:
     <select id="extractors">
         <option value="">No Extractor</option>
@@ -17,21 +31,38 @@
         <option value="<%= extractors[i] %>"><%= extractors[i] %></option>
     <% }; %>
     </select>
-    <% var recurse = function recurseFn(sub) { %>
-           <table class="display" cellspacing="0" width="100%"><thead><tr><th>key</th><th>val</th></tr></thead><tbody>
-    <%     for (var key in sub.children) { 
-               var child = sub.children[key];
-               var disabled = (typeof(child.locked) == "undefined" || !child.locked) ? "" : "disabled";%>
-               <tr><td><%= child.name %></td><td><input type="text" name="<%= child.name %>" value="<%= child.values.join()%>" <%= disabled %>></input></td></tr>
-    <%         if (Object.keys(child.children).length != 0) { %>
-                   <tr><td>      
-    <%             recurseFn(child); %>
-                   </td></tr>
-    <%         };
-           }; %>
-           </tbody>
+</script>
+
+<!-- A table for metadata key/vals -->
+<script type="text/template" id="template-table">
+    <% var extractorSelectHtml = _.template($("script#template-extractor-list").html())({"extractors":extractors}); %>
+    <%= extractorSelectHtml %>
+    <% function recurseFn(sub) { %>
+           <table class="display" cellspacing="0" width="100%">
+               <thead>
+                   <tr>
+                       <th>Metadata Key</th>
+                       <th>Value</th>
+                   </tr>
+               </thead>
+               <tbody>
+    <%             for (var key in sub.children) { 
+                       var child = sub.children[key];
+                       var disabled = (typeof(child.locked) == "undefined" || !child.locked) ? "" : "disabled";
+                       var inputHtml = _.template($("script#template-input").html())({"record":child}); %>
+                       <tr>
+                           <td><%= child.name %></td>
+                           <td><%= inputHtml %></td>
+                       </tr>
+    <%                 if (Object.keys(child.children).length != 0) { %>
+                           <tr>
+                               <td><%recurseFn(child);%></td>
+                           </tr>
+    <%                 };
+                   }; %>
+               </tbody>
            </table>
     <% };
-       recurse(object);%>
+       recurseFn(object);%>
     <button id="ingest" class="btn btn-success">Ingest Current Selection</button>
 </script>

@@ -5,8 +5,81 @@
 define(["jquery",
         "underscore",
         "lib/backbone",
-        "datatables"],
-    function($,_,Backbone,DataTable) {
+        "datatables",
+        "js-new/utils/utils"],
+    function($,_,Backbone,DataTable,utils) {
+    
+        /**
+         * Get a callback to apply when cloning the metadata object
+         * that masks the fill values, provides selections.
+         * @param fill - fill valye to look for
+         * @return - callback function enclosing "fill"
+         */
+        function getFillHandlerCallback(fill) {
+            /**
+             * Process the object's values eliminating fill and seting "choices" if it is a selection
+             * @param object - metadata object to process
+             */
+            return function(object) {
+                    /**
+                     * A function to process element value for fill
+                     * @param element - element of list
+                     * @param index - index of the element in the list
+                     * @param list - list iterated
+                     */
+                    function processForFill(element,index,list) {
+                        //Ignore non-filled values
+                        if (element.indexOf(fill) == -1) {
+                            return;
+                        }
+                        var val = element.replace(fill,"");
+                        //This is a "choices" fill
+                        if (val.indexOf("__CHOICES__:") != -1) {
+                            object.choices = val.replace("__CHOICES__:","").split(",");
+                        }
+                        //Always remove fill entry
+                        list[index] = "";
+                    };
+                    _.each(object.values,processForFill);
+                };
+        };
+        /**
+         * Returns delimited list
+         */
+        function getDelimitedList(list1,list2) {
+            var tmp = _.zip(list1,list2);
+            for (var i = 0; i < tmp.length; i++) {
+                tmp[i] = tmp[i].join("|");
+            }
+            return tmp;
+        }
+    
+        /**
+         * Recursively merge two metadata objects
+         * @param mer - original metadata object (merge into)
+         * @param met - new metadat object (merge from)
+         */
+        function recurseMerge(mer,met) {
+            if (mer.name != met.name)
+                return;
+            //Lock if values don't match
+            if (!_.isEqual(mer.values,met.values)) {
+                mer.locked = true;
+                mer.display = getDelimitedList(mer.values,met.values);
+            } else {
+                delete mer.display;
+            }
+            //Merge "choices"
+            if ("choices" in met && !("choices" in mer))
+                mer.choices = met.choices;
+            //Merge the children
+            for (var key in met.children) {
+                if (!(key in mer.children))
+                    mer.children[key] = {"name":met.children[key].name,"values":met.children[key].values,"children":{}};
+                recurseMerge(mer.children[key],met.children[key]);
+            }
+        };
+    
         /**
          * Initialization function for metadata view
          * @param options - options for this view
@@ -20,45 +93,6 @@ define(["jquery",
             this.render();
         };
         /**
-         * Recursively merge two metadata objects
-         * @param mer - original metadata object (merge into)
-         * @param met - new metadat object (merge from)
-         */
-        function recurseMerge(mer,met,fill) {
-            //TODO: clone this object so "fill me" does not disappear
-            if (mer.name != met.name)
-                return;
-            //Remove fill values
-            var ind = mer.values.indexOf(fill);
-            if (ind != -1)
-                mer.values[ind] = "";
-            var ind = met.values.indexOf(fill);
-            if (ind != -1)
-                met.values[ind] = "";          
-            //Lock if values don't match
-            if (!_.isEqual(mer.values,met.values)) {
-                mer.locked = true;
-                var max = Math.max(mer.values.length,met.values.length);
-                var end = []
-                for (var i = 0; i < max; i++) {
-                    var tot = [];
-                    if (i < mer.values.length)
-                        tot.push(mer.values[i]);
-                    if (i < met.values.length)
-                        tot.push(met.values[i]);
-                    end.push(tot.join("|"));
-                }
-                mer.values = end;
-            }
-            //Merge the children
-            for (var key in met.children) {
-                if (!(key in mer.children))
-                    mer.children[key] = {"name":met.children[key].name,"values":met.children[key].values,"children":{}};
-                recurseMerge(mer.children[key],met.children[key],fill);
-                
-            }
-        };
-        /**
          * Render this view
          */
         function render() {
@@ -69,7 +103,7 @@ define(["jquery",
             this.metadata.each(function(elem) {
                 if (typeof(elem.get("root")) == "undefined")
                     return;
-                recurseMerge(merged,elem.get("root"),elem.get("fill"));
+                recurseMerge(merged,utils.deep(elem.get("root"),getFillHandlerCallback(elem.get("fill"))));
             });
             //Extractors
             var extracts = this.extractors.get("extractors");
@@ -88,7 +122,7 @@ define(["jquery",
             var table = $(this.$el).find("table:first");
             table.DataTable({"paging": false});
             //On change for edits
-            $(this.$el).find("table:first").find("input").on("change",
+            $(this.$el).find("table:first").find("input,select").on("change",
                 function(obj) {
                     var name = $(this).attr("name");
                     var value = $(this).val();
@@ -96,8 +130,11 @@ define(["jquery",
                         function(elem) {
                             var root = elem.get("root");
                             root.children[name].values[0] = value;
-                            elem.save();
-                        }        
+                            //Fix this to do a set and a save, not just a set
+                            elem.save(null,{success:function() {
+                                elem.fetch();
+                            }});
+                        }
                     );
                 }
             );

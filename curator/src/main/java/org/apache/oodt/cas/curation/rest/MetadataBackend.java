@@ -89,6 +89,7 @@ public class MetadataBackend {
 
     @PUT
     @Consumes("application/json")
+    @Produces("application/json")
     @Path("{file:.+}")
     /**
      * Sets the metadata for a given file
@@ -96,7 +97,7 @@ public class MetadataBackend {
      * @param extractor - optional extractor to run
      * @param json - new json for file
      */
-    public Response putMetadata(@PathParam("file") String file,@QueryParam("extractor") String extractor,String json) throws Exception {
+    public String putMetadata(@PathParam("file") String file,@QueryParam("extractor") String extractor,String json) throws Exception {
         //TODO: Sanitize this input
         Metadata met = gson.fromJson(json, Metadata.class);
         met.removeMetadata(Configuration.FILLER_METDATA_KEY);
@@ -106,7 +107,7 @@ public class MetadataBackend {
             met = this.merge(extracted, met, extractors.get(extractor).getFiller());
             handler.set(file, met);
         }
-        return Response.ok().build();
+        return gson.toJson(met);
     }
     @GET
     @Produces("application/json")
