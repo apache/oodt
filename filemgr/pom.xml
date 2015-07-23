@@ -123,6 +123,7 @@
             <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
             <Export-Package>org.apache.oodt.cas.filemgr.*</Export-Package>
             <Main-Class>org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient</Main-Class>
+            <Import-Package>*;resolution:=optional</Import-Package>
           </instructions>
         </configuration>
         <extensions>true</extensions>
