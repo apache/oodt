@@ -122,6 +122,35 @@ the License.
 		</dependency>
 	</dependencies>
         <profiles>
+			<profile>
+				<id>create-osgi-bundles-from-dependencies</id>
+				<build>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.felix</groupId>
+							<artifactId>maven-bundle-plugin</artifactId>
+							<version>2.3.7</version>
+							<configuration>
+								<supportedProjectTypes>
+									<supportedProjectType>jar</supportedProjectType>
+									<supportedProjectType>bundle</supportedProjectType>
+									<supportedProjectType>war</supportedProjectType>
+								</supportedProjectTypes>
+								<instructions>
+									<Bundle-Name>${project.artifactId}</Bundle-Name>
+									<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+									<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+									<Export-Package>org.apache.oodt.pcs.opsui.*</Export-Package>
+									<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+									<Embed-Transitive>true</Embed-Transitive>
+									<Import-Package>*;resolution:=optional</Import-Package>
+								</instructions>
+							</configuration>
+							<extensions>true</extensions>
+						</plugin>
+					</plugins>
+				</build>
+			</profile>
             <profile>
                 <id>audit</id>
                 <activation>
@@ -188,6 +217,26 @@ the License.
 					<optimize>true</optimize>
 					<debug>true</debug>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<configuration>
+					<supportedProjectTypes>
+						<supportedProjectType>jar</supportedProjectType>
+						<supportedProjectType>bundle</supportedProjectType>
+						<supportedProjectType>war</supportedProjectType>
+					</supportedProjectTypes>
+					<instructions>
+						<Bundle-Name>${project.artifactId}</Bundle-Name>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+						<Export-Package>org.apache.oodt.pcs.opsui.*</Export-Package>
+						<Import-Package>*;resolution:=optional</Import-Package>
+					</instructions>
+				</configuration>
+				<extensions>true</extensions>
 			</plugin>
 		</plugins>
 	</build>
