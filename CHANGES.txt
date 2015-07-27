@@ -2,6 +2,8 @@ Apache OODT Change Log
 ======================
 Release 0.10 - Current Development
 
+* OODT-861 Workflow Manager client will print the list of task ids for a given workflow, if requested (luca)
+
 * OODT-854 Enable File Manager and Resource Manager to collect configuration files by parsing a directory tree recursively (luca)
 
 
