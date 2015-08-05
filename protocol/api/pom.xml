@@ -143,32 +143,26 @@
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>oodt-commons</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>cas-metadata</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-cli</artifactId>
-      <version>${project.parent.version}</version>
     </dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>xmlrpc</groupId>
 			<artifactId>xmlrpc</artifactId>
-			<version>2.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.3.1</version>
 			<exclusions>
 				<exclusion>
 					<!-- xom is an optional dependency of xstream. Its also an Apache incompatible 
@@ -181,7 +175,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

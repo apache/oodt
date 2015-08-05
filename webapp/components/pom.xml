@@ -24,7 +24,6 @@ the License.
         <version>0.10-SNAPSHOT</version>
         <relativePath>../../core/pom.xml</relativePath>
     </parent>
-	<groupId>org.apache.oodt</groupId>
 	<artifactId>oodt-webapp-components</artifactId>
 	<packaging>jar</packaging>
 	<version>0.10-SNAPSHOT</version>
@@ -33,43 +32,35 @@ the License.
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket</artifactId>
-			<version>1.4.16</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>cas-filemgr</artifactId>
-		  <version>0.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>cas-workflow</artifactId>
-		  <version>0.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>	
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>pcs-core</artifactId>
-		  <version>${project.parent.version}</version>
-		</dependency>			
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.5.8</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
 		</dependency>
 		<dependency>
 		    <groupId>javax.servlet</groupId>
 		    <artifactId>servlet-api</artifactId>
-		    <version>2.4</version>
 		    <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

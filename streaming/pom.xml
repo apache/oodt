@@ -24,7 +24,6 @@ the License.
         <relativePath>../core/pom.xml</relativePath>
     </parent>
 
-    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-streaming</artifactId>
     <name>Apache OODT Streaming</name>
     <packaging>pom</packaging>
