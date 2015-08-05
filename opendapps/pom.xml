@@ -61,17 +61,14 @@
    <dependency>
      <groupId>edu.ucar</groupId>
      <artifactId>netcdf</artifactId>
-     <version>4.2</version>
    </dependency>
    <dependency>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-profile</artifactId>
-    <version>${project.parent.version}</version>
    </dependency>
    <dependency>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-xmlquery</artifactId>
-    <version>${project.parent.version}</version>
    </dependency>
   </dependencies>
 </project>
