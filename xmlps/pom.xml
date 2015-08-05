@@ -77,65 +77,54 @@
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>oodt-commons</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>oodt-xmlquery</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>cas-metadata</artifactId>
-			<version>${project.parent.version}</version>
 			<optional />
 		</dependency>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>oodt-product</artifactId>
-			<version>${project.parent.version}</version>
 			<optional />
 		</dependency>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>oodt-profile</artifactId>
-			<version>${project.parent.version}</version>
 			<optional />
 		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
-			<version>1.2.1</version>
 			<optional />
 		</dependency>
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-			<version>2.1</version>
 			<optional />
 		</dependency>
 		<dependency>
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
-			<version>1.2</version>
 			<optional />
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.3</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
-			<version>3.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

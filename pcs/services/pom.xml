@@ -33,24 +33,20 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>pcs-core</artifactId>
-      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>net.sf.json-lib</groupId>
       <artifactId>json-lib</artifactId>
-      <version>2.3</version>
       <classifier>jdk15</classifier>
     </dependency>
     <dependency>
        <groupId>servletapi</groupId>
        <artifactId>servletapi</artifactId>
-       <version>2.4</version>
        <scope>provided</scope>
     </dependency>
    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>2.6.0</version>
    </dependency>
   </dependencies>
 
