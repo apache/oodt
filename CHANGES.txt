@@ -6,6 +6,7 @@ Release 0.10 - Current Development
 
 * OODT-854 Enable File Manager and Resource Manager to collect configuration files by parsing a directory tree recursively (luca)
 
+* OODT-863 - Tidy up dependencies has been successfully created. (magicaltrout)
 
 Release 0.9 - 05/31/2015
 
