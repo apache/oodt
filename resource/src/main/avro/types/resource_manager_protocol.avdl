@@ -1,0 +1,53 @@
+@namespace("org.apache.oodt.cas.resource.structs.avrotypes")
+
+protocol ResourceManager {
+import schema "AvroJob.avsc";
+import schema "AvroNameValueJobInput.avsc";
+import schema "AvroJobInput.avsc";
+import schema "AvroResourceNode.avsc";
+
+    boolean isJobComplete(string jobId);
+
+    AvroJob getJobInfo(string jobId);
+
+    boolean isAlive();
+
+    int getJobQueueSize();
+
+    int getJobQueueCapacity();
+
+    boolean killJob(string jobId);
+
+    string getExecutionNode(string jobId);
+
+    string handleJob(AvroJob exec, AvroJobInput into);
+
+    boolean handleJobWithUrl(AvroJob exec, AvroJobInput in, string hostUrl);
+
+    array<AvroResourceNode> getNodes();
+
+    AvroResourceNode getNodeById(string nodeId);
+
+    boolean addQueue(string queueName);
+
+    boolean removeQueue(string queueName);
+
+    boolean addNode(AvroResourceNode node);
+
+    boolean removeNode(string nodeId);
+
+    boolean setNodeCapacity(string nodeId, int capacity);
+
+    boolean addNodeToQueue(string nodeId, string queueName);
+
+    boolean removeNodeFromQueue(string nodeId, string queueName);
+
+    array<string> getQueues();
+
+    array<string> getNodesInQueue(string queueName);
+
+    array<string> getQueuesWithNode(string nodeId);
+
+    string getNodeLoad(string nodeId);
+
+}

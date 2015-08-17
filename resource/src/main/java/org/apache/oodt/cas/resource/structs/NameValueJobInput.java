@@ -114,4 +114,8 @@ public class NameValueJobInput implements JobInput {
     }
   }
 
+  public Properties getProps(){
+    return this.props;
+  }
+
 }

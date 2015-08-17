@@ -29,6 +29,7 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 
 //OODT imports
+import org.apache.oodt.cas.resource.structs.NameValueJobInput;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 //Junit imports
@@ -87,6 +88,9 @@ public class TestXmlRpcResourceManager extends TestCase {
    */
   @Override
   protected void setUp() throws Exception {
+
+    System.out.println(NameValueJobInput.class.getCanonicalName());
+
     generateTestConfiguration();
     this.rm = new XmlRpcResourceManager(RM_PORT);
   }

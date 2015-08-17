@@ -35,6 +35,48 @@ the License.
   </scm>
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>1.7.7</version>
+        <configuration>
+          <stringType>String</stringType>
+          <detail>true</detail>
+        </configuration>
+        <executions>
+          <execution>
+            <id>schemas</id>
+            <configuration>
+              <imports>
+                <import>${basedir}/src/main/avro/types/AvroJob.avsc</import>
+                <import>${basedir}/src/main/avro/types/AvroNameValueJobInput.avsc</import>
+                <import>${basedir}/src/main/avro/types/AvroJobInput.avsc</import>
+              </imports>
+            </configuration>
+            <goals>
+              <goal>schema</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>protocol</id>
+            <configuration><imports>
+              <import>${basedir}/src/main/avro/types</import>
+
+            </imports>
+            </configuration>
+            <goals>
+              <goal>idl-protocol</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.4</version>
@@ -80,6 +122,16 @@ the License.
     </plugins>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>1.7.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro-ipc</artifactId>
+      <version>1.7.7</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
