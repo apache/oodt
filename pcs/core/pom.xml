@@ -26,10 +26,13 @@ the License.
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
   <name>Process Control System Core Package</name>
-  <packaging>jar</packaging>
+  <packaging>${packaging.type}</packaging>
   <description>The Process Control System's core system framework. PCS is an agglomeration of 
   CAS services and components needed to build a science data system.
   </description>
+  <properties>
+    <packaging.type>jar</packaging.type>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -81,6 +84,9 @@ the License.
   <profiles>
     <profile>
       <id>create-osgi-bundles-from-dependencies</id>
+      <properties>
+        <packaging.type>bundle</packaging.type>
+      </properties>
       <build>
         <plugins>
           <plugin>

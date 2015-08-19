@@ -23,7 +23,7 @@
     <version>0.10-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <packaging>bundle</packaging>
+  <packaging>${packaging.type}</packaging>
   <artifactId>cas-catalog</artifactId>
   <name>OODT CAS Virtual Catalog and Integration Service.</name>
   <description>CAS Catalog is an effort to virtualize underlying 
@@ -36,9 +36,15 @@
    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/catalog</url>
   </scm>
+  <properties>
+    <packaging.type>jar</packaging.type>
+  </properties>
   <profiles>
     <profile>
       <id>create-osgi-bundles-from-dependencies</id>
+      <properties>
+        <packaging.type>bundle</packaging.type>
+      </properties>
       <build>
         <plugins>
           <plugin>

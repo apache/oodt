@@ -24,7 +24,7 @@
 		<version>0.10-SNAPSHOT</version>
 		<relativePath>../core/pom.xml</relativePath>
 	</parent>
-	<packaging>jar</packaging>
+	<packaging>${packaging.type}</packaging>
 	<artifactId>oodt-xmlps</artifactId>
 	<name>XML-configured, DBMS-based Product and Profile Server</name>
 	<version>0.10-SNAPSHOT</version>
@@ -36,6 +36,9 @@
 	<profiles>
 		<profile>
 			<id>create-osgi-bundles-from-dependencies</id>
+			<properties>
+				<packaging.type>jar</packaging.type>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -64,6 +67,9 @@
 			</build>
 		</profile>
 	</profiles>
+	<properties>
+		<packaging.type>jar</packaging.type>
+	</properties>
 	<build>
 	 <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
 		<resources>
@@ -102,27 +108,6 @@
 			          </property>					
 					</systemProperties>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
-				<configuration>
-					<supportedProjectTypes>
-						<supportedProjectType>jar</supportedProjectType>
-						<supportedProjectType>bundle</supportedProjectType>
-						<supportedProjectType>war</supportedProjectType>
-					</supportedProjectTypes>
-					<instructions>
-						<Bundle-Name>${project.artifactId}</Bundle-Name>
-						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
-						<Export-Package>org.apache.oodt.xmlps.*</Export-Package>
-						<Import-Package>*;resolution:=optional</Import-Package>
-
-					</instructions>
-				</configuration>
-				<extensions>true</extensions>
 			</plugin>
 		</plugins>
 	</build>

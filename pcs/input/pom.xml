@@ -26,10 +26,13 @@ the License.
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
   <name>Process Control System Input Data Package</name>
-  <packaging>jar</packaging>
+  <packaging>${packaging.type}</packaging>
   <description>The Process Control System's data handling package. This package contains data structures
   and readers and writers to write an input file format similar to HDF, as represented in XML.
   </description>
+  <properties>
+    <packaging.type>jar</packaging.type>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -85,6 +88,9 @@ the License.
   <profiles>
     <profile>
       <id>create-osgi-bundles-from-dependencies</id>
+      <properties>
+        <packaging.type>bundle</packaging.type>
+      </properties>
       <build>
         <plugins>
           <plugin>

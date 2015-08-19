@@ -25,7 +25,7 @@
   </parent>
   <artifactId>oodt-xmlquery</artifactId>
   <name>Query Expression</name>
-  <packaging>jar</packaging>
+  <packaging>${packaging.type}</packaging>
   <description>This component provides a way to express queries in a generic
     manner.  Its centerpiece is a class called XMLQuery that uses
     boolean postfix expressions to capture the domain, range, and
@@ -39,6 +39,9 @@
    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/xmlquery</url>
   </scm>
+  <properties>
+    <packaging.type>jar</packaging.type>
+  </properties>
   <build>
     <resources>
       <resource>
@@ -85,6 +88,9 @@
   <profiles>
     <profile>
       <id>create-osgi-bundles-from-dependencies</id>
+      <properties>
+        <packaging.type>jar</packaging.type>
+      </properties>
       <build>
         <plugins>
           <plugin>

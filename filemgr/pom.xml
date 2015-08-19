@@ -23,7 +23,7 @@
     <version>0.10-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <packaging>bundle</packaging>
+  <packaging>${packaging.type}</packaging>
   <artifactId>cas-filemgr</artifactId>
   <name>Catalog and Archive File Management Component</name>
   <description>The file management component of a Catalog and Archive Service. This component
@@ -36,6 +36,9 @@
    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/filemgr</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/filemgr</url>
   </scm>
+  <properties>
+    <packaging.type>jar</packaging.type>
+  </properties>
   <build>
     <directory>target</directory>
     <outputDirectory>target/classes</outputDirectory>
@@ -133,6 +136,9 @@
   <profiles>
     <profile>
       <id>audit</id>
+      <properties>
+        <packaging.type>jar</packaging.type>
+      </properties>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
@@ -161,6 +167,9 @@
     </profile>
     <profile>
       <id>create-osgi-bundles-from-dependencies</id>
+      <properties>
+        <packaging.type>bundle</packaging.type>
+      </properties>
       <build>
         <plugins>
           <plugin>

@@ -25,7 +25,7 @@
   </parent>
   <artifactId>oodt-profile</artifactId>
   <name>Profile Service</name>
-  <packaging>jar</packaging>
+  <packaging>${packaging.type}</packaging>
   <description>The Profile Service describes and locates resources using metadata
     descriptions.  These descriptions, called profiles, tell of a
     resource's inception, composition, and location using a mix of
@@ -37,6 +37,9 @@
    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/profile</url>
   </scm>
+  <properties>
+    <packaging.type>jar</packaging.type>
+  </properties>
   <build>
     <resources>
       <resource>
@@ -78,6 +81,9 @@
   <profiles>
     <profile>
       <id>create-osgi-bundles-from-dependencies</id>
+      <properties>
+        <packaging.type>bundle</packaging.type>
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -107,6 +113,9 @@
     </profile>
     <profile>
       <id>audit</id>
+      <properties>
+        <packaging.type>jar</packaging.type>
+      </properties>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>

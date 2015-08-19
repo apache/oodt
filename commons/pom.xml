@@ -26,13 +26,16 @@
   </parent>
   <artifactId>oodt-commons</artifactId>
   <name>Common Utilities</name>
-  <packaging>bundle</packaging>
+  <packaging>${packaging.type}</packaging>
   <description>Apache OODT Common Utilities Project</description>
   <scm>
    	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</connection>
    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/commons</url>
   </scm>
+  <properties>
+    <packaging.type>jar</packaging.type>
+  </properties>
   <build>
     <resources>
         <resource>
@@ -96,6 +99,9 @@
   <profiles>
     <profile>
       <id>create-osgi-bundles-from-dependencies</id>
+      <properties>
+        <packaging.type>bundle</packaging.type>
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -125,6 +131,9 @@
     </profile>
     <profile>
       <id>audit</id>
+      <properties>
+        <packaging.type>jar</packaging.type>
+      </properties>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>

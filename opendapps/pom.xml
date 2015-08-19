@@ -35,7 +35,10 @@
     <version>0.10-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-    <packaging>jar</packaging>
+    <packaging>${packaging.type}</packaging>
+    <properties>
+        <packaging.type>jar</packaging.type>
+    </properties>
   <build>
     <plugins>
       <plugin>
@@ -81,6 +84,9 @@
     <profiles>
         <profile>
             <id>create-osgi-bundles-from-dependencies</id>
+            <properties>
+                <packaging.type>bundle</packaging.type>
+            </properties>
             <build>
                 <plugins>
                     <plugin>

@@ -20,10 +20,13 @@
 	</parent>
 	<artifactId>cas-protocol-api</artifactId>
 	<name>CAS Protocol</name>
-	<packaging>jar</packaging>
+	<packaging>${packaging.type}</packaging>
 	<profiles>
 		<profile>
 			<id>create-osgi-bundles-from-dependencies</id>
+			<properties>
+				<packaging.type>bundle</packaging.type>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -55,6 +58,9 @@
 		</profile>
 		<profile>
 			<id>audit</id>
+			<properties>
+				<packaging.type>jar</packaging.type>
+			</properties>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
@@ -81,6 +87,9 @@
 			</build>
 		</profile>
 	</profiles>
+	<properties>
+		<packaging.type>jar</packaging.type>
+	</properties>
 	<build>
 		<plugins>
 			<plugin>

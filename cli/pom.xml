@@ -28,10 +28,16 @@
 	</parent>
 	<artifactId>cas-cli</artifactId>
 	<name>CAS Command Line Interface</name>
-	<packaging>bundle</packaging>
+	<packaging>${packaging.type}</packaging>
+	<properties>
+		<packaging.type>jar</packaging.type>
+	</properties>
 	<profiles>
 		<profile>
 			<id>create-osgi-bundles-from-dependencies</id>
+			<properties>
+				<packaging.type>bundle</packaging.type>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>

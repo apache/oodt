@@ -24,7 +24,7 @@ the License.
     <version>0.10-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <packaging>jar</packaging>
+  <packaging>${packaging.type}</packaging>
   <artifactId>cas-metadata</artifactId>
   <name>Catalog and Archive Service Generic Multi-valued Metadata Container</name>
   <description>A Multi-valued, generic Metadata container class. The class uses an internal
@@ -42,6 +42,9 @@ the License.
    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>
   </scm>
+  <properties>
+    <packaging.type>jar</packaging.type>
+  </properties>
   <build>
     <resources>
       <resource>
@@ -103,6 +106,9 @@ the License.
   <profiles>
     <profile>
       <id>create-osgi-bundles-from-dependencies</id>
+      <properties>
+        <packaging.type>bundle</packaging.type>
+      </properties>
       <build>
         <plugins>
           <plugin>

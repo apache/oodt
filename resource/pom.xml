@@ -23,7 +23,7 @@ the License.
     <version>0.10-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <packaging>jar</packaging>
+  <packaging>${packaging.type}</packaging>
   <artifactId>cas-resource</artifactId>
   <name>Catalog and Archive Resource Management Component</name>
   <description>The resource management component of a Catalog and Archive Service. This component
@@ -34,9 +34,15 @@ the License.
    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/resource</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/resource</url>
   </scm>
+  <properties>
+    <packaging.type>jar</packaging.type>
+  </properties>
   <profiles>
     <profile>
       <id>create-osgi-bundles-from-dependencies</id>
+      <properties>
+        <packaging.type>bundle</packaging.type>
+      </properties>
       <build>
         <plugins>
           <plugin>

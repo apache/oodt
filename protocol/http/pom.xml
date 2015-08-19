@@ -18,12 +18,15 @@
 		<version>0.10-SNAPSHOT</version>
 		<relativePath>../../core/pom.xml</relativePath>
 	</parent>
-	<packaging>jar</packaging>
+	<packaging>${packaging.type}</packaging>
 	<artifactId>cas-protocol-http</artifactId>
 	<name>CAS Protocol HTTP Implementation</name>
 	<profiles>
 		<profile>
 			<id>create-osgi-bundles-from-dependencies</id>
+			<properties>
+				<packaging.type>bundle</packaging.type>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -53,6 +56,9 @@
 		</profile>
 		<profile>
 			<id>audit</id>
+			<properties>
+				<packaging.type>jar</packaging.type>
+			</properties>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
@@ -99,6 +105,9 @@
 			</build>
 		</profile>
 	</profiles>
+	<properties>
+		<packaging.type>jar</packaging.type>
+	</properties>
 	<build>
 		<resources>
 			<resource>

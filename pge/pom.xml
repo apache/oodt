@@ -25,10 +25,13 @@ the License.
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-pge</artifactId>
-  <packaging>jar</packaging>
+  <packaging>${packaging.type}</packaging>
   <name>CAS PGE Adaptor Framework</name>
   <description>Allows data processing jobs not written in conformance with the
         PCS PGE interface to be run within the PCS.</description>
+  <properties>
+    <packaging.type>jar</packaging.type>
+  </properties>
  <build>
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory> 
     <plugins>
@@ -61,6 +64,9 @@ the License.
   <profiles>
     <profile>
       <id>audit</id>
+      <properties>
+        <packaging.type>jar</packaging.type>
+      </properties>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
@@ -110,6 +116,9 @@ the License.
     </profile>
     <profile>
       <id>create-osgi-bundles-from-dependencies</id>
+      <properties>
+        <packaging.type>jar</packaging.type>
+      </properties>
       <build>
         <plugins>
           <plugin>
