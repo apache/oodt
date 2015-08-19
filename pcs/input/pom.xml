@@ -16,42 +16,30 @@ License for the specific language governing permissions and limitations under
 the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>pcs-input</artifactId>
   <parent>
-    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
+    <groupId>org.apache.oodt</groupId>
     <version>0.10-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
-  <name>Process Control System Input Data Package</name>
+  <artifactId>pcs-input</artifactId>
   <packaging>jar</packaging>
+  <name>Process Control System Input Data Package</name>
   <description>The Process Control System's data handling package. This package contains data structures
-  and readers and writers to write an input file format similar to HDF, as represented in XML.
-  </description>
+  and readers and writers to write an input file format similar to HDF, as represented in XML.</description>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+    </dependency>
+  </dependencies>
   <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <forkMode>pertest</forkMode>
-          <useSystemClassLoader>false</useSystemClassLoader>
-          <systemProperties>
-            <property>
-              <name>javax.xml.transform.TransformerFactory</name>
-              <value>com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl</value>
-            </property>
-          </systemProperties>
-           <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
-           <redirectTestOutputToFile>true</redirectTestOutputToFile>
-            <includes>
-              <include>**/*Test*.java</include>
-            </includes>
-        </configuration>
-      </plugin>  
-    </plugins>
     <resources>
       <resource>
         <targetPath>org/apache/oodt/pcs/input</targetPath>
@@ -61,16 +49,25 @@ the License.
         </includes>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>pertest</forkMode>
+          <useSystemClassLoader>false</useSystemClassLoader>
+          <systemProperties>
+            <property>
+              <name>javax.xml.transform.TransformerFactory</name>
+              <value>com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl</value>
+            </property>
+          </systemProperties>
+          <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <includes>
+            <include>**/*Test*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>

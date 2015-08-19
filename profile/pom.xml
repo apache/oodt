@@ -18,8 +18,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
+    <groupId>org.apache.oodt</groupId>
     <version>0.10-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
@@ -32,10 +32,49 @@
     The Profile Service catalogs metadata descriptions and provides
     creating, updating, and querying capabilities.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/profile</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/profile</url>
   </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-filemgr</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-xmlquery</artifactId>
+    </dependency>
+  </dependencies>
   <build>
     <resources>
       <resource>
@@ -65,12 +104,6 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>rat-maven-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <exclude>**/testdata/*</exclude>
-                <exclude>**/handlers/lightweight/package.html</exclude>
-              </excludes>
-            </configuration>
             <executions>
               <execution>
                 <phase>verify</phase>
@@ -79,48 +112,15 @@
                 </goals>
               </execution>
             </executions>
+            <configuration>
+              <excludes>
+                <exclude>**/testdata/*</exclude>
+                <exclude>**/handlers/lightweight/package.html</exclude>
+              </excludes>
+            </configuration>
           </plugin>
         </plugins>
       </build>
     </profile>
   </profiles>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-xmlquery</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-filemgr</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.icu</groupId>
-      <artifactId>icu4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>

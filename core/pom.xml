@@ -316,11 +316,11 @@ the License.
           </exclusion>
         </exclusions>
       </dependency>
-      <!--<dependency>
+      <dependency>
         <groupId>commons-cli</groupId>
         <artifactId>commons-cli</artifactId>
         <version>1.2</version>
-      </dependency>-->
+      </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
@@ -421,7 +421,7 @@ the License.
         <artifactId>servlet-api</artifactId>
         <version>2.4</version>
       </dependency>
-<!--      <dependency>
+      <!--      <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
         <version>2.3</version>
@@ -681,7 +681,7 @@ the License.
         <artifactId>oodt-sso</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
-<!--      <dependency>
+      <!--      <dependency>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-webapp-components</artifactId>
         <version>${project.parent.version}</version>
@@ -940,6 +940,30 @@ the License.
   <build>
     <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>2.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.tomcat.maven</groupId>
+          <artifactId>tomcat7-maven-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -949,23 +973,15 @@ the License.
         </configuration>
       </plugin>
       <plugin>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
+      <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
             <index>true</index>
           </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.6</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/*Test*.java</include>
-          </includes>
         </configuration>
       </plugin>
       <plugin>
@@ -987,10 +1003,28 @@ the License.
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Test*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <reporting>
     <plugins>
+      <!-- Checkstyle report -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <!--configLocation>checkstyle.xml</configLocation-->
+          <enableRulesSummary>false</enableRulesSummary>
+        </configuration>
+      </plugin>
       <!-- FIXME: currently produces a NullPointerException
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -1032,17 +1066,20 @@ the License.
           <aggregate>true</aggregate>
         </configuration>
       </plugin>
+      <!-- Project website generation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>2.0-beta-7</version>
+        <configuration>
+          <outputEncoding>UTF-8</outputEncoding>
+        </configuration>
+      </plugin>
       <!-- Unit tests report -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
         <version>2.3</version>
-      </plugin>
-      <!-- "Release Audit" report (checks license headers etc.) -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>rat-maven-plugin</artifactId>
-        <version>1.0-alpha-3</version>
       </plugin>
       <!-- FindBugs Report -->
       <plugin>
@@ -1054,24 +1091,11 @@ the License.
           <effort>Default</effort>
         </configuration>
       </plugin>
-      <!-- Checkstyle report -->
+      <!-- "Release Audit" report (checks license headers etc.) -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.1</version>
-        <configuration>
-          <!--configLocation>checkstyle.xml</configLocation-->
-          <enableRulesSummary>false</enableRulesSummary>
-        </configuration>
-      </plugin>
-      <!-- Project website generation -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>2.0-beta-7</version>
-        <configuration>
-          <outputEncoding>UTF-8</outputEncoding>
-        </configuration>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rat-maven-plugin</artifactId>
+        <version>1.0-alpha-3</version>
       </plugin>
     </plugins>
   </reporting>
@@ -1104,7 +1128,6 @@ the License.
               <docencoding>UTF-8</docencoding>
               <encoding>UTF-8</encoding>
             </configuration>
-
           </plugin>
         </plugins>
       </build>
