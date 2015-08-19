@@ -18,14 +18,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
+    <groupId>org.apache.oodt</groupId>
     <version>0.10-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-xmlquery</artifactId>
-  <name>Query Expression</name>
   <packaging>jar</packaging>
+  <name>Query Expression</name>
   <description>This component provides a way to express queries in a generic
     manner.  Its centerpiece is a class called XMLQuery that uses
     boolean postfix expressions to capture the domain, range, and
@@ -35,10 +35,21 @@
     pass a query and its results between servers, clients, nodes, and
     other components.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/xmlquery</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/xmlquery</url>
   </scm>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+    </dependency>
+  </dependencies>
   <build>
     <resources>
       <resource>
@@ -74,11 +85,6 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>rat-maven-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <exclude>**/oodt/xmlquery/package.html</exclude>
-              </excludes>
-            </configuration>
             <executions>
               <execution>
                 <phase>verify</phase>
@@ -87,22 +93,14 @@
                 </goals>
               </execution>
             </executions>
+            <configuration>
+              <excludes>
+                <exclude>**/oodt/xmlquery/package.html</exclude>
+              </excludes>
+            </configuration>
           </plugin>
         </plugins>
       </build>
     </profile>
   </profiles>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>

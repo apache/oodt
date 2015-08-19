@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE.txt file distributed with this work for
@@ -18,39 +18,35 @@ the License.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
+    <groupId>org.apache.oodt</groupId>
     <version>0.10-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-sso</artifactId>
-  <name>OODT Single Sign On Security Package</name>
   <packaging>jar</packaging>
-  <properties />
-  <build>
-    <plugins />
-  </build>
+  <name>OODT Single Sign On Security Package</name>
+  <distributionManagement></distributionManagement>
+  <properties></properties>
   <dependencies>
     <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-metadata</artifactId>
-      <version>${project.parent.version}</version>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
-      <version>3.0</version>
-    </dependency>      
+    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.4</version>
     </dependency>
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.3</version>
-    </dependency>    
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-metadata</artifactId>
+    </dependency>
   </dependencies>
-  <distributionManagement />
+  <build>
+    <plugins></plugins>
+  </build>
 </project>

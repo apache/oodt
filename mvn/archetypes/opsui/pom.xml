@@ -18,16 +18,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
+    <groupId>org.apache.oodt</groupId>
     <version>0.10-SNAPSHOT</version>
     <relativePath>../../../core</relativePath>
   </parent>
   <artifactId>opsui-archetype</artifactId>
   <packaging>maven-archetype</packaging>
-
   <name>OODT :: Archetypes :: OpsUI</name>
-
   <build>
     <extensions>
       <extension>
@@ -36,7 +34,6 @@
         <version>2.0-alpha-5</version>
       </extension>
     </extensions>
-
     <pluginManagement>
       <plugins>
         <plugin>

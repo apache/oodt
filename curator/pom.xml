@@ -68,7 +68,6 @@ the License.
 		<plugin>
 		    <groupId>org.apache.tomcat.maven</groupId>
 		    <artifactId>tomcat7-maven-plugin</artifactId>
-		    <version>2.2</version>
 		    <configuration>
 		        <port>8080</port>
 		        <systemProperties>
@@ -131,7 +130,6 @@ the License.
     <dependency>
         <groupId>org.apache.wicket</groupId>
         <artifactId>wicket</artifactId>
-        <version>${wicket.version}</version>
         <exclusions>
           <exclusion>
             <groupId>org.slf4j</groupId>
@@ -142,7 +140,6 @@ the License.
     <dependency>
         <groupId>org.apache.wicket</groupId>
         <artifactId>wicket-extensions</artifactId>
-        <version>${wicket.version}</version>
         <exclusions>
           <exclusion>
             <groupId>org.slf4j</groupId>
@@ -153,7 +150,6 @@ the License.
 	<dependency>
 		<groupId>commons-fileupload</groupId>
 		<artifactId>commons-fileupload</artifactId>
-		<version>1.2.1</version>
 	</dependency>
 	<dependency>
 		<groupId>commons-io</groupId>
@@ -162,23 +158,19 @@ the License.
 	<dependency>
 	    <groupId>commons-lang</groupId>
 	    <artifactId>commons-lang</artifactId>
-	    <version>2.3</version>
 	</dependency>
 	<dependency>
 	    <groupId>commons-collections</groupId>
 	    <artifactId>commons-collections</artifactId>
-	    <version>3.2.1</version>
 	</dependency>
     <dependency>
        <groupId>javax.servlet</groupId>
        <artifactId>servlet-api</artifactId>
-       <version>2.4</version>
        <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-filemgr</artifactId>
-      <version>${project.parent.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -189,12 +181,10 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>oodt-sso</artifactId>
-      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-metadata</artifactId>
-      <version>${project.parent.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -206,7 +196,6 @@ the License.
     <dependency>
       <groupId>net.sf.json-lib</groupId>
       <artifactId>json-lib</artifactId>      
-      <version>2.3</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -218,7 +207,6 @@ the License.
    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>2.6.0</version>
    </dependency>
   </dependencies>
 

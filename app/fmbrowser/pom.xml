@@ -18,8 +18,8 @@ the License.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
+    <groupId>org.apache.oodt</groupId>
     <version>0.10-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
@@ -30,34 +30,30 @@ the License.
      can view archived products' metadata, query for products with particular metadata, 
      and export results of queries to the MS Excel(c) file format.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/app/fmbrowser</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/app/fmbrowser</url>
   </scm>
-  <build>
-    <plugins />
-  </build>
   <dependencies>
     <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-metadata</artifactId>
-      <version>${project.parent.version}</version>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-filemgr</artifactId>
-      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-metadata</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
-      <version>3.2-FINAL</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins></plugins>
+  </build>
 </project>
