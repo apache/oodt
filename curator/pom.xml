@@ -70,7 +70,7 @@ the License.
 		    <artifactId>tomcat7-maven-plugin</artifactId>
 		    <version>2.2</version>
 		    <configuration>
-		        <port>8080</port>
+		        <port>8181</port>
 		        <systemProperties>
 		            <CATALINA_OPTS>-Djava.awt.headless=true -Dfile.encoding=UTF-8
 		                            -server -Xms1536m -Xmx1536m
@@ -220,6 +220,11 @@ the License.
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
       <version>2.6.0</version>
    </dependency>
+   <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>0.9.9-RC1</version>
+     </dependency>   
   </dependencies>
 
 </project>
