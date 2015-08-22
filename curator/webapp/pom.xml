@@ -20,7 +20,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.10-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-curator</artifactId>
@@ -157,11 +157,21 @@ the License.
       <version>${project.parent.version}</version>
       <type>war</type>
     </dependency>
-   <dependency>
-      <groupId>org.reflections</groupId>
-      <artifactId>reflections</artifactId>
-      <version>0.9.9-RC1</version>
-     </dependency>   
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-webapp-components</artifactId>
+      <version>${project.parent.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>cas-filemgr</artifactId>
+          <groupId>org.apache.oodt</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>cas-workflow</artifactId>
+          <groupId>org.apache.oodt</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>       
   </dependencies>
 
 </project>

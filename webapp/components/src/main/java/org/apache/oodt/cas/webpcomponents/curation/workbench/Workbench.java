@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.curation.workbench;
+package org.apache.oodt.cas.webpcomponents.curation.workbench;
 
 import java.util.HashMap;
 import java.util.HashSet;

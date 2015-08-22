@@ -24,10 +24,8 @@ the License.
         <version>0.10-SNAPSHOT</version>
         <relativePath>../../core/pom.xml</relativePath>
     </parent>
-	<groupId>org.apache.oodt</groupId>
 	<artifactId>oodt-webapp-components</artifactId>
 	<packaging>jar</packaging>
-	<version>0.10-SNAPSHOT</version>
 	<name>OODT Wicket Web Components</name>
 	<dependencies>
 		<dependency>
@@ -72,6 +70,11 @@ the License.
 			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
+	   <dependency>
+	      <groupId>org.reflections</groupId>
+	      <artifactId>reflections</artifactId>
+	      <version>0.9.9-RC1</version>
+	   </dependency>		
 	</dependencies>
         <profiles>
             <profile>
