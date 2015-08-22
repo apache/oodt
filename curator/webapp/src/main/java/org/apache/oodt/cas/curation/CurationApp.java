@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.oodt.cas.curation.workbench.Workbench;
+import org.apache.oodt.cas.webpcomponents.curation.workbench.Workbench;
 import org.apache.wicket.Page;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.protocol.http.WebApplication;
