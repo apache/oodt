@@ -24,7 +24,6 @@ the License.
         <relativePath>core/pom.xml</relativePath>
     </parent>
 
-    <groupId>org.apache.oodt</groupId>
     <artifactId>oodt</artifactId>
     <name>Apache OODT</name>
     <packaging>pom</packaging>
@@ -56,7 +55,8 @@ the License.
         <module>workflow</module>
         <module>crawler</module>
         <module>resource</module>
-        <!-- <module>curator</module> -->
+        <module>curator/curator-services</module>
+        <module>curator/curator-webapp</module>
         <module>pge</module>
         <module>mvn/plugins/cas-install</module>
         <module>mvn/archetypes</module>
