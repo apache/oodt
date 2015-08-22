@@ -1,4 +1,4 @@
-package org.apache.oodt.cas.curation.fileTree;
+package org.apache.oodt.cas.curation.workbench;
 
 import java.util.Set;
 import java.util.regex.Pattern;
