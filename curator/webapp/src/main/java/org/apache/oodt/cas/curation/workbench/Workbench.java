@@ -7,9 +7,9 @@ import org.apache.wicket.markup.html.WebComponent;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
-public class FileTree extends WebComponent{
+public class Workbench extends WebComponent{
 
-  public FileTree(String id) {
+  public Workbench(String id) {
     super(id);
   }
 
@@ -17,7 +17,7 @@ public class FileTree extends WebComponent{
 
   public static Set<String> getImageFiles() {
     Pattern pattern = Pattern.compile(".*\\.png");
-    return new Reflections(FileTree.class.getPackage(), new ResourcesScanner())
+    return new Reflections(Workbench.class.getPackage(), new ResourcesScanner())
         .getResources(pattern);
   }
 

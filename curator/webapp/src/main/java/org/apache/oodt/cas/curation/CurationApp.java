@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.oodt.cas.curation.workbench.FileTree;
+import org.apache.oodt.cas.curation.workbench.Workbench;
 import org.apache.wicket.Page;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.protocol.http.WebApplication;
@@ -20,14 +20,14 @@ public class CurationApp extends WebApplication {
   @Override
   protected void init() {
     super.init();
-    Set<String> resources = FileTree.getImageFiles();
+    Set<String> resources = Workbench.getImageFiles();
     if (resources != null){
       for (String resource: resources){
         String resName = new File(resource).getName();
         String resPath = "/images/"+resName;
         LOG.log(Level.INFO, "Mounting: ["+resPath+"]");
         mountSharedResource(resPath,
-            new ResourceReference(FileTree.class,
+            new ResourceReference(Workbench.class,
                 resName).getSharedResourceKey());
       }
     }

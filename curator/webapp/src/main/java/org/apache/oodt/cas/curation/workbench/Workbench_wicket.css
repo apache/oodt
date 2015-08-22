@@ -100,3 +100,292 @@ UL.fileTree A:hover, LI.helper A {
 .fileTree LI.ext_xml, LI.helper.ext_xml { background: url(../../../images/code.png) left top no-repeat; }
 .fileTree LI.ext_zip, LI.helper.ext_zip { background: url(../../../images/zip.png) left top no-repeat; }
 
+/**
+ * .CLR
+ * This is a utility which serves to reset things after a 
+ * series of floated elements
+ */
+.clr {
+    clear:both;
+}
+
+
+/* UI.TABS */
+.ui-tabs { padding: 0em; zoom: 1; font-size:11px; }
+.ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: 0px; }
+.ui-tabs .ui-tabs-nav li { position: relative; float: left; border-bottom-width: 0; margin: 0 .2em; padding: 0; }
+.ui-tabs .ui-tabs-nav li a { float: left; text-decoration: none; padding: .5em 1em; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 1px; border-bottom-width: 3px; border-bottom-color:#fff; margin-bottom:-2px; overflow:none; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
+.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+.ui-tabs .ui-tabs-panel { padding: 1em 0em; display: block; background: none; }
+.ui-tabs .ui-tabs-hide { display: none !important; }
+
+
+
+.ui-tabs .ui-tabs-nav li { border: solid 1px #ccc; background-color: #bbb; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected {  background-color: #fff; color: #555; }
+.ui-tabs .ui-tabs-nav li a { color: #fff; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a { color:  #555; }
+.ui-tabs .ui-tabs-nav {  }
+.ui-tabs .ui-tabs-panel { padding: 1em 0em; margin: 0em; border-top: solid 1px #ccc;}
+
+
+
+
+/* MAIN INTERFACE STRUCTURES */
+div.container {
+    position:relative;
+    border:solid 1px grey;
+    padding:5px;
+}
+
+div#browseStagingContainer, div#browseCatalogContainer {
+    position:relative;
+    width:47%;
+    border:solid 2px #ccc;
+    padding:2px;
+}
+div#browseStagingContainer {
+    position:relative;
+    float:left;
+}
+
+div#browseCatalogContainer {
+    position:relative;
+    float:right;
+}
+
+div#browseStaging {
+    position:relative;
+    float:left;
+    width:33%;
+    border:solid 1px #ccc;
+    overflow:scroll;    
+}
+div#browseCatalog {
+    position:relative;
+    float:left;
+    width:33%;
+    border:solid 1px #ccc;
+    overflow:scroll;    
+}
+div#stagingMetContainer {
+    position:relative;
+    float:right;
+    width:60%;
+    height:350px;
+    font-size:12px;
+}
+div#stagingMetExtractorSelection {
+    position:relative;
+    margin-bottom:3px;
+    display:none;
+}
+
+div#stagedMetadataWorkbenchContent {
+    position:relative;
+    height:323px;
+    background-color:#fff;
+    overflow:scroll;
+    border:solid 1px #ccc;  
+}
+div#catalogMetadataWorkbenchContent {
+    position:relative;
+    float:right;
+    width:60%;
+    height:350px;
+    background-color:#fff;
+    overflow:scroll;
+    border:solid 1px #ccc;  
+}
+
+.browser {
+    background:#FFFFFF none repeat scroll 0 0;
+    border-color:#BBBBBB #FFFFFF #FFFFFF #BBBBBB;
+    border-style:solid;
+    border-width:1px;
+    height:350px;
+    padding:5px;
+    width:200px;
+}
+.container.browsers, .container.tasks {
+    background-color:#EEEEEE;
+    border:solid 1px #ccc;
+    padding-top:18px;
+    margin:5px 0px;
+}
+.container h5 {
+    position:relative;
+    margin:-20px -4px 5px;
+    padding:0px;
+    font-family:arial,sans-serif;
+    text-transform:uppercase;
+    color:#999; 
+}
+
+.pathbar {
+    border:solid 1px #ccc;
+    background-color:#f4f4f4;
+    color:#222;
+    padding:3px;
+    margin-bottom:2px;  
+    font-family:courier,sans-serif;
+    font-size:11px;
+}
+
+
+/* METADATA EDITOR */
+div.editor {
+    position:relative;
+    padding:0px;    
+}
+
+div.editor.info {
+    padding:5px;    
+}
+
+div.editor table {
+    font-size:11px;
+    width:100%;
+}
+
+div.editor table tr {
+    
+}
+
+div.editor table tr th {
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+    padding:5px;
+    text-align:left;
+    background-color:#f6f6f6;
+    color:#555;
+}
+
+div.editor table tr td {
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+    padding:5px;
+}
+
+/* 
+ * INGESTION TASK LIST 
+ */
+
+
+.container.tasks {
+    padding:5px;
+    padding-top:20px;
+}
+.container.tasks h5 {
+    margin:-18px 0px 2px;
+}
+div#ingestionTaskList {
+    
+}
+div#ingestionTaskListContent {
+    background-color:#fff;
+    min-height:100px;
+    border:solid 1px #ccc;  
+}
+
+div#ingestionTaskListContent table {
+    font-size:11px;
+    width:100%;
+}
+
+div#ingestionTaskListContent table tr{
+
+}
+div#ingestionTaskListContent table tr th{
+    padding:4px;
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+    background-color:#f6f6f6;
+}
+div#ingestionTaskListContent table tr td{
+    padding:4px;
+    border-right:solid 1px #ccc;
+    border-bottom:solid 1px #ccc;
+}
+
+
+/* PRODUCTTYPE WORKBENCH */
+
+div#productTypeWorkbenchLabel {
+    font-size:12px;
+    font-family:arial,sans-serif;
+    text-transform:uppercase;
+    color:#555;
+    font-weight:normal;
+    padding:1px 1px 1px 4px;    
+}
+
+div#ptwbAddProducts {
+    padding:5px;    
+}
+
+div#productTypeWorkbenchContents .instructions {
+    font-size:90%;
+    color:#444; 
+}
+
+div#ptwbMetadataList table {
+    border:solid 1px #ccc;  
+}
+
+div#droppedFileList {
+
+    overflow:scroll;
+    min-height:50px;
+        
+}
+
+div.ptwbSectionBox {
+    border:solid 1px #ccc;
+    padding:2px;
+    margin:5px 0px 2px 0px; 
+}
+
+div.ptwbSectionBox h5 {
+    margin:0 0 4px;
+    padding:0px;    
+}
+
+div#droppedFileTarget {
+    height:30px;
+    border-color:#bdb;
+    background-color:#dfd;  
+}
+
+div#itMetExtractorSelector {
+    
+}
+
+div#itCreateIngestionTaskButton {
+    margin-top:5px; 
+}
+
+div.editor table tr td {
+    
+    position:relative;
+    padding-left:5px;
+    cursor:pointer;
+    _cursor:hand;
+    
+}
+
+div.editor table tr td img.pencil {
+    
+    position:relative;
+    left:0px;
+    cursor:pointer;
+    _cursor:hand;
+    
+}
+
+
+.ptwbMetadataList table {
+    border-top:solid 1px #ccc;
+}
