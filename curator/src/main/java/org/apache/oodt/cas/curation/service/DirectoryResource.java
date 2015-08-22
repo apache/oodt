@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.curation.service;
 
 //JDK imports
@@ -32,8 +31,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-
-
 @Path("directory")
 /**
  * 
@@ -49,7 +46,7 @@ public class DirectoryResource extends CurationService {
 
   @Context
   UriInfo uriInfo;
-  
+
   private static final long serialVersionUID = 715126227357637464L;
 
   @GET
@@ -60,12 +57,12 @@ public class DirectoryResource extends CurationService {
       @DefaultValue("true") @QueryParam("showFiles") boolean showFiles,
       @DefaultValue(FORMAT_HTML) @QueryParam("format") String format) {
     if (FORMAT_HTML.equals(format)) {
-      String response = this.getDirectoryAreaAsHTML(CurationService.config
-          .getStagingAreaPath(), path, showFiles);
+      String response = this.getDirectoryAreaAsHTML(
+          CurationService.config.getStagingAreaPath(), path, showFiles);
       return response;
     }
-    return this.getDirectoryAreaAsJSON(CurationService.config
-        .getStagingAreaPath(), path, showFiles);
+    return this.getDirectoryAreaAsJSON(
+        CurationService.config.getStagingAreaPath(), path, showFiles);
   }
 
   @GET
@@ -89,7 +86,6 @@ public class DirectoryResource extends CurationService {
     return productType;
   }
 
-
   public String getDirectoryAreaAsHTML(String base, String path,
       boolean showFiles) {
     StringBuffer html = new StringBuffer();
@@ -108,31 +104,36 @@ public class DirectoryResource extends CurationService {
 
     html.append("<ul class=\"fileTree\">\r\n");
     // Loop through and list directories first. Nicer for UI to get these first
-    for (int i = 0; i < f.length; i++) {
-      if (new File(startingPath + "/" + f[i]).isDirectory()) {
-        html.append(" <li class=\"directory collapsed\">");
-        html.append("<a href=\"#\" rel=\"").append(relativePath).append("/")
-            .append(f[i]).append("\">").append(f[i]).append("</a>");
-        html.append("</li>\r\n");
-      }
-    }
-    // If we are showing files now loop through and show files
-    if (showFiles) {
+
+    if (f != null) {
       for (int i = 0; i < f.length; i++) {
-        if (new File(startingPath + "/" + f[i]).isFile()) {
-          String filename = new File(startingPath + "/" + f[i]).getName();
-          String ext = filename.substring(filename.lastIndexOf('.') + 1);
-          html.append(" <li class=\"file draggy ext_").append(ext)
-              .append("\">");
+        if (new File(startingPath + "/" + f[i]).isDirectory()) {
+          html.append(" <li class=\"directory collapsed\">");
           html.append("<a href=\"#\" rel=\"").append(relativePath).append("/")
               .append(f[i]).append("\">").append(f[i]).append("</a>");
           html.append("</li>\r\n");
         }
       }
+      // If we are showing files now loop through and show files
+      if (showFiles) {
+        for (int i = 0; i < f.length; i++) {
+          if (new File(startingPath + "/" + f[i]).isFile()) {
+            String filename = new File(startingPath + "/" + f[i]).getName();
+            String ext = filename.substring(filename.lastIndexOf('.') + 1);
+            html.append(" <li class=\"file draggy ext_").append(ext)
+                .append("\">");
+            html.append("<a href=\"#\" rel=\"").append(relativePath)
+                .append("/").append(f[i]).append("\">").append(f[i])
+                .append("</a>");
+            html.append("</li>\r\n");
+          }
+        }
+      }
+
     }
     html.append("</ul>");
 
     return html.toString();
   }
-  
+
 }

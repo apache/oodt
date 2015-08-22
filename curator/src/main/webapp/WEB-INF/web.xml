@@ -35,6 +35,15 @@ the License.
 	<load-on-startup>1</load-on-startup>
 	</servlet>
 	
+	<servlet>
+	   <display-name>Curation Service</display-name>
+	   <servlet-name>Curation Service</servlet-name>
+	   <servlet-class>
+		 org.apache.oodt.cas.curation.service.CurationService
+	   </servlet-class>
+	   <load-on-startup>1</load-on-startup>
+	</servlet>
+	
     <filter>
         <filter-name>wicket.browser</filter-name>
         <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>

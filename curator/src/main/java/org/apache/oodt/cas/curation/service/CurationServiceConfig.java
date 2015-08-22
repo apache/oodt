@@ -19,10 +19,11 @@
 package org.apache.oodt.cas.curation.service;
 
 //OODT imports
-import org.apache.oodt.cas.curation.config.CuratorConfMetKeys;
+import org.apache.oodt.cas.curation.metadata.CuratorConfMetKeys;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.util.PathUtils;
+
 
 //JDK imports
 import java.net.URL;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 

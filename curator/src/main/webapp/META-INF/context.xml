@@ -21,16 +21,16 @@ the License.
         value="OODT"/>
 
 	<Parameter name="org.apache.oodt.cas.curator.metExtractorConf.uploadPath"
-		value="[OODT_HOME]/extractors/cas_curator" />
+		value="[OODT_HOME]/extractors" />
 
 	<Parameter name="org.apache.oodt.cas.curator.dataDefinition.uploadPath"
 		value="[FILEMGR_HOME]/policy" />
 		
     <Parameter name="org.apache.oodt.cas.curator.stagingAreaPath"
-        value="[OODT_HOME]/data/ingest"/>
+        value="[OODT_HOME]/data/staging"/>
     
     <Parameter name="org.apache.oodt.cas.curator.metAreaPath"
-        value="[OODT_HOME]]/data/met"/>
+        value="[OODT_HOME]/data/met"/>
     
     <Parameter name="org.apache.oodt.cas.curator.fmProps"
         value="[FILEMGR_HOME]/etc/filemgr.properties"/>
