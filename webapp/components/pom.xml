@@ -100,6 +100,16 @@ the License.
                                 <excludes>
                                     <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/workflow/instance/prototype.js</exclude>
                                     <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/workflow/instance/progress.js</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/src/jquery*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-treeview/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-treeview/demo/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-treeview/lib/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-ui/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-ui/css/smoothness/jquery-ui-1.7.2.custom.css</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/src/MIT-License.txt</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/media/Bach-SuiteNo2.mp3</exclude>
                                 </excludes>
                             </configuration>
                         </plugin>
