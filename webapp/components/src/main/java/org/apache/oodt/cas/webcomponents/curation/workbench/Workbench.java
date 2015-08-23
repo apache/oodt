@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.oodt.cas.webpcomponents.curation.workbench;
+package org.apache.oodt.cas.webcomponents.curation.workbench;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,27 +32,24 @@ public class Workbench extends Panel {
 
   private static final long serialVersionUID = 3911179455208050261L;
 
-  
   public Workbench(String id) {
     super(id);
   }
 
-
   public static Set<String> getImageFiles() {
     Pattern pattern = Pattern.compile(".*\\.(png|gif)");
-    
-    Set<String> resources = new Reflections(Workbench.class.getPackage(), new ResourcesScanner())
-        .getResources(pattern);
+    Set<String> resources = new Reflections(Workbench.class.getPackage()
+        .getName(), new ResourcesScanner()).getResources(pattern);
     Set<String> filteredResources = new HashSet<String>();
     Map<String, Boolean> resMap = new HashMap<String, Boolean>();
-    for(String res: resources){
+    for (String res : resources) {
       String resName = new File(res).getName();
-      if (!resMap.containsKey(resName)){
+      if (!resMap.containsKey(resName)) {
         resMap.put(resName, true);
         filteredResources.add(resName);
       }
     }
-    
+
     return filteredResources;
   }
 
