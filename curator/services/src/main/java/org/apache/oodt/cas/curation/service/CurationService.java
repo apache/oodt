@@ -15,14 +15,11 @@
  * limitations under the License.
  */
 
-
 package org.apache.oodt.cas.curation.service;
 
 //OODT imports
 import org.apache.oodt.cas.curation.metadata.CuratorConfMetKeys;
-import org.apache.oodt.cas.curation.util.SSOUtils;
 import org.apache.oodt.security.sso.SingleSignOn;
-
 
 //JDK imports
 import java.io.File;
@@ -35,19 +32,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriInfo;
-
 
 //JAX-RS imports
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
 
 //APACHE imports
 import org.apache.commons.lang.StringUtils;
@@ -157,19 +150,5 @@ public class CurationService extends HttpServlet implements CuratorConfMetKeys {
     return newPath;
 
   }
-  
-  /**
-   * Configures the web context persistence layer for the CAS SSO so that all
-   * services ({@link HttpServlet}s) that extend this implementation get the
-   * ability to configure an SSO object for free, essentially.
-   * 
-   * @param req
-   *          The HTTP request object.
-   * @param res
-   *          The HTTP response object.
-   */
-  protected void configureSingleSignOn(HttpServletRequest req,
-      HttpServletResponse res) {
-    this.sso = SSOUtils.getWebSingleSignOn(CurationService.config, req, res);
-  }
+
 }

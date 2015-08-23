@@ -138,23 +138,6 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
 
   /**
    * 
-   * @return The java class name (fully-qualified) of the CAS SSO security
-   *         implementation.
-   */
-  public String getSSOImplClass() {
-    return this.evaluateParameter(SSO_IMPL_CLASS);
-  }
-
-  /**
-   * 
-   * @return The display name of the project.
-   */
-  public String getProjectDisplayName() {
-    return this.evaluateParameter(PROJECT_DISPLAY_NAME);
-  }
-
-  /**
-   * 
    * @return The upload path for metadata extractor config files.
    */
   public String getMetExtrConfUploadPath() {
