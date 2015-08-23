@@ -17,7 +17,7 @@
 
 package org.apache.oodt.cas.curation;
 
-import org.apache.oodt.cas.webpcomponents.curation.workbench.Workbench;
+import org.apache.oodt.cas.webcomponents.curation.workbench.Workbench;
 import org.apache.wicket.markup.html.WebPage;
 
 public class HomePage extends WebPage {
