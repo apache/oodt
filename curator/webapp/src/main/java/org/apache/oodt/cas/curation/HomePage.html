@@ -20,11 +20,14 @@
 <title>Apache OODT Curation Interface</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <wicket:link>
-  <link type="text/css" rel="stylesheet" href="HomePage.css"/>
+  <link type="text/css" rel="stylesheet" href="HomePage_wicket.css"/>
 </wicket:link>    
+<wicket:remove>
+  <link type="text/css" rel="stylesheet" href="HomePage.css"/>
+</wicket:remove> 
 </head>
 
-<body onload="refreshIngestTaskList();registerIngestionTaskListener();">
+<body>
 <div id="page">
     <div id="cas-header">
         <div id="cas-logo-left"><!--  cas logo lhs --></div>
@@ -54,7 +57,7 @@
   
   <!--  so that it previews right -->
   <wicket:remove>	
-  <link type="text/css" rel="stylesheet" href="workbench/Workbench.css"/>
+  <link type="text/css" rel="stylesheet" href="../../../../../../../../../../webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/workbench/Workbench.css"/>
 	
 	<div class="page">
 	    <div class="container browsers">

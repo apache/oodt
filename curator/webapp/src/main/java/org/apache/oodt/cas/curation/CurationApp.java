@@ -48,6 +48,10 @@ public class CurationApp extends WebApplication {
                 resName).getSharedResourceKey());
       }
     }
+    
+    mountSharedResource("/images/blackfade-syncd.jpg", 
+        new ResourceReference(HomePage.class, "blackfade-syncd.jpg")
+    .getSharedResourceKey());
   }
 
   @Override

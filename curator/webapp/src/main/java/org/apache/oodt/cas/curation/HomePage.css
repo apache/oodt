@@ -26,8 +26,7 @@ div#cas-header {
     text-align:right;
     border-bottom:solid 1px #000;
     overflow:none;
-    background:url(../../img/blackfade-syncd.jpg) scroll 0px 0px repeat-x;
-    background-color:#000;
+    background:url(blackfade-syncd.jpg) scroll 0px 0px repeat-x;
 }
 
 /* DIV.CAS-LOGO-LEFT */
