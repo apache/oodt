@@ -1,4 +1,3 @@
-<%@page import="org.apache.oodt.cas.curation.util.SSOUtils"%>
 <%@page import="org.apache.oodt.security.sso.SingleSignOn"%>
 <%
 // Licensed to the Apache Software Foundation (ASF) under one or more contributor
@@ -17,7 +16,7 @@
 // the License.
 
 // use new single sign on API
-SingleSignOn auth = SSOUtils.getWebSingleSignOn(application, request,response);
+SingleSignOn auth = null;//SSOUtils.getWebSingleSignOn(application, request,response);
 
 String refererUrl = request.getParameter("from");
 auth.logout();

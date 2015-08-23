@@ -27,7 +27,7 @@ the License.
         </init-param>
         <init-param>
             <param-name>curator.homepage</param-name>
-            <param-value>org.apache.oodt.cas.curation.HomePage</param-value>
+            <param-value>org.apache.oodt.cas.curation.workbench.WorkbenchPage</param-value>
         </init-param>
     </filter>
 

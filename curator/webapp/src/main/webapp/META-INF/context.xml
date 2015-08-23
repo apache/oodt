@@ -23,7 +23,7 @@ the License.
 	<Parameter name="org.apache.oodt.security.sso.implClass"
 	          value="org.apache.oodt.security.sso.DummyImpl"/>
 	          
-    <Parameter name="curator.homepage" value="org.apache.oodt.cas.curation.HomePage"/>	
+    <Parameter name="curator.homepage" value="org.apache.oodt.cas.curation.workbench.WorkbenchPage"/>	
     
     <!--  needed by Curation Services -->		   
 

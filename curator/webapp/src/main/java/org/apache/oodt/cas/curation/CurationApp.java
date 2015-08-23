@@ -21,51 +21,74 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.oodt.cas.curation.login.LoginPage;
 import org.apache.oodt.cas.webcomponents.curation.workbench.Workbench;
 import org.apache.wicket.Page;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
 import org.apache.wicket.util.file.File;
 
 public class CurationApp extends WebApplication {
-  
-  private static final Logger LOG = Logger.getLogger(CurationApp.class.getName());
 
-	/* (non-Javadoc)
+  private static final Logger LOG = Logger.getLogger(CurationApp.class
+      .getName());
+
+  public static final String PROJECT_DISPLAY_NAME = "org.apache.oodt.cas.curator.projectName";
+
+  public static final String SSO_IMPL_CLASS = "org.apache.oodt.security.sso.implClass";
+  
+  public static final String CURATOR_HOMEPAGE = "curator.homepage";
+  
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.wicket.protocol.http.WebApplication#init()
    */
   @Override
   protected void init() {
     super.init();
     Set<String> resources = Workbench.getImageFiles();
-    if (resources != null){
-      for (String resource: resources){
+    if (resources != null) {
+      for (String resource : resources) {
         String resName = new File(resource).getName();
-        String resPath = "/images/"+resName;
-        LOG.log(Level.INFO, "Mounting: ["+resPath+"]");
-        mountSharedResource(resPath,
-            new ResourceReference(Workbench.class,
-                resName).getSharedResourceKey());
+        String resPath = "/images/" + resName;
+        LOG.log(Level.INFO, "Mounting: [" + resPath + "]");
+        mountSharedResource(resPath, new ResourceReference(Workbench.class,
+            resName).getSharedResourceKey());
       }
     }
+
+    mountSharedResource("/images/blackfade-syncd.jpg", new ResourceReference(
+        HomePage.class, "blackfade-syncd.jpg").getSharedResourceKey());
     
-    mountSharedResource("/images/blackfade-syncd.jpg", 
-        new ResourceReference(HomePage.class, "blackfade-syncd.jpg")
-    .getSharedResourceKey());
+    MixedParamUrlCodingStrategy loginPageMount = new MixedParamUrlCodingStrategy(
+        "auth", LoginPage.class, new String[] { "action"});
+    mount(loginPageMount);
   }
 
   @Override
-	public Class<? extends Page> getHomePage() {
-		try {
-			return (Class<? extends Page>) Class.forName(getHomePageClass());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return HomePage.class;
-		}
-	}
+  public Class<? extends Page> getHomePage() {
+    try {
+      return (Class<? extends Page>) Class.forName(getHomePageClass());
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+      return HomePage.class;
+    }
+  }
 
-	public String getHomePageClass() {
-		return getServletContext().getInitParameter("curator.homepage");
-	}
+  public String getHomePageClass() {
+    return getServletContext().getInitParameter(CURATOR_HOMEPAGE);
+  }
+
+  public String getSSOClass() {
+    return getServletContext().getInitParameter(
+        SSO_IMPL_CLASS);
+  }
+
+  public String getProjectName() {
+    return getServletContext().getInitParameter(
+        PROJECT_DISPLAY_NAME);
+  }
 
 }

@@ -159,7 +159,12 @@ the License.
           <groupId>org.apache.oodt</groupId>
         </exclusion>
       </exclusions>
-    </dependency>       
+    </dependency>  
+    <dependency>
+       <groupId>org.apache.oodt</groupId>
+       <artifactId>oodt-sso</artifactId>
+       <version>${project.parent.version}</version>
+    </dependency>         
   </dependencies>
 
 </project>
