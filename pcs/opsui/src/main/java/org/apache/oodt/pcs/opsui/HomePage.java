@@ -22,7 +22,6 @@ package org.apache.oodt.pcs.opsui;
 import org.apache.oodt.pcs.opsui.config.ConfigPage;
 import org.apache.oodt.pcs.opsui.status.StatusPage;
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.Link;
 

@@ -62,7 +62,12 @@ the License.
 			"classic"    => The original, OCO (Orbiting Carbon Observatory) skin for OPSUI
 		OR add your own!
 	-->
-	<Parameter name="opsui.skin" value="cleanwhite"/>
+	<Parameter name="opsui.skin" value=""/>
+	
+	<!-- 
+	if you use the classic skin, change the home page to 
+	                org.apache.oodt.pcs.opsui.status.StatusPage
+	 -->
 	<Parameter name="opsui.homepage" value="org.apache.oodt.pcs.opsui.HomePage"/>
 	
 	
