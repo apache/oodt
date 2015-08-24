@@ -17,6 +17,7 @@
 
 package org.apache.oodt.cas.curation;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +43,7 @@ public class CurationApp extends WebApplication {
   public static final String SSO_IMPL_CLASS = "org.apache.oodt.security.sso.implClass";
 
   public static final String CURATOR_HOMEPAGE = "curator.homepage";
-  
+
   public static final String CURATOR_SKIN = "org.apache.oodt.cas.curator.skin";
 
   /*
@@ -53,19 +54,13 @@ public class CurationApp extends WebApplication {
   @Override
   protected void init() {
     super.init();
-    Set<String> resources = Workbench.getImageFiles();
-    if (resources != null) {
-      for (String resource : resources) {
-        String resName = new File(resource).getName();
-        String resPath = "/images/" + resName;
-        LOG.log(Level.INFO, "Mounting: [" + resPath + "]");
-        mountSharedResource(resPath, new ResourceReference(Workbench.class,
-            resName).getSharedResourceKey());
-      }
-    }
-
-    mountSharedResource("/images/blackfade-syncd.jpg", new ResourceReference(
-        HomePage.class, "blackfade-syncd.jpg").getSharedResourceKey());
+    Set<String> benchResources = Workbench.getImageFiles();
+    String localPath = HomePage.class.getPackage().getName();
+    Set<String> localResources = Workbench.getImageFiles(localPath);
+    benchResources = filterBenchResources(benchResources, localResources,
+        localPath);
+    doImageMounts(benchResources, (Class<?>) Workbench.class);
+    doImageMounts(localResources, (Class<?>) HomePage.class);
 
     MixedParamUrlCodingStrategy loginPageMount = new MixedParamUrlCodingStrategy(
         "auth", LoginPage.class, new String[] { "action" });
@@ -93,8 +88,8 @@ public class CurationApp extends WebApplication {
   public String getSSOImplClass() {
     return getServletContext().getInitParameter(SSO_IMPL_CLASS);
   }
-  
-  public String getSkin(){
+
+  public String getSkin() {
     return getServletContext().getInitParameter(CURATOR_SKIN);
   }
 
@@ -109,10 +104,44 @@ public class CurationApp extends WebApplication {
   public Session newSession(Request request, Response response) {
     CurationSession session = new CurationSession(request);
     String skin = getSkin();
-    if (skin != null && !skin.equals("")){
-      session.setStyle(skin);  
+    if (skin != null && !skin.equals("")) {
+      LOG.log(Level.INFO, "Setting skin to: [" + skin + "]");
+      session.setStyle(skin);
     }
-    return new CurationSession(request);
+    return session;
   }
 
+  private Set<String> filterBenchResources(Set<String> bench,
+      Set<String> local, String localPrefix) {
+    if (local == null || (local != null && local.size() == 0))
+      return bench;
+    if (bench == null || (bench != null && bench.size() == 0))
+      return bench;
+    Set<String> filtered = new HashSet<String>();
+    for (String bResource : bench) {
+      String localName = new File(bResource).getName();
+      String compare = localPrefix + localName;
+      if (!local.contains(compare)) {
+        filtered.add(bResource);
+      } else {
+        LOG.log(Level.INFO, "Filtered conflicting bench resource: ["
+            + bResource + "]");
+      }
+
+    }
+    return filtered;
+  }
+
+  private void doImageMounts(Set<String> resources, Class<?> clazz) {
+    if (resources != null) {
+      for (String resource : resources) {
+        String resName = new File(resource).getName();
+        String resPath = "/images/" + resName;
+        LOG.log(Level.INFO, "Mounting: [" + resPath + "] origName: [" + resName
+            + "]: resource: [" + resource + "]");
+        mountSharedResource(resPath,
+            new ResourceReference(clazz, resName).getSharedResourceKey());
+      }
+    }
+  }
 }

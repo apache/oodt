@@ -45,6 +45,9 @@ the License.
     <Parameter name="org.apache.oodt.cas.curator.metExtension"
         value=".met"/>
         
+    <!-- switch to edrn to see the NCI Early Detection Research Network
+         curator skin
+     -->
     <Parameter name="org.apache.oodt.cas.curator.skin"
         value=""/>
         
