@@ -75,6 +75,12 @@ the License.
 		  <version>${project.parent.version}</version>
 		  <type>war</type>
 		</dependency>
+	    <dependency>
+	      <groupId>org.apache.oodt</groupId>
+	      <artifactId>curator-services</artifactId>
+	      <version>${project.parent.version}</version>
+	      <type>war</type>
+	    </dependency>		
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>pcs-core</artifactId>
@@ -189,6 +195,28 @@ the License.
 					<debug>true</debug>
 				</configuration>
 			</plugin>
-		</plugins>
-	</build>
+            <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+		            <version>2.2</version>
+		            <configuration>
+		                <port>8181</port>
+		                <systemProperties>
+		                    <CATALINA_OPTS>-Djava.awt.headless=true -Dfile.encoding=UTF-8
+		                                    -server -Xms1536m -Xmx1536m
+		                                    -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m
+		                                    -XX:MaxPermSize=512m -XX:+DisableExplicitGC
+		                                    -XX:+UseConcMarkSweepGC
+		                                    -XX:+CMSIncrementalMode
+		                                    -XX:+CMSIncrementalPacing
+		                                    -XX:CMSIncrementalDutyCycleMin=0
+		                                    -XX:-TraceClassUnloading
+		                    </CATALINA_OPTS>
+		                </systemProperties>
+		                <contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
+		                <path>/${project.build.finalName}</path>  
+		            </configuration>        
+            </plugin>    
+        </plugins>	
+    </build>
 	</project>

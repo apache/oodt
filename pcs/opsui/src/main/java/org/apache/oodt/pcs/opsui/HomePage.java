@@ -89,6 +89,14 @@ public class HomePage extends OPSUIWebPage {
         params.add("tab", "File Manager");
         setResponsePage(ConfigPage.class, params);  
       }
-  });    
+  });   
+    
+    add(new Link("curate_link"){
+      @Override
+      public void onClick() {
+        setResponsePage(WorkbenchPage.class);
+      }
+    });
+    
   }
 }
