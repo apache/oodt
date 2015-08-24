@@ -24,7 +24,10 @@ import java.util.logging.Logger;
 import org.apache.oodt.cas.curation.login.LoginPage;
 import org.apache.oodt.cas.webcomponents.curation.workbench.Workbench;
 import org.apache.wicket.Page;
+import org.apache.wicket.Request;
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.Response;
+import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
 import org.apache.wicket.util.file.File;
@@ -37,9 +40,9 @@ public class CurationApp extends WebApplication {
   public static final String PROJECT_DISPLAY_NAME = "org.apache.oodt.cas.curator.projectName";
 
   public static final String SSO_IMPL_CLASS = "org.apache.oodt.security.sso.implClass";
-  
+
   public static final String CURATOR_HOMEPAGE = "curator.homepage";
-  
+
   /*
    * (non-Javadoc)
    * 
@@ -61,9 +64,9 @@ public class CurationApp extends WebApplication {
 
     mountSharedResource("/images/blackfade-syncd.jpg", new ResourceReference(
         HomePage.class, "blackfade-syncd.jpg").getSharedResourceKey());
-    
+
     MixedParamUrlCodingStrategy loginPageMount = new MixedParamUrlCodingStrategy(
-        "auth", LoginPage.class, new String[] { "action"});
+        "auth", LoginPage.class, new String[] { "action" });
     mount(loginPageMount);
   }
 
@@ -81,14 +84,25 @@ public class CurationApp extends WebApplication {
     return getServletContext().getInitParameter(CURATOR_HOMEPAGE);
   }
 
-  public String getSSOClass() {
-    return getServletContext().getInitParameter(
-        SSO_IMPL_CLASS);
+  public String getProjectName() {
+    return getServletContext().getInitParameter(PROJECT_DISPLAY_NAME);
   }
 
-  public String getProjectName() {
-    return getServletContext().getInitParameter(
-        PROJECT_DISPLAY_NAME);
+  public String getSSOImplClass() {
+    return getServletContext().getInitParameter(SSO_IMPL_CLASS);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.wicket.protocol.http.WebApplication#newSession(org.apache.wicket
+   * .Request, org.apache.wicket.Response)
+   */
+  @Override
+  public Session newSession(Request request, Response response) {
+    System.out.println("CALLED!");
+    return new CurationSession(request);
   }
 
 }

@@ -10,6 +10,11 @@
     margin: 0 auto;
 }
 
+#centered{
+	width:90%; 
+    margin-left:15%; 
+    margin-right:15%;
+}
 #invalid_creds{
 	align:center;
 	margin:0px;
@@ -26,10 +31,26 @@
 	font-size:90%;
 }
 
+#spacer{
+    align:center;
+    margin:0px;
+    margin-bottom:5px;
+    width:230px;
+    font-size:90%;
+}
+
 #section_title{
 	 width: auto; 
 	 font-size: 22px; 
 	 font-weight: bold; 
 	 margin-top: 24px; 
 	 text-align: center;
+}
+
+#password_txt{
+	text-align:right;
+}
+
+#username_txt{
+	text-align:right;
 }

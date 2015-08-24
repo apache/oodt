@@ -56,18 +56,18 @@
 <br/><br/>
 
 <div id="login">
-<form id="login_form" method="post">
- <div id="invalid_creds" class="error">Invalid Credentials...<br/>Please try again.</div>
- <div id="connect_error" class="error">Unable to contact LDAP authentication server...<br/>Please try again later.</div>
+<form id="login_form" wicket:id="login_form"> 
+ <div id="invalid_creds" class="error" wicket:id="invalid_creds">Invalid Credentials...<br/>Please try again.</div>
+ <div id="connect_error" class="error" wicket:id="connect_error">Unable to contact LDAP authentication server...<br/>Please try again later.</div>
  
-  <table>
+  <table id="centered">
    <tbody><tr>
-     <td>Username</td>
-     <td><input id="login_username" value="" size="20" maxlength="255" type="text"></td>
+     <td id="username_txt">Username</td>
+     <td><input wicket:id="login_username" id="login_username" value="" size="20" maxlength="255" type="text"></td>
    </tr>
    <tr>
-     <td>Password</td>
-     <td><input id="password" value="" size="20" maxlength="255" type="password"></td>
+     <td id="password_txt">Password</td>
+     <td><input wicket:id="password" id="password" value="" size="20" maxlength="255" type="password"></td>
    </tr>
    <tr>
      <td>&nbsp;</td>

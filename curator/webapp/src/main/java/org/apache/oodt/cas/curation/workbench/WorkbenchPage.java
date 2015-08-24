@@ -17,13 +17,25 @@
 
 package org.apache.oodt.cas.curation.workbench;
 
+import org.apache.oodt.cas.curation.CurationSession;
 import org.apache.oodt.cas.curation.HomePage;
+import org.apache.oodt.cas.curation.login.LoginPage;
 import org.apache.oodt.cas.webcomponents.curation.workbench.Workbench;
+import org.apache.wicket.PageParameters;
 
 public class WorkbenchPage extends HomePage {
 
   public WorkbenchPage() {
     super();
+    
+    CurationSession session = (CurationSession)getSession();
+
+    if (!session.isLoggedIn()) {
+      PageParameters params = new PageParameters();
+      params.add("action", "login");
+      setResponsePage(LoginPage.class, params);
+    }
+    
     add(new Workbench(
         "curator_workbench"));
 
