@@ -2,6 +2,12 @@ Apache OODT Change Log
 ======================
 Release 0.10 - Current Development
 
+* OODT-870 Integrate Curator into OPSUI (mattmann)
+
+* OODT-842 create restful version of cas curator services (mattmann)
+
+* OODT-824 Port the Curator to Apache Wicket (mattmann)
+
 * OODT-861 Workflow Manager client will print the list of task ids for a given workflow, if requested (luca)
 
 * OODT-854 Enable File Manager and Resource Manager to collect configuration files by parsing a directory tree recursively (luca)
