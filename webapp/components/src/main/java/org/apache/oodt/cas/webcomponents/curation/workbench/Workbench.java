@@ -37,9 +37,13 @@ public class Workbench extends Panel {
   }
 
   public static Set<String> getImageFiles() {
-    Pattern pattern = Pattern.compile(".*\\.(png|gif)");
-    Set<String> resources = new Reflections(Workbench.class.getPackage()
-        .getName(), new ResourcesScanner()).getResources(pattern);
+    return getImageFiles(Workbench.class.getPackage().getName());
+  }
+
+  public static Set<String> getImageFiles(String packageName) {
+    Pattern pattern = Pattern.compile(".*\\.(png|gif|jpg|jpeg|jp2)");
+    Set<String> resources = new Reflections(packageName, new ResourcesScanner())
+        .getResources(pattern);
     Set<String> filteredResources = new HashSet<String>();
     Map<String, Boolean> resMap = new HashMap<String, Boolean>();
     for (String res : resources) {
