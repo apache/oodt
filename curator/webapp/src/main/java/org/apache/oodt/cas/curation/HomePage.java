@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.curation;
 
 import org.apache.oodt.cas.curation.login.LoginPage;
+import org.apache.oodt.cas.curation.workbench.WorkbenchPage;
 import org.apache.wicket.Application;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
@@ -77,6 +78,13 @@ public class HomePage extends WebPage {
 
     String projectName = app.getProjectName() + " CAS Curation";
     add(new Label("project_name", projectName));
+    add(new Label("crumb_name", "Main"));
+    add(new Link<String>("home_link"){
+      @Override
+      public void onClick() {
+        setResponsePage(WorkbenchPage.class);
+      }
+    });
   }
 
 }

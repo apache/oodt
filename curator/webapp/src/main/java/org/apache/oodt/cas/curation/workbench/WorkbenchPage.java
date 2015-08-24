@@ -22,6 +22,7 @@ import org.apache.oodt.cas.curation.HomePage;
 import org.apache.oodt.cas.curation.login.LoginPage;
 import org.apache.oodt.cas.webcomponents.curation.workbench.Workbench;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.basic.Label;
 
 public class WorkbenchPage extends HomePage {
 
@@ -38,6 +39,7 @@ public class WorkbenchPage extends HomePage {
     
     add(new Workbench(
         "curator_workbench"));
+    replace(new Label("crumb_name", "Workbench"));
 
   }
 

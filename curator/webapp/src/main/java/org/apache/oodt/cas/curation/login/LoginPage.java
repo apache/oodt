@@ -52,6 +52,7 @@ public class LoginPage extends HomePage {
     String action = parameters.getString("action");
     String appNameString = app.getProjectName()+" CAS Curation Interface";
     add(new Label("login_project_name", appNameString));
+    replace(new Label("crumb_name", "Login"));
     final WebMarkupContainer creds = new WebMarkupContainer("invalid_creds");
     final WebMarkupContainer connect = new WebMarkupContainer("connect_error");
     creds.setVisible(false);

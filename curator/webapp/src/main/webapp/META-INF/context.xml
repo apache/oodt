@@ -45,6 +45,9 @@ the License.
     <Parameter name="org.apache.oodt.cas.curator.metExtension"
         value=".met"/>
         
+    <Parameter name="org.apache.oodt.cas.curator.skin"
+        value=""/>
+        
     <Parameter name="org.apache.oodt.cas.fm.url"
         value="[FILEMGR_URL]"/>
         <Parameter name="org.apache.oodt.cas.curator.catalogFactoryClass" 

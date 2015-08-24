@@ -42,6 +42,8 @@ public class CurationApp extends WebApplication {
   public static final String SSO_IMPL_CLASS = "org.apache.oodt.security.sso.implClass";
 
   public static final String CURATOR_HOMEPAGE = "curator.homepage";
+  
+  public static final String CURATOR_SKIN = "org.apache.oodt.cas.curator.skin";
 
   /*
    * (non-Javadoc)
@@ -91,6 +93,10 @@ public class CurationApp extends WebApplication {
   public String getSSOImplClass() {
     return getServletContext().getInitParameter(SSO_IMPL_CLASS);
   }
+  
+  public String getSkin(){
+    return getServletContext().getInitParameter(CURATOR_SKIN);
+  }
 
   /*
    * (non-Javadoc)
@@ -101,7 +107,11 @@ public class CurationApp extends WebApplication {
    */
   @Override
   public Session newSession(Request request, Response response) {
-    System.out.println("CALLED!");
+    CurationSession session = new CurationSession(request);
+    String skin = getSkin();
+    if (skin != null && !skin.equals("")){
+      session.setStyle(skin);  
+    }
     return new CurationSession(request);
   }
 
