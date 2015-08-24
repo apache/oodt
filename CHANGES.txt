@@ -6,6 +6,8 @@ Release 0.10 - Current Development
 
 * OODT-842 create restful version of cas curator services (mattmann)
 
+* OODT-838 Separate RESTful Servers and Clients (Michael Starch, mattmann)
+
 * OODT-824 Port the Curator to Apache Wicket (mattmann)
 
 * OODT-861 Workflow Manager client will print the list of task ids for a given workflow, if requested (luca)
