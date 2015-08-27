@@ -2,6 +2,8 @@ Apache OODT Change Log
 ======================
 Release 0.10 - Current Development
 
+* OODT-303 Add support in the Grid Package to throw an HTTP Servlet Response (Michael Cayanan via mattmann)
+
 * OODT-480 Balance: default view not found (Nesbert Hidalgo via mattmann)
 
 * OODT-598 XMLQuery DIS-style query parser needs to treat "#" as a word character (kelly via mattmann)
