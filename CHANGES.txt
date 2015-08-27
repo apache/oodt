@@ -2,6 +2,8 @@ Apache OODT Change Log
 ======================
 Release 0.10 - Current Development
 
+* OODT-480 Balance: default view not found (Nesbert Hidalgo via mattmann)
+
 * OODT-598 XMLQuery DIS-style query parser needs to treat "#" as a word character (kelly via mattmann)
 
 * OODT-870 Integrate Curator into OPSUI (mattmann)
