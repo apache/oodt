@@ -2,6 +2,8 @@ Apache OODT Change Log
 ======================
 Release 0.10 - Current Development
 
+* OODT-686 AddProductTypeCliAction should prompt for ProductTypeId (rverma, mattmann)
+
 * OODT-302 Add support in the xmlquery package to handle HTTP Redirection (Michael Cayanan via mattmann)
 
 * OODT-303 Add support in the Grid Package to throw an HTTP Servlet Response (Michael Cayanan via mattmann)
