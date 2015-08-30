@@ -2,6 +2,9 @@ Apache OODT Change Log
 ======================
 Release 0.10 - Current Development
 
+* OODT-244 Allow the Resource Manager scheduler to cycle on a non-integer 
+  number of seconds (Gabe Resneck via mattmann)
+
 * OODT-864 Upgrade to Tika 1.10 (mattmann,tpalsulich)
 
 * OODT-686 AddProductTypeCliAction should prompt for ProductTypeId (rverma, mattmann)
