@@ -62,6 +62,10 @@
 		class="org.apache.oodt.cas.resource.cli.action.GetQueuesCliAction">
 		<property name="description" value="Gets list of queues" />
 	</bean>
+        <bean id="getQueuedJobs"
+                class="org.apache.oodt.cas.resource.cli.action.GetQueuedJobsCliAction">
+                <property name="description" value="Gets list of jobs currently in the queue" />
+        </bean>
 	<bean id="getQueuesWithNode"
 		class="org.apache.oodt.cas.resource.cli.action.GetQueuesWithNodeCliAction">
 		<property name="description" value="Gets list of queues which contain given node" />

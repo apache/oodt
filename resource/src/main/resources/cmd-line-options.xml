@@ -55,14 +55,16 @@
 					p:option-ref="getNodes" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="getQueues" p:required="false" />
+                                <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+                                        p:option-ref="getQueuedJobs" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="addNode" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="removeNode" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="setNodeCapacity" p:required="false" />
-        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
-          p:option-ref="getExecNode" p:required="false" />
+                                <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+                                        p:option-ref="getExecNode" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="addQueue" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
@@ -598,4 +600,24 @@
       <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
     </property>
   </bean>
+
+        <bean id="getQueuedJobs" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+                p:isSubOption="true">
+                <property name="shortOption" value="qjobs" />
+                <property name="longOption" value="getQueuedJobs" />
+                <property name="description" value="Triggers getQueuedJobs Action" />
+                <property name="hasArgs" value="false" />
+                <property name="staticArgs">
+                        <list>
+                                <value>getQueuedJobs</value>
+                        </list>
+                </property>
+                <property name="requirementRules">
+                        <list>
+                                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+				      p:actionName="getQueuedJobs" p:relation="REQUIRED" />
+                        </list>
+                </property>
+        </bean>
+
 </beans>

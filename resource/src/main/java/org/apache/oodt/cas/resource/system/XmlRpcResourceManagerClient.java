@@ -27,9 +27,11 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
+import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.JobStatus;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
+import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
@@ -486,7 +488,19 @@ public class XmlRpcResourceManagerClient {
     	}
     }
 
-  private static String getReadableJobStatus(String status) {
+   public List getQueuedJobs() throws JobQueueException{
+        Vector queuedJobs = null;
+           
+        try{
+	   queuedJobs = (Vector)client.execute("resourcemgr.getQueuedJobs", new Vector<Object>());
+           }catch(Exception e){
+	      throw new JobQueueException(e.getMessage(), e);
+           }
+	    
+           return XmlRpcStructFactory.getJobListFromXmlRpc(queuedJobs);
+  }  
+
+  public static String getReadableJobStatus(String status) {
     if (status.equals(JobStatus.SUCCESS)) {
       return "SUCCESS";
     } else if (status.equals(JobStatus.FAILURE)) {
@@ -499,7 +513,7 @@ public class XmlRpcResourceManagerClient {
       return "SCHEDULED";
     } else if (status.equals(JobStatus.KILLED)) {
       return "KILLED";
-    } else
-      return null;
+    }
+    else return null;
   }
 }

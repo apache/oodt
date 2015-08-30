@@ -2,6 +2,9 @@ Apache OODT Change Log
 ======================
 Release 0.10 - Current Development
 
+* OODT-247 Resource Manager client should allow users to see what jobs are 
+  currently in the queue (Gabe Resneck, mattmann)
+
 * OODT-244 Allow the Resource Manager scheduler to cycle on a non-integer 
   number of seconds (Gabe Resneck via mattmann)
 

@@ -43,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -336,6 +337,20 @@ public class XmlRpcResourceManager {
     	int capacity = node.getCapacity();
     	int load = (this.scheduler.getMonitor().getLoad(node)) * -1 + capacity;
     	return load + "/" + capacity;
+    }
+    
+    public List getQueuedJobs() throws JobQueueException{
+    	Vector jobs = new Vector();
+    	List jobSpecs = this.scheduler.getJobQueue().getQueuedJobs();
+    	
+    	if(jobSpecs != null && jobSpecs.size() > 0){
+    		for(Iterator i = jobSpecs.iterator(); i.hasNext();){
+    			Job job = ((JobSpec)i.next()).getJob();
+    			jobs.add(job);
+    		}
+    	}
+    	
+    	return XmlRpcStructFactory.getXmlRpcJobList(jobs);
     }
     
     public static void main(String[] args) throws Exception {
