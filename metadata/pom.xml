@@ -21,7 +21,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.10-SNAPSHOT</version>
+    <version>0.10</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-metadata</artifactId>
@@ -37,9 +37,9 @@ the License.
 	between a scalar value and a non-scalar is handled by determining whether the list of
 	values for a particular key is greater than 1.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc1/metadata</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc1/metadata</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/0.10-rc1/metadata</url>
   </scm>
   <build>
     <resources>
