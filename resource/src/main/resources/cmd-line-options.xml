@@ -58,6 +58,8 @@
                                 <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
                                         p:option-ref="getQueuedJobs" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+				        p:option-ref="getNodeReport" p:required="false"/>
+				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="addNode" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="removeNode" p:required="false" />
@@ -616,6 +618,25 @@
                         <list>
                                 <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
 				      p:actionName="getQueuedJobs" p:relation="REQUIRED" />
+                        </list>
+                </property>
+        </bean>
+
+        <bean id="getNodeReport" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+                p:isSubOption="true">
+                <property name="shortOption" value="nreport" />
+                <property name="longOption" value="getNodeReport" />
+                <property name="description" value="Triggers getNodeReport Action" />
+                <property name="hasArgs" value="false" />
+		<property name="staticArgs">
+                        <list>
+                                <value>getNodeReport</value>
+                        </list>
+                </property>
+                <property name="requirementRules">
+                        <list>
+                                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                                      p:actionName="getNodeReport" p:relation="REQUIRED" />
                         </list>
                 </property>
         </bean>

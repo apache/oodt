@@ -500,6 +500,19 @@ public class XmlRpcResourceManagerClient {
            return XmlRpcStructFactory.getJobListFromXmlRpc(queuedJobs);
   }  
 
+    public String getNodeReport() throws MonitorException{
+	String report = null;
+	
+	try{
+	    report = (String)client.execute("resourcemgr.getNodeReport", new Vector<Object>());
+	}catch(Exception e){
+	    throw new MonitorException(e.getMessage(), e);
+        }
+	
+       return report;
+   }
+
+
   public static String getReadableJobStatus(String status) {
     if (status.equals(JobStatus.SUCCESS)) {
       return "SUCCESS";

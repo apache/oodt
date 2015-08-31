@@ -2,6 +2,12 @@ Apache OODT Change Log
 ======================
 Release 0.10 - Current Development
 
+* OODT-245 List results from the Resource Manager client should be sorted 
+  alphabetically (Gabe Resneck via mattmann)
+
+* OODT-248 Give user the ability to print a detailed report on the load, capacity 
+  and queues of all nodes in the Resource Manager (Gabe Resneck, mattmann)
+
 * OODT-247 Resource Manager client should allow users to see what jobs are 
   currently in the queue (Gabe Resneck, mattmann)
 
