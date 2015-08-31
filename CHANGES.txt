@@ -1,6 +1,6 @@
 Apache OODT Change Log
 ======================
-Release 0.10 - Current Development
+Release 0.10 - 08/30/2015
 
 * OODT-246 Give user the ability to print a detailed report on what jobs in 
   the Resource Manager are running on what nodes (Gabe Resneck, mattmann)
