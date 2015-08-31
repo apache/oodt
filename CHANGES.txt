@@ -2,6 +2,9 @@ Apache OODT Change Log
 ======================
 Release 0.10 - Current Development
 
+* OODT-246 Give user the ability to print a detailed report on what jobs in 
+  the Resource Manager are running on what nodes (Gabe Resneck, mattmann)
+
 * OODT-245 List results from the Resource Manager client should be sorted 
   alphabetically (Gabe Resneck via mattmann)
 

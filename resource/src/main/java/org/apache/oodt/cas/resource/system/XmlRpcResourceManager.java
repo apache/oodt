@@ -387,6 +387,47 @@ public class XmlRpcResourceManager {
     	return report;
     }
     
+    public String getExecutionReport() throws JobRepositoryException{
+    	String report = new String();
+    	
+    	try{
+    	
+	    	// get a sorted list of all nodes, since the report should be
+	    	// alphabetically sorted by node
+	    	List resNodes = scheduler.getMonitor().getNodes();
+	    	if(resNodes.size() == 0){
+	    		throw new MonitorException(
+	    				"No jobs can be executing, as there are no nodes in the Monitor");
+	    	}
+	    	Vector<String> nodeIds = new Vector<String>();
+	    	for(Iterator i = resNodes.iterator(); i.hasNext(); ){
+	    		nodeIds.add(((ResourceNode)i.next()).getNodeId());
+	    	}
+	    	Collections.sort(nodeIds);
+	    	
+	    	// generate the report string
+	    	for(String nodeId: nodeIds){
+	    		List execJobIds = this.scheduler.getBatchmgr().getJobsOnNode(nodeId);
+	    		if(execJobIds != null && execJobIds.size() > 0){
+	    			for(Iterator i = execJobIds.iterator(); i.hasNext(); ){
+	    				String jobId = (String)i.next();
+	    				Job job = scheduler.getJobQueue().getJobRepository()
+	    						.getJobById(jobId).getJob();
+	    				report += "job id=" + jobId;
+	    				report += ", load=" + job.getLoadValue();
+	    				report += ", node=" + nodeId;
+	    				report += ", queue=" + job.getQueueName() + "\n";
+	    			}
+	    		}
+	    	}
+    	
+    	}catch(Exception e){
+    		throw new JobRepositoryException(e.getMessage(), e);
+    	}
+    	
+    	return report;
+    }
+    
     public static void main(String[] args) throws Exception {
         int portNum = -1;
         String usage = "XmlRpcResourceManager --portNum <port number for xml rpc service>\n";

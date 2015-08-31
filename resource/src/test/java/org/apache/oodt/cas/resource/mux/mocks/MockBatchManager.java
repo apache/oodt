@@ -16,10 +16,12 @@
  */
 package org.apache.oodt.cas.resource.mux.mocks;
 
+import java.util.List;
 import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
 import org.apache.oodt.cas.resource.jobrepo.JobRepository;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.structs.JobSpec;
+import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 /**
@@ -48,6 +50,11 @@ public class MockBatchManager implements Batchmgr {
     public void setJobRepository(JobRepository repository) {}
 
     @Override
+    public List<Job> getJobsOnNode(String nodeId){
+	throw new UnsupportedOperationException("method not implemented. getJobsOnNode");
+    }
+
+    @Override
     public boolean killJob(String jobId, ResourceNode node) {
         if (this.execJobSpec.getJob().getId().equals(jobId))
         {
@@ -62,6 +69,7 @@ public class MockBatchManager implements Batchmgr {
     public String getExecutionNode(String jobId) {
         return execResNode.getNodeId();
     }
+
     /*****
      * The following are test methods to report what jobs are here.
      *****/

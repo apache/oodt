@@ -59,6 +59,8 @@
                                         p:option-ref="getQueuedJobs" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 				        p:option-ref="getNodeReport" p:required="false"/>
+                                <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+                                        p:option-ref="getExecReport" p:required="false"/>
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="addNode" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
@@ -640,5 +642,22 @@
                         </list>
                 </property>
         </bean>
-
+        <bean id="getExecReport" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+                p:isSubOption="true">
+                <property name="shortOption" value="ereport" />
+                <property name="longOption" value="getExecReport" />
+                <property name="description" value="Triggers getExecReport Action" />
+                <property name="hasArgs" value="false" />
+                <property name="staticArgs">
+                        <list>
+                                <value>getExecReport</value>
+                        </list>
+                </property>
+                <property name="requirementRules">
+                        <list>
+                                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                                      p:actionName="getExecReport" p:relation="REQUIRED" />
+                        </list>
+                </property>
+        </bean>
 </beans>

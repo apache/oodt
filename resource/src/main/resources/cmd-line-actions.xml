@@ -66,6 +66,10 @@
                 class="org.apache.oodt.cas.resource.cli.action.GetQueuedJobsCliAction">
                 <property name="description" value="Gets list of jobs currently in the queue" />
         </bean>
+        <bean id="getExecReport"
+                class="org.apache.oodt.cas.resource.cli.action.GetExecReportCliAction">
+                <property name="description" value="Gets list of jobs currently in the queue" />
+        </bean>
         <bean id="getNodeReport"
                 class="org.apache.oodt.cas.resource.cli.action.GetNodeReportCliAction">
                 <property name="description" value="Gets name (all nodes will be displayed in alphabetical order), load and capacity of all nodes, and their queues." />

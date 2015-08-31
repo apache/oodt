@@ -513,6 +513,18 @@ public class XmlRpcResourceManagerClient {
    }
 
 
+    public String getExecReport() throws JobRepositoryException{
+	String report = null;
+	
+	try{
+	    report = (String)client.execute("resourcemgr.getExecutionReport", new Vector<Object>());
+	}catch(Exception e){
+	    throw new JobRepositoryException(e.getMessage(), e);
+	}
+	
+	return report;
+  }   
+
   public static String getReadableJobStatus(String status) {
     if (status.equals(JobStatus.SUCCESS)) {
       return "SUCCESS";
