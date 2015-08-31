@@ -31,6 +31,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
+import org.apache.oodt.cas.resource.util.ResourceNodeComparator;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 
 //APACHE imports
@@ -351,6 +352,38 @@ public class XmlRpcResourceManager {
     	}
     	
     	return XmlRpcStructFactory.getXmlRpcJobList(jobs);
+    }
+    
+    public String getNodeReport() throws MonitorException{
+    	String report = new String();
+    	
+    	try{
+    		
+    		// get a sorted list of nodes
+    		List nodes = scheduler.getMonitor().getNodes();
+    		Collections.sort(nodes, new ResourceNodeComparator());
+    		
+    		// formulate the report string
+    		for(Iterator i = nodes.iterator(); i.hasNext(); ){
+    			ResourceNode node = (ResourceNode)i.next();
+    			String nodeId = node.getNodeId();
+    			report += nodeId;
+    			report += " (" + getNodeLoad(nodeId) + "/" + node.getCapacity() + ")";
+    			List<String> nodeQueues = getQueuesWithNode(nodeId);
+    			if(nodeQueues != null && nodeQueues.size() > 0){
+    				report += " -- " + nodeQueues.get(0);
+    				for(int j = 1; j < nodeQueues.size(); j++){
+    					report += ", " + nodeQueues.get(j);
+    				}
+    			}
+    			report += "\n";
+    		}
+    	
+    	}catch(Exception e){
+    		throw new MonitorException(e.getMessage(), e);
+    	}
+    	
+    	return report;
     }
     
     public static void main(String[] args) throws Exception {
