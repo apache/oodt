@@ -1,0 +1,18 @@
+@namespace("org.apache.oodt.cas.crawler.structs.avrotypes")
+protocol IntAvroCrawlDaemon {
+
+    double rpcGetAverageCrawlTime();
+
+    int rpcGetMilisCrawling();
+
+    int rpcGetWaitInterval();
+
+    int rpcGetNumCrawls();
+
+    boolean rpcIsRunning();
+
+    boolean rpcStop();
+
+    void rpcSetWaitInterval(long waitInterval);
+
+}

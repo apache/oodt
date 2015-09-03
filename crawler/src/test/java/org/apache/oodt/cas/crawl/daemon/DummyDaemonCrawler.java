@@ -17,23 +17,32 @@
 
 package org.apache.oodt.cas.crawl.daemon;
 
-import org.apache.oodt.cas.crawl.structs.exceptions.CrawlException;
+import org.apache.avro.ipc.NettyServer;
+import org.apache.avro.ipc.Server;
+import org.apache.avro.ipc.specific.SpecificResponder;
+import org.apache.oodt.cas.crawl.ProductCrawler;
+import org.apache.oodt.cas.crawler.structs.avrotypes.IntAvroCrawlDaemon;
 
-import java.net.URL;
+import java.net.InetSocketAddress;
 
-public interface CrawlDaemonController {
+public class DummyDaemonCrawler extends AvroRpcCrawlerDaemon {
 
-    double getAverageCrawlTime() throws CrawlException;
+    private int port;
 
-    int getMilisCrawling() throws CrawlException;
+    private Server server;
 
-    int getWaitInterval() throws CrawlException;
+    public DummyDaemonCrawler(int wait, ProductCrawler crawler, int port) {
+        super(wait, crawler, port);
+        this.port = port;
+    }
 
-    int getNumCrawls() throws CrawlException;
+    @Override
+    public void  startCrawling(){
+        server = new NettyServer(new SpecificResponder(IntAvroCrawlDaemon.class,this), new InetSocketAddress(this.port));
+        server.start();
+    }
 
-    boolean isRunning() throws CrawlException;
-
-    void stop() throws CrawlException;
-
-    URL getUrl();
+    public void closeServer(){
+        server.close();
+    }
 }

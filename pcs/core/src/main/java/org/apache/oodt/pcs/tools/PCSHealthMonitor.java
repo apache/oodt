@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Vector;
 
 //APACHE imports
+import org.apache.oodt.cas.crawl.daemon.AvroCrawlDaemonController;
+import org.apache.oodt.cas.crawl.daemon.CrawlDaemonController;
 import org.apache.xmlrpc.XmlRpcClient;
 
 //OODT imports
@@ -35,7 +37,6 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
-import org.apache.oodt.cas.crawl.daemon.CrawlDaemonController;
 import org.apache.oodt.pcs.util.FileManagerUtils;
 import org.apache.oodt.pcs.util.ResourceManagerUtils;
 import org.apache.oodt.pcs.util.WorkflowManagerUtils;
@@ -350,7 +351,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
       String crawlUrlStr = "http://" + this.crawlProps.getCrawlHost() + ":"
           + info.getCrawlerPort();
       try {
-        CrawlDaemonController controller = new CrawlDaemonController(
+        CrawlDaemonController controller = new AvroCrawlDaemonController(
             crawlUrlStr);
         CrawlerHealth health = new CrawlerHealth();
         health.setCrawlerName(info.getCrawlerName());
@@ -553,7 +554,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
       String crawlUrlStr = "http://" + this.crawlProps.getCrawlHost() + ":"
           + info.getCrawlerPort();
       try {
-        CrawlDaemonController controller = new CrawlDaemonController(
+        CrawlDaemonController controller = new AvroCrawlDaemonController(
             crawlUrlStr);
         System.out.println(info.getCrawlerName() + ":");
         System.out.println("Number of Crawls: " + controller.getNumCrawls());
@@ -613,7 +614,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     CrawlDaemonController controller = null;
 
     try {
-      controller = new CrawlDaemonController(crawlUrlStr);
+      controller = new AvroCrawlDaemonController(crawlUrlStr);
       return controller.isRunning();
     } catch (Exception e) {
       return false;

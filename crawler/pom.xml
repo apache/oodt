@@ -35,6 +35,27 @@ the License.
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.avro</groupId>
+				<artifactId>avro-maven-plugin</artifactId>
+				<version>1.7.7</version>
+				<configuration>
+					<stringType>String</stringType>
+					<detail>true</detail>
+				</configuration>
+				<executions>
+					<execution>
+						<id>protocol</id>
+						<configuration><imports>
+							<import>${basedir}/src/main/avro/types</import>
+						</imports>
+						</configuration>
+						<goals>
+							<goal>idl-protocol</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
@@ -86,11 +107,22 @@ the License.
 					<include>crawler-beans.xml</include>
 					<include>crawler-config.xml</include>
 					<include>precondition-beans.xml</include>
+					<include>naming-beans.xml</include>
 				</includes>
 			</resource>
 		</resources>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+			<version>1.7.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro-ipc</artifactId>
+			<version>1.7.7</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.oodt</groupId>
 			<artifactId>oodt-commons</artifactId>

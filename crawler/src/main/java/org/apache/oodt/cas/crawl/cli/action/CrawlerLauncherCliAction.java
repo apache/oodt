@@ -20,9 +20,9 @@ package org.apache.oodt.cas.crawl.cli.action;
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.crawl.ProductCrawler;
-import org.apache.oodt.cas.crawl.daemon.CrawlDaemon;
 
 //Spring imports
+import org.apache.oodt.cas.crawl.daemon.AvroRpcCrawlerDaemon;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
@@ -52,7 +52,7 @@ public class CrawlerLauncherCliAction extends CmdLineAction {
                .getBean(crawlerId != null ? crawlerId : getName());
          pc.setApplicationContext(appContext);
          if (pc.getDaemonPort() != -1 && pc.getDaemonWait() != -1) {
-            new CrawlDaemon(pc.getDaemonWait(), pc, pc.getDaemonPort())
+            new AvroRpcCrawlerDaemon(pc.getDaemonWait(), pc, pc.getDaemonPort())
                   .startCrawling();
          } else {
             pc.crawl();
