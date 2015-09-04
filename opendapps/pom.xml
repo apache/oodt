@@ -25,14 +25,14 @@
   to extract and translate datasets from OPeNDAP and THREDDS into OODT profiles.
   </description> 
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc1/opendapps</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc1/opendapps</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/0.10-rc1/opendapps</url>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/opendapps</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/opendapps</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/trunk/opendapps</url>
   </scm>
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.10</version>
+    <version>0.10-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <build>

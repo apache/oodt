@@ -21,16 +21,16 @@ the License.
 	<parent>
 		<groupId>org.apache.oodt</groupId>
 		<artifactId>oodt-core</artifactId>
-		<version>0.10</version>
+		<version>0.10-SNAPSHOT</version>
 		<relativePath>../core/pom.xml</relativePath>
 	</parent>
 	<artifactId>cas-crawler</artifactId>
 	<name>Catalog and Archive Crawling Framework</name>
 	<description>The Catalog and Archive Service Crawling Framework.</description>
 	<scm>
-		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc1/crawler</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc1/crawler</developerConnection>
-		<url>http://svn.apache.org/viewvc/oodt/tags/0.10-rc1/crawler</url>
+		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/crawler</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/crawler</developerConnection>
+		<url>http://svn.apache.org/viewvc/oodt/trunk/crawler</url>
 	</scm>
 	<build>
 		<plugins>
