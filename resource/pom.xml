@@ -20,7 +20,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.10</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-resource</artifactId>
@@ -29,9 +29,9 @@ the License.
      provides job management, and management of the underlying software system hardware
      and resources, such as disk space, computational resources, and shared identity.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc2/resource</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc2/resource</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/tags/0.10-rc2/resource</url>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/resource</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/resource</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/trunk/resource</url>
   </scm>
   <build>
     <plugins>

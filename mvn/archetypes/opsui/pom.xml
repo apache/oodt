@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.10</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../../../core</relativePath>
   </parent>
   <artifactId>opsui-archetype</artifactId>
