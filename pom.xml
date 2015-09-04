@@ -20,7 +20,7 @@ the License.
     <parent>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-core</artifactId>
-        <version>0.10-SNAPSHOT</version>
+        <version>0.10</version>
         <relativePath>core/pom.xml</relativePath>
     </parent>
 
@@ -32,9 +32,9 @@ the License.
     </description>
 
     <scm>
-        <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10</developerConnection>
-        <url>http://svn.apache.org/viewvc/oodt/trunk</url>
+        <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc2</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc2</developerConnection>
+        <url>http://svn.apache.org/viewvc/oodt/tags/0.10-rc2</url>
     </scm>
 
     <modules>

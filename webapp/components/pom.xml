@@ -21,7 +21,7 @@ the License.
     <parent>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-core</artifactId>
-        <version>0.10-SNAPSHOT</version>
+        <version>0.10</version>
         <relativePath>../../core/pom.xml</relativePath>
     </parent>
 	<artifactId>oodt-webapp-components</artifactId>
@@ -36,12 +36,12 @@ the License.
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>cas-filemgr</artifactId>
-		  <version>0.10-SNAPSHOT</version>
+		  <version>0.10</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>cas-workflow</artifactId>
-		  <version>0.10-SNAPSHOT</version>
+		  <version>0.10</version>
 		</dependency>
 		<dependency>	
 		  <groupId>org.apache.oodt</groupId>
