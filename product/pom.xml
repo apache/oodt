@@ -35,8 +35,8 @@
         without impacting local stores or operations.
     </description>
     <scm>
-   		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/product</connection>
-   		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/product</developerConnection>
+   		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/product</connection>
+   		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/product</developerConnection>
    		<url>http://svn.apache.org/viewvc/oodt/trunk/product</url>
     </scm>
     <build>

@@ -36,8 +36,8 @@ the License.
 		<log4j.version>1.2.14</log4j.version>
 	</properties>
 	<scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/webapp/fmbrowser</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/webapp/fmbrowser</developerConnection>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/webapp/fmbrowser</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/webapp/fmbrowser</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/webapp/fmbrowser</url>
   </scm>
 	<dependencies>

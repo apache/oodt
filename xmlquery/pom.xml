@@ -35,8 +35,8 @@
     pass a query and its results between servers, clients, nodes, and
     other components.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</developerConnection>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/xmlquery</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/xmlquery</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/xmlquery</url>
   </scm>
   <build>

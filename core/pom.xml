@@ -267,8 +267,8 @@ the License.
         <url>http://oodt.apache.org/</url>
     </organization>
     <scm>
-    	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</connection>
-    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</developerConnection>
+    	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/core</connection>
+    	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/core</developerConnection>
     	<url>http://svn.apache.org/viewvc/oodt/trunk/core</url>
     </scm>
     <build>

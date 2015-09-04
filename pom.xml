@@ -32,8 +32,8 @@ the License.
     </description>
 
     <scm>
-        <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk</developerConnection>
+        <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10</developerConnection>
         <url>http://svn.apache.org/viewvc/oodt/trunk</url>
     </scm>
 

@@ -36,8 +36,8 @@ the License.
 		<log4j.version>1.2.14</log4j.version>
 	</properties>
 	<scm>
-   		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/webapp/wmonitor</connection>
-   		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/webapp/wmonitor</developerConnection>
+   		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/webapp/wmonitor</connection>
+   		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/webapp/wmonitor</developerConnection>
    		<url>http://svn.apache.org/viewvc/oodt/trunk/webapp/wmonitor</url>
   	</scm>
 	<dependencies>

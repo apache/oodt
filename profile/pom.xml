@@ -32,8 +32,8 @@
     The Profile Service catalogs metadata descriptions and provides
     creating, updating, and querying capabilities.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</developerConnection>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/profile</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/profile</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/profile</url>
   </scm>
   <build>

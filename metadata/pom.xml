@@ -37,8 +37,8 @@ the License.
 	between a scalar value and a non-scalar is handled by determining whether the list of
 	values for a particular key is greater than 1.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</developerConnection>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/metadata</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/metadata</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>
   </scm>
   <build>

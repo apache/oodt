@@ -31,8 +31,8 @@
      on the javax.sql.DataSource interface). This component provides everything that you need
      to catalog, archive and manage files, and directories, and their associated metadata.</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/filemgr</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/filemgr</developerConnection>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/filemgr</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/filemgr</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/filemgr</url>
   </scm>
   <build>

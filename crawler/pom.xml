@@ -28,8 +28,8 @@ the License.
 	<name>Catalog and Archive Crawling Framework</name>
 	<description>The Catalog and Archive Service Crawling Framework.</description>
 	<scm>
-		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/crawler</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/crawler</developerConnection>
+		<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/crawler</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/crawler</developerConnection>
 		<url>http://svn.apache.org/viewvc/oodt/trunk/crawler</url>
 	</scm>
 	<build>

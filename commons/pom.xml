@@ -29,8 +29,8 @@
   <packaging>jar</packaging>
   <description>Apache OODT Common Utilities Project</description>
   <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</developerConnection>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/commons</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/branches/0.10/commons</developerConnection>
    	<url>http://svn.apache.org/viewvc/oodt/trunk/commons</url>
   </scm>
   <build>
