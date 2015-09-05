@@ -15,15 +15,30 @@
  * limitations under the License.
  */
 
+
 package org.apache.oodt.cas.crawl.daemon;
 
+//OODT imports
 import org.apache.oodt.cas.crawl.ProductCrawler;
 
-import java.net.URL;
+//JDK imports
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class CrawlDaemon {
+//APACHE imports
+import org.apache.xmlrpc.WebServer;
+
+/**
+ * @author mattmann
+ * @version $Revision$
+ * 
+ * <p>
+ * A daemon utility class for {@link ProductCrawler}s that allows a regular
+ * ProductCrawler to be run as a daemon, and statistics about crawling to be
+ * kept. The daemon is an XML-RPC accessible web service.
+ * </p>.
+ */
+public class CrawlDaemon {
 
     /* our log stream */
     private static Logger LOG = Logger.getLogger(CrawlDaemon.class.getName());
@@ -52,7 +67,12 @@ public abstract class CrawlDaemon {
         this.daemonPort = port;
     }
 
-    public void crawl(){
+    public void startCrawling() {
+        // start up the web server
+        WebServer server = new WebServer(this.daemonPort);
+        server.addHandler("crawldaemon", this);
+        server.start();
+
         LOG.log(Level.INFO, "Crawl Daemon started by "
                 + System.getProperty("user.name", "unknown"));
 
@@ -76,10 +96,9 @@ public abstract class CrawlDaemon {
         LOG.log(Level.INFO, "Num Crawls: [" + this.numCrawls + "]");
         LOG.log(Level.INFO, "Total time spent crawling: ["
                 + (this.milisCrawling / 1000.0) + "] seconds");
-
         LOG.log(Level.INFO, "Average Crawl Time: ["
                 + (this.getAverageCrawlTime() / 1000.0) + "] seconds");
-
+        server.shutdown();
     }
 
     public double getAverageCrawlTime() {
@@ -89,7 +108,6 @@ public abstract class CrawlDaemon {
     /**
      * @return the crawler
      */
-
     public ProductCrawler getCrawler() {
         return crawler;
     }
@@ -98,7 +116,6 @@ public abstract class CrawlDaemon {
      * @param crawler
      *            the crawler to set
      */
-
     public void setCrawler(ProductCrawler crawler) {
         this.crawler = crawler;
     }
@@ -106,7 +123,6 @@ public abstract class CrawlDaemon {
     /**
      * @return the milisCrawling
      */
-
     public int getMilisCrawling() {
         return (int) milisCrawling;
     }
@@ -115,7 +131,6 @@ public abstract class CrawlDaemon {
      * @param milisCrawling
      *            the milisCrawling to set
      */
-
     public void setMilisCrawling(long milisCrawling) {
         this.milisCrawling = milisCrawling;
     }
@@ -123,7 +138,6 @@ public abstract class CrawlDaemon {
     /**
      * @return the numCrawls
      */
-
     public int getNumCrawls() {
         return numCrawls;
     }
@@ -132,7 +146,6 @@ public abstract class CrawlDaemon {
      * @param numCrawls
      *            the numCrawls to set
      */
-
     public void setNumCrawls(int numCrawls) {
         this.numCrawls = numCrawls;
     }
@@ -140,7 +153,6 @@ public abstract class CrawlDaemon {
     /**
      * @return the running
      */
-
     public boolean isRunning() {
         return running;
     }
@@ -149,7 +161,6 @@ public abstract class CrawlDaemon {
      * @param running
      *            the running to set
      */
-
     public boolean stop() {
         this.running = false;
         return this.running;
@@ -158,7 +169,6 @@ public abstract class CrawlDaemon {
     /**
      * @return the waitInterval
      */
-
     public int getWaitInterval() {
         return (int) waitInterval;
     }
@@ -167,15 +177,13 @@ public abstract class CrawlDaemon {
      * @param waitInterval
      *            the waitInterval to set
      */
-
     public void setWaitInterval(long waitInterval) {
         this.waitInterval = waitInterval;
     }
 
-    public int getDaemonPort(){
-        return daemonPort;
+    private static void main(String[] args) throws InstantiationException {
+        throw new InstantiationException(
+                "Don't call a crawl daemon by its main function!");
     }
-
-    abstract public void startCrawling();
 
 }
