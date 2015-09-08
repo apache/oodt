@@ -24,7 +24,8 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.profile.handlers.cas.util.ProfileUtils;
 
@@ -60,7 +61,7 @@ public class CASProfileHandler implements ProfileHandler {
             .getName());
 
     /* our filemgr client */
-    private XmlRpcFileManagerClient fmClient = null;
+    private FileManagerClient fmClient = null;
 
     /* the base URL to the data delivery servlet for products */
     /* AKA our "web-ified" product server */
@@ -77,7 +78,8 @@ public class CASProfileHandler implements ProfileHandler {
                 "org.apache.oodt.cas.profile.fmUrl", "http://localhost:9000");
 
         try {
-            fmClient = new XmlRpcFileManagerClient(new URL(filemgrUrlStr));
+            fmClient = RpcCommunicationFactory.createClient(new URL(filemgrUrlStr));
+
         } catch (Exception e) {
             throw new InstantiationException(
                     "Error communicating with the filemgr: [" + filemgrUrlStr

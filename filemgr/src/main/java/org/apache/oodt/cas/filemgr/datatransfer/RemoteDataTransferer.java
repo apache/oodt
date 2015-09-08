@@ -22,7 +22,8 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 
 
 //JDK imports
@@ -63,7 +64,7 @@ public class RemoteDataTransferer implements DataTransfer {
    private int chunkSize = 1024;
 
    /* our file manager client */
-   private XmlRpcFileManagerClient client = null;
+   private FileManagerClient client = null;
 
    /* our log stream */
    private static final Logger LOG = Logger
@@ -85,7 +86,7 @@ public class RemoteDataTransferer implements DataTransfer {
     */
    public void setFileManagerUrl(URL url) {
       try {
-         client = new XmlRpcFileManagerClient(url);
+         client = RpcCommunicationFactory.createClient(url);
          this.fileManagerUrl = url;
          LOG.log(Level.INFO, "Remote Data Transfer to: ["
                + client.getFileManagerUrl().toString() + "] enabled");

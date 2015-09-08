@@ -26,7 +26,7 @@ import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 //JDK imports
 import java.io.BufferedReader;
@@ -46,6 +46,7 @@ import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.TermQuery;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 
 /**
  * 
@@ -61,7 +62,7 @@ public class CatalogSearch {
 
     private static QueryParser parser;
 
-    private static XmlRpcFileManagerClient client;
+    private static FileManagerClient client;
 
     private static String freeTextBlock = "__FREE__";
 
@@ -368,7 +369,7 @@ public class CatalogSearch {
         // connect with Filemgr Client
         boolean clientConnect = true;
         try {
-            client = new XmlRpcFileManagerClient(new URL(fileManagerUrl));
+            client = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
         } catch (Exception e) {
             System.out
                     .println("Exception when communicating with file manager, errors to follow: message: "

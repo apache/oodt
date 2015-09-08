@@ -21,7 +21,6 @@ package org.apache.oodt.cas.filemgr.ingest;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -32,8 +31,9 @@ import java.util.Vector;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerServer;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 
@@ -51,9 +51,9 @@ import junit.framework.TestCase;
  */
 public class TestCachedIngester extends TestCase {
 
-    private static final int FM_PORT = 50010;
+    private static final int FM_PORT = 50011;
 
-    private XmlRpcFileManager fm;
+    private FileManagerServer fm;
 
     private String luceneCatLoc;
 
@@ -126,7 +126,7 @@ public class TestCachedIngester extends TestCase {
 
         // now make sure that the file is ingested
         try {
-            XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(
+            FileManagerClient fmClient = RpcCommunicationFactory.createClient(
                     new URL("http://localhost:" + FM_PORT));
             Product p = fmClient.getProductByName("test.txt");
             assertNotNull(p);
@@ -282,7 +282,8 @@ public class TestCachedIngester extends TestCase {
         System.setProperties(properties);
 
         try {
-            fm = new XmlRpcFileManager(FM_PORT);
+            fm = RpcCommunicationFactory.createServer(FM_PORT);
+            fm.startUp();
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());

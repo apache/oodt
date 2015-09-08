@@ -25,7 +25,7 @@ import org.apache.oodt.cas.cli.action.CmdLineAction.ActionMessagePrinter;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.versioning.BasicVersioner;
 
 //JUnit imports
@@ -71,9 +71,9 @@ public class TestGetProductTypeByNameCliAction extends TestCase {
 
    public class MockGetProductTypeByNameCliAction extends GetProductTypeByNameCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public ProductType getProductTypeByName(String name) {
@@ -91,9 +91,9 @@ public class TestGetProductTypeByNameCliAction extends TestCase {
 
    public class NullPTGetProductTypeByNameCliAction extends MockGetProductTypeByNameCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public ProductType getProductTypeByName(String name) {

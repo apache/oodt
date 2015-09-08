@@ -18,14 +18,14 @@
 package org.apache.oodt.cas.filemgr.metadata;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * 
  * Met key field names used to augment {@link Product} {@link Metadata} in
- * {@link XmlRpcFileManagerClient#getMetadata(org.apache.oodt.cas.filemgr.structs.Product)}
+ * {@link FileManagerClient#getMetadata(org.apache.oodt.cas.filemgr.structs.Product)}
  * and in
- * {@link XmlRpcFileManagerClient#getReducedMetadata(org.apache.oodt.cas.filemgr.structs.Product, java.util.List)}
+ * {@link FileManagerClient#getReducedMetadata(org.apache.oodt.cas.filemgr.structs.Product, java.util.List)}
  * .
  * 
  * @see http://issues.apache.org/jira/browse/OODT-72

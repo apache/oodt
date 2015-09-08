@@ -1,0 +1,13 @@
+{
+  "type":"record",
+  "name":"AvroQueryFilter",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":["AvroFilterAlgor.avcs"],
+  "fields":[
+    {"name":"startDateTimeMetKey","type":["null","string"]},
+    {"name":"endDateTimeMetKey","type":["null","string"]},
+    {"name":"priorityMetKey","type":["null","string"]},
+    {"name":"filterAlgor","type":["null","AvroFilterAlgor"]}
+  ]
+}

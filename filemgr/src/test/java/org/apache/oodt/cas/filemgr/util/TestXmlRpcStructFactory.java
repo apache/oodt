@@ -26,8 +26,8 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.type.TypeHandler;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerServer;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //Google imports
@@ -53,7 +53,7 @@ import junit.framework.TestCase;
 public class TestXmlRpcStructFactory extends TestCase {
 
     final int FILEMGR_PORT = 9999;
-    XmlRpcFileManager fmServer;
+    FileManagerServer fmServer;
     private Properties initialProperties = new Properties(
       System.getProperties());
 
@@ -74,7 +74,7 @@ public class TestXmlRpcStructFactory extends TestCase {
     }
 
     public void testProductTypeMethods() throws RepositoryManagerException, MalformedURLException, ConnectionException {
-        XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL("http://localhost:" + FILEMGR_PORT));
+        FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL("http://localhost:" + FILEMGR_PORT));
         fmClient.setDataTransfer(new LocalDataTransferFactory().createDataTransfer());
         
         ProductType productType = fmClient.getProductTypeByName("GenericFile");
@@ -101,7 +101,7 @@ public class TestXmlRpcStructFactory extends TestCase {
     }
 
     public void testProductMethods() throws Exception {
-       XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL("http://localhost:" + FILEMGR_PORT));
+       FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL("http://localhost:" + FILEMGR_PORT));
        fmClient.setDataTransfer(new InPlaceDataTransferFactory().createDataTransfer());
 
        Product product = new Product();
@@ -218,7 +218,8 @@ public class TestXmlRpcStructFactory extends TestCase {
         System.setProperties(properties);
 
         try {
-            fmServer = new XmlRpcFileManager(FILEMGR_PORT);
+            fmServer = RpcCommunicationFactory.createServer(FILEMGR_PORT);
+            fmServer.startUp();
         } catch (Exception e) {
             fail(e.getMessage());
         }

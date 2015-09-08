@@ -23,7 +23,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * A {@link CmdLineAction} which get a {@link Product}'s data file transfers
@@ -43,7 +43,7 @@ public class GetProductPercentTransferredCliAction extends FileManagerCliAction 
          Validate.notNull(productId, "Must specify productid");
          Validate.notNull(productTypeName, "Must specify productTypeName");
 
-         XmlRpcFileManagerClient client = getClient();
+         FileManagerClient client = getClient();
 
          Product product = new Product();
          // TODO(bfoster): Not sure why ProductType is needed here.

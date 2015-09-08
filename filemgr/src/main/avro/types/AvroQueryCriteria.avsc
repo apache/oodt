@@ -1,0 +1,17 @@
+{
+  "type":"record",
+  "name":"AvroQueryCriteria",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":[],
+  "fields":[
+    {"name":"className","type":["null","string"]},
+    {"name":"elementName","type":["null","string"]},
+    {"name":"elementValue","type":["null","string"]},
+    {"name":"elementStartValue","type":["null","string"]},
+    {"name":"elementEndValue","type":["null","string"]},
+    {"name":"inclusive","type":["null","boolean"]},
+    {"name":"operator","type":["null","int"]},
+    {"name":"terms","type":["null",{"type":"array","items":"AvroQueryCriteria"}]}
+  ]
+}

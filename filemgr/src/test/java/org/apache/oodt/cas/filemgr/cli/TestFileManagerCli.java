@@ -40,8 +40,8 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
-import org.apache.oodt.cas.filemgr.system.MockXmlRpcFileManagerClient;
-import org.apache.oodt.cas.filemgr.system.MockXmlRpcFileManagerClient.MethodCallDetails;
+import org.apache.oodt.cas.filemgr.system.MockFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.MockFileManagerClient.MethodCallDetails;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //Google imports
@@ -55,7 +55,7 @@ import com.google.common.collect.Lists;
 public class TestFileManagerCli extends TestCase {
 
    private CmdLineUtility cmdLineUtility;
-   private MockXmlRpcFileManagerClient client;
+   private MockFileManagerClient client;
    private Properties initialProperties = new Properties(
      System.getProperties());
 

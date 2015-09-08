@@ -24,7 +24,7 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * A {@link CmdLineAction} which gets the next page of {@link Product}s for a
@@ -45,7 +45,7 @@ public class GetNextPageCliAction extends FileManagerCliAction {
          Validate.notNull(productTypeName, "Must specify productTypeName");
          Validate.isTrue(currentPageNum != -1, "Must specify currentPageNum");
 
-         XmlRpcFileManagerClient client = getClient();
+         FileManagerClient client = getClient();
 
          ProductType type = client.getProductTypeByName(productTypeName);
          if (type == null) {

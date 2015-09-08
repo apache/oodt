@@ -33,7 +33,8 @@ import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.pge.config.FileStagingInfo;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 
@@ -65,7 +66,7 @@ public abstract class FileStager {
          }
       }
       if (!fileStagingInfo.getProductIds().isEmpty()) {
-         XmlRpcFileManagerClient fmClient = createFileManagerClient(pgeMetadata);
+         FileManagerClient fmClient = createFileManagerClient(pgeMetadata);
          for (String productId : fileStagingInfo.getProductIds()) {
             logger.log(Level.INFO, "Staging product [" + productId
                   + "] to directory ["
@@ -83,19 +84,19 @@ public abstract class FileStager {
    }
 
    @VisibleForTesting
-   static XmlRpcFileManagerClient createFileManagerClient(PgeMetadata pgeMetadata)
+   static FileManagerClient createFileManagerClient(PgeMetadata pgeMetadata)
          throws Exception {
       String filemgrUrl = pgeMetadata.getMetadata(QUERY_FILE_MANAGER_URL);
       if (filemgrUrl == null) {
          throw new Exception("Must specify [" + QUERY_FILE_MANAGER_URL
                + "] if you want to stage product IDs");
       }
-      return new XmlRpcFileManagerClient(new URL(filemgrUrl));
+      return RpcCommunicationFactory.createClient(new URL(filemgrUrl));
    }
 
    @VisibleForTesting
    static List<URI> getProductReferences(
-         String productId, XmlRpcFileManagerClient fmClient)
+         String productId, FileManagerClient fmClient)
          throws URISyntaxException, CatalogException {
       List<URI> files = Lists.newArrayList();
       Product product = new Product();

@@ -27,7 +27,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 //Google imports
 import com.google.common.collect.Lists;
@@ -110,9 +110,9 @@ public class TestGetProductByNameCliAction extends TestCase {
    }
 
    public class MockGetProductByNameCliAction extends GetProductByNameCliAction {
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             public Product getProductByName(String name) {
                Product p = new Product();
@@ -134,9 +134,9 @@ public class TestGetProductByNameCliAction extends TestCase {
    }
 
    public class NullProductGetProductByNameCliAction extends MockGetProductByNameCliAction {
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             public Product getProductByName(String name) {
                return null;

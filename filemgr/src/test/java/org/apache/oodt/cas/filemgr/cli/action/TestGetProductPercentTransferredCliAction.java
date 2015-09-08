@@ -26,7 +26,7 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 //JUnit imports
 import junit.framework.TestCase;
@@ -69,9 +69,9 @@ public class TestGetProductPercentTransferredCliAction extends TestCase {
 
    public class MockGetProductPercentTransferredCliAction extends GetProductPercentTransferredCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public ProductType getProductTypeByName(String name) {
@@ -89,9 +89,9 @@ public class TestGetProductPercentTransferredCliAction extends TestCase {
 
    public class NullPTGetProductPercentTransferredCliAction extends MockGetProductPercentTransferredCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public ProductType getProductTypeByName(String name) {

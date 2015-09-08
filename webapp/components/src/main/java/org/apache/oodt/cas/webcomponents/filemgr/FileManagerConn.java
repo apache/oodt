@@ -30,7 +30,8 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 
 /**
@@ -43,7 +44,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  */
 public class FileManagerConn {
 
-  private XmlRpcFileManagerClient fm;
+  private FileManagerClient fm;
 
   private static final Logger LOG = Logger.getLogger(FileManagerConn.class
       .getName());
@@ -127,13 +128,13 @@ public class FileManagerConn {
     return types;
   }
 
-  public XmlRpcFileManagerClient getFm() {
+  public FileManagerClient getFm() {
     return this.fm;
   }
 
   public void initFm(String urlStr) {
     try {
-      this.fm = new XmlRpcFileManagerClient(new URL(urlStr));
+      this.fm = RpcCommunicationFactory.createClient(new URL(urlStr));
     } catch (Exception e) {
       LOG.log(Level.WARNING, "Unable to connect to the file manager at: ["
           + urlStr + "]");

@@ -22,7 +22,8 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 
 //JDK imports
 import java.io.BufferedReader;
@@ -55,14 +56,14 @@ public class DeleteProduct {
     private static final Logger LOG = Logger.getLogger(DeleteProduct.class.getName());
 
     /* our File Manager client */
-    private static XmlRpcFileManagerClient client = null;
+    private static FileManagerClient client = null;
 
     /* whether or not we should commit our deletions */
     private boolean commit = true;
 
     public DeleteProduct(String fileManagerUrl, boolean commit) {
         try {
-            client = new XmlRpcFileManagerClient(new URL(fileManagerUrl));
+            client = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
         } catch (Exception e) {
             LOG.log(Level.SEVERE,
                     "Unable to create file manager client: Message: "

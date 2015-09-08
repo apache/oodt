@@ -27,7 +27,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 //Google imports
 import com.google.common.collect.Lists;
@@ -96,9 +96,9 @@ public class TestGetFirstPageCliAction extends TestCase {
 
    public class MockGetFirstPageCliAction extends GetFirstPageCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public ProductType getProductTypeByName(String name) {
@@ -128,9 +128,9 @@ public class TestGetFirstPageCliAction extends TestCase {
 
    public class NullPTGetFirstPageCliAction extends MockGetFirstPageCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public ProductType getProductTypeByName(String name) {
@@ -142,9 +142,9 @@ public class TestGetFirstPageCliAction extends TestCase {
 
    public class NullPPGetFirstPageCliAction extends MockGetFirstPageCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public ProductType getProductTypeByName(String name) {

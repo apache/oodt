@@ -24,7 +24,7 @@ import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.action.store.spring.SpringCmdLineActionStore;
 import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
 import org.apache.oodt.cas.filemgr.cli.action.FileManagerCliAction;
-import org.apache.oodt.cas.filemgr.system.MockXmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.MockFileManagerClient;
 
 /**
  * A {@link SpringCmdLineActionStore} which sets {@link WorkflowCliAction}s
@@ -34,12 +34,12 @@ import org.apache.oodt.cas.filemgr.system.MockXmlRpcFileManagerClient;
  */
 public class UseMockClientCmdLineActionStore extends SpringCmdLineActionStore {
 
-   private MockXmlRpcFileManagerClient client;
+   private MockFileManagerClient client;
 
    public UseMockClientCmdLineActionStore() {
       super(System.getProperty("org.apache.oodt.cas.cli.action.spring.config"));
       try {
-         client = new MockXmlRpcFileManagerClient();
+         client = new MockFileManagerClient();
       } catch (Exception e) {
          throw new RuntimeException(e);
       }
@@ -55,7 +55,7 @@ public class UseMockClientCmdLineActionStore extends SpringCmdLineActionStore {
       return actions;
    }
 
-   public MockXmlRpcFileManagerClient getClient() {
+   public MockFileManagerClient getClient() {
       return client;
    }
 }

@@ -39,7 +39,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //Google imports
@@ -303,9 +303,9 @@ public class TestIngestProductCliAction extends TestCase {
 
    public class MockIngestProductCliAction extends IngestProductCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public ProductType getProductTypeByName(String typeName) {
@@ -330,9 +330,9 @@ public class TestIngestProductCliAction extends TestCase {
 
    public class NullPTIngestProductCliAction extends MockIngestProductCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public ProductType getProductTypeByName(String typeName) {

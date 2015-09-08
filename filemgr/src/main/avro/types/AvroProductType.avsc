@@ -1,0 +1,17 @@
+{
+  "type":"record",
+  "name":"AvroProductType",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":["AvroExtractorSpec.avsc","AvroTypeHandler.avsc","AvroMetadata.avsc"],
+  "fields":[
+      {"name":"productTypeId","type":["null","string"]},
+      {"name":"name","type":["null","string"]},
+      {"name":"description","type":["null","string"]},
+      {"name":"productRepositoryPath","type":["null","string"]},
+      {"name":"versioner","type":["null","string"]},
+      {"name":"typeMetadata","type":["null","AvroMetadata"]},
+      {"name":"extractors","type":[{ "type": "array", "items": "AvroExtractorSpec" },"null"]},
+      {"name":"handlers","type":[{ "type": "array", "items": "AvroTypeHandler" },"null"]}
+  ]
+}

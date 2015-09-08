@@ -1,0 +1,1 @@
+This is a file test for avro rpc.

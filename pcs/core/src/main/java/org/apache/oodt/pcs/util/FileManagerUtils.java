@@ -18,6 +18,8 @@
 package org.apache.oodt.pcs.util;
 
 //OODT imports
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.pcs.metadata.PCSConfigMetadata;
 import org.apache.oodt.pcs.query.FilenameQuery;
 import org.apache.oodt.cas.filemgr.structs.Element;
@@ -29,7 +31,6 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
@@ -58,13 +59,13 @@ public class FileManagerUtils implements PCSConfigMetadata {
   private static Logger LOG = Logger
       .getLogger(FileManagerUtils.class.getName());
 
-  private XmlRpcFileManagerClient fmgrClient = null;
+  private FileManagerClient fmgrClient = null;
 
   private URL fmUrl;
 
   public FileManagerUtils(URL fileMgrUrl) {
     try {
-      fmgrClient = new XmlRpcFileManagerClient(fileMgrUrl);
+      fmgrClient = RpcCommunicationFactory.createClient(fileMgrUrl);
     } catch (ConnectionException e) {
       LOG.log(Level.SEVERE, "Unable to connect to file manager: ["
           + fileMgrUrl.toString() + "]");
@@ -78,7 +79,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     this(safeGetUrlFromString(fmUrlStr));
   }
 
-  public FileManagerUtils(XmlRpcFileManagerClient client) {
+  public FileManagerUtils(FileManagerClient client) {
     this.fmgrClient = client;
   }
 
@@ -395,7 +396,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
   /**
    * @return the fmgrClient
    */
-  public XmlRpcFileManagerClient getFmgrClient() {
+  public FileManagerClient getFmgrClient() {
     return fmgrClient;
   }
 
@@ -403,7 +404,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
    * @param fmgrClient
    *          the fmgrClient to set
    */
-  public void setFmgrClient(XmlRpcFileManagerClient fmgrClient) {
+  public void setFmgrClient(FileManagerClient fmgrClient) {
     this.fmgrClient = fmgrClient;
     if (this.fmgrClient != null) {
       this.fmUrl = this.fmgrClient.getFileManagerUrl();

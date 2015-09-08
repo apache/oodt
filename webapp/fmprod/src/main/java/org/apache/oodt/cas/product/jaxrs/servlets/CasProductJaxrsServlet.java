@@ -33,7 +33,8 @@ import javax.servlet.ServletException;
 
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.product.jaxrs.configurations.RdfConfiguration;
 import org.apache.oodt.cas.product.jaxrs.configurations.RssConfiguration;
@@ -98,7 +99,7 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
 
       // Attempt to connect the client to the file manager and if successful
       // store the client as a context attribute for other objects to access.
-      XmlRpcFileManagerClient client = new XmlRpcFileManagerClient(url);
+      FileManagerClient client = RpcCommunicationFactory.createClient(url);
       context.setAttribute("client", client);
     }
     catch (MalformedURLException e)

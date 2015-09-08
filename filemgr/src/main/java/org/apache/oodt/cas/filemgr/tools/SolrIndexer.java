@@ -49,7 +49,8 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -244,8 +245,7 @@ public class SolrIndexer {
 	public void indexProductTypes(boolean delete) {
 		LOG.info("Indexing product types...");
 		try {
-			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
-			    this.fmUrl));
+			FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL(this.fmUrl));
 			LOG.info("Retrieving list of product types.");
 			List<ProductType> types = fmClient.getProductTypes();
 			for (ProductType type : types) {
@@ -295,7 +295,7 @@ public class SolrIndexer {
 	/**
 	 * Suppresses exception that occurred with older file managers. 
 	 */
-	private ProductPage safeFirstPage(XmlRpcFileManagerClient fmClient, ProductType type) {
+	private ProductPage safeFirstPage(FileManagerClient fmClient, ProductType type) {
 		ProductPage page = null;
 		try {
 			page = fmClient.getFirstPage(type);
@@ -319,8 +319,7 @@ public class SolrIndexer {
 	public void indexAll(boolean delete) {
 		LOG.info("Indexing products...");
 		try {
-			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
-			    this.fmUrl));
+			FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL(this.fmUrl));
 			LOG.info("Retrieving list of product types.");
 			List<ProductType> types = fmClient.getProductTypes();
 			for (ProductType type : types) {
@@ -373,8 +372,7 @@ public class SolrIndexer {
 	    throws SolrServerException {
 		LOG.info("Attempting to index product: " + productId);
 		try {
-			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
-			    this.fmUrl));
+			FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL(this.fmUrl));
 			Product product = fmClient.getProductById(productId);
 			Metadata productMetadata = fmClient.getMetadata(product);
 			indexProduct(product.getProductId(), productMetadata, product
@@ -424,8 +422,7 @@ public class SolrIndexer {
 				}
 			}
 
-			XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL(
-			    this.fmUrl));
+			FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL(this.fmUrl));
 			Product product = fmClient.getProductByName(productName);
 			Metadata productMetadata = fmClient.getMetadata(product);
 			// NOTE: delete (by id) is now false

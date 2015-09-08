@@ -33,7 +33,8 @@ import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -50,10 +51,10 @@ import org.apache.oodt.cas.metadata.Metadata;
 public class ExpImpCatalog {
 
     /* the client to the source catalog to export */
-    private XmlRpcFileManagerClient sourceClient = null;
+    private FileManagerClient sourceClient = null;
 
     /* the client to the dest catalog to import into */
-    private XmlRpcFileManagerClient destClient = null;
+    private FileManagerClient destClient = null;
 
     /* a source catalog I/F to export from (if no fm client is desired) */
     private Catalog srcCatalog = null;
@@ -81,7 +82,7 @@ public class ExpImpCatalog {
      */
     public ExpImpCatalog(URL sUrl, URL dUrl, boolean unique) {
         try {
-            sourceClient = new XmlRpcFileManagerClient(sUrl);
+            sourceClient = RpcCommunicationFactory.createClient(sUrl);
         } catch (ConnectionException e) {
             LOG.log(Level.WARNING, "Unable to connect to source filemgr: ["
                     + sUrl + "]");
@@ -89,7 +90,7 @@ public class ExpImpCatalog {
         }
 
         try {
-            destClient = new XmlRpcFileManagerClient(dUrl);
+            destClient = RpcCommunicationFactory.createClient(dUrl);
         } catch (ConnectionException e) {
             LOG.log(Level.WARNING, "Unable to connect to dest filemgr: ["
                     + dUrl + "]");

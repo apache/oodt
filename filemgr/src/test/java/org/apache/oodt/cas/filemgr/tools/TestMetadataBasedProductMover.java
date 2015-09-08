@@ -21,7 +21,8 @@ package org.apache.oodt.cas.filemgr.tools;
 //OODT imports
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
+import org.apache.oodt.cas.filemgr.system.FileManagerServer;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 
@@ -45,7 +46,7 @@ public class TestMetadataBasedProductMover extends TestCase {
 
     private static final int FM_PORT = 50010;
 
-    private XmlRpcFileManager fm;
+    private FileManagerServer fm;
 
     private String luceneCatLoc;
 
@@ -233,7 +234,8 @@ public class TestMetadataBasedProductMover extends TestCase {
         System.setProperties(properties);
 
         try {
-            fm = new XmlRpcFileManager(FM_PORT);
+            fm = RpcCommunicationFactory.createServer(FM_PORT);
+            fm.startUp();
         } catch (Exception e) {
             fail(e.getMessage());
         }

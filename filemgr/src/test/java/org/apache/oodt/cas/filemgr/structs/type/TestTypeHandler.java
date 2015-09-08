@@ -17,6 +17,9 @@
 
 package org.apache.oodt.cas.filemgr.structs.type;
 
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerServer;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
 import org.apache.oodt.commons.database.SqlScript;
 import org.apache.oodt.commons.pagination.PaginationUtils;
@@ -33,14 +36,10 @@ import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
@@ -55,7 +54,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
-import org.apache.xmlrpc.XmlRpcException;
+
 import junit.framework.TestCase;
 
 public class TestTypeHandler extends TestCase {
@@ -64,7 +63,7 @@ public class TestTypeHandler extends TestCase {
     
     DataSource publicDataSource;
     
-    XmlRpcFileManager fmServer;
+    FileManagerServer fmServer;
     
     int FILEMGR_PORT = 9999;
 
@@ -152,7 +151,8 @@ public class TestTypeHandler extends TestCase {
         met.addMetadata("ProductName", "test");
         Product testProduct = getTestProduct();
 
-        XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL("http://localhost:" + FILEMGR_PORT));
+        FileManagerClient fmClient = RpcCommunicationFactory.createClient(
+                new URL("http://localhost:" + FILEMGR_PORT));
         try {
             testProduct.setProductType(fmClient.getProductTypeByName("GenericFile"));
             testProduct.setProductId(fmClient.ingestProduct(testProduct, met, false));
@@ -184,7 +184,7 @@ public class TestTypeHandler extends TestCase {
         Product testProduct = getTestProduct();
 
         ProductType genericFile = null;
-        XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL("http://localhost:" + FILEMGR_PORT));
+        FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL("http://localhost:" + FILEMGR_PORT));
         try {
             testProduct.setProductType(genericFile = fmClient.getProductTypeByName("GenericFile"));
             testProduct.setProductId(fmClient.ingestProduct(testProduct, met, false));
@@ -203,13 +203,14 @@ public class TestTypeHandler extends TestCase {
         assertEquals(products.get(0).getProductId(), testProduct.getProductId());
     }
     
-    public void testGetCatalogAndOrigValuesAndGetCatalogQuery() throws ConnectionException, RepositoryManagerException, XmlRpcException, IOException {
+    public void testGetCatalogAndOrigValuesAndGetCatalogQuery() throws Exception {
         Metadata met = new Metadata();
         met.addMetadata("DataVersion", "4.0");
         met.addMetadata("ProductName", "test");
         Product testProduct = getTestProduct();
 
-        XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL("http://localhost:" + FILEMGR_PORT));
+        FileManagerClient fmClient = RpcCommunicationFactory.createClient(
+                new URL("http://localhost:" + FILEMGR_PORT));
         ProductType genericFile = fmClient.getProductTypeByName("GenericFile");
         assertEquals("04.00", (met = fmClient.getCatalogValues(met, genericFile)).getMetadata("DataVersion"));
         assertEquals("4.0", fmClient.getOrigValues(met, genericFile).getMetadata("DataVersion"));
@@ -299,7 +300,8 @@ public class TestTypeHandler extends TestCase {
     
     private void startXmlRpcFileManager() {
         try {
-            fmServer = new XmlRpcFileManager(FILEMGR_PORT);
+            fmServer = RpcCommunicationFactory.createServer(FILEMGR_PORT);
+            fmServer.startUp();
             fmServer.setCatalog(new HsqlDbFriendlyDataSourceCatalogFatory().createCatalog());
         } catch (Exception e) {
             fail(e.getMessage());

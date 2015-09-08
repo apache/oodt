@@ -58,5 +58,6 @@ public class TestTikaAutoDetectExtractor {
         assertTrue(outputMetadata.getAllKeys().size() > 0);
         assertTrue(outputMetadata.containsKey("X-Parsed-By"));
         assertFalse(outputMetadata.getMetadata("X-Parsed-By") == "org.apache.tika.parser.EmptyParser");
+        assertTrue(true);
     }
 }

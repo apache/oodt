@@ -1,0 +1,12 @@
+{
+  "type":"record",
+  "name":"AvroQueryResult",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":[],
+  "fields":[
+    {"name":"product","type":["null","AvroProduct"]},
+    {"name":"metadata","type":["null","AvroMetadata"]},
+    {"name":"toStringFormat","type":["null","string"]}
+  ]
+}

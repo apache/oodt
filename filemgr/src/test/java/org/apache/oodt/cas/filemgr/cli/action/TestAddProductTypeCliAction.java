@@ -25,7 +25,7 @@ import org.apache.oodt.cas.cli.action.CmdLineAction.ActionMessagePrinter;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.filemgr.versioning.BasicVersioner;
 
 //JUnit imports
@@ -109,10 +109,10 @@ public class TestAddProductTypeCliAction extends TestCase {
    }
 
    public class MockAddProductTypeCliAction extends AddProductTypeCliAction {
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
-               false) {
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),false)
+         {
             public String addProductType(ProductType type) {
                productTypePassedToClient = type;
                return PRODUCT_TYPE_ID;

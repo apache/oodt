@@ -24,7 +24,8 @@ import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 
 //JDK imports
 import java.net.URL;
@@ -59,7 +60,7 @@ public class LocalCache implements Cache {
 
     private String endOfQuery;
 
-    private XmlRpcFileManagerClient fm;
+    private FileManagerClient fm;
 
     private static final Logger LOG = Logger.getLogger(LocalCache.class
             .getName());
@@ -171,7 +172,7 @@ public class LocalCache implements Cache {
      */
     public void setFileManager(URL fmUrl) {
         try {
-            this.fm = new XmlRpcFileManagerClient(fmUrl);
+            this.fm = RpcCommunicationFactory.createClient(fmUrl);
         } catch (ConnectionException e) {
             LOG.log(Level.WARNING,
                     "Exception setting file manager connection to: [" + fmUrl
@@ -205,7 +206,7 @@ public class LocalCache implements Cache {
     }
 
     /**
-     * Performs a {@link XmlRpcFileManagerClient#hasProduct(String)} check
+     * Performs a {@link FileManagerClient#hasProduct(String)} check
      * against a live File Manager, bypassing the {@link Cache}.
      * 
      * @param uniqueElementName

@@ -17,30 +17,17 @@
 
 package org.apache.oodt.cas.filemgr.system;
 
-//APACHE imports
 import org.apache.xmlrpc.CommonsXmlRpcTransport;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcClientException;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcTransport;
 import org.apache.xmlrpc.XmlRpcTransportFactory;
-//JDK imports
-import java.net.URL;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.File;
-//OODT imports
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodRetryHandler;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
@@ -60,7 +47,13 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
-
+import java.net.URL;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.io.IOException;
 /**
  * @author mattmann (Chris Mattmann)
  * @author bfoster (Brian Foster)
@@ -71,7 +64,7 @@ import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
  * </p>
  * 
  */
-public class XmlRpcFileManagerClient {
+public class XmlRpcFileManagerClient implements FileManagerClient {
 
     /* our xml rpc client */
     private XmlRpcClient client = null;
@@ -94,7 +87,7 @@ public class XmlRpcFileManagerClient {
      * <p>
      * Constructs a new XmlRpcFileManagerClient with the given <code>url</code>.
      * </p>
-     * 
+     *
      * @param url
      *            The url pointer to the xml rpc file manager service.
      * @param testConnection
@@ -102,23 +95,6 @@ public class XmlRpcFileManagerClient {
      */
     public XmlRpcFileManagerClient(final URL url, boolean testConnection)
           throws ConnectionException {
-        // set up the configuration, if there is any
-        if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
-            String configFile = System
-                    .getProperty("org.apache.oodt.cas.filemgr.properties");
-            LOG.log(Level.INFO,
-                    "Loading File Manager Configuration Properties from: ["
-                            + configFile + "]");
-            try {
-                System.getProperties().load(
-                        new FileInputStream(new File(configFile)));
-            } catch (Exception e) {
-                LOG.log(Level.INFO,
-                        "Error loading configuration properties from: ["
-                                + configFile + "]");
-            }
-
-        }
 
         XmlRpcTransportFactory transportFactory = new XmlRpcTransportFactory() {
 
@@ -654,6 +630,7 @@ public class XmlRpcFileManagerClient {
         return topNProductList;
     }
 
+
     @SuppressWarnings("unchecked")
     public List<Product> getTopNProducts(int n, ProductType type)
             throws CatalogException {
@@ -948,31 +925,6 @@ public class XmlRpcFileManagerClient {
             throws ValidationLayerException {
         Vector<Object> argList = new Vector<Object>();
         argList.add(elementName);
-
-        Hashtable<String, Object> elementHash = null;
-
-        try {
-            elementHash = (Hashtable<String, Object>) client.execute(
-                    "filemgr.getElementByName", argList);
-        } catch (XmlRpcException e) {
-            throw new ValidationLayerException(e.getMessage());
-        } catch (IOException e) {
-            throw new ValidationLayerException(e.getMessage());
-        }
-
-        if (elementHash == null) {
-            return null;
-        } else {
-            return XmlRpcStructFactory.getElementFromXmlRpc(elementHash);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public Element getElementByName(String elementName, ProductType type)
-            throws ValidationLayerException {
-        Vector<Object> argList = new Vector<Object>();
-        argList.add(elementName);
-        argList.add(XmlRpcStructFactory.getXmlRpcProductType(type));
 
         Hashtable<String, Object> elementHash = null;
 
@@ -1344,12 +1296,6 @@ public class XmlRpcFileManagerClient {
                 .getQueryFromXmlRpc((Hashtable<String, Object>) this.client
                         .execute("filemgr.getCatalogQuery", args));
     }
-
-    public static void main(String[] args) {
-       CmdLineUtility cmdLineUtility = new CmdLineUtility();
-       cmdLineUtility.run(args);
-    }
-
     /**
      * @return Returns the fileManagerUrl.
      */

@@ -3,6 +3,9 @@ Apache OODT Change Log
 
 Current Development
 
+* OODT-858 Integrate Avro RPC with the filemanager module
+  OODT-856 Separate XMLRPC from OODT logic in the filemgr module (Radu Manole, mattmann, lewismc))
+
 * OODT-872 Upgrade Jena dependencies to org.apache.jena 3.0.0 (mattmann, lewismc)
 
 * OODT-865 Integrate Avro RPC with the crawler module 

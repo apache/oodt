@@ -21,7 +21,8 @@ package org.apache.oodt.cas.filemgr.tools;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.xml.XMLUtils;
 
@@ -48,7 +49,7 @@ public final class ProductDumper {
             .getName());
 
     /* our file manager client */
-    private XmlRpcFileManagerClient fmClient = null;
+    private FileManagerClient fmClient = null;
 
     private final static String FILENAME = "Filename";
 
@@ -56,7 +57,7 @@ public final class ProductDumper {
 
     public ProductDumper(String fmUrlStr) throws InstantiationException {
         try {
-            this.fmClient = new XmlRpcFileManagerClient(new URL(fmUrlStr));
+            this.fmClient = RpcCommunicationFactory.createClient(new URL(fmUrlStr));
         } catch (MalformedURLException e) {
             LOG.log(Level.SEVERE, "malformed file manager url: [" + fmUrlStr
                     + "]", e);

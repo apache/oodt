@@ -24,7 +24,7 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory;
 import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * Retrieves files for a given {@link Product}.
@@ -42,7 +42,7 @@ public class RetrieveFilesCliAction extends FileManagerCliAction {
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
       try {
-         XmlRpcFileManagerClient fmClient = getClient();
+         FileManagerClient fmClient = getClient();
          dt.setFileManagerUrl(fmClient.getFileManagerUrl());
          Product product = null;
          if (productId != null) {

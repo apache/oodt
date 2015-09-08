@@ -1,0 +1,11 @@
+{
+  "type":"record",
+  "name":"AvroFilterAlgor",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":[],
+  "fields":[
+    {"name":"className","type":["null","string"]},
+    {"name":"epsilon","type":"long","default":0}
+  ]
+}

@@ -32,7 +32,7 @@ import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.filemgr.structs.query.conv.VersionConverter;
 import org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor;
 import org.apache.oodt.cas.filemgr.structs.query.filter.TimeEvent;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //Google imports
@@ -144,9 +144,9 @@ public class TestSqlQueryCliAction extends TestCase {
 
    public class MockSqlQueryCliAction extends SqlQueryCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public List<QueryResult> complexQuery(ComplexQuery complexQuery) {

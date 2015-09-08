@@ -35,7 +35,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 
 //Google imports
@@ -65,7 +65,7 @@ public class IngestProductCliAction extends FileManagerCliAction {
          Validate.notNull(metadataFile, "Must specify metadataFile");
          Validate.notNull(references, "Must specify references");
 
-         XmlRpcFileManagerClient client = getClient();
+         FileManagerClient client = getClient();
 
          ProductType pt = client.getProductTypeByName(productTypeName);
          if (pt == null) {

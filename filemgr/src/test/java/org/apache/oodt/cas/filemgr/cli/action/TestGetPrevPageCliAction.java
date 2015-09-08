@@ -27,7 +27,7 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 //Google imports
 import com.google.common.collect.Lists;
@@ -107,7 +107,7 @@ public class TestGetPrevPageCliAction extends TestCase {
 
    public class MockGetPrevPageCliAction extends GetPrevPageCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
          return new MockXmlRpcFileManagerClient();
       }
@@ -115,7 +115,7 @@ public class TestGetPrevPageCliAction extends TestCase {
 
    public class NullPTGetPrevPageCliAction extends MockGetPrevPageCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
          return new MockXmlRpcFileManagerClient() {
             @Override
@@ -128,7 +128,7 @@ public class TestGetPrevPageCliAction extends TestCase {
 
    public class NullPPGetPrevPageCliAction extends MockGetPrevPageCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
          return new MockXmlRpcFileManagerClient() {
             @Override
@@ -141,7 +141,7 @@ public class TestGetPrevPageCliAction extends TestCase {
 
    public class NullNPGetPrevPageCliAction extends MockGetPrevPageCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
          return new MockXmlRpcFileManagerClient() {
             @Override
@@ -153,7 +153,7 @@ public class TestGetPrevPageCliAction extends TestCase {
       }
    }
 
-   public static class MockXmlRpcFileManagerClient extends XmlRpcFileManagerClient {
+   public static class MockXmlRpcFileManagerClient extends DummyFileManagerClient {
       public MockXmlRpcFileManagerClient() throws MalformedURLException,
             ConnectionException {
          super(new URL("http://localhost:9000"), false);

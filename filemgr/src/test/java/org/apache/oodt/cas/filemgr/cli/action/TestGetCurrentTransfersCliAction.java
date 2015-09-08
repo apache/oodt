@@ -28,7 +28,7 @@ import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 //Google imports
 import com.google.common.collect.Lists;
@@ -80,9 +80,9 @@ public class TestGetCurrentTransfersCliAction extends TestCase {
 
    public class MockGetCurrentTransfersCliAction extends GetCurrentTransfersCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public List<FileTransferStatus> getCurrentFileTransfers() {
@@ -101,9 +101,9 @@ public class TestGetCurrentTransfersCliAction extends TestCase {
    public class NullStatusGetCurrentTransfersCliAction extends
          GetCurrentTransfersCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public List<FileTransferStatus> getCurrentFileTransfers() {

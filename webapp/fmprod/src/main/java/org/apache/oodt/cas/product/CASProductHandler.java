@@ -35,7 +35,8 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.product.data.DataUtils;
 import org.apache.oodt.product.LargeProductQueryHandler;
 import org.apache.oodt.product.ProductException;
@@ -55,12 +56,11 @@ import static org.apache.oodt.cas.product.CASProductHandlerMetKeys.*;
  */
 public class CASProductHandler implements LargeProductQueryHandler {
 
-    private XmlRpcFileManagerClient fm;
+    private FileManagerClient fm;
 
     public CASProductHandler() throws MalformedURLException,
             ConnectionException {
-        this.fm = new XmlRpcFileManagerClient(new URL(System.getProperty(
-                "fm.url", "http://localhost:9000")));
+        this.fm = RpcCommunicationFactory.createClient(new URL(System.getProperty("fm.url", "http://localhost:9000")));
     }
 
     /*

@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * A abstract {@link CmdLineAction} for deleting {@link Product}s.
@@ -40,7 +40,7 @@ public abstract class AbstractDeleteProductCliAction extends
          throws CmdLineActionException {
       Product p = null;
       try {
-         XmlRpcFileManagerClient client = getClient();
+         FileManagerClient client = getClient();
          p = getProductToDelete();
          List<Reference> refs = client.getProductReferences(p);
          if (refs == null) {

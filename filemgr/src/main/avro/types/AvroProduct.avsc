@@ -1,0 +1,16 @@
+{
+  "type":"record",
+  "name":"AvroProduct",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":["AvroReference.avsc","AvroProductType.avsc"],
+  "fields":[
+    {"name":"productId","type":["null","string"]},
+    {"name":"productName","type":["null","string"]},
+    {"name":"productType","type":["null","AvroProductType"]},
+    {"name":"productStructure","type":["null","string"]},
+    {"name":"references","type":[{"type":"array","items":"AvroReference"},"null"]},
+    {"name":"transferStatus","type":["null","string"]},
+    {"name":"rootRef","type":["null","AvroReference"]}
+  ]
+}

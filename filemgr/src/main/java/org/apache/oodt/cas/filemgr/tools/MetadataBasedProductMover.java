@@ -32,7 +32,8 @@ import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -54,7 +55,7 @@ public class MetadataBasedProductMover {
     private String pathSpec = null;
 
     /* the client to the file manager */
-    private XmlRpcFileManagerClient fmgrClient = null;
+    private FileManagerClient fmgrClient = null;
 
     /* our log stream */
     private static final Logger LOG = Logger
@@ -75,7 +76,7 @@ public class MetadataBasedProductMover {
             throws InstantiationException {
         this.pathSpec = pathSpec;
         try {
-            this.fmgrClient = new XmlRpcFileManagerClient(new URL(fmUrl));
+            this.fmgrClient = RpcCommunicationFactory.createClient(new URL(fmUrl));
         } catch (MalformedURLException e) {
             throw new InstantiationException(e.getMessage());
         } catch (ConnectionException e) {

@@ -22,7 +22,8 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import java.net.URL;
@@ -38,7 +39,7 @@ import org.apache.lucene.search.Query;
 public class CasDB {
 
   URL filemgrUrl;
-  XmlRpcFileManagerClient client;
+  FileManagerClient client;
   public Results results;
 
   private static String freeTextBlock = "__FREE__";
@@ -50,7 +51,7 @@ public class CasDB {
   public boolean connect(String cas) {
     try {
       filemgrUrl = new URL(cas);
-      client = new XmlRpcFileManagerClient(filemgrUrl);
+      client = RpcCommunicationFactory.createClient(filemgrUrl);
     } catch (Exception e) {
       filemgrUrl = null;
       return false;

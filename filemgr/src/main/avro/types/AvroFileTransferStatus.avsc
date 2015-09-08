@@ -1,0 +1,12 @@
+{
+  "type":"record",
+  "name":"AvroFileTransferStatus",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":["AvroProduct.avsc","AvroReference.avsc"],
+  "fields":[
+    {"name":"fileRef","type":["null","AvroReference"]},
+    {"name": "bytesTransferred", "type":"long","default":0},
+    {"name":"parentProduct","type":["null","AvroProduct"]}
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "type":"record",
+  "name":"AvroMimeType",
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "fields":[
+    {"name":"typeName","type":["null","string"]}
+  ]
+}

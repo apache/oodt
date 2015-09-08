@@ -26,7 +26,8 @@ import org.apache.commons.lang.Validate;
 //OODT imports
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 
 /**
  * Base {@link CmdLineAction} for File Manager.
@@ -35,24 +36,24 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
  */
 public abstract class FileManagerCliAction extends CmdLineAction {
 
-   private XmlRpcFileManagerClient client;
+   private FileManagerClient client;
 
    public String getUrl() {
       return System.getProperty("org.apache.oodt.cas.filemgr.url");
    }
 
-   protected XmlRpcFileManagerClient getClient()
+   protected FileManagerClient getClient()
          throws MalformedURLException, ConnectionException {
       Validate.notNull(getUrl(), "Must specify url");
 
       if (client != null) {
          return client;
       } else {
-         return new XmlRpcFileManagerClient(new URL(getUrl()), false);
+         return RpcCommunicationFactory.createClient(new URL(getUrl()), false);
       }
    }
 
-   public void setClient(XmlRpcFileManagerClient client) {
+   public void setClient(FileManagerClient client) {
       this.client = client;
    }
 }

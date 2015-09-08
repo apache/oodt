@@ -1,0 +1,13 @@
+{
+  "type":"record",
+  "name":"AvroElement",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":[],
+  "fields":[
+    {"name":"elementId","type":["null","string"]},
+    {"name":"elementName","type":["null","string"]},
+    {"name":"dcElement","type":["null","string"]},
+    {"name":"description","type":["null","string"]}
+  ]
+}

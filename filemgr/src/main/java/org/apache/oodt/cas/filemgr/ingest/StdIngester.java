@@ -25,7 +25,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.IngestException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.oodt.cas.metadata.MetExtractor;
@@ -78,7 +79,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
             .getName());
 
     /* our file manager client */
-    private XmlRpcFileManagerClient fmClient = null;
+    private FileManagerClient fmClient = null;
 
     /* client transfer service factory */
     private String clientTransferServiceFactory = null;
@@ -253,7 +254,8 @@ public class StdIngester implements Ingester, CoreMetKeys {
 
     private void setFileManager(URL url) {
         try {
-            fmClient = new XmlRpcFileManagerClient(url);
+            fmClient = RpcCommunicationFactory.createClient(url);
+
             LOG.log(Level.INFO, "StdIngester: connected to file manager: ["
                     + url + "]");
             // instantiate the client transfer object

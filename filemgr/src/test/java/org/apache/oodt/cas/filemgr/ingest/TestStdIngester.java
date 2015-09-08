@@ -26,8 +26,9 @@ import java.util.Properties;
 //OODT imports
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerServer;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 
@@ -46,7 +47,7 @@ public class TestStdIngester extends TestCase {
 
     private static final int FM_PORT = 50010;
 
-    private XmlRpcFileManager fm;
+    private FileManagerServer fm;
 
     private String luceneCatLoc;
 
@@ -84,7 +85,7 @@ public class TestStdIngester extends TestCase {
         
         // now make sure that the file is ingested
         try {
-            XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(new URL("http://localhost:"+FM_PORT));
+            FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL("http://localhost:" + FM_PORT));
             Product p = fmClient.getProductByName("test.txt");
             assertNotNull(p);
             assertEquals(Product.STATUS_RECEIVED, p.getTransferStatus());
@@ -201,7 +202,9 @@ public class TestStdIngester extends TestCase {
         System.setProperties(properties);
 
         try {
-            fm = new XmlRpcFileManager(FM_PORT);
+
+            fm = RpcCommunicationFactory.createServer(FM_PORT);
+            fm.startUp();
         } catch (Exception e) {
             fail(e.getMessage());
         }

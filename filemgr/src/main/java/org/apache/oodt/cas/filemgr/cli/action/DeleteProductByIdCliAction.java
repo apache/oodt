@@ -21,7 +21,7 @@ import org.apache.commons.lang.Validate;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * A {@link CmdLineAction} which deletes a {@link Product} by ID.
@@ -36,7 +36,7 @@ public class DeleteProductByIdCliAction extends AbstractDeleteProductCliAction {
    public Product getProductToDelete() throws Exception {
       Validate.notNull(productId, "Must specify productId");
 
-      XmlRpcFileManagerClient client = getClient();
+      FileManagerClient client = getClient();
       Product p = client.getProductById(productId);
       if (p == null) {
          throw new Exception("FileManager returned null for product '"

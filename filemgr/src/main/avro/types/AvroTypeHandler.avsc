@@ -1,0 +1,10 @@
+{
+  "type":"record",
+  "name":"AvroTypeHandler","default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":[],
+  "fields":[
+    {"name":"className","type":"string"},
+    {"name":"elementName","type":"string"}
+  ]
+}

@@ -25,8 +25,9 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.mime.MimeTypesFactory;
@@ -63,7 +64,7 @@ public class LocalDataTransferer implements DataTransfer {
          .getName());
 
    /* file manager client */
-   private XmlRpcFileManagerClient client = null;
+   private FileManagerClient client = null;
 
    /**
     * <p>
@@ -82,7 +83,7 @@ public class LocalDataTransferer implements DataTransfer {
     */
    public void setFileManagerUrl(URL url) {
       try {
-         client = new XmlRpcFileManagerClient(url);
+         client = RpcCommunicationFactory.createClient(url);
          LOG.log(Level.INFO, "Local Data Transfer to: ["
                + client.getFileManagerUrl().toString() + "] enabled");
       } catch (ConnectionException e) {

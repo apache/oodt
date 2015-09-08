@@ -1,0 +1,120 @@
+@namespace("org.apache.oodt.cas.filemgr.structs.avrotypes")
+protocol AvroFileManager {
+import schema "AvroMimeType.avsc";
+import schema "AvroReference.avsc";
+import schema "AvroTypeHandler.avsc";
+import schema "AvroExtractorSpec.avsc";
+import schema "AvroMetadata.avsc";
+import schema "AvroProductType.avsc";
+import schema "AvroProduct.avsc";
+import schema "AvroFileTransferStatus.avsc";
+import schema "AvroProductPage.avsc";
+import schema "AvroQueryCriteria.avsc";
+import schema "AvroQuery.avsc";
+import schema "AvroElement.avsc";
+import schema "AvroQueryResult.avsc";
+import schema "AvroFilterAlgor.avsc";
+import schema "AvroQueryFilter.avsc";
+import schema "AvroComplexQuery.avsc";
+
+    boolean isAlive();
+
+    boolean refreshConfigAndPolicy();
+
+    boolean transferringProduct(AvroProduct p);
+
+    AvroFileTransferStatus getCurrentFileTransfer();
+
+    array<AvroFileTransferStatus> getCurrentFileTransfers();
+
+    double getProductPctTransferred(AvroProduct product);
+
+    double getRefPctTransferred(AvroReference reference);
+
+    boolean removeProductTransferStatus(AvroProduct product);
+
+    boolean isTransferComplete(AvroProduct product);
+
+    AvroProductPage pagedQuery(AvroQuery query, AvroProductType type, int pageNum);
+
+    AvroProductPage getFirstPage(AvroProductType type);
+
+    AvroProductPage getLastPage(AvroProductType type);
+
+    AvroProductPage getNextPage(AvroProductType type ,AvroProductPage currPage);
+
+    AvroProductPage getPrevPage(AvroProductType type,AvroProductPage currPage);
+
+    boolean setProductTransferStatus(AvroProduct product);
+
+    int getNumProducts(AvroProductType type);
+
+    array<AvroProduct> getTopNProductsByProductType(int n,AvroProductType type);
+
+    array<AvroProduct> getTopNProducts(int n);
+
+    boolean hasProduct(string productName);
+
+    AvroMetadata getMetadata(AvroProduct product);
+
+    AvroMetadata getReducedMetadata(AvroProduct product, array<string> elements);
+
+    array<AvroProductType>  getProductTypes();
+
+    array<AvroReference> getProductReferences(AvroProduct product);
+
+    AvroProduct getProductById(string productId);
+
+    AvroProduct getProductByName(string productName);
+
+    array<AvroProduct> getProductsByProductType(AvroProductType type);
+
+    array<AvroElement> getElementsByProductType(AvroProductType type);
+
+    AvroElement getElementById(string elementId);
+
+    AvroElement getElementByName(string elementName);
+
+    array<AvroQueryResult> complexQuery(AvroComplexQuery complexQuery);
+
+    array<AvroProduct> query(AvroQuery query,AvroProductType type);
+
+    AvroProductType getProductTypeByName(string productTypeName);
+
+    AvroProductType getProductTypeById(string productTypeId);
+
+    AvroProductType getProductTypeById(string productTypeId);
+
+    boolean updateMetadata(AvroProduct product,AvroMetadata met);
+
+    string addProductType(AvroProductType type);
+
+    string catalogProduct(AvroProduct product);
+
+    boolean addMetadata(AvroProduct product, AvroMetadata met);
+
+    boolean addProductReferences(AvroProduct product);
+
+    string ingestProduct(AvroProduct p,AvroMetadata m, boolean clientTransfer);
+
+    string ingestProduct(AvroProduct p,AvroMetadata m, boolean clientTransfer);
+
+    bytes retrieveFile(string filePath, int offset, int numBytes);
+
+    boolean transferFile(string filePath, bytes fileData, int offset,int numBytes);
+
+    boolean moveProduct(AvroProduct p, string newPath);
+
+    boolean removeFile(string filePath);
+
+    boolean modifyProduct(AvroProduct p);
+
+    boolean removeProduct(AvroProduct p);
+
+    AvroMetadata getCatalogValues(AvroMetadata m,AvroProductType productType);
+
+    AvroMetadata getOrigValues(AvroMetadata m,AvroProductType productType);
+
+    AvroQuery getCatalogQuery(AvroQuery query,AvroProductType productType);
+
+}

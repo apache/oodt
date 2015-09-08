@@ -1,0 +1,11 @@
+{
+  "type":"record",
+  "name":"AvroExtractorSpec",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":[],
+  "fields":[
+    {"name":"className","type":["null","string"]},
+    {"name":"configuration","type":[{"type":"map","values":"string"},"null"]}
+  ]
+}

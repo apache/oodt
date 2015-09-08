@@ -1,0 +1,15 @@
+{
+  "type":"record",
+  "name":"AvroComplexQuery",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":["AvroQueryCriteria.avsc","AvroQueryFilter.avsc"],
+  "fields":[
+    {"name":"criteria","type":["null",{"type":"array","items":"AvroQueryCriteria"}]},
+    {"name":"reducedProductTypeNames","type":["null",{"type":"array","items":"string"}]},
+    {"name":"reducedMetadata","type":["null",{"type":"array","items":"string"}]},
+    {"name":"queryFilter","type":["null","AvroQueryFilter"]},
+    {"name":"sortByMetKey","type":["null","string"]},
+    {"name":"toStringResultFormat","type":["null","string"]}
+  ]
+}

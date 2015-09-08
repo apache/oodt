@@ -346,7 +346,7 @@ public final class XmlRpcStructFactory {
 
     public static Hashtable<String, Object> getXmlRpcProductType(ProductType type) {
         Hashtable<String, Object> productTypeHash = new Hashtable<String, Object>();
-        // TODO(bfoster): ProductType ID is currently required by XmlRpcFileManager.
+        // TODO(bfoster): ProductType ID is currently required by XmlRpcFileManagerServer.
         productTypeHash.put("id", type.getProductTypeId());
         if (type.getName() != null) {
            productTypeHash.put("name", type.getName());

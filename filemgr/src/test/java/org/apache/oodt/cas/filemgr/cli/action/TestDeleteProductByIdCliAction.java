@@ -27,7 +27,7 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 //Google imports
 import com.google.common.collect.Lists;
@@ -109,9 +109,9 @@ public class TestDeleteProductByIdCliAction extends TestCase {
    public class MockDeleteProductByIdCliAction extends
          DeleteProductByIdCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public Product getProductById(String productId) {
@@ -143,9 +143,9 @@ public class TestDeleteProductByIdCliAction extends TestCase {
    public class NullProductDeleteProductByIdCliAction extends
          MockDeleteProductByIdCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public Product getProductById(String productId) {
@@ -158,9 +158,9 @@ public class TestDeleteProductByIdCliAction extends TestCase {
    public class NullRefsDeleteProductByIdCliAction extends
          MockDeleteProductByIdCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public Product getProductById(String productId) {
@@ -180,9 +180,9 @@ public class TestDeleteProductByIdCliAction extends TestCase {
    public class FalseDeleteProductByIdCliAction extends
          MockDeleteProductByIdCliAction {
       @Override
-      public XmlRpcFileManagerClient getClient() throws MalformedURLException,
+      public FileManagerClient getClient() throws MalformedURLException,
             ConnectionException {
-         return new XmlRpcFileManagerClient(new URL("http://localhost:9000"),
+         return new DummyFileManagerClient(new URL("http://localhost:9000"),
                false) {
             @Override
             public Product getProductById(String productId) {

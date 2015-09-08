@@ -22,7 +22,7 @@ import org.apache.commons.lang.Validate;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
 
 /**
  * A {@link CmdLineAction} which gets number of {@link Product}s of a given
@@ -40,7 +40,7 @@ public class GetNumProductsCliAction extends FileManagerCliAction {
       try {
          Validate.notNull(productTypeName, "Must specify productTypeName");
 
-         XmlRpcFileManagerClient client = getClient();
+         FileManagerClient client = getClient();
          ProductType pt = client.getProductTypeByName(productTypeName);
          if (pt == null) {
             throw new Exception("FileManager returned null ProductType");

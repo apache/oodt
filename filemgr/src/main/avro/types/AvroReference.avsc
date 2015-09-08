@@ -1,0 +1,13 @@
+{
+  "type":"record",
+  "name":"AvroReference",
+  "default":null,
+  "namespace":"org.apache.oodt.cas.filemgr.structs.avrotypes",
+  "imports":["AvroMimeType.avsc"],
+  "fields":[
+    {"name":"origReference","type":["null","string"]},
+    {"name":"dataStoreReference","type":["null","string"]},
+    {"name":"fileSize","type":"long","default":0},
+    {"name":"mimeTypeName","type":["string","null"]}
+  ]
+}

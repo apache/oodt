@@ -22,8 +22,9 @@ package org.apache.oodt.cas.filemgr.tools;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerServer;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 
@@ -49,9 +50,9 @@ public class TestExpImpCatalog extends TestCase {
 
     private static final int FM_PORT = 50010;
 
-    private XmlRpcFileManager fm;
+    private FileManagerServer fm;
 
-    private XmlRpcFileManager fm2;
+    private FileManagerServer fm2;
 
     private ExpImpCatalog expImp;
 
@@ -79,8 +80,7 @@ public class TestExpImpCatalog extends TestCase {
         // its name is test.txt
         
         try {
-            XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(
-                    new URL("http://localhost:" + (FM_PORT + 1)));
+            FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL("http://localhost:" + (FM_PORT + 1)));
             assertEquals(1, fmClient.getNumProducts(fmClient
                     .getProductTypeByName("GenericFile")));
 
@@ -122,8 +122,7 @@ public class TestExpImpCatalog extends TestCase {
 
         // now test that test.txt exists in cat 2
         try {
-            XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(
-                    new URL("http://localhost:" + (FM_PORT + 1)));
+            FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL("http://localhost:" + (FM_PORT + 1)));
             assertEquals(2, fmClient.getNumProducts(fmClient
                     .getProductTypeByName("GenericFile")));
 
@@ -160,8 +159,7 @@ public class TestExpImpCatalog extends TestCase {
 
         // now test that test.txt exists in cat 2
         try {
-            XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(
-                    new URL("http://localhost:" + (FM_PORT + 1)));
+            FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL("http://localhost:" + (FM_PORT + 1)));
             Product prod = fmClient.getProductByName("test.txt");
             assertNotNull(prod);
             Metadata met = fmClient.getMetadata(prod);
@@ -187,8 +185,10 @@ public class TestExpImpCatalog extends TestCase {
         URL ingestUrl = this.getClass().getResource("/ingest");
         String cat1 = new File(ingestUrl.getFile()).getCanonicalPath() + "cat";
         String cat2 = new File(ingestUrl.getFile()).getCanonicalPath() + "cat2";
-        fm = startXmlRpcFileManager(FM_PORT, cat1);
-        fm2 = startXmlRpcFileManager(FM_PORT + 1, cat2);
+        fm = startFileManager(FM_PORT, cat1);
+        fm.startUp();
+        fm2 = startFileManager(FM_PORT + 1, cat2);
+        fm2.startUp();
         ingestTestFiles();
         try {
             expImp = new ExpImpCatalog(new URL("http://localhost:" + FM_PORT),
@@ -265,11 +265,11 @@ public class TestExpImpCatalog extends TestCase {
 
     }
 
-    private XmlRpcFileManager startXmlRpcFileManager(int port, String catPath) {
+    private FileManagerServer startFileManager(int port, String catPath) {
 
         Properties properties = new Properties(System.getProperties());
 
-        XmlRpcFileManager fileMgr = null;
+        FileManagerServer fileMgr = null;
         
         // first make sure to load properties for the file manager
         // and make sure to load logging properties as well
@@ -321,7 +321,7 @@ public class TestExpImpCatalog extends TestCase {
         System.setProperties(properties);
 
         try {
-            fileMgr = new XmlRpcFileManager(port);
+            fileMgr = RpcCommunicationFactory.createServer(port);
         } catch (Exception e) {
             fail(e.getMessage());
         }

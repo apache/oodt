@@ -36,6 +36,9 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.io.FileNotFoundException;
@@ -53,7 +56,6 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -76,7 +78,7 @@ public class RDFProductServlet extends HttpServlet {
   private static final long serialVersionUID = -3660991271646533985L;
 
   /* our client to the file manager */
-  private static XmlRpcFileManagerClient fClient = null;
+  private static FileManagerClient fClient = null;
 
   /* our log stream */
   private Logger LOG = Logger.getLogger(RDFProductServlet.class.getName());
@@ -121,7 +123,7 @@ public class RDFProductServlet extends HttpServlet {
     fClient = null;
 
     try {
-      fClient = new XmlRpcFileManagerClient(new URL(fileManagerUrl));
+      fClient = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
     } catch (MalformedURLException e) {
       LOG.log(Level.SEVERE,
           "Unable to initialize file manager url in RDF Servlet: [url="

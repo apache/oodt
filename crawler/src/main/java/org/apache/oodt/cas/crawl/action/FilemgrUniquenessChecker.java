@@ -28,7 +28,8 @@ import org.apache.commons.lang.Validate;
 
 //OODT imports
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 
 /**
@@ -47,8 +48,7 @@ public class FilemgrUniquenessChecker extends CrawlerAction {
          Validate.notNull(productMetadata.getMetadata(PRODUCT_NAME),
                PRODUCT_NAME + " was not found in metadata");
 
-         XmlRpcFileManagerClient fmClient = new XmlRpcFileManagerClient(
-               new URL(this.filemgrUrl));
+         FileManagerClient fmClient = RpcCommunicationFactory.createClient(new URL(this.filemgrUrl));
          return !fmClient.hasProduct(productMetadata.getMetadata(PRODUCT_NAME));
       } catch (Exception e) {
          throw new CrawlerActionException("Product failed uniqueness check : ["

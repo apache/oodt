@@ -33,8 +33,9 @@ import java.util.List;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerServer;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 import org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys;
 
@@ -72,7 +73,8 @@ public class TestFileStager extends TestCase {
       System.setProperty("filemgr.catalog.factory", "");
       System.setProperty("filemgr.repository.factory", "");
       int port = 9876;
-      XmlRpcFileManager filemgr = new XmlRpcFileManager(port);
+      FileManagerServer filemgr = RpcCommunicationFactory.createServer(port);
+      filemgr.startUp();
       String filemgrUrl = "http://localhost:" + port;
       pgeMetadata = createStrictMock(PgeMetadata.class);
       expect(pgeMetadata.getMetadata(PgeTaskMetKeys.QUERY_FILE_MANAGER_URL))
@@ -96,7 +98,7 @@ public class TestFileStager extends TestCase {
       Reference ref2 = new Reference();
       ref2.setDataStoreReference(uri2);
 
-      XmlRpcFileManagerClient fmClient = createStrictMock(XmlRpcFileManagerClient.class);
+      FileManagerClient fmClient = createStrictMock(FileManagerClient.class);
       expect(fmClient.getProductReferences(ProductIdMatcher.eqProductId(productId))).andReturn(
             Lists.newArrayList(ref1, ref2));
       replay(fmClient);

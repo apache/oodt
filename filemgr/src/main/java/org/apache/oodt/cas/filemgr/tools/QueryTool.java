@@ -37,7 +37,8 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
 
 //APACHE imports
@@ -65,7 +66,7 @@ public final class QueryTool {
 
     private static String freeTextBlock = "__FREE__";
 
-    private XmlRpcFileManagerClient client = null;
+    private FileManagerClient client = null;
 
     private static enum QueryType { LUCENE, SQL }; 
     
@@ -74,7 +75,7 @@ public final class QueryTool {
 
     public QueryTool(URL fmUrl) throws InstantiationException {
         try {
-            client = new XmlRpcFileManagerClient(fmUrl);
+            client = RpcCommunicationFactory.createClient(fmUrl);
         } catch (ConnectionException e) {
             throw new InstantiationException(e.getMessage());
         }
@@ -249,7 +250,7 @@ public final class QueryTool {
         ComplexQuery complexQuery = SqlParser.parseSqlQuery(query);
         complexQuery.setSortByMetKey(sortBy);
         complexQuery.setToStringResultFormat(outputFormat);
-        List<QueryResult> results = new XmlRpcFileManagerClient(new URL(filemgrUrl)).complexQuery(complexQuery);
+        List<QueryResult> results = RpcCommunicationFactory.createClient(new URL(filemgrUrl)).complexQuery(complexQuery);
         StringBuffer returnString = new StringBuffer("");
         for (QueryResult qr : results) 
             returnString.append(qr.toString() + delimiter);

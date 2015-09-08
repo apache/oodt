@@ -20,7 +20,8 @@ package org.apache.oodt.cas.filemgr.datatransfer;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 
 //JDK imports
 import java.io.File;
@@ -40,13 +41,13 @@ public class InPlaceDataTransferer implements DataTransfer {
 
   private static final Logger LOG = Logger.getLogger(InPlaceDataTransferer.class.getName());
 
-  private XmlRpcFileManagerClient client = null;
+  private FileManagerClient client = null;
 
   public InPlaceDataTransferer() {}
 
   public void setFileManagerUrl(URL url) {
     try {
-      client = new XmlRpcFileManagerClient(url);
+      client = RpcCommunicationFactory.createClient(url);
       LOG.log(Level.INFO, "In Place Data Transfer to: [" + client.getFileManagerUrl().toString()
           + "] enabled");
     } catch (ConnectionException e) {

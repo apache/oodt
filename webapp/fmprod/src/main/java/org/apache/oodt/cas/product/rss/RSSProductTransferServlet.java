@@ -36,6 +36,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+
+import org.apache.oodt.cas.filemgr.system.FileManagerClient;
+import org.apache.oodt.cas.filemgr.util.RpcCommunicationFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.io.File;
@@ -51,7 +54,6 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
 import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -74,7 +76,7 @@ public class RSSProductTransferServlet extends HttpServlet {
     private static final long serialVersionUID = -7983832512818339079L;
 
     /* our client to the file manager */
-    private static XmlRpcFileManagerClient fClient = null;
+    private static FileManagerClient fClient = null;
 
     /* RSS config */
     private RSSConfig rssconf;
@@ -119,7 +121,7 @@ public class RSSProductTransferServlet extends HttpServlet {
         fClient = null;
 
         try {
-            fClient = new XmlRpcFileManagerClient(new URL(fileManagerUrl));
+            fClient = RpcCommunicationFactory.createClient(new URL(fileManagerUrl));
         } catch (MalformedURLException e) {
             LOG.log(Level.SEVERE,
                     "Unable to initialize file manager url in RSS Servlet: [url="
