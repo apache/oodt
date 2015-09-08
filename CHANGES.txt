@@ -2,6 +2,7 @@ Apache OODT Change Log
 ======================
 Release 0.11 - Current Development
 
+* OODT-872 Upgrade Jena dependencies to org.apache.jena 3.0.0 (lewismc, mattmann)
 
 Release 0.10 - 08/30/2015
 
