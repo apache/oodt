@@ -1,5 +1,13 @@
 Apache OODT Change Log
 ======================
+
+Current Development
+
+* OODT-872 Upgrade Jena dependencies to org.apache.jena 3.0.0 (mattmann, lewismc)
+
+* OODT-865 Integrate Avro RPC with the crawler module 
+  OODT-852 Replace XMLRPC with AvroRPC in the crawler module (prototype) (Radu Manole, mattmann, lewismc)
+
 Release 0.10 - 08/30/2015
 
 * OODT-246 Give user the ability to print a detailed report on what jobs in 

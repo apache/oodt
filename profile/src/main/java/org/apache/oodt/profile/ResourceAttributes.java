@@ -18,15 +18,13 @@
 
 package org.apache.oodt.profile;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import java.io.IOException;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.oodt.commons.Configuration;
-import org.apache.oodt.xmlquery.Result;
+
 import org.apache.oodt.commons.util.Documentable;
 import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
@@ -34,8 +32,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+
 import java.net.URI;
 
 /**
@@ -45,7 +42,7 @@ import java.net.URI;
  *
  * @author Kelly
  */
-public class ResourceAttributes implements Serializable, Cloneable, Comparable, Documentable {
+public class ResourceAttributes implements Serializable, Cloneable, Comparable<Object>, Documentable {
 	/**
 	 * Create blank profile attributes.
 	 */
@@ -148,10 +145,10 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 * @param clazz Class of the resource.
 	 * @param locations Location of the resource.
 	 */
-	public ResourceAttributes(Profile profile, String identifier, String title, List formats, String description,
-		List creators, List subjects, List publishers, List contributors, List dates, List types, List sources,
-		List languages, List relations, List coverages, List rights, List contexts, String aggregation, String clazz,
-		List locations) {
+	public ResourceAttributes(Profile profile, String identifier, String title, List<String> formats, String description,
+		List<String> creators, List<String> subjects, List<String> publishers, List<String> contributors, List<String> dates, List<String> types, List<String> sources,
+		List<String> languages, List<String> relations, List<String> coverages, List<String> rights, List<String> contexts, String aggregation, String clazz,
+		List<String> locations) {
 		this.profile = profile;
 		this.identifier = identifier;
 		this.title = title;
@@ -285,7 +282,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The formats.
 	 */
-	public List getFormats() {
+	public List<String> getFormats() {
 		return formats;
 	}
 
@@ -312,7 +309,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The creators.
 	 */
-	public List getCreators() {
+	public List<String> getCreators() {
 		return creators;
 	}
 
@@ -321,7 +318,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The subjects.
 	 */
-	public List getSubjects() {
+	public List<String> getSubjects() {
 		return subjects;
 	}
 
@@ -330,7 +327,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The publishers.
 	 */
-	public List getPublishers() {
+	public List<String> getPublishers() {
 		return publishers;
 	}
 
@@ -339,7 +336,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The contributors.
 	 */
-	public List getContributors() {
+	public List<String> getContributors() {
 		return contributors;
 	}
 
@@ -348,7 +345,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The dates.
 	 */
-	public List getDates() {
+	public List<String> getDates() {
 		return dates;
 	}
 
@@ -357,7 +354,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The types.
 	 */
-	public List getTypes() {
+	public List<String> getTypes() {
 		return types;
 	}
 
@@ -366,7 +363,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The sources.
 	 */
-	public List getSources() {
+	public List<String> getSources() {
 		return sources;
 	}
 
@@ -375,7 +372,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The languages.
 	 */
-	public List getLanguages() {
+	public List<String> getLanguages() {
 		return languages;
 	}
 
@@ -384,7 +381,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The relations.
 	 */
-	public List getRelations() {
+	public List<String> getRelations() {
 		return relations;
 	}
 
@@ -393,7 +390,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The coverages.
 	 */
-	public List getCoverages() {
+	public List<String> getCoverages() {
 		return coverages;
 	}
 
@@ -402,7 +399,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The rights.
 	 */
-	public List getRights() {
+	public List<String> getRights() {
 		return rights;
 	}
 
@@ -411,7 +408,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return The contexts, a list of {@link String}s.
 	 */
-	public List getResContexts() {
+	public List<String> getResContexts() {
 		return contexts;
 	}
 
@@ -457,7 +454,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 *
 	 * @return Locations, a list of {@link String}s.
 	 */
-	public List getResLocations() {
+	public List<String> getResLocations() {
 		return locations;
 	}
 
@@ -466,20 +463,20 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	 * Initialize all the various {@link java.util.List} fields.
 	 */
 	protected void initializeLists() {
-		formats = new ArrayList();
-		creators = new ArrayList();
-		subjects = new ArrayList();
-		publishers = new ArrayList();
-		contributors = new ArrayList();
-		dates = new ArrayList();
-		types = new ArrayList();
-		sources = new ArrayList();
-		languages = new ArrayList();
-		relations = new ArrayList();
-		coverages = new ArrayList();
-		rights = new ArrayList();
-		contexts = new ArrayList();
-		locations = new ArrayList();
+		formats = new ArrayList<String>();
+		creators = new ArrayList<String>();
+		subjects = new ArrayList<String>();
+		publishers = new ArrayList<String>();
+		contributors = new ArrayList<String>();
+		dates = new ArrayList<String>();
+		types = new ArrayList<String>();
+		sources = new ArrayList<String>();
+		languages = new ArrayList<String>();
+		relations = new ArrayList<String>();
+		coverages = new ArrayList<String>();
+		rights = new ArrayList<String>();
+		contexts = new ArrayList<String>();
+		locations = new ArrayList<String>();
 	}
 
 	/** Profile I describe. */
@@ -492,46 +489,46 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	protected String title;
 
 	/** Formats. */
-	protected List formats;
+	protected List<String> formats;
 
 	/** Descriptions. */
 	protected String description;
 
 	/** Creators. */
-	protected List creators;
+	protected List<String> creators;
 
 	/** Subjects. */
-	protected List subjects;
+	protected List<String> subjects;
 
 	/** Publishers. */
-	protected List publishers;
+	protected List<String> publishers;
 
 	/** Contributors. */
-	protected List contributors;
+	protected List<String> contributors;
 
 	/** Dates. */
-	protected List dates;
+	protected List<String> dates;
 
 	/** Types. */
-	protected List types;
+	protected List<String> types;
 
 	/** Sources. */
-	protected List sources;
+	protected List<String> sources;
 
 	/** Languages. */
-	protected List languages;
+	protected List<String> languages;
 
 	/** Relations. */
-	protected List relations;
+	protected List<String> relations;
 
 	/** Coverages. */
-	protected List coverages;
+	protected List<String> coverages;
 
 	/** Rights. */
-	protected List rights;
+	protected List<String> rights;
 
 	/** Contexts, one or more list of {@link String}s. */
-	protected List contexts;
+	protected List<String> contexts;
 
 	/** Aggregation. */
 	protected String aggregation;
@@ -540,7 +537,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 	protected String clazz;
 
 	/** Locations, zero or more {@link String}s. */
-	protected List locations;
+	protected List<String> locations;
 
 	/**
 	 * Serialize this attributes as an XML node.
@@ -566,7 +563,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable, 
 		XML.add(root, "Relation", relations);
 		XML.add(root, "Coverage", coverages);
 		XML.add(root, "Rights", rights);
-		List contexts = new ArrayList(this.contexts);
+		List<String> contexts = new ArrayList<String>(this.contexts);
 		if (contexts.isEmpty()) contexts.add("UNKNOWN");
 		XML.add(root, "resContext", contexts);
 		XML.addNonNull(root, "resAggregation", aggregation);

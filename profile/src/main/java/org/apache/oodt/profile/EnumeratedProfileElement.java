@@ -20,13 +20,15 @@ package org.apache.oodt.profile;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.oodt.commons.util.XML;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
+
 import java.net.URI;
 import java.util.Iterator;
+
 import org.w3c.dom.Element;
 
 /**
@@ -42,7 +44,7 @@ public class EnumeratedProfileElement extends ProfileElement {
 	 */
 	public EnumeratedProfileElement(Profile profile) {
 		super(profile);
-  values = new ArrayList();
+  values = new ArrayList<Object>();
 	}
 
 	/**
@@ -61,7 +63,7 @@ public class EnumeratedProfileElement extends ProfileElement {
 	 * @param values Valid values.
 	 */
 	public EnumeratedProfileElement(Profile profile, String name, String id, String desc, String type, String unit,
-		List synonyms, boolean obligation, int maxOccurrence, String comment, List values) {
+		List<?> synonyms, boolean obligation, int maxOccurrence, String comment, List<?> values) {
 		super(profile, name, id, desc, type, unit, synonyms, obligation, maxOccurrence, comment);
 		if (values.contains(null))
 			throw new IllegalArgumentException("Null item in 'values' not allowed for enumerated profile elements");
@@ -74,7 +76,7 @@ public class EnumeratedProfileElement extends ProfileElement {
 
 	protected void addValues(Node node) throws DOMException {
 		if (values == null) return;
-		for (Iterator i = values.iterator(); i.hasNext();) {
+		for (Iterator<?> i = values.iterator(); i.hasNext();) {
 			Element e = node.getOwnerDocument().createElement("elemValue");
 			e.appendChild(node.getOwnerDocument().createCDATASection((String) i.next()));
 			node.appendChild(e);
@@ -98,5 +100,5 @@ public class EnumeratedProfileElement extends ProfileElement {
 	}
 
 	/** Valid values. */
-	protected List values;
+	protected List<?> values;
 }
