@@ -2,6 +2,10 @@ Apache OODT Change Log
 ======================
 Release 0.11 - Current Development
 
+* OODT-874 Corrected workflow/bin/wmgr and resource/bin/resmgr to make sure
+  they both delete the cas.xxxx.pid file when stopped using the 'stop'
+  command. (mallder)
+
 * OODT-872 Upgrade Jena dependencies to org.apache.jena 3.0.0 (lewismc, mattmann)
 
 Release 0.10 - 08/30/2015
