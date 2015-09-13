@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<workflows> 
+    
+    <sequential id="MSPI_L1_Workflow" name="MSPI L1 Workflow">
+        
+        <configuration extends="global,workflows"/>
+        
+        <task id-ref="MSPI_L1A1_Task"/>
+        <task id-ref="MSPI_L1A2_Task"/>
+        <task id-ref="MSPI_L1B1_Task"/>
+        <task id-ref="MSPI_L1B2_Task"/>
+        
+    </sequential>
+    
+    <!-- CONDITIONS -->
+    <condition id="MSPI_L0_Condition" name="MSPI L0 Condition" class="gov.nasa.jpl.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+        <configuration extends="global,conditions,1-file">
+            <property name="PGETask/Condition/ProductTypeNames" value="MSPI_L0"/>
+            <property name="PGETask/Condition/ResultKeyFormats" value="{Runtime/Condition/L0/Formatted | $FileLocation/$Filename},{Runtime/Condition/L0/Filenames | $Filename},{Runtime/Condition/L0/StartDateTime | $StartDateTime},{Runtime/Condition/L0/EndDat
+                eTime | $EndDateTime},{Runtime/Condition/L0/Latitude | $Latitude},{Runtime/Condition/L0/Longitude | $Longitude},{Runtime/Condition/L0/Azimuth | $Azimuth},{Runtime/Condition/L0/Elevation | $Elevation}"/>
+            <property name="PGETask/Condition/SqlQueryKey" value="Runtime/Condition/L0_Query"/>
+        </configuration>
+    </condition>
+    <condition id="MSPI_L1A1_Condition" name="MSPI L1A1 Condition" class="gov.nasa.jpl.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+        <configuration extends="global,conditions,1-file">
+            <property name="PGETask/Condition/ProductTypeNames" value="MSPI_L1A1"/>
+            <property name="PGETask/Condition/ResultKeyFormats" value="{Runtime/Condition/L1A1/Formatted | $FileLocation/$Filename},{Runtime/Condition/L1A1/Filenames | $Filename},{Runtime/Condition/L1A1/StartDateTime | $StartDateTime},{Runtime/Condition/L1A
+                1/EndDateTime | $EndDateTime},{Runtime/Condition/L1A1/Latitude | $Latitude},{Runtime/Condition/L1A1/Longitude | $Longitude},{Runtime/Condition/L1A1/Azimuth | $Azimuth},{Runtime/Condition/L1A1/Elevation | $Elevation}"/>
+            <property name="PGETask/Condition/SqlQueryKey" value="Runtime/Condition/L1A1_Query"/>
+        </configuration>
+    </condition>
+    <condition id="MSPI_L1A2_Condition" name="MSPI L1A2 Condition" class="gov.nasa.jpl.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+        <configuration name="MSPI_L1A2_Condition" extends="global,conditions,1-file">
+            <property name="PGETask/Condition/ProductTypeNames" value="MSPI_L1A2"/>
+            <property name="PGETask/Condition/ResultKeyFormats" value="{Runtime/Condition/L1A2/Formatted | $FileLocation/$Filename},{Runtime/Condition/L1A2/Filenames | $Filename},{Runtime/Condition/L1A2/StartDateTime | $StartDateTime},{Runtime/Condition/L1A
+                2/EndDateTime | $EndDateTime},{Runtime/Condition/L1A2/Latitude | $Latitude},{Runtime/Condition/L1A2/Longitude | $Longitude},{Runtime/Condition/L1A2/Azimuth | $Azimuth},{Runtime/Condition/L1A2/Elevation | $Elevation}"/>
+            <property name="PGETask/Condition/SqlQueryKey" value="Runtime/Condition/L1A2_Query"/>
+        </configuration>
+    </condition>
+    <condition id="MSPI_L1B1_Condition" name="MSPI L1B1 Condition" class="gov.nasa.jpl.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+        <configuration extends="global,conditions,1-file">
+            <property name="PGETask/Condition/ProductTypeNames" value="MSPI_L1B1"/>
+            <property name="PGETask/Condition/ResultKeyFormats" value="{Runtime/Condition/L1B1/Formatted | $FileLocation/$Filename},{Runtime/Condition/L1B1/Filenames | $Filename},{Runtime/Condition/L1B1/StartDateTime | $StartDateTime},{Runtime/Condition/L1B
+                1/EndDateTime | $EndDateTime},{Runtime/Condition/L1B1/Latitude | $Latitude},{Runtime/Condition/L1B1/Longitude | $Longitude},{Runtime/Condition/L1B1/Azimuth | $Azimuth},{Runtime/Condition/L1B1/Elevation | $Elevation},{Runtime/Condition/L1B1/ref_row | 32}"
+            />
+            <property name="PGETask/Condition/SqlQueryKey" value="Runtime/Condition/L1B1_Query"/>
+        </configuration>
+    </condition>
+    <condition id="MSPI_L1B1_Diag_Condition" name="MSPI L1B1 Diag Condition" class="gov.nasa.jpl.oodt.cas.pge.condition.PGETaskWorkflowCondition">
+        <configuration extends="global,conditions,1-file">
+            <property name="PGETask/Condition/ProductTypeNames" value="MSPI_L1B1_Diag"/>
+            <property name="PGETask/Condition/ResultKeyFormats" value="{Runtime/Condition/L1B1_Diag/Formatted | $FileLocation/$Filename},{Runtime/Condition/L1B1_Diag/Filenames | $Filename}"/>
+            <property name="PGETask/Condition/SqlQueryKey" value="Runtime/Condition/L1B1_Diag_Query"/>
+        </configuration>
+    </condition>
+    
+    <!-- TASKS -->
+    <task id="MSPI_L1A1_Task" name="MSPI L1A1 Task" class="gov.nasa.jpl.oodt.cas.pge.StdPGETaskInstance">
+        <conditions execution="sequential" type="pre">
+            <condition id-ref="MSPI_L0_Condition"/>
+        </conditions>
+        <configuration>
+            <property name="PGETask/Name" value="MSPI_L1A1_Task"/>
+            <property name="PGETask/FileBasedConfig/StageConfigFile" value="true"/>
+            <property name="PGETask/FileBasedConfig/ConfigFilePath" value="[PCS_HOME]/core/pge/policy/mspi/PgeConfig_MSPI_L1.xml" envReplace="true"/>
+            <property name="MSPI/L1Type" value="L1A1"/>
+            <property name="MSPI/L1InputType" value="L0"/>
+        </configuration>
+    </task>
+    <task id="MSPI_L1A2_Task" name="MSPI L1A2 Task" class="gov.nasa.jpl.oodt.cas.pge.StdPGETaskInstance">
+        <conditions execution="sequential" type="pre">
+            <condition id-ref="MSPI_L1A1_Condition"/>
+        </conditions>
+        <configuration>
+            <property name="PGETask/Name" value="MSPI_L1A2_Task"/>
+            <property name="PGETask/FileBasedConfig/StageConfigFile" value="true"/>
+            <property name="PGETask/FileBasedConfig/ConfigFilePath" value="[PCS_HOME]/core/pge/policy/mspi/PgeConfig_MSPI_L1.xml" envReplace="true"/>
+            <property name="MSPI/L1Type" value="L1A2"/>
+            <property name="MSPI/L1InputType" value="L1A1"/>
+        </configuration>
+    </task>
+    <task id="MSPI_L1B1_Task" name="MSPI L1B1 Task" class="gov.nasa.jpl.oodt.cas.pge.StdPGETaskInstance">
+        <conditions execution="sequential" type="pre">
+            <condition id-ref="MSPI_L1A2_Condition"/>
+        </conditions>
+        <configuration>
+            <property name="PGETask/Name" value="MSPI_L1B1_Task"/>
+            <property name="PGETask/FileBasedConfig/StageConfigFile" value="true"/>
+            <property name="PGETask/FileBasedConfig/ConfigFilePath" value="[PCS_HOME]/core/pge/policy/mspi/PgeConfig_MSPI_L1.xml" envReplace="true"/>
+            <property name="MSPI/L1Type" value="L1B1"/>
+            <property name="MSPI/L1InputType" value="L1A2"/>
+        </configuration>
+    </task>
+    <task id="MSPI_L1B2_Task" name="MSPI L1B2 Task" class="gov.nasa.jpl.oodt.cas.pge.StdPGETaskInstance">
+        <conditions execution="parallel" type="pre">
+            <condition id-ref="MSPI_L1B1_Condition"/>
+            <condition id-ref="MSPI_L1B1_Diag_Condition"/>
+        </conditions>
+        <configuration>
+            <property name="PGETask/Name" value="MSPI_L1B2_Task"/>
+            <property name="PGETask/FileBasedConfig/StageConfigFile" value="true"/>
+            <property name="PGETask/FileBasedConfig/ConfigFilePath" value="[PCS_HOME]/core/pge/policy/mspi/PgeConfig_MSPI_L1.xml" envReplace="true"/>
+            <property name="MSPI/L1Type" value="L1B2"/>
+            <property name="MSPI/L1InputType" value="L1B1"/>
+        </configuration>
+    </task>
+    
+</workflows>

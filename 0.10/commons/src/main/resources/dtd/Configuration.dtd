@@ -1,0 +1,99 @@
+<!--
+FPI is "-//JPL//DTD EDA Configuration 1.0//EN"
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+
+configuration.dtd
+
+Document Type for the Apache Object Oriented Data Technology
+configuration file, used by the class Configuration.
+-->
+
+<!ELEMENT configuration (webServer, nameServer, ldapServer?, xml?, serverMgr?, properties?, programs?)>
+
+<!-- Location of the web server -->
+<!ELEMENT webServer (host, port, dir?)>
+
+<!-- Location of the name server -->
+<!ELEMENT nameServer (iiop | rir)>
+
+<!-- How often to save state; unspecified or <= 0 means never -->
+<!ATTLIST nameServer stateFrequency CDATA #IMPLIED>
+
+<!-- An IIOP address -->
+<!ELEMENT iiop (version?, host, port?, objectKey?)>
+
+<!-- An RIR address -->
+<!ELEMENT rir (objectKey?)>
+
+<!-- Location of the LDAP server -->
+<!ELEMENT ldapServer (host, port?, managerDN?, password?)>
+
+<!-- XML configuration -->
+<!ELEMENT xml (parser?, entityRef?)>
+
+<!-- Preferred XML parser -->
+<!ELEMENT parser (#PCDATA)>
+
+<!-- Where to resolve entity references -->
+<!ELEMENT entityRef (dir*)>
+
+<!-- A directory where an entity reference might be resolved -->
+<!ELEMENT dir (#PCDATA)>
+
+<!-- The server manager -->
+<!ELEMENT serverMgr (port)>
+
+<!-- A collection of Java properties -->
+<!ELEMENT properties (key, value)*>
+
+<!-- A series of programs to execute or that can be executed -->
+<!ELEMENT programs (execServer | client)*>
+
+<!-- A program executed by the ExecServer class -->
+<!ELEMENT execServer (class, objectKey, host?, properties?)>
+
+<!-- A program that you execute by hand -->
+<!ELEMENT client (class, properties?)>
+
+<!-- A fully-qualified Java class name -->
+<!ELEMENT class (#PCDATA)>
+
+<!-- An Internet host name or dotted IP decimal address -->
+<!ELEMENT host (#PCDATA)>
+
+<!-- An Internet port number -->
+<!ELEMENT port (#PCDATA)>
+
+<!-- An Internet or CORBA protocol name -->
+<!ELEMENT protocol (#PCDATA)>
+
+<!-- A CORBA object key -->
+<!ELEMENT objectKey (#PCDATA)>
+
+<!-- An LDAP manager's distinguished name -->
+<!ELEMENT managerDN (#PCDATA)>
+
+<!-- A password -->
+<!ELEMENT password (#PCDATA)>
+
+<!-- A CORBA object version -->
+<!ELEMENT version (#PCDATA)>
+
+<!-- A property key -->
+<!ELEMENT key (#PCDATA)>
+
+<!-- A property value -->
+<!ELEMENT value (#PCDATA)>

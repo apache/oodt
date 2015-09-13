@@ -1,0 +1,43 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#workflow_modeL_tbl{
+	
+}
+
+#workflow_model_tbl tr{
+ vertical-align:top;
+}
+
+#workflow_model_tbl td.task_bubble{
+  width:82;
+  height:82;
+  /*background:url(task_circle.jpg) no-repeat;*/
+  background-color: #CCC;
+  text-align:center;
+  white-space:wrap;
+  vertical-align:middle;
+  border-width: 2px;
+  border-style: dashed;
+}
+
+#workflow_model_tbl td.arrow{
+  width:60;
+  height:16;
+  text-align:center;
+  vertical-align:middle;
+  border-width: 0px;
+}

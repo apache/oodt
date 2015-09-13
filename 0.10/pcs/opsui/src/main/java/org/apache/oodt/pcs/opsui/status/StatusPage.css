@@ -1,0 +1,84 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#widenoborder{
+  width:100%;
+  border:0px;
+}
+
+#fm_status{
+
+}
+
+#wm_status{
+
+}
+
+#rm_status{
+
+}
+
+#report_date{
+
+}
+
+.roundtable table{
+border-top: 2px solid #bbb8a9;
+border-bottom: 2px solid #bbb8a9;
+border-left: 2px solid #bbb8a9;
+border-right: 2px solid #bbb8a9;
+}
+
+.nowrap{
+  white-space:nowrap;
+}
+
+.heading{
+  font-size:14px;
+  font-weight:bold;
+}
+
+.avg_crawl_time{
+
+}
+
+.num_crawls{
+
+}
+
+.crawler_name{
+
+}
+
+.file_ingest_datetime{
+
+}
+
+.file_path{
+
+}
+
+.status_name{
+
+}
+
+.batch_stub_url{
+
+}
+
+.crawler_name_and_url{
+
+}

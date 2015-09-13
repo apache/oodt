@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.oodt</groupId>
+    <artifactId>oodt-core</artifactId>
+    <version>0.10</version>
+    <relativePath>../core/pom.xml</relativePath>
+  </parent>
+  <artifactId>web-grid</artifactId>
+  <name>OODT Web Grid</name>
+  <packaging>war</packaging>
+  <description>The OODT grid services (product and profile services) use CORBA or
+    RMI as their underlying network transport.  However, limitations
+    of CORBA and RMI make them inappropriate for large-scale
+    deployments.  For one, both are procedural mechanisms, providing a
+    remote interface that resembles a method call.  This makes
+    streaming of data from a service impossible, because there are
+    limitations to the sizes of data structures that can be passed
+    over a remote method call.  Instead, repeated calls must be made
+    to retrieve each block of a product, making transfer speeds
+    horribly slow compared to HTTP or FTP.  (Block-based retrieval of
+    profiles was never implemented, resulting in out of memory
+    conditions for large profile results, which is another problem.)
+    Second, both CORBA and RMI rely on a central name registry.  The
+    registry makes an object independent of its network location,
+    enabling a client to call it by name (looking up its last known
+    location in the registry).  However, this requires that server
+    objects be able to make outbound network calls to the registry
+    (through any outbound firewall), and that the registry accept
+    those registrations (through any inbound firewall).  This required
+    administrative action at institutions hosting server objects and
+    at the institution hosting the registry.  Often, these firewall
+    exceptions would change without notice as system adminstrators
+    changed at each location (apparently firewall exceptions are
+    poorly documented everywhere).  Further, in the two major
+    deployments of OODT (PDS and EDRN), server objects have almost
+    never moved, nullifying any benefit of the registry.  This
+    project, OODT Web Grid Services, avoids the prolems of CORBA and
+    RMI by using HTTP as the transport mechanism for products and
+    profiles.  Further, it provides a password-protected mechanism to
+    add new sets of product and profile query handlers, enabling
+    seamless activation of additional capabilities.</description>
+  <scm>
+   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc2/grid</connection>
+   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/tags/0.10-rc2/grid</developerConnection>
+   	<url>http://svn.apache.org/viewvc/oodt/tags/0.10-rc2/grid</url>
+  </scm>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webResources />
+          <warSourceDirectory>src/main/webapp</warSourceDirectory>
+        </configuration>
+        <version>2.5</version>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-profile</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-product</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-xmlquery</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <version>2.6.3</version>
+    </dependency>
+    <dependency>
+       <groupId>javax.servlet</groupId>
+       <artifactId>servlet-api</artifactId>
+       <version>2.4</version>
+       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.9.1</version>
+    </dependency>
+    <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan</artifactId>
+        <version>2.7.1</version>
+    </dependency>
+  </dependencies>
+</project>

@@ -1,0 +1,95 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<wicket:panel>
+<wicket:remove>
+  <link rel="stylesheet" type="text/css" href="TypeBrowser.css"/>
+</wicket:remove>
+
+<h3 wicket:id="ptype_name">GenericFile Products</h3>
+   
+<p>Showing products <span style="font-weight:bold;" wicket:id="start_idx">1</span>-<span style="font-weight:bold;" wicket:id="end_idx">20</span> 
+of <span wicket:id="num_products">100</span> total</p>
+
+<h4>Existing Filter Criteria</h4>
+
+<form wicket:id="existing_criteria_form">
+<table>
+  <tr wicket:id="criteria_selected_row">
+    <td><span wicket:id="criteria_elem_name">CAS.ProductName</span> = 
+        <span wicket:id="criteria_elem_value">foo.txt</span>
+    </td>
+    <td><input type="submit" value="Remove" wicket:id="criteria_elem_remove"/></td>
+  </tr>
+</table>
+</form>
+
+<h4>Specify New Filter Criteria</h4>
+<form wicket:id="new_criteria_form">
+<table>
+  <tr>
+    <td><select wicket:id="criteria_list">
+        <wicket:remove>
+          <option id="urn:oodt:ProductName">ProductName</option>
+        </wicket:remove>
+        </select>
+    </td>
+    <td>
+      <input type="text" size="20" maxlength="255" id="criteria_form_add_element_value" wicket:id="criteria_form_add_element_value"/>
+    </td>
+    <td>
+      <input type="submit" value="Add" wicket:id="criteria_elem_add"/>
+    </td>
+  </tr>
+ </table>
+                
+</form>
+
+<table id="product_table">
+<tr>
+  <td>Product</td>
+  <td>Transfer Status</td>
+  <td>Percent Complete</td>
+  <td>Received Time</td>
+  <td>References</td>
+  <td>Metadata</td>
+</tr>
+<tr wicket:id="product_list">
+ <td><a href="#" wicket:id="product_page_link"><span wicket:id="product_name">Test Product</span></a></td>
+ <td wicket:id="product_transfer_status">RECEIVED</td>
+ <td wicket:id="product_pct_transferred">100%</td>
+ <td wicket:id="product_received_time">2011-01-11T00:00:01.000Z</td>
+ <td><a href="#" wicket:id="ref_page_link">View References</a></td>
+ <td><a href="#" wicket:id="met_page_link">View Metadata</a></td>
+</tr>
+</table>
+               
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<span wicket:id="paginator"></span>
+<wicket:remove>
+<hr width="*">
+<div align="center">
+<table id="pagination_table">
+  <tr>
+    <td id="pagination_table_result_hdr">Result Page</td>
+    
+
+ </tr>
+ </table>
+ </div>
+ </wicket:remove>
+</wicket:panel>

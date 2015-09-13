@@ -1,0 +1,91 @@
+Installation
+============
+
+What follows are the installation instructions for Agile OODT.
+
+
+Quick Instructions
+------------------
+
+As a user with administrative privileges, run either::
+
+    pip oodt
+
+or::
+
+    easy_install oodt
+
+depending on what's available on your system.  You're done!
+
+
+Full Instructions
+-----------------
+
+Agile OODT requires the Python_ programming language.  We recommend version 2.4
+or later.  As of this writing, 2.7 is the latest stable version.  If Python is
+not yet installed on your system, you can find binary and and source
+distributions from the Python website.
+
+To test if a correct version of Python is available on your system, run::
+
+    python -V
+    
+You should see output similar to::
+
+    Python 2.7
+    
+indicating the version of Python installed.  You may then proceed to install
+Agile OODT.
+
+By far the easiest, recommended, and encouraged way to install Agile OODT is
+either with Pip_ or EasyInstall_.  If your Python installation has either of
+these installers available to it, then one command is all you need to run in
+order to download, build, install, and generate command-line tools all in one
+go for all users on your system.  For Pip users, it's::
+
+    pip oodt
+
+And for EasyInstall users, it's::
+
+    easy_install oodt
+    
+Be sure to run that command as an administrative user.  For example, on Mac OS
+X and other Unix systems, you might need to run either of::
+
+    sudo pip oodt
+    sudo easy_install oodt
+
+
+Installing From Source
+~~~~~~~~~~~~~~~~~~~~~~
+
+If neither Pip nor EasyInstall are available, you can still make a proper
+installation of Agile OODT by building it from its source code.  Just follow
+these instructions:
+
+1.  Download the Agile OODT source distribution and extract the source
+    archive.  The source distribution is packaged as a gzip'd tar archive.
+2.  Change the current working directory to the newly extracted directory.
+3.  As an administrative user, run: ``python setup.py install``
+
+
+For More Information
+--------------------
+
+Visit any of the following links for additional information, to ask questions,
+report bugs, and so forth:
+
+OODT Home Page
+    http://oodt.apache.org/
+Mailing List for OODT Development
+    mailto:dev@oodt.apache.org
+Package Page (Cheese Shop)
+    http://pypi.python.org/pypi/oodt/
+Issue Tracker (submit bug reports here)
+    https://issues.apache.org/jira/browse/OODT
+
+
+.. References:
+.. _EasyInstall: http://packages.python.org/distribute/easy_install.html
+.. _Pip: http://pip.openplans.org/
+.. _Python: http://python.org/

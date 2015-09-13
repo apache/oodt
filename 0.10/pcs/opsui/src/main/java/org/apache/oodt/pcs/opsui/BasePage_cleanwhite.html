@@ -1,0 +1,132 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html
+	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
+<head>
+<title>Apache OODT PCS Operator Interface</title>
+<wicket:link>
+  <link type="text/css" rel="stylesheet" href="BasePage.css"/>
+  <script type="text/javascript" language="Javascript" src="jquery-1.7.min.js"></script>
+  <script type="text/javascript" language="Javascript" src="BasePage.js"></script>
+</wicket:link>
+<wicket:remove>
+  <script language="Javascript" type="text/javascript">
+   <!--
+
+   function menuSelected(cell) {
+		cell.css({'background-color':'#006699'});
+	}
+	function menuNotSelected(cell) {
+		cell.css({'background-color':'#666666'});	
+	}   
+   
+   function subMenuSelected(id) {
+		var x = document.getElementById(id).rows;
+		var y = x[0].cells;
+		y[0].innerHTML = "<img src='selleftcorner.gif'>";
+		y[1].bgColor = "#99CCFF";
+		y[2].innerHTML = "<img src='selrightcorner.gif'>";
+	}
+
+	function subMenuNotSelected(id) {
+		var x = document.getElementById(id).rows;
+		var y = x[0].cells;
+		y[0].innerHTML = "<img src='leftcorner.gif'>";
+		y[1].bgColor = "#cccccc";
+		y[2].innerHTML = "<img src='rightcorner.gif'>";
+	}     
+	
+	var interfaceimg = new Array();
+	function preloadimg() {
+		for (var i = 0; i < arguments.length; i++) {
+			interfaceimg[i] = new Image();
+			interfaceimg[i].src = arguments[i];
+		}
+	}
+
+	// Enter full URL to image tabs to preload below. Separate with comma:
+
+	preloadimg("rightcorner.gif", "leftcorner.gif",
+			"selrightcorner.gif", "selleftcorner.gif");	
+   //-->
+  </script>
+</wicket:remove>
+</head>
+<body>
+<div id="content">
+<div id="header">
+    <div id="project_logo">
+       <wicket:link>
+	     <img src="project_logo.png" alt="banner image" class="banner"/>
+       </wicket:link>
+    </div>
+    <div id="user_status">
+		<span>Apache OODT PCS Operator Interface</span>
+        <!--TODO: add Wicket logon widget here -->
+		<span id="logon_widget"/>
+    </div>
+</div>
+<div id="nav">
+        <a href="#" wicket:id="home_link" class="first">
+					  <span>
+					    Home
+					  </span>
+					</a>
+        <a href="#" wicket:id="fmbrowser_link" >
+					  <span>
+					    File Catalog Browse
+					  </span>
+					</a>
+        <a href="#" wicket:id="wmonitor_link" id="wmonitor_link" >
+					  <span>
+					    Workflow Monitor
+					  </span>
+					</a>
+        <a href="#" wicket:id="ganglia_link" >
+					  <span>
+					    Resource Monitor
+					  </span>
+					</a>
+        <a href="#" wicket:id="config_link">
+					  <span>
+					    Configuration
+					  </span>
+					</a>
+        <a href="#" wicket:id="curate_link">
+                      <span>
+                        Ingest
+                      </span>
+                    </a>
+        <a href="#" wicket:id="pcsstatus_link" id="pcsstatus_link" class="last">
+					  <span>
+					    PCS Status
+					  </span>
+					</a>
+</div>
+
+<wicket:child/>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</div> <!--  end content block -->
+<div id="footer">
+        <p id="powered">Powered by <a href="http://oodt.apache.org/">Apache OODT</a></p>
+        <p id="feedback"><a href="#" wicket:id="contact_link">Feedback</a></p>
+</div>
+</body>
+</html>

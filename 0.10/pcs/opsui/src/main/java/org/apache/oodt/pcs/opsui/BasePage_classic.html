@@ -1,0 +1,358 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html
+	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
+<head>
+<title>Apache OODT PCS Operator Interface</title>
+<wicket:link>
+	<link type="text/css" rel="stylesheet" href="BasePage_classic.css" />
+	<script type="text/javascript" language="Javascript"
+		src="jquery-1.7.min.js"></script>
+	<script type="text/javascript" language="Javascript" src="BasePage_classic.js"></script>
+</wicket:link>
+<wicket:remove>
+	<script language="Javascript" type="text/javascript">
+	<!--
+		function menuSelected(cell) {
+			cell.css({
+				'background-color' : '#006699'
+			});
+		}
+		function menuNotSelected(cell) {
+			cell.css({
+				'background-color' : '#666666'
+			});
+		}
+
+		function subMenuSelected(id) {
+			var x = document.getElementById(id).rows;
+			var y = x[0].cells;
+			y[0].innerHTML = "<img src='selleftcorner.gif'>";
+			y[1].bgColor = "#99CCFF";
+			y[2].innerHTML = "<img src='selrightcorner.gif'>";
+		}
+
+		function subMenuNotSelected(id) {
+			var x = document.getElementById(id).rows;
+			var y = x[0].cells;
+			y[0].innerHTML = "<img src='leftcorner.gif'>";
+			y[1].bgColor = "#cccccc";
+			y[2].innerHTML = "<img src='rightcorner.gif'>";
+		}
+
+		var interfaceimg = new Array();
+		function preloadimg() {
+			for ( var i = 0; i < arguments.length; i++) {
+				interfaceimg[i] = new Image();
+				interfaceimg[i].src = arguments[i];
+			}
+		}
+
+		// Enter full URL to image tabs to preload below. Separate with comma:
+
+		preloadimg("rightcorner.gif", "leftcorner.gif", "selrightcorner.gif",
+				"selleftcorner.gif");
+	//-->
+	</script>
+</wicket:remove>
+</head>
+
+<map name="Map">
+	<area shape="rect" coords="91,36,272,54" href="http://www.caltech.edu/"
+		alt="Caltech" />
+	<area shape="circle" coords="61,34,24" href="http://www.nasa.gov"
+		alt="NASA" />
+	<area shape="rect" coords="91,11,278,35"
+		href="http://www.jpl.nasa.gov/"
+		alt="Daily Planet e-News for the JPL Community" />
+</map>
+
+<body>
+	<table border="0" cellspacing="0" cellpadding="0" align="center"
+		bgcolor="#FFFFFF" width="730">
+		<tr class="blackbg">
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+			<td style="width: 732px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 730px; height: 10px;">
+				</wicket:link></td>
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+		</tr>
+		<tr>
+			<td style="width:10px;"><wicket:link><img src="spacer.gif" alt="spacer" style="width:10px;height:1px;"/></wicket:link></td>
+			<td style="width:732px;"><wicket:link><img src="spacer.gif" alt="spacer" style="width:730px;height:10px;"/></wicket:link></td>
+			<td style="width:10px;"><wicket:link><img src="spacer.gif" alt="spacer" style="width:10px;height:1px;"/></wicket:link></td>
+		</tr>
+		<tr>
+			<td style="width:10px;"><wicket:link><img src="spacer.gif" alt="spacer" style="width:10px;height:1px;"/></wicket:link></td>
+			<td style="width:732px;vertical-align: top;">
+
+				<table id="opsui_header_tbl">
+					<tr>
+						<td>
+							<table id="opsui_inner_header_tbl">
+								<tr>
+									<td style="width: 379px; background-color: #ccccc;"><wicket:link>
+											<img src="nasa_logo.gif" alt="banner image" class="banner"
+												usemap="#Map" />
+										</wicket:link>
+									</td>
+									<td
+										style="height: 70px; width: 136px; background-color: #cccccc;"></td>
+									<td
+										style="width: 205px; background-color: #000669; text-align: center; vertical-align: middle;">
+										<!--TODO: add Wicket logon widget here --> <span
+										id="logon_widget" /> <span
+										style="font-size: 14px; color: white;">Welcome to the
+											Operator Interface Web site</span> <br /> <br />
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td><wicket:link>
+								<img src="spacer.gif" alt="spacer" class="spacer" />
+							</wicket:link>
+						</td>
+					</tr>
+					<tr>
+						<td class="white">
+							<table id="menu_inner_tbl">
+								<tr>
+									<td id="menu_inner_tbl_home"
+										onMouseOver="menuSelected($(this))"
+										onMouseOut="menuNotSelected($(this))"><a href="#"
+										wicket:id="home_link" class="white">HOME</a>
+									</td>
+									<td class="tdspacer"></td>
+									<td class="tdspacer"></td>
+									<td class="tdspacer"></td>
+									<td class="tdspacer"></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td><wicket:link>
+								<img src="spacer.gif" alt="spacer" class="spacer"
+									style="height: 1px;" />
+							</wicket:link>
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 100%"><wicket:link>
+								<img src="banner.jpg" class="tight-noborder" alt="Banner" />
+							</wicket:link>
+						</td>
+					</tr>
+					<tr>
+						<td class="white">
+							<table id="menu_tbl_links">
+								<tr>
+									<td id="menu_inner_tbl_links_fm"
+										onMouseOver="menuSelected($(this))"
+										onMouseOut="menuNotSelected($(this))"><a href="#"
+										wicket:id="fmbrowser_link" class="blackLink"> <span
+											style="color: white; font-weight: bold;"> File Catalog
+												Browse </span> </a>
+									</td>
+									<td id="menu_inner_tbl_links_wm"
+										onMouseOver="menuSelected($(this))"
+										onMouseOut="menuNotSelected($(this))"><a href="#"
+										wicket:id="wmonitor_link" id="wmonitor_link" class="blackLink">
+											<span style="color: white; font-weight: bold;">
+												Workflow Monitor </span> </a>
+									</td>
+									<td id="menu_inner_tbl_links_rm"
+										onMouseOver="menuSelected($(this))"
+										onMouseOut="menuNotSelected($(this))"><a href="#"
+										wicket:id="ganglia_link" class="blackLink"> <span
+											style="color: white; font-weight: bold;"> Resource
+												Monitor </span> </a>
+									</td>
+									<td id="menu_inner_tbl_links_cfg"
+										onMouseOver="menuSelected($(this))"
+										onMouseOut="menuNotSelected($(this))"><a href="#"
+										wicket:id="config_link" class="blackLink"> <span
+											style="color: white; font-weight: bold;">
+												Configuration </span> </a>
+									</td>
+                                    <td id="menu_inner_tbl_links_cfg"
+                                        onMouseOver="menuSelected($(this))"
+                                        onMouseOut="menuNotSelected($(this))"><a href="#"
+                                        wicket:id="curate_link" class="blackLink"> <span
+                                            style="color: white; font-weight: bold;">
+                                                Ingest </span> </a>
+                                    </td>									
+									<td id="menu_inner_tbl_links_pcsstat"
+										onMouseOver="menuSelected($(this))"
+										onMouseOut="menuNotSelected($(this))"><a href="#"
+										wicket:id="pcsstatus_link" id="pcsstatus_link"
+										class="blackLink"> <span
+											style="color: white; font-weight: bold;"> PCS Status </span>
+									</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td><wicket:link>
+								<img src="spacer.gif" alt="spacer" class="spacer"
+									style="height: 1px;">
+							</wicket:link>
+						</td>
+					</tr>
+
+				</table>
+			</td>
+			<td style="width:10px;"><wicket:link><img src="spacer.gif" alt="spacer" style="width:10px;height:1px;"/></wicket:link>
+			</td>
+		</tr>
+
+		<tr>
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+			<td style="width: 732px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 730px; height: 10px;">
+				</wicket:link></td>
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+		</tr>
+		<tr>
+			<td style="width:10px;"><wicket:link><img src="spacer.gif" alt="spacer" style="width:10px;height:100px;"/></wicket:link></td>
+			<td style="vertical-align: top;width: 732px;">
+			  
+			  <wicket:child />
+			
+			
+			</td>
+			<td style="width:10px;">
+			  <wicket:link><img src="spacer.gif" alt="spacer" style="width:10px;height:300px;"/></wicket:link>
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+			<td style="width: 732px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 730px; height: 10px;">
+				</wicket:link></td>
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+		</tr>
+
+		<tr>
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+			<td style="width: 732px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 730px; height: 10px;">
+				</wicket:link></td>
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+		</tr>
+		<tr>
+			<td width="10"><wicket:link><img src="spacer.gif" alt="spacer" style="width:10px;height:1px;"/></wicket:link></td>
+
+			<td style="background-color:#cccccc;width:732px;">
+
+
+				<table id="footer_tbl">
+					<tr>
+						<td style="vertical-align: top; width: 160px;"><a
+							target="_blank" href="http://www.firstgov.gov/"> <wicket:link>
+									<img class="firstGovImg" src="footer_image1.gif" />
+								</wicket:link> </a>
+						</td>
+						<td style="width: 200px;"><a target="_blank"
+							href="http://www.jpl.nasa.gov/copyrights.cfm">+ JPL/Caltech
+								Privacy/Copyright </a>
+						</td>
+						<td style="width: 61px;"><a target="_blank"
+							href="http://www.nasa.gov/home/index.html"> <wicket:link>
+									<img class="nasaHomePageImg" alt="NASA Home Page"
+										src="footer_image2.gif" />
+								</wicket:link> </a>
+						</td>
+						<td style="width: 280px;"><span class="feedback">&nbsp;</span>
+							<a href="#" wicket:id="contact_link">Feedback</a>
+						</td>
+					</tr>
+				</table> <wicket:remove>
+					<div style="text-align: center">
+						<p>
+							Powered by <a href="http://oodt.apache.org/">Apache OODT</a>
+						</p>
+					</div>
+				</wicket:remove>
+			</td>
+			<td style="width:10px;"><wicket:link><img src="spacer.gif" alt="spacer" style="width:10px;height:8px;"/></wicket:link></td>
+		</tr>
+		<tr>
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+			<td style="width: 732px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 730px; height: 10px;">
+				</wicket:link></td>
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+		</tr>
+
+
+		<tr class="blackbg">
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+			<td style="width: 732px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 730px; height: 10px;">
+				</wicket:link></td>
+			<td style="width: 10px;"><wicket:link>
+					<img src="spacer.gif" alt="spacer"
+						style="width: 10px; height: 1px;" />
+				</wicket:link></td>
+		</tr>
+	</table>
+</body>
+</html>

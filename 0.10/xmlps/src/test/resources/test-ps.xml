@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<oodt:ps xmlns:oodt="http://oodt.jpl.nasa.gov/xmlps/1.0" name="Test Query Handler" id="urn:oodt:xmlps:testps">
+<tables default="baseline">
+  <table name="specimen" join="patient_id" tofld="participant_num"/>
+</tables>
+
+	<!-- 
+		field:
+		
+		type (required):   dyanmic or constant. If you choose dynamic, then the field
+		value is read from the row in the ResultSet returned
+		from the database. If constant, then each returned row
+		from the ResultSet is annotated with the value specified
+		in the 'value' attribute.
+		
+		dbname (optional): the name of the field within the underlying db. If not
+		specified, then assumed to be name
+		
+		name (required):   the name of the attribute that you want returned
+		in the product server.
+		
+		table (optional):  if provided, then the attribute a is selected as
+		'table'.'a',and then returned. If omitted, the attribute
+		is assumed to come from the default table returned from the
+		PS query.
+		
+		value (optional):  is necessary to provide if type='constant' is selected.
+		
+		scope (optional):  limits the scope of a field's existance: acceptable values
+		are &quot;query&quot;, which signifies that the field is only applicable when
+		translating queries: and &quot;return&quot;, which signifies the field is only
+		applicable as a return field when converting database results into ERNEResults.
+		
+	-->
+	<field type="dynamic" dbname="specimen_collected" table="specimen"
+		name="SPECIMEN_COLLECTED_CODE" appendTableName="true"/>
+	<field type="constant" name="STUDY_SITE_ID" value="71" />
+	<field type="constant" name="STUDY_PROTOCOL_ID" value="XX" />
+	<field type="dynamic" dbname="" name="STUDY_PARTICIPANT_ID" />
+	<field type="constant" name="SPECIMEN_STUDY-DESIGN_CODE"
+		value="prospective" />
+	<field type="constant" name="SPECIMEN_CONTACT_NAME-TEXT"
+		value="Brendan Phalan" />
+	<field type="constant" name="SPECIMEN_CONTACT-EMAIL_TEXT"
+		value="Brendan.Phalan@med.nyu.edu" scope="return"/>
+	<field type="constant" name="BASELINE_DEMOGRAPHICS-GENDER_CODE"
+		value="1" />
+	<field type="constant" name="BASELINE_DEMOGRAPHICS-ETHNIC_CODE"
+		value="1" />
+	<field type="constant" name="BASELINE_DEMOGRAPHICS_RACE_CODE"
+		value="1" />
+	<field type="dynamic" name="BASELINE_DEMOGRAPHICS-RACE_OTHER_TEXT" />
+	<field type="dynamic" name="BASELINE_DEMOGRAPHICS-BIRTH-YEAR_TEXT" />
+	<field type="dynamic" name="BASELINE_SMOKE-REGULAR_1YEAR_CODE" />
+	<field type="dynamic"
+		name="BASELINE_SMOKE-HX_BEGIN-AGE-REGULAR_VALUE" />
+	<field type="dynamic" name="BASELINE_SMOKE-HX_AVERAGE-DAY_VALUE" />
+	<field type="dynamic" name="BASELINE_SMOKE-HX_QUIT-AGE_VALUE" />
+	<field type="dynamic" name="BASELINE_CANCER-CONFIRMATION_CODE" />
+	<field type="constant" name="BASELINE_CANCER-ICD9-CODE"
+		value="UNKNOWN" />
+	<field type="constant" name="BASELINE_CANCER-DIAGNOSIS_YEAR_TEXT"
+		value="UNKNOWN" />
+	<field type="constant" name="BASELINE_CANCER-AGE-DIAGNOSIS_VALUE"
+		value="UNKNOWN" />
+	<field type="dynamic"
+		name="BASELINE_FAMILY_CANCER-CONFIRMATION_CODE" />
+	<field type="dynamic" name="BASELINE_FAMILY_CANCER-LOCATION_CODE" />
+	<field type="constant"
+		name="BASELINE_FAMILY_CANCER-LOCATION-OTHER_TEXT" value="UNKNOWN" />
+	<field type="dynamic" name="SPECIMEN_COLLECTION_TEXT" />
+	<field type="dynamic" name="SPECIMEN_STORED_CODE" />
+	<field type="dynamic" name="SPECIMEN_FINAL-STORE_CODE" />
+	<field type="constant" name="SPECIMEN_FINAL-STORE-OTHER_TEXT"
+		value="UNKNOWN" />
+	<field type="dynamic" name="SPECIMEN_DAY-COLLECTED_VALUE" />
+	<field type="constant" name="SPECIMEN_DAY-CA-DIAGNOSIS_VALUE"
+		value="UNKNOWN" />
+	<field type="dynamic" name="SPECIMEN_AGE-COLLECTED_VALUE" />
+	<field type="dynamic" name="SPECIMEN_AMOUNT-STORED_VALUE" />
+	<field type="constant" name="SPECIMEN_AMOUNT-STORED-UNIT_CODE"
+		value="1" />
+	<field type="dynamic" name="SPECIMEN_AMOUNT_REMAINING_VALUE" />
+	<field type="dynamic" name="SPECIMEN_AMOUNT_REMAINING_UNIT_CODE" />
+	<field type="dynamic" name="SPECIMEN_CONCENTRATION_VALUE" />
+	<field type="dynamic" name="SPECIMEN_AVAILABLE_CODE" />
+	<field type="dynamic" name="SPECIMEN_TISSUE_ORGAN-SITE_CODE">
+		<translate>
+			<func class="org.apache.oodt.xmlps.mapping.funcs.ReplaceFunc" orig="16" with="1" />
+		</translate>
+	</field>
+	<field type="constant" name="SPECIMEN_TISSUE-ORGAN-SITE-OTHER_TEXT"
+		value="UNKNOWN" />
+	<field type="constant" name="SPECIMEN_TISSUE_DEGREE-INVASIVE_CODE"
+		value="UNKNOWN" />
+	<field type="constant"
+		name="SPECIMEN_TISSUE_DEGREE-INVASIVE-TUMOR_CODE" value="UNKNOWN" />
+	<field type="constant" name="SPECIMEN_BONE-MARROW_BLAST_VALUE"
+		value="UNKNOWN" />
+	<field type="constant" name="SPECIMEN_SPUTUM_PRESERVATIVE_CODE"
+		value="UNKNOWN" />
+	<field type="constant"
+		name="SPECIMEN_SPUTUM-PRESERVATIVE-OTHER_TEXT" value="UNKOWN" />
+</oodt:ps>
