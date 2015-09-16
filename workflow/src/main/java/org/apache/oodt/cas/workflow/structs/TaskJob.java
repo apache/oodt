@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import org.apache.oodt.commons.util.DateConvert;
 
 //OODT imports
@@ -36,7 +38,6 @@ import org.apache.oodt.cas.resource.structs.JobInstance;
 import org.apache.oodt.cas.resource.structs.exceptions.JobInputException;
 import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 /**
@@ -117,7 +118,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
 
     private void updateStatus(String status, Metadata met) {
         String workflowInstId = met.getMetadata(WORKFLOW_INST_ID);
-        XmlRpcWorkflowManagerClient wClient = getWmClientFromMetadata(met);
+        WorkflowManagerClient wClient = getWmClientFromMetadata(met);
 
         try {
             if (!wClient.updateWorkflowInstanceStatus(workflowInstId, status)) {
@@ -131,7 +132,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
 
     private void updateMetadata(Metadata met) {
         String workflowInstId = met.getMetadata(WORKFLOW_INST_ID);
-        XmlRpcWorkflowManagerClient wClient = getWmClientFromMetadata(met);
+        WorkflowManagerClient wClient = getWmClientFromMetadata(met);
 
         try {
             if (!wClient.updateMetadataForWorkflow(workflowInstId, met)) {
@@ -146,7 +147,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
     private void setWorkflowInstanceCurrentTaskStartDateTime(
             String startDateTime, Metadata met) {
         String workflowInstId = met.getMetadata(WORKFLOW_INST_ID);
-        XmlRpcWorkflowManagerClient wClient = getWmClientFromMetadata(met);
+        WorkflowManagerClient wClient = getWmClientFromMetadata(met);
 
         try {
             if (!wClient.setWorkflowInstanceCurrentTaskStartDateTime(
@@ -162,7 +163,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
     private void setWorkflowInstanceCurrentTaskEndDateTime(String endDateTime,
             Metadata met) {
         String workflowInstId = met.getMetadata(WORKFLOW_INST_ID);
-        XmlRpcWorkflowManagerClient wClient = getWmClientFromMetadata(met);
+        WorkflowManagerClient wClient = getWmClientFromMetadata(met);
 
         try {
             if (!wClient.setWorkflowInstanceCurrentTaskEndDateTime(
@@ -175,7 +176,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
         }
     }
 
-    private XmlRpcWorkflowManagerClient getWmClientFromMetadata(Metadata met) {
+    private WorkflowManagerClient getWmClientFromMetadata(Metadata met) {
         String workflowMgrUrlStr = met.getMetadata(WORKFLOW_MANAGER_URL);
         if (workflowMgrUrlStr == null
                 || (workflowMgrUrlStr != null && workflowMgrUrlStr.equals(""))) {
@@ -184,8 +185,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
             workflowMgrUrlStr = "http://localhost:9001";
         }
 
-        return new XmlRpcWorkflowManagerClient(
-                safeGetUrlFromString(workflowMgrUrlStr));
+        return RpcCommunicationFactory.createClient(safeGetUrlFromString(workflowMgrUrlStr));
     }
 
     private String getHostname() {

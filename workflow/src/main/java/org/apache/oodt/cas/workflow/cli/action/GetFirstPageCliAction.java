@@ -23,7 +23,7 @@ import java.util.List;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * Gets the first page of workflow instances.
@@ -39,7 +39,7 @@ public class GetFirstPageCliAction extends WorkflowCliAction {
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
       try {
-         XmlRpcWorkflowManagerClient client = getClient();
+         WorkflowManagerClient client = getClient();
          WorkflowInstancePage page = null;
          if (status != null && !status.equals("")) {
             page = client.paginateWorkflowInstances(1, status);

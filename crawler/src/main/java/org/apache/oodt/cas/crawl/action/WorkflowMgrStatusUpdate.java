@@ -25,7 +25,8 @@ import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 
 //Spring imports
 import org.springframework.beans.factory.annotation.Required;
@@ -50,8 +51,7 @@ public class WorkflowMgrStatusUpdate extends CrawlerAction implements
    public boolean performAction(File product, Metadata productMetadata)
          throws CrawlerActionException {
       try {
-         XmlRpcWorkflowManagerClient wClient = new XmlRpcWorkflowManagerClient(
-               new URL(this.workflowMgrUrl));
+         WorkflowManagerClient wClient = RpcCommunicationFactory.createClient(new URL(this.workflowMgrUrl));
          String ingestSuffix = this.ingestSuffix;
          return wClient.sendEvent(productMetadata.getMetadata(PRODUCT_TYPE)
                + ingestSuffix, productMetadata);

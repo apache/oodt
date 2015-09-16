@@ -28,8 +28,9 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 
 /**
  * @author mattmann
@@ -48,7 +49,7 @@ public class RandomStatusUpdateTask implements WorkflowTaskInstance {
 
     private final int numStatusesToDisplay = 10;
 
-    private XmlRpcWorkflowManagerClient client = null;
+    private WorkflowManagerClient client = null;
 
     /*
      * (non-Javadoc)
@@ -91,7 +92,7 @@ public class RandomStatusUpdateTask implements WorkflowTaskInstance {
 
     private void setWorkflowMgrUrl(String wmUrlStr) {
         System.out.println("Connecting to workflow mgr: ["+wmUrlStr+"]");
-        this.client = new XmlRpcWorkflowManagerClient(safeGetUrl(wmUrlStr));
+        this.client = RpcCommunicationFactory.createClient(safeGetUrl(wmUrlStr));
     }
 
     private URL safeGetUrl(String urlStr) {

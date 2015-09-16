@@ -3,12 +3,14 @@ Apache OODT Change Log
 
 Current Development
 
+* OODT-866 Integrate Avro RPC with the workflow module (Radu Manole, mattmann, lewismc)
+
 * OODT-874 Corrected workflow/bin/wmgr and resource/bin/resmgr to make sure
   they both delete the cas.xxxx.pid file when stopped using the 'stop'
   command. (mallder)
 
 * OODT-858 Integrate Avro RPC with the filemanager module
-  OODT-856 Separate XMLRPC from OODT logic in the filemgr module (Radu Manole, mattmann, lewismc))
+  OODT-856 Separate XMLRPC from OODT logic in the filemgr module (Radu Manole, mattmann, lewismc)
 
 * OODT-872 Upgrade Jena dependencies to org.apache.jena 3.0.0 (mattmann, lewismc)
 

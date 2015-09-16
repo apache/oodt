@@ -64,17 +64,13 @@ import com.google.common.base.Preconditions;
  * @author mattmann (Chris Mattmann)
  * @author bfoster (Brian Foster)
  */
-public class XmlRpcWorkflowManager {
+public class XmlRpcWorkflowManager implements WorkflowManager {
 
    private static final Logger LOG = Logger.getLogger(XmlRpcWorkflowManager.class.getName());
 
-   public static final int DEFAULT_WEB_SERVER_PORT = 9001;
+
    public static final String XML_RPC_HANDLER_NAME = "workflowmgr";
 
-   public static final String PROPERTIES_FILE_PROPERTY = "org.apache.oodt.cas.workflow.properties";
-   public static final String WORKFLOW_ENGINE_FACTORY_PROPERTY = "workflow.engine.factory";
-   public static final String ENGINE_RUNNER_FACTORY_PROPERTY = "workflow.engine.runner.factory";
-   public static final String WORKFLOW_REPOSITORY_FACTORY_PROPERTY = "workflow.repo.factory";
 
    private final int webServerPort;
    private WebServer webServer;
@@ -103,6 +99,7 @@ public class XmlRpcWorkflowManager {
             + System.getProperty("user.name", "unknown"));
    }
 
+   @Override
    public boolean shutdown() {
       if (webServer != null) {
          webServer.shutdown();
@@ -601,31 +598,6 @@ public class XmlRpcWorkflowManager {
 
         wInst.setStatus(status);
         return doUpdateWorkflowInstance(wInst);
-    }
-
-    public static void main(String[] args) throws Exception {
-        int portNum = -1;
-        String usage = "XmlRpcWorkflowManager --portNum <port number for xml rpc service>\n";
-
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equals("--portNum")) {
-                portNum = Integer.parseInt(args[++i]);
-            }
-        }
-
-        if (portNum == -1) {
-            System.err.println(usage);
-            System.exit(1);
-        }
-
-        loadProperties();
-        XmlRpcWorkflowManager manager = new XmlRpcWorkflowManager(portNum);
-
-        for (;;)
-            try {
-                Thread.currentThread().join();
-            } catch (InterruptedException ignore) {
-            }
     }
 
     public static void loadProperties() throws FileNotFoundException, IOException {

@@ -25,7 +25,8 @@ import org.apache.commons.lang.Validate;
 
 //OODT imports
 import org.apache.oodt.cas.cli.action.CmdLineAction;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 
 /**
  * Base {@link CmdLineAction} for Workflow Manager.
@@ -34,24 +35,24 @@ import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
  */
 public abstract class WorkflowCliAction extends CmdLineAction {
 
-   private XmlRpcWorkflowManagerClient client;
+   private WorkflowManagerClient client;
 
    public String getUrl() {
       return System.getProperty("org.apache.oodt.cas.workflow.url");
    }
 
-   protected XmlRpcWorkflowManagerClient getClient()
+   protected WorkflowManagerClient getClient()
          throws MalformedURLException {
       Validate.notNull(getUrl());
 
       if (client != null) {
          return client;
       } else {
-         return new XmlRpcWorkflowManagerClient(new URL(getUrl()));
+         return RpcCommunicationFactory.createClient(new URL(getUrl()));
       }
    }
 
-   public void setClient(XmlRpcWorkflowManagerClient client) {
+   public void setClient(WorkflowManagerClient client) {
       this.client = client;
    }
 }

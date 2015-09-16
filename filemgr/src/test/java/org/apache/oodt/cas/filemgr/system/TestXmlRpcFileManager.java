@@ -51,8 +51,8 @@ public class TestXmlRpcFileManager extends TestCase {
 
   private String luceneCatLoc;
 
-  private static final String transferServiceFacClass = "org.apache.oodt.cas."
-      + "filemgr.datatransfer.LocalDataTransferFactory";
+  private static final String transferServiceFacClass = 
+      "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
 
   private Properties initialProperties = new Properties(
       System.getProperties());
@@ -169,7 +169,8 @@ public class TestXmlRpcFileManager extends TestCase {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+  @Override
+  public void setUp() throws Exception {
     startXmlRpcFileManager();
     ingestTestFile();
   }
@@ -179,7 +180,8 @@ public class TestXmlRpcFileManager extends TestCase {
    * 
    * @see junit.framework.TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+  @Override
+  public void tearDown() throws Exception {
     fm.shutdown();
     fm = null;
 

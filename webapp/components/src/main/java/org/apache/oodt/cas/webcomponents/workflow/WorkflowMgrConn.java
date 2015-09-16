@@ -30,7 +30,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 
 /**
  * 
@@ -47,11 +48,11 @@ public class WorkflowMgrConn implements Serializable {
   private static final Logger LOG = Logger.getLogger(WorkflowMgrConn.class
       .getName());
 
-  private XmlRpcWorkflowManagerClient wm;
+  private WorkflowManagerClient wm;
 
   public WorkflowMgrConn(String wmUrlStr) {
     try {
-      this.wm = new XmlRpcWorkflowManagerClient(new URL(wmUrlStr));
+      this.wm = RpcCommunicationFactory.createClient(new URL(wmUrlStr));
     } catch (MalformedURLException e) {
       LOG.log(Level.SEVERE, "Unable to contact Workflow Manager at URL: ["
           + wmUrlStr + "]: Message: " + e.getMessage());
@@ -184,7 +185,7 @@ public class WorkflowMgrConn implements Serializable {
     }
   }
 
-  public XmlRpcWorkflowManagerClient getWM() {
+  public WorkflowManagerClient getWM() {
     return this.wm;
   }
 

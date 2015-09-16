@@ -1,0 +1,15 @@
+{
+  "type":"record",
+  "name":"AvroWorkflowCondition",
+  "default":"null",
+  "namespace":"org.apache.oodt.cas.workflow.struct.avrotypes",
+  "fields":[
+    {"name":"conditionName","type":["null","string"]},
+    {"name":"conditionId","type":["null","string"]},
+    {"name":"conditionInstanceClassName","type":["null","string"]},
+    {"name":"order","type":"int","default":-1},
+    {"name":"condConfig","type":{"type":"map","values":"string"}},
+    {"name":"timeoutSeconds","type":"long"},
+    {"name":"optional","type":"boolean"}
+  ]
+}

@@ -26,7 +26,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which gets the next page of workflows.
@@ -45,7 +45,7 @@ public class GetNextPageCliAction extends WorkflowCliAction {
       Validate.isTrue(pageNum != -1);
 
       try {
-         XmlRpcWorkflowManagerClient client = getClient();
+         WorkflowManagerClient client = getClient();
          WorkflowInstancePage page = null;
          if (status != null && !status.equals("")) {
             page = client.paginateWorkflowInstances(pageNum + 1, status);

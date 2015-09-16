@@ -1,0 +1,19 @@
+{
+  "type":"record",
+  "name":"AvroWorkflowInstance",
+  "default":"null",
+  "namespace":"org.apache.oodt.cas.workflow.struct.avrotypes",
+  "imports":["AvroWorkflow.avsc"],
+  "fields":[
+    {"name":"workflow","type":"AvroWorkflow"},
+    {"name":"id","type":["null","string"]},
+    {"name":"status","type":["null","string"]},
+    {"name":"currentTaskId","type":["null","string"]},
+    {"name":"startDateTimeIsoStr","type":["null","string"]},
+    {"name":"endDateTimeIsoStr","type":["null","string"]},
+    {"name":"currentTaskStartDateTimeIsoStr","type":["null","string"]},
+    {"name":"currentTaskEndDateTimeIsoStr","type":["null","string"]},
+    {"name":"sharedContext","type":{"type":"map","values":"string"}},
+    {"name":"priority","type":["null","double"]}
+  ]
+}

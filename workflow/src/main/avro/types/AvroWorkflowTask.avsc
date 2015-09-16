@@ -1,0 +1,20 @@
+{
+  "type":"record",
+  "name":"AvroWorkflowTask",
+  "default":"null",
+  "namespace":"org.apache.oodt.cas.workflow.struct.avrotypes",
+  "imports":"AvroWorkflowCondition.avsc",
+  "fields":[
+    {"name":"taskId","type":["null","string"]},
+    {"name":"taskName","type":["null","string"]},
+    {"name":"taskConfig","type":{"type":"map","values":"string"}},
+    {"name":"preConditions","type":{"type":"array","items":"AvroWorkflowCondition"}},
+    {"name":"postConditions","type":{"type":"array","items":"AvroWorkflowCondition"}},
+    {"name":"taskInstanceClassName","type":["null","string"]},
+    {"name":"order","type":"int","default":-1},
+    {"name":"requiredMetFields","type":{"type":"array","items":"string"}},
+    {"name":"startDate","type":["null","string"]},
+    {"name":"endDate","type":["null","string"]}
+  ]
+
+}

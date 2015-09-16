@@ -24,22 +24,22 @@ import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.action.store.spring.SpringCmdLineActionStore;
 import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
 import org.apache.oodt.cas.workflow.cli.action.WorkflowCliAction;
-import org.apache.oodt.cas.workflow.system.MockXmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.MockWorkflowManagerClient;
 
 /**
  * A {@link SpringCmdLineActionStore} which sets {@link WorkflowCliAction}s
- * to use a {@link MockXmlRpcWorkflowManagerClient}.
+ * to use a {@link MockWorkflowManagerClient}.
  *
  * @author bfoster (Brian Foster)
  */
 public class UseMockClientCmdLineActionStore extends SpringCmdLineActionStore {
 
-   private MockXmlRpcWorkflowManagerClient client;
+   private MockWorkflowManagerClient client;
 
    public UseMockClientCmdLineActionStore() {
       super(System.getProperty("org.apache.oodt.cas.cli.action.spring.config"));
       try {
-         client = new MockXmlRpcWorkflowManagerClient();
+         client = new MockWorkflowManagerClient();
       } catch (Exception e) {
          throw new RuntimeException(e);
       }
@@ -55,7 +55,7 @@ public class UseMockClientCmdLineActionStore extends SpringCmdLineActionStore {
       return actions;
    }
 
-   public MockXmlRpcWorkflowManagerClient getClient() {
+   public MockWorkflowManagerClient getClient() {
       return client;
    }
 }

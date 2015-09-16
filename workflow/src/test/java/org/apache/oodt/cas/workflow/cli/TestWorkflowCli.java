@@ -21,8 +21,8 @@ import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.cli.util.OptionPropertyRegister;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.repository.MockWorkflowRepository;
-import org.apache.oodt.cas.workflow.system.MockXmlRpcWorkflowManagerClient;
-import org.apache.oodt.cas.workflow.system.MockXmlRpcWorkflowManagerClient.MethodCallDetails;
+import org.apache.oodt.cas.workflow.system.MockWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.MockWorkflowManagerClient.MethodCallDetails;
 
 //Google imports
 import com.google.common.collect.Lists;
@@ -47,7 +47,7 @@ public class TestWorkflowCli extends TestCase {
    }
 
    private CmdLineUtility cmdLineUtility;
-   private MockXmlRpcWorkflowManagerClient client;
+   private MockWorkflowManagerClient client;
 
    @Override
    public void setUp() throws Exception {

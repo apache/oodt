@@ -19,7 +19,7 @@ package org.apache.oodt.cas.workflow.cli.action;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which get WorkflowInstance information by given
@@ -35,7 +35,7 @@ public class GetWorkflowInstCliAction extends WorkflowCliAction {
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
       try {
-         XmlRpcWorkflowManagerClient client = getClient();
+         WorkflowManagerClient client = getClient();
          WorkflowInstance inst = client.getWorkflowInstanceById(instanceId);
          if (inst == null) {
             throw new Exception(

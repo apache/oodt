@@ -41,7 +41,7 @@ public class WorkflowInstancePage {
     /* the size of the number of workflows on this page */
     private int pageSize = -1;
 
-    /* the list of produdcts associated with this page */
+    /* the list of products associated with this page */
     private List pageWorkflows = null;
 
     /**

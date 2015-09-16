@@ -22,7 +22,7 @@ import java.util.List;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 
 /**
  * A {@link CmdLineAction} which lists workflow instances current managed by
@@ -37,7 +37,7 @@ public class GetWorkflowInstsCliAction extends WorkflowCliAction {
          throws CmdLineActionException {
 
       try {
-         XmlRpcWorkflowManagerClient client = getClient();
+         WorkflowManagerClient client = getClient();
          @SuppressWarnings("unchecked")
          List<WorkflowInstance> insts = client.getWorkflowInstances();
 

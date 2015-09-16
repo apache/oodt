@@ -19,6 +19,7 @@ package org.apache.oodt.cas.protocol.imaps;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.List;
 
 //Apache imports
@@ -33,6 +34,7 @@ import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import com.icegreen.greenmail.util.DummySSLSocketFactory;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
+import com.icegreen.greenmail.util.ServerSetupTest;
 
 //JUnit imports
 import junit.framework.TestCase;
@@ -51,7 +53,8 @@ public class TestImapsProtocol extends TestCase {
 	public void setUp() {
   	System.setProperty("mail.imaps.socketFactory.class", DummySSLSocketFactory.class.getCanonicalName());
 		System.setProperty("mail.imaps.socketFactory.fallback", "false");
-		gMail = new GreenMail();
+		//gMail = new GreenMail(new ServerSetup(findAvailablePort(3035, 8000), null, "imaps"));
+		gMail = new GreenMail(ServerSetupTest.ALL);
 		gMail.setUser("bfoster@google.com", "password");
 		gMail.start();
 		ImapsProtocol.port = gMail.getImaps().getPort();
@@ -108,5 +111,18 @@ public class TestImapsProtocol extends TestCase {
 		imapsProtocol.delete(emails.get(0));
 		emails = imapsProtocol.ls();
 		assertEquals(0, emails.size());
+	}
+
+	private static int findAvailablePort(int min, int max) {
+		for (int port = min; port < max; port++) {
+			try {
+            	new ServerSocket(port).close();
+            	return port;
+        	} catch (IOException e) {
+            // Must already be taken
+        	}
+    	}
+    	throw new IllegalStateException("Could not find available port in range "
+            + min + " to " + max);
 	}
 }

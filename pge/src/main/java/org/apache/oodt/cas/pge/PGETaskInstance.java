@@ -85,7 +85,8 @@ import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import org.apache.oodt.cas.workflow.util.ScriptFile;
 import org.apache.oodt.commons.exec.ExecUtils;
 
@@ -107,7 +108,7 @@ import com.google.common.collect.Lists;
 public class PGETaskInstance implements WorkflowTaskInstance {
 
    protected Logger logger = Logger.getLogger(PGETaskInstance.class.getName());
-   protected XmlRpcWorkflowManagerClient wm;
+   protected WorkflowManagerClient wm;
    protected String workflowInstId;
    protected PgeMetadata pgeMetadata;
    protected PgeConfig pgeConfig;
@@ -264,12 +265,12 @@ public class PGETaskInstance implements WorkflowTaskInstance {
             pgeConfig.getPropertyAdderCustomArgs());
    }
 
-   protected XmlRpcWorkflowManagerClient createWorkflowManagerClient()
+   protected WorkflowManagerClient createWorkflowManagerClient()
          throws Exception {
       String url = pgeMetadata.getMetadata(WORKFLOW_MANAGER_URL);
       logger.info("Creating WorkflowManager client for url [" + url + "]");
       Validate.notNull(url, "Must specify " + WORKFLOW_MANAGER_URL);
-      return new XmlRpcWorkflowManagerClient(new URL(url));
+      return RpcCommunicationFactory.createClient(new URL(url));
    }
 
    protected String getWorkflowInstanceId() throws Exception {

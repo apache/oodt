@@ -1,0 +1,13 @@
+{
+  "type":"record",
+  "name":"AvroWorkflowInstancePage",
+  "default":"null",
+  "namespace":"org.apache.oodt.cas.workflow.struct.avrotypes",
+  "imports":["AvroWorkflowInstance.avsc"],
+  "fields":[
+    {"name":"pageNum","type":"int","default":-1},
+    {"name":"totalPages","type":"int","default":-1},
+    {"name":"pageSize","type":"int","default":-1},
+    {"name":"pageWorkflows","type":{"type":"array","items":"AvroWorkflowInstance"}}
+  ]
+}

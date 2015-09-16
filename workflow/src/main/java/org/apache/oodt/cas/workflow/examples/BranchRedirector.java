@@ -26,7 +26,8 @@ import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 
 /**
  * 
@@ -54,11 +55,11 @@ public class BranchRedirector implements WorkflowTaskInstance {
   @Override
   public void run(Metadata metadata, WorkflowTaskConfiguration config)
       throws WorkflowTaskInstanceException {
-    XmlRpcWorkflowManagerClient wm = null;
+    WorkflowManagerClient wm = null;
 
     try {
-      wm = new XmlRpcWorkflowManagerClient(new URL(
-          metadata.getMetadata(CoreMetKeys.WORKFLOW_MANAGER_URL)));
+      wm = RpcCommunicationFactory.createClient(new URL(
+              metadata.getMetadata(CoreMetKeys.WORKFLOW_MANAGER_URL)));
       wm.sendEvent(config.getProperty("eventName"), metadata);
     } catch (Exception e) {
       throw new WorkflowTaskInstanceException(e.getMessage());

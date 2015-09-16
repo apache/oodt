@@ -29,7 +29,8 @@ import org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import org.apache.oodt.commons.date.DateUtils;
 
 /**
@@ -54,7 +55,7 @@ public class InstanceRepoCleaner {
   private static final Logger LOG = Logger.getLogger(InstanceRepoCleaner.class
       .getName());
 
-  private XmlRpcWorkflowManagerClient wm;
+  private WorkflowManagerClient wm;
 
   private LuceneWorkflowInstanceRepository rep;
 
@@ -62,7 +63,7 @@ public class InstanceRepoCleaner {
   }
 
   public InstanceRepoCleaner(String wmUrlStr) throws Exception {
-    this.wm = new XmlRpcWorkflowManagerClient(new URL(wmUrlStr));
+    this.wm = RpcCommunicationFactory.createClient(new URL(wmUrlStr));
   }
 
   public void setInstanceRepo(String idxPath) {

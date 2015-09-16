@@ -53,7 +53,7 @@ case "$1" in
         -Dorg.apache.oodt.cas.workflow.properties=${CAS_WORKFLOW_PROPS} \
         -Dorg.apache.oodt.cas.pge.task.metkeys.legacyMode="true" \
         -Dorg.apache.oodt.cas.pge.task.status.legacyMode="true" \
-        org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager --portNum $SERVER_PORT &       
+        org.apache.oodt.cas.workflow.system.WorkflowManagerStarter --portNum $SERVER_PORT &
         echo $! >${RUN_HOME}/cas.workflow.pid 
         echo "OK"
         sleep 5

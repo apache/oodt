@@ -86,7 +86,7 @@ if [ "$1" = "start" ]; then
     -Djava.io.tmpdir="$OODT_TMPDIR" \
     -Dorg.apache.oodt.cas.pge.task.metkeys.legacyMode="true" \
     -Dorg.apache.oodt.cas.pge.task.status.legacyMode="true" \
-    org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager \
+    org.apache.oodt.cas.workflow.system.WorkflowManagerStarter \
     --portNum "$WORKFLOW_PORT" 2>&1 &
 
   if [ ! -z "$WORKFLOW_PID" ]; then

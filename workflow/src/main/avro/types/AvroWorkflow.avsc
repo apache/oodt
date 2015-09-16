@@ -1,0 +1,14 @@
+{
+  "type":"record",
+  "name":"AvroWorkflow",
+  "default":"null",
+  "namespace":"org.apache.oodt.cas.workflow.struct.avrotypes",
+  "imports":["AvroWorkflowTask.avsc","AvroWorkflowCondition.avsc"],
+  "fields":[
+    {"name":"name","type":["null","string"]},
+    {"name":"id","type":["null","string"]},
+    {"name":"tasks","type":{"type":"array","items":"AvroWorkflowTask"}},
+    {"name":"preConditions","type":{"type":"array","items":"AvroWorkflowCondition"}},
+    {"name":"postConditions","type":{"type":"array","items":"AvroWorkflowCondition"}}
+  ]
+}

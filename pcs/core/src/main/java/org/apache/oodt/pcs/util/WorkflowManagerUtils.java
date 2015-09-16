@@ -28,7 +28,8 @@ import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.rpc.RpcCommunicationFactory;
 import org.apache.xmlrpc.XmlRpcClient;
 
 /**
@@ -42,7 +43,7 @@ import org.apache.xmlrpc.XmlRpcClient;
 public class WorkflowManagerUtils {
 
   /* our workflow manager client */
-  private XmlRpcWorkflowManagerClient client;
+  private WorkflowManagerClient client;
 
   /* our log stream */
   private static final Logger LOG = Logger.getLogger(WorkflowManagerUtils.class
@@ -55,11 +56,11 @@ public class WorkflowManagerUtils {
   }
 
   public WorkflowManagerUtils(URL url) {
-    this.client = new XmlRpcWorkflowManagerClient(url);
+    this.client = RpcCommunicationFactory.createClient(url);
     this.wmUrl = url;
   }
 
-  public WorkflowManagerUtils(XmlRpcWorkflowManagerClient client) {
+  public WorkflowManagerUtils(WorkflowManagerClient client) {
     this.client = client;
   }
 
@@ -118,7 +119,7 @@ public class WorkflowManagerUtils {
   /**
    * @return the client
    */
-  public XmlRpcWorkflowManagerClient getClient() {
+  public WorkflowManagerClient getClient() {
     return client;
   }
 
@@ -126,7 +127,7 @@ public class WorkflowManagerUtils {
    * @param client
    *          the client to set
    */
-  public void setClient(XmlRpcWorkflowManagerClient client) {
+  public void setClient(WorkflowManagerClient client) {
     this.client = client;
     if (this.client != null) {
       this.wmUrl = this.client.getWorkflowManagerUrl();
