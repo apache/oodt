@@ -1,0 +1,481 @@
+{
+   "protocol" : "AvroCommunicationChannel",
+   "namespace" : "org.apache.oodt.cas.catalog.server.channel.avrorpc",
+   "messages" :
+      {
+         "avrorpc_startup" :
+            {
+               "request" :
+                  [
+                  ],
+               "response" : "null"
+            },
+         "avrorpc_shutdown" :
+            {
+               "request" :
+                  [
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_addCatalog1" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_replaceCatalog" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_addCatalog2" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogId",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "indexObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_addCatalog3" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogId",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "indexObject",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "dictionariesObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_addCatalog5" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogId",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "indexObject",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "dictionariesObject",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "restrictQueryPermissionObject",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "restrictIngestPermissionObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_addDictionary" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogId",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "dictionariesObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_replaceDictionaries" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogId",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "dictionariesObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_replaceIndex" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogId",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "indexObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_modifyIngestPermission" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogId",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "restrictIngestPermissionObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_modifyQueryPermission" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogId",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "restrictQueryPermissionObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_delete" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "metadataObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_getPluginUrls" :
+            {
+               "request" :
+                  [
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_addPluginUrls" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "pluginUrlsObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_getPluginStorageDir" :
+            {
+               "request" :
+                  [
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_transferFile" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "filePath",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "fileData",
+                        "type" : "bytes"
+                     },
+                     {
+                        "name" : "offset",
+                        "type" : "int"
+                     },
+                     {
+                        "name" : "numBytes",
+                        "type" : "int"
+                     }
+                  ],
+               "response" : "boolean"
+            },
+         "avrorpc_getAllPages" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "queryPagerObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getCalalogProperties1" :
+            {
+               "request" :
+                  [
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getCalalogProperties2" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogUrn",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getCatalogServiceTransactionId" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogTransactionIdObject",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "catalogUrn",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getCatalogServiceTransactionId2" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogReceiptObject",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "generateNewObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getCatalogServiceTransactionIds" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogTransactionIdsObject",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "catalogUrn",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getCurrentCatalogIds" :
+            {
+               "request" :
+                  [
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getMetadataFromTransactionIdStrings" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogServiceTransactionIdStringsObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getMetadataFromTransactionIds" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogServiceTransactionIdsObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getNextPage" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "queryPagerObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getProperty" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "key",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_ingest" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "metadataObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_isRestrictIngestPermissions" :
+            {
+               "request" :
+                  [
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_isRestrictQueryPermissions" :
+            {
+               "request" :
+                  [
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_query1" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "queryExpressionObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_query2" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "queryExpressionObject",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "catalogIdsObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getNextPage2" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "pageObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getPage2" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "pageInfoObject",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "queryExpressionObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getPage3" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "pageInfoObject",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "queryExpressionObject",
+                        "type" : "string"
+                     },
+                     {
+                        "name" : "catalogIdsObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_getMetadata" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "pageObject",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "string"
+            },
+         "avrorpc_removeCatalog" :
+            {
+               "request" :
+                  [
+                     {
+                        "name" : "catalogUrn",
+                        "type" : "string"
+                     }
+                  ],
+               "response" : "boolean"
+            }
+      }
+}

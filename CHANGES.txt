@@ -3,6 +3,8 @@ Apache OODT Change Log
 
 Current Development
 
+* OODT-855 Integrate Avro RPC with the catalog module using Serializer (Radu Manole, mattmann, lewismc)
+
 * OODT-866 Integrate Avro RPC with the workflow module (Radu Manole, mattmann, lewismc)
 
 * OODT-874 Corrected workflow/bin/wmgr and resource/bin/resmgr to make sure
