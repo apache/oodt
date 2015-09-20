@@ -49,6 +49,7 @@ import org.apache.oodt.commons.xml.XMLUtils;
 /**
  * @author mattmann
  * @author bfoster
+ * @author riverma
  * @version $Revision$
  * 
  * <p>
@@ -99,12 +100,11 @@ public final class XmlStructFactory {
         repositoryPath = PathUtils.replaceEnvVariables(repositoryPath);
 
         // grab metadata
-        Metadata met = null;
+        Metadata met = new Metadata();
         Element metadataRoot = XMLUtils.getFirstElement("metadata",
                 productTypeElem);
         if (metadataRoot != null) {
             Hashtable<String, Object> metHash = new Hashtable<String, Object>();
-            met = new Metadata();
             NodeList keyValElems = metadataRoot.getElementsByTagName("keyval");
 
             for (int i = 0; i < keyValElems.getLength(); i++) {
@@ -117,17 +117,18 @@ public final class XmlStructFactory {
             }
 
             met.replaceMetadata(metHash);
+        } else {
+        	LOG.warning("metadata node missing for product type : "+id);
         }
 
         // grab extractors
-        List<ExtractorSpec> extractors = null;
+        List<ExtractorSpec> extractors = new Vector<ExtractorSpec>();
         Element extractorRoot = XMLUtils.getFirstElement("metExtractors",
                 productTypeElem);
 
         if (extractorRoot != null) {
             NodeList extractorNodes = extractorRoot
                     .getElementsByTagName("extractor");
-            extractors = new Vector<ExtractorSpec>();
             if (extractorNodes != null && extractorNodes.getLength() > 0) {
                 for (int i = 0; i < extractorNodes.getLength(); i++) {
                     Element extractorElem = (Element) extractorNodes.item(i);
@@ -173,6 +174,8 @@ public final class XmlStructFactory {
                 }
 
             }
+        } else {
+        	LOG.warning("metExtractors node missing from product type : "+id);
         }
         
         List<TypeHandler> handlers = null;

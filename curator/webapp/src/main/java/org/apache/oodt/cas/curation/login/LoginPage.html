@@ -1,0 +1,95 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<wicket:extend>
+<wicket:remove>
+  <link type="text/css" rel="stylesheet" href="../HomePage.css"/>
+  <link type="text/css" rel="stylesheet" href="../../../../../../../../../../../webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/workbench/Workbench.css"/> 
+</wicket:remove>
+
+<wicket:link>
+<link type="text/css" rel="stylesheet" href="LoginPage.css"/>
+</wicket:link>
+
+<wicket:remove>
+<div id="page">
+    <div id="cas-header">
+        <div id="cas-logo-left"><!--  cas logo lhs --></div>
+        <div id="cas-logo-right"><!-- cas logo rhs --></div>
+        <h2 class="app-title">Project Name CAS Curation</h2>
+            <div class="userdetails">
+               <span >Logged in as mattmann</span>
+               <a href="#">Log In</a>
+               <a href="#">Log Out</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="menu">
+        <!-- Breadcrumbs Area -->
+        <div id="breadcrumbs">
+        <div style="margin-left: 10px;padding-left: 10px;">
+        <a href="#" style="color:black;">Home</a> > Main
+        </div>
+        </div>
+    </div>
+
+<!-- begin main content -->
+</wicket:remove>
+
+<div style="position:relative;min-height:300px;">
+<h1 class="sectionTitle" id="section_title">Please Log In to the <span wicket:id="login_project_name">Project Name CAS Curation Interface</span></h1>
+<br/><br/>
+
+<div id="login">
+<form id="login_form" wicket:id="login_form"> 
+ <div id="invalid_creds" class="error" wicket:id="invalid_creds">Invalid Credentials...<br/>Please try again.</div>
+ <div id="connect_error" class="error" wicket:id="connect_error">Unable to contact LDAP authentication server...<br/>Please try again later.</div>
+ 
+  <table id="centered">
+   <tbody><tr>
+     <td id="username_txt">Username</td>
+     <td><input wicket:id="login_username" id="login_username" value="" size="20" maxlength="255" type="text"></td>
+   </tr>
+   <tr>
+     <td id="password_txt">Password</td>
+     <td><input wicket:id="password" id="password" value="" size="20" maxlength="255" type="password"></td>
+   </tr>
+   <tr>
+     <td>&nbsp;</td>
+     <td><input id="login_submit" value="Log In" type="submit"></td>
+   </tr>
+ </tbody></table>
+</form>
+</div>
+
+<script type="text/javascript">
+    document.getElementById('login_username').focus();
+</script>
+</div>
+
+<wicket:remove>
+<!--  end main content -->
+<div id="footer">
+    Apache Software Foundation.<br/>
+    <a href="http://apache.org/">apache.org</a><br/>
+    Built On Apache <a href="http://oodt.apache.org">OODT</a>
+</div>
+
+</wicket:remove>
+
+</wicket:extend>

@@ -27,9 +27,11 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
  * A {@link CmdLineAction} which adds a {@link ProductType} to the file manager.
  * 
  * @author bfoster (Brian Foster)
+ * @author riverma (Rishi Verma)
  */
 public class AddProductTypeCliAction extends FileManagerCliAction {
 
+   private String productTypeId;
    private String productTypeName;
    private String productTypeDescription;
    private String fileRepositoryPath;
@@ -39,6 +41,7 @@ public class AddProductTypeCliAction extends FileManagerCliAction {
    public void execute(ActionMessagePrinter printer)
          throws CmdLineActionException {
       try {
+         Validate.notNull(productTypeId, "Must specify productTypeId");
          Validate.notNull(productTypeName, "Must specify productTypeName");
          Validate.notNull(productTypeDescription,
                "Must specify productTypeDescription");
@@ -47,6 +50,7 @@ public class AddProductTypeCliAction extends FileManagerCliAction {
          Validate.notNull(versioner, "Must specify versioner");
 
          ProductType type = new ProductType();
+         type.setProductTypeId(productTypeId);
          type.setName(productTypeName);
          type.setDescription(productTypeDescription);
          type.setProductRepositoryPath(fileRepositoryPath);
@@ -56,13 +60,17 @@ public class AddProductTypeCliAction extends FileManagerCliAction {
                + getClient().addProductType(type));
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to add product type with "
-               + "name '" + productTypeName + "', description '"
+               + "id '" + productTypeId + "', name '" + productTypeName + "', description '"
                + productTypeDescription + "', repository '"
                + fileRepositoryPath + ", and versioner '" + versioner + "' : "
                + e.getMessage(), e);
       }
    }
 
+   public void setProductTypeId(String productTypeId) {
+      this.productTypeId = productTypeId;
+   }
+	
    public void setProductTypeName(String productTypeName) {
       this.productTypeName = productTypeName;
    }

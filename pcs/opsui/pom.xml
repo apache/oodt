@@ -23,7 +23,7 @@ the License.
 	<parent>
        <groupId>org.apache.oodt</groupId>
        <artifactId>oodt-core</artifactId>
-       <version>0.10-SNAPSHOT</version>
+       <version>0.11-SNAPSHOT</version>
        <relativePath>../../core/pom.xml</relativePath>
     </parent>
 	<name>Process Control System Operator Interface Webapp</name>
@@ -75,6 +75,12 @@ the License.
 		  <version>${project.parent.version}</version>
 		  <type>war</type>
 		</dependency>
+	    <dependency>
+	      <groupId>org.apache.oodt</groupId>
+	      <artifactId>curator-services</artifactId>
+	      <version>${project.parent.version}</version>
+	      <type>war</type>
+	    </dependency>		
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>pcs-core</artifactId>
@@ -122,35 +128,6 @@ the License.
 		</dependency>
 	</dependencies>
         <profiles>
-			<profile>
-				<id>create-osgi-bundles-from-dependencies</id>
-				<build>
-					<plugins>
-						<plugin>
-							<groupId>org.apache.felix</groupId>
-							<artifactId>maven-bundle-plugin</artifactId>
-							<version>2.3.7</version>
-							<configuration>
-								<supportedProjectTypes>
-									<supportedProjectType>jar</supportedProjectType>
-									<supportedProjectType>bundle</supportedProjectType>
-									<supportedProjectType>war</supportedProjectType>
-								</supportedProjectTypes>
-								<instructions>
-									<Bundle-Name>${project.artifactId}</Bundle-Name>
-									<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-									<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
-									<Export-Package>org.apache.oodt.pcs.opsui.*</Export-Package>
-									<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
-									<Embed-Transitive>true</Embed-Transitive>
-									<Import-Package>*;resolution:=optional</Import-Package>
-								</instructions>
-							</configuration>
-							<extensions>true</extensions>
-						</plugin>
-					</plugins>
-				</build>
-			</profile>
             <profile>
                 <id>audit</id>
                 <activation>
@@ -218,26 +195,28 @@ the License.
 					<debug>true</debug>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
-				<configuration>
-					<supportedProjectTypes>
-						<supportedProjectType>jar</supportedProjectType>
-						<supportedProjectType>bundle</supportedProjectType>
-						<supportedProjectType>war</supportedProjectType>
-					</supportedProjectTypes>
-					<instructions>
-						<Bundle-Name>${project.artifactId}</Bundle-Name>
-						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
-						<Export-Package>org.apache.oodt.pcs.opsui.*</Export-Package>
-						<Import-Package>*;resolution:=optional</Import-Package>
-					</instructions>
-				</configuration>
-				<extensions>true</extensions>
-			</plugin>
-		</plugins>
-	</build>
+            <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+		            <version>2.2</version>
+		            <configuration>
+		                <port>8181</port>
+		                <systemProperties>
+		                    <CATALINA_OPTS>-Djava.awt.headless=true -Dfile.encoding=UTF-8
+		                                    -server -Xms1536m -Xmx1536m
+		                                    -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m
+		                                    -XX:MaxPermSize=512m -XX:+DisableExplicitGC
+		                                    -XX:+UseConcMarkSweepGC
+		                                    -XX:+CMSIncrementalMode
+		                                    -XX:+CMSIncrementalPacing
+		                                    -XX:CMSIncrementalDutyCycleMin=0
+		                                    -XX:-TraceClassUnloading
+		                    </CATALINA_OPTS>
+		                </systemProperties>
+		                <contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
+		                <path>/${project.build.finalName}</path>  
+		            </configuration>        
+            </plugin>    
+        </plugins>	
+    </build>
 	</project>

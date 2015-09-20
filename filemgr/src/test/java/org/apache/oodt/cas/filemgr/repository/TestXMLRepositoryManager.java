@@ -170,8 +170,8 @@ public class TestXMLRepositoryManager extends TestCase {
         }
 
         assertNotNull(type);
-        assertNull(type.getTypeMetadata());
-
+        assertNotNull(type.getTypeMetadata());
+	assertEquals(0, type.getTypeMetadata().getKeys().size());
     }
 
     /**
