@@ -36,11 +36,69 @@ the License.
 	container. Since all values are stored internally as string vectors, the difference
 	between a scalar value and a non-scalar is handled by determining whether the list of
 	values for a particular key is greater than 1.</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>
-  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>pcs-input</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-hibernate3</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
   <build>
     <resources>
       <resource>
@@ -58,17 +116,17 @@ the License.
         <configuration>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
 
-        <systemProperties>
-           <property>
+          <systemProperties>
+            <property>
               <name>java.io.tmpdir</name>
               <value>${project.build.outputDirectory}</value>
-           </property>
-           <property>
-             <name>java.util.logging.config.file</name>
-             <value>${basedir}/src/main/resources/logging.properties</value>
             </property>
-         </systemProperties>
-         <forkMode>never</forkMode>
+            <property>
+              <name>java.util.logging.config.file</name>
+              <value>${basedir}/src/main/resources/logging.properties</value>
+            </property>
+          </systemProperties>
+          <forkMode>never</forkMode>
           <includes>
             <include>**/*Test*.java</include>
           </includes>
@@ -79,6 +137,11 @@ the License.
       </plugin>
     </plugins>
   </build>
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>
+  </scm>
   <profiles>
     <profile>
       <id>audit</id>
@@ -98,10 +161,10 @@ the License.
             </configuration>
             <executions>
               <execution>
-                <phase>verify</phase>
                 <goals>
                   <goal>check</goal>
                 </goals>
+                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
@@ -109,67 +172,4 @@ the License.
       </build>
     </profile>
   </profiles>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>pcs-input</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-hibernate3</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.transaction</groupId>
-          <artifactId>jta</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-	<dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
-	</dependency>
-	<dependency>
-	  <groupId>org.hamcrest</groupId>
-	  <artifactId>hamcrest-all</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>
