@@ -23,168 +23,13 @@
     <version>0.11-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
-  <packaging>bundle</packaging>
   <artifactId>cas-catalog</artifactId>
+  <packaging>bundle</packaging>
   <name>OODT CAS Virtual Catalog and Integration Service.</name>
   <description>CAS Catalog is an effort to virtualize underlying 
   catalogs for use in the CAS system. Heterogeneous catalog models 
   are mapped to a common dictionary, and then integrated locally so that
-  they may be queried across and ingested into.
-  </description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/catalog</url>
-  </scm>
-  <profiles>
-    <profile>
-      <id>create-osgi-bundles-from-dependencies</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <version>2.3.7</version>
-            <configuration>
-              <supportedProjectTypes>
-                <supportedProjectType>jar</supportedProjectType>
-                <supportedProjectType>bundle</supportedProjectType>
-                <supportedProjectType>war</supportedProjectType>
-              </supportedProjectTypes>
-              <instructions>
-                <Bundle-Name>${project.artifactId}</Bundle-Name>
-                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
-                <Export-Package>org.apache.oodt.cas.catalog.*</Export-Package>
-                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
-                <Embed-Transitive>true</Embed-Transitive>
-                <Import-Package>*;resolution:=optional</Import-Package>
-              </instructions>
-            </configuration>
-            <extensions>true</extensions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>audit</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>rat-maven-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <exclude>**/src/main/java/org/apache/oodt/cas/catalog/query/parser/*.java</exclude>
-              </excludes>
-            </configuration>
-            <executions>
-              <execution>
-                <phase>verify</phase>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>tmpdir</id>
-      <activation>
-        <property>
-           <name>test.tmpdir</name>
-        </property>
-      </activation>
-       <build>
-        <plugins>
-         <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.4.3</version>
-          <configuration>
-          <systemProperties>
-             <property>
-               <name>java.io.tmpdir</name>
-               <value>${test.tmpdir}</value>
-              </property>
-           </systemProperties>
-           </configuration>
-         </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-2</version>
-        <configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/assembly.xml</descriptor>
-          </descriptors>
-          <archive />
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.3.7</version>
-        <configuration>
-          <supportedProjectTypes>
-            <supportedProjectType>jar</supportedProjectType>
-            <supportedProjectType>bundle</supportedProjectType>
-            <supportedProjectType>war</supportedProjectType>
-          </supportedProjectTypes>
-          <instructions>
-            <Bundle-Name>${project.artifactId}</Bundle-Name>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
-            <Export-Package>org.apache.oodt.cas.catalog.*</Export-Package>
-            <Import-Package>*;resolution:=optional</Import-Package>
-          </instructions>
-        </configuration>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-    <resources>
-      <resource>
-        <targetPath>org/apache/oodt/cas/catalog/config</targetPath>
-        <directory>${basedir}/src/main/resources/policy</directory>
-        <includes>
-          <include>catserv-properties.xml</include>          
-          <include>catserv-beans.xml</include>    
-          <include>catserv-server-config.xml</include>
-          <include>catserv-server-cmd-line-beans.xml</include>          
-          <include>catserv-client-config.xml</include>                          
-          <include>catserv-client-action-beans.xml</include>          
-          <include>catserv-client-cmd-line-beans.xml</include>          
-        </includes>
-      </resource>
-    </resources>
-  </build>
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>chris.mattmann@jpl.nasa.gov</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
+  they may be queried across and ingested into.</description>
   <dependencies>
     <dependency>
       <groupId>org.apache.oodt</groupId>
@@ -222,7 +67,7 @@
           <!-- xom is an optional dependency of xstream. Its also an Apache incompatible license -->
           <groupId>xom</groupId>
           <artifactId>xom</artifactId>
-        </exclusion> 
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -235,7 +80,161 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-<!-- 
+  <build>
+    <resources>
+      <resource>
+        <targetPath>org/apache/oodt/cas/catalog/config</targetPath>
+        <directory>${basedir}/src/main/resources/policy</directory>
+        <includes>
+          <include>catserv-properties.xml</include>
+          <include>catserv-beans.xml</include>
+          <include>catserv-server-config.xml</include>
+          <include>catserv-server-cmd-line-beans.xml</include>
+          <include>catserv-client-config.xml</include>
+          <include>catserv-client-action-beans.xml</include>
+          <include>catserv-client-cmd-line-beans.xml</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-2</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/assembly.xml</descriptor>
+          </descriptors>
+          <archive></archive>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <supportedProjectTypes>
+            <supportedProjectType>jar</supportedProjectType>
+            <supportedProjectType>bundle</supportedProjectType>
+            <supportedProjectType>war</supportedProjectType>
+          </supportedProjectTypes>
+          <instructions>
+            <Bundle-Name>${project.artifactId}</Bundle-Name>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+            <Export-Package>org.apache.oodt.cas.catalog.*</Export-Package>
+            <Import-Package>*;resolution:=optional</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/catalog</url>
+  </scm>
+  <ciManagement>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>chris.mattmann@jpl.nasa.gov</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <profiles>
+    <profile>
+      <id>create-osgi-bundles-from-dependencies</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>2.3.7</version>
+            <extensions>true</extensions>
+            <configuration>
+              <supportedProjectTypes>
+                <supportedProjectType>jar</supportedProjectType>
+                <supportedProjectType>bundle</supportedProjectType>
+                <supportedProjectType>war</supportedProjectType>
+              </supportedProjectTypes>
+              <instructions>
+                <Bundle-Name>${project.artifactId}</Bundle-Name>
+                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+                <Export-Package>org.apache.oodt.cas.catalog.*</Export-Package>
+                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                <Embed-Transitive>true</Embed-Transitive>
+                <Import-Package>*;resolution:=optional</Import-Package>
+              </instructions>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>audit</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>rat-maven-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/src/main/java/org/apache/oodt/cas/catalog/query/parser/*.java</exclude>
+              </excludes>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <phase>verify</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>tmpdir</id>
+      <activation>
+        <property>
+          <name>test.tmpdir</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.4.3</version>
+            <configuration>
+              <systemProperties>
+                <property>
+                  <name>java.io.tmpdir</name>
+                  <value>${test.tmpdir}</value>
+                </property>
+              </systemProperties>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  <!-- 
   <reporting>
   	<plugins>
   		<plugin>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE.txt file distributed with this work for
@@ -26,48 +26,98 @@ the License.
   <artifactId>cas-curator</artifactId>
   <packaging>war</packaging>
   <name>CAS Curation Interface</name>
-  <properties>
-   <wicket.version>1.4.17</wicket.version>
-  </properties>  
   <description>A web application for managing policy for products and files and metadata that have been ingested via the CAS component.</description>
+  <properties>
+    <wicket.version>1.4.17</wicket.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.wicket</groupId>
+      <artifactId>wicket</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.wicket</groupId>
+      <artifactId>wicket-extensions</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>curator-services</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-webapp-components</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.oodt</groupId>
+          <artifactId>cas-filemgr</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.oodt</groupId>
+          <artifactId>cas-workflow</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-sso</artifactId>
+    </dependency>
+  </dependencies>
   <build>
-        <resources>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <filtering>false</filtering>
-                <directory>src/test/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-        </testResources>  
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>src/test/java</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
     <plugins>
-		<plugin>
-		    <groupId>org.apache.tomcat.maven</groupId>
-		    <artifactId>tomcat7-maven-plugin</artifactId>
-		    <version>2.2</version>
-		    <configuration>
-		        <port>8181</port>
-		        <systemProperties>
-		            <CATALINA_OPTS>-Djava.awt.headless=true -Dfile.encoding=UTF-8
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <port>8181</port>
+          <systemProperties>
+            <CATALINA_OPTS>-Djava.awt.headless=true -Dfile.encoding=UTF-8
 		                            -server -Xms1536m -Xmx1536m
 		                            -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m
 		                            -XX:MaxPermSize=512m -XX:+DisableExplicitGC
@@ -75,13 +125,12 @@ the License.
 		                            -XX:+CMSIncrementalMode
 		                            -XX:+CMSIncrementalPacing
 		                            -XX:CMSIncrementalDutyCycleMin=0
-		                            -XX:-TraceClassUnloading
-		            </CATALINA_OPTS>
-		        </systemProperties>
-		        <contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
-		        <path>/${project.build.finalName}</path>  
-		    </configuration>	    
-		</plugin>    
+		                            -XX:-TraceClassUnloading</CATALINA_OPTS>
+          </systemProperties>
+          <contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
+          <path>/${project.build.finalName}</path>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <profiles>
@@ -95,70 +144,19 @@ the License.
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>rat-maven-plugin</artifactId>
-            <configuration>
-            </configuration>
+            <configuration></configuration>
             <executions>
               <execution>
-                <phase>verify</phase>
                 <goals>
                   <goal>check</goal>
                 </goals>
+                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
         </plugins>
       </build>
     </profile>
-  </profiles>  
-  <dependencies>
-    <dependency>
-        <groupId>org.apache.wicket</groupId>
-        <artifactId>wicket</artifactId>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-          </exclusion>
-        </exclusions>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.wicket</groupId>
-        <artifactId>wicket-extensions</artifactId>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-          </exclusion>
-        </exclusions>
-    </dependency>
-    <dependency>
-       <groupId>javax.servlet</groupId>
-       <artifactId>servlet-api</artifactId>
-       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>curator-services</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-webapp-components</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>cas-filemgr</artifactId>
-          <groupId>org.apache.oodt</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>cas-workflow</artifactId>
-          <groupId>org.apache.oodt</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>  
-    <dependency>
-       <groupId>org.apache.oodt</groupId>
-       <artifactId>oodt-sso</artifactId>
-    </dependency>
-  </dependencies>
+  </profiles>
 
 </project>

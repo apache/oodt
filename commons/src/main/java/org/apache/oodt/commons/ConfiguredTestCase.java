@@ -17,12 +17,12 @@
 
 package org.apache.oodt.commons;
 
-import java.io.BufferedInputStream;
-import junit.framework.TestCase;
 import org.xml.sax.InputSource;
-import java.io.InputStream;
+
 import java.io.IOException;
 import java.io.StringReader;
+
+import junit.framework.TestCase;
 
 /**
  * Base test case for tests that need the Configuration object.

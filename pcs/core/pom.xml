@@ -18,98 +18,17 @@ the License.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>pcs-core</artifactId>
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
     <version>0.11-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
-  <name>Process Control System Core Package</name>
+  <artifactId>pcs-core</artifactId>
   <packaging>jar</packaging>
+  <name>Process Control System Core Package</name>
   <description>The Process Control System's core system framework. PCS is an agglomeration of 
-  CAS services and components needed to build a science data system.
-  </description>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-2</version>
-        <configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/assembly.xml</descriptor>
-          </descriptors>
-          <archive>
-            <manifest>
-              <mainClass>org.apache.oodt.pcs.tools.PCSHealthMonitor</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.3.7</version>
-        <configuration>
-          <supportedProjectTypes>
-            <supportedProjectType>jar</supportedProjectType>
-            <supportedProjectType>bundle</supportedProjectType>
-            <supportedProjectType>war</supportedProjectType>
-          </supportedProjectTypes>
-          <instructions>
-            <Bundle-Name>${project.artifactId}</Bundle-Name>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
-            <Export-Package>org.apache.oodt.pcs.*</Export-Package>
-            <Main-Class>org.apache.oodt.pcs.tools.PCSHealthMonitor</Main-Class>
-            <Import-Package>*;resolution:=optional</Import-Package>
-          </instructions>
-        </configuration>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
-  <profiles>
-    <profile>
-      <id>create-osgi-bundles-from-dependencies</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <version>2.3.7</version>
-            <configuration>
-              <supportedProjectTypes>
-                <supportedProjectType>jar</supportedProjectType>
-                <supportedProjectType>bundle</supportedProjectType>
-                <supportedProjectType>war</supportedProjectType>
-              </supportedProjectTypes>
-              <instructions>
-                <Bundle-Name>${project.artifactId}</Bundle-Name>
-                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
-                <Export-Package>org.apache.oodt.pcs.*</Export-Package>
-                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
-                <Embed-Transitive>true</Embed-Transitive>
-                <Import-Package>*;resolution:=optional</Import-Package>
-                <Main-Class>org.apache.oodt.pcs.tools.PCSHealthMonitor</Main-Class>
-              </instructions>
-            </configuration>
-            <extensions>true</extensions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+  CAS services and components needed to build a science data system.</description>
   <dependencies>
     <dependency>
       <groupId>org.apache.oodt</groupId>
@@ -150,4 +69,84 @@ the License.
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-2</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/assembly.xml</descriptor>
+          </descriptors>
+          <archive>
+            <manifest>
+              <mainClass>org.apache.oodt.pcs.tools.PCSHealthMonitor</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <supportedProjectTypes>
+            <supportedProjectType>jar</supportedProjectType>
+            <supportedProjectType>bundle</supportedProjectType>
+            <supportedProjectType>war</supportedProjectType>
+          </supportedProjectTypes>
+          <instructions>
+            <Bundle-Name>${project.artifactId}</Bundle-Name>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+            <Export-Package>org.apache.oodt.pcs.*</Export-Package>
+            <Main-Class>org.apache.oodt.pcs.tools.PCSHealthMonitor</Main-Class>
+            <Import-Package>*;resolution:=optional</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>create-osgi-bundles-from-dependencies</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>2.3.7</version>
+            <extensions>true</extensions>
+            <configuration>
+              <supportedProjectTypes>
+                <supportedProjectType>jar</supportedProjectType>
+                <supportedProjectType>bundle</supportedProjectType>
+                <supportedProjectType>war</supportedProjectType>
+              </supportedProjectTypes>
+              <instructions>
+                <Bundle-Name>${project.artifactId}</Bundle-Name>
+                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+                <Export-Package>org.apache.oodt.pcs.*</Export-Package>
+                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                <Embed-Transitive>true</Embed-Transitive>
+                <Import-Package>*;resolution:=optional</Import-Package>
+                <Main-Class>org.apache.oodt.pcs.tools.PCSHealthMonitor</Main-Class>
+              </instructions>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
