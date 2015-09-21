@@ -1,6 +1,51 @@
 Apache OODT Change Log
 ======================
-Release 0.10 - Current Development
+Release 0.11 - Current Development
+
+* OODT-874 Corrected workflow/bin/wmgr and resource/bin/resmgr to make sure
+  they both delete the cas.xxxx.pid file when stopped using the 'stop'
+  command. (mallder)
+
+* OODT-872 Upgrade Jena dependencies to org.apache.jena 3.0.0 (lewismc, mattmann)
+
+Release 0.10 - 08/30/2015
+
+* OODT-871 Issues with OODT 0.10 RC#1 (lewismc, mattmann)
+
+* OODT-246 Give user the ability to print a detailed report on what jobs in 
+  the Resource Manager are running on what nodes (Gabe Resneck, mattmann)
+
+* OODT-245 List results from the Resource Manager client should be sorted 
+  alphabetically (Gabe Resneck via mattmann)
+
+* OODT-248 Give user the ability to print a detailed report on the load, capacity 
+  and queues of all nodes in the Resource Manager (Gabe Resneck, mattmann)
+
+* OODT-247 Resource Manager client should allow users to see what jobs are 
+  currently in the queue (Gabe Resneck, mattmann)
+
+* OODT-244 Allow the Resource Manager scheduler to cycle on a non-integer 
+  number of seconds (Gabe Resneck via mattmann)
+
+* OODT-864 Upgrade to Tika 1.10 (mattmann,tpalsulich)
+
+* OODT-686 AddProductTypeCliAction should prompt for ProductTypeId (rverma, mattmann)
+
+* OODT-302 Add support in the xmlquery package to handle HTTP Redirection (Michael Cayanan via mattmann)
+
+* OODT-303 Add support in the Grid Package to throw an HTTP Servlet Response (Michael Cayanan via mattmann)
+
+* OODT-480 Balance: default view not found (Nesbert Hidalgo via mattmann)
+
+* OODT-598 XMLQuery DIS-style query parser needs to treat "#" as a word character (kelly via mattmann)
+
+* OODT-870 Integrate Curator into OPSUI (mattmann)
+
+* OODT-842 create restful version of cas curator services (mattmann)
+
+* OODT-838 Separate RESTful Servers and Clients (Michael Starch, mattmann)
+
+* OODT-824 Port the Curator to Apache Wicket (mattmann)
 
 * OODT-861 Workflow Manager client will print the list of task ids for a given workflow, if requested (luca)
 

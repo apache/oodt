@@ -16,6 +16,7 @@
   limitations under the License.
 
   Author: bfoster (Brian Foster)
+          riverma (Rishi Verma)
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
@@ -116,6 +117,30 @@
 			</list>
 		</property>
 	</bean>
+
+  <bean id="typeId" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
+    <property name="shortOption" value="tid" />
+    <property name="longOption" value="typeId" />
+    <property name="description" value="ProductType Id" />
+    <property name="hasArgs" value="true" />
+    <property name="argsDescription" value="product-type-id" />
+    <property name="requirementRules">
+      <list>
+        <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+          p:actionName="addProductType" p:relation="REQUIRED" />
+      </list>
+    </property>
+    <property name="handler">
+      <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler">
+        <property name="applyToActions">
+          <list>
+            <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToAction"
+              p:actionName="addProductType" p:methodName="setProductTypeId" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
 
   <bean id="typeName" class="org.apache.oodt.cas.cli.option.AdvancedCmdLineOption">
     <property name="shortOption" value="tn" />

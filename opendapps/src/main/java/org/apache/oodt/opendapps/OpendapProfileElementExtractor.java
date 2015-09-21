@@ -22,11 +22,13 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 //OPeNDAP/THREDDS imports
 import opendap.dap.Attribute;
 import opendap.dap.AttributeTable;
 import opendap.dap.DAS;
 import opendap.dap.NoSuchAttributeException;
+
 
 //OODT imports
 import org.apache.oodt.opendapps.config.OpendapConfig;
@@ -119,6 +121,7 @@ public class OpendapProfileElementExtractor {
     return elem;
   }
 
+  @SuppressWarnings("unchecked")
   public EnumeratedProfileElement extractEnumeratedProfileElement(String elemName, String varname,
       Profile profile, DAS das)
       throws NoSuchAttributeException {

@@ -16,39 +16,82 @@
   limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  
+
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.10-SNAPSHOT</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>oodt-commons</artifactId>
-  <name>Common Utilities</name>
   <packaging>jar</packaging>
+  <name>Common Utilities</name>
   <description>Apache OODT Common Utilities Project</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/commons</url>
-  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-hibernate3</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xmlrpc</groupId>
+      <artifactId>xmlrpc</artifactId>
+    </dependency>
+  </dependencies>
   <build>
     <resources>
-        <resource>
-            <targetPath>org/apache/oodt/commons</targetPath>
-            <directory>${basedir}/src/main/resources/dtd</directory>
-            <includes>
-                <include>Configuration.dtd</include>
-            </includes>
-        </resource>
-        <resource>
-            <targetPath>org/apache/oodt/commons/util</targetPath>
-            <directory>${basedir}/src/main/resources/conf</directory>
-            <includes>
-                <include>entities.xml</include>
-            </includes>
-        </resource>
+      <resource>
+        <targetPath>org/apache/oodt/commons</targetPath>
+        <directory>${basedir}/src/main/resources/dtd</directory>
+        <includes>
+          <include>Configuration.dtd</include>
+        </includes>
+      </resource>
+      <resource>
+        <targetPath>org/apache/oodt/commons/util</targetPath>
+        <directory>${basedir}/src/main/resources/conf</directory>
+        <includes>
+          <include>entities.xml</include>
+        </includes>
+      </resource>
     </resources>
     <plugins>
       <plugin>
@@ -58,21 +101,26 @@
           <forkMode>pertest</forkMode>
           <useSystemClassLoader>false</useSystemClassLoader>
           <systemProperties>
-             <property>
-               <name>java.util.logging.config.file</name>
-               <value>${basedir}/src/test/resources/test.logging.properties</value>
-              </property>
-           </systemProperties>
-           <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
-           <redirectTestOutputToFile>true</redirectTestOutputToFile>
-            <includes>
-              <include>**/*Test*.java</include>
-            </includes>
+            <property>
+              <name>java.util.logging.config.file</name>
+              <value>${basedir}/src/test/resources/test.logging.properties</value>
+            </property>
+          </systemProperties>
+          <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <includes>
+            <include>**/*Test*.java</include>
+          </includes>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
         </configuration>
       </plugin>
-    </plugins> 
+    </plugins>
   </build>
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/commons</url>
+  </scm>
   <profiles>
     <profile>
       <id>audit</id>
@@ -93,10 +141,10 @@
             </configuration>
             <executions>
               <execution>
-                <phase>verify</phase>
                 <goals>
                   <goal>check</goal>
                 </goals>
+                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
@@ -104,62 +152,4 @@
       </build>
     </profile>
   </profiles>
-  <dependencies>
-    <dependency>
-      <groupId>commons-dbcp</groupId>
-      <artifactId>commons-dbcp</artifactId>
-      <version>1.2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-      <version>2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-pool</groupId>
-      <artifactId>commons-pool</artifactId>
-      <version>1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.3</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.0.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>2.5.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-hibernate3</artifactId>
-      <version>2.0.8</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.transaction</groupId>
-          <artifactId>jta</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-        <groupId>xmlrpc</groupId>
-        <artifactId>xmlrpc</artifactId>
-        <version>2.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-    </dependency>
-    <dependency>
-        <groupId>xerces</groupId>
-        <artifactId>xercesImpl</artifactId>
-        <version>2.9.1</version>
-    </dependency>
-  </dependencies>
 </project>
