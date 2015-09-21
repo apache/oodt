@@ -95,9 +95,10 @@ public class TestFileManagerCli extends TestCase {
       String productTypeDesc = "ProductTypeDesc";
       String productTypeRepo = "ProductTypeRepo";
       String productTypeVersioner = "ProductTypeVersioner";
+      String productTypeId = "MyProductTypeId";
       cmdLineUtility
             .run(("--url http://localhost:9000 --operation --addProductType"
-                  + " --typeName " + productTypeName + " --typeDesc "
+                  + " --typeName " + productTypeName + " --typeId "+productTypeId+" --typeDesc "
                   + productTypeDesc + " --repository " + productTypeRepo
                   + " --versionClass " + productTypeVersioner).split(" "));
       MethodCallDetails methodCallDetails = client.getLastMethodCallDetails();

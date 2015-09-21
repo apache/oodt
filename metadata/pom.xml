@@ -21,10 +21,11 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.10-SNAPSHOT</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-metadata</artifactId>
+  <packaging>jar</packaging>
   <name>Catalog and Archive Service Generic Multi-valued Metadata Container</name>
   <description>A Multi-valued, generic Metadata container class. The class uses an internal
 	Map of string keys pointing to vectors of strings. The data
@@ -36,11 +37,69 @@ the License.
 	container. Since all values are stored internally as string vectors, the difference
 	between a scalar value and a non-scalar is handled by determining whether the list of
 	values for a particular key is greater than 1.</description>
-  <scm>
-   	<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</connection>
-   	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</developerConnection>
-   	<url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>
-  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>pcs-input</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-hibernate3</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
   <build>
     <resources>
       <resource>
@@ -58,17 +117,17 @@ the License.
         <configuration>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
 
-        <systemProperties>
-           <property>
+          <systemProperties>
+            <property>
               <name>java.io.tmpdir</name>
               <value>${project.build.outputDirectory}</value>
-           </property>
-           <property>
-             <name>java.util.logging.config.file</name>
-             <value>${basedir}/src/main/resources/logging.properties</value>
             </property>
-         </systemProperties>
-         <forkMode>never</forkMode>
+            <property>
+              <name>java.util.logging.config.file</name>
+              <value>${basedir}/src/main/resources/logging.properties</value>
+            </property>
+          </systemProperties>
+          <forkMode>never</forkMode>
           <includes>
             <include>**/*Test*.java</include>
           </includes>
@@ -77,9 +136,63 @@ the License.
           </excludes>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <supportedProjectTypes>
+            <supportedProjectType>jar</supportedProjectType>
+            <supportedProjectType>bundle</supportedProjectType>
+            <supportedProjectType>war</supportedProjectType>
+          </supportedProjectTypes>
+          <instructions>
+            <Bundle-Name>${project.artifactId}</Bundle-Name>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+            <Export-Package>org.apache.oodt.cas.metadata.*</Export-Package>
+            <Import-Package>*;resolution:=optional</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</developerConnection>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>
+  </scm>
   <profiles>
+    <profile>
+      <id>create-osgi-bundles-from-dependencies</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>2.3.7</version>
+            <extensions>true</extensions>
+            <configuration>
+              <supportedProjectTypes>
+                <supportedProjectType>jar</supportedProjectType>
+                <supportedProjectType>bundle</supportedProjectType>
+                <supportedProjectType>war</supportedProjectType>
+              </supportedProjectTypes>
+              <instructions>
+                <Bundle-Name>${project.artifactId}</Bundle-Name>
+                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+                <Export-Package>org.apache.oodt.cas.metadata.*</Export-Package>
+                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                <Embed-Transitive>true</Embed-Transitive>
+                <Import-Package>*;resolution:=optional</Import-Package>
+              </instructions>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>audit</id>
       <activation>
@@ -98,10 +211,10 @@ the License.
             </configuration>
             <executions>
               <execution>
-                <phase>verify</phase>
                 <goals>
                   <goal>check</goal>
                 </goals>
+                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
@@ -109,78 +222,4 @@ the License.
       </build>
     </profile>
   </profiles>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>pcs-input</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.3</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.0.3</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>2.5.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-hibernate3</artifactId>
-      <version>2.0.8</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.transaction</groupId>
-          <artifactId>jta</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>10.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.1</version>
-      <scope>test</scope>
-    </dependency>
-	<dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.9.5</version>
-      <scope>test</scope>
-	</dependency>
-	<dependency>
-	  <groupId>org.hamcrest</groupId>
-	  <artifactId>hamcrest-all</artifactId>
-	  <version>1.3</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>

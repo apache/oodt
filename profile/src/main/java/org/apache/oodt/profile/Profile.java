@@ -18,20 +18,18 @@
 
 package org.apache.oodt.profile;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import java.io.IOException;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.oodt.commons.Configuration;
+
 import org.apache.oodt.commons.util.Documentable;
 import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
@@ -41,7 +39,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.OutputStreamWriter;
@@ -53,7 +51,7 @@ import java.io.OutputStreamWriter;
  *
  * @author Kelly
  */
-public class Profile implements Serializable, Cloneable, Comparable, Documentable {
+public class Profile implements Serializable, Cloneable, Comparable<Object>, Documentable {
         /** Serial version unique ID. */
         static final long serialVersionUID = -3936851809184360591L;
 
@@ -70,8 +68,8 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	 * @param factory Factory for creation of profile-related objects.
 	 * @return A list of profiles.
 	 */
-	public static List createProfiles(Element root, ObjectFactory factory) {
-		List profiles = new ArrayList();
+	public static List<Profile> createProfiles(Element root, ObjectFactory factory) {
+		List<Profile> profiles = new ArrayList<Profile>();
 		if ("profile".equals(root.getNodeName()))
 			// The root is a <profile>, so add the single profile to the list.
 			profiles.add(factory.createProfile((Element) root));
@@ -99,7 +97,7 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	 * @param root Either a &lt;profiles&gt; or a &lt;profile&gt; element.
 	 * @return A list of profiles.
 	 */
-	public static List createProfiles(Element root) {
+	public static List<Profile> createProfiles(Element root) {
 		return createProfiles(root, new DefaultFactory());
 	}
 
@@ -251,7 +249,7 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	 *
 	 * @return The profile elements.
 	 */
-	public Map getProfileElements() {
+	public Map<String, ProfileElement> getProfileElements() {
 		return elements;
 	}
 
@@ -271,7 +269,7 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	public void addToModel(Model model) {
 		Resource resource = model.createResource(getURI().toString());
 		resAttr.addToModel(model, resource, profAttr);
-		for (Iterator i = elements.values().iterator(); i.hasNext();) {
+		for (Iterator<ProfileElement> i = elements.values().iterator(); i.hasNext();) {
 			ProfileElement e = (ProfileElement) i.next();
 			e.addToModel(model, resource, profAttr);
 		}
@@ -311,7 +309,7 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 		Element profile = doc.createElement("profile");
 		profile.appendChild(profAttr.toXML(doc));
 		profile.appendChild(resAttr.toXML(doc));
-		if (withElements) for (Iterator i = elements.values().iterator(); i.hasNext();)
+		if (withElements) for (Iterator<ProfileElement> i = elements.values().iterator(); i.hasNext();)
 			profile.appendChild(((ProfileElement) i.next()).toXML(doc));
 		return profile;
 	}
@@ -356,7 +354,7 @@ public class Profile implements Serializable, Cloneable, Comparable, Documentabl
 	 *
 	 * This mapping is from element name (a {@link String}) to {@link ProfileElement}.
 	 */
-	protected Map elements = new HashMap();
+	protected Map<String, ProfileElement> elements = new HashMap<String, ProfileElement>();
 
 	/**
 	 * Try to parse an XML profile in a file in its XML vocabulary.  If successful,

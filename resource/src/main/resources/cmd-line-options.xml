@@ -55,14 +55,20 @@
 					p:option-ref="getNodes" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="getQueues" p:required="false" />
+                                <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+                                        p:option-ref="getQueuedJobs" p:required="false" />
+				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+				        p:option-ref="getNodeReport" p:required="false"/>
+                                <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+                                        p:option-ref="getExecReport" p:required="false"/>
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="addNode" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="removeNode" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="setNodeCapacity" p:required="false" />
-        <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
-          p:option-ref="getExecNode" p:required="false" />
+                                <bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
+                                        p:option-ref="getExecNode" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
 					p:option-ref="addQueue" p:required="false" />
 				<bean class="org.apache.oodt.cas.cli.option.GroupSubOption"
@@ -598,4 +604,60 @@
       <bean class="org.apache.oodt.cas.cli.option.handler.ApplyToActionHandler" />
     </property>
   </bean>
+
+        <bean id="getQueuedJobs" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+                p:isSubOption="true">
+                <property name="shortOption" value="qjobs" />
+                <property name="longOption" value="getQueuedJobs" />
+                <property name="description" value="Triggers getQueuedJobs Action" />
+                <property name="hasArgs" value="false" />
+                <property name="staticArgs">
+                        <list>
+                                <value>getQueuedJobs</value>
+                        </list>
+                </property>
+                <property name="requirementRules">
+                        <list>
+                                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+				      p:actionName="getQueuedJobs" p:relation="REQUIRED" />
+                        </list>
+                </property>
+        </bean>
+
+        <bean id="getNodeReport" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+                p:isSubOption="true">
+                <property name="shortOption" value="nreport" />
+                <property name="longOption" value="getNodeReport" />
+                <property name="description" value="Triggers getNodeReport Action" />
+                <property name="hasArgs" value="false" />
+		<property name="staticArgs">
+                        <list>
+                                <value>getNodeReport</value>
+                        </list>
+                </property>
+                <property name="requirementRules">
+                        <list>
+                                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                                      p:actionName="getNodeReport" p:relation="REQUIRED" />
+                        </list>
+                </property>
+        </bean>
+        <bean id="getExecReport" class="org.apache.oodt.cas.cli.option.ActionCmdLineOption"
+                p:isSubOption="true">
+                <property name="shortOption" value="ereport" />
+                <property name="longOption" value="getExecReport" />
+                <property name="description" value="Triggers getExecReport Action" />
+                <property name="hasArgs" value="false" />
+                <property name="staticArgs">
+                        <list>
+                                <value>getExecReport</value>
+                        </list>
+                </property>
+                <property name="requirementRules">
+                        <list>
+                                <bean class="org.apache.oodt.cas.cli.option.require.ActionDependencyRule"
+                                      p:actionName="getExecReport" p:relation="REQUIRED" />
+                        </list>
+                </property>
+        </bean>
 </beans>

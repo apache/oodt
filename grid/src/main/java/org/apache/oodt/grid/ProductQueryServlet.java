@@ -24,6 +24,8 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.oodt.product.HttpRedirectException;
 import org.apache.oodt.product.LargeProductQueryHandler;
 import org.apache.oodt.product.ProductException;
 import org.apache.oodt.product.QueryHandler;
@@ -37,7 +39,7 @@ import org.apache.oodt.xmlquery.XMLQuery;
  * Product query servlet handles product queries.  It always returns the first matching
  * product, if any.  If no handler can provide a product, it returns 404 Not Found.  If
  * there are no query handlers, it returns 404 Not Found.
- * 
+ *
  */
 public class ProductQueryServlet extends QueryServlet {
 	/** {@inheritDoc} */
@@ -64,8 +66,13 @@ public class ProductQueryServlet extends QueryServlet {
 				}
 			}
 		} catch (ProductException ex) {
-			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
-			return;
+          if (ex instanceof HttpRedirectException) {
+            HttpRedirectException hre = (HttpRedirectException) ex;
+            res.sendRedirect(hre.getLocation());
+          } else {
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+          }
+          return;
 		}
 
 		res.sendError(HttpServletResponse.SC_NOT_FOUND, "no matching products from any query handler");

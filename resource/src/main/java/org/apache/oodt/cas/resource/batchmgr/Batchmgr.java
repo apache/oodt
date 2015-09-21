@@ -27,6 +27,7 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 
 //java imports
 import java.net.URL;
+import java.util.List;
 
 /**
  * @author woollard
@@ -87,5 +88,11 @@ public interface Batchmgr {
      * @return
      */
     public String getExecutionNode(String jobId);
+    
+    /**
+     * Get a list of the ids of all jobs that are executing on the given node. 
+     * @return A list of ids of jobs on the given node
+     */
+    public List getJobsOnNode(String nodeId);
 
 }

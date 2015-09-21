@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE.txt file distributed with this work for
@@ -20,10 +20,9 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.10-SNAPSHOT</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
-  <groupId>org.apache.oodt</groupId>
   <artifactId>pcs-services</artifactId>
   <packaging>war</packaging>
   <name>OODT Process Control System JAX-RS service layer</name>
@@ -33,25 +32,76 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>pcs-core</artifactId>
-      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>net.sf.json-lib</groupId>
       <artifactId>json-lib</artifactId>
-      <version>2.3</version>
       <classifier>jdk15</classifier>
     </dependency>
     <dependency>
-       <groupId>servletapi</groupId>
-       <artifactId>servletapi</artifactId>
-       <version>2.4</version>
-       <scope>provided</scope>
+      <groupId>servletapi</groupId>
+      <artifactId>servletapi</artifactId>
+      <scope>provided</scope>
     </dependency>
-   <dependency>
+    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>2.6.0</version>
-   </dependency>
+    </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <supportedProjectTypes>
+            <supportedProjectType>jar</supportedProjectType>
+            <supportedProjectType>bundle</supportedProjectType>
+            <supportedProjectType>war</supportedProjectType>
+          </supportedProjectTypes>
+          <instructions>
+            <Bundle-Name>${project.artifactId}</Bundle-Name>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+            <Export-Package>org.apache.oodt.pcs.services.*</Export-Package>
+            <Import-Package>*;resolution:=optional</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>create-osgi-bundles-from-dependencies</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>2.3.7</version>
+            <extensions>true</extensions>
+            <configuration>
+              <supportedProjectTypes>
+                <supportedProjectType>jar</supportedProjectType>
+                <supportedProjectType>bundle</supportedProjectType>
+                <supportedProjectType>war</supportedProjectType>
+              </supportedProjectTypes>
+              <instructions>
+                <Bundle-Name>${project.artifactId}</Bundle-Name>
+                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+                <Export-Package>org.apache.oodt.pcs.services.*</Export-Package>
+                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                <Embed-Transitive>true</Embed-Transitive>
+                <Import-Package>*;resolution:=optional</Import-Package>
+              </instructions>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

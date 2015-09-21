@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.10-SNAPSHOT</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../../../core</relativePath>
   </parent>
   <artifactId>opsui-archetype</artifactId>
@@ -29,13 +29,6 @@
   <name>OODT :: Archetypes :: OpsUI</name>
 
   <build>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.archetype</groupId>
-        <artifactId>archetype-packaging</artifactId>
-        <version>2.0-alpha-5</version>
-      </extension>
-    </extensions>
 
     <pluginManagement>
       <plugins>
@@ -46,5 +39,12 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.archetype</groupId>
+        <artifactId>archetype-packaging</artifactId>
+        <version>2.0-alpha-5</version>
+      </extension>
+    </extensions>
   </build>
 </project>
