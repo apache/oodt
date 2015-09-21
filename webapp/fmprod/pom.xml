@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one or more contributor
   license agreements.  See the NOTICE.txt file distributed with this work for
@@ -26,13 +26,94 @@
   <artifactId>cas-product</artifactId>
   <packaging>war</packaging>
   <name>CAS Product Server Web Application</name>
-  <description>
-    This project builds on top of the CAS file management component and exposes
+  <description>This project builds on top of the CAS file management component and exposes
     its underlying data delivery capabilities using the OODT ProductServer
     component. All-in-all, this project contributes an OODT LargeProductHandler
     component, that can be used to deliver and format a CAS product structure
-    into an OODT XML Query Result Set.
-  </description>
+    into an OODT XML Query Result Set.</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-filemgr</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-metadata</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-product</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-xmlquery</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <!--
+        Zip4j is released under the Apache License, Version 2.0
+        For reference, see: http://www.lingala.net/zip4j/about.php
+      -->
+      <groupId>net.lingala.zip4j</groupId>
+      <artifactId>zip4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-rs-extension-providers</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-local</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+    </dependency>
+  </dependencies>
   <build>
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
     <plugins>
@@ -61,9 +142,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptorRefs>
-            <descriptorRef>
-              jar-with-dependencies
-            </descriptorRef>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
         </configuration>
       </plugin>
@@ -73,117 +152,14 @@
           <systemProperties>
             <property>
               <name>java.util.logging.config.file</name>
-              <value>
-                ${basedir}/src/test/resources/test.logging.properties
-              </value>
+              <value>${basedir}/src/test/resources/test.logging.properties</value>
             </property>
           </systemProperties>
           <excludes>
-            <exclude>
-             org/apache/oodt/cas/product/service/resources/ResourceTestBase.java
-            </exclude>
+            <exclude>org/apache/oodt/cas/product/service/resources/ResourceTestBase.java</exclude>
           </excludes>
         </configuration>
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-filemgr</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-metadata</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-commons</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-product</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-xmlquery</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.2.5</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.4</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <!--
-        Zip4j is released under the Apache License, Version 2.0
-        For reference, see: http://www.lingala.net/zip4j/about.php
-      -->
-      <groupId>net.lingala.zip4j</groupId>
-      <artifactId>zip4j</artifactId>
-      <version>1.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.jettison</groupId>
-      <artifactId>jettison</artifactId>
-      <version>1.3.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-rs-extension-providers</artifactId>
-      <version>2.6.8</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>2.6.8</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-transports-local</artifactId>
-      <version>2.6.8</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.easymock</groupId>
-      <artifactId>easymock</artifactId>
-      <version>3.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>xmlunit</groupId>
-      <artifactId>xmlunit</artifactId>
-      <version>1.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.velocity</groupId>
-      <artifactId>velocity</artifactId>
-      <version>1.7</version>
-    </dependency>
-  </dependencies>
 </project>
