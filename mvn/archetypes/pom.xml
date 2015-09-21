@@ -26,9 +26,9 @@
   </parent>
 
   <artifactId>archetypes</artifactId>
+  <packaging>pom</packaging>
   <name>OODT :: Archetypes</name>
   <description>Ways to quickly get started with some of OODT's components</description>
-  <packaging>pom</packaging>
 
   <modules>
     <module>opsui</module>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE.txt file distributed with this work for
@@ -27,44 +27,89 @@ the License.
   <packaging>war</packaging>
   <name>CAS Curation Web Services</name>
   <description>Services for ingesting files into the file manager and iteratively extracting metadata.</description>
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-filemgr</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-sso</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-metadata</artifactId>
+      <type>jar</type>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.json-lib</groupId>
+      <artifactId>json-lib</artifactId>
+      <classifier>jdk15</classifier>
+    </dependency>
+  </dependencies>
   <build>
-        <resources>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <filtering>false</filtering>
-                <directory>src/test/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-        </testResources>  
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>src/test/java</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
     <plugins>
-		<plugin>
-		    <groupId>org.apache.tomcat.maven</groupId>
-		    <artifactId>tomcat7-maven-plugin</artifactId>
-		    <version>2.2</version>
-		    <configuration>
-		        <port>8181</port>
-		        <systemProperties>
-		            <CATALINA_OPTS>-Djava.awt.headless=true -Dfile.encoding=UTF-8
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <port>8181</port>
+          <systemProperties>
+            <CATALINA_OPTS>-Djava.awt.headless=true -Dfile.encoding=UTF-8
 		                            -server -Xms1536m -Xmx1536m
 		                            -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m
 		                            -XX:MaxPermSize=512m -XX:+DisableExplicitGC
@@ -72,13 +117,12 @@ the License.
 		                            -XX:+CMSIncrementalMode
 		                            -XX:+CMSIncrementalPacing
 		                            -XX:CMSIncrementalDutyCycleMin=0
-		                            -XX:-TraceClassUnloading
-		            </CATALINA_OPTS>
-		        </systemProperties>
-		        <contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
-		        <path>/${project.build.finalName}</path>  
-		    </configuration>	    
-		</plugin>    
+		                            -XX:-TraceClassUnloading</CATALINA_OPTS>
+          </systemProperties>
+          <contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
+          <path>/${project.build.finalName}</path>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <profiles>
@@ -99,68 +143,16 @@ the License.
             </configuration>
             <executions>
               <execution>
-                <phase>verify</phase>
                 <goals>
                   <goal>check</goal>
                 </goals>
+                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
         </plugins>
       </build>
     </profile>
-  </profiles>  
-  <dependencies>
-    <dependency>
-       <groupId>javax.servlet</groupId>
-       <artifactId>servlet-api</artifactId>
-       <version>2.4</version>
-       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-filemgr</artifactId>
-      <version>${project.parent.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>oodt-sso</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oodt</groupId>
-      <artifactId>cas-metadata</artifactId>
-      <version>${project.parent.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>      
-      <type>jar</type>
-    </dependency>
-   <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>2.6.0</version>
-   </dependency>
-   <dependency>
-      <groupId>org.reflections</groupId>
-      <artifactId>reflections</artifactId>
-      <version>0.9.9-RC1</version>
-     </dependency>   
-	<dependency>
-	    <groupId>net.sf.json-lib</groupId>
-	    <artifactId>json-lib</artifactId>
-	    <version>2.4</version>
-	    <classifier>jdk15</classifier>
-	</dependency>     
-  </dependencies>
+  </profiles>
 
 </project>
