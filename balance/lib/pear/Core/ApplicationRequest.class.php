@@ -78,7 +78,7 @@ class Org_Apache_Oodt_Balance_Core_ApplicationRequest {
 	
 	protected function processAsView() {
 		// Determine the view to use
-		list($thePage) = explode('index.php',$this->uri);
+		list($thePage) = explode('index.php', parse_url($this->uri, PHP_URL_PATH)); // we only care about URL path info
 		$thePage = ltrim($thePage,'/');
 
 		if ($thePage == '') { $thePage = 'index'; }	
@@ -100,7 +100,9 @@ class Org_Apache_Oodt_Balance_Core_ApplicationRequest {
 		// directory, chop off the last segment and try again. Add the chopped
 		// segment to the "segments" array since it is likely a parameter.
 		$partCount = count($parts);
-		while ($partCount > 0) {
+
+		// check for view at least once
+		do {
 			$testPath    = implode('/',$parts);
 			$homeTest    = (($this->isModule) ? "{$this->modulePath}/views" : $this->config['views_dir']) . '/' . $testPath . '.php';
 			$homeIdxTest = (($this->isModule) ? "{$this->modulePath}/views" : $this->config['views_dir']) . '/' . $testPath . '/index.php';
@@ -119,7 +121,7 @@ class Org_Apache_Oodt_Balance_Core_ApplicationRequest {
 			$this->segments[] = $parts[$partCount - 1];
 			array_pop($parts);
 			$partCount--;
-		}
+		} while ($partCount > 0);
 		
 		// If no view has been found by this point, display a 404 message
 		if (!$this->viewPath) {

@@ -22,7 +22,6 @@ package org.apache.oodt.pcs.opsui;
 import org.apache.oodt.pcs.opsui.config.ConfigPage;
 import org.apache.oodt.pcs.opsui.status.StatusPage;
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.Link;
 
@@ -89,6 +88,14 @@ public class HomePage extends OPSUIWebPage {
         params.add("tab", "File Manager");
         setResponsePage(ConfigPage.class, params);  
       }
-  });    
+  });   
+    
+    add(new Link("curate_link"){
+      @Override
+      public void onClick() {
+        setResponsePage(WorkbenchPage.class);
+      }
+    });
+    
   }
 }

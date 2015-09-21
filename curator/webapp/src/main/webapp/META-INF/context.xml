@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<Context path="/cas-curator">
+
+    <Parameter name="org.apache.oodt.cas.curator.projectName"
+        value="OODT"/>
+	    
+	<Parameter name="org.apache.oodt.security.sso.implClass"
+	          value="org.apache.oodt.security.sso.DummyImpl"/>
+	          
+    <Parameter name="curator.homepage" value="org.apache.oodt.cas.curation.workbench.WorkbenchPage"/>	
+
+    <!-- switch to edrn to see the NCI Early Detection Research Network
+         curator skin
+     -->
+    <Parameter name="org.apache.oodt.cas.curator.skin"
+        value=""/>
+            
+    <!--  needed by Curation Services -->		   
+
+    <Parameter name="org.apache.oodt.cas.curator.metExtractorConf.uploadPath"
+        value="[OODT_HOME]/extractors" />
+
+    <Parameter name="org.apache.oodt.cas.curator.dataDefinition.uploadPath"
+        value="[FILEMGR_HOME]/policy" />
+        
+    <Parameter name="org.apache.oodt.cas.curator.stagingAreaPath"
+        value="[OODT_HOME]/data/staging"/>
+    
+    <Parameter name="org.apache.oodt.cas.curator.metAreaPath"
+        value="[OODT_HOME]/data/met"/>
+    
+    <Parameter name="org.apache.oodt.cas.curator.fmProps"
+        value="[FILEMGR_HOME]/etc/filemgr.properties"/>
+    
+    <Parameter name="org.apache.oodt.cas.curator.metExtension"
+        value=".met"/>
+        
+    <Parameter name="org.apache.oodt.cas.fm.url"
+        value="[FILEMGR_URL]"/>
+    
+    <Parameter name="org.apache.oodt.cas.curator.catalogFactoryClass" 
+               value="org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory" />
+
+</Context>

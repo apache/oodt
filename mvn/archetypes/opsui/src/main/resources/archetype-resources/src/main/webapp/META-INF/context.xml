@@ -49,4 +49,30 @@ the License.
 	
 	<Parameter name="opsui.skin" value=""/>
 	<Parameter name="opsui.homepage" value="org.apache.oodt.pcs.opsui.HomePage"/>   
+
+    <!--  needed by Curation Services -->          
+    <Parameter name="org.apache.oodt.cas.curator.metExtractorConf.uploadPath"
+        value="[OODT_HOME]/extractors" />
+
+    <Parameter name="org.apache.oodt.cas.curator.dataDefinition.uploadPath"
+        value="[FILEMGR_HOME]/policy" />
+        
+    <Parameter name="org.apache.oodt.cas.curator.stagingAreaPath"
+        value="[OODT_HOME]/data/staging"/>
+    
+    <Parameter name="org.apache.oodt.cas.curator.metAreaPath"
+        value="[OODT_HOME]/data/met"/>
+    
+    <Parameter name="org.apache.oodt.cas.curator.fmProps"
+        value="[FILEMGR_HOME]/etc/filemgr.properties"/>
+    
+    <Parameter name="org.apache.oodt.cas.curator.metExtension"
+        value=".met"/>
+
+    <Parameter name="org.apache.oodt.cas.fm.url"
+        value="[FILEMGR_URL]"/>
+   
+    <Parameter name="org.apache.oodt.cas.curator.catalogFactoryClass" 
+               value="org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory" />
+
 </Context>

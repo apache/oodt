@@ -61,6 +61,7 @@ case "$1" in
   stop)
         echo -n "Shutting down cas workflow manager: "
         kill `cat ${RUN_HOME}/cas.workflow.pid`
+        rm -f ${RUN_HOME}/cas.workflow.pid
         echo "OK"
         ;;
   restart)
