@@ -40,8 +40,13 @@ import javax.naming.OperationNotSupportedException;
  * @author Kelly
  * @version $Revision: 1.1 $
  */
-class TestContext implements Context {
-	/**
+public class TestContext implements Context {
+
+
+  	public TestContext() {
+  	}
+
+  /**
 	 * Creates a new <code>TestContext</code> instance.
 	 *
 	 * @param prefix What every name must start with.
