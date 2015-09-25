@@ -120,6 +120,7 @@ public class DBMSExecutor {
 
   }
 
+  @SuppressWarnings("unchecked")
   private Profile toProfile(ResultSet rs, Mapping map, String resLocationSpec) {
     Profile profile = new Profile();
     ResourceAttributes resAttr = profile.getResourceAttributes();

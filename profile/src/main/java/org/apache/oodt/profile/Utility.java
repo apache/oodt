@@ -16,17 +16,22 @@
 package org.apache.oodt.profile;
 
 import org.apache.oodt.commons.Configuration;
+
 import java.io.IOException;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Property;
+
 import java.util.Iterator;
 import java.util.Collection;
-import com.hp.hpl.jena.rdf.model.Bag;
-import com.hp.hpl.jena.rdf.model.Seq;
+
+import org.apache.jena.rdf.model.Bag;
+import org.apache.jena.rdf.model.Seq;
+
 import java.util.List;
 import java.net.URI;
 
@@ -52,10 +57,10 @@ class Utility {
 
 		Object obj;
 		if (value instanceof Collection) {
-			Collection collection = (Collection) value;
+			Collection<?> collection = (Collection<?>) value;
 			if (collection.isEmpty()) return;
 			Bag bag = model.createBag(uri + "_" + property.getLocalName() + "_bag");
-			for (Iterator i = collection.iterator(); i.hasNext();)
+			for (Iterator<?> i = collection.iterator(); i.hasNext();)
 				bag.add(i.next());
 			resource.addProperty(property, bag);
 			obj = bag;
@@ -79,18 +84,18 @@ class Utility {
 		addPotentiallyNullReifiedStatement(reification, edmParent, profAttr.getParent());
 		addPotentiallyNullReifiedStatement(reification, edmRegAuth, profAttr.getRegAuthority());
 
-		List children = profAttr.getChildren();
+		List<?> children = profAttr.getChildren();
 		if (!children.isEmpty()) {
 			Bag bag = model.createBag(uri + "_" + property.getLocalName() + "_childrenBag");
-			for (Iterator i = children.iterator(); i.hasNext();)
+			for (Iterator<?> i = children.iterator(); i.hasNext();)
 				bag.add(i.next());
 			reification.addProperty(edmChild, bag);
 		}
 
-		List revNotes = profAttr.getRevisionNotes();
+		List<?> revNotes = profAttr.getRevisionNotes();
 		if (!revNotes.isEmpty()) {
 			Seq seq = model.createSeq(uri + "_" + property.getLocalName() + "_revNotesSeq");
-			for (Iterator i = revNotes.iterator(); i.hasNext();)
+			for (Iterator<?> i = revNotes.iterator(); i.hasNext();)
 				seq.add(i.next());
 			reification.addProperty(edmRevNote, seq);
 		}
@@ -169,7 +174,8 @@ class Utility {
 	 */
 	static {
 		try {
-			Configuration config = Configuration.getConfiguration();
+			@SuppressWarnings("unused")
+      Configuration config = Configuration.getConfiguration();
 			String profNS = System.getProperty("jpl.rdf.ns", "http://oodt.jpl.nasa.gov/grid-profile/rdfs/prof.rdf");
 			Model model = ModelFactory.createDefaultModel();
 

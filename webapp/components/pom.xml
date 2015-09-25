@@ -21,13 +21,11 @@ the License.
     <parent>
         <groupId>org.apache.oodt</groupId>
         <artifactId>oodt-core</artifactId>
-        <version>0.10-SNAPSHOT</version>
+        <version>0.11-SNAPSHOT</version>
         <relativePath>../../core/pom.xml</relativePath>
     </parent>
-	<groupId>org.apache.oodt</groupId>
 	<artifactId>oodt-webapp-components</artifactId>
 	<packaging>jar</packaging>
-	<version>0.10-SNAPSHOT</version>
 	<name>OODT Wicket Web Components</name>
 	<dependencies>
 		<dependency>
@@ -38,12 +36,12 @@ the License.
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>cas-filemgr</artifactId>
-		  <version>0.10-SNAPSHOT</version>
+		  <version>0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.apache.oodt</groupId>
 		  <artifactId>cas-workflow</artifactId>
-		  <version>0.10-SNAPSHOT</version>
+		  <version>0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>	
 		  <groupId>org.apache.oodt</groupId>
@@ -72,6 +70,11 @@ the License.
 			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
+	   <dependency>
+	      <groupId>org.reflections</groupId>
+	      <artifactId>reflections</artifactId>
+	      <version>0.9.9-RC1</version>
+	   </dependency>		
 	</dependencies>
         <profiles>
             <profile>
@@ -97,6 +100,16 @@ the License.
                                 <excludes>
                                     <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/workflow/instance/prototype.js</exclude>
                                     <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/workflow/instance/progress.js</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/src/jquery*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-treeview/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-treeview/demo/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-treeview/lib/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-ui/*</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/jquery-ui/css/smoothness/jquery-ui-1.7.2.custom.css</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/src/MIT-License.txt</exclude>
+					                <exclude>webapp/components/src/main/java/org/apache/oodt/cas/webcomponents/curation/**/media/Bach-SuiteNo2.mp3</exclude>
                                 </excludes>
                             </configuration>
                         </plugin>

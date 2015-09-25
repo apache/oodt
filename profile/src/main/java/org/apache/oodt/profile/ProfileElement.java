@@ -18,8 +18,9 @@
 
 package org.apache.oodt.profile;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
+
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.oodt.commons.util.Documentable;
 import org.apache.oodt.commons.util.XML;
 import org.w3c.dom.DOMException;
@@ -42,7 +44,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Kelly
  */
-public abstract class ProfileElement implements Serializable, Cloneable, Comparable, Documentable {
+public abstract class ProfileElement implements Serializable, Cloneable, Comparable<Object>, Documentable {
 	/**
 	 * Create a profile element from the given XML node.
 	 *
@@ -56,7 +58,7 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 		String desc = null;
 		String type = null;
 		String unit = null;
-		List synonyms = new ArrayList();
+		List<String> synonyms = new ArrayList<String>();
 		boolean obligation = false;
 		int maxOccurrence = 0;
 		String comments = null;
@@ -65,7 +67,7 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 		String min = "0.0", max = "0.0";
 		boolean gotMin = false;
 		boolean gotMax = false;
-		List values = new ArrayList();
+		List<String> values = new ArrayList<String>();
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node node = children.item(i);
 			if ("elemId".equals(node.getNodeName()))
@@ -121,7 +123,7 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 */
 	protected ProfileElement(Profile profile) {
 		this.profile = profile;
-		synonyms = new ArrayList();
+		synonyms = new ArrayList<Object>();
 	}
 
 	/**
@@ -138,7 +140,7 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 * @param maxOccurrence Maximum number of occurrences of this element.
 	 * @param comments Any comments about this element.
 	 */
-	protected ProfileElement(Profile profile, String name, String id, String desc, String type, String unit, List synonyms,
+	protected ProfileElement(Profile profile, String name, String id, String desc, String type, String unit, List<?> synonyms,
 		boolean obligation, int maxOccurrence, String comments) {
 		this.profile = profile;
 		this.name = name;
@@ -496,7 +498,7 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	protected String unit;
 
 	/** My synonyms. */
-	protected List synonyms;
+	protected List<?> synonyms;
 
 	/** My obligation. */
 	protected boolean obligation;
@@ -522,9 +524,9 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 * @param elements Profile elements.
 	 * @return Profiles that own those elements.
 	 */
-	public static Set profiles(Set elements) {
-		Set rc = new HashSet();
-		for (Iterator i = elements.iterator(); i.hasNext();) {
+	public static Set<Profile> profiles(Set<?> elements) {
+		Set<Profile> rc = new HashSet<Profile>();
+		for (Iterator<?> i = elements.iterator(); i.hasNext();) {
 			ProfileElement element = (ProfileElement) i.next();
 			rc.add(element.getProfile());
 		}
@@ -539,9 +541,9 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 * @param elements Profile elements.
 	 * @return Members of <var>elements</var> that are owned by members of <var>profiles</var>.
 	 */
-	public static Set elements(Set profiles, Set elements) {
-		Set rc = new HashSet();
-		for (Iterator i = elements.iterator(); i.hasNext();) {
+	public static Set<ProfileElement> elements(Set<?> profiles, Set<?> elements) {
+		Set<ProfileElement> rc = new HashSet<ProfileElement>();
+		for (Iterator<?> i = elements.iterator(); i.hasNext();) {
 			ProfileElement element = (ProfileElement) i.next();
 			if (profiles.contains(element.getProfile()))
 				rc.add(element);

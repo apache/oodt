@@ -64,7 +64,7 @@ the License.
     <dependency>
       <groupId>org.apache.oodt</groupId>
       <artifactId>pcs-opsui</artifactId>
-      <version>0.4-SNAPSHOT</version>
+      <version>0.10</version>
       <type>war</type>
     </dependency>
   </dependencies>

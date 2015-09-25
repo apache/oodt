@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.resource.scheduler;
 
 //JDKimports
-import java.lang.Integer;
+import java.lang.Double;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,7 +63,7 @@ public class LRUScheduler implements Scheduler {
     private JobQueue myJobQueue;
 
     /* our wait time between checking the queue */
-    private int waitTime = -1;
+    private double waitTime = -1;
 
     public LRUScheduler(Monitor m, Batchmgr b, JobQueue q, LRUQueueManager qm) {
 
@@ -74,7 +74,7 @@ public class LRUScheduler implements Scheduler {
 
         String waitStr = System.getProperty(
                 "org.apache.oodt.cas.resource.scheduler.wait.seconds", "20");
-        waitTime = Integer.parseInt(waitStr);
+        waitTime = Double.parseDouble(waitStr);
     }
 
     /*
@@ -86,7 +86,8 @@ public class LRUScheduler implements Scheduler {
         for (;;) {
 
             try {
-                Thread.currentThread().sleep((long) waitTime * 1000);
+            	long sleepTime = (long)(waitTime * 1000.0);
+                Thread.currentThread().sleep(sleepTime);
             } catch (Exception ignore) {}
 
             if (!myJobQueue.isEmpty()) {
