@@ -24,7 +24,7 @@ import javax.naming.Binding;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import org.apache.oodt.commons.object.jndi.ObjectContext;
+
 import junit.framework.TestCase;
 
 /**
@@ -54,9 +54,9 @@ public class ObjectContextTest extends TestCase {
 		aliases.save(out, "Temporary properties");
 		out.close();
 
-		a1 = new TestContext("urn:a");
-		a2 = new TestContext("urn:a");
-		b = new TestContext("urn:b");
+		a1 = new TContext("urn:a");
+		a2 = new TContext("urn:a");
+		b = new TContext("urn:b");
 
 		oldValue = System.getProperty("org.apache.oodt.commons.object.jndi.aliases");
 		System.setProperty("org.apache.oodt.commons.object.jndi.aliases", aliasFile.toString());
@@ -184,13 +184,13 @@ public class ObjectContextTest extends TestCase {
 	}
 
 	/** First delegate context for "urn:a" namespace. */
-	private TestContext a1;
+	private TContext a1;
 
 	/** Second delegate context for "urn:a" namespace. */
-	private TestContext a2;
+	private TContext a2;
 
 	/** Delegate context for "urn:b" namespace. */
-	private TestContext b;
+	private TContext b;
 
 	/** Test subject: the object context. */
 	private ObjectContext context;
