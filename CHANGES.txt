@@ -8,6 +8,8 @@ Release 0.11 - Current Development
 
 * OODT-872 Upgrade Jena dependencies to org.apache.jena 3.0.0 (lewismc, mattmann)
 
+* OODT-882 Merge dependency update into master (magicaltrout)
+
 Release 0.10 - 08/30/2015
 
 * OODT-871 Issues with OODT 0.10 RC#1 (lewismc, mattmann)
