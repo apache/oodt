@@ -105,6 +105,11 @@ the License.
         <version>2.1</version>
       </dependency>
       <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.2.1</version>
+      </dependency>
+      <dependency>
         <groupId>commons-dbcp</groupId>
         <artifactId>commons-dbcp</artifactId>
         <version>1.2.1</version>
@@ -123,6 +128,11 @@ the License.
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>2.3</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.6</version>
       </dependency>
       <dependency>
         <groupId>commons-logging</groupId>
@@ -160,6 +170,12 @@ the License.
         <version>4.12</version>
       </dependency>
       <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>1.2.14</version>
@@ -178,6 +194,15 @@ the License.
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
         <version>3.2.0</version>
+      </dependency>
+      <dependency>
+        <!--
+          Zip4j is released under the Apache License, Version 2.0
+          For reference, see: http://www.lingala.net/zip4j/about.php
+        -->
+        <groupId>net.lingala.zip4j</groupId>
+        <artifactId>zip4j</artifactId>
+        <version>1.3.1</version>
       </dependency>
       <dependency>
         <groupId>net.sf.json-lib</groupId>
@@ -206,13 +231,9 @@ the License.
         <version>2.0.1</version>
       </dependency>
       <dependency>
-        <!--
-          Zip4j is released under the Apache License, Version 2.0
-          For reference, see: http://www.lingala.net/zip4j/about.php
-        -->
-        <groupId>net.lingala.zip4j</groupId>
-        <artifactId>zip4j</artifactId>
-        <version>1.3.1</version>
+        <groupId>net.sf.saxon</groupId>
+        <artifactId>saxon-dom</artifactId>
+        <version>8.7</version>
       </dependency>
       <dependency>
         <groupId>org.apache.cxf</groupId>
@@ -278,6 +299,16 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
+        <artifactId>cas-crawler</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.oodt</groupId>
+        <artifactId>cas-filemgr</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.oodt</groupId>
         <artifactId>cas-filemgr</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
@@ -293,9 +324,14 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
-        <artifactId>cas-product</artifactId>
-        <type>war</type>
+        <artifactId>cas-metadata</artifactId>
         <version>${project.parent.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.oodt</groupId>
+        <artifactId>cas-product</artifactId>
+        <version>${project.parent.version}</version>
+        <type>war</type>
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
@@ -314,9 +350,19 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
+        <artifactId>cas-workflow</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.oodt</groupId>
         <artifactId>curator-services</artifactId>
         <version>${project.parent.version}</version>
         <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.oodt</groupId>
+        <artifactId>oodt-commons</artifactId>
+        <version>${project.parent.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
@@ -394,6 +440,11 @@ the License.
         <version>1.7</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.velocity</groupId>
+        <artifactId>velocity</artifactId>
+        <version>1.7</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.wicket</groupId>
         <artifactId>wicket</artifactId>
         <version>${wicket.version}</version>
@@ -407,6 +458,12 @@ the License.
         <groupId>org.codehaus.jettison</groupId>
         <artifactId>jettison</artifactId>
         <version>1.3.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.easymock</groupId>
+        <artifactId>easymock</artifactId>
+        <version>3.4</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.easymock</groupId>
@@ -444,13 +501,13 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-util</artifactId>
+        <artifactId>jetty-management</artifactId>
         <version>${jetty.version}</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-management</artifactId>
+        <artifactId>jetty-util</artifactId>
         <version>${jetty.version}</version>
         <scope>provided</scope>
       </dependency>
@@ -478,11 +535,6 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.7.12</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j</artifactId>
         <version>1.7.12</version>
       </dependency>
@@ -490,6 +542,16 @@ the License.
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
         <version>1.7.12</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>1.7.12</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>2.5.4</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -503,13 +565,13 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>spring-core</artifactId>
+        <artifactId>spring-context</artifactId>
         <version>2.5.4</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>spring-hibernate3</artifactId>
-        <version>2.0.8</version>
+        <artifactId>spring-core</artifactId>
+        <version>2.5.4</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
