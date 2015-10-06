@@ -102,11 +102,6 @@ the License.
       <dependency>
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
-        <version>2.1</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-collections</groupId>
-        <artifactId>commons-collections</artifactId>
         <version>3.2.1</version>
       </dependency>
       <dependency>
@@ -123,11 +118,6 @@ the License.
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>1.4</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-lang</groupId>
-        <artifactId>commons-lang</artifactId>
-        <version>2.3</version>
       </dependency>
       <dependency>
         <groupId>commons-lang</groupId>
@@ -236,11 +226,6 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-        <version>2.6.8</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-rt-rs-extension-providers</artifactId>
         <version>2.6.8</version>
       </dependency>
@@ -293,27 +278,7 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
-        <artifactId>cas-crawler</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
         <artifactId>cas-filemgr</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
-        <artifactId>cas-filemgr</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
-        <artifactId>cas-metadata</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
-        <artifactId>cas-metadata</artifactId>
         <version>${project.parent.version}</version>
       </dependency>
       <dependency>
@@ -344,19 +309,9 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
-        <artifactId>cas-workflow</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
         <artifactId>curator-services</artifactId>
         <version>${project.parent.version}</version>
         <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.oodt</groupId>
-        <artifactId>oodt-commons</artifactId>
-        <version>${project.parent.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.oodt</groupId>
@@ -434,11 +389,6 @@ the License.
         <version>1.7</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.velocity</groupId>
-        <artifactId>velocity</artifactId>
-        <version>1.7</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.wicket</groupId>
         <artifactId>wicket</artifactId>
         <version>${wicket.version}</version>
@@ -457,12 +407,6 @@ the License.
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
         <version>3.4</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.easymock</groupId>
-        <artifactId>easymock</artifactId>
-        <version>3.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -549,16 +493,6 @@ the License.
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>spring-beans</artifactId>
-        <version>2.5.4</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-        <version>2.5.4</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
         <version>2.5.4</version>
       </dependency>
@@ -566,11 +500,6 @@ the License.
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
         <version>2.5.4</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-hibernate3</artifactId>
-        <version>2.0.8</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
