@@ -23,7 +23,6 @@ import java.util.Map;
 //OODT imports
 import org.apache.oodt.cas.catalog.exception.QueryServiceException;
 import org.apache.oodt.cas.catalog.page.IngestReceipt;
-import org.apache.oodt.cas.catalog.page.TransactionReceipt;
 import org.apache.oodt.cas.catalog.query.QueryExpression;
 import org.apache.oodt.cas.catalog.term.TermBucket;
 

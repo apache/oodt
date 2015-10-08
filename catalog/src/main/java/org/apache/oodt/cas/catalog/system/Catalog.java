@@ -16,35 +16,26 @@
  */
 package org.apache.oodt.cas.catalog.system;
 
-//JDK imports
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 //OODT imports
 import org.apache.oodt.cas.catalog.exception.CatalogDictionaryException;
 import org.apache.oodt.cas.catalog.exception.CatalogException;
 import org.apache.oodt.cas.catalog.exception.CatalogIndexException;
-import org.apache.oodt.cas.catalog.exception.IngestServiceException;
 import org.apache.oodt.cas.catalog.page.CatalogReceipt;
 import org.apache.oodt.cas.catalog.page.IndexPager;
 import org.apache.oodt.cas.catalog.page.IngestReceipt;
 import org.apache.oodt.cas.catalog.query.QueryExpression;
 import org.apache.oodt.cas.catalog.struct.Dictionary;
-import org.apache.oodt.cas.catalog.struct.Index;
-import org.apache.oodt.cas.catalog.struct.IngestService;
-import org.apache.oodt.cas.catalog.struct.QueryService;
-import org.apache.oodt.cas.catalog.struct.TransactionId;
-import org.apache.oodt.cas.catalog.struct.TransactionIdFactory;
+import org.apache.oodt.cas.catalog.struct.*;
 import org.apache.oodt.cas.catalog.term.Term;
 import org.apache.oodt.cas.catalog.term.TermBucket;
 import org.apache.oodt.cas.metadata.Metadata;
+
+//JDK imports
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * @author bfoster
@@ -146,12 +137,11 @@ public class Catalog {
 	
 	/**
 	 * 
-	 * @param transactionId
 	 * @param metadata
 	 * @return TransactionId param if used by underlying catalog, otherwise
 	 * the TransactionId generated and used by underlying catalog.  if no
 	 * TermBuckets where created from the Metadata then null is returned
-	 * @throws IngestServiceException
+	 * @throws CatalogException
 	 */
 	public CatalogReceipt ingest(Metadata metadata) throws CatalogException {
 		try {

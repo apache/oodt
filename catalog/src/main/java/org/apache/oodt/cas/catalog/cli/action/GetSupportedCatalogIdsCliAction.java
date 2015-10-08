@@ -17,7 +17,7 @@
 package org.apache.oodt.cas.catalog.cli.action;
 
 //OODT imports
-import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
+//import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 
 /**

@@ -17,19 +17,8 @@
 package org.apache.oodt.cas.catalog.server.channel;
 
 //JDK imports
-import java.net.URL;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
-//OODT imports
-import org.apache.oodt.cas.catalog.exception.CatalogServiceException;
 import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
-import org.apache.oodt.cas.catalog.page.CatalogReceipt;
-import org.apache.oodt.cas.catalog.page.Page;
-import org.apache.oodt.cas.catalog.page.PageInfo;
-import org.apache.oodt.cas.catalog.page.QueryPager;
-import org.apache.oodt.cas.catalog.page.TransactionReceipt;
+import org.apache.oodt.cas.catalog.page.*;
 import org.apache.oodt.cas.catalog.query.QueryExpression;
 import org.apache.oodt.cas.catalog.struct.Dictionary;
 import org.apache.oodt.cas.catalog.struct.Index;
@@ -38,6 +27,13 @@ import org.apache.oodt.cas.catalog.system.Catalog;
 import org.apache.oodt.cas.catalog.system.CatalogService;
 import org.apache.oodt.cas.catalog.util.PluginURL;
 import org.apache.oodt.cas.metadata.Metadata;
+
+import java.net.URL;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
+//OODT imports
 
 /**
  * @author bfoster

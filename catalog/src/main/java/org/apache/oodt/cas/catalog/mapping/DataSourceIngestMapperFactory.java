@@ -19,9 +19,6 @@ package org.apache.oodt.cas.catalog.mapping;
 //Spring imports
 import org.springframework.beans.factory.annotation.Required;
 
-//OODT imports
-import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
-
 /**
  * @author bfoster
  * @version $Revision$

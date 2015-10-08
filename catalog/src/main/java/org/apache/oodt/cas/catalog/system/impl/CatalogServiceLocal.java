@@ -16,38 +16,13 @@
  */
 package org.apache.oodt.cas.catalog.system.impl;
 
-//JDK imports
-import java.io.File;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Vector;
-import java.util.Map.Entry;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 //OODT imports
 import org.apache.oodt.cas.catalog.exception.CatalogDictionaryException;
 import org.apache.oodt.cas.catalog.exception.CatalogException;
-import org.apache.oodt.cas.catalog.exception.CatalogIndexException;
 import org.apache.oodt.cas.catalog.exception.CatalogServiceException;
 import org.apache.oodt.cas.catalog.mapping.IngestMapper;
 import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
-import org.apache.oodt.cas.catalog.page.CatalogReceipt;
-import org.apache.oodt.cas.catalog.page.Page;
-import org.apache.oodt.cas.catalog.page.PageInfo;
-import org.apache.oodt.cas.catalog.page.ProcessedPageInfo;
-import org.apache.oodt.cas.catalog.page.QueryPager;
-import org.apache.oodt.cas.catalog.page.TransactionReceipt;
+import org.apache.oodt.cas.catalog.page.*;
 import org.apache.oodt.cas.catalog.query.QueryExpression;
 import org.apache.oodt.cas.catalog.query.QueryLogicalGroup;
 import org.apache.oodt.cas.catalog.query.WrapperQueryExpression;
@@ -61,6 +36,17 @@ import org.apache.oodt.cas.catalog.system.CatalogService;
 import org.apache.oodt.cas.catalog.util.PluginURL;
 import org.apache.oodt.cas.catalog.util.QueryUtils;
 import org.apache.oodt.cas.metadata.Metadata;
+
+//JDK imports
+import java.io.File;
+import java.net.URL;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * @author bfoster
