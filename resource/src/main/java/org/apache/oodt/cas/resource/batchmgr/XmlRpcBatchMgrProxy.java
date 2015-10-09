@@ -18,21 +18,21 @@
 
 package org.apache.oodt.cas.resource.batchmgr;
 
+//OODT imports
+import org.apache.oodt.cas.resource.structs.JobSpec;
+import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
+
+//APACHE imports
+import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.XmlRpcException;
+
 //JDK imports
 import java.io.IOException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OODT imports
-import org.apache.oodt.cas.resource.structs.Job;
-import org.apache.oodt.cas.resource.structs.JobSpec;
-import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
-import org.apache.oodt.cas.resource.structs.ResourceNode;
-
-//APACHE imports
-import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
 
 /**
  * 
@@ -42,8 +42,8 @@ import org.apache.xmlrpc.XmlRpcException;
  * <p>
  * A {@link Runnable} proxy to an XmlRpcBatchStub that allows the call to the
  * XmlRpcBatchStub to be asynchronous rather than synchronous. This allows a
- * {@link Scheduler} that calls the {@link XmlRpcBatchMgr} to not be stuck
- * waiting for each job to complete before scheduling the next {@link Job}
+ * {@link org.apache.oodt.cas.resource.scheduler.Scheduler} that calls the {@link XmlRpcBatchMgr} to not be stuck
+ * waiting for each job to complete before scheduling the next {@link org.apache.oodt.cas.resource.structs.Job}
  * </p>.
  */
 public class XmlRpcBatchMgrProxy extends Thread implements Runnable {

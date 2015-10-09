@@ -20,7 +20,7 @@ package org.apache.oodt.cas.resource.cli.action;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 
 /**
- * A {@link CmdLineAction} which returns name (all nodes will be displayed in alphabetical order), 
+ * A {@link org.apache.oodt.cas.cli.action.CmdLineAction} which returns name (all nodes will be displayed in alphabetical order),
  * load and capacity of all nodes, in addition to what queues that node draws from.
  * 
  */

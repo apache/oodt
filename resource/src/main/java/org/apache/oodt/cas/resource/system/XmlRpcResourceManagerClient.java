@@ -18,36 +18,32 @@
 
 package org.apache.oodt.cas.resource.system;
 
-//APACHE imports
-import org.apache.xmlrpc.CommonsXmlRpcTransportFactory;
-import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
 
 //OODTimports
 import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
-import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.JobStatus;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
-import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
-import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
-import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
-import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
-import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
+import org.apache.oodt.cas.resource.structs.exceptions.*;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 
+//APACHE imports
+import org.apache.xmlrpc.CommonsXmlRpcTransportFactory;
+import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.XmlRpcException;
+
 //JDK imports
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.FileInputStream;
-import java.io.File;
-import java.io.IOException;
+
 
 /**
  * @author mattmann
