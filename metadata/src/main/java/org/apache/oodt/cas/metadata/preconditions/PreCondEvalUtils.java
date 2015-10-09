@@ -19,16 +19,15 @@
 package org.apache.oodt.cas.metadata.preconditions;
 
 //JDK imports
+import org.springframework.context.ApplicationContext;
+
 import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //Spring imports
-import org.springframework.context.ApplicationContext;
 
-//OODT imports
-import org.apache.oodt.cas.metadata.MetExtractor; // for javadoc
 
 /**
  * 
@@ -54,12 +53,12 @@ public class PreCondEvalUtils implements PreConditionOperatorMetKeys {
     /**
      * Evaluates whether all preconditions pass or not
      * 
-     * @param preconditions
+     * @param preCondComparatorIds
      *            The String identifiers of the {@link PreConditionComparator}s
      *            in question
      * @param product
      *            the {@link File} to test the preconditions against to
-     *            determine whether or not the {@link MetExtractor} should be
+     *            determine whether or not the {@link org.apache.oodt.cas.metadata.MetExtractor} should be
      *            run or not.
      * @return True if all preconditions pass and false otherwise
      */

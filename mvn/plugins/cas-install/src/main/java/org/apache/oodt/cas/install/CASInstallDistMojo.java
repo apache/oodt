@@ -25,8 +25,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 //JDK imports
-import org.apache.oodt.cas.metadata.util.PathUtils;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -89,7 +87,7 @@ public class CASInstallDistMojo extends AbstractMojo {
     private File[] customLibs;
 
     /**
-     * Files to do dynamic {@link PathUtils#replaceEnvVariables(String)} on.
+     * Files to do dynamic {@link org.apache.oodt.cas.metadata.util.PathUtils#replaceEnvVariables(String)} on.
      * 
      * @parameter
      */

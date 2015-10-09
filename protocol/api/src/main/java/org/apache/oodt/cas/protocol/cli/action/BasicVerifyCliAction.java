@@ -20,12 +20,11 @@ package org.apache.oodt.cas.protocol.cli.action;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFactory;
-import org.apache.oodt.cas.protocol.system.ProtocolManager;
 import org.apache.oodt.cas.protocol.verify.ProtocolVerifier;
 
 /**
  * Action for determining whether a given {@link Protocol} or auto-determined
- * {@link Protocol} via {@link ProtocolManager} can connect and pass
+ * {@link Protocol} via {@link org.apache.oodt.cas.protocol.system.ProtocolManager} can connect and pass
  * verification of the given {@link Verifier} for given site.
  * 
  * @author bfoster (Brian Foster)
