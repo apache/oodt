@@ -16,17 +16,18 @@
  */
 package org.apache.oodt.cas.workflow.engine.processor;
 
+
+//OODT imports
+import org.apache.oodt.cas.workflow.engine.ChangeType;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+
 //JDK imports
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-//OODT imports
-import org.apache.oodt.cas.workflow.engine.ChangeType;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleStage;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 
 /**
  * 
@@ -343,14 +344,14 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
   }
 
   /**
-   * Evaluates whether or not this processor's {@link WorkflowLifecycleStage}
+   * Evaluates whether or not this processor's {@link org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleStage}
    * is in any of the provided category names.
    * 
    * @param categories The names of categories to check this processor's 
-   * {@link WorkflowLifecycleStage} against.
+   * {@link org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleStage} against.
    * 
    * @return True, if any of the category names provided is the name of
-   * this processor's internal {@link WorkflowLifecycleStage}, False otherwise.
+   * this processor's internal {@link org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleStage}, False otherwise.
    */
   public boolean isAnyCategory(String... categories) {
     for (String category : categories) {
@@ -433,10 +434,10 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
   /**
    * This is the core method of the WorkflowProcessor class in the new Wengine
    * style workflows. Instead of requiring that a processor actually walk
-   * through the underlying {@link Workflow}, these style WorkflowProcessors
+   * through the underlying {@link org.apache.oodt.cas.workflow.structs.Workflow}, these style WorkflowProcessors
    * actually require their implementing sub-classes to return the current set
    * of Runnable sub-processors (which could be tasks, conditions, even
-   * {@link Workflow}s themselves.
+   * {@link org.apache.oodt.cas.workflow.structs.Workflow}s themselves.
    * 
    * The Parallel sub-class returns a list of task or condition processors that
    * are able to run at a given time. The Sequential sub-class returns only a

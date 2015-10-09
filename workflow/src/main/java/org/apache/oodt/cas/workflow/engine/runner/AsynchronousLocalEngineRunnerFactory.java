@@ -16,10 +16,6 @@
  */
 package org.apache.oodt.cas.workflow.engine.runner;
 
-//OODT imports
-import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
-
 /**
  * A {@link EngineRunnerFactory} which creates
  * {@link AsynchronousLocalEngineRunner}s.
