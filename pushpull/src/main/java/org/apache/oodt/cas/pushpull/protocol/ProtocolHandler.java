@@ -21,27 +21,23 @@ package org.apache.oodt.cas.pushpull.protocol;
 import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFactory;
 import org.apache.oodt.cas.protocol.ProtocolFile;
-import org.apache.oodt.cas.pushpull.protocol.RemoteSiteFile;
-import org.apache.oodt.cas.pushpull.config.ProtocolInfo;
 import org.apache.oodt.cas.protocol.auth.BasicAuthentication;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
+import org.apache.oodt.cas.pushpull.config.ProtocolInfo;
 import org.apache.oodt.cas.pushpull.exceptions.RemoteConnectionException;
-
 
 //JDK imports
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  * This class is responsible for creating the appropriate Protocol for the given
@@ -59,9 +55,9 @@ import java.util.logging.Logger;
  */
 public class ProtocolHandler {
 
-  private final HashMap<URL, ProtocolFactory> urlAndProtocolFactory;
+  private final HashMap<URI, ProtocolFactory> urlAndProtocolFactory;
 
-  private final HashMap<URL, Protocol> reuseProtocols;
+  private final HashMap<URI, Protocol> reuseProtocols;
 
   private final HashMap<RemoteSiteFile, PagingInfo> pageInfos;
 
@@ -81,8 +77,8 @@ public class ProtocolHandler {
    */
   public ProtocolHandler(ProtocolInfo pi) {
     this.pi = pi;
-    urlAndProtocolFactory = new HashMap<URL, ProtocolFactory>();
-    reuseProtocols = new HashMap<URL, Protocol>();
+    urlAndProtocolFactory = new HashMap<URI, ProtocolFactory>();
+    reuseProtocols = new HashMap<URI, Protocol>();
     pageInfos = new HashMap<RemoteSiteFile, PagingInfo>();
     pathAndFileListMap = new HashMap<RemoteSiteFile, List<RemoteSiteFile>>();
   }
@@ -154,7 +150,7 @@ public class ProtocolHandler {
                         + remoteSite.getURL());
                 protocol = null;
               } else {
-                this.urlAndProtocolFactory.put(remoteSite.getURL(),
+                this.urlAndProtocolFactory.put(remoteSite.getURL().toURI(),
                     protocolFactory);
                 break;
               }
@@ -171,7 +167,11 @@ public class ProtocolHandler {
         connect(protocol = protocolFactory.newInstance(), remoteSite, false);
       }
       if (allowReuse)
-        this.reuseProtocols.put(remoteSite.getURL(), protocol);
+        try {
+          this.reuseProtocols.put(remoteSite.getURL().toURI(), protocol);
+        } catch (URISyntaxException e) {
+          LOG.log(Level.SEVERE, "Couildn't covert URL to URI Mesage: " + e.getMessage());
+        }
     }
     return protocol;
   }
@@ -515,8 +515,8 @@ public class ProtocolHandler {
    * @throws RemoteConnectionException
    */
   public void close() throws RemoteConnectionException {
-    Set<Entry<URL, Protocol>> entries = reuseProtocols.entrySet();
-    for (Entry<URL, Protocol> entry : entries) {
+    Set<Entry<URI, Protocol>> entries = reuseProtocols.entrySet();
+    for (Entry<URI, Protocol> entry : entries) {
       disconnect(entry.getValue());
     }
     this.reuseProtocols.clear();

@@ -104,8 +104,10 @@ public class RemoteSite {
             } catch (URISyntaxException e) {
                 LOG.log(Level.SEVERE, "Could not convert URL to URL: Message: "+e.getMessage());
             }
-        } else
+        } else {
             return false;
+        }
+        return false;
     }
 
     public String toString() {
