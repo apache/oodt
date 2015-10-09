@@ -18,7 +18,6 @@
 package org.apache.oodt.cas.webcomponents.filemgr.browser.metadata;
 
 //JDK imports
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 

@@ -17,19 +17,18 @@
 
 package org.apache.oodt.cas.resource.monitor.ganglia;
 
-//JDK imports
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-
 
 //OODT imports
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.monitor.MonitorFactory;
 import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator;
-import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
+
+//JDK imports
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 
 /**
  * @author rajith

@@ -17,13 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.structs;
 
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 //OODT imports
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.tika.Tika;
@@ -32,6 +25,10 @@ import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.mime.MimeTypesFactory;
+
+//JDK imports
+import java.io.File;
+import java.io.FileInputStream;
 
 /**
  * @author mattmann

@@ -18,14 +18,16 @@
 
 package org.apache.oodt.cas.pushpull.retrievalsystem;
 
-//JDK imports
-import static org.apache.oodt.cas.metadata.util.PathUtils.doDynamicReplacement;
+//OODT imports
+import org.apache.oodt.cas.pushpull.config.*;
+import org.apache.oodt.cas.pushpull.exceptions.ParserException;
+import org.apache.oodt.cas.pushpull.exceptions.RetrievalMethodException;
+import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
+import org.apache.oodt.cas.pushpull.objectfactory.PushPullObjectFactory;
+import org.apache.oodt.cas.pushpull.retrievalmethod.RetrievalMethod;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+//JDK imports
+import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -33,19 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-//OODT imports
-import org.apache.oodt.cas.pushpull.config.Config;
-import org.apache.oodt.cas.pushpull.config.DataFilesInfo;
-import org.apache.oodt.cas.pushpull.config.SiteInfo;
-import org.apache.oodt.cas.pushpull.config.PropFilesInfo;
-import org.apache.oodt.cas.pushpull.config.ProtocolInfo;
-import org.apache.oodt.cas.pushpull.exceptions.ParserException;
-import org.apache.oodt.cas.pushpull.exceptions.RetrievalMethodException;
-import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
-import org.apache.oodt.cas.pushpull.objectfactory.PushPullObjectFactory;
-import org.apache.oodt.cas.pushpull.retrievalmethod.RetrievalMethod;
-import org.apache.oodt.cas.pushpull.retrievalsystem.FileRetrievalSystem;
-import org.apache.oodt.commons.exec.ExecUtils;
 
 /**
  *

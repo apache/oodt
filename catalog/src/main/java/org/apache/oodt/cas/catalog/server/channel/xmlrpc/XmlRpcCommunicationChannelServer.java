@@ -35,8 +35,6 @@ import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Set;
 
-//OODT imports
-//APACHE imports
 
 /**
  * @author bfoster

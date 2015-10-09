@@ -27,13 +27,8 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 import java.net.URL;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-
-import org.apache.lucene.analysis.standard.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Query;
 
 public class CasDB {
 

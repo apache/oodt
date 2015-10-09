@@ -18,10 +18,12 @@
 package org.apache.oodt.cas.curation.service;
 
 //OODT imports
+import net.sf.json.JSONArray;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.curation.metadata.CuratorConfMetKeys;
 import org.apache.oodt.security.sso.SingleSignOn;
 
-//JDK imports
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -32,18 +34,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriInfo;
 
+//JDK imports
 //JAX-RS imports
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 //APACHE imports
-import org.apache.commons.lang.StringUtils;
 
 /**
  * 
@@ -97,7 +97,7 @@ public class CurationService extends HttpServlet implements CuratorConfMetKeys {
    * @param showFiles
    *          Whether or not to show {@link File#isFile()} files or not.
    * @return A String representation formatting using
-   *         {@link JSONObject#toString()}.
+   *         {@link net.sf.json.JSONObject#toString()}.
    */
   public String getDirectoryAreaAsJSON(String base, String path,
       boolean showFiles) {

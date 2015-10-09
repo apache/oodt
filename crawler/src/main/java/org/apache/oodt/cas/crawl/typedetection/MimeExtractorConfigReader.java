@@ -17,7 +17,6 @@
 package org.apache.oodt.cas.crawl.typedetection;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.filenaming.NamingConvention;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
 

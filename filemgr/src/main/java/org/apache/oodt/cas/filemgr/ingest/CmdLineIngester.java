@@ -19,7 +19,6 @@
 package org.apache.oodt.cas.filemgr.ingest;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.exceptions.IngestException;
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
@@ -31,7 +30,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
@@ -59,8 +57,8 @@ public class CmdLineIngester extends StdIngester {
 
     /**
      * @param args
-     * @throws IngestException
-     * @throws MalformedURLException
+     * @throws org.apache.oodt.cas.filemgr.structs.exceptions.IngestException
+     * @throws java.net.MalformedURLException
      */
     public static void main(String[] args) throws Exception {
         String usage = CmdLineIngester.class.getName()

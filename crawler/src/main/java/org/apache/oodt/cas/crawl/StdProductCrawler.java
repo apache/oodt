@@ -22,7 +22,6 @@ import org.apache.oodt.cas.metadata.extractors.MetReaderExtractor;
 
 //JDK imports
 import java.io.File;
-import java.util.logging.Level;
 
 /**
  * A generic Product Crawler for Products. The Crawler is given a root Product

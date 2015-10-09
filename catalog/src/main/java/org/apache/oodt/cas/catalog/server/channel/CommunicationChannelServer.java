@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-//OODT imports
-
 /**
  * @author bfoster
  * @version $Revision$

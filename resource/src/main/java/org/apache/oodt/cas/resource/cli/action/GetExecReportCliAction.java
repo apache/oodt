@@ -16,9 +16,6 @@
  */
 package org.apache.oodt.cas.resource.cli.action;
 
-//JDK imports
-import java.util.List;
-
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 

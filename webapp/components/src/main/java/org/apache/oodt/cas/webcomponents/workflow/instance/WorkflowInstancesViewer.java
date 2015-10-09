@@ -17,10 +17,6 @@
 
 package org.apache.oodt.cas.webcomponents.workflow.instance;
 
-import java.text.NumberFormat;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.webcomponents.workflow.WorkflowMgrConn;
 import org.apache.oodt.cas.webcomponents.workflow.pagination.WorkflowPagePaginator;
@@ -30,20 +26,21 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.wicket.IResourceListener;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.link.ResourceLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.util.value.ValueMap;
+
+import java.text.NumberFormat;
+import java.util.List;
 
 /**
  * 

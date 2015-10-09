@@ -17,8 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.structs;
 
-import org.apache.oodt.cas.filemgr.structs.type.TypeHandler;
-
 /**
  * @author mattmann
  * @version $Revision$

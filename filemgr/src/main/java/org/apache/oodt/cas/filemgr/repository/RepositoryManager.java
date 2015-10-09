@@ -18,7 +18,6 @@
 package org.apache.oodt.cas.filemgr.repository;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 
@@ -32,7 +31,7 @@ import java.util.List;
  * 
  * A Repository Manager is an extension point that is responsible for managing
  * {@link ProductType} information which boils down to policy information about
- * {@link Product}s that are ingested into the File Manager. This includes
+ * {@link org.apache.oodt.cas.filemgr.structs.Product}s that are ingested into the File Manager. This includes
  * information such as the root repository path for a product type, what type of
  * URI generation scheme to apply, etc.
  * </p>
