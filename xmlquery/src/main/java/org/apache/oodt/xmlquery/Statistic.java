@@ -21,13 +21,11 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.*;
-import java.util.*;
-import org.apache.oodt.commons.Configuration;
-import org.apache.oodt.commons.util.DOMParser;
-import org.apache.oodt.commons.util.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.apache.oodt.commons.util.XML;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * EDM Statisti class. 

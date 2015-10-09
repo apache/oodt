@@ -18,8 +18,6 @@
 
 package org.apache.oodt.profile.handlers.lightweight;
 
-import java.rmi.RemoteException;
-import org.apache.oodt.xmlquery.XMLQuery;
 import org.apache.oodt.profile.EnumeratedProfileElement;
 import java.util.List;
 

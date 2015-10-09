@@ -20,7 +20,6 @@ package org.apache.oodt.xmlquery;
 
 import java.util.List;
 import java.util.StringTokenizer;
-import org.apache.oodt.product.Retriever;
 import java.io.InputStream;
 import java.io.IOException;
 

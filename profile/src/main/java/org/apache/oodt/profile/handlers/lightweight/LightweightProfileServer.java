@@ -18,25 +18,11 @@
 
 package org.apache.oodt.profile.handlers.lightweight;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Stack;
-import org.apache.oodt.commons.Configuration;
-import org.apache.oodt.commons.ExecServerConfig;
+import org.apache.oodt.commons.util.DOMParser;
+import org.apache.oodt.commons.util.XML;
 import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileException;
 import org.apache.oodt.profile.handlers.ProfileHandler;
-import org.apache.oodt.commons.util.DOMParser;
-import org.apache.oodt.commons.util.XML;
 import org.apache.oodt.xmlquery.QueryElement;
 import org.apache.oodt.xmlquery.XMLQuery;
 import org.w3c.dom.Document;
@@ -45,6 +31,11 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * A lightweight profile server.

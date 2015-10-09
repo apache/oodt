@@ -15,17 +15,21 @@
 
 package org.apache.oodt.profile.handlers;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.sql.*;
-import java.util.*;
-import org.apache.oodt.commons.Configuration;
-import org.apache.oodt.commons.util.DOMParser;
-import org.apache.oodt.commons.util.*;
-import org.apache.oodt.xmlquery.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import org.apache.oodt.profile.*;
+import org.apache.oodt.commons.util.XML;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileException;
+import org.apache.oodt.profile.ProfileSQLException;
+import org.apache.oodt.xmlquery.XMLQuery;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
 /**********************************************************************************
 **
