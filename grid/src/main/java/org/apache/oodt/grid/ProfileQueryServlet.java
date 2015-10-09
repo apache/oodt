@@ -17,12 +17,16 @@
 
 package org.apache.oodt.grid;
 
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.handlers.ProfileHandler;
+import org.apache.oodt.xmlquery.QueryElement;
+import org.apache.oodt.xmlquery.XMLQuery;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,13 +36,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
-import org.apache.oodt.profile.Profile;
-import org.apache.oodt.profile.handlers.ProfileHandler;
-import org.apache.oodt.xmlquery.QueryElement;
-import org.apache.oodt.xmlquery.XMLQuery;
 
 
 /**

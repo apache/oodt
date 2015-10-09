@@ -17,9 +17,6 @@
 
 package org.apache.oodt.pcs.health;
 
-//OODT imports
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance; //for javadoc
-import org.apache.oodt.cas.workflow.structs.WorkflowStatus; //for javadoc
 
 /**
  * 
@@ -42,12 +39,12 @@ public class JobHealthStatus {
    * Constructs a JobHealthStatus with the given parameters.
    * 
    * @param status
-   *          The Job status, one of {@link WorkflowStatus#STARTED}, or any of
+   *          The Job status, one of {@link org.apache.oodt.cas.workflow.structs.WorkflowStatus#STARTED}, or any of
    *          the other WorkflowStatus keys.
    * 
    * @param numPipelines
-   *          The number of {@link WorkflowInstance}s with the given
-   *          {@link WorkflowStatus}.
+   *          The number of {@link org.apache.oodt.cas.workflow.structs.WorkflowInstance}s with the given
+   *          {@link org.apache.oodt.cas.workflow.structs.WorkflowStatus}.
    */
   public JobHealthStatus(String status, int numPipelines) {
     this.status = status;

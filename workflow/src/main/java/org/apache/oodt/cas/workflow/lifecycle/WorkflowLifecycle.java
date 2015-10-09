@@ -17,10 +17,6 @@
 
 package org.apache.oodt.cas.workflow.lifecycle;
 
-//OODT imports
-import org.apache.oodt.cas.workflow.structs.Workflow; //javadoc
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance; //javadoc
-import org.apache.oodt.cas.workflow.structs.WorkflowStatus; //javadoc
 
 //JDK imports
 import java.util.Comparator;
@@ -31,8 +27,8 @@ import java.util.TreeSet;
 
 /**
  * 
- * Defines the lifecycle of a {@link Workflow}, identifying what
- * {@link WorkflowStatus}es belong to a particular phase.
+ * Defines the lifecycle of a {@link org.apache.oodt.cas.workflow.structs.Workflow}, identifying what
+ * {@link org.apache.oodt.cas.workflow.structs.WorkflowStatus}es belong to a particular phase.
  * 
  * @author mattmann
  * @author bfoster
@@ -65,7 +61,7 @@ public class WorkflowLifecycle {
    * @param name
    *          The name of the WorkflowLifecycle.
    * @param workflowId
-   *          The associated identifier for the {@link Workflow}s that this
+   *          The associated identifier for the {@link org.apache.oodt.cas.workflow.structs.Workflow}s that this
    *          WorkflowLifecycle is appropriate for.
    */
   public WorkflowLifecycle(String name, String workflowId) {
@@ -160,13 +156,13 @@ public class WorkflowLifecycle {
 
   /**
    * Gets the associated {@link WorkflowLifecycleStage} for a
-   * {@link WorkflowInstance} with a given status.
+   * {@link org.apache.oodt.cas.workflow.structs.WorkflowInstance} with a given status.
    * 
    * @param status
-   *          The status of the {@link WorkflowInstance} to get the
+   *          The status of the {@link org.apache.oodt.cas.workflow.structs.WorkflowInstance} to get the
    *          {@link WorkflowLifecycleStage} for.
    * @return The corresponding {@link WorkflowLifecycleStage} for the
-   *         {@link WorkflowInstance} with the given status, or null if that
+   *         {@link org.apache.oodt.cas.workflow.structs.WorkflowInstance} with the given status, or null if that
    *         status does not exist in any defined {@link WorkflowLifecycleStage}
    *         .
    */

@@ -18,25 +18,16 @@
 package org.apache.oodt.opendapps;
 
 //JDK imports
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.opendapps.config.OpendapConfig;
 import org.apache.oodt.opendapps.extractors.MetadataExtractor;
 import org.apache.oodt.opendapps.extractors.ThreddsMetadataExtractor;
 
-import thredds.catalog.InvAccess;
-import thredds.catalog.InvCatalogRef;
-import thredds.catalog.InvDataset;
-import thredds.catalog.InvService;
-import thredds.catalog.ServiceType;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import thredds.catalog.*;
 import thredds.catalog.crawl.CatalogCrawler;
 
 /**
@@ -108,9 +99,9 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
   }
 
   /**
-   * Gets the set of String {@link URL}s crawled.
+   * Gets the set of String {@link java.net.URL}s crawled.
    * 
-   * @return A {@link List} of {@link String} representations of {@link URL}s.
+   * @return A {@link List} of {@link String} representations of {@link java.net.URL}s.
    */
   public List<String> getURLs() {
     return this.urls;

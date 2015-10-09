@@ -17,7 +17,7 @@
 
 package org.apache.oodt.cas.workflow.engine.processor;
 
-//JDK imports
+//OODT imports
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
@@ -28,14 +28,13 @@ import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 
+//JDK imports
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-//OODT imports
 
 /**
  * 

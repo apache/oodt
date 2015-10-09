@@ -19,7 +19,6 @@
 package org.apache.oodt.cas.workflow.util;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 
@@ -70,10 +69,6 @@ public interface Pagination {
      * 
      * @param pageNum
      *            The {@link WorkflowInstancePage} number to get.
-     * @param status
-     *            Identifies which {@link WorkflowInstance} set to paginate,
-     *            e.g., only {@link WorkflowInstance}s with a given status.
-     * 
      * @return The {@link WorkflowInstancePage} with the given status, and page
      *         number.
      * @throws InstanceRepositoryException
@@ -89,8 +84,8 @@ public interface Pagination {
      * @param pageNum
      *            The {@link WorkflowInstancePage} number to get.
      * @param status
-     *            Identifies which {@link WorkflowInstance} set to paginate,
-     *            e.g., only {@link WorkflowInstance}s with a given status.
+     *            Identifies which {@link org.apache.oodt.cas.workflow.structs.WorkflowInstance} set to paginate,
+     *            e.g., only {@link org.apache.oodt.cas.workflow.structs.WorkflowInstance}s with a given status.
      * 
      * @return The {@link WorkflowInstancePage} with the given status, and page
      *         number.

@@ -17,13 +17,11 @@
 
 package org.apache.oodt.pcs.health;
 
-//OODT imports
-import org.apache.oodt.cas.crawl.daemon.CrawlDaemon; //for javadoc
 
 /**
  * 
  * Health of a PCS Crawler in terms of the number of crawls performed, and
- * average crawl time provided by a {@link CrawlDaemon}
+ * average crawl time provided by a {@link org.apache.oodt.cas.crawl.daemon.CrawlDaemon}
  * 
  * @author mattmann
  * @version $Revision$

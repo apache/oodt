@@ -23,7 +23,6 @@ import java.util.Date;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.commons.util.DateConvert;
 
@@ -45,7 +44,7 @@ import org.apache.oodt.commons.util.DateConvert;
  * 
  * In addition, as of Apache OODT 0.4 the internal {@link #state} member
  * variable now uses {@link WorkflowState} for representation. This requires the
- * use of {@link WorkflowLifecycle} which has now moved from being simply a UI
+ * use of {@link org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle} which has now moved from being simply a UI
  * utility class for the Worklow Monitor web application to actually being fully
  * integrated with the Workflow Manager. For backwards compatibility the
  * {@link #setStatus(String)} and {@link #getStatus()} methods are still

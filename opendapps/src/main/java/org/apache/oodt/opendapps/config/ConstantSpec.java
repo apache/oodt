@@ -17,16 +17,11 @@
 
 package org.apache.oodt.opendapps.config;
 
-//APACHE imports
-import org.apache.oodt.profile.Profile;
-import org.apache.oodt.profile.ProfileAttributes;
-import org.apache.oodt.profile.ResourceAttributes;
-
 /**
  * 
  * A specification of a constant field to flow through into either the generated
- * {@link Profile}s {@link ProfileAttributes} section or its
- * {@link ResourceAttributes} section. Part of the {@link OpendapConfig}.
+ * {@link org.apache.oodt.profile.Profile}s {@link org.apache.oodt.profile.ProfileAttributes} section or its
+ * {@link org.apache.oodt.profile.ResourceAttributes} section. Part of the {@link OpendapConfig}.
  * 
  */
 public class ConstantSpec {
