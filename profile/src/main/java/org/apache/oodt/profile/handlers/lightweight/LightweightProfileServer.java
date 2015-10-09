@@ -34,6 +34,7 @@ import org.xml.sax.SAXParseException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
@@ -51,9 +52,8 @@ final public class LightweightProfileServer implements ProfileHandler {
 	 *
 	 * @throws IOException If an I/O error occurs.
 	 * @throws SAXException If an error occurs parsing the profile file.
-	 * @throws MalformedURLException If the default profile URL is malformed.
 	 */
-	public LightweightProfileServer() throws IOException, SAXException, MalformedURLException {
+	public LightweightProfileServer() throws IOException, SAXException {
 		this(System.getProperties());
 	}
 
@@ -90,8 +90,12 @@ final public class LightweightProfileServer implements ProfileHandler {
 		this.id = id;
 
 		// Get the list of profiles from the cache, if it's there.
-		profiles = (List) cache.get(url);
-		if (profiles != null) return;
+	  try {
+		profiles = (List) cache.get(url.toURI());
+	  } catch (URISyntaxException e) {
+		e.printStackTrace();
+	  }
+	  if (profiles != null) return;
 
 		// It wasn't in the cache, so create a parser to parse the file.  We only
 		// deal with correct files, so turn on validation and install an error
@@ -122,9 +126,13 @@ final public class LightweightProfileServer implements ProfileHandler {
 		doc.normalize();
 		Element root = doc.getDocumentElement();
 		profiles = Profile.createProfiles(root, new SearchableObjectFactory());
-		cache.put(url, profiles);
+	  try {
+		cache.put(url.toURI(), profiles);
+	  } catch (URISyntaxException e) {
+		e.printStackTrace();
+	  }
 
-		System.err.println("LightweightProfileServer ready");
+	  System.err.println("LightweightProfileServer ready");
 	}
 
 	public List findProfiles(XMLQuery query) throws ProfileException {
