@@ -10,7 +10,9 @@ Release 0.11 - Current Development
 
 * OODT-882 Merge dependency update into master (magicaltrout)
 
-* OODT-887 Prevent DNS resolution on URL Lookup
+* OODT-887 Prevent DNS resolution on URL Lookup (magicaltrout)
+
+* OODT-888 Replace =+ with StringBuilders to improve performance (magicaltrout)
 
 Release 0.10 - 08/30/2015
 
