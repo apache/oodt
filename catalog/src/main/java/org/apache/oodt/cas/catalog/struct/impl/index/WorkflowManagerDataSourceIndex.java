@@ -17,34 +17,11 @@
 package org.apache.oodt.cas.catalog.struct.impl.index;
 
 //JDK imports
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//SQL imports
-import javax.sql.DataSource;
-
-//OODT imports
 import org.apache.oodt.cas.catalog.exception.CatalogIndexException;
 import org.apache.oodt.cas.catalog.exception.QueryServiceException;
 import org.apache.oodt.cas.catalog.page.IndexPager;
 import org.apache.oodt.cas.catalog.page.IngestReceipt;
-import org.apache.oodt.cas.catalog.query.ComparisonQueryExpression;
-import org.apache.oodt.cas.catalog.query.NotQueryExpression;
-import org.apache.oodt.cas.catalog.query.QueryExpression;
-import org.apache.oodt.cas.catalog.query.QueryLogicalGroup;
-import org.apache.oodt.cas.catalog.query.StdQueryExpression;
+import org.apache.oodt.cas.catalog.query.*;
 import org.apache.oodt.cas.catalog.struct.Index;
 import org.apache.oodt.cas.catalog.struct.QueryService;
 import org.apache.oodt.cas.catalog.struct.TransactionId;
@@ -53,9 +30,23 @@ import org.apache.oodt.cas.catalog.struct.impl.transaction.LongTransactionIdFact
 import org.apache.oodt.cas.catalog.term.Term;
 import org.apache.oodt.cas.catalog.term.TermBucket;
 import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
-
-//EDA imports
 import org.apache.oodt.commons.util.DateConvert;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.sql.DataSource;
+
+//SQL imports
+//OODT imports
+//EDA imports
 
 /**
  * @author bfoster
@@ -259,17 +250,17 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 	}
 	
     private String getSqlQuery(QueryExpression queryExpression) throws QueryServiceException, UnsupportedEncodingException {
-        String sqlQuery = null;
+        StringBuilder sqlQuery = new StringBuilder();
         if (queryExpression instanceof QueryLogicalGroup) {
         	QueryLogicalGroup qlg = (QueryLogicalGroup) queryExpression;
-            sqlQuery = "(" + this.getSqlQuery(qlg.getExpressions().get(0));
+            sqlQuery.append("(").append(this.getSqlQuery(qlg.getExpressions().get(0)));
             String op = qlg.getOperator() == QueryLogicalGroup.Operator.AND ? "INTERSECT" : "UNION";
             for (int i = 1; i < qlg.getExpressions().size(); i++) 
-                sqlQuery += ") " + op + " (" + this.getSqlQuery(qlg.getExpressions().get(i));
-            sqlQuery += ")";
+                sqlQuery.append(") ").append(op).append(" (").append(this.getSqlQuery(qlg.getExpressions().get(i)));
+            sqlQuery.append(")");
         }else if (queryExpression instanceof ComparisonQueryExpression){
         	ComparisonQueryExpression cqe = (ComparisonQueryExpression) queryExpression;
-        	String operator = null;
+        	String operator;
             if (cqe.getOperator().equals(ComparisonQueryExpression.Operator.EQUAL_TO)) {
             	operator = "=";
             } else if (cqe.getOperator().equals(ComparisonQueryExpression.Operator.GREATER_THAN)) {
@@ -284,23 +275,28 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
                 throw new QueryServiceException("Invalid ComparisonQueryExpression Operator '" + cqe.getOperator() + "'");
             }
             
-            sqlQuery = "SELECT DISTINCT workflow_instance_id FROM workflow_instance_metadata WHERE workflow_met_key = '" + cqe.getTerm().getName() + "' AND (";
+            sqlQuery.append(
+				"SELECT DISTINCT workflow_instance_id FROM workflow_instance_metadata WHERE " + "workflow_met_key = '")
+					.append(cqe.getTerm().getName()).append("' AND (");
         	for (int i = 0; i < cqe.getTerm().getValues().size(); i++) {
         		String value = cqe.getTerm().getValues().get(i);
-                sqlQuery += "workflow_met_val " + operator + " '" + URLEncoder.encode(value, "UTF-8") + "'";
+                sqlQuery.append("workflow_met_val ").append(operator).append(" '")
+						.append(URLEncoder.encode(value, "UTF-8")).append("'");
 	            if ((i + 1) < cqe.getTerm().getValues().size())
-	            	sqlQuery += "OR";
+	            	sqlQuery.append("OR");
         	}
-        	sqlQuery += ")";
+        	sqlQuery.append(")");
         }else if (queryExpression instanceof NotQueryExpression) {
         	NotQueryExpression nqe = (NotQueryExpression) queryExpression;
-            sqlQuery = "SELECT DISTINCT workflow_instance_id FROM workflow_instance_metadata WHERE NOT (" + this.getSqlQuery(nqe.getQueryExpression()) + ")";
+            sqlQuery.append("SELECT DISTINCT workflow_instance_id FROM workflow_instance_metadata WHERE NOT (")
+					.append(this
+						.getSqlQuery(nqe.getQueryExpression())).append(")");
         }else if (queryExpression instanceof StdQueryExpression) {
-            sqlQuery = "SELECT DISTINCT workflow_instance_id FROM workflow_instance_metadata";
+            sqlQuery.append("SELECT DISTINCT workflow_instance_id FROM workflow_instance_metadata");
         }else {
             throw new QueryServiceException("Invalid QueryExpression '" + queryExpression.getClass().getCanonicalName() + "'");
         }
-        return sqlQuery;
+        return sqlQuery.toString();
     }
 
 }
