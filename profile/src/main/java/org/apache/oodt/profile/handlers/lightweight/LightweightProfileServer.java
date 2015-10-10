@@ -34,8 +34,8 @@ import org.xml.sax.SAXParseException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -53,7 +53,7 @@ final public class LightweightProfileServer implements ProfileHandler {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws SAXException If an error occurs parsing the profile file.
 	 */
-	public LightweightProfileServer() throws IOException, SAXException {
+	public LightweightProfileServer() throws IOException, SAXException, URISyntaxException {
 		this(System.getProperties());
 	}
 
@@ -70,8 +70,9 @@ final public class LightweightProfileServer implements ProfileHandler {
 	 * @throws SAXException If an error occurs parsing the profile file.
 	 * @throws MalformedURLException If the URL to the profile file is malformed.
 	 */
-	public LightweightProfileServer(Properties props) throws IOException, SAXException, MalformedURLException {
-		this(new URL(props.getProperty("org.apache.oodt.profile.handlers.LightweightProfileServer.profiles.url",
+	public LightweightProfileServer(Properties props)
+		throws IOException, SAXException, URISyntaxException {
+		this(new URI(props.getProperty("org.apache.oodt.profile.handlers.LightweightProfileServer.profiles.url",
                         props.getProperty("org.apache.oodt.profile.webServer.baseURL", "http://eda.jpl.nasa.gov")
                         + "/profiles.xml")),
 			props.getProperty("org.apache.oodt.profile.handlers.LightweightProfileServer.id", "lightweight"));
@@ -84,17 +85,12 @@ final public class LightweightProfileServer implements ProfileHandler {
 	 * @param id Identifier to report for when this handler is queried by name.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws SAXException If an error occurs parsing the profile file.
-	 * @throws MalformedURLException If <var>url</var> is malformed.
 	 */
-	public LightweightProfileServer(URL url, String id) throws IOException, SAXException, MalformedURLException {
+	public LightweightProfileServer(URI url, String id) throws IOException, SAXException {
 		this.id = id;
 
 		// Get the list of profiles from the cache, if it's there.
-	  try {
-		profiles = (List) cache.get(url.toURI());
-	  } catch (URISyntaxException e) {
-		e.printStackTrace();
-	  }
+	  profiles = (List) cache.get(url);
 	  if (profiles != null) return;
 
 		// It wasn't in the cache, so create a parser to parse the file.  We only
@@ -126,11 +122,7 @@ final public class LightweightProfileServer implements ProfileHandler {
 		doc.normalize();
 		Element root = doc.getDocumentElement();
 		profiles = Profile.createProfiles(root, new SearchableObjectFactory());
-	  try {
-		cache.put(url.toURI(), profiles);
-	  } catch (URISyntaxException e) {
-		e.printStackTrace();
-	  }
+	  cache.put(url, profiles);
 
 	  System.err.println("LightweightProfileServer ready");
 	}
