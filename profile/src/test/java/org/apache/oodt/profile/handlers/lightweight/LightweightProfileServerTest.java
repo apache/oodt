@@ -22,7 +22,7 @@ import org.apache.oodt.profile.ProfileElement;
 import org.apache.oodt.profile.ProfileException;
 import org.apache.oodt.xmlquery.XMLQuery;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,8 +41,8 @@ public class LightweightProfileServerTest extends TestCase {
 	}
 
 	protected void setUp() throws Exception {
-	  URL url = getClass().getResource("lightweightTest.xml");
-		server = new LightweightProfileServer(url, "testing");
+	  URI uri = getClass().getResource("lightweightTest.xml").toURI();
+		server = new LightweightProfileServer(uri, "testing");
 	}
 	
 	/**

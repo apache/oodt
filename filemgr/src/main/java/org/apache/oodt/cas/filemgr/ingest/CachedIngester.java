@@ -20,6 +20,7 @@ package org.apache.oodt.cas.filemgr.ingest;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -112,7 +113,8 @@ public class CachedIngester extends StdIngester {
      */
     public boolean hasProduct(URL fmUrl, String productName)
             throws CatalogException {
-        if (cache.getFileManagerUrl().equals(fmUrl)) {
+      try {
+        if (cache.getFileManagerUrl().toURI().equals(fmUrl.toURI())) {
             return cache.contains(productName);
         } else {
             // need to re-sync
@@ -129,6 +131,10 @@ public class CachedIngester extends StdIngester {
             }
             return cache.contains(productName);
         }
+      } catch (URISyntaxException e) {
+        LOG.log(Level.SEVERE, "Exception getting URI from URL");
+        throw new CatalogException("Exception getting URL from URL: Message: " + e.getMessage());
+      }
     }
 
     /**
