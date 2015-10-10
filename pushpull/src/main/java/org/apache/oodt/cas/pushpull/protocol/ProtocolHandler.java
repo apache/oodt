@@ -75,7 +75,7 @@ public class ProtocolHandler {
   /**
    * Creates a new ProtocolHandler for the given Config object
    *
-   * @param config
+   * @param pi
    *          The Config object that guides this ProtocolHandler in making class
    *          instanciations
    */
@@ -90,7 +90,7 @@ public class ProtocolHandler {
   /**
    * Returns the appropriate protocol for the given Path
    *
-   * @param ProtocolPath
+   * @param pFile
    *          Used to determine the appropriate Protocol to be returned and the
    *          path to navigate on if navigateToPathLoc is set to true.
    * @param allowReuse
@@ -103,7 +103,7 @@ public class ProtocolHandler {
    *          If true, will navigate the to the end of the Path location
    *          specified
    * @return Protocol for the given Path
-   * @throws RemoteCommunicationException
+   * @throws RemoteConnectionException
    *           If there is an error creating the protocol
    */
   public Protocol getAppropriateProtocol(RemoteSiteFile pFile,
@@ -285,12 +285,9 @@ public class ProtocolHandler {
    *
    * @param protocol
    *          The Protocol that will be connected
-   * @param url
+   * @param remoteSite
    *          The server to which the Protocol will connect
-   * @throws RemoteConnectionException
-   *           If connection fails
-   * @throws RemoteLoginException
-   *           If login fails
+   * @param test
    */
   public boolean connect(Protocol protocol, RemoteSite remoteSite, boolean test) {
     for (int tries = 0; tries < 3; tries++) {
