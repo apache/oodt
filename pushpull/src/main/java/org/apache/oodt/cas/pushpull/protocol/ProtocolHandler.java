@@ -129,49 +129,58 @@ public class ProtocolHandler {
   public Protocol getAppropriateProtocolBySite(RemoteSite remoteSite,
       boolean allowReuse) throws ProtocolException {
     Protocol protocol = null;
-    if ((allowReuse && ((protocol = reuseProtocols.get(remoteSite.getURL())) == null))
-        || !allowReuse) {
-      ProtocolFactory protocolFactory = this.urlAndProtocolFactory
-          .get(remoteSite.getURL());
-      if (protocolFactory == null) {
-        LinkedList<Class<ProtocolFactory>> protocolClasses = pi
-            .getProtocolClassesForProtocolType(remoteSite.getURL()
-                .getProtocol());
-        for (Class<ProtocolFactory> clazz : protocolClasses) {
-          try {
-            if ((protocol = (protocolFactory = clazz.newInstance())
-                .newInstance()) != null) {
-              if (!connect(protocol, remoteSite, true)) {
-                LOG.log(
-                    Level.WARNING,
-                    "ProtocolFactory "
-                        + protocolFactory.getClass().getCanonicalName()
-                        + " is not compatible with server at "
-                        + remoteSite.getURL());
-                protocol = null;
-              } else {
-                this.urlAndProtocolFactory.put(remoteSite.getURL().toURI(),
-                    protocolFactory);
-                break;
-              }
-            }
-          } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to instanciate protocol " + clazz
-                + " for " + remoteSite.getURL());
-          }
-        }
-        if (protocol == null)
-          throw new ProtocolException("Failed to get appropriate protocol for "
-              + remoteSite);
-      } else {
-        connect(protocol = protocolFactory.newInstance(), remoteSite, false);
-      }
-      if (allowReuse)
+    try {
+      if ((allowReuse && ((protocol = reuseProtocols.get(remoteSite.getURL().toURI())) == null))
+          || !allowReuse) {
+        ProtocolFactory protocolFactory = null;
         try {
-          this.reuseProtocols.put(remoteSite.getURL().toURI(), protocol);
+          protocolFactory = this.urlAndProtocolFactory
+              .get(remoteSite.getURL().toURI());
         } catch (URISyntaxException e) {
-          LOG.log(Level.SEVERE, "Couildn't covert URL to URI Mesage: " + e.getMessage());
+          LOG.log(Level.SEVERE, "could not convert url to uri: Message: " + e.getMessage());
         }
+        if (protocolFactory == null) {
+          LinkedList<Class<ProtocolFactory>> protocolClasses = pi
+              .getProtocolClassesForProtocolType(remoteSite.getURL()
+                                                           .getProtocol());
+          for (Class<ProtocolFactory> clazz : protocolClasses) {
+            try {
+              if ((protocol = (protocolFactory = clazz.newInstance())
+                  .newInstance()) != null) {
+                if (!connect(protocol, remoteSite, true)) {
+                  LOG.log(
+                      Level.WARNING,
+                      "ProtocolFactory "
+                          + protocolFactory.getClass().getCanonicalName()
+                          + " is not compatible with server at "
+                          + remoteSite.getURL());
+                  protocol = null;
+                } else {
+                  this.urlAndProtocolFactory.put(remoteSite.getURL().toURI(),
+                      protocolFactory);
+                  break;
+                }
+              }
+            } catch (Exception e) {
+              LOG.log(Level.WARNING, "Failed to instanciate protocol " + clazz
+                  + " for " + remoteSite.getURL());
+            }
+          }
+          if (protocol == null)
+            throw new ProtocolException("Failed to get appropriate protocol for "
+                + remoteSite);
+        } else {
+          connect(protocol = protocolFactory.newInstance(), remoteSite, false);
+        }
+        if (allowReuse)
+          try {
+            this.reuseProtocols.put(remoteSite.getURL().toURI(), protocol);
+          } catch (URISyntaxException e) {
+            LOG.log(Level.SEVERE, "Couildn't covert URL to URI Mesage: " + e.getMessage());
+          }
+      }
+    } catch (URISyntaxException e) {
+      LOG.log(Level.SEVERE, "could not convert url to uri: Message: "+e.getMessage());
     }
     return protocol;
   }
