@@ -17,34 +17,21 @@
 
 package org.apache.oodt.cas.filemgr.browser.view.prompts;
 
+import org.apache.oodt.cas.filemgr.browser.controller.WindowListener;
+import org.apache.oodt.cas.filemgr.browser.model.CasDB;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
-import org.apache.oodt.cas.filemgr.browser.controller.WindowListener;
-import org.apache.oodt.cas.filemgr.browser.model.CasDB;
 
 public class QueryBuilderPrompt extends JFrame {
 
@@ -292,22 +279,22 @@ public class QueryBuilderPrompt extends JFrame {
     }
 
     public String getQuery() {
-      String q = new String();
+      StringBuilder q = new StringBuilder();
       for (int i = 0; i < this.getComponentCount(); i++) {
         Component c = this.getComponent(i);
         if (c instanceof TermQueryPanel) {
-          q += ((TermQueryPanel) c).getOp() + " ";
-          q += ((TermQueryPanel) c).getElement() + ":";
-          q += ((TermQueryPanel) c).getText() + " ";
+          q.append(((TermQueryPanel) c).getOp()).append(" ");
+          q.append(((TermQueryPanel) c).getElement()).append(":");
+          q.append(((TermQueryPanel) c).getText()).append(" ");
         } else if (c instanceof RangeQueryPanel) {
-          q += ((RangeQueryPanel) c).getOp() + " ";
-          q += ((RangeQueryPanel) c).getElement() + ":[";
-          q += ((RangeQueryPanel) c).getStart() + " TO ";
-          q += ((RangeQueryPanel) c).getStop() + "] ";
+          q.append(((RangeQueryPanel) c).getOp()).append(" ");
+          q.append(((RangeQueryPanel) c).getElement()).append(":[");
+          q.append(((RangeQueryPanel) c).getStart()).append(" TO ");
+          q.append(((RangeQueryPanel) c).getStop()).append("] ");
         }
       }
 
-      return q;
+      return q.toString();
     }
 
     public org.apache.oodt.cas.filemgr.structs.Query getCasQuery() {
