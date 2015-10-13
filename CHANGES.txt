@@ -14,6 +14,7 @@ Release 0.11 - Current Development
 
 * OODT-888 Replace += with StringBuilders to improve performance (magicaltrout)
 
+* OODT-889 Fix TopN with Type
 Release 0.10 - 08/30/2015
 
 * OODT-871 Issues with OODT 0.10 RC#1 (lewismc, mattmann)

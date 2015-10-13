@@ -728,7 +728,12 @@ public class LuceneCatalog implements Catalog {
 
         for (int pageNum = 1; pageNum < numPages + 1; pageNum++) {
             List<Product> pageProducts = paginateQuery(query, type, pageNum, null);
-            products.addAll(pageProducts);
+            if(n<=pageProducts.size()) {
+                products.addAll(pageProducts.subList(0, n));
+            }
+            else{
+                products.addAll(pageProducts);
+            }
         }
 
         return products;
