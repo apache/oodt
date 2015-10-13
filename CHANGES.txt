@@ -1,8 +1,9 @@
 Apache OODT Change Log
 ======================
 Release 0.11 - Current Development
-
-* OODT-885 RegEx Precondition Comparator for DRAT --exclude feature
+ 
+* OODT-885 RegEx Precondition Comparator for DRAT --exclude feature (Karanjeet
+  Singh via mattmann)
 
 * OODT-874 Corrected workflow/bin/wmgr and resource/bin/resmgr to make sure
   they both delete the cas.xxxx.pid file when stopped using the 'stop'
