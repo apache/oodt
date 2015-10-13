@@ -97,9 +97,9 @@ public class QueryLogicalGroup extends QueryExpression {
     @Override
     public String toString() {
         StringBuilder query = new StringBuilder();
-        query.append("({" + this.bucketNames + "} " + this.operator + " : ");
+        query.append("({").append(this.bucketNames).append("} ").append(this.operator).append(" : ");
         for (QueryExpression queryExpression : this.queryExpressions) {
-            query.append(queryExpression.toString() + ",");
+            query.append(queryExpression.toString()).append(",");
         }
         return query.substring(0, query.length() - 1) + ")";
     }

@@ -82,9 +82,9 @@ public class FreeTextQueryExpression extends TermQueryExpression {
      */
     public String toString() {
         StringBuilder serial = new StringBuilder();
-        serial.append("({" + this.bucketNames + "} " + this.term.getName() + " :|");
+        serial.append("({").append(this.bucketNames).append("} ").append(this.term.getName()).append(" :|");
         for (String value : this.term.getValues()) {
-            serial.append("+" + value);
+            serial.append("+").append(value);
             serial.append("|: )");
         }
         return serial.toString();
