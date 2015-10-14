@@ -78,7 +78,7 @@ public class TaskRunner implements Runnable {
    */
   @Override
   public void run() {
-    TaskProcessor nextTaskProcessor = null;
+    TaskProcessor nextTaskProcessor;
 
     while (running) {
       nextTaskProcessor = taskQuerier.getNext();
@@ -93,9 +93,7 @@ public class TaskRunner implements Runnable {
             Level.SEVERE,
             "Engine failed while submitting jobs to its runner : "
                 + e.getMessage(), e);
-        if (nextTaskProcessor != null) {
-          this.flagProcessorAsFailed(nextTaskProcessor, e.getMessage());
-        }
+        this.flagProcessorAsFailed(nextTaskProcessor, e.getMessage());
       }
     }
 

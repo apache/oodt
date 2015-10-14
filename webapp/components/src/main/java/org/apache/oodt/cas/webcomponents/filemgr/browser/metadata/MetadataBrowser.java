@@ -54,56 +54,52 @@ public class MetadataBrowser extends Panel {
         .getMetadata(this.fm.safeGetProductById(productId)));
     setDefaultModel(new Model(met));
 
-    if (met != null) {
-      add(new Label("no_prod_met_display") {
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.apache.wicket.Component#isVisible()
-         */
-        @Override
-        public boolean isVisible() {
-          return false;
-        }
-      });
+    add(new Label("no_prod_met_display") {
+      /*
+       * (non-Javadoc)
+       *
+       * @see org.apache.wicket.Component#isVisible()
+       */
+      @Override
+      public boolean isVisible() {
+        return false;
+      }
+    });
 
-      List<String> metKeys = met.getAllKeys();
-      Collections.sort(metKeys);
+    List<String> metKeys = met.getAllKeys();
+    Collections.sort(metKeys);
 
-      add(new ListView<String>("met_elem", new ListModel<String>(metKeys)) {
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.apache.wicket.markup.html.list.ListView#populateItem(org.apache
-         * .wicket.markup.html.list.ListItem)
-         */
-        @Override
-        protected void populateItem(ListItem<String> item) {
-          item.add(new Label("met_elem_name", item.getModelObject()));
+    add(new ListView<String>("met_elem", new ListModel<String>(metKeys)) {
+      /*
+       * (non-Javadoc)
+       *
+       * @see
+       * org.apache.wicket.markup.html.list.ListView#populateItem(org.apache
+       * .wicket.markup.html.list.ListItem)
+       */
+      @Override
+      protected void populateItem(ListItem<String> item) {
+        item.add(new Label("met_elem_name", item.getModelObject()));
 
-          item
-              .add(new ListView<String>("met_values_list",
-                  new ListModel<String>(met.getAllMetadata(item
-                      .getModelObject()))) {
-                /*
-                 * (non-Javadoc)
-                 * 
-                 * @see
-                 * org.apache.wicket.markup.html.list.ListView#populateItem(
-                 * org.apache.wicket.markup.html.list.ListItem)
-                 */
-                @Override
-                protected void populateItem(ListItem<String> item) {
-                  item.add(new Label("met_value", item.getModelObject()));
-                }
-              });
+        item
+            .add(new ListView<String>("met_values_list",
+                new ListModel<String>(met.getAllMetadata(item
+                    .getModelObject()))) {
+              /*
+               * (non-Javadoc)
+               *
+               * @see
+               * org.apache.wicket.markup.html.list.ListView#populateItem(
+               * org.apache.wicket.markup.html.list.ListItem)
+               */
+              @Override
+              protected void populateItem(ListItem<String> item) {
+                item.add(new Label("met_value", item.getModelObject()));
+              }
+            });
 
-        }
-      });
-    } else {
-      add(new Label("no_prod_met_display", "No Product Metadata!"));
-    }
+      }
+    });
 
   }
 

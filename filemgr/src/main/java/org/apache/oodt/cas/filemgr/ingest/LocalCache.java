@@ -67,7 +67,6 @@ public class LocalCache implements Cache {
     /**
      * 
      * @param fmUrl
-     * @param uniqueElementName
      * @param rangeQueryElementName
      * @param startOfQuery
      * @param endOfQuery
@@ -82,7 +81,6 @@ public class LocalCache implements Cache {
      * 
      * @param fmUrl
      * @param uniqueElementName
-     * @param uniqueElementProductType
      * @param rangeQueryElementName
      * @param startOfQuery
      * @param endOfQuery
@@ -125,9 +123,7 @@ public class LocalCache implements Cache {
                     this.rangeQueryElementName, productType, this.startOfQuery,
                     this.endOfQuery));
             clear();
-            for (Iterator<Product> i = products.iterator(); i.hasNext();) {
-                Product product = i.next();
-
+            for (Product product : products) {
                 String value = getValueForMetadata(product, uniqueElementName);
                 this.uniqueElements.add(value);
             }
@@ -185,9 +181,8 @@ public class LocalCache implements Cache {
      * @see org.apache.oodt.cas.filemgr.ingest.Cache#sync()
      */
     public void sync() throws CacheException {
-        if (this.uniqueElementName == null
-                || (this.uniqueElementProductTypeNames == null || 
-                        (this.uniqueElementProductTypeNames != null && this.uniqueElementProductTypeNames.size() == 0))) {
+        if (this.uniqueElementName == null || (this.uniqueElementProductTypeNames == null || (
+            this.uniqueElementProductTypeNames.size() == 0))) {
             throw new CacheException(
                     "Both uniqueElementName and uniqueElementProductTypeName must "
                             + "be defined in order to use this form of the sync operation!");
@@ -278,8 +273,7 @@ public class LocalCache implements Cache {
                     startOfQuery, endOfQuery));
             if(this.uniqueElementProductTypeNames != null && 
                     this.uniqueElementProductTypeNames.size() > 0){
-                for(Iterator<String> i = this.uniqueElementProductTypeNames.iterator(); i.hasNext(); ){
-                    String productTypeName = i.next();
+                for (String productTypeName : this.uniqueElementProductTypeNames) {
                     products.addAll(getProducts(query, productTypeName));
                 }
                 

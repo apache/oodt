@@ -18,25 +18,23 @@
 package org.apache.oodt.cas.workflow.repository;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.util.DbStructFactory;
 import org.apache.oodt.cas.workflow.examples.NoOpTask;
-import org.apache.oodt.cas.workflow.structs.Workflow;
-import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.*;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
+import org.apache.oodt.cas.workflow.util.DbStructFactory;
 
-//JDK imports
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.sql.DataSource;
+
+//JDK imports
 
 /**
  * 
@@ -1731,7 +1729,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
   }
 
   private boolean hasTaskId(List<WorkflowTask> tasks, String id) {
-    if (tasks == null || (tasks != null && tasks.size() == 0))
+    if (tasks == null || (tasks.size() == 0))
       return false;
 
     for (WorkflowTask task : tasks) {
@@ -1744,7 +1742,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
   }
 
   private boolean hasConditionId(List<WorkflowCondition> conds, String id) {
-    if (conds == null || (conds != null && conds.size() == 0))
+    if (conds == null || (conds.size() == 0))
       return false;
 
     for (WorkflowCondition cond : conds) {

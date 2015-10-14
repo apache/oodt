@@ -18,15 +18,16 @@
 package org.apache.oodt.cas.filemgr.versioning;
 
 //JDK imports
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * @author mattmann
@@ -77,7 +78,7 @@ public class SingleFileBasicVersioner implements Versioner {
         // we need the Filename Metadata parameter for this to work
         String filename = metadata.getMetadata(FILENAME_FIELD);
 
-        if (filename == null || (filename != null && filename.equals(""))) {
+        if (filename == null || (filename.equals(""))) {
             throw new VersioningException(
                     "SingleFileVersioner: unable to version without "
                             + "Filename metadata field specified!");
@@ -101,7 +102,7 @@ public class SingleFileBasicVersioner implements Versioner {
 
         // get the first reference back
         // set its data store ref
-        Reference ref = (Reference) product.getProductReferences().get(0);
+        Reference ref = product.getProductReferences().get(0);
         LOG.log(Level.INFO, "Generated data store ref: [" + dataStoreRef
                 + "] from origRef: [" + ref.getOrigReference() + "]");
         ref.setDataStoreReference(dataStoreRef);

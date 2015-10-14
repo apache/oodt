@@ -17,8 +17,11 @@ package org.apache.oodt.pcs.input;
 
 //OODT imports
 import org.apache.oodt.commons.xml.DOMUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-//JDK imports
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,12 +31,11 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+
+//JDK imports
 
 /**
  * <p>
@@ -91,8 +93,7 @@ public final class PGEXMLFileUtils {
         NodeList colNodeList = rowElem.getElementsByTagName("td");
 
         // there must be at least one colum in each row
-        if (colNodeList == null
-            || (colNodeList != null && colNodeList.getLength() <= 0)) {
+        if (colNodeList == null || (colNodeList.getLength() <= 0)) {
           throw new PGEConfigFileException(
               "there must be at least one column a matrix row!");
         }
@@ -141,8 +142,7 @@ public final class PGEXMLFileUtils {
       NodeList rowNodeList = matrix.getElementsByTagName("tr");
 
       // there has to be at least one 1
-      if (rowNodeList == null
-          || (rowNodeList != null && rowNodeList.getLength() <= 0)) {
+      if (rowNodeList == null || (rowNodeList.getLength() <= 0)) {
         throw new PGEConfigFileException(
             "there must be at least one row in a matrix!");
       }
@@ -157,8 +157,7 @@ public final class PGEXMLFileUtils {
         NodeList colNodeList = rowElem.getElementsByTagName("td");
 
         // there must be at least one colum in each row
-        if (colNodeList == null
-            || (colNodeList != null && colNodeList.getLength() <= 0)) {
+        if (colNodeList == null || (colNodeList.getLength() <= 0)) {
           throw new PGEConfigFileException(
               "there must be at least one column a matrix row!");
         }
@@ -267,7 +266,7 @@ public final class PGEXMLFileUtils {
       // get the nodelist of elements
       NodeList vecElems = vector.getElementsByTagName("element");
 
-      if (vecElems == null || (vecElems != null && vecElems.getLength() <= 0)) {
+      if (vecElems == null || (vecElems.getLength() <= 0)) {
         throw new PGEConfigFileException(
             "There must be at least one element in a PGEVector!");
       }
@@ -311,7 +310,7 @@ public final class PGEXMLFileUtils {
       // get the nodelist of elements
       NodeList vecElems = vector.getElementsByTagName("element");
 
-      if (vecElems == null || (vecElems != null && vecElems.getLength() <= 0)) {
+      if (vecElems == null || (vecElems.getLength() <= 0)) {
         throw new PGEConfigFileException(
             "There must be at least one element in a PGEVector!");
       }
@@ -332,12 +331,12 @@ public final class PGEXMLFileUtils {
 
   public static Document getDocumentRoot(String xmlFile) {
     // open up the XML file
-    DocumentBuilderFactory factory = null;
-    DocumentBuilder parser = null;
-    Document document = null;
-    InputSource inputSource = null;
+    DocumentBuilderFactory factory;
+    DocumentBuilder parser;
+    Document document;
+    InputSource inputSource;
 
-    InputStream xmlInputStream = null;
+    InputStream xmlInputStream;
 
     try {
       xmlInputStream = new File(xmlFile).toURL().openStream();

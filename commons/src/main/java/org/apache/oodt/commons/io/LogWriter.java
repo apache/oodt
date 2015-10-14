@@ -320,8 +320,9 @@ public class LogWriter extends java.io.Writer {
 				println("Null stack trace in " + t.getClass().getName());
 			else {
 				println(t.getClass().getName() + ":");
-				for (int i = 0; i < frames.length; ++i)
-					println(frames[i]);
+			  for (StackTraceElement frame : frames) {
+				println(frame);
+			  }
 			}
 		}
 	}

@@ -42,8 +42,7 @@ public class PackagedWorkflowRepositoryFactory implements
   public PackagedWorkflowRepositoryFactory() throws InstantiationException {
     this.wDirPath = System
         .getProperty("org.apache.oodt.cas.workflow.wengine.packagedRepo.dir.path");
-    if (this.wDirPath == null
-        || (this.wDirPath != null && !new File(wDirPath).isDirectory())) {
+    if (this.wDirPath == null || (!new File(wDirPath).isDirectory())) {
       throw new InstantiationException("Must specify valid directory path "
           + "containing wengine-style workflow xml files! path specified: ["
           + this.wDirPath + "]");

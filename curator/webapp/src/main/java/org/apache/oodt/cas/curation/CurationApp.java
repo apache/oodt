@@ -17,21 +17,17 @@
 
 package org.apache.oodt.cas.curation;
 
+import org.apache.oodt.cas.curation.login.LoginPage;
+import org.apache.oodt.cas.webcomponents.curation.workbench.Workbench;
+import org.apache.wicket.*;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
+import org.apache.wicket.util.file.File;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.oodt.cas.curation.login.LoginPage;
-import org.apache.oodt.cas.webcomponents.curation.workbench.Workbench;
-import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.ResourceReference;
-import org.apache.wicket.Response;
-import org.apache.wicket.Session;
-import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
-import org.apache.wicket.util.file.File;
 
 public class CurationApp extends WebApplication {
 
@@ -59,8 +55,8 @@ public class CurationApp extends WebApplication {
     Set<String> localResources = Workbench.getImageFiles(localPath);
     benchResources = filterBenchResources(benchResources, localResources,
         localPath);
-    doImageMounts(benchResources, (Class<?>) Workbench.class);
-    doImageMounts(localResources, (Class<?>) HomePage.class);
+    doImageMounts(benchResources, Workbench.class);
+    doImageMounts(localResources, HomePage.class);
 
     MixedParamUrlCodingStrategy loginPageMount = new MixedParamUrlCodingStrategy(
         "auth", LoginPage.class, new String[] { "action" });
@@ -113,9 +109,9 @@ public class CurationApp extends WebApplication {
 
   private Set<String> filterBenchResources(Set<String> bench,
       Set<String> local, String localPrefix) {
-    if (local == null || (local != null && local.size() == 0))
+    if (local == null || (local.size() == 0))
       return bench;
-    if (bench == null || (bench != null && bench.size() == 0))
+    if (bench == null || (bench.size() == 0))
       return bench;
     Set<String> filtered = new HashSet<String>();
     for (String bResource : bench) {

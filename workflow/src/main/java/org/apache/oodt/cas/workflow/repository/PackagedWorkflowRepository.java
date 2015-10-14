@@ -20,38 +20,21 @@ package org.apache.oodt.cas.workflow.repository;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.examples.BranchRedirector;
 import org.apache.oodt.cas.workflow.examples.NoOpTask;
-import org.apache.oodt.cas.workflow.structs.Graph;
-import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
-import org.apache.oodt.cas.workflow.structs.Workflow;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
-import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.*;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.XmlStructFactory;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.*;
 
-
-//JDK imports
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.Vector;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+//JDK imports
 
 /**
  * 
@@ -300,8 +283,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   @Override
   public String addWorkflow(Workflow workflow) throws RepositoryException {
     // first check to see that its tasks are all present
-    if (workflow.getTasks() == null
-        || (workflow.getTasks() != null && workflow.getTasks().size() == 0)) {
+    if (workflow.getTasks() == null || (workflow.getTasks().size() == 0)) {
       throw new RepositoryException("Attempt to define a new worklfow: ["
           + workflow.getName() + "] with no tasks.");
     }
@@ -328,8 +310,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
 
     // recast it as a parent/child workflow
     String workflowId = workflow.getId();
-	if (workflowId == null
-			|| (workflowId != null && workflowId.equals(""))) {
+	if (workflowId == null || (workflowId.equals(""))) {
 		// generate its ID
 		workflowId = UUID.randomUUID().toString();
 		workflow.setId(workflowId);
@@ -410,8 +391,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   }
 
   private void computeWorkflowConditions() throws Exception {
-    if (this.workflows != null && this.workflows.values() != null
-        && this.workflows.values().size() > 0) {
+    if (this.workflows != null && this.workflows.values().size() > 0) {
       for (ParentChildWorkflow w : this.workflows.values()) {
         if (w.getConditions() != null && w.getConditions().size() > 0) {
           w.getTasks().add(0,
@@ -516,8 +496,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       if (procTypeBlocks != null && procTypeBlocks.size() > 0) {
         LOG.log(Level.FINE, "Found: [" + procTypeBlocks.size() + "] ["
             + processorType + "] processor types");
-        for (int i = 0; i < procTypeBlocks.size(); i++) {
-          loadGraphs(rootElements, procTypeBlocks.get(i), graph, staticMetadata);
+        for (Element procTypeBlock : procTypeBlocks) {
+          loadGraphs(rootElements, procTypeBlock, graph, staticMetadata);
         }
       } else {
         if (processorType.equals("condition")) {
@@ -529,8 +509,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
             if (procTypeBlockNodes != null && procTypeBlockNodes.size() > 0) {
               LOG.log(Level.FINE, "Found: [" + procTypeBlockNodes.size()
                   + "] linked condition definitions");
-              for (int i = 0; i < procTypeBlockNodes.size(); i++) {
-                loadGraphs(rootElements, procTypeBlockNodes.get(i), graph,
+              for (Element procTypeBlockNode : procTypeBlockNodes) {
+                loadGraphs(rootElements, procTypeBlockNode, graph,
                     staticMetadata);
               }
             }
@@ -539,8 +519,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       }
     }
 
-    if (graphElem.getNodeName().equals("cas:workflows"))
-      return;
+
   }
 
   private void loadConfiguration(List<Element> rootElements, Node workflowNode,
@@ -569,7 +548,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
           }
         }
 
-        if (configName == null || (configName != null && configName.equals(""))) {
+        if (configName == null || (configName.equals(""))) {
           NamedNodeMap workflowNodeAttrs = workflowNode.getAttributes();
           for (int j = 0; j < workflowNodeAttrs.getLength(); j++) {
             Attr attr = (Attr) workflowNodeAttrs.item(j);
@@ -608,14 +587,12 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       workflow.setId(graph.getModelId());
       workflow.setName(graph.getModelName());
       graph.setWorkflow(workflow);
-      if (graph.getParent() == null
-          || (graph.getParent() != null && graph.getParent().getWorkflow() == null)) {
+      if (graph.getParent() == null || (graph.getParent().getWorkflow() == null)) {
         LOG.log(Level.FINEST, "Workflow: [" + graph.getModelId()
             + "] has no parent: it's a top-level workflow");
       }
 
-      if (workflow.getName() == null
-          || (workflow.getName() != null && workflow.getName().equals(""))) {
+      if (workflow.getName() == null || (workflow.getName().equals(""))) {
         workflow.setName(graph.getExecutionType() + "-" + workflow.getId());
       }
       this.workflows.put(graph.getModelId(), workflow);
@@ -633,9 +610,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
         cond.setOptional(graph.isOptional());
         cond.setCondConfig(convertToConditionConfiguration(staticMetadata));
 
-        if (cond.getConditionName() == null
-            || (cond.getConditionName() != null && cond.getConditionName()
-                .equals(""))) {
+        if (cond.getConditionName() == null || (cond.getConditionName()
+                                                    .equals(""))) {
           cond.setConditionName(cond.getConditionId());
         }
         this.conditions.put(graph.getModelId(), cond);
@@ -674,8 +650,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
         task.setTaskConfig(convertToTaskConfiguration(staticMetadata));
         task.setTaskInstanceClassName(graph.getClazz());
 
-        if (task.getTaskName() == null
-            || (task.getTaskName() != null && task.getTaskName().equals(""))) {
+        if (task.getTaskName() == null || (task.getTaskName().equals(""))) {
           task.setTaskName(task.getTaskId());
         }
         this.tasks.put(graph.getModelId(), task);

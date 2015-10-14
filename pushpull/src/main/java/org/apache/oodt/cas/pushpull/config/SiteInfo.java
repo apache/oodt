@@ -87,7 +87,7 @@ public class SiteInfo {
                 }
             }
             if (remoteSites.size() == 0) {
-                if (url != null && username != null && password != null)
+                if (username != null && password != null)
                     remoteSites.add(new RemoteSite(url.toString(), url,
                             username, password));
             }

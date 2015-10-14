@@ -209,8 +209,7 @@ public class Reference {
      *            the String name of the mimetype of this reference
      */
     public void setMimeType(String name) {
-        if(name == null || (name != null && 
-            name.equals(""))) return;
+        if(name == null || (name.equals(""))) return;
         
         try {
           this.mimeType = mimeTypeRepository.forName(name);
@@ -225,17 +224,8 @@ public class Reference {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        StringBuffer buf = new StringBuffer();
-        buf.append("[orig=");
-        buf.append(this.origReference);
-        buf.append(",dest=");
-        buf.append(this.dataStoreReference);
-        buf.append(",size=");
-        buf.append(this.fileSize);
-        buf.append(",mime=");
-        buf.append(this.mimeType != null ? this.mimeType.toString() : "N/A");
-        buf.append("]");
-        return buf.toString();
+        return "[orig=" + this.origReference + ",dest=" + this.dataStoreReference + ",size=" + this.fileSize + ",mime="
+               + (this.mimeType != null ? this.mimeType.toString() : "N/A") + "]";
     }
 
 }

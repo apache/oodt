@@ -20,7 +20,6 @@ package org.apache.oodt.xmlps.mapping;
 //OODT imports
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -59,7 +58,6 @@ public class MappingField {
    * @param scope
    * @param funcs
    * @param string
-   * @param appendTableName
    */
   public MappingField(String name, FieldType type, String dbName,
       String tableName, String constantValue, FieldScope scope,
@@ -195,34 +193,19 @@ public class MappingField {
 
   @Override
   public String toString() {
-    StringBuffer rStr = new StringBuffer("[name=");
-    rStr.append(this.name);
-    rStr.append(",dbname=");
-    rStr.append(this.dbName);
-    rStr.append(",constant_value=");
-    rStr.append(this.constantValue);
-    rStr.append(",table_name=");
-    rStr.append(this.tableName);
-    rStr.append(",scope=");
-    rStr.append(this.scope.equals(FieldScope.RETURN) ? "return" : "query");
-    rStr.append(",type=");
-    rStr.append(this.type.equals(FieldType.CONSTANT) ? "constant" : "dynamic");
-    rStr.append(",funcs=");
-    rStr.append(printClassNames(this.funcs));
-    rStr.append(",string=");
-    rStr.append(String.valueOf(this.string));
-    rStr.append("]");
-    return rStr.toString();
+    return "[name=" + this.name + ",dbname=" + this.dbName + ",constant_value=" + this.constantValue + ",table_name="
+           + this.tableName + ",scope=" + (this.scope.equals(FieldScope.RETURN) ? "return" : "query") + ",type=" + (
+               this.type.equals(FieldType.CONSTANT) ? "constant" : "dynamic") + ",funcs=" + printClassNames(this.funcs)
+           + ",string=" + String.valueOf(this.string) + "]";
   }
 
   private String printClassNames(List<MappingFunc> funcs) {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
 
-    if (funcs == null || (funcs != null && funcs.size() == 0)) {
+    if (funcs == null || (funcs.size() == 0)) {
       return "";
     } else {
-      for (Iterator<MappingFunc> i = funcs.iterator(); i.hasNext();) {
-        MappingFunc func = i.next();
+      for (MappingFunc func : funcs) {
         buf.append(func.getClass().getName());
         buf.append(",");
       }

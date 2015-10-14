@@ -19,16 +19,16 @@
 package org.apache.oodt.profile.handlers.cas;
 
 //CAS imports
-import org.apache.oodt.cas.filemgr.structs.Element;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Query;
-import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.*;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileException;
+import org.apache.oodt.profile.handlers.ProfileHandler;
 import org.apache.oodt.profile.handlers.cas.util.ProfileUtils;
+import org.apache.oodt.xmlquery.QueryElement;
+import org.apache.oodt.xmlquery.XMLQuery;
 
-//JDK imports
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -36,12 +36,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//JDK imports
 //OODT imports
-import org.apache.oodt.profile.Profile;
-import org.apache.oodt.profile.ProfileException;
-import org.apache.oodt.profile.handlers.ProfileHandler;
-import org.apache.oodt.xmlquery.QueryElement;
-import org.apache.oodt.xmlquery.XMLQuery;
 
 /**
  * @author mattmann
@@ -212,16 +208,9 @@ public class CASProfileHandler implements ProfileHandler {
             // split the string on ","
             String[] typeNames = productTypeNames.split(",");
 
-            if (typeNames != null) {
-                for (int i = 0; i < typeNames.length; i++) {
-                    ProductType type = safeGetProductTypeByName(typeNames[i]);
-                    typeFilter.add(type);
-                }
-            } else {
-                LOG.log(Level.WARNING,
-                        "Unable to parse comma delimited type string: ["
-                                + productTypeNames + "]: using all types");
-                typeFilter = safeGetProductTypes();
+            for (String typeName : typeNames) {
+                ProductType type = safeGetProductTypeByName(typeName);
+                typeFilter.add(type);
             }
         }
 

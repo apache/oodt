@@ -719,7 +719,7 @@ public class DataSourceWorkflowInstanceRepository extends
         List wInstIds = null;
         int numResults = -1;
 
-        if (status == null || (status != null && status.equals(""))) {
+        if (status == null || (status.equals(""))) {
             numResults = getNumWorkflowInstances();
         } else {
             numResults = getNumWorkflowInstancesByStatus(status);

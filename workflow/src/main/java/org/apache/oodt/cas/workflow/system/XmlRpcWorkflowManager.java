@@ -17,29 +17,20 @@
 package org.apache.oodt.cas.workflow.system;
 
 //OODT static imports
-import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getWorkflowEngineFromClassName;
-import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getWorkflowRepositoryFromClassName;
+import com.google.common.base.Preconditions;
 
-//Apache imports
-import org.apache.xmlrpc.WebServer;
-
-//OODT imports
-import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.ThreadPoolWorkflowEngineFactory;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngine;
 import org.apache.oodt.cas.workflow.repository.DataSourceWorkflowRepositoryFactory;
 import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
-import org.apache.oodt.cas.workflow.structs.Workflow;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.*;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
-import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
+import org.apache.xmlrpc.WebServer;
 
-//JDK imports
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -48,15 +39,20 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getWorkflowEngineFromClassName;
+import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getWorkflowRepositoryFromClassName;
+
+//Apache imports
+//OODT imports
+//JDK imports
 //Google imports
-import com.google.common.base.Preconditions;
 
 /**
  * An XML RPC-based Workflow manager.
@@ -120,7 +116,7 @@ public class XmlRpcWorkflowManager {
 
   public String executeDynamicWorkflow(Vector<String> taskIds, Hashtable metadata)
       throws RepositoryException, EngineException {
-    if (taskIds == null || (taskIds != null && taskIds.size() == 0))
+    if (taskIds == null || (taskIds.size() == 0))
       throw new RepositoryException(
           "Must specify task identifiers to build dynamic workflows!");
 

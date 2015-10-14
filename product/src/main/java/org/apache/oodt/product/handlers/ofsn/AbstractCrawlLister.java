@@ -19,6 +19,8 @@
 package org.apache.oodt.product.handlers.ofsn;
 
 //JDK imports
+import org.apache.oodt.product.ProductException;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
@@ -29,7 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.product.ProductException;
 
 /**
  * 
@@ -84,7 +85,7 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
 
   protected File[] crawlFiles(File dirRoot, boolean recur,
       boolean crawlForDirs) {
-    if (dirRoot == null || ((dirRoot != null && !dirRoot.exists())))
+    if (dirRoot == null || ((!dirRoot.exists())))
       throw new IllegalArgumentException("dir root: [" + dirRoot
           + "] is null or non existant!");
 

@@ -18,14 +18,15 @@
 package org.apache.oodt.cas.workflow.structs;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
+import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
-import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 /**
  * 
@@ -61,8 +62,7 @@ public class ConditionTaskInstance implements WorkflowTaskInstance {
   public void run(Metadata metadata, WorkflowTaskConfiguration config)
       throws WorkflowTaskInstanceException {
     String conditionClassName = config.getProperty("ConditionClassName");
-    if (conditionClassName == null
-        || (conditionClassName != null && conditionClassName.equals(""))) {
+    if (conditionClassName == null || (conditionClassName.equals(""))) {
       throw new WorkflowTaskInstanceException(
           "Condition class name is null or " + "unreadable: ["
               + conditionClassName + "]: unable to run ConditionTaskInstance!");

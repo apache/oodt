@@ -121,9 +121,9 @@ public class RmiCacheServer extends UnicastRemoteObject implements RemoteableCac
     }
 
     public void sync() throws RemoteException {
-        if (this.uniqueElementName == null
-                || (this.uniqueElementProductTypeNames == null || (this.uniqueElementProductTypeNames != null && this.uniqueElementProductTypeNames
-                        .size() == 0))) {
+        if (this.uniqueElementName == null || (this.uniqueElementProductTypeNames == null || (
+            this.uniqueElementProductTypeNames
+                .size() == 0))) {
             throw new RemoteException(
                     "Both uniqueElementName and uniqueElementProductTypeNames must "
                             + "be defined in order to use this form of the sync operation!");

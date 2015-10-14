@@ -16,17 +16,19 @@
 package org.apache.oodt.pcs.input;
 
 //JDK imports
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 /**
  * 
@@ -226,7 +228,7 @@ public class PGEConfigFileReader {
     List scalars = PGEXMLFileUtils.getScalars(group);
 
     // the list should be size 1
-    if (scalars == null || (scalars != null && scalars.size() != 1)) {
+    if (scalars == null || (scalars.size() != 1)) {
       throw new PGEConfigFileException(
           "There is no product path defined in the configuration file, or there is more than one scalar listed in the ProductPathGroup!");
     }
@@ -250,7 +252,7 @@ public class PGEConfigFileReader {
     List scalars = PGEXMLFileUtils.getScalars(group);
 
     // the list should be size 1
-    if (scalars == null || (scalars != null && scalars.size() != 1)) {
+    if (scalars == null || (scalars.size() != 1)) {
       throw new PGEConfigFileException(
           "There is no PGEName defined in the configuration file, or there is more than one scalar listed in the PGENameGroup");
     }
