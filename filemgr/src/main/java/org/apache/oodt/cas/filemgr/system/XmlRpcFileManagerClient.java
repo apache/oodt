@@ -17,22 +17,37 @@
 
 package org.apache.oodt.cas.filemgr.system;
 
-//APACHE imports
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodRetryHandler;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
-import org.apache.oodt.cas.filemgr.structs.*;
-import org.apache.oodt.cas.filemgr.structs.exceptions.*;
+import org.apache.oodt.cas.filemgr.structs.Element;
+import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Query;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory;
 import org.apache.oodt.cas.filemgr.versioning.Versioner;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.xmlrpc.*;
+import org.apache.xmlrpc.CommonsXmlRpcTransport;
+import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.XmlRpcClientException;
+import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.XmlRpcTransport;
+import org.apache.xmlrpc.XmlRpcTransportFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,8 +59,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//JDK imports
-//OODT imports
 
 /**
  * @author mattmann (Chris Mattmann)
@@ -1287,7 +1300,6 @@ public class XmlRpcFileManagerClient {
           throw new Exception(e2);
         }
         catch (Exception e) {
-            //e.printStackTrace();
           LOG.log(Level.SEVERE, "Failed to ingest product [ id: " + product.getProductId() +
                                 "/ name:" +product.getProductName() + "] :" + e.getMessage() + " -- rolling back ingest");
             try {
