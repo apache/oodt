@@ -18,30 +18,16 @@
 package org.apache.oodt.cas.filemgr.system;
 
 //APACHE imports
-import org.apache.xmlrpc.WebServer;
+import com.google.common.collect.Lists;
 
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
+import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
+import org.apache.oodt.cas.filemgr.datatransfer.TransferStatusTracker;
 import org.apache.oodt.cas.filemgr.metadata.ProductMetKeys;
 import org.apache.oodt.cas.filemgr.metadata.extractors.FilemgrMetExtractor;
 import org.apache.oodt.cas.filemgr.repository.RepositoryManager;
-import org.apache.oodt.cas.filemgr.structs.Element;
-import org.apache.oodt.cas.filemgr.structs.ExtractorSpec;
-import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
-import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.Query;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
+import org.apache.oodt.cas.filemgr.structs.*;
+import org.apache.oodt.cas.filemgr.structs.exceptions.*;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryFilter;
 import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
@@ -49,35 +35,25 @@ import org.apache.oodt.cas.filemgr.structs.query.QueryResultComparator;
 import org.apache.oodt.cas.filemgr.structs.query.filter.ObjectTimeEvent;
 import org.apache.oodt.cas.filemgr.structs.query.filter.TimeEvent;
 import org.apache.oodt.cas.filemgr.structs.type.TypeHandler;
-import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory;
 import org.apache.oodt.cas.filemgr.versioning.Versioner;
 import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
-import org.apache.oodt.cas.filemgr.datatransfer.TransferStatusTracker;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.commons.date.DateUtils;
+import org.apache.xmlrpc.WebServer;
 
-import com.google.common.collect.Lists;
-
-
-
-
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
+//JDK imports
 
 /**
  * @author mattmann
@@ -1086,6 +1062,11 @@ public class XmlRpcFileManager {
 
     private Metadata runExtractors(Product product, Metadata metadata) {
         // make sure that the product type definition is present
+        if(product.getProductType() == null){
+          LOG.log(Level.SEVERE, "Failed to run extractor for: "+product.getProductId()+":"+product
+              .getProductName()+" product type cannot be null.");
+          return null;
+        }
         try {
             product.setProductType(repositoryManager.getProductTypeById(product
                     .getProductType().getProductTypeId()));
