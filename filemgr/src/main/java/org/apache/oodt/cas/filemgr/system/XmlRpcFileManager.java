@@ -1060,12 +1060,13 @@ public class XmlRpcFileManager {
         return metadata;
     }
 
-    private Metadata runExtractors(Product product, Metadata metadata) {
+    private Metadata runExtractors(Product product, Metadata metadata) throws CatalogException {
         // make sure that the product type definition is present
         if(product.getProductType() == null){
           LOG.log(Level.SEVERE, "Failed to run extractor for: "+product.getProductId()+":"+product
               .getProductName()+" product type cannot be null.");
-          return null;
+          throw new CatalogException("Failed to run extractor for: "+product.getProductId()+":"+product
+              .getProductName()+" product type cannot be null.");
         }
         try {
             product.setProductType(repositoryManager.getProductTypeById(product
