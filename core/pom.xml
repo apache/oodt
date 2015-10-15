@@ -532,6 +532,21 @@ the License.
     <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
     <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
     <plugins>
+ <plugin>
+            <groupId>com.atlassian.maven.plugins</groupId>
+            <artifactId>maven-clover2-plugin</artifactId>
+            <version>4.0.6</version>
+        <configuration>
+            <license><![CDATA[
+oOmRsdEFLXepeoGMXQooikmNPOPmVegiGubXhbERoJfRSL
+mi2KPdq<W7KOK3JVlo0fkp2R2Kx279nvrcMRbejDsX7xXm
+NMrQVXqQRmonRonRNpputMopoRNNpnNrNQTUUXuusXVWnR
+onmqmUUnqrovqvommmmmUUnqrovqvommmmmUU1mXZebUUn
+mm
+]]></license>
+        </configuration>
+        </plugin>
+
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>

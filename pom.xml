@@ -97,20 +97,6 @@ the License.
               </execution>
             </executions>
           </plugin>
-	  <plugin>
-            <groupId>com.atlassian.maven.plugins</groupId>
-            <artifactId>maven-clover2-plugin</artifactId>
-            <version>4.0.2</version>
-        <configuration>
-            <license><![CDATA[
-oOmRsdEFLXepeoGMXQooikmNPOPmVegiGubXhbERoJfRSL
-mi2KPdq<W7KOK3JVlo0fkp2R2Kx279nvrcMRbejDsX7xXm
-NMrQVXqQRmonRonRNpputMopoRNNpnNrNQTUUXuusXVWnR
-onmqmUUnqrovqvommmmmUUnqrovqvommmmmUU1mXZebUUn
-mm
-	]]></license>
-        </configuration>
-        </plugin>
         </plugins>
       </build>
     </profile>
