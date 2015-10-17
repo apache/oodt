@@ -21,21 +21,15 @@ import org.apache.oodt.cas.crawl.typedetection.MetExtractorSpec;
 import org.apache.oodt.cas.crawl.typedetection.MimeExtractorConfigReader;
 import org.apache.oodt.cas.crawl.typedetection.MimeExtractorRepo;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
-import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.filenaming.NamingConvention;
 import org.apache.oodt.cas.metadata.preconditions.PreCondEvalUtils;
+import org.springframework.beans.factory.annotation.Required;
 
-//JDK imports
 import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 
-//APACHE imports
-import org.apache.tika.mime.MimeType; //for javadoc
-
-//Spring imports
-import org.springframework.beans.factory.annotation.Required;
 
 /**
  * <p>
@@ -47,11 +41,11 @@ import org.springframework.beans.factory.annotation.Required;
  * actions that the crawler should take in response to its 3 lifecycle phases:
  * preIngest, postIngestSuccess, and postIngestFail. </li>
  * <li><code>met-extr-preconditions.xml</code> - This file defines
- * preconditions that {@link MetExtractor}s must pass before being called by
+ * preconditions that {@link org.apache.oodt.cas.metadata.MetExtractor}s must pass before being called by
  * the AutoDetectCrawler. </li>
- * <li><code>mime-extractor-map.xml</code> - This file maps {@link MimeType}
- * names to names of {@link MetExtractor}s to call for a particular
- * {@link Product} {@link File} as it is encountered during a crawl (e.g.,
+ * <li><code>mime-extractor-map.xml</code> - This file maps {@link org.apache.tika.mime.MimeType}
+ * names to names of {@link org.apache.oodt.cas.metadata.MetExtractor}s to call for a particular
+ * {@link org.apache.oodt.cas.filemgr.structs.Product} {@link File} as it is encountered during a crawl (e.g.,
  * assuming that {@link Metadata} needs to be generated, as oppossed to being
  * available apriori). See
  * <code>./src/resources/examples/mime-extractor-map.xml</code> for an example
@@ -59,7 +53,7 @@ import org.springframework.beans.factory.annotation.Required;
  * <li><code>mimetypes.xml</code> - An <a
  * href="http://tika.apache.org/">Apache Tika</a> style mimetypes
  * file, augmented with the ability to have arbitrary regular expressions that
- * define a particular {@link Product} {@link MimeType}. This {@link MimeType}
+ * define a particular {@link org.apache.oodt.cas.filemgr.structs.Product} {@link org.apache.tika.mime.MimeType}. This {@link org.apache.tika.mime.MimeType}
  * is then mapped to an extractor vai the <code>mime-extractor-map.xml</code>
  * file, described above. </li>
  * </p>.
@@ -82,7 +76,7 @@ public class AutoDetectProductCrawler extends ProductCrawler implements
       metadata.addMetadata(MIME_TYPES_HIERARCHY,
             mimeExtractorRepo.getMimeTypes(product));
       for (int i = 0; i < specs.size(); i++) {
-         Metadata m = ((MetExtractorSpec) specs.get(i)).getMetExtractor()
+         Metadata m = specs.get(i).getMetExtractor()
                .extractMetadata(product);
          if (m != null) {
             metadata.addMetadata(m.getHashtable(), true);
@@ -101,8 +95,8 @@ public class AutoDetectProductCrawler extends ProductCrawler implements
                PreCondEvalUtils evalUtils = new PreCondEvalUtils(
                      this.getApplicationContext());
                for (int i = 0; i < specs.size(); i++) {
-                  List<String> preCondComparatorIds = ((MetExtractorSpec) specs
-                        .get(i)).getPreCondComparatorIds();
+                  List<String> preCondComparatorIds = specs
+                        .get(i).getPreCondComparatorIds();
                   if (!evalUtils.eval(preCondComparatorIds, product))
                      return false;
                }

@@ -17,12 +17,10 @@
 
 package org.apache.oodt.opendapps;
 
-//OPeNDAP imports
-import opendap.dap.DAS;
 
 /**
  * 
- * A set of named constants for extracting information from OPeNDAP {@link DAS}
+ * A set of named constants for extracting information from OPeNDAP {@link opendap.dap.DAS}
  * profiles.
  * 
  */

@@ -18,8 +18,6 @@
 
 package org.apache.oodt.cas.product.rdf;
 
-//JDK imports
-import org.apache.oodt.cas.filemgr.structs.ProductType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -183,11 +181,11 @@ public class RDFConfig {
 
   /**
    * Convenience method. First checks to see if there is a declared type
-   * namespace for this {@link ProductType}, otherwise, returns
+   * namespace for this {@link org.apache.oodt.cas.filemgr.structs.ProductType}, otherwise, returns
    * {@link #getDefaultTypeNs()}.
    * 
    * @param type
-   *          The {@link ProductType#getName()} to find the namespace for.
+   *          The {@link org.apache.oodt.cas.filemgr.structs.ProductType#getName()} to find the namespace for.
    * @return Either the type's declared namespace, or
    *         {@link #getDefaultTypeNs()}.
    */

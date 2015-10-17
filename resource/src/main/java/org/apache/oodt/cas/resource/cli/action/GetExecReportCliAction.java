@@ -16,14 +16,11 @@
  */
 package org.apache.oodt.cas.resource.cli.action;
 
-//JDK imports
-import java.util.List;
-
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 
 /**
- * A {@link CmdLineAction} which list all jobs executing and shows 
+ * A {@link org.apache.oodt.cas.cli.action.CmdLineAction} which list all jobs executing and shows
  * what nodes are executing those jobs in addition to queue name and
  * load value.
  * 

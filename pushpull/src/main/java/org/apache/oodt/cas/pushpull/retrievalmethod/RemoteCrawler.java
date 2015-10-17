@@ -24,7 +24,6 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.pushpull.config.DataFilesInfo;
 import org.apache.oodt.cas.pushpull.config.DownloadInfo;
 import org.apache.oodt.cas.pushpull.exceptions.AlreadyInDatabaseException;
-import org.apache.oodt.cas.pushpull.exceptions.ProtocolFileException;
 import org.apache.oodt.cas.pushpull.exceptions.RetrievalMethodException;
 import org.apache.oodt.cas.pushpull.exceptions.ToManyFailedDownloadsException;
 import org.apache.oodt.cas.pushpull.exceptions.UndefinedTypeException;
@@ -44,7 +43,6 @@ import org.apache.oodt.cas.pushpull.retrievalsystem.FileRetrievalSystem;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -68,9 +66,9 @@ public class RemoteCrawler implements RetrievalMethod {
      * Starts the crawler and creates a default DirStruct if null was supplied
      * in constructor
      *
-     * @throws MalformedURLException
-     * @throws ProtocolException
-     * @throws ProtocolFileException
+     * @throws java.net.MalformedURLException
+     * @throws org.apache.oodt.cas.pushpull.exceptions.ProtocolException
+     * @throws org.apache.oodt.cas.pushpull.exceptions.ProtocolFileException
      */
     @Override
    public void processPropFile(FileRetrievalSystem frs, Parser propFileParser,

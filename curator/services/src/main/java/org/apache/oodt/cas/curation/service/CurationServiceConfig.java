@@ -20,7 +20,6 @@ package org.apache.oodt.cas.curation.service;
 
 //OODT imports
 import org.apache.oodt.cas.curation.metadata.CuratorConfMetKeys;
-import org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
@@ -75,8 +74,7 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
    *          The {@link ServletConfig} read on startup of the webapp. This is
    *          typically specified in a <code>context.xml</code> file, but can
    *          also be specified in <code>web.xml</code>.
-   * @return A singleton instance of the global {@link link
-   *         CurationServiceConfig}.
+   * @return A singleton instance of the global {@link CurationServiceConfig}.
    * @throws InstantiationException
    *           If there is any error constructing the config.
    */
@@ -163,7 +161,7 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
 
   /**
    * 
-   * @return The default CAS File Manager {@link DataTransferFactory} classname.
+   * @return The default CAS File Manager {@link org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory} classname.
    */
   public String getDefaultTransferFactory() {
     return this.evaluateParameter(DEFAULT_TRANSFER_FACTORY);

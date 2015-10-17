@@ -19,12 +19,11 @@
 package org.apache.oodt.cas.crawl.typedetection;
 
 // OODT imports
-import java.io.FileNotFoundException;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author mattmann
@@ -118,12 +117,8 @@ public class MetExtractorSpec {
     }
 
     /**
-     * @param preconditionsFile
+     * @param preCondComparatorIds
      *            The extractor preconditions file
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws FileNotFoundException
      */
     public void setPreConditionComparatorIds(List<String> preCondComparatorIds) {
         this.preCondComparatorIds = preCondComparatorIds;

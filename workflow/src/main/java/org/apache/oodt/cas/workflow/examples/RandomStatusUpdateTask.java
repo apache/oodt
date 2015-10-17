@@ -18,26 +18,26 @@
 
 package org.apache.oodt.cas.workflow.examples;
 
+
+//OODT imports
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
+import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+
 //JDK imports
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
 
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 
 /**
  * @author mattmann
  * @version $Revision$
  * 
  * This class illustrates OODT-86, demonstrating how the method
- * {@link XmlRpcWorkflowManager#updateWorkflowInstance(java.util.Hashtable)}
- * allows a user to change the status of a given {@link WorkflowInstance}
+ * {@link org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManager#updateWorkflowInstance(java.util.Hashtable)}
+ * allows a user to change the status of a given {@link org.apache.oodt.cas.workflow.structs.WorkflowInstance}
  * programmatically.
  */
 public class RandomStatusUpdateTask implements WorkflowTaskInstance {

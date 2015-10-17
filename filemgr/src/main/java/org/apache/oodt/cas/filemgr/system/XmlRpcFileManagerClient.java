@@ -17,49 +17,48 @@
 
 package org.apache.oodt.cas.filemgr.system;
 
-//APACHE imports
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpMethodRetryHandler;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.oodt.cas.cli.CmdLineUtility;
+import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
+import org.apache.oodt.cas.filemgr.structs.Element;
+import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Query;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
+import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
+import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
+import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
+import org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory;
+import org.apache.oodt.cas.filemgr.versioning.Versioner;
+import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.xmlrpc.CommonsXmlRpcTransport;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcClientException;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcTransport;
 import org.apache.xmlrpc.XmlRpcTransportFactory;
-//JDK imports
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.File;
-//OODT imports
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpMethodRetryHandler;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.cli.CmdLineUtility;
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
-import org.apache.oodt.cas.filemgr.structs.Element;
-import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
-import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.Query;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
-import org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory;
-import org.apache.oodt.cas.filemgr.versioning.Versioner;
-import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
-import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
-import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
-import org.apache.oodt.cas.filemgr.structs.query.QueryResult;
+
 
 /**
  * @author mattmann (Chris Mattmann)
@@ -1286,10 +1285,23 @@ public class XmlRpcFileManagerClient {
                         + product.getProductType().getVersioner()
                         + ": Message: " + e.getMessage());
             throw new VersioningException(e);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE, "Failed to ingest product [" + product
-                    + "] : " + e.getMessage() + " -- rolling back ingest");
+        } catch(XmlRpcException e2){
+          LOG.log(Level.SEVERE, "Failed to ingest product [ name:" +product.getProductName() + "] :" + e2.getMessage() + " -- rolling back ingest");
+          try {
+            Vector<Object> argList = new Vector<Object>();
+            Hashtable<String, Object> productHash = XmlRpcStructFactory
+                .getXmlRpcProduct(product);
+            argList.add(productHash);
+            client.execute("filemgr.removeProduct", argList);
+          } catch (Exception e1) {
+            LOG.log(Level.SEVERE, "Failed to rollback ingest of product ["
+                                  + product + "] : " + e2.getMessage());
+          }
+          throw new Exception(e2);
+        }
+        catch (Exception e) {
+          LOG.log(Level.SEVERE, "Failed to ingest product [ id: " + product.getProductId() +
+                                "/ name:" +product.getProductName() + "] :" + e.getMessage() + " -- rolling back ingest");
             try {
                 Vector<Object> argList = new Vector<Object>();
                 Hashtable<String, Object> productHash = XmlRpcStructFactory

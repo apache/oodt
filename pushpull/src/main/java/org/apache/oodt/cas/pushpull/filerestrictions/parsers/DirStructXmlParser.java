@@ -21,17 +21,20 @@ package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
-import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
-import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 import org.apache.oodt.cas.pushpull.expressions.GlobalVariables;
 import org.apache.oodt.cas.pushpull.expressions.Method;
 import org.apache.oodt.cas.pushpull.expressions.Variable;
+import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
+import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
+import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-
-//JDK imports
 import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -40,11 +43,7 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+//JDK imports
 
 /**
  * 
@@ -72,7 +71,7 @@ public class DirStructXmlParser implements Parser {
             NodeList list = (DocumentBuilderFactory.newInstance()
                     .newDocumentBuilder().parse(new InputSource(xmlFile)))
                     .getDocumentElement().getChildNodes();
-            VirtualFile currentFile = null;
+            VirtualFile currentFile;
             for (int i = 0; i < list.getLength(); i++) {
                 Node node = list.item(i);
                 if (node.getNodeName().equals("dirstruct")) {
@@ -144,7 +143,7 @@ public class DirStructXmlParser implements Parser {
             case '$':
                 try {
                     if (input.charAt(i + 1) == '{') {
-                        StringBuffer variable = new StringBuffer("");
+                        StringBuilder variable = new StringBuilder("");
                         for (int j = i + 2; j < input.length(); j++) {
                             char ch = input.charAt(j);
                             if ((ch <= 'Z' && ch >= 'A')
@@ -168,7 +167,7 @@ public class DirStructXmlParser implements Parser {
                 break;
             case '%':
                 try {
-                    StringBuffer method = new StringBuffer("");
+                    StringBuilder method = new StringBuilder("");
                     int j = i + 1;
                     for (; j < input.length(); j++) {
                         char ch = input.substring(j, j + 1).charAt(0);
@@ -201,7 +200,7 @@ public class DirStructXmlParser implements Parser {
                                 + input + " near " + method);
                         break;
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
                 break;
             }

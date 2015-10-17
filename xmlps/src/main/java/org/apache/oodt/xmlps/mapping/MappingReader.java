@@ -21,6 +21,7 @@ package org.apache.oodt.xmlps.mapping;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlps.util.GenericCDEObjectFactory;
+import org.w3c.dom.*;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -28,12 +29,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -83,7 +78,7 @@ public final class MappingReader implements MappingReaderMetKeys {
 
     String defaultTbl = tblsElem.getAttribute("default");
     // make sure that the default attribute is set
-    if (defaultTbl == null || (defaultTbl != null && defaultTbl.equals(""))) {
+    if (defaultTbl == null || (defaultTbl.equals(""))) {
       throw new Exception("Unable to parse mapping XML file: [" + map.getName()
           + "]: reason: there needs to be a default table defined "
           + "by the \"default\" attribute!");

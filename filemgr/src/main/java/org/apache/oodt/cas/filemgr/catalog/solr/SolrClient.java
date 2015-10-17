@@ -16,15 +16,6 @@
  */
 package org.apache.oodt.cas.filemgr.catalog.solr;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -34,6 +25,14 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Class containing client-side functionality for interacting with a Solr server.
@@ -62,11 +61,11 @@ public class SolrClient {
 	/**
 	 * Method to send one or more documents to be indexed to Solr.
 	 * 
-	 * @param document
+	 * @param docs
 	 * @param commit
 	 * @param mimeType : the mime-type format of the documents
 	 * @return
-	 * @throws MalformedURLException
+	 * @throws CatalogException
 	 */
 	public String index(List<String> docs, boolean commit, String mimeType) throws CatalogException {
 		
@@ -104,7 +103,7 @@ public class SolrClient {
 	 * @param id
 	 * @param commit
 	 * @return
-	 * @throws Exception
+	 * @throws CatalogException
 	 */
 	public String delete(String id, boolean commit) throws CatalogException {
 		
@@ -143,7 +142,8 @@ public class SolrClient {
 	
 	/**
 	 * Method to query the Solr index for a product with the specified name.
-	 * @param id
+	 * @param name
+	 * @param mimeType
 	 * @return
 	 */
 	public String queryProductByName(String name, String mimeType) throws CatalogException {
@@ -188,7 +188,7 @@ public class SolrClient {
 	
 	/**
 	 * Method to commit the current changes to the Solr index.
-	 * @throws MalformedURLException
+	 * @throws Exception
 	 */
 	public void commit() throws Exception {
 		

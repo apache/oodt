@@ -20,17 +20,16 @@ package org.apache.oodt.xmlps.queryparser;
 //JDK imports
 import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.MappingField;
+import org.apache.oodt.xmlquery.QueryElement;
 
 import java.util.List;
 import java.util.Stack;
 
 //OODT imports
-import org.apache.oodt.xmlquery.QueryElement;
-import org.apache.oodt.xmlquery.XMLQuery;
 
 /**
  * 
- * Parsers the {@link XMLQuery} and its @link XMLQuery#getWhereElementSet()}
+ * Parsers the {@link org.apache.oodt.xmlquery.XMLQuery} and its @link XMLQuery#getWhereElementSet()}
  * into an {@link Expression} tree.
  */
 public class HandlerQueryParser implements ParseConstants {
@@ -38,7 +37,7 @@ public class HandlerQueryParser implements ParseConstants {
   /**
    * Calls {@link #parse(Stack, Mapping)} with a null mapping.
    * 
-   * @param queryStack The {@link XMLQuery#getWhereElementSet()}.
+   * @param queryStack The {@link org.apache.oodt.xmlquery.XMLQuery#getWhereElementSet()}.
    * @return The parsed {@link Expression} tree.
    */
   public static Expression parse(Stack<QueryElement> queryStack) {
@@ -47,10 +46,10 @@ public class HandlerQueryParser implements ParseConstants {
 
   /**
    * 
-   * Parses the {@link XMLQuery#getWhereElementSet()} using the provided
+   * Parses the {@link org.apache.oodt.xmlquery.XMLQuery#getWhereElementSet()} using the provided
    * <param>map</param>.
    * 
-   * @param queryStack The {@link XMLQuery#getWhereElementSet()}
+   * @param queryStack The {@link org.apache.oodt.xmlquery.XMLQuery#getWhereElementSet()}
    * @param map The provided ontological mapping.
    * @return The parsed {@link Expression} tree.
    */

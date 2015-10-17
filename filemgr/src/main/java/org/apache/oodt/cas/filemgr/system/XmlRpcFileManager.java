@@ -17,29 +17,27 @@
 
 package org.apache.oodt.cas.filemgr.system;
 
-//APACHE imports
-import org.apache.xmlrpc.WebServer;
 
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-import org.apache.oodt.commons.date.DateUtils;
+import com.google.common.collect.Lists;
+
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
+import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
+import org.apache.oodt.cas.filemgr.datatransfer.TransferStatusTracker;
 import org.apache.oodt.cas.filemgr.metadata.ProductMetKeys;
 import org.apache.oodt.cas.filemgr.metadata.extractors.FilemgrMetExtractor;
 import org.apache.oodt.cas.filemgr.repository.RepositoryManager;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.ExtractorSpec;
 import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
+import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
@@ -49,35 +47,32 @@ import org.apache.oodt.cas.filemgr.structs.query.QueryResultComparator;
 import org.apache.oodt.cas.filemgr.structs.query.filter.ObjectTimeEvent;
 import org.apache.oodt.cas.filemgr.structs.query.filter.TimeEvent;
 import org.apache.oodt.cas.filemgr.structs.type.TypeHandler;
-import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.filemgr.util.XmlRpcStructFactory;
 import org.apache.oodt.cas.filemgr.versioning.Versioner;
 import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
-import org.apache.oodt.cas.filemgr.datatransfer.TransferStatusTracker;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.commons.date.DateUtils;
+import org.apache.xmlrpc.WebServer;
 
-import com.google.common.collect.Lists;
-
-
-
-
-//JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * @author mattmann
@@ -193,8 +188,7 @@ public class XmlRpcFileManager {
 
     public double getProductPctTransferred(Hashtable<String, Object> productHash) {
         Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-        double pct = transferStatusTracker.getPctTransferred(product);
-        return pct;
+      return transferStatusTracker.getPctTransferred(product);
     }
 
     public double getRefPctTransferred(Hashtable<String, Object> refHash) {
@@ -233,7 +227,7 @@ public class XmlRpcFileManager {
                 .getProductTypeFromXmlRpc(productTypeHash);
         Query query = XmlRpcStructFactory.getQueryFromXmlRpc(queryHash);
 
-        ProductPage prodPage = null;
+        ProductPage prodPage;
 
         try {
             prodPage = catalog.pagedQuery(this.getCatalogQuery(query, type), type, pageNum);
@@ -364,7 +358,7 @@ public class XmlRpcFileManager {
 
     public Vector<Hashtable<String, Object>> getTopNProducts(int n)
             throws CatalogException {
-        List<Product> topNProducts = null;
+        List<Product> topNProducts;
 
         try {
             topNProducts = catalog.getTopNProducts(n);
@@ -383,7 +377,7 @@ public class XmlRpcFileManager {
             throws CatalogException {
         ProductType type = XmlRpcStructFactory
                 .getProductTypeFromXmlRpc(productTypeHash);
-        List<Product> topNProducts = null;
+        List<Product> topNProducts;
 
         try {
             topNProducts = catalog.getTopNProducts(n, type);
@@ -516,7 +510,7 @@ public class XmlRpcFileManager {
             throws CatalogException {
         ProductType type = XmlRpcStructFactory
                 .getProductTypeFromXmlRpc(productTypeHash);
-        List<Product> productList = null;
+        List<Product> productList;
 
         try {
             productList = catalog.getProductsByProductType(type);
@@ -552,7 +546,7 @@ public class XmlRpcFileManager {
 
     public Hashtable<String, Object> getElementById(String elementId)
             throws ValidationLayerException {
-        Element element = null;
+        Element element;
 
         try {
             element = catalog.getValidationLayer().getElementById(elementId);
@@ -567,7 +561,7 @@ public class XmlRpcFileManager {
 
     public Hashtable<String, Object> getElementByName(String elementName)
             throws ValidationLayerException {
-        Element element = null;
+        Element element;
 
         try {
             element = catalog.getValidationLayer()
@@ -588,7 +582,7 @@ public class XmlRpcFileManager {
                     .getComplexQueryFromXmlRpc(complexQueryHash);
 
             // get ProductTypes
-            List<ProductType> productTypes = null;
+            List<ProductType> productTypes;
             if (complexQuery.getReducedProductTypeNames() == null) {
                 productTypes = this.repositoryManager.getProductTypes();
             } else {
@@ -707,7 +701,7 @@ public class XmlRpcFileManager {
     public String ingestProduct(Hashtable<String, Object> productHash,
       Hashtable<String, String> metadata, boolean clientTransfer)
       throws VersioningException, RepositoryManagerException,
-      DataTransferException, CatalogException {
+        DataTransferException, CatalogException {
 
     Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
 
@@ -722,8 +716,7 @@ public class XmlRpcFileManager {
       Metadata expandedMetdata = addMetadata(p, m);
 
       // version the product
-      if (!clientTransfer || (clientTransfer
-          && Boolean.getBoolean("org.apache.oodt.cas.filemgr.serverside.versioning"))) {
+      if (!clientTransfer || (Boolean.getBoolean("org.apache.oodt.cas.filemgr.serverside.versioning"))) {
         Versioner versioner = null;
         try {
           versioner = GenericFileManagerObjectFactory
@@ -801,7 +794,7 @@ public class XmlRpcFileManager {
                + "' bytes from file '" + filePath + "' at index '" + offset
                + "' : " + e.getMessage(), e);
       } finally {
-         try { is.close(); } catch (Exception e) {}
+         try { is.close(); } catch (Exception ignored) {}
       }
    }
     
@@ -850,14 +843,12 @@ public class XmlRpcFileManager {
                         + filePath + ": Message: " + e.getMessage());
                 success = false;
             } finally {
-                if (fOut != null) {
-                    try {
-                        fOut.close();
-                    } catch (Exception ignore) {
-                    }
+              try {
+                  fOut.close();
+              } catch (Exception ignore) {
+              }
 
-                    fOut = null;
-                }
+              fOut = null;
             }
         }
 
@@ -873,16 +864,14 @@ public class XmlRpcFileManager {
         // first thing we care about is if the product is flat or heirarchical
         if (p.getProductStructure().equals(Product.STRUCTURE_FLAT)) {
             // we just need to get its first reference
-            if (p.getProductReferences() == null
-                    || (p.getProductReferences() != null && p
-                            .getProductReferences().size() != 1)) {
+            if (p.getProductReferences() == null || (p.getProductReferences().size() != 1)) {
                 throw new DataTransferException(
                         "Flat products must have a single reference: cannot move");
             }
 
             // okay, it's fine to move it
             // first, we need to update the data store ref
-            Reference r = (Reference) p.getProductReferences().get(0);
+            Reference r = p.getProductReferences().get(0);
             if (r.getDataStoreReference().equals(
                     new File(newPath).toURI().toString())) {
                 throw new DataTransferException("cannot move product: ["
@@ -1084,8 +1073,14 @@ public class XmlRpcFileManager {
         return metadata;
     }
 
-    private Metadata runExtractors(Product product, Metadata metadata) {
+    private Metadata runExtractors(Product product, Metadata metadata) throws CatalogException {
         // make sure that the product type definition is present
+        if(product.getProductType() == null){
+          LOG.log(Level.SEVERE, "Failed to run extractor for: "+product.getProductId()+":"+product
+              .getProductName()+" product type cannot be null.");
+          throw new CatalogException("Failed to run extractor for: "+product.getProductId()+":"+product
+              .getProductName()+" product type cannot be null.");
+        }
         try {
             product.setProductType(repositoryManager.getProductTypeById(product
                     .getProductType().getProductTypeId()));
@@ -1102,8 +1097,10 @@ public class XmlRpcFileManager {
             for (ExtractorSpec spec: product.getProductType().getExtractors()) {
                 FilemgrMetExtractor extractor = GenericFileManagerObjectFactory
                         .getExtractorFromClassName(spec.getClassName());
+              if (extractor != null) {
                 extractor.configure(spec.getConfiguration());
-                LOG.log(Level.INFO, "Running Met Extractor: ["
+              }
+              LOG.log(Level.INFO, "Running Met Extractor: ["
                         + extractor.getClass().getName()
                         + "] for product type: ["
                         + product.getProductType().getName() + "]");
@@ -1131,15 +1128,14 @@ public class XmlRpcFileManager {
 
     private void setProductType(List<Product> products) throws Exception {
         if (products != null && products.size() > 0) {
-            for (Iterator<Product> i = products.iterator(); i.hasNext();) {
-                Product p = i.next();
-                try {
-                    p.setProductType(repositoryManager.getProductTypeById(p
-                            .getProductType().getProductTypeId()));
-                } catch (RepositoryManagerException e) {
-                    throw new Exception(e.getMessage());
-                }
+          for (Product p : products) {
+            try {
+              p.setProductType(repositoryManager.getProductTypeById(p
+                  .getProductType().getProductTypeId()));
+            } catch (RepositoryManagerException e) {
+              throw new Exception(e.getMessage());
             }
+          }
         }
     }
     
@@ -1152,18 +1148,17 @@ public class XmlRpcFileManager {
 
             if (productIdList != null && productIdList.size() > 0) {
                 productList = new Vector<Product>(productIdList.size());
-                for (Iterator<String> i = productIdList.iterator(); i.hasNext();) {
-                    String productId = i.next();
-                    Product product = catalog.getProductById(productId);
-                    // it is possible here that the underlying catalog did not
-                    // set the ProductType
-                    // to obey the contract of the File Manager, we need to make
-                    // sure its set here
-                    product.setProductType(this.repositoryManager
-                            .getProductTypeById(product.getProductType()
-                                    .getProductTypeId()));
-                    productList.add(product);
-                }
+              for (String productId : productIdList) {
+                Product product = catalog.getProductById(productId);
+                // it is possible here that the underlying catalog did not
+                // set the ProductType
+                // to obey the contract of the File Manager, we need to make
+                // sure its set here
+                product.setProductType(this.repositoryManager
+                    .getProductTypeById(product.getProductType()
+                                               .getProductTypeId()));
+                productList.add(product);
+              }
                 return productList;
             } else {
                 return new Vector<Product>(); // null values not supported by XML-RPC
@@ -1179,7 +1174,7 @@ public class XmlRpcFileManager {
     
     private Metadata getReducedMetadata(Product product, List<String> elements) throws CatalogException {
         try {
-            Metadata m = null;
+            Metadata m;
             if (elements != null && elements.size() > 0) {
                 m = catalog.getReducedMetadata(product, elements);
             }else {
@@ -1229,9 +1224,9 @@ public class XmlRpcFileManager {
         List<TypeHandler> handlers = this.repositoryManager.getProductTypeById(
                 productType.getProductTypeId()).getHandlers();
         if (handlers != null) {
-            for (Iterator<TypeHandler> iter = handlers.iterator(); iter
-                    .hasNext();)
-                iter.next().preAddMetadataHandle(metadata);
+          for (TypeHandler handler : handlers) {
+            handler.preAddMetadataHandle(metadata);
+          }
         }
         return metadata;
     }
@@ -1241,9 +1236,9 @@ public class XmlRpcFileManager {
         List<TypeHandler> handlers = this.repositoryManager.getProductTypeById(
                 productType.getProductTypeId()).getHandlers();
         if (handlers != null) {
-            for (Iterator<TypeHandler> iter = handlers.iterator(); iter
-                    .hasNext();)
-                iter.next().preQueryHandle(query);
+          for (TypeHandler handler : handlers) {
+            handler.preQueryHandle(query);
+          }
         }
         return query;
     }
@@ -1306,7 +1301,7 @@ public class XmlRpcFileManager {
 
     List<Reference> refs = product.getProductReferences();
 
-    if (refs == null || (refs != null && refs.size() == 0)) {
+    if (refs == null || (refs.size() == 0)) {
       refs = this.catalog.getProductReferences(product);
     }
 

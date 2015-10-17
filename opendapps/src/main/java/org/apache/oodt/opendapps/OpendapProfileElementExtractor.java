@@ -16,26 +16,23 @@
  */
 package org.apache.oodt.opendapps;
 
+//OODT imports
+import org.apache.oodt.opendapps.config.OpendapConfig;
+import org.apache.oodt.profile.EnumeratedProfileElement;
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.RangedProfileElement;
+
 //JDK imports
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 //OPeNDAP/THREDDS imports
 import opendap.dap.Attribute;
 import opendap.dap.AttributeTable;
 import opendap.dap.DAS;
 import opendap.dap.NoSuchAttributeException;
-
-
-//OODT imports
-import org.apache.oodt.opendapps.config.OpendapConfig;
-import org.apache.oodt.profile.EnumeratedProfileElement;
-import org.apache.oodt.profile.Profile;
-import org.apache.oodt.profile.ProfileElement;
-import org.apache.oodt.profile.RangedProfileElement;
 
 import static org.apache.oodt.opendapps.DapNames.*;
 
@@ -46,7 +43,7 @@ import static org.apache.oodt.opendapps.DapNames.*;
  * different types of objects. The class looks at the {@link OpendapConfig} and
  * then tries to stuff what's in each &lt;var&gt; into
  * {@link RangedProfileElement} or {@link EnumeratedProfileElement}. The class
- * is designed with extensibility in mind in case new {@link ProfileElement}
+ * is designed with extensibility in mind in case new {@link org.apache.oodt.profile.ProfileElement}
  * types are created in the future.
  * 
  */

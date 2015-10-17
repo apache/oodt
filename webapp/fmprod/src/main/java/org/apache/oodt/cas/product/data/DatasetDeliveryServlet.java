@@ -27,24 +27,21 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+//JDK imports
 
 /**
  * Delivers back entire {@link ProductType}s (or <code>Dataset</code>s) as
@@ -105,7 +102,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
       throws ServletException, IOException {
 
     String typeID = req.getParameter("typeID");
-    ProductType type = null;
+    ProductType type;
 
     if (typeID == null) {
       throw new IllegalArgumentException("No typeID parameter specified!");
@@ -134,10 +131,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
 
     try {
       page = client.getFirstPage(type);
-      if (page == null
-          || (page != null && page.getPageProducts() == null)
-          || (page != null && page.getPageProducts() != null && page
-              .getPageProducts().size() == 0)) {
+      if (page == null || (page.getPageProducts() == null) || (page.getPageProducts().size() == 0)) {
         throw new ServletException("No products for dataset: ["
             + type.getName() + "]");
       }
@@ -145,8 +139,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
       Map productHash = new HashMap();
 
       do {
-        for (Iterator i = page.getPageProducts().iterator(); i.hasNext();) {
-          Product product = (Product) i.next();
+        for (Product product : page.getPageProducts()) {
           if (alreadyZipped(product, productHash)) {
             continue;
           }
@@ -169,7 +162,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
 
     // now that all product zips have been created, create the dataset
     // zip
-    String datasetZipFilePath = null;
+    String datasetZipFilePath;
     File datasetZipFile = null;
     InputStream in = null;
     OutputStream o2 = null;
@@ -215,7 +208,6 @@ public class DatasetDeliveryServlet extends HttpServlet implements
         } catch (Exception ignore) {
         }
 
-        in = null;
       }
 
       if (o2 != null) {
@@ -224,7 +216,6 @@ public class DatasetDeliveryServlet extends HttpServlet implements
         } catch (Exception ignore) {
         }
 
-        o2 = null;
       }
 
       // now try and remove the tmp working directory for the
@@ -232,7 +223,6 @@ public class DatasetDeliveryServlet extends HttpServlet implements
       if (datasetZipFile != null) {
         datasetZipFile.getParentFile().delete();
       }
-      datasetZipFile = null;
     }
 
   }
@@ -246,15 +236,13 @@ public class DatasetDeliveryServlet extends HttpServlet implements
     super.init(config);
 
     try {
-      String fileMgrURL = null;
+      String fileMgrURL;
       try {
         fileMgrURL = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
             "filemgr.url") );
       } catch (Exception e) {
         throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
-      }      
-      if (fileMgrURL == null)
-        fileMgrURL = "http://localhost:9000";
+      }
       client = new XmlRpcFileManagerClient(new URL(fileMgrURL));
     } catch (MalformedURLException ex) {
       throw new ServletException(ex);

@@ -18,7 +18,6 @@ package org.apache.oodt.cas.workflow.lifecycle;
 
 //JDK imports
 import java.util.Date;
-import java.util.Vector;
 
 /**
  * 

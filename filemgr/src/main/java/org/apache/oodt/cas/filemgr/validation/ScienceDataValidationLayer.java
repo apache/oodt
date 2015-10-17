@@ -17,6 +17,13 @@
 
 package org.apache.oodt.cas.filemgr.validation;
 
+
+//OODT imports
+import org.apache.oodt.cas.filemgr.structs.Element;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
+import org.apache.oodt.cas.filemgr.util.DbStructFactory;
+
 //JDK imports
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -24,20 +31,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Vector;
+
 import javax.sql.DataSource;
 
-//OODT imports
-import org.apache.oodt.cas.filemgr.catalog.ScienceDataCatalog;
-import org.apache.oodt.cas.filemgr.structs.Element;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
-import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
-import org.apache.oodt.cas.filemgr.util.DbStructFactory;
 
 /**
  * 
  * Determines the mapping of {@Element}s to {@link ProductType}s by
- * reading the {@link ScienceDataCatalog} catalog schema tables concerning parameters and datasets.
+ * reading the {@link org.apache.oodt.cas.filemgr.catalog.ScienceDataCatalog} catalog schema tables concerning parameters and datasets.
  * 
  * @author mattmann
  * @version $Revision$

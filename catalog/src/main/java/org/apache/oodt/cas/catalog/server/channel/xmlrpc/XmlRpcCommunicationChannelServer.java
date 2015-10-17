@@ -17,13 +17,6 @@
 package org.apache.oodt.cas.catalog.server.channel.xmlrpc;
 
 //JDK imports
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.List;
-import java.util.Set;
-
-//OODT imports
-import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
 import org.apache.oodt.cas.catalog.page.CatalogReceipt;
 import org.apache.oodt.cas.catalog.page.Page;
 import org.apache.oodt.cas.catalog.page.PageInfo;
@@ -35,9 +28,13 @@ import org.apache.oodt.cas.catalog.struct.Index;
 import org.apache.oodt.cas.catalog.struct.TransactionId;
 import org.apache.oodt.cas.catalog.system.Catalog;
 import org.apache.oodt.cas.metadata.Metadata;
-
-//APACHE imports
 import org.apache.xmlrpc.WebServer;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
+import java.util.Set;
+
 
 /**
  * @author bfoster

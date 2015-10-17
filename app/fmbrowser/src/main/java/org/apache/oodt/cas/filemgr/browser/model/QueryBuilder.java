@@ -17,7 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.browser.model;
 
-import org.apache.lucene.analysis.standard.ParseException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;

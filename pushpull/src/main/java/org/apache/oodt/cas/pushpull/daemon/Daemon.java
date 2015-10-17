@@ -22,8 +22,6 @@ package org.apache.oodt.cas.pushpull.daemon;
 import org.apache.oodt.cas.pushpull.config.Config;
 import org.apache.oodt.cas.pushpull.config.DaemonInfo;
 import org.apache.oodt.cas.pushpull.config.SiteInfo;
-import org.apache.oodt.cas.pushpull.daemon.DaemonMBean;
-import org.apache.oodt.cas.pushpull.daemon.DaemonRmiInterface;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
 import org.apache.oodt.cas.pushpull.retrievalsystem.RetrievalSetup;
 
@@ -182,9 +180,6 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
      * crawl the URLs specified in the properties file in the sequence
      * given--one at a time.
      * 
-     * @param property
-     *            The system property whose value is the path to a java
-     *            .properties file that is be used to create the Crawler
      * @throws DirStructException
      */
     public void startDaemon() {

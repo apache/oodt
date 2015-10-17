@@ -16,7 +16,6 @@ package org.apache.oodt.commons.io;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

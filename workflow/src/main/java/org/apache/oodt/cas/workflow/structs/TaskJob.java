@@ -177,8 +177,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
 
     private XmlRpcWorkflowManagerClient getWmClientFromMetadata(Metadata met) {
         String workflowMgrUrlStr = met.getMetadata(WORKFLOW_MANAGER_URL);
-        if (workflowMgrUrlStr == null
-                || (workflowMgrUrlStr != null && workflowMgrUrlStr.equals(""))) {
+        if (workflowMgrUrlStr == null || (workflowMgrUrlStr.equals(""))) {
             // try to default to a workflow mgr on localhost
             // most likely won't work, but worth trying
             workflowMgrUrlStr = "http://localhost:9001";

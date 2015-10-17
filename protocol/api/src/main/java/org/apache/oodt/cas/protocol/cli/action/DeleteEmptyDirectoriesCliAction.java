@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 // OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.protocol.Protocol;
-import org.apache.oodt.cas.protocol.ProtocolFactory;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.verify.ProtocolVerifierFactory;
 

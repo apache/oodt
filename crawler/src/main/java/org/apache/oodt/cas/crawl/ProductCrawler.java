@@ -16,6 +16,8 @@
  */
 package org.apache.oodt.cas.crawl;
 
+import com.google.common.annotations.VisibleForTesting;
+
 //OODT imports
 import org.apache.oodt.cas.crawl.action.CrawlerAction;
 import org.apache.oodt.cas.crawl.action.CrawlerActionRepo;
@@ -23,12 +25,8 @@ import org.apache.oodt.cas.crawl.config.ProductCrawlerBean;
 import org.apache.oodt.cas.crawl.status.IngestStatus;
 import org.apache.oodt.cas.filemgr.ingest.Ingester;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
 
-import com.google.common.annotations.VisibleForTesting;
-
-//JDK imports
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
@@ -38,6 +36,7 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  * An abstract base class for Product Crawling. This class provides methods to

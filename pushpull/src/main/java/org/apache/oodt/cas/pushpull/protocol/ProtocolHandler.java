@@ -21,27 +21,23 @@ package org.apache.oodt.cas.pushpull.protocol;
 import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFactory;
 import org.apache.oodt.cas.protocol.ProtocolFile;
-import org.apache.oodt.cas.pushpull.protocol.RemoteSiteFile;
-import org.apache.oodt.cas.pushpull.config.ProtocolInfo;
 import org.apache.oodt.cas.protocol.auth.BasicAuthentication;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
+import org.apache.oodt.cas.pushpull.config.ProtocolInfo;
 import org.apache.oodt.cas.pushpull.exceptions.RemoteConnectionException;
-
 
 //JDK imports
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  * This class is responsible for creating the appropriate Protocol for the given
@@ -59,9 +55,9 @@ import java.util.logging.Logger;
  */
 public class ProtocolHandler {
 
-  private final HashMap<URL, ProtocolFactory> urlAndProtocolFactory;
+  private final HashMap<URI, ProtocolFactory> urlAndProtocolFactory;
 
-  private final HashMap<URL, Protocol> reuseProtocols;
+  private final HashMap<URI, Protocol> reuseProtocols;
 
   private final HashMap<RemoteSiteFile, PagingInfo> pageInfos;
 
@@ -75,14 +71,14 @@ public class ProtocolHandler {
   /**
    * Creates a new ProtocolHandler for the given Config object
    *
-   * @param config
+   * @param pi
    *          The Config object that guides this ProtocolHandler in making class
    *          instanciations
    */
   public ProtocolHandler(ProtocolInfo pi) {
     this.pi = pi;
-    urlAndProtocolFactory = new HashMap<URL, ProtocolFactory>();
-    reuseProtocols = new HashMap<URL, Protocol>();
+    urlAndProtocolFactory = new HashMap<URI, ProtocolFactory>();
+    reuseProtocols = new HashMap<URI, Protocol>();
     pageInfos = new HashMap<RemoteSiteFile, PagingInfo>();
     pathAndFileListMap = new HashMap<RemoteSiteFile, List<RemoteSiteFile>>();
   }
@@ -90,7 +86,7 @@ public class ProtocolHandler {
   /**
    * Returns the appropriate protocol for the given Path
    *
-   * @param ProtocolPath
+   * @param pFile
    *          Used to determine the appropriate Protocol to be returned and the
    *          path to navigate on if navigateToPathLoc is set to true.
    * @param allowReuse
@@ -103,7 +99,7 @@ public class ProtocolHandler {
    *          If true, will navigate the to the end of the Path location
    *          specified
    * @return Protocol for the given Path
-   * @throws RemoteCommunicationException
+   * @throws RemoteConnectionException
    *           If there is an error creating the protocol
    */
   public Protocol getAppropriateProtocol(RemoteSiteFile pFile,
@@ -133,45 +129,58 @@ public class ProtocolHandler {
   public Protocol getAppropriateProtocolBySite(RemoteSite remoteSite,
       boolean allowReuse) throws ProtocolException {
     Protocol protocol = null;
-    if ((allowReuse && ((protocol = reuseProtocols.get(remoteSite.getURL())) == null))
-        || !allowReuse) {
-      ProtocolFactory protocolFactory = this.urlAndProtocolFactory
-          .get(remoteSite.getURL());
-      if (protocolFactory == null) {
-        LinkedList<Class<ProtocolFactory>> protocolClasses = pi
-            .getProtocolClassesForProtocolType(remoteSite.getURL()
-                .getProtocol());
-        for (Class<ProtocolFactory> clazz : protocolClasses) {
-          try {
-            if ((protocol = (protocolFactory = clazz.newInstance())
-                .newInstance()) != null) {
-              if (!connect(protocol, remoteSite, true)) {
-                LOG.log(
-                    Level.WARNING,
-                    "ProtocolFactory "
-                        + protocolFactory.getClass().getCanonicalName()
-                        + " is not compatible with server at "
-                        + remoteSite.getURL());
-                protocol = null;
-              } else {
-                this.urlAndProtocolFactory.put(remoteSite.getURL(),
-                    protocolFactory);
-                break;
-              }
-            }
-          } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to instanciate protocol " + clazz
-                + " for " + remoteSite.getURL());
-          }
+    try {
+      if ((allowReuse && ((protocol = reuseProtocols.get(remoteSite.getURL().toURI())) == null))
+          || !allowReuse) {
+        ProtocolFactory protocolFactory = null;
+        try {
+          protocolFactory = this.urlAndProtocolFactory
+              .get(remoteSite.getURL().toURI());
+        } catch (URISyntaxException e) {
+          LOG.log(Level.SEVERE, "could not convert url to uri: Message: " + e.getMessage());
         }
-        if (protocol == null)
-          throw new ProtocolException("Failed to get appropriate protocol for "
-              + remoteSite);
-      } else {
-        connect(protocol = protocolFactory.newInstance(), remoteSite, false);
+        if (protocolFactory == null) {
+          LinkedList<Class<ProtocolFactory>> protocolClasses = pi
+              .getProtocolClassesForProtocolType(remoteSite.getURL()
+                                                           .getProtocol());
+          for (Class<ProtocolFactory> clazz : protocolClasses) {
+            try {
+              if ((protocol = (protocolFactory = clazz.newInstance())
+                  .newInstance()) != null) {
+                if (!connect(protocol, remoteSite, true)) {
+                  LOG.log(
+                      Level.WARNING,
+                      "ProtocolFactory "
+                          + protocolFactory.getClass().getCanonicalName()
+                          + " is not compatible with server at "
+                          + remoteSite.getURL());
+                  protocol = null;
+                } else {
+                  this.urlAndProtocolFactory.put(remoteSite.getURL().toURI(),
+                      protocolFactory);
+                  break;
+                }
+              }
+            } catch (Exception e) {
+              LOG.log(Level.WARNING, "Failed to instanciate protocol " + clazz
+                  + " for " + remoteSite.getURL());
+            }
+          }
+          if (protocol == null)
+            throw new ProtocolException("Failed to get appropriate protocol for "
+                + remoteSite);
+        } else {
+          connect(protocol = protocolFactory.newInstance(), remoteSite, false);
+        }
+        if (allowReuse)
+          try {
+            this.reuseProtocols.put(remoteSite.getURL().toURI(), protocol);
+          } catch (URISyntaxException e) {
+            LOG.log(Level.SEVERE, "Couildn't covert URL to URI Mesage: " + e.getMessage());
+          }
       }
-      if (allowReuse)
-        this.reuseProtocols.put(remoteSite.getURL(), protocol);
+    } catch (URISyntaxException e) {
+      LOG.log(Level.SEVERE, "could not convert url to uri: Message: "+e.getMessage());
     }
     return protocol;
   }
@@ -285,12 +294,9 @@ public class ProtocolHandler {
    *
    * @param protocol
    *          The Protocol that will be connected
-   * @param url
+   * @param remoteSite
    *          The server to which the Protocol will connect
-   * @throws RemoteConnectionException
-   *           If connection fails
-   * @throws RemoteLoginException
-   *           If login fails
+   * @param test
    */
   public boolean connect(Protocol protocol, RemoteSite remoteSite, boolean test) {
     for (int tries = 0; tries < 3; tries++) {
@@ -515,8 +521,8 @@ public class ProtocolHandler {
    * @throws RemoteConnectionException
    */
   public void close() throws RemoteConnectionException {
-    Set<Entry<URL, Protocol>> entries = reuseProtocols.entrySet();
-    for (Entry<URL, Protocol> entry : entries) {
+    Set<Entry<URI, Protocol>> entries = reuseProtocols.entrySet();
+    for (Entry<URI, Protocol> entry : entries) {
       disconnect(entry.getValue());
     }
     this.reuseProtocols.clear();

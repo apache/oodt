@@ -15,12 +15,11 @@
 
 package org.apache.oodt.profile.handlers;
 
-import java.util.Collection;
-import java.util.Iterator;
 import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileException;
-import org.apache.oodt.xmlquery.XMLQuery;
-import org.w3c.dom.Document;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Interface of a profile manager.

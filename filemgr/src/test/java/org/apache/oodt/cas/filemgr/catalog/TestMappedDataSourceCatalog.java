@@ -71,5 +71,4 @@ public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
 
         return new File(url.getFile()).getAbsolutePath();
     }
-
 }

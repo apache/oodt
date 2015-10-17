@@ -17,6 +17,17 @@
 
 package org.apache.oodt.cas.workflow.engine.processor;
 
+//OODT imports
+import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
+import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
+import org.apache.oodt.cas.workflow.structs.*;
+import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
+import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
+
 //JDK imports
 import java.util.HashMap;
 import java.util.List;
@@ -25,30 +36,10 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OODT imports
-import org.apache.oodt.cas.workflow.engine.TaskQuerier;
-import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
-import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
-import org.apache.oodt.cas.workflow.structs.ConditionTaskInstance;
-import org.apache.oodt.cas.workflow.structs.Graph;
-import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
-import org.apache.oodt.cas.workflow.structs.Workflow;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
-import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
-import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
-
 /**
  * 
  * The queue of available {@link WorkflowTask}s, that will be fed into the
- * {@link TaskQuerier}.
+ * {@link org.apache.oodt.cas.workflow.engine.TaskQuerier}.
  * 
  * @author mattmann
  * @version $Revision$

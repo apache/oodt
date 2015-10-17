@@ -95,9 +95,7 @@ public class CDEResult extends Result {
       CDERow row = createCDERow();
       if (mapping != null)
         applyMappingFuncs(row);
-      if (this.constValues != null && 
-          ((this.orderedFields == null) || 
-          (this.orderedFields != null && this.orderedFields.size() == 0))){
+      if (this.constValues != null && ((this.orderedFields == null) || (this.orderedFields.size() == 0))){
         addConstValues(row);
       }
       // if there is some kind of configurable response writer,

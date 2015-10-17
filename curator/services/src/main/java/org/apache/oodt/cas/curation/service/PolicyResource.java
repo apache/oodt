@@ -19,6 +19,8 @@
 package org.apache.oodt.cas.curation.service;
 
 //OODT imports
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -27,33 +29,24 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 
-//JDK imports
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//JAX-RS imports
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
+//JDK imports
+//JAX-RS imports
 //JSON imports
-import net.sf.json.JSONObject;
 
 @Path("policy")
 public class PolicyResource extends CurationService {
@@ -124,9 +117,9 @@ public class PolicyResource extends CurationService {
     ProductType productType;
     ProductPage page;
     try {
-      productType = this.config.getFileManagerClient().getProductTypeByName(
+      productType = config.getFileManagerClient().getProductTypeByName(
           productTypeName);
-      page = this.config.getFileManagerClient().pagedQuery(new Query(),
+      page = config.getFileManagerClient().pagedQuery(new Query(),
           productType, pageNum);
     } catch (Exception e) {
       e.printStackTrace();
@@ -146,7 +139,7 @@ public class PolicyResource extends CurationService {
   
   private String encodeProductsAsHTML(ProductPage page, String policy,
       String productTypeName) {
-    StringBuffer html = new StringBuffer();
+    StringBuilder html = new StringBuilder();
     html.append("<ul class=\"fileTree\" >\r\n");
     
     for (Product product : page.getPageProducts()) {

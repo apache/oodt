@@ -15,12 +15,12 @@
 
 package org.apache.oodt.commons.util;
 
-import java.beans.PropertyChangeEvent;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Iterator;
-import org.apache.oodt.commons.io.LogListener;
 import org.apache.oodt.commons.io.LogEvent;
+import org.apache.oodt.commons.io.LogListener;
+
+import java.beans.PropertyChangeEvent;
+import java.util.LinkedList;
+import java.util.List;
 
 /** In-memory logger.
  *

@@ -19,9 +19,6 @@ package org.apache.oodt.pcs.health;
 
 //OODT imports
 import org.apache.oodt.commons.date.DateUtils;
-import org.apache.oodt.pcs.tools.PCSHealthMonitor;
-import org.apache.oodt.cas.filemgr.structs.Product; //for javadoc
-import org.apache.oodt.cas.resource.system.extern.XmlRpcBatchStub; //for javadoc
 
 //JDK imports
 import java.util.Calendar;
@@ -30,7 +27,7 @@ import java.util.List;
 
 /**
  * 
- * The output generated from running the {@link PCSHealthMonitor#getReport()}
+ * The output generated from running the {@link org.apache.oodt.pcs.tools.PCSHealthMonitor#getReport()}
  * method.
  * 
  * @author mattmann
@@ -77,11 +74,11 @@ public class PCSHealthMonitorReport {
    *          THe {@link PCSDaemonStatus} for the Resource Manager.
    * @param batchStubStatus
    *          A {@lik List} of {@link PCSDaemonStatus}es for each
-   *          {@link XmlRpcBatchStub}.
+   *          {@link org.apache.oodt.cas.resource.system.extern.XmlRpcBatchStub}.
    * @param crawlerStatus
    *          A {@link List} of {@link CrawlerStatus}es.
    * @param latestProductsIngested
-   *          A {@link List} of the top N {@link Product}s that have been
+   *          A {@link List} of the top N {@link org.apache.oodt.cas.filemgr.structs.Product}s that have been
    *          ingested.
    * @param jobHealthStatus
    *          A {@link List} of {@link JobHealthStatus}es.

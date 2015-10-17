@@ -17,17 +17,16 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
+//OODT imports
+import org.apache.oodt.cas.metadata.util.PathUtils;
+
 //JDK imports
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-//OODT imports
-import org.apache.oodt.cas.filemgr.catalog.Catalog;
-import org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.metadata.util.PathUtils;
+
 
 /**
  * @author mattmann
@@ -36,7 +35,8 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
  * <p>
  * Factory for constructing a special {@link DataSourceCatalog} called
  * {@link MappedDataSourceCatalog} which is able to override the default
- * policy of {@link ProductType#getName()}_metadata and {@link ProductType#getName()}_reference
+ * policy of {@link org.apache.oodt.cas.filemgr.structs.ProductType#getName()}_metadata
+ * and {@link org.apache.oodt.cas.filemgr.structs.ProductType#getName()}_reference
  * as the underlying table names
  * </p>.
  */

@@ -18,54 +18,32 @@
 package org.apache.oodt.cas.filemgr.catalog;
 
 //JDK imports
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//Lucene imports
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.RangeQuery;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.WildcardQuery;
-
-//OODT imports
-import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.Element;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.lucene.search.*;
+import org.apache.oodt.cas.filemgr.structs.*;
 import org.apache.oodt.cas.filemgr.structs.Query;
-import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.pagination.PaginationUtils;
-
-//JUG imports
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//Lucene imports
+//OODT imports
+//JUG imports
 
 /**
  * @author mattmann
@@ -426,7 +404,6 @@ public class LuceneCatalog implements Catalog {
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
     }
@@ -476,7 +453,6 @@ public class LuceneCatalog implements Catalog {
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
     }
@@ -542,7 +518,6 @@ public class LuceneCatalog implements Catalog {
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -600,7 +575,6 @@ public class LuceneCatalog implements Catalog {
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -638,7 +612,6 @@ public class LuceneCatalog implements Catalog {
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
     }
@@ -668,8 +641,7 @@ public class LuceneCatalog implements Catalog {
         if (fullProducts != null && fullProducts.size() > 0) {
             productIds = new Vector<String>(fullProducts.size());
 
-            for (Iterator<Product> i = fullProducts.iterator(); i.hasNext();) {
-                Product p = i.next();
+            for (Product p : fullProducts) {
                 productIds.add(p.getProductId());
             }
         }
@@ -725,7 +697,6 @@ public class LuceneCatalog implements Catalog {
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -750,7 +721,11 @@ public class LuceneCatalog implements Catalog {
 
         for (int pageNum = 1; pageNum < numPages + 1; pageNum++) {
             List<Product> pageProducts = paginateQuery(query, type, pageNum, null);
-            products.addAll(pageProducts);
+                products.addAll(pageProducts);
+        }
+
+        if(n<=products.size()) {
+         return products.subList(0, n);
         }
 
         return products;
@@ -782,7 +757,7 @@ public class LuceneCatalog implements Catalog {
      */
     public ProductPage getFirstPage(ProductType type) {
         ProductPage firstPage = new ProductPage();
-        List<Product> products = null;
+        List<Product> products;
         Query query = new Query();
         
         // now construct the page
@@ -798,7 +773,7 @@ public class LuceneCatalog implements Catalog {
             return null;
         }
         // There are no products and thus no first page
-        if (products == null || (products != null && products.size() == 0)) {
+        if (products == null || (products.size() == 0)) {
         		return null;
         }
 
@@ -815,7 +790,7 @@ public class LuceneCatalog implements Catalog {
     public ProductPage getLastProductPage(ProductType type) {
         ProductPage lastPage = new ProductPage();
         ProductPage firstPage = getFirstPage(type);
-        List<Product> products = null;
+        List<Product> products;
         Query query = new Query();
         
         // now construct the page
@@ -831,7 +806,7 @@ public class LuceneCatalog implements Catalog {
           	return null;
         }
         // There are no products thus there is no last page
-        if (products == null || (products != null && products.size() == 0)) {
+        if (products == null || (products.size() == 0)) {
         	  return null;
         }
         lastPage.setPageProducts(products);
@@ -846,6 +821,9 @@ public class LuceneCatalog implements Catalog {
      *      org.apache.oodt.cas.filemgr.structs.ProductPage)
      */
     public ProductPage getNextPage(ProductType type, ProductPage currentPage) {
+        if(type==null){
+            return null;
+        }
         if (currentPage == null) {
             return getFirstPage(type);
         }
@@ -854,7 +832,7 @@ public class LuceneCatalog implements Catalog {
             return currentPage;
         }
 
-        List<Product> products = null;
+        List<Product> products;
         ProductPage nextPage = new ProductPage();
         Query query = new Query();
 
@@ -871,7 +849,7 @@ public class LuceneCatalog implements Catalog {
             return null;
         }
         // There are no products and thus no next page
-        if (products == null || (products != null && products.size() == 0)) {
+        if (products == null || (products.size() == 0)) {
         	  return null;
         }
         nextPage.setPageProducts(products);
@@ -886,6 +864,10 @@ public class LuceneCatalog implements Catalog {
      *      org.apache.oodt.cas.filemgr.structs.ProductPage)
      */
     public ProductPage getPrevPage(ProductType type, ProductPage currentPage) {
+        if(type==null){
+            return null;
+        }
+
         if (currentPage == null) {
             return getFirstPage(type);
         }
@@ -893,12 +875,12 @@ public class LuceneCatalog implements Catalog {
         if (currentPage.isFirstPage()) {
             return currentPage;
         }
-        List<Product> products = null;
-        ProductPage prevPage = new ProductPage();
+        List<Product> products;
+
         Query query = new Query();
 
         // now construct the page
-        prevPage = new ProductPage();
+        ProductPage prevPage = new ProductPage();
         prevPage.setPageNum(currentPage.getPageNum() - 1);
         prevPage.setPageSize(pageSize);
         try {
@@ -912,7 +894,7 @@ public class LuceneCatalog implements Catalog {
         }
         
         // There are no products and thus no pages
-        if (products == null || (products != null && products.size() == 0)) {
+        if (products == null || (products.size() == 0)) {
         	  return null;
         }
         prevPage.setPageProducts(products);
@@ -967,7 +949,6 @@ public class LuceneCatalog implements Catalog {
                 } catch (Exception ignore) {
                 }
 
-                reader = null;
             }
 
         }
@@ -979,7 +960,7 @@ public class LuceneCatalog implements Catalog {
 
         File indexDir = new File(indexFilePath);
 
-        boolean createIndex = false;
+        boolean createIndex;
 
         if (indexDir.exists() && indexDir.isDirectory()) {
             createIndex = false;
@@ -1007,10 +988,11 @@ public class LuceneCatalog implements Catalog {
                     + e.getMessage());
         } finally {
             try {
-                writer.close();
+                if (writer != null) {
+                    writer.close();
+                }
             } catch (Exception ignore) {
             }
-            writer = null;
         }
 
     }
@@ -1154,11 +1136,10 @@ public class LuceneCatalog implements Catalog {
         // validation layer: add only specifically configured keys
         if (valLayer!=null) {
         	List<Element> elements = quietGetElements(product.getProductType());
-        	for (Iterator<Element> i = elements.iterator(); i.hasNext();) {
-                Element element = i.next();
+            for (Element element : elements) {
                 String key = element.getElementName();
                 keys.add(key);
-        	}
+            }
         // no validation layer: add all keys that are NOT already in doc
         // (otherwise some keys such as the product_* keys are duplicated)
         } else {
@@ -1185,10 +1166,9 @@ public class LuceneCatalog implements Catalog {
                 continue;
             }
 
-            for (Iterator<String> j = values.iterator(); j.hasNext();) {
-                String val = j.next();
+            for (String val : values) {
                 doc.add(new Field(key, val, Field.Store.YES,
-                        Field.Index.UN_TOKENIZED));
+                    Field.Index.UN_TOKENIZED));
             }
         }
 
@@ -1221,11 +1201,10 @@ public class LuceneCatalog implements Catalog {
         if (cp.getMetadata() != null && cp.getProduct() != null) {
             if (cp.getReferences() != null && cp.getReferences().size() > 0) {
                 // make sure there is a data store ref for each of the refs
-                for (Iterator<Reference> i = cp.getReferences().iterator(); i.hasNext();) {
-                    Reference r = i.next();
+                for (Reference r : cp.getReferences()) {
                     if (r.getDataStoreReference() == null
-                            || (r.getDataStoreReference() != null && r
-                                    .getDataStoreReference().equals(""))) {
+                        || (r.getDataStoreReference() != null && r
+                        .getDataStoreReference().equals(""))) {
                         return false;
                     }
                 }
@@ -1275,7 +1254,6 @@ public class LuceneCatalog implements Catalog {
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -1364,7 +1342,6 @@ public class LuceneCatalog implements Catalog {
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -1374,7 +1351,7 @@ public class LuceneCatalog implements Catalog {
     private org.apache.lucene.search.Query getQuery(QueryCriteria queryCriteria) throws CatalogException {
         if (queryCriteria instanceof BooleanQueryCriteria) {
             BooleanQuery booleanQuery = new BooleanQuery();
-            BooleanClause.Occur occur = null;
+            BooleanClause.Occur occur;
             switch (((BooleanQueryCriteria) queryCriteria).getOperator()) {
             case BooleanQueryCriteria.AND:
                 occur = BooleanClause.Occur.MUST;

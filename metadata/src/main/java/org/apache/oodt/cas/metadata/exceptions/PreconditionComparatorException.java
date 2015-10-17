@@ -18,8 +18,6 @@
 
 package org.apache.oodt.cas.metadata.exceptions;
 
-//OODT imports
-import org.apache.oodt.cas.metadata.preconditions.PreConditionComparator; //for javadoc
 
 /**
  * 
@@ -27,7 +25,7 @@ import org.apache.oodt.cas.metadata.preconditions.PreConditionComparator; //for 
  * @version $Revision$
  * 
  * <p>
- * An exception throw by a {@link PreConditionComparator}
+ * An exception throw by a {@link org.apache.oodt.cas.metadata.preconditions.PreConditionComparator}
  * </p>.
  */
 public class PreconditionComparatorException extends Exception {

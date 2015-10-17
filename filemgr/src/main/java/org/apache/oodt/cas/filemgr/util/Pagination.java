@@ -19,18 +19,15 @@ package org.apache.oodt.cas.filemgr.util;
 
 //CAS imports
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.Product; //for javadoc
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 
-//JDK imports
-import java.util.List; //for javadoc
 
 /**
  * @author mattmann
  * @version $Revision$
  * 
  * <p>
- * An interface for pagination of {@link Product} {@link List}s..
+ * An interface for pagination of {@link org.apache.oodt.cas.filemgr.structs.Product} {@link java.util.List}s..
  * </p>
  * 
  */

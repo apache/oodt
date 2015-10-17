@@ -22,7 +22,6 @@ import org.apache.oodt.pcs.opsui.ProductBrowserPage;
 import org.apache.oodt.pcs.opsui.BasePage;
 import org.apache.oodt.pcs.opsui.OpsuiApp;
 import org.apache.oodt.pcs.opsui.WorkflowInstanceViewerPage;
-import org.apache.oodt.pcs.tools.PCSHealthMonitor;
 import org.apache.oodt.pcs.webcomponents.health.HealthMonitor;
 
 //Wicket imports
@@ -31,7 +30,7 @@ import org.apache.wicket.PageParameters;
 /**
  * 
  * A wicket controller for exposing the super awesome power of the
- * {@link PCSHealthMonitor}.
+ * {@link org.apache.oodt.pcs.tools.PCSHealthMonitor}.
  * 
  * @author mattmann
  * @version $Revision$

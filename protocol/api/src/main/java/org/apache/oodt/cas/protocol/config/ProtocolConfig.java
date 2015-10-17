@@ -16,16 +16,17 @@
  */
 package org.apache.oodt.cas.protocol.config;
 
+
+//OODT imports
+import org.apache.oodt.cas.protocol.ProtocolFactory;
+
 //JDK imports
 import java.net.URI;
 import java.util.List;
 
-//OODT imports
-import org.apache.oodt.cas.protocol.ProtocolFactory;
-import org.apache.oodt.cas.protocol.system.ProtocolManager;
 
 /**
- * Protocol configuration for configuring {@link ProtocolManager}.
+ * Protocol configuration for configuring {@link org.apache.oodt.cas.protocol.system.ProtocolManager}.
  *
  * @author bfoster
  */

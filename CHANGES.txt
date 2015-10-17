@@ -1,14 +1,29 @@
 Apache OODT Change Log
 ======================
 Release 0.11 - Current Development
-
-* OODT-885 RegEx Precondition Comparator for DRAT --exclude feature
+ 
+* OODT-885 RegEx Precondition Comparator for DRAT --exclude feature (Karanjeet
+  Singh via mattmann)
 
 * OODT-874 Corrected workflow/bin/wmgr and resource/bin/resmgr to make sure
   they both delete the cas.xxxx.pid file when stopped using the 'stop'
   command. (mallder)
 
 * OODT-872 Upgrade Jena dependencies to org.apache.jena 3.0.0 (lewismc, mattmann)
+
+* OODT-882 Merge dependency update into master (magicaltrout)
+
+* OODT-887 Prevent DNS resolution on URL Lookup (magicaltrout)
+
+* OODT-888 Replace += with StringBuilders to improve performance (magicaltrout)
+
+* OODT-889 Fix TopN with Type (magicaltrout)
+
+* OODT-891 Add clover placeholder(waiting on license from Atlassian) (magicaltrout)
+
+* OODT-892 Tidy up null assignments (magicaltrout)
+
+* OODT-755 Fix error message in FM client when ingestion fails 
 
 Release 0.10 - 08/30/2015
 

@@ -25,8 +25,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 //JDK imports
-import org.apache.oodt.cas.metadata.util.PathUtils;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -89,7 +87,7 @@ public class CASInstallDistMojo extends AbstractMojo {
     private File[] customLibs;
 
     /**
-     * Files to do dynamic {@link PathUtils#replaceEnvVariables(String)} on.
+     * Files to do dynamic {@link org.apache.oodt.cas.metadata.util.PathUtils#replaceEnvVariables(String)} on.
      * 
      * @parameter
      */
@@ -110,9 +108,8 @@ public class CASInstallDistMojo extends AbstractMojo {
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        if (casDistributionFile == null
-                || (casDistributionFile != null && !casDistributionFile
-                        .exists())) {
+        if (casDistributionFile == null || (!casDistributionFile
+            .exists())) {
             throw new MojoExecutionException("the CAS distribution: ["
                     + casDistributionFile + "] does not exist!");
         }
@@ -175,29 +172,29 @@ public class CASInstallDistMojo extends AbstractMojo {
                 AntDecorator.deleteAllFilesAndDir(policyDir);
             } catch (IOException e) {
                 getLog().warn(
-                        "IO exception when removing default policy from: ["
-                                + policyDir + "]: Message: " + e.getMessage());
+                        "IO exception when removing default policy from null policy dir: "
+                        + "Message: " + e.getMessage());
             }
 
-            for (int i = 0; i < customPolicyDirs.length; i++) {
-                getLog().info(
-                        "Installing: [" + customPolicyDirs[i] + "] to: ["
-                                + policyDir + "]");
+          for (File customPolicyDir : customPolicyDirs) {
+            getLog().info(
+                "Installing: [" + customPolicyDir + "] to: ["
+                + policyDir + "]");
 
-                if (customPolicyDirs[i].exists()) {
-                    try {
-                        FileUtils.copyDirectoryToDirectory(customPolicyDirs[i],
-                                policyDir);
-                    } catch (IOException e) {
-                        getLog().warn(
-                                "error copying custom policy dir: ["
-                                        + customPolicyDirs[i]
-                                        + "] to policy dir: [" + policyDir
-                                        + "]");
-                    }
-                }
-
+            if (customPolicyDir.exists()) {
+              try {
+                FileUtils.copyDirectoryToDirectory(customPolicyDir,
+                    policyDir);
+              } catch (IOException e) {
+                getLog().warn(
+                    "error copying custom policy dir: ["
+                    + customPolicyDir
+                    + "] to policy dir: [" + policyDir
+                    + "]");
+              }
             }
+
+          }
 
         }
 
@@ -261,16 +258,16 @@ public class CASInstallDistMojo extends AbstractMojo {
                     "Replacing env vars on [" + envVarReplaceFiles.length
                             + "] files");
 
-            for (int i = 0; i < envVarReplaceFiles.length; i++) {
-                try {
-                    envVarReplaceFiles[i].doEnvReplace();
-                } catch (IOException e) {
-                    getLog().warn(
-                            "IOException while doing env replacement on: ["
-                                    + envVarReplaceFiles[i].getFilepath()
-                                    + "]: Message: " + e.getMessage());
-                }
+          for (EnvReplacer envVarReplaceFile : envVarReplaceFiles) {
+            try {
+              envVarReplaceFile.doEnvReplace();
+            } catch (IOException e) {
+              getLog().warn(
+                  "IOException while doing env replacement on: ["
+                  + envVarReplaceFile.getFilepath()
+                  + "]: Message: " + e.getMessage());
             }
+          }
         }
 
         if (customBinScripts != null && customBinScripts.length > 0) {
@@ -289,27 +286,27 @@ public class CASInstallDistMojo extends AbstractMojo {
                                 + e.getMessage());
             }
 
-            for (int i = 0; i < customBinScripts.length; i++) {
-                getLog().info(
-                        "installing [" + customBinScripts[i] + "] to ["
-                                + binDir + "]");
-                try {
-                    FileUtils.copyFileToDirectory(customBinScripts[i], binDir);
-                    // now chmod it with exec perms
-                    String custBinScriptFullPath = binDir + File.separator
-                            + customBinScripts[i].getName();
+          for (File customBinScript : customBinScripts) {
+            getLog().info(
+                "installing [" + customBinScript + "] to ["
+                + binDir + "]");
+            try {
+              FileUtils.copyFileToDirectory(customBinScript, binDir);
+              // now chmod it with exec perms
+              String custBinScriptFullPath = binDir + File.separator
+                                             + customBinScript.getName();
 
-                    getLog().info("fixing perms on ["+custBinScriptFullPath+"]");
-                    AntDecorator.chmodFile(new File(custBinScriptFullPath),
-                            "ugo+rx");
-                } catch (IOException e) {
-                    getLog().warn(
-                            "unable to install [" + customBinScripts[i]
-                                    + "] to [" + binDir
-                                    + "]: IO exception: Message: "
-                                    + e.getMessage());
-                }
+              getLog().info("fixing perms on [" + custBinScriptFullPath + "]");
+              AntDecorator.chmodFile(new File(custBinScriptFullPath),
+                  "ugo+rx");
+            } catch (IOException e) {
+              getLog().warn(
+                  "unable to install [" + customBinScript
+                  + "] to [" + binDir
+                  + "]: IO exception: Message: "
+                  + e.getMessage());
             }
+          }
         }
 
     }

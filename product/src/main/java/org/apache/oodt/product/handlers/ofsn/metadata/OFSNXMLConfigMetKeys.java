@@ -18,12 +18,10 @@
 
 package org.apache.oodt.product.handlers.ofsn.metadata;
 
-// OODT imports
-import org.apache.oodt.product.handlers.ofsn.OFSNFileHandlerConfigurationReader; //javadoc
 
 /**
  * 
- * Met Keys for the {@link OFSNFileHandlerConfigurationReader}
+ * Met Keys for the {@link org.apache.oodt.product.handlers.ofsn.OFSNFileHandlerConfigurationReader}
  * 
  * @author mattmann
  * @version $Revision$

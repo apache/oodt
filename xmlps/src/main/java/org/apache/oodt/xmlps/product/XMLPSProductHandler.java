@@ -148,15 +148,14 @@ public class XMLPSProductHandler implements QueryHandler {
 
     protected List<QueryElement> getElemNamesFromQueryElemSet(
             List<QueryElement> origSet) {
-        if (origSet == null || (origSet != null && origSet.size() == 0))
+        if (origSet == null || (origSet.size() == 0))
             return Collections.emptyList();
 
         List<QueryElement> newSet = new Vector<QueryElement>();
 
-        for (Iterator<QueryElement> i = origSet.iterator(); i.hasNext();) {
-            QueryElement elem = i.next();
+        for (QueryElement elem : origSet) {
             if (elem.getRole().equals(XMLQueryHelper.ROLE_ELEMNAME)
-                    && !mapping.constantField(elem.getValue())) {
+                && !mapping.constantField(elem.getValue())) {
                 newSet.add(elem);
 
             }
@@ -169,15 +168,14 @@ public class XMLPSProductHandler implements QueryHandler {
 
     protected List<QueryElement> getConstElemNamesFromQueryElemSet(
             List<QueryElement> origSet) {
-        if (origSet == null || (origSet != null && origSet.size() == 0))
+        if (origSet == null || (origSet.size() == 0))
             return Collections.emptyList();
 
         List<QueryElement> newSet = new Vector<QueryElement>();
 
-        for (Iterator<QueryElement> i = origSet.iterator(); i.hasNext();) {
-            QueryElement elem = i.next();
+        for (QueryElement elem : origSet) {
             if (elem.getRole().equals(XMLQueryHelper.ROLE_ELEMNAME)
-                    && mapping.constantField(elem.getValue())) {
+                && mapping.constantField(elem.getValue())) {
                 newSet.add(elem);
             }
         }
@@ -195,7 +193,7 @@ public class XMLPSProductHandler implements QueryHandler {
 
         String querySelectNames = toSQLSelectColumns(selectNames);
 
-        StringBuffer sqlBuf = new StringBuffer("SELECT ");
+        StringBuilder sqlBuf = new StringBuilder("SELECT ");
         sqlBuf.append(querySelectNames);
         sqlBuf.append(" FROM ");
         sqlBuf.append(mapping.getDefaultTable());
@@ -258,7 +256,7 @@ public class XMLPSProductHandler implements QueryHandler {
     }
 
     private String toSQLSelectColumns(List<QueryElement> elems) {
-        if (elems == null || (elems != null && elems.size() == 0))
+        if (elems == null || (elems.size() == 0))
             return null;
 
         StringBuilder buf = new StringBuilder();
@@ -325,11 +323,9 @@ public class XMLPSProductHandler implements QueryHandler {
                                 + litElem.getRole() + " instead!");
                     }
 
-                    for (Iterator<MappingFunc> j = fld.getFuncs().iterator(); j
-                            .hasNext();) {
-                        MappingFunc func = j.next();
+                    for (MappingFunc func : fld.getFuncs()) {
                         CDEValue origVal = new CDEValue(fld.getName(),
-                                litElem.getValue());
+                            litElem.getValue());
                         CDEValue newVal = func.inverseTranslate(origVal);
                         litElem.setValue(newVal.getVal());
                     }

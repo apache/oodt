@@ -17,13 +17,14 @@
 
 package org.apache.oodt.grid;
 
-import java.io.Serializable;
-import java.net.URL;
-import java.net.URLClassLoader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+
+import java.io.Serializable;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 
 /**
@@ -120,8 +121,7 @@ public abstract class Server implements Serializable {
       return true;
     if (obj instanceof Server) {
       Server rhs = (Server) obj;
-      return configuration.equals(configuration)
-          && className.equals(rhs.className);
+      return className.equals(rhs.className);
     }
     return false;
   }

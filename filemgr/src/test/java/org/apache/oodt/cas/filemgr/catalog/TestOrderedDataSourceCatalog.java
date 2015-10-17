@@ -17,11 +17,12 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.io.File;
 import java.net.URL;
 import java.util.Properties;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * @author mattmann
@@ -98,7 +99,7 @@ public class TestOrderedDataSourceCatalog extends TestDataSourceCatalog {
 
   }
 
-  private static Product getTestProduct() {
+  protected static Product getTestProduct() {
     Product testProduct = Product.getDefaultFlatProduct("test",
         "urn:oodt:GenericFile");
     testProduct.getProductType().setName("GenericFile");

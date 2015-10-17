@@ -23,7 +23,6 @@ import java.io.File;
 
 //OODT imports
 import org.apache.oodt.commons.spring.SpringSetIdInjectionType;
-import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
 import static org.apache.oodt.cas.metadata.preconditions.PreConditionOperatorMetKeys.*;
@@ -39,7 +38,7 @@ import org.springframework.beans.factory.annotation.Required;
  * 
  * <p>
  * The abstract base class for evaluating {@link PreCondition} checks for
- * running a {@link MetExtractor}
+ * running a {@link org.apache.oodt.cas.metadata.MetExtractor}
  * </p>.
  */
 public abstract class PreConditionComparator<CompareType> implements SpringSetIdInjectionType {

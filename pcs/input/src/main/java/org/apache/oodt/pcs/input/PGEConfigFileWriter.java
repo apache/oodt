@@ -16,19 +16,21 @@
 package org.apache.oodt.pcs.input;
 
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-//JDK imports
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+
+//JDK imports
 
 /**
  * <p>
@@ -108,8 +110,7 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
       root
           .setAttribute(
               "xsi:noNamespaceSchemaLocation",
-              (schemaLocation == null
-                  || (schemaLocation != null && schemaLocation.equals("")) ? "input.xsd"
+              (schemaLocation == null || (schemaLocation.equals("")) ? "input.xsd"
                   : schemaLocation));
       document.appendChild(root);
 

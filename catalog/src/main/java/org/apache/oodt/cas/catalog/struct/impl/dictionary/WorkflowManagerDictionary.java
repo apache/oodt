@@ -16,21 +16,17 @@
  */
 package org.apache.oodt.cas.catalog.struct.impl.dictionary;
 
-//JDK imports
-import java.util.Set;
-
 //OODT imports
 import org.apache.oodt.cas.catalog.exception.CatalogDictionaryException;
-import org.apache.oodt.cas.catalog.query.ComparisonQueryExpression;
-import org.apache.oodt.cas.catalog.query.NotQueryExpression;
-import org.apache.oodt.cas.catalog.query.QueryExpression;
-import org.apache.oodt.cas.catalog.query.QueryLogicalGroup;
-import org.apache.oodt.cas.catalog.query.StdQueryExpression;
-import org.apache.oodt.cas.catalog.query.TermQueryExpression;
+import org.apache.oodt.cas.catalog.query.*;
 import org.apache.oodt.cas.catalog.struct.Dictionary;
 import org.apache.oodt.cas.catalog.term.Term;
 import org.apache.oodt.cas.catalog.term.TermBucket;
 import org.apache.oodt.cas.metadata.Metadata;
+
+//JDK imports
+import java.util.Set;
+
 
 /**
  * 

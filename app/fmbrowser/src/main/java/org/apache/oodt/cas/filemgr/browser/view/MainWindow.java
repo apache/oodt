@@ -17,29 +17,16 @@
 
 package org.apache.oodt.cas.filemgr.browser.view;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-
-import org.apache.oodt.cas.filemgr.browser.controller.TableListener;
 import org.apache.oodt.cas.filemgr.browser.controller.WindowListener;
-import org.apache.oodt.cas.filemgr.browser.model.CasDB;
+import org.apache.oodt.cas.filemgr.browser.view.menus.MenuBar;
 import org.apache.oodt.cas.filemgr.browser.view.panels.BottomPane;
 import org.apache.oodt.cas.filemgr.browser.view.panels.HeaderRow;
 import org.apache.oodt.cas.filemgr.browser.view.panels.MiddlePane;
 import org.apache.oodt.cas.filemgr.browser.view.panels.QueryPane;
-import org.apache.oodt.cas.filemgr.browser.view.prompts.ConnectPrompt;
-import org.apache.oodt.cas.filemgr.browser.view.prompts.SortPrompt;
-import org.apache.oodt.cas.filemgr.browser.view.menus.MenuBar;
+
+import java.awt.*;
+
+import javax.swing.*;
 
 public class MainWindow extends JFrame {
 

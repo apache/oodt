@@ -18,11 +18,11 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InterruptedIOException;
 import org.apache.oodt.product.ProductException;
 import org.apache.oodt.product.Retriever;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Streamer for chunked products.

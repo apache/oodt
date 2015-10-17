@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-	<!--
+<!--
 		Licensed to the Apache Software Foundation (ASF) under one or more
 		contributor license agreements. See the NOTICE file distributed with
 		this work for additional information regarding copyright ownership.
@@ -15,129 +14,133 @@
 		the specific language governing permissions and limitations under the
 		License.
 	-->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.apache.oodt</groupId>
-		<artifactId>oodt-core</artifactId>
-		<version>0.11-SNAPSHOT</version>
-		<relativePath>../core/pom.xml</relativePath>
-	</parent>
-	<artifactId>oodt-xmlps</artifactId>
-	<name>XML-configured, DBMS-based Product and Profile Server</name>
-	<version>0.11-SNAPSHOT</version>
-	<description>
-	  An XML-configured DBMS-based Product and Profile meant to easily 
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.oodt</groupId>
+    <artifactId>oodt-core</artifactId>
+    <version>0.11-SNAPSHOT</version>
+    <relativePath>../core/pom.xml</relativePath>
+  </parent>
+  <artifactId>oodt-xmlps</artifactId>
+  <version>0.11-SNAPSHOT</version>
+  <name>XML-configured, DBMS-based Product and Profile Server</name>
+  <description>An XML-configured DBMS-based Product and Profile meant to easily 
 	  sit on top of Web-Grid and other Product and Profile server contexts
-	  for rapid deployment and integration.
-	</description>
-	<build>
-	 <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
-		<resources>
-			<resource>
-				<targetPath>org/apache/oodt/xmlps</targetPath>
-				<directory>${basedir}/src/main/conf</directory>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<targetPath>org/apache/oodt/xmlps/mapping</targetPath>
-				<filtering />
-				<directory>${basedir}/src/test/resources</directory>
-				<includes />
-				<excludes />
-			</testResource>
-		</testResources>
-		
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-				    <forkMode>pertest</forkMode>
-					<systemProperties>
-			          <property>
-			            <name>java.util.logging.config.file</name>
-			            <value>${basedir}/src/test/resources/logging.properties</value>
-			          </property>					
-					</systemProperties>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.oodt</groupId>
-			<artifactId>oodt-commons</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.oodt</groupId>
-			<artifactId>oodt-xmlquery</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.oodt</groupId>
-			<artifactId>cas-metadata</artifactId>
-			<version>${project.parent.version}</version>
-			<optional />
-		</dependency>
-		<dependency>
-			<groupId>org.apache.oodt</groupId>
-			<artifactId>oodt-product</artifactId>
-			<version>${project.parent.version}</version>
-			<optional />
-		</dependency>
-		<dependency>
-			<groupId>org.apache.oodt</groupId>
-			<artifactId>oodt-profile</artifactId>
-			<version>${project.parent.version}</version>
-			<optional />
-		</dependency>
-		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.2.1</version>
-			<optional />
-		</dependency>
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>2.1</version>
-			<optional />
-		</dependency>
-		<dependency>
-			<groupId>commons-pool</groupId>
-			<artifactId>commons-pool</artifactId>
-			<version>1.2</version>
-			<optional />
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.3</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>3.0</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-</project>
+	  for rapid deployment and integration.</description>
+  <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
+     Once the dependency is in the core pom, it can then be used in other modules without the version tags.
+     For example, within core/pom.xml:
 
+      <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+
+     Elsewhere in the platform:
+     <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+    </dependency>
+
+     Where possible the same dependency version should be used across the whole platform but if required the version
+     can be overridden in a specific pom and should have a comment explaing why the version has been overridden
+  -->
+  <dependencies>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <optional></optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <optional></optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+      <optional></optional>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-metadata</artifactId>
+      <optional></optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-product</artifactId>
+      <optional></optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-profile</artifactId>
+      <optional></optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>oodt-xmlquery</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
+    <resources>
+      <resource>
+        <targetPath>org/apache/oodt/xmlps</targetPath>
+        <directory>${basedir}/src/main/conf</directory>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <targetPath>org/apache/oodt/xmlps/mapping</targetPath>
+        <filtering></filtering>
+        <directory>${basedir}/src/test/resources</directory>
+        <includes></includes>
+        <excludes></excludes>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>pertest</forkMode>
+          <systemProperties>
+            <property>
+              <name>java.util.logging.config.file</name>
+              <value>${basedir}/src/test/resources/logging.properties</value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

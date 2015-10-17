@@ -64,10 +64,7 @@ public class Mapping {
   }
 
   public MappingField getFieldByLocalName(String localName) {
-    if (this.fields == null
-        || (this.fields != null && this.fields.keySet() == null)
-        || (this.fields != null && this.fields.keySet() != null && this.fields
-            .keySet().size() == 0)) {
+    if (this.fields == null || (this.fields.keySet().size() == 0)) {
       return null;
     }
 

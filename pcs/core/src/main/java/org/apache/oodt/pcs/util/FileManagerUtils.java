@@ -182,14 +182,14 @@ public class FileManagerUtils implements PCSConfigMetadata {
   public List queryAndReturnMetadata(Query query, ProductType type) {
     List prods = safeIssueQuery(query, type);
 
-    if (prods == null || (prods != null && prods.size() == 0)) {
+    if (prods == null || (prods.size() == 0)) {
       return new Vector();
     }
 
     List prodsMet = new Vector(prods.size());
 
-    for (Iterator i = prods.iterator(); i.hasNext();) {
-      Product p = (Product) i.next();
+    for (Object prod : prods) {
+      Product p = (Product) prod;
       prodsMet.add(safeGetMetadata(p));
     }
 
@@ -342,13 +342,13 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public static List toProductNameList(List productList) {
-    if (productList == null || (productList != null && productList.size() == 0)) {
+    if (productList == null || (productList.size() == 0)) {
       return new Vector();
     }
 
     List prodNames = new Vector(productList.size());
-    for (Iterator i = productList.iterator(); i.hasNext();) {
-      Product p = (Product) i.next();
+    for (Object aProductList : productList) {
+      Product p = (Product) aProductList;
       prodNames.add(p.getProductName());
     }
 

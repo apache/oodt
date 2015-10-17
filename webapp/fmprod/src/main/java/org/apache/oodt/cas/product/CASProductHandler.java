@@ -19,18 +19,6 @@
 package org.apache.oodt.cas.product;
 
 //JDK imports
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Collections;
-import java.util.Iterator;
-
-//OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
@@ -42,8 +30,18 @@ import org.apache.oodt.product.ProductException;
 import org.apache.oodt.xmlquery.Header;
 import org.apache.oodt.xmlquery.LargeResult;
 import org.apache.oodt.xmlquery.XMLQuery;
-import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.*;
-import static org.apache.oodt.cas.product.CASProductHandlerMetKeys.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.*;
+import java.util.Collections;
+
+import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.PRODUCT_ID;
+import static org.apache.oodt.cas.product.CASProductHandlerMetKeys.CAS_PROFILE_ID;
+import static org.apache.oodt.cas.product.CASProductHandlerMetKeys.FILE_HEADER;
+
+//OODT imports
 
 /**
  * @author mattmann
@@ -72,8 +70,7 @@ public class CASProductHandler implements LargeProductQueryHandler {
         // we'll only accept queries for ProductId=some_id
         String kwdQuery = query.getKwdQueryString();
         String[] kwdQueryToks = kwdQuery.split("=");
-        if (kwdQueryToks == null
-                || (kwdQueryToks != null && kwdQueryToks.length != 2)) {
+        if ((kwdQueryToks.length != 2)) {
             throw new ProductException(
                     "Malformed query: CASProductHandler only accepts queries of the "
                             + "form " + PRODUCT_ID
@@ -82,7 +79,7 @@ public class CASProductHandler implements LargeProductQueryHandler {
         }
 
         String prodId = kwdQueryToks[1];
-        Product product = null;
+        Product product;
         try {
             product = this.fm.getProductById(prodId);
             product.setProductReferences(this.fm.getProductReferences(product));
@@ -173,11 +170,9 @@ public class CASProductHandler implements LargeProductQueryHandler {
 
         if (product != null && product.getProductReferences() != null
                 && product.getProductReferences().size() > 0) {
-            for (Iterator<Reference> i = product.getProductReferences()
-                    .iterator(); i.hasNext();) {
-                Reference r = i.next();
-                query.getResults().add(toResult(r));
-            }
+          for (Reference r : product.getProductReferences()) {
+            query.getResults().add(toResult(r));
+          }
         }
 
     }
@@ -185,12 +180,11 @@ public class CASProductHandler implements LargeProductQueryHandler {
     private LargeResult toResult(Reference r) throws URISyntaxException {
         String mimeType = r.getMimeType() != null ? r.getMimeType().getName()
                 : DataUtils.guessTypeFromName(r.getDataStoreReference());
-        LargeResult result = new LargeResult(r.getDataStoreReference(),
-                mimeType, CAS_PROFILE_ID, new File(new URI(r
-                        .getDataStoreReference())).getName(),
-                Collections.singletonList(new Header(FILE_HEADER, mimeType,
-                        null /* unit */)), r.getFileSize());
-        return result;
+      return new LargeResult(r.getDataStoreReference(),
+              mimeType, CAS_PROFILE_ID, new File(new URI(r
+                      .getDataStoreReference())).getName(),
+              Collections.singletonList(new Header(FILE_HEADER, mimeType,
+                      null /* unit */)), r.getFileSize());
     }
 
 }

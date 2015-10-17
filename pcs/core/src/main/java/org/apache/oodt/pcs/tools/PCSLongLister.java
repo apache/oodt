@@ -70,7 +70,7 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
         // (this is true in the case of someone using */* from
         // a shell): if it does, we'll consider the prodName a
         // path, and we'll clean it using new File(prodName).getName()
-        if (prodName.indexOf("/") != -1) {
+        if (prodName.contains("/")) {
           // clean the prodName
           prodName = new File(prodName).getName();
         }
@@ -116,7 +116,7 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
   }
 
   private String getToolHeader() {
-    StringBuffer header = new StringBuffer();
+    StringBuilder header = new StringBuilder();
     for (String colName : this.conf.getHeaderColKeys()) {
       header.append(this.conf.getHeaderColDisplayName(colName));
       header.append("\t");
@@ -125,7 +125,7 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
   }
 
   private void outputListingLine(Metadata met, String prodName) {
-    StringBuffer output = new StringBuffer();
+    StringBuilder output = new StringBuilder();
     for (String colNameKey : this.conf.getHeaderColKeys()) {
       if (!this.conf.isCollectionField(colNameKey)) {
         output.append(met.getMetadata(colNameKey));
@@ -140,13 +140,13 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
   }
 
   private static String outputOrBlank(List items) {
-    if (items == null || (items != null && items.size() == 0)) {
+    if (items == null || (items.size() == 0)) {
       return "N/A";
     }
 
-    StringBuffer buf = new StringBuffer();
-    for (Iterator i = items.iterator(); i.hasNext();) {
-      String item = (String) i.next();
+    StringBuilder buf = new StringBuilder();
+    for (Object item1 : items) {
+      String item = (String) item1;
       buf.append(item);
       buf.append(",");
     }

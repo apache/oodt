@@ -16,14 +16,13 @@
  */
 package org.apache.oodt.cas.workflow.cli.action;
 
-import org.apache.oodt.cas.cli.action.CmdLineAction;
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 
 /**
- * A {@link CmdLineAction} which retrieves Workflow information for
+ * A {@link org.apache.oodt.cas.cli.action.CmdLineAction} which retrieves Workflow information for
  * Workflow with given workflow ID.
  *
  * @author bfoster (Brian Foster)

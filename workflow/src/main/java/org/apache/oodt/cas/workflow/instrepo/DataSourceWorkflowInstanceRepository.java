@@ -20,7 +20,6 @@ package org.apache.oodt.cas.workflow.instrepo;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
@@ -720,7 +719,7 @@ public class DataSourceWorkflowInstanceRepository extends
         List wInstIds = null;
         int numResults = -1;
 
-        if (status == null || (status != null && status.equals(""))) {
+        if (status == null || (status.equals(""))) {
             numResults = getNumWorkflowInstances();
         } else {
             numResults = getNumWorkflowInstancesByStatus(status);

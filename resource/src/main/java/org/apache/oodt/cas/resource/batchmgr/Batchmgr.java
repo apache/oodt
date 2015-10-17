@@ -26,7 +26,6 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 
 //java imports
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -46,7 +45,7 @@ public interface Batchmgr {
      * @param job
      *            The {@link JobSpec} to execute.
      * @param remoteHost
-     *            A {@link URL} pointer to the remote host to execute the job
+     *            A {@link java.net.URL} pointer to the remote host to execute the job
      *            on.
      * @return true if the job execution was successful, false otherwise.
      * @throws JobExecutionException

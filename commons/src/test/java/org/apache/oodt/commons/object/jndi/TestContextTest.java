@@ -46,7 +46,7 @@ public class TestContextTest extends TestCase {
 	 * @throws NamingException if an error occurs.
 	 */
 	public void testTestContext() throws NamingException {
-		TestContext ctx = new TestContext("urn:x:");			       // Make it
+		TContext ctx = new TContext("urn:x:");			       // Make it
 		try {
 			ctx.lookup("urn:x:y");					       // Lookup a nonexistent binding
 			fail("Got a binding that doesn't exist");		       // Got something?  Yikes.

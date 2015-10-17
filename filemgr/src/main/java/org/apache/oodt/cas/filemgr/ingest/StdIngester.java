@@ -34,6 +34,7 @@ import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 
 //JDK imports
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -243,8 +244,12 @@ public class StdIngester implements Ingester, CoreMetKeys {
     private void checkOrSetFileManager(URL url) {
         if (this.fmClient != null && this.fmClient.getFileManagerUrl() != null) {
 
-            if (!this.fmClient.getFileManagerUrl().equals(url)) {
-                setFileManager(url);
+            try {
+                if (!this.fmClient.getFileManagerUrl().toURI().equals(url.toURI())) {
+                    setFileManager(url);
+                }
+            } catch (URISyntaxException e) {
+                LOG.log(Level.SEVERE, "Could not convert URL to URI, Message :" +e.getMessage());
             }
         } else {
             setFileManager(url);

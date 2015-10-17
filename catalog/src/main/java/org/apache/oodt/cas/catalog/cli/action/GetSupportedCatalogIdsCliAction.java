@@ -17,12 +17,11 @@
 package org.apache.oodt.cas.catalog.cli.action;
 
 //OODT imports
-import org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient;
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 
 /**
- * A {@link CmdLineAction} which get a list of supported {@link Catalog}
- * IDs for given {@link CatalogServiceClient}.
+ * A {@link org.apache.oodt.cas.cli.action.CmdLineAction} which get a list of supported {@link org.apache.oodt.cas.catalog.system.Catalog;}
+ * IDs for given {@link org.apache.oodt.cas.catalog.system.impl.CatalogServiceClient}.
  *
  * @author bfoster (Brian Foster) 
  */

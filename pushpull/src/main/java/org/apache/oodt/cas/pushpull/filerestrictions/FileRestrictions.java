@@ -22,14 +22,13 @@ package org.apache.oodt.cas.pushpull.filerestrictions;
 import org.apache.oodt.cas.pushpull.protocol.ProtocolPath;
 
 //JDK imports
-import java.io.InputStream;
 import java.util.LinkedList;
 
 
 /**
  * This class allows the creation of restrictions for files and directories created below an actual directory which is passed
  * into the constructor.  These restriction are loaded by passing a FileInputStream which contains a XML File
- * into the {@link #loadRestrictions(InputStream)} method and can be tested against by using the {@link #isAllowed(VirtualFile)} method.
+ * into the {@link #loadRestrictions(java.io.InputStream)} method and can be tested against by using the {@link #isAllowed(VirtualFile)} method.
  * 
  * <pre>
  * The XML file schema is:

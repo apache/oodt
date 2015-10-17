@@ -18,7 +18,6 @@
 package org.apache.oodt.cas.filemgr.browser.view.panels;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.BoxLayout;

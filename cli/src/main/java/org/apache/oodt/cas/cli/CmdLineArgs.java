@@ -16,25 +16,15 @@
  */
 package org.apache.oodt.cas.cli;
 
-//OODT static imports
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.findAction;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedHelpOption;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedPrintSupportedActionsOption;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.findSpecifiedActionOption;
-
-//JDK imports
-import java.util.Set;
-
-//Apache imports
 import org.apache.commons.lang.Validate;
-
-//OODT imports
 import org.apache.oodt.cas.cli.action.CmdLineAction;
-import org.apache.oodt.cas.cli.option.ActionCmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
-import org.apache.oodt.cas.cli.option.HelpCmdLineOption;
-import org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption;
+
+import java.util.Set;
+
+//OODT static imports
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.*;
 
 /**
  * A convenience class for {@link CmdLineUtility} for helping use already parsed
@@ -75,7 +65,7 @@ public class CmdLineArgs {
 
    /**
     * @return The {@link CmdLineOptionInstance} which is the specified
-    *         {@link HelpCmdLineOption}, or null if it was not specified
+    *         {@link org.apache.oodt.cas.cli.option.HelpCmdLineOption}, or null if it was not specified
     */
    public CmdLineOptionInstance getHelpOptionInst() {
       return helpOptionInst;
@@ -83,7 +73,7 @@ public class CmdLineArgs {
 
    /**
     * @return The {@link CmdLineOptionInstance} which is the specified
-    *         {@link ActionCmdLineOption}, or null if it was not specified
+    *         {@link org.apache.oodt.cas.cli.option.ActionCmdLineOption}, or null if it was not specified
     */
    public CmdLineOptionInstance getActionOptionInst() {
       return actionOptionInst;
@@ -91,7 +81,7 @@ public class CmdLineArgs {
 
    /**
     * @return The {@link CmdLineOptionInstance} which is the specified
-    *         {@link PrintSupportedActionsCmdLineOption}, or null if it was not
+    *         {@link org.apache.oodt.cas.cli.option.PrintSupportedActionsCmdLineOption}, or null if it was not
     *         specified
     */
    public CmdLineOptionInstance getPrintSupportedActionsOptionInst() {

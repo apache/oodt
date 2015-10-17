@@ -18,6 +18,12 @@
 package org.apache.oodt.cas.filemgr.structs;
 
 //JDK imports
+import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -32,14 +38,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 //OODT imports
-import org.apache.oodt.cas.filemgr.catalog.Catalog; //for javadoc
-import org.apache.oodt.commons.xml.XMLUtils;
 
 /**
  * @author mattmann
@@ -48,7 +47,7 @@ import org.apache.oodt.commons.xml.XMLUtils;
  * 
  * <p>
  * A Product is a set of files, or a heirarchical, directory structure that
- * should be ingested into the {@link Catalog}.
+ * should be ingested into the {@link org.apache.oodt.cas.filemgr.catalog.Catalog}.
  * </p>
  * 
  */

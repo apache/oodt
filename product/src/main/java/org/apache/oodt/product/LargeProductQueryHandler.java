@@ -18,8 +18,6 @@
 
 package org.apache.oodt.product;
 
-import org.apache.oodt.xmlquery.XMLQuery;
-
 /**
  * Handle requests for products that are too large to fit in an {@link
  * org.apache.oodt.xmlquery.XMLQuery} object.

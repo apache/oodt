@@ -18,20 +18,13 @@
 
 package org.apache.oodt.profile;
 
+import org.apache.oodt.commons.util.Documentable;
+import org.apache.oodt.commons.util.XML;
+import org.w3c.dom.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.oodt.commons.util.Documentable;
-import org.apache.oodt.commons.util.XML;
-import org.apache.oodt.commons.Configuration;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import java.io.IOException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.SAXException;
 
 /**
  * Profile attributes.
