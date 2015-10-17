@@ -26,10 +26,13 @@ the License.
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
   <name>Process Control System Core Package</name>
-  <packaging>jar</packaging>
+  <packaging>${packaging.type}</packaging>
   <description>The Process Control System's core system framework. PCS is an agglomeration of 
   CAS services and components needed to build a science data system.
   </description>
+  <properties>
+    <packaging.type>jar</packaging.type>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -54,9 +57,65 @@ the License.
             </goals>
           </execution>
         </executions>
-      </plugin>    
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <configuration>
+          <supportedProjectTypes>
+            <supportedProjectType>jar</supportedProjectType>
+            <supportedProjectType>bundle</supportedProjectType>
+            <supportedProjectType>war</supportedProjectType>
+          </supportedProjectTypes>
+          <instructions>
+            <Bundle-Name>${project.artifactId}</Bundle-Name>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+            <Export-Package>org.apache.oodt.pcs.*</Export-Package>
+            <Main-Class>org.apache.oodt.pcs.tools.PCSHealthMonitor</Main-Class>
+            <Import-Package>*;resolution:=optional</Import-Package>
+          </instructions>
+        </configuration>
+        <extensions>true</extensions>
+      </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>create-osgi-bundles-from-dependencies</id>
+      <properties>
+        <packaging.type>bundle</packaging.type>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>2.3.7</version>
+            <configuration>
+              <supportedProjectTypes>
+                <supportedProjectType>jar</supportedProjectType>
+                <supportedProjectType>bundle</supportedProjectType>
+                <supportedProjectType>war</supportedProjectType>
+              </supportedProjectTypes>
+              <instructions>
+                <Bundle-Name>${project.artifactId}</Bundle-Name>
+                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+                <Export-Package>org.apache.oodt.pcs.*</Export-Package>
+                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                <Embed-Transitive>true</Embed-Transitive>
+                <Import-Package>*;resolution:=optional</Import-Package>
+                <Main-Class>org.apache.oodt.pcs.tools.PCSHealthMonitor</Main-Class>
+              </instructions>
+            </configuration>
+            <extensions>true</extensions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
   <dependencies>
     <dependency>
       <groupId>org.apache.oodt</groupId>

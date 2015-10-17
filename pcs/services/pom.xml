@@ -23,12 +23,51 @@ the License.
     <version>0.10-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
-  <groupId>org.apache.oodt</groupId>
-  <artifactId>pcs-services</artifactId>
-  <packaging>war</packaging>
+    <artifactId>pcs-services</artifactId>
+  <packaging>${packaging.type}</packaging>
   <name>OODT Process Control System JAX-RS service layer</name>
   <description>A web application for exposing services form the underlying 
   OODT Process Control System via the JAX-RS specification.</description>
+    <properties>
+        <packaging.type>war</packaging.type>
+    </properties>
+    <build>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>create-osgi-bundles-from-dependencies</id>
+            <properties>
+                <packaging.type>war</packaging.type>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>maven-bundle-plugin</artifactId>
+                        <version>2.3.7</version>
+                        <configuration>
+                            <supportedProjectTypes>
+                                <supportedProjectType>jar</supportedProjectType>
+                                <supportedProjectType>bundle</supportedProjectType>
+                                <supportedProjectType>war</supportedProjectType>
+                            </supportedProjectTypes>
+                            <instructions>
+                                <Bundle-Name>${project.artifactId}</Bundle-Name>
+                                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                                <Bundle-Description>OSGI version of ${project.name}</Bundle-Description>
+                                <Export-Package>org.apache.oodt.pcs.services.*</Export-Package>
+                                <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                                <Embed-Transitive>true</Embed-Transitive>
+                                <Import-Package>*;resolution:=optional</Import-Package>
+                            </instructions>
+                        </configuration>
+                        <extensions>true</extensions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
   <dependencies>
     <dependency>
       <groupId>org.apache.oodt</groupId>
