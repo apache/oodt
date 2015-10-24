@@ -155,7 +155,7 @@ public final class MimeTypeUtils {
      */
     public String autoResolveContentType(String typeName, String url,
             byte[] data) {
-        MimeType type = null;
+        MimeType type;
         String cleanedMimeType = null;
 
         try {
@@ -220,7 +220,7 @@ public final class MimeTypeUtils {
             }
         }
 
-        return type.getName();
+        return type != null ? type.getName() : null;
     }
 
     /**

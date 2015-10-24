@@ -17,27 +17,25 @@
 package org.apache.oodt.cas.metadata.extractors;
 
 // JDK imports
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
+
+import org.apache.oodt.cas.metadata.AbstractMetExtractor;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
-// JAVAX imports
 import javax.sql.DataSource;
 
-
+// JAVAX imports
 // OODT imports
-import org.apache.oodt.cas.metadata.AbstractMetExtractor;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
-
-
 // Google imports
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Splitter;
 
 /**
  * MetExtractor which uses input file's name as key for lookup into a sql database to get metadata.
@@ -84,9 +82,21 @@ public class DataSourceMetExtractor extends AbstractMetExtractor {
       throw new MetExtractionException(
           String.format("Failed to get metadaata for key '%s'", key), e);
     } finally {
-      try { conn.close(); } catch (Exception e) { /* ignore */ }
-      try { statement.close(); } catch (Exception e) { /* ignore */ }
-      try { rs.close(); } catch (Exception e) { /* ignore */ }
+      try {
+        if (conn != null) {
+          conn.close();
+        }
+      } catch (Exception e) { /* ignore */ }
+      try {
+        if (statement != null) {
+          statement.close();
+        }
+      } catch (Exception e) { /* ignore */ }
+      try {
+        if (rs != null) {
+          rs.close();
+        }
+      } catch (Exception e) { /* ignore */ }
     }
   }
 

@@ -52,7 +52,7 @@ public class QueryBuilder {
       e.printStackTrace();
     }
 
-    System.out.println(luceneQ.toString());
+    System.out.println(luceneQ != null ? luceneQ.toString() : null);
     GenerateCASQuery(casQ, luceneQ);
 
     return casQ;

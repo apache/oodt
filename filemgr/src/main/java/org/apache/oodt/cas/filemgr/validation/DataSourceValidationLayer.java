@@ -23,16 +23,18 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.util.DbStructFactory;
 
-//JDK imports
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.sql.DataSource;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -92,7 +94,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                     + addMetaElemSql);
             statement.execute(addMetaElemSql);
 
-            String elementId = new String();
+            String elementId = "";
 
             String getMetaIdSql = "SELECT MAX(element_id) AS max_id FROM elements";
             LOG.log(Level.FINE, "addElement: Executing: " + getMetaIdSql);
@@ -112,7 +114,9 @@ public class DataSourceValidationLayer implements ValidationLayer {
                             + element.getElementName() + ". Message: "
                             + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback addElement transaction. Message: "
@@ -127,7 +131,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -136,7 +139,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -146,7 +148,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -181,7 +182,9 @@ public class DataSourceValidationLayer implements ValidationLayer {
             LOG.log(Level.WARNING, "Exception modifying element. Message: "
                     + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback modifyElement transaction. Message: "
@@ -196,7 +199,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -206,7 +208,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -240,7 +241,9 @@ public class DataSourceValidationLayer implements ValidationLayer {
             LOG.log(Level.WARNING, "Exception removing element. Message: "
                     + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback removeElement transaction. Message: "
@@ -254,7 +257,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -264,7 +266,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -306,7 +307,9 @@ public class DataSourceValidationLayer implements ValidationLayer {
                     + element.getElementName() + " to product type "
                     + type.getName() + " . Message: " + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback addElementToProductType transaction. Message: "
@@ -320,7 +323,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -330,7 +332,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -373,7 +374,9 @@ public class DataSourceValidationLayer implements ValidationLayer {
                     + element.getElementName() + " from product type "
                     + type.getName() + ". Message: " + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback removeElementFromProductType transaction. Message: "
@@ -387,7 +390,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -397,7 +399,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -432,7 +433,9 @@ public class DataSourceValidationLayer implements ValidationLayer {
                     "Exception adding parent info to product type "
                             + type.getName() + " . Message: " + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback addParentToProductType transaction. Message: "
@@ -446,7 +449,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -455,7 +457,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
     }
@@ -491,7 +492,9 @@ public class DataSourceValidationLayer implements ValidationLayer {
                     "Exception removing parent from product type "
                             + type.getName() + ". Message: " + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback removeParentFromProductType transaction. Message: "
@@ -505,7 +508,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -514,7 +516,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
     }
@@ -691,7 +692,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -700,7 +700,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -710,7 +709,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -758,7 +756,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -767,7 +764,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -777,7 +773,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -825,7 +820,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -834,7 +828,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -844,7 +837,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 

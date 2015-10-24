@@ -185,7 +185,7 @@ public interface Catalog extends Pagination {
      *         specified Product.
      * @throws CatalogException
      */
-    public List<Reference> getProductReferences(Product product) throws CatalogException;
+    public List getProductReferences(Product product) throws CatalogException;
 
     /**
      * <p>

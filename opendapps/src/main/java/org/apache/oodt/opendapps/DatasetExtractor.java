@@ -18,6 +18,10 @@
 package org.apache.oodt.opendapps;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.opendapps.config.OpendapConfig;
+import org.apache.oodt.xmlquery.XMLQuery;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +33,13 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.opendapps.config.OpendapConfig;
-import org.apache.oodt.xmlquery.XMLQuery;
-
-//NetCDF-Java imports
-import thredds.catalog.crawl.CatalogCrawler;
-import ucar.nc2.util.CancelTask;
 import opendap.dap.DConnect;
 import opendap.dap.DataDDS;
+import thredds.catalog.crawl.CatalogCrawler;
+import ucar.nc2.util.CancelTask;
+
+//OODT imports
+//NetCDF-Java imports
 
 /**
  * 
@@ -137,7 +138,10 @@ public class DatasetExtractor {
             + " is neither a valid URL nor a filename.");
       }
       try {
-        DataDDS dds = dConn.getData(queryExpression, null);
+        DataDDS dds = null;
+        if (dConn != null) {
+          dds = dConn.getData(queryExpression, null);
+        }
 
         if (dds != null) {
           datasetUrls.add(datasetUrl);

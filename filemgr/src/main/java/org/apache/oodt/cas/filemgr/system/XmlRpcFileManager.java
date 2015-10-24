@@ -66,7 +66,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -338,7 +337,7 @@ public class XmlRpcFileManager {
 
     public int getNumProducts(Hashtable<String, Object> productTypeHash)
             throws CatalogException {
-        int numProducts = -1;
+        int numProducts;
 
         ProductType type = XmlRpcStructFactory
                 .getProductTypeFromXmlRpc(productTypeHash);
@@ -529,7 +528,7 @@ public class XmlRpcFileManager {
             throws ValidationLayerException {
         ProductType type = XmlRpcStructFactory
                 .getProductTypeFromXmlRpc(productTypeHash);
-        List<Element> elementList = null;
+        List<Element> elementList;
 
         try {
             elementList = catalog.getValidationLayer().getElements(type);
@@ -721,7 +720,9 @@ public class XmlRpcFileManager {
         try {
           versioner = GenericFileManagerObjectFactory
               .getVersionerFromClassName(p.getProductType().getVersioner());
-          versioner.createDataStoreReferences(p, expandedMetdata);
+          if (versioner != null) {
+            versioner.createDataStoreReferences(p, expandedMetdata);
+          }
         } catch (Exception e) {
           LOG.log(Level.SEVERE,
               "ingestProduct: VersioningException when versioning Product: "
@@ -794,7 +795,11 @@ public class XmlRpcFileManager {
                + "' bytes from file '" + filePath + "' at index '" + offset
                + "' : " + e.getMessage(), e);
       } finally {
-         try { is.close(); } catch (Exception ignored) {}
+         try {
+           if (is != null) {
+             is.close();
+           }
+         } catch (Exception ignored) {}
       }
    }
     
@@ -1101,11 +1106,11 @@ public class XmlRpcFileManager {
                 extractor.configure(spec.getConfiguration());
               }
               LOG.log(Level.INFO, "Running Met Extractor: ["
-                        + extractor.getClass().getName()
+                        + (extractor != null ? extractor.getClass().getName() : null)
                         + "] for product type: ["
                         + product.getProductType().getName() + "]");
                 try {
-                    met = extractor.extractMetadata(product, met);
+                    met = extractor != null ? extractor.extractMetadata(product, met) : null;
                 } catch (MetExtractionException e) {
                     LOG.log(Level.SEVERE,
                             "Exception extractor metadata from product: ["
@@ -1140,8 +1145,8 @@ public class XmlRpcFileManager {
     }
     
     private List<Product> query(Query query, ProductType productType) throws CatalogException {
-        List<String> productIdList = null;
-        List<Product> productList = null;
+        List<String> productIdList;
+        List<Product> productList;
 
         try {            
             productIdList = catalog.query(this.getCatalogQuery(query, productType), productType);
@@ -1212,9 +1217,9 @@ public class XmlRpcFileManager {
         List<TypeHandler> handlers = this.repositoryManager.getProductTypeById(
                 productType.getProductTypeId()).getHandlers();
         if (handlers != null) {
-            for (Iterator<TypeHandler> iter = handlers.iterator(); iter
-                    .hasNext();)
-                iter.next().postGetMetadataHandle(metadata);
+          for (TypeHandler handler : handlers) {
+            handler.postGetMetadataHandle(metadata);
+          }
         }
         return metadata;
     }

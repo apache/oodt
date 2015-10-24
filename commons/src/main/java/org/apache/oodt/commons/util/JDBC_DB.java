@@ -39,12 +39,10 @@ public class JDBC_DB
 	ResultSet rs;
 	ResultSetMetaData rs_meta;
 	int affected;
-	boolean more_rows;
-	boolean keep_connect_open;
+  	boolean keep_connect_open;
 	private boolean autoCommitMode = false;
-	public final String TO_DATE_FORMAT = "DD-MM-YYYY HH24:MI:SS";
 
-	/******************************************************************
+  /******************************************************************
 	**
 	** JDBC_DB
 	**
@@ -56,9 +54,8 @@ public class JDBC_DB
 	public  JDBC_DB(
 			java.util.Properties sys_props) throws SQLException
 	{
-			String  classname;
 
-			serverProps = sys_props;
+	 		serverProps = sys_props;
 			keep_connect_open = true;
 
 	}
@@ -67,16 +64,11 @@ public class JDBC_DB
 			java.util.Properties sys_props,
 			Connection srv_connect) throws SQLException
 	{
-			String  classname;
 
-			serverProps = sys_props;
+	  		serverProps = sys_props;
 			connect = srv_connect;
 
-			if (srv_connect == null) {
-				keep_connect_open  = false;
-			} else {
-				keep_connect_open = true;
-			}
+	  		keep_connect_open = srv_connect != null;
 	}
 
 	public void setAutoCommitMode(boolean autoCommitMode) {
@@ -364,7 +356,7 @@ public class JDBC_DB
 				connect.rollback();
 		}
 
-		catch (SQLException e)
+		catch (SQLException ignored)
 		{
 
 		}
@@ -391,7 +383,7 @@ public class JDBC_DB
 			}
 
 		}
-		catch (SQLException e)
+		catch (SQLException ignored)
 		{
 		}
 	}
@@ -420,9 +412,8 @@ public class JDBC_DB
 */
 
 		SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		String dateStr = fmt.format(inDate);
 
-		return dateStr;
+	  return fmt.format(inDate);
 
 
 	}
