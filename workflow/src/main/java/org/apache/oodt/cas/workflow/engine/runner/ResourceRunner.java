@@ -18,11 +18,6 @@
 package org.apache.oodt.cas.workflow.engine.runner;
 
 //JDK imports
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
@@ -32,6 +27,12 @@ import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.TaskJobInput;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * 
@@ -70,7 +71,7 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
         .setJobInstanceClassName("org.apache.oodt.cas.workflow.structs.TaskJob");
     workflowTaskJob
         .setJobInputClassName("org.apache.oodt.cas.workflow.structs.TaskJobInput");
-    workflowTaskJob.setLoadValue(new Integer(2));
+    workflowTaskJob.setLoadValue(2);
     workflowTaskJob.setQueueName(workflowTask.getTaskConfig().getProperty(
         QUEUE_NAME) != null ? workflowTask.getTaskConfig().getProperty(
         QUEUE_NAME) : DEFAULT_QUEUE_NAME);

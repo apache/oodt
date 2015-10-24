@@ -341,7 +341,7 @@ public class CmdLineUtils {
                return option2.getLongOption()
                      .compareTo(option1.getLongOption());
             } else {
-               return new Integer(thisScore).compareTo(compareScore);
+               return Integer.valueOf(thisScore).compareTo(compareScore);
             }
          }
       });
@@ -1095,12 +1095,12 @@ public class CmdLineUtils {
       } else if (type.equals(Integer.class) || type.equals(Integer.TYPE)) {
          List<Object> ints = new LinkedList<Object>();
          for (String value : values)
-            ints.add(new Integer(value));
+            ints.add(Integer.valueOf(value));
          return ints;
       } else if (type.equals(Long.class) || type.equals(Long.TYPE)) {
          List<Object> longs = new LinkedList<Object>();
          for (String value : values)
-            longs.add(new Long(value));
+            longs.add(Long.valueOf(value));
          return longs;
       } else if (type.equals(Double.class) || type.equals(Double.TYPE)) {
          List<Object> doubles = new LinkedList<Object>();

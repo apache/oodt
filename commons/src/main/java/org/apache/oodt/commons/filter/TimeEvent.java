@@ -89,7 +89,7 @@ public class TimeEvent implements Comparable<TimeEvent> {
     }
 
     public int compareTo(TimeEvent te) {
-        return new Long(this.startTime).compareTo(te.startTime);
+        return Long.valueOf(this.startTime).compareTo(te.startTime);
     }
  
     public static List<? extends TimeEvent> getTimeOrderedEvents(List<? extends TimeEvent> events) {

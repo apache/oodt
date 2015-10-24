@@ -52,7 +52,7 @@ public class TestResmgr {
       Job hw1 = new Job("JobOne", "HelloWorldJob",
           "org.apache.oodt.cas.resource.examples.HelloWorldJob",
           "org.apache.oodt.cas.resource.structs.NameValueJobInput", "quick",
-          new Integer(1));
+          1);
       NameValueJobInput hw1Input = new NameValueJobInput();
       hw1Input.setNameValuePair("user.name", "Dave");
 

@@ -29,7 +29,6 @@ import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
 import org.apache.oodt.commons.xml.XMLUtils;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -208,7 +207,7 @@ public class DirStructXmlParser implements Parser {
         return input;
     }
 
-    private void parseVariablesXML(NodeList list) throws DOMException, Exception {
+    private void parseVariablesXML(NodeList list) throws Exception {
 
         // loop through all variable elements
         for (int i = 0; i < list.getLength(); i++) {
@@ -265,7 +264,7 @@ public class DirStructXmlParser implements Parser {
                 }
                 // determine if variable is an Integer or a String
                 if (type.equals("int")) {
-                    variable.setValue(new Integer(value));
+                    variable.setValue(Integer.valueOf(value));
                 } else
                     variable.setValue(value);
 

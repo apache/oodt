@@ -15,13 +15,25 @@
 
 package org.apache.oodt.commons.util;
 
-import java.io.*;
-import java.util.*;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /** XML-RPC utilities.
  *
@@ -48,8 +60,9 @@ public class XMLRPC {
 		if (params != null && !params.isEmpty()) {
 			Element paramsElement = doc.createElement("params");
 			methodCallElement.appendChild(paramsElement);
-			for (Iterator i = params.iterator(); i.hasNext();)
-				paramsElement.appendChild(createValueElement(doc, i.next()));
+		  for (Object param : params) {
+			paramsElement.appendChild(createValueElement(doc, param));
+		  }
 		}
 		return XML.serialize(doc).getBytes();
 	}
@@ -87,23 +100,25 @@ public class XMLRPC {
 			Element structElement = doc.createElement("struct");
 			valueElement.appendChild(structElement);
 			Map map = (Map) value;
-			for (Iterator i = map.entrySet().iterator(); i.hasNext();) {
-				Element memberElement = doc.createElement("member");
-				valueElement.appendChild(memberElement);
-				Map.Entry entry = (Map.Entry) i.next();
-				if (!(entry.getKey() instanceof String))
-					throw new IllegalArgumentException("Keys in maps for XML-RPC structs must be Strings");
-				XML.add(memberElement, "name", entry.getKey().toString());
-				memberElement.appendChild(createValueElement(doc, entry.getValue()));
+		  for (Object o : map.entrySet()) {
+			Element memberElement = doc.createElement("member");
+			valueElement.appendChild(memberElement);
+			Map.Entry entry = (Map.Entry) o;
+			if (!(entry.getKey() instanceof String)) {
+			  throw new IllegalArgumentException("Keys in maps for XML-RPC structs must be Strings");
 			}
+			XML.add(memberElement, "name", entry.getKey().toString());
+			memberElement.appendChild(createValueElement(doc, entry.getValue()));
+		  }
 		} else if (value instanceof Collection) {
 			Element arrayElement = doc.createElement("array");
 			valueElement.appendChild(arrayElement);
 			Element dataElement = doc.createElement("data");
 			arrayElement.appendChild(dataElement);
 			Collection collection = (Collection) value;
-			for (Iterator i = collection.iterator(); i.hasNext();)
-				dataElement.appendChild(createValueElement(doc, i.next()));
+		  for (Object aCollection : collection) {
+			dataElement.appendChild(createValueElement(doc, aCollection));
+		  }
 		} else throw new IllegalArgumentException(value.getClass().getName() + " not supported in XML-RPC");
 		return valueElement;
 	}
@@ -163,10 +178,10 @@ public class XMLRPC {
 		// Figure out what the type is from the nested element.
 		String txt = XML.unwrappedText(t);
 		if ("i4".equals(n) || "int".equals(n)) {
-			return new Integer(txt);
+			return Integer.valueOf(txt);
 		} else if ("boolean".equals(n)) {
-			if ("1".equals(txt))      return new Boolean(true);
-			else if ("0".equals(txt)) return new Boolean(false);
+			if ("1".equals(txt))      return true;
+			else if ("0".equals(txt)) return false;
 			else throw new IllegalArgumentException(n + " does not contain a 0 or 1");
 		} else if ("string".equals(n)) {
 			return txt;

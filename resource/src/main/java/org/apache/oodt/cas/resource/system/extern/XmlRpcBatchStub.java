@@ -19,6 +19,15 @@
 package org.apache.oodt.cas.resource.system.extern;
 
 //JDK imports
+import org.apache.oodt.cas.resource.structs.Job;
+import org.apache.oodt.cas.resource.structs.JobInput;
+import org.apache.oodt.cas.resource.structs.JobInstance;
+import org.apache.oodt.cas.resource.structs.exceptions.JobException;
+import org.apache.oodt.cas.resource.structs.exceptions.JobInputException;
+import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
+import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
+import org.apache.xmlrpc.WebServer;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -28,16 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.resource.structs.Job;
-import org.apache.oodt.cas.resource.structs.JobInput;
-import org.apache.oodt.cas.resource.structs.JobInstance;
-import org.apache.oodt.cas.resource.structs.exceptions.JobException;
-import org.apache.oodt.cas.resource.structs.exceptions.JobInputException;
-import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
-import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
-
 //APACHE imports
-import org.apache.xmlrpc.WebServer;
 
 /**
  * @author woollard
@@ -92,17 +92,17 @@ public class XmlRpcBatchStub {
 
     public boolean executeJob(Hashtable jobHash, double jobInput)
             throws JobException {
-        return genericExecuteJob(jobHash, new Double(jobInput));
+        return genericExecuteJob(jobHash, jobInput);
     }
 
     public boolean executeJob(Hashtable jobHash, int jobInput)
             throws JobException {
-        return genericExecuteJob(jobHash, new Integer(jobInput));
+        return genericExecuteJob(jobHash, jobInput);
     }
 
     public boolean executeJob(Hashtable jobHash, boolean jobInput)
             throws JobException {
-        return genericExecuteJob(jobHash, new Boolean(jobInput));
+        return genericExecuteJob(jobHash, jobInput);
     }
 
     public boolean executeJob(Hashtable jobHash, Vector jobInput)
@@ -131,8 +131,8 @@ public class XmlRpcBatchStub {
 
     private boolean genericExecuteJob(Hashtable jobHash, Object jobInput)
             throws JobException {
-        JobInstance exec = null;
-        JobInput in = null;
+        JobInstance exec;
+        JobInput in;
         try {
             Job job = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
 
@@ -145,7 +145,9 @@ public class XmlRpcBatchStub {
                     .getJobInputFromClassName(job.getJobInputClassName());
 
             // load the input obj
-            in.read(jobInput);
+            if (in != null) {
+                in.read(jobInput);
+            }
 
             // create threaded job
             // so that it can be interrupted
@@ -171,7 +173,6 @@ public class XmlRpcBatchStub {
             synchronized (jobThreadMap) {
                 Thread endThread = (Thread) jobThreadMap.get(job.getId());
                 if (endThread != null)
-                    endThread = null;
             }
 
             return runner.wasSuccessful();
@@ -195,8 +196,6 @@ public class XmlRpcBatchStub {
             System.err.println(usage);
             System.exit(1);
         }
-
-        XmlRpcBatchStub stub = new XmlRpcBatchStub(portNum);
 
         for (;;)
             try {

@@ -19,6 +19,7 @@ package org.apache.oodt.cas.filemgr.util;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.ExtractorSpec;
 import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -28,7 +29,6 @@ import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
@@ -38,12 +38,12 @@ import org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor;
 import org.apache.oodt.cas.filemgr.structs.type.TypeHandler;
 import org.apache.oodt.cas.metadata.Metadata;
 
-//JDK imports
 import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.List;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -91,8 +91,7 @@ public final class XmlRpcStructFactory {
 
         if (statuses != null && statuses.size() > 0) {
 
-            for (Iterator<FileTransferStatus> i = statuses.iterator(); i.hasNext();) {
-                FileTransferStatus status = i.next();
+            for (FileTransferStatus status : statuses) {
                 statusVector.add(getXmlRpcFileTransferStatus(status));
             }
         }
@@ -104,8 +103,7 @@ public final class XmlRpcStructFactory {
         List<FileTransferStatus> statuses = new Vector<FileTransferStatus>();
 
         if (statusVector != null && statusVector.size() > 0) {
-            for (Iterator<Hashtable<String, Object>> i = statusVector.iterator(); i.hasNext();) {
-                Hashtable<String, Object> statusHash = i.next();
+            fore (Hashtable<String, Object> statusHash : statusVector) {
                 FileTransferStatus status = getFileTransferStatusFromXmlRpc(statusHash);
                 statuses.add(status);
             }
@@ -116,9 +114,9 @@ public final class XmlRpcStructFactory {
 
     public static Hashtable<String, Object> getXmlRpcProductPage(ProductPage page) {
         Hashtable<String, Object>productPageHash = new Hashtable<String, Object>();
-        productPageHash.put("totalPages", new Integer(page.getTotalPages()));
-        productPageHash.put("pageNum", new Integer(page.getPageNum()));
-        productPageHash.put("pageSize", new Integer(page.getPageSize()));
+        productPageHash.put("totalPages", page.getTotalPages());
+        productPageHash.put("pageNum", page.getPageNum());
+        productPageHash.put("pageSize", page.getPageSize());
         productPageHash.put("pageProducts", getXmlRpcProductList(page
                 .getPageProducts()));
         return productPageHash;
@@ -127,12 +125,10 @@ public final class XmlRpcStructFactory {
     @SuppressWarnings("unchecked")
     public static ProductPage getProductPageFromXmlRpc(Hashtable<String, Object> productPageHash) {
         ProductPage page = new ProductPage();
-        page.setPageNum(((Integer) productPageHash.get("pageNum")).intValue());
+        page.setPageNum((Integer) productPageHash.get("pageNum"));
         page
-                .setPageSize(((Integer) productPageHash.get("pageSize"))
-                        .intValue());
-        page.setTotalPages(((Integer) productPageHash.get("totalPages"))
-                .intValue());
+                .setPageSize((Integer) productPageHash.get("pageSize"));
+        page.setTotalPages((Integer) productPageHash.get("totalPages"));
         page.setPageProducts(getProductListFromXmlRpc((Vector<Hashtable<String, Object>>) productPageHash
                 .get("pageProducts")));
         return page;
@@ -202,7 +198,9 @@ public final class XmlRpcStructFactory {
     
     public static FilterAlgor getFilterAlgorFromXmlRpc(Hashtable<String, Object> filterAlgorHash) {
         FilterAlgor filterAlgor = GenericFileManagerObjectFactory.getFilterAlgorFromClassName((String) filterAlgorHash.get("class"));
-        filterAlgor.setEpsilon(Long.parseLong((String) filterAlgorHash.get("epsilon")));
+        if (filterAlgor != null) {
+            filterAlgor.setEpsilon(Long.parseLong((String) filterAlgorHash.get("epsilon")));
+        }
         return filterAlgor;
     }
     
@@ -293,8 +291,7 @@ public final class XmlRpcStructFactory {
     public static List<Product> getProductListFromXmlRpc(Vector<Hashtable<String, Object>> productVector) {
         List<Product> productList = new Vector<Product>();
 
-        for (Iterator<Hashtable<String, Object>> i = productVector.iterator(); i.hasNext();) {
-            Hashtable<String, Object> productHash = i.next();
+        for (Hashtable<String, Object> productHash : productVector) {
             Product product = getProductFromXmlRpc(productHash);
             productList.add(product);
         }
@@ -309,8 +306,7 @@ public final class XmlRpcStructFactory {
             return productVector;
         }
 
-        for (Iterator<Product> i = products.iterator(); i.hasNext();) {
-            Product product = i.next();
+        for (Product product : products) {
             Hashtable<String, Object> productHash = getXmlRpcProduct(product);
             productVector.add(productHash);
         }
@@ -325,8 +321,7 @@ public final class XmlRpcStructFactory {
             return productTypeVector;
         }
 
-        for (Iterator<ProductType> i = productTypes.iterator(); i.hasNext();) {
-            ProductType type = i.next();
+        for (ProductType type : productTypes) {
             Hashtable<String, Object> typeHash = getXmlRpcProductType(type);
             productTypeVector.add(typeHash);
         }
@@ -335,8 +330,7 @@ public final class XmlRpcStructFactory {
 
     public static List<ProductType> getProductTypeListFromXmlRpc(Vector<Hashtable<String, Object>> productTypeVector) {
         List<ProductType> productTypeList = new Vector<ProductType>();
-        for (Iterator<Hashtable<String, Object>> i = productTypeVector.iterator(); i.hasNext();) {
-            Hashtable<String, Object> productTypeHash = i.next();
+        for (Hashtable<String, Object> productTypeHash : productTypeVector) {
             ProductType type = getProductTypeFromXmlRpc(productTypeHash);
             productTypeList.add(type);
         }
@@ -402,8 +396,7 @@ public final class XmlRpcStructFactory {
         Vector<Hashtable<String, Object>> extractorsVector = new Vector<Hashtable<String, Object>>();
 
         if (extractors != null && extractors.size() > 0) {
-            for (Iterator<ExtractorSpec> i = extractors.iterator(); i.hasNext();) {
-                ExtractorSpec spec = i.next();
+            for (ExtractorSpec spec : extractors) {
                 extractorsVector.add(getXmlRpcExtractorSpec(spec));
             }
         }
@@ -423,8 +416,7 @@ public final class XmlRpcStructFactory {
         Vector<Hashtable<String, Object>> handlersVector = new Vector<Hashtable<String, Object>>();
 
         if (typeHandlers != null && typeHandlers.size() > 0) {
-            for (Iterator<TypeHandler> i = typeHandlers.iterator(); i.hasNext();) {
-                TypeHandler typeHandler = i.next();
+            for (TypeHandler typeHandler : typeHandlers) {
                 handlersVector.add(getXmlRpcTypeHandler(typeHandler));
             }
         }
@@ -445,8 +437,7 @@ public final class XmlRpcStructFactory {
         List<ExtractorSpec> extractors = new Vector<ExtractorSpec>();
 
         if (extractorsVector != null && extractorsVector.size() > 0) {
-            for (Iterator<Hashtable<String, Object>> i = extractorsVector.iterator(); i.hasNext();) {
-                Hashtable<String, Object> extractorSpecHash = i.next();
+            for (Hashtable<String, Object> extractorSpecHash : extractorsVector) {
                 extractors.add(getExtractorSpecFromXmlRpc(extractorSpecHash));
             }
         }
@@ -469,8 +460,7 @@ public final class XmlRpcStructFactory {
         List<TypeHandler> handlers = new Vector<TypeHandler>();
 
         if (handlersVector != null && handlersVector.size() > 0) {
-            for (Iterator<Hashtable<String, Object>> i = handlersVector.iterator(); i.hasNext();) {
-                Hashtable<String, Object> typeHandlerHash = i.next();
+            for (Hashtable<String, Object> typeHandlerHash : handlersVector) {
                 handlers.add(getTypeHandlerFromXmlRpc(typeHandlerHash));
             }
         }
@@ -491,8 +481,7 @@ public final class XmlRpcStructFactory {
         Properties props = new Properties();
 
         if (propHash != null && propHash.keySet().size() > 0) {
-            for (Iterator<String> i = propHash.keySet().iterator(); i.hasNext();) {
-                String propName = i.next();
+            for (String propName : propHash.keySet()) {
                 String propValue = propHash.get(propName);
                 props.setProperty(propName, propValue);
             }
@@ -505,8 +494,8 @@ public final class XmlRpcStructFactory {
         Hashtable<String, String> propHash = new Hashtable<String, String>();
 
         if (props != null && props.keySet().size() > 0) {
-            for (Iterator<Object> i = props.keySet().iterator(); i.hasNext();) {
-                String propName = (String) i.next();
+            for (Object o : props.keySet()) {
+                String propName = (String) o;
                 String propValue = props.getProperty(propName);
                 propHash.put(propName, propValue);
             }
@@ -522,8 +511,8 @@ public final class XmlRpcStructFactory {
             return refVector;
         }
 
-        for (Iterator<Reference> i = references.iterator(); i.hasNext();) {
-            Hashtable<String, Object> refHash = getXmlRpcReference(i.next());
+        for (Reference reference : references) {
+            Hashtable<String, Object> refHash = getXmlRpcReference(reference);
             refVector.add(refHash);
         }
 
@@ -532,8 +521,8 @@ public final class XmlRpcStructFactory {
 
     public static List<Reference> getReferencesFromXmlRpc(Vector<Hashtable<String, Object>> referenceVector) {
         List<Reference> references = new Vector<Reference>();
-        for (Iterator<Hashtable<String, Object>> i = referenceVector.iterator(); i.hasNext();) {
-            Reference r = getReferenceFromXmlRpc(i.next());
+        for (Hashtable<String, Object> aReferenceVector : referenceVector) {
+            Reference r = getReferenceFromXmlRpc(aReferenceVector);
             references.add(r);
         }
         return references;
@@ -564,8 +553,7 @@ public final class XmlRpcStructFactory {
 
     public static Vector<Hashtable<String, Object>> getXmlRpcElementList(List<Element> elementList) {
         Vector<Hashtable<String, Object>> elementVector = new Vector<Hashtable<String, Object>>(elementList.size());
-        for (Iterator<Element> i = elementList.iterator(); i.hasNext();) {
-            Element element = i.next();
+        for (Element element : elementList) {
             Hashtable<String, Object> elementHash = getXmlRpcElement(element);
             elementVector.add(elementHash);
         }
@@ -574,8 +562,7 @@ public final class XmlRpcStructFactory {
 
     public static List<Element> getElementListFromXmlRpc(Vector<Hashtable<String, Object>> elementVector) {
         List<Element> elementList = new Vector<Element>(elementVector.size());
-        for (Iterator<Hashtable<String, Object>> i = elementVector.iterator(); i.hasNext();) {
-            Hashtable<String, Object> elementHash = i.next();
+        for (Hashtable<String, Object> elementHash : elementVector) {
             Element element = getElementFromXmlRpc(elementHash);
             elementList.add(element);
         }
@@ -624,8 +611,7 @@ public final class XmlRpcStructFactory {
 
     public static Vector<Hashtable<String, Object>> getXmlRpcQueryCriteriaList(List<QueryCriteria> criteriaList) {
         Vector<Hashtable<String, Object>> criteriaVector = new Vector<Hashtable<String, Object>>(criteriaList.size());
-        for (Iterator<QueryCriteria> i = criteriaList.iterator(); i.hasNext();) {
-            QueryCriteria criteria = i.next();
+        for (QueryCriteria criteria : criteriaList) {
             Hashtable<String, Object> criteriaHash = getXmlRpcQueryCriteria(criteria);
             criteriaVector.add(criteriaHash);
         }
@@ -636,8 +622,7 @@ public final class XmlRpcStructFactory {
     public static List<QueryCriteria> getQueryCriteriaListFromXmlRpc(Vector<Hashtable<String, Object>> criteriaVector) {
 
         List<QueryCriteria> criteriaList = new Vector<QueryCriteria>(criteriaVector.size());
-        for (Iterator<Hashtable<String, Object>> i = criteriaVector.iterator(); i.hasNext();) {
-            Hashtable<String, Object> criteriaHash = i.next();
+        for (Hashtable<String, Object> criteriaHash : criteriaVector) {
             QueryCriteria criteria = getQueryCriteriaFromXmlRpc(criteriaHash);
             criteriaList.add(criteria);
         }
@@ -660,12 +645,11 @@ public final class XmlRpcStructFactory {
             criteriaHash.put("inclusive", Boolean.toString(((RangeQueryCriteria) criteria).getInclusive())); 
         } else if(criteria instanceof BooleanQueryCriteria){
             BooleanQueryCriteria boolQuery = (BooleanQueryCriteria) criteria;
-            criteriaHash.put("operator", new Integer(boolQuery.getOperator()));
+            criteriaHash.put("operator", boolQuery.getOperator());
             Vector<Hashtable<String, Object>> termsHash = new Vector<Hashtable<String, Object>>();
             List<QueryCriteria> terms = boolQuery.getTerms();
-            
-            for(int i=0;i<terms.size();i++){
-                QueryCriteria term = terms.get(i);
+
+            for (QueryCriteria term : terms) {
                 Hashtable<String, Object> termHash = getXmlRpcQueryCriteria(term);
                 termsHash.add(termHash);
             }
@@ -679,11 +663,11 @@ public final class XmlRpcStructFactory {
     
     public static QueryCriteria getQueryCriteriaFromXmlRpc(Hashtable<String, Object> criteriaHash) {
         QueryCriteria criteria = null;
-        if(((String)criteriaHash.get("class")).equals(TermQueryCriteria.class.getCanonicalName())){
+        if(criteriaHash.get("class").equals(TermQueryCriteria.class.getCanonicalName())){
             criteria = new TermQueryCriteria();
             criteria.setElementName((String) criteriaHash.get("elementName"));
             ((TermQueryCriteria)criteria).setValue((String) criteriaHash.get("elementValue"));
-        } else if(((String)criteriaHash.get("class")).equals(RangeQueryCriteria.class.getCanonicalName())){
+        } else if(criteriaHash.get("class").equals(RangeQueryCriteria.class.getCanonicalName())){
             criteria = new RangeQueryCriteria();
             criteria.setElementName((String) criteriaHash.get("elementName"));
             String startVal = criteriaHash.get("elementStartValue").equals("") ? 
@@ -693,21 +677,20 @@ public final class XmlRpcStructFactory {
             ((RangeQueryCriteria)criteria).setStartValue(startVal);
             ((RangeQueryCriteria)criteria).setEndValue(endVal);
             ((RangeQueryCriteria)criteria).setInclusive(Boolean.parseBoolean((String) criteriaHash.get("inclusive")));
-        } else if(((String)criteriaHash.get("class")).equals(BooleanQueryCriteria.class.getCanonicalName())){
+        } else if(criteriaHash.get("class").equals(BooleanQueryCriteria.class.getCanonicalName())){
             criteria = new BooleanQueryCriteria();
             try{
-              ((BooleanQueryCriteria)criteria).setOperator( ((Integer)criteriaHash.get("operator")).intValue() );
+              ((BooleanQueryCriteria)criteria).setOperator((Integer) criteriaHash.get("operator"));
             } catch (QueryFormulationException e){
                 System.out.println("Error generating Boolean Query.");
             }
             @SuppressWarnings("unchecked")
             List<Hashtable<String, Object>> terms = (List<Hashtable<String, Object>>) criteriaHash.get("terms");
-            for(int i=0;i<terms.size();i++){
-                Hashtable<String, Object> term = terms.get(i);
+            for (Hashtable<String, Object> term : terms) {
                 QueryCriteria termCriteria = getQueryCriteriaFromXmlRpc(term);
-                try{
-                    ((BooleanQueryCriteria)criteria).addTerm(termCriteria);
-                } catch (QueryFormulationException e){
+                try {
+                    ((BooleanQueryCriteria) criteria).addTerm(termCriteria);
+                } catch (QueryFormulationException e) {
                     System.out.println("Error generating Boolean Query.");
                 }
             }

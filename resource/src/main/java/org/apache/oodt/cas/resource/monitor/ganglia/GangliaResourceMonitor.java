@@ -82,7 +82,7 @@ public class GangliaResourceMonitor implements Monitor {
 
 	@Override
 	public int getLoad(ResourceNode node) throws MonitorException {
-		Map<String, String> nodeProperties = null;
+		Map<String, String> nodeProperties;
 		String nodeId = node.getNodeId();
 		nodeProperties = this.locateNode(nodeId);
 		if (nodeProperties == null) {
@@ -94,7 +94,7 @@ public class GangliaResourceMonitor implements Monitor {
 		// calculate load
 		double calcLoad = this.loadCalculator.calculateLoad(nodeProperties);
 		System.out.println(calcLoad);
-		int load = new Long(Math.round(calcLoad)).intValue();
+		int load = Long.valueOf(Math.round(calcLoad)).intValue();
 		System.out.println("LOAD is: "+load);
 		return load;
 	}

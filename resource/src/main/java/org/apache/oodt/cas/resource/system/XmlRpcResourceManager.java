@@ -33,11 +33,8 @@ import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
 import org.apache.oodt.cas.resource.util.ResourceNodeComparator;
 import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
-
-//APACHE imports
 import org.apache.xmlrpc.WebServer;
 
-//JDK imports
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.MalformedURLException;
@@ -45,11 +42,13 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+//APACHE imports
+//JDK imports
 
 /**
  * @author woollard
@@ -169,12 +168,12 @@ public class XmlRpcResourceManager {
 
     public String handleJob(Hashtable jobHash, int jobIn)
             throws SchedulerException {
-        return genericHandleJob(jobHash, new Integer(jobIn));
+        return genericHandleJob(jobHash, jobIn);
     }
 
     public String handleJob(Hashtable jobHash, boolean jobIn)
             throws SchedulerException {
-        return genericHandleJob(jobHash, new Boolean(jobIn));
+        return genericHandleJob(jobHash, jobIn);
     }
 
     public String handleJob(Hashtable jobHash, String jobIn)
@@ -184,7 +183,7 @@ public class XmlRpcResourceManager {
 
     public String handleJob(Hashtable jobHash, double jobIn)
             throws SchedulerException {
-        return genericHandleJob(jobHash, new Double(jobIn));
+        return genericHandleJob(jobHash, jobIn);
     }
 
     public String handleJob(Hashtable jobHash, Date jobIn)
@@ -209,12 +208,12 @@ public class XmlRpcResourceManager {
 
     public boolean handleJob(Hashtable jobHash, int jobIn, String urlStr)
             throws JobExecutionException {
-        return genericHandleJob(jobHash, new Integer(jobIn), urlStr);
+        return genericHandleJob(jobHash, jobIn, urlStr);
     }
 
     public boolean handleJob(Hashtable jobHash, boolean jobIn, String urlStr)
             throws JobExecutionException {
-        return genericHandleJob(jobHash, new Boolean(jobIn), urlStr);
+        return genericHandleJob(jobHash, jobIn, urlStr);
     }
 
     public boolean handleJob(Hashtable jobHash, String jobIn, String urlStr)
@@ -224,7 +223,7 @@ public class XmlRpcResourceManager {
 
     public boolean handleJob(Hashtable jobHash, double jobIn, String urlStr)
             throws JobExecutionException {
-        return genericHandleJob(jobHash, new Double(jobIn), urlStr);
+        return genericHandleJob(jobHash, jobIn, urlStr);
     }
 
     public boolean handleJob(Hashtable jobHash, Date jobIn, String urlStr)
@@ -346,17 +345,17 @@ public class XmlRpcResourceManager {
     	List jobSpecs = this.scheduler.getJobQueue().getQueuedJobs();
     	
     	if(jobSpecs != null && jobSpecs.size() > 0){
-    		for(Iterator i = jobSpecs.iterator(); i.hasNext();){
-    			Job job = ((JobSpec)i.next()).getJob();
-    			jobs.add(job);
-    		}
+            for (Object jobSpec : jobSpecs) {
+                Job job = ((JobSpec) jobSpec).getJob();
+                jobs.add(job);
+            }
     	}
     	
     	return XmlRpcStructFactory.getXmlRpcJobList(jobs);
     }
     
     public String getNodeReport() throws MonitorException{
-    	String report = new String();
+    	String report = "";
     	
     	try{
     		
@@ -365,20 +364,20 @@ public class XmlRpcResourceManager {
     		Collections.sort(nodes, new ResourceNodeComparator());
     		
     		// formulate the report string
-    		for(Iterator i = nodes.iterator(); i.hasNext(); ){
-    			ResourceNode node = (ResourceNode)i.next();
-    			String nodeId = node.getNodeId();
-    			report += nodeId;
-    			report += " (" + getNodeLoad(nodeId) + "/" + node.getCapacity() + ")";
-    			List<String> nodeQueues = getQueuesWithNode(nodeId);
-    			if(nodeQueues != null && nodeQueues.size() > 0){
-    				report += " -- " + nodeQueues.get(0);
-    				for(int j = 1; j < nodeQueues.size(); j++){
-    					report += ", " + nodeQueues.get(j);
-    				}
-    			}
-    			report += "\n";
-    		}
+            for (Object node1 : nodes) {
+                ResourceNode node = (ResourceNode) node1;
+                String nodeId = node.getNodeId();
+                report += nodeId;
+                report += " (" + getNodeLoad(nodeId) + "/" + node.getCapacity() + ")";
+                List<String> nodeQueues = getQueuesWithNode(nodeId);
+                if (nodeQueues != null && nodeQueues.size() > 0) {
+                    report += " -- " + nodeQueues.get(0);
+                    for (int j = 1; j < nodeQueues.size(); j++) {
+                        report += ", " + nodeQueues.get(j);
+                    }
+                }
+                report += "\n";
+            }
     	
     	}catch(Exception e){
     		throw new MonitorException(e.getMessage(), e);
@@ -388,7 +387,7 @@ public class XmlRpcResourceManager {
     }
     
     public String getExecutionReport() throws JobRepositoryException{
-    	String report = new String();
+    	String report = "";
     	
     	try{
     	
@@ -400,24 +399,24 @@ public class XmlRpcResourceManager {
 	    				"No jobs can be executing, as there are no nodes in the Monitor");
 	    	}
 	    	Vector<String> nodeIds = new Vector<String>();
-	    	for(Iterator i = resNodes.iterator(); i.hasNext(); ){
-	    		nodeIds.add(((ResourceNode)i.next()).getNodeId());
-	    	}
+            for (Object resNode : resNodes) {
+                nodeIds.add(((ResourceNode) resNode).getNodeId());
+            }
 	    	Collections.sort(nodeIds);
 	    	
 	    	// generate the report string
 	    	for(String nodeId: nodeIds){
 	    		List execJobIds = this.scheduler.getBatchmgr().getJobsOnNode(nodeId);
 	    		if(execJobIds != null && execJobIds.size() > 0){
-	    			for(Iterator i = execJobIds.iterator(); i.hasNext(); ){
-	    				String jobId = (String)i.next();
-	    				Job job = scheduler.getJobQueue().getJobRepository()
-	    						.getJobById(jobId).getJob();
-	    				report += "job id=" + jobId;
-	    				report += ", load=" + job.getLoadValue();
-	    				report += ", node=" + nodeId;
-	    				report += ", queue=" + job.getQueueName() + "\n";
-	    			}
+                    for (Object execJobId : execJobIds) {
+                        String jobId = (String) execJobId;
+                        Job job = scheduler.getJobQueue().getJobRepository()
+                                           .getJobById(jobId).getJob();
+                        report += "job id=" + jobId;
+                        report += ", load=" + job.getLoadValue();
+                        report += ", node=" + nodeId;
+                        report += ", queue=" + job.getQueueName() + "\n";
+                    }
 	    		}
 	    	}
     	
@@ -469,12 +468,14 @@ public class XmlRpcResourceManager {
         Job exec = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
         JobInput in = GenericResourceManagerObjectFactory
                 .getJobInputFromClassName(exec.getJobInputClassName());
-        in.read(jobIn);
+        if (in != null) {
+            in.read(jobIn);
+        }
 
         JobSpec spec = new JobSpec(in, exec);
 
         // queue the job up
-        String jobId = null;
+        String jobId;
 
         try {
             jobId = scheduler.getJobQueue().addJob(spec);
@@ -490,8 +491,10 @@ public class XmlRpcResourceManager {
             String urlStr) throws JobExecutionException {
         Job exec = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
         JobInput in = GenericResourceManagerObjectFactory
-                .getJobInputFromClassName(exec.getJobInputClassName());
-        in.read(jobIn);
+            .getJobInputFromClassName(exec.getJobInputClassName());
+        if (in != null) {
+            in.read(jobIn);
+        }
 
         JobSpec spec = new JobSpec(in, exec);
 
@@ -500,13 +503,10 @@ public class XmlRpcResourceManager {
 
         try {
             remoteNode = scheduler.getMonitor().getNodeByURL(remoteUrl);
-        } catch (MonitorException e) {
+        } catch (MonitorException ignored) {
         }
 
-        if (remoteNode != null) {
-            return scheduler.getBatchmgr().executeRemotely(spec, remoteNode);
-        } else
-            return false;
+        return remoteNode != null && scheduler.getBatchmgr().executeRemotely(spec, remoteNode);
     }
 
     private URL safeGetUrlFromString(String urlStr) {

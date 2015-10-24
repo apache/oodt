@@ -59,13 +59,13 @@ public class Method {
 
     public void addArgSignature(String name, int type) {
         argNames.add(name);
-        argTypes.add(new Integer(type));
+        argTypes.add(type);
     }
 
     public boolean addArg(String name, String value) {
         int nextLoc = args.size();
         if (nextLoc >= 0) {
-            switch (argTypes.get(nextLoc).intValue()) {
+            switch (argTypes.get(nextLoc)) {
             case INT:
                 addArg(new Variable(null, new Integer(value)));
                 break;
@@ -98,7 +98,7 @@ public class Method {
                 // System.out.println("Next C = " + c);
                 switch (c) {
                 case '$':
-                    StringBuffer variable = new StringBuffer("");
+                    StringBuilder variable = new StringBuilder("");
                     boolean globalVar = false;
 
                     // skip $ by incr i and if true then variable is a global
@@ -134,7 +134,7 @@ public class Method {
                     // System.out.println(output);
                     break;
                 case '#':
-                    StringBuffer variableIntString = new StringBuffer("");
+                    StringBuilder variableIntString = new StringBuilder("");
                     int k = i + 1;
                     for (; k < infixArray.length; k++) {
                         char ch = infixArray[k];
@@ -148,7 +148,7 @@ public class Method {
                     i = k - 1;
                     break;
                 case '"':
-                    StringBuffer variableString = new StringBuffer("");
+                    StringBuilder variableString = new StringBuilder("");
                     int l = i + 1;
                     for (; l < infixArray.length; l++) {
                         char ch = infixArray[l];
@@ -217,9 +217,9 @@ public class Method {
                             stack.push(new Variable(null, value));
                         } else if (((Variable) first).isInteger()
                                 && ((Variable) second).isInteger()) {
-                            Integer value = new Integer(((Integer) second
-                                    .getValue()).intValue()
-                                    + ((Integer) first.getValue()).intValue());
+                            Integer value = (Integer) second
+                                .getValue()
+                                            + (Integer) first.getValue();
                             stack.push(new Variable(null, value));
                         } else {
                             throw new MethodException(
@@ -229,9 +229,9 @@ public class Method {
                     case '-':
                         if (((Variable) first).isInteger()
                                 && ((Variable) second).isInteger()) {
-                            Integer value = new Integer(((Integer) second
-                                    .getValue()).intValue()
-                                    - ((Integer) first.getValue()).intValue());
+                            Integer value = (Integer) second
+                                .getValue()
+                                            - (Integer) first.getValue();
                             stack.push(new Variable(null, value));
                         } else {
                             throw new MethodException(
@@ -241,9 +241,9 @@ public class Method {
                     case '*':
                         if (((Variable) first).isInteger()
                                 && ((Variable) second).isInteger()) {
-                            Integer value = new Integer(((Integer) second
-                                    .getValue()).intValue()
-                                    * ((Integer) first.getValue()).intValue());
+                            Integer value = (Integer) second
+                                .getValue()
+                                            * (Integer) first.getValue();
                             stack.push(new Variable(null, value));
                         } else {
                             throw new MethodException(
@@ -253,11 +253,10 @@ public class Method {
                     case '/':
                         if (((Variable) first).isInteger()
                                 && ((Variable) second).isInteger()
-                                && ((Integer) ((Variable) first).getValue())
-                                        .intValue() > 0) {
-                            Integer value = new Integer(((Integer) second
-                                    .getValue()).intValue()
-                                    / ((Integer) first.getValue()).intValue());
+                                && (Integer) first.getValue() > 0) {
+                            Integer value = (Integer) second
+                                .getValue()
+                                            / (Integer) first.getValue();
                             stack.push(new Variable(null, value));
                         } else {
                             throw new MethodException(

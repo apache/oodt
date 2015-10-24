@@ -17,6 +17,15 @@
 
 package org.apache.oodt.cas.filemgr.browser.controller;
 
+import org.apache.oodt.cas.filemgr.browser.view.menus.RightClickMenu;
+import org.apache.oodt.cas.filemgr.browser.view.panels.HeaderCell;
+import org.apache.oodt.cas.filemgr.browser.view.panels.HeaderSpacer;
+import org.apache.oodt.cas.filemgr.browser.view.panels.Row;
+import org.apache.oodt.cas.filemgr.browser.view.panels.TablePane;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,16 +34,6 @@ import java.awt.event.MouseListener;
 import java.io.FileOutputStream;
 
 import javax.swing.JFileChooser;
-
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
-import org.apache.oodt.cas.filemgr.browser.view.menus.RightClickMenu;
-import org.apache.oodt.cas.filemgr.browser.view.panels.HeaderCell;
-import org.apache.oodt.cas.filemgr.browser.view.panels.HeaderSpacer;
-import org.apache.oodt.cas.filemgr.browser.view.panels.Row;
-import org.apache.oodt.cas.filemgr.browser.view.panels.TablePane;
 
 public class TableListener implements MouseListener, ActionListener {
 
@@ -70,7 +69,7 @@ public class TableListener implements MouseListener, ActionListener {
       if (caller instanceof HeaderSpacer) {
         HeaderSpacer hsCaller = (HeaderSpacer) caller;
         if (e.getModifiers() == 18
-            && table.hiddenCols.contains(new Integer(hsCaller.getColNum() + 1))) {
+            && table.hiddenCols.contains(Integer.valueOf(hsCaller.getColNum() + 1))) {
           rcMenu.setUnhideMode();
           rcMenu.show(caller, e.getX(), e.getY());
 
@@ -130,7 +129,7 @@ public class TableListener implements MouseListener, ActionListener {
 
         int i = 0;
         for (int j = 0; j < table.getRow(0).getComponentCount(); j++) {
-          if (!table.hiddenCols.contains(new Integer(j))) {
+          if (!table.hiddenCols.contains(Integer.valueOf(j))) {
             headerRow.createCell((short) i).setCellValue(
                 table.header.getText(j));
             i++;

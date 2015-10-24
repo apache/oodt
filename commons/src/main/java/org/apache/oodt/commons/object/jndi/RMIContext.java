@@ -59,7 +59,7 @@ public class RMIContext implements Context {
 	public RMIContext(String host, int port) {
         	Hashtable environment = new Hashtable();
 		environment.put("host", host);
-		environment.put("port", new Integer(port));
+		environment.put("port", port);
 		initEnv(environment);
 	}
 	

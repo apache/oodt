@@ -126,12 +126,10 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
      * satisfaction
      */
     waitForConditionSatisfy = Long.getLong(
-        "org.apache.oodt.cas.workflow.engine.preConditionWaitTime", 10)
-        .longValue();
+        "org.apache.oodt.cas.workflow.engine.preConditionWaitTime", 10);
 
     pollingWaitTime = Long.getLong(
-        "org.apache.oodt.cas.workflow.engine.resourcemgr.pollingWaitTime", 10)
-        .longValue();
+        "org.apache.oodt.cas.workflow.engine.resourcemgr.pollingWaitTime", 10);
 
     wmgrParentUrl = wParentUrl;
   }
@@ -244,7 +242,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
         taskJob
             .setJobInputClassName("org.apache.oodt.cas.workflow.structs.TaskJobInput");
         taskJob.setLoadValue(task.getTaskConfig().getProperty(TASK_LOAD) != null ? 
-            Integer.parseInt(task.getTaskConfig().getProperty(TASK_LOAD)):new Integer(2));
+            Integer.parseInt(task.getTaskConfig().getProperty(TASK_LOAD)): 2);
         taskJob
             .setQueueName(task.getTaskConfig().getProperty(QUEUE_NAME) != null ? task
                 .getTaskConfig().getProperty(QUEUE_NAME) : DEFAULT_QUEUE_NAME);
@@ -287,7 +285,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
             break;
           }
 
-          WorkflowInstance updatedInst = null;
+          WorkflowInstance updatedInst;
           try {
             updatedInst = instanceRepository
                 .getWorkflowInstanceById(workflowInst.getId());
@@ -379,7 +377,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
    * @return True if the WorkflowInstance managed by this processor is paused.
    */
   public boolean isPaused() {
-    return pause == true;
+    return pause;
   }
 
   public boolean isStopped() {
@@ -467,20 +465,19 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
 
   private boolean checkTaskRequiredMetadata(WorkflowTask task,
       Metadata dynMetadata) {
-    if (task.getRequiredMetFields() == null
-        || (task.getRequiredMetFields() != null && task.getRequiredMetFields()
-            .size() == 0)) {
+    if (task.getRequiredMetFields() == null || (task.getRequiredMetFields()
+                                                    .size() == 0)) {
       LOG.log(Level.INFO, "Task: [" + task.getTaskName()
           + "] has no required metadata fields");
       return true; /* no required metadata, so we're fine */
     }
 
-    for (Iterator i = task.getRequiredMetFields().iterator(); i.hasNext();) {
-      String reqField = (String) i.next();
+    for (Object o : task.getRequiredMetFields()) {
+      String reqField = (String) o;
       if (!dynMetadata.containsKey(reqField)) {
         LOG.log(Level.SEVERE, "Checking metadata key: [" + reqField
-            + "] for task: [" + task.getTaskName()
-            + "]: failed: aborting workflow");
+                              + "] for task: [" + task.getTaskName()
+                              + "]: failed: aborting workflow");
         return false;
       }
     }
@@ -492,9 +489,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
   }
 
   private String getTaskNameById(String taskId) {
-    for (Iterator i = workflowInst.getWorkflow().getTasks().iterator(); i
-        .hasNext();) {
-      WorkflowTask task = (WorkflowTask) i.next();
+    for (WorkflowTask task : workflowInst.getWorkflow().getTasks()) {
       if (task.getTaskId().equals(taskId)) {
         return task.getTaskName();
       }
@@ -504,8 +499,8 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
   }
 
   private boolean satisfied(List conditionList, String taskId) {
-    for (Iterator i = conditionList.iterator(); i.hasNext();) {
-      WorkflowCondition c = (WorkflowCondition) i.next();
+    for (Object aConditionList : conditionList) {
+      WorkflowCondition c = (WorkflowCondition) aConditionList;
       WorkflowConditionInstance cInst = null;
 
       // see if we've already cached this condition instance
@@ -551,9 +546,8 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
       // Get hostname by textual representation of IP address
       InetAddress addr = InetAddress.getLocalHost();
       // Get the host name
-      String hostname = addr.getHostName();
-      return hostname;
-    } catch (UnknownHostException e) {
+      return addr.getHostName();
+    } catch (UnknownHostException ignored) {
     }
     return null;
   }

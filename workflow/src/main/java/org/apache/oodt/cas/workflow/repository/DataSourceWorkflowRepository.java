@@ -17,7 +17,6 @@
 
 package org.apache.oodt.cas.workflow.repository;
 
-//OODT imports
 import org.apache.oodt.cas.workflow.examples.NoOpTask;
 import org.apache.oodt.cas.workflow.structs.*;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
@@ -33,8 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
-
-//JDK imports
 
 /**
  * 
@@ -1485,7 +1482,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
       synchronized (taskId) {
-        taskId = String.valueOf(new Integer(taskId) + 1);
+        taskId = String.valueOf(Integer.valueOf(taskId) + 1);
       }
 
       task.setTaskId(taskId);

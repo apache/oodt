@@ -16,16 +16,6 @@
  */
 package org.apache.oodt.cas.catalog.server.channel.xmlrpc;
 
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Vector;
-
-//OODT imports
 import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
 import org.apache.oodt.cas.catalog.page.CatalogReceipt;
 import org.apache.oodt.cas.catalog.page.Page;
@@ -40,10 +30,16 @@ import org.apache.oodt.cas.catalog.struct.TransactionId;
 import org.apache.oodt.cas.catalog.system.Catalog;
 import org.apache.oodt.cas.catalog.util.PluginURL;
 import org.apache.oodt.cas.metadata.Metadata;
-
-//APACHE imports
 import org.apache.xmlrpc.CommonsXmlRpcTransportFactory;
 import org.apache.xmlrpc.XmlRpcClient;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * @author bfoster
@@ -175,7 +171,7 @@ public class XmlRpcCommunicationChannelClient extends AbstractCommunicationChann
         }finally {
         	try {
         		is.close();
-        	}catch(Exception e) {}
+        	}catch(Exception ignored) {}
         }
 	}
 	
@@ -184,8 +180,8 @@ public class XmlRpcCommunicationChannelClient extends AbstractCommunicationChann
         Vector<Object> argList = new Vector<Object>();
         argList.add(filePath);
         argList.add(fileData);
-        argList.add(new Integer(offset));
-        argList.add(new Integer(numBytes));
+        argList.add(offset);
+        argList.add(numBytes);
         client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_transferFile", argList);
     }
 
@@ -237,7 +233,7 @@ public class XmlRpcCommunicationChannelClient extends AbstractCommunicationChann
 			boolean generateNew) throws Exception {
 		Vector<Object> args = new Vector<Object>();
 		args.add(this.serializer.serializeObject(catalogReceipt));
-		args.add(this.serializer.serializeObject(new Boolean(generateNew)));
+		args.add(this.serializer.serializeObject(generateNew));
 		return this.serializer.deserializeObject(TransactionId.class, (String) this.client.execute(XmlRpcCommunicationChannelServer.class.getSimpleName() + ".xmlrpc_getCatalogServiceTransactionId2", args));
 	}
 

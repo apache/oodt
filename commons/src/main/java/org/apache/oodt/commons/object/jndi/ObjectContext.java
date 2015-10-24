@@ -60,14 +60,14 @@ class ObjectContext implements Context {
 			Constructor ctor = clazz.getConstructor(new Class[]{Hashtable.class});
 			Object corbaContext = ctor.newInstance(new Object[]{this.environment});
 			contexts.add(corbaContext);
-		} catch (Throwable ex) {}
+		} catch (Throwable ignored) {}
 
-		String registryList = (String) environment.get("rmiregistries");
+		String registryList = (String) (environment != null ? environment.get("rmiregistries") : null);
 		if (registryList != null) for (Iterator i = Utility.parseCommaList(registryList); i.hasNext();) {
 			Hashtable rmiEnv = (Hashtable) this.environment.clone();
 			URI uri = URI.create((String) i.next());
 			rmiEnv.put("host", uri.getHost());
-			rmiEnv.put("port", new Integer(uri.getPort()));
+			rmiEnv.put("port", uri.getPort());
 			contexts.add(new RMIContext(rmiEnv));
 		}
 
@@ -123,14 +123,15 @@ class ObjectContext implements Context {
 		String alias = aliases.getProperty(name);
 		if (alias != null) name = alias;
 
-		for (Iterator i = contexts.iterator(); i.hasNext();) {
-			Context c = (Context) i.next();
-			try {
-				return c.lookup(name);
-			} catch (InvalidNameException ignore) {
-			} catch (NameNotFoundException ignore) {
-			} catch (NamingException ignore){}
+	  for (Object context : contexts) {
+		Context c = (Context) context;
+		try {
+		  return c.lookup(name);
+		} catch (InvalidNameException ignore) {
+		} catch (NameNotFoundException ignore) {
+		} catch (NamingException ignore) {
 		}
+	  }
 		throw new NameNotFoundException(name + " not found in any managed subcontext");
 	}
 
@@ -180,13 +181,14 @@ class ObjectContext implements Context {
 	 */
 	private void doRebind(String name, Object obj) throws NamingException {
 		boolean bound = false;
-		for (Iterator i = contexts.iterator(); i.hasNext();) {
-			Context c = (Context) i.next();
-			try {
-				c.rebind(name, obj);
-				bound = true;
-			} catch (NamingException ex) {}
+	  for (Object context : contexts) {
+		Context c = (Context) context;
+		try {
+		  c.rebind(name, obj);
+		  bound = true;
+		} catch (NamingException ignored) {
 		}
+	  }
 		if (!bound) throw new InvalidNameException("Name \"" + name + "\" not compatible with any managed subcontext");
 	}
 
@@ -205,13 +207,14 @@ class ObjectContext implements Context {
 		}
 
 		boolean unbound = false;
-		for (Iterator i = contexts.iterator(); i.hasNext();) {
-			Context c = (Context) i.next();
-			try {
-				c.unbind(name);
-				unbound = true;
-			} catch (NamingException ignore) {}
+	  for (Object context : contexts) {
+		Context c = (Context) context;
+		try {
+		  c.unbind(name);
+		  unbound = true;
+		} catch (NamingException ignore) {
 		}
+	  }
 		if (!unbound) throw new InvalidNameException("Name \"" + name + "\" not compatible with any managed subcontext");
 	}
 
@@ -233,13 +236,14 @@ class ObjectContext implements Context {
 		}
 
 		boolean renamed = false;
-		for (Iterator i = contexts.iterator(); i.hasNext();) {
-			Context c = (Context) i.next();
-			try {
-				c.rename(oldName, newName);
-				renamed = true;
-			} catch (NamingException ignore) {}
+	  for (Object context : contexts) {
+		Context c = (Context) context;
+		try {
+		  c.rename(oldName, newName);
+		  renamed = true;
+		} catch (NamingException ignore) {
 		}
+	  }
 		if (!renamed) throw new InvalidNameException("Names not compatible with any managed subcontext");
 	}
 

@@ -164,16 +164,16 @@ public class ConfigServlet extends GridServlet {
       String key = (String) entry.getKey(); // And its name
       String value = ((String[]) entry.getValue())[0]; // And its zeroth value
       if (key.startsWith("delcb-") && "on".equals(value)) { // If it's checked
-        Integer index = new Integer(key.substring(6)); // Parse out the index
+        Integer index = Integer.valueOf(key.substring(6)); // Parse out the index
         toRemove.add(index); // Add it to the list
       }
     }
     if (!toRemove.isEmpty()) { // And if we have any indexes
       Collections.sort(toRemove); // Sort 'em and put 'em in reverse ...
       Collections.reverse(toRemove); // ... order so we can safely remove them
-      for (Iterator i = toRemove.iterator(); i.hasNext();) { // For each index
-                                                             // to remove
-        int index = ((Integer) i.next()).intValue(); // Get the index value
+      for (Object aToRemove : toRemove) { // For each index
+        // to remove
+        int index = (Integer) aToRemove; // Get the index value
         codeBases.remove(index); // And buh-bye.
       }
       needSave = true; // Definitely need to save changes now
@@ -212,14 +212,14 @@ public class ConfigServlet extends GridServlet {
 
     List toRemove = new ArrayList(); // Start with empty list of indexes to
                                      // remove
-    for (Iterator i = params.entrySet().iterator(); i.hasNext();) { // Go
-                                                                    // through
-                                                                    // each
-                                                                    // parameter
-      Map.Entry entry = (Map.Entry) i.next(); // Get its key/value
+    for (Object o : params.entrySet()) { // Go
+      // through
+      // each
+      // parameter
+      Map.Entry entry = (Map.Entry) o; // Get its key/value
       String name = (String) entry.getKey(); // The key is a String
       if (name.startsWith(type + "rm-")) { // Is it an "drm-" or "mrm-"?
-        Integer index = new Integer(name.substring(4)); // Yes, get it sindex
+        Integer index = Integer.valueOf(name.substring(4)); // Yes, get it sindex
         toRemove.add(index); // Add it to the list
       }
     }
@@ -228,8 +228,8 @@ public class ConfigServlet extends GridServlet {
       Collections.sort(toRemove); // We need to go through them in reverse ord-
       Collections.reverse(toRemove); // -er, so that removals don't shift
                                      // indexes
-      for (Iterator i = toRemove.iterator(); i.hasNext();) { // For each index
-        int index = ((Integer) i.next()).intValue(); // Get its int value
+      for (Object aToRemove : toRemove) { // For each index
+        int index = (Integer) aToRemove; // Get its int value
         servers.remove(index); // and buh-bye
       }
       needSave = true; // Gotta save after all that, whew.
@@ -272,15 +272,15 @@ public class ConfigServlet extends GridServlet {
    */
   private boolean updateProperties(Properties props, Map params) {
     boolean needSave = false; // Assume no save for now
-    for (Iterator i = params.entrySet().iterator(); i.hasNext();) { // Go
-                                                                    // through
-                                                                    // each
-                                                                    // request
-                                                                    // parameter
-      Map.Entry entry = (Map.Entry) i.next(); // Get the key/value
+    for (Object o : params.entrySet()) { // Go
+      // through
+      // each
+      // request
+      // parameter
+      Map.Entry entry = (Map.Entry) o; // Get the key/value
       String name = (String) entry.getKey(); // Key is always a string
       String newValue = ((String[]) entry.getValue())[0]; // Value is String[],
-                                                          // get the zeroth
+      // get the zeroth
       if (name.startsWith("val-")) { // If the param is "val-"
         String key = name.substring(4); // Then find the key
         if (props.containsKey(key)) { // If that key exists
