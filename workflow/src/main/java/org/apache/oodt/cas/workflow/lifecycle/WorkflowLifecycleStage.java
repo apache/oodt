@@ -116,7 +116,7 @@ public class WorkflowLifecycleStage {
    * @see java.lang.Object#hashCode()
    */
   public int hashCode() {
-    return this.name.hashCode() + Integer.valueOf(othis.order).hashCode();
+    return this.name.hashCode() + Integer.valueOf(this.order).hashCode();
   }
 
   /*

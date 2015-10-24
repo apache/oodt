@@ -42,11 +42,11 @@ import java.util.logging.Logger;
 /**
  * @author woollard
  * @version $Revision$
- * 
+ *
  * <p>
  * An XML RPC-based Batch Submission System.
  * </p>
- * 
+ *
  */
 public class XmlRpcBatchStub {
 
@@ -58,7 +58,7 @@ public class XmlRpcBatchStub {
 
     /* our log stream */
     private static Logger LOG = Logger.getLogger(XmlRpcBatchStub.class
-            .getName());
+        .getName());
 
     private static Map jobThreadMap = null;
 
@@ -73,7 +73,7 @@ public class XmlRpcBatchStub {
         jobThreadMap = new HashMap();
 
         LOG.log(Level.INFO, "XmlRpc Batch Stub started by "
-                + System.getProperty("user.name", "unknown"));
+                            + System.getProperty("user.name", "unknown"));
     }
 
     public boolean isAlive() {
@@ -81,37 +81,37 @@ public class XmlRpcBatchStub {
     }
 
     public boolean executeJob(Hashtable jobHash, Hashtable jobInput)
-            throws JobException {
+        throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
     public boolean executeJob(Hashtable jobHash, Date jobInput)
-            throws JobException {
+        throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
     public boolean executeJob(Hashtable jobHash, double jobInput)
-            throws JobException {
-        return genericExecuteJob(jobHash, jobInput);
+        throws JobException {
+        return genericExecuteJob(jobHash, new Double(jobInput));
     }
 
     public boolean executeJob(Hashtable jobHash, int jobInput)
-            throws JobException {
-        return genericExecuteJob(jobHash, jobInput);
+        throws JobException {
+        return genericExecuteJob(jobHash, new Integer(jobInput));
     }
 
     public boolean executeJob(Hashtable jobHash, boolean jobInput)
-            throws JobException {
-        return genericExecuteJob(jobHash, jobInput);
+        throws JobException {
+        return genericExecuteJob(jobHash, new Boolean(jobInput));
     }
 
     public boolean executeJob(Hashtable jobHash, Vector jobInput)
-            throws JobException {
+        throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
     public boolean executeJob(Hashtable jobHash, byte[] jobInput)
-            throws JobException {
+        throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
@@ -120,7 +120,7 @@ public class XmlRpcBatchStub {
         Thread jobThread = (Thread) jobThreadMap.get(job.getId());
         if (jobThread == null) {
             LOG.log(Level.WARNING, "Job: [" + job.getId()
-                    + "] not managed by this batch stub");
+                                   + "] not managed by this batch stub");
             return false;
         }
 
@@ -130,24 +130,22 @@ public class XmlRpcBatchStub {
     }
 
     private boolean genericExecuteJob(Hashtable jobHash, Object jobInput)
-            throws JobException {
-        JobInstance exec;
-        JobInput in;
+        throws JobException {
+        JobInstance exec = null;
+        JobInput in = null;
         try {
             Job job = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
 
             LOG.log(Level.INFO, "stub attempting to execute class: ["
-                    + job.getJobInstanceClassName() + "]");
+                                + job.getJobInstanceClassName() + "]");
 
             exec = GenericResourceManagerObjectFactory
-                    .getJobInstanceFromClassName(job.getJobInstanceClassName());
+                .getJobInstanceFromClassName(job.getJobInstanceClassName());
             in = GenericResourceManagerObjectFactory
-                    .getJobInputFromClassName(job.getJobInputClassName());
+                .getJobInputFromClassName(job.getJobInputClassName());
 
             // load the input obj
-            if (in != null) {
-                in.read(jobInput);
-            }
+            in.read(jobInput);
 
             // create threaded job
             // so that it can be interrupted
@@ -161,7 +159,7 @@ public class XmlRpcBatchStub {
                 threadRunner.join();
             } catch (InterruptedException e) {
                 LOG.log(Level.INFO, "Current job: [" + job.getName()
-                        + "]: killed: exiting gracefully");
+                                    + "]: killed: exiting gracefully");
                 synchronized (jobThreadMap) {
                     Thread endThread = (Thread) jobThreadMap.get(job.getId());
                     if (endThread != null)
@@ -173,6 +171,7 @@ public class XmlRpcBatchStub {
             synchronized (jobThreadMap) {
                 Thread endThread = (Thread) jobThreadMap.get(job.getId());
                 if (endThread != null)
+                    endThread = null;
             }
 
             return runner.wasSuccessful();
@@ -197,6 +196,8 @@ public class XmlRpcBatchStub {
             System.exit(1);
         }
 
+        XmlRpcBatchStub stub = new XmlRpcBatchStub(portNum);
+
         for (;;)
             try {
                 Thread.currentThread().join();
@@ -211,7 +212,7 @@ public class XmlRpcBatchStub {
         private JobInstance job;
 
         private boolean successful;
-        
+
         public RunnableJob(JobInstance job, JobInput in) {
             this.job = job;
             this.in = in;
@@ -234,7 +235,7 @@ public class XmlRpcBatchStub {
         }
 
         public boolean wasSuccessful() {
-        	return this.successful;
+            return this.successful;
         }
     }
 }

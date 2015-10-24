@@ -17,7 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.util;
 
-//OODT imports
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.ExtractorSpec;
@@ -43,7 +42,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
-//JDK imports
 
 /**
  * @author mattmann
@@ -103,7 +101,7 @@ public final class XmlRpcStructFactory {
         List<FileTransferStatus> statuses = new Vector<FileTransferStatus>();
 
         if (statusVector != null && statusVector.size() > 0) {
-            fore (Hashtable<String, Object> statusHash : statusVector) {
+            for (Hashtable<String, Object> statusHash : statusVector) {
                 FileTransferStatus status = getFileTransferStatusFromXmlRpc(statusHash);
                 statuses.add(status);
             }
