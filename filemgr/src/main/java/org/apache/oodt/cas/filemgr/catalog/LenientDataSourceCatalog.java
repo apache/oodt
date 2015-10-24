@@ -31,13 +31,11 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
 
-//JDK imports
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +43,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
+
+//JDK imports
 
 /**
  * @author luca
@@ -71,7 +71,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
      * <p>
      * Default Constructor
      * </p>.
-     * @throws  
      */
     public LenientDataSourceCatalog(DataSource ds, ValidationLayer valLayer,
 				    boolean fieldId, int pageSize, long cacheUpdateMin, boolean productIdString, boolean orderedValues) {
@@ -110,27 +109,25 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 continue;
             }
 
-            for (Iterator<String> j = values.iterator(); j.hasNext();) {
-                String value = j.next();
-
-                try {
-                    addMetadataValue(metadataId, product, value);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    LOG
-                            .log(
-                                    Level.WARNING,
-                                    "Exception ingesting metadata. Error inserting field: ["
-                                            + metadataId
-                                            + "=>"
-                                            + value
-                                            + "]: for product: ["
-                                            + product.getProductName()
-                                            + "]: Message: "
-                                            + e.getMessage()
-                                            + ": Attempting to continue processing metadata");
-                }
+          for (String value : values) {
+            try {
+              addMetadataValue(metadataId, product, value);
+            } catch (Exception e) {
+              e.printStackTrace();
+              LOG
+                  .log(
+                      Level.WARNING,
+                      "Exception ingesting metadata. Error inserting field: ["
+                      + metadataId
+                      + "=>"
+                      + value
+                      + "]: for product: ["
+                      + product.getProductName()
+                      + "]: Message: "
+                      + e.getMessage()
+                      + ": Attempting to continue processing metadata");
             }
+          }
         }
 
     }
@@ -189,27 +186,25 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             List<String> values = m.getAllMetadata(metadataName);
 
             if (values != null) {
-                for (Iterator<String> j = values.iterator(); j.hasNext();) {
-                    String value = j.next();
-
-                    try {
-                        removeMetadataValue(metadataId, product, value);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        LOG
-                                .log(
-                                        Level.WARNING,
-                                        "Exception removing metadata. Error deleting field: ["
-                                                + metadataId
-                                                + "=>"
-                                                + value
-                                                + "]: for product: ["
-                                                + product.getProductName()
-                                                + "]: Message: "
-                                                + e.getMessage()
-                                                + ": Attempting to continue processing metadata");
-                    }
+              for (String value : values) {
+                try {
+                  removeMetadataValue(metadataId, product, value);
+                } catch (Exception e) {
+                  e.printStackTrace();
+                  LOG
+                      .log(
+                          Level.WARNING,
+                          "Exception removing metadata. Error deleting field: ["
+                          + metadataId
+                          + "=>"
+                          + value
+                          + "]: for product: ["
+                          + product.getProductName()
+                          + "]: Message: "
+                          + e.getMessage()
+                          + ": Attempting to continue processing metadata");
                 }
+              }
             }
         }
     }
@@ -248,7 +243,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -257,7 +251,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -267,7 +260,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -282,7 +274,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
       if (getValidationLayer()!=null) {
         
       	// validation layer: retrieve valid metadata elements
-        List<Element> elements = null;
+        List<Element> elements;
 
       	try {
             elements = getValidationLayer().getElements(product.getProductType());
@@ -295,18 +287,16 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
         }
 
         while (rs.next()) {
-            for (Iterator<Element> i = elements.iterator(); i.hasNext();) {
-                Element e = i.next();
+          for (Element e : elements) {
+            // right now, we just support STRING
+            String elemValue = rs.getString("metadata_value");
+            String elemId = rs.getString("element_id");
 
-                // right now, we just support STRING
-                String elemValue = rs.getString("metadata_value");
-                String elemId = rs.getString("element_id");
-
-                if (elemId.equals(e.getElementId())) {
-                    elemValue = (elemValue != null ? elemValue : "");
-                    m.addMetadata(e.getElementName(), elemValue);
-                }
+            if (elemId.equals(e.getElementId())) {
+              elemValue = (elemValue != null ? elemValue : "");
+              m.addMetadata(e.getElementName(), elemValue);
             }
+          }
         }
       
       } else {
@@ -382,7 +372,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -391,7 +380,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -401,7 +389,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -423,23 +410,21 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             statement = conn.createStatement();
 
             // build up the sql statement
-            StringBuffer insertClauseSql = new StringBuffer();
-            StringBuffer valueClauseSql = new StringBuffer();
+          StringBuilder valueClauseSql = new StringBuilder();
 
-            insertClauseSql.append("INSERT INTO " + metadataTable
-                    + " (product_id, element_id, metadata_value) ");
-            valueClauseSql.append("VALUES ");
+          valueClauseSql.append("VALUES ");
 
             // now do the value clause
             if (fieldIdStringFlag) {
-                valueClauseSql.append("(" + quoteIt(product.getProductId()) + ", '"
-                        + key + "', '" + value + "')");
+                valueClauseSql.append("(").append(quoteIt(product.getProductId())).append(", '").append(key)
+                              .append("', '").append(value).append("')");
             } else {
-                valueClauseSql.append("(" + product.getProductId() + ", "
-                        + key + ", '" + value + "')");
+                valueClauseSql.append("(").append(product.getProductId()).append(", ").append(key).append(", '")
+                              .append(value).append("')");
             }
 
-            String metaIngestSql = insertClauseSql.toString()
+            String metaIngestSql = ("INSERT INTO " + metadataTable
+                                    + " (product_id, element_id, metadata_value) ")
                     + valueClauseSql.toString();
             LOG
                     .log(Level.FINE, "addMetadataValue: Executing: "
@@ -461,7 +446,9 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             LOG.log(Level.WARNING, "Exception adding metadata value. Message: "
                     + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback add metadata value. Message: "
@@ -475,7 +462,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -485,7 +471,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
     }
@@ -529,7 +514,9 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                     "Exception removing metadata value. Message: "
                             + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback remove metadata value. Message: "
@@ -543,7 +530,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -553,7 +539,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
     }
@@ -573,137 +558,138 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             conn = dataSource.getConnection();
             statement = conn.createStatement();
 
-            String getProductSql = "";
+            String getProductSql;
             String tableName = type.getName() + "_metadata";
             String subSelectQueryBase = "SELECT product_id FROM " + tableName
                     + " ";
-            StringBuffer selectClause = new StringBuffer(
-                    "SELECT COUNT(DISTINCT p.product_id) AS numResults ");
-            StringBuffer fromClause = new StringBuffer("FROM " + tableName
+          StringBuilder fromClause = new StringBuilder("FROM " + tableName
                     + " p ");
-            StringBuffer whereClause = new StringBuffer("WHERE ");
+            StringBuilder whereClause = new StringBuilder("WHERE ");
 
             boolean gotFirstClause = false;
             int clauseNum = 0;
 
             if (query.getCriteria() != null && query.getCriteria().size() > 0) {
-                for (Iterator<QueryCriteria> i = query.getCriteria().iterator(); i.hasNext();) {
-                    QueryCriteria criteria = i.next();
-                    clauseNum++;
+              for (QueryCriteria criteria : query.getCriteria()) {
+                clauseNum++;
 
-                    String elementIdStr = null;
+                String elementIdStr;
 
-                    if (fieldIdStringFlag) {
-                    		if (getValidationLayer()!=null) {
-                    			elementIdStr = "'" + this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId() + "'";
-                    		} else {
-                    			elementIdStr = "'" + criteria.getElementName() + "'";
-                    		}
-                    } else {
-                    	if (getValidationLayer()!=null) {
-                        elementIdStr = this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
-                    	} else {
-                    		elementIdStr = criteria.getElementName();
-                    	}
-                    }
-
-                    String clause = null;
-
-                    if (!gotFirstClause) {
-                        clause = "(p.element_id = " + elementIdStr + " AND ";
-                        if (criteria instanceof TermQueryCriteria) {
-                            clause += " metadata_value LIKE '%"
-                                    + ((TermQueryCriteria) criteria).getValue()
-                                    + "%') ";
-                        } else if (criteria instanceof RangeQueryCriteria) {
-                            String startVal = ((RangeQueryCriteria) criteria)
-                                    .getStartValue();
-                            String endVal = ((RangeQueryCriteria) criteria)
-                                    .getEndValue();
-                            boolean inclusive = ((RangeQueryCriteria) criteria)
-                                    .getInclusive();
-
-                            if ((startVal != null && !startVal.equals(""))
-                                    || (endVal != null && !endVal.equals(""))) {
-                                clause += " metadata_value ";
-
-                                boolean gotStart = false;
-
-                                if (startVal != null && !startVal.equals("")) {
-                                    if (inclusive)
-                                        clause += ">= '" + startVal + "'";
-                                    else
-                                        clause += "> '" + startVal + "'";
-                                    gotStart = true;
-                                }
-
-                                if (endVal != null && !endVal.equals("")) {
-                                    if (gotStart) {
-                                        if (inclusive)
-                                            clause += " AND metadata_value <= '"
-                                                    + endVal + "'";
-                                        else
-                                            clause += " AND metadata_value < '"
-                                                    + endVal + "'";
-                                    } else if (inclusive)
-                                        clause += "<= '" + endVal + "'";
-                                    else
-                                        clause += "< '" + endVal + "'";
-                                }
-
-                                clause += ") ";
-                            }
-                        }
-                        whereClause.append(clause);
-                        gotFirstClause = true;
-                    } else {
-                        String subSelectTblName = "p" + clauseNum;
-                        String subSelectQuery = subSelectQueryBase
-                                + "WHERE (element_id = " + elementIdStr
-                                + " AND ";
-                        if (criteria instanceof TermQueryCriteria) {
-                            subSelectQuery += " metadata_value LIKE '%"
-                                    + ((TermQueryCriteria) criteria).getValue()
-                                    + "%')";
-                        } else if (criteria instanceof RangeQueryCriteria) {
-                            String startVal = ((RangeQueryCriteria) criteria)
-                                    .getStartValue();
-                            String endVal = ((RangeQueryCriteria) criteria)
-                                    .getEndValue();
-
-                            if (startVal != null || endVal != null) {
-                                subSelectQuery += " metadata_value ";
-
-                                boolean gotStart = false;
-
-                                if (startVal != null && !startVal.equals("")) {
-                                    subSelectQuery += ">= '" + startVal + "'";
-                                    gotStart = true;
-                                }
-
-                                if (endVal != null && !endVal.equals("")) {
-                                    if (gotStart) {
-                                        subSelectQuery += " AND metadata_value <= '"
-                                                + endVal + "'";
-                                    } else
-                                        subSelectQuery += "<= '" + endVal + "'";
-                                }
-
-                                subSelectQuery += ") ";
-
-                            }
-                        }
-
-                        fromClause.append("INNER JOIN (" + subSelectQuery
-                                + ") " + subSelectTblName + " ON "
-                                + subSelectTblName
-                                + ".product_id = p.product_id ");
-
-                    }
+                if (fieldIdStringFlag) {
+                  if (getValidationLayer() != null) {
+                    elementIdStr =
+                        "'" + this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId()
+                        + "'";
+                  } else {
+                    elementIdStr = "'" + criteria.getElementName() + "'";
+                  }
+                } else {
+                  if (getValidationLayer() != null) {
+                    elementIdStr = this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
+                  } else {
+                    elementIdStr = criteria.getElementName();
+                  }
                 }
+
+                String clause;
+
+                if (!gotFirstClause) {
+                  clause = "(p.element_id = " + elementIdStr + " AND ";
+                  if (criteria instanceof TermQueryCriteria) {
+                    clause += " metadata_value LIKE '%"
+                              + ((TermQueryCriteria) criteria).getValue()
+                              + "%') ";
+                  } else if (criteria instanceof RangeQueryCriteria) {
+                    String startVal = ((RangeQueryCriteria) criteria)
+                        .getStartValue();
+                    String endVal = ((RangeQueryCriteria) criteria)
+                        .getEndValue();
+                    boolean inclusive = ((RangeQueryCriteria) criteria)
+                        .getInclusive();
+
+                    if ((startVal != null && !startVal.equals(""))
+                        || (endVal != null && !endVal.equals(""))) {
+                      clause += " metadata_value ";
+
+                      boolean gotStart = false;
+
+                      if (startVal != null && !startVal.equals("")) {
+                        if (inclusive) {
+                          clause += ">= '" + startVal + "'";
+                        } else {
+                          clause += "> '" + startVal + "'";
+                        }
+                        gotStart = true;
+                      }
+
+                      if (endVal != null && !endVal.equals("")) {
+                        if (gotStart) {
+                          if (inclusive) {
+                            clause += " AND metadata_value <= '"
+                                      + endVal + "'";
+                          } else {
+                            clause += " AND metadata_value < '"
+                                      + endVal + "'";
+                          }
+                        } else if (inclusive) {
+                          clause += "<= '" + endVal + "'";
+                        } else {
+                          clause += "< '" + endVal + "'";
+                        }
+                      }
+
+                      clause += ") ";
+                    }
+                  }
+                  whereClause.append(clause);
+                  gotFirstClause = true;
+                } else {
+                  String subSelectTblName = "p" + clauseNum;
+                  String subSelectQuery = subSelectQueryBase
+                                          + "WHERE (element_id = " + elementIdStr
+                                          + " AND ";
+                  if (criteria instanceof TermQueryCriteria) {
+                    subSelectQuery += " metadata_value LIKE '%"
+                                      + ((TermQueryCriteria) criteria).getValue()
+                                      + "%')";
+                  } else if (criteria instanceof RangeQueryCriteria) {
+                    String startVal = ((RangeQueryCriteria) criteria)
+                        .getStartValue();
+                    String endVal = ((RangeQueryCriteria) criteria)
+                        .getEndValue();
+
+                    if (startVal != null || endVal != null) {
+                      subSelectQuery += " metadata_value ";
+
+                      boolean gotStart = false;
+
+                      if (startVal != null && !startVal.equals("")) {
+                        subSelectQuery += ">= '" + startVal + "'";
+                        gotStart = true;
+                      }
+
+                      if (endVal != null && !endVal.equals("")) {
+                        if (gotStart) {
+                          subSelectQuery += " AND metadata_value <= '"
+                                            + endVal + "'";
+                        } else {
+                          subSelectQuery += "<= '" + endVal + "'";
+                        }
+                      }
+
+                      subSelectQuery += ") ";
+
+                    }
+                  }
+
+                  fromClause.append("INNER JOIN (").append(subSelectQuery).append(") ").append(subSelectTblName)
+                            .append(" ON ").append(subSelectTblName).append(".product_id = p.product_id ");
+
+                }
+              }
             }
 
-            getProductSql = selectClause.toString() + fromClause.toString();
+            getProductSql = "SELECT COUNT(DISTINCT p.product_id) AS numResults " + fromClause.toString();
             if (gotFirstClause) {
                 getProductSql += whereClause.toString();
             }
@@ -724,7 +710,9 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                     "Exception performing get num results. Message: "
                             + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback get num results transaction. Message: "
@@ -739,7 +727,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -748,7 +735,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -758,7 +744,6 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -769,7 +754,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
      * Overridden method from superclass to allow for null validation layer.
      */
     protected String getSqlQuery(QueryCriteria queryCriteria, ProductType type) throws ValidationLayerException, CatalogException {
-      String sqlQuery = null;
+      String sqlQuery;
       if (queryCriteria instanceof BooleanQueryCriteria) {
           BooleanQueryCriteria bqc = (BooleanQueryCriteria) queryCriteria;
           if (bqc.getOperator() == BooleanQueryCriteria.NOT) {

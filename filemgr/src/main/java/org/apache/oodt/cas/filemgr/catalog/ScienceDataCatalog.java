@@ -24,7 +24,6 @@ import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -34,7 +33,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -218,9 +216,8 @@ public class ScienceDataCatalog implements Catalog {
     try {
       conn = this.dataSource.getConnection();
       conn.setAutoCommit(true);
-      int count = 0;
       statement = conn.createStatement();
-      ResultSet rs = statement.executeQuery(queryExists.toString());
+      ResultSet rs = statement.executeQuery(queryExists);
       while (rs.next()) {
         granuleId = rs.getInt("granule_id");
       }
@@ -237,7 +234,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -246,7 +242,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -279,7 +274,7 @@ public class ScienceDataCatalog implements Catalog {
       conn.setAutoCommit(true);
       int count = 0;
       statement = conn.createStatement();
-      ResultSet rs = statement.executeQuery(queryExists.toString());
+      ResultSet rs = statement.executeQuery(queryExists);
       while (rs.next()) {
         parameterId = rs.getInt("parameter_id");
       }
@@ -296,7 +291,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -305,7 +299,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -355,7 +348,9 @@ public class ScienceDataCatalog implements Catalog {
           "SQL Exception adding product metadata. Last query was: " + query
               + " , Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(
             Level.SEVERE,
@@ -370,7 +365,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -379,7 +373,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
   }
@@ -432,7 +425,6 @@ public class ScienceDataCatalog implements Catalog {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -440,7 +432,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -448,7 +439,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
     }
 
@@ -478,7 +468,6 @@ public class ScienceDataCatalog implements Catalog {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -486,7 +475,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -494,7 +482,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -525,7 +512,6 @@ public class ScienceDataCatalog implements Catalog {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -533,7 +519,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -541,7 +526,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -576,7 +560,6 @@ public class ScienceDataCatalog implements Catalog {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -584,7 +567,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -592,7 +574,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -624,7 +605,6 @@ public class ScienceDataCatalog implements Catalog {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -632,7 +612,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -640,7 +619,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -685,7 +663,6 @@ public class ScienceDataCatalog implements Catalog {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -693,7 +670,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -701,7 +677,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -736,7 +711,6 @@ public class ScienceDataCatalog implements Catalog {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -744,7 +718,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -752,7 +725,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -922,8 +894,7 @@ public class ScienceDataCatalog implements Catalog {
     if (productIds != null && productIds.size() > 0) {
       List<Product> products = new Vector<Product>(productIds.size());
 
-      for (Iterator<String> i = productIds.iterator(); i.hasNext();) {
-        String productId = i.next();
+      for (String productId : productIds) {
         Product p = getProductById(productId);
         products.add(p);
       }
@@ -971,7 +942,7 @@ public class ScienceDataCatalog implements Catalog {
         // must call next first, or else no relative cursor
         if (rs.next()) {
           // grab the first one
-          int numGrabbed = -1;
+          int numGrabbed;
 
           if (pageNum == 1) {
             numGrabbed = 1;
@@ -1005,7 +976,9 @@ public class ScienceDataCatalog implements Catalog {
       LOG.log(Level.WARNING,
           "Exception performing query. Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE, "Unable to rollback query transaction. Message: "
             + e2.getMessage());
@@ -1019,7 +992,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -1028,7 +1000,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -1038,7 +1009,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -1078,7 +1048,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -1086,7 +1055,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -1122,7 +1090,6 @@ public class ScienceDataCatalog implements Catalog {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -1130,7 +1097,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -1138,7 +1104,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
     }
 
@@ -1174,7 +1139,6 @@ public class ScienceDataCatalog implements Catalog {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -1182,7 +1146,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -1190,7 +1153,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
     }
 
