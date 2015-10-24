@@ -60,7 +60,7 @@ public final class ExecUtils {
          OutputStream stdErrStream) throws IOException {
       return callProgram(commandLine, stdOutStream, stdErrStream, null);
    }
-b
+
    public static int callProgram(String commandLine, Logger logger, File workDir)
          throws IOException {
       LoggerOutputStream loggerInfoStream = null;
