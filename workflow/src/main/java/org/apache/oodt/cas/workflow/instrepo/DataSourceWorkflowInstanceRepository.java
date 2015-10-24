@@ -75,7 +75,7 @@ public class DataSourceWorkflowInstanceRepository extends
      */
     public synchronized void addWorkflowInstance(WorkflowInstance wInst)
             throws InstanceRepositoryException {
-        Connoection conn = null;
+        Connection conn = null;
         Statement statement = null;
         ResultSet rs = null;
 
