@@ -81,9 +81,9 @@ public class Term implements Cloneable {
 		xml_NMTOKENS,
 		xml_anyType,
 		xml_anySimpleType
-	};
-	
-	public Term() {
+	}
+
+  public Term() {
 		this.type = Type.xml_string;
 		this.values = Collections.emptyList();
 	}

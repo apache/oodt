@@ -117,29 +117,29 @@ public class ResourceAttributesTest extends TestCase {
 			} else if ("Title".equals(name)) {
 				assertEquals("title", XML.text(child));
 			} else if ("Format".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("Description".equals(name)) {
 				assertEquals("desc", XML.text(child));
 			} else if ("Creator".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("Subject".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("Publisher".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("Contributor".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("Date".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("Type".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("Source".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("Language".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("Coverage".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("Rights".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("resContext".equals(name)) {
 				assertEquals("context", XML.text(child));
 			} else if ("resAggregation".equals(name)) {
@@ -147,7 +147,7 @@ public class ResourceAttributesTest extends TestCase {
 			} else if ("resClass".equals(name)) {
 				assertEquals("class", XML.text(child));
 			} else if ("resLocation".equals(name)) {
-				; // ignore
+			  // ignore
 			} else fail("Unknown node \"" + name + "\" in XML result");
 		}
 		ResourceAttributes q = new ResourceAttributes(null, root);

@@ -31,7 +31,7 @@ import java.io.File;
 public interface IngestStatus {
 
 	enum Result {
-		SUCCESS, FAILURE, SKIPPED, PRECONDS_FAILED;
+		SUCCESS, FAILURE, SKIPPED, PRECONDS_FAILED
 	}
 	
 	File getProduct();

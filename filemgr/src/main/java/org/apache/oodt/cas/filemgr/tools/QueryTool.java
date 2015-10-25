@@ -67,8 +67,8 @@ public final class QueryTool {
 
     private XmlRpcFileManagerClient client = null;
 
-    private enum QueryType { LUCENE, SQL };
-    
+    private enum QueryType { LUCENE, SQL }
+
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(QueryTool.class.getName());
 

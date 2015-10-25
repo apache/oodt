@@ -28,7 +28,7 @@ public interface CmdLineOptionValidator {
 
    class Result {
       public enum Grade {
-         PASS, FAIL;
+         PASS, FAIL
       }
 
       private String message;

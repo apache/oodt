@@ -36,7 +36,7 @@ public abstract class View extends JPanel {
   private static final long serialVersionUID = -708692459667309413L;
 
   public enum Mode {
-    DELETE, EDIT, MOVE, ZOOM_IN, ZOOM_OUT;
+    DELETE, EDIT, MOVE, ZOOM_IN, ZOOM_OUT
   }
 
   private Vector<ViewListener> listeners;

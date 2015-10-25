@@ -64,7 +64,6 @@ import java.util.Vector;
       label_1:
       while (true) {
         if (jj_2_1(2147483647)) {
-          ;
         } else {
           break label_1;
         }
@@ -172,7 +171,6 @@ import java.util.Vector;
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[1] = jj_gen;
@@ -185,7 +183,6 @@ import java.util.Vector;
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[2] = jj_gen;
@@ -198,7 +195,6 @@ import java.util.Vector;
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[3] = jj_gen;
@@ -211,7 +207,6 @@ import java.util.Vector;
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[4] = jj_gen;
@@ -226,7 +221,6 @@ import java.util.Vector;
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case SPACE:
-            ;
             break;
           default:
             jj_la1[5] = jj_gen;
@@ -238,13 +232,11 @@ import java.util.Vector;
         break;
       default:
         jj_la1[6] = jj_gen;
-        ;
       }
       label_7:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[7] = jj_gen;
@@ -295,7 +287,6 @@ import java.util.Vector;
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[8] = jj_gen;
@@ -328,7 +319,6 @@ import java.util.Vector;
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[10] = jj_gen;
@@ -415,7 +405,6 @@ import java.util.Vector;
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[11] = jj_gen;
@@ -428,7 +417,6 @@ import java.util.Vector;
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[12] = jj_gen;
@@ -441,7 +429,6 @@ import java.util.Vector;
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[13] = jj_gen;
@@ -457,7 +444,6 @@ import java.util.Vector;
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case SPACE:
-            ;
             break;
           default:
             jj_la1[14] = jj_gen;
@@ -468,13 +454,11 @@ import java.util.Vector;
         jj_consume_token(SEMI_COLON);
         getProperties(p);
       } else {
-        ;
       }
       label_14:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[15] = jj_gen;
@@ -521,7 +505,6 @@ import java.util.Vector;
       label_15:
       while (true) {
         if (jj_2_7(2147483647)) {
-          ;
         } else {
           break label_15;
         }
@@ -564,7 +547,6 @@ import java.util.Vector;
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[16] = jj_gen;
@@ -577,7 +559,6 @@ import java.util.Vector;
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SPACE:
-          ;
           break;
         default:
           jj_la1[17] = jj_gen;
@@ -589,7 +570,6 @@ import java.util.Vector;
       label_18:
       while (true) {
         if (jj_2_8(2147483647)) {
-          ;
         } else {
           break label_18;
         }

@@ -35,7 +35,7 @@ import java.util.TimeZone;
  */
 public class DateUtils {
 
-    public enum FormatType { UTC_FORMAT, LOCAL_FORMAT, TAI_FORMAT };
+    public enum FormatType { UTC_FORMAT, LOCAL_FORMAT, TAI_FORMAT }
     
     public static Calendar tai93epoch = new GregorianCalendar(1993, GregorianCalendar.JANUARY, 1);
     
