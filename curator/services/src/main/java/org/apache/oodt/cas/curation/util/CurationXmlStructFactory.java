@@ -19,16 +19,17 @@
 package org.apache.oodt.cas.curation.util;
 
 //JDK imports
-import java.net.URLEncoder;
-import java.util.List;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.util.XmlStructFactory;
+import org.apache.oodt.commons.xml.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.net.URLEncoder;
+import java.util.List;
+
 //OODT imports
-import org.apache.oodt.commons.xml.XMLUtils;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.util.XmlStructFactory;
 
 /**
  * 
@@ -86,7 +87,7 @@ public class CurationXmlStructFactory {
         Element valElem = doc.createElement("val");
         if (val == null) {
           throw new Exception("Attempt to write null value "
-              + "for property: [" + key + "]: val: [" + val + "]");
+              + "for property: [" + key + "]: val: [null]");
         }
 
         valElem

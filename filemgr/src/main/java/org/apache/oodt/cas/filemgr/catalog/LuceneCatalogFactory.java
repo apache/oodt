@@ -76,7 +76,7 @@ public class LuceneCatalogFactory implements CatalogFactory {
 			throw new IllegalArgumentException(
 					"error initializing lucene catalog: "
 							+ "[org.apache.oodt.cas.filemgr.catalog.lucene.idxPath="
-							+ indexFilePath);
+							+ null);
 		}
 
 		//do env var replacement

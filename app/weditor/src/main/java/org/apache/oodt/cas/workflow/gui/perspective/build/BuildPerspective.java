@@ -285,10 +285,14 @@ public class BuildPerspective extends MultiStatePerspective {
       mainViews = new HashMap<View, ViewState>();
 
       propView = createPropView();
-      propView.registerListener(this);
+      if (propView != null) {
+        propView.registerListener(this);
+      }
 
       treeView = createTreeView();
-      treeView.registerListener(this);
+      if (treeView != null) {
+        treeView.registerListener(this);
+      }
 
       tabbedPane = new JTabbedPane();
 

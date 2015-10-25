@@ -77,8 +77,7 @@ public final class PGEXMLFileUtils {
       NodeList rowNodeList = matrix.getElementsByTagName("tr");
 
       // there has to be at least one 1
-      if (rowNodeList == null
-          || (rowNodeList != null && rowNodeList.getLength() <= 0)) {
+      if (rowNodeList == null || (rowNodeList.getLength() <= 0)) {
         throw new PGEConfigFileException(
             "there must be at least one row in a matrix!");
       }

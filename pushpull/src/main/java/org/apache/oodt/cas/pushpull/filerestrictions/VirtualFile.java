@@ -126,7 +126,7 @@ public class VirtualFile {
     }
 
     public static VirtualFile mergeTwoFiles(VirtualFile vf1, VirtualFile vf2) {
-        if (vf1.isDir && vf1.isDir) {
+        if (vf1.isDir) {
             VirtualFile newFile = VirtualFile.createRootDir();
             newFile.children.addAll(vf1.children);
             newFile.children.addAll(vf2.children);

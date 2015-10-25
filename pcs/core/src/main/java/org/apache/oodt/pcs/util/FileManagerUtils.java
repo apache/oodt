@@ -357,7 +357,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
   public static boolean check(String propName, String propValue,
       Metadata metadata) {
     if (propValue == null) {
-      LOG.log(Level.SEVERE, "PCS: " + propName + ": value: " + propValue);
+      LOG.log(Level.SEVERE, "PCS: " + propName + ": value: " + null);
       metadata.replaceMetadata("ApplicationSuccess", "false");
       return false;
     } else {

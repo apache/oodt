@@ -290,7 +290,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
     @Override
     public String addWorkflow(Workflow workflow) throws RepositoryException {
        // first check to see that its tasks are all present
-      if(workflow.getTasks() == null || (workflow.getTasks() != null && workflow.getTasks().size() == 0)){
+      if(workflow.getTasks() == null || (workflow.getTasks().size() == 0)){
         throw new RepositoryException("Attempt to define a new worklfow: ["+workflow.getName()+"] with no tasks.");
       }
       

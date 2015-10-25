@@ -18,12 +18,6 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorHelper;
@@ -34,6 +28,13 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.cas.workflow.structs.PrioritySorter;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * 
@@ -132,7 +133,7 @@ public class TaskQuerier implements Runnable {
             processorsToRun.add(tp);
           }
 
-          if (processorsToRun != null && processorsToRun.size() > 1) {
+          if (processorsToRun.size() > 1) {
             prioritizer.sort(processorsToRun);
           }
 
@@ -199,8 +200,7 @@ public class TaskQuerier implements Runnable {
   private synchronized void persist(WorkflowInstance instance) {
     if (this.repo != null) {
       try {
-        if (instance.getId() == null
-            || (instance.getId() != null && instance.getId().equals(""))) {
+        if (instance.getId() == null || (instance.getId().equals(""))) {
           // we have to persist it by adding it
           // rather than updating it
           repo.addWorkflowInstance(instance);

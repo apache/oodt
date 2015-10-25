@@ -134,13 +134,11 @@ public class DeleteProduct {
             LOG.log(Level.WARNING, "Error reading prod id: line: [" + line
                     + "]: Message: " + e.getMessage(), e);
         } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (Exception ignore) {
-                }
-
+            try {
+                br.close();
+            } catch (Exception ignore) {
             }
+
         }
 
         return prodIds;

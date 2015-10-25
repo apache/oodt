@@ -241,8 +241,7 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
 
   private synchronized void persist(WorkflowInstance inst) throws EngineException {
     try {
-      if (inst.getId() == null
-          || (inst.getId() != null && inst.getId().equals(""))) {
+      if (inst.getId() == null || (inst.getId().equals(""))) {
         // we have to persist it by adding it
         // rather than updating it
         repo.addWorkflowInstance(inst);

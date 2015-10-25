@@ -66,8 +66,6 @@ public class DataDeliveryServlet extends HttpServlet implements
       } catch (Exception e) {
         throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
       }
-      if (fileMgrURL == null)
-        fileMgrURL = "http://localhost:9000";
       client = new XmlRpcFileManagerClient(new URL(fileMgrURL));
     } catch (MalformedURLException ex) {
       throw new ServletException(ex);

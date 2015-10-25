@@ -676,10 +676,8 @@ public class XmlRpcWorkflowManager {
         if (wInsts != null && wInsts.size() > 0) {
           for (Object wInst1 : wInsts) {
             WorkflowInstance wInst = (WorkflowInstance) wInst1;
-            if (wInst.getWorkflow() == null ||
-                (wInst.getWorkflow() != null &&
-                 (wInst.getWorkflow().getName() == null ||
-                  wInst.getWorkflow().getId() == null))) {
+            if (wInst.getWorkflow() == null || ((wInst.getWorkflow().getName() == null
+                                                 || wInst.getWorkflow().getId() == null))) {
               wInst.setWorkflow(safeGetWorkflowById(wInst.getWorkflow()
                                                          .getId()));
             } else {

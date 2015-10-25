@@ -44,7 +44,7 @@ public class XMLTest extends TestCase {
 	 */
 	public void testDocumentCreation() {
 		Document doc = XML.createDocument();
-		assertTrue(doc instanceof Document);
+		assertTrue(doc != null);
 	}
 
 	/** Test the {@link XML#createDOMParser} and {@link XML#serialize} methods.

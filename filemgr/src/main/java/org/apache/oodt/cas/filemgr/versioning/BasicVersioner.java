@@ -18,20 +18,21 @@
 package org.apache.oodt.cas.filemgr.versioning;
 
 //JDK imports
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.net.MalformedURLException;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.filemgr.structs.exceptions.VersioningException;
 
 /**
  * @author mattmann
@@ -70,9 +71,7 @@ public class BasicVersioner implements Versioner {
         if (product.getProductStructure()
                 .equals(Product.STRUCTURE_HIERARCHICAL)) {
 
-            if (product.getProductReferences() == null
-                    || (product.getProductReferences() != null && product
-                            .getProductReferences().size() == 0)) {
+            if (product.getProductReferences() == null || (product.getProductReferences().size() == 0)) {
                 throw new VersioningException(
                         "Hierarchical product and references not set!");
             }

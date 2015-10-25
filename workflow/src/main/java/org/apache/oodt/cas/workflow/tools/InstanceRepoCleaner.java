@@ -115,9 +115,8 @@ public class InstanceRepoCleaner {
           LOG.log(Level.INFO, "Existing status: [" + inst.getStatus()
               + "]: setting to [" + WorkflowStatus.FINISHED + "]");
           inst.setEndDateTimeIsoStr(endDateTimeIsoStr);
-          if (inst.getStartDateTimeIsoStr() == null
-              || (inst.getStartDateTimeIsoStr() != null && inst
-                  .getStartDateTimeIsoStr().equals(""))) {
+          if (inst.getStartDateTimeIsoStr() == null || (inst
+                                                            .getStartDateTimeIsoStr().equals(""))) {
             inst.setStartDateTimeIsoStr(endDateTimeIsoStr);
           }
           inst.setStatus(WorkflowStatus.FINISHED);

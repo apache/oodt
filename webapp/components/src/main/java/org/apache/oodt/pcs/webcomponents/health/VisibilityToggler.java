@@ -56,7 +56,7 @@ public class VisibilityToggler extends WebMarkupContainer {
     final WebMarkupContainer moreComponent = new WebMarkupContainer(moreId);
     add(moreComponent);
 
-    showLink = new Link<Link>(showLinkId, new Model<Link>(hideLink)) {
+    showLink = new Link<Link>(showLinkId, new Model<Link>(null)) {
       /*
        * (non-Javadoc)
        * 

@@ -84,7 +84,7 @@ public class Incident implements Serializable, Comparable {
 	 */
 	public int compareTo(Object obj) {
 		Incident rhs = (Incident) obj;
-		int idComp = id == null && rhs.id != null? -1 : id == null && rhs.id == null? 0 : id != null && rhs.id == null? 1
+		int idComp = id == null && rhs.id != null ? -1 : id == null ? 0 : rhs.id == null ? 1
 			: id.compareTo(rhs.id);
 		if (idComp == 0)
 			return time.compareTo(rhs.time);

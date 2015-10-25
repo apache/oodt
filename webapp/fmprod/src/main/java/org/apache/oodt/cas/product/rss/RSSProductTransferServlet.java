@@ -19,11 +19,34 @@
 package org.apache.oodt.cas.product.rss;
 
 //JDK imports
+import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.commons.util.DateConvert;
+import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -31,30 +54,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.util.List;
-import java.util.Date;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
+
+import static org.apache.oodt.cas.product.rss.RSSConfigMetKeys.RSS_TRANSFER_CONF_KEY;
 
 //OODT imports
-import static org.apache.oodt.cas.product.rss.RSSConfigMetKeys.RSS_TRANSFER_CONF_KEY;
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import org.apache.oodt.commons.xml.XMLUtils;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.commons.util.DateConvert;
 
 /**
  * @author mattmann
@@ -109,13 +112,9 @@ public class RSSProductTransferServlet extends HttpServlet {
               "filemgr.url") );
         } catch (Exception e) {
           throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
-        }        
-        if (fileManagerUrl == null) {
-            // try the default port
-            fileManagerUrl = "http://localhost:9000";
         }
 
-        fClient = null;
+      fClient = null;
 
         try {
             fClient = new XmlRpcFileManagerClient(new URL(fileManagerUrl));

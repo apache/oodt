@@ -20,13 +20,13 @@ package org.apache.oodt.cas.crawl.daemon;
 
 //OODT imports
 import org.apache.oodt.cas.crawl.ProductCrawler;
+import org.apache.xmlrpc.WebServer;
 
-//JDK imports
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//JDK imports
 //APACHE imports
-import org.apache.xmlrpc.WebServer;
 
 /**
  * @author mattmann
@@ -161,7 +161,7 @@ public class CrawlDaemon {
      */
     public boolean stop() {
         this.running = false;
-        return this.running;
+        return false;
     }
 
     /**

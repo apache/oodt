@@ -1196,9 +1196,7 @@ public class LuceneCatalog implements Catalog {
             if (cp.getReferences() != null && cp.getReferences().size() > 0) {
                 // make sure there is a data store ref for each of the refs
                 for (Reference r : cp.getReferences()) {
-                    if (r.getDataStoreReference() == null
-                        || (r.getDataStoreReference() != null && r
-                        .getDataStoreReference().equals(""))) {
+                    if (r.getDataStoreReference() == null || (r.getDataStoreReference().equals(""))) {
                         return false;
                     }
                 }

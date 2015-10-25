@@ -61,7 +61,7 @@ public class OptimizeLuceneCatalog {
 
         try {
             writer = new IndexWriter(catalogPath, new StandardAnalyzer(),
-                    createIndex);
+                false);
             writer.setMergeFactor(this.mergeFactor);
             long timeBefore = System.currentTimeMillis();
             writer.optimize();

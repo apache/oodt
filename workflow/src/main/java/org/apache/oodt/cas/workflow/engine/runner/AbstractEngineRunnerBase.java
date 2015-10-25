@@ -18,16 +18,17 @@
 package org.apache.oodt.cas.workflow.engine.runner;
 
 //JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * 
@@ -76,8 +77,7 @@ public abstract class AbstractEngineRunnerBase extends EngineRunner {
   protected synchronized void persist(WorkflowInstance instance) {
     if(instRep == null) return;
     try {
-      if (instance.getId() == null
-          || (instance.getId() != null && instance.getId().equals(""))) {
+      if (instance.getId() == null || (instance.getId().equals(""))) {
         // we have to persist it by adding it
         // rather than updating it
         instRep.addWorkflowInstance(instance);

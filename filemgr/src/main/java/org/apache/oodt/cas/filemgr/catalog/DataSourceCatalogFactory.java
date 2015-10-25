@@ -148,7 +148,7 @@ public class DataSourceCatalogFactory implements CatalogFactory {
      */
     public Catalog createCatalog() {
     	if (validationLayer==null) {
-    			return new LenientDataSourceCatalog(dataSource, validationLayer, fieldIdStr,
+    			return new LenientDataSourceCatalog(dataSource, null, fieldIdStr,
 							    pageSize, cacheUpdateMinutes, productIdString, orderedValues);
     	} else {
         return new DataSourceCatalog(dataSource, validationLayer, fieldIdStr,

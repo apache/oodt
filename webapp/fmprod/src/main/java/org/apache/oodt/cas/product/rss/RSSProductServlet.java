@@ -108,10 +108,6 @@ public class RSSProductServlet extends HttpServlet {
 	} catch (Exception e) {
 		throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
 	}
-    if (fileManagerUrl == null) {
-      // try the default port
-      fileManagerUrl = "http://localhost:9000";
-    }
 
     this.getFileManager(fileManagerUrl);
     try {

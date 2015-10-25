@@ -204,9 +204,7 @@ public class MemoryWorkflowInstanceRepository extends
             throws InstanceRepositoryException {
         int cnt = 0;
 
-        if (this.workflowInstMap != null
-                && this.workflowInstMap.keySet() != null
-                && this.workflowInstMap.keySet().size() > 0) {
+        if (this.workflowInstMap != null && this.workflowInstMap.keySet().size() > 0) {
             for (Object o : this.workflowInstMap.keySet()) {
                 String wInstId = (String) o;
                 WorkflowInstance inst = (WorkflowInstance) this.workflowInstMap

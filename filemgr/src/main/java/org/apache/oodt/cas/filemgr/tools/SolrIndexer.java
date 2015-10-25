@@ -18,22 +18,6 @@
 package org.apache.oodt.cas.filemgr.tools;
 
 //JDK imports
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
-import java.util.logging.Logger;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -59,6 +43,22 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.util.StringUtils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Indexes products from the File Manager catalog to a Solr instance. Uses an
@@ -698,12 +698,10 @@ public class SolrIndexer {
 			LOG.severe("Error reading product id: line: [" + line + "]: Message: "
 			    + e.getMessage());
 		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (Exception ignore) {
-				}
-			}
+		  try {
+              br.close();
+          } catch (Exception ignore) {
+          }
 		}
 		return productIds;
 	}

@@ -58,7 +58,7 @@ public class ProfileChecker {
 		boolean ok = true;
 		sb.append("\nChecking profile=").append(profile.getProfileAttributes().getID());
 		
-		ok = ok && checkResourceAttribute("Identifier", profile.getResourceAttributes().getIdentifier(), true, sb);
+		ok = checkResourceAttribute("Identifier", profile.getResourceAttributes().getIdentifier(), true, sb);
 		
 		ok = ok && checkResourceAttribute("Title", profile.getResourceAttributes().getTitle(), true, sb);
 		

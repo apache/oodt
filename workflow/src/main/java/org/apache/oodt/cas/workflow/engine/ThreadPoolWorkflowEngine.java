@@ -365,10 +365,9 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
     Date workflowStartDateTime;
 
-    if (inst.getStartDateTimeIsoStr() == null
-        || (inst.getStartDateTimeIsoStr() != null && (inst
-            .getStartDateTimeIsoStr().equals("") || inst
-            .getStartDateTimeIsoStr().equals("null")))) {
+    if (inst.getStartDateTimeIsoStr() == null || ((inst
+                                                       .getStartDateTimeIsoStr().equals("") || inst
+                                                       .getStartDateTimeIsoStr().equals("null")))) {
       return 0.0;
     }
 
@@ -398,10 +397,10 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
     Date workflowTaskStartDateTime;
 
-    if (inst.getCurrentTaskStartDateTimeIsoStr() == null
-        || (inst.getCurrentTaskStartDateTimeIsoStr() != null && (inst
-            .getCurrentTaskStartDateTimeIsoStr().equals("") || inst
-            .getCurrentTaskStartDateTimeIsoStr().equals("null")))) {
+    if (inst.getCurrentTaskStartDateTimeIsoStr() == null || ((inst
+                                                                  .getCurrentTaskStartDateTimeIsoStr().equals("")
+                                                              || inst
+                                                                  .getCurrentTaskStartDateTimeIsoStr().equals("null")))) {
       return 0.0;
     }
 
@@ -435,8 +434,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
       throws EngineException {
 
     try {
-      if (wInst.getId() == null
-          || (wInst.getId() != null && wInst.getId().equals(""))) {
+      if (wInst.getId() == null || (wInst.getId().equals(""))) {
         // we have to persist it by adding it
         // rather than updating it
         instRep.addWorkflowInstance(wInst);

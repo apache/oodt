@@ -18,6 +18,12 @@
 package org.apache.oodt.security.sso.opensso;
 
 //JDK imports
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.PostMethod;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -26,11 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //APACHE imports
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
 
 /**
  * 
@@ -216,21 +217,16 @@ public class SSOProxy implements SSOMetKeys {
       LOG.log(Level.WARNING, "Error reading service response line: [" + line
           + "]: Message: " + e.getMessage());
     } finally {
-      if (is != null) {
-        try {
-          is.close();
-        } catch (Exception ignore) {
-        }
-
+      try {
+        is.close();
+      } catch (Exception ignore) {
       }
 
-      if (br != null) {
-        try {
-          br.close();
-        } catch (Exception ignore) {
-        }
-
+      try {
+        br.close();
+      } catch (Exception ignore) {
       }
+
     }
 
     return details;
@@ -271,21 +267,16 @@ public class SSOProxy implements SSOMetKeys {
       LOG.log(Level.WARNING, "Error reading service response line: [" + line
           + "]: Message: " + e.getMessage());
     } finally {
-      if (is != null) {
-        try {
-          is.close();
-        } catch (Exception ignore) {
-        }
-
+      try {
+        is.close();
+      } catch (Exception ignore) {
       }
 
-      if (br != null) {
-        try {
-          br.close();
-        } catch (Exception ignore) {
-        }
-
+      try {
+        br.close();
+      } catch (Exception ignore) {
       }
+
     }
 
     return details;

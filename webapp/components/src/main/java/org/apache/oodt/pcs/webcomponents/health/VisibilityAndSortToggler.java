@@ -56,7 +56,7 @@ class VisibilityAndSortToggler extends VisibilityToggler {
     Link<Link> sortLink;
     Link<Link> unsortLink = null;
 
-    sortLink = new Link<Link>(sortLinkId, new Model<Link>(unsortLink)) {
+    sortLink = new Link<Link>(sortLinkId, new Model<Link>(null)) {
       /*
        * (non-Javadoc)
        * 

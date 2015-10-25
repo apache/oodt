@@ -107,8 +107,7 @@ public class WorkflowProcessorQueue {
 
   public synchronized void persist(WorkflowInstance inst) {
     try {
-      if (inst.getId() == null
-          || (inst.getId() != null && inst.getId().equals(""))) {
+      if (inst.getId() == null || (inst.getId().equals(""))) {
         // we have to persist it by adding it
         // rather than updating it
         repo.addWorkflowInstance(inst);
@@ -134,7 +133,7 @@ public class WorkflowProcessorQueue {
         LOG.log(Level.SEVERE,
             "Unable to process Graph for workflow instance: [" + inst.getId()
                 + "]");
-        return processor;
+        return null;
       }
 
       if (isCompositeProcessor(inst)) {
@@ -446,7 +445,7 @@ public class WorkflowProcessorQueue {
         e.printStackTrace();
       }
     
-    return task;
+    return null;
   }
 
 }

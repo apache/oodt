@@ -75,17 +75,16 @@ public abstract class AbstractFilemgrMetExtractor implements
 
     protected void validateProduct(Product product, Metadata met)
             throws MetExtractionException {
-        if (product.getProductType() == null
-                || (product.getProductType() != null && (product
-                        .getProductType().getName() == null || (product
-                        .getProductType().getName() != null && product
-                        .getProductType().getName().equals(""))))) {
+        if (product.getProductType() == null || ((product
+                                                      .getProductType().getName() == null || (product
+                                                                                                  .getProductType()
+                                                                                                  .getName()
+                                                                                                  .equals(""))))) {
             throw new MetExtractionException("Product Type undefined");
         }
 
-        if (product.getProductReferences() == null
-                || (product.getProductReferences() != null && product
-                        .getProductReferences().size() == 0)) {
+        if (product.getProductReferences() == null || (product
+                                                           .getProductReferences().size() == 0)) {
             throw new MetExtractionException("Product references undefined");
         }
 

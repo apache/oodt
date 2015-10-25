@@ -159,12 +159,9 @@ public final class EnvUtilities {
             buf.append(line).append("\n");
         }
 
-        if (reader != null) {
-            try {
-                reader.close();
-            } catch (Exception ignore) {
-            }
-
+        try {
+            reader.close();
+        } catch (Exception ignore) {
         }
 
         return new ByteArrayInputStream(buf.toString().getBytes());

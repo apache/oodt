@@ -17,6 +17,10 @@ package org.apache.oodt.cas.metadata;
 
 //JDK imports
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,11 +38,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 /**
  * @author mattmann
@@ -191,8 +190,7 @@ public class SerializableMetadata extends Metadata implements Serializable {
                     Element valElem = document.createElement("val");
                     if (value == null) {
                         throw new Exception("Attempt to write null value "
-                                + "for property: [" + key + "]: val: ["
-                                + value + "]");
+                                + "for property: [" + key + "]: val: [null]");
                     }
                     if (this.useCDATA)
                         valElem.appendChild(document
