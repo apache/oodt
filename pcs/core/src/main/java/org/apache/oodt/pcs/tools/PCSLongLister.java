@@ -64,8 +64,8 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
   public void doList(List prodNames) {
     if (prodNames != null && prodNames.size() > 0) {
       System.out.println(getToolHeader());
-      for (Iterator i = prodNames.iterator(); i.hasNext();) {
-        String prodName = (String) i.next();
+      for (Object prodName1 : prodNames) {
+        String prodName = (String) prodName1;
         // check to see if the product name has a "/" in it
         // (this is true in the case of someone using */* from
         // a shell): if it does, we'll consider the prodName a
@@ -181,14 +181,15 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
       // if you find one tag, then set foundTag = true, and we
       // break
       if (products != null && products.size() > 0) {
-        for (Iterator i = products.iterator(); i.hasNext();) {
-          Product prod = (Product) i.next();
+        for (Object product : products) {
+          Product prod = (Product) product;
           Metadata prodMet = fm.safeGetMetadata(prod);
 
           if (prodMet.containsKey(tagType)) {
             // got one, done
-            if (!foundTag)
+            if (!foundTag) {
               foundTag = true;
+            }
             if (!tags.contains(prodMet.getMetadata(tagType))) {
               tags.add(prodMet.getMetadata(tagType));
             }

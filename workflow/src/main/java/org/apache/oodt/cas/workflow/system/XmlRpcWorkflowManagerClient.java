@@ -251,12 +251,12 @@ public class XmlRpcWorkflowManagerClient {
                     "workflowmgr.getWorkflowsByEvent", argList);
 
             if (workflowVector != null) {
-                for (Iterator i = workflowVector.iterator(); i.hasNext();) {
-                    Hashtable workflowHash = (Hashtable) i.next();
-                    Workflow w = XmlRpcStructFactory
-                            .getWorkflowFromXmlRpc(workflowHash);
-                    workflows.add(w);
-                }
+              for (Object aWorkflowVector : workflowVector) {
+                Hashtable workflowHash = (Hashtable) aWorkflowVector;
+                Workflow w = XmlRpcStructFactory
+                    .getWorkflowFromXmlRpc(workflowHash);
+                workflows.add(w);
+              }
             }
 
             return workflows;
@@ -560,12 +560,12 @@ public class XmlRpcWorkflowManagerClient {
             if (works != null) {
                 workflows = new Vector(works.size());
 
-                for (Iterator i = works.iterator(); i.hasNext();) {
-                    Hashtable workflw = (Hashtable) i.next();
-                    Workflow w = XmlRpcStructFactory
-                            .getWorkflowFromXmlRpc(workflw);
-                    workflows.add(w);
-                }
+              for (Object work : works) {
+                Hashtable workflw = (Hashtable) work;
+                Workflow w = XmlRpcStructFactory
+                    .getWorkflowFromXmlRpc(workflw);
+                workflows.add(w);
+              }
 
                 return workflows;
             } else
@@ -628,12 +628,12 @@ public class XmlRpcWorkflowManagerClient {
                     "workflowmgr.getWorkflowInstancesByStatus", argList);
             if (insts != null) {
                 instsUnpacked = new Vector(insts.size());
-                for (Iterator i = insts.iterator(); i.hasNext();) {
-                    Hashtable hWinst = (Hashtable) i.next();
-                    WorkflowInstance inst = XmlRpcStructFactory
-                            .getWorkflowInstanceFromXmlRpc(hWinst);
-                    instsUnpacked.add(inst);
-                }
+              for (Object inst1 : insts) {
+                Hashtable hWinst = (Hashtable) inst1;
+                WorkflowInstance inst = XmlRpcStructFactory
+                    .getWorkflowInstanceFromXmlRpc(hWinst);
+                instsUnpacked.add(inst);
+              }
                 return instsUnpacked;
             } else
                 return null;
@@ -657,12 +657,12 @@ public class XmlRpcWorkflowManagerClient {
                     argList);
             if (insts != null) {
                 instsUnpacked = new Vector(insts.size());
-                for (Iterator i = insts.iterator(); i.hasNext();) {
-                    Hashtable hWinst = (Hashtable) i.next();
-                    WorkflowInstance inst = XmlRpcStructFactory
-                            .getWorkflowInstanceFromXmlRpc(hWinst);
-                    instsUnpacked.add(inst);
-                }
+              for (Object inst1 : insts) {
+                Hashtable hWinst = (Hashtable) inst1;
+                WorkflowInstance inst = XmlRpcStructFactory
+                    .getWorkflowInstanceFromXmlRpc(hWinst);
+                instsUnpacked.add(inst);
+              }
                 return instsUnpacked;
             } else
                 return null;

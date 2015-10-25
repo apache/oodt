@@ -48,13 +48,13 @@ public abstract class XMLStorage implements Storage {
 			root.setAttribute("id", id);
 			doc.appendChild(root);
 
-			for (Iterator i = incidents.iterator(); i.hasNext();) {
-				Incident incident = (Incident) i.next();
-				Element e = doc.createElement(incident.getClass().getName());
-				e.setAttribute("time", String.valueOf(incident.getTime().getTime()));
-				e.appendChild(doc.createTextNode(incident.toString()));
-				root.appendChild(e);
-			}
+		  for (Object incident1 : incidents) {
+			Incident incident = (Incident) incident1;
+			Element e = doc.createElement(incident.getClass().getName());
+			e.setAttribute("time", String.valueOf(incident.getTime().getTime()));
+			e.appendChild(doc.createTextNode(incident.toString()));
+			root.appendChild(e);
+		  }
 			saveDocument(doc);
 		} catch (ParserConfigurationException ex) {
 			throw new IllegalStateException("Unexpected ParserConfigurationException: " + ex.getMessage());

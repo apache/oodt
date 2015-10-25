@@ -87,11 +87,11 @@ public class Result implements Serializable, Cloneable, Documentable {
 				+ " Result.INFINITE to indicate no expiration");
 		if (!codecs.containsKey(mimeType))
 			throw new IllegalArgumentException("MIME type \"" + mimeType + "\" unknown");
-		for (Iterator i = headers.iterator(); i.hasNext();) {
-			Object header = i.next();
-			if (!(header instanceof Header))
-				throw new IllegalArgumentException("List of headers doesn't contain Header object");
+	  for (Object header : headers) {
+		if (!(header instanceof Header)) {
+		  throw new IllegalArgumentException("List of headers doesn't contain Header object");
 		}
+	  }
 
 		this.id         = id;
 		this.mimeType   = mimeType;
@@ -261,10 +261,10 @@ public class Result implements Serializable, Cloneable, Documentable {
 		XML.add(root, "identifier", resourceID);
 		Element resultHeader = doc.createElement("resultHeader");
 		root.appendChild(resultHeader);
-		for (Iterator i = headers.iterator(); i.hasNext();) {
-			Header header = (Header) i.next();
-			resultHeader.appendChild(header.toXML(doc));
-		}
+	  for (Object header1 : headers) {
+		Header header = (Header) header1;
+		resultHeader.appendChild(header.toXML(doc));
+	  }
 		Codec codec = (Codec) codecs.get(mimeType);
 		if (codec == null) throw new IllegalStateException("No codec available for supposedly valid MIME type \""
 			+ mimeType + "\"");
@@ -394,10 +394,10 @@ public class Result implements Serializable, Cloneable, Documentable {
 			Properties props = new Properties();
 			props.load(in);
 			in.close();
-			for (Iterator i = props.entrySet().iterator(); i.hasNext();) {
-				Map.Entry entry = (Map.Entry) i.next();
-				codecs.put(entry.getKey(), CodecFactory.createCodec((String) entry.getValue()));
-			}
+		  for (Map.Entry<Object, Object> objectObjectEntry : props.entrySet()) {
+			Map.Entry entry = (Map.Entry) objectObjectEntry;
+			codecs.put(entry.getKey(), CodecFactory.createCodec((String) entry.getValue()));
+		  }
 		} catch (IOException ex) {
 			System.err.println("I/O exception WHILE reading mime.properties: " + ex.getMessage());
 			ex.printStackTrace();

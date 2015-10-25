@@ -101,20 +101,20 @@ public final class QueryTool {
         List productTypes = safeGetProductTypes();
 
         if (productTypes != null && productTypes.size() > 0) {
-            for (Iterator i = productTypes.iterator(); i.hasNext();) {
-                ProductType type = (ProductType) i.next();
+            for (Object productType : productTypes) {
+                ProductType type = (ProductType) productType;
                 try {
                     products = client.query(query, type);
                     if (products != null && products.size() > 0) {
-                        for (Iterator j = products.iterator(); j.hasNext();) {
-                            Product product = (Product) j.next();
+                        for (Object product1 : products) {
+                            Product product = (Product) product1;
                             prodIds.add(product.getProductId());
                         }
                     }
                 } catch (CatalogException e) {
                     LOG.log(Level.WARNING, "Exception querying for: ["
-                            + type.getName() + "] products: Message: "
-                            + e.getMessage());
+                                           + type.getName() + "] products: Message: "
+                                           + e.getMessage());
                 }
 
             }
@@ -141,9 +141,10 @@ public final class QueryTool {
             if (t[0].field().equals(freeTextBlock)) {
                 // nothing for now
             } else {
-                for (int i = 0; i < t.length; i++)
+                for (Term aT : t) {
                     casQuery.addCriterion(new TermQueryCriteria(
-                            t[i].field(), t[i].text()));
+                        aT.field(), aT.text()));
+                }
             }
         } else if (luceneQuery instanceof RangeQuery) {
             Term startT = ((RangeQuery) luceneQuery).getLowerTerm();
@@ -152,8 +153,8 @@ public final class QueryTool {
                     .field(), startT.text(), endT.text()));
         } else if (luceneQuery instanceof BooleanQuery) {
             BooleanClause[] clauses = ((BooleanQuery) luceneQuery).getClauses();
-            for (int i = 0; i < clauses.length; i++) {
-                generateCASQuery(casQuery, (clauses[i]).getQuery());
+            for (BooleanClause clause : clauses) {
+                generateCASQuery(casQuery, (clause).getQuery());
             }
         } else {
             throw new RuntimeException(
@@ -233,8 +234,8 @@ public final class QueryTool {
     
             List prodIds = queryTool.query(casQuery);
             if (prodIds != null && prodIds.size() > 0) {
-                for (Iterator i = prodIds.iterator(); i.hasNext();) {
-                    String prodId = (String) i.next();
+                for (Object prodId1 : prodIds) {
+                    String prodId = (String) prodId1;
                     System.out.println(prodId);
                 }
             }

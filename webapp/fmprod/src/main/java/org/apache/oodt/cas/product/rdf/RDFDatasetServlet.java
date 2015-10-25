@@ -200,29 +200,23 @@ public class RDFDatasetServlet extends HttpServlet {
       Element rdf = XMLUtils.addNode(doc, doc, "rdf:RDF");
       RDFUtils.addNamespaces(doc, rdf, this.rdfConf);
 
-      for (Iterator<ProductType> i = productTypes.iterator(); i.hasNext();) {
-        ProductType type = i.next();
-        
+      for (ProductType type : productTypes) {
         Element productTypeRdfDesc = XMLUtils.addNode(doc, rdf, this.rdfConf
-            .getTypeNs(type.getName())
-            + ":" + type.getName());
+                                                                    .getTypeNs(type.getName())
+                                                                + ":" + type.getName());
         XMLUtils.addAttribute(doc, productTypeRdfDesc, "rdf:about", base
-            + "?typeID=" + type.getProductTypeId());
+                                                                    + "?typeID=" + type.getProductTypeId());
 
         // for all of its metadata keys and values, loop through them
         // and add RDF nodes underneath the RdfDesc for this product
 
         if (type.getTypeMetadata() != null) {
-          for (Iterator<String> j = type.getTypeMetadata().getHashtable().keySet()
-              .iterator(); j.hasNext();) {
-            String key = (String) j.next();
-
+          for (String key : type.getTypeMetadata().getHashtable().keySet()) {
             List<String> vals = type.getTypeMetadata().getAllMetadata(key);
 
             if (vals != null && vals.size() > 0) {
 
-              for (Iterator<String> k = vals.iterator(); k.hasNext();) {
-                String val = (String) k.next();
+              for (String val : vals) {
                 //OODT-665 fix, take keys like 
                 //PRODUCT Experiment Type
                 //and transform it into ProductExperimentType
@@ -231,7 +225,7 @@ public class RDFDatasetServlet extends HttpServlet {
                   outputKey = StringUtils.join(WordUtils.capitalizeFully(outputKey).split(
                       " "));
                 }
-                
+
                 val = StringEscapeUtils.escapeXml(val);
                 Element rdfElem = RDFUtils.getRDFElement(outputKey, val,
                     this.rdfConf, doc);

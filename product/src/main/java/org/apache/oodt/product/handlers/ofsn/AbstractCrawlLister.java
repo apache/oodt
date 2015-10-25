@@ -99,15 +99,16 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
         productFiles = dir.listFiles(FILE_FILTER);
       }
 
-      for (int j = 0; j < productFiles.length; j++) {
-        fileList.add(productFiles[j]);
+      for (File productFile : productFiles) {
+        fileList.add(productFile);
       }
 
       if (recur) {
         File[] subdirs = dir.listFiles(DIR_FILTER);
         if (subdirs != null)
-          for (int j = 0; j < subdirs.length; j++)
-            stack.push(subdirs[j]);
+          for (File subdir : subdirs) {
+            stack.push(subdir);
+          }
       }
     }
 

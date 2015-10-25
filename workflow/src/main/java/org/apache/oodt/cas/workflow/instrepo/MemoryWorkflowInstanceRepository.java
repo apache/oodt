@@ -137,10 +137,10 @@ public class MemoryWorkflowInstanceRepository extends
             throws InstanceRepositoryException {
         List instances = new Vector();
 
-        for (Iterator i = workflowInstMap.keySet().iterator(); i.hasNext();) {
-            String workflowInstId = (String) i.next();
+        for (Object o : workflowInstMap.keySet()) {
+            String workflowInstId = (String) o;
             WorkflowInstance inst = (WorkflowInstance) workflowInstMap
-                    .get(workflowInstId);
+                .get(workflowInstId);
             if (inst.getStatus().equals(status)) {
                 instances.add(inst);
             }
@@ -208,11 +208,10 @@ public class MemoryWorkflowInstanceRepository extends
         if (this.workflowInstMap != null
                 && this.workflowInstMap.keySet() != null
                 && this.workflowInstMap.keySet().size() > 0) {
-            for (Iterator i = this.workflowInstMap.keySet().iterator(); i
-                    .hasNext();) {
-                String wInstId = (String) i.next();
+            for (Object o : this.workflowInstMap.keySet()) {
+                String wInstId = (String) o;
                 WorkflowInstance inst = (WorkflowInstance) this.workflowInstMap
-                        .get(wInstId);
+                    .get(wInstId);
                 if (inst.getStatus().equals(status)) {
                     cnt++;
                 }

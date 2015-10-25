@@ -125,10 +125,10 @@ public class ActivityTracker {
 		 */
 		public Activity createActivity() {
 			List activities = new ArrayList();
-			for (Iterator i = factories.iterator(); i.hasNext();) {
-				ActivityFactory factory = (ActivityFactory) i.next();
-				activities.add(factory.createActivity());
-			}
+		  for (Object factory1 : factories) {
+			ActivityFactory factory = (ActivityFactory) factory1;
+			activities.add(factory.createActivity());
+		  }
 			return new CompositeActivity(activities);
 		}
 

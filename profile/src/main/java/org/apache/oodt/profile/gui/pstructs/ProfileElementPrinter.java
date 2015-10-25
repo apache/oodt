@@ -52,11 +52,11 @@ public class ProfileElementPrinter {
 		  rStr+="\t<elemMaxOccurrence>"+myProfileElement.getMaxOccurrence()+"</elemMaxOccurrence>\n";
 		  rStr+="\t<elemMaxValue>"+myProfileElement.getMaxValue()+"</elemMaxValue>\n";
 		  rStr+="\t<elemMinValue>"+myProfileElement.getMinValue()+"</elemMinValue>\n";
-		  
-		  for(Iterator i = myProfileElement.getValues().iterator(); i.hasNext(); ){
-		  	String theValue = (String)i.next();
-		  	rStr+="<elemValue>"+theValue+"</elemValue>\n";
-		  }
+
+	  for (Object o : myProfileElement.getValues()) {
+		String theValue = (String) o;
+		rStr += "<elemValue>" + theValue + "</elemValue>\n";
+	  }
 		  rStr+="\t<elemComment>"+myProfileElement.getComments()+"</elemComment>\n";
 		  rStr+="</profElement>\n";
 		return rStr;

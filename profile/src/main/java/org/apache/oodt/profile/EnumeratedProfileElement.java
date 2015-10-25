@@ -76,11 +76,11 @@ public class EnumeratedProfileElement extends ProfileElement {
 
 	protected void addValues(Node node) throws DOMException {
 		if (values == null) return;
-		for (Iterator<?> i = values.iterator(); i.hasNext();) {
-			Element e = node.getOwnerDocument().createElement("elemValue");
-			e.appendChild(node.getOwnerDocument().createCDATASection((String) i.next()));
-			node.appendChild(e);
-		}
+	  for (Object value : values) {
+		Element e = node.getOwnerDocument().createElement("elemValue");
+		e.appendChild(node.getOwnerDocument().createCDATASection((String) value));
+		node.appendChild(e);
+	  }
 	}
 
 	public String getMinValue() {

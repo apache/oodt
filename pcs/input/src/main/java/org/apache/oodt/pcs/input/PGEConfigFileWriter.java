@@ -159,9 +159,7 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
         }
 
         // write the pge specific groups
-        for (Iterator i = configFile.getPgeSpecificGroups().keySet().iterator(); i
-            .hasNext();) {
-          String pgeSpecificGroupName = (String) i.next();
+        for (String pgeSpecificGroupName : configFile.getPgeSpecificGroups().keySet()) {
           PGEGroup pgeSpecificGroup = (PGEGroup) configFile
               .getPgeSpecificGroups().get(pgeSpecificGroupName);
 
@@ -191,8 +189,7 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
     groupElem.setAttribute(NAME_ATTR, group.getName());
 
     if (group.getNumScalars() > 0) {
-      for (Iterator i = group.getScalars().keySet().iterator(); i.hasNext();) {
-        String scalarName = (String) i.next();
+      for (String scalarName : group.getScalars().keySet()) {
         PGEScalar scalar = group.getScalar(scalarName);
 
         Element scalarElem = document.createElement(SCALAR_TAG_NAME);
@@ -200,7 +197,7 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
 
         if (scalar.getValue() == null) {
           throw new Exception("Attempt to write null value for scalar: ["
-              + scalarName + "] to PGE config file!");
+                              + scalarName + "] to PGE config file!");
         }
 
         if (urlEncoding) {
@@ -210,8 +207,8 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
           } catch (UnsupportedEncodingException e) {
             LOG.log(Level.WARNING,
                 "Error creating text node for scalar element: "
-                    + scalar.getName() + " in pge group: " + group.getName()
-                    + " Message: " + e.getMessage());
+                + scalar.getName() + " in pge group: " + group.getName()
+                + " Message: " + e.getMessage());
           }
 
         } else {
@@ -224,19 +221,18 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
     }
 
     if (group.getNumVectors() > 0) {
-      for (Iterator i = group.getVectors().keySet().iterator(); i.hasNext();) {
-        String vectorName = (String) i.next();
+      for (String vectorName : group.getVectors().keySet()) {
         PGEVector vector = group.getVector(vectorName);
 
         Element vectorElem = document.createElement(VECTOR_TAG_NAME);
         vectorElem.setAttribute(NAME_ATTR, vector.getName());
 
-        for (Iterator j = vector.getElements().iterator(); j.hasNext();) {
-          String element = (String) j.next();
+        for (Object o : vector.getElements()) {
+          String element = (String) o;
 
           if (element == null) {
             throw new Exception("Attempt to write null value for vector: ["
-                + vectorName + "] to PGE config file!");
+                                + vectorName + "] to PGE config file!");
           }
 
           Element elementElem = document.createElement(VECTOR_ELEMENT_TAG);
@@ -247,8 +243,8 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
             } catch (UnsupportedEncodingException e) {
               LOG.log(Level.WARNING,
                   "Error creating text node for vector element: "
-                      + vector.getName() + " in pge group: " + group.getName()
-                      + " Message: " + e.getMessage());
+                  + vector.getName() + " in pge group: " + group.getName()
+                  + " Message: " + e.getMessage());
             }
           } else {
             elementElem.appendChild(document.createTextNode(element));
@@ -262,27 +258,26 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
     }
 
     if (group.getNumMatrixs() > 0) {
-      for (Iterator i = group.getMatrixs().keySet().iterator(); i.hasNext();) {
-        String matrixName = (String) i.next();
+      for (String matrixName : group.getMatrixs().keySet()) {
         PGEMatrix matrix = group.getMatrix(matrixName);
 
         Element matrixElem = document.createElement(MATRIX_TAG_NAME);
         matrixElem.setAttribute(NAME_ATTR, matrix.getName());
 
         int rowNum = 0;
-        for (Iterator j = matrix.getRows().iterator(); j.hasNext();) {
-          List rowValues = (List) j.next();
+        for (List<Object> objects : matrix.getRows()) {
+          List rowValues = (List) objects;
 
           Element rowElem = document.createElement(MATRIX_ROW_TAG);
 
           int colNum = 0;
-          for (Iterator k = rowValues.iterator(); k.hasNext();) {
-            String colValue = (String) k.next();
+          for (Object rowValue : rowValues) {
+            String colValue = (String) rowValue;
             Element colElem = document.createElement(MATRIX_COL_TAG);
 
             if (colValue == null) {
               throw new Exception("Attempt to write null value for matrix: ["
-                  + matrixName + "]: " + "(" + rowNum + "," + colNum + ")");
+                                  + matrixName + "]: " + "(" + rowNum + "," + colNum + ")");
             }
 
             if (urlEncoding) {
@@ -292,9 +287,9 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
               } catch (UnsupportedEncodingException e) {
                 LOG.log(Level.WARNING,
                     "Error creating node for matrix element: "
-                        + matrix.getName() + " (" + rowNum + "," + colNum
-                        + ") in pge group: " + group.getName() + " Message: "
-                        + e.getMessage());
+                    + matrix.getName() + " (" + rowNum + "," + colNum
+                    + ") in pge group: " + group.getName() + " Message: "
+                    + e.getMessage());
               }
 
             } else {
@@ -312,8 +307,7 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
     }
 
     if (group.getNumGroups() > 0) {
-      for (Iterator i = group.getGroups().keySet().iterator(); i.hasNext();) {
-        String groupName = (String) i.next();
+      for (String groupName : group.getGroups().keySet()) {
         PGEGroup subgroup = group.getGroup(groupName);
         Element subgroupElem = getGroupElement(subgroup, document);
         groupElem.appendChild(subgroupElem);

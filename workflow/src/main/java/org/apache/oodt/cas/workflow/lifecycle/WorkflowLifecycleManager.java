@@ -155,11 +155,11 @@ public class WorkflowLifecycleManager {
         WorkflowLifecycle defaultLifecycle = null;
 
         if (this.lifecycles != null && this.lifecycles.size() > 0) {
-            for (Iterator i = this.lifecycles.iterator(); i.hasNext();) {
-                WorkflowLifecycle lifecycle = (WorkflowLifecycle) i.next();
+            for (Object lifecycle1 : this.lifecycles) {
+                WorkflowLifecycle lifecycle = (WorkflowLifecycle) lifecycle1;
 
                 if (lifecycle.getName().equals(
-                        WorkflowLifecycle.DEFAULT_LIFECYCLE)) {
+                    WorkflowLifecycle.DEFAULT_LIFECYCLE)) {
                     defaultLifecycle = lifecycle;
                 }
             }
@@ -183,14 +183,14 @@ public class WorkflowLifecycleManager {
         WorkflowLifecycle defaultLifecycle = null;
 
         if (this.lifecycles != null && this.lifecycles.size() > 0) {
-            for (Iterator i = this.lifecycles.iterator(); i.hasNext();) {
-                WorkflowLifecycle lifecycle = (WorkflowLifecycle) i.next();
+            for (Object lifecycle1 : this.lifecycles) {
+                WorkflowLifecycle lifecycle = (WorkflowLifecycle) lifecycle1;
                 if (lifecycle.getWorkflowId().equals(workflow.getId())) {
                     return lifecycle;
                 }
 
                 if (lifecycle.getName().equals(
-                        WorkflowLifecycle.DEFAULT_LIFECYCLE)) {
+                    WorkflowLifecycle.DEFAULT_LIFECYCLE)) {
                     defaultLifecycle = lifecycle;
                 }
             }

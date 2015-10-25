@@ -162,9 +162,11 @@ public class Utility {
 	public static boolean delete(File file) {
 		if (file.isDirectory()) {
 			File[] entries = file.listFiles();
-			for (int i = 0; i < entries.length; ++i)
-				if (!delete(entries[i]))
-					return false;
+		  for (File entry : entries) {
+			if (!delete(entry)) {
+			  return false;
+			}
+		  }
 		}
 		return file.delete();
 	}

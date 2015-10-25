@@ -49,10 +49,10 @@ public class PropertyMgr {
 		System.setProperty(key, value);
 		if (!listeners.isEmpty()) {
 			PropertyChangeEvent event = new PropertyChangeEvent(System.getProperties(), key, oldValue, value);
-			for (Iterator i = listeners.iterator(); i.hasNext();) {
-				PropertyChangeListener listener = (PropertyChangeListener) i.next();
-				listener.propertyChange(event);
-			}
+		  for (Object listener1 : listeners) {
+			PropertyChangeListener listener = (PropertyChangeListener) listener1;
+			listener.propertyChange(event);
+		  }
 		}
 	}
 

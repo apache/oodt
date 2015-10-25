@@ -42,7 +42,7 @@ public class ExtractorConfigReader {
     List<File> files = new ArrayList<File>();
     String[] fileList = props.getProperty(ExtractorConfig.PROP_CONFIG_FILES)
         .split(",");
-    for (int i = 0; i < fileList.length; i++) {
+    for (String aFileList : fileList) {
       files.add(new File(PathUtils.replaceEnvVariables(fileList[0])));
     }
     

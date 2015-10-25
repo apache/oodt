@@ -70,8 +70,9 @@ public class CasDB {
         Vector<String> names = new Vector<String>();
         types = new String[v.size()];
 
-        for (int i = 0; i < v.size(); i++)
-          names.add(v.get(i).getName());
+        for (ProductType aV : v) {
+          names.add(aV.getName());
+        }
 
         Collections.sort(names);
         names.toArray(types);
@@ -98,8 +99,9 @@ public class CasDB {
         Vector<String> names = new Vector<String>();
         elements = new String[v.size()];
 
-        for (int i = 0; i < v.size(); i++)
-          names.add(v.get(i).getElementName());
+        for (Element aV : v) {
+          names.add(aV.getElementName());
+        }
 
         Collections.sort(names);
         names.toArray(elements);

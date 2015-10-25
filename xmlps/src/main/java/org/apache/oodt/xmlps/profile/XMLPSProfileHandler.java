@@ -155,10 +155,10 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
         sqlBuf.append(" ");
 
         if (mapping.getNumTables() > 0) {
-            for (Iterator<String> i = mapping.getTableNames().iterator(); i
-                    .hasNext();) {
-                String tableName = i.next();
-                if(tableName.equals(mapping.getDefaultTable())) continue;
+            for (String tableName : mapping.getTableNames()) {
+                if (tableName.equals(mapping.getDefaultTable())) {
+                    continue;
+                }
                 DatabaseTable tbl = mapping.getTableByName(tableName);
                 sqlBuf.append("INNER JOIN ");
                 sqlBuf.append(tbl.getName());

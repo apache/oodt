@@ -169,10 +169,10 @@ public class WorkflowLifecycle {
   @Deprecated
   public WorkflowLifecycleStage getStageForWorkflow(String status) {
     if (this.stages != null && this.stages.size() > 0) {
-      for (Iterator i = this.stages.iterator(); i.hasNext();) {
-        WorkflowLifecycleStage stage = (WorkflowLifecycleStage) i.next();
-        for(WorkflowState state: stage.getStates()){
-          if(state.getName().equals(status)){
+      for (Object stage1 : this.stages) {
+        WorkflowLifecycleStage stage = (WorkflowLifecycleStage) stage1;
+        for (WorkflowState state : stage.getStates()) {
+          if (state.getName().equals(status)) {
             return stage;
           }
         }

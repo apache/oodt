@@ -169,8 +169,8 @@ public class TestDataSourceCatalog extends TestCase {
             File[] tmpFiles = tmpDir.listFiles();
 
             if (tmpFiles != null && tmpFiles.length > 0) {
-                for (int i = 0; i < tmpFiles.length; i++) {
-                    tmpFiles[i].delete();
+                for (File tmpFile : tmpFiles) {
+                    tmpFile.delete();
                 }
 
                 tmpDir.delete();

@@ -91,8 +91,8 @@ public class TestExpImpCatalog extends TestCase {
 
             int countProds = 0;
 
-            for (Iterator i = prods.iterator(); i.hasNext();) {
-                Product p = (Product) i.next();
+            for (Object prod : prods) {
+                Product p = (Product) prod;
                 if (p.getProductName().equals("test.txt")) {
                     countProds++;
                 }
@@ -134,8 +134,8 @@ public class TestExpImpCatalog extends TestCase {
 
             int countProds = 0;
 
-            for (Iterator i = prods.iterator(); i.hasNext();) {
-                Product p = (Product) i.next();
+            for (Object prod : prods) {
+                Product p = (Product) prod;
                 if (p.getProductName().equals("test.txt")) {
                     countProds++;
                 }
@@ -256,8 +256,8 @@ public class TestExpImpCatalog extends TestCase {
         File[] delFiles = startDirFile.listFiles();
 
         if (delFiles != null && delFiles.length > 0) {
-            for (int i = 0; i < delFiles.length; i++) {
-                delFiles[i].delete();
+            for (File delFile : delFiles) {
+                delFile.delete();
             }
         }
 

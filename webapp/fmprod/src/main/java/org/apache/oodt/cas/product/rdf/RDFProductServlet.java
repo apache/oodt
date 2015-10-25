@@ -205,9 +205,7 @@ public class RDFProductServlet extends HttpServlet {
       Element rdf = XMLUtils.addNode(doc, doc, "rdf:RDF");
       RDFUtils.addNamespaces(doc, rdf, this.rdfConf);
 
-      for (Iterator<Product> i = products.iterator(); i.hasNext();) {
-        Product p = i.next();
-
+      for (Product p : products) {
         String productTypeIdStr = p.getProductType().getProductTypeId();
         ProductType productType = null;
 
@@ -220,8 +218,8 @@ public class RDFProductServlet extends HttpServlet {
             e.printStackTrace();
             LOG.log(Level.SEVERE,
                 "Unable to obtain product type from product type id: ["
-                    + ((Product) products.get(0)).getProductType()
-                        .getProductTypeId() + "]: Message: " + e.getMessage());
+                + ((Product) products.get(0)).getProductType()
+                                             .getProductTypeId() + "]: Message: " + e.getMessage());
             return;
           }
         }
@@ -229,10 +227,10 @@ public class RDFProductServlet extends HttpServlet {
         p.setProductType(productType);
 
         Element productRdfDesc = XMLUtils.addNode(doc, rdf, this.rdfConf
-            .getTypeNs(productType.getName())
-            + ":" + productType.getName());
+                                                                .getTypeNs(productType.getName())
+                                                            + ":" + productType.getName());
         XMLUtils.addAttribute(doc, productRdfDesc, "rdf:about", base
-            + "?productID=" + p.getProductId());
+                                                                + "?productID=" + p.getProductId());
 
         // now add all its metadata
         Metadata prodMetadata = safeGetMetadata(p);
@@ -241,22 +239,18 @@ public class RDFProductServlet extends HttpServlet {
         // and add RDF nodes underneath the RdfDesc for this product
 
         if (prodMetadata != null) {
-          for (Iterator<String> j = prodMetadata.getHashtable().keySet()
-              .iterator(); j.hasNext();) {
-            String key = (String) j.next();
-
+          for (String key : prodMetadata.getHashtable().keySet()) {
             List<String> vals = prodMetadata.getAllMetadata(key);
 
             if (vals != null && vals.size() > 0) {
 
-              for (Iterator<String> k = vals.iterator(); k.hasNext();) {
-                String val = (String) k.next();
+              for (String val : vals) {
                 String outputKey = key;
                 if (outputKey.contains(" ")) {
                   outputKey = StringUtils.join(WordUtils.capitalizeFully(outputKey).split(
                       " "));
-                }                
-                
+                }
+
                 val = StringEscapeUtils.escapeXml(val);
                 Element rdfElem = RDFUtils.getRDFElement(outputKey, val,
                     this.rdfConf, doc);
@@ -292,9 +286,7 @@ public class RDFProductServlet extends HttpServlet {
 
     if (types != null && types.size() > 0) {
       products = new Vector<Product>();
-      for (Iterator<ProductType> i = types.iterator(); i.hasNext();) {
-        ProductType type = i.next();
-
+      for (ProductType type : types) {
         ProductPage page = null;
 
         try {
@@ -306,8 +298,9 @@ public class RDFProductServlet extends HttpServlet {
               products.addAll(page.getPageProducts());
               if (!page.isLastPage()) {
                 page = fClient.getNextPage(type, page);
-              } else
+              } else {
                 break;
+              }
             }
           }
         } catch (Exception ignore) {

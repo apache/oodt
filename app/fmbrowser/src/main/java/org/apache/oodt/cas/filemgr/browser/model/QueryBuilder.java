@@ -81,10 +81,10 @@ public class QueryBuilder {
         // for(int i=0;i<t.length;i++)
         // ((FreeTextQueryCriteria)casQuery.getCriteria().get(0)).addValue(t[i].text());
       } else {
-        for (int i = 0; i < t.length; i++) {
-          String element = database.getElementID(t[i].field());
-          if (!element.equals("") && !t[i].text().equals("")) {
-            casQ.addCriterion(new TermQueryCriteria(element, t[i].text()));
+        for (Term aT : t) {
+          String element = database.getElementID(aT.field());
+          if (!element.equals("") && !aT.text().equals("")) {
+            casQ.addCriterion(new TermQueryCriteria(element, aT.text()));
           }
         }
       }
@@ -99,8 +99,8 @@ public class QueryBuilder {
       }
     } else if (luceneQ instanceof BooleanQuery) {
       BooleanClause[] clauses = ((BooleanQuery) luceneQ).getClauses();
-      for (int i = 0; i < clauses.length; i++) {
-        GenerateCASQuery(casQ, (clauses[i]).getQuery());
+      for (BooleanClause clause : clauses) {
+        GenerateCASQuery(casQ, (clause).getQuery());
       }
     } else {
       System.out.println("Error Parsing Query");

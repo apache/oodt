@@ -68,9 +68,7 @@ public final class RDFUtils {
   }
 
   public static void addNamespaces(Document doc, Element rdf, RDFConfig rdfConf) {
-    for (Iterator<String> i = rdfConf.getNsMap().keySet().iterator(); i
-        .hasNext();) {
-      String nsName = i.next();
+    for (String nsName : rdfConf.getNsMap().keySet()) {
       String nsUrl = rdfConf.getNsMap().get(nsName);
 
       XMLUtils.addAttribute(doc, rdf, "xmlns:" + nsName, nsUrl);

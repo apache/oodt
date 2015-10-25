@@ -118,26 +118,25 @@ public class StdIngester implements Ingester, CoreMetKeys {
 	public void ingest(URL fmUrl, List<String> prodFiles,
 			MetExtractor extractor, File metConfFile) {
 		if (prodFiles != null && prodFiles.size() > 0) {
-			for (Iterator<String> i = prodFiles.iterator(); i.hasNext();) {
-				String prodFilePath = i.next();
-				String productID = null;
+            for (String prodFilePath : prodFiles) {
+                String productID = null;
 
-				try {
-					productID = ingest(fmUrl, new File(prodFilePath),
-							extractor, metConfFile);
-					LOG.log(Level.INFO, "Product: [" + prodFilePath
-							+ "] ingested successfully! ID: [" + productID
-							+ "]");
-				} catch (IngestException e) {
-					LOG.log(Level.WARNING,
-							"IngestException handling product: ["
-									+ prodFilePath
-									+ "]: Exception: ["
-									+ e.getMessage()
-									+ "]: Continuing ingest of remainder of products.");
-				}
+                try {
+                    productID = ingest(fmUrl, new File(prodFilePath),
+                        extractor, metConfFile);
+                    LOG.log(Level.INFO, "Product: [" + prodFilePath
+                                        + "] ingested successfully! ID: [" + productID
+                                        + "]");
+                } catch (IngestException e) {
+                    LOG.log(Level.WARNING,
+                        "IngestException handling product: ["
+                        + prodFilePath
+                        + "]: Exception: ["
+                        + e.getMessage()
+                        + "]: Continuing ingest of remainder of products.");
+                }
 
-			}
+            }
 		}
 
 	}

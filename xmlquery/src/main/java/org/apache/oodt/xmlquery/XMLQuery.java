@@ -531,12 +531,11 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
      */
     private static boolean isFromToken (String s1)
 	{
-	  for (int i = 0; i < FROM_TOKENS.length; i++)
-	    {
-	        if (s1.compareTo(FROM_TOKENS[i]) == 0) {
-	            return true;
-	        }
-	    }
+	  for (String FROM_TOKEN : FROM_TOKENS) {
+		if (s1.compareTo(FROM_TOKEN) == 0) {
+		  return true;
+		}
+	  }
 	    return false;
 	}
 
@@ -714,36 +713,36 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 	    // create and load queryStatistics
             elem = doc.createElement("queryStatistics");
             query.appendChild(elem);
-            for (Iterator i = statistics.iterator(); i.hasNext();) {
-            Statistic s = (Statistic) i.next();
-            elem.appendChild(s.toXML(doc));
-            }
+	  for (Object statistic : statistics) {
+		Statistic s = (Statistic) statistic;
+		elem.appendChild(s.toXML(doc));
+	  }
 
 	    // create and load querySelectSet
 	    elem = doc.createElement("querySelectSet");
 	    query.appendChild(elem);
 
-	    for (Iterator i = selectElementSet.iterator(); i.hasNext();) {
-		    QueryElement queryElement = (QueryElement) i.next();
-		    elem.appendChild(queryElement.toXML(doc));
-	    }
+	  for (Object aSelectElementSet : selectElementSet) {
+		QueryElement queryElement = (QueryElement) aSelectElementSet;
+		elem.appendChild(queryElement.toXML(doc));
+	  }
 
 	    // create and load queryFromSet
 	    elem = doc.createElement("queryFromSet");
 	    query.appendChild(elem);
 
-	    for (Iterator i = fromElementSet.iterator(); i.hasNext();) {
-		    QueryElement queryElement = (QueryElement) i.next();
-		    elem.appendChild(queryElement.toXML(doc));
-	    }
+	  for (Object aFromElementSet : fromElementSet) {
+		QueryElement queryElement = (QueryElement) aFromElementSet;
+		elem.appendChild(queryElement.toXML(doc));
+	  }
 
 	    // create and load queryWhereSet
 	    elem = doc.createElement("queryWhereSet");
 	    query.appendChild(elem);
-	    for (Iterator i = whereElementSet.iterator(); i.hasNext();) {
-		    QueryElement queryElement = (QueryElement) i.next();
-		    elem.appendChild(queryElement.toXML(doc));
-	    }
+	  for (Object aWhereElementSet : whereElementSet) {
+		QueryElement queryElement = (QueryElement) aWhereElementSet;
+		elem.appendChild(queryElement.toXML(doc));
+	  }
 
 	    query.appendChild(result.toXML(doc));
     }

@@ -142,8 +142,7 @@ public class TestXmlRpcWorkflowManagerClient extends TestCase {
     // check key-values for key1
     boolean checkVal1 = false, checkVal2 = false, checkVal3 = false;
 
-    for (Iterator i = met.getAllMetadata("key1").iterator(); i.hasNext();) {
-      String val = (String) i.next();
+    for (String val : met.getAllMetadata("key1")) {
       if (val.equals("val1")) {
         checkVal1 = true;
       } else if (val.equals("val2")) {
@@ -158,8 +157,7 @@ public class TestXmlRpcWorkflowManagerClient extends TestCase {
     // check key-values for key2
     boolean checkVal4 = false, checkVal5 = false;
 
-    for (Iterator i = met.getAllMetadata("key2").iterator(); i.hasNext();) {
-      String val = (String) i.next();
+    for (String val : met.getAllMetadata("key2")) {
       if (val.equals("val4")) {
         checkVal4 = true;
       } else if (val.equals("val5")) {

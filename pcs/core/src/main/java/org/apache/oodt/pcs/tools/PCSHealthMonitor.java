@@ -245,8 +245,8 @@ public final class PCSHealthMonitor implements CoreMetKeys,
       List resNodes = rm.safeGetResourceNodes();
 
       if (resNodes != null && resNodes.size() > 0) {
-        for (Iterator i = resNodes.iterator(); i.hasNext();) {
-          ResourceNode node = (ResourceNode) i.next();
+        for (Object resNode : resNodes) {
+          ResourceNode node = (ResourceNode) resNode;
           PCSDaemonStatus batchStatus = new PCSDaemonStatus();
           batchStatus.setDaemonName(BATCH_STUB_DAEMON_NAME);
           batchStatus.setUrlStr(node.getIpAddr().toString());
@@ -275,10 +275,10 @@ public final class PCSHealthMonitor implements CoreMetKeys,
 
       });
 
-      for (Iterator i = crawlers.iterator(); i.hasNext();) {
-        CrawlInfo info = (CrawlInfo) i.next();
+      for (Object crawler : crawlers) {
+        CrawlInfo info = (CrawlInfo) crawler;
         String crawlerUrlStr = "http://" + crawlHost + ":"
-            + info.getCrawlerPort();
+                               + info.getCrawlerPort();
         CrawlerStatus status = new CrawlerStatus();
         status.setInfo(info);
         status.setStatus(printUp(getCrawlerUp(crawlerUrlStr)));
@@ -307,8 +307,8 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     List states = this.statesFile.getStates();
 
     if (states != null && states.size() > 0) {
-      for (Iterator i = states.iterator(); i.hasNext();) {
-        String state = (String) i.next();
+      for (Object state1 : states) {
+        String state = (String) state1;
         int numPipelines = this.wm.safeGetNumWorkflowInstancesByStatus(state);
         if (numPipelines == -1) {
           numPipelines = 0;
@@ -382,10 +382,10 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   private void printJobStatusHealth(PCSHealthMonitorReport report) {
     if (report.getJobHealthStatus() != null
         && report.getJobHealthStatus().size() > 0) {
-      for (Iterator i = report.getJobHealthStatus().iterator(); i.hasNext();) {
-        JobHealthStatus status = (JobHealthStatus) i.next();
+      for (Object o : report.getJobHealthStatus()) {
+        JobHealthStatus status = (JobHealthStatus) o;
         System.out.println(status.getNumPipelines() + " pipelines "
-            + status.getStatus());
+                           + status.getStatus());
       }
     }
   }
@@ -410,10 +410,10 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   private void printBatchStubs(PCSHealthMonitorReport report) {
     if (report.getBatchStubStatus() != null
         && report.getBatchStubStatus().size() > 0) {
-      for (Iterator i = report.getBatchStubStatus().iterator(); i.hasNext();) {
-        PCSDaemonStatus batchStatus = (PCSDaemonStatus) i.next();
+      for (Object o : report.getBatchStubStatus()) {
+        PCSDaemonStatus batchStatus = (PCSDaemonStatus) o;
         System.out.println("> " + batchStatus.getDaemonName() + ": ["
-            + batchStatus.getUrlStr() + "]: " + batchStatus.getStatus());
+                           + batchStatus.getUrlStr() + "]: " + batchStatus.getStatus());
       }
 
     }
@@ -533,17 +533,17 @@ public final class PCSHealthMonitor implements CoreMetKeys,
       return;
     }
 
-    for (Iterator i = this.crawlProps.getCrawlers().iterator(); i.hasNext();) {
-      CrawlInfo info = (CrawlInfo) i.next();
+    for (Object o : this.crawlProps.getCrawlers()) {
+      CrawlInfo info = (CrawlInfo) o;
       String crawlUrlStr = "http://" + this.crawlProps.getCrawlHost() + ":"
-          + info.getCrawlerPort();
+                           + info.getCrawlerPort();
       try {
         CrawlDaemonController controller = new CrawlDaemonController(
             crawlUrlStr);
         System.out.println(info.getCrawlerName() + ":");
         System.out.println("Number of Crawls: " + controller.getNumCrawls());
         System.out.println("Average Crawl Time (seconds): "
-            + (double) (controller.getAverageCrawlTime() / 1000.0));
+                           + (double) (controller.getAverageCrawlTime() / 1000.0));
         System.out.println("");
 
       } catch (Exception e) {

@@ -86,22 +86,18 @@ public class TransferStatusTracker {
     public List<FileTransferStatus> getCurrentFileTransfers() {
         List<FileTransferStatus> currTransfers = new Vector<FileTransferStatus>();
 
-        for (Iterator<String> i = currentProductTransfers.keySet().iterator(); i
-                .hasNext();) {
-            String productId = i.next();
+        for (String productId : currentProductTransfers.keySet()) {
             Product p = (Product) currentProductTransfers.get(productId);
 
             // get its references
             List<Reference> refs = quietGetReferences(p);
 
             if (refs != null && refs.size() > 0) {
-                for (Iterator<Reference> j = refs.iterator(); j.hasNext();) {
-                    Reference r = j.next();
-
+                for (Reference r : refs) {
                     long bytesTransferred = getBytesTransferred(r);
 
                     if (bytesTransferred > 0
-                            && bytesTransferred < r.getFileSize() && !isDir(r)) {
+                        && bytesTransferred < r.getFileSize() && !isDir(r)) {
                         FileTransferStatus status = new FileTransferStatus();
                         status.setBytesTransferred(bytesTransferred);
                         status.setFileRef(r);
@@ -122,9 +118,7 @@ public class TransferStatusTracker {
         long totalProductSize = 0L;
 
         if (refs.size() > 0) {
-            for (Iterator<Reference> j = refs.iterator(); j.hasNext();) {
-                Reference r = (Reference) j.next();
-
+            for (Reference r : refs) {
                 long bytesTransferred = getBytesTransferred(r);
 
                 if (!isDir(r)) {

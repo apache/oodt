@@ -675,15 +675,15 @@ public class GraphView extends DefaultTreeView {
   }
 
   private void shift(List<ModelGraph> graphs, Map nested, double x, double y) {
-    for (int i = 0; i < graphs.size(); i++) {
-      ModelGraph graph = graphs.get(i);
+    for (ModelGraph graph : graphs) {
       DefaultGraphCell cell = this.m_jgAdapter.getVertexCell(graph.getModel());
       Rectangle2D bounds = (Rectangle2D) ((Map) nested.get(cell))
           .get(GraphConstants.BOUNDS);
       ((Map) nested.get(cell)).put(
           GraphConstants.BOUNDS,
           new AttributeMap.SerializableRectangle2D(bounds.getX() + x, bounds
-              .getY() + y, bounds.getWidth(), bounds.getHeight()));
+                                                                          .getY() + y, bounds.getWidth(),
+              bounds.getHeight()));
       this.shift(graph.getChildren(), nested, x, y);
     }
   }

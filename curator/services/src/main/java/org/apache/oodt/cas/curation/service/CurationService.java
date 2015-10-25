@@ -106,15 +106,15 @@ public class CurationService extends HttpServlet implements CuratorConfMetKeys {
     String f[] = getFilesInDirectory(startingPath, showFiles);
 
     List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
-    for (int i = 0; i < f.length; i++) {
+    for (String aF : f) {
       Map<String, Object> entry = new HashMap<String, Object>();
-      String children[] = getFilesInDirectory(startingPath + "/" + f[i],
+      String children[] = getFilesInDirectory(startingPath + "/" + aF,
           showFiles);
-      entry.put("text", f[i]);
-      entry.put("id", path + "/" + f[i]);
+      entry.put("text", aF);
+      entry.put("id", path + "/" + aF);
       entry.put("expanded", false);
       entry.put("hasChildren", children != null && (children.length > 0));
-      entry.put("isFile", new File(startingPath + "/" + f[i]).isFile());
+      entry.put("isFile", new File(startingPath + "/" + aF).isFile());
       items.add(entry);
     }
 

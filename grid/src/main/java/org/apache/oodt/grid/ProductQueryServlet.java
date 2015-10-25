@@ -56,15 +56,15 @@ public class ProductQueryServlet extends QueryServlet {
 		}
 
 		try {								       // OK, let's try
-			for (Iterator i = handlers.iterator(); i.hasNext();) {	       // Try each query handler
-				QueryHandler handler = (QueryHandler) i.next();	       // Get the query handler
-				query = handler.query(query);			       // Give it the query
-				if (!query.getResults().isEmpty()) {		       // Did it give any result?
-					Result result = (Result) query.getResults().get(0); // Yes, get the result
-					deliverResult(handler, result, res);	       // And deliver it
-					return;					       // Done!
-				}
+		  for (Object handler1 : handlers) {           // Try each query handler
+			QueryHandler handler = (QueryHandler) handler1;           // Get the query handler
+			query = handler.query(query);                   // Give it the query
+			if (!query.getResults().isEmpty()) {               // Did it give any result?
+			  Result result = (Result) query.getResults().get(0); // Yes, get the result
+			  deliverResult(handler, result, res);           // And deliver it
+			  return;                           // Done!
 			}
+		  }
 		} catch (ProductException ex) {
           if (ex instanceof HttpRedirectException) {
             HttpRedirectException hre = (HttpRedirectException) ex;
@@ -133,8 +133,11 @@ public class ProductQueryServlet extends QueryServlet {
 	 * @return a <code>boolean</code> value.
 	 */
 	protected static boolean displayable(String contentType) {
-		for (int i = 0; i < DISPLAYABLE_TYPES.length; ++i)		       // For each displayable type
-			if (DISPLAYABLE_TYPES[i].equals(contentType)) return true;     // Does it match?
+	  for (String DISPLAYABLE_TYPE : DISPLAYABLE_TYPES) {
+		if (DISPLAYABLE_TYPE.equals(contentType)) {
+		  return true;     // Does it match?
+		}
+	  }
 		return false;							       // None of 'em do, it's not displayable
 	}
 

@@ -126,8 +126,7 @@ public class WorkflowViewer extends Panel {
     String[] words = orig.split(" ");
     StringBuilder summarizedString = new StringBuilder();
 
-    for (int i = 0; i < words.length; i++) {
-      String word = words[i];
+    for (String word : words) {
       summarizedString.append(word.substring(0, Math.min(wordThreshhold, word
           .length())));
       summarizedString.append(" ");

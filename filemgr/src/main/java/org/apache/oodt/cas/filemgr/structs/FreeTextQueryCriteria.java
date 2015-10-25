@@ -57,8 +57,9 @@ public class FreeTextQueryCriteria extends QueryCriteria {
         values = new ArrayList<String>();
 
         noiseWordHash = new HashSet<String>();
-        for (int i = 0; i < noiseWords.length; i++)
-            noiseWordHash.add(noiseWords[i]);
+        for (String noiseWord : noiseWords) {
+            noiseWordHash.add(noiseWord);
+        }
     }
 
     /**
@@ -72,8 +73,9 @@ public class FreeTextQueryCriteria extends QueryCriteria {
         values = v;
 
         noiseWordHash = new HashSet<String>();
-        for (int i = 0; i < noiseWords.length; i++)
-            noiseWordHash.add(noiseWords[i]);
+        for (String noiseWord : noiseWords) {
+            noiseWordHash.add(noiseWord);
+        }
     }
 
     /**
@@ -159,8 +161,9 @@ public class FreeTextQueryCriteria extends QueryCriteria {
      */
     public String toString() {
         String serial = elementName + ":(";
-        for (int i = 0; i < values.size(); i++)
-            serial += "+" + (String) values.get(i);
+        for (String value : values) {
+            serial += "+" + (String) value;
+        }
         serial += ")";
         return serial;
     }

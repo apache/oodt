@@ -171,15 +171,15 @@ public class MetadataResource extends CurationService {
   protected String getExtractorConfigIdsAsHTML(String[] configIds,
       String current) {
     StringBuilder html = new StringBuilder();
-    for (int i = 0; i < configIds.length; i++) {
+    for (String configId : configIds) {
       html.append("<option ");
-      if (configIds[i].equals(current)) {
+      if (configId.equals(current)) {
         html.append("selected ");
       }
       html.append("value=\"");
-      html.append(configIds[i]);
+      html.append(configId);
       html.append("\">");
-      html.append(configIds[i]);
+      html.append(configId);
       html.append("</option>\r\n");
     }
     return html.toString();

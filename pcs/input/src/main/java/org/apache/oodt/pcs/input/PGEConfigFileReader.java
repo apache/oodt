@@ -162,18 +162,18 @@ public class PGEConfigFileReader {
 
     PGEGroup pgeGroup = new PGEGroup(group.getAttribute("name"));
 
-    for (Iterator i = scalars.iterator(); i.hasNext();) {
-      PGEScalar s = (PGEScalar) i.next();
+    for (Object scalar : scalars) {
+      PGEScalar s = (PGEScalar) scalar;
       pgeGroup.addScalar(s);
     }
 
-    for (Iterator i = vectors.iterator(); i.hasNext();) {
-      PGEVector v = (PGEVector) i.next();
+    for (Object vector : vectors) {
+      PGEVector v = (PGEVector) vector;
       pgeGroup.addVector(v);
     }
 
-    for (Iterator i = matrixs.iterator(); i.hasNext();) {
-      PGEMatrix m = (PGEMatrix) i.next();
+    for (Object matrix : matrixs) {
+      PGEMatrix m = (PGEMatrix) matrix;
       pgeGroup.addMatrix(m);
     }
 
@@ -187,8 +187,8 @@ public class PGEConfigFileReader {
     List scalars = PGEXMLFileUtils.getScalars(group);
 
     if (scalars != null && scalars.size() > 0) {
-      for (Iterator i = scalars.iterator(); i.hasNext();) {
-        PGEScalar scalar = (PGEScalar) i.next();
+      for (Object scalar1 : scalars) {
+        PGEScalar scalar = (PGEScalar) scalar1;
         configFile.getMonitorLevelGroup().addScalar(scalar);
       }
     }
@@ -208,8 +208,8 @@ public class PGEConfigFileReader {
 
     PGEScalar monPath = null, monFilenameFormat = null;
 
-    for (Iterator i = scalars.iterator(); i.hasNext();) {
-      PGEScalar scalar = (PGEScalar) i.next();
+    for (Object scalar1 : scalars) {
+      PGEScalar scalar = (PGEScalar) scalar1;
 
       if (scalar.getName().equals("MonitorPath")) {
         monPath = scalar;
@@ -297,8 +297,8 @@ public class PGEConfigFileReader {
     List scalars = PGEXMLFileUtils.getScalars(group);
 
     if (scalars != null && scalars.size() > 0) {
-      for (Iterator i = scalars.iterator(); i.hasNext();) {
-        PGEScalar scalar = (PGEScalar) i.next();
+      for (Object scalar1 : scalars) {
+        PGEScalar scalar = (PGEScalar) scalar1;
         pgeGroup.addScalar(scalar);
       }
     }
@@ -310,8 +310,8 @@ public class PGEConfigFileReader {
     List vectors = PGEXMLFileUtils.getVectors(group);
 
     if (vectors != null && vectors.size() > 0) {
-      for (Iterator i = vectors.iterator(); i.hasNext();) {
-        PGEVector vector = (PGEVector) i.next();
+      for (Object vector1 : vectors) {
+        PGEVector vector = (PGEVector) vector1;
         pgeGroup.addVector(vector);
       }
     }

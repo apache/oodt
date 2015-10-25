@@ -265,20 +265,23 @@ public class MultiServer {
 	 * @throws NamingException if an error occurs.
 	 */
 	static void startup() throws NamingException {
-		for (Iterator i = servers.values().iterator(); i.hasNext();) {
-			Server s = (Server) i.next();
-			s.start();
-		}
+	  for (Object o : servers.values()) {
+		Server s = (Server) o;
+		s.start();
+	  }
 	}
 
 	/**
 	 * Stop each server.
 	 */
 	static void shutdown() {
-		for (Iterator i = servers.values().iterator(); i.hasNext();) try {
-			Server s = (Server) i.next();
-			s.stop();
-		} catch (NamingException ignore) {}
+	  for (Object o : servers.values()) {
+		try {
+		  Server s = (Server) o;
+		  s.stop();
+		} catch (NamingException ignore) {
+		}
+	  }
 		TIMER.cancel();
 	}
 

@@ -117,13 +117,13 @@ public class Configuration {
 
 				 // Now find one.
 				 boolean found = false;
-				 for (Iterator i = candidates.iterator(); i.hasNext();) {
-					 file = (File) i.next();
-					 if (file.exists()) {
-						 found = true;
-						 break;
-					 }
+			   for (Object candidate : candidates) {
+				 file = (File) candidate;
+				 if (file.exists()) {
+				   found = true;
+				   break;
 				 }
+			   }
 				 if (found && file == alt)
 					 System.err.println("WARNING: Using older config file " + alt + "; rename to "
 						 + homedirfile + " as soon as possible.");
@@ -416,16 +416,17 @@ public class Configuration {
 			Element programsNode = document.createElement("programs");
 			configurationNode.appendChild(programsNode);
 
-			for (Iterator i = execServers.iterator(); i.hasNext();) {
-				ExecServerConfig esc = (ExecServerConfig) i.next();
-				Element execServerNode = document.createElement("execServer");
-				programsNode.appendChild(execServerNode);
-				XML.add(execServerNode, "class", esc.getClassName());
-				XML.add(execServerNode, "objectKey", esc.getObjectKey());
-				XML.add(execServerNode, "host", esc.getPreferredHost().toString());
-				if (esc.getProperties().size() > 0)
-					dumpProperties(esc.getProperties(), execServerNode);
+		  for (Object execServer : execServers) {
+			ExecServerConfig esc = (ExecServerConfig) execServer;
+			Element execServerNode = document.createElement("execServer");
+			programsNode.appendChild(execServerNode);
+			XML.add(execServerNode, "class", esc.getClassName());
+			XML.add(execServerNode, "objectKey", esc.getObjectKey());
+			XML.add(execServerNode, "host", esc.getPreferredHost().toString());
+			if (esc.getProperties().size() > 0) {
+			  dumpProperties(esc.getProperties(), execServerNode);
 			}
+		  }
 		}
 
 		return configurationNode;
@@ -439,11 +440,12 @@ public class Configuration {
 	 * @param targetProps The target properties.
 	 */
 	public void mergeProperties(Properties targetProps) {
-		for (Iterator i = properties.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
-			if (!targetProps.containsKey(entry.getKey()))
-				targetProps.put(entry.getKey(), entry.getValue());
+	  for (Map.Entry<Object, Object> objectObjectEntry : properties.entrySet()) {
+		Map.Entry entry = (Map.Entry) objectObjectEntry;
+		if (!targetProps.containsKey(entry.getKey())) {
+		  targetProps.put(entry.getKey(), entry.getValue());
 		}
+	  }
 	}
 
 	/** Get the exec-server configurations.
@@ -462,11 +464,12 @@ public class Configuration {
         public Collection getExecServerConfigs(Class clazz) {
                 String className = clazz.getName();
                 Collection execServerConfigs = new ArrayList();
-                for (Iterator i = execServers.iterator(); i.hasNext();) {
-                        ExecServerConfig exec = (ExecServerConfig) i.next();
-                        if (className.equals(exec.getClassName()))
-                                execServerConfigs.add(exec);
-                }
+		  for (Object execServer : execServers) {
+			ExecServerConfig exec = (ExecServerConfig) execServer;
+			if (className.equals(exec.getClassName())) {
+			  execServerConfigs.add(exec);
+			}
+		  }
                 return execServerConfigs;
         }
 
@@ -611,11 +614,11 @@ public class Configuration {
 	static void dumpProperties(Properties props, Node node) {
 		Element propertiesElement = node.getOwnerDocument().createElement("properties");
 		node.appendChild(propertiesElement);
-		for (Iterator i = props.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
-			XML.add(propertiesElement, "key", (String) entry.getKey());
-			XML.add(propertiesElement, "value", (String) entry.getValue());
-		}
+	  for (Map.Entry<Object, Object> objectObjectEntry : props.entrySet()) {
+		Map.Entry entry = (Map.Entry) objectObjectEntry;
+		XML.add(propertiesElement, "key", (String) entry.getKey());
+		XML.add(propertiesElement, "value", (String) entry.getValue());
+	  }
 	}
 
 	/** Create a new XML document with the configuration DTD.

@@ -167,10 +167,10 @@ public class CacheMap implements Map {
 
 	public void putAll(Map t) {
 		// FXN: [ C, M := (keys(t) || C)[0..(c-1)], { (k_i, v_i) | k_i elem of (keys(t) || C)[0..(c-1)]} ]
-		for (Iterator i = t.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
-			put(entry.getKey(), entry.getValue());
-		}
+	  for (Object o : t.entrySet()) {
+		Entry entry = (Entry) o;
+		put(entry.getKey(), entry.getValue());
+	  }
 	}
 
 	public void clear() {

@@ -74,87 +74,82 @@ public class XmlQueueRepository implements QueueRepository {
 		QueueManager queueManager = new QueueManager();
 
 		if (dirUris != null && dirUris.size() > 0) {
-			for (Iterator i = dirUris.iterator(); i.hasNext();) {
-				String dirUri = (String) i.next();
+		  for (String dirUri : dirUris) {
+			try {
+			  File nodesDir = new File(new URI(dirUri));
+			  if (nodesDir.isDirectory()) {
 
-				try {
-					File nodesDir = new File(new URI(dirUri));
-					if (nodesDir.isDirectory()) {
+				String nodesDirStr = nodesDir.getAbsolutePath();
 
-						String nodesDirStr = nodesDir.getAbsolutePath();
-
-						if (!nodesDirStr.endsWith("/")) {
-							nodesDirStr += "/";
-						}
-
-						// get all the workflow xml files
-						File[] nodesFiles = nodesDir.listFiles(queuesXmlFilter);
-
-						for (int j = 0; j < nodesFiles.length; j++) {
-
-							String nodesXmlFile = nodesFiles[j]
-									.getAbsolutePath();
-							Document nodesRoot = null;
-							try {
-								nodesRoot = XMLUtils
-										.getDocumentRoot(new FileInputStream(
-												nodesFiles[j]));
-							} catch (FileNotFoundException e) {
-								e.printStackTrace();
-								return null;
-							}
-
-							NodeList nodeList = nodesRoot
-									.getElementsByTagName("node");
-
-							if (nodeList != null && nodeList.getLength() > 0) {
-								for (int k = 0; k < nodeList.getLength(); k++) {
-
-									String nodeId = ((Element) nodeList.item(k))
-											.getAttribute("id");
-									Vector assignments = (Vector) XmlStructFactory
-											.getQueueAssignment((Element) nodeList
-													.item(k));
-									for (int l = 0; l < assignments.size(); l++) {
-										try {
-											// make sure queue exists
-											queueManager
-													.addQueue((String) assignments
-															.get(l));
-											// add node to queue
-											queueManager
-													.addNodeToQueue(nodeId,
-															(String) assignments
-																	.get(l));
-										} catch (Exception e) {
-											LOG
-													.log(
-															Level.WARNING,
-															"Failed to add node '"
-																	+ nodeId
-																	+ "' to queue '"
-																	+ (String) assignments
-																			.get(l)
-																	+ "' : "
-																	+ e
-																			.getMessage(),
-															e);
-										}
-									}
-								}
-							}
-						}
-					}
-				} catch (URISyntaxException e) {
-					e.printStackTrace();
-					LOG
-							.log(
-									Level.WARNING,
-									"DirUri: "
-											+ dirUri
-											+ " is not a directory: skipping node loading for it.");
+				if (!nodesDirStr.endsWith("/")) {
+				  nodesDirStr += "/";
 				}
+
+				// get all the workflow xml files
+				File[] nodesFiles = nodesDir.listFiles(queuesXmlFilter);
+
+				for (File nodesFile : nodesFiles) {
+
+				  String nodesXmlFile = nodesFile
+					  .getAbsolutePath();
+				  Document nodesRoot = null;
+				  try {
+					nodesRoot = XMLUtils
+						.getDocumentRoot(new FileInputStream(
+							nodesFile));
+				  } catch (FileNotFoundException e) {
+					e.printStackTrace();
+					return null;
+				  }
+
+				  NodeList nodeList = nodesRoot
+					  .getElementsByTagName("node");
+
+				  if (nodeList != null && nodeList.getLength() > 0) {
+					for (int k = 0; k < nodeList.getLength(); k++) {
+
+					  String nodeId = ((Element) nodeList.item(k))
+						  .getAttribute("id");
+					  Vector assignments = (Vector) XmlStructFactory
+						  .getQueueAssignment((Element) nodeList
+							  .item(k));
+					  for (Object assignment : assignments) {
+						try {
+						  // make sure queue exists
+						  queueManager
+							  .addQueue((String) assignment);
+						  // add node to queue
+						  queueManager
+							  .addNodeToQueue(nodeId,
+								  (String) assignment);
+						} catch (Exception e) {
+						  LOG
+							  .log(
+								  Level.WARNING,
+								  "Failed to add node '"
+								  + nodeId
+								  + "' to queue '"
+								  + (String) assignment
+								  + "' : "
+								  + e
+									  .getMessage(),
+								  e);
+						}
+					  }
+					}
+				  }
+				}
+			  }
+			} catch (URISyntaxException e) {
+			  e.printStackTrace();
+			  LOG
+				  .log(
+					  Level.WARNING,
+					  "DirUri: "
+					  + dirUri
+					  + " is not a directory: skipping node loading for it.");
 			}
+		  }
 
 		}
 		return queueManager;

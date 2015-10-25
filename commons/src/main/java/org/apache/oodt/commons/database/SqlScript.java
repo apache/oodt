@@ -137,8 +137,8 @@ public class SqlScript {
             doExecuteBatch();
         } else {
             if (statementList != null && statementList.size() > 0) {
-                for (Iterator i = statementList.iterator(); i.hasNext();) {
-                    String sqlStatement = (String) i.next();
+                for (Object aStatementList : statementList) {
+                    String sqlStatement = (String) aStatementList;
                     doExecuteIndividual(sqlStatement);
 
                 }
@@ -218,8 +218,8 @@ public class SqlScript {
                 conn = ds.getConnection();
                 statement = conn.createStatement();
 
-                for (Iterator i = statementList.iterator(); i.hasNext();) {
-                    String sqlStatement = (String) i.next();
+                for (Object aStatementList : statementList) {
+                    String sqlStatement = (String) aStatementList;
                     statement.addBatch(sqlStatement);
                 }
 

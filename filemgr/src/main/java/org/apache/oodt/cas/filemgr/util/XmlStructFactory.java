@@ -251,28 +251,26 @@ public final class XmlStructFactory {
                 if(!allTypes.contains(type))
                     allTypes.add(type);
             }
-            
-            for (Iterator<String> i = allTypes.iterator(); i.hasNext();) {
-                String typeId = i.next();
 
+            for (String typeId : allTypes) {
                 Element typeElem = document.createElement("type");
                 typeElem.setAttribute("id", typeId);
 
                 boolean hasParent = false;
                 if (subToSuperMap.containsKey(typeId)) {
                     typeElem.setAttribute("parent", subToSuperMap
-                            .get(typeId));
+                        .get(typeId));
                     hasParent = true;
                 }
 
                 List<org.apache.oodt.cas.filemgr.structs.Element> elementIds = productTypeMap.get(typeId);
-                if(!hasParent && (elementIds == null || elementIds.size() == 0)) {
+                if (!hasParent && (elementIds == null || elementIds.size() == 0)) {
                     // If no parent, and no elements, don't add this type to the xml
                     continue;
                 }
-                if(elementIds != null) {
-                    for (Iterator<org.apache.oodt.cas.filemgr.structs.Element> j = elementIds.iterator(); j.hasNext();) {
-                        String elementId = j.next().getElementId();
+                if (elementIds != null) {
+                    for (org.apache.oodt.cas.filemgr.structs.Element elementId1 : elementIds) {
+                        String elementId = elementId1.getElementId();
 
                         Element elementElem = document.createElement("element");
                         elementElem.setAttribute("id", elementId);
@@ -307,22 +305,21 @@ public final class XmlStructFactory {
             root.setAttribute("xmlns:cas", "http://oodt.jpl.nasa.gov/1.0/cas");
             document.appendChild(root);
 
-            for (Iterator<org.apache.oodt.cas.filemgr.structs.Element> i = elements.iterator(); i.hasNext();) {
-                org.apache.oodt.cas.filemgr.structs.Element element = i.next();
+            for (org.apache.oodt.cas.filemgr.structs.Element element : elements) {
                 Element elementElem = document.createElement("element");
                 elementElem.setAttribute("id", friendlyXml(element.getElementId()));
                 elementElem.setAttribute("name", friendlyXml(element.getElementName()));
 
                 Element descriptionElem = document.createElement("description");
                 descriptionElem.appendChild(document.createTextNode(friendlyXml(element
-                        .getDescription())));
+                    .getDescription())));
                 elementElem.appendChild(descriptionElem);
 
                 Element dcElementElem = document.createElement("dcElement");
                 dcElementElem.appendChild(document.createTextNode(friendlyXml(element
-                        .getDCElement())));
+                    .getDCElement())));
                 elementElem.appendChild(dcElementElem);
-                
+
                 root.appendChild(elementElem);
             }
 
@@ -350,28 +347,26 @@ public final class XmlStructFactory {
             document.appendChild(root);
 
             // now add the set of metadata elements in the properties object
-            for (Iterator<ProductType> i = productTypes.iterator(); i.hasNext();) {
-                ProductType type = i.next();
-
+            for (ProductType type : productTypes) {
                 Element typeElem = document.createElement("type");
                 typeElem.setAttribute("id", type.getProductTypeId());
                 typeElem.setAttribute("name", type.getName());
 
                 Element descriptionElem = document.createElement("description");
                 descriptionElem.appendChild(document.createTextNode(type
-                        .getDescription()));
+                    .getDescription()));
                 typeElem.appendChild(descriptionElem);
 
                 Element repositoryPathElem = document
-                        .createElement("repository");
+                    .createElement("repository");
                 repositoryPathElem.setAttribute("path", type
-                        .getProductRepositoryPath());
+                    .getProductRepositoryPath());
                 typeElem.appendChild(repositoryPathElem);
 
                 Element versionerClassPathElem = document
-                        .createElement("versioner");
+                    .createElement("versioner");
                 versionerClassPathElem.setAttribute("class", type
-                        .getVersioner());
+                    .getVersioner());
                 typeElem.appendChild(versionerClassPathElem);
 
                 // add extractor info
@@ -380,41 +375,41 @@ public final class XmlStructFactory {
                     ExtractorSpec spec = (ExtractorSpec) specObject;
                     Element extractorElem = document.createElement("extractor");
                     extractorElem.setAttribute("class", spec.getClassName());
-                    
+
                     if (spec.getConfiguration() != null) {
                         Element extractorConfigElem = document.createElement("configuration");
                         Enumeration e = spec.getConfiguration().propertyNames();
-                        
+
                         while (e.hasMoreElements()) {
                             String key = (String) e.nextElement();
-                            
+
                             Element propertyElem = document.createElement("property");
                             propertyElem.setAttribute("name", key);
                             propertyElem.setAttribute("value", spec.getConfiguration().getProperty(key));
-                            
+
                             extractorConfigElem.appendChild(propertyElem);
                         }
-                        
+
                         extractorElem.appendChild(extractorConfigElem);
                     }
-                    
+
                     metExtractorsElem.appendChild(extractorElem);
                 }
                 typeElem.appendChild(metExtractorsElem);
-                
+
                 // add type metadata
                 Element metElem = document.createElement("metadata");
                 for (String key : type.getTypeMetadata().getAllKeys()) {
                     Element keyValElem = document.createElement("keyval");
                     Element keyElem = document.createElement("key");
                     Element valElem = document.createElement("val");
-                    
+
                     keyElem.appendChild(document.createTextNode(key));
                     valElem.appendChild(document.createTextNode(
-                            type.getTypeMetadata().getMetadata(key)));
+                        type.getTypeMetadata().getMetadata(key)));
                     keyValElem.appendChild(keyElem);
                     keyValElem.appendChild(valElem);
-                    
+
                     metElem.appendChild(keyValElem);
                 }
                 typeElem.appendChild(metElem);

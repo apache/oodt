@@ -77,8 +77,8 @@ public class NameValueJobInput implements JobInput {
     }
 
     Hashtable readable = (Hashtable) in;
-    for (Iterator i = readable.keySet().iterator(); i.hasNext();) {
-      String key = (String) i.next();
+    for (Object o : readable.keySet()) {
+      String key = (String) o;
       String value = (String) readable.get(key);
       this.props.setProperty(key, value);
     }
@@ -93,8 +93,8 @@ public class NameValueJobInput implements JobInput {
   public Object write() {
     Hashtable writeable = new Hashtable();
     if (props != null && props.size() > 0) {
-      for (Iterator i = props.keySet().iterator(); i.hasNext();) {
-        String key = (String) i.next();
+      for (Object o : props.keySet()) {
+        String key = (String) o;
         String val = props.getProperty(key);
         writeable.put(key, val);
       }

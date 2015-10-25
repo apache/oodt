@@ -60,70 +60,57 @@ public class ResourceAttributesPrinter {
 		   rStr+="\t<resClass>"+resAttr.getResClass()+"</resClass>\n";
 		   rStr+="\t<resAggregation>"+resAttr.getResAggregation()+"</resAggregation>\n";
 
-		   for(Iterator i = resAttr.getRights().iterator(); i.hasNext(); ){
-		   	String theRight = (String)i.next();
-		   	rStr+="\t<Right>"+theRight+"</Right>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getSources().iterator(); i.hasNext(); ){
-		   	String theSource = (String)i.next();
-		   	rStr+="\t<Source>"+theSource+"</Source>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getSubjects().iterator(); i.hasNext(); ){
-		   	String theSubject = (String)i.next();
-		   	rStr+="\t<Subject>"+theSubject+"</Subject>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getFormats().iterator(); i.hasNext(); ){
-		   	String theFormat = (String)i.next();
-		   	rStr+="\t<Format>"+theFormat+"</Format>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getCreators().iterator(); i.hasNext(); ){
-		   	String theCreator = (String)i.next();
-		   	rStr+="\t<Creator>"+theCreator+"</Creator>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getPublishers().iterator(); i.hasNext(); ){
-		   	String thePublisher = (String)i.next();
-		   	rStr+="\t<Publisher>"+thePublisher+"</Publisher>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getTypes().iterator(); i.hasNext(); ){
-		   	String theType = (String)i.next();
-		   	rStr+="\t<Type>"+theType+"</Type>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getResContexts().iterator(); i.hasNext(); ){
-		   	String theContext = (String)i.next();
-		   	rStr+="\t<resContext>"+theContext+"</resContext>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getResLocations().iterator(); i.hasNext(); ){
-		   	String theLocation = (String)i.next();
-		   	rStr+="\t<resLocation>"+theLocation+"</resLocation>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getContributors().iterator(); i.hasNext(); ){
-		   	String theContributor = (String)i.next();
-		   	rStr+="\t<Contributor>"+theContributor+"</Contributor>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getCoverages().iterator(); i.hasNext(); ){
-		   	String theCoverage = (String)i.next();
-		   	rStr+="\t<Coverage>"+theCoverage+"</Coverage>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getLanguages().iterator(); i.hasNext(); ){
-		   	String theLang = (String)i.next();
-		   	rStr+="\t<Language>"+theLang+"</Language>\n";
-		   }
-		   
-		   for(Iterator i = resAttr.getRelations().iterator(); i.hasNext(); ){
-		   	String theRelation = (String)i.next();
-		   	rStr+="\t<Relation>"+theRelation+"</Relation>\n";
-		   }
+	  for (String theRight : resAttr.getRights()) {
+		rStr += "\t<Right>" + theRight + "</Right>\n";
+	  }
+
+	  for (String theSource : resAttr.getSources()) {
+		rStr += "\t<Source>" + theSource + "</Source>\n";
+	  }
+
+	  for (String theSubject : resAttr.getSubjects()) {
+		rStr += "\t<Subject>" + theSubject + "</Subject>\n";
+	  }
+
+	  for (String theFormat : resAttr.getFormats()) {
+		rStr += "\t<Format>" + theFormat + "</Format>\n";
+	  }
+
+	  for (String theCreator : resAttr.getCreators()) {
+		rStr += "\t<Creator>" + theCreator + "</Creator>\n";
+	  }
+
+	  for (String thePublisher : resAttr.getPublishers()) {
+		rStr += "\t<Publisher>" + thePublisher + "</Publisher>\n";
+	  }
+
+	  for (String theType : resAttr.getTypes()) {
+		rStr += "\t<Type>" + theType + "</Type>\n";
+	  }
+
+	  for (String theContext : resAttr.getResContexts()) {
+		rStr += "\t<resContext>" + theContext + "</resContext>\n";
+	  }
+
+	  for (String theLocation : resAttr.getResLocations()) {
+		rStr += "\t<resLocation>" + theLocation + "</resLocation>\n";
+	  }
+
+	  for (String theContributor : resAttr.getContributors()) {
+		rStr += "\t<Contributor>" + theContributor + "</Contributor>\n";
+	  }
+
+	  for (String theCoverage : resAttr.getCoverages()) {
+		rStr += "\t<Coverage>" + theCoverage + "</Coverage>\n";
+	  }
+
+	  for (String theLang : resAttr.getLanguages()) {
+		rStr += "\t<Language>" + theLang + "</Language>\n";
+	  }
+
+	  for (String theRelation : resAttr.getRelations()) {
+		rStr += "\t<Relation>" + theRelation + "</Relation>\n";
+	  }
 		   
 		   rStr+="</resAttributes>\n";
 		   

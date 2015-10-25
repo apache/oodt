@@ -158,9 +158,9 @@ public class ConfigServlet extends GridServlet {
     List codeBases = config.getCodeBases(); // Get the current code bases
 
     List toRemove = new ArrayList(); // Hold indexes of code bases to remove
-    for (Iterator i = params.entrySet().iterator(); i.hasNext();) { // For each
-                                                                    // parameter
-      Map.Entry entry = (Map.Entry) i.next(); // Get its entry
+    for (Object o : params.entrySet()) { // For each
+      // parameter
+      Map.Entry entry = (Map.Entry) o; // Get its entry
       String key = (String) entry.getKey(); // And its name
       String value = ((String[]) entry.getValue())[0]; // And its zeroth value
       if (key.startsWith("delcb-") && "on".equals(value)) { // If it's checked

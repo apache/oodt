@@ -66,15 +66,15 @@ public final class JobSubmitter {
         File[] jobFiles = jobFileDir.listFiles(JOB_FILE_FILTER);
 
         if (jobFiles != null && jobFiles.length > 0) {
-            for (int i = 0; i < jobFiles.length; i++) {
+            for (File jobFile : jobFiles) {
                 try {
-                    String id = submitJobFile(jobFiles[i]);
+                    String id = submitJobFile(jobFile);
                     LOG.log(Level.INFO, "Job Submitted: id: [" + id + "]");
 
                 } catch (Exception e) {
                     e.printStackTrace();
                     LOG.log(Level.WARNING, "Exception submitting job file: ["
-                            + jobFiles[i] + "]: Message: " + e.getMessage());
+                                           + jobFile + "]: Message: " + e.getMessage());
                 }
             }
         }

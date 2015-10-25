@@ -117,11 +117,13 @@ public class SearchableResourceAttributes extends ResourceAttributes {
 		else if ("NE".equals(op)  || "NOTLIKE".equals(op))
 			if (!a.contains(b)) rc = t;
 		else if ("LT".equals(op) || "GT".equals(op) || "LE".equals(op) || "GE".equals(op)) {
-			for (Iterator i = a.iterator(); i.hasNext();) {
-				String value = (String) i.next();
+			  for (Object anA : a) {
+				String value = (String) anA;
 				rc = computeResult(value, b, op);
-				if (rc != f) break;
-			}
+				if (rc != f) {
+				  break;
+				}
+			  }
 		} else throw new IllegalArgumentException("Unknown relational operator \"" + op + "\"");
 		return rc;
 	}

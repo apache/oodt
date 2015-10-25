@@ -260,8 +260,8 @@ public class TestTypeHandler extends TestCase {
             File[] tmpFiles = tmpDir.listFiles();
 
             if (tmpFiles != null && tmpFiles.length > 0) {
-                for (int i = 0; i < tmpFiles.length; i++) {
-                    tmpFiles[i].delete();
+                for (File tmpFile : tmpFiles) {
+                    tmpFile.delete();
                 }
 
                 tmpDir.delete();
@@ -366,8 +366,8 @@ public class TestTypeHandler extends TestCase {
             if (productIds != null && productIds.size() > 0) {
                 List products = new Vector(productIds.size());
 
-                for (Iterator i = productIds.iterator(); i.hasNext();) {
-                    String productId = (String) i.next();
+                for (Object productId1 : productIds) {
+                    String productId = (String) productId1;
                     Product p = getProductById(productId);
                     products.add(p);
                 }
@@ -460,64 +460,67 @@ public class TestTypeHandler extends TestCase {
 
                 if (query.getCriteria() != null
                         && query.getCriteria().size() > 0) {
-                    for (Iterator i = query.getCriteria().iterator(); i
-                            .hasNext();) {
-                        QueryCriteria criteria = (QueryCriteria) i.next();
+                    for (QueryCriteria criteria : query.getCriteria()) {
                         clauseNum++;
 
                         String elementIdStr = null;
 
                         if (fieldIdStringFlag) {
-                            elementIdStr = "'" + this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId() + "'";
+                            elementIdStr = "'" + this.getValidationLayer().getElementByName(criteria.getElementName())
+                                                     .getElementId() + "'";
                         } else {
-                            elementIdStr = this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
+                            elementIdStr =
+                                this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
                         }
 
                         String clause = null;
 
                         if (!gotFirstClause) {
                             clause = "(p.element_id = " + elementIdStr
-                                    + " AND ";
+                                     + " AND ";
                             if (criteria instanceof TermQueryCriteria) {
                                 clause += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%') ";
+                                          + ((TermQueryCriteria) criteria)
+                                              .getValue() + "%') ";
                             } else if (criteria instanceof RangeQueryCriteria) {
                                 String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
+                                    .getStartValue();
                                 String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
+                                    .getEndValue();
                                 boolean inclusive = ((RangeQueryCriteria) criteria)
-                                        .getInclusive();
+                                    .getInclusive();
 
                                 if ((startVal != null && !startVal.equals(""))
-                                        || (endVal != null && !endVal
-                                                .equals(""))) {
+                                    || (endVal != null && !endVal
+                                    .equals(""))) {
                                     clause += " metadata_value ";
 
                                     boolean gotStart = false;
 
                                     if (startVal != null
-                                            && !startVal.equals("")) {
-                                        if (inclusive)
+                                        && !startVal.equals("")) {
+                                        if (inclusive) {
                                             clause += ">= '" + startVal + "'";
-                                        else
+                                        } else {
                                             clause += "> '" + startVal + "'";
+                                        }
                                         gotStart = true;
                                     }
 
                                     if (endVal != null && !endVal.equals("")) {
                                         if (gotStart) {
-                                            if (inclusive)
+                                            if (inclusive) {
                                                 clause += " AND metadata_value <= '"
-                                                        + endVal + "'";
-                                            else
+                                                          + endVal + "'";
+                                            } else {
                                                 clause += " AND metadata_value < '"
-                                                        + endVal + "'";
-                                        } else if (inclusive)
+                                                          + endVal + "'";
+                                            }
+                                        } else if (inclusive) {
                                             clause += "<= '" + endVal + "'";
-                                        else
+                                        } else {
                                             clause += "< '" + endVal + "'";
+                                        }
                                     }
 
                                     clause += ") ";
@@ -529,17 +532,17 @@ public class TestTypeHandler extends TestCase {
                         } else {
                             String subSelectTblName = "p" + clauseNum;
                             String subSelectQuery = subSelectQueryBase
-                                    + "WHERE (element_id = " + elementIdStr
-                                    + " AND ";
+                                                    + "WHERE (element_id = " + elementIdStr
+                                                    + " AND ";
                             if (criteria instanceof TermQueryCriteria) {
                                 subSelectQuery += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%')";
+                                                  + ((TermQueryCriteria) criteria)
+                                                      .getValue() + "%')";
                             } else if (criteria instanceof RangeQueryCriteria) {
                                 String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
+                                    .getStartValue();
                                 String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
+                                    .getEndValue();
 
                                 if (startVal != null || endVal != null) {
                                     subSelectQuery += " metadata_value ";
@@ -547,19 +550,20 @@ public class TestTypeHandler extends TestCase {
                                     boolean gotStart = false;
 
                                     if (startVal != null
-                                            && !startVal.equals("")) {
+                                        && !startVal.equals("")) {
                                         subSelectQuery += ">= '" + startVal
-                                                + "'";
+                                                          + "'";
                                         gotStart = true;
                                     }
 
                                     if (endVal != null && !endVal.equals("")) {
                                         if (gotStart) {
                                             subSelectQuery += " AND metadata_value <= '"
-                                                    + endVal + "'";
-                                        } else
+                                                              + endVal + "'";
+                                        } else {
                                             subSelectQuery += "<= '" + endVal
-                                                    + "'";
+                                                              + "'";
+                                        }
                                     }
 
                                     subSelectQuery += ") ";
@@ -698,64 +702,67 @@ public class TestTypeHandler extends TestCase {
 
                 if (query.getCriteria() != null
                         && query.getCriteria().size() > 0) {
-                    for (Iterator i = query.getCriteria().iterator(); i
-                            .hasNext();) {
-                        QueryCriteria criteria = (QueryCriteria) i.next();
+                    for (QueryCriteria criteria : query.getCriteria()) {
                         clauseNum++;
 
                         String elementIdStr = null;
 
                         if (fieldIdStringFlag) {
-                            elementIdStr = "'" + this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId() + "'";
+                            elementIdStr = "'" + this.getValidationLayer().getElementByName(criteria.getElementName())
+                                                     .getElementId() + "'";
                         } else {
-                            elementIdStr = this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
+                            elementIdStr =
+                                this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
                         }
 
                         String clause = null;
 
                         if (!gotFirstClause) {
                             clause = "(p.element_id = " + elementIdStr
-                                    + " AND ";
+                                     + " AND ";
                             if (criteria instanceof TermQueryCriteria) {
                                 clause += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%') ";
+                                          + ((TermQueryCriteria) criteria)
+                                              .getValue() + "%') ";
                             } else if (criteria instanceof RangeQueryCriteria) {
                                 String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
+                                    .getStartValue();
                                 String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
+                                    .getEndValue();
                                 boolean inclusive = ((RangeQueryCriteria) criteria)
-                                        .getInclusive();
+                                    .getInclusive();
 
                                 if ((startVal != null && !startVal.equals(""))
-                                        || (endVal != null && !endVal
-                                                .equals(""))) {
+                                    || (endVal != null && !endVal
+                                    .equals(""))) {
                                     clause += " metadata_value ";
 
                                     boolean gotStart = false;
 
                                     if (startVal != null
-                                            && !startVal.equals("")) {
-                                        if (inclusive)
+                                        && !startVal.equals("")) {
+                                        if (inclusive) {
                                             clause += ">= '" + startVal + "'";
-                                        else
+                                        } else {
                                             clause += "> '" + startVal + "'";
+                                        }
                                         gotStart = true;
                                     }
 
                                     if (endVal != null && !endVal.equals("")) {
                                         if (gotStart) {
-                                            if (inclusive)
+                                            if (inclusive) {
                                                 clause += " AND metadata_value <= '"
-                                                        + endVal + "'";
-                                            else
+                                                          + endVal + "'";
+                                            } else {
                                                 clause += " AND metadata_value < '"
-                                                        + endVal + "'";
-                                        } else if (inclusive)
+                                                          + endVal + "'";
+                                            }
+                                        } else if (inclusive) {
                                             clause += "<= '" + endVal + "'";
-                                        else
+                                        } else {
                                             clause += "< '" + endVal + "'";
+                                        }
                                     }
 
                                     clause += ") ";
@@ -766,17 +773,17 @@ public class TestTypeHandler extends TestCase {
                         } else {
                             String subSelectTblName = "p" + clauseNum;
                             String subSelectQuery = subSelectQueryBase
-                                    + "WHERE (element_id = " + elementIdStr
-                                    + " AND ";
+                                                    + "WHERE (element_id = " + elementIdStr
+                                                    + " AND ";
                             if (criteria instanceof TermQueryCriteria) {
                                 subSelectQuery += " metadata_value LIKE '%"
-                                        + ((TermQueryCriteria) criteria)
-                                                .getValue() + "%')";
+                                                  + ((TermQueryCriteria) criteria)
+                                                      .getValue() + "%')";
                             } else if (criteria instanceof RangeQueryCriteria) {
                                 String startVal = ((RangeQueryCriteria) criteria)
-                                        .getStartValue();
+                                    .getStartValue();
                                 String endVal = ((RangeQueryCriteria) criteria)
-                                        .getEndValue();
+                                    .getEndValue();
 
                                 if (startVal != null || endVal != null) {
                                     subSelectQuery += " metadata_value ";
@@ -784,19 +791,20 @@ public class TestTypeHandler extends TestCase {
                                     boolean gotStart = false;
 
                                     if (startVal != null
-                                            && !startVal.equals("")) {
+                                        && !startVal.equals("")) {
                                         subSelectQuery += ">= '" + startVal
-                                                + "'";
+                                                          + "'";
                                         gotStart = true;
                                     }
 
                                     if (endVal != null && !endVal.equals("")) {
                                         if (gotStart) {
                                             subSelectQuery += " AND metadata_value <= '"
-                                                    + endVal + "'";
-                                        } else
+                                                              + endVal + "'";
+                                        } else {
                                             subSelectQuery += "<= '" + endVal
-                                                    + "'";
+                                                              + "'";
+                                        }
                                     }
 
                                     subSelectQuery += ") ";

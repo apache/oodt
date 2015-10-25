@@ -207,57 +207,57 @@ public class RSSProductTransferServlet extends HttpServlet {
                 XMLUtils.addNode(doc, channel, "generator", "CAS File Manager");
                 XMLUtils.addNode(doc, channel, "lastBuildDate", buildPubDate);
 
-                for (Iterator i = currentTransfers.iterator(); i.hasNext();) {
-                    FileTransferStatus status = (FileTransferStatus) i.next();
+              for (Object currentTransfer : currentTransfers) {
+                FileTransferStatus status = (FileTransferStatus) currentTransfer;
 
-                    Element item = XMLUtils.addNode(doc, channel, "item");
+                Element item = XMLUtils.addNode(doc, channel, "item");
 
-                    XMLUtils.addNode(doc, item, "title", status
-                            .getParentProduct().getProductName());
-                    XMLUtils.addNode(doc, item, "description", status
-                            .getParentProduct().getProductType().getName());
-                    XMLUtils.addNode(doc, item, "link", base
-                            + "/viewTransfer?ref="
-                            + status.getFileRef().getOrigReference() + "&size="
-                            + status.getFileRef().getFileSize());
+                XMLUtils.addNode(doc, item, "title", status
+                    .getParentProduct().getProductName());
+                XMLUtils.addNode(doc, item, "description", status
+                    .getParentProduct().getProductType().getName());
+                XMLUtils.addNode(doc, item, "link", base
+                                                    + "/viewTransfer?ref="
+                                                    + status.getFileRef().getOrigReference() + "&size="
+                                                    + status.getFileRef().getFileSize());
 
-                    Metadata m = null;
+                Metadata m = null;
 
-                    try {
-                        m = fClient.getMetadata(status.getParentProduct());
+                try {
+                  m = fClient.getMetadata(status.getParentProduct());
 
-                        String productReceivedTime = m
-                                .getMetadata("CAS.ProductReceivedTime");
-                        Date receivedTime = null;
+                  String productReceivedTime = m
+                      .getMetadata("CAS.ProductReceivedTime");
+                  Date receivedTime = null;
 
-                        try {
-                            receivedTime = DateConvert
-                                    .isoParse(productReceivedTime);
-                        } catch (ParseException ignore) {
-                        }
+                  try {
+                    receivedTime = DateConvert
+                        .isoParse(productReceivedTime);
+                  } catch (ParseException ignore) {
+                  }
 
-                        if (receivedTime != null) {
-                            XMLUtils.addNode(doc, item, "pubDate",
-                                    dateFormatter.format(receivedTime));
-                        }
+                  if (receivedTime != null) {
+                    XMLUtils.addNode(doc, item, "pubDate",
+                        dateFormatter.format(receivedTime));
+                  }
 
-                        // set product transfer metadata
-                        m.addMetadata("BytesTransferred",
-                          "" + status.getBytesTransferred());
-                        m.addMetadata("TotalBytes",
-                          "" + status.getFileRef().getFileSize());
-                        m.addMetadata("PercentComplete",
-                          "" + status.computePctTransferred());
+                  // set product transfer metadata
+                  m.addMetadata("BytesTransferred",
+                      "" + status.getBytesTransferred());
+                  m.addMetadata("TotalBytes",
+                      "" + status.getFileRef().getFileSize());
+                  m.addMetadata("PercentComplete",
+                      "" + status.computePctTransferred());
 
-                    } catch (CatalogException ignore) {
-                    }
-
-                    // add additional elements from the RSSConfig
-                    for (RSSTag tag : rssconf.getTags()) {
-                      item.appendChild(RSSUtils.emitRSSTag(tag, m, doc, item));
-                    }
-
+                } catch (CatalogException ignore) {
                 }
+
+                // add additional elements from the RSSConfig
+                for (RSSTag tag : rssconf.getTags()) {
+                  item.appendChild(RSSUtils.emitRSSTag(tag, m, doc, item));
+                }
+
+              }
 
                 DOMSource source = new DOMSource(doc);
                 TransformerFactory transFactory = TransformerFactory

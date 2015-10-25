@@ -51,8 +51,8 @@ public final class WorkflowInstanceMetMap implements WorkflowInstanceMetMapKeys{
 
     public void addWorkflowToMap(String id, List fields) {
         if (fields != null && fields.size() > 0) {
-            for (Iterator i = fields.iterator(); i.hasNext();) {
-                String fld = (String) i.next();
+            for (Object field : fields) {
+                String fld = (String) field;
                 addFieldToWorkflow(id, fld);
             }
         }

@@ -1049,9 +1049,9 @@ public class LuceneCatalog implements Catalog {
 	                String[] elemValues = doc.getValues(name);
 	                	
 	                if (elemValues != null && elemValues.length > 0) {
-	                    for (int j = 0; j < elemValues.length; j++) {
-	                        metadata.addMetadata(name, elemValues[j]);
-	                    }
+                        for (String elemValue : elemValues) {
+                            metadata.addMetadata(name, elemValue);
+                        }
 	                }
             		}
             }
@@ -1169,20 +1169,18 @@ public class LuceneCatalog implements Catalog {
         }
 
         // add the product references
-        for (Iterator<Reference> i = product.getProductReferences().iterator(); i
-                .hasNext();) {
-            Reference r = i.next();
+        for (Reference r : product.getProductReferences()) {
             doc.add(new Field("reference_orig", r.getOrigReference(),
-                    Field.Store.YES, Field.Index.NO));
+                Field.Store.YES, Field.Index.NO));
             doc
-                    .add(new Field("reference_data_store", r
-                            .getDataStoreReference(), Field.Store.YES,
-                            Field.Index.NO));
+                .add(new Field("reference_data_store", r
+                    .getDataStoreReference(), Field.Store.YES,
+                    Field.Index.NO));
             doc.add(new Field("reference_fileSize", String.valueOf(r
-                    .getFileSize()), Field.Store.YES, Field.Index.NO));
+                .getFileSize()), Field.Store.YES, Field.Index.NO));
             doc.add(new Field("reference_mimeType", r.getMimeType() != null ? r
-                    .getMimeType().getName() : "", Field.Store.YES,
-                    Field.Index.UN_TOKENIZED));
+                .getMimeType().getName() : "", Field.Store.YES,
+                Field.Index.UN_TOKENIZED));
         }
 
         // add special field for all products

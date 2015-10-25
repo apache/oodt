@@ -93,10 +93,10 @@ public abstract class QueryServlet extends GridServlet {
 			updateHandlers(getServers(config));			       // And any servers.
 
 			List handlerObjects = new ArrayList(handlers.size());	       // Start with no handlers.
-			for (Iterator i = handlers.iterator(); i.hasNext();) {	       // For each server
-				InstantiedHandler ih = (InstantiedHandler) i.next();   // Get its handler
-				handlerObjects.add(ih.getHandler());		       // Add its handler
-			}
+		  for (Object handler : handlers) {           // For each server
+			InstantiedHandler ih = (InstantiedHandler) handler;   // Get its handler
+			handlerObjects.add(ih.getHandler());               // Add its handler
+		  }
 			handleQuery(query, handlerObjects, req, res);		       // Handlers: handle query, please
 		} catch (RuntimeException ex) {
 			throw ex;
@@ -165,17 +165,19 @@ public abstract class QueryServlet extends GridServlet {
 	private synchronized void updateHandlers(List servers) throws ClassNotFoundException, InstantiationException,
 		IllegalAccessException {
 		eachServer:
-		for (Iterator i = servers.iterator(); i.hasNext();) {		       // For each server
-			Server server = (Server) i.next();			       // Grab the server
-			for (Iterator j = handlers.iterator(); j.hasNext();) {	       // For each handler
-				InstantiedHandler handler = (InstantiedHandler) j.next(); // Grab the handler
-				if (handler.getServer().equals(server))		       // Have we already instantiated?
-					continue eachServer;			       // Yes, try the next server
-			}
-			InstantiedHandler handler				       // No.  Create ...
-				= new InstantiedHandler(server, server.createHandler()); // ... a fresh handler
-			handlers.add(handler);					       // Save it
+	  for (Object server1 : servers) {               // For each server
+		Server server = (Server) server1;                   // Grab the server
+		for (Object handler1 : handlers) {           // For each handler
+		  InstantiedHandler handler = (InstantiedHandler) handler1; // Grab the handler
+		  if (handler.getServer().equals(server))               // Have we already instantiated?
+		  {
+			continue eachServer;                   // Yes, try the next server
+		  }
 		}
+		InstantiedHandler handler                       // No.  Create ...
+			= new InstantiedHandler(server, server.createHandler()); // ... a fresh handler
+		handlers.add(handler);                           // Save it
+	  }
 
 		for (Iterator i = handlers.iterator(); i.hasNext();) {		       // Now, for each handler
 			InstantiedHandler handler = (InstantiedHandler) i.next();      // Grab the handler
@@ -192,8 +194,9 @@ public abstract class QueryServlet extends GridServlet {
 	private synchronized void updateProperties(Configuration config) {
 		if (properties != null) {					       // Any old properties?
 			if (properties.equals(config.getProperties())) return;	       // Yes, any changes?  No?  Then done.
-			for (Iterator i = properties.keySet().iterator(); i.hasNext();)	// Yes, then grab each old setting
-				System.getProperties().remove(i.next());	       // and remove it.
+		  for (Object o : properties.keySet()) {
+			System.getProperties().remove(o);           // and remove it.
+		  }
 		}
 		properties = (Properties) config.getProperties().clone();	       // Now copy the new settings
 		System.getProperties().putAll(properties);			       // And set them!

@@ -269,10 +269,9 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 	public void addToModel(Model model) {
 		Resource resource = model.createResource(getURI().toString());
 		resAttr.addToModel(model, resource, profAttr);
-		for (Iterator<ProfileElement> i = elements.values().iterator(); i.hasNext();) {
-			ProfileElement e = (ProfileElement) i.next();
-			e.addToModel(model, resource, profAttr);
-		}
+	  for (ProfileElement e : elements.values()) {
+		e.addToModel(model, resource, profAttr);
+	  }
 	}
 
 	/**
@@ -309,8 +308,10 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 		Element profile = doc.createElement("profile");
 		profile.appendChild(profAttr.toXML(doc));
 		profile.appendChild(resAttr.toXML(doc));
-		if (withElements) for (Iterator<ProfileElement> i = elements.values().iterator(); i.hasNext();)
-			profile.appendChild(((ProfileElement) i.next()).toXML(doc));
+		if (withElements)
+		  for (ProfileElement profileElement : elements.values()) {
+			profile.appendChild((profileElement).toXML(doc));
+		  }
 		return profile;
 	}
 

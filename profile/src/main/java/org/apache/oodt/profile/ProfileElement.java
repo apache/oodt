@@ -526,10 +526,10 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 */
 	public static Set<Profile> profiles(Set<?> elements) {
 		Set<Profile> rc = new HashSet<Profile>();
-		for (Iterator<?> i = elements.iterator(); i.hasNext();) {
-			ProfileElement element = (ProfileElement) i.next();
-			rc.add(element.getProfile());
-		}
+	  for (Object element1 : elements) {
+		ProfileElement element = (ProfileElement) element1;
+		rc.add(element.getProfile());
+	  }
 		return rc;
 	}
 
@@ -543,11 +543,12 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	 */
 	public static Set<ProfileElement> elements(Set<?> profiles, Set<?> elements) {
 		Set<ProfileElement> rc = new HashSet<ProfileElement>();
-		for (Iterator<?> i = elements.iterator(); i.hasNext();) {
-			ProfileElement element = (ProfileElement) i.next();
-			if (profiles.contains(element.getProfile()))
-				rc.add(element);
+	  for (Object element1 : elements) {
+		ProfileElement element = (ProfileElement) element1;
+		if (profiles.contains(element.getProfile())) {
+		  rc.add(element);
 		}
+	  }
 		return rc;
 	}
 

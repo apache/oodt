@@ -180,8 +180,8 @@ public final class XmlRpcStructFactory {
     List wInsts = new Vector();
 
     if (instsVector != null && instsVector.size() > 0) {
-      for (Iterator i = instsVector.iterator(); i.hasNext();) {
-        Hashtable wInstHash = (Hashtable) i.next();
+      for (Object anInstsVector : instsVector) {
+        Hashtable wInstHash = (Hashtable) anInstsVector;
         WorkflowInstance inst = getWorkflowInstanceFromXmlRpc(wInstHash);
         wInsts.add(inst);
       }
@@ -203,8 +203,8 @@ public final class XmlRpcStructFactory {
     Vector instsVector = new Vector();
 
     if (wInsts != null && wInsts.size() > 0) {
-      for (Iterator i = wInsts.iterator(); i.hasNext();) {
-        WorkflowInstance inst = (WorkflowInstance) i.next();
+      for (Object wInst : wInsts) {
+        WorkflowInstance inst = (WorkflowInstance) wInst;
         instsVector.add(getXmlRpcWorkflowInstance(inst));
       }
     }
@@ -295,8 +295,8 @@ public final class XmlRpcStructFactory {
       return wTasks;
     }
 
-    for (Iterator i = tasks.iterator(); i.hasNext();) {
-      WorkflowTask t = (WorkflowTask) i.next();
+    for (Object task1 : tasks) {
+      WorkflowTask t = (WorkflowTask) task1;
       Hashtable task = getXmlRpcWorkflowTask(t);
       wTasks.add(task);
     }
@@ -345,8 +345,8 @@ public final class XmlRpcStructFactory {
   public static List getWorkflowTasksFromXmlRpc(Vector tsks) {
     List tasks = new Vector();
 
-    for (Iterator i = tsks.iterator(); i.hasNext();) {
-      Hashtable taskHashtable = (Hashtable) i.next();
+    for (Object tsk : tsks) {
+      Hashtable taskHashtable = (Hashtable) tsk;
       WorkflowTask task = getWorkflowTaskFromXmlRpc(taskHashtable);
       tasks.add(task);
 
@@ -420,8 +420,8 @@ public final class XmlRpcStructFactory {
       return wConditions;
     }
 
-    for (Iterator i = conditions.iterator(); i.hasNext();) {
-      WorkflowCondition c = (WorkflowCondition) i.next();
+    for (Object condition1 : conditions) {
+      WorkflowCondition c = (WorkflowCondition) condition1;
       Hashtable condition = getXmlRpcWorkflowCondition(c);
       wConditions.add(condition);
     }
@@ -445,8 +445,8 @@ public final class XmlRpcStructFactory {
       return reqFields;
     }
 
-    for (Iterator i = fields.iterator(); i.hasNext();) {
-      String reqField = (String) i.next();
+    for (Object field : fields) {
+      String reqField = (String) field;
       reqFields.add(reqField);
     }
 
@@ -468,8 +468,8 @@ public final class XmlRpcStructFactory {
       return fields;
     }
 
-    for (Iterator i = metFields.iterator(); i.hasNext();) {
-      String reqFieldName = (String) i.next();
+    for (Object metField : metFields) {
+      String reqFieldName = (String) metField;
       fields.add(reqFieldName);
     }
 
@@ -534,8 +534,8 @@ public final class XmlRpcStructFactory {
     List conditions = new Vector();
 
     if (conds != null && conds.size() > 0) {
-      for (Iterator i = conds.iterator(); i.hasNext();) {
-        Hashtable cond = (Hashtable) i.next();
+      for (Object cond1 : conds) {
+        Hashtable cond = (Hashtable) cond1;
         WorkflowCondition condition = getWorkflowConditionFromXmlRpc(cond);
         conditions.add(condition);
       }
@@ -560,8 +560,8 @@ public final class XmlRpcStructFactory {
       WorkflowTaskConfiguration config) {
     Hashtable configuration = new Hashtable();
 
-    for (Iterator i = config.getProperties().keySet().iterator(); i.hasNext();) {
-      String name = (String) i.next();
+    for (Object o : config.getProperties().keySet()) {
+      String name = (String) o;
       String value = (String) config.getProperties().get(name);
       configuration.put(name, value);
     }
@@ -582,8 +582,8 @@ public final class XmlRpcStructFactory {
       Hashtable config) {
     WorkflowTaskConfiguration configuration = new WorkflowTaskConfiguration();
 
-    for (Iterator i = config.keySet().iterator(); i.hasNext();) {
-      String name = (String) i.next();
+    for (Object o : config.keySet()) {
+      String name = (String) o;
       String value = (String) config.get(name);
 
       configuration.getProperties().put(name, value);

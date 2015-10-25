@@ -134,16 +134,17 @@ final public class LightweightProfileServer implements ProfileHandler {
 		WhereExpression whereExpression = createWhereExpression(query);
 
 		// Search each profile, and add the results of the search to the set of results.
-		for (Iterator i = profiles.iterator(); i.hasNext();) {
-			SearchableProfile profile = (SearchableProfile) i.next();
+	  for (Object profile1 : profiles) {
+		SearchableProfile profile = (SearchableProfile) profile1;
 
-			// Search the profile with the where-expression.
-			Result result = profile.search(whereExpression);
+		// Search the profile with the where-expression.
+		Result result = profile.search(whereExpression);
 
-			// If there are any matching elements, add the profile to the set.
-			if (!result.matchingElements().isEmpty())
-				matchingProfiles.add(profile);
+		// If there are any matching elements, add the profile to the set.
+		if (!result.matchingElements().isEmpty()) {
+		  matchingProfiles.add(profile);
 		}
+	  }
 
 		// Convert from set to list.
 		return new ArrayList(matchingProfiles);
@@ -158,13 +159,13 @@ final public class LightweightProfileServer implements ProfileHandler {
 	public Profile get(String profID) {
 		if (profID == null) return null;
 		Profile rc = null;
-		for (Iterator i = profiles.iterator(); i.hasNext();) {
-			Profile p = (Profile) i.next();
-			if (p.getProfileAttributes().getID().equals(profID)) {
-				rc = p;
-				break;
-			}
+	  for (Object profile : profiles) {
+		Profile p = (Profile) profile;
+		if (p.getProfileAttributes().getID().equals(profID)) {
+		  rc = p;
+		  break;
 		}
+	  }
 		return rc;
 	}
 
@@ -186,36 +187,38 @@ final public class LightweightProfileServer implements ProfileHandler {
 		}
 		
 		// For each item in the where-set
-		for (Iterator i = allElements.iterator(); i.hasNext();) {
-			QueryElement queryElement = (QueryElement) i.next();
+	  for (Object allElement : allElements) {
+		QueryElement queryElement = (QueryElement) allElement;
 
-			// Get the keyword and its type.
-			String keyword = queryElement.getValue();
-			String type = queryElement.getRole();
+		// Get the keyword and its type.
+		String keyword = queryElement.getValue();
+		String type = queryElement.getRole();
 
-			if (type.equals("elemName")) {
-				// It's an element name, so push the element name.
-				stack.push(keyword);
-			} else if (type.equals("LITERAL")) {
-				// It's a literal value, so push the value.
-				stack.push(keyword);
-			} else if (type.equals("LOGOP")) {
-				// It's a logical operator.  Pop the operands off the
-				// stack and push the appropriate operator back on.
-				if (keyword.equals("AND")) {
-					stack.push(new AndExpression((WhereExpression) stack.pop(), (WhereExpression)stack.pop()));
-				} else if (keyword.equals("OR")) {
-					stack.push(new OrExpression((WhereExpression) stack.pop(), (WhereExpression)stack.pop()));
-				} else if (keyword.equals("NOT")) {
-					stack.push(new NotExpression((WhereExpression) stack.pop()));
-				} else throw new IllegalArgumentException("Illegal operator \"" + keyword + "\" in query");
-			} else if (type.equals("RELOP")) {
-				// It's a relational operator.  Pop the element name and
-				// literal value off the stack, and push the operator
-				// expression on with the given operator.
-				stack.push(new OperatorExpression((String) stack.pop(), (String) stack.pop(), keyword));
-			}
+		if (type.equals("elemName")) {
+		  // It's an element name, so push the element name.
+		  stack.push(keyword);
+		} else if (type.equals("LITERAL")) {
+		  // It's a literal value, so push the value.
+		  stack.push(keyword);
+		} else if (type.equals("LOGOP")) {
+		  // It's a logical operator.  Pop the operands off the
+		  // stack and push the appropriate operator back on.
+		  if (keyword.equals("AND")) {
+			stack.push(new AndExpression((WhereExpression) stack.pop(), (WhereExpression) stack.pop()));
+		  } else if (keyword.equals("OR")) {
+			stack.push(new OrExpression((WhereExpression) stack.pop(), (WhereExpression) stack.pop()));
+		  } else if (keyword.equals("NOT")) {
+			stack.push(new NotExpression((WhereExpression) stack.pop()));
+		  } else {
+			throw new IllegalArgumentException("Illegal operator \"" + keyword + "\" in query");
+		  }
+		} else if (type.equals("RELOP")) {
+		  // It's a relational operator.  Pop the element name and
+		  // literal value off the stack, and push the operator
+		  // expression on with the given operator.
+		  stack.push(new OperatorExpression((String) stack.pop(), (String) stack.pop(), keyword));
 		}
+	  }
 
 		// If there's nothing on the stack, we're given nothing, so give back everything.
 		if (stack.size() == 0)
@@ -272,8 +275,9 @@ final public class LightweightProfileServer implements ProfileHandler {
 
 		// Gather together the command-line arguments into a single long string.
 		StringBuilder b = new StringBuilder();
-		for (int i = 0; i < argv.length; ++i)
-			b.append(argv[i]).append(' ');
+	  for (String anArgv : argv) {
+		b.append(anArgv).append(' ');
+	  }
 
 		// Create the query object from the expression.
 		XMLQuery query = new XMLQuery(b.toString().trim(), /*id*/"cli1", /*title*/"CmdLine-1",

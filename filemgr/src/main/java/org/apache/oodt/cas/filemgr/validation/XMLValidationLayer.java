@@ -153,14 +153,13 @@ public class XMLValidationLayer implements ValidationLayer {
         List<Element> elements = productTypeElementMap.get(type
                 .getProductTypeId());
 
-        for (Iterator<Element> i = elements.iterator(); i.hasNext();) {
-            Element elementObj = i.next();
-            if (elementObj.getElementId().equals(element.getElementId())) {
-                elements.remove(elementObj);
-                saveElementsAndMappings();
-                break;
-            }
+      for (Element elementObj : elements) {
+        if (elementObj.getElementId().equals(element.getElementId())) {
+          elements.remove(elementObj);
+          saveElementsAndMappings();
+          break;
         }
+      }
 
     }
 
@@ -201,13 +200,12 @@ public class XMLValidationLayer implements ValidationLayer {
      */
     public Element getElementByName(String elementName)
             throws ValidationLayerException {
-        for (Iterator<String> i = elementMap.keySet().iterator(); i.hasNext();) {
-            String elementId = i.next();
-            Element element = (Element) elementMap.get(elementId);
-            if (element.getElementName().equals(elementName)) {
-                return element;
-            }
+      for (String elementId : elementMap.keySet()) {
+        Element element = (Element) elementMap.get(elementId);
+        if (element.getElementName().equals(elementName)) {
+          return element;
         }
+      }
 
         return null;
 
@@ -274,189 +272,188 @@ public class XMLValidationLayer implements ValidationLayer {
     
 
     private void saveElementsAndMappings() {
-        for (Iterator<String> i = xmlFileDirUris.iterator(); i.hasNext();) {
-            String dirUri = i.next();
-            File elementDir = null;
+      for (String dirUri : xmlFileDirUris) {
+        File elementDir = null;
 
-            try {
-                elementDir = new File(new URI(dirUri));
+        try {
+          elementDir = new File(new URI(dirUri));
 
-                if (!elementDir.isDirectory()) {
-                    LOG
-                            .log(
-                                    Level.WARNING,
-                                    "Element directory: "
-                                            + dirUri
-                                            + " is not "
-                                            + "a directory: skipping element and product type map saving to it.");
-                    continue;
-                }
+          if (!elementDir.isDirectory()) {
+            LOG
+                .log(
+                    Level.WARNING,
+                    "Element directory: "
+                    + dirUri
+                    + " is not "
+                    + "a directory: skipping element and product type map saving to it.");
+            continue;
+          }
 
-                String elementDirStr = elementDir.getAbsolutePath();
-                if (!elementDirStr.endsWith("/")) {
-                    elementDirStr += "/";
-                }
+          String elementDirStr = elementDir.getAbsolutePath();
+          if (!elementDirStr.endsWith("/")) {
+            elementDirStr += "/";
+          }
 
-                String elementXmlFile = elementDirStr + "elements.xml";
+          String elementXmlFile = elementDirStr + "elements.xml";
 
-                String productTypeMapXmlFile = elementDirStr
-                        + "product-type-element-map.xml";
+          String productTypeMapXmlFile = elementDirStr
+                                         + "product-type-element-map.xml";
 
-                XmlStructFactory.writeElementXmlDocument(Arrays
-                        .asList(elementMap.values().toArray(
-                                new Element[elementMap.size()])),
-                        elementXmlFile);
+          XmlStructFactory.writeElementXmlDocument(Arrays
+                  .asList(elementMap.values().toArray(
+                      new Element[elementMap.size()])),
+              elementXmlFile);
 
-                XmlStructFactory.writeProductTypeMapXmLDocument(
-                        productTypeElementMap, subToSuperMap,
-                        productTypeMapXmlFile);
+          XmlStructFactory.writeProductTypeMapXmLDocument(
+              productTypeElementMap, subToSuperMap,
+              productTypeMapXmlFile);
 
-            } catch (URISyntaxException e) {
-                LOG
-                        .log(
-                                Level.WARNING,
-                                "URISyntaxException when saving element "
-                                        + "directory URI: "
-                                        + dirUri
-                                        + ": Skipping Element and Product Type map saving"
-                                        + "for it: Message: " + e.getMessage());
-            }
-
+        } catch (URISyntaxException e) {
+          LOG
+              .log(
+                  Level.WARNING,
+                  "URISyntaxException when saving element "
+                  + "directory URI: "
+                  + dirUri
+                  + ": Skipping Element and Product Type map saving"
+                  + "for it: Message: " + e.getMessage());
         }
+
+      }
 
     }
 
     private void loadElements(List<String> dirUris) {
-        for (Iterator<String> i = dirUris.iterator(); i.hasNext();) {
-            File elementDir = null;
-            String dirUri = i.next();
+      for (String dirUri1 : dirUris) {
+        File elementDir = null;
+        String dirUri = dirUri1;
 
-            try {
-                elementDir = new File(new URI(dirUri));
+        try {
+          elementDir = new File(new URI(dirUri));
 
-                if (!elementDir.isDirectory()) {
-                    LOG.log(Level.WARNING, "Element directory: " + dirUri
-                            + " is not "
-                            + "a directory: skipping element loading from it.");
-                    continue;
-                }
+          if (!elementDir.isDirectory()) {
+            LOG.log(Level.WARNING, "Element directory: " + dirUri
+                                   + " is not "
+                                   + "a directory: skipping element loading from it.");
+            continue;
+          }
 
-                String elementDirStr = elementDir.getAbsolutePath();
-                if (!elementDirStr.endsWith("/")) {
-                    elementDirStr += "/";
-                }
+          String elementDirStr = elementDir.getAbsolutePath();
+          if (!elementDirStr.endsWith("/")) {
+            elementDirStr += "/";
+          }
 
-                String elementXmlFile = elementDirStr + "elements.xml";
-                Document elementDoc = getDocumentRoot(elementXmlFile);
+          String elementXmlFile = elementDirStr + "elements.xml";
+          Document elementDoc = getDocumentRoot(elementXmlFile);
 
-                org.w3c.dom.Element elementRootElem = elementDoc
-                        .getDocumentElement();
+          org.w3c.dom.Element elementRootElem = elementDoc
+              .getDocumentElement();
 
-                NodeList elementNodeList = elementRootElem
-                        .getElementsByTagName("element");
+          NodeList elementNodeList = elementRootElem
+              .getElementsByTagName("element");
 
-                if (elementNodeList != null && elementNodeList.getLength() > 0) {
-                    for (int j = 0; j < elementNodeList.getLength(); j++) {
-                        Node elementNode = elementNodeList.item(j);
-                        Element element = XmlStructFactory
-                                .getElement(elementNode);
-                        elementMap.put(element.getElementId(), element);
-                    }
-                }
-
-            } catch (URISyntaxException e) {
-                LOG.log(Level.WARNING,
-                        "URISyntaxException when loading element "
-                                + "directory URI: " + dirUri
-                                + ": Skipping element loading"
-                                + "for it: Message: " + e.getMessage());
+          if (elementNodeList != null && elementNodeList.getLength() > 0) {
+            for (int j = 0; j < elementNodeList.getLength(); j++) {
+              Node elementNode = elementNodeList.item(j);
+              Element element = XmlStructFactory
+                  .getElement(elementNode);
+              elementMap.put(element.getElementId(), element);
             }
+          }
+
+        } catch (URISyntaxException e) {
+          LOG.log(Level.WARNING,
+              "URISyntaxException when loading element "
+              + "directory URI: " + dirUri
+              + ": Skipping element loading"
+              + "for it: Message: " + e.getMessage());
         }
+      }
     }
 
     private void loadProductTypeMap(List<String> dirUris) {
-        for (Iterator<String> i = dirUris.iterator(); i.hasNext();) {
-            File elementDir = null;
-            String dirUri = i.next();
+      for (String dirUri1 : dirUris) {
+        File elementDir = null;
+        String dirUri = dirUri1;
 
-            try {
-                elementDir = new File(new URI(dirUri));
+        try {
+          elementDir = new File(new URI(dirUri));
 
-                if (!elementDir.isDirectory()) {
-                    LOG
-                            .log(
-                                    Level.WARNING,
-                                    "Element directory: "
-                                            + dirUri
-                                            + " is not "
-                                            + "a directory: skipping product type element map loading from it.");
-                    continue;
+          if (!elementDir.isDirectory()) {
+            LOG
+                .log(
+                    Level.WARNING,
+                    "Element directory: "
+                    + dirUri
+                    + " is not "
+                    + "a directory: skipping product type element map loading from it.");
+            continue;
+          }
+
+          String elementDirStr = elementDir.getAbsolutePath();
+          if (!elementDirStr.endsWith("/")) {
+            elementDirStr += "/";
+          }
+
+          String productTypeMapXmlFile = elementDirStr
+                                         + "product-type-element-map.xml";
+          Document productTypeMapDoc = getDocumentRoot(productTypeMapXmlFile);
+
+          org.w3c.dom.Element mapRootElem = productTypeMapDoc
+              .getDocumentElement();
+
+          NodeList typeNodeList = mapRootElem
+              .getElementsByTagName("type");
+
+          if (typeNodeList != null && typeNodeList.getLength() > 0) {
+            for (int j = 0; j < typeNodeList.getLength(); j++) {
+              org.w3c.dom.Element typeElement = (org.w3c.dom.Element) typeNodeList
+                  .item(j);
+              String typeId = typeElement.getAttribute("id");
+
+              // get inheritance info
+              String typeParent = typeElement.getAttribute("parent");
+              if (typeParent != null) {
+                subToSuperMap.put(typeId, typeParent);
+              }
+
+              // get its element list
+              NodeList elementIdNodeList = typeElement
+                  .getElementsByTagName("element");
+
+              // allow for 0 sized element list
+              List<Element> productTypeElementList = new Vector<Element>();
+
+              if (elementIdNodeList != null
+                  && elementIdNodeList.getLength() > 0) {
+                productTypeElementList = new Vector<Element>(
+                    elementIdNodeList.getLength());
+                for (int k = 0; k < elementIdNodeList.getLength(); k++) {
+                  org.w3c.dom.Element elementIdElement = (org.w3c.dom.Element) elementIdNodeList
+                      .item(k);
+                  String elementId = elementIdElement
+                      .getAttribute("id");
+
+                  if (elementMap.get(elementId) != null) {
+                    productTypeElementList.add(elementMap
+                        .get(elementId));
+                  }
                 }
+              }
 
-                String elementDirStr = elementDir.getAbsolutePath();
-                if (!elementDirStr.endsWith("/")) {
-                    elementDirStr += "/";
-                }
-
-                String productTypeMapXmlFile = elementDirStr
-                        + "product-type-element-map.xml";
-                Document productTypeMapDoc = getDocumentRoot(productTypeMapXmlFile);
-
-                org.w3c.dom.Element mapRootElem = productTypeMapDoc
-                        .getDocumentElement();
-
-                NodeList typeNodeList = mapRootElem
-                        .getElementsByTagName("type");
-
-                if (typeNodeList != null && typeNodeList.getLength() > 0) {
-                    for (int j = 0; j < typeNodeList.getLength(); j++) {
-                        org.w3c.dom.Element typeElement = (org.w3c.dom.Element) typeNodeList
-                                .item(j);
-                        String typeId = typeElement.getAttribute("id");
-
-                        // get inheritance info
-                        String typeParent = typeElement.getAttribute("parent");
-                        if (typeParent != null) {
-                            subToSuperMap.put(typeId, typeParent);
-                        }
-
-                        // get its element list
-                        NodeList elementIdNodeList = typeElement
-                                .getElementsByTagName("element");
-
-                        // allow for 0 sized element list
-                        List<Element> productTypeElementList = new Vector<Element>();
-
-                        if (elementIdNodeList != null
-                                && elementIdNodeList.getLength() > 0) {
-                            productTypeElementList = new Vector<Element>(
-                                    elementIdNodeList.getLength());
-                            for (int k = 0; k < elementIdNodeList.getLength(); k++) {
-                                org.w3c.dom.Element elementIdElement = (org.w3c.dom.Element) elementIdNodeList
-                                        .item(k);
-                                String elementId = elementIdElement
-                                        .getAttribute("id");
-
-                                if (elementMap.get(elementId) != null) {
-                                    productTypeElementList.add(elementMap
-                                            .get(elementId));
-                                }
-                            }
-                        }
-
-                        productTypeElementMap.put(typeId,
-                                productTypeElementList);
-                    }
-                }
-
-            } catch (URISyntaxException e) {
-                LOG.log(Level.WARNING,
-                        "URISyntaxException when loading element "
-                                + "directory URI: " + dirUri
-                                + ": Skipping product type map loading"
-                                + "for it: Message: " + e.getMessage());
+              productTypeElementMap.put(typeId,
+                  productTypeElementList);
             }
+          }
+
+        } catch (URISyntaxException e) {
+          LOG.log(Level.WARNING,
+              "URISyntaxException when loading element "
+              + "directory URI: " + dirUri
+              + ": Skipping product type map loading"
+              + "for it: Message: " + e.getMessage());
         }
+      }
     }
 
     private Document getDocumentRoot(String xmlFile) {

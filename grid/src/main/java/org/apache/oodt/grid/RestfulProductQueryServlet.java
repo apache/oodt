@@ -65,10 +65,12 @@ public class RestfulProductQueryServlet extends ProductQueryServlet {
 			while (parameterNames.hasMoreElements()) {
 				String paramName = parameterNames.nextElement();
 				String[] paramValues = req.getParameterValues(paramName);
-				for (int i = 0; i < paramValues.length; i++) {
-					if (q.length()>0) q.append(" AND ");
-					q.append(paramName).append(" EQ ").append(paramValues[i]);
+			  for (String paramValue : paramValues) {
+				if (q.length() > 0) {
+				  q.append(" AND ");
 				}
+				q.append(paramName).append(" EQ ").append(paramValue);
+			  }
 			}
 			
 			// build XMLQuery object from HTTP parameters

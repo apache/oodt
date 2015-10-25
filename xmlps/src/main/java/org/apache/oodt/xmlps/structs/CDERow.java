@@ -43,8 +43,7 @@ public class CDERow {
     public String toString() {
         StringBuilder rStr = new StringBuilder();
         if (vals != null && vals.size() > 0) {
-            for (Iterator<CDEValue> i = vals.iterator(); i.hasNext();) {
-                CDEValue v = i.next();
+            for (CDEValue v : vals) {
                 rStr.append(v.getVal()).append(COL_SEPARATOR);
             }
 

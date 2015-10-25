@@ -104,8 +104,9 @@ public abstract class Activity {
 			messageDigest.update((String.valueOf(addr) + nextNum + date).getBytes());	       // Add the 1st 3 components
 			byte[] sig = messageDigest.digest(bytes);		       // And add the random bytes
 			StringBuilder output = new StringBuilder();		       // Make space to store the hash as a string
-			for (int i = 0; i < sig.length; ++i)			       // For each byte in the hash
-				output.append(Integer.toHexString(((int)sig[i])&0xff));// Store it as a hex value
+		  for (byte aSig : sig) {
+			output.append(Integer.toHexString(((int) aSig) & 0xff));// Store it as a hex value
+		  }
 			return output.toString();				       // And return the string
 		} catch (NoSuchAlgorithmException ex) {
 			throw new IllegalStateException("MD5 algorithm not available");

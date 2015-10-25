@@ -97,8 +97,8 @@ public class ScriptFile {
 
         rStr += "#!" + commandShell + "\n";
 
-        for (Iterator i = commands.iterator(); i.hasNext();) {
-            String cmd = (String) i.next();
+        for (Object command : commands) {
+            String cmd = (String) command;
             rStr += cmd + "\n";
         }
 

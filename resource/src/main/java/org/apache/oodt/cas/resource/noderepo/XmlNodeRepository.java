@@ -83,26 +83,28 @@ public class XmlNodeRepository implements NodeRepository {
 					// get all the workflow xml files
 					File[] nodesFiles = nodesDir.listFiles(nodesXmlFilter);
 
-					for (int j = 0; j < nodesFiles.length; j++) {
+				  for (File nodesFile : nodesFiles) {
 
-						String nodesXmlFile = nodesFiles[j].getAbsolutePath();
-						Document nodesRoot = null;
-						try {
-							nodesRoot = XMLUtils
-									.getDocumentRoot(new FileInputStream(
-											nodesFiles[j]));
-						} catch (FileNotFoundException e) {
-							e.printStackTrace();
-							return null;
-						}
-
-						NodeList nodeList = nodesRoot
-								.getElementsByTagName("node");
-						if (nodeList != null)
-							for (int k = 0; k < nodeList.getLength(); k++)
-								nodes.add(XmlStructFactory
-										.getNodes((Element) nodeList.item(k)));
+					String nodesXmlFile = nodesFile.getAbsolutePath();
+					Document nodesRoot = null;
+					try {
+					  nodesRoot = XMLUtils
+						  .getDocumentRoot(new FileInputStream(
+							  nodesFile));
+					} catch (FileNotFoundException e) {
+					  e.printStackTrace();
+					  return null;
 					}
+
+					NodeList nodeList = nodesRoot
+						.getElementsByTagName("node");
+					if (nodeList != null) {
+					  for (int k = 0; k < nodeList.getLength(); k++) {
+						nodes.add(XmlStructFactory
+							.getNodes((Element) nodeList.item(k)));
+					  }
+					}
+				  }
 				}
 			} catch (URISyntaxException e) {
 				LOG.log(Level.WARNING, "DirUri: " + dirUri

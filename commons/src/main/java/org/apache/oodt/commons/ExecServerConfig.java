@@ -86,10 +86,10 @@ public class ExecServerConfig extends Executable implements Documentable {
 		commandLine[1] = "-Xms" + initialHeap;
 		commandLine[2] = "-Xmx" + maxHeap;
 		int index = 3;
-		for (Iterator i = properties.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
-			commandLine[index++] = "-D" + entry.getKey() + "=" + entry.getValue();
-		}
+	  for (Map.Entry<Object, Object> objectObjectEntry : properties.entrySet()) {
+		Map.Entry entry = (Map.Entry) objectObjectEntry;
+		commandLine[index++] = "-D" + entry.getKey() + "=" + entry.getValue();
+	  }
 		commandLine[index++] = "org.apache.oodt.commons.ExecServer";
 		commandLine[index++] = className;
 		commandLine[index++] = objectKey;

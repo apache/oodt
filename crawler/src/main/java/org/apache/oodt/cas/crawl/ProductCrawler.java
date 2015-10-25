@@ -103,15 +103,15 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
             productFiles = dir.listFiles(FILE_FILTER);
          }
 
-         for (int j = 0; j < productFiles.length; j++) {
-            ingestStatus.add(handleFile(productFiles[j]));
+         for (File productFile : productFiles) {
+            ingestStatus.add(handleFile(productFile));
          }
 
          if (!isNoRecur()) {
             File[] subdirs = dir.listFiles(DIR_FILTER);
             if (subdirs != null) {
-               for (int j = 0; j < subdirs.length; j++) {
-                  stack.push(subdirs[j]);
+               for (File subdir : subdirs) {
+                  stack.push(subdir);
                }
             }
          }

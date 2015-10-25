@@ -94,20 +94,19 @@ public final class DataUtils implements DataDeliveryKeys {
     ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
         datasetZipFilePath));
 
-    for (int i = 0; i < productZipFiles.length; i++) {
-      String filename = productZipFiles[i].getName();
-      FileInputStream in = new FileInputStream(productZipFiles[i]
+    for (File productZipFile : productZipFiles) {
+      String filename = productZipFile.getName();
+      FileInputStream in = new FileInputStream(productZipFile
           .getAbsoluteFile());
       addZipEntryFromStream(in, out, filename);
       in.close();
-      
-      if (!productZipFiles[i].delete()) {
+
+      if (!productZipFile.delete()) {
         LOG.log(Level.WARNING, "Unable to remove tempoary product zip file: ["
-            + productZipFiles[i].getAbsolutePath() + "]");
-      }
-      else{
+                               + productZipFile.getAbsolutePath() + "]");
+      } else {
         LOG.log(Level.INFO, "Deleting original product zip file: ["
-            + productZipFiles[i].getAbsolutePath() + "]");
+                            + productZipFile.getAbsolutePath() + "]");
       }
     }
 
@@ -138,15 +137,13 @@ public final class DataUtils implements DataDeliveryKeys {
     ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
         productZipFilePath));
 
-    for (Iterator i = product.getProductReferences().iterator(); i.hasNext();) {
-      Reference r = (Reference) i.next();
-
+    for (Reference r : product.getProductReferences()) {
       try {
         File prodFile = new File(new URI(r.getDataStoreReference()));
         if (prodFile.isDirectory()) {
-            LOG.log(Level.WARNING, "Data store reference is a directory. Not adding directory to the zip file: ["
-                    + r.getDataStoreReference() + "]");
-            continue;
+          LOG.log(Level.WARNING, "Data store reference is a directory. Not adding directory to the zip file: ["
+                                 + r.getDataStoreReference() + "]");
+          continue;
         }
         String filename = prodFile.getName();
         FileInputStream in = new FileInputStream(prodFile.getAbsoluteFile());
@@ -154,7 +151,7 @@ public final class DataUtils implements DataDeliveryKeys {
         in.close();
       } catch (URISyntaxException e) {
         LOG.log(Level.WARNING, "Unable to get filename from uri: ["
-            + r.getDataStoreReference() + "]");
+                               + r.getDataStoreReference() + "]");
       }
 
     }

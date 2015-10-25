@@ -1023,28 +1023,33 @@ public class CatalogServiceLocal implements CatalogService {
 			
 			// if (QueryLogicalGroup's operator is AND and is unbalanced or a child contains query results)
 			if ((((QueryLogicalGroup) queryExpression).getOperator().equals(QueryLogicalGroup.Operator.AND) && containsUnbalancedCatalogInterest(childrenQueryResults)) || containsTranactionReceipts(childrenQueryResults)) {
-				
-				for (int i = 0; i < childrenQueryResults.size(); i++) {
-					QueryResult childQueryResult = childrenQueryResults.get(i);
-					
-					// if childQueryResult has not been used, use it
-					if (childQueryResult.getCatalogReceipts() == null) { 
-						List<CatalogReceipt> catalogReceipts = new Vector<CatalogReceipt>();
-						for (Catalog catalog : this.getCurrentCatalogList()) {
-							try {
-								if (childQueryResult.getInterestedCatalogs().contains(catalog.getId())) 
-									catalogReceipts.addAll(catalog.query(this.reduceToUnderstoodExpressions(catalog, childQueryResult.getQueryExpression())));
-							}catch (Exception e) {
-								if (this.oneCatalogFailsAllFail)
-									throw new CatalogServiceException("Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : " + e.getMessage(), e);
-								else
-									LOG.log(Level.WARNING, "Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : " + e.getMessage(), e);
-							}
-						}
-						childQueryResult.setCatalogReceipts(catalogReceipts);
+
+			  for (QueryResult childQueryResult : childrenQueryResults) {
+				// if childQueryResult has not been used, use it
+				if (childQueryResult.getCatalogReceipts() == null) {
+				  List<CatalogReceipt> catalogReceipts = new Vector<CatalogReceipt>();
+				  for (Catalog catalog : this.getCurrentCatalogList()) {
+					try {
+					  if (childQueryResult.getInterestedCatalogs().contains(catalog.getId())) {
+						catalogReceipts.addAll(catalog
+							.query(this.reduceToUnderstoodExpressions(catalog, childQueryResult.getQueryExpression())));
+					  }
+					} catch (Exception e) {
+					  if (this.oneCatalogFailsAllFail) {
+						throw new CatalogServiceException(
+							"Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : "
+							+ e.getMessage(), e);
+					  } else {
+						LOG.log(Level.WARNING,
+							"Failed to query catalog '" + catalog.getId() + "' for query '" + queryExpression + "' : "
+							+ e.getMessage(), e);
+					  }
 					}
-					
+				  }
+				  childQueryResult.setCatalogReceipts(catalogReceipts);
 				}
+
+			  }
 				
 				// get intersection of results
 	   			QueryResult queryResult = new QueryResult(queryExpression);

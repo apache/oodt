@@ -62,11 +62,12 @@ public final class SecureWebServer extends org.apache.xmlrpc.WebServer
      */
     public Object execute(String methodSpecifier, Vector params, String user,
             String password) throws Exception {
-        for (Iterator i = dispatchers.iterator(); i.hasNext();) {
-            Result rc = ((Dispatcher) i.next()).handleRequest(methodSpecifier,
-                    params, user, password);
-            if (rc != null)
+        for (Object dispatcher : dispatchers) {
+            Result rc = ((Dispatcher) dispatcher).handleRequest(methodSpecifier,
+                params, user, password);
+            if (rc != null) {
                 return rc.getValue();
+            }
         }
         throw new IllegalStateException(
                 "No request dispatcher was able to return a non-null value to the XML-RPC caller");

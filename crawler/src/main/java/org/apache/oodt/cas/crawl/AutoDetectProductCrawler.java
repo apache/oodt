@@ -75,9 +75,9 @@ public class AutoDetectProductCrawler extends ProductCrawler implements
       Metadata metadata = new Metadata();
       metadata.addMetadata(MIME_TYPES_HIERARCHY,
             mimeExtractorRepo.getMimeTypes(product));
-      for (int i = 0; i < specs.size(); i++) {
-         Metadata m = specs.get(i).getMetExtractor()
-               .extractMetadata(product);
+      for (MetExtractorSpec spec : specs) {
+         Metadata m = spec.getMetExtractor()
+                          .extractMetadata(product);
          if (m != null) {
             metadata.addMetadata(m.getHashtable(), true);
          }
@@ -94,11 +94,11 @@ public class AutoDetectProductCrawler extends ProductCrawler implements
             if (this.getApplicationContext() != null) {
                PreCondEvalUtils evalUtils = new PreCondEvalUtils(
                      this.getApplicationContext());
-               for (int i = 0; i < specs.size(); i++) {
-                  List<String> preCondComparatorIds = specs
-                        .get(i).getPreCondComparatorIds();
-                  if (!evalUtils.eval(preCondComparatorIds, product))
+               for (MetExtractorSpec spec : specs) {
+                  List<String> preCondComparatorIds = spec.getPreCondComparatorIds();
+                  if (!evalUtils.eval(preCondComparatorIds, product)) {
                      return false;
+                  }
                }
             }
             return true;

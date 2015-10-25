@@ -88,10 +88,10 @@ public class QueryResult implements Serializable, Cloneable, Documentable {
 
 	public Node toXML(Document doc) throws DOMException {
 		Element root = doc.createElement("queryResultSet");
-		for (Iterator i = list.iterator(); i.hasNext();) {
-			Result r = (Result) i.next();
-			root.appendChild(r.toXML(doc));
-		}
+	  for (Object aList : list) {
+		Result r = (Result) aList;
+		root.appendChild(r.toXML(doc));
+	  }
 		return root;
 	}
 
@@ -121,18 +121,18 @@ public class QueryResult implements Serializable, Cloneable, Documentable {
 	}
 
 	public void setRetriever(Retriever retriever) {
-		for (Iterator i = list.iterator(); i.hasNext();) {
-			Result r = (Result) i.next();
-			r.setRetriever(retriever);
-		}
+	  for (Object aList : list) {
+		Result r = (Result) aList;
+		r.setRetriever(retriever);
+	  }
 	}
 
 	public long getSize() {
 		long size = 0;
-		for (Iterator i = list.iterator(); i.hasNext();) {
-			Result r = (Result) i.next();
-			size += r.getSize();
-		}
+	  for (Object aList : list) {
+		Result r = (Result) aList;
+		size += r.getSize();
+	  }
 		return size;
 	}
 

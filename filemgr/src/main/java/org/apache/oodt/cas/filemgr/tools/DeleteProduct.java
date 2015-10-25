@@ -110,8 +110,8 @@ public class DeleteProduct {
         DeleteProduct remover = new DeleteProduct(fileManagerUrl, commitChanges);
         if (readFromStdIn) {
             List prodIds = readProdIdsFromStdin();
-            for (Iterator i = prodIds.iterator(); i.hasNext();) {
-                String prodId = (String) i.next();
+            for (Object prodId1 : prodIds) {
+                String prodId = (String) prodId1;
                 remover.remove(prodId);
             }
         } else
@@ -177,28 +177,28 @@ public class DeleteProduct {
                             + e.getMessage());
         }
 
-        for (int i = 0; i < refs.size(); i++) {
-            Reference ref = (Reference) refs.get(i);
+        for (Object ref1 : refs) {
+            Reference ref = (Reference) ref1;
 
             if (commit) {
                 try {
                     client.removeFile(new File(new URI(ref
-                            .getDataStoreReference())).getAbsolutePath());
+                        .getDataStoreReference())).getAbsolutePath());
                 } catch (DataTransferException e) {
                     LOG.log(Level.WARNING, "Unable to delete reference : ["
-                            + ref.getDataStoreReference() + "] for product : ["
-                            + productId + "] from file manager : ["
-                            + client.getFileManagerUrl() + "]: Message: "
-                            + e.getMessage());
+                                           + ref.getDataStoreReference() + "] for product : ["
+                                           + productId + "] from file manager : ["
+                                           + client.getFileManagerUrl() + "]: Message: "
+                                           + e.getMessage());
                 } catch (URISyntaxException e) {
                     LOG.log(Level.WARNING,
-                            "uri syntax exception getting file absolute path from URI: ["
-                                    + ref.getDataStoreReference()
-                                    + "]: Message: " + e.getMessage());
+                        "uri syntax exception getting file absolute path from URI: ["
+                        + ref.getDataStoreReference()
+                        + "]: Message: " + e.getMessage());
                 }
             } else {
                 LOG.log(Level.INFO, "Delete file: ["
-                        + ref.getDataStoreReference() + "]");
+                                    + ref.getDataStoreReference() + "]");
             }
 
         }

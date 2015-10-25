@@ -100,25 +100,25 @@ public final class VersioningUtils {
 
             File[] files = dir.listFiles(FILE_FILTER);
 
-            for (int i = 0; i < files.length; i++) {
+            for (File file : files) {
                 // add the file references
                 try {
                     Reference r = new Reference();
-                    r.setOrigReference(files[i].toURL().toExternalForm());
-                    r.setFileSize(files[i].length());
+                    r.setOrigReference(file.toURL().toExternalForm());
+                    r.setFileSize(file.length());
                     references.add(r);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                     LOG.log(Level.WARNING,
-                            "MalformedURLException when generating reference for file: "
-                                    + files[i]);
+                        "MalformedURLException when generating reference for file: "
+                        + file);
                 }
 
             }
             File[] subdirs = dir.listFiles(DIR_FILTER);
             if (subdirs != null)
-                for (int i = 0; i < subdirs.length; i++) {
-                    stack.push(subdirs[i]);
+                for (File subdir : subdirs) {
+                    stack.push(subdir);
                 }
         }
 
@@ -147,15 +147,15 @@ public final class VersioningUtils {
 
             File[] files = dir.listFiles(FILE_FILTER);
 
-            for (int i = 0; i < files.length; i++) {
+            for (File file : files) {
                 // add the file references
-                uris.add(files[i].toURI().toString());
+                uris.add(file.toURI().toString());
             }
 
             File[] subdirs = dir.listFiles(DIR_FILTER);
             if (subdirs != null)
-                for (int i = 0; i < subdirs.length; i++) {
-                    stack.push(subdirs[i]);
+                for (File subdir : subdirs) {
+                    stack.push(subdir);
                 }
         }
 
@@ -177,9 +177,7 @@ public final class VersioningUtils {
         String origDirRef = references.get(0).getOrigReference();
         String origDirRefName = new File(origDirRef).getName();
 
-        for (Iterator<Reference> i = references.iterator(); i.hasNext();) {
-            Reference r = i.next();
-
+        for (Reference r : references) {
             // don't bother with the first one, because it's already set
             // correctly
             if (r.getOrigReference().equals(origDirRef)) {
@@ -193,15 +191,15 @@ public final class VersioningUtils {
 
             String dataStoreRef = toDirRef;
             int firstOccurenceOfOrigDir = r.getOrigReference().indexOf(
-                    origDirRefName);
+                origDirRefName);
             String tmpRef = r.getOrigReference().substring(
-                    firstOccurenceOfOrigDir);
+                firstOccurenceOfOrigDir);
             LOG.log(Level.FINER, "tmpRef: " + tmpRef);
             int firstOccurenceSlash = tmpRef.indexOf("/");
             dataStoreRef += tmpRef.substring(firstOccurenceSlash + 1);
 
             LOG.log(Level.FINE, "VersioningUtils: Generated data store ref: "
-                    + dataStoreRef + " from origRef: " + r.getOrigReference());
+                                + dataStoreRef + " from origRef: " + r.getOrigReference());
             r.setDataStoreReference(dataStoreRef);
         }
 
@@ -209,46 +207,43 @@ public final class VersioningUtils {
 
     public static void createBasicDataStoreRefsFlat(String productName,
             String productRepoPath, List<Reference> references) {
-        for (Iterator<Reference> i = references.iterator(); i.hasNext();) {
-            Reference r = i.next();
-
+        for (Reference r : references) {
             String dataStoreRef = null;
             String productRepoPathRef = null;
 
             try {
                 productRepoPathRef = new File(new URI(productRepoPath)).toURL()
-                        .toExternalForm();
+                                                                       .toExternalForm();
 
                 if (!productRepoPathRef.endsWith("/")) {
                     productRepoPathRef += "/";
                 }
 
                 dataStoreRef = productRepoPathRef
-                        + URLEncoder.encode(productName, "UTF-8") + "/"
-                        + new File(new URI(r.getOrigReference())).getName();
+                               + URLEncoder.encode(productName, "UTF-8") + "/"
+                               + new File(new URI(r.getOrigReference())).getName();
             } catch (IOException e) {
                 LOG.log(Level.WARNING,
-                        "VersioningUtils: Error generating dataStoreRef for "
-                                + r.getOrigReference() + ": Message: "
-                                + e.getMessage());
+                    "VersioningUtils: Error generating dataStoreRef for "
+                    + r.getOrigReference() + ": Message: "
+                    + e.getMessage());
             } catch (URISyntaxException e) {
                 LOG.log(Level.WARNING,
-                        "VersioningUtils: Error generating dataStoreRef for "
-                                + r.getOrigReference() + ": Message: "
-                                + e.getMessage());
+                    "VersioningUtils: Error generating dataStoreRef for "
+                    + r.getOrigReference() + ": Message: "
+                    + e.getMessage());
             }
 
             LOG.log(Level.FINE, "VersioningUtils: Generated data store ref: "
-                    + dataStoreRef + " from origRef: " + r.getOrigReference());
+                                + dataStoreRef + " from origRef: " + r.getOrigReference());
             r.setDataStoreReference(dataStoreRef);
         }
 
     }
     public static void createBasicDataStoreRefsStream(String productName,
         String productRepoPath, List<Reference> references,String postfix) {
-        for (Iterator<Reference> i = references.iterator(); i.hasNext();) {
-            Reference r = i.next();
-            createDataStoreRefStream(productName,productRepoPath,r,postfix);
+        for (Reference r : references) {
+            createDataStoreRefStream(productName, productRepoPath, r, postfix);
         }
 
     }
@@ -259,9 +254,9 @@ public final class VersioningUtils {
     }
     public static void addRefsFromUris(Product p, List<String> uris) {
         // add the refs to the Product
-        for (Iterator<String> i = uris.iterator(); i.hasNext();) {
-            String ref = i.next();
-            Reference r = new Reference(ref, null, (p.getProductStructure().equals(Product.STRUCTURE_STREAM)?-1:quietGetFileSizeFromUri(ref)));
+        for (String ref : uris) {
+            Reference r = new Reference(ref, null,
+                (p.getProductStructure().equals(Product.STRUCTURE_STREAM) ? -1 : quietGetFileSizeFromUri(ref)));
             p.getProductReferences().add(r);
         }
     }

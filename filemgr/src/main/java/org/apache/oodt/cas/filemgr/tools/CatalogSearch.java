@@ -80,9 +80,9 @@ public class CatalogSearch {
                     .println("Error getting available product types from the File Manager.");
             e.printStackTrace();
         }
-        for (int i = 0; i < products.size(); i++) {
-            PostQuery(((ProductType) products.get(i)).getProductTypeId(),
-                    casQuery);
+        for (Object product : products) {
+            PostQuery(((ProductType) product).getProductTypeId(),
+                casQuery);
         }
     }
 
@@ -110,10 +110,10 @@ public class CatalogSearch {
             System.out.println("No Products Found Matching This Criteria.");
         } else {
             System.out.println("Products Matching Query");
-            for (int i = 0; i < results.size(); i++) {
-                System.out.print(((Product) results.get(i)).getProductName()
-                        + "\t");
-                System.out.println(((Product) results.get(i)).getProductId());
+            for (Object result : results) {
+                System.out.print(((Product) result).getProductName()
+                                 + "\t");
+                System.out.println(((Product) result).getProductId());
             }
         }
     }
@@ -143,10 +143,10 @@ public class CatalogSearch {
                     .println("Error getting available product types from the File Manager.");
             e.printStackTrace();
         }
-        for (int i = 0; i < products.size(); i++) {
-            System.out.print(((ProductType) products.get(i)).getProductTypeId()
-                    + "\t");
-            System.out.println(((ProductType) products.get(i)).getName());
+        for (Object product : products) {
+            System.out.print(((ProductType) product).getProductTypeId()
+                             + "\t");
+            System.out.println(((ProductType) product).getName());
         }
     }
 
@@ -154,8 +154,8 @@ public class CatalogSearch {
         Vector products = new Vector();
         try {
             products = (Vector) client.getProductTypes();
-            for (int i = 0; i < products.size(); i++) {
-                listElements(((ProductType) products.get(i)).getProductTypeId());
+            for (Object product : products) {
+                listElements(((ProductType) product).getProductTypeId());
             }
         } catch (RepositoryManagerException e) {
             System.out
@@ -180,8 +180,8 @@ public class CatalogSearch {
             e.printStackTrace();
         }
 
-        for (int i = 0; i < elements.size(); i++) {
-            Element e = (Element) elements.get(i);
+        for (Object element : elements) {
+            Element e = (Element) element;
             System.out.print(e.getElementId() + "\t");
             System.out.println(e.getElementName());
         }
@@ -260,9 +260,10 @@ public class CatalogSearch {
                 // for(int i=0;i<t.length;i++)
                 // ((FreeTextQueryCriteria)casQuery.getCriteria().get(0)).addValue(t[i].text());
             } else {
-                for (int i = 0; i < t.length; i++)
-                    casQuery.addCriterion(new TermQueryCriteria(t[i].field(),
-                            t[i].text()));
+                for (Term aT : t) {
+                    casQuery.addCriterion(new TermQueryCriteria(aT.field(),
+                        aT.text()));
+                }
             }
         } else if (luceneQuery instanceof RangeQuery) {
             Term startT = ((RangeQuery) luceneQuery).getLowerTerm();
@@ -271,8 +272,8 @@ public class CatalogSearch {
                     .text(), endT.text()));
         } else if (luceneQuery instanceof BooleanQuery) {
             BooleanClause[] clauses = ((BooleanQuery) luceneQuery).getClauses();
-            for (int i = 0; i < clauses.length; i++) {
-                GenerateCASQuery(casQuery, (clauses[i]).getQuery());
+            for (BooleanClause clause : clauses) {
+                GenerateCASQuery(casQuery, (clause).getQuery());
             }
         } else {
             System.out.println("Error Parsing Query");

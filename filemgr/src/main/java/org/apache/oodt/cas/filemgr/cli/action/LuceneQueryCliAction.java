@@ -105,9 +105,9 @@ public class LuceneQueryCliAction extends AbstractQueryCliAction {
          } else {
             BooleanQueryCriteria bqc = new BooleanQueryCriteria();
             bqc.setOperator(BooleanQueryCriteria.AND);
-            for (int i = 0; i < t.length; i++) {
-               bqc.addTerm(new TermQueryCriteria(t[i].field(), t[i]
-                     .text()));
+            for (Term aT : t) {
+               bqc.addTerm(new TermQueryCriteria(aT.field(), aT
+                   .text()));
             }
             return bqc;
          }
@@ -120,11 +120,11 @@ public class LuceneQueryCliAction extends AbstractQueryCliAction {
          BooleanClause[] clauses = ((BooleanQuery) luceneQuery).getClauses();
          BooleanQueryCriteria bqc = new BooleanQueryCriteria();
          bqc.setOperator(BooleanQueryCriteria.AND);
-         for (int i = 0; i < clauses.length; i++) {
-            if (clauses[i].getOccur().equals(BooleanClause.Occur.SHOULD)) {
+         for (BooleanClause clause : clauses) {
+            if (clause.getOccur().equals(BooleanClause.Occur.SHOULD)) {
                bqc.setOperator(BooleanQueryCriteria.OR);
             }
-            bqc.addTerm(generateCASQuery(clauses[i].getQuery()));
+            bqc.addTerm(generateCASQuery(clause.getQuery()));
          }
          return bqc;
       } else {

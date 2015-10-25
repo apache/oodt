@@ -300,17 +300,15 @@ public class Product {
             if (this.getProductReferences() != null
                     && this.getProductReferences().size() > 0) {
                 Element refsElem = XMLUtils.addNode(doc, root, "references");
-                for (Iterator<Reference> i = this.getProductReferences().iterator(); i
-                        .hasNext();) {
-                    Reference r = i.next();
+                for (Reference r : this.getProductReferences()) {
                     Element refElem = XMLUtils.addNode(doc, refsElem,
-                            "reference");
+                        "reference");
                     XMLUtils.addAttribute(doc, refElem, "orig", r
-                            .getOrigReference());
+                        .getOrigReference());
                     XMLUtils.addAttribute(doc, refElem, "dataStore", r
-                            .getDataStoreReference());
+                        .getDataStoreReference());
                     XMLUtils.addAttribute(doc, refElem, "size", String
-                            .valueOf(r.getFileSize()));
+                        .valueOf(r.getFileSize()));
 
                 }
             }

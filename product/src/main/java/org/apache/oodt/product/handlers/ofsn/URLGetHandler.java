@@ -171,11 +171,11 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 		 
 		// convert each crawled file's path into an OFSN download link
 		StringBuilder stringBuilder = new StringBuilder();
-		for (int i=0; i < fileListing.length; i++) {
-			File file = (File) fileListing[i];
-			stringBuilder.append(buildOFSNURL(file).toString());
-			stringBuilder.append("\n");
-		}
+	  for (File aFileListing : fileListing) {
+		File file = (File) aFileListing;
+		stringBuilder.append(buildOFSNURL(file).toString());
+		stringBuilder.append("\n");
+	  }
 		
     	return stringBuilder.toString();
 	}

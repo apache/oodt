@@ -73,10 +73,10 @@ public final class XmlRpcStructFactory {
 		Vector jobVector = new Vector();
 		
 		if(jobs != null && jobs.size() > 0){
-			for(Iterator i = jobs.iterator(); i.hasNext();){
-				Job job = (Job)i.next();
-				jobVector.add(getXmlRpcJob(job));
-			}
+		  for (Object job1 : jobs) {
+			Job job = (Job) job1;
+			jobVector.add(getXmlRpcJob(job));
+		  }
 		}
 		
 		return jobVector;
@@ -86,10 +86,10 @@ public final class XmlRpcStructFactory {
 		List jobs = new Vector();
 		
 		if(jobVector != null && jobVector.size() > 0){
-			for(Iterator i = jobVector.iterator(); i.hasNext(); ){
-				Hashtable jobHash = (Hashtable)i.next();
-				jobs.add(getJobFromXmlRpc(jobHash));
-			}
+		  for (Object aJobVector : jobVector) {
+			Hashtable jobHash = (Hashtable) aJobVector;
+			jobs.add(getJobFromXmlRpc(jobHash));
+		  }
 		}
 		
 		return jobs;
@@ -99,10 +99,10 @@ public final class XmlRpcStructFactory {
     Vector resNodeVector = new Vector();
 
     if (resNodes != null && resNodes.size() > 0) {
-      for (Iterator i = resNodes.iterator(); i.hasNext();) {
-        ResourceNode node = (ResourceNode) i.next();
-        resNodeVector.add(getXmlRpcResourceNode(node));
-      }
+	  for (Object resNode : resNodes) {
+		ResourceNode node = (ResourceNode) resNode;
+		resNodeVector.add(getXmlRpcResourceNode(node));
+	  }
     }
 
     return resNodeVector;
@@ -112,10 +112,10 @@ public final class XmlRpcStructFactory {
     List resNodes = new Vector();
 
     if (resNodeVector != null && resNodeVector.size() > 0) {
-      for (Iterator i = resNodeVector.iterator(); i.hasNext();) {
-        Hashtable resNodeHash = (Hashtable) i.next();
-        resNodes.add(getResourceNodeFromXmlRpc(resNodeHash));
-      }
+	  for (Object aResNodeVector : resNodeVector) {
+		Hashtable resNodeHash = (Hashtable) aResNodeVector;
+		resNodes.add(getResourceNodeFromXmlRpc(resNodeHash));
+	  }
     }
 
     return resNodes;

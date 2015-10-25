@@ -152,14 +152,14 @@ public class XMLWorkflowRepository implements WorkflowRepository {
      */
     public Workflow getWorkflowByName(String workflowName)
             throws RepositoryException {
-        for (Iterator i = workflowMap.keySet().iterator(); i.hasNext();) {
-            String workflowId = (String) i.next();
-            Workflow w = (Workflow) workflowMap.get(workflowId);
+      for (Object o : workflowMap.keySet()) {
+        String workflowId = (String) o;
+        Workflow w = (Workflow) workflowMap.get(workflowId);
 
-            if (w.getName().equals(workflowName)) {
-                return w;
-            }
+        if (w.getName().equals(workflowName)) {
+          return w;
         }
+      }
 
         return null;
     }
@@ -222,12 +222,12 @@ public class XMLWorkflowRepository implements WorkflowRepository {
      */
     public List getConditionsByTaskName(String taskName)
             throws RepositoryException {
-        for (Iterator i = taskMap.values().iterator(); i.hasNext();) {
-            WorkflowTask t = (WorkflowTask) i.next();
-            if (t.getTaskName().equals(taskName)) {
-                return t.getConditions();
-            }
+      for (Object o : taskMap.values()) {
+        WorkflowTask t = (WorkflowTask) o;
+        if (t.getTaskName().equals(taskName)) {
+          return t.getConditions();
         }
+      }
 
         return null;
     }
@@ -357,11 +357,11 @@ public class XMLWorkflowRepository implements WorkflowRepository {
 
         uris = new Vector(args.length);
 
-        for (int i = 0; i < args.length; i++) {
-            if (args[i] != null) {
-                uris.add(args[i]);
-            }
+      for (String arg : args) {
+        if (arg != null) {
+          uris.add(arg);
         }
+      }
 
         XMLWorkflowRepository repo = new XMLWorkflowRepository(uris);
 

@@ -223,8 +223,8 @@ public class RSSProductServlet extends HttpServlet {
         XMLUtils.addNode(doc, channel, "generator", "CAS File Manager");
         XMLUtils.addNode(doc, channel, "lastBuildDate", buildPubDate);
 
-        for (Iterator i = products.iterator(); i.hasNext();) {
-          Product p = (Product) i.next();
+        for (Object product : products) {
+          Product p = (Product) product;
 
           String productTypeIdStr = p.getProductType().getProductTypeId();
           ProductType productType = null;
@@ -235,8 +235,8 @@ public class RSSProductServlet extends HttpServlet {
             e.printStackTrace();
             LOG.log(Level.SEVERE,
                 "Unable to obtain product type from product type id: ["
-                    + ((Product) products.get(0)).getProductType()
-                        .getProductTypeId() + "]: Message: " + e.getMessage());
+                + ((Product) products.get(0)).getProductType()
+                                             .getProductTypeId() + "]: Message: " + e.getMessage());
             return;
           }
 
@@ -247,9 +247,9 @@ public class RSSProductServlet extends HttpServlet {
 
           XMLUtils.addNode(doc, item, "title", p.getProductName());
           XMLUtils.addNode(doc, item, "description", p.getProductType()
-              .getName());
+                                                      .getName());
           XMLUtils.addNode(doc, item, "link", base + "/data?productID="
-              + p.getProductId());
+                                              + p.getProductId());
 
           Metadata m = this.safeGetMetadata(p);
           String productReceivedTime = m.getMetadata("CAS.ProductReceivedTime");
@@ -269,7 +269,7 @@ public class RSSProductServlet extends HttpServlet {
           if (p.getProductReferences() != null
               && p.getProductReferences().size() == 1) {
             m.addMetadata("FileSize", String.valueOf(p.getProductReferences()
-                .get(0).getFileSize()));
+                                                      .get(0).getFileSize()));
           }
 
           // add additional elements from the RSSConfig

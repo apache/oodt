@@ -117,8 +117,8 @@ public class HandlerQueryParser implements ParseConstants {
 
     Stack<QueryElement> ret = new Stack<QueryElement>();
 
-    for (int i = 0; i < l.size(); i++) {
-      ret.push(l.get(i));
+    for (QueryElement aL : l) {
+      ret.push(aL);
     }
 
     return ret;

@@ -138,10 +138,12 @@ public class EnterpriseEntityResolver implements EntityResolver {
 	 * or null if no directory in <var>dirs</var> contains a file named <var>filename</var>.
 	 */
 	static File findFile(List dirs, String filename) {
-		for (Iterator i = dirs.iterator(); i.hasNext();) {
-			File potentialFile = new File((String) i.next(), filename);
-			if (potentialFile.isFile()) return potentialFile;
+	  for (Object dir : dirs) {
+		File potentialFile = new File((String) dir, filename);
+		if (potentialFile.isFile()) {
+		  return potentialFile;
 		}
+	  }
 		return null;
 	}
 }

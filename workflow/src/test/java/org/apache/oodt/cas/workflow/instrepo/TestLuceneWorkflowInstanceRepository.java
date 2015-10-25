@@ -229,9 +229,8 @@ public class TestLuceneWorkflowInstanceRepository extends TestCase implements
 
         boolean gotVal1 = false, gotVal2 = false;
 
-        for (Iterator i = foundInst.getSharedContext().getAllMetadata(
-                "TestKey1").iterator(); i.hasNext();) {
-            String val = (String) i.next();
+        for (String val : foundInst.getSharedContext().getAllMetadata(
+            "TestKey1")) {
             if (val.equals("TestVal1")) {
                 gotVal1 = true;
             } else if (val.equals("TestVal2")) {

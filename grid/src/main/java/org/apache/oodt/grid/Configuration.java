@@ -83,21 +83,21 @@ public class Configuration implements Serializable {
         if (password != null && password.length > 0)                            // If we have a password
             elem.setAttribute("password", encode(password));                    // Add passowrd attribute
 
-        for (Iterator i = productServers.iterator(); i.hasNext();) {            // For each product server
-            ProductServer ps = (ProductServer) i.next();                        // Get the product server
+        for (Object productServer : productServers) {            // For each product server
+            ProductServer ps = (ProductServer) productServer;                        // Get the product server
             elem.appendChild(ps.toXML(owner));                                  // And add it under <configuration>
         }
 
-        for (Iterator i = profileServers.iterator(); i.hasNext();) {            // For each profile server
-            ProfileServer ps = (ProfileServer) i.next();                        // Get the profile server
+        for (Object profileServer : profileServers) {            // For each profile server
+            ProfileServer ps = (ProfileServer) profileServer;                        // Get the profile server
             elem.appendChild(ps.toXML(owner));                                  // And add it under the <configuration>
         }
 
         if (!codeBases.isEmpty()) {                                             // Got any code bases?
             Element cbs = owner.createElement("codeBases");                     // Boo yah.  Make a parent for 'em
             elem.appendChild(cbs);                                              // Add parent
-            for (Iterator i = codeBases.iterator(); i.hasNext();) {             // Then, for each code base
-                URL url = (URL) i.next();                                       // Get the URL to it
+            for (Object codeBase : codeBases) {             // Then, for each code base
+                URL url = (URL) codeBase;                                       // Get the URL to it
                 Element cb = owner.createElement("codeBase");                   // And make a <codeBase> for it
                 cb.setAttribute("url", url.toString());                         // And an "url" attribute
                 cbs.appendChild(cb);                                            // Add it
@@ -108,8 +108,9 @@ public class Configuration implements Serializable {
             Element props = owner.createElement("properties");                  // Add <properties> under <configuration>
             props.setAttribute("xml:space", "preserve");                        // And make sure space is properly preserved
             elem.appendChild(props);                                            // Add the space attribute
-            for (Iterator i = properties.entrySet().iterator(); i.hasNext();) { // For each property
-                Map.Entry entry = (Map.Entry) i.next();                         // Get the property key/value pair
+            for (Map.Entry<Object, Object> objectObjectEntry : properties.entrySet()) { // For each property
+                Map.Entry entry =
+                    (Map.Entry) objectObjectEntry;                         // Get the property key/value pair
                 String key = (String) entry.getKey();                           // Key is always a String
                 String value = (String) entry.getValue();                       // So is the value
                 Element prop = owner.createElement("property");                 // Create a <property> element

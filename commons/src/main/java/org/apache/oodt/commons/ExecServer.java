@@ -267,13 +267,13 @@ public class ExecServer {
 	 */
 	public String getServerStatus() {
 		// Update the status document with the current log.
-		for (Iterator i = LogInit.MEMORY_LOGGER.getMessages().iterator(); i.hasNext();) {
-			String message = (String) i.next();
-			Element messageElement = statusDocument.createElement("message");
-			messageElement.setAttribute("xml:space", "preserve");
-			messageElement.appendChild(statusDocument.createTextNode(message));
-			logElement.appendChild(messageElement);
-		}
+	  for (Object o : LogInit.MEMORY_LOGGER.getMessages()) {
+		String message = (String) o;
+		Element messageElement = statusDocument.createElement("message");
+		messageElement.setAttribute("xml:space", "preserve");
+		messageElement.appendChild(statusDocument.createTextNode(message));
+		logElement.appendChild(messageElement);
+	  }
 
 		// Serialize the document.
 		String rc = XML.serialize(statusDocument);

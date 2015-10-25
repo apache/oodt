@@ -58,9 +58,7 @@ public class DatabaseTableGroup {
 
     public List<String> getTableNames() {
         List<String> names = new Vector<String>();
-        for (Iterator<DatabaseTable> i = this.orderedGroup.iterator(); i
-                .hasNext();) {
-            DatabaseTable tbl = i.next();
+        for (DatabaseTable tbl : this.orderedGroup) {
             names.add(tbl.getName());
         }
 

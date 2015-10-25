@@ -206,8 +206,8 @@ public class TestXMLRepositoryManager extends TestCase {
         List creatorValues = type.getTypeMetadata().getAllMetadata("Creator");
         boolean hasFirstCreator = false, hasSecondCreator = false;
 
-        for (Iterator i = creatorValues.iterator(); i.hasNext();) {
-            String val = (String) i.next();
+        for (Object creatorValue : creatorValues) {
+            String val = (String) creatorValue;
             if (val.equals("Chris Mattmann")) {
                 hasFirstCreator = true;
             } else if (val.equals("Paul Ramirez")) {

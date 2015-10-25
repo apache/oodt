@@ -585,30 +585,27 @@ public class DataSourceCatalog implements Catalog {
             conn.setAutoCommit(false);
             statement = conn.createStatement();
 
-            for (Iterator<Reference> i = product.getProductReferences().iterator(); i
-                    .hasNext();) {
-                Reference r = i.next();
+          for (Reference r : product.getProductReferences()) {
+            String addRefSql = "INSERT INTO "
+                               + productRefTable
+                               + " "
+                               + "(product_id, product_orig_reference, product_datastore_reference, product_reference_filesize, product_reference_mimetype) "
+                               + "VALUES ("
+                               + quoteIt(product.getProductId())
+                               + ", '"
+                               + r.getOrigReference()
+                               + "', '"
+                               + r.getDataStoreReference()
+                               + "', "
+                               + r.getFileSize()
+                               + ",'"
+                               + ((r.getMimeType() == null) ? "" : r.getMimeType()
+                                                                    .getName()) + "')";
 
-                String addRefSql = "INSERT INTO "
-                        + productRefTable
-                        + " "
-                        + "(product_id, product_orig_reference, product_datastore_reference, product_reference_filesize, product_reference_mimetype) "
-                        + "VALUES ("
-                        + quoteIt(product.getProductId())
-                        + ", '"
-                        + r.getOrigReference()
-                        + "', '"
-                        + r.getDataStoreReference()
-                        + "', "
-                        + r.getFileSize()
-                        + ",'"
-                        + ((r.getMimeType() == null) ? "" : r.getMimeType()
-                                .getName()) + "')";
-
-                LOG.log(Level.FINE, "addProductReferences: Executing: "
-                        + addRefSql);
-                statement.execute(addRefSql);
-            }
+            LOG.log(Level.FINE, "addProductReferences: Executing: "
+                                + addRefSql);
+            statement.execute(addRefSql);
+          }
 
             conn.commit();
 

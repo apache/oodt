@@ -114,39 +114,37 @@ public class RemoteDataTransferer implements DataTransfer {
       quietNotifyTransferProduct(product);
 
       // for each file reference, transfer the file to the remote file manager
-      for (Iterator<Reference> i = product.getProductReferences().iterator(); i
-            .hasNext();) {
-         Reference r = i.next();
-         // test whether or not the reference is a directory or a file
-         File refFile = null;
+     for (Reference r : product.getProductReferences()) {
+       // test whether or not the reference is a directory or a file
+       File refFile = null;
+       try {
+         refFile = new File(new URI(r.getOrigReference()));
+       } catch (URISyntaxException e) {
+         LOG.log(Level.WARNING,
+             "Unable to test if reference: [" + r.getOrigReference()
+             + "] is a directory: skipping it");
+         continue;
+       }
+
+       if (!refFile.isDirectory()) {
+         LOG.log(Level.FINE, "Reference: [" + r.getOrigReference()
+                             + "] is file: transferring it");
+
          try {
-            refFile = new File(new URI(r.getOrigReference()));
+           remoteTransfer(r, product);
          } catch (URISyntaxException e) {
-            LOG.log(Level.WARNING,
-                  "Unable to test if reference: [" + r.getOrigReference()
-                        + "] is a directory: skipping it");
-            continue;
+           LOG.log(Level.WARNING,
+               "Error transferring file: [" + r.getOrigReference()
+               + "]: URISyntaxException: " + e.getMessage());
          }
-
-         if (!refFile.isDirectory()) {
-            LOG.log(Level.FINE, "Reference: [" + r.getOrigReference()
-                  + "] is file: transferring it");
-
-            try {
-               remoteTransfer(r, product);
-            } catch (URISyntaxException e) {
-               LOG.log(Level.WARNING,
-                     "Error transferring file: [" + r.getOrigReference()
-                           + "]: URISyntaxException: " + e.getMessage());
-            }
-         } else {
-            LOG.log(
-                  Level.FINE,
-                  "RemoteTransfer: skipping reference: ["
-                        + refFile.getAbsolutePath() + "] of product: ["
-                        + product.getProductName() + "]: ref is a directory");
-         }
-      }
+       } else {
+         LOG.log(
+             Level.FINE,
+             "RemoteTransfer: skipping reference: ["
+             + refFile.getAbsolutePath() + "] of product: ["
+             + product.getProductName() + "]: ref is a directory");
+       }
+     }
 
       quietNotifyProductTransferComplete(product);
 

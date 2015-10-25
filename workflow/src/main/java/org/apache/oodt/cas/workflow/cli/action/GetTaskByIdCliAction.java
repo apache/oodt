@@ -39,10 +39,12 @@ public class GetTaskByIdCliAction extends WorkflowCliAction {
          WorkflowTask task = getClient().getTaskById(taskId);
          
          String requiredMetFields = "";
-         for (Iterator i = task.getRequiredMetFields().iterator(); i.hasNext();) {
-        	 if (requiredMetFields.length()>0) requiredMetFields += ", ";
-             requiredMetFields += (String) i.next();
-         }
+        for (Object o : task.getRequiredMetFields()) {
+          if (requiredMetFields.length() > 0) {
+            requiredMetFields += ", ";
+          }
+          requiredMetFields += (String) o;
+        }
          
          printer.println("Task: [id=" + task.getTaskId() 
                + ", name=" + task.getTaskName() 

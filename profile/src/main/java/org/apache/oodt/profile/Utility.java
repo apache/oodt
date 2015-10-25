@@ -60,8 +60,9 @@ class Utility {
 			Collection<?> collection = (Collection<?>) value;
 			if (collection.isEmpty()) return;
 			Bag bag = model.createBag(uri + "_" + property.getLocalName() + "_bag");
-			for (Iterator<?> i = collection.iterator(); i.hasNext();)
-				bag.add(i.next());
+		  for (Object aCollection : collection) {
+			bag.add(aCollection);
+		  }
 			resource.addProperty(property, bag);
 			obj = bag;
 		} else {
@@ -87,16 +88,18 @@ class Utility {
 		List<?> children = profAttr.getChildren();
 		if (!children.isEmpty()) {
 			Bag bag = model.createBag(uri + "_" + property.getLocalName() + "_childrenBag");
-			for (Iterator<?> i = children.iterator(); i.hasNext();)
-				bag.add(i.next());
+		  for (Object aChildren : children) {
+			bag.add(aChildren);
+		  }
 			reification.addProperty(edmChild, bag);
 		}
 
 		List<?> revNotes = profAttr.getRevisionNotes();
 		if (!revNotes.isEmpty()) {
 			Seq seq = model.createSeq(uri + "_" + property.getLocalName() + "_revNotesSeq");
-			for (Iterator<?> i = revNotes.iterator(); i.hasNext();)
-				seq.add(i.next());
+		  for (Object revNote : revNotes) {
+			seq.add(revNote);
+		  }
 			reification.addProperty(edmRevNote, seq);
 		}
 	}

@@ -99,8 +99,8 @@ public class CASProfileHandler implements ProfileHandler {
         List profs = new Vector();
 
         if (productTypeFilter != null && productTypeFilter.size() > 0) {
-            for (Iterator i = productTypeFilter.iterator(); i.hasNext();) {
-                ProductType type = (ProductType) i.next();
+            for (Object aProductTypeFilter : productTypeFilter) {
+                ProductType type = (ProductType) aProductTypeFilter;
                 Query cQuery = convertQuery(query);
 
                 profs.addAll(queryAndBuildProfiles(type, cQuery));
@@ -264,13 +264,13 @@ public class CASProfileHandler implements ProfileHandler {
             products = fmClient.query(query, type);
 
             if (products != null && products.size() > 0) {
-                for (Iterator i = products.iterator(); i.hasNext();) {
-                    Product p = (Product) i.next();
+                for (Object product : products) {
+                    Product p = (Product) product;
                     p.setProductReferences(safeGetProductReferences(p));
                     Metadata met = safeGetMetadata(p);
                     try {
                         profiles.add(ProfileUtils.buildProfile(p, met,
-                                dataDelivBaseUrlStr));
+                            dataDelivBaseUrlStr));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -213,8 +213,8 @@ public final class RangeQueryTester {
         List productFiles = queryTester.doRangeQuery(productTypeId);
 
         if (productFiles != null && productFiles.size() > 0) {
-            for (Iterator i = productFiles.iterator(); i.hasNext();) {
-                String productFile = (String) i.next();
+            for (Object productFile1 : productFiles) {
+                String productFile = (String) productFile1;
                 System.out.println(productFile);
             }
         } else

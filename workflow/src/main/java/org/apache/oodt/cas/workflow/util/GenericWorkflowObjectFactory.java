@@ -372,11 +372,11 @@ public final class GenericWorkflowObjectFactory {
 	public static List copyWorkflows(List workflows){
 		if(workflows != null){
 			List newWorkflows = new Vector(workflows.size());
-			for(Iterator i = workflows.iterator(); i.hasNext(); ){
-				Workflow w = (Workflow)i.next();
-				Workflow newWorkflow = copyWorkflow(w);
-				newWorkflows.add(newWorkflow);
-			}
+		  for (Object workflow : workflows) {
+			Workflow w = (Workflow) workflow;
+			Workflow newWorkflow = copyWorkflow(w);
+			newWorkflows.add(newWorkflow);
+		  }
 
 			return newWorkflows;
 		}
@@ -420,11 +420,11 @@ public final class GenericWorkflowObjectFactory {
 
 			List newTaskList = new Vector(taskList.size());
 
-			for(Iterator i = taskList.iterator(); i.hasNext(); ){
-				WorkflowTask t = (WorkflowTask)i.next();
-				WorkflowTask newTask = copyTask(t);
-				newTaskList.add(newTask);
-			}
+		  for (Object aTaskList : taskList) {
+			WorkflowTask t = (WorkflowTask) aTaskList;
+			WorkflowTask newTask = copyTask(t);
+			newTaskList.add(newTask);
+		  }
 
 			return newTaskList;
 		}
@@ -454,11 +454,11 @@ public final class GenericWorkflowObjectFactory {
 		if(conditionList != null){
 			List newConditionList = new Vector(conditionList.size());
 
-			for(Iterator i = conditionList.iterator(); i.hasNext(); ){
-				WorkflowCondition c = (WorkflowCondition)i.next();
-				WorkflowCondition newCondition = copyCondition(c);
-				newConditionList.add(newCondition);
-			}
+		  for (Object aConditionList : conditionList) {
+			WorkflowCondition c = (WorkflowCondition) aConditionList;
+			WorkflowCondition newCondition = copyCondition(c);
+			newConditionList.add(newCondition);
+		  }
 
 			return newConditionList;
 		}

@@ -136,8 +136,7 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
     Metadata met = fm.safeGetMetadata(prod);
     if (met != null && met.getHashtable() != null
         && met.getHashtable().keySet().size() > 0) {
-      for (Iterator i = met.getHashtable().keySet().iterator(); i.hasNext();) {
-        String key = (String) i.next();
+      for (String key : met.getHashtable().keySet()) {
         List vals = met.getAllMetadata(key);
         System.out.println(key + "=>" + vals);
       }
@@ -159,8 +158,8 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
       if (wInstProds != null && wInstProds.size() > 0) {
         System.out.println("Associated products:");
         System.out.println("");
-        for (Iterator i = wInstProds.iterator(); i.hasNext();) {
-          Product wInstProd = (Product) i.next();
+        for (Object wInstProd1 : wInstProds) {
+          Product wInstProd = (Product) wInstProd1;
           System.out.println(wInstProd.getProductName());
         }
       }
@@ -238,8 +237,8 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
       return null;
     }
 
-    for (Iterator i = insts.iterator(); i.hasNext();) {
-      WorkflowInstance inst = (WorkflowInstance) i.next();
+    for (Object inst1 : insts) {
+      WorkflowInstance inst = (WorkflowInstance) inst1;
       if (inst.getId().equals(id)) {
         return inst;
       }

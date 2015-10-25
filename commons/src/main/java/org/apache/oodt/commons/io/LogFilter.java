@@ -55,8 +55,9 @@ public class LogFilter implements LogListener {
 		this.listener = listener;
 		this.passThrough = passThrough;
 		if (categories == null) return;
-		for (int i = 0; i < categories.length; ++i)
-			this.categories.put(categories[i], DUMMY);
+	  for (Object category : categories) {
+		this.categories.put(category, DUMMY);
+	  }
 	}
 
 	/** Create a log filter.

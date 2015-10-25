@@ -353,8 +353,9 @@ public class XML {
 	 * @throws DOMException If a DOM error occurs.
 	 */
 	public static void add(Node node, String name, Collection values) throws DOMException {
-		for (Iterator i = values.iterator(); i.hasNext();)
-			add(node, name, i.next());
+	  for (Object value : values) {
+		add(node, name, value);
+	  }
 	}
 
 	/** Add a child element with the given text to the given element.
@@ -513,10 +514,10 @@ public class XML {
 	public static void removeComments(Node node) {
 		List commentNodes = new ArrayList();
 		findCommentNodes(commentNodes, node);
-		for (Iterator i = commentNodes.iterator(); i.hasNext();) {
-			Node commentNode = (Node) i.next();
-			commentNode.getParentNode().removeChild(commentNode);
-		}
+	  for (Object commentNode1 : commentNodes) {
+		Node commentNode = (Node) commentNode1;
+		commentNode.getParentNode().removeChild(commentNode);
+	  }
 	}
 
 	/** The resolver for entities for the JPL enterprise. */

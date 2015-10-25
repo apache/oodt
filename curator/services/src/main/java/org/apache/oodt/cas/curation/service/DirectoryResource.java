@@ -105,24 +105,24 @@ public class DirectoryResource extends CurationService {
     // Loop through and list directories first. Nicer for UI to get these first
 
     if (f != null) {
-      for (int i = 0; i < f.length; i++) {
-        if (new File(startingPath + "/" + f[i]).isDirectory()) {
+      for (String aF1 : f) {
+        if (new File(startingPath + "/" + aF1).isDirectory()) {
           html.append(" <li class=\"directory collapsed\">");
           html.append("<a href=\"#\" rel=\"").append(relativePath).append("/")
-              .append(f[i]).append("\">").append(f[i]).append("</a>");
+              .append(aF1).append("\">").append(aF1).append("</a>");
           html.append("</li>\r\n");
         }
       }
       // If we are showing files now loop through and show files
       if (showFiles) {
-        for (int i = 0; i < f.length; i++) {
-          if (new File(startingPath + "/" + f[i]).isFile()) {
-            String filename = new File(startingPath + "/" + f[i]).getName();
+        for (String aF : f) {
+          if (new File(startingPath + "/" + aF).isFile()) {
+            String filename = new File(startingPath + "/" + aF).getName();
             String ext = filename.substring(filename.lastIndexOf('.') + 1);
             html.append(" <li class=\"file draggy ext_").append(ext)
                 .append("\">");
             html.append("<a href=\"#\" rel=\"").append(relativePath)
-                .append("/").append(f[i]).append("\">").append(f[i])
+                .append("/").append(aF).append("\">").append(aF)
                 .append("</a>");
             html.append("</li>\r\n");
           }

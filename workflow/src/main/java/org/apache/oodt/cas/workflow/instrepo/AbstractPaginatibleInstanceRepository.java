@@ -177,8 +177,8 @@ public abstract class AbstractPaginatibleInstanceRepository implements
         if (wInstIds != null && wInstIds.size() > 0) {
             List workflowInstances = new Vector(wInstIds.size());
 
-            for (Iterator i = wInstIds.iterator(); i.hasNext();) {
-                String workflowInstId = (String) i.next();
+            for (Object wInstId : wInstIds) {
+                String workflowInstId = (String) wInstId;
                 WorkflowInstance inst = getWorkflowInstanceById(workflowInstId);
                 workflowInstances.add(inst);
             }

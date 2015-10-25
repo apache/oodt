@@ -148,9 +148,9 @@ public class XmlRpcWorkflowManager {
             events = repo.getRegisteredEvents();
 
             if (events != null) {
-                for (Iterator i = events.iterator(); i.hasNext();) {
-                    eventsVector.add(i.next());
-                }
+              for (Object event : events) {
+                eventsVector.add(event);
+              }
 
             }
 
@@ -260,12 +260,12 @@ public class XmlRpcWorkflowManager {
             workflows = repo.getWorkflowsForEvent(eventName);
 
             if (workflows != null) {
-                for (Iterator i = workflows.iterator(); i.hasNext();) {
-                    Workflow w = (Workflow) i.next();
-                    Hashtable workflow = XmlRpcStructFactory
-                            .getXmlRpcWorkflow(w);
-                    workflowList.add(workflow);
-                }
+              for (Object workflow1 : workflows) {
+                Workflow w = (Workflow) workflow1;
+                Hashtable workflow = XmlRpcStructFactory
+                    .getXmlRpcWorkflow(w);
+                workflowList.add(workflow);
+              }
             }
 
             return workflowList;
@@ -294,24 +294,24 @@ public class XmlRpcWorkflowManager {
         }
 
         if (workflows != null) {
-            for (Iterator i = workflows.iterator(); i.hasNext();) {
-                Workflow w = (Workflow) i.next();
-                LOG.log(Level.INFO, "WorkflowManager: Workflow " + w.getName()
-                        + " retrieved for event " + eventName);
+          for (Object workflow : workflows) {
+            Workflow w = (Workflow) workflow;
+            LOG.log(Level.INFO, "WorkflowManager: Workflow " + w.getName()
+                                + " retrieved for event " + eventName);
 
-                Metadata m = new Metadata();
-                m.addMetadata(metadata);
+            Metadata m = new Metadata();
+            m.addMetadata(metadata);
 
-                try {
-                    engine.startWorkflow(w, m);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new EngineException(
-                            "Engine exception when starting workflow: "
-                                    + w.getName() + ": Message: "
-                                    + e.getMessage());
-                }
+            try {
+              engine.startWorkflow(w, m);
+            } catch (Exception e) {
+              e.printStackTrace();
+              throw new EngineException(
+                  "Engine exception when starting workflow: "
+                  + w.getName() + ": Message: "
+                  + e.getMessage());
             }
+          }
             return true;
         } else
             return false;
@@ -390,25 +390,25 @@ public class XmlRpcWorkflowManager {
                             + workflowInsts.size() + " instances");
 
             try {
-                for (Iterator i = workflowInsts.iterator(); i.hasNext();) {
-                    WorkflowInstance wInst = (WorkflowInstance) i.next();
-                    // pick up the description of the workflow
-                    Workflow wDesc = repo.getWorkflowById(wInst.getWorkflow()
-                            .getId());
-                    // TODO: hack for now, fix this, we shouldn't have to cast
-                    // here, bad
-                    // design
-                    if(wDesc == null){
-                      //Possible dynamic workflow for instance
-                      //reconsitute it from cache
-                      wDesc = wInst.getWorkflow();
-                      repo.addWorkflow(wDesc);
-                    }
-                    wInst.setWorkflow(wDesc);
-                    Hashtable workflowInstance = XmlRpcStructFactory
-                            .getXmlRpcWorkflowInstance(wInst);
-                    workflowInstances.add(workflowInstance);
+              for (Object workflowInst : workflowInsts) {
+                WorkflowInstance wInst = (WorkflowInstance) workflowInst;
+                // pick up the description of the workflow
+                Workflow wDesc = repo.getWorkflowById(wInst.getWorkflow()
+                                                           .getId());
+                // TODO: hack for now, fix this, we shouldn't have to cast
+                // here, bad
+                // design
+                if (wDesc == null) {
+                  //Possible dynamic workflow for instance
+                  //reconsitute it from cache
+                  wDesc = wInst.getWorkflow();
+                  repo.addWorkflow(wDesc);
                 }
+                wInst.setWorkflow(wDesc);
+                Hashtable workflowInstance = XmlRpcStructFactory
+                    .getXmlRpcWorkflowInstance(wInst);
+                workflowInstances.add(workflowInstance);
+              }
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new EngineException(
@@ -441,27 +441,27 @@ public class XmlRpcWorkflowManager {
                     + workflowInsts.size() + " instances");
 
             try {
-                for (Iterator i = workflowInsts.iterator(); i.hasNext();) {
-                    WorkflowInstance wInst = (WorkflowInstance) i.next();
-                    // pick up the description of the workflow
-                    Workflow wDesc = repo.getWorkflowById(wInst.getWorkflow()
-                            .getId());
-                    if(wDesc == null){
-                      //possible dynamic workflow
-                      //reconsitute it from cached instance
-                      wDesc = wInst.getWorkflow();
-                      //now save it
-                      repo.addWorkflow(wDesc);
+              for (Object workflowInst : workflowInsts) {
+                WorkflowInstance wInst = (WorkflowInstance) workflowInst;
+                // pick up the description of the workflow
+                Workflow wDesc = repo.getWorkflowById(wInst.getWorkflow()
+                                                           .getId());
+                if (wDesc == null) {
+                  //possible dynamic workflow
+                  //reconsitute it from cached instance
+                  wDesc = wInst.getWorkflow();
+                  //now save it
+                  repo.addWorkflow(wDesc);
 
-                    }
-                    // TODO: hack for now, fix this, we shouldn't have to cast
-                    // here, bad
-                    // design
-                    wInst.setWorkflow(wDesc);
-                    Hashtable workflowInstance = XmlRpcStructFactory
-                            .getXmlRpcWorkflowInstance(wInst);
-                    workflowInstances.add(workflowInstance);
                 }
+                // TODO: hack for now, fix this, we shouldn't have to cast
+                // here, bad
+                // design
+                wInst.setWorkflow(wDesc);
+                Hashtable workflowInstance = XmlRpcStructFactory
+                    .getXmlRpcWorkflowInstance(wInst);
+                workflowInstances.add(workflowInstance);
+              }
                 return workflowInstances;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -482,12 +482,12 @@ public class XmlRpcWorkflowManager {
                     + workflowList.size() + " workflows");
 
             try {
-                for (Iterator i = workflowList.iterator(); i.hasNext();) {
-                    Workflow w = (Workflow) i.next();
-                    Hashtable workflow = XmlRpcStructFactory
-                            .getXmlRpcWorkflow(w);
-                    workflows.add(workflow);
-                }
+              for (Object aWorkflowList : workflowList) {
+                Workflow w = (Workflow) aWorkflowList;
+                Hashtable workflow = XmlRpcStructFactory
+                    .getXmlRpcWorkflow(w);
+                workflows.add(workflow);
+              }
 
                 return workflows;
             } catch (Exception e) {
@@ -676,30 +676,30 @@ public class XmlRpcWorkflowManager {
 
     private void populateWorkflows(List wInsts) {
         if (wInsts != null && wInsts.size() > 0) {
-            for (Iterator i = wInsts.iterator(); i.hasNext();) {
-                WorkflowInstance wInst = (WorkflowInstance) i.next();
-                if(wInst.getWorkflow() == null || 
-                	(wInst.getWorkflow() != null && 
-                	  (wInst.getWorkflow().getName() == null || 
-                	   wInst.getWorkflow().getId() == null))){
-                    wInst.setWorkflow(safeGetWorkflowById(wInst.getWorkflow()
-                            .getId()));                	
+          for (Object wInst1 : wInsts) {
+            WorkflowInstance wInst = (WorkflowInstance) wInst1;
+            if (wInst.getWorkflow() == null ||
+                (wInst.getWorkflow() != null &&
+                 (wInst.getWorkflow().getName() == null ||
+                  wInst.getWorkflow().getId() == null))) {
+              wInst.setWorkflow(safeGetWorkflowById(wInst.getWorkflow()
+                                                         .getId()));
+            } else {
+              // check to see if the workflow exists in the
+              // repo
+              try {
+                if (repo.getWorkflowById(wInst.getWorkflow().getId()) == null) {
+                  repo.addWorkflow(wInst.getWorkflow());
                 }
-                else{
-                	// check to see if the workflow exists in the 
-                	// repo
-                	try {
-						if(repo.getWorkflowById(wInst.getWorkflow().getId()) == null){
-							repo.addWorkflow(wInst.getWorkflow());
-						}
-					} catch (RepositoryException e) {
-						LOG.log(Level.WARNING, "Attempting to look up workflow: ["+wInst.getWorkflow()
-								.getId()+"] in populate workflows. Message: "+e.getMessage());
-						e.printStackTrace();
-					}
+              } catch (RepositoryException e) {
+                LOG.log(Level.WARNING, "Attempting to look up workflow: [" + wInst.getWorkflow()
+                                                                                  .getId()
+                                       + "] in populate workflows. Message: " + e.getMessage());
+                e.printStackTrace();
+              }
 
-                }
             }
+          }
         }
     }
 

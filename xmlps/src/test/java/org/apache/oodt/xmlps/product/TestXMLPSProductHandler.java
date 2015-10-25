@@ -107,8 +107,7 @@ public class TestXMLPSProductHandler extends TestCase {
         assertEquals(1, elemNames.size()); // only 1 b/c one field is constant
 
         boolean gotSpecCollected = false;
-        for (Iterator<QueryElement> i = elemNames.iterator(); i.hasNext();) {
-            QueryElement elem = i.next();
+        for (QueryElement elem : elemNames) {
             if (elem.getValue().equals("specimen.specimen_collected")) {
                 gotSpecCollected = true;
             }

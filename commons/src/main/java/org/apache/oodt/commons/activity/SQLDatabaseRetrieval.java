@@ -192,13 +192,15 @@ public class SQLDatabaseRetrieval implements Retrieval {
       try {
          SQLDatabaseRetrieval retrieval = new SQLDatabaseRetrieval();
          List activities = retrieval.retrieve();
-         for (Iterator i = activities.iterator(); i.hasNext();) {
-            StoredActivity activity = (StoredActivity) i.next();
+         for (Object activity1 : activities) {
+            StoredActivity activity = (StoredActivity) activity1;
             System.out.println("Activity: " + activity.getActivityID());
             List incidents = activity.getIncidents();
-            for (Iterator j = incidents.iterator(); j.hasNext();) {
-               StoredIncident incident = (StoredIncident) j.next();
-               System.out.println("   Incident: " + incident.getClassName() + ", " + incident.getOccurTime() + ", " + incident.getDetail());
+            for (Object incident1 : incidents) {
+               StoredIncident incident = (StoredIncident) incident1;
+               System.out.println(
+                   "   Incident: " + incident.getClassName() + ", " + incident.getOccurTime() + ", " + incident
+                       .getDetail());
             }
          }
          System.exit(0);

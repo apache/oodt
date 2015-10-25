@@ -110,8 +110,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
     List typeList = new Vector();
 
     if (typeNames != null && typeNames.size() > 0) {
-      for (Iterator i = typeNames.iterator(); i.hasNext();) {
-        String typeName = (String) i.next();
+      for (Object typeName1 : typeNames) {
+        String typeName = (String) typeName1;
         ProductType type = safeGetProductTypeByName(typeName);
         if (type != null) {
           typeList.add(type);
@@ -126,8 +126,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
     List products = new Vector();
 
     if (typeList != null && typeList.size() > 0) {
-      for (Iterator i = typeList.iterator(); i.hasNext();) {
-        ProductType type = (ProductType) i.next();
+      for (Object aTypeList : typeList) {
+        ProductType type = (ProductType) aTypeList;
         List prods = safeIssueQuery(query, type);
         if (prods != null && prods.size() > 0) {
           products.addAll(prods);
@@ -161,8 +161,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
     List products = new Vector();
 
     if (productTypes != null && productTypes.size() > 0) {
-      for (Iterator i = productTypes.iterator(); i.hasNext();) {
-        ProductType type = (ProductType) i.next();
+      for (Object productType : productTypes) {
+        ProductType type = (ProductType) productType;
         if (excludeTypeList != null && excludeTypeList.contains(type.getName())) {
           // System.out.println("Skipping: [" + type.getName() + "]");
           continue;
@@ -428,8 +428,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
   public static Reference getRootReference(String productName, List refs) {
     Reference r = null;
 
-    for (Iterator i = refs.iterator(); i.hasNext();) {
-      Reference ref = (Reference) i.next();
+    for (Object ref1 : refs) {
+      Reference ref = (Reference) ref1;
       if (isRootDir(ref, productName)) {
         r = ref;
       }

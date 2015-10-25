@@ -92,31 +92,30 @@ public class MetadataBasedProductMover {
         for (int i = 0; i < page.getTotalPages(); i++) {
             if (page.getPageProducts() != null
                     && page.getPageProducts().size() > 0) {
-                for (Iterator j = page.getPageProducts().iterator(); j
-                        .hasNext();) {
-                    Product p = (Product) j.next();
+                for (Product p : page.getPageProducts()) {
                     p.setProductReferences(fmgrClient.getProductReferences(p));
                     Metadata met = fmgrClient.getMetadata(p);
                     Reference r = ((Reference) p.getProductReferences().get(0));
                     String newLocPath = PathUtils.replaceEnvVariables(
-                            this.pathSpec, met);
-                    
+                        this.pathSpec, met);
+
                     if (locationsMatch(r.getDataStoreReference(), newLocPath)) {
-                    	LOG.log(Level.INFO, "Current and New locations match. "+p.getProductName()+" was not moved.");
-                    	continue;
+                        LOG.log(Level.INFO,
+                            "Current and New locations match. " + p.getProductName() + " was not moved.");
+                        continue;
                     }
-                    
+
                     LOG.log(Level.INFO, "Moving product: ["
-                            + p.getProductName() + "] from: ["
-                            + new File(new URI(r.getDataStoreReference()))
-                            + "] to: [" + newLocPath + "]");
+                                        + p.getProductName() + "] from: ["
+                                        + new File(new URI(r.getDataStoreReference()))
+                                        + "] to: [" + newLocPath + "]");
                     long timeBefore = System.currentTimeMillis();
                     fmgrClient.moveProduct(p, newLocPath);
                     long timeAfter = System.currentTimeMillis();
                     double seconds = ((timeAfter - timeBefore) * 1.0) / (1000.0);
                     LOG.log(Level.INFO, "Product: [" + p.getProductName()
-                            + "] move successful: took: [" + seconds
-                            + "] seconds");
+                                        + "] move successful: took: [" + seconds
+                                        + "] seconds");
                 }
 
                 if (!page.isLastPage()) {

@@ -148,12 +148,12 @@ public class XmlRpcBatchMgr implements Batchmgr {
     	Vector<String> jobIds = new Vector();
     	
     	if(this.nodeToJobMap.size() > 0){
-    		for(Iterator i = this.nodeToJobMap.keySet().iterator(); i.hasNext(); ){
-    			String jobId = (String)i.next();
-    			if(nodeId.equals(this.nodeToJobMap.get(jobId))){
-    				jobIds.add(jobId);
-    			}
-    		}
+            for (Object o : this.nodeToJobMap.keySet()) {
+                String jobId = (String) o;
+                if (nodeId.equals(this.nodeToJobMap.get(jobId))) {
+                    jobIds.add(jobId);
+                }
+            }
     	}
     	
     	Collections.sort(jobIds); // sort the list to return as a courtesy to the user
