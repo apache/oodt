@@ -63,8 +63,7 @@ public class IngestAncillary extends FileBasedAction {
   }
 
   @Override
-  public boolean performFileAction(File actionFile, Metadata metadata)
-      throws CrawlerActionException {
+  public boolean performFileAction(File actionFile, Metadata metadata) {
     Metadata ingestMetadata = new Metadata();
     if (ancillaryMetadata != null) {
       for (String key : this.ancillaryMetadata.keySet()) {

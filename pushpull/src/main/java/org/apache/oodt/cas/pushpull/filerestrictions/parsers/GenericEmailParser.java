@@ -108,7 +108,7 @@ public class GenericEmailParser implements Parser {
     return emailText.toString();
   }
 
-  private List<String> generateFilePaths(String emailText) throws ParserException {
+  private List<String> generateFilePaths(String emailText) {
     List<String> filePaths = Lists.newArrayList();
     Pattern pattern = Pattern.compile(filePattern);
     Matcher m = pattern.matcher(emailText);

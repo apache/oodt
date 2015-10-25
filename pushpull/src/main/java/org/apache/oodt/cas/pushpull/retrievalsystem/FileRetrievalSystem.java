@@ -226,7 +226,7 @@ public class FileRetrievalSystem {
      *
      * @throws ThreadEvaluatorException
      */
-    void resetVariables() throws ThreadEvaluatorException {
+    void resetVariables() {
         numberOfSessions = 0;
         stagingAreas = new HashSet<File>();
         avaliableSessions = new Vector<Protocol>();
@@ -277,7 +277,7 @@ public class FileRetrievalSystem {
     }
 
     public void changeToRoot(RemoteSite remoteSite) throws
-        MalformedURLException, org.apache.oodt.cas.protocol.exceptions.ProtocolException {
+        org.apache.oodt.cas.protocol.exceptions.ProtocolException {
         if (validate(remoteSite))
             protocolHandler.cdToROOT(protocolHandler
                     .getAppropriateProtocolBySite(remoteSite, true));
@@ -285,8 +285,7 @@ public class FileRetrievalSystem {
             throw new ProtocolException("Not a valid remote site " + remoteSite);
     }
 
-    public void changeToHOME(RemoteSite remoteSite) throws ProtocolException,
-            MalformedURLException {
+    public void changeToHOME(RemoteSite remoteSite) throws ProtocolException {
         if (validate(remoteSite))
             protocolHandler.cdToHOME(protocolHandler
                     .getAppropriateProtocolBySite(remoteSite, true));
@@ -305,8 +304,7 @@ public class FileRetrievalSystem {
             throw new ProtocolException("Not a valid remote site " + remoteSite);
     }
 
-    public void changeToDir(RemoteSiteFile pFile) throws ProtocolException,
-            MalformedURLException {
+    public void changeToDir(RemoteSiteFile pFile) throws ProtocolException {
         RemoteSite remoteSite = pFile.getSite();
         if (validate(remoteSite))
             protocolHandler.cd(protocolHandler.getAppropriateProtocolBySite(
@@ -335,8 +333,7 @@ public class FileRetrievalSystem {
     }
 
     public ProtocolFile getCurrentFile(RemoteSite remoteSite)
-            throws ProtocolFileException, ProtocolException,
-            MalformedURLException {
+            throws ProtocolException {
         if (validate(remoteSite))
             return protocolHandler.pwd(remoteSite, protocolHandler
                     .getAppropriateProtocolBySite(remoteSite, true));
@@ -349,7 +346,7 @@ public class FileRetrievalSystem {
             String renamingString, File downloadToDir,
             String uniqueMetadataElement, boolean deleteAfterDownload, Metadata fileMetadata)
             throws ToManyFailedDownloadsException, RemoteConnectionException,
-            ProtocolFileException, ProtocolException,
+        ProtocolException,
             AlreadyInDatabaseException, UndefinedTypeException,
             CatalogException, IOException {
         if (validate(remoteSite)) {

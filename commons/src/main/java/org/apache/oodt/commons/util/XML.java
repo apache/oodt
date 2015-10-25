@@ -235,7 +235,7 @@ public class XML {
 	 * @param omitXMLDeclaration True if we should omit the XML declaration, false to keep the XML declaration.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public static void serialize(Document doc, Writer writer, boolean omitXMLDeclaration) throws IOException {
+	public static void serialize(Document doc, Writer writer, boolean omitXMLDeclaration) {
 		try {
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer transformer = factory.newTransformer();

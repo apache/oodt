@@ -49,7 +49,7 @@ public class ProductQueryServlet extends QueryServlet {
 
 	/** {@inheritDoc} */
 	protected void handleQuery(XMLQuery query, List handlers, HttpServletRequest req, HttpServletResponse res)
-		throws IOException, ServletException {
+		throws IOException {
 		if (handlers.isEmpty()) {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND, "no query handlers available to handle query");
 			return;

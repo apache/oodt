@@ -221,8 +221,7 @@ public class XMLValidationLayer implements ValidationLayer {
      * @throws ValidationLayerException
      * 				If any error occurs
      */
-    public List<Element> getElements(ProductType type, boolean direct)
-            throws ValidationLayerException {
+    public List<Element> getElements(ProductType type, boolean direct) {
         List<Element> elems = new Vector<Element>();
         String currType = type.getProductTypeId();
         if (productTypeElementMap.containsKey(currType)) {
@@ -257,8 +256,7 @@ public class XMLValidationLayer implements ValidationLayer {
      * @throws ValidationLayerException
      * 				If any error occurs
      */
-    public void addParentForProductType(ProductType type, String parentId)
-            throws ValidationLayerException {
+    public void addParentForProductType(ProductType type, String parentId) {
         subToSuperMap.put(type.getProductTypeId(), parentId);
         saveElementsAndMappings();
     }
@@ -269,8 +267,7 @@ public class XMLValidationLayer implements ValidationLayer {
      * @throws ValidationLayerException
      * 				If any error occurs
      */
-    public void removeParentForProductType(ProductType type)
-            throws ValidationLayerException {
+    public void removeParentForProductType(ProductType type) {
         subToSuperMap.remove(type.getProductTypeId());
         saveElementsAndMappings();
     }

@@ -176,7 +176,7 @@ public class MockCatalog implements Catalog {
    }
 
    @Override
-   public ValidationLayer getValidationLayer() throws CatalogException {
+   public ValidationLayer getValidationLayer() {
       return null;
    }
 

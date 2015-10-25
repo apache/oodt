@@ -71,7 +71,7 @@ public abstract class XMLStorage implements Storage {
 	 * @param doc XML document containing the activity's incidents.
 	 * @throws IOException if an error occurs.
 	 */
-	protected abstract void saveDocument(Document doc) throws IOException;
+	protected abstract void saveDocument(Document doc);
 
 	/** Factory for document builders which we use to create XML documents. */
 	protected DocumentBuilderFactory factory;

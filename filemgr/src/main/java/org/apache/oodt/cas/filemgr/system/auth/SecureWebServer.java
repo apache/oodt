@@ -44,7 +44,7 @@ public final class SecureWebServer extends org.apache.xmlrpc.WebServer
      * @throws IOException
      *             If any error occurs.
      */
-    public SecureWebServer(int port) throws IOException {
+    public SecureWebServer(int port) {
         super(port);
         addHandler("$default", this);
     }

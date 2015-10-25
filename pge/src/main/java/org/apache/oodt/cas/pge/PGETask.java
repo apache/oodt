@@ -50,8 +50,8 @@ public class PGETask {
     }
 
     public void run(String pgeTaskInstanceClasspath)
-            throws InstantiationException, IllegalAccessException,
-            ClassNotFoundException, WorkflowTaskInstanceException {
+            throws
+        WorkflowTaskInstanceException {
         PGETaskInstance pgeTaskInst = createPGETaskInstance(
                 pgeTaskInstanceClasspath, LOGGER);
         pgeTaskInst.run(this.metadata, this.wftConfig);

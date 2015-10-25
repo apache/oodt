@@ -100,6 +100,6 @@ public interface CatalogRepository {
 	List<PluginURL> deserializePluginURLs()
 			throws CatalogRepositoryException;
 	
-	boolean isModifiable() throws CatalogRepositoryException;
+	boolean isModifiable();
 	
 }

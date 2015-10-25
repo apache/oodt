@@ -40,7 +40,7 @@ public class XMLStandardOutputStorage extends XMLStorage {
 		factory = TransformerFactory.newInstance();
 	}
 
-	protected void saveDocument(Document doc) throws IOException {
+	protected void saveDocument(Document doc) {
 		try {
 			Transformer transformer = factory.newTransformer();
 			DOMSource source = new DOMSource(doc);

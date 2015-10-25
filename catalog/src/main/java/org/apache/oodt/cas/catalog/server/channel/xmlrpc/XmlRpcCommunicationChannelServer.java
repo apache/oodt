@@ -53,7 +53,7 @@ public class XmlRpcCommunicationChannelServer extends
 		super();
 	}
 	
-	public void startup() throws Exception {
+	public void startup() {
 		this.webServer = new WebServer(this.port);
 		this.webServer.addHandler(this.getClass().getSimpleName(), this);
 		this.webServer.start();

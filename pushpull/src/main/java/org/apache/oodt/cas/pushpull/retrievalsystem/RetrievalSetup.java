@@ -71,8 +71,7 @@ public class RetrievalSetup {
         linker = new DataFileToPropFileLinker();
     }
 
-    public void retrieveFiles(PropFilesInfo pfi, final DataFilesInfo dfi)
-            throws RetrievalMethodException {
+    public void retrieveFiles(PropFilesInfo pfi, final DataFilesInfo dfi) {
 
         FileRetrievalSystem dataFilesFRS = null;
         try {
@@ -147,8 +146,7 @@ public class RetrievalSetup {
         }
     }
 
-    private void startPropFileDownload(final PropFilesInfo pfi)
-            throws IOException {
+    private void startPropFileDownload(final PropFilesInfo pfi) {
         if (pfi.needsToBeDownloaded()) {
             this.downloadingProps = true;
             new Thread(new Runnable() {

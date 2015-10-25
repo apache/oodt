@@ -699,8 +699,8 @@ public class XmlRpcFileManager {
 
     public String ingestProduct(Hashtable<String, Object> productHash,
       Hashtable<String, String> metadata, boolean clientTransfer)
-      throws VersioningException, RepositoryManagerException,
-        DataTransferException, CatalogException {
+      throws
+        CatalogException {
 
     Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
 

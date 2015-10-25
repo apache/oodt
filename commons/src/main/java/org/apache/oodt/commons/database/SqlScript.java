@@ -56,7 +56,7 @@ public class SqlScript {
      * @throws SQLException
      */
 
-    public SqlScript(String scriptFileName, DataSource ds) throws SQLException {
+    public SqlScript(String scriptFileName, DataSource ds) {
         script = new File(scriptFileName);
         statementList = new Vector();
         this.ds = ds;
@@ -132,7 +132,7 @@ public class SqlScript {
         }
     }
 
-    public void execute() throws SQLException {
+    public void execute() {
         if (useBatch) {
             doExecuteBatch();
         } else {

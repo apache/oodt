@@ -46,8 +46,7 @@ public class SpringCmdLineOptionStore implements CmdLineOptionStore {
    }
 
    @Override
-   public Set<CmdLineOption> loadSupportedOptions()
-         throws CmdLineOptionStoreException {
+   public Set<CmdLineOption> loadSupportedOptions() {
       @SuppressWarnings("unchecked")
       Map<String, CmdLineOption> optionsMap = appContext
             .getBeansOfType(CmdLineOption.class);

@@ -43,7 +43,7 @@ public class DataSourceRepositoryManagerFactory implements
      * Default Constructor
      * </p>.
      */
-    public DataSourceRepositoryManagerFactory() throws Exception {
+    public DataSourceRepositoryManagerFactory() {
         String jdbcUrl = null, user = null, pass = null, driver = null;
 
         jdbcUrl = System

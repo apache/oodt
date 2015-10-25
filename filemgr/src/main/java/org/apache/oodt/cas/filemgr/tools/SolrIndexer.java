@@ -204,8 +204,8 @@ public class SolrIndexer {
 	 *           When an error occurs communicating with the Solr server instance.
 	 */
 	public void indexMetFile(File file, boolean delete)
-	    throws InstantiationException, IOException,
-	    SolrServerException {
+	    throws
+		SolrServerException {
 		LOG.info("Attempting to index product from metadata file.");
 		try {
 			SerializableMetadata metadata = new SerializableMetadata("UTF-8", false);
@@ -497,7 +497,7 @@ public class SolrIndexer {
 	 * @throws IOException
 	 * @throws SolrServerException
 	 */
-	public void deleteProductByName(String productName) throws IOException, SolrServerException {
+	public void deleteProductByName(String productName) {
 		LOG.info("Attempting to delete product: " + productName);
 
 		try {

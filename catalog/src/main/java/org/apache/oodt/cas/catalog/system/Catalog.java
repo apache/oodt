@@ -111,7 +111,8 @@ public class Catalog {
 		return this.index.getPage(indexPage);
 	}
 	
-	public TransactionId<?> getTransactionIdFromString(String catalogTransactionId) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, CatalogIndexException {
+	public TransactionId<?> getTransactionIdFromString(String catalogTransactionId) throws IllegalArgumentException, SecurityException,
+		CatalogIndexException {
 		return this.getTransactionIdFactory().createTransactionId(catalogTransactionId);
 	}
 	

@@ -27,7 +27,7 @@ package org.apache.oodt.cas.catalog.query.filter.time.conv;
  */
 public class AsciiSortableVersionConverter implements VersionConverter {
 
-    public double convertToPriority(String version) throws Exception {
+    public double convertToPriority(String version) {
         double priority = 0;
         char[] versionCharArray = version.toCharArray();
         for (int i = 0, j = versionCharArray.length - 1; i < versionCharArray.length; i++, j--)

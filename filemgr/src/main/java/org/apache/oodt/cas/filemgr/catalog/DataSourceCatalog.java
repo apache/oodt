@@ -1325,7 +1325,7 @@ public class DataSourceCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getValidationLayer()
      */
-    public ValidationLayer getValidationLayer() throws CatalogException {
+    public ValidationLayer getValidationLayer() {
     	// note that validationLayer may be null to allow for leniency in subclasses
     	return validationLayer;
     }

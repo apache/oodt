@@ -68,7 +68,7 @@ public class DownloadCliAction extends ProtocolCliAction {
       return usedProtocol;
    }
 
-   protected ProtocolFile createProtocolFile() throws URISyntaxException {
+   protected ProtocolFile createProtocolFile() {
       return new ProtocolFile(uri.getPath(), false);
    }
 

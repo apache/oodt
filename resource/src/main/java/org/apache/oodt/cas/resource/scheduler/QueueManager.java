@@ -62,7 +62,7 @@ public class QueueManager {
 		this.queueToNodesMapping.put(queueName, nodes);
 	}
 
-	public synchronized void addQueue(String queueName) throws QueueManagerException {
+	public synchronized void addQueue(String queueName) {
 		if (queueName != null && !this.queueToNodesMapping.containsKey(queueName)) 
 			this.queueToNodesMapping.put(queueName, new LinkedHashSet<String>());
 	}
@@ -74,11 +74,11 @@ public class QueueManager {
 			throw new QueueManagerException("Queue '" + queueName + "' does not exist");
 	}
 	
-	public synchronized List<String> getQueues() throws QueueManagerException {
+	public synchronized List<String> getQueues() {
 		return new Vector<String>(this.queueToNodesMapping.keySet());
 	}
 
-	public synchronized List<String> getQueues(String nodeId) throws QueueManagerException {
+	public synchronized List<String> getQueues(String nodeId) {
 		Vector<String> queueNames = new Vector<String>();
 		for (String queueName : this.queueToNodesMapping.keySet()) 
 			if (this.queueToNodesMapping.get(queueName).contains(nodeId))
@@ -93,7 +93,7 @@ public class QueueManager {
 			throw new QueueManagerException("Queue '" + queueName + "' does not exist");
 	}
 
-	public synchronized void removeQueue(String queueName) throws QueueManagerException {
+	public synchronized void removeQueue(String queueName) {
 		if (queueName != null) 
 			this.queueToNodesMapping.remove(queueName);
 	}

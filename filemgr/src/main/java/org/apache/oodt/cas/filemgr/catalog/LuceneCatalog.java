@@ -735,7 +735,7 @@ public class LuceneCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getValidationLayer()
      */
-    public ValidationLayer getValidationLayer() throws CatalogException {
+    public ValidationLayer getValidationLayer() {
         return valLayer;
     }
 

@@ -51,7 +51,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 	protected DataSource dataSource;
 	
 	public DataSourceIngestMapper(String user, String pass, String driver,
-			String jdbcUrl) throws InstantiationException {
+			String jdbcUrl) {
 		this.dataSource = DatabaseConnectionBuilder.buildDataSource(user, pass,
                 driver, jdbcUrl);
 	}

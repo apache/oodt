@@ -238,8 +238,7 @@ public class GangliaResourceMonitor implements Monitor {
 		return node;
 	}
 
-	private void initGmetaNodes(String host, int port)
-			throws MalformedURLException {
+	private void initGmetaNodes(String host, int port) {
 		this.addGmetadNode(host, port);
 	}
 

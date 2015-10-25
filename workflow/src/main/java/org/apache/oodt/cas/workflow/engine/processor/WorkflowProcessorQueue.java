@@ -126,8 +126,7 @@ public class WorkflowProcessorQueue {
     }
   }  
 
-  private WorkflowProcessor fromWorkflowInstance(WorkflowInstance inst)
-      throws EngineException {
+  private WorkflowProcessor fromWorkflowInstance(WorkflowInstance inst) {
     WorkflowProcessor processor = null;
     if (processorCache.containsKey(inst.getId())) {
       return processorCache.get(inst.getId());

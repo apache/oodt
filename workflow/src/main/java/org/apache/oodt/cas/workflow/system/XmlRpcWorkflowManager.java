@@ -108,8 +108,7 @@ public class XmlRpcWorkflowManager {
          return false;
    }
 
-   public boolean refreshRepository()
-       throws RepositoryException {
+   public boolean refreshRepository() {
      repo = getWorkflowRepositoryFromProperty();
      return true;
    }
@@ -318,8 +317,7 @@ public class XmlRpcWorkflowManager {
             return false;
     }
 
-    public Hashtable getWorkflowInstanceById(String wInstId)
-            throws EngineException {
+    public Hashtable getWorkflowInstanceById(String wInstId) {
         WorkflowInstance inst = null;
 
         try {

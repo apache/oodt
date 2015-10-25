@@ -116,7 +116,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
 	 * java.util.List, org.apache.oodt.cas.metadata.MetExtractor, java.io.File)
 	 */
 	public void ingest(URL fmUrl, List<String> prodFiles,
-			MetExtractor extractor, File metConfFile) throws IngestException {
+			MetExtractor extractor, File metConfFile) {
 		if (prodFiles != null && prodFiles.size() > 0) {
 			for (Iterator<String> i = prodFiles.iterator(); i.hasNext();) {
 				String prodFilePath = i.next();

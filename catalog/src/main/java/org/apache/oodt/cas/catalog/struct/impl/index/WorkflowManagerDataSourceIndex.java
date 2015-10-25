@@ -62,25 +62,24 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 	
 	protected DataSource dataSource;
 	
-	public WorkflowManagerDataSourceIndex(String user, String pass, String driver, String jdbcUrl) throws InstantiationException {
+	public WorkflowManagerDataSourceIndex(String user, String pass, String driver, String jdbcUrl) {
 		this.dataSource = DatabaseConnectionBuilder.buildDataSource(user, pass, driver, jdbcUrl);
 	}
 	
-	public List<TransactionId<?>> getPage(IndexPager indexPage)
-			throws CatalogIndexException {
+	public List<TransactionId<?>> getPage(IndexPager indexPage) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Properties getProperties() throws CatalogIndexException {
+	public Properties getProperties() {
 		return new Properties();
 	}
 
-	public String getProperty(String key) throws CatalogIndexException {
+	public String getProperty(String key) {
 		return null;
 	}
 
-	public TransactionIdFactory getTransactionIdFactory() throws CatalogIndexException {
+	public TransactionIdFactory getTransactionIdFactory() {
 		return new LongTransactionIdFactory();
 	}
 

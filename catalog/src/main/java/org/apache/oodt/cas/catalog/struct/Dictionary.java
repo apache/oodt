@@ -41,7 +41,7 @@ public interface Dictionary {
 	 * @return TermBucket representing the given Metadata for this Dictionary or
 	 * null if Metadata is not recognized by this Dictionary
 	 */
-	TermBucket lookup(Metadata metadata) throws CatalogDictionaryException;
+	TermBucket lookup(Metadata metadata);
 
 	/**
 	 * Generates Metadata for the given TermBucket.  A call to lookup(Metadata) and
@@ -52,7 +52,7 @@ public interface Dictionary {
 	 * @return Metadata for the given TermBucket.  If the TermBucket is not understood,
 	 * then an empty Metadata object should be returned.
 	 */
-	Metadata reverseLookup(TermBucket termBucket) throws CatalogDictionaryException;
+	Metadata reverseLookup(TermBucket termBucket);
 			
 	/**
 	 * 
@@ -60,6 +60,6 @@ public interface Dictionary {
 	 * @return
 	 * @throws CatalogDictionaryException
 	 */
-	boolean understands(QueryExpression queryExpression) throws CatalogDictionaryException;
+	boolean understands(QueryExpression queryExpression);
 	
 }

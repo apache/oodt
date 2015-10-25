@@ -32,7 +32,7 @@ import org.apache.oodt.cas.cli.CmdLineUtility;
  */
 public class CatalogServiceServerLauncher {
 		
-	private CatalogServiceServerLauncher() throws InstantiationException {}
+	private CatalogServiceServerLauncher() {}
 	
 	public static void main(String[] args) throws Exception {
       // Load Catalog Service properties.

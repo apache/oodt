@@ -116,7 +116,7 @@ public class ProtocolPath implements Serializable {
         return false;
     }
 
-    public String getParentDirPath() throws MalformedURLException {
+    public String getParentDirPath() {
         if (path.length() <= 1)
             return null;
         return path.substring(0, path.lastIndexOf("/"));
@@ -126,7 +126,7 @@ public class ProtocolPath implements Serializable {
         return (path + " isDir=" + this.isDir);
     }
 
-    public ProtocolPath getParentPath() throws MalformedURLException {
+    public ProtocolPath getParentPath() {
         return new ProtocolPath(path.substring(0, path.lastIndexOf("/")), true);
     }
 

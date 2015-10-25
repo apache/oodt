@@ -36,8 +36,7 @@ import java.util.Set;
  */
 public class WorkflowManagerDictionary implements Dictionary {
 
-	public TermBucket lookup(Metadata metadata)
-			throws CatalogDictionaryException {
+	public TermBucket lookup(Metadata metadata) {
 		if (metadata.getMetadata("ProductType") != null && metadata.getAllMetadata("ProductType").contains("Workflows")) {
 			TermBucket workflowBucket = new TermBucket("Workflows");
 			for (Object key : metadata.getHashtable().keySet()) 
@@ -48,8 +47,7 @@ public class WorkflowManagerDictionary implements Dictionary {
 		}
 	}
 
-	public Metadata reverseLookup(TermBucket termBucket)
-			throws CatalogDictionaryException {
+	public Metadata reverseLookup(TermBucket termBucket) {
 		Metadata metadata = new Metadata();
 		if (termBucket.getName().equals("Workflows")) {
 			for (Term term : termBucket.getTerms())
@@ -58,8 +56,7 @@ public class WorkflowManagerDictionary implements Dictionary {
 		return metadata;
 	}
 
-	public boolean understands(QueryExpression queryExpression)
-			throws CatalogDictionaryException {
+	public boolean understands(QueryExpression queryExpression) {
 		Set<String> bucketNames = queryExpression.getBucketNames();
 		if (bucketNames == null || bucketNames.contains("Workflows")) {
 		  return queryExpression instanceof NotQueryExpression

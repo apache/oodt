@@ -176,7 +176,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       return logger;
    }
 
-   protected String createLogFileName() throws Exception {
+   protected String createLogFileName() {
       String filenamePattern = pgeMetadata.getMetadata(LOG_FILENAME_PATTERN);
       if (filenamePattern != null) {
          return filenamePattern;
@@ -187,7 +187,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    }
 
    protected PgeMetadata createPgeMetadata(Metadata dynMetadata,
-         WorkflowTaskConfiguration config) throws Exception {
+         WorkflowTaskConfiguration config) {
       logger.info("Converting workflow configuration to static metadata...");
       Metadata staticMetadata = new Metadata();
       for (Object objKey : config.getProperties().keySet()) {
@@ -251,13 +251,12 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    }
 
    protected ConfigFilePropertyAdder loadPropertyAdder(
-         String propertyAdderClasspath) throws Exception {
+         String propertyAdderClasspath) {
       logger.fine("Loading property adder: " + propertyAdderClasspath);
       return createConfigFilePropertyAdder(propertyAdderClasspath, logger);
    }
 
-   protected void runPropertyAdder(ConfigFilePropertyAdder propAdder)
-         throws Exception {
+   protected void runPropertyAdder(ConfigFilePropertyAdder propAdder) {
       logger.info("Running property adder: "
             + propAdder.getClass().getCanonicalName());
       propAdder.addConfigProperties(pgeMetadata,
@@ -272,7 +271,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       return new XmlRpcWorkflowManagerClient(new URL(url));
    }
 
-   protected String getWorkflowInstanceId() throws Exception {
+   protected String getWorkflowInstanceId() {
       String instanceId = pgeMetadata.getMetadata(CoreMetKeys.WORKFLOW_INST_ID);
       logger.info("Workflow instanceId is [" + instanceId + "]");
       Validate.notNull(instanceId, "Must specify "
@@ -294,7 +293,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
             + getDumpMetadataName();
    }
 
-   protected String getDumpMetadataName() throws Exception {
+   protected String getDumpMetadataName() {
       return "pgetask-metadata.xml";
    }
 
@@ -333,7 +332,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       }
    }
 
-   protected FileStager getFileStager() throws Exception {
+   protected FileStager getFileStager() {
       String fileStagerClass = pgeMetadata.getMetadata(FILE_STAGER);
       if (fileStagerClass != null) {
          logger.info("Loading FileStager [" + fileStagerClass + "]");

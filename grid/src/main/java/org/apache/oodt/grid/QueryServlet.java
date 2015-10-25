@@ -61,7 +61,7 @@ public abstract class QueryServlet extends GridServlet {
 	 * @throws ServletException if a servlet error occurs.
 	 */
 	protected abstract void handleQuery(XMLQuery query, List handlers, HttpServletRequest req, HttpServletResponse res)
-		throws IOException, ServletException;
+		throws IOException;
 
 	/**
 	 * Treat GETs as POSTs.

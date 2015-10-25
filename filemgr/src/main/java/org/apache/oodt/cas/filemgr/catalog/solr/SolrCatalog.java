@@ -468,7 +468,7 @@ public class SolrCatalog implements Catalog {
 	}
 
 	@Override
-	public ValidationLayer getValidationLayer() throws CatalogException {
+	public ValidationLayer getValidationLayer() {
 		// FIXME: must parse Solr schema.xmnl from:
 		// http://localhost:8080/solr/admin/file/?contentType=text/xml;charset=utf-8&file=schema.xml
 		throw new RuntimeException("Method 'getValidationLayer' not yet implemented");

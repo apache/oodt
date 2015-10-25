@@ -390,7 +390,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     }
   }
 
-  private void computeWorkflowConditions() throws Exception {
+  private void computeWorkflowConditions() {
     if (this.workflows != null && this.workflows.values().size() > 0) {
       for (ParentChildWorkflow w : this.workflows.values()) {
         if (w.getConditions() != null && w.getConditions().size() > 0) {
@@ -579,7 +579,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   }
 
   private void expandWorkflowTasksAndConditions(Graph graph,
-      Metadata staticMetadata) throws Exception {
+      Metadata staticMetadata) {
     if (graph.getExecutionType().equals("workflow")
         || graph.getExecutionType().equals("sequential")
         || graph.getExecutionType().equals("parallel")) {

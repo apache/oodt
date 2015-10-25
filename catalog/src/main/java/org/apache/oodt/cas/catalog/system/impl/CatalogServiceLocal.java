@@ -1103,7 +1103,8 @@ TR:				for (CatalogReceipt catalogReceipt : qr.getCatalogReceipts()) {
 		return catalogReceipts;
 	}
 
-	protected QueryExpression reduceToUnderstoodExpressions(Catalog catalog, QueryExpression queryExpression) throws CatalogDictionaryException, CatalogException {
+	protected QueryExpression reduceToUnderstoodExpressions(Catalog catalog, QueryExpression queryExpression) throws
+		CatalogException {
 		if (queryExpression instanceof QueryLogicalGroup) {
         	QueryLogicalGroup queryLogicalGroup = (QueryLogicalGroup) queryExpression;
         	List<QueryExpression> restrictedExpressions = new Vector<QueryExpression>();

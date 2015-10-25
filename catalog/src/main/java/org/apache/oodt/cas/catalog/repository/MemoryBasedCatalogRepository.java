@@ -77,8 +77,7 @@ public class MemoryBasedCatalogRepository implements CatalogRepository {
 	 * org.apache.oodt.cas.catalog.repository.CatalogRepository#deserializeCatalog
 	 * (java.lang.String)
 	 */
-	public Catalog deserializeCatalog(String catalogUrn)
-			throws CatalogRepositoryException {
+	public Catalog deserializeCatalog(String catalogUrn) {
 		return this.catalogMap.get(catalogUrn);
 	}
 	
@@ -88,8 +87,7 @@ public class MemoryBasedCatalogRepository implements CatalogRepository {
 	 * @seeorg.apache.oodt.cas.catalog.repository.CatalogRepository#
 	 * isCatalogSerialized(java.lang.String)
 	 */
-	public boolean isCatalogSerialized(String catalogUrn)
-			throws CatalogRepositoryException {
+	public boolean isCatalogSerialized(String catalogUrn) {
 		return this.catalogMap.containsKey(catalogUrn);
 	}
 	
@@ -115,8 +113,7 @@ public class MemoryBasedCatalogRepository implements CatalogRepository {
 		return new Vector<PluginURL>(this.classLoaderUrls);
 	}
 	
-	public boolean isModifiable() 
-			throws CatalogRepositoryException {
+	public boolean isModifiable() {
 		return true;
 	}
 

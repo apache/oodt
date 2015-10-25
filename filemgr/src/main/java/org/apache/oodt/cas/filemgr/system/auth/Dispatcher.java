@@ -46,5 +46,5 @@ public interface Dispatcher {
      *             If any error occurs.
      */
     Result handleRequest(String methodSpecifier, List params,
-                         String user, String password) throws Exception;
+                         String user, String password);
 }

@@ -672,7 +672,7 @@ public class MetadataResource extends CurationService {
    *           If any error occurs during this delete operation.
    */
   public void deleteCatalogProduct(Product product) 
-  throws IOException, CatalogException {
+  throws CatalogException {
 	  CurationService.config.getFileManagerClient().removeProduct(product);
   }  
 

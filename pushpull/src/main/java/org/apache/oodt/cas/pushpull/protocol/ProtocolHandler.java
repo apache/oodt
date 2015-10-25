@@ -122,7 +122,7 @@ public class ProtocolHandler {
   }
 
   private Protocol getAppropriateProtocol(RemoteSiteFile pFile,
-      boolean allowReuse) throws ProtocolException, MalformedURLException {
+      boolean allowReuse) throws ProtocolException {
     return this.getAppropriateProtocolBySite(pFile.getSite(), allowReuse);
   }
 
@@ -238,8 +238,7 @@ public class ProtocolHandler {
   }
 
   private boolean passesDynamicDetection(PagingInfo pgInfo,
-      List<RemoteSiteFile> newLS) throws MalformedURLException,
-      ProtocolException {
+      List<RemoteSiteFile> newLS) {
     return !(pgInfo.getSizeOfLastLS() != -1
              && (pgInfo.getSizeOfLastLS() != newLS.size() || (newLS.size() != 0
                                                               && pgInfo.getPageLoc() < newLS.size() && (newLS.get(pgInfo
@@ -381,8 +380,7 @@ public class ProtocolHandler {
     protocol.cdHome();
   }
 
-  public boolean isProtocolConnected(Protocol protocol)
-      throws ProtocolException {
+  public boolean isProtocolConnected(Protocol protocol) {
     return protocol.connected();
   }
 
@@ -396,8 +394,7 @@ public class ProtocolHandler {
     return this.getProtocolFileByProtocol(site, protocol, file, isDir);
   }
 
-  public synchronized boolean delete(Protocol protocol, RemoteSiteFile file)
-      throws MalformedURLException, ProtocolException {
+  public synchronized boolean delete(Protocol protocol, RemoteSiteFile file) {
     try {
       PagingInfo pgInfo = this.getPagingInfo(file.getRemoteParent());
       List<RemoteSiteFile> fileList = this.ls(protocol, file.getRemoteParent());
@@ -565,8 +562,7 @@ public class ProtocolHandler {
       this.pFileAtPageLoc = null;
     }
 
-    synchronized void updatePageInfo(int newPageLoc, List<RemoteSiteFile> ls)
-        throws MalformedURLException, ProtocolException {
+    synchronized void updatePageInfo(int newPageLoc, List<RemoteSiteFile> ls) {
       this.sizeOfLastLS = ls.size();
       this.pageLoc = newPageLoc < 0 ? 0 : newPageLoc;
       this.pFileAtPageLoc = (this.sizeOfLastLS > 0 && newPageLoc < ls.size()) ? ls

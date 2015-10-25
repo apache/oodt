@@ -44,7 +44,7 @@ public class DataSourceValidationLayerFactory implements ValidationLayerFactory 
      * Default Constructor
      * </p>
      */
-    public DataSourceValidationLayerFactory() throws Exception {
+    public DataSourceValidationLayerFactory() {
         String jdbcUrl = null, user = null, pass = null, driver = null;
 
         jdbcUrl = System

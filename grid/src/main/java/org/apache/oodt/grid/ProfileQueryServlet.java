@@ -52,7 +52,7 @@ public class ProfileQueryServlet extends QueryServlet {
 
 	/** {@inheritDoc} */
 	protected void handleQuery(XMLQuery query, List handlers, HttpServletRequest req, HttpServletResponse res)
-		throws IOException, ServletException {
+		throws IOException {
 		// Find if the query should be targeted to specific handlers.
 		Set ids = new HashSet();
 		if (query.getFromElementSet() != null) {

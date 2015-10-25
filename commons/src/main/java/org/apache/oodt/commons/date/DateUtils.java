@@ -110,7 +110,7 @@ public class DateUtils {
         return taiCal;
     }
     
-    private static synchronized Calendar taiToUtc(Calendar taiCal) throws Exception {
+    private static synchronized Calendar taiToUtc(Calendar taiCal) {
         Calendar calUtc = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         calUtc.setTimeInMillis(taiCal.getTimeInMillis() - taiCal.getTimeZone().getRawOffset());
         return calUtc;
@@ -144,7 +144,7 @@ public class DateUtils {
         return toUtc(getCurrentLocalTime());
     }
     
-    public static Calendar getCurrentLocalTime() throws Exception {
+    public static Calendar getCurrentLocalTime() {
         return Calendar.getInstance();
     }
     

@@ -97,7 +97,7 @@ public interface Ingester {
      *             If there is an error ingesting the {@link Product}s.
      */
     void ingest(URL fmUrl, List<String> prodFiles, MetExtractor extractor,
-                File metConfFile) throws IngestException;
+                File metConfFile);
 
     /**
      * Checks the file manager at the given {@link URL} to see whether or not it

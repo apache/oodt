@@ -64,7 +64,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 	 * @return The profiles in the database, as a list.
 	 * @throws ProfileException If an error occurs.
 	 */
-	public abstract List getProfiles(Connection conn) throws ProfileException;
+	public abstract List getProfiles(Connection conn);
 
     	Connection conn;
    	Properties props;
@@ -107,7 +107,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 		}
     	}
 
-    	public abstract List findProfiles(Connection conn, XMLQuery query) throws DOMException, ProfileException;
+    	public abstract List findProfiles(Connection conn, XMLQuery query) throws DOMException;
 
 
 	public void add(Profile profile) throws ProfileException {
@@ -122,7 +122,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 			throw new ProfileSQLException (e);
 		}
 	}
-	public abstract void add(Connection conn, Profile profile) throws ProfileException ;
+	public abstract void add(Connection conn, Profile profile);
 	
 
 	public void addAll(Collection collection) throws ProfileException
@@ -143,9 +143,9 @@ public abstract class DatabaseProfileManager implements ProfileManager
                 }
 	}
 
-	public abstract void addAll(Connection conn,Collection collection) throws ProfileException;
+	public abstract void addAll(Connection conn,Collection collection);
 
-	public abstract void clear(Connection conn) throws ProfileException ;
+	public abstract void clear(Connection conn);
 
 	public void clear() throws ProfileException 
 	{
@@ -161,14 +161,14 @@ public abstract class DatabaseProfileManager implements ProfileManager
 			throw new ProfileSQLException (e);
 		}
 	}
-	public boolean contains(Profile profile) throws ProfileException {
+	public boolean contains(Profile profile) {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
-	public boolean containsAll(Collection collection) throws ProfileException {
+	public boolean containsAll(Collection collection) {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
-	public abstract Profile get(Connection conn, String profID) throws ProfileException;
+	public abstract Profile get(Connection conn, String profID);
 
 	public Profile get(String profId) throws ProfileException {
 		// Create database connection
@@ -183,20 +183,20 @@ public abstract class DatabaseProfileManager implements ProfileManager
 		}
 	}
 
-	public Collection getAll() throws ProfileException {
+	public Collection getAll() {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
-	public boolean isEmpty() throws ProfileException {
+	public boolean isEmpty() {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
-	public Iterator iterator() throws ProfileException {
+	public Iterator iterator() {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
 	public abstract boolean remove(Connection conn, String profId, String version)
-		 throws ProfileException;
+		;
 
-	public abstract boolean remove(Connection conn, String profId) throws ProfileException;
+	public abstract boolean remove(Connection conn, String profId);
 
 
 	public boolean remove(String profId, String version) throws ProfileException 
@@ -242,7 +242,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 
 	}
 
-	public abstract int size(Connection conn) throws ProfileException ;
+	public abstract int size(Connection conn);
 
 	public void replace(Profile profile) throws ProfileException {
 		// Create database connection
@@ -257,7 +257,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 			throw new ProfileException(e.getMessage());
 		}
 	}
-	public abstract void replace(Connection conn, Profile profile) throws ProfileException ;
+	public abstract void replace(Connection conn, Profile profile);
 
 	protected  static Connection openConnection(Properties props) throws SQLException, ProfileException
 	{

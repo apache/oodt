@@ -63,7 +63,7 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
    * @see org.apache.oodt.cas.workflow.engine.runner.EngineRunner#execute(org.apache.oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public void execute(TaskProcessor taskProcessor) throws Exception {
+  public void execute(TaskProcessor taskProcessor) {
     Job workflowTaskJob = new Job();
     WorkflowTask workflowTask = getTaskFromProcessor(taskProcessor);
     workflowTaskJob.setName(workflowTask.getTaskId());
@@ -102,7 +102,7 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
    * @see org.apache.oodt.cas.workflow.engine.EngineRunner#shutdown()
    */
   @Override
-  public void shutdown() throws Exception {
+  public void shutdown() {
     // TODO Auto-generated method stub
 
   }
@@ -112,7 +112,7 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
    * @see org.apache.oodt.cas.workflow.engine.runner.EngineRunner#hasOpenSlots(org.apache.oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public boolean hasOpenSlots(TaskProcessor taskProcessor) throws Exception {
+  public boolean hasOpenSlots(TaskProcessor taskProcessor) {
     // TODO Auto-generated method stub
     return false;
   }

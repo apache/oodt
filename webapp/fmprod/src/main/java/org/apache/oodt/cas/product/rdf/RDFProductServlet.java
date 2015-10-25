@@ -144,7 +144,7 @@ public class RDFProductServlet extends HttpServlet {
   }
 
   public void doIt(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, java.io.IOException {
+      throws ServletException {
 
     // need to know the type of product to get products for
     String productTypeName = req.getParameter("type");

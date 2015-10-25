@@ -168,7 +168,7 @@ public class TestCatalogServiceLocal extends TestCase {
 	}
 
 	private InMemoryIngestMapperFactory getOracleIngestMapperFactory(
-			String tmpDirPath) throws SQLException, IOException {
+			String tmpDirPath) {
 		String user = "sa";
 		String pass = "";
 		String driver = "org.hsqldb.jdbcDriver";
@@ -183,8 +183,7 @@ public class TestCatalogServiceLocal extends TestCase {
 		return factory;
 	}
 
-	private DataSourceIndexFactory getInMemoryDSFactory(String tmpDirPath)
-			throws IOException, SQLException {
+	private DataSourceIndexFactory getInMemoryDSFactory(String tmpDirPath) {
 		String user = "sa";
 		String pass = "";
 		String driver = "org.hsqldb.jdbcDriver";

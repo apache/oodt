@@ -52,7 +52,7 @@ public class ExternMetExtractor extends CmdLineMetExtractor implements
 
     private static ExternConfigReader reader = new ExternConfigReader();
 
-    public ExternMetExtractor() throws InstantiationException {
+    public ExternMetExtractor() {
         super(reader);
     }
 

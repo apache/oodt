@@ -62,7 +62,7 @@ public class XmlRpcBatchStub {
 
     private static Map jobThreadMap = null;
 
-    public XmlRpcBatchStub(int port) throws Exception {
+    public XmlRpcBatchStub(int port) {
         webServerPort = port;
 
         // start up the web server
@@ -129,8 +129,7 @@ public class XmlRpcBatchStub {
         return true;
     }
 
-    private boolean genericExecuteJob(Hashtable jobHash, Object jobInput)
-        throws JobException {
+    private boolean genericExecuteJob(Hashtable jobHash, Object jobInput) {
         JobInstance exec = null;
         JobInput in = null;
         try {

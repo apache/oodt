@@ -69,7 +69,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
    * .oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public void execute(final TaskProcessor taskProcessor) throws Exception {
+  public void execute(final TaskProcessor taskProcessor) {
     Thread worker = new Thread() {
 
       @Override
@@ -129,7 +129,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
    * @see org.apache.oodt.cas.workflow.engine.EngineRunner#shutdown()
    */
   @Override
-  public void shutdown() throws Exception {
+  public void shutdown() {
     for (Thread worker : this.workerMap.values()) {
       if (worker != null) {
         worker.interrupt();
@@ -147,7 +147,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
    * .apache.oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public boolean hasOpenSlots(TaskProcessor taskProcessor) throws Exception {
+  public boolean hasOpenSlots(TaskProcessor taskProcessor) {
     // TODO Auto-generated method stub
     return true;
   }

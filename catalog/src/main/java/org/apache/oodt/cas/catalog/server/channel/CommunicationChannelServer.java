@@ -43,13 +43,13 @@ import java.util.Set;
  */
 public interface CommunicationChannelServer {
 
-	void setCatalogService(CatalogService catalogService) throws Exception;
+	void setCatalogService(CatalogService catalogService);
 	
-	void setPort(int port) throws Exception;
+	void setPort(int port);
 
 	int getPort();
 	
-	void startup() throws Exception;
+	void startup();
 
 	void shutdown() throws Exception;
 

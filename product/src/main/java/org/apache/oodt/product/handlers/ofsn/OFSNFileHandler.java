@@ -171,7 +171,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
    * 
    * @see org.apache.oodt.product.LargeProductQueryHandler#close(java.lang.String)
    */
-  public void close(String id) throws ProductException {
+  public void close(String id) {
     // nothing to do
   }
 
@@ -249,7 +249,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     return cfg.getType().equals(LISTING_CMD);
   }
 
-  private boolean isGetCmd(String cmd) throws ProductException {
+  private boolean isGetCmd(String cmd) {
     OFSNHandlerConfig cfg = this.conf.getHandlerConfig(cmd);
 
     return cfg.getType().equals(GET_CMD);

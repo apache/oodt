@@ -111,8 +111,7 @@ public class SerializedCatalogRepository implements CatalogRepository {
 	 * (non-Javadoc)
 	 * @see org.apache.oodt.cas.catalog.repository.MemoryBasedCatalogRepository#isCatalogSerialized(java.lang.String)
 	 */
-	public boolean isCatalogSerialized(String catalogUrn)
-			throws CatalogRepositoryException {
+	public boolean isCatalogSerialized(String catalogUrn) {
 		return this.getCatalogFile(catalogUrn).exists();
 	}
 
@@ -177,8 +176,7 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		}
 	}
 
-	public boolean isModifiable() 
-			throws CatalogRepositoryException {
+	public boolean isModifiable() {
 		return true;
 	}
 

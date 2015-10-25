@@ -109,5 +109,5 @@ public abstract class FileBasedAction extends CrawlerAction {
    }
 
    public abstract boolean performFileAction(File actionFile, Metadata metadata)
-         throws CrawlerActionException;
+       ;
 }

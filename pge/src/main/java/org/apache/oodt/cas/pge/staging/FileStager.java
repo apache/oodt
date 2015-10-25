@@ -108,7 +108,7 @@ public abstract class FileStager {
    }
 
    @VisibleForTesting
-   static URI asURI(String path) throws URISyntaxException {
+   static URI asURI(String path) {
       Validate.notNull(path, "path must not be null");
 
       URI uri = URI.create(path);

@@ -196,8 +196,7 @@ public class XmlWorkflowModelRepository {
     }
   }
 
-  private void saveGraph(ModelGraph graph, Element parentElem, Document document)
-      throws FileNotFoundException, ParserConfigurationException {
+  private void saveGraph(ModelGraph graph, Element parentElem, Document document) {
     ModelNode node = graph.getModel();
 
     Element workflowElem = document.createElement(node.getExecutionType());
@@ -496,8 +495,7 @@ public class XmlWorkflowModelRepository {
   }
 
   private Metadata loadConfiguration(List<FileBasedElement> rootElements,
-      Node configNode, HashMap<String, ConfigGroup> globalConfGroups)
-      throws Exception {
+      Node configNode, HashMap<String, ConfigGroup> globalConfGroups) {
     Metadata curMetadata = new Metadata();
     NodeList curGrandChildren = configNode.getChildNodes();
     for (int k = 0; k < curGrandChildren.getLength(); k++) {

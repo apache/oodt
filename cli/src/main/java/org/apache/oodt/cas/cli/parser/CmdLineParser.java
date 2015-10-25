@@ -31,6 +31,6 @@ import org.apache.oodt.cas.cli.util.ParsedArg;
  */
 public interface CmdLineParser {
 
-   List<ParsedArg> parse(String[] args) throws CmdLineParserException;
+   List<ParsedArg> parse(String[] args);
 
 }

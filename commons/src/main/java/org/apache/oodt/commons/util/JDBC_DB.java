@@ -52,8 +52,7 @@ public class JDBC_DB
 	*******************************************************************/
 
 	public  JDBC_DB(
-			java.util.Properties sys_props) throws SQLException
-	{
+			java.util.Properties sys_props) {
 
 	 		serverProps = sys_props;
 			keep_connect_open = true;
@@ -62,8 +61,7 @@ public class JDBC_DB
 
 	public  JDBC_DB(
 			java.util.Properties sys_props,
-			Connection srv_connect) throws SQLException
-	{
+			Connection srv_connect) {
 
 	  		serverProps = sys_props;
 			connect = srv_connect;

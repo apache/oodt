@@ -27,6 +27,6 @@ package org.apache.oodt.cas.catalog.query.filter.time.conv;
  */
 public interface VersionConverter {
 
-    double convertToPriority(String version) throws Exception;
+    double convertToPriority(String version);
     
 }

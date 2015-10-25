@@ -31,6 +31,6 @@ import org.apache.oodt.cas.cli.option.CmdLineOption;
 public interface CmdLineOptionStore {
 
    Set<CmdLineOption> loadSupportedOptions()
-      throws CmdLineOptionStoreException;
+       ;
 
 }

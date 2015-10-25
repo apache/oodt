@@ -54,7 +54,7 @@ public class LoggerOutputStream extends OutputStream {
    }
 
    public LoggerOutputStream(Logger logger, int numOfBytesPerWrite,
-         Level logLevel) throws InstantiationException {
+         Level logLevel) {
       this.logger = logger;
       this.buffer = CharBuffer.wrap(new char[numOfBytesPerWrite]);
       this.logLevel = logLevel;

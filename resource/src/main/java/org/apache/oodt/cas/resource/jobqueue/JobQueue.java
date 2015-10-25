@@ -65,7 +65,7 @@ public interface JobQueue {
    * @throws JobQueueException
    *           If there is any error obtaining the queued jobs.
    */
-  List getQueuedJobs() throws JobQueueException;
+  List getQueuedJobs();
 
   /**
    * Purges all {@link JobSpec}s from the queue.
@@ -73,7 +73,7 @@ public interface JobQueue {
    * @throws JobQueueException
    *           If there is any error purging all the {@link JobSpec}s.
    */
-  void purge() throws JobQueueException;
+  void purge();
 
   /**
    * Returns a boolean value representing whether or not the queue is empty.
@@ -90,7 +90,7 @@ public interface JobQueue {
    * @throws JobQueueException
    *           If there is any error getting the next {@link JobSpec}.
    */
-  JobSpec getNextJob() throws JobQueueException;
+  JobSpec getNextJob();
   
   
   /**

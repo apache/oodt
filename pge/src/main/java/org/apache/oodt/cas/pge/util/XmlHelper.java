@@ -178,8 +178,7 @@ public class XmlHelper {
 		return key;
 	}
 
-	public static boolean isEnvReplaceNoRecur(Element elem, Metadata metadata)
-			throws Exception {
+	public static boolean isEnvReplaceNoRecur(Element elem, Metadata metadata) {
 		String isEnvReplaceNoRecur = elem
 				.getAttribute(ENV_REPLACE_NO_RECUR_ATTR);
 		if (Strings.isNullOrEmpty(isEnvReplaceNoRecur)) {
@@ -189,8 +188,7 @@ public class XmlHelper {
 		}
 	}
 
-	public static boolean isEnvReplace(Element elem, Metadata metadata)
-			throws Exception {
+	public static boolean isEnvReplace(Element elem, Metadata metadata) {
 		String isEnvReplace = elem.getAttribute(ENV_REPLACE_ATTR);
 		if (Strings.isNullOrEmpty(isEnvReplace)) {
 			return true;

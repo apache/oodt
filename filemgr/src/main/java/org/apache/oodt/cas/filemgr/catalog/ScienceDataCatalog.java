@@ -732,7 +732,7 @@ public class ScienceDataCatalog implements Catalog {
     return products;
   }
 
-  public ValidationLayer getValidationLayer() throws CatalogException {
+  public ValidationLayer getValidationLayer() {
     return this.validationLayer;
   }
 

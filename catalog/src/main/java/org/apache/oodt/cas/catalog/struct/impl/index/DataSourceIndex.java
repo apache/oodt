@@ -99,7 +99,7 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<TransactionId<?>> getPage(IndexPager indexPage) throws CatalogIndexException {
+	public List<TransactionId<?>> getPage(IndexPager indexPage) {
 //		Connection conn = null;
 //		Statement stmt = null;
 //		ResultSet rs = null;
@@ -133,22 +133,21 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Properties getProperties() throws CatalogIndexException {
+	public Properties getProperties() {
 		return new Properties();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getProperty(String key) throws CatalogIndexException {
+	public String getProperty(String key) {
 		return null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public TransactionIdFactory getTransactionIdFactory()
-			throws CatalogIndexException {
+	public TransactionIdFactory getTransactionIdFactory() {
 		return new UuidTransactionIdFactory();
 	}
 

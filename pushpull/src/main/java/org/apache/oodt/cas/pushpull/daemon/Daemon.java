@@ -115,8 +115,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
      * @throws SecurityException
      */
     public Daemon(int rmiRegPort, int daemonID, Config config,
-            DaemonInfo daemonInfo, SiteInfo siteInfo) throws RemoteException,
-            InstantiationException {
+            DaemonInfo daemonInfo, SiteInfo siteInfo) throws RemoteException {
         super();
 
         this.rmiRegPort = rmiRegPort;
@@ -155,8 +154,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
         return "Daemon" + this.getDaemonID();
     }
 
-    private void registerRMIServer() throws RemoteException,
-            MalformedURLException, NotBoundException, AlreadyBoundException {
+    private void registerRMIServer() throws RemoteException {
         try {
             Naming.bind("//localhost:" + this.rmiRegPort + "/daemon"
                     + this.getDaemonID(), this);

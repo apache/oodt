@@ -55,7 +55,7 @@ public class OptimizeLuceneCatalog {
         this.mergeFactor = mf;
     }
 
-    public void doOptimize() throws Exception {
+    public void doOptimize() {
         IndexWriter writer = null;
         boolean createIndex = false;
 

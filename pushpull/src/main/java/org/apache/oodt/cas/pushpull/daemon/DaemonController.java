@@ -43,7 +43,7 @@ public class DaemonController {
      * 
      * @throws InstantiationException
      */
-    public DaemonController(String rmiUrl) throws RemoteException {
+    public DaemonController(String rmiUrl) {
         try {
             daemon = (DaemonRmiInterface) Naming.lookup(rmiUrl);
             System.out.println(!daemon.getHasBeenToldToQuit());

@@ -183,8 +183,7 @@ public final class PGEXMLFileUtils {
     return matrixList;
   }
 
-  public static Map getScalarsAsMap(Element group)
-      throws PGEConfigFileException {
+  public static Map getScalarsAsMap(Element group) {
     // get the nodelist for scalars
     NodeList scalars = group.getElementsByTagName("scalar");
 
@@ -212,7 +211,7 @@ public final class PGEXMLFileUtils {
     return scalarMap;
   }
 
-  public static List getScalars(Element group) throws PGEConfigFileException {
+  public static List getScalars(Element group) {
     // get the nodelist for scalars
     NodeList scalars = group.getElementsByTagName("scalar");
 

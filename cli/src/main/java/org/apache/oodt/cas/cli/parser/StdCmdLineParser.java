@@ -51,7 +51,7 @@ import com.google.common.collect.Lists;
  */
 public class StdCmdLineParser implements CmdLineParser {
 
-   public List<ParsedArg> parse(String[] args) throws CmdLineParserException {
+   public List<ParsedArg> parse(String[] args) {
       List<ParsedArg> parsedArgs = Lists.newArrayList();
 
       for (String arg : args) {

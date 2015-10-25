@@ -43,7 +43,7 @@ public interface RmiCommunicationChannelClientInterface extends Remote {
 	
 	void setCatalogRepository(CatalogRepository catalogRepository);
 	
-	CatalogRepository getCatalogRepository() throws Exception;
+	CatalogRepository getCatalogRepository();
 	
 	IngestMapper getIngestMapper() throws RemoteException;
 

@@ -18,25 +18,6 @@
 package org.apache.oodt.cas.workflow.gui.perspective.build;
 
 //JDK imports
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-//OODT imports
 import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
 import org.apache.oodt.cas.workflow.gui.perspective.MultiStatePerspective;
 import org.apache.oodt.cas.workflow.gui.perspective.view.MultiStateView;
@@ -50,6 +31,27 @@ import org.apache.oodt.cas.workflow.gui.perspective.view.impl.GlobalConfigView;
 import org.apache.oodt.cas.workflow.gui.perspective.view.impl.GraphView;
 import org.apache.oodt.cas.workflow.gui.perspective.view.impl.TreeProjectView;
 import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+//OODT imports
 
 /**
  * 
@@ -91,8 +93,7 @@ public class BuildPerspective extends MultiStatePerspective {
 
   public BuildPerspective(Class<? extends View> projectViewClass,
       Class<? extends View> mainViewClass, Class<? extends View> treeViewClass,
-      Class<? extends View> propViewClass, Class<? extends View> globalViewClass)
-      throws InstantiationException, IllegalAccessException {
+      Class<? extends View> propViewClass, Class<? extends View> globalViewClass) {
     super("Build");
     this.projectViewClass = projectViewClass;
     this.mainViewClass = mainViewClass;

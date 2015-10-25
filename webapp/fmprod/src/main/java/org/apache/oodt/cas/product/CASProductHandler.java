@@ -105,7 +105,7 @@ public class CASProductHandler implements LargeProductQueryHandler {
      * 
      * @see org.apache.product.LargeProductQueryHandler#close(java.lang.String)
      */
-    public void close(String id) throws ProductException {
+    public void close(String id) {
         // doesn't really have to do anything b/c we're not going
         // to keep anything open
 

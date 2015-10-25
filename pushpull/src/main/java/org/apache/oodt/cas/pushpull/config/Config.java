@@ -173,8 +173,7 @@ public class Config implements ConfigMetKeys {
      * @throws ClassNotFoundException
      * @throws ClassNotFoundException
      */
-    void loadProperties() throws ConfigException, InstantiationException,
-        IOException, ClassNotFoundException {
+    void loadProperties() throws ConfigException, InstantiationException {
         this.loadExternalConfigFiles();
         this.loadProtocolTypes();
         this.loadParserInfo();
@@ -228,7 +227,7 @@ public class Config implements ConfigMetKeys {
         }
     }
 
-    void loadIngester() throws InstantiationException, ConfigException {
+    void loadIngester() throws ConfigException {
         try {
             String fmUrlStr = PropertiesUtils.getProperties(INGESTER_FM_URL,
                     new String[] { NO_FM_SPECIFIED })[0];
