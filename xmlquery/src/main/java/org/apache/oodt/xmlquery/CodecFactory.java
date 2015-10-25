@@ -18,7 +18,6 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.*;
 import java.util.*;
 
 /** A factory for codecs.

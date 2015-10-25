@@ -15,7 +15,6 @@
 
 package org.apache.oodt.commons.util;
 
-import java.io.*;
 import java.util.*;
 import junit.framework.*;
 

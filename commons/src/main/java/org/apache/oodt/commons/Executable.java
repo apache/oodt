@@ -18,7 +18,6 @@
 package org.apache.oodt.commons;
 
 import java.io.*;
-import java.util.*;
 
 /** An executable object.
  *

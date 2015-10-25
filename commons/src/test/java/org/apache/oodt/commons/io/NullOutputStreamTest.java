@@ -16,7 +16,7 @@
 package org.apache.oodt.commons.io;
 
 import java.io.*;
-import java.util.*;
+
 import junit.framework.*;
 
 /** Unit test the {@link NullOutputStream} class.

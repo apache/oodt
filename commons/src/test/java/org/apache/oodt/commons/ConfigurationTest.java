@@ -19,7 +19,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.util.*;
 import junit.framework.*;
-import org.w3c.dom.*;
+
 import org.xml.sax.*;
 
 /** Unit test the {@link Configuration} class.

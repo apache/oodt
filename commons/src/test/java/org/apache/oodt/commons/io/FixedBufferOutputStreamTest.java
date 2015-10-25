@@ -16,7 +16,6 @@
 package org.apache.oodt.commons.io;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Arrays;
 import junit.framework.TestCase;
 

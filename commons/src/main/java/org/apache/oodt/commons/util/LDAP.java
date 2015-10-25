@@ -15,9 +15,6 @@
 
 package org.apache.oodt.commons.util;
 
-import java.io.*;
-import java.util.*;
-
 /** LDAP services.
  *
  * This class provides LDAP convenience services.

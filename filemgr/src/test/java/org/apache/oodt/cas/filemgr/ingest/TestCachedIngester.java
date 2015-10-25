@@ -21,7 +21,6 @@ package org.apache.oodt.cas.filemgr.ingest;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;

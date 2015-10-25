@@ -27,7 +27,6 @@ import org.apache.commons.io.FileUtils;
 //OODT imports
 import org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor;
 import org.apache.oodt.cas.metadata.extractors.MetReaderExtractor;
-import org.apache.oodt.cas.metadata.filenaming.PathUtilsNamingConvention;
 
 //Google imports
 import com.google.common.collect.Lists;

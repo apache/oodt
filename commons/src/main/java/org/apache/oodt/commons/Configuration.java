@@ -29,7 +29,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.NoInitialContextException;
 import java.rmi.registry.Registry;
-import java.util.StringTokenizer;
 
 /** EDA Configuration.
  *

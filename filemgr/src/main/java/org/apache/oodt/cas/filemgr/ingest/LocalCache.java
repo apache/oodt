@@ -29,7 +29,6 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 //JDK imports
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;

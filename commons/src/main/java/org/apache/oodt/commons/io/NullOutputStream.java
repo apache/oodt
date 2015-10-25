@@ -16,7 +16,6 @@
 package org.apache.oodt.commons.io;
 
 import java.io.*;
-import java.util.*;
 
 /** A null output stream.
  *
