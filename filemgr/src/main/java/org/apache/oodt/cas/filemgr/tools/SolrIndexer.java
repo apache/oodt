@@ -29,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -747,25 +748,19 @@ public class SolrIndexer {
 			if (properties.getProperty(IGNORE_TYPES) != null) {
 				String[] values = properties.getProperty(IGNORE_TYPES).trim()
 				    .split(",");
-				for (String value : values) {
-					ignoreTypes.add(value);
-				}
+			  Collections.addAll(ignoreTypes, values);
 			}
 
 			if (properties.getProperty(IGNORE_VALUES) != null) {
 				String[] values = properties.getProperty(IGNORE_VALUES).trim().split(
 				    ",");
-				for (String value : values) {
-					ignoreValues.add(value);
-				}
+			  Collections.addAll(ignoreValues, values);
 			}
 
 			if (properties.getProperty(REPLACEMENT_KEYS) != null) {
 				String[] values = properties.getProperty(REPLACEMENT_KEYS).trim()
 				    .split(",");
-				for (String value : values) {
-					replacementKeys.add(value);
-				}
+			  Collections.addAll(replacementKeys, values);
 			}
 		}
 

@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.structs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -57,9 +58,7 @@ public class FreeTextQueryCriteria extends QueryCriteria {
         values = new ArrayList<String>();
 
         noiseWordHash = new HashSet<String>();
-        for (String noiseWord : noiseWords) {
-            noiseWordHash.add(noiseWord);
-        }
+        Collections.addAll(noiseWordHash, noiseWords);
     }
 
     /**
@@ -73,9 +72,7 @@ public class FreeTextQueryCriteria extends QueryCriteria {
         values = v;
 
         noiseWordHash = new HashSet<String>();
-        for (String noiseWord : noiseWords) {
-            noiseWordHash.add(noiseWord);
-        }
+        Collections.addAll(noiseWordHash, noiseWords);
     }
 
     /**

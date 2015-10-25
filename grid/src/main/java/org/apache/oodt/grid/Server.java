@@ -87,7 +87,7 @@ public abstract class Server implements Serializable {
     if (urlList.isEmpty())
       clazz = Class.forName(className);
     else {
-      URL[] urls = (URL[]) urlList.toArray(EMPTY_URL_ARRAY);
+      URL[] urls = (URL[]) urlList.toArray(new URL[urlList.size()]);
       URLClassLoader loader = new URLClassLoader(urls, getClass()
           .getClassLoader());
       clazz = loader.loadClass(className);

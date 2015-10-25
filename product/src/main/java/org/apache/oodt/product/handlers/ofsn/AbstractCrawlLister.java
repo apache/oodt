@@ -23,6 +23,7 @@ import org.apache.oodt.product.ProductException;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
@@ -99,9 +100,7 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
         productFiles = dir.listFiles(FILE_FILTER);
       }
 
-      for (File productFile : productFiles) {
-        fileList.add(productFile);
-      }
+      Collections.addAll(fileList, productFiles);
 
       if (recur) {
         File[] subdirs = dir.listFiles(DIR_FILTER);

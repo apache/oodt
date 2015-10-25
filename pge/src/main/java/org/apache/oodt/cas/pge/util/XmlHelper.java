@@ -311,7 +311,7 @@ public class XmlHelper {
 				String writer = getWriter(fileElem, metadata);
 				List<String> args = getArgs(fileElem, metadata);
 				dynamicConfigFiles.add(new DynamicConfigFile(path, writer, args
-						.toArray(new String[0])));
+					.toArray(new String[args.size()])));
 			}
 		}
 		return dynamicConfigFiles;

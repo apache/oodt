@@ -24,14 +24,15 @@ import org.apache.oodt.cas.metadata.MetExtractorConfigReader;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractorConfigReaderException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
-
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Vector;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Vector;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -117,7 +118,7 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
                     }
 
                     config.setArgList((String[]) argVector
-                            .toArray(new String[] {}));
+                        .toArray(new String[argVector.size()]));
                 }
             }
 
