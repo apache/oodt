@@ -26,7 +26,7 @@ package org.apache.oodt.cas.catalog.query;
  */
 public class ComparisonQueryExpression extends TermQueryExpression {
 
-	public static enum Operator { EQUAL_TO("=="), LESS_THAN_EQUAL_TO("<="), GREATER_THAN_EQUAL_TO(">="), LESS_THAN("<"), GREATER_THAN(">"), LIKE("LIKE"); 
+	public enum Operator { EQUAL_TO("=="), LESS_THAN_EQUAL_TO("<="), GREATER_THAN_EQUAL_TO(">="), LESS_THAN("<"), GREATER_THAN(">"), LIKE("LIKE");
 	
 		private String value;
 		

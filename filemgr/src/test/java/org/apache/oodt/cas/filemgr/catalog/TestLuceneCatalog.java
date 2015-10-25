@@ -983,6 +983,8 @@ public class TestLuceneCatalog extends TestCase {
 
     public void testNullIndexPath(){
         System.clearProperty("org.apache.oodt.cas.filemgr.catalog.lucene.idxPath");
+        Properties sysProps = System.getProperties();
+
         try{
             LuceneCatalogFactory fact = new LuceneCatalogFactory();
             fail( "Missing exception" );
