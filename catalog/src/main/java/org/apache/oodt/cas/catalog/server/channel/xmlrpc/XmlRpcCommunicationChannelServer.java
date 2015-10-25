@@ -233,11 +233,11 @@ public class XmlRpcCommunicationChannelServer extends
 	}
 
 	public String xmlrpc_isRestrictIngestPermissions() throws Exception {
-		return this.serializer.serializeObject(new Boolean(this.isRestrictIngestPermissions()));	
+		return this.serializer.serializeObject(this.isRestrictIngestPermissions());
 	}
 
 	public String xmlrpc_isRestrictQueryPermissions() throws Exception {
-		return this.serializer.serializeObject(new Boolean(this.isRestrictQueryPermissions()));
+		return this.serializer.serializeObject(this.isRestrictQueryPermissions());
 	}
 
 	public String xmlrpc_query(String queryExpressionObject) throws Exception {

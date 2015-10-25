@@ -110,7 +110,7 @@ public class TableListener implements MouseListener, ActionListener {
       }
     } else if (arg0.getActionCommand().equals("Unhide Columns")) {
       while (!table.hiddenCols.isEmpty()) {
-        table.unhideColumn((table.hiddenCols.firstElement()).intValue());
+        table.unhideColumn(table.hiddenCols.firstElement());
       }
     } else if (arg0.getActionCommand().equals("Export Table")) {
 

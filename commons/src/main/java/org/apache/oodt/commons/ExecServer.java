@@ -475,5 +475,6 @@ public class ExecServer {
 	public static final String DISABLE_BINDING = "org.apache.oodt.commons.ExecServer.disableBinding";
 
 	/** How long to wait before bind attempts, in ms. */
-	private static final long REBIND_PERIOD = Long.getLong("org.apache.oodt.commons.ExecServer.rebindPeriod", 30*60*1000).longValue();
+	private static final long REBIND_PERIOD =
+		Long.getLong("org.apache.oodt.commons.ExecServer.rebindPeriod", 30 * 60 * 1000);
 }

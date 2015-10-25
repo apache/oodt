@@ -333,7 +333,7 @@ public class RMIContext implements Context {
 		if (registry != null) return registry;
 		try {
 			String host = environment.containsKey("host")? (String) environment.get("host") : "localhost";
-			int port = environment.containsKey("port")? ((Integer) environment.get("port")).intValue()
+			int port = environment.containsKey("port")? (Integer) environment.get("port")
 				: Registry.REGISTRY_PORT;
 
 			

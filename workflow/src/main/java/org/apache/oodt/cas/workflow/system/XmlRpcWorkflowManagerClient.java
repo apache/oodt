@@ -79,9 +79,8 @@ public class XmlRpcWorkflowManagerClient {
     public boolean refreshRepository()
         throws Exception {
         try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.refreshRepository", new Vector()))
-                    .booleanValue();
+            return (Boolean) client.execute(
+                "workflowmgr.refreshRepository", new Vector());
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -205,7 +204,7 @@ public class XmlRpcWorkflowManagerClient {
     public WorkflowInstancePage paginateWorkflowInstances(int pageNum,
             String status) throws Exception {
         Vector argList = new Vector();
-        argList.add(new Integer(pageNum));
+        argList.add(pageNum);
         argList.add(status);
         Hashtable pageHash = null;
 
@@ -225,7 +224,7 @@ public class XmlRpcWorkflowManagerClient {
     public WorkflowInstancePage paginateWorkflowInstances(int pageNum)
             throws Exception {
         Vector argList = new Vector();
-        argList.add(new Integer(pageNum));
+        argList.add(pageNum);
         Hashtable pageHash = null;
 
         try {
@@ -296,9 +295,9 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(startDateTimeIsoStr);
 
         try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.setWorkflowInstanceCurrentTaskStartDateTime",
-                    argList)).booleanValue();
+            return (Boolean) client.execute(
+                "workflowmgr.setWorkflowInstanceCurrentTaskStartDateTime",
+                argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -314,9 +313,9 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(workflowInstId);
 
         try {
-            return ((Double) client.execute(
-                    "workflowmgr.getWorkflowCurrentTaskWallClockMinutes",
-                    argList)).doubleValue();
+            return (Double) client.execute(
+                "workflowmgr.getWorkflowCurrentTaskWallClockMinutes",
+                argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -331,9 +330,8 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(workflowInstId);
 
         try {
-            return ((Double) client.execute(
-                    "workflowmgr.getWorkflowWallClockMinutes", argList))
-                    .doubleValue();
+            return (Double) client.execute(
+                "workflowmgr.getWorkflowWallClockMinutes", argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -348,9 +346,8 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(workflowInstId);
 
         try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.stopWorkflowInstance", argList))
-                    .booleanValue();
+            return (Boolean) client.execute(
+                "workflowmgr.stopWorkflowInstance", argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -365,9 +362,8 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(workflowInstId);
 
         try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.pauseWorkflowInstance", argList))
-                    .booleanValue();
+            return (Boolean) client.execute(
+                "workflowmgr.pauseWorkflowInstance", argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -382,9 +378,8 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(workflowInstId);
 
         try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.resumeWorkflowInstance", argList))
-                    .booleanValue();
+            return (Boolean) client.execute(
+                "workflowmgr.resumeWorkflowInstance", argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -400,9 +395,9 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(endDateTimeIsoStr);
 
         try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.setWorkflowInstanceCurrentTaskEndDateTime",
-                    argList)).booleanValue();
+            return (Boolean) client.execute(
+                "workflowmgr.setWorkflowInstanceCurrentTaskEndDateTime",
+                argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -419,9 +414,8 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(status);
 
         try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.updateWorkflowInstanceStatus", argList))
-                    .booleanValue();
+            return (Boolean) client.execute(
+                "workflowmgr.updateWorkflowInstanceStatus", argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -437,9 +431,8 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(XmlRpcStructFactory.getXmlRpcWorkflowInstance(instance));
 
         try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.updateWorkflowInstance", argList))
-                    .booleanValue();
+            return (Boolean) client.execute(
+                "workflowmgr.updateWorkflowInstance", argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -455,9 +448,8 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(metadata.getHashtable());
 
         try {
-            return ((Boolean) client.execute(
-                    "workflowmgr.updateMetadataForWorkflow", argList))
-                    .booleanValue();
+            return (Boolean) client.execute(
+                "workflowmgr.updateMetadataForWorkflow", argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -474,9 +466,8 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(metadata.getHashtable());
 
         try {
-            return ((Boolean) client
-                    .execute("workflowmgr.handleEvent", argList))
-                    .booleanValue();
+            return (Boolean) client
+                .execute("workflowmgr.handleEvent", argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -595,8 +586,8 @@ public class XmlRpcWorkflowManagerClient {
         int numInsts = -1;
 
         try {
-            numInsts = ((Integer)client.execute(
-                    "workflowmgr.getNumWorkflowInstancesByStatus", argList)).intValue();
+            numInsts = (Integer) client.execute(
+                "workflowmgr.getNumWorkflowInstancesByStatus", argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -613,8 +604,8 @@ public class XmlRpcWorkflowManagerClient {
         int numInsts = -1;
 
         try {
-            numInsts = ((Integer)client.execute(
-                    "workflowmgr.getNumWorkflowInstances", argList)).intValue();
+            numInsts = (Integer) client.execute(
+                "workflowmgr.getNumWorkflowInstances", argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());

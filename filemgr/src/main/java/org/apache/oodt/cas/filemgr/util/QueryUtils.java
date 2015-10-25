@@ -41,7 +41,7 @@ public class QueryUtils {
     
     public static String getQueryResultsAsString(
             List<QueryResult> queryResults, String delimiter) {
-        StringBuffer returnString = new StringBuffer("");
+        StringBuilder returnString = new StringBuilder("");
         for (QueryResult qr : queryResults) 
             returnString.append(qr.toString() + delimiter);
         return returnString.substring(0, returnString.length() - delimiter.length());

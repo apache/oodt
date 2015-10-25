@@ -54,7 +54,7 @@ public final class MimeExtractorConfigReader implements
 
             MimeExtractorRepo extractorRepo = new MimeExtractorRepo();
             extractorRepo.setMagic(Boolean.valueOf(
-                    root.getAttribute(MAGIC_ATTR)).booleanValue());
+                root.getAttribute(MAGIC_ATTR)));
             String mimeTypeFile = PathUtils.replaceEnvVariables(root
                   .getAttribute(MIME_REPO_ATTR));
             if (!mimeTypeFile.startsWith("/")) {
@@ -183,8 +183,7 @@ public final class MimeExtractorConfigReader implements
         Element elem = XMLUtils.getFirstElement(elemName, root);
         if (elem != null) {
             filePath = elem.getAttribute(FILE_ATTR);
-            if (Boolean.valueOf(elem.getAttribute(ENV_REPLACE_ATTR))
-                    .booleanValue())
+            if (Boolean.valueOf(elem.getAttribute(ENV_REPLACE_ATTR)))
                 filePath = PathUtils.replaceEnvVariables(filePath);
         }
         return filePath;

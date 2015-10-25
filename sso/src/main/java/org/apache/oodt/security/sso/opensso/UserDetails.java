@@ -92,7 +92,7 @@ public class UserDetails {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append("[token=");
     sb.append(this.token);
     sb.append(",roles=");

@@ -355,8 +355,7 @@ public class Product {
                     Reference r = new Reference();
                     r.setOrigReference(refElem.getAttribute("orig"));
                     r.setDataStoreReference(refElem.getAttribute("dataStore"));
-                    r.setFileSize(Long.valueOf(refElem.getAttribute("size"))
-                            .longValue());
+                    r.setFileSize(Long.valueOf(refElem.getAttribute("size")));
                     this.references.add(r);
                 }
             }

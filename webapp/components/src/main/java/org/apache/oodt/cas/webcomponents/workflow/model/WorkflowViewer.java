@@ -124,7 +124,7 @@ public class WorkflowViewer extends Panel {
   private String summarizeWords(String orig, int wordThreshhold,
       int maxLengthTotal) {
     String[] words = orig.split(" ");
-    StringBuffer summarizedString = new StringBuffer();
+    StringBuilder summarizedString = new StringBuilder();
 
     for (int i = 0; i < words.length; i++) {
       String word = words[i];

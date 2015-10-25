@@ -163,7 +163,7 @@ public class XmlRpcBatchMgr implements Batchmgr {
 
     protected void notifyMonitor(ResourceNode node, JobSpec jobSpec) {
         Job job = jobSpec.getJob();
-        int reducedLoad = job.getLoadValue().intValue();
+        int reducedLoad = job.getLoadValue();
         try {
             mon.reduceLoad(node, reducedLoad);
         } catch (MonitorException e) {

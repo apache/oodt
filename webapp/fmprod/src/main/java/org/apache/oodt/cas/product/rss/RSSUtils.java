@@ -58,7 +58,7 @@ public class RSSUtils {
   public static Element emitRSSTag(RSSTag tag, Metadata prodMet, Document doc,
       Element item) {
     String outputTag = tag.getName();
-    if (outputTag.indexOf(" ") != -1) {
+    if (outputTag.contains(" ")) {
       outputTag = StringUtils.join(WordUtils.capitalizeFully(outputTag).split(
           " "));
     }

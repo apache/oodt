@@ -91,9 +91,9 @@ public class HighestFIFOPrioritySorter implements PrioritySorter {
         processorStub.getWorkflowInstance().getPriority().getValue(),
         Math.min(
             this.boostCap,
-            Double.valueOf(processorStub.getWorkflowInstance().getPriority()
-                .getValue()
-                + (boostPercentage * this.boostAmount))));
+            processorStub.getWorkflowInstance().getPriority()
+                         .getValue()
+            + (boostPercentage * this.boostAmount)));
   }
 
 }

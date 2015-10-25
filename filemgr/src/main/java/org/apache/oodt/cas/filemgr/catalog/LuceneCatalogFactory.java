@@ -92,19 +92,18 @@ public class LuceneCatalogFactory implements CatalogFactory {
 				.getValidationLayerFromFactory(validationLayerFactoryClass);
 		}
 		
-		pageSize = Integer.getInteger("org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", 20).intValue();
+		pageSize = Integer.getInteger("org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", 20);
 		
 		commitLockTimeOut = Long
-				.getLong(
-						"org.apache.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
-						60).longValue();
+			.getLong(
+				"org.apache.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
+				60);
 		writeLockTimeOut = Long
-				.getLong(
-						"org.apache.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
-						60).longValue();
+			.getLong(
+				"org.apache.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
+				60);
 		mergeFactor = Integer.getInteger(
-				"org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor", 20)
-				.intValue();
+			"org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor", 20);
 	}
 
 	/*

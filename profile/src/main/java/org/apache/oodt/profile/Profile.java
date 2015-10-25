@@ -369,7 +369,7 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 			System.err.println("Usage: <profile.xml>");
 			System.exit(1);
 		}
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 		BufferedReader reader = new BufferedReader(new FileReader(argv[0]));
 		char[] buf = new char[512];
 		int num;

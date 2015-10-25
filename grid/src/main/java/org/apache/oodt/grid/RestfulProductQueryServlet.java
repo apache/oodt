@@ -60,7 +60,7 @@ public class RestfulProductQueryServlet extends ProductQueryServlet {
 		// combine all HTTP (name, value) pairs into XML query string with logical AND
 		} else {
 			
-			StringBuffer q = new StringBuffer("");
+			StringBuilder q = new StringBuilder("");
 			Enumeration<String> parameterNames = req.getParameterNames();
 			while (parameterNames.hasMoreElements()) {
 				String paramName = parameterNames.nextElement();

@@ -329,8 +329,8 @@ public final class ExecHelper {
      */
     private ExecHelper(Process process, String charset) throws IOException {
     	try {
-	        StringBuffer output = new StringBuffer();
-	        StringBuffer error = new StringBuffer();
+	        StringBuilder output = new StringBuilder();
+	        StringBuilder error = new StringBuilder();
 	
 	        Reader stdout;
 	        Reader stderr;

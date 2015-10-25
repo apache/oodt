@@ -100,12 +100,12 @@ public abstract class Activity {
 			Date date = new Date();					       // Get the current time
 			byte[] bytes = new byte[32];				       // Make space for 32 random bytes
 			RANDOM.nextBytes(bytes);				       // Fill in 32 random bytes
-			StringBuffer input = new StringBuffer();		       // Make space to put the 1st 3 components...
+			StringBuilder input = new StringBuilder();		       // Make space to put the 1st 3 components...
 			input.append(addr).append(nextNum).append(date);	       // ...together and put 'em together
 			MessageDigest messageDigest = MessageDigest.getInstance("MD5");// Prepare to take a hash
 			messageDigest.update(input.toString().getBytes());	       // Add the 1st 3 components
 			byte[] sig = messageDigest.digest(bytes);		       // And add the random bytes
-			StringBuffer output = new StringBuffer();		       // Make space to store the hash as a string
+			StringBuilder output = new StringBuilder();		       // Make space to store the hash as a string
 			for (int i = 0; i < sig.length; ++i)			       // For each byte in the hash
 				output.append(Integer.toHexString(((int)sig[i])&0xff));// Store it as a hex value
 			return output.toString();				       // And return the string

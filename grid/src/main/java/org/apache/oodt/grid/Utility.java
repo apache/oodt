@@ -32,7 +32,7 @@ public class Utility {
    * @return <var>str</var> escaped.
    */
   public static String esc(String str) {
-    StringBuffer s = new StringBuffer(str.length()); // Assume at least the same
+    StringBuilder s = new StringBuilder(str.length()); // Assume at least the same
     // length
     for (int i = 0; i < str.length(); ++i) { // For each character
       char c = str.charAt(i); // Grab the character

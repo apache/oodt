@@ -170,7 +170,7 @@ public class MetadataResource extends CurationService {
 
   protected String getExtractorConfigIdsAsHTML(String[] configIds,
       String current) {
-    StringBuffer html = new StringBuffer();
+    StringBuilder html = new StringBuilder();
     for (int i = 0; i < configIds.length; i++) {
       html.append("<option ");
       if (configIds[i].equals(current)) {
@@ -407,7 +407,7 @@ public class MetadataResource extends CurationService {
       return "<table></table>";
     }
 
-    StringBuffer html = new StringBuffer();
+    StringBuilder html = new StringBuilder();
 
     html.append("<table>\r\n");
     for (String key : (Set<String>) metadata.getHashtable().keySet()) {

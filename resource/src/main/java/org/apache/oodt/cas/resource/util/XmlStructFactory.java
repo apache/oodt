@@ -70,8 +70,7 @@ public final class XmlStructFactory {
 					.getAttribute("envReplace")) ? PathUtils
 					.doDynamicReplacement(resourceNodeRoot.getAttribute("ip"))
 					: resourceNodeRoot.getAttribute("ip"));
-            capacity = new Integer(resourceNodeRoot.getAttribute("capacity"))
-                    .intValue();
+            capacity = new Integer(resourceNodeRoot.getAttribute("capacity"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -108,8 +107,8 @@ public final class XmlStructFactory {
                 jobNodeElem);
         String instClass = instClassElem.getAttribute("name");
         String queue = XMLUtils.getElementText("queue", jobNodeElem);
-        Integer load = new Integer(Integer.parseInt(XMLUtils.getElementText(
-                "load", jobNodeElem)));
+        Integer load = Integer.parseInt(XMLUtils.getElementText(
+            "load", jobNodeElem));
 
         Element inputClass = XMLUtils
                 .getFirstElement("inputClass", jobNodeElem);

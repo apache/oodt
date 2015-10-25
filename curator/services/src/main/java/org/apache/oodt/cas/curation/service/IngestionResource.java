@@ -183,7 +183,7 @@ public class IngestionResource extends CurationService {
   }
 
   private String encodeTaskListAsHTML(List<IngestionTask> taskList) {
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
 
     for (IngestionTask task : taskList) {
       out.append("<tr>");
@@ -245,7 +245,7 @@ public class IngestionResource extends CurationService {
   }
 
   private String encodeIngestResponseAsHTML(boolean success, String msg) {
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
     if (success) {
       out.append("Success");
     } else {

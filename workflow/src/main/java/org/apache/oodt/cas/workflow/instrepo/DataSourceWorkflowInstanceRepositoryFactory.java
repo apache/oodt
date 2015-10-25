@@ -92,8 +92,7 @@ public class DataSourceWorkflowInstanceRepositoryFactory implements
         quoteFields = Boolean
                 .getBoolean("org.apache.oodt.cas.workflow.instanceRep.datasource.quoteFields");
         pageSize = Integer.getInteger(
-                "org.apache.oodt.cas.workflow.instanceRep.pageSize", 20)
-                .intValue();
+            "org.apache.oodt.cas.workflow.instanceRep.pageSize", 20);
 
     }
 

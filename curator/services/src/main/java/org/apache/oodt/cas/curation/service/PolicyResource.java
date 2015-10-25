@@ -203,7 +203,7 @@ public class PolicyResource extends CurationService {
   }
 
   private String encodePoliciesAsHTML(String[] policyDirs) {
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
     out.append("<ul class=\"fileTree\" >");
     for (String policy : policyDirs) {
       out.append("<li class=\"directory collapsed\"><a href=\"#\" rel=\"/");
@@ -228,7 +228,7 @@ public class PolicyResource extends CurationService {
   }
 
   private String encodeProductTypesAsHTML(String policy, String[] typeNames) {
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
     out.append("<ul class=\"fileTree\" >");
     for (String type : typeNames) {
       out

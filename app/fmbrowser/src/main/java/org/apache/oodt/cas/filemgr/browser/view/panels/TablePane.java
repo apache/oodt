@@ -135,7 +135,7 @@ public class TablePane extends JPanel{
 		for(int i=1;i<this.getComponentCount();i++){
 			((Row)this.getComponent(i)).hideCol(colNum);
 		}
-		hiddenCols.add(Integer.valueOf(colNum));
+		hiddenCols.add(colNum);
 	}
 	
 	public void unhideColumn(int colNum){

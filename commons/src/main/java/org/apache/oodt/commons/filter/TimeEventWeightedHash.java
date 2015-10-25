@@ -368,7 +368,7 @@ public class TimeEventWeightedHash {
   }
 
   public String toString() {
-      StringBuffer sb = new StringBuffer("");
+      StringBuilder sb = new StringBuilder("");
       LinkedList<TimeEventNode> printNodes = new LinkedList<TimeEventNode>();
       printNodes.add(this.root);
       sb.append(printNodes(printNodes, "-", 0));

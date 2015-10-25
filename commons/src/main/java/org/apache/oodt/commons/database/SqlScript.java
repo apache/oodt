@@ -114,7 +114,7 @@ public class SqlScript {
 
         try {
             String line = null;
-            StringBuffer query = new StringBuffer();
+            StringBuilder query = new StringBuilder();
             boolean queryEnds = false;
 
             while ((line = reader.readLine()) != null) {

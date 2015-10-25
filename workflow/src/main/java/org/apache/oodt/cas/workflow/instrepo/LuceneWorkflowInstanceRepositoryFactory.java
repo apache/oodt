@@ -62,8 +62,7 @@ public class LuceneWorkflowInstanceRepositoryFactory implements
         // do env variable replacement
         indexFilePath = PathUtils.replaceEnvVariables(indexFilePath);
         pageSize = Integer.getInteger(
-                "org.apache.oodt.cas.workflow.instanceRep.pageSize", 20)
-                .intValue();
+            "org.apache.oodt.cas.workflow.instanceRep.pageSize", 20);
     }
 
     /*

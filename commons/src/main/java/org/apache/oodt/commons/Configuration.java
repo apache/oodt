@@ -300,7 +300,7 @@ public class Configuration {
 					Node xmlNode = children.item(i);
 					if ("entityRef".equals(xmlNode.getNodeName())) {
 						NodeList dirNodes = xmlNode.getChildNodes();
-						StringBuffer refDirs = new StringBuffer(System.getProperty(ENTITY_DIRS_PROP, ""));
+						StringBuilder refDirs = new StringBuilder(System.getProperty(ENTITY_DIRS_PROP, ""));
 						for (int j = 0; j < dirNodes.getLength(); ++j)
 							refDirs.append(',').append(XML.unwrappedText(dirNodes.item(j)));
 						if (refDirs.length() > 0)
@@ -331,7 +331,7 @@ public class Configuration {
 		String registryList = System.getProperty("org.apache.oodt.commons.rmiregistries", System.getProperty("rmiregistries"));
 		if (registryList == null) {
 			String host = System.getProperty("rmiregistry.host", "localhost");
-			int port = Integer.getInteger("rmiregistry.port", Registry.REGISTRY_PORT).intValue();
+			int port = Integer.getInteger("rmiregistry.port", Registry.REGISTRY_PORT);
 			registryList = "rmi://" + host + ":" + port;
 		}
 		contextEnvironment.put("rmiregistries", registryList);

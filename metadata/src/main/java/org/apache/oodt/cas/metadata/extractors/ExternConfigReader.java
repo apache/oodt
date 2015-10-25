@@ -67,8 +67,7 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
             Element binPathElem = XMLUtils.getFirstElement(
                     EXTRACTOR_BIN_PATH_TAG, execElement);
             String binPath = XMLUtils.getSimpleElementText(binPathElem);
-            if (Boolean.valueOf(binPathElem.getAttribute(ENV_REPLACE_ATTR))
-                    .booleanValue()) {
+            if (Boolean.valueOf(binPathElem.getAttribute(ENV_REPLACE_ATTR))) {
                 binPath = PathUtils.replaceEnvVariables(binPath);
             }
 
@@ -90,12 +89,12 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
                         Element argElem = (Element) argNodes.item(i);
                         String argStr = null;
                         if (Boolean.valueOf(
-                                argElem.getAttribute(IS_DATA_FILE_ATTR)
-                                        .toLowerCase()).booleanValue())
+                            argElem.getAttribute(IS_DATA_FILE_ATTR)
+                                   .toLowerCase()))
                             argStr = DATA_FILE_PLACE_HOLDER;
                         else if (Boolean.valueOf(
-                                argElem.getAttribute(IS_MET_FILE_ATTR)
-                                        .toLowerCase()).booleanValue())
+                            argElem.getAttribute(IS_MET_FILE_ATTR)
+                                   .toLowerCase()))
                             argStr = MET_FILE_PLACE_HOLDER;
                         else
                             argStr = XMLUtils.getSimpleElementText(argElem);
@@ -106,13 +105,11 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
                             argStr += "." + appendExt;
 
                         if (Boolean.valueOf(
-                                argElem.getAttribute(ENV_REPLACE_ATTR))
-                                .booleanValue()) {
+                            argElem.getAttribute(ENV_REPLACE_ATTR))) {
                             argStr = PathUtils.replaceEnvVariables(argStr);
                         }
 
-                        if (Boolean.valueOf(argElem.getAttribute(IS_PATH_ATTR))
-                                .booleanValue()) {
+                        if (Boolean.valueOf(argElem.getAttribute(IS_PATH_ATTR))) {
                             argStr = argStr.replaceAll("\\s", "\\\\ ");
                         }
 

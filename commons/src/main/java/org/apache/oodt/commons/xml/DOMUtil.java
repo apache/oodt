@@ -92,7 +92,7 @@ public class DOMUtil {
      * @return String text inbetween the simple element tag.
      */
     public static String getSimpleElementText(Element node) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         NodeList children = node.getChildNodes();
 
         for (int i = 0; i < children.getLength(); i++) {

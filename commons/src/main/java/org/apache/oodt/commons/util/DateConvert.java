@@ -132,7 +132,7 @@ public class DateConvert {
 
 			// Determine the sign of the offset.
 			String sign = "+";
-			if (String.valueOf(tzOffsetMS).indexOf("-") != -1) {
+			if (String.valueOf(tzOffsetMS).contains("-")) {
 				sign = "-";
 			}
 

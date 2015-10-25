@@ -439,7 +439,7 @@ public class FileRetrievalSystem {
                String description = this.mimeTypeDetection
                        .getDescriptionForMimeType(mimeType);
                if (!Strings.isNullOrEmpty(description)) {
-                 if(description.indexOf("&") != -1){
+                 if(description.contains("&")){
                    for (String field : description.split("\\&\\&")) {
                      String[] keyval = field.split("\\=");
                      remoteFile.addMetadata(keyval[0].trim(), keyval[1].trim());

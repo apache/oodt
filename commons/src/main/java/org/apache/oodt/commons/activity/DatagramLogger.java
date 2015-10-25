@@ -44,7 +44,7 @@ class DatagramLogger {
 			System.err.println("Set the activity.storage property to set the Storage class to use.");
 			System.exit(1);
 		}
-		int port = Integer.getInteger("activity.port", 4556).intValue();
+		int port = Integer.getInteger("activity.port", 4556);
 		String className = System.getProperty("activity.storage");
 		if (className == null) {
 			System.err.println("No Storage class defined via the `activity.storage' property; exiting...");

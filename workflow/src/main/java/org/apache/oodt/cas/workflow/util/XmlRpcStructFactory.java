@@ -320,7 +320,7 @@ public final class XmlRpcStructFactory {
     t.setTaskInstanceClassName((String) task.get("class"));
     t.setTaskId((String) task.get("id"));
     t.setTaskName((String) task.get("name"));
-    t.setOrder(Integer.valueOf((String) task.get("order")).intValue());
+    t.setOrder(Integer.valueOf((String) task.get("order")));
     t.setTaskConfig(getWorkflowTaskConfigurationFromXmlRpc((Hashtable) task
         .get("configuration")));
     t.setConditions(getWorkflowConditionsFromXmlRpc((Vector) task
@@ -490,7 +490,7 @@ public final class XmlRpcStructFactory {
     condition.setConditionInstanceClassName((String) cond.get("class"));
     condition.setConditionId((String) cond.get("id"));
     condition.setConditionName((String) cond.get("name"));
-    condition.setOrder(Integer.valueOf((String) cond.get("order")).intValue());
+    condition.setOrder(Integer.valueOf((String) cond.get("order")));
     condition
         .setTimeoutSeconds(Long.valueOf(cond.get("timeout") != null ? (String) cond
             .get("timeout") : "-1"));

@@ -439,7 +439,7 @@ public class XML {
 	public static String unwrappedText(Node node) {
 		if (node == null) return null;
 		StringBuffer buffer = new StringBuffer();
-		StringBuffer wrapped = new StringBuffer(text1(node, buffer));
+		StringBuilder wrapped = new StringBuilder(text1(node, buffer));
 		boolean newline = false;
 		for (int i = 0; i < wrapped.length(); ++i) {
 			if (newline == false) {

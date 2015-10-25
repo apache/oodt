@@ -68,7 +68,7 @@ public class ReducedPagedQueryCliAction extends CatalogServiceCliAction {
          List<TransactionalMetadata> transactionMetadatas = getClient()
                .getMetadata(page);
          for (TransactionalMetadata tMet : transactionMetadatas) {
-            StringBuffer sb = new StringBuffer("");
+            StringBuilder sb = new StringBuilder("");
             for (String termName : this.termNames) {
                List<String> values = tMet.getMetadata().getAllMetadata(
                      (String) termName);

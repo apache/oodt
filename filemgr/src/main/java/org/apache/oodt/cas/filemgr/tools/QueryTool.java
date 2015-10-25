@@ -250,7 +250,7 @@ public final class QueryTool {
         complexQuery.setSortByMetKey(sortBy);
         complexQuery.setToStringResultFormat(outputFormat);
         List<QueryResult> results = new XmlRpcFileManagerClient(new URL(filemgrUrl)).complexQuery(complexQuery);
-        StringBuffer returnString = new StringBuffer("");
+        StringBuilder returnString = new StringBuilder("");
         for (QueryResult qr : results) 
             returnString.append(qr.toString() + delimiter);
         return returnString.substring(0, returnString.length() - delimiter.length());

@@ -305,7 +305,7 @@ public class ImapsProtocol implements Protocol {
 
   private String getContentFromPlainText(Part p) throws MessagingException,
       IOException, DecoderException {
-    StringBuffer content = new StringBuffer("");
+    StringBuilder content = new StringBuilder("");
     if (p.isMimeType("text/plain")) {
       content.append((String) p.getContent());
     } else if (p.isMimeType("multipart/*")) {
@@ -323,7 +323,7 @@ public class ImapsProtocol implements Protocol {
 
   private String getContentFromHTML(Part p) throws MessagingException,
       IOException, DecoderException, SAXException, TikaException {
-    StringBuffer content = new StringBuffer("");
+    StringBuilder content = new StringBuilder("");
     if (p.isMimeType("multipart/*")) {
       Multipart mp = (Multipart) p.getContent();
       int count = mp.getCount();

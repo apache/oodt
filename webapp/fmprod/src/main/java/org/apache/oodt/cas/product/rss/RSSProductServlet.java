@@ -143,7 +143,7 @@ public class RSSProductServlet extends HttpServlet {
     int top = 20;
 
     if (topN != null) {
-      top = Integer.valueOf(topN).intValue();
+      top = Integer.valueOf(topN);
     }
 
     String requestUrl = req.getRequestURL().toString();

@@ -63,7 +63,7 @@ public class WorkflowProcessorHelper {
   }
 
   private String toString(WorkflowProcessor skeleton, String indent) {
-    StringBuffer stringModel = new StringBuffer(
+    StringBuilder stringModel = new StringBuilder(
         "["
             + (skeleton.getWorkflowInstance().getParentChildWorkflow().getId() == null ? ""
                 : "id = '"
@@ -92,7 +92,7 @@ public class WorkflowProcessorHelper {
   }
 
   public String describe(WorkflowProcessor skeleton) {
-    StringBuffer stringModel = new StringBuffer("");
+    StringBuilder stringModel = new StringBuilder("");
     stringModel.append("Processor [id = '"
         + skeleton.getWorkflowInstance().getParentChildWorkflow().getId()
         + "', name = '"

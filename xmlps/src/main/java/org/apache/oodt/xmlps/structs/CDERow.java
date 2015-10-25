@@ -41,7 +41,7 @@ public class CDERow {
     }
 
     public String toString() {
-        StringBuffer rStr = new StringBuffer();
+        StringBuilder rStr = new StringBuilder();
         if (vals != null && vals.size() > 0) {
             for (Iterator<CDEValue> i = vals.iterator(); i.hasNext();) {
                 CDEValue v = i.next();

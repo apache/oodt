@@ -155,10 +155,9 @@ public final class XmlStructFactory {
                                 String propertyValue = propertyElem
                                         .getAttribute("value");
                                 if (Boolean
-                                        .valueOf(
-                                                propertyElem
-                                                        .getAttribute("envReplace"))
-                                        .booleanValue()) {
+                                    .valueOf(
+                                        propertyElem
+                                            .getAttribute("envReplace"))) {
                                     propertyValue = PathUtils
                                             .replaceEnvVariables(propertyValue);
                                 }

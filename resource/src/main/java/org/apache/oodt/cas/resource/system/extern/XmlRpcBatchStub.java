@@ -92,17 +92,17 @@ public class XmlRpcBatchStub {
 
     public boolean executeJob(Hashtable jobHash, double jobInput)
         throws JobException {
-        return genericExecuteJob(jobHash, new Double(jobInput));
+        return genericExecuteJob(jobHash, jobInput);
     }
 
     public boolean executeJob(Hashtable jobHash, int jobInput)
         throws JobException {
-        return genericExecuteJob(jobHash, new Integer(jobInput));
+        return genericExecuteJob(jobHash, jobInput);
     }
 
     public boolean executeJob(Hashtable jobHash, boolean jobInput)
         throws JobException {
-        return genericExecuteJob(jobHash, new Boolean(jobInput));
+        return genericExecuteJob(jobHash, jobInput);
     }
 
     public boolean executeJob(Hashtable jobHash, Vector jobInput)

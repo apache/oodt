@@ -79,7 +79,7 @@ public class Query {
      * @return A String representation of this Query.
      */
     public String toString() {
-        StringBuffer rStr = new StringBuffer();
+        StringBuilder rStr = new StringBuilder();
 
         rStr.append("q=");
 

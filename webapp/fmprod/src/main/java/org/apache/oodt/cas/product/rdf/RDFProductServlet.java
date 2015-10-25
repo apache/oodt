@@ -252,7 +252,7 @@ public class RDFProductServlet extends HttpServlet {
               for (Iterator<String> k = vals.iterator(); k.hasNext();) {
                 String val = (String) k.next();
                 String outputKey = key;
-                if (outputKey.indexOf(" ") != -1) {
+                if (outputKey.contains(" ")) {
                   outputKey = StringUtils.join(WordUtils.capitalizeFully(outputKey).split(
                       " "));
                 }                

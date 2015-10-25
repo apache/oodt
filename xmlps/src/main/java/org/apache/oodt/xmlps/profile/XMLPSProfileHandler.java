@@ -149,7 +149,7 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
                 this.mapping);
         List<Profile> profs = null;
 
-        StringBuffer sqlBuf = new StringBuffer("SELECT *");
+        StringBuilder sqlBuf = new StringBuilder("SELECT *");
         sqlBuf.append(" FROM ");
         sqlBuf.append(mapping.getDefaultTable());
         sqlBuf.append(" ");

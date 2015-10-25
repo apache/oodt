@@ -227,7 +227,7 @@ public class RDFDatasetServlet extends HttpServlet {
                 //PRODUCT Experiment Type
                 //and transform it into ProductExperimentType
                 String outputKey = key;
-                if (outputKey.indexOf(" ") != -1) {
+                if (outputKey.contains(" ")) {
                   outputKey = StringUtils.join(WordUtils.capitalizeFully(outputKey).split(
                       " "));
                 }

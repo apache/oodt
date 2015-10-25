@@ -127,13 +127,13 @@ public class DataSourceCatalogFactory implements CatalogFactory {
       	.getBoolean("org.apache.oodt.cas.filemgr.catalog.datasource.quoteFields");
 
 			pageSize = Integer
-			      .getInteger(
-			              "org.apache.oodt.cas.filemgr.catalog.datasource.pageSize",
-			              20).intValue();
+                .getInteger(
+                    "org.apache.oodt.cas.filemgr.catalog.datasource.pageSize",
+                    20);
 			cacheUpdateMinutes = Long
-			      .getLong(
-			              "org.apache.oodt.cas.filemgr.catalog.datasource.cacheUpdateMinutes",
-			              5L).longValue();
+                .getLong(
+                    "org.apache.oodt.cas.filemgr.catalog.datasource.cacheUpdateMinutes",
+                    5L);
 			
 			productIdString = Boolean.parseBoolean( 
 				System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.productId.string", "false") );

@@ -183,7 +183,7 @@ public class RdfConfiguration
   {
     // Apply the rewrite rules.
     String tagName = rewriteMap.containsKey(key) ? rewriteMap.get(key) : key;
-    if (tagName.indexOf(" ") != -1) {
+    if (tagName.contains(" ")) {
       tagName = StringUtils.join(WordUtils.capitalizeFully(tagName).split(
           " "));
     }

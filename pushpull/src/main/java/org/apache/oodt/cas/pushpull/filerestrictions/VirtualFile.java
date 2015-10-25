@@ -194,7 +194,7 @@ public class VirtualFile {
     public String getAbsolutePath() {
         if (regExp == null)
             return null;
-        StringBuffer path = new StringBuffer(this.regExp);
+        StringBuilder path = new StringBuilder(this.regExp);
         VirtualFile parent = this.parent;
         while (parent != null) {
             path.insert(0, (parent.regExp != "/" ? parent.regExp : "") + "/");
@@ -270,7 +270,7 @@ public class VirtualFile {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer(
+        StringBuilder sb = new StringBuilder(
                 "-<VirtualFile>\t : allowNewDirs/noDirs\t : allowNewFiles/noFiles\n------------\n");
         LinkedList<VirtualFile> printFiles = new LinkedList<VirtualFile>();
         printFiles.add(this);

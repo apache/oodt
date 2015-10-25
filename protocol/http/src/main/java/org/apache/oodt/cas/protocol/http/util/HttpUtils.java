@@ -92,7 +92,7 @@ public class HttpUtils {
     Scanner scanner = new Scanner(conn.getInputStream());
 
     // Read in link
-    StringBuffer sb = new StringBuffer("");
+    StringBuilder sb = new StringBuilder("");
     while (scanner.hasNext())
       sb.append(scanner.nextLine());
     

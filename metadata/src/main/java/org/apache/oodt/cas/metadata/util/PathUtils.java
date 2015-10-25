@@ -61,7 +61,7 @@ public final class PathUtils {
 
     public static String replaceEnvVariables(String origPath,
             Metadata metadata, boolean expand) {
-        StringBuffer finalPath = new StringBuffer();
+        StringBuilder finalPath = new StringBuilder();
 
         for (int i = 0; i < origPath.length(); i++) {
             if (origPath.charAt(i) == '[') {
@@ -340,7 +340,7 @@ public final class PathUtils {
     }
 
     private static VarData readEnvVarName(String origPathStr, int startIdx) {
-        StringBuffer varName = new StringBuffer();
+        StringBuilder varName = new StringBuilder();
         int idx = startIdx + 1;
 
         do {

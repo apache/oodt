@@ -150,8 +150,8 @@ final class History {
  	private static final Timer TIMER = new Timer(/*isDaemon*/true);
 
 	/** How many milliseconds to wait before giving up on an idle history. */
-	static long idleTime = Long.getLong("org.apache.oodt.commons.activity.History.idle", 5*60*1000).longValue();
+	static long idleTime = Long.getLong("org.apache.oodt.commons.activity.History.idle", 5 * 60 * 1000);
 
 	/** How many milliseconds to wait to give a history extra time to receive incidents before saving it to storage. */
-	static long closeTime = Long.getLong("org.apache.oodt.commons.activity.History.close", 5*60*1000).longValue();
+	static long closeTime = Long.getLong("org.apache.oodt.commons.activity.History.close", 5 * 60 * 1000);
 }

@@ -451,11 +451,11 @@ public class TestTypeHandler extends TestCase {
                 String tableName = type.getName() + "_metadata";
                 String subSelectQueryBase = "SELECT product_id FROM "
                         + tableName + " ";
-                StringBuffer selectClause = new StringBuffer(
+                StringBuilder selectClause = new StringBuilder(
                         "SELECT DISTINCT p.product_id ");
-                StringBuffer fromClause = new StringBuffer("FROM " + tableName
+                StringBuilder fromClause = new StringBuilder("FROM " + tableName
                         + " p ");
-                StringBuffer whereClause = new StringBuffer("WHERE ");
+                StringBuilder whereClause = new StringBuilder("WHERE ");
 
                 boolean gotFirstClause = false;
                 int clauseNum = 0;
@@ -692,11 +692,11 @@ public class TestTypeHandler extends TestCase {
                 String tableName = type.getName() + "_metadata";
                 String subSelectQueryBase = "SELECT product_id FROM "
                         + tableName + " ";
-                StringBuffer selectClause = new StringBuffer(
+                StringBuilder selectClause = new StringBuilder(
                         "SELECT COUNT(DISTINCT p.product_id) AS numResults ");
-                StringBuffer fromClause = new StringBuffer("FROM " + tableName
+                StringBuilder fromClause = new StringBuilder("FROM " + tableName
                         + " p ");
-                StringBuffer whereClause = new StringBuffer("WHERE ");
+                StringBuilder whereClause = new StringBuilder("WHERE ");
 
                 boolean gotFirstClause = false;
                 int clauseNum = 0;

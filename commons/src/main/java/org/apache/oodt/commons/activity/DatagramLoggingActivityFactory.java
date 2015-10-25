@@ -52,7 +52,7 @@ public class DatagramLoggingActivityFactory implements ActivityFactory {
 		String hostname = System.getProperty("org.apache.oodt.commons.activity.DatagramLoggingActivityFactory.host",
 			System.getProperty("activity.host", ""));
 		port = Integer.getInteger("org.apache.oodt.commons.activity.DatagramLoggingActivityFactory.port",
-			Integer.getInteger("activity.port", 4556)).intValue();
+			Integer.getInteger("activity.port", 4556));
 		if (hostname.length() == 0)
 			throw new IllegalStateException("System property `org.apache.oodt.commons.activity.DatagramLoggingActivityFactory.host'"
 				+ " (or simply `activity.host') not defined or is empty");

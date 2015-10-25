@@ -913,7 +913,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 
 		XMLQuery q;
 		if (argv[0].equals("-expr")) {
-			StringBuffer expr = new StringBuffer();
+			StringBuilder expr = new StringBuilder();
 			for (int i = 1; i < argv.length; ++i)
 				expr.append(argv[i]).append(' ');
 			q = new XMLQuery(expr.toString().trim(), "expr1", "Command-line Expression Query",
@@ -921,7 +921,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 				/*resultModeId*/ null, /*propType*/ null, /*propLevels*/ null, XMLQuery.DEFAULT_MAX_RESULTS);
 		} else if (argv[0].equals("-file")) {
 			BufferedReader reader = new BufferedReader(new FileReader(argv[1]));
-			StringBuffer str = new StringBuffer();
+			StringBuilder str = new StringBuilder();
 			String line;
 			while ((line = reader.readLine()) != null)
 				str.append(line).append('\n');

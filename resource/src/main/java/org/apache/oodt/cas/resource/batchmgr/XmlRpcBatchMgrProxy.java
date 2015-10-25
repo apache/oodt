@@ -72,8 +72,7 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
         boolean alive = false;
 
         try {
-            alive = ((Boolean) client.execute("batchstub.isAlive", argList))
-                    .booleanValue();
+            alive = (Boolean) client.execute("batchstub.isAlive", argList);
         } catch (XmlRpcException e) {
             alive = false;
         } catch (IOException e) {
@@ -91,8 +90,7 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
 
         boolean result = false;
         try {
-            result = ((Boolean) client.execute("batchstub.killJob", argList))
-                    .booleanValue();
+            result = (Boolean) client.execute("batchstub.killJob", argList);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             result = false;
@@ -117,8 +115,8 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
         boolean result = false;
         try {
             parent.jobExecuting(jobSpec);
-            result = ((Boolean) client
-                    .execute("batchstub.executeJob", argList)).booleanValue();
+            result = (Boolean) client
+                .execute("batchstub.executeJob", argList);
             if (result)
             	parent.jobSuccess(jobSpec);
             else

@@ -35,7 +35,7 @@ public class ExtractorConfigWriter {
     props.setProperty(ExtractorConfig.PROP_CLASS_NAME, config.getClassName());
     File configDir = new File(dir, config.getIdentifier());
     configDir.mkdirs();
-    StringBuffer files = new StringBuffer();
+    StringBuilder files = new StringBuilder();
     for (Iterator<File> i = config.getConfigFiles().iterator(); i.hasNext();) {
       File file = i.next();
       files.append(file.toURI());

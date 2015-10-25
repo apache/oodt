@@ -73,7 +73,7 @@ public abstract class AbstractQueryCliAction extends FileManagerCliAction {
             complexQuery.setQueryFilter(filter);
          }
          List<QueryResult> results = getClient().complexQuery(complexQuery);
-         StringBuffer returnString = new StringBuffer("");
+         StringBuilder returnString = new StringBuilder("");
          for (QueryResult qr : results) {
             returnString.append(qr.toString() + delimiter);
          }

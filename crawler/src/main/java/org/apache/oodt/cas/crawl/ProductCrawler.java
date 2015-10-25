@@ -231,7 +231,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
    }
 
    @VisibleForTesting void validateActions() {
-      StringBuffer actionErrors = new StringBuffer("");
+      StringBuilder actionErrors = new StringBuilder("");
       for (CrawlerAction action : actionRepo.getActions()) {
          try {
             action.validate();

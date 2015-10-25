@@ -84,10 +84,10 @@ public class MailTask implements WorkflowTaskInstance {
   }
 
   private String getMsgStringFromMet(Metadata met) {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     for (Object key : met.getHashtable().keySet()) {
       String keyStr = (String) key;
-      StringBuffer val = new StringBuffer();
+      StringBuilder val = new StringBuilder();
       for (Object value : met.getAllMetadata(keyStr)) {
         String valStr = (String) value;
         val.append(valStr);

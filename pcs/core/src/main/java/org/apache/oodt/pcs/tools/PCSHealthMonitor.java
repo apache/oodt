@@ -587,8 +587,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     Vector argList = new Vector();
 
     try {
-      return ((Boolean) client.execute("batchstub.isAlive", argList))
-          .booleanValue();
+      return (Boolean) client.execute("batchstub.isAlive", argList);
     } catch (Exception e) {
       return false;
     }

@@ -220,8 +220,7 @@ public final class XmlStructFactory {
       Element propElem = (Element) configProperties.item(i);
       String value = propElem.getAttribute("value");
 
-      boolean doReplace = Boolean.valueOf(propElem.getAttribute("envReplace"))
-          .booleanValue();
+      boolean doReplace = Boolean.valueOf(propElem.getAttribute("envReplace"));
       if (doReplace) {
         value = PathUtils.replaceEnvVariables(value);
       }

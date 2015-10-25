@@ -44,8 +44,8 @@ public class RemoteDataTransferFactory implements DataTransferFactory {
      */
     public RemoteDataTransferFactory() throws InstantiationException {
         chunkSize = Integer.getInteger(
-                "org.apache.oodt.cas.filemgr.datatransfer.remote.chunkSize",
-                1024).intValue();
+            "org.apache.oodt.cas.filemgr.datatransfer.remote.chunkSize",
+            1024);
 
         LOG.log(Level.INFO, "RemoteDataTransfer enabled: using chunk size: ["
                 + chunkSize + "]");

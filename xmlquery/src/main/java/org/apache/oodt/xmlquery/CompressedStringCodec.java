@@ -63,7 +63,7 @@ class CompressedStringCodec implements Codec {
 			ByteArrayInputStream byteArray = new ByteArrayInputStream(encodedValue.getBytes());
 			Base64DecodingInputStream base64 = new Base64DecodingInputStream(byteArray);
 			GZIPInputStream gzip = new GZIPInputStream(base64);
-			StringBuffer b = new StringBuffer();
+			StringBuilder b = new StringBuilder();
 			int numRead;
 			byte[] buf = new byte[1024];
 			while ((numRead = gzip.read(buf)) != -1)

@@ -59,7 +59,7 @@ public class FileSettings {
    }
 
    public String getPreparedFileString(File file) {
-      StringBuffer fileString = new StringBuffer();
+      StringBuilder fileString = new StringBuilder();
 
       if (file.getParent() != null) {
          fileString.append(file.getParent());

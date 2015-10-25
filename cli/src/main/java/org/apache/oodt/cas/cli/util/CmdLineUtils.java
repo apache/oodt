@@ -1048,7 +1048,7 @@ public class CmdLineUtils {
     */
    public static String getFormattedString(String string, int startIndex,
          int endIndex) {
-      StringBuffer outputString = new StringBuffer("");
+      StringBuilder outputString = new StringBuilder("");
       String[] splitStrings = StringUtils.split(string, " ");
       StringBuffer curLine = null;
       for (int i = 0; i < splitStrings.length; i++) {
@@ -1108,7 +1108,7 @@ public class CmdLineUtils {
             doubles.add(new Double(value));
          return doubles;
       } else if (type.equals(String.class)) {
-         StringBuffer combinedString = new StringBuffer("");
+         StringBuilder combinedString = new StringBuilder("");
          for (String value : values)
             combinedString.append(value + " ");
          return Lists.newArrayList(combinedString.toString().trim());

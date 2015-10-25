@@ -83,7 +83,7 @@ public class XMLRPC {
 		if (value instanceof Integer || value instanceof Short) {
 			XML.add(valueElement, "int", value.toString());
 		} else if (value instanceof Boolean) {
-			XML.add(valueElement, "boolean", ((Boolean) value).booleanValue()? "1" : "0");
+			XML.add(valueElement, "boolean", (Boolean) value ? "1" : "0");
 		} else if (value instanceof String) {
 			Element stringElement = doc.createElement("string");
 			valueElement.appendChild(stringElement);

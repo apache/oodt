@@ -271,7 +271,7 @@ final public class LightweightProfileServer implements ProfileHandler {
 		LightweightProfileServer lp = new LightweightProfileServer();
 
 		// Gather together the command-line arguments into a single long string.
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 		for (int i = 0; i < argv.length; ++i)
 			b.append(argv[i]).append(' ');
 

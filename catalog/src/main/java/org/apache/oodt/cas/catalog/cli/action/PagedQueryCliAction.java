@@ -65,7 +65,7 @@ public class PagedQueryCliAction extends CatalogServiceCliAction {
          for (TransactionalMetadata tMet : transactionMetadatas) {
             printer.print("ID: " + tMet.getTransactionId() + " ; CatalogIDs: "
                   + tMet.getCatalogIds() + " ; Metadata: (");
-            StringBuffer sb = new StringBuffer("");
+            StringBuilder sb = new StringBuilder("");
             for (Object metKey : tMet.getMetadata().getHashtable().keySet()) {
                sb.append(metKey
                      + "="

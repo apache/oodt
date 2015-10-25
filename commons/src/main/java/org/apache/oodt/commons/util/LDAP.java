@@ -32,7 +32,7 @@ public class LDAP {
 	 * @return An escaped, LDAP-safe string.
 	 */
 	public static String toLDAPString(String str) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < str.length(); ++i) {
 			char ch = str.charAt(i);
 			switch (ch) {

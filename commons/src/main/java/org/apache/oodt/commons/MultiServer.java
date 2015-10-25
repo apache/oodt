@@ -157,7 +157,7 @@ public class MultiServer {
 		String registryList = System.getProperty("org.apache.oodt.commons.rmiregistries", System.getProperty("rmiregistries"));
 		if (registryList == null) {
 			String host = System.getProperty("rmiregistry.host", "localhost");
-			int port = Integer.getInteger("rmiregistry.port", Registry.REGISTRY_PORT).intValue();
+			int port = Integer.getInteger("rmiregistry.port", Registry.REGISTRY_PORT);
 			registryList = "rmi://" + host + ":" + port;
 		}
 		t.put("rmiregistries", registryList);

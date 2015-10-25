@@ -43,7 +43,7 @@ public class ProfileTest extends TestCase {
 		oldProfNS = System.getProperty("jpl.rdf.ns");
 		System.setProperty("jpl.rdf.ns", "http://enterprise.jpl.nasa.gov/rdfs/prof.rdf#");
 
-		StringBuffer buffer = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		StringBuilder buffer = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		buffer.append("<!DOCTYPE profile PUBLIC \"").append(Profile.PROFILES_DTD_FPI).append("\" \"")
 			.append(Profile.PROFILES_DTD_URL).append("\">\n");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("test.xml")));
