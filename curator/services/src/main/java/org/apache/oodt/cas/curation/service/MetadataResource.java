@@ -139,7 +139,7 @@ public class MetadataResource extends CurationService {
     
       // this.sendRedirect("login.jsp", uriInfo, res);
 
-      Metadata metadata = null;
+      Metadata metadata;
       
       try {
         metadata = this.getStagingMetadata(id, configId, overwrite);
@@ -532,7 +532,7 @@ public class MetadataResource extends CurationService {
     try {
     
       // retrieve product from catalog
-      Product product = null;
+      Product product;
       if (StringUtils.hasText(id)) {
     	  id = id.substring(id.lastIndexOf("/") + 1);
     	  product = fmClient.getProductById(id);
@@ -636,7 +636,7 @@ public class MetadataResource extends CurationService {
 
 	  try {
 		  // retrieve product from catalog
-		  Product product = null;
+		  Product product;
 		  if (StringUtils.hasText(id)) {
 			  id = id.substring(id.lastIndexOf("/") + 1);
 			  product = CurationService.config.getFileManagerClient().getProductById(id);

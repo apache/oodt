@@ -69,7 +69,7 @@ public final class VersioningUtils {
     };
 
     public static List<Reference> getReferencesFromDir(File dirRoot) {
-        List<Reference> references = null;
+        List<Reference> references;
 
         if (dirRoot == null)
             throw new IllegalArgumentException("null");
@@ -126,7 +126,7 @@ public final class VersioningUtils {
     }
 
     public static List<String> getURIsFromDir(File dirRoot) {
-        List<String> uris = null;
+        List<String> uris;
 
         if (dirRoot == null)
             throw new IllegalArgumentException("null");
@@ -209,7 +209,7 @@ public final class VersioningUtils {
             String productRepoPath, List<Reference> references) {
         for (Reference r : references) {
             String dataStoreRef = null;
-            String productRepoPathRef = null;
+            String productRepoPathRef;
 
             try {
                 productRepoPathRef = new File(new URI(productRepoPath)).toURL()
@@ -262,7 +262,7 @@ public final class VersioningUtils {
     }
 
     public static String getAbsolutePathFromUri(String uriStr) {
-        URI uri = null;
+        URI uri;
         String absPath = null;
 
         try {
@@ -278,7 +278,7 @@ public final class VersioningUtils {
     }
 
     private static long quietGetFileSizeFromUri(String uri) {
-        File fileRef = null;
+        File fileRef;
 
         try {
             fileRef = new File(new URI(uri));

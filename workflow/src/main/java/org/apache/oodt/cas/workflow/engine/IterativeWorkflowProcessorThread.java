@@ -501,7 +501,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
   private boolean satisfied(List conditionList, String taskId) {
     for (Object aConditionList : conditionList) {
       WorkflowCondition c = (WorkflowCondition) aConditionList;
-      WorkflowConditionInstance cInst = null;
+      WorkflowConditionInstance cInst;
 
       // see if we've already cached this condition instance
       if (CONDITION_CACHE.get(taskId) != null) {

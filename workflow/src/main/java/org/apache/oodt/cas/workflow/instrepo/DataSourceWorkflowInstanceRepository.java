@@ -748,7 +748,7 @@ public class DataSourceWorkflowInstanceRepository extends
             // must call next first, or else no relative cursor
             if (rs.next()) {
                 // grab the first one
-                int numGrabbed = -1;
+                int numGrabbed;
                 if(pageNum == 1){
                     numGrabbed = 1;
                     wInstIds.add(rs.getString("workflow_instance_id"));                    

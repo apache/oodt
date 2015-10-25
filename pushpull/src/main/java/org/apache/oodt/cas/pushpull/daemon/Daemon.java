@@ -456,7 +456,6 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
         String element = this.daemonInfo.getDataFilesInfo()
                 .getQueryMetadataElementName();
         if (element == null || element.equals(""))
-            element = "Filename";
         return this.daemonInfo.getDataFilesInfo().getQueryMetadataElementName();
     }
 
@@ -542,7 +541,6 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
                 if (args[i].equals("--rmiPort"))
                     rmiPort = Integer.parseInt(args[++i]);
                 else if (args[i].equals("--waitForNotification"))
-                    waitForCrawlNotification = true;
             }
 
             LocateRegistry.createRegistry(rmiPort);

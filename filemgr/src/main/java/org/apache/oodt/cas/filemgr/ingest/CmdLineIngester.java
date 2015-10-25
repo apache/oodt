@@ -102,7 +102,7 @@ public class CmdLineIngester extends StdIngester {
         }
 
         CmdLineIngester ingester = new CmdLineIngester(transferServiceFactory);
-        MetExtractor extractor = null;
+        MetExtractor extractor;
         if (readFromStdin) {
             List<String> prods = readProdFilesFromStdin();
             extractor = GenericMetadataObjectFactory
@@ -110,7 +110,7 @@ public class CmdLineIngester extends StdIngester {
             ingester.ingest(new URL(fmUrlStr), prods, extractor, new File(
                     metConfFilePath));
         } else {
-            String productID = null;
+            String productID;
             if (metFilePath != null) {
                 productID = ingester.ingest(new URL(fmUrlStr), new File(
                         filePath), new SerializableMetadata(
@@ -129,7 +129,7 @@ public class CmdLineIngester extends StdIngester {
 
     private static List<String> readProdFilesFromStdin() {
         List<String> prodFiles = new Vector<String>();
-        BufferedReader br = null;
+        BufferedReader br;
 
         br = new BufferedReader(new InputStreamReader(System.in));
 

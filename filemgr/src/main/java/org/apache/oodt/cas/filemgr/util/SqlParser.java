@@ -256,7 +256,7 @@ public class SqlParser {
                 stack.push("(");
                 break;
             case ')':
-                String value = null;
+                String value;
                 while (!(value = stack.pop()).equals("("))
                     postFix.add(value);
                 if (stack.peek().equals("NOT"))

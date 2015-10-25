@@ -55,7 +55,7 @@ public class HandlerQueryParser implements ParseConstants {
    */
   public static Expression parse(Stack<QueryElement> queryStack, Mapping map) {
 
-    QueryElement qe = null;
+    QueryElement qe;
 
     if (!queryStack.empty()) {
       qe = (QueryElement) queryStack.pop();

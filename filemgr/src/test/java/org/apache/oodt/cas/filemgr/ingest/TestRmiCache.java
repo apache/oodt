@@ -197,7 +197,7 @@ public class TestRmiCache extends TestCase {
     }
 
     private void doIngest() {
-        Metadata prodMet = null;
+        Metadata prodMet;
 
         try {
             URL ingestUrl = this.getClass().getResource("/ingest");
@@ -225,7 +225,6 @@ public class TestRmiCache extends TestCase {
             assertNotNull(p);
             assertEquals(Product.STATUS_RECEIVED, p.getTransferStatus());
             assertTrue(fmClient.hasProduct("test.txt"));
-            fmClient = null;
         } catch (Exception e) {
             fail(e.getMessage());
         }

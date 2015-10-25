@@ -87,7 +87,7 @@ public class SSOProxy implements SSOMetKeys {
   public String authenticate(String username, String password) {
     HttpClient httpClient = new HttpClient();
     PostMethod post = new PostMethod(AUTH_ENDPOINT);
-    String response = null;
+    String response;
     String ssoToken = null;
 
     NameValuePair[] data = { new NameValuePair("username", username),
@@ -186,7 +186,7 @@ public class SSOProxy implements SSOMetKeys {
       while ((line = br.readLine()) != null) {
         if (line.equals(IDENTITY_DETAILS_ATTR_SKIP_LINE))
           continue;
-        String key = null, val = null;
+        String key, val;
         if (line.startsWith(IDENTITY_DETAILS_REALM)) {
           // can't parse it the same way
           key = line.substring(0, IDENTITY_DETAILS_REALM.length());
@@ -222,7 +222,6 @@ public class SSOProxy implements SSOMetKeys {
         } catch (Exception ignore) {
         }
 
-        is = null;
       }
 
       if (br != null) {
@@ -231,7 +230,6 @@ public class SSOProxy implements SSOMetKeys {
         } catch (Exception ignore) {
         }
 
-        br = null;
       }
     }
 
@@ -247,7 +245,7 @@ public class SSOProxy implements SSOMetKeys {
 
     try {
       while ((line = br.readLine()) != null) {
-        String key = null, val = null;
+        String key, val;
         if (line.startsWith(USER_DETAILS_ROLE)) {
           // can't parse by splitting, parse by using substring
           key = line.substring(0, USER_DETAILS_ROLE.length());
@@ -279,7 +277,6 @@ public class SSOProxy implements SSOMetKeys {
         } catch (Exception ignore) {
         }
 
-        is = null;
       }
 
       if (br != null) {
@@ -288,7 +285,6 @@ public class SSOProxy implements SSOMetKeys {
         } catch (Exception ignore) {
         }
 
-        br = null;
       }
     }
 

@@ -62,7 +62,7 @@ public class OpendapProfileElementExtractor {
       Profile profile, DAS das) throws NoSuchAttributeException {
     RangedProfileElement elem = new RangedProfileElement(profile);
     elem.setName(elemName);
-    AttributeTable attTable = null;
+    AttributeTable attTable;
     try {
       attTable = das.getAttributeTable(varname);
       
@@ -85,7 +85,7 @@ public class OpendapProfileElementExtractor {
       Attribute attr = attTable.getAttribute(attrName);
      
       if (!attr.isContainer()) {
-      	 Enumeration attrValues = null;
+      	 Enumeration attrValues;
         
         	try {
             attrValues = attr.getValues();
@@ -125,7 +125,7 @@ public class OpendapProfileElementExtractor {
     EnumeratedProfileElement elem = new EnumeratedProfileElement(profile);
     elem.setName(elemName);
 
-    AttributeTable attTable = null;
+    AttributeTable attTable;
     try {
       attTable = das.getAttributeTable(elemName);
     } catch (NoSuchAttributeException e) {
@@ -139,7 +139,7 @@ public class OpendapProfileElementExtractor {
     while (attributeNames.hasMoreElements()) {
       String attrName = (String) attributeNames.nextElement();
       Attribute attr = attTable.getAttribute(attrName);
-      Enumeration attrValues = null;
+      Enumeration attrValues;
       try {
         attrValues = attr.getValues();
       } catch (NoSuchAttributeException e) {

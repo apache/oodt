@@ -193,7 +193,7 @@ public class RdfConfiguration
       ? keyNsMap.get(key) : defaultKeyNs;
 
     // Create the element.
-    Element element = null;
+    Element element;
     if (resLinkMap.containsKey(key))
     {
       element = document.createElement(namespace + ":" + tagName);

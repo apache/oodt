@@ -96,7 +96,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
          File dir = (File) stack.pop();
          LOG.log(Level.INFO, "Crawling " + dir);
 
-         File[] productFiles = null;
+         File[] productFiles;
          if (isCrawlForDirs()) {
             productFiles = dir.listFiles(DIR_FILTER);
          } else {

@@ -84,7 +84,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -92,7 +91,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -131,7 +129,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -139,7 +136,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -147,7 +143,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -186,7 +181,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -194,7 +188,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -202,7 +195,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -238,7 +230,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -246,7 +237,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -254,7 +244,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
     }
 
@@ -290,7 +279,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -298,7 +286,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -332,7 +319,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -340,7 +326,6 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }

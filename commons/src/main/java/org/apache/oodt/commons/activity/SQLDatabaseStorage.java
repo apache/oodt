@@ -159,7 +159,6 @@ public class SQLDatabaseStorage implements Storage {
           statement.close();
         } catch (SQLException ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -167,8 +166,6 @@ public class SQLDatabaseStorage implements Storage {
           conn.close();
         } catch (SQLException ignore) {
         }
-        conn = null;
-        conn = null;
       }
     }
   }

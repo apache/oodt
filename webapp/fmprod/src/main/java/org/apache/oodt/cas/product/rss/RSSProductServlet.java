@@ -155,7 +155,7 @@ public class RSSProductServlet extends HttpServlet {
     channelMet.addMetadata("TopN", String.valueOf(topN));
     channelMet.addMetadata("BaseUrl", base);
 
-    List products = null;
+    List products;
 
     try {
       if (productTypeName.equals("ALL")) {
@@ -184,7 +184,7 @@ public class RSSProductServlet extends HttpServlet {
     }
 
     if (products != null && products.size() > 0) {
-      String channelDesc = null;
+      String channelDesc;
 
       if (!productTypeName.equals("ALL")) {
         channelDesc = type.getDescription();
@@ -227,7 +227,7 @@ public class RSSProductServlet extends HttpServlet {
           Product p = (Product) product;
 
           String productTypeIdStr = p.getProductType().getProductTypeId();
-          ProductType productType = null;
+          ProductType productType;
 
           try {
             productType = fm.getProductTypeById(productTypeIdStr);

@@ -100,7 +100,7 @@ public class RDFDatasetServlet extends HttpServlet {
       throw new ServletException(e.getMessage());
     }
 
-    String fileManagerUrl = null;
+    String fileManagerUrl;
     try {
       fileManagerUrl = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
           "filemgr.url") );
@@ -146,7 +146,7 @@ public class RDFDatasetServlet extends HttpServlet {
     String productTypeName = req.getParameter("type");
     String productTypeId = req.getParameter("typeID");
     ProductTypeFilter filter = new ProductTypeFilter(req.getParameter("filter"));
-    ProductType type = null;
+    ProductType type;
 
     List<ProductType> productTypes = new Vector<ProductType>();
 

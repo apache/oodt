@@ -348,7 +348,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
      */
     public static void main(String[] args) throws RepositoryException {
         String usage = "XmlWorkflowRepository <uri 1>...<uri n>\n";
-        List uris = null;
+        List uris;
 
         if (args.length == 0) {
             System.err.println(usage);
@@ -534,7 +534,6 @@ public class XMLWorkflowRepository implements WorkflowRepository {
                 String workflowDirStr = workflowDir.getAbsolutePath();
 
                 if (!workflowDirStr.endsWith("/")) {
-                  workflowDirStr += "/";
                 }
 
                 // get all the workflow xml files
@@ -614,7 +613,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
 
                     String eventName = eventElem
                         .getAttribute("name");
-                    Workflow w = null;
+                    Workflow w;
 
                     NodeList workflowNodeList = eventElem
                         .getElementsByTagName("workflow");

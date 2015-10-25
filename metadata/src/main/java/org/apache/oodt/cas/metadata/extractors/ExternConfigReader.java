@@ -87,7 +87,7 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
                     Vector argVector = new Vector();
                     for (int i = 0; i < argNodes.getLength(); i++) {
                         Element argElem = (Element) argNodes.item(i);
-                        String argStr = null;
+                        String argStr;
                         if (Boolean.valueOf(
                             argElem.getAttribute(IS_DATA_FILE_ATTR)
                                    .toLowerCase()))
@@ -99,7 +99,7 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
                         else
                             argStr = XMLUtils.getSimpleElementText(argElem);
 
-                        String appendExt = null;
+                        String appendExt;
                         if (!(appendExt = argElem.getAttribute(APPEND_EXT_ATTR))
                                 .equals(""))
                             argStr += "." + appendExt;

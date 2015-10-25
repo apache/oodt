@@ -41,7 +41,7 @@ public final class DatabaseConnectionBuilder {
     public static final DataSource buildDataSource(String user, String pass,
             String driver, String url) {
 
-        DataSource ds = null;
+        DataSource ds;
 
         try {
             Class.forName(driver);

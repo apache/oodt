@@ -178,7 +178,7 @@ public class CasDB {
 
       QueryBuilder qb = new QueryBuilder(this);
       org.apache.oodt.cas.filemgr.structs.Query casQ = qb.ParseQuery(queryText);
-      ProductType type = null;
+      ProductType type;
       try {
         type = client.getProductTypeByName(productType);
         Vector<Product> products = (Vector<Product>) client.query(casQ, type);

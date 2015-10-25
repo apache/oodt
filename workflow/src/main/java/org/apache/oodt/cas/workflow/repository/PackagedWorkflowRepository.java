@@ -316,7 +316,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
 		workflow.setId(workflowId);
 	}
       
-    ParentChildWorkflow pcw = null;
+    ParentChildWorkflow pcw;
     if(workflow instanceof ParentChildWorkflow) {
         pcw = (ParentChildWorkflow) workflow;
     }
@@ -369,7 +369,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     this.globalConfGroups = new HashMap<String, Metadata>();
     this.graphs = new Vector<Graph>();
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder parser = null;
+    DocumentBuilder parser;
 
     try {
       parser = factory.newDocumentBuilder();
@@ -597,7 +597,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       }
       this.workflows.put(graph.getModelId(), workflow);
     } else if (graph.getExecutionType().equals("condition")) {
-      WorkflowCondition cond = null;
+      WorkflowCondition cond;
 
       if (graph.getModelIdRef() != null && !graph.getModelIdRef().equals("")) {
         cond = this.conditions.get(graph.getModelIdRef());
@@ -639,7 +639,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       // is null and it's a condition definition, just add it
 
     } else if (graph.getExecutionType().equals("task")) {
-      WorkflowTask task = null;
+      WorkflowTask task;
       if (graph.getModelIdRef() != null && !graph.getModelIdRef().equals("")) {
         LOG.log(Level.FINER, "Model ID-Ref to: [" + graph.getModelIdRef() + "]");
         task = this.tasks.get(graph.getModelIdRef());

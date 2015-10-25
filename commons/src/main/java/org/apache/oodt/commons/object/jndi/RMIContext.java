@@ -298,7 +298,7 @@ public class RMIContext implements Context {
 	 * @return A list of the current bindings, as simple string names.
 	 */
 	private List getCurrentBindings() throws NamingException {
-		List names = null;
+		List names;
 		try {
 			Registry registry = getRegistry();
 			names = Arrays.asList(registry.list());

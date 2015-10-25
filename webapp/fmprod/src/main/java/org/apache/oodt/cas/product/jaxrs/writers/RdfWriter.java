@@ -59,7 +59,7 @@ public class RdfWriter
   public String getBaseUri()
   {
     String baseUri = uriInfo.getBaseUri().toString();
-    return baseUri += baseUri.endsWith("/") ? "" : "/";
+    return baseUri.endsWith("/") ? "" : "/";
   }
 
 

@@ -105,7 +105,7 @@ public class RDFProductServlet extends HttpServlet {
       throw new ServletException(e.getMessage());
     }
 
-    String fileManagerUrl = null;
+    String fileManagerUrl;
     try {
       fileManagerUrl = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
           "filemgr.url") );
@@ -151,7 +151,7 @@ public class RDFProductServlet extends HttpServlet {
     String productTypeId = req.getParameter("id");
     ProductType type = null;
 
-    List<Product> products = null;
+    List<Product> products;
 
     try {
       if (productTypeName.equals("ALL")) {
@@ -207,7 +207,7 @@ public class RDFProductServlet extends HttpServlet {
 
       for (Product p : products) {
         String productTypeIdStr = p.getProductType().getProductTypeId();
-        ProductType productType = null;
+        ProductType productType;
 
         if (type != null) {
           productType = type;
@@ -287,7 +287,7 @@ public class RDFProductServlet extends HttpServlet {
     if (types != null && types.size() > 0) {
       products = new Vector<Product>();
       for (ProductType type : types) {
-        ProductPage page = null;
+        ProductPage page;
 
         try {
           page = fClient.getFirstPage(type);

@@ -142,7 +142,7 @@ public class DataSourceCatalog implements Catalog {
      */
     public synchronized void addMetadata(Metadata m, Product product)
             throws CatalogException {
-        List<Element> metadataTypes = null;
+        List<Element> metadataTypes;
 
         try {
             metadataTypes = validationLayer.getElements(product
@@ -551,7 +551,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -561,7 +560,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -961,8 +959,8 @@ public class DataSourceCatalog implements Catalog {
             conn = dataSource.getConnection();
             statement = conn.createStatement();
 
-            String getProductSql = null;
-            String productTypeIdStr = null;
+            String getProductSql;
+            String productTypeIdStr;
 
             if (fieldIdStringFlag) {
                 productTypeIdStr = "'" + type.getProductTypeId() + "'";
@@ -2059,7 +2057,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -2068,7 +2065,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -2078,7 +2074,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 

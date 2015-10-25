@@ -801,7 +801,7 @@ public class GraphView extends DefaultTreeView {
       if (e.getButton() == MouseEvent.BUTTON3) {
         Object mouseOverCell = GraphView.this.jgraph.getFirstCellForLocation(
             e.getX(), e.getY());
-        ModelGraph mouseOverGraph = null;
+        ModelGraph mouseOverGraph;
         if (mouseOverCell != null) {
           mouseOverGraph = (GuiUtils.find(state.getGraphs(),
               ((ModelNode) ((DefaultMutableTreeNode) mouseOverCell)
@@ -818,8 +818,6 @@ public class GraphView extends DefaultTreeView {
             if (mouseOverGraph != null)
               mouseOverCell = GraphView.this.m_jgAdapter
                   .getVertexCell(mouseOverGraph.getModel());
-            else
-              mouseOverCell = null;
           }
           state.setSelected(mouseOverGraph);
         } else {
@@ -911,7 +909,7 @@ public class GraphView extends DefaultTreeView {
     }
 
     private void createNewGraph(String actionCommand) {
-      ModelGraph newGraph = null;
+      ModelGraph newGraph;
       if (actionCommand.equals(NEW_TASK_ITEM_NAME)) {
         newGraph = new ModelGraph(new ModelNode(state.getFile(),
             GuiUtils.createUniqueName()));
@@ -957,7 +955,7 @@ public class GraphView extends DefaultTreeView {
   }
 
   public Point getShift(ViewState state, DefaultGraphCell cell, Map nested) {
-    ModelGraph graph = null;
+    ModelGraph graph;
     if (cell instanceof DefaultEdge) {
       IdentifiableEdge edge = (IdentifiableEdge) cell.getUserObject();
       Pair pair = GraphView.this.edgeMap.get(edge.id);

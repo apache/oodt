@@ -81,7 +81,7 @@ public class RetrievalSetup {
                     .initialize();
             dataFilesFRS.registerDownloadListener(linker);
 
-            File[] propFiles = null;
+            File[] propFiles;
             while ((propFiles = getCurrentlyDownloadedPropFiles(pfi)).length > 0
                     || downloadingProps) {
                 for (File propFile : propFiles) {
@@ -89,7 +89,7 @@ public class RetrievalSetup {
                         Parser parser = pfi.getParserForFile(propFile);
                         Class<RetrievalMethod> rmClass = config.getParserInfo()
                                 .getRetrievalMethod(parser);
-                        RetrievalMethod rm = null;
+                        RetrievalMethod rm;
                         if ((rm = this.classToRmMap.get(rmClass)) == null) {
                             LOG.log(Level.INFO, "Creating '"
                                     + rmClass.getCanonicalName()
@@ -167,7 +167,7 @@ public class RetrievalSetup {
                             Parser parser = pfi.getParserForFile(dirStructFile);
                             Class<RetrievalMethod> rmClass = config
                                     .getParserInfo().getRetrievalMethod(parser);
-                            RetrievalMethod rm = null;
+                            RetrievalMethod rm;
                             if ((rm = RetrievalSetup.this.classToRmMap
                                     .get(rmClass)) == null) {
                                 LOG.log(Level.INFO, "Creating '"

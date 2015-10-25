@@ -76,7 +76,7 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
       String productRoot, boolean showDirSize, boolean showFileSize) {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware(true);
-    Document document = null;
+    Document document;
 
     try {
       DocumentBuilder builder = factory.newDocumentBuilder();
@@ -163,7 +163,6 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
         } catch (Exception ignore) {
         }
 
-        out = null;
       }
     }
 

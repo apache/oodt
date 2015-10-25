@@ -145,7 +145,7 @@ public class XmlRpcResourceManager {
     }
 
     public Hashtable getJobInfo(String jobId) throws JobRepositoryException {
-        JobSpec spec = null;
+        JobSpec spec;
 
         try {
             spec = scheduler.getJobQueue().getJobRepository()

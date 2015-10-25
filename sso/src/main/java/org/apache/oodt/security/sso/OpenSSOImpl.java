@@ -61,7 +61,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
       // and pull the username from there
       String ssoToken = this.getSSOToken();
       if (ssoToken != null) {
-        UserDetails details = null;
+        UserDetails details;
         try {
           details = this.ssoProxy.getUserAttributes(ssoToken);
         } catch (Exception e) {
@@ -88,7 +88,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
 
   public boolean login(String username, String password) {
 
-    String ssoToken = null;
+    String ssoToken;
     try {
       ssoToken = this.ssoProxy.authenticate(username, password);
     } catch (Exception e) {

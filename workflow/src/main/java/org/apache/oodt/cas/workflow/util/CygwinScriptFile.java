@@ -69,7 +69,6 @@ public class CygwinScriptFile extends ScriptFile {
         } finally {
             try {
                 pw.close();
-                pw = null;
             } catch (Exception ignore) {
             }
 

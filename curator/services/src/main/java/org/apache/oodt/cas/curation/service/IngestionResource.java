@@ -153,7 +153,7 @@ public class IngestionResource extends CurationService {
     Ingester ingest = this.configureIngester();
     MetadataResource metService = new MetadataResource();
     for (String file : task.getFileList()) {
-      Metadata fileMet = null;
+      Metadata fileMet;
       try {
         String vFilePath = this.getVirtualPath(CurationService.config
             .getStagingAreaPath(), file);

@@ -78,7 +78,7 @@ public class ProtocolManager {
     		return verifiedMap.get(site).newInstance();
     	} else {
     		for (ProtocolFactory factory : protocolConfig.getFactoriesBySite(site)) {
-    			Protocol protocol = null;
+    			Protocol protocol;
     			try {
     				protocol = factory.newInstance();
     				if (verifier == null || verifier.verify(protocol, site, auth)) {

@@ -93,7 +93,7 @@ public class TestTypeHandler extends TestCase {
 
         // get a temp directory
         File tempDir = null;
-        File tempFile = null;
+        File tempFile;
 
         try {
             tempFile = File.createTempFile("foo", "bar");
@@ -447,7 +447,7 @@ public class TestTypeHandler extends TestCase {
                         ResultSet.TYPE_SCROLL_INSENSITIVE,
                         ResultSet.CONCUR_READ_ONLY);
 
-                String getProductSql = "";
+                String getProductSql;
                 String tableName = type.getName() + "_metadata";
                 String subSelectQueryBase = "SELECT product_id FROM "
                         + tableName + " ";
@@ -463,7 +463,7 @@ public class TestTypeHandler extends TestCase {
                     for (QueryCriteria criteria : query.getCriteria()) {
                         clauseNum++;
 
-                        String elementIdStr = null;
+                        String elementIdStr;
 
                         if (fieldIdStringFlag) {
                             elementIdStr = "'" + this.getValidationLayer().getElementByName(criteria.getElementName())
@@ -473,7 +473,7 @@ public class TestTypeHandler extends TestCase {
                                 this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
                         }
 
-                        String clause = null;
+                        String clause;
 
                         if (!gotFirstClause) {
                             clause = "(p.element_id = " + elementIdStr
@@ -598,7 +598,7 @@ public class TestTypeHandler extends TestCase {
                     // must call next first, or else no relative cursor
                     if (rs.next()) {
                         // grab the first one
-                        int numGrabbed = -1;
+                        int numGrabbed;
 
                         if (pageNum == 1) {
                             numGrabbed = 1;
@@ -651,7 +651,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    rs = null;
                 }
 
                 if (statement != null) {
@@ -660,7 +659,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    statement = null;
                 }
 
                 if (conn != null) {
@@ -670,7 +668,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    conn = null;
                 }
             }
 
@@ -689,7 +686,7 @@ public class TestTypeHandler extends TestCase {
                 conn = dataSource.getConnection();
                 statement = conn.createStatement();
 
-                String getProductSql = "";
+                String getProductSql;
                 String tableName = type.getName() + "_metadata";
                 String subSelectQueryBase = "SELECT product_id FROM "
                         + tableName + " ";
@@ -705,7 +702,7 @@ public class TestTypeHandler extends TestCase {
                     for (QueryCriteria criteria : query.getCriteria()) {
                         clauseNum++;
 
-                        String elementIdStr = null;
+                        String elementIdStr;
 
                         if (fieldIdStringFlag) {
                             elementIdStr = "'" + this.getValidationLayer().getElementByName(criteria.getElementName())
@@ -715,7 +712,7 @@ public class TestTypeHandler extends TestCase {
                                 this.getValidationLayer().getElementByName(criteria.getElementName()).getElementId();
                         }
 
-                        String clause = null;
+                        String clause;
 
                         if (!gotFirstClause) {
                             clause = "(p.element_id = " + elementIdStr
@@ -855,7 +852,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    rs = null;
                 }
 
                 if (statement != null) {
@@ -864,7 +860,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    statement = null;
                 }
 
                 if (conn != null) {
@@ -874,7 +869,6 @@ public class TestTypeHandler extends TestCase {
                     } catch (SQLException ignore) {
                     }
 
-                    conn = null;
                 }
             }
 

@@ -530,7 +530,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
         Connection conn = null;
         Statement statement = null;
         ResultSet rs = null;
-        List<Element> elements = null;
+        List<Element> elements;
 
         elements = new Vector<Element>();
 

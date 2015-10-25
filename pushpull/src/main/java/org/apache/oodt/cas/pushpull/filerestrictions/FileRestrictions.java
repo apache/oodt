@@ -477,7 +477,7 @@ public class FileRestrictions {
 
     public static boolean isAllowed(VirtualFile file, VirtualFile root) {
         boolean vfDoesNotExist = false, lastFileIsDir = file.isDir();
-        VirtualFile vf = null;
+        VirtualFile vf;
         while ((vf = root.getChildRecursive(file)) == null) {
             vfDoesNotExist = true;
             lastFileIsDir = file.isDir();

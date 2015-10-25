@@ -52,7 +52,7 @@ public final class RDFUtils {
 
     // does this tag have a namespace? if not, use the default
     String ns = conf.getKeyNs(key);
-    Element elem = null;
+    Element elem;
     // is this a resource link?
     if (conf.getResLinkMap().containsKey(key)) {
       elem = doc.createElement(ns + ":" + tagName);

@@ -328,7 +328,7 @@ public class TestPGETaskInstance {
 
    private static Document parseXmlFile(File file) throws Exception{
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      Document dom = null;
+      Document dom;
       DocumentBuilder db = dbf.newDocumentBuilder();
       dom = db.parse(file);
       return dom;

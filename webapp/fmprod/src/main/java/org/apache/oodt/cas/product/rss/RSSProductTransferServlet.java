@@ -104,7 +104,7 @@ public class RSSProductTransferServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        String fileManagerUrl = null;
+        String fileManagerUrl;
         try {
           fileManagerUrl = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
               "filemgr.url") );
@@ -154,7 +154,7 @@ public class RSSProductTransferServlet extends HttpServlet {
 
     public void doIt(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, java.io.IOException {
-        List currentTransfers = null;
+        List currentTransfers;
 
         try {
             currentTransfers = fClient.getCurrentFileTransfers();

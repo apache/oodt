@@ -81,7 +81,7 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
   {
     try
     {
-      URL url = null;
+      URL url;
       String urlParameter = context.getInitParameter("filemgr.url");
       if (urlParameter != null)
       {

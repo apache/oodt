@@ -682,7 +682,7 @@ public Token getNextToken()
   int kind;
   Token specialToken = null;
   Token matchedToken;
-  int curPos = 0;
+  int curPos;
 
   EOFLoop :
   for (;;)

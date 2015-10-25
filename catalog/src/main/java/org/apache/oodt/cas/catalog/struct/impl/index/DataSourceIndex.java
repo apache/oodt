@@ -485,7 +485,7 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
             sqlQuery.append(")");
         }else if (queryExpression instanceof ComparisonQueryExpression){
         	ComparisonQueryExpression cqe = (ComparisonQueryExpression) queryExpression;
-        	String operator = null;
+        	String operator;
             if (cqe.getOperator().equals(ComparisonQueryExpression.Operator.EQUAL_TO)) {
             	operator = "=";
             } else if (cqe.getOperator().equals(ComparisonQueryExpression.Operator.GREATER_THAN)) {

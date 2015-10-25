@@ -78,7 +78,7 @@ public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
                   "No config file defined: unable to copy and rewrite metadata!");
       }
 
-      Metadata met = null;
+      Metadata met;
       
       try {
           met = new SerializableMetadata(new File(PathUtils

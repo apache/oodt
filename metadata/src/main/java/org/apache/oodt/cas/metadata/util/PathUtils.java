@@ -66,7 +66,7 @@ public final class PathUtils {
         for (int i = 0; i < origPath.length(); i++) {
             if (origPath.charAt(i) == '[') {
                 VarData data = readEnvVarName(origPath, i);
-                String var = null;
+                String var;
                 if (metadata != null
                         && metadata.getMetadata(data.getFieldName()) != null) {
                     List valList = metadata.getAllMetadata(data.getFieldName());
@@ -142,7 +142,7 @@ public final class PathUtils {
                 throw new Exception("No date type specified - '" + dateString
                         + "'");
             String dateType = splitDate[1].replaceAll("[\\[\\]\\s]", "");
-            String replacement = "";
+            String replacement;
             if (dateType.equals("DAY")) {
                 replacement = StringUtils.leftPad(gc
                         .get(GregorianCalendar.DAY_OF_MONTH)

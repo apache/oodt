@@ -60,7 +60,7 @@ public class ListRetriever implements RetrievalMethod {
     public void processPropFile(FileRetrievalSystem frs, Parser propFileParser,
             File propFile, DataFilesInfo dfi, DataFileToPropFileLinker linker)
             throws Exception {
-        RemoteSite remoteSite = null;
+        RemoteSite remoteSite;
 
         // parse property file
         Metadata fileMetadata = new Metadata();

@@ -184,8 +184,8 @@ public final class PCSHealthMonitor implements CoreMetKeys,
 
   public static void main(String[] args) throws Exception {
     String usage = "PCSHealthMonitor <fm url> <wm url> <rm url> <crawler xml file path> <workflow states xml file path>\n";
-    String fmUrlStr = null, wmUrlStr = null, rmUrlStr = null;
-    String crawlerXmlFilePath = null, workflowStateXmlPath = null;
+    String fmUrlStr, wmUrlStr, rmUrlStr;
+    String crawlerXmlFilePath, workflowStateXmlPath;
 
     if (args.length != 5) {
       System.err.println(usage);
@@ -471,7 +471,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   }
 
   private void quickPrintBatchStubs() {
-    List resNodes = null;
+    List resNodes;
 
     if (getRmUp()) {
       // only print if the resource manager is up
@@ -594,7 +594,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   }
 
   private boolean getCrawlerUp(String crawlUrlStr) {
-    CrawlDaemonController controller = null;
+    CrawlDaemonController controller;
 
     try {
       controller = new CrawlDaemonController(crawlUrlStr);

@@ -118,7 +118,6 @@ public class ScriptFile {
         } finally {
             try {
                 pw.close();
-                pw = null;
             } catch (Exception ignore) {
             }
 

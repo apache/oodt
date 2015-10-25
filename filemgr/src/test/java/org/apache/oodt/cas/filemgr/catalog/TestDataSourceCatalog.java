@@ -88,7 +88,7 @@ public class TestDataSourceCatalog extends TestCase {
 
             // get a temp directory
             File tempDir = null;
-            File tempFile = null;
+            File tempFile;
 
             try {
                 tempFile = File.createTempFile("foo", "bar");

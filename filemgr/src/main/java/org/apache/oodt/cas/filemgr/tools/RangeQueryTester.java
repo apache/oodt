@@ -150,7 +150,6 @@ public final class RangeQueryTester {
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 

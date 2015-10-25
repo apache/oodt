@@ -178,7 +178,7 @@ public class BuildPerspective extends MultiStatePerspective {
     this.save();
     this.removeAll();
     this.setLayout(new BorderLayout());
-    JPanel panel = null;
+    JPanel panel;
     if (this.activeState != null) {
       BuildPanel buildPanel = this.stateViews.get(this.activeState);
       buildPanel.refresh();

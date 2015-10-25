@@ -71,7 +71,7 @@ public class DataSourceCatalogFactory implements CatalogFactory {
     public DataSourceCatalogFactory() {
     	
     	  // instantiate data source
-        String jdbcUrl = null, user = null, pass = null, driver = null;
+        String jdbcUrl, user, pass, driver;
 
         jdbcUrl = PathUtils
                 .replaceEnvVariables(System

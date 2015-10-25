@@ -127,7 +127,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
     // for each product, zip it up
     // after you zip up all products then create the dataset zip
 
-    ProductPage page = null;
+    ProductPage page;
 
     try {
       page = client.getFirstPage(type);
@@ -144,7 +144,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
             continue;
           }
 
-          Metadata metadata = null;
+          Metadata metadata;
           product.setProductReferences(client.getProductReferences(product));
           metadata = client.getMetadata(product);
           DataUtils.createProductZipFile(product, metadata, productDirPath);

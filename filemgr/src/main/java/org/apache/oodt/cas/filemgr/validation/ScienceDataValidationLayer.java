@@ -80,7 +80,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -88,7 +87,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -121,7 +119,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -129,7 +126,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -166,7 +162,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -174,7 +169,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -182,7 +176,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -221,7 +214,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -229,7 +221,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -237,7 +228,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -272,7 +262,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -280,7 +269,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -288,7 +276,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -326,7 +313,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -334,7 +320,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -342,7 +327,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -378,7 +362,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -386,7 +369,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -419,7 +401,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -427,7 +408,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -463,7 +443,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -471,7 +450,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }

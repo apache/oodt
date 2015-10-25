@@ -120,7 +120,7 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                 NodeList propInfoList = ((Element) daemonNode)
                         .getElementsByTagName(PROP_INFO_TAG);
                 LinkedList<PropFilesInfo> pfiList = new LinkedList<PropFilesInfo>();
-                PropFilesInfo pfi = null;
+                PropFilesInfo pfi;
                 if (propInfoList.getLength() > 0) {
                     Node propInfoNode = propInfoList.item(0);
 
@@ -187,8 +187,7 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                         String regExp = ((Element) downloadInfo)
                                 .getAttribute(REG_EXP_ATTR);
                         if (regExp.equals(""))
-                            regExp = propFilesRegExp;
-                        NodeList propsList = ((Element) propInfoNode)
+                      NodeList propsList = ((Element) propInfoNode)
                                 .getElementsByTagName(PROP_FILE_TAG);
                         HashMap<File, Parser> propFileToParserMap = new HashMap<File, Parser>();
                         for (int p = 0; p < propsList.getLength(); p++) {
@@ -238,7 +237,7 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                 // get DATAINFO elements
                 NodeList dataInfoList = ((Element) daemonNode)
                         .getElementsByTagName(DATA_INFO_TAG);
-                DataFilesInfo dfi = null;
+                DataFilesInfo dfi;
                 if (dataInfoList.getLength() > 0) {
                     Node dataInfo = dataInfoList.item(0);
                     String queryElement = ((Element) dataInfo)

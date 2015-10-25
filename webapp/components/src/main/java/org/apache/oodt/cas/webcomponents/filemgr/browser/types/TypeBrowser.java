@@ -250,7 +250,7 @@ public class TypeBrowser extends Panel {
       this.pageNum = this.productPage.getPageNum();
 
       // get the last page
-      ProductPage lastPage = null;
+      ProductPage lastPage;
       Query query = new Query();
       query.getCriteria().addAll(this.criteria);
 

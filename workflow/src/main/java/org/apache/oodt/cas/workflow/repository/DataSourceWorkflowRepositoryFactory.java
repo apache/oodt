@@ -50,7 +50,7 @@ public class DataSourceWorkflowRepositoryFactory implements
      * </p>.
      */
     public DataSourceWorkflowRepositoryFactory() throws Exception {
-        String jdbcUrl = null, user = null, pass = null, driver = null;
+        String jdbcUrl, user, pass, driver;
 
         jdbcUrl = System
                 .getProperty("org.apache.oodt.cas.workflow.repo.datasource.jdbc.url");

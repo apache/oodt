@@ -104,7 +104,7 @@ public class TestCachedIngester extends TestCase {
     }
 
     public void testIngest() {
-        Metadata prodMet = null;
+        Metadata prodMet;
 
         try {
             URL ingestUrl = this.getClass().getResource("/ingest");
@@ -131,7 +131,6 @@ public class TestCachedIngester extends TestCase {
             assertNotNull(p);
             assertEquals(Product.STATUS_RECEIVED, p.getTransferStatus());
             assertTrue(fmClient.hasProduct("test.txt"));
-            fmClient = null;
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -182,7 +181,7 @@ public class TestCachedIngester extends TestCase {
     }
 
     private void ingestTestFile() {
-        Metadata prodMet = null;
+        Metadata prodMet;
         StdIngester ingester = new StdIngester(transferServiceFacClass);
 
         try {

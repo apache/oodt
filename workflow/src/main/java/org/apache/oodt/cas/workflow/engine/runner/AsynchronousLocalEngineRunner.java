@@ -18,6 +18,14 @@
 package org.apache.oodt.cas.workflow.engine.runner;
 
 //JDK imports
+import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
+import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
+import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -27,13 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
-import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
-import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
 /**
  * Runs a local version of a {@link TaskProcessor} asynchronously.
@@ -130,12 +131,11 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
    */
   @Override
   public void shutdown() {
-    for (Thread worker : this.workerMap.values()) {
+    for (Thread worker : this.workerMap.values())
       if (worker != null) {
         worker.interrupt();
         worker = null;
       }
-    }
 
   }
 

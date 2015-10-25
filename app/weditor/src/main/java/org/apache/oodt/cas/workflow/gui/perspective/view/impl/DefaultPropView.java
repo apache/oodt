@@ -104,7 +104,7 @@ public class DefaultPropView extends View {
   }
 
   private JTable createTable(final ViewState state) {
-    JTable table = null;
+    JTable table;
     final ModelGraph selected = state.getSelected();
     if (selected != null) {
       final Vector<Vector<String>> rows = new Vector<Vector<String>>();

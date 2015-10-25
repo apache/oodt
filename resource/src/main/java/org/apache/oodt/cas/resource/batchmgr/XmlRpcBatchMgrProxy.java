@@ -69,7 +69,7 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
         client = new XmlRpcClient(remoteHost.getIpAddr());
         Vector argList = new Vector();
 
-        boolean alive = false;
+        boolean alive;
 
         try {
             alive = (Boolean) client.execute("batchstub.isAlive", argList);
@@ -88,7 +88,7 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
         Vector argList = new Vector();
         argList.add(XmlRpcStructFactory.getXmlRpcJob(jobSpec.getJob()));
 
-        boolean result = false;
+        boolean result;
         try {
             result = (Boolean) client.execute("batchstub.killJob", argList);
         } catch (XmlRpcException e) {
@@ -112,7 +112,7 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
         argList.add(XmlRpcStructFactory.getXmlRpcJob(jobSpec.getJob()));
         argList.add(jobSpec.getIn().write());
 
-        boolean result = false;
+        boolean result;
         try {
             parent.jobExecuting(jobSpec);
             result = (Boolean) client

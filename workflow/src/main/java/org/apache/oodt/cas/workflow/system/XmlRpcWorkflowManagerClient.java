@@ -94,7 +94,7 @@ public class XmlRpcWorkflowManagerClient {
     Vector argList = new Vector();
     Vector<String> taskIdVector = new Vector<String>();
     taskIdVector.addAll(taskIds);
-    String instId = null;
+    String instId;
     
     argList.add(taskIdVector);
     argList.add(metadata.getHashtable());
@@ -129,7 +129,7 @@ public class XmlRpcWorkflowManagerClient {
 
     public WorkflowInstancePage getFirstPage() throws Exception {
         Vector argList = new Vector();
-        Hashtable pageHash = null;
+        Hashtable pageHash;
 
         try {
             pageHash = (Hashtable) client.execute("workflowmgr.getFirstPage",
@@ -149,7 +149,7 @@ public class XmlRpcWorkflowManagerClient {
         Vector argList = new Vector();
         argList.add(XmlRpcStructFactory
                 .getXmlRpcWorkflowInstancePage(currentPage));
-        Hashtable pageHash = null;
+        Hashtable pageHash;
 
         try {
             pageHash = (Hashtable) client.execute("workflowmgr.getNextPage",
@@ -169,7 +169,7 @@ public class XmlRpcWorkflowManagerClient {
         Vector argList = new Vector();
         argList.add(XmlRpcStructFactory
                 .getXmlRpcWorkflowInstancePage(currentPage));
-        Hashtable pageHash = null;
+        Hashtable pageHash;
 
         try {
             pageHash = (Hashtable) client.execute("workflowmgr.getPrevPage",
@@ -186,7 +186,7 @@ public class XmlRpcWorkflowManagerClient {
 
     public WorkflowInstancePage getLastPage() throws Exception {
         Vector argList = new Vector();
-        Hashtable pageHash = null;
+        Hashtable pageHash;
 
         try {
             pageHash = (Hashtable) client.execute("workflowmgr.getLastPage",
@@ -206,7 +206,7 @@ public class XmlRpcWorkflowManagerClient {
         Vector argList = new Vector();
         argList.add(pageNum);
         argList.add(status);
-        Hashtable pageHash = null;
+        Hashtable pageHash;
 
         try {
             pageHash = (Hashtable) client.execute(
@@ -225,7 +225,7 @@ public class XmlRpcWorkflowManagerClient {
             throws Exception {
         Vector argList = new Vector();
         argList.add(pageNum);
-        Hashtable pageHash = null;
+        Hashtable pageHash;
 
         try {
             pageHash = (Hashtable) client.execute(
@@ -242,7 +242,7 @@ public class XmlRpcWorkflowManagerClient {
 
     public List getWorkflowsByEvent(String eventName) throws Exception {
         List workflows = new Vector();
-        Vector workflowVector = new Vector();
+        Vector workflowVector;
         Vector argList = new Vector();
         argList.add(eventName);
 
@@ -271,7 +271,7 @@ public class XmlRpcWorkflowManagerClient {
     public Metadata getWorkflowInstanceMetadata(String wInstId) throws Exception {
         Vector argList = new Vector();
         argList.add(wInstId);
-        Metadata met = null;
+        Metadata met;
 
         try {
             Hashtable instMetHash = (Hashtable) client.execute(
@@ -550,8 +550,8 @@ public class XmlRpcWorkflowManagerClient {
 
     public Vector getWorkflows() throws Exception {
         Vector argList = new Vector();
-        Vector works = null;
-        Vector workflows = null;
+        Vector works;
+        Vector workflows;
 
         try {
             works = (Vector) client
@@ -583,7 +583,7 @@ public class XmlRpcWorkflowManagerClient {
     public int getNumWorkflowInstancesByStatus(String status) throws Exception{
         Vector argList = new Vector();
         argList.add(status);
-        int numInsts = -1;
+        int numInsts;
 
         try {
             numInsts = (Integer) client.execute(
@@ -601,7 +601,7 @@ public class XmlRpcWorkflowManagerClient {
 
     public int getNumWorkflowInstances() throws Exception{
         Vector argList = new Vector();
-        int numInsts = -1;
+        int numInsts;
 
         try {
             numInsts = (Integer) client.execute(
@@ -620,8 +620,8 @@ public class XmlRpcWorkflowManagerClient {
     public Vector getWorkflowInstancesByStatus(String status) throws Exception {
         Vector argList = new Vector();
         argList.add(status);
-        Vector insts = null;
-        Vector instsUnpacked = null;
+        Vector insts;
+        Vector instsUnpacked;
 
         try {
             insts = (Vector) client.execute(
@@ -649,8 +649,8 @@ public class XmlRpcWorkflowManagerClient {
 
     public Vector getWorkflowInstances() throws Exception {
         Vector argList = new Vector();
-        Vector insts = null;
-        Vector instsUnpacked = null;
+        Vector insts;
+        Vector instsUnpacked;
 
         try {
             insts = (Vector) client.execute("workflowmgr.getWorkflowInstances",

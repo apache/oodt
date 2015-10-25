@@ -258,7 +258,7 @@ public class CASProfileHandler implements ProfileHandler {
     private List queryAndBuildProfiles(ProductType type, Query query) {
         List profiles = new Vector();
 
-        List products = null;
+        List products;
 
         try {
             products = fmClient.query(query, type);

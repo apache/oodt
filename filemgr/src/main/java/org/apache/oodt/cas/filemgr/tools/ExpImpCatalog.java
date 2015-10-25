@@ -182,7 +182,7 @@ public class ExpImpCatalog {
     }
 
     private void exportTypeToDest(ProductType type) throws Exception {
-        ProductPage page = null;
+        ProductPage page;
 
         if (this.srcCatalog != null) {
             page = srcCatalog.getFirstPage(type);

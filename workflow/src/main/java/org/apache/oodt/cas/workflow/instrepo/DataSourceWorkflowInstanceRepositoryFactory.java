@@ -61,7 +61,7 @@ public class DataSourceWorkflowInstanceRepositoryFactory implements
      * </p>
      */
     public DataSourceWorkflowInstanceRepositoryFactory() throws Exception {
-        String jdbcUrl = null, user = null, pass = null, driver = null;
+        String jdbcUrl, user, pass, driver;
 
         jdbcUrl = PathUtils
                 .replaceEnvVariables(System

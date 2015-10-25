@@ -130,8 +130,8 @@ public class XmlRpcBatchStub {
     }
 
     private boolean genericExecuteJob(Hashtable jobHash, Object jobInput) {
-        JobInstance exec = null;
-        JobInput in = null;
+        JobInstance exec;
+        JobInput in;
         try {
             Job job = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
 
@@ -162,7 +162,6 @@ public class XmlRpcBatchStub {
                 synchronized (jobThreadMap) {
                     Thread endThread = (Thread) jobThreadMap.get(job.getId());
                     if (endThread != null)
-                        endThread = null;
                 }
                 return false;
             }
@@ -170,7 +169,6 @@ public class XmlRpcBatchStub {
             synchronized (jobThreadMap) {
                 Thread endThread = (Thread) jobThreadMap.get(job.getId());
                 if (endThread != null)
-                    endThread = null;
             }
 
             return runner.wasSuccessful();

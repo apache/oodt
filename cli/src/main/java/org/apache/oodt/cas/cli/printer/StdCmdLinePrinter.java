@@ -130,7 +130,7 @@ public class StdCmdLinePrinter implements CmdLinePrinter {
                .getArgDescription(action, option);
       }
 
-      String argHelp = null;
+      String argHelp;
       if (option instanceof ActionCmdLineOption && option.hasArgs()) {
          argHelp = " " + action.getName();
       } else {

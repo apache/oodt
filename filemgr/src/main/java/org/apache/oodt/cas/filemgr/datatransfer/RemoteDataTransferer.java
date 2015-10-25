@@ -116,7 +116,7 @@ public class RemoteDataTransferer implements DataTransfer {
       // for each file reference, transfer the file to the remote file manager
      for (Reference r : product.getProductReferences()) {
        // test whether or not the reference is a directory or a file
-       File refFile = null;
+       File refFile;
        try {
          refFile = new File(new URI(r.getOrigReference()));
        } catch (URISyntaxException e) {
@@ -171,7 +171,7 @@ public class RemoteDataTransferer implements DataTransfer {
                   "RemoteDataTransfer: Copying File: " + "fmp:"
                         + dataStoreFile.getAbsolutePath() + " to " + "file:"
                         + dest.getAbsolutePath());
-            byte[] fileData = null;
+            byte[] fileData;
             int offset = 0;
             while (true) {
                fileData = (byte[]) client.retrieveFile(
@@ -222,7 +222,7 @@ public class RemoteDataTransferer implements DataTransfer {
       try {
          is = new FileInputStream(origFile);
          int offset = 0;
-         int numBytes = 0;
+         int numBytes;
 
          // remove the file if it already exists: this operation
          // is an overwrite
@@ -252,7 +252,6 @@ public class RemoteDataTransferer implements DataTransfer {
             } catch (Exception ignore) {
             }
 
-            is = null;
          }
       }
    }

@@ -105,8 +105,8 @@ public final class RunDirJobSubmitter {
             if (!in.ready())
                 throw new IOException();
 
-            String line = null;
-            String jobId = null;
+            String line;
+            String jobId;
             while ((line = in.readLine()) != null) {
 
                 // overwrite the runDirName

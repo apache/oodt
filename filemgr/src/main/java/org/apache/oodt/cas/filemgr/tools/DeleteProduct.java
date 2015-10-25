@@ -121,7 +121,7 @@ public class DeleteProduct {
 
     private static List readProdIdsFromStdin() {
         List prodIds = new Vector();
-        BufferedReader br = null;
+        BufferedReader br;
 
         br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -141,7 +141,6 @@ public class DeleteProduct {
                 } catch (Exception ignore) {
                 }
 
-                br = null;
             }
         }
 

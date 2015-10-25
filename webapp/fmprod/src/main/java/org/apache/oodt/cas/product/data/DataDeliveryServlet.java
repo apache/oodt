@@ -59,7 +59,7 @@ public class DataDeliveryServlet extends HttpServlet implements
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
-      String fileMgrURL = null;
+      String fileMgrURL;
       try {
         fileMgrURL = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
             "filemgr.url") );
@@ -157,8 +157,8 @@ public class DataDeliveryServlet extends HttpServlet implements
     // we'll be delivering a zip
     res.addHeader(CONTENT_TYPE_HDR, FORMAT_ZIP);
 
-    String productZipFilePath = null;
-    File productZipFile = null;
+    String productZipFilePath;
+    File productZipFile;
     InputStream in = null;
     OutputStream o2 = null;
 
@@ -202,7 +202,6 @@ public class DataDeliveryServlet extends HttpServlet implements
         } catch (Exception ignore) {
         }
 
-        in = null;
       }
 
       if (o2 != null) {
@@ -211,10 +210,8 @@ public class DataDeliveryServlet extends HttpServlet implements
         } catch (Exception ignore) {
         }
 
-        o2 = null;
       }
 
-      productZipFile = null;
     }
 
   }

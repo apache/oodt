@@ -47,7 +47,7 @@ public class VisibilityToggler extends WebMarkupContainer {
       String moreId, final ListModel model) {
     super(id, model);
 
-    Link<Link> showLink = null;
+    Link<Link> showLink;
     Link<Link> hideLink = null;
     final Vector allStatusList = (Vector) ((Vector) model.getObject()).clone();
 

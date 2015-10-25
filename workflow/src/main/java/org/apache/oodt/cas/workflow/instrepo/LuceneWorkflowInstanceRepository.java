@@ -118,7 +118,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -156,7 +155,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -238,7 +236,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -283,7 +280,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -329,7 +325,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -400,7 +395,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -432,7 +426,6 @@ public class LuceneWorkflowInstanceRepository extends
                 } catch (Exception ignore) {
                 }
 
-                reader = null;
             }
 
         }
@@ -444,7 +437,7 @@ public class LuceneWorkflowInstanceRepository extends
 
         File indexDir = new File(idxFilePath);
 
-        boolean createIndex = false;
+        boolean createIndex;
 
         createIndex = !(indexDir.exists() && indexDir.isDirectory());
 
@@ -466,7 +459,6 @@ public class LuceneWorkflowInstanceRepository extends
                 writer.close();
             } catch (Exception ignore) {
             }
-            writer = null;
         }
 
     }

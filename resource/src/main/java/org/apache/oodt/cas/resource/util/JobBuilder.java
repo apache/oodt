@@ -47,7 +47,7 @@ public final class JobBuilder {
     }
 
     public static JobSpec buildJobSpec(String jobFilePath) {
-        Document doc = null;
+        Document doc;
         try {
             doc = XMLUtils.getDocumentRoot(new FileInputStream(new File(
                     jobFilePath)));

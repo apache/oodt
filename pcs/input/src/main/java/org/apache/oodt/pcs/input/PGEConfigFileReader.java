@@ -66,7 +66,7 @@ public class PGEConfigFileReader {
    *           If there is an error reading the url.
    */
   public PGEConfigurationFile read(URL url) throws PGEConfigFileException {
-    PGEConfigurationFile configFile = null;
+    PGEConfigurationFile configFile;
 
     try {
       configFile = read(url.openStream());
@@ -95,11 +95,11 @@ public class PGEConfigFileReader {
    */
   public PGEConfigurationFile read(InputStream is)
       throws PGEConfigFileException {
-    PGEConfigurationFile configFile = null;
+    PGEConfigurationFile configFile;
 
-    DocumentBuilderFactory factory = null;
-    DocumentBuilder parser = null;
-    Document document = null;
+    DocumentBuilderFactory factory;
+    DocumentBuilder parser;
+    Document document;
 
     if (is == null) {
       return null;

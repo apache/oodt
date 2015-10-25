@@ -1050,7 +1050,7 @@ public class CmdLineUtils {
          int endIndex) {
       StringBuilder outputString = new StringBuilder("");
       String[] splitStrings = StringUtils.split(string, " ");
-      StringBuffer curLine = null;
+      StringBuffer curLine;
       for (int i = 0; i < splitStrings.length; i++) {
          curLine = new StringBuffer("");
          curLine.append(splitStrings[i]).append(" ");

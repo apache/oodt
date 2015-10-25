@@ -539,7 +539,7 @@ public class Configuration {
 	 * @throws NamingException If the context can't be created.
 	 */
 	public Context getObjectContext() throws NamingException {
-		Context c = null;
+		Context c;
 		final String className = (String) contextEnvironment.get(javax.naming.Context.INITIAL_CONTEXT_FACTORY);
 		if (className == null)
 			c = new InitialContext(contextEnvironment);

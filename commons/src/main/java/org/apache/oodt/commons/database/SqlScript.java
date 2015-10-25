@@ -112,9 +112,9 @@ public class SqlScript {
         BufferedReader reader = new BufferedReader(new FileReader(script));
 
         try {
-            String line = null;
+            String line;
             StringBuilder query = new StringBuilder();
-            boolean queryEnds = false;
+            boolean queryEnds;
 
             while ((line = reader.readLine()) != null) {
                 if (isComment(line))
@@ -195,7 +195,6 @@ public class SqlScript {
                 } catch (Exception ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -204,7 +203,6 @@ public class SqlScript {
                 } catch (Exception ignore) {
                 }
 
-                conn = null;
             }
         }
     }
@@ -239,7 +237,6 @@ public class SqlScript {
                 } catch (Exception ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -248,7 +245,6 @@ public class SqlScript {
                 } catch (Exception ignore) {
                 }
 
-                conn = null;
             }
         }
     }

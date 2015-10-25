@@ -154,7 +154,7 @@ public class TransferStatusTracker {
     }
 
     private long getBytesTransferred(Reference r) {
-        File destFile = null;
+        File destFile;
 
         try {
             destFile = new File(new URI(r.getDataStoreReference()));
@@ -169,7 +169,7 @@ public class TransferStatusTracker {
     }
 
     private List<Reference> quietGetReferences(Product p) {
-        List<Reference> refs = null;
+        List<Reference> refs;
 
         try {
             refs = catalog.getProductReferences(p);
@@ -186,7 +186,7 @@ public class TransferStatusTracker {
     }
 
     private boolean isDir(Reference r) {
-        File fileRef = null;
+        File fileRef;
 
         try {
             fileRef = new File(new URI(r.getDataStoreReference()));

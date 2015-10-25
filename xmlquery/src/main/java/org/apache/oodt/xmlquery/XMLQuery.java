@@ -561,10 +561,9 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
      */
     private boolean isTokenEqual (String s1) {
 	    String ts;
-	    boolean rc = false;
+	    boolean rc;
 
-	    ts = previous_token;
-       	    if (previous_token.compareTo("") == 0) {
+	  if (previous_token.compareTo("") == 0) {
        	        ts = getNextTokenFromStream ();
 		if (ts.compareTo("") == 0) {
                     rc = false;
@@ -593,7 +592,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
      */
    private String getNextTokenFromStream () {
             int c, c2;
-	    String rc = "";
+	    String rc;
             try {
                 switch (c=tokens.nextToken()) {
                     case StreamTokenizer.TT_EOF:
@@ -669,8 +668,8 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
         int p1, p2, s1l;
     	String s2;
     	
-    	p1 = 0; p2 = 0;
-    	s1l = s1.length();
+    	p1 = 0;
+	  s1l = s1.length();
     	s2 = "";
     	p2 = s1.indexOf(c, p1);
     	while (p2 >= 0) {

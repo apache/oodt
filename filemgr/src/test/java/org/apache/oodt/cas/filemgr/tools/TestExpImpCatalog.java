@@ -99,7 +99,6 @@ public class TestExpImpCatalog extends TestCase {
             }
 
             assertEquals(1, countProds);
-            fmClient = null;
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -142,7 +141,6 @@ public class TestExpImpCatalog extends TestCase {
             }
 
             assertEquals(2, countProds);
-            fmClient = null;
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -170,7 +168,6 @@ public class TestExpImpCatalog extends TestCase {
             prod.setProductReferences(fmClient.getProductReferences(prod));
             assertNotNull(prod.getProductReferences());
             assertEquals(1, prod.getProductReferences().size());
-            fmClient = null;
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -225,7 +222,7 @@ public class TestExpImpCatalog extends TestCase {
     }
 
     private void ingestTestFiles() {
-        Metadata prodMet = null;
+        Metadata prodMet;
         StdIngester ingester = new StdIngester(transferServiceFacClass);
 
         try {

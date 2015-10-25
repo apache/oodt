@@ -63,7 +63,7 @@ public class ClassNoaaEmailParser implements Parser {
             Pattern getPattern = Pattern.compile("\\s*get\\s{1,}.{1,}?(?:\\s|$)");
             Matcher getMatcher = getPattern.matcher(sb);
             
-            VirtualFile vf = null;
+            VirtualFile vf;
             while (cdMatcher.find() && getMatcher.find()) {
                 String cdCommand = sb.substring(cdMatcher.start(), cdMatcher.end());
                 String directory = cdCommand.trim().split(" ")[1];

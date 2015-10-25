@@ -81,7 +81,6 @@ public class StdOFSNGetHandler implements OFSNGetHandler {
         } catch (Exception ignore) {
         }
 
-        in = null;
       }
     }
 

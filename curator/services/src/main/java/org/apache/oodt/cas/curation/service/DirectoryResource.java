@@ -88,7 +88,7 @@ public class DirectoryResource extends CurationService {
   public String getDirectoryAreaAsHTML(String base, String path,
       boolean showFiles) {
     StringBuilder html = new StringBuilder();
-    String relativePath = null;
+    String relativePath;
     try {
       relativePath = this.cleansePath(path);
     } catch (Exception e) {

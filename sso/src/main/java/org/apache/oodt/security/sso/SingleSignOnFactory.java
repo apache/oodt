@@ -38,8 +38,8 @@ public final class SingleSignOnFactory {
 
   @SuppressWarnings("unchecked")
   public static AbstractWebBasedSingleSignOn getWebBasedSingleSignOn(String className) {
-    AbstractWebBasedSingleSignOn sso = null;
-    Class<AbstractWebBasedSingleSignOn> clazz = null;
+    AbstractWebBasedSingleSignOn sso;
+    Class<AbstractWebBasedSingleSignOn> clazz;
 
     try {
       clazz = (Class<AbstractWebBasedSingleSignOn>) Class.forName(className);

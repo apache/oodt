@@ -157,7 +157,6 @@ public class CASProductHandler implements LargeProductQueryHandler {
                 } catch (Exception ignore) {
                 }
 
-                in = null;
             }
         }
 

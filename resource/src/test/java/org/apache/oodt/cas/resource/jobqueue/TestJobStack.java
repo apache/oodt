@@ -140,7 +140,7 @@ public class TestJobStack extends TestCase {
 
     public void testGetNextJob() {
         JobStack stack = new JobStack(waitTime, repo);
-        JobSpec nextJob = null;
+        JobSpec nextJob;
 
         try {
             stack.addJob(job1);

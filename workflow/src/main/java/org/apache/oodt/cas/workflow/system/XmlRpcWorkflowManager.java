@@ -141,7 +141,7 @@ public class XmlRpcWorkflowManager {
 
     public Vector getRegisteredEvents() throws RepositoryException {
 
-        List events = null;
+        List events;
         Vector eventsVector = new Vector();
 
         try {
@@ -253,7 +253,7 @@ public class XmlRpcWorkflowManager {
 
     public Vector getWorkflowsByEvent(String eventName)
             throws RepositoryException {
-        List workflows = null;
+        List workflows;
         Vector workflowList = new Vector();
 
         try {
@@ -282,7 +282,7 @@ public class XmlRpcWorkflowManager {
             throws RepositoryException, EngineException {
         LOG.log(Level.INFO, "WorkflowManager: Received event: " + eventName);
 
-        List workflows = null;
+        List workflows;
 
         try {
             workflows = repo.getWorkflowsForEvent(eventName);
@@ -318,7 +318,7 @@ public class XmlRpcWorkflowManager {
     }
 
     public Hashtable getWorkflowInstanceById(String wInstId) {
-        WorkflowInstance inst = null;
+        WorkflowInstance inst;
 
         try {
             inst = engine.getInstanceRepository().getWorkflowInstanceById(
@@ -369,7 +369,7 @@ public class XmlRpcWorkflowManager {
 
     public Vector getWorkflowInstancesByStatus(String status)
             throws EngineException {
-        List workflowInsts = null;
+        List workflowInsts;
 
         Vector workflowInstances = new Vector();
 
@@ -421,7 +421,7 @@ public class XmlRpcWorkflowManager {
     }
 
     public Vector getWorkflowInstances() throws EngineException {
-        List workflowInsts = null;
+        List workflowInsts;
 
         Vector workflowInstances = new Vector();
 
@@ -556,7 +556,7 @@ public class XmlRpcWorkflowManager {
 
     public synchronized boolean setWorkflowInstanceCurrentTaskStartDateTime(
             String wInstId, String startDateTimeIsoStr) {
-        WorkflowInstance wInst = null;
+        WorkflowInstance wInst;
         try {
             wInst = this.engine.getInstanceRepository()
                     .getWorkflowInstanceById(wInstId);
@@ -570,7 +570,7 @@ public class XmlRpcWorkflowManager {
 
     public synchronized boolean setWorkflowInstanceCurrentTaskEndDateTime(
             String wInstId, String endDateTimeIsoStr) {
-        WorkflowInstance wInst = null;
+        WorkflowInstance wInst;
         try {
             wInst = this.engine.getInstanceRepository()
                     .getWorkflowInstanceById(wInstId);
@@ -584,7 +584,7 @@ public class XmlRpcWorkflowManager {
 
     public synchronized boolean updateWorkflowInstanceStatus(
             String workflowInstanceId, String status) throws Exception {
-        WorkflowInstance wInst = null;
+        WorkflowInstance wInst;
         try {
             wInst = engine.getInstanceRepository().getWorkflowInstanceById(
                     workflowInstanceId);

@@ -181,7 +181,7 @@ public class TimeEventWeightedHash {
       
       @Override
       public boolean add(E ten) {
-          boolean wasAdded = false;
+          boolean wasAdded;
           if (wasAdded = super.add(ten))
               listSet.add(ten);
           return wasAdded;

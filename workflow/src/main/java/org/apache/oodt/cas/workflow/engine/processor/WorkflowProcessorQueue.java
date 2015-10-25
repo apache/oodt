@@ -72,7 +72,7 @@ public class WorkflowProcessorQueue {
    * @return the list of available, Queued, {@link WorkflowProcessor}s.
    */
   public synchronized List<WorkflowProcessor> getProcessors() {
-    WorkflowInstancePage page = null;
+    WorkflowInstancePage page;
     try {
       page = repo.getPagedWorkflows(1);
     } catch (Exception e) {
@@ -87,7 +87,7 @@ public class WorkflowProcessorQueue {
     for (WorkflowInstance inst : (List<WorkflowInstance>) (List<?>) page
         .getPageWorkflows()) {
       if (!inst.getState().getCategory().getName().equals("done")) {
-        WorkflowProcessor processor = null;
+        WorkflowProcessor processor;
         try {
           processor = fromWorkflowInstance(inst);
         } catch (Exception e) {

@@ -92,7 +92,7 @@ public class SolrIndexer {
 	public SolrIndexer(String solrUrl, String fmUrl)
 	    throws InstantiationException {
 		InputStream input = null;
-		String filename = null;
+		String filename;
 
 		try {
 			LOG.info("System property " + SOLR_INDEXER_CONFIG + " set to "
@@ -636,7 +636,7 @@ public class SolrIndexer {
 		} else if (line.hasOption("all") || line.hasOption("product")
 		    || line.hasOption("metFile") || line.hasOption("read")
 		    || line.hasOption("types") || line.hasOption("deleteAll")) {
-			SolrIndexer indexer = null;
+			SolrIndexer indexer;
 			String solrUrl = null;
 			String fmUrl = null;
 			if (line.hasOption("solrUrl")) {
@@ -684,7 +684,7 @@ public class SolrIndexer {
 	 */
 	private static List<String> readProductIdsFromStdin() {
 		List<String> productIds = new ArrayList<String>();
-		BufferedReader br = null;
+		BufferedReader br;
 
 		br = new BufferedReader(new InputStreamReader(System.in));
 		String line = null;
@@ -702,7 +702,6 @@ public class SolrIndexer {
 					br.close();
 				} catch (Exception ignore) {
 				}
-				br = null;
 			}
 		}
 		return productIds;

@@ -97,7 +97,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
      */
     public String ingest(URL fmUrl, File prodFile, MetExtractor extractor,
             File metConfFile) throws IngestException {
-        Metadata met = null;
+        Metadata met;
         try {
             met = extractor.extractMetadata(prodFile, metConfFile);
         } catch (MetExtractionException e) {
@@ -119,7 +119,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
 			MetExtractor extractor, File metConfFile) {
 		if (prodFiles != null && prodFiles.size() > 0) {
             for (String prodFilePath : prodFiles) {
-                String productID = null;
+                String productID;
 
                 try {
                     productID = ingest(fmUrl, new File(prodFilePath),
@@ -205,7 +205,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
                 + productType + "]: " + FILE_LOCATION + ": [" + fileLocation
                 + "]");
 
-        String productID = null;
+        String productID;
 
         try {
             productID = fmClient.ingestProduct(product, met, true);

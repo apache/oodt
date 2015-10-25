@@ -86,8 +86,8 @@ public class PolicyResource extends CurationService {
     // calls.
 
     String[] pathToks = tokenizeVirtualPath(path);
-    String policy = null;
-    String productType = null;
+    String policy;
+    String productType;
 
     if (pathToks == null) {
       LOG.log(Level.WARNING, "malformed path token string: "
@@ -181,7 +181,7 @@ public class PolicyResource extends CurationService {
   }
 
   private String getProductTypesForPolicy(String policy, String format) {
-    String[] typeNames = null;
+    String[] typeNames;
     try {
       typeNames = this.getProductTypeNamesForPolicy(policy);
     } catch (Exception e) {

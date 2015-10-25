@@ -300,7 +300,7 @@ public class XML {
 	 * @throws SAXException If a parse error occurs.
 	 */
 	public static Document parse(String string) throws SAXException {
-		Document doc = null;
+		Document doc;
 		try {
 			DOMParser parser = XML.createDOMParser();
 			StringReader reader = new StringReader(string);

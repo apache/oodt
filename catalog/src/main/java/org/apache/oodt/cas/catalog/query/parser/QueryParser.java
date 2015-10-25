@@ -23,7 +23,7 @@ import java.util.Vector;
  /*@bgen(jjtree) parseInput */
         SimpleNode jjtn000 = new SimpleNode(JJTPARSEINPUT);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);QueryExpression qe = null;
+        jjtree.openNodeScope(jjtn000);QueryExpression qe;
     try {
       qe = Query(null);
       jj_consume_token(0);
@@ -56,7 +56,7 @@ import java.util.Vector;
  /*@bgen(jjtree) Query */
         SimpleNode jjtn000 = new SimpleNode(JJTQUERY);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);QueryExpression qe1 = null;
+        jjtree.openNodeScope(jjtn000);QueryExpression qe1;
         QueryExpression qe2 = null;
         Token operator = null;
     try {
@@ -120,7 +120,7 @@ import java.util.Vector;
  /*@bgen(jjtree) QueryExpression */
         SimpleNode jjtn000 = new SimpleNode(JJTQUERYEXPRESSION);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);QueryExpression qe = null;
+        jjtree.openNodeScope(jjtn000);QueryExpression qe;
     try {
       if (jj_2_2(2147483647)) {
         qe = PriorityQueryExpression(bucketNames);
@@ -278,8 +278,8 @@ import java.util.Vector;
  /*@bgen(jjtree) ComparisonQueryExpression */
         SimpleNode jjtn000 = new SimpleNode(JJTCOMPARISONQUERYEXPRESSION);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);Token termName = null;
-        Token operator = null;
+        jjtree.openNodeScope(jjtn000);Token termName;
+        Token operator;
         Vector<String> values = new Vector<String>();
     try {
       termName = jj_consume_token(TERM);
@@ -363,7 +363,7 @@ import java.util.Vector;
  /*@bgen(jjtree) PriorityQueryExpression */
         SimpleNode jjtn000 = new SimpleNode(JJTPRIORITYQUERYEXPRESSION);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);QueryExpression qe = null;
+        jjtree.openNodeScope(jjtn000);QueryExpression qe;
     try {
       jj_consume_token(OPEN_PARENS);
       qe = Query(bucketNames);
@@ -397,7 +397,7 @@ import java.util.Vector;
  /*@bgen(jjtree) CustomQueryExpression */
         SimpleNode jjtn000 = new SimpleNode(JJTCUSTOMQUERYEXPRESSION);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);Token customNameToken = null;
+        jjtree.openNodeScope(jjtn000);Token customNameToken;
         Properties p = new Properties();
     try {
       jj_consume_token(OPEN_BRACES);
@@ -499,7 +499,7 @@ import java.util.Vector;
  /*@bgen(jjtree) getValues */
         SimpleNode jjtn000 = new SimpleNode(JJTGETVALUES);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);Token value = null;
+        jjtree.openNodeScope(jjtn000);Token value;
     try {
       value = jj_consume_token(VALUE);
       label_15:
@@ -539,8 +539,8 @@ import java.util.Vector;
  /*@bgen(jjtree) getProperties */
         SimpleNode jjtn000 = new SimpleNode(JJTGETPROPERTIES);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);Token propertyKey = null;
-        Token propertyVal = null;
+        jjtree.openNodeScope(jjtn000);Token propertyKey;
+        Token propertyVal;
     try {
       propertyKey = jj_consume_token(P_KEY);
       label_16:

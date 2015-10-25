@@ -65,7 +65,7 @@ public class MetadataListPcsMetFileWriter extends PcsMetFileWriter {
                 if (val != null && !val.equals("")) {
                     if (!metadataElement.getAttribute(ENV_REPLACE_ATTR).toLowerCase().equals("false"))
                         val = PathUtils.doDynamicReplacement(val, inputMetadata);
-                    String[] vals = null;
+                    String[] vals;
                     if (metadataElement.getAttribute(SPLIT_ATTR).toLowerCase().equals("false")) {
                         vals = new String[] { val };
                     } else {

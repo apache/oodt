@@ -61,7 +61,7 @@ public class HttpProtocol implements Protocol {
 
   public void cd(ProtocolFile file) throws ProtocolException {
     try {
-    	HttpFile httpFile = null;
+    	HttpFile httpFile;
     	if (!(file instanceof HttpFile)) {
     		URL link = HttpUtils.resolveUri(currentFile.getLink().toURI(), file.getPath()).toURL();
   			httpFile = new HttpFile(link.getPath(), file.isDir(), link);

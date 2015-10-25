@@ -151,7 +151,7 @@ public class CatalogSearch {
     }
 
     public static void listElements() {
-        Vector products = new Vector();
+        Vector products;
         try {
             products = (Vector) client.getProductTypes();
             for (Object product : products) {
@@ -377,7 +377,7 @@ public class CatalogSearch {
 
             System.out.println(welcomeMessage);
 
-            String command = "";
+            String command;
 
             for (;;) {
                 System.out.print("CatalogSearch>");

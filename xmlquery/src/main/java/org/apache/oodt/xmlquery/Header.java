@@ -18,11 +18,17 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.*;
-import java.util.*;
+import org.apache.oodt.commons.util.Documentable;
+import org.apache.oodt.commons.util.XML;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import org.apache.oodt.commons.util.*;
-import org.w3c.dom.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /** A single header.
  *
@@ -170,7 +176,7 @@ public class Header implements Serializable, Cloneable, Documentable {
 	}
 
 	public Object clone() {
-		Object rc = null;
+		Object rc;
 		try {
 			rc = super.clone();
 		} catch (CloneNotSupportedException cantHappen) {

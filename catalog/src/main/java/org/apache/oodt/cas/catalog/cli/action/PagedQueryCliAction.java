@@ -52,7 +52,7 @@ public class PagedQueryCliAction extends CatalogServiceCliAction {
 
          QueryExpression queryExpression = QueryParser
                .parseQueryExpression(query);
-         Page page = null;
+         Page page;
          if (catalogIds == null) {
             page = getClient().getPage(new PageInfo(pageSize, pageNum),
                   queryExpression);

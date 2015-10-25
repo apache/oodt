@@ -52,7 +52,7 @@ public class TestXmlStructFactory extends TestCase {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        Document document = null;
+        Document document;
 
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();

@@ -69,7 +69,7 @@ public final class ProductDumper {
     }
 
     private Product getProduct(String productId) {
-        Product product = null;
+        Product product;
 
         try {
             product = this.fmClient.getProductById(productId);
@@ -99,7 +99,7 @@ public final class ProductDumper {
     }
 
     private Metadata getMetadata(Product product) {
-        Metadata met = null;
+        Metadata met;
 
         try {
             met = this.fmClient.getMetadata(product);

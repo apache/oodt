@@ -123,7 +123,7 @@ public class FreeTextQueryCriteria extends QueryCriteria {
 
         // tokenize string using default delimiters
         StringTokenizer tok = new StringTokenizer(text);
-        String token = null;
+        String token;
 
         // filter noise words and add to values vector
         while (tok.hasMoreElements()) {

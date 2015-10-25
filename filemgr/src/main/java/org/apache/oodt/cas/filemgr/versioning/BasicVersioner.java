@@ -82,7 +82,7 @@ public class BasicVersioner implements Versioner {
             // TODO: fix that hack :-)
             Reference r = (Reference) product.getProductReferences().get(0);
 
-            String dataStoreRef = null;
+            String dataStoreRef;
 
             try {
                 dataStoreRef = new File(new URI(productRepoPath)).toURL()

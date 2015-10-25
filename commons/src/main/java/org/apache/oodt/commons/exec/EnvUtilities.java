@@ -150,7 +150,7 @@ public final class EnvUtilities {
         // line by line, and replaceAll on \ with \\
         // so \\\\ with \\\\\\\\
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        String line = null;
+        String line;
         StringBuilder buf = new StringBuilder();
 
         while ((line = reader.readLine()) != null) {
@@ -165,7 +165,6 @@ public final class EnvUtilities {
             } catch (Exception ignore) {
             }
 
-            reader = null;
         }
 
         return new ByteArrayInputStream(buf.toString().getBytes());

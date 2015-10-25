@@ -131,7 +131,7 @@ public class XmlRpcBatchMgr implements Batchmgr {
      *      org.apache.oodt.cas.resource.structs.ResourceNode)
      */
     public boolean killJob(String jobId, ResourceNode node) {
-        JobSpec spec = null;
+        JobSpec spec;
         try {
             spec = repo.getJobById(jobId);
         } catch (Exception e) {
@@ -179,7 +179,6 @@ public class XmlRpcBatchMgr implements Batchmgr {
             XmlRpcBatchMgrProxy proxy = (XmlRpcBatchMgrProxy) this.specToProxyMap
                     .remove(spec.getJob().getId());
             if (proxy != null) {
-                proxy = null;
             }
         }
 
@@ -200,7 +199,6 @@ public class XmlRpcBatchMgr implements Batchmgr {
             XmlRpcBatchMgrProxy proxy = (XmlRpcBatchMgrProxy) this.specToProxyMap
                     .remove(spec.getJob().getId());
             if (proxy != null) {
-                proxy = null;
             }
         }
 

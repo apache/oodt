@@ -76,7 +76,6 @@ public class SimpleTester implements WorkflowTaskInstance {
           pw.close();
         } catch (Exception ignore) {
         }
-        pw = null;
       }
     }
 

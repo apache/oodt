@@ -86,7 +86,7 @@ public final class XmlStructFactory {
         org.w3c.dom.Element descElem = XMLUtils.getFirstElement("description",
                 productTypeElem);
 
-        String description = null;
+        String description;
         if (descElem.getAttribute("trim") != null
                 && !descElem.getAttribute("trim").equals("")
                 && !Boolean.valueOf(descElem.getAttribute("trim"))) {
@@ -234,7 +234,7 @@ public final class XmlStructFactory {
             HashMap<String, String> subToSuperMap) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        Document document = null;
+        Document document;
 
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -295,7 +295,7 @@ public final class XmlStructFactory {
     public static Document getElementXmlDocument(List<org.apache.oodt.cas.filemgr.structs.Element> elements) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        Document document = null;
+        Document document;
 
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -336,7 +336,7 @@ public final class XmlStructFactory {
     public static Document getProductTypeXmlDocument(List<ProductType> productTypes) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        Document document = null;
+        Document document;
 
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -438,7 +438,7 @@ public final class XmlStructFactory {
 
         org.w3c.dom.Element descElem = XMLUtils.getFirstElement("description",
                 elementElem);
-        String description = null;
+        String description;
         if (descElem.getAttribute("trim") != null
                 && !descElem.getAttribute("trim").equals("")
                 && !Boolean.valueOf(descElem.getAttribute("trim"))) {

@@ -77,7 +77,6 @@ public class XmlNodeRepository implements NodeRepository {
 					String nodesDirStr = nodesDir.getAbsolutePath();
 
 					if (!nodesDirStr.endsWith("/")) {
-						nodesDirStr += "/";
 					}
 
 					// get all the workflow xml files

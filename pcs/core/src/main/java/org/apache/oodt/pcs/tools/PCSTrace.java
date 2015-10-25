@@ -145,7 +145,7 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
     System.out.println(REPORT_LINE_SEPARATOR);
     System.out.println("Generated from workflow:");
     System.out.println("");
-    WorkflowInstance inst = null;
+    WorkflowInstance inst;
 
     try {
       inst = getWorkflowInstanceById(wm.safeGetWorkflowInstances(), met

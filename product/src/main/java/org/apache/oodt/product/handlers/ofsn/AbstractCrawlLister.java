@@ -92,7 +92,7 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
       File dir = (File) stack.pop();
       LOG.log(Level.INFO, "OFSN: Crawling " + dir);
 
-      File[] productFiles = null;
+      File[] productFiles;
       if (crawlForDirs) {
         productFiles = dir.listFiles(DIR_FILTER);
       } else {

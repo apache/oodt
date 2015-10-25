@@ -98,7 +98,7 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
   public Document getConfigFileXml() throws Exception {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware(true);
-    Document document = null;
+    Document document;
 
     try {
       DocumentBuilder builder = factory.newDocumentBuilder();

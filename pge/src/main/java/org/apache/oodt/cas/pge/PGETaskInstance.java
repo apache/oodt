@@ -500,7 +500,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 	protected ProductCrawler createProductCrawler() throws Exception {
      /* create a ProductCrawler based on whether or not the output dir specifies a MIME_EXTRACTOR_REPO */
       logger.info("Configuring ProductCrawler...");
-      ProductCrawler crawler = null;
+      ProductCrawler crawler;
       if (pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO) != null && 
     		  !pgeMetadata.getMetadata(MIME_EXTRACTOR_REPO).equals("")){
           crawler = new AutoDetectProductCrawler();

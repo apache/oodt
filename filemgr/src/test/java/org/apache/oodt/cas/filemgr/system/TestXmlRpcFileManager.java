@@ -208,7 +208,7 @@ public class TestXmlRpcFileManager extends TestCase {
   }
 
   private void ingestTestFile() {
-    Metadata prodMet = null;
+    Metadata prodMet;
     StdIngester ingester = new StdIngester(transferServiceFacClass);
 
     try {

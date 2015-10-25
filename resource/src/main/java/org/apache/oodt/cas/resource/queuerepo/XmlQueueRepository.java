@@ -82,7 +82,6 @@ public class XmlQueueRepository implements QueueRepository {
 				String nodesDirStr = nodesDir.getAbsolutePath();
 
 				if (!nodesDirStr.endsWith("/")) {
-				  nodesDirStr += "/";
 				}
 
 				// get all the workflow xml files

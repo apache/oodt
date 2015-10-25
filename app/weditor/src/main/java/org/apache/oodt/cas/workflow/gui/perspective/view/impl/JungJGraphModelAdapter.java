@@ -222,8 +222,8 @@ public class JungJGraphModelAdapter extends DefaultGraphModel {
   private void addJGraphEdge(IdentifiableEdge e) {
     ConnectionSet set = new ConnectionSet();
     DefaultEdge theEdge = new DefaultEdge(e);
-    DefaultGraphCell from = null;
-    DefaultGraphCell to = null;
+    DefaultGraphCell from;
+    DefaultGraphCell to;
     String fromVertexId = e.getFrom().getId();
     String toVertexId = e.getTo().getId();
     if (!cellMap.containsKey(fromVertexId)) {

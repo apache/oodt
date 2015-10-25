@@ -1040,7 +1040,6 @@ public class ScienceDataCatalog implements Catalog {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {

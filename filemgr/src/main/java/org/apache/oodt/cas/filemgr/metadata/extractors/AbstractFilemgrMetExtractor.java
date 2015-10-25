@@ -18,6 +18,11 @@
 package org.apache.oodt.cas.filemgr.metadata.extractors;
 
 //JDK imports
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,10 +30,6 @@ import java.util.List;
 import java.util.Properties;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 
 /**
  * @author mattmann
@@ -109,7 +110,7 @@ public abstract class AbstractFilemgrMetExtractor implements
 
     protected File getProductFile(Product product)
             throws MetExtractionException {
-        File prodFile = null;
+        File prodFile;
 
         if (product.getProductStructure()
                 .equals(Product.STRUCTURE_HIERARCHICAL)) {

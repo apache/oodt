@@ -112,7 +112,7 @@ public class TestLuceneWorkflowInstanceRepository extends TestCase implements
         // get a temp directory
 
         File tempDir = null;
-        File tempFile = null;
+        File tempFile;
 
         try {
             tempFile = File.createTempFile("foo", "bar");

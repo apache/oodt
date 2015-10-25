@@ -294,7 +294,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public Product getLatestProduct(Query query, ProductType type) {
-    List products = null;
+    List products;
 
     try {
       products = fmgrClient.query(query, type);

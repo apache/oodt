@@ -413,7 +413,7 @@ public class XmlRpcFileManager {
 
     public Vector<Hashtable<String, Object>> getProductTypes()
             throws RepositoryManagerException {
-        List<ProductType> productTypeList = null;
+        List<ProductType> productTypeList;
 
         try {
             productTypeList = repositoryManager.getProductTypes();
@@ -431,7 +431,7 @@ public class XmlRpcFileManager {
     public Vector<Hashtable<String, Object>> getProductReferences(
             Hashtable<String, Object> productHash)
             throws CatalogException {
-        List<Reference> referenceList = null;
+        List<Reference> referenceList;
         Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
 
         try {
@@ -652,7 +652,7 @@ public class XmlRpcFileManager {
 
     public Hashtable<String, Object> getProductTypeById(String productTypeId)
             throws RepositoryManagerException {
-        ProductType type = null;
+        ProductType type;
 
         try {
             type = repositoryManager.getProductTypeById(productTypeId);
@@ -716,7 +716,7 @@ public class XmlRpcFileManager {
 
       // version the product
       if (!clientTransfer || (Boolean.getBoolean("org.apache.oodt.cas.filemgr.serverside.versioning"))) {
-        Versioner versioner = null;
+        Versioner versioner;
         try {
           versioner = GenericFileManagerObjectFactory
               .getVersionerFromClassName(p.getProductType().getVersioner());
@@ -853,12 +853,10 @@ public class XmlRpcFileManager {
               } catch (Exception ignore) {
               }
 
-              fOut = null;
             }
         }
 
-        outFile = null;
-        return success;
+      return success;
     }
 
     public boolean moveProduct(Hashtable<String, Object> productHash, String newPath)
@@ -1337,7 +1335,7 @@ public class XmlRpcFileManager {
       System.getProperties().load(new FileInputStream(new File(configFile)));
     }
 
-    String metaFactory = null, dataFactory = null, transferFactory = null;
+    String metaFactory, dataFactory, transferFactory;
 
     metaFactory = System.getProperty("filemgr.catalog.factory",
         "org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory");

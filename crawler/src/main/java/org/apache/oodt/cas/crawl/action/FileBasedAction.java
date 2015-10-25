@@ -76,7 +76,7 @@ public abstract class FileBasedAction extends CrawlerAction {
    }
 
    public File getSelectedFile(File product, Metadata metadata) {
-      File selectedFile = null;
+      File selectedFile;
       if (file == null && fileKey == null) {
          selectedFile = product;
       } else if (file != null) {

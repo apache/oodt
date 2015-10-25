@@ -135,8 +135,8 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new implementation of a {@link QueueRepository}.
    */
   public static QueueRepository getQueueRepositoryFromFactory(String queueRepositoryFactory) {
-    Class clazz = null;
-    QueueRepositoryFactory factory = null;
+    Class clazz;
+    QueueRepositoryFactory factory;
 
     try {
       clazz = Class.forName(queueRepositoryFactory);
@@ -171,8 +171,8 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new implementation of a {@link BackendRepository}.
    */
   public static BackendRepository getBackendRepositoryFromFactory(String backendRepositoryFactory) {
-    Class clazz = null;
-    BackendRepositoryFactory factory = null;
+    Class clazz;
+    BackendRepositoryFactory factory;
 
     try {
       clazz = Class.forName(backendRepositoryFactory);
@@ -204,8 +204,8 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new implementation of a {@link NodeRepository}.
    */
   public static NodeRepository getNodeRepositoryFromFactory(String nodeRepositoryFactory) {
-    Class clazz = null;
-    NodeRepositoryFactory factory = null;
+    Class clazz;
+    NodeRepositoryFactory factory;
 
     try {
       clazz = Class.forName(nodeRepositoryFactory);
@@ -241,8 +241,8 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new implementation of a {@link JobQueue}.
    */
   public static JobQueue getJobQueueServiceFromFactory(String serviceFactory) {
-    Class clazz = null;
-    JobQueueFactory factory = null;
+    Class clazz;
+    JobQueueFactory factory;
 
     try {
       clazz = Class.forName(serviceFactory);
@@ -278,8 +278,8 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new {@link Batchmgr} implementation.
    */
   public static Batchmgr getBatchmgrServiceFromFactory(String serviceFactory) {
-    Class clazz = null;
-    BatchmgrFactory factory = null;
+    Class clazz;
+    BatchmgrFactory factory;
 
     try {
       clazz = Class.forName(serviceFactory);
@@ -315,8 +315,8 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new {@link Monitor} implementation.
    */
   public static Monitor getMonitorServiceFromFactory(String serviceFactory) {
-    Class clazz = null;
-    MonitorFactory factory = null;
+    Class clazz;
+    MonitorFactory factory;
 
     try {
       clazz = Class.forName(serviceFactory);
@@ -353,8 +353,8 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new {@link Scheduler} implementation.
    */
   public static Scheduler getSchedulerServiceFromFactory(String serviceFactory) {
-    Class clazz = null;
-    SchedulerFactory factory = null;
+    Class clazz;
+    SchedulerFactory factory;
 
     try {
       clazz = Class.forName(serviceFactory);
@@ -388,8 +388,8 @@ public final class GenericResourceManagerObjectFactory {
    * @return A new {@link JobRepository} from the given service factory.
    */
   public static JobRepository getJobRepositoryFromServiceFactory(String serviceFactory) {
-    Class clazz = null;
-    JobRepositoryFactory factory = null;
+    Class clazz;
+    JobRepositoryFactory factory;
 
     try {
       clazz = Class.forName(serviceFactory);

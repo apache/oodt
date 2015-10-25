@@ -103,7 +103,6 @@ public class DBMSExecutor {
         } catch (Exception ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -112,7 +111,6 @@ public class DBMSExecutor {
         } catch (Exception ignore) {
         }
 
-        conn = null;
       }
     }
 

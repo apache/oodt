@@ -278,7 +278,7 @@ public class Product {
     public Document toXML() throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        Document doc = null;
+        Document doc;
 
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();

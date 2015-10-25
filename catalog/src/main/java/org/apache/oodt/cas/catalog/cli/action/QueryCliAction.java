@@ -49,7 +49,7 @@ public class QueryCliAction  extends CatalogServiceCliAction {
 
          QueryExpression queryExpression = QueryParser
                .parseQueryExpression(query);
-         QueryPager queryPager = null;
+         QueryPager queryPager;
          if (catalogIds == null) {
             queryPager = getClient().query(queryExpression);
          } else {

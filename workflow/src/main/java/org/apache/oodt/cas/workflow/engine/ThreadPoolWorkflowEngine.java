@@ -105,7 +105,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
       long threadKeepAliveTime, boolean unlimitedQueue, URL resUrl) {
 
     this.instRep = instRep;
-    Channel c = null;
+    Channel c;
     if (unlimitedQueue) {
       c = new LinkedQueue();
     } else {
@@ -363,7 +363,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
         .getEndDateTimeIsoStr().equals("null")) ? safeDateConvert(inst
         .getEndDateTimeIsoStr()) : new Date();
 
-    Date workflowStartDateTime = null;
+    Date workflowStartDateTime;
 
     if (inst.getStartDateTimeIsoStr() == null
         || (inst.getStartDateTimeIsoStr() != null && (inst
@@ -396,7 +396,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
         .getCurrentTaskEndDateTimeIsoStr().equals("null")) ? safeDateConvert(inst
         .getCurrentTaskEndDateTimeIsoStr()) : new Date();
 
-    Date workflowTaskStartDateTime = null;
+    Date workflowTaskStartDateTime;
 
     if (inst.getCurrentTaskStartDateTimeIsoStr() == null
         || (inst.getCurrentTaskStartDateTimeIsoStr() != null && (inst

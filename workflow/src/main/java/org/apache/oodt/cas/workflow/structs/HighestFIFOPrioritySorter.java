@@ -72,7 +72,7 @@ public class HighestFIFOPrioritySorter implements PrioritySorter {
   }
 
   private Double calculatePriority(WorkflowProcessor processorStub) {
-    double aliveTime = 0.0;
+    double aliveTime;
 
     try {
       aliveTime = (double) (System.currentTimeMillis() - processorStub

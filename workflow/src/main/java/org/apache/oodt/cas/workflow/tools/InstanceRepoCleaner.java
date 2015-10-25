@@ -77,7 +77,7 @@ public class InstanceRepoCleaner {
       System.exit(1);
     }
 
-    InstanceRepoCleaner clean = null;
+    InstanceRepoCleaner clean;
     if (args.length == 1) {
       String wmUrlStr = args[0];
       clean = new InstanceRepoCleaner(wmUrlStr);

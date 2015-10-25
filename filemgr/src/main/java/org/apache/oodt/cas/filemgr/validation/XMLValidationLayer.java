@@ -273,7 +273,7 @@ public class XMLValidationLayer implements ValidationLayer {
 
     private void saveElementsAndMappings() {
       for (String dirUri : xmlFileDirUris) {
-        File elementDir = null;
+        File elementDir;
 
         try {
           elementDir = new File(new URI(dirUri));
@@ -458,12 +458,12 @@ public class XMLValidationLayer implements ValidationLayer {
 
     private Document getDocumentRoot(String xmlFile) {
         // open up the XML file
-        DocumentBuilderFactory factory = null;
-        DocumentBuilder parser = null;
-        Document document = null;
-        InputSource inputSource = null;
+        DocumentBuilderFactory factory;
+        DocumentBuilder parser;
+        Document document;
+        InputSource inputSource;
 
-        InputStream xmlInputStream = null;
+        InputStream xmlInputStream;
 
         try {
             xmlInputStream = new File(xmlFile).toURL().openStream();

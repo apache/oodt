@@ -70,7 +70,7 @@ public final class MetadataDumper {
     }
 
     private Metadata getMetadata(String productId) {
-        Product product = null;
+        Product product;
 
         try {
             product = this.fmClient.getProductById(productId);
@@ -79,7 +79,7 @@ public final class MetadataDumper {
                     + productId + "] by id");
         }
 
-        Metadata met = null;
+        Metadata met;
 
         try {
             met = this.fmClient.getMetadata(product);

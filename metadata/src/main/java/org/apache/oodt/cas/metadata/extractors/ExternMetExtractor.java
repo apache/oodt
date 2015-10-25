@@ -95,7 +95,7 @@ public class ExternMetExtractor extends CmdLineMetExtractor implements
         // generate metadata file
         LOG.log(Level.INFO, "Generating met file for product file: ["
                 + file.getAbsolutePath() + "]");
-        int status = -1;
+        int status;
         try {
             LOG.log(Level.INFO, "Executing command line: ["
                     + ExecUtils.printCommandLine(commandLineArgs)

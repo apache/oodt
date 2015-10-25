@@ -81,8 +81,8 @@ public final class GenericFileManagerObjectFactory {
     @SuppressWarnings("unchecked")
     public static DataTransfer getDataTransferServiceFromFactory(
             String serviceFactory) {
-        DataTransferFactory dataTransferFactory = null;
-        Class<DataTransferFactory> dataTransferFactoryClass = null;
+        DataTransferFactory dataTransferFactory;
+        Class<DataTransferFactory> dataTransferFactoryClass;
 
         try {
             dataTransferFactoryClass = (Class<DataTransferFactory>) Class.forName(serviceFactory);
@@ -122,8 +122,8 @@ public final class GenericFileManagerObjectFactory {
     @SuppressWarnings("unchecked")
     public static RepositoryManager getRepositoryManagerServiceFromFactory(
             String serviceFactory) {
-        RepositoryManagerFactory factory = null;
-        Class<RepositoryManagerFactory> clazz = null;
+        RepositoryManagerFactory factory;
+        Class<RepositoryManagerFactory> clazz;
 
         try {
             clazz = (Class<RepositoryManagerFactory>) Class.forName(serviceFactory);
@@ -162,8 +162,8 @@ public final class GenericFileManagerObjectFactory {
      */
     @SuppressWarnings("unchecked")
     public static Catalog getCatalogServiceFromFactory(String serviceFactory) {
-        CatalogFactory factory = null;
-        Class<CatalogFactory> clazz = null;
+        CatalogFactory factory;
+        Class<CatalogFactory> clazz;
 
         try {
             clazz = (Class<CatalogFactory>) Class.forName(serviceFactory);
@@ -204,8 +204,8 @@ public final class GenericFileManagerObjectFactory {
     @SuppressWarnings("unchecked")
     public static ValidationLayer getValidationLayerFromFactory(
             String serviceFactory) {
-        ValidationLayerFactory factory = null;
-        Class<ValidationLayerFactory> clazz = null;
+        ValidationLayerFactory factory;
+        Class<ValidationLayerFactory> clazz;
 
         try {
             clazz = (Class<ValidationLayerFactory>) Class.forName(serviceFactory);
@@ -233,8 +233,8 @@ public final class GenericFileManagerObjectFactory {
     
     @SuppressWarnings("unchecked")
     public static Cache getCacheFromFactory(String serviceFactory){
-        CacheFactory factory = null;
-        Class<CacheFactory> clazz = null;
+        CacheFactory factory;
+        Class<CacheFactory> clazz;
 
         try {
             clazz = (Class<CacheFactory>) Class.forName(serviceFactory);

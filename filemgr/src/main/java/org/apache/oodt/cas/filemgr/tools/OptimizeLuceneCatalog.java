@@ -77,7 +77,6 @@ public class OptimizeLuceneCatalog {
                 writer.close();
             } catch (Exception ignore) {
             }
-            writer = null;
         }
     }
 

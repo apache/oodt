@@ -96,7 +96,7 @@ public class QuerierAndRunnerUtils {
   }
   
   private File getTmpPath() throws IOException{
-    File testDir = null;
+    File testDir;
     String parentPath = File.createTempFile("test", "txt").getParentFile().getAbsolutePath();
     parentPath = parentPath.endsWith("/") ? parentPath:parentPath + "/";
     String testJobDirPath = parentPath + "jobs";

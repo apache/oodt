@@ -174,7 +174,7 @@ public class XmlBackendRepository implements BackendRepository {
     private static String getFactoryAttribute(String queue,Element elem, String tag) throws RepositoryException {
         NodeList children = elem.getElementsByTagName(tag);
         try {
-            String attr = "";
+            String attr;
             if (children.getLength() != 1 || (attr = ((Element)children.item(0)).getAttribute("factory")) == "") {
                 throw new RepositoryException("Could not find exactly one "+tag+", with factory set, in queue: "+queue);
             }

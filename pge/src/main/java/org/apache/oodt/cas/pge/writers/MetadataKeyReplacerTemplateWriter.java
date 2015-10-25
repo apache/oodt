@@ -63,7 +63,7 @@ public class MetadataKeyReplacerTemplateWriter extends
     String separator = args.length == 2 ? (String) args[1] : DEFAULT_SEPARATOR;
 
     for (String key : metadata.getAllKeys()) {
-      String replaceVal = null;
+      String replaceVal;
       if (metadata.isMultiValued(key)) {
         List<String> values = metadata.getAllMetadata(key);
         replaceVal = StringUtils.join(values, separator);

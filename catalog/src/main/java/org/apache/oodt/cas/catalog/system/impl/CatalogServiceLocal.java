@@ -475,7 +475,7 @@ public class CatalogServiceLocal implements CatalogService {
 		if (this.restrictIngestPermissions) 
 			throw new CatalogServiceException("Ingest permissions are restricted for this CatalogService -- request denied");
 		try {	
-			boolean performUpdate = false;
+			boolean performUpdate;
 			TransactionId<?> catalogServiceTransactionId = this.getCatalogServiceTransactionId(metadata);
 			if (performUpdate = this.ingestMapper.hasCatalogServiceTransactionId(catalogServiceTransactionId)) 
 				LOG.log(Level.INFO, "TransactionId '" + catalogServiceTransactionId + "' is an existing TransactionId, switching to update mode");
@@ -1070,7 +1070,7 @@ public class CatalogServiceLocal implements CatalogService {
 			restrictToCatalogIds.retainAll(getInterestedCatalogs(queryExpression, restrictToCatalogIds));
 			
 			// check for catalogs interested in wrapped query expression
-			QueryResult wrapperExprQueryResult = null;
+			QueryResult wrapperExprQueryResult;
 			QueryExpression wrapperQE = ((WrapperQueryExpression) queryExpression).getQueryExpression();
 			if (wrapperQE instanceof QueryLogicalGroup) {
 				wrapperExprQueryResult = this.queryRecur((QueryLogicalGroup) wrapperQE, restrictToCatalogIds);

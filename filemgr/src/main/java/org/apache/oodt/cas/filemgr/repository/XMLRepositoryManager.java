@@ -156,7 +156,7 @@ public class XMLRepositoryManager implements RepositoryManager {
 
     private void saveProductTypes() {
       for (String dirUri : productTypeHomeUris) {
-        File productTypeDir = null;
+        File productTypeDir;
 
         try {
           productTypeDir = new File(new URI(dirUri));
@@ -255,12 +255,12 @@ public class XMLRepositoryManager implements RepositoryManager {
 
     private Document getDocumentRoot(String xmlFile) {
         // open up the XML file
-        DocumentBuilderFactory factory = null;
-        DocumentBuilder parser = null;
-        Document document = null;
-        InputSource inputSource = null;
+        DocumentBuilderFactory factory;
+        DocumentBuilder parser;
+        Document document;
+        InputSource inputSource;
 
-        InputStream xmlInputStream = null;
+        InputStream xmlInputStream;
 
         try {
             xmlInputStream = new File(xmlFile).toURI().toURL().openStream();

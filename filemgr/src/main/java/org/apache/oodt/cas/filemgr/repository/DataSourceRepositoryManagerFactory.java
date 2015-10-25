@@ -44,7 +44,7 @@ public class DataSourceRepositoryManagerFactory implements
      * </p>.
      */
     public DataSourceRepositoryManagerFactory() {
-        String jdbcUrl = null, user = null, pass = null, driver = null;
+        String jdbcUrl, user, pass, driver;
 
         jdbcUrl = System
                 .getProperty("org.apache.oodt.cas.filemgr.repositorymgr.datasource.jdbc.url");

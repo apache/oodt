@@ -167,7 +167,7 @@ public final class Ulimit implements UlimitMetKeys {
     }
 
     public static Map getUlimitPropertiesMap() throws Exception {
-        Process p = null;
+        Process p;
         try {
             p = Runtime.getRuntime().exec(
                     new String[] { shell, runShellCmdOption, ulimitCommand });
@@ -180,7 +180,7 @@ public final class Ulimit implements UlimitMetKeys {
         BufferedReader in = new BufferedReader(new InputStreamReader(p
                 .getInputStream()));
 
-        String line = null;
+        String line;
         Map properties = new HashMap();
 
         while ((line = in.readLine()) != null) {
@@ -198,7 +198,7 @@ public final class Ulimit implements UlimitMetKeys {
     }
 
     public static List getUlimitProperties() throws Exception {
-        Process p = null;
+        Process p;
         try {
             p = Runtime.getRuntime().exec(
                     new String[] { shell, runShellCmdOption, ulimitCommand });
@@ -211,7 +211,7 @@ public final class Ulimit implements UlimitMetKeys {
         BufferedReader in = new BufferedReader(new InputStreamReader(p
                 .getInputStream()));
 
-        String line = null;
+        String line;
         List properties = new Vector();
 
         while ((line = in.readLine()) != null) {

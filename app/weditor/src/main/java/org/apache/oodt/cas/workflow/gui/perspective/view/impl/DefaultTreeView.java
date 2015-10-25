@@ -386,7 +386,7 @@ public class DefaultTreeView extends View {
   private void addMetadataNodes(DefaultMutableTreeNode metadataNode,
       Metadata staticMetadata) {
     for (String group : staticMetadata.getGroups()) {
-      Object userObj = null;
+      Object userObj;
       if (staticMetadata.getMetadata(group) != null) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put(group,

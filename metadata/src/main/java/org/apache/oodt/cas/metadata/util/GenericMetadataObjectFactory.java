@@ -40,8 +40,8 @@ public final class GenericMetadataObjectFactory {
       .getLogger(GenericMetadataObjectFactory.class.getName());
 
   public static MetExtractor getMetExtractorFromClassName(String className) {
-    Class metExtractorClass = null;
-    MetExtractor extractor = null;
+    Class metExtractorClass;
+    MetExtractor extractor;
 
     try {
       metExtractorClass = Class.forName(className);

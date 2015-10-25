@@ -53,7 +53,7 @@ class VisibilityAndSortToggler extends VisibilityToggler {
       final ListModel model) {
     super(id, showLinkId, hideLinkId, moreId, model);
 
-    Link<Link> sortLink = null;
+    Link<Link> sortLink;
     Link<Link> unsortLink = null;
 
     sortLink = new Link<Link>(sortLinkId, new Model<Link>(unsortLink)) {

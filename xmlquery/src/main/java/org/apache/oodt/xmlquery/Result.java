@@ -335,7 +335,7 @@ public class Result implements Serializable, Cloneable, Documentable {
 	}
 
 	public Object clone() {
-		Object rc = null;
+		Object rc;
 		try {
 			rc = super.clone();
 		} catch (CloneNotSupportedException cantHappen) {

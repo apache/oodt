@@ -85,7 +85,7 @@ public class TestXmlRpcFileManagerClient extends TestCase {
             XmlRpcFileManagerClient fmc = new XmlRpcFileManagerClient(new URL(
                     "http://localhost:" + FM_PORT));
             
-            Metadata reducedMet = null;
+            Metadata reducedMet;
             List pTypes = fmc.getProductTypes();
             assertNotNull(pTypes);
             assertTrue(pTypes.size() > 0);
@@ -151,7 +151,7 @@ public class TestXmlRpcFileManagerClient extends TestCase {
         URL refUrl = this.getClass().getResource("/ingest/test-file-3.txt");
         URL metUrl = this.getClass().getResource("/ingest/test-file-3.txt.met");
 
-        Metadata prodMet = null;
+        Metadata prodMet;
         StdIngester ingester = new StdIngester(transferServiceFacClass);
         prodMet = new SerializableMetadata(new FileInputStream(
             metUrl.getFile()));
@@ -254,7 +254,7 @@ public class TestXmlRpcFileManagerClient extends TestCase {
     }
 
     private void ingestTestFile() {
-        Metadata prodMet = null;
+        Metadata prodMet;
         StdIngester ingester = new StdIngester(transferServiceFacClass);
 
         try {

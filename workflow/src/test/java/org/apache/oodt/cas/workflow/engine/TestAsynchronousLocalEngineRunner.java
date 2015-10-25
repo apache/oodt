@@ -115,7 +115,6 @@ public class TestAsynchronousLocalEngineRunner extends TestCase {
           } catch (Exception ignore) {
           }
 
-          br = null;
         }
       }
     }

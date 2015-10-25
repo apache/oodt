@@ -87,7 +87,7 @@ public class DateTimeVersioner implements Versioner {
         if (productionDateTime == null) { // generate it ourselves then
             productionDateTime = dateFormatter.format(new Date());
         } else {
-            Date prodDateTime = null;
+            Date prodDateTime;
             try {
                 prodDateTime = DateConvert.isoParse(productionDateTime);
             } catch (ParseException e) {
@@ -106,7 +106,7 @@ public class DateTimeVersioner implements Versioner {
             // we'll use the format: yyyy.dd.MM.HH.mm.ss
 
           for (Reference r : product.getProductReferences()) {
-            String dataStoreRef = null;
+            String dataStoreRef;
 
             try {
               dataStoreRef = new File(new URI(product.getProductType()

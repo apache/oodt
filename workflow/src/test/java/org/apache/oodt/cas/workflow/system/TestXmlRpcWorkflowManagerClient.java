@@ -128,7 +128,7 @@ public class TestXmlRpcWorkflowManagerClient extends TestCase {
     assertNotNull(WInst);
 
     // get Metadata for the workflow instance
-    Metadata met = null;
+    Metadata met;
     met = WInst.getSharedContext();
     assertNotNull(met);
 

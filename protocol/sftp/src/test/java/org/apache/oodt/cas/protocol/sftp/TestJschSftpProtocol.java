@@ -274,7 +274,7 @@ public class TestJschSftpProtocol extends TestCase {
 			File publicKeyFile = new File(publicKeysDir, "sample-dsa.pub");
 			br = new BufferedReader(new FileReader(new File("src/test/resources/sample-dsa.pub").getAbsoluteFile()));
 			ps = new PrintStream(new FileOutputStream(publicKeyFile));
-			String nextLine = null;
+			String nextLine;
 			while ((nextLine = br.readLine()) != null) {
 				ps.println(nextLine.replace("2022", Integer.toString(port)));
 			}

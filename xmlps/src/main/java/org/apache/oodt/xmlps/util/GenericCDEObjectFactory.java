@@ -41,7 +41,7 @@ public final class GenericCDEObjectFactory {
     }
 
     public static MappingFunc getMappingFuncFromClassName(String className) {
-        MappingFunc func = null;
+        MappingFunc func;
         Class funcClazz;
         try {
             funcClazz = Class.forName(className);

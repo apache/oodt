@@ -91,7 +91,7 @@ public class LRUScheduler implements Scheduler {
             } catch (Exception ignore) {}
 
             if (!myJobQueue.isEmpty()) {
-                JobSpec exec = null;
+                JobSpec exec;
 
                 try {
                     exec = myJobQueue.getNextJob();

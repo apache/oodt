@@ -120,8 +120,8 @@ public final class GenericWorkflowObjectFactory {
 
 	public static WorkflowInstanceRepository getWorkflowInstanceRepositoryFromClassName(
 			String serviceFactory) {
-		WorkflowInstanceRepositoryFactory factory = null;
-		Class clazz = null;
+		WorkflowInstanceRepositoryFactory factory;
+		Class clazz;
 
 		try {
 			clazz = Class.forName(serviceFactory);
@@ -163,7 +163,7 @@ public final class GenericWorkflowObjectFactory {
 	public static WorkflowTaskInstance getTaskObjectFromClassName(String className) {
 
 		if (className != null) {
-			WorkflowTaskInstance taskInstance = null;
+			WorkflowTaskInstance taskInstance;
 
 			try {
 				Class workflowTaskClass = Class.forName(className);
@@ -209,7 +209,7 @@ public final class GenericWorkflowObjectFactory {
   public static WorkflowTaskInstance getTaskObjectFromInnerClassName(Class<?> enclosingInstance, String className) {
 
     if (className != null) {
-      WorkflowTaskInstance taskInstance = null;
+      WorkflowTaskInstance taskInstance;
 
       try {
         Class workflowTaskClass = Class.forName(className);
@@ -269,7 +269,7 @@ public final class GenericWorkflowObjectFactory {
 	public static WorkflowConditionInstance getConditionObjectFromClassName(
 			String className) {
 		if (className != null) {
-			WorkflowConditionInstance conditionInstance = null;
+			WorkflowConditionInstance conditionInstance;
 
 			try {
 				Class workflowConditionClass = Class.forName(className);
@@ -312,7 +312,7 @@ public final class GenericWorkflowObjectFactory {
 	 */
 	public static Workflow getWorkflowObjectFromClassName(String className){
 		if (className != null) {
-			Workflow workflow = null;
+			Workflow workflow;
 
 			try {
 				Class workflowClass = Class.forName(className);
@@ -393,7 +393,7 @@ public final class GenericWorkflowObjectFactory {
 	 * @return A copy of the specified Workflow.
 	 */
 	public static Workflow copyWorkflow(Workflow w){
-		Workflow newWorkflow = null;
+		Workflow newWorkflow;
 
 
 		newWorkflow = getWorkflowObjectFromClassName(w.getClass().getName());
