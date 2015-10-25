@@ -15,8 +15,13 @@
 
 package org.apache.oodt.commons.util;
 
-import java.io.*;
-import org.apache.oodt.commons.io.*;
+import org.apache.oodt.commons.io.Base64DecodingInputStream;
+import org.apache.oodt.commons.io.Base64EncodingOutputStream;
+
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /** Base 64 encoding and decoding.
  *
@@ -67,7 +72,7 @@ public class Base64 {
 		byte dest[] = new byte[((length+2)/3)*4];
 
 		// Convert groups of 3 bytes into 4.
-		for (i = 0 + offset, j = 0; i < offset + length - 2; i += 3) {
+		for (i = offset, j = 0; i < offset + length - 2; i += 3) {
 			dest[j++] = (byte) ((data[i] >>> 2) & 077);
 			dest[j++] = (byte) ((data[i+1] >>> 4) & 017 | (data[i] << 4) & 077);
 			dest[j++] = (byte) ((data[i+2] >>> 6) & 003 | (data[i+1] << 2) & 077);
