@@ -624,7 +624,7 @@ public class XmlRpcWorkflowManager {
             }
     }
 
-    public static void loadProperties() throws FileNotFoundException, IOException {
+    public static void loadProperties() throws IOException {
        String configFile = System.getProperty(PROPERTIES_FILE_PROPERTY);
        if (configFile != null) {
           LOG.log(Level.INFO,

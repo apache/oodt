@@ -148,7 +148,7 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
    }
 
    private void loadCustomMetadata(Element root, PgeMetadata pgeMetadata)
-         throws MalformedURLException, Exception {
+         throws Exception {
 
       // Check if there is a 'customMetadata' elem and load it.
       Element customMetadataElem = getCustomMetadataElement(root);

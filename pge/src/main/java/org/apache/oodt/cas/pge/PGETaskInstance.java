@@ -447,7 +447,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
       return returnCode == 0;
    }
    
-   protected void processOutput() throws FileNotFoundException, IOException {
+   protected void processOutput() throws IOException {
      for (final OutputDir outputDir : this.pgeConfig.getOuputDirs()) {
          File[] createdFiles = new File(outputDir.getPath()).listFiles();
          for (File createdFile : createdFiles) {
@@ -493,7 +493,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
 	}
 
 	protected void writeFromMetadata(Metadata metadata, String toMetFilePath)
-			throws FileNotFoundException, IOException {
+			throws IOException {
 		new SerializableMetadata(metadata, "UTF-8", false)
 				.writeMetadataToXmlStream(new FileOutputStream(toMetFilePath));
 	}

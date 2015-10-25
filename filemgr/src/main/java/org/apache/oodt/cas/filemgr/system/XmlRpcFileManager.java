@@ -1326,7 +1326,7 @@ public class XmlRpcFileManager {
     return pMet;
   }
     
-    private void loadConfiguration() throws FileNotFoundException, IOException {
+    private void loadConfiguration() throws IOException {
     // set up the configuration, if there is any
     if (System.getProperty("org.apache.oodt.cas.filemgr.properties") != null) {
       String configFile = System

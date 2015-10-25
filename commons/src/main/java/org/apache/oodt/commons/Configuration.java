@@ -72,7 +72,7 @@ public class Configuration {
 	  * @throws MalformedURLException If the URL specification is invalid.
 	  * @return An initialized configuration object.
 	  */
-	 public static Configuration getConfiguration() throws IOException, SAXException, MalformedURLException {
+	 public static Configuration getConfiguration() throws IOException, SAXException {
 		 // Got one?  Use it.
 		 if (configuration != null) return configuration;
 

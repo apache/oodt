@@ -276,8 +276,8 @@ public class FileRetrievalSystem {
                 + dir);
     }
 
-    public void changeToRoot(RemoteSite remoteSite) throws ProtocolException,
-            MalformedURLException, org.apache.oodt.cas.protocol.exceptions.ProtocolException {
+    public void changeToRoot(RemoteSite remoteSite) throws
+        MalformedURLException, org.apache.oodt.cas.protocol.exceptions.ProtocolException {
         if (validate(remoteSite))
             protocolHandler.cdToROOT(protocolHandler
                     .getAppropriateProtocolBySite(remoteSite, true));

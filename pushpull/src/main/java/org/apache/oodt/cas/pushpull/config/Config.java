@@ -174,7 +174,7 @@ public class Config implements ConfigMetKeys {
      * @throws ClassNotFoundException
      */
     void loadProperties() throws ConfigException, InstantiationException,
-            FileNotFoundException, IOException, ClassNotFoundException {
+        IOException, ClassNotFoundException {
         this.loadExternalConfigFiles();
         this.loadProtocolTypes();
         this.loadParserInfo();

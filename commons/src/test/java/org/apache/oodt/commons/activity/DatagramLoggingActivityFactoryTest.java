@@ -109,7 +109,7 @@ public class DatagramLoggingActivityFactoryTest extends TestCase {
 	 * @throws IOException if an error occurs.
 	 * @throws ClassNotFoundException if an error occurs.
 	 */
-	public void testActivityReceipt() throws SocketException, IOException, ClassNotFoundException {
+	public void testActivityReceipt() throws IOException, ClassNotFoundException {
 		DatagramSocket socket = null;
 		try {
 			byte[] buf = new byte[512];

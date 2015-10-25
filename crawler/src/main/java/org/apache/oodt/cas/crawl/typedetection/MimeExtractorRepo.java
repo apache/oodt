@@ -124,7 +124,7 @@ public class MimeExtractorRepo {
 	}
 
 	public synchronized List<MetExtractorSpec> getExtractorSpecsForFile(
-			File file) throws FileNotFoundException, IOException {
+			File file) throws IOException {
 		String mimeType = this.mimeRepo.getMimeType(file);
 		if (mimeType == null && magic)
 			mimeType = this.mimeRepo.getMimeTypeByMagic(MimeTypeUtils

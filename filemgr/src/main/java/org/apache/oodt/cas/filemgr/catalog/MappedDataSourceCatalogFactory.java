@@ -47,8 +47,8 @@ public class MappedDataSourceCatalogFactory extends DataSourceCatalogFactory {
     private static final String TYPE_MAP_KEY = "org.apache.oodt.cas.filemgr."
             + "catalog.mappeddatasource.mapFile";
 
-    public MappedDataSourceCatalogFactory() throws FileNotFoundException,
-            IOException {
+    public MappedDataSourceCatalogFactory() throws
+        IOException {
         super();
         String mapFilePath = PathUtils.replaceEnvVariables(System
                 .getProperty(TYPE_MAP_KEY));

@@ -30,7 +30,7 @@ import java.util.Iterator;
 public class ExtractorConfigWriter {
   
   public static void saveToDirectory(ExtractorConfig config, File dir)
-      throws FileNotFoundException, IOException {
+      throws IOException {
     Properties props = new Properties();
     props.setProperty(ExtractorConfig.PROP_CLASS_NAME, config.getClassName());
     File configDir = new File(dir, config.getIdentifier());

@@ -31,7 +31,7 @@ import java.util.Properties;
 
 public class ExtractorConfigReader {
   public static ExtractorConfig readFromDirectory(File directory,
-      String configId) throws FileNotFoundException, IOException {
+      String configId) throws IOException {
     File propsFileDir = new File(directory, configId);
     Properties props = new Properties();
     props

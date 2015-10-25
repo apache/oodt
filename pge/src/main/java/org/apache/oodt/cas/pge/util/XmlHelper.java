@@ -333,17 +333,17 @@ public class XmlHelper {
 	}
 
 	public static String getDir(Element elem, Metadata metadata)
-			throws MalformedURLException, Exception {
+			throws Exception {
 		return fillIn(elem.getAttribute(DIR_ATTR), metadata);
 	}
 
 	public static String getShellType(Element elem, Metadata metadata)
-			throws MalformedURLException, Exception {
+			throws Exception {
 		return fillIn(elem.getAttribute(SHELL_TYPE_ATTR), metadata);
 	}
 
 	public static List<String> getExeCmds(Element elem, Metadata metadata)
-			throws MalformedURLException, DOMException, Exception {
+			throws Exception {
 		List<String> exeCmds = Lists.newArrayList();
 		NodeList nodeList = elem.getElementsByTagName(CMD_TAG);
 		for (int i = 0; i < nodeList.getLength(); i++) {

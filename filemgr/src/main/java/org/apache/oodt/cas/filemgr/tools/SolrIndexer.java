@@ -204,7 +204,7 @@ public class SolrIndexer {
 	 *           When an error occurs communicating with the Solr server instance.
 	 */
 	public void indexMetFile(File file, boolean delete)
-	    throws InstantiationException, FileNotFoundException, IOException,
+	    throws InstantiationException, IOException,
 	    SolrServerException {
 		LOG.info("Attempting to index product from metadata file.");
 		try {

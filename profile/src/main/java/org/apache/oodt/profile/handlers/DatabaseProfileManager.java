@@ -77,7 +77,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
     	 **
     	***********************************************************************/	
 
-    	public DatabaseProfileManager(Properties props) throws SQLException, Exception {
+    	public DatabaseProfileManager(Properties props) throws Exception {
 		this(props, openConnection(props));
     	}
 

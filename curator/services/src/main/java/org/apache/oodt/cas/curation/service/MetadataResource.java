@@ -210,7 +210,7 @@ public class MetadataResource extends CurationService {
    * @throws MetExtractionException
    */
   protected Metadata getStagingMetadata(String id, String configId,
-      Boolean overwrite) throws FileNotFoundException, InstantiationException,
+      Boolean overwrite) throws InstantiationException,
       IOException, MetExtractionException {
     if (configId == null || configId.trim().length() == 0) {
       return this.readMetFile(id + CurationService.config.getMetExtension());
@@ -450,7 +450,7 @@ public class MetadataResource extends CurationService {
    *           If there is an IO problem opening the met file.
    */
   public Metadata readMetFile(String file) throws InstantiationException,
-      FileNotFoundException, IOException {
+      IOException {
     SerializableMetadata metadata = new SerializableMetadata("UTF-8", false);
     metadata.loadMetadataFromXmlStream(new FileInputStream(config
         .getMetAreaPath()
@@ -489,7 +489,7 @@ public class MetadataResource extends CurationService {
    *           If there is an IO exception writing the {@link File}.
    */
   public void writeMetFile(String id, Metadata metadata)
-      throws FileNotFoundException, IOException {
+      throws IOException {
     SerializableMetadata serMet = new SerializableMetadata(metadata, "UTF-8",
         false);
     serMet.writeMetadataToXmlStream(new FileOutputStream(new File(config
@@ -596,7 +596,7 @@ public class MetadataResource extends CurationService {
    * @throws FileNotFoundException
    */
   public void updateCatalogMetadata(Product product, Metadata newMetadata)
-      throws CatalogException, FileNotFoundException, IOException {
+      throws CatalogException, IOException {
     System.getProperties().load(
         new FileInputStream(CurationService.config.getFileMgrProps()));
     Catalog catalog = this.getCatalog();
@@ -672,7 +672,7 @@ public class MetadataResource extends CurationService {
    *           If any error occurs during this delete operation.
    */
   public void deleteCatalogProduct(Product product) 
-  throws FileNotFoundException, IOException, CatalogException {
+  throws IOException, CatalogException {
 	  CurationService.config.getFileManagerClient().removeProduct(product);
   }  
 
