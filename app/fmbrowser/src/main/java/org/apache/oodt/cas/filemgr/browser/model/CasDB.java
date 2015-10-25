@@ -26,7 +26,6 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import java.net.URL;
-import java.util.Hashtable;
 import java.util.Vector;
 
 public class CasDB {
@@ -120,10 +119,7 @@ public class CasDB {
       if (products.size() < maxVal)
         maxVal = products.size();
       for (int i = 0; i < maxVal; i++) {
-        Vector<Element> elements = (Vector<Element>) client
-            .getElementsByProductType(type);
         Metadata m = client.getMetadata(products.get(i));
-        Hashtable hash = m.getHashtable();
         results.addProduct(m);
       }
     } catch (Exception e) {
@@ -147,10 +143,7 @@ public class CasDB {
         if (products.size() < maxVal)
           maxVal = products.size();
         for (int i = 0; i < maxVal; i++) {
-          Vector<Element> elements = (Vector<Element>) client
-              .getElementsByProductType(type);
           Metadata m = client.getMetadata(products.get(i));
-          Hashtable hash = m.getHashtable();
           results.addProduct(m);
         }
       } catch (Exception e) {
@@ -169,10 +162,7 @@ public class CasDB {
         if (products.size() < maxVal)
           maxVal = products.size();
         for (int i = 0; i < maxVal; i++) {
-          Vector<Element> elements = (Vector<Element>) client
-              .getElementsByProductType(type);
           Metadata m = client.getMetadata(products.get(i));
-          Hashtable hash = m.getHashtable();
           results.addProduct(m);
         }
       } catch (Exception e) {

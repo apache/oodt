@@ -134,7 +134,6 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
     for (Thread worker : this.workerMap.values())
       if (worker != null) {
         worker.interrupt();
-        worker = null;
       }
 
   }

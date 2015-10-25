@@ -123,7 +123,6 @@ public class BuildPerspective extends MultiStatePerspective {
     } else if (change instanceof ViewChange.REFRESH_VIEW) {
       this.refresh();
     } else if (change instanceof ViewChange.STATE_NAME_CHANGE) {
-      ViewState state = ((ViewChange.STATE_NAME_CHANGE) change).getObject();
       this.refresh();
     } else if (change instanceof ViewChange.VIEW_MODEL) {
       String modelId = ((ViewChange.VIEW_MODEL) change).getObject();

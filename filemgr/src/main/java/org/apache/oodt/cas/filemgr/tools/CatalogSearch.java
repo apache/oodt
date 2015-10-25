@@ -18,6 +18,15 @@
 package org.apache.oodt.cas.filemgr.tools;
 
 //OODT imports
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.RangeQuery;
+import org.apache.lucene.search.TermQuery;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -28,7 +37,6 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 
-//JDK imports
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,16 +44,8 @@ import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+//JDK imports
 //Lucene imports
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.PhraseQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.RangeQuery;
-import org.apache.lucene.search.TermQuery;
 
 /**
  * 
@@ -348,7 +348,6 @@ public class CatalogSearch {
         welcomeMessage += "Copyright 2006. California Institute of Technology.\n";
         String usage = "CatalogSearch --url <url to File Manager service>\n";
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        CatalogSearch cs = new CatalogSearch();
 
         // determine url
         for (int i = 0; i < args.length; i++) {
