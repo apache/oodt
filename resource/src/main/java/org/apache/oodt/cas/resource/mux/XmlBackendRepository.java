@@ -16,14 +16,6 @@
  */
 package org.apache.oodt.cas.resource.mux;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.oodt.cas.resource.scheduler.Scheduler;
 import org.apache.oodt.cas.resource.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.resource.util.GenericResourceManagerObjectFactory;
@@ -31,6 +23,14 @@ import org.apache.oodt.commons.xml.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class to load BackendManager from XML file.
@@ -175,7 +175,7 @@ public class XmlBackendRepository implements BackendRepository {
         NodeList children = elem.getElementsByTagName(tag);
         try {
             String attr;
-            if (children.getLength() != 1 || (attr = ((Element)children.item(0)).getAttribute("factory")) == "") {
+            if (children.getLength() != 1 || (attr = ((Element) children.item(0)).getAttribute("factory")).equals("")) {
                 throw new RepositoryException("Could not find exactly one "+tag+", with factory set, in queue: "+queue);
             }
             return attr;

@@ -195,7 +195,7 @@ public class VirtualFile {
         StringBuilder path = new StringBuilder(this.regExp);
         VirtualFile parent = this.parent;
         while (parent != null) {
-            path.insert(0, (parent.regExp != "/" ? parent.regExp : "") + "/");
+            path.insert(0, (!parent.regExp.equals("/") ? parent.regExp : "") + "/");
             parent = parent.parent;
         }
         return path.toString();
