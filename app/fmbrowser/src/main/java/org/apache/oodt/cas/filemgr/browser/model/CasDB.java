@@ -67,15 +67,7 @@ public class CasDB {
     if (filemgrUrl != null) {
       try {
         Vector<ProductType> v = (Vector<ProductType>) client.getProductTypes();
-        Vector<String> names = new Vector<String>();
         types = new String[v.size()];
-
-        for (ProductType aV : v) {
-          names.add(aV.getName());
-        }
-
-        Collections.sort(names);
-        names.toArray(types);
 
       } catch (RepositoryManagerException e) {
         // e.printStackTrace();
