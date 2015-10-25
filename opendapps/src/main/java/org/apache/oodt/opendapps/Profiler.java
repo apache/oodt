@@ -140,8 +140,7 @@ public class Profiler {
     final String query = "<query><queryKWQString>"
         + "PFunction=findall?ConfigUrl=" + file.getAbsolutePath()
         + "</queryKWQString></query>";
-    final XMLQuery xmlQuery = new XMLQuery(query);
-    return xmlQuery;
+    return new XMLQuery(query);
 
   }
 

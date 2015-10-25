@@ -475,8 +475,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder parser = factory.newDocumentBuilder();
-    Document document = parser.parse( new InputSource(new StringReader(xml)) );
-    return document;
+	  return parser.parse( new InputSource(new StringReader(xml)) );
     
 	}
 	

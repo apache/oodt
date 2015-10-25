@@ -167,8 +167,7 @@ public class XML {
 					System.err.println("Fatal parse error: " + ex.getMessage());
 				}
 			});
-			SAXParser p = new SAXParser(saxParser);
-			return p;
+		  return new SAXParser(saxParser);
 		} catch (ParserConfigurationException ex) {
 			throw new IllegalStateException("Unexpected ParserConfigurationException: " + ex.getMessage());
 		} catch (SAXException ex) {

@@ -164,8 +164,7 @@ public class TransferStatusTracker {
 
         try {
             destFile = new File(new URI(r.getDataStoreReference()));
-            long bytesTransferred = destFile.length();
-            return bytesTransferred;
+            return destFile.length();
         } catch (URISyntaxException e) {
             LOG.log(Level.WARNING,
                     "URISyntaxException when checking size of destFile: ["

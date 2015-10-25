@@ -389,9 +389,8 @@ public class LuceneCatalog implements Catalog {
             }
 
             Document productDoc = hits.doc(0);
-            CompleteProduct prod = toCompleteProduct(productDoc, getRefs,
+            return toCompleteProduct(productDoc, getRefs,
                     getMet);
-            return prod;
         } catch (IOException e) {
             LOG.log(Level.WARNING,
                     "IOException when opening index directory: ["

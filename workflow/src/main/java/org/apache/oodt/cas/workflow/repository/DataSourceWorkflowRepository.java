@@ -1165,9 +1165,8 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         }              
       }
     }
-    
-    String taskId = this.commitTask(null, task);
-    return taskId;
+
+    return this.commitTask(null, task);
   }
 
   /*

@@ -102,8 +102,7 @@ public class VisibilityToggler extends WebMarkupContainer {
 
   private static List subsetModelObject(Object obj) {
     List objList = (List) obj;
-    List subsetList = getTopN(objList, 3);
-    return subsetList;
+    return getTopN(objList, 3);
   }
 
   private static List getTopN(List statuses, int topN) {

@@ -652,8 +652,7 @@ public class XmlRpcWorkflowManager {
             // Get hostname by textual representation of IP address
             InetAddress addr = InetAddress.getLocalHost();
             // Get the host name
-            String hostname = addr.getHostName();
-            return hostname;
+          return addr.getHostName();
         } catch (UnknownHostException e) {
         }
         return null;

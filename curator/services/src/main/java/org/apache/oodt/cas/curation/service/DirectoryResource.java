@@ -57,9 +57,8 @@ public class DirectoryResource extends CurationService {
       @DefaultValue("true") @QueryParam("showFiles") boolean showFiles,
       @DefaultValue(FORMAT_HTML) @QueryParam("format") String format) {
     if (FORMAT_HTML.equals(format)) {
-      String response = this.getDirectoryAreaAsHTML(
+      return this.getDirectoryAreaAsHTML(
           CurationService.config.getStagingAreaPath(), path, showFiles);
-      return response;
     }
     return this.getDirectoryAreaAsJSON(
         CurationService.config.getStagingAreaPath(), path, showFiles);

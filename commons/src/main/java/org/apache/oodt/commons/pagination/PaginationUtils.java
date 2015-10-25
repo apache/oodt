@@ -73,8 +73,7 @@ public final class PaginationUtils {
     }
 
     public static int computeNextStartIdx(int maxPage, int productsPerPage) {
-        int nextPage = maxPage;
-        return (nextPage * productsPerPage);
+        return (maxPage * productsPerPage);
 
     }
 

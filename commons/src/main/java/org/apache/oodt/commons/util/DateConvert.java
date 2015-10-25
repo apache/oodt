@@ -194,9 +194,8 @@ public class DateConvert {
 		}
 
 		// Parse the given string.
-		Date parseDate = dateFormat.parse(inputString);
 
-		return(parseDate);
+	  return(dateFormat.parse(inputString));
 	}
 
 
@@ -213,9 +212,8 @@ public class DateConvert {
 
 		// Setup the date format and convert the given date.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DOY_FORMAT);
-		String dateString = dateFormat.format(inputDate);
 
-		return(dateString);
+	  return(dateFormat.format(inputDate));
 	}
 
 
@@ -235,9 +233,8 @@ public class DateConvert {
 		// Setup the date format and parse the given string.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DOY_FORMAT);
 		dateFormat.setLenient(false);
-		Date parseDate = dateFormat.parse(inputString);
 
-		return(parseDate);
+	  return(dateFormat.parse(inputString));
 	}
 
 
@@ -254,9 +251,8 @@ public class DateConvert {
 
 		// Setup the date format and convert the given date.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(TS_FORMAT);
-		String dateString = dateFormat.format(inputDate);
 
-		return(dateString);
+	  return(dateFormat.format(inputDate));
 	}
 
 
@@ -276,9 +272,8 @@ public class DateConvert {
 		// Setup the date format and parse the given string.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(TS_FORMAT);
 		dateFormat.setLenient(false);
-		Date parseDate = dateFormat.parse(inputString);
 
-		return(parseDate);
+	  return(dateFormat.parse(inputString));
 	}
 
 
@@ -295,9 +290,8 @@ public class DateConvert {
 
 		// Setup the date format and convert the given date.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DBMS_FORMAT);
-		String dateString = dateFormat.format(inputDate);
 
-		return(dateString);
+	  return(dateFormat.format(inputDate));
 	}
 
 
@@ -317,9 +311,8 @@ public class DateConvert {
 		// Setup the date format and parse the given string.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DBMS_FORMAT);
 		dateFormat.setLenient(false);
-		Date parseDate = dateFormat.parse(inputString);
 
-		return(parseDate);
+	  return(dateFormat.parse(inputString));
 	}
 
 
@@ -336,9 +329,8 @@ public class DateConvert {
 
 		// Setup the date format and convert the given date.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(YMD_FORMAT);
-		String dateString = dateFormat.format(inputDate);
 
-		return(dateString);
+	  return(dateFormat.format(inputDate));
 	}
 
 
@@ -358,9 +350,8 @@ public class DateConvert {
 		// Setup the date format and parse the given string.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(YMD_FORMAT);
 		dateFormat.setLenient(false);
-		Date parseDate = dateFormat.parse(inputString);
 
-		return(parseDate);
+	  return(dateFormat.parse(inputString));
 	}
 
 

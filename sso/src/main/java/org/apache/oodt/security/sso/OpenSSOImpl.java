@@ -162,10 +162,9 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
     Cookie[] cookies = this.req.getCookies();
     for (Cookie cookie : cookies) {
       if (cookie.getName().equals(name)) {
-        String cookieVal = cookie.getValue().startsWith("\"")
+        return cookie.getValue().startsWith("\"")
             && cookie.getValue().endsWith("\"") ? cookie.getValue().substring(
             1, cookie.getValue().length() - 1) : cookie.getValue();
-        return cookieVal;
       }
     }
 

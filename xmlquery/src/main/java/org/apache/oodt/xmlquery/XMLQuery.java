@@ -535,10 +535,9 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
      */
     private static boolean isFromToken (String s1)
 	{
-		String tmpStr = s1;
-	    for (int i = 0; i < FROM_TOKENS.length; i++)
+	  for (int i = 0; i < FROM_TOKENS.length; i++)
 	    {
-	        if (tmpStr.compareTo(FROM_TOKENS[i]) == 0) {
+	        if (s1.compareTo(FROM_TOKENS[i]) == 0) {
 	            return true;
 	        }
 	    }

@@ -182,8 +182,7 @@ public class TestJschSftpProtocol extends TestCase {
 
 
             }
-            String str = build.toString();
-            return str;
+		  return build.toString();
         }catch(IOException ioe){
             ioe.printStackTrace();
         }finally{

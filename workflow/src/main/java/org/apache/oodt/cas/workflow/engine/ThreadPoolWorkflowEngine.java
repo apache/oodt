@@ -382,8 +382,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     long diffMs = currentDateOrStopTime.getTime()
         - workflowStartDateTime.getTime();
     double diffSecs = (diffMs * 1.0 / 1000.0);
-    double diffMins = diffSecs / 60.0;
-    return diffMins;
+    return diffSecs / 60.0;
 
   }
 
@@ -429,8 +428,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     long diffMs = currentDateOrStopTime.getTime()
         - workflowTaskStartDateTime.getTime();
     double diffSecs = (diffMs * 1.0 / 1000.0);
-    double diffMins = diffSecs / 60.0;
-    return diffMins;
+    return diffSecs / 60.0;
   }
 
   private synchronized void persistWorkflowInstance(WorkflowInstance wInst)

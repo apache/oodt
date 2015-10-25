@@ -76,9 +76,7 @@ public final class XmlStructFactory {
             e.printStackTrace();
         }
 
-        ResourceNode resource = new ResourceNode(id, ip, capacity);
-
-        return resource;
+        return new ResourceNode(id, ip, capacity);
     }
 
     public static List getQueueAssignment(Node node) {
@@ -154,9 +152,7 @@ public final class XmlStructFactory {
             in.configure(inputConfigProps);
         }
 
-        JobSpec spec = new JobSpec(in, job);
-
-        return spec;
+        return new JobSpec(in, job);
     }
 
 }

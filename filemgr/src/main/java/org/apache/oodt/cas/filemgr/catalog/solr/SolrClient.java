@@ -116,9 +116,8 @@ public class SolrClient {
 			
 	    // send POST request
 	    LOG.info("Posting message:"+message+" to URL:"+url);
-	    String response = doPost(url, message, Parameters.MIME_TYPE_XML);
 
-	    return response;
+		  return doPost(url, message, Parameters.MIME_TYPE_XML);
     
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -213,8 +212,7 @@ public class SolrClient {
 			String url = this.buildSelectUrl();
 			
 			// execute request
-			String response = this.doGet(url, parameters, mimeType);
-			return response;
+		  return this.doGet(url, parameters, mimeType);
 		
 		} catch(Exception e) {
 			e.printStackTrace();

@@ -627,8 +627,7 @@ public class Configuration {
 	 */
 	static Document createDocument(String documentElementName) throws DOMException {
 		DocumentType docType = XML.getDOMImplementation().createDocumentType(documentElementName, DTD_FPI, DTD_URL);
-		Document doc = XML.getDOMImplementation().createDocument(/*namespaceURI*/null, documentElementName, docType);
-		return doc;
+	  return XML.getDOMImplementation().createDocument(/*namespaceURI*/null, documentElementName, docType);
 	}
 
 	/** The formal public identifier (FPI) of the configuration document type definition (DTD). */

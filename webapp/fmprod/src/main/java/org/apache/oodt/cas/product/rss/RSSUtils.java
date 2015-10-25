@@ -49,10 +49,9 @@ public class RSSUtils {
     if (channelLink != null && !channelLink.equals("")) {
       return PathUtils.replaceEnvVariables(channelLink, channelMet);
     } else {
-      String cLink = channelMet.getMetadata("BaseUrl") + "/rdf/dataset?type="
+      return channelMet.getMetadata("BaseUrl") + "/rdf/dataset?type="
       + channelMet.getMetadata("ProductType") + "&typeID="
       + channelMet.getMetadata("ProductTypeId");
-      return cLink;
     }
   }
 

@@ -340,8 +340,7 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 	 */
 	static Document createDocument(String root) {
 		DocumentType docType = XML.getDOMImplementation().createDocumentType(root, PROFILES_DTD_FPI, PROFILES_DTD_URL);
-		Document doc = XML.getDOMImplementation().createDocument(/*namespaceURI*/null, root, docType);
-		return doc;
+	  return XML.getDOMImplementation().createDocument(/*namespaceURI*/null, root, docType);
 	}
 
 	/** My profile attributes. */

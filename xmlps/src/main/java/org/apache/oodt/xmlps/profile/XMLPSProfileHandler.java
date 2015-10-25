@@ -121,8 +121,7 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
             e.printStackTrace();
             throw new ProfileException(e.getMessage());
         }
-        List<Profile> profs = queryAndPackageProfiles(query);
-        return profs;
+        return queryAndPackageProfiles(query);
     }
 
     /*

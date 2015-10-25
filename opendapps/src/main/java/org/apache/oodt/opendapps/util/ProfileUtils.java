@@ -420,8 +420,7 @@ public class ProfileUtils {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     TimeZone tz = TimeZone.getTimeZone("UTC");
     df.setTimeZone(tz);
-    String output = df.format(date);
-    return output;
+    return df.format(date);
   }
 
 }

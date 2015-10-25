@@ -80,8 +80,7 @@ public class TestFILOPrioritySorter extends TestCase {
     workflow.setTasks(Collections.EMPTY_LIST);
     inst.setWorkflow(workflow);
     inst.setPriority(Priority.getPriority(priority));
-    SequentialProcessor processor = new SequentialProcessor(lifecycleManager, inst);
-    return processor;
+    return new SequentialProcessor(lifecycleManager, inst);
   }
 
 }

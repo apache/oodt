@@ -50,8 +50,7 @@ public final class DbStructFactory {
     }
 
     public static String getEvent(ResultSet rs) throws SQLException {
-        String eventName = rs.getString("event_name");
-        return eventName;
+        return rs.getString("event_name");
     }
 
     public static WorkflowInstance getWorkflowInstance(ResultSet rs)

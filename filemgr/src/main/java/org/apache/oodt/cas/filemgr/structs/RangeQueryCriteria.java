@@ -175,8 +175,7 @@ public class RangeQueryCriteria extends QueryCriteria {
      * @return The query as a String.
      */
     public String toString() {
-        String serial = elementName + ":[" + startValue + " TO " + endValue + "]";
-        return serial;
+        return elementName + ":[" + startValue + " TO " + endValue + "]";
     }
 
 }

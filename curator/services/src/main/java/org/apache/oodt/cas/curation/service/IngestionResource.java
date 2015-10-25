@@ -265,8 +265,7 @@ public class IngestionResource extends CurationService {
   }
 
   private Ingester configureIngester() {
-    StdIngester ingest = new StdIngester(DATA_TRANSFER_SERVICE);
-    return ingest;
+    return new StdIngester(DATA_TRANSFER_SERVICE);
   }
 
   private URL safeGetUrl(String urlStr) {

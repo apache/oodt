@@ -55,8 +55,7 @@ public class RestfulProductQueryServlet extends ProductQueryServlet {
 		
 		// if DIS-style parameters are found, default to standard processing
 		if (req.getParameter("xmlq") !=null || req.getParameter("q")!=null) {
-			XMLQuery xmlQuery = super.getQuery(req, res);
-			return xmlQuery;
+		  return super.getQuery(req, res);
 			
 		// combine all HTTP (name, value) pairs into XML query string with logical AND
 		} else {

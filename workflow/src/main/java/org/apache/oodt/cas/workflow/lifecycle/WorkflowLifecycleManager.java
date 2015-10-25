@@ -110,9 +110,8 @@ public class WorkflowLifecycleManager {
         WorkflowLifecycle lifecycle = getLifecycleForWorkflow(inst
                 .getWorkflow());
         if (lifecycle != null) {
-            WorkflowLifecycleStage stage = lifecycle.getStageForWorkflow(inst
+            return lifecycle.getStageForWorkflow(inst
                     .getStatus());
-            return stage;
         } else
             return null;
     }
@@ -131,8 +130,7 @@ public class WorkflowLifecycleManager {
         int numStages = getNumStages(inst.getWorkflow());
         int lastCompletedStageNum = getLastCompletedStageNum(inst);
 
-        double pct = (double) ((lastCompletedStageNum * 1.0) / (numStages * 1.0));
-        return pct;
+        return (double) ((lastCompletedStageNum * 1.0) / (numStages * 1.0));
     }
 
     /**

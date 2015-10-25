@@ -104,8 +104,7 @@ public class TermQueryCriteria extends QueryCriteria {
      * @return The query as a String.
      */
     public String toString() {
-        String serial = this.elementName + ":" + value;
-        return serial;
+        return this.elementName + ":" + value;
     }
 
 }

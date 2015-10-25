@@ -528,9 +528,8 @@ public class XmlRpcWorkflowManagerClient {
         try {
             Hashtable workflowInstance = (Hashtable) client.execute(
                     "workflowmgr.getWorkflowInstanceById", argList);
-            WorkflowInstance wInst = XmlRpcStructFactory
-                    .getWorkflowInstanceFromXmlRpc(workflowInstance);
-            return wInst;
+          return XmlRpcStructFactory
+                  .getWorkflowInstanceFromXmlRpc(workflowInstance);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());
@@ -548,8 +547,7 @@ public class XmlRpcWorkflowManagerClient {
         try {
             Hashtable workflow = (Hashtable) client.execute(
                     "workflowmgr.getWorkflowById", argList);
-            Workflow w = XmlRpcStructFactory.getWorkflowFromXmlRpc(workflow);
-            return w;
+          return XmlRpcStructFactory.getWorkflowFromXmlRpc(workflow);
         } catch (XmlRpcException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());

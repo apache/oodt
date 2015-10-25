@@ -53,8 +53,7 @@ public class DBMSExecutor {
       Connection conn = dataSource.getConnection();
       Statement statement = conn.createStatement();
       ResultSet rs = statement.executeQuery(sql);
-      CDEResult result = new CDEResult(rs, conn);
-      return result;
+      return new CDEResult(rs, conn);
     } catch (SQLException e) {
       e.printStackTrace();
       throw e;

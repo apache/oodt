@@ -37,8 +37,7 @@ public class ExtractorConfigReader {
     props
         .load(new FileInputStream(new File(propsFileDir,
         "config.properties")));
-    
-    String identifier = configId;
+
     String className = props.getProperty(ExtractorConfig.PROP_CLASS_NAME);
     List<File> files = new ArrayList<File>();
     String[] fileList = props.getProperty(ExtractorConfig.PROP_CONFIG_FILES)
@@ -47,6 +46,6 @@ public class ExtractorConfigReader {
       files.add(new File(PathUtils.replaceEnvVariables(fileList[0])));
     }
     
-    return new ExtractorConfig(identifier, className, files);
+    return new ExtractorConfig(configId, className, files);
   }
 }
