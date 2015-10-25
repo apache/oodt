@@ -45,7 +45,7 @@ public class CDERow {
         if (vals != null && vals.size() > 0) {
             for (Iterator<CDEValue> i = vals.iterator(); i.hasNext();) {
                 CDEValue v = i.next();
-                rStr.append(v.getVal() + COL_SEPARATOR);
+                rStr.append(v.getVal()).append(COL_SEPARATOR);
             }
 
             rStr.deleteCharAt(rStr.length() - 1);

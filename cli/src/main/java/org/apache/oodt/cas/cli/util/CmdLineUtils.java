@@ -1053,14 +1053,13 @@ public class CmdLineUtils {
       StringBuffer curLine = null;
       for (int i = 0; i < splitStrings.length; i++) {
          curLine = new StringBuffer("");
-         curLine.append(splitStrings[i] + " ");
+         curLine.append(splitStrings[i]).append(" ");
 
          for (; i + 1 < splitStrings.length
                && curLine.length() + splitStrings[i + 1].length() <= (endIndex - startIndex); i++)
-            curLine.append(splitStrings[i + 1] + " ");
+            curLine.append(splitStrings[i + 1]).append(" ");
 
-         outputString.append(StringUtils.repeat(" ", startIndex)
-               + curLine.toString() + "\n");
+         outputString.append(StringUtils.repeat(" ", startIndex)).append(curLine.toString()).append("\n");
       }
       return outputString.toString();
    }
@@ -1110,7 +1109,7 @@ public class CmdLineUtils {
       } else if (type.equals(String.class)) {
          StringBuilder combinedString = new StringBuilder("");
          for (String value : values)
-            combinedString.append(value + " ");
+            combinedString.append(value).append(" ");
          return Lists.newArrayList(combinedString.toString().trim());
       } else {
          List<Object> objects = new LinkedList<Object>();

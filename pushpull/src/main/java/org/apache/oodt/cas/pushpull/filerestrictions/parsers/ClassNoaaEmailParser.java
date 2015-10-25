@@ -52,7 +52,7 @@ public class ClassNoaaEmailParser implements Parser {
             Scanner s = new Scanner(emailFile);
             StringBuffer sb = new StringBuffer("");
             while (s.hasNextLine())
-                sb.append(s.nextLine() + "\n");
+                sb.append(s.nextLine()).append("\n");
 
             if (!validEmail(sb.toString()))
                 throw new ParserException(

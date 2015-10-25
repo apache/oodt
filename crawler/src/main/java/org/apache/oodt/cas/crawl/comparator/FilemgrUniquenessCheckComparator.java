@@ -51,7 +51,7 @@ public class FilemgrUniquenessCheckComparator extends
         try {
             boolean returnVal = new XmlRpcFileManagerClient(new URL(
                     this.filemgrUrl)).hasProduct(product.getName());
-            return new Boolean(returnVal).compareTo(compareItem);
+            return Boolean.valueOf(returnVal).compareTo(compareItem);
         } catch (Exception e) {
             throw new PreconditionComparatorException(
                     "Failed to check for product " + product + " : "

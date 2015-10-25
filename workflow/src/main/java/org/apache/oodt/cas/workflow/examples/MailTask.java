@@ -95,7 +95,7 @@ public class MailTask implements WorkflowTaskInstance {
       }
       val.deleteCharAt(val.length() - 1);
 
-      buf.append("[" + keyStr + "=>" + val + "]\n");
+      buf.append("[").append(keyStr).append("=>").append(val).append("]\n");
     }
 
     return buf.toString();

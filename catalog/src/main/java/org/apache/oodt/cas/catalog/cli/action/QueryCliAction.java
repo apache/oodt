@@ -62,10 +62,8 @@ public class QueryCliAction  extends CatalogServiceCliAction {
                   + tMet.getCatalogIds() + " ; Metadata: (");
             StringBuilder sb = new StringBuilder("");
             for (Object metKey : tMet.getMetadata().getHashtable().keySet()) {
-               sb.append(metKey
-                     + "="
-                     + tMet.getMetadata().getAllMetadata((String) metKey)
-                           .toString().replaceAll("[\\[\\]]", "'") + ", ");
+               sb.append(metKey).append("=").append(tMet.getMetadata().getAllMetadata((String) metKey)
+                                                        .toString().replaceAll("[\\[\\]]", "'")).append(", ");
             }
             printer.println(sb.substring(0, sb.length() - 2) + ")");
          }

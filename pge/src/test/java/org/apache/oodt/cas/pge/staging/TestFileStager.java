@@ -138,7 +138,7 @@ public class TestFileStager extends TestCase {
          buffer.append("eqProduct(");
          buffer.append(Product.class.getName());
          buffer.append(" with product id [");
-         buffer.append(productId + "])");
+         buffer.append(productId).append("])");
       }
 
       @Override

@@ -156,7 +156,7 @@ public final class EnvUtilities {
         while ((line = reader.readLine()) != null) {
             // fix the line
             line = line.replaceAll("\\\\", "\\\\\\\\");
-            buf.append(line + "\n");
+            buf.append(line).append("\n");
         }
 
         if (reader != null) {

@@ -252,7 +252,7 @@ public final class QueryTool {
         List<QueryResult> results = new XmlRpcFileManagerClient(new URL(filemgrUrl)).complexQuery(complexQuery);
         StringBuilder returnString = new StringBuilder("");
         for (QueryResult qr : results) 
-            returnString.append(qr.toString() + delimiter);
+            returnString.append(qr.toString()).append(delimiter);
         return returnString.substring(0, returnString.length() - delimiter.length());
     }
     

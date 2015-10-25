@@ -283,10 +283,9 @@ public class VirtualFile {
         StringBuffer output = new StringBuffer("");
         for (VirtualFile vf : list) {
             output.append(spacer);
-            output.append(vf.getRegExp()
-                    + (vf.isDir && !vf.regExp.equals("/") ? "/" : "") + "\t : "
-                    + vf.allowNewDirs + "/" + vf.noDirs + "\t\t : "
-                    + vf.allowNewFiles + "/" + vf.noFiles + "\n");
+            output.append(vf.getRegExp()).append(vf.isDir && !vf.regExp.equals("/") ? "/" : "").append("\t : ")
+                  .append(vf.allowNewDirs).append("/").append(vf.noDirs).append("\t\t : ").append(vf.allowNewFiles)
+                  .append("/").append(vf.noFiles).append("\n");
             output.append(printVirtualFiles(vf.getChildren(), " " + spacer));
         }
         return output;

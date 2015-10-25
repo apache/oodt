@@ -56,7 +56,7 @@ public class ProfileChecker {
 		
 		// profile passes by default
 		boolean ok = true;
-		sb.append("\nChecking profile="+profile.getProfileAttributes().getID());
+		sb.append("\nChecking profile=").append(profile.getProfileAttributes().getID());
 		
 		ok = ok && checkResourceAttribute("Identifier", profile.getResourceAttributes().getIdentifier(), true, sb);
 		
@@ -100,7 +100,7 @@ public class ProfileChecker {
 	 * @return
 	 */
 	private static boolean checkResourceAttribute(String name, String value, boolean mandatory, StringBuilder sb) {
-		sb.append("\n\tResource Attribute '" + name + "' = ");
+		sb.append("\n\tResource Attribute '").append(name).append("' = ");
 		if (!StringUtils.hasText(value) || value.equalsIgnoreCase("null")) {
 				if (mandatory) return false; // bad value
 		} else {
@@ -120,7 +120,7 @@ public class ProfileChecker {
 	 */
 	private static boolean checkProfileElement(Profile profile, String name, boolean mandatory, StringBuilder sb) {
 		
-		sb.append("\n\tProfile Element '" + name + "' = ");
+		sb.append("\n\tProfile Element '").append(name).append("' = ");
 	  // profile element is valid by default
 		boolean ok = true; 
 	

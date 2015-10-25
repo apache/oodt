@@ -236,8 +236,7 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
          try {
             action.validate();
          } catch (Exception e) {
-            actionErrors.append(" " + action.getId() + ": " + e.getMessage()
-                  + "\n");
+            actionErrors.append(" ").append(action.getId()).append(": ").append(e.getMessage()).append("\n");
          }
       }
       if (actionErrors.length() > 0) {

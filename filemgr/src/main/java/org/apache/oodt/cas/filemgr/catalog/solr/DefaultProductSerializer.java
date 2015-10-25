@@ -332,7 +332,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 	 */
 	protected String encodeUpdateField(String key, String value, boolean replace) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<field name=\""+key+"\"");
+		sb.append("<field name=\"").append(key).append("\"");
 		
 		if (replace) {
 			
@@ -344,13 +344,13 @@ public class DefaultProductSerializer implements ProductSerializer {
 			} else {
 				
 				// (2) replace existing values with new values
-				sb.append(" update=\"set\">" + value + "</field>");
+				sb.append(" update=\"set\">").append(value).append("</field>");
 			}
 			
 		} else {
 			
 			// (1) add new values to existing values
-			sb.append(" update=\"add\">"+value+"</field>");
+			sb.append(" update=\"add\">").append(value).append("</field>");
 			
 		}
 

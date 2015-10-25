@@ -66,10 +66,8 @@ public class ReducedQueryCliAction extends CatalogServiceCliAction {
             for (String termName : this.termNames) {
                List<String> values = tMet.getMetadata().getAllMetadata(
                      (String) termName);
-               sb.append(termName
-                     + " = '"
-                     + (values == null ? "null" : StringUtils.join(
-                           values.iterator(), ",")) + "', ");
+               sb.append(termName).append(" = '").append(values == null ? "null" : StringUtils.join(
+                   values.iterator(), ",")).append("', ");
             }
             printer.println(sb.substring(0, sb.length() - 2));
          }

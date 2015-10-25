@@ -380,7 +380,7 @@ public class TimeEventWeightedHash {
       StringBuffer output = new StringBuffer("");
       for (TimeEventNode node : list) {
           output.append(spacer);
-          output.append(node.te + " -- " + (curPathWeight + node.te.getDuration()) + "\n");
+          output.append(node.te).append(" -- ").append(curPathWeight + node.te.getDuration()).append("\n");
           output.append(printNodes(node.getChildren().getList(), " " + spacer, curPathWeight + node.te.getDuration()));
       }
       return output;

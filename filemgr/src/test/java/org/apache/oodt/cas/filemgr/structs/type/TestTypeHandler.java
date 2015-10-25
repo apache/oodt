@@ -568,10 +568,9 @@ public class TestTypeHandler extends TestCase {
 
                                 }
                             }
-                            fromClause.append("INNER JOIN (" + subSelectQuery
-                                    + ") " + subSelectTblName + " ON "
-                                    + subSelectTblName
-                                    + ".product_id = p.product_id ");
+                            fromClause.append("INNER JOIN (").append(subSelectQuery).append(") ")
+                                      .append(subSelectTblName).append(" ON ").append(subSelectTblName)
+                                      .append(".product_id = p.product_id ");
 
                         }
                     }
@@ -809,10 +808,9 @@ public class TestTypeHandler extends TestCase {
                                 }
                             }
 
-                            fromClause.append("INNER JOIN (" + subSelectQuery
-                                    + ") " + subSelectTblName + " ON "
-                                    + subSelectTblName
-                                    + ".product_id = p.product_id ");
+                            fromClause.append("INNER JOIN (").append(subSelectQuery).append(") ")
+                                      .append(subSelectTblName).append(" ON ").append(subSelectTblName)
+                                      .append(".product_id = p.product_id ");
 
                         }
                     }

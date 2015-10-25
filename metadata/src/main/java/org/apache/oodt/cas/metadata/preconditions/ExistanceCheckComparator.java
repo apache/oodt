@@ -40,7 +40,7 @@ public class ExistanceCheckComparator extends PreConditionComparator<Boolean> {
     @Override
     protected int performCheck(File product, Boolean compareItem)
             throws PreconditionComparatorException {
-        return new Boolean(product.exists()).compareTo(compareItem);
+        return Boolean.valueOf(product.exists()).compareTo(compareItem);
     }
 
 }

@@ -67,7 +67,7 @@ public class RestfulProductQueryServlet extends ProductQueryServlet {
 				String[] paramValues = req.getParameterValues(paramName);
 				for (int i = 0; i < paramValues.length; i++) {
 					if (q.length()>0) q.append(" AND ");
-					q.append(paramName+" EQ "+paramValues[i]);
+					q.append(paramName).append(" EQ ").append(paramValues[i]);
 				}
 			}
 			
