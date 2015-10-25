@@ -59,10 +59,7 @@ public class CasDB {
   }
 
   public boolean isConnected() {
-    if (filemgrUrl == null) {
-      return false;
-    } else
-      return true;
+    return filemgrUrl != null;
   }
 
   public String[] getAvailableTypes() {

@@ -18,6 +18,23 @@
 package org.apache.oodt.cas.workflow.gui.perspective.view.impl;
 
 //JDK imports
+import com.jgraph.layout.JGraphFacade;
+import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
+
+import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
+import org.apache.oodt.cas.workflow.gui.model.ModelNode;
+import org.apache.oodt.cas.workflow.gui.perspective.view.View;
+import org.apache.oodt.cas.workflow.gui.perspective.view.ViewChange;
+import org.apache.oodt.cas.workflow.gui.perspective.view.ViewState;
+import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
+import org.apache.oodt.cas.workflow.gui.util.IconLoader;
+import org.apache.oodt.cas.workflow.gui.util.Line;
+import org.jgraph.JGraph;
+import org.jgraph.graph.AttributeMap;
+import org.jgraph.graph.DefaultEdge;
+import org.jgraph.graph.DefaultGraphCell;
+import org.jgraph.graph.GraphConstants;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -55,35 +72,20 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.Map.Entry;
+import java.util.Vector;
+
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-//JGraph imports
-import org.jgraph.JGraph;
-import org.jgraph.graph.AttributeMap;
-import org.jgraph.graph.DefaultGraphCell;
-import org.jgraph.graph.DefaultEdge;
-import org.jgraph.graph.GraphConstants;
-import com.jgraph.layout.JGraphFacade;
-import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
-
-//Jung imports
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.ObservableGraph;
 
+//JGraph imports
+//Jung imports
 //OODT imports
-import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
-import org.apache.oodt.cas.workflow.gui.model.ModelNode;
-import org.apache.oodt.cas.workflow.gui.perspective.view.View;
-import org.apache.oodt.cas.workflow.gui.perspective.view.ViewChange;
-import org.apache.oodt.cas.workflow.gui.perspective.view.ViewState;
-import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
-import org.apache.oodt.cas.workflow.gui.util.IconLoader;
-import org.apache.oodt.cas.workflow.gui.util.Line;
 
 /**
  * 
@@ -240,11 +242,8 @@ public class GraphView extends DefaultTreeView {
                         }
 
                         public boolean isDataFlavorSupported(DataFlavor flavor) {
-                          if (flavor.getHumanPresentableName().equals(
-                              DefaultGraphCell.class.getSimpleName()))
-                            return true;
-                          else
-                            return false;
+                          return flavor.getHumanPresentableName().equals(
+                              DefaultGraphCell.class.getSimpleName());
                         }
 
                       }, new DragSourceListener() {

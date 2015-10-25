@@ -17,28 +17,28 @@
 package org.apache.oodt.cas.pushpull.config;
 
 //OODT imports
+import com.google.common.base.Strings;
+
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.pushpull.exceptions.ConfigException;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.filerestrictions.renamingconventions.RenamingConvention;
 import org.apache.oodt.cas.pushpull.objectfactory.PushPullObjectFactory;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
-import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-//JDK imports
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+//JDK imports
 //DOM imports
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 //Google imports
-import com.google.common.base.Strings;
 
 /**
  * Remote Site Crawling specifications.
@@ -110,7 +110,7 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                             .getAttribute(FIRSTRUN_DATETIME_ATTR);
                     period = runInfo.getAttribute(PERIOD_ATTR);
                     runOnReboot = (runInfo.getAttribute(RUNONREBOOT_ATTR)
-                            .toLowerCase().equals("yes")) ? true : false;
+                                          .toLowerCase().equals("yes"));
                     epsilon = runInfo.getAttribute(EPSILON_ATTR);
                     if (epsilon.equals(""))
                         epsilon = "0s";

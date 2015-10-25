@@ -249,9 +249,8 @@ public class FileRetrievalSystem {
     }
 
     public boolean isAlreadyInDatabase(RemoteFile rf) throws CatalogException {
-        return config.getIngester() != null ? config.getIngester().hasProduct(
-                config.getFmUrl(), rf.getMetadata(RemoteFile.PRODUCT_NAME))
-                : false;
+        return config.getIngester() != null && config.getIngester().hasProduct(
+            config.getFmUrl(), rf.getMetadata(RemoteFile.PRODUCT_NAME));
     }
 
     public List<RemoteSiteFile> getNextPage(final RemoteSiteFile dir,

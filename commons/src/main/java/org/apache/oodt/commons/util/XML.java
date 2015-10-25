@@ -60,21 +60,42 @@
 
 package org.apache.oodt.commons.util;
 
-import java.io.*;
-import java.util.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.OutputKeys;
 
 /** XML services.
  *
@@ -442,7 +463,7 @@ public class XML {
 		StringBuilder wrapped = new StringBuilder(text1(node, buffer));
 		boolean newline = false;
 		for (int i = 0; i < wrapped.length(); ++i) {
-			if (newline == false) {
+			if (!newline) {
 				if (wrapped.charAt(i) == '\n') {
 					newline = true;
 					wrapped.setCharAt(i, ' ');

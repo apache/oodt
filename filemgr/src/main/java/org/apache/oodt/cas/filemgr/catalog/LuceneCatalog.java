@@ -961,10 +961,7 @@ public class LuceneCatalog implements Catalog {
 
         boolean createIndex;
 
-        if (indexDir.exists() && indexDir.isDirectory()) {
-            createIndex = false;
-        } else
-            createIndex = true;
+        createIndex = !(indexDir.exists() && indexDir.isDirectory());
 
         try {
             writer = new IndexWriter(indexFilePath, new StandardAnalyzer(),

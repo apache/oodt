@@ -18,19 +18,20 @@
 package org.apache.oodt.security.sso;
 
 //JDK imports
+import org.apache.commons.codec.binary.Base64;
+import org.apache.oodt.security.sso.opensso.SSOMetKeys;
+import org.apache.oodt.security.sso.opensso.SSOProxy;
+import org.apache.oodt.security.sso.opensso.UserDetails;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 import javax.servlet.http.Cookie;
 
 //APACHE imports
-import org.apache.commons.codec.binary.Base64;
-
 //LMMP imports
-import org.apache.oodt.security.sso.opensso.SSOMetKeys;
-import org.apache.oodt.security.sso.opensso.SSOProxy;
-import org.apache.oodt.security.sso.opensso.UserDetails;
 
 /**
  * 
@@ -82,7 +83,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
 
   public boolean isLoggedIn() {
     // TODO: make sure the token is valid?
-    return (this.getSSOToken() == null) ? false : true;
+    return (this.getSSOToken() != null);
   }
 
   public boolean login(String username, String password) {

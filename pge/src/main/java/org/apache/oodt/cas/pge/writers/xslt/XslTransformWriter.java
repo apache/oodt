@@ -58,8 +58,8 @@ public class XslTransformWriter implements SciPgeConfigFileWriter {
 
             TransformerFactory transFact = TransformerFactory.newInstance();
             Transformer trans = transFact.newTransformer(xsltSource);
-            boolean useCDATA = customArgs.length > 1 ? ((String) customArgs[1])
-                    .toLowerCase().equals("true") : false;
+            boolean useCDATA = customArgs.length > 1 && ((String) customArgs[1])
+                .toLowerCase().equals("true");
             Source xmlSource = new DOMSource((new SerializableMetadata(
                     inputMetadata,
                     trans.getOutputProperty(OutputKeys.ENCODING), useCDATA))

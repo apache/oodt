@@ -190,7 +190,6 @@ public class XMLRepositoryManager implements RepositoryManager {
                                 + "type directory URI: " + dirUri
                                 + ": Skipping Product Type saving"
                                 + "for it: Message: " + e.getMessage());
-                continue;
             }
 
         }
@@ -252,7 +251,6 @@ public class XMLRepositoryManager implements RepositoryManager {
                                 + "type directory URI: " + dirUri
                                 + ": Skipping Product Type loading"
                                 + "for it: Message: " + e.getMessage());
-                continue;
             }
         }
     }

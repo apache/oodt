@@ -49,19 +49,13 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
 
   protected static final FileFilter FILE_FILTER = new FileFilter() {
     public boolean accept(File pathname) {
-      if (pathname.isFile()) {
-        return true;
-      } else
-        return false;
+      return pathname.isFile();
     }
   };
 
   protected static final FileFilter DIR_FILTER = new FileFilter() {
     public boolean accept(File pathname) {
-      if (pathname.isDirectory()) {
-        return true;
-      } else
-        return false;
+      return pathname.isDirectory();
     }
   };
 

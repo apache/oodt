@@ -605,7 +605,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   }
 
   private boolean getFmUp() {
-    return fm.getFmgrClient() != null ? fm.getFmgrClient().isAlive() : false;
+    return fm.getFmgrClient() != null && fm.getFmgrClient().isAlive();
   }
 
   private boolean getWmUp() {

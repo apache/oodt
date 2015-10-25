@@ -241,14 +241,12 @@ public class RemoteDataTransferer implements DataTransfer {
          LOG.log(Level.WARNING,
                "Error opening input stream to read file to transfer: Message: "
                      + e.getMessage());
-         return;
       } catch (DataTransferException e) {
          LOG.log(
                Level.WARNING,
                "DataTransferException when transfering file: [" + origFilePath
                      + "] to [" + destFilePath + "]: Message: "
                      + e.getMessage());
-         return;
       } finally {
          if (is != null) {
             try {
@@ -269,7 +267,6 @@ public class RemoteDataTransferer implements DataTransfer {
          LOG.log(Level.WARNING,
                "Error notifying file manager of product transfer initiation for product: ["
                      + p.getProductId() + "]: Message: " + e.getMessage());
-         return;
       }
    }
 
@@ -281,7 +278,6 @@ public class RemoteDataTransferer implements DataTransfer {
          LOG.log(Level.WARNING,
                "Error notifying file manager of product transfer completion for product: ["
                      + p.getProductId() + "]: Message: " + e.getMessage());
-         return;
       }
    }
 

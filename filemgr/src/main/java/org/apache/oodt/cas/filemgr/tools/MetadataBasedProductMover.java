@@ -18,6 +18,15 @@
 package org.apache.oodt.cas.filemgr.tools;
 
 //JDK imports
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -27,14 +36,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductPage;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * @author mattmann
@@ -129,12 +130,7 @@ public class MetadataBasedProductMover {
     	String currentLocationURI = new URI(currentLocation).getSchemeSpecificPart();
     	String newLocationURI = new URI(newLocation).getSchemeSpecificPart();
 
-    	if (currentLocationURI.equals(newLocationURI)) {
-    		return true;
-    	}
-    	else {
-    		return false;
-    	}
+        return currentLocationURI.equals(newLocationURI);
     	
     }
     

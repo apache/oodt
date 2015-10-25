@@ -132,7 +132,6 @@ public class WriterLogger implements LogListener {
 	 * @param event The event to ignore.
 	 */
 	public void streamStarted(LogEvent event) {
-		return;
 	}
 
 	/** Ignore the stream stopped event.
@@ -140,7 +139,6 @@ public class WriterLogger implements LogListener {
 	 * @param event The event to ignore.
 	 */
 	public void streamStopped(LogEvent event) {
-		return;
 	}
 
 	public void propertyChange(java.beans.PropertyChangeEvent ignore) {}

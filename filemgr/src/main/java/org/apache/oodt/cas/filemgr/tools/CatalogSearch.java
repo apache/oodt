@@ -301,27 +301,23 @@ public class CatalogSearch {
                                 listElements();
                             } else {
                                 System.out.println("Error parsing command");
-                                return;
                             }
                         }
                     }
                 } else {
                     System.out.println("Error parsing command");
-                    return;
                 }
             } else if (com.equalsIgnoreCase("add")) {
                 if (tokCount == 3 && tok.nextToken().equalsIgnoreCase("filter")) {
                     setFilter(tok.nextToken());
                 } else {
                     System.out.println("Error parsing command");
-                    return;
                 }
             } else if (com.equalsIgnoreCase("remove")) {
                 if (tokCount == 2 && tok.nextToken().equalsIgnoreCase("filter")) {
                     removeFilter();
                 } else {
                     System.out.println("Error parsing command");
-                    return;
                 }
             } else if (com.equalsIgnoreCase("help")) {
                 printHelp();

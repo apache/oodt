@@ -18,6 +18,13 @@
 package org.apache.oodt.cas.workflow.gui.perspective.view.impl;
 
 //JDK imports
+import org.apache.commons.lang.StringUtils;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
+import org.apache.oodt.cas.workflow.gui.perspective.view.View;
+import org.apache.oodt.cas.workflow.gui.perspective.view.ViewState;
+import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
+
 import java.awt.BorderLayout;
 import java.awt.Checkbox;
 import java.awt.Color;
@@ -39,6 +46,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -66,14 +74,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 //Apache imports
-import org.apache.commons.lang.StringUtils;
-
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
-import org.apache.oodt.cas.workflow.gui.perspective.view.View;
-import org.apache.oodt.cas.workflow.gui.perspective.view.ViewState;
-import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
 
 /**
  * 
@@ -193,21 +194,16 @@ public class DefaultPropView extends View {
 
         public boolean isCellEditable(int row, int col) {
           if (row >= rows.size()) {
-            if (selected.getModel().getStaticMetadata()
-                .containsGroup(state.getCurrentMetGroup()))
-              return true;
-            else
-              return false;
+            return selected.getModel().getStaticMetadata()
+                           .containsGroup(state.getCurrentMetGroup());
           }
           if (col == 0)
             return false;
           String key = rows.get(row).get(1);
-          if (key == null
-              || (selected.getModel().getStaticMetadata() != null && selected
-                  .getModel().getStaticMetadata()
-                  .containsKey(getKey(key, state))))
-            return true;
-          return false;
+          return key == null
+                 || (selected.getModel().getStaticMetadata() != null && selected
+              .getModel().getStaticMetadata()
+              .containsKey(getKey(key, state)));
         }
 
         public void setValueAt(Object value, int row, int col) {

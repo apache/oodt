@@ -446,10 +446,7 @@ public class LuceneWorkflowInstanceRepository extends
 
         boolean createIndex = false;
 
-        if (indexDir.exists() && indexDir.isDirectory()) {
-            createIndex = false;
-        } else
-            createIndex = true;
+        createIndex = !(indexDir.exists() && indexDir.isDirectory());
 
         try {
             writer = new IndexWriter(idxFilePath, new StandardAnalyzer(),

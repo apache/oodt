@@ -62,13 +62,10 @@ public class WorkflowManagerDictionary implements Dictionary {
 			throws CatalogDictionaryException {
 		Set<String> bucketNames = queryExpression.getBucketNames();
 		if (bucketNames == null || bucketNames.contains("Workflows")) {
-			if (queryExpression instanceof NotQueryExpression 
-					|| queryExpression instanceof ComparisonQueryExpression 
-					|| queryExpression instanceof StdQueryExpression 
-					|| queryExpression instanceof QueryLogicalGroup) {
-				return true;
-			} else
-				return false;	
+		  return queryExpression instanceof NotQueryExpression
+				 || queryExpression instanceof ComparisonQueryExpression
+				 || queryExpression instanceof StdQueryExpression
+				 || queryExpression instanceof QueryLogicalGroup;
 		}
 		return false;
 	}

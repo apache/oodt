@@ -186,9 +186,7 @@ public class VirtualFile {
     }
 
     public boolean hasChild(VirtualFile vf) {
-        if (children.contains(vf))
-            return true;
-        return false;
+        return children.contains(vf);
     }
 
     public String getAbsolutePath() {

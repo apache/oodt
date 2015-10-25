@@ -323,7 +323,6 @@ public class XMLValidationLayer implements ValidationLayer {
                                         + dirUri
                                         + ": Skipping Element and Product Type map saving"
                                         + "for it: Message: " + e.getMessage());
-                continue;
             }
 
         }
@@ -374,7 +373,6 @@ public class XMLValidationLayer implements ValidationLayer {
                                 + "directory URI: " + dirUri
                                 + ": Skipping element loading"
                                 + "for it: Message: " + e.getMessage());
-                continue;
             }
         }
     }
@@ -460,7 +458,6 @@ public class XMLValidationLayer implements ValidationLayer {
                                 + "directory URI: " + dirUri
                                 + ": Skipping product type map loading"
                                 + "for it: Message: " + e.getMessage());
-                continue;
             }
         }
     }

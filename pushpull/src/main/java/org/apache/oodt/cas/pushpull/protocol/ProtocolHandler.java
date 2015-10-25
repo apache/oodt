@@ -240,15 +240,11 @@ public class ProtocolHandler {
   private boolean passesDynamicDetection(PagingInfo pgInfo,
       List<RemoteSiteFile> newLS) throws MalformedURLException,
       ProtocolException {
-    if (pgInfo.getSizeOfLastLS() != -1
-        && (pgInfo.getSizeOfLastLS() != newLS.size() || (newLS.size() != 0
-            && pgInfo.getPageLoc() < newLS.size() && (newLS.get(pgInfo
-            .getPageLoc()) == null || !newLS.get(pgInfo.getPageLoc()).equals(
-            pgInfo.getRemoteSiteFileAtPageLoc()))))) {
-      return false;
-    } else {
-      return true;
-    }
+    return !(pgInfo.getSizeOfLastLS() != -1
+             && (pgInfo.getSizeOfLastLS() != newLS.size() || (newLS.size() != 0
+                                                              && pgInfo.getPageLoc() < newLS.size() && (newLS.get(pgInfo
+        .getPageLoc()) == null || !newLS.get(pgInfo.getPageLoc()).equals(
+        pgInfo.getRemoteSiteFileAtPageLoc())))));
   }
 
   public void download(Protocol protocol, RemoteSiteFile fromFile, File toFile,

@@ -246,19 +246,13 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
       throw new ProductException("Unrecognized command: [" + cmd + "]!");
     }
 
-    if (cfg.getType().equals(LISTING_CMD)) {
-      return true;
-    } else
-      return false;
+    return cfg.getType().equals(LISTING_CMD);
   }
 
   private boolean isGetCmd(String cmd) throws ProductException {
     OFSNHandlerConfig cfg = this.conf.getHandlerConfig(cmd);
 
-    if (cfg.getType().equals(GET_CMD)) {
-      return true;
-    } else
-      return false;
+    return cfg.getType().equals(GET_CMD);
   }
 
 }

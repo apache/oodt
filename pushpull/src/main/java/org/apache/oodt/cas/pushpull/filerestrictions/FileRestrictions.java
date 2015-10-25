@@ -490,12 +490,8 @@ public class FileRestrictions {
     }
 
     private static boolean isValidPath(ProtocolPath path) {
-        if (path != null && !path.getFileName().equals(".")
-                && !path.getFileName().equals("..")) {
-            return true;
-        } else {
-            return false;
-        }
+        return path != null && !path.getFileName().equals(".")
+               && !path.getFileName().equals("..");
     }
 
     public static LinkedList<String> toStringList(VirtualFile root) {

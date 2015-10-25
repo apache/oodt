@@ -419,12 +419,8 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
             tokens.whitespaceChars(0, ' ');
             tokens.quoteChar('"');
             tokens.quoteChar('\'');
-	    
-	    if (kqOrParse ()){
-	        return true;
-	    } else {
-	        return false;
-	    }
+
+	  return kqOrParse();
 	}
 
     /**
@@ -809,8 +805,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
                     }
                 }
             }
-            return;
-    }
+	}
 
     /**
      * Replace the dictionary keyword value with the DOM text node value.
@@ -824,8 +819,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
         } else {
                 map.put(nodeName, "UNKNOWN");            
         }
-        return;
-    }
+	}
 
     /**
      * Scan the DOM structure for the SELECT, FROM, or WHERE set.
