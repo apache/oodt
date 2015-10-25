@@ -5,7 +5,7 @@ public class QueryParserTokenManager implements QueryParserConstants
 {
   public  java.io.PrintStream debugStream = System.out;
   public  void setDebugStream(java.io.PrintStream ds) { debugStream = ds; }
-private final int jjStopStringLiteralDfa_0(int pos, long active0)
+private int jjStopStringLiteralDfa_0(int pos, long active0)
 {
    switch (pos)
    {
@@ -96,17 +96,17 @@ private final int jjStopStringLiteralDfa_0(int pos, long active0)
          return -1;
    }
 }
-private final int jjStartNfa_0(int pos, long active0)
+private int jjStartNfa_0(int pos, long active0)
 {
    return jjMoveNfa_0(jjStopStringLiteralDfa_0(pos, active0), pos + 1);
 }
-private final int jjStopAtPos(int pos, int kind)
+private int jjStopAtPos(int pos, int kind)
 {
    jjmatchedKind = kind;
    jjmatchedPos = pos;
    return pos + 1;
 }
-private final int jjStartNfaWithStates_0(int pos, int kind, int state)
+private int jjStartNfaWithStates_0(int pos, int kind, int state)
 {
    jjmatchedKind = kind;
    jjmatchedPos = pos;
@@ -114,7 +114,7 @@ private final int jjStartNfaWithStates_0(int pos, int kind, int state)
    catch(java.io.IOException e) { return pos + 1; }
    return jjMoveNfa_0(state, pos + 1);
 }
-private final int jjMoveStringLiteralDfa0_0()
+private int jjMoveStringLiteralDfa0_0()
 {
    switch(curChar)
    {
@@ -155,7 +155,7 @@ private final int jjMoveStringLiteralDfa0_0()
          return jjMoveNfa_0(3, 0);
    }
 }
-private final int jjMoveStringLiteralDfa1_0(long active0)
+private int jjMoveStringLiteralDfa1_0(long active0)
 {
    try { curChar = input_stream.readChar(); }
    catch(java.io.IOException e) {
@@ -189,7 +189,7 @@ private final int jjMoveStringLiteralDfa1_0(long active0)
    }
    return jjStartNfa_0(0, active0);
 }
-private final int jjMoveStringLiteralDfa2_0(long old0, long active0)
+private int jjMoveStringLiteralDfa2_0(long old0, long active0)
 {
    if (((active0 &= old0)) == 0L)
       return jjStartNfa_0(0, old0); 
@@ -213,7 +213,7 @@ private final int jjMoveStringLiteralDfa2_0(long old0, long active0)
    }
    return jjStartNfa_0(1, active0);
 }
-private final int jjMoveStringLiteralDfa3_0(long old0, long active0)
+private int jjMoveStringLiteralDfa3_0(long old0, long active0)
 {
    if (((active0 &= old0)) == 0L)
       return jjStartNfa_0(1, old0); 
@@ -241,7 +241,7 @@ private final int jjMoveStringLiteralDfa3_0(long old0, long active0)
    }
    return jjStartNfa_0(2, active0);
 }
-private final int jjMoveStringLiteralDfa4_0(long old0, long active0)
+private int jjMoveStringLiteralDfa4_0(long old0, long active0)
 {
    if (((active0 &= old0)) == 0L)
       return jjStartNfa_0(2, old0); 
@@ -263,7 +263,7 @@ private final int jjMoveStringLiteralDfa4_0(long old0, long active0)
    }
    return jjStartNfa_0(3, active0);
 }
-private final int jjMoveStringLiteralDfa5_0(long old0, long active0)
+private int jjMoveStringLiteralDfa5_0(long old0, long active0)
 {
    if (((active0 &= old0)) == 0L)
       return jjStartNfa_0(3, old0); 
@@ -281,7 +281,7 @@ private final int jjMoveStringLiteralDfa5_0(long old0, long active0)
    }
    return jjStartNfa_0(4, active0);
 }
-private final int jjMoveStringLiteralDfa6_0(long old0, long active0)
+private int jjMoveStringLiteralDfa6_0(long old0, long active0)
 {
    if (((active0 &= old0)) == 0L)
       return jjStartNfa_0(4, old0); 
@@ -299,7 +299,7 @@ private final int jjMoveStringLiteralDfa6_0(long old0, long active0)
    }
    return jjStartNfa_0(5, active0);
 }
-private final int jjMoveStringLiteralDfa7_0(long old0, long active0)
+private int jjMoveStringLiteralDfa7_0(long old0, long active0)
 {
    if (((active0 &= old0)) == 0L)
       return jjStartNfa_0(5, old0); 
@@ -317,7 +317,7 @@ private final int jjMoveStringLiteralDfa7_0(long old0, long active0)
    }
    return jjStartNfa_0(6, active0);
 }
-private final int jjMoveStringLiteralDfa8_0(long old0, long active0)
+private int jjMoveStringLiteralDfa8_0(long old0, long active0)
 {
    if (((active0 &= old0)) == 0L)
       return jjStartNfa_0(6, old0); 
@@ -335,7 +335,7 @@ private final int jjMoveStringLiteralDfa8_0(long old0, long active0)
    }
    return jjStartNfa_0(7, active0);
 }
-private final int jjMoveStringLiteralDfa9_0(long old0, long active0)
+private int jjMoveStringLiteralDfa9_0(long old0, long active0)
 {
    if (((active0 &= old0)) == 0L)
       return jjStartNfa_0(7, old0); 
@@ -353,7 +353,7 @@ private final int jjMoveStringLiteralDfa9_0(long old0, long active0)
    }
    return jjStartNfa_0(8, active0);
 }
-private final int jjMoveStringLiteralDfa10_0(long old0, long active0)
+private int jjMoveStringLiteralDfa10_0(long old0, long active0)
 {
    if (((active0 &= old0)) == 0L)
       return jjStartNfa_0(8, old0); 
@@ -373,7 +373,7 @@ private final int jjMoveStringLiteralDfa10_0(long old0, long active0)
    }
    return jjStartNfa_0(9, active0);
 }
-private final void jjCheckNAdd(int state)
+private void jjCheckNAdd(int state)
 {
    if (jjrounds[state] != jjround)
    {
@@ -381,29 +381,29 @@ private final void jjCheckNAdd(int state)
       jjrounds[state] = jjround;
    }
 }
-private final void jjAddStates(int start, int end)
+private void jjAddStates(int start, int end)
 {
    do {
       jjstateSet[jjnewStateCnt++] = jjnextStates[start];
    } while (start++ != end);
 }
-private final void jjCheckNAddTwoStates(int state1, int state2)
+private void jjCheckNAddTwoStates(int state1, int state2)
 {
    jjCheckNAdd(state1);
    jjCheckNAdd(state2);
 }
-private final void jjCheckNAddStates(int start, int end)
+private void jjCheckNAddStates(int start, int end)
 {
    do {
       jjCheckNAdd(jjnextStates[start]);
    } while (start++ != end);
 }
-private final void jjCheckNAddStates(int start)
+private void jjCheckNAddStates(int start)
 {
    jjCheckNAdd(jjnextStates[start]);
    jjCheckNAdd(jjnextStates[start + 1]);
 }
-private final int jjMoveNfa_0(int startState, int curPos)
+private int jjMoveNfa_0(int startState, int curPos)
 {
    int[] nextStates;
    int startsAt = 0;
@@ -637,7 +637,7 @@ public void ReInit(SimpleCharStream stream)
    input_stream = stream;
    ReInitRounds();
 }
-private final void ReInitRounds()
+private void ReInitRounds()
 {
    int i;
    jjround = 0x80000001;

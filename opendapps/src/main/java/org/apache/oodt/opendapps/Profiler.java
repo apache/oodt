@@ -145,7 +145,7 @@ public class Profiler {
 
   }
 
-  private final static void usage() {
+  private static void usage() {
     System.out
         .println("Usage: java -classpath [path to opendapps-version-jar-with-dependencies.jar] org.apache.oodt.opendapps.Profiler <config file location> [<output_dir>]");
     System.out

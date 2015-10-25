@@ -170,7 +170,7 @@ final class ChunkedProductInputStream extends InputStream {
 	 *
 	 * @throws IOException if the stream's closed.
 	 */
-	private final void checkOpen() throws IOException {
+	private void checkOpen() throws IOException {
 		if (open) return;
 		throw new IOException("Stream closed");
 	}
