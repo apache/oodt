@@ -19,7 +19,6 @@ package org.apache.oodt.cas.catalog.system.impl;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;

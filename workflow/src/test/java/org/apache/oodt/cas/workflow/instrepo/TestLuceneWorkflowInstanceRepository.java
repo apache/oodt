@@ -31,7 +31,6 @@ import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryExcepti
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 

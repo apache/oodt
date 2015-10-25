@@ -42,7 +42,6 @@ import org.apache.oodt.cas.filemgr.util.SqlParser;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;

@@ -21,7 +21,6 @@ package org.apache.oodt.cas.workflow.util;
 //JDK imports
 import java.util.List;
 import java.util.Vector;
-import java.util.Iterator;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;

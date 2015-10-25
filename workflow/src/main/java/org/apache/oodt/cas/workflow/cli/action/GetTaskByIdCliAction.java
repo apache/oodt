@@ -16,8 +16,6 @@
  */
 package org.apache.oodt.cas.workflow.cli.action;
 
-import java.util.Iterator;
-
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;

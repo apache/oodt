@@ -26,7 +26,6 @@ import org.apache.oodt.commons.exec.EnvUtilities;
 //JDK imports
 import java.io.File;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 

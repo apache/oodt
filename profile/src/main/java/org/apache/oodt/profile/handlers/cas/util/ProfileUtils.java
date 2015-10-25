@@ -19,7 +19,6 @@
 package org.apache.oodt.profile.handlers.cas.util;
 
 //CAS imports
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.oodt.cas.filemgr.structs.Product;

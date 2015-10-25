@@ -40,7 +40,6 @@ import static org.apache.oodt.cas.pge.util.XmlHelper.isWorkflowMetKey;
 //JDK imports
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
 
 //OODT imports

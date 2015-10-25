@@ -17,7 +17,6 @@
 package org.apache.oodt.cas.catalog.system.impl;
 
 //OODT imports
-import org.apache.oodt.cas.catalog.exception.CatalogDictionaryException;
 import org.apache.oodt.cas.catalog.exception.CatalogException;
 import org.apache.oodt.cas.catalog.exception.CatalogServiceException;
 import org.apache.oodt.cas.catalog.mapping.IngestMapper;

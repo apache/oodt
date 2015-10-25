@@ -19,9 +19,8 @@ package org.apache.oodt.grid;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
-import javax.servlet.ServletException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

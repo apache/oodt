@@ -19,7 +19,6 @@ package org.apache.oodt.cas.workflow.util;
 
 //JDK imports
 import java.util.List;
-import java.util.Iterator;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.Vector;

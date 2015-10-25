@@ -31,7 +31,6 @@ import org.apache.oodt.cas.catalog.term.TermBucket;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;

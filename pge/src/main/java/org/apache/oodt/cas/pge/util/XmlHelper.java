@@ -58,7 +58,6 @@ import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.QUERY_FILE_MANAGER
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -76,7 +75,6 @@ import org.apache.oodt.cas.pge.config.RegExprOutputFiles;
 import org.apache.oodt.commons.xml.XMLUtils;
 
 //DOM imports
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

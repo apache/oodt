@@ -39,7 +39,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
 import java.util.Vector;
-import java.util.Iterator;
 
 /**
  * Generic Workflow object construction utilities.

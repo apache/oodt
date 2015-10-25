@@ -19,7 +19,6 @@ package org.apache.oodt.cas.filemgr.tools;
 
 //JDK imports
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;

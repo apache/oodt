@@ -33,7 +33,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.util.List;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import org.w3c.dom.Document;

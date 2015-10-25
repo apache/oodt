@@ -27,7 +27,6 @@ import org.apache.oodt.commons.util.DateConvert;
 //JDK imports
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
-import java.util.Iterator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;

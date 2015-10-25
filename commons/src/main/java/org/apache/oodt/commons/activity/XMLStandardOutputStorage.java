@@ -17,7 +17,6 @@
 
 package org.apache.oodt.commons.activity;
 
-import java.io.IOException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;

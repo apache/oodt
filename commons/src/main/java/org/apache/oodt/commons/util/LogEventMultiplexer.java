@@ -17,7 +17,6 @@ package org.apache.oodt.commons.util;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.oodt.commons.io.LogEvent;
 import org.apache.oodt.commons.io.LogListener;

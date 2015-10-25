@@ -27,7 +27,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 
 import java.net.URI;
-import java.util.Iterator;
 
 import org.w3c.dom.Element;
 

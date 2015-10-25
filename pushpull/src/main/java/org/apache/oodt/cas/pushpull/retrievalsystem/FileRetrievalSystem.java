@@ -23,7 +23,6 @@ import org.apache.oodt.cas.pushpull.config.Config;
 import org.apache.oodt.cas.pushpull.config.SiteInfo;
 import org.apache.oodt.cas.pushpull.exceptions.AlreadyInDatabaseException;
 import org.apache.oodt.cas.pushpull.exceptions.CrawlerException;
-import org.apache.oodt.cas.pushpull.exceptions.ProtocolFileException;
 import org.apache.oodt.cas.pushpull.exceptions.RemoteConnectionException;
 import org.apache.oodt.cas.pushpull.exceptions.ThreadEvaluatorException;
 import org.apache.oodt.cas.pushpull.exceptions.ToManyFailedDownloadsException;

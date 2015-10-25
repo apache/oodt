@@ -21,7 +21,6 @@ package org.apache.oodt.cas.pushpull.retrievalsystem;
 //OODT imports
 import org.apache.oodt.cas.pushpull.config.*;
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
-import org.apache.oodt.cas.pushpull.exceptions.RetrievalMethodException;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.objectfactory.PushPullObjectFactory;
 import org.apache.oodt.cas.pushpull.retrievalmethod.RetrievalMethod;

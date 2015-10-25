@@ -16,7 +16,6 @@
 package org.apache.oodt.commons;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.util.*;
 import junit.framework.*;
 

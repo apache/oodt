@@ -30,7 +30,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;

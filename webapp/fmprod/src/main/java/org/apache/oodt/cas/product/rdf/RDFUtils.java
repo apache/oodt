@@ -26,7 +26,7 @@ import org.apache.oodt.commons.xml.XMLUtils;
 //JDK imports
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Iterator;
+
 import javax.servlet.ServletConfig;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

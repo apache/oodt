@@ -31,7 +31,6 @@ import org.apache.oodt.cas.metadata.SerializableMetadata;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 //Junit imports

@@ -36,7 +36,6 @@ import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;

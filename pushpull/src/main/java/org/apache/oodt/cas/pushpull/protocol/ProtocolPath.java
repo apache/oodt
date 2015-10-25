@@ -20,7 +20,6 @@ package org.apache.oodt.cas.pushpull.protocol;
 
 //JDK imports
 import java.io.Serializable;
-import java.net.MalformedURLException;
 
 /**
  * This class wraps up a URL for a given path, and whether the path specified by

@@ -29,7 +29,6 @@ import org.apache.oodt.cas.metadata.Metadata;
 //JDK imports
 import java.io.File;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;

@@ -46,7 +46,6 @@ import static org.apache.oodt.cas.pge.util.GenericPgeObjectFactory.createSciPgeC
 
 //JDK imports
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;

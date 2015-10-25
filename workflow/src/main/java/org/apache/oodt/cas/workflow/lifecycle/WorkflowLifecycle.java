@@ -20,7 +20,6 @@ package org.apache.oodt.cas.workflow.lifecycle;
 
 //JDK imports
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;

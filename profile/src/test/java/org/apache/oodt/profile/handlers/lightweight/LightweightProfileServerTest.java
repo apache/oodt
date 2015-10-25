@@ -23,7 +23,6 @@ import org.apache.oodt.profile.ProfileException;
 import org.apache.oodt.xmlquery.XMLQuery;
 
 import java.net.URI;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 

@@ -18,7 +18,6 @@
 package org.apache.oodt.commons.activity;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * A composite activity multiplexes incidents to multiple other activities.

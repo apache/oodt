@@ -23,7 +23,6 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**

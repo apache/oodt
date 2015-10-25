@@ -20,7 +20,6 @@ package org.apache.oodt.cas.resource.structs;
 
 //JDK imports
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Properties;
 
 /**

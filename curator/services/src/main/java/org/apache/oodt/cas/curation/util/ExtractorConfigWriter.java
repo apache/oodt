@@ -21,7 +21,6 @@ package org.apache.oodt.cas.curation.util;
 import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;

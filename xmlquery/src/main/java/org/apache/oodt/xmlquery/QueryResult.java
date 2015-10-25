@@ -20,7 +20,6 @@ package org.apache.oodt.xmlquery;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.oodt.product.Retriever;
 import org.apache.oodt.commons.util.Documentable;

@@ -27,7 +27,6 @@ import org.w3c.dom.Node;
 import java.io.IOException;
 import java.util.*;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.OutputKeys;

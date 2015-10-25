@@ -20,7 +20,6 @@ package org.apache.oodt.cas.workflow.lifecycle;
 
 //JDK imports
 import java.text.NumberFormat;
-import java.util.Iterator;
 import java.util.List;
 
 //OODT imports

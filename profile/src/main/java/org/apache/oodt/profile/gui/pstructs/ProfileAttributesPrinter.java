@@ -25,7 +25,6 @@ package org.apache.oodt.profile.gui.pstructs;
 
 
 import org.apache.oodt.profile.ProfileAttributes;
-import java.util.Iterator;
 
 /**
  * @author mattmann

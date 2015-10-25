@@ -26,7 +26,6 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Property;
 
-import java.util.Iterator;
 import java.util.Collection;
 
 import org.apache.jena.rdf.model.Bag;

@@ -17,7 +17,6 @@
 package org.apache.oodt.cas.catalog.struct.impl.dictionary;
 
 //OODT imports
-import org.apache.oodt.cas.catalog.exception.CatalogDictionaryException;
 import org.apache.oodt.cas.catalog.query.*;
 import org.apache.oodt.cas.catalog.struct.Dictionary;
 import org.apache.oodt.cas.catalog.term.Term;

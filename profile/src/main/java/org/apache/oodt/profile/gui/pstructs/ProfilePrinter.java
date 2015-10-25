@@ -26,7 +26,6 @@ package org.apache.oodt.profile.gui.pstructs;
 
 import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileElement;
-import java.util.Iterator;
 
 
 /**

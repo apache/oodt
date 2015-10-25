@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 
 //OODT imports
-import org.apache.oodt.cas.cli.exception.CmdLineOptionStoreException;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.store.CmdLineOptionStore;
 
