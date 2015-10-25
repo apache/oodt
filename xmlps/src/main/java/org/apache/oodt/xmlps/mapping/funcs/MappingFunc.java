@@ -40,7 +40,7 @@ public interface MappingFunc {
      *            The original {@link CDEValue} to translate.
      * @return The translated {@link CDEValue}.
      */
-    public CDEValue translate(CDEValue orig);
+    CDEValue translate(CDEValue orig);
 
     /**
      * Translates the local site's SDE {@link CDEValue} back into its CDE
@@ -51,7 +51,7 @@ public interface MappingFunc {
      *            a CDE.
      * @return The translated {@link CDEValue}.
      */
-    public CDEValue inverseTranslate(CDEValue orig);
+    CDEValue inverseTranslate(CDEValue orig);
 
     /**
      * Configures the MappingFunc with the appropriate {@link Properties}.
@@ -59,6 +59,6 @@ public interface MappingFunc {
      * @param props
      *            The {@link Properties} to use to configure the MappingFunc.
      */
-    public void configure(Properties props);
+    void configure(Properties props);
 
 }

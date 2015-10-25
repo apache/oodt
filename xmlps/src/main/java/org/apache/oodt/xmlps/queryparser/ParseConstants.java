@@ -23,43 +23,43 @@ package org.apache.oodt.xmlps.queryparser;
  */
 public interface ParseConstants {
     
-    public final static String XMLQUERY_LOGOP = "LOGOP";
+    String XMLQUERY_LOGOP = "LOGOP";
     
-    public final static String XMLQUERY_AND = "AND";
+    String XMLQUERY_AND = "AND";
     
-    public final static String XMLQUERY_OR = "OR";
+    String XMLQUERY_OR = "OR";
     
-    public final static String XMLQUERY_RELOP = "RELOP";
+    String XMLQUERY_RELOP = "RELOP";
     
-    public final static String XMLQUERY_EQUAL = "EQ";
+    String XMLQUERY_EQUAL = "EQ";
     
-    public final static String XMLQUERY_LIKE = "LIKE";
+    String XMLQUERY_LIKE = "LIKE";
     
-    public final static String XMLQUERY_GREATER_THAN = "GT";
+    String XMLQUERY_GREATER_THAN = "GT";
     
-    public final static String XMLQUERY_GREATER_THAN_OR_EQUAL_TO = "GE";
+    String XMLQUERY_GREATER_THAN_OR_EQUAL_TO = "GE";
     
-    public final static String XMLQUERY_LESS_THAN = "LT";
+    String XMLQUERY_LESS_THAN = "LT";
     
-    public final static String XMLQUERY_LESS_THAN_OR_EQUAL_TO = "LE";
+    String XMLQUERY_LESS_THAN_OR_EQUAL_TO = "LE";
     
-    public final static String XMLQUERY_LITERAL = "LITERAL";
+    String XMLQUERY_LITERAL = "LITERAL";
     
     
-    public final static String SQL_LIKE = "LIKE";
+    String SQL_LIKE = "LIKE";
     
-    public final static String SQL_EQUAL = "=";
+    String SQL_EQUAL = "=";
     
-    public final static String SQL_AND = "AND";
+    String SQL_AND = "AND";
     
-    public final static String SQL_OR = "OR";
+    String SQL_OR = "OR";
     
-    public final static String SQL_GREATER_THAN_OR_EQUAL_TO = ">=";
+    String SQL_GREATER_THAN_OR_EQUAL_TO = ">=";
     
-    public final static String SQL_GREATER_THAN = ">";
+    String SQL_GREATER_THAN = ">";
     
-    public final static String SQL_LESS_THAN = "<";
+    String SQL_LESS_THAN = "<";
     
-    public final static String SQL_LESS_THAN_OR_EQUAL_TO = "<=";
+    String SQL_LESS_THAN_OR_EQUAL_TO = "<=";
 
 }

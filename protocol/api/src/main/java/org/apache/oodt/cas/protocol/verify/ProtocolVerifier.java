@@ -30,6 +30,6 @@ import org.apache.oodt.cas.protocol.auth.Authentication;
  */
 public interface ProtocolVerifier {
 	
-    public boolean verify(Protocol protocol, URI site, Authentication auth);
+    boolean verify(Protocol protocol, URI site, Authentication auth);
     
 }

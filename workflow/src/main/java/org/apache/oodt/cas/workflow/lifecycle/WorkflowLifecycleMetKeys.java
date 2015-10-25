@@ -28,15 +28,15 @@ package org.apache.oodt.cas.workflow.lifecycle;
  */
 public interface WorkflowLifecycleMetKeys {
 
-    public static final String DEFAULT_LIFECYCLE = "default";
+    String DEFAULT_LIFECYCLE = "default";
 
-    public static final String LIFECYCLE_TAG_NAME_ATTR = "name";
+    String LIFECYCLE_TAG_NAME_ATTR = "name";
 
-    public static final String STAGE_TAG_NAME_ATTR = "name";
+    String STAGE_TAG_NAME_ATTR = "name";
 
-    public static final String STATUS_TAG_NAME = "status";
+    String STATUS_TAG_NAME = "status";
 
-    public static final String STAGE_ELEM_NAME = "stage";
+    String STAGE_ELEM_NAME = "stage";
 
-    public static final String LIFECYCLE_TAG_NAME = "lifecycle";
+    String LIFECYCLE_TAG_NAME = "lifecycle";
 }

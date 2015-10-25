@@ -28,8 +28,8 @@ package org.apache.oodt.cas.resource.metadata;
  */
 public interface JobMetadata {
 
-	public static final String QUEUE_NAME = "QUEUE_NAME";
+	String QUEUE_NAME = "QUEUE_NAME";
 
-	public static final String LOAD = "LOAD";
+	String LOAD = "LOAD";
 
 }

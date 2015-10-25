@@ -30,14 +30,14 @@ import java.io.File;
  */
 public interface IngestStatus {
 
-	public static enum Result {
+	enum Result {
 		SUCCESS, FAILURE, SKIPPED, PRECONDS_FAILED;
 	}
 	
-	public File getProduct();
+	File getProduct();
 	
-	public Result getResult();
+	Result getResult();
 	
-	public String getMessage();
+	String getMessage();
 	
 }

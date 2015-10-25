@@ -36,7 +36,7 @@ import org.apache.oodt.cas.workflow.util.Pagination;
  */
 public interface WorkflowInstanceRepository extends Pagination {
 
-    public static final String X_POINT_ID = WorkflowInstanceRepository.class
+    String X_POINT_ID = WorkflowInstanceRepository.class
             .getName();
 
     /**
@@ -48,7 +48,7 @@ public interface WorkflowInstanceRepository extends Pagination {
      * @throws InstanceRepositoryException
      *             If any error occurs.
      */
-    public void addWorkflowInstance(WorkflowInstance wInst)
+    void addWorkflowInstance(WorkflowInstance wInst)
             throws InstanceRepositoryException;
 
     /**
@@ -60,7 +60,7 @@ public interface WorkflowInstanceRepository extends Pagination {
      * @throws InstanceRepositoryException
      *             If any error occurs.
      */
-    public void updateWorkflowInstance(WorkflowInstance wInst)
+    void updateWorkflowInstance(WorkflowInstance wInst)
             throws InstanceRepositoryException;
 
     /**
@@ -72,7 +72,7 @@ public interface WorkflowInstanceRepository extends Pagination {
      * @throws InstanceRepositoryException
      *             If any error occurs.
      */
-    public void removeWorkflowInstance(WorkflowInstance wInst)
+    void removeWorkflowInstance(WorkflowInstance wInst)
             throws InstanceRepositoryException;
 
     /**
@@ -87,7 +87,7 @@ public interface WorkflowInstanceRepository extends Pagination {
      * @throws InstanceRepositoryException
      *             If any error occurs.
      */
-    public WorkflowInstance getWorkflowInstanceById(String workflowInstId)
+    WorkflowInstance getWorkflowInstanceById(String workflowInstId)
             throws InstanceRepositoryException;
 
     /**
@@ -96,7 +96,7 @@ public interface WorkflowInstanceRepository extends Pagination {
      * @throws InstanceRepositoryException
      *             If any error occurs.
      */
-    public List getWorkflowInstances() throws InstanceRepositoryException;
+    List getWorkflowInstances() throws InstanceRepositoryException;
 
     /**
      * <p>
@@ -112,7 +112,7 @@ public interface WorkflowInstanceRepository extends Pagination {
      * @throws InstanceRepositoryException
      *             If there is any error that occurs.
      */
-    public List getWorkflowInstancesByStatus(String status)
+    List getWorkflowInstancesByStatus(String status)
             throws InstanceRepositoryException;
 
     /**
@@ -123,7 +123,7 @@ public interface WorkflowInstanceRepository extends Pagination {
      *         <code>status</code> being managed by this
      *         WorkflowInstanceRepository.
      */
-    public int getNumWorkflowInstances() throws InstanceRepositoryException;
+    int getNumWorkflowInstances() throws InstanceRepositoryException;
 
     /**
      * Gets the number of {@link WorkflowInstances} with the given
@@ -136,6 +136,6 @@ public interface WorkflowInstanceRepository extends Pagination {
      *         <code>status</code>.
      * @throws InstanceRepositoryException If there is any error that occurs.
      */
-    public int getNumWorkflowInstancesByStatus(String status) throws InstanceRepositoryException;
+    int getNumWorkflowInstancesByStatus(String status) throws InstanceRepositoryException;
 
 }

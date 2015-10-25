@@ -28,6 +28,6 @@ package org.apache.oodt.cas.resource.queuerepo;
  */
 public interface QueueRepositoryFactory {
 
-	public QueueRepository createQueueRepository();
+	QueueRepository createQueueRepository();
 	
 }

@@ -32,5 +32,5 @@ public interface BatchmgrFactory {
 	/**
 	 * @return A new implementation of the {@link Batchmgr} interface.
 	 */
-	public Batchmgr createBatchmgr();
+	Batchmgr createBatchmgr();
 }

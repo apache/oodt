@@ -29,5 +29,5 @@ public interface DataTransferFactory {
     /**
      * @return A new {@link DataTransfer} implementation.
      */
-    public DataTransfer createDataTransfer();
+    DataTransfer createDataTransfer();
 }

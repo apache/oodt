@@ -29,12 +29,12 @@ import org.apache.oodt.cas.catalog.system.CatalogServiceFactory;
  */
 public interface CommunicationChannelServerFactory {
 	
-	public CommunicationChannelServer createCommunicationChannelServer();
+	CommunicationChannelServer createCommunicationChannelServer();
 	
-	public void setPort(int port);
+	void setPort(int port);
 	
-	public int getPort();
+	int getPort();
 	
-	public void setCatalogServiceFactory(CatalogServiceFactory catalogServiceFactory);
+	void setCatalogServiceFactory(CatalogServiceFactory catalogServiceFactory);
 	
 }

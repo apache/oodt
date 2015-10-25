@@ -29,24 +29,24 @@ package org.apache.oodt.cas.curation.metadata;
  */
 public interface CuratorConfMetKeys {
 
-  final String MET_EXTRACTOR_CONF_UPLOAD_PATH = "org.apache.oodt.cas.curator.metExtractorConf.uploadPath";
+  String MET_EXTRACTOR_CONF_UPLOAD_PATH = "org.apache.oodt.cas.curator.metExtractorConf.uploadPath";
 
-  final String POLICY_UPLOAD_PATH = "org.apache.oodt.cas.curator.dataDefinition.uploadPath";
+  String POLICY_UPLOAD_PATH = "org.apache.oodt.cas.curator.dataDefinition.uploadPath";
 
-  final String FM_URL = "org.apache.oodt.cas.fm.url";
+  String FM_URL = "org.apache.oodt.cas.fm.url";
 
-  final String DEFAULT_TRANSFER_FACTORY = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
+  String DEFAULT_TRANSFER_FACTORY = "org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory";
 
-  final String CRAWLER_CONF_FILE = "classpath:/org.apache/oodt/cas/crawl/crawler-config.xml";
+  String CRAWLER_CONF_FILE = "classpath:/org.apache/oodt/cas/crawl/crawler-config.xml";
 
-  final String STAGING_AREA_PATH = "org.apache.oodt.cas.curator.stagingAreaPath";
+  String STAGING_AREA_PATH = "org.apache.oodt.cas.curator.stagingAreaPath";
 
-  final String MET_AREA_PATH = "org.apache.oodt.cas.curator.metAreaPath";
+  String MET_AREA_PATH = "org.apache.oodt.cas.curator.metAreaPath";
   
-  final String MET_EXTENSION = "org.apache.oodt.cas.curator.metExtension";
+  String MET_EXTENSION = "org.apache.oodt.cas.curator.metExtension";
   
-  final String FM_PROPS = "org.apache.oodt.cas.curator.fmProps";
+  String FM_PROPS = "org.apache.oodt.cas.curator.fmProps";
   
-  final String CATALOG_FACTORY_CLASS = "org.apache.oodt.cas.curator.catalogFactoryClass";
+  String CATALOG_FACTORY_CLASS = "org.apache.oodt.cas.curator.catalogFactoryClass";
   
 }

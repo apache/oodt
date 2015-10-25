@@ -32,8 +32,8 @@ import java.util.List;
  */
 public interface ProtocolConfig {
 
-	public List<ProtocolFactory> getAllFactories();
+	List<ProtocolFactory> getAllFactories();
 	
-	public List<ProtocolFactory> getFactoriesBySite(URI site);
+	List<ProtocolFactory> getFactoriesBySite(URI site);
 	
 }

@@ -47,7 +47,7 @@ public interface Monitor {
    * @throws MonitorException
    *           If there is any error obtaining the load.
    */
-  public int getLoad(ResourceNode node) throws MonitorException;
+ int getLoad(ResourceNode node) throws MonitorException;
 
   /**
    * 
@@ -57,7 +57,7 @@ public interface Monitor {
    *           If any error occurs getting the {@link List} of
    *           {@link ResourceNode}s.
    */
-  public List getNodes() throws MonitorException;
+  List getNodes() throws MonitorException;
   
   
   /**
@@ -67,7 +67,7 @@ public interface Monitor {
    * @throws MonitorException
    *           If any error occurs.
    */
-  public ResourceNode getNodeById(String nodeId) throws MonitorException;
+  ResourceNode getNodeById(String nodeId) throws MonitorException;
 
   
   /**
@@ -76,7 +76,7 @@ public interface Monitor {
    * @return The {@link ResourceNode} with the given ipAddr.
    * @throws MonitorException If any error occurs.
    */
-  public ResourceNode getNodeByURL(URL ipAddr) throws MonitorException;
+  ResourceNode getNodeByURL(URL ipAddr) throws MonitorException;
   
   /**
    * Reduces the load on a particular {@link ResourceNode} by the given
@@ -87,7 +87,7 @@ public interface Monitor {
    * @return True if successfully reduced, false otherwise.
    * @throws MonitorException If any error occurs.
    */
-  public boolean reduceLoad(ResourceNode node, int loadValue)
+  boolean reduceLoad(ResourceNode node, int loadValue)
   throws MonitorException;
   
   
@@ -103,7 +103,7 @@ public interface Monitor {
    * @throws MonitorException
    *           If any error occurs assigning the load.
    */
-  public boolean assignLoad(ResourceNode node, int loadValue)
+  boolean assignLoad(ResourceNode node, int loadValue)
       throws MonitorException;
   
 	/**
@@ -113,7 +113,7 @@ public interface Monitor {
      * @param node
      *            The new {@link ResourceNode} to manage
      */
-    public void addNode(ResourceNode node) throws MonitorException;
+    void addNode(ResourceNode node) throws MonitorException;
 
     /**
      * Remove {@link ResourceNode} from this {@link Monitor}
@@ -121,6 +121,6 @@ public interface Monitor {
      * @param nodeId
      *            The id of the {@link ResourceNode} to remove
      */
-    public void removeNodeById(String nodeId) throws MonitorException;
+    void removeNodeById(String nodeId) throws MonitorException;
 	
 }

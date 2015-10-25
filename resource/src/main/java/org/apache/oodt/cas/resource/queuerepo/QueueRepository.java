@@ -31,6 +31,6 @@ import org.apache.oodt.cas.resource.scheduler.QueueManager;
  */
 public interface QueueRepository {
 
-	public QueueManager loadQueues();
+	QueueManager loadQueues();
 			
 }

@@ -30,6 +30,6 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
  */
 public interface CmdLineActionStore {
 
-   public Set<CmdLineAction> loadSupportedActions()
+   Set<CmdLineAction> loadSupportedActions()
          throws CmdLineActionStoreException;
 }

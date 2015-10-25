@@ -29,12 +29,12 @@ package org.apache.oodt.cas.pushpull.daemon;
  */
 public interface DaemonListener {
 
-    public void wasRegisteredWith(Daemon daemon);
+    void wasRegisteredWith(Daemon daemon);
 
-    public void wasUnregisteredWith(Daemon daemon);
+    void wasUnregisteredWith(Daemon daemon);
 
-    public void daemonStarting(Daemon daemon);
+    void daemonStarting(Daemon daemon);
 
-    public void daemonFinished(Daemon daemon);
+    void daemonFinished(Daemon daemon);
 
 }

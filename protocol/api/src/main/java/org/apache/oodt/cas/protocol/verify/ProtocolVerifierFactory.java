@@ -23,6 +23,6 @@ package org.apache.oodt.cas.protocol.verify;
  */
 public interface ProtocolVerifierFactory {
 
-	public ProtocolVerifier newInstance();
+	ProtocolVerifier newInstance();
 
 }

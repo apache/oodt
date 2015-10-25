@@ -28,18 +28,18 @@ package org.apache.oodt.cas.workflow.metadata;
  */
 public interface CoreMetKeys {
 
-    public static final String TASK_ID = "TaskId";
+    String TASK_ID = "TaskId";
 
-    public static final String WORKFLOW_INST_ID = "WorkflowInstId";
+    String WORKFLOW_INST_ID = "WorkflowInstId";
 
-    public static final String JOB_ID = "JobId";
+    String JOB_ID = "JobId";
 
-    public static final String PROCESSING_NODE = "ProcessingNode";
+    String PROCESSING_NODE = "ProcessingNode";
 
-    public static final String WORKFLOW_MANAGER_URL = "WorkflowManagerUrl";
+    String WORKFLOW_MANAGER_URL = "WorkflowManagerUrl";
 
-    public static final String QUEUE_NAME = "QueueName";
+    String QUEUE_NAME = "QueueName";
     
-    public static final String TASK_LOAD = "TaskLoad";
+    String TASK_LOAD = "TaskLoad";
 
 }

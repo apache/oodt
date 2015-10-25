@@ -26,12 +26,12 @@ package org.apache.oodt.opendapps;
  */
 public interface DapNames {
 
-  public static final String ACTUAL_RANGE = "actual_range";
+  String ACTUAL_RANGE = "actual_range";
 
-  public static final String UNITS = "units";
+  String UNITS = "units";
 
-  public static final String START = "start";
+  String START = "start";
 
-  public static final String END = "end";
+  String END = "end";
 
 }

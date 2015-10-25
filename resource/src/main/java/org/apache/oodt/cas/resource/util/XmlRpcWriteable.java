@@ -38,13 +38,13 @@ public interface XmlRpcWriteable {
    *          The {@link Object} to read in and instantiate the implementation
    *          of this class with.
    */
-  public void read(Object in);
+  void read(Object in);
 
   /**
    * 
    * @return An XML-RPC safe serialization {@link Object} of the implementing
    *         class for this interface.
    */
-  public Object write();
+  Object write();
 
 }

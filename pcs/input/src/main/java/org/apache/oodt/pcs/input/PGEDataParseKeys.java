@@ -27,33 +27,33 @@ package org.apache.oodt.pcs.input;
  */
 public interface PGEDataParseKeys {
 
-  public static final int PARSING_VEC = -10;
+  int PARSING_VEC = -10;
 
-  public static final int PARSING_SCALAR = -20;
+  int PARSING_SCALAR = -20;
 
-  public static final int PARSING_MATRIX = -30;
+  int PARSING_MATRIX = -30;
 
-  public static final int UNSET = -1;
+  int UNSET = -1;
 
-  public static final String GROUP_TAG_NAME = "group";
+  String GROUP_TAG_NAME = "group";
 
-  public static final String SCALAR_TAG_NAME = "scalar";
+  String SCALAR_TAG_NAME = "scalar";
 
-  public static final String VECTOR_TAG_NAME = "vector";
+  String VECTOR_TAG_NAME = "vector";
 
-  public static final String MATRIX_TAG_NAME = "matrix";
+  String MATRIX_TAG_NAME = "matrix";
 
-  public static final String PGE_INPUT_TAG_NAME = "input";
+  String PGE_INPUT_TAG_NAME = "input";
 
-  public static final String VECTOR_ELEMENT_TAG = "element";
+  String VECTOR_ELEMENT_TAG = "element";
 
-  public static final String MATRIX_ROW_TAG = "tr";
+  String MATRIX_ROW_TAG = "tr";
 
-  public static final String MATRIX_COL_TAG = "td";
+  String MATRIX_COL_TAG = "td";
 
-  public static final String NAME_ATTR = "name";
+  String NAME_ATTR = "name";
 
-  public static final String ROWS_ATTR = "rows";
+  String ROWS_ATTR = "rows";
 
-  public static final String COLS_ATTR = "cols";
+  String COLS_ATTR = "cols";
 }

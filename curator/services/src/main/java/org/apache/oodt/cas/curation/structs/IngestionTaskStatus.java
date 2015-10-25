@@ -28,9 +28,9 @@ package org.apache.oodt.cas.curation.structs;
  */
 public interface IngestionTaskStatus {
 
-  public static final String FINISHED = "Finished";
+  String FINISHED = "Finished";
   
-  public static final String STARTED = "Started";
+  String STARTED = "Started";
   
-  public static final String NOT_STARTED = "Not Started";
+  String NOT_STARTED = "Not Started";
 }

@@ -30,6 +30,6 @@ import org.apache.oodt.cas.metadata.exceptions.NamingConventionException;
  */
 public interface NamingConvention {
 
-   public File rename(File file, Metadata metadata)
+   File rename(File file, Metadata metadata)
          throws NamingConventionException;
 }

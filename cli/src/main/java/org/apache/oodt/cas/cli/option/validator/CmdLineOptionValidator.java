@@ -26,7 +26,7 @@ import org.apache.oodt.cas.cli.option.CmdLineOptionInstance;
  */
 public interface CmdLineOptionValidator {
 
-   public class Result {
+   class Result {
       public enum Grade {
          PASS, FAIL;
       }
@@ -52,5 +52,5 @@ public interface CmdLineOptionValidator {
     * Throws {@link CmdLineValidationException} if validation fails, otherwise
     * method just returns.
     */
-   public Result validate(CmdLineOptionInstance optionInst);
+   Result validate(CmdLineOptionInstance optionInst);
 }

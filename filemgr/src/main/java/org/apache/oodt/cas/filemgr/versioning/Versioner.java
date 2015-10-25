@@ -34,9 +34,9 @@ import org.apache.oodt.cas.metadata.Metadata;
  */
 public interface Versioner {
 
-    public static final String X_POINT_ID = Versioner.class.getName();
+    String X_POINT_ID = Versioner.class.getName();
 
-    public void createDataStoreReferences(Product product, Metadata metadata)
+    void createDataStoreReferences(Product product, Metadata metadata)
             throws VersioningException;
 
 }

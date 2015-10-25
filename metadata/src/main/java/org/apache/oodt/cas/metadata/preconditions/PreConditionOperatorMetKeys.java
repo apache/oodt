@@ -30,12 +30,12 @@ package org.apache.oodt.cas.metadata.preconditions;
  */
 public interface PreConditionOperatorMetKeys {
 
-    public static String EQUAL_TO = "EQUAL_TO";
+    String EQUAL_TO = "EQUAL_TO";
 
-    public static String NOT_EQUAL_TO = "NOT_EQUAL_TO";
+    String NOT_EQUAL_TO = "NOT_EQUAL_TO";
 
-    public static String GREATER_THAN = "GREATER_THAN";
+    String GREATER_THAN = "GREATER_THAN";
 
-    public static String LESS_THAN = "LESS_THAN";
+    String LESS_THAN = "LESS_THAN";
 
 }

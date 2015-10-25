@@ -52,7 +52,7 @@ public interface Batchmgr {
      *             If there is an exception executing the job on the remote
      *             host.
      */
-    public boolean executeRemotely(JobSpec job, ResourceNode resNode)
+    boolean executeRemotely(JobSpec job, ResourceNode resNode)
             throws JobExecutionException;
 
     /**
@@ -61,7 +61,7 @@ public interface Batchmgr {
      * @param monitor
      *            The {@link Monitor} to be used.
      */
-    public void setMonitor(Monitor monitor);
+    void setMonitor(Monitor monitor);
 
     /**
      * Sets the {@link JobRepository} that this Batchmgr will use to persist
@@ -69,7 +69,7 @@ public interface Batchmgr {
      * 
      * @param repository
      */
-    public void setJobRepository(JobRepository repository);
+    void setJobRepository(JobRepository repository);
     
     
     /**
@@ -78,7 +78,7 @@ public interface Batchmgr {
      * @param node
      * @return
      */
-    public boolean killJob(String jobId, ResourceNode node);
+    boolean killJob(String jobId, ResourceNode node);
     
     
     /**
@@ -86,12 +86,12 @@ public interface Batchmgr {
      * @param jobId
      * @return
      */
-    public String getExecutionNode(String jobId);
+    String getExecutionNode(String jobId);
     
     /**
      * Get a list of the ids of all jobs that are executing on the given node. 
      * @return A list of ids of jobs on the given node
      */
-    public List getJobsOnNode(String nodeId);
+    List getJobsOnNode(String nodeId);
 
 }

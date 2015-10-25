@@ -43,6 +43,6 @@ public interface WorkflowConditionInstance {
 	 *            satisfaction.
 	 * @return true if the condition is satisfied, otherwise, false.
 	 */
-	public boolean evaluate(Metadata metadata, WorkflowConditionConfiguration config);
+	boolean evaluate(Metadata metadata, WorkflowConditionConfiguration config);
 
 }

@@ -34,6 +34,6 @@ import java.util.List;
  */
 public interface NodeRepository {
 
-	public List<ResourceNode> loadNodes();
+	List<ResourceNode> loadNodes();
 	
 }

@@ -23,8 +23,8 @@ package org.apache.oodt.cas.protocol.auth;
  */
 public interface Authentication {
 
-	public String getUser();
+	String getUser();
 	
-	public String getPass();
+	String getPass();
 
 }

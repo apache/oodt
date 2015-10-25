@@ -39,6 +39,6 @@ public interface PCSQuery extends PCSMetadata, CoreMetKeys {
    * 
    * @return A filemgr compliant {@link Query} object.
    */
-  public Query buildQuery();
+  Query buildQuery();
 
 }

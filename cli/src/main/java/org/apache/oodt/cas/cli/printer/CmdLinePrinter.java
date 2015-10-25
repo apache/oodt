@@ -43,7 +43,7 @@ public interface CmdLinePrinter {
     *           Supported {@link CmdLineOption}s
     * @return Help message for specified action
     */
-   public String printActionHelp(CmdLineAction action, Set<CmdLineOption> options);
+   String printActionHelp(CmdLineAction action, Set<CmdLineOption> options);
 
    /**
     * Generates help messages given {@link CmdLineAction}s.
@@ -52,7 +52,7 @@ public interface CmdLinePrinter {
     *           {@link CmdLineAction}s to print help for
     * @return Help message for given {@link CmdLineAction}s
     */
-   public String printActionsHelp(Set<CmdLineAction> actions);
+   String printActionsHelp(Set<CmdLineAction> actions);
 
    /**
     * Generates help message for given {@link CmdLineOption}s.
@@ -61,7 +61,7 @@ public interface CmdLinePrinter {
     *           {@link CmdLineOption}s for which help message will be generated
     * @return Help message for given {@link CmdLineOption}s
     */
-   public String printOptionsHelp(Set<CmdLineOption> options);
+   String printOptionsHelp(Set<CmdLineOption> options);
 
    /**
     * Generate validation error message for results of failed validations.
@@ -70,7 +70,7 @@ public interface CmdLinePrinter {
     *           {@link List} of FAILed validations
     * @return Generated validation error message
     */
-   public String printOptionValidationErrors(List<Result> results);
+   String printOptionValidationErrors(List<Result> results);
 
    /**
     * Generates missing required options error message from given
@@ -81,8 +81,8 @@ public interface CmdLinePrinter {
     *           not set.
     * @return Generated missing required options error message.
     */
-   public String printRequiredOptionsMissingError(
-         Set<CmdLineOption> missingOptions);
+   String printRequiredOptionsMissingError(
+       Set<CmdLineOption> missingOptions);
 
    /**
     * Generates {@link CmdLineAction} message from list of messages.
@@ -90,5 +90,5 @@ public interface CmdLinePrinter {
     * @param messages The messages from a {@link CmdLineAction}
     * @return printed message from list of messages.
     */
-   public String printActionMessages(List<String> messages);
+   String printActionMessages(List<String> messages);
 }

@@ -58,7 +58,7 @@ public interface CatalogRepository {
 	 * @throws CatalogRepositoryException
 	 *             Any Error
 	 */
-	public void serializeCatalog(Catalog catalog)
+	void serializeCatalog(Catalog catalog)
 			throws CatalogRepositoryException;
 //
 //	/**
@@ -83,7 +83,7 @@ public interface CatalogRepository {
 	 * @throws CatalogRepositoryException
 	 *             Any Error
 	 */
-	public void deleteSerializedCatalog(String catalogUrn)
+	void deleteSerializedCatalog(String catalogUrn)
 			throws CatalogRepositoryException;
 
 	/**
@@ -93,15 +93,15 @@ public interface CatalogRepository {
 	 * @throws CatalogRepositoryException
 	 *             Any Error
 	 */
-	public Set<Catalog> deserializeAllCatalogs()
+	Set<Catalog> deserializeAllCatalogs()
 			throws CatalogRepositoryException;
 
-	public void serializePluginURLs(List<PluginURL> urls) 
+	void serializePluginURLs(List<PluginURL> urls)
 			throws CatalogRepositoryException;
 	
-	public List<PluginURL> deserializePluginURLs() 
+	List<PluginURL> deserializePluginURLs()
 			throws CatalogRepositoryException;
 	
-	public boolean isModifiable() throws CatalogRepositoryException;
+	boolean isModifiable() throws CatalogRepositoryException;
 	
 }

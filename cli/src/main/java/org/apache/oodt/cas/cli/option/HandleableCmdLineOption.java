@@ -27,9 +27,9 @@ import org.apache.oodt.cas.cli.option.handler.CmdLineOptionHandler;
  */
 public interface HandleableCmdLineOption {
 
-   public void setHandler(CmdLineOptionHandler handler);
+   void setHandler(CmdLineOptionHandler handler);
 
-   public CmdLineOptionHandler getHandler();
+   CmdLineOptionHandler getHandler();
 
-   public boolean hasHandler();
+   boolean hasHandler();
 }

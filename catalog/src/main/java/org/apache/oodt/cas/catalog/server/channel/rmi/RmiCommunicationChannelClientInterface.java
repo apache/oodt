@@ -41,67 +41,69 @@ import org.apache.oodt.cas.metadata.Metadata;
  */
 public interface RmiCommunicationChannelClientInterface extends Remote {
 	
-	public void setCatalogRepository(CatalogRepository catalogRepository);
+	void setCatalogRepository(CatalogRepository catalogRepository);
 	
-	public CatalogRepository getCatalogRepository() throws Exception;
+	CatalogRepository getCatalogRepository() throws Exception;
 	
-	public IngestMapper getIngestMapper() throws RemoteException;
+	IngestMapper getIngestMapper() throws RemoteException;
 
-	public void setIngestMapper(IngestMapper ingestMapper) throws RemoteException;
+	void setIngestMapper(IngestMapper ingestMapper) throws RemoteException;
 
-	public boolean isRestrictQueryPermissions() throws RemoteException;
+	boolean isRestrictQueryPermissions() throws RemoteException;
 
-	public void setRestrictQueryPermissions(boolean restrictQueryPermissions) throws RemoteException;
+	void setRestrictQueryPermissions(boolean restrictQueryPermissions) throws RemoteException;
 
-	public boolean isHasIngestPermissions() throws RemoteException;
+	boolean isHasIngestPermissions() throws RemoteException;
 
-	public void setHasIngestPermissions(boolean restrictIngestPermissions) throws RemoteException;
+	void setHasIngestPermissions(boolean restrictIngestPermissions) throws RemoteException;
 
-	public Class<? extends TransactionId<?>> getTransactionIdClass() throws RemoteException;
+	Class<? extends TransactionId<?>> getTransactionIdClass() throws RemoteException;
 
-	public void setTransactionIdClass(Class<? extends TransactionId<?>> transactionIdClass) throws RemoteException;
+	void setTransactionIdClass(Class<? extends TransactionId<?>> transactionIdClass) throws RemoteException;
 
-	public void addCatalog(Catalog catalog) throws RemoteException;
+	void addCatalog(Catalog catalog) throws RemoteException;
 	
-	public void addCatalog(Catalog catalog, boolean allowOverride) throws RemoteException;
+	void addCatalog(Catalog catalog, boolean allowOverride) throws RemoteException;
 	
-	public void removeCatalog(String catalogUrn) throws RemoteException;
+	void removeCatalog(String catalogUrn) throws RemoteException;
 
-	public void removeCatalog(String catalogUrn, boolean preserveMapping) throws RemoteException;
+	void removeCatalog(String catalogUrn, boolean preserveMapping) throws RemoteException;
 
-	public Set<Catalog> getCurrentCatalogList() throws RemoteException;
+	Set<Catalog> getCurrentCatalogList() throws RemoteException;
 	
-	public Catalog getCatalog(String catalogUrn) throws RemoteException;
+	Catalog getCatalog(String catalogUrn) throws RemoteException;
 
-	public Set<String> getCurrentCatalogIds() throws RemoteException;
+	Set<String> getCurrentCatalogIds() throws RemoteException;
 		
-	public TransactionId<?> ingest(Metadata metadata) throws RemoteException;
+	TransactionId<?> ingest(Metadata metadata) throws RemoteException;
 	
-	public void delete(Metadata metadata) throws RemoteException;
+	void delete(Metadata metadata) throws RemoteException;
 	
-	public List<String> getProperty(String key) throws RemoteException;
+	List<String> getProperty(String key) throws RemoteException;
 
-	public Properties getCalalogProperties() throws RemoteException;
+	Properties getCalalogProperties() throws RemoteException;
 	
-	public Properties getCalalogProperties(String catalogUrn) throws RemoteException;
+	Properties getCalalogProperties(String catalogUrn) throws RemoteException;
 	
-	public QueryPager query(QueryExpression queryExpression) throws RemoteException;
+	QueryPager query(QueryExpression queryExpression) throws RemoteException;
 	
-	public QueryPager query(QueryExpression queryExpression, boolean sortResults) throws RemoteException;
+	QueryPager query(QueryExpression queryExpression, boolean sortResults) throws RemoteException;
  
-	public Set<TransactionalMetadata> getNextPage(QueryPager queryPager) throws RemoteException;
+	Set<TransactionalMetadata> getNextPage(QueryPager queryPager) throws RemoteException;
 
-	public Set<TransactionId<?>> getTransactionIdsForAllPages(QueryPager queryPager) throws RemoteException;
+	Set<TransactionId<?>> getTransactionIdsForAllPages(QueryPager queryPager) throws RemoteException;
 	
-	public Set<TransactionalMetadata> getAllPages(QueryPager queryPager) throws RemoteException;
+	Set<TransactionalMetadata> getAllPages(QueryPager queryPager) throws RemoteException;
 	
-	public Set<TransactionalMetadata> getMetadataFromTransactionIdStrings(List<String> catalogServiceTransactionIdStrings) throws RemoteException;
+	Set<TransactionalMetadata> getMetadataFromTransactionIdStrings(List<String> catalogServiceTransactionIdStrings) throws RemoteException;
 	
-	public Set<TransactionalMetadata> getMetadataFromTransactionIds(List<TransactionId<?>> catalogServiceTransactionIds) throws RemoteException;
+	Set<TransactionalMetadata> getMetadataFromTransactionIds(List<TransactionId<?>> catalogServiceTransactionIds) throws RemoteException;
 	
-	public Set<TransactionId<?>> getCatalogServiceTransactionIds(List<TransactionId<?>> catalogTransactionIds, String catalogUrn) throws RemoteException;
+	Set<TransactionId<?>> getCatalogServiceTransactionIds(List<TransactionId<?>> catalogTransactionIds,
+														  String catalogUrn) throws RemoteException;
 	
-	public TransactionId<?> getCatalogServiceTransactionId(TransactionId<?> catalogTransactionId, String catalogUrn) throws RemoteException;
+	TransactionId<?> getCatalogServiceTransactionId(TransactionId<?> catalogTransactionId, String catalogUrn) throws RemoteException;
 	
-	public TransactionId<?> getCatalogServiceTransactionId(TransactionId<?> catalogTransactionId, String catalogUrn, boolean generateNew) throws RemoteException;
+	TransactionId<?> getCatalogServiceTransactionId(TransactionId<?> catalogTransactionId, String catalogUrn,
+													boolean generateNew) throws RemoteException;
 }

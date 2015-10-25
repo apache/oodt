@@ -46,7 +46,7 @@ public interface JobQueue {
    * @throws JobQueueException
    *           If there is any error queueing the {@link JobSpec}.
    */
-  public String addJob(JobSpec spec) throws JobQueueException;
+  String addJob(JobSpec spec) throws JobQueueException;
   
   /**
    * Re-adds a {@link JobSpec} to the back of the queue.
@@ -56,7 +56,7 @@ public interface JobQueue {
    * @throws JobQueueException
    *           If there is any error requeueing the {@link JobSpec}.
    */
-  public String requeueJob(JobSpec spec) throws JobQueueException;
+  String requeueJob(JobSpec spec) throws JobQueueException;
   
   /**
    * Gets an ordered {@link List} of queued {@link JobSpec}s.
@@ -65,7 +65,7 @@ public interface JobQueue {
    * @throws JobQueueException
    *           If there is any error obtaining the queued jobs.
    */
-  public List getQueuedJobs() throws JobQueueException;
+  List getQueuedJobs() throws JobQueueException;
 
   /**
    * Purges all {@link JobSpec}s from the queue.
@@ -73,14 +73,14 @@ public interface JobQueue {
    * @throws JobQueueException
    *           If there is any error purging all the {@link JobSpec}s.
    */
-  public void purge() throws JobQueueException;
+  void purge() throws JobQueueException;
 
   /**
    * Returns a boolean value representing whether or not the queue is empty.
    * 
    * @return true, if the queue is empty, false otherwise.
    */
-  public boolean isEmpty();
+  boolean isEmpty();
 
   /**
    * Gets the next {@link JobSpec} from the queue, and correspondingly removes
@@ -90,7 +90,7 @@ public interface JobQueue {
    * @throws JobQueueException
    *           If there is any error getting the next {@link JobSpec}.
    */
-  public JobSpec getNextJob() throws JobQueueException;
+  JobSpec getNextJob() throws JobQueueException;
   
   
   /**
@@ -98,19 +98,19 @@ public interface JobQueue {
    * used by this {@link JobQueue}.
    * @return The underlying {@link JobRepository}.
    */
-  public JobRepository getJobRepository();
+  JobRepository getJobRepository();
 
   /**
    * Gets the number of jobs in queue
    * @return Number of jobs in queue
    */
-  public int getSize();
+  int getSize();
   
   /**
    * Gets the max number of jobs allowed in
    * queue at any given time
    * @return Max number of jobs
    */
-  public int getCapacity();
+  int getCapacity();
   
 }

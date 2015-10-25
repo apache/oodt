@@ -28,5 +28,5 @@ package org.apache.oodt.cas.filemgr.validation;
  */
 public interface ValidationLayerFactory {
 
-    public ValidationLayer createValidationLayer();
+    ValidationLayer createValidationLayer();
 }

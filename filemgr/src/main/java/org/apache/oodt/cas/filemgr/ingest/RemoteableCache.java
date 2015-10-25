@@ -35,14 +35,14 @@ import java.util.List;
  */
 public interface RemoteableCache extends Remote{
 
-    public static final String DEFAULT_UNIQUE_MET_KEY = "CAS.ProductName";
+    String DEFAULT_UNIQUE_MET_KEY = "CAS.ProductName";
 
     /**
      * Clears the current cache. This should be used before a re-{@link #sync(String, String))}
      * occurs.
      * 
      */
-    public void clear() throws RemoteException;
+    void clear() throws RemoteException;
 
     /**
      * Checks the cache to determine if a {@link Product} with the given
@@ -53,7 +53,7 @@ public interface RemoteableCache extends Remote{
      * @return True if the {@link Product} is foudn in the Cache, False,
      *         otherwise.
      */
-    public boolean contains(String productName) throws RemoteException;
+    boolean contains(String productName) throws RemoteException;
 
     /**
      * Specifies the {@link URL} to the File Manager to connect this Cache to.
@@ -62,13 +62,13 @@ public interface RemoteableCache extends Remote{
      *            The {@link URL} of the File Manager to cache {@link Product}s
      *            from.
      */
-    public void setFileManager(URL fmUrl) throws RemoteException;
+    void setFileManager(URL fmUrl) throws RemoteException;
 
     /**
      * 
      * @return The size of the current {@link Product} cache.
      */
-    public int size() throws RemoteException;
+    int size() throws RemoteException;
 
     /**
      * Synchronizes this Cache with the File Manager specified by the
@@ -80,7 +80,7 @@ public interface RemoteableCache extends Remote{
      * @throws RemoteException
      *             If there is any error.
      */
-    public void sync(List<String> uniqueElementProductTypeNames) throws RemoteException;
+    void sync(List<String> uniqueElementProductTypeNames) throws RemoteException;
 
     /**
      * Synchronizes this Cache with the File Manager specified by the
@@ -95,8 +95,8 @@ public interface RemoteableCache extends Remote{
      * @throws RemoteException
      *             If there is any error.
      */
-    public void sync(String uniqueElementName,
-            List<String> uniqueElementProductTypeNames) throws RemoteException;
+    void sync(String uniqueElementName,
+              List<String> uniqueElementProductTypeNames) throws RemoteException;
 
     /**
      * Synchronizes this Cache with the File Manager specified by the
@@ -108,7 +108,7 @@ public interface RemoteableCache extends Remote{
      * @throws RemoteException
      *             If any error occurs.
      */
-    public void sync() throws RemoteException;
+    void sync() throws RemoteException;
 
     /**
      * Sets the names of the {@link ProductType}s to cache.
@@ -117,8 +117,8 @@ public interface RemoteableCache extends Remote{
      *            A {@link List} of java.util.String names of
      *            {@link ProductType}s.
      */
-    public void setUniqueElementProductTypeNames(
-            List<String> uniqueElementProductTypeNames) throws RemoteException;
+    void setUniqueElementProductTypeNames(
+        List<String> uniqueElementProductTypeNames) throws RemoteException;
 
     /**
      * Sets the name of the met element to use as the identifier of a
@@ -129,7 +129,7 @@ public interface RemoteableCache extends Remote{
      *            The name of the met element used to uniquely identify
      *            {@link Product}s.
      */
-    public void setUniqueElementName(String uniqueElementName)
+    void setUniqueElementName(String uniqueElementName)
             throws RemoteException;
 
     /**
@@ -139,5 +139,5 @@ public interface RemoteableCache extends Remote{
      * @return The {@link URL} of the File Manager that this Cache communicates
      *         with.
      */
-    public URL getFileManagerUrl() throws RemoteException;
+    URL getFileManagerUrl() throws RemoteException;
 }

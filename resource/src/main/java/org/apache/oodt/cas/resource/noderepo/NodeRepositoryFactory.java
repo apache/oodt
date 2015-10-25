@@ -32,6 +32,6 @@ public interface NodeRepositoryFactory {
 	 * Creates {@link NodeRepository}
 	 * @return the created {@link NodeRepository}
 	 */
-	public NodeRepository createNodeRepository();
+	NodeRepository createNodeRepository();
 	
 }

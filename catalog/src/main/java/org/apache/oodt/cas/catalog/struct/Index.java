@@ -36,9 +36,9 @@ import org.apache.oodt.cas.catalog.page.IndexPager;
  */
 public interface Index {
 	
-	public Properties getProperties() throws CatalogIndexException;
+	Properties getProperties() throws CatalogIndexException;
 	
-	public String getProperty(String key) throws CatalogIndexException;
+	String getProperty(String key) throws CatalogIndexException;
 	
 	/**
 	 * Returns a list of TransactionIds associated with the 
@@ -47,13 +47,13 @@ public interface Index {
 	 * @return A page of TransactionIds, if page does not exist,
 	 * then returns null.
 	 */
-	public List<TransactionId<?>> getPage(IndexPager indexPage) throws CatalogIndexException;
+	List<TransactionId<?>> getPage(IndexPager indexPage) throws CatalogIndexException;
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public TransactionIdFactory getTransactionIdFactory() throws CatalogIndexException;
+	TransactionIdFactory getTransactionIdFactory() throws CatalogIndexException;
 	
 	/**
 	 * 
@@ -61,6 +61,6 @@ public interface Index {
 	 * @return
 	 * @throws CatalogIndexException
 	 */
-	public boolean hasTransactionId(TransactionId<?> transactionid)  throws CatalogIndexException;
+	boolean hasTransactionId(TransactionId<?> transactionid)  throws CatalogIndexException;
 	
 }
