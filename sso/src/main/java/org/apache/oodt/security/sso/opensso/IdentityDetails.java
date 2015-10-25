@@ -128,19 +128,8 @@ public class IdentityDetails {
   }
 
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("[name=");
-    sb.append(this.name);
-    sb.append(",type=");
-    sb.append(this.type);
-    sb.append(",realm=");
-    sb.append(this.realm);
-    sb.append(",roles=");
-    sb.append(this.groups);
-    sb.append(",attributes=");
-    sb.append(this.attributes.getHashtable());
-    sb.append("]");
-    return sb.toString();
+    return "[name=" + this.name + ",type=" + this.type + ",realm=" + this.realm + ",roles=" + this.groups
+           + ",attributes=" + this.attributes.getHashtable() + "]";
   }
 
 }

@@ -451,8 +451,6 @@ public class TestTypeHandler extends TestCase {
                 String tableName = type.getName() + "_metadata";
                 String subSelectQueryBase = "SELECT product_id FROM "
                         + tableName + " ";
-                StringBuilder selectClause = new StringBuilder(
-                        "SELECT DISTINCT p.product_id ");
                 StringBuilder fromClause = new StringBuilder("FROM " + tableName
                         + " p ");
                 StringBuilder whereClause = new StringBuilder("WHERE ");
@@ -575,7 +573,7 @@ public class TestTypeHandler extends TestCase {
                         }
                     }
                 }
-                getProductSql = selectClause.toString() + fromClause.toString();
+                getProductSql = "SELECT DISTINCT p.product_id " + fromClause.toString();
                 if (gotFirstClause) {
                     getProductSql += whereClause.toString();
                 }
@@ -691,8 +689,6 @@ public class TestTypeHandler extends TestCase {
                 String tableName = type.getName() + "_metadata";
                 String subSelectQueryBase = "SELECT product_id FROM "
                         + tableName + " ";
-                StringBuilder selectClause = new StringBuilder(
-                        "SELECT COUNT(DISTINCT p.product_id) AS numResults ");
                 StringBuilder fromClause = new StringBuilder("FROM " + tableName
                         + " p ");
                 StringBuilder whereClause = new StringBuilder("WHERE ");
@@ -816,7 +812,7 @@ public class TestTypeHandler extends TestCase {
                     }
                 }
 
-                getProductSql = selectClause.toString() + fromClause.toString();
+                getProductSql = "SELECT COUNT(DISTINCT p.product_id) AS numResults " + fromClause.toString();
                 if (gotFirstClause) {
                     getProductSql += whereClause.toString();
                 }
