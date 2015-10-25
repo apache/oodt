@@ -84,8 +84,8 @@ public class ProfileQueryServlet extends QueryServlet {
 		  if (results == null) {
 			results = Collections.EMPTY_LIST;         // Assume nothing
 		  }
-		  for (Iterator j = results.iterator(); j.hasNext(); ) {          // For each matching profile
-			Profile profile = (Profile) j.next();                   // Get the profile
+		  for (Object result1 : results) {          // For each matching profile
+			Profile profile = (Profile) result1;                   // Get the profile
 			if (transformer == null) {                       // No transformer/doc yet?
 			  transformer = createTransformer();             // Then make the transformer
 			  doc = Profile.createProfileDocument();         // And the doc
