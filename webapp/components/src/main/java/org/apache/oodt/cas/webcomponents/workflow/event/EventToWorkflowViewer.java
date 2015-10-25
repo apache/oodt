@@ -18,9 +18,6 @@
 
 package org.apache.oodt.cas.webcomponents.workflow.event;
 
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.oodt.cas.webcomponents.workflow.WorkflowMgrConn;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.wicket.PageParameters;
@@ -37,6 +34,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
+import java.util.List;
+
 /**
  *
  * Describe your class here.
@@ -50,13 +49,10 @@ public class EventToWorkflowViewer extends Panel {
   private static final long serialVersionUID = -5120511045763328237L;
 
   private final WorkflowMgrConn wm;
-  
-  private final List<Workflow> workflows;
-  
+
   public EventToWorkflowViewer(String id, String workflowUrlStr, final Class<? extends WebPage> viewerPage) {
     super(id);
     this.wm = new WorkflowMgrConn(workflowUrlStr);
-    this.workflows = new Vector<Workflow>();
     WebMarkupContainer wTable = new WebMarkupContainer("wtable");
     wTable.setVisible(false);
     PropertyModel<List<Workflow>> workflowsModel = new PropertyModel<List<Workflow>>(this, "workflows");

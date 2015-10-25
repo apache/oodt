@@ -50,8 +50,6 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
 
   private Map<String, ParentChildWorkflow> workflows;
 
-  private List<Graph> graphs;
-
   private Map<String, WorkflowCondition> conditions;
 
   private Map<String, WorkflowTask> tasks;
@@ -367,7 +365,6 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     this.conditions = new HashMap<String, WorkflowCondition>();
     this.eventWorkflowMap = new HashMap<String, List<ParentChildWorkflow>>();
     this.globalConfGroups = new HashMap<String, Metadata>();
-    this.graphs = new Vector<Graph>();
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder parser;
 

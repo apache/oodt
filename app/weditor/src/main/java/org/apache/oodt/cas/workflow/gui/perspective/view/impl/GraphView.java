@@ -701,14 +701,12 @@ public class GraphView extends DefaultTreeView {
       this.directedGraph.addVertex(modelGraph.getModel());
       DefaultGraphCell modelCell = this.m_jgAdapter.getVertexCell(modelGraph
           .getModel());
-      Vector<DefaultGraphCell> group = new Vector<DefaultGraphCell>();
-      group.add(modelCell);
+
 
       HashMap<Object, Object> map = new HashMap<Object, Object>();
       for (int i = 0; i < modelGraph.getChildren().size(); i++) {
         ModelGraph child = modelGraph.getChildren().get(i);
         DefaultGraphCell curCell = addGroups(child, nested, state);
-        group.add(curCell);
         Rectangle2D bounds = (Rectangle2D) ((Map<Object, Object>) nested
             .get(curCell)).get("bounds");
         if (bounds.getX() < top_x)

@@ -26,7 +26,6 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import java.net.URL;
-import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -88,15 +87,7 @@ public class CasDB {
         ProductType pt = client.getProductTypeByName(productTypeName);
         Vector<Element> v = (Vector<Element>) client
             .getElementsByProductType(pt);
-        Vector<String> names = new Vector<String>();
         elements = new String[v.size()];
-
-        for (Element aV : v) {
-          names.add(aV.getElementName());
-        }
-
-        Collections.sort(names);
-        names.toArray(elements);
 
       } catch (Exception e) {
         e.printStackTrace();
