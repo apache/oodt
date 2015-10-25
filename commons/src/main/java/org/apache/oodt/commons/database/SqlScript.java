@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
 import javax.sql.DataSource;
 
 /**
@@ -98,9 +98,6 @@ public class SqlScript {
             sqlScript.loadScript();
             sqlScript.execute();
 
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

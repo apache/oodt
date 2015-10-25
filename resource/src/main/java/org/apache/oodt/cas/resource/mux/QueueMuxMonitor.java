@@ -16,6 +16,12 @@
  */
 package org.apache.oodt.cas.resource.mux;
 
+import org.apache.oodt.cas.resource.monitor.Monitor;
+import org.apache.oodt.cas.resource.scheduler.QueueManager;
+import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
+import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
+
 import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -24,12 +30,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.oodt.cas.resource.monitor.Monitor;
-import org.apache.oodt.cas.resource.scheduler.QueueManager;
-import org.apache.oodt.cas.resource.structs.ResourceNode;
-import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
-import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 
 /**
  * @author starchmd
@@ -185,12 +185,7 @@ public class QueueMuxMonitor implements Monitor {
         List<String> ret = new LinkedList<String>();
         //Get list of queues
         List<String> queues = null;
-        try
-        {
-            queues = qManager.getQueues();
-        } catch (QueueManagerException e) {
-            LOG.log(Level.SEVERE, "Cannot list queues.");
-        }
+        queues = qManager.getQueues();
         //Search each queu to see if it contains given node
         for (String queue : queues) {
             try

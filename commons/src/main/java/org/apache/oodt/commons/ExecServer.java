@@ -431,9 +431,6 @@ public class ExecServer {
 			} catch (IllegalAccessException ex) {
 				System.err.println("Initializer \"" + iname + "\" isn't public; aborting");
 				throw new EDAException(ex);
-			} catch (EDAException ex) {
-				System.err.println("Initializer \"" + iname + "\" failed: " + ex.getMessage());
-				throw new EDAException(ex);
 			}
 		}
 	}

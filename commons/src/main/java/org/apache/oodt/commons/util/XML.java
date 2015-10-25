@@ -82,7 +82,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -207,10 +206,8 @@ public class XML {
 	 */
 	public static String serialize(Document doc, boolean omitXMLDeclaration) {
 		StringWriter writer = new StringWriter();
-		try {
-			serialize(doc, writer, omitXMLDeclaration);
-		} catch (IOException cantHappen) {}
-		return writer.getBuffer().toString();
+	  serialize(doc, writer, omitXMLDeclaration);
+	  return writer.getBuffer().toString();
 	}
 
 	/** Serialize an XML DOM document into a String.

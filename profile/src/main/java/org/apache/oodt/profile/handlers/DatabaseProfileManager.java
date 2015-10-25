@@ -173,14 +173,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 	public Profile get(String profId) throws ProfileException {
 		// Create database connection
 
-		try
-		{ 
-			return(get(conn, profId));
-		}
-		catch (ProfileException e)
-		{
-			throw e;
-		}
+	  return(get(conn, profId));
 	}
 
 	public Collection getAll() {
@@ -231,14 +224,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 	}
 
 	public int size() throws ProfileException {
-		try
-		{
-			return(size(conn));
-		}
-		catch (ProfileException e)
-		{
-			throw e;
-		}
+	  return(size(conn));
 
 	}
 

@@ -19,18 +19,9 @@
 package org.apache.oodt.cas.resource.mux;
 
 //JDKimports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-
-
-
-
-
-//OODT imports
+import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
 import org.apache.oodt.cas.resource.jobqueue.JobQueue;
 import org.apache.oodt.cas.resource.monitor.Monitor;
-import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
 import org.apache.oodt.cas.resource.scheduler.QueueManager;
 import org.apache.oodt.cas.resource.scheduler.Scheduler;
 import org.apache.oodt.cas.resource.structs.JobSpec;
@@ -38,6 +29,11 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 import org.apache.oodt.cas.resource.structs.exceptions.SchedulerException;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * This scheduler multiplexes between multiple schedulers based on the "queue" .
@@ -94,9 +90,6 @@ public class QueueMuxScheduler implements Scheduler {
                     job = queue.getNextJob();
                     LOG.log(Level.INFO, "Scheduling job: ["+ job.getJob().getId()+ "] for execution");
                     schedule(job);
-                } catch (JobQueueException je) {
-                    LOG.log(Level.WARNING,"Error getting job from queue: "
-                                    + je.getLocalizedMessage());
                 } catch (SchedulerException se) {
                     LOG.log(Level.WARNING,"Error occured scheduling job: "+se.getLocalizedMessage());
                     try {

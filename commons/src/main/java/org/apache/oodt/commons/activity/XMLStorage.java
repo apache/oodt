@@ -17,14 +17,15 @@
 
 package org.apache.oodt.commons.activity;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Storage that saves activities as XML documents.
@@ -58,10 +59,6 @@ public abstract class XMLStorage implements Storage {
 			saveDocument(doc);
 		} catch (ParserConfigurationException ex) {
 			throw new IllegalStateException("Unexpected ParserConfigurationException: " + ex.getMessage());
-		} catch (IOException ex) {
-			System.err.println("Unable to save activity " + id + " due to " + ex.getClass().getName() + ": "
-				+ ex.getMessage());
-			ex.printStackTrace();
 		}
 	}
 

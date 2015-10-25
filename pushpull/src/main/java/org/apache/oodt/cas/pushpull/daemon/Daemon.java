@@ -51,11 +51,11 @@ import javax.management.ObjectName;
  * specified by the properties file passed in. A Crawler will be created per the
  * properties file and executed at six hour intervals. This class can be
  * controlled by CrawlDaemonController after is has been started up.
- * 
+ *
  * @author bfoster
  */
 public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
-        DaemonMBean {
+                                                           DaemonMBean {
 
     private static final long serialVersionUID = 7660972939723142802L;
 
@@ -107,7 +107,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
 
     /**
      * Constructor
-     * 
+     *
      * @throws RemoteException
      * @throws RemoteException
      * @throws InstantiationException
@@ -115,7 +115,8 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
      * @throws SecurityException
      */
     public Daemon(int rmiRegPort, int daemonID, Config config,
-            DaemonInfo daemonInfo, SiteInfo siteInfo) throws RemoteException {
+                  DaemonInfo daemonInfo, SiteInfo siteInfo) throws RemoteException,
+        InstantiationException {
         super();
 
         this.rmiRegPort = rmiRegPort;
@@ -133,20 +134,20 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
             registerRMIServer();
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed to bind to RMI server : "
-                    + e.getMessage());
+                                  + e.getMessage());
         }
 
         try {
             // registry CrawlDaemon as MBean so it can be used with jconsole
             mbs = ManagementFactory.getPlatformMBeanServer();
             ObjectName name = new ObjectName(
-                    "org.apache.oodt.cas.pushpull.daemon:type=Daemon"
-                            + this.getDaemonID());
+                "org.apache.oodt.cas.pushpull.daemon:type=Daemon"
+                + this.getDaemonID());
             mbs.registerMBean(this, name);
         } catch (Exception e) {
             LOG.log(Level.SEVERE,
-                    "Failed to register CrawlDaemon as a MBean Object : "
-                            + e.getMessage());
+                "Failed to register CrawlDaemon as a MBean Object : "
+                + e.getMessage());
         }
     }
 
@@ -154,17 +155,18 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
         return "Daemon" + this.getDaemonID();
     }
 
-    private void registerRMIServer() throws RemoteException {
+    private void registerRMIServer() throws RemoteException,
+        MalformedURLException, NotBoundException, AlreadyBoundException {
         try {
             Naming.bind("//localhost:" + this.rmiRegPort + "/daemon"
-                    + this.getDaemonID(), this);
+                        + this.getDaemonID(), this);
             LOG.log(Level.INFO, "Created Daemon ID = " + this.getDaemonID()
-                    + " on RMI registry port " + this.rmiRegPort);
+                                + " on RMI registry port " + this.rmiRegPort);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RemoteException("Failed to bind Daemon with ID = "
-                    + this.getDaemonID() + " to RMI registry at port "
-                    + this.rmiRegPort);
+                                      + this.getDaemonID() + " to RMI registry at port "
+                                      + this.rmiRegPort);
         }
     }
 
@@ -177,7 +179,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
      * Loads and executes the Crawler specified by the properties file. It will
      * crawl the URLs specified in the properties file in the sequence
      * given--one at a time.
-     * 
+     *
      * @throws DirStructException
      */
     public void startDaemon() {
@@ -188,9 +190,9 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
                 // check if Daemon should sleep first
                 long timeTilNextRun;
                 if ((timeTilNextRun = Daemon.this.calculateTimeTilNextRun()) != 0
-                        && !(Daemon.this.beforeToday(daemonInfo
-                                .getFirstRunDateTime()) && daemonInfo
-                                .runOnReboot()))
+                    && !(Daemon.this.beforeToday(daemonInfo
+                    .getFirstRunDateTime()) && daemonInfo
+                             .runOnReboot()))
                     sleep(timeTilNextRun);
 
                 for (keepRunning = true; keepRunning;) {
@@ -209,7 +211,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
 
                     try {
                         rs.retrieveFiles(daemonInfo.getPropFilesInfo(),
-                                daemonInfo.getDataFilesInfo());
+                            daemonInfo.getDataFilesInfo());
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
@@ -222,15 +224,15 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
                     Daemon.this.notifyDaemonListenerOfFinish();
                     Daemon.this.calculateAndStoreElapsedTime(startTime);
                     if (Daemon.this.keepRunning
-                            && daemonInfo.getTimeIntervalInMilliseconds() >= 0) {
+                        && daemonInfo.getTimeIntervalInMilliseconds() >= 0) {
                         sleep(Daemon.this.calculateTimeTilNextRun());
                     } else {
                         break;
                     }
                 }
                 LOG.log(Level.INFO, "Daemon with ID = "
-                        + Daemon.this.getDaemonID() + " on RMI registry port "
-                        + Daemon.this.rmiRegPort + " is shutting down");
+                                    + Daemon.this.getDaemonID() + " on RMI registry port "
+                                    + Daemon.this.rmiRegPort + " is shutting down");
                 Daemon.this.unregister();
             }
         }).start();
@@ -240,10 +242,10 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
         try {
             // unregister CrawlDaemon from RMI registry
             Naming.unbind("//localhost:" + this.rmiRegPort + "/daemon"
-                    + this.getDaemonID());
+                          + this.getDaemonID());
             this.mbs.unregisterMBean(new ObjectName(
-                    "org.apache.oodt.cas.pushpull.daemon:type=Daemon"
-                            + this.getDaemonID()));
+                "org.apache.oodt.cas.pushpull.daemon:type=Daemon"
+                + this.getDaemonID()));
             UnicastRemoteObject.unexportObject(this, true);
             this.daemonListener.wasUnregisteredWith(this);
         } catch (Exception e) {
@@ -268,10 +270,10 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
             return 0;
         } else {
             int numOfPeriods = (int) (diff / daemonInfo
-                    .getTimeIntervalInMilliseconds());
+                .getTimeIntervalInMilliseconds());
             long nextRunTime = gcStartDateTime.getTimeInMillis()
-                    + ((numOfPeriods + 1) * daemonInfo
-                            .getTimeIntervalInMilliseconds());
+                               + ((numOfPeriods + 1) * daemonInfo
+                .getTimeIntervalInMilliseconds());
             return nextRunTime - now.getTimeInMillis();
         }
     }
@@ -293,9 +295,9 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
     private void sleep(long length) {
         if (length > 0) {
             LOG.log(Level.INFO, "Daemon with ID = " + this.getDaemonID()
-                    + " on RMI registry port " + this.rmiRegPort
-                    + " is going to sleep until "
-                    + new Date(System.currentTimeMillis() + length));
+                                + " on RMI registry port " + this.rmiRegPort
+                                + " is going to sleep until "
+                                + new Date(System.currentTimeMillis() + length));
             synchronized (this) {
                 try {
                     wait(length);
@@ -314,13 +316,13 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
     public synchronized void pauseDaemon() {
         try {
             LOG.log(Level.INFO, "Daemon with ID = " + this.getDaemonID()
-                    + " on RMI registry port " + this.rmiRegPort
-                    + " has been stopped");
+                                + " on RMI registry port " + this.rmiRegPort
+                                + " has been stopped");
             this.wait(0);
         } catch (Exception e) {
         }
         LOG.log(Level.INFO, "Daemon with ID = " + this.getDaemonID()
-                + " on RMI registry port " + this.rmiRegPort + " has resumed");
+                            + " on RMI registry port " + this.rmiRegPort + " has resumed");
     }
 
     /**
@@ -342,7 +344,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
 
     /**
      * Can be used to determine if Crawler is presently running
-     * 
+     *
      * @return true if Crawler is runnning
      * @uml.property name="isRunning"
      */
@@ -352,7 +354,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
 
     /**
      * Average runtime for the Crawler
-     * 
+     *
      * @return average runtime for the Crawler
      */
     public long getAverageRunTime() {
@@ -361,7 +363,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
 
     /**
      * Gets the total crawling time of the Crawler
-     * 
+     *
      * @return Total crawling time of Crawler
      */
     public long getMillisCrawling() {
@@ -370,7 +372,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
 
     /**
      * Gets the time between the start of Crawler executions
-     * 
+     *
      * @return Time interval between Crawler start times
      */
     public long getTimeInterval() {
@@ -379,7 +381,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
 
     /**
      * Gets the total number of times the Crawler has been run
-     * 
+     *
      * @return The number of times Crawler has run
      */
     public int getNumCrawls() {
@@ -388,24 +390,24 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
 
     public String[] downloadedFilesInStagingArea() {
         return this.daemonInfo.getDataFilesInfo().getDownloadInfo()
-                .getStagingArea().list(new FilenameFilter() {
-                    public boolean accept(File dir, String name) {
-                        return !name.startsWith("Downloading_")
-                                && !(name.endsWith("info.tmp") || name
-                                        .endsWith("cas"));
-                    }
-                });
+                              .getStagingArea().list(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return !name.startsWith("Downloading_")
+                           && !(name.endsWith("info.tmp") || name
+                        .endsWith("cas"));
+                }
+            });
     }
 
     public String[] downloadingFilesInStagingArea() {
         return this.daemonInfo.getDataFilesInfo().getDownloadInfo()
-                .getStagingArea().list(new FilenameFilter() {
-                    public boolean accept(File dir, String name) {
-                        return name.startsWith("Downloading_")
-                                && !(name.endsWith("info.tmp") || name
-                                        .endsWith("cas"));
-                    }
-                });
+                              .getStagingArea().list(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return name.startsWith("Downloading_")
+                           && !(name.endsWith("info.tmp") || name
+                        .endsWith("cas"));
+                }
+            });
     }
 
     public int numberOfFilesDownloadingInStagingArea() {
@@ -438,35 +440,36 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
     // ***************DataFilesInfo*******************
     public String getDataFilesRemoteSite() {
         RemoteSite remoteSite = this.daemonInfo.getDataFilesInfo()
-                .getDownloadInfo().getRemoteSite();
+                                               .getDownloadInfo().getRemoteSite();
         return (remoteSite == null) ? "" : remoteSite.toString();
     }
 
     public String getDataFilesRenamingConv() {
         return this.daemonInfo.getDataFilesInfo().getDownloadInfo()
-                .getRenamingConv();
+                              .getRenamingConv();
     }
 
     public boolean getDeleteDataFilesFromServer() {
         return this.daemonInfo.getDataFilesInfo().getDownloadInfo()
-                .deleteFromServer();
+                              .deleteFromServer();
     }
 
     public String getQueryMetadataElementName() {
         String element = this.daemonInfo.getDataFilesInfo()
-                .getQueryMetadataElementName();
+                                        .getQueryMetadataElementName();
         if (element == null || element.equals(""))
+            element = "Filename";
         return this.daemonInfo.getDataFilesInfo().getQueryMetadataElementName();
     }
 
     public File getDataFilesStagingArea() {
         return this.daemonInfo.getDataFilesInfo().getDownloadInfo()
-                .getStagingArea();
+                              .getStagingArea();
     }
 
     public boolean getAllowAliasOverride() {
         return this.daemonInfo.getDataFilesInfo().getDownloadInfo()
-                .isAllowAliasOverride();
+                              .isAllowAliasOverride();
     }
 
     // **************DataFilesInfo********************
@@ -474,18 +477,18 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
     // **************PropFilesInfo********************
     public String getPropertyFilesRemoteSite() {
         RemoteSite remoteSite = this.daemonInfo.getPropFilesInfo()
-                .getDownloadInfo().getRemoteSite();
+                                               .getDownloadInfo().getRemoteSite();
         return (remoteSite == null) ? "" : remoteSite.toString();
     }
 
     public String getPropertyFilesRenamingConv() {
         return this.daemonInfo.getPropFilesInfo().getDownloadInfo()
-                .getRenamingConv();
+                              .getRenamingConv();
     }
 
     public boolean getDeletePropertyFilesFromServer() {
         return this.daemonInfo.getPropFilesInfo().getDownloadInfo()
-                .deleteFromServer();
+                              .deleteFromServer();
     }
 
     public String getPropertyFilesOnSuccessDir() {
@@ -507,7 +510,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
     /**
      * Gets the time in milliseconds for when the CrawlDaemon constructor was
      * invoked.
-     * 
+     *
      * @return
      * @uml.property name="daemonCreationTime"
      */
@@ -525,7 +528,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
 
     /**
      * Starts the program
-     * 
+     *
      * @param args
      *            Not Used
      * @throws IOException
@@ -541,6 +544,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
                 if (args[i].equals("--rmiPort"))
                     rmiPort = Integer.parseInt(args[++i]);
                 else if (args[i].equals("--waitForNotification"))
+                    waitForCrawlNotification = true;
             }
 
             LocateRegistry.createRegistry(rmiPort);
@@ -549,16 +553,16 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
                 // registry CrawlDaemon as MBean so it can be used with jconsole
                 MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
                 ObjectName name = new ObjectName(
-                        "org.apache.oodt.cas.pushpull.daemon:type=Daemon");
+                    "org.apache.oodt.cas.pushpull.daemon:type=Daemon");
             } catch (Exception e) {
                 LOG.log(Level.SEVERE,
-                        "Failed to register CrawlDaemon as a MBean Object : "
-                                + e.getMessage());
+                    "Failed to register CrawlDaemon as a MBean Object : "
+                    + e.getMessage());
             }
 
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed to create CrawlDaemon : "
-                    + e.getMessage());
+                                  + e.getMessage());
         } finally {
             // terminate the CrawlDaemon
             LOG.log(Level.INFO, "Terminating CrawlDaemon");
