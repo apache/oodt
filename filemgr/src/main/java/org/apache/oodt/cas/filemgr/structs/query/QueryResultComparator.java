@@ -45,9 +45,11 @@ public class QueryResultComparator implements Comparator<QueryResult> {
     public int compare(QueryResult qr1, QueryResult qr2) {
         String m1 = qr1.getMetadata().getMetadata(sortByMetKey);
         String m2 = qr2.getMetadata().getMetadata(sortByMetKey);
-        if (m1.equals(m2))
+        if (m1 == m2)
             return 0;
         // return null last, since they are the least interesting
+        if (m1 == null)
+            return 1;
         if (m2 == null)
             return -1;
         return m1.compareTo(m2);
