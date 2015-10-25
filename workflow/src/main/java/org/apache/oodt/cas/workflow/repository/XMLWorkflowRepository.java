@@ -265,13 +265,13 @@ public class XMLWorkflowRepository implements WorkflowRepository {
       // check its conditions
       if(task.getPreConditions() != null && task.getPreConditions().size() > 0){
         for(WorkflowCondition cond: task.getPreConditions()){
-          if(!this.conditionMap.containsKey(cond.getConditionId())){
+          if(!conditionMap.containsKey(cond.getConditionId())){
             throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined pre condition ith id: ["+cond.getConditionId()+"]");            
           }          
         }
         
         for(WorkflowCondition cond: task.getPostConditions()){
-          if(!this.conditionMap.containsKey(cond.getConditionId())){
+          if(!conditionMap.containsKey(cond.getConditionId())){
             throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined post condition ith id: ["+cond.getConditionId()+"]");            
           }              
         }
@@ -279,7 +279,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
       
         String taskId = task.getTaskId() != null ? 
              task.getTaskId():UUID.randomUUID().toString();
-        this.taskMap.put(taskId, task);
+        taskMap.put(taskId, task);
         return taskId;
     }
     
@@ -295,14 +295,14 @@ public class XMLWorkflowRepository implements WorkflowRepository {
       }
       
       for(WorkflowTask task: (List<WorkflowTask>)workflow.getTasks()){
-        if(!this.taskMap.containsKey(task.getTaskId())){
+        if(!taskMap.containsKey(task.getTaskId())){
           throw new RepositoryException("Reference in new workflow: ["+workflow.getName()+"] to undefined task with id: ["+task.getTaskId()+"]");
         }
         
         // check its conditions
         if(task.getConditions() != null && task.getConditions().size() > 0){
           for(WorkflowCondition cond: (List<WorkflowCondition>)task.getConditions()){
-            if(!this.conditionMap.containsKey(cond.getConditionId())){
+            if(!conditionMap.containsKey(cond.getConditionId())){
               throw new RepositoryException("Reference in new workflow: ["+workflow.getName()+"] to undefined condition ith id: ["+cond.getConditionId()+"]");
             }
           }
@@ -315,8 +315,8 @@ public class XMLWorkflowRepository implements WorkflowRepository {
 			workflowId = UUID.randomUUID().toString();
 			workflow.setId(workflowId);
 		}
-		this.workflowMap.put(workflowId, workflow);
-		this.eventMap.put(workflowId, Collections.singletonList(workflow));
+		workflowMap.put(workflowId, workflow);
+		eventMap.put(workflowId, Collections.singletonList(workflow));
 		return workflowId;
 		
     }    
@@ -327,11 +327,11 @@ public class XMLWorkflowRepository implements WorkflowRepository {
     @Override
     public List<WorkflowCondition> getConditionsByWorkflowId(String workflowId)
         throws RepositoryException {
-      if(!this.workflowMap.containsKey(workflowId)) throw new 
+      if(!workflowMap.containsKey(workflowId)) throw new
          RepositoryException("Attempt to obtain conditions for a workflow: " +
          		"["+workflowId+"] that does not exist!");
       
-      return ((Workflow)this.workflowMap.get(workflowId)).getConditions();
+      return ((Workflow) workflowMap.get(workflowId)).getConditions();
     }    
     
 
@@ -340,7 +340,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
      */
     @Override
     public WorkflowTask getTaskById(String taskId) throws RepositoryException {
-      return (WorkflowTask)this.taskMap.get(taskId);
+      return (WorkflowTask) taskMap.get(taskId);
     }    
 
     /**
@@ -694,7 +694,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
       task.setTaskId(workflowId+"-global-conditions-eval");
       task.setTaskName(workflowName+"-global-conditions-eval");
       task.setTaskInstanceClassName(NoOpTask.class.getName());
-      this.taskMap.put(task.getTaskId(), task);
+      taskMap.put(task.getTaskId(), task);
       return task;
     }
 

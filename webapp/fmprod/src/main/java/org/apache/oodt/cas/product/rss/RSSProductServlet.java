@@ -317,7 +317,7 @@ public class RSSProductServlet extends HttpServlet {
 
   private void getFileManager(String fileManagerUrl) {
     try {
-      this.fm = new XmlRpcFileManagerClient(new URL(fileManagerUrl));
+      fm = new XmlRpcFileManagerClient(new URL(fileManagerUrl));
     } catch (MalformedURLException e) {
       LOG.log(Level.SEVERE,
           "Unable to initialize file manager url in RSS Servlet: [url="

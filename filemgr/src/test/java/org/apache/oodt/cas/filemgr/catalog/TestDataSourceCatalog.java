@@ -264,7 +264,7 @@ public class TestDataSourceCatalog extends TestCase {
         Product testProd = getTestProduct();
         Metadata met = getTestMetadata("test");
 
-        for (int i = 0; i < this.catPageSize; i++) {
+        for (int i = 0; i < catPageSize; i++) {
             try {
                 myCat.addProduct(testProd);
                 myCat.addMetadata(met, testProd);

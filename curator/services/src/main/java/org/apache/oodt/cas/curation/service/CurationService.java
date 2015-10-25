@@ -83,7 +83,7 @@ public class CurationService extends HttpServlet implements CuratorConfMetKeys {
   @Override
   public void init(ServletConfig conf) throws ServletException {
     super.init(conf);
-    this.config = CurationServiceConfig.getInstance(conf);
+    config = CurationServiceConfig.getInstance(conf);
   }
 
   /**

@@ -159,7 +159,7 @@ public class MetadataResource extends CurationService {
   public String getMetExtractorConfigList(
       @DefaultValue("") @QueryParam("current") String current,
       @DefaultValue(FORMAT_HTML) @QueryParam("format") String format) {
-    String[] configIds = this.getFilesInDirectory(this.config
+    String[] configIds = this.getFilesInDirectory(config
         .getMetExtrConfUploadPath(), false);
 
     if (FORMAT_HTML.equals(format)) {
