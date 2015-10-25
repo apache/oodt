@@ -33,7 +33,7 @@
 }
 #invalid_creds{
 	align:center;
-	margin:0px;
+	margin:0;
 	margin-bottom:5px;
 	width:230px;
 	font-size:90%;
@@ -41,7 +41,7 @@
 
 #connect_error{
 	align:center;
-	margin:0px;
+	margin:0;
 	margin-bottom:5px;
 	width:230px;
 	font-size:90%;
@@ -49,7 +49,7 @@
 
 #spacer{
     align:center;
-    margin:0px;
+    margin:0;
     margin-bottom:5px;
     width:230px;
     font-size:90%;

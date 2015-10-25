@@ -64,7 +64,7 @@ label.invalid {
 /* Signup form */
 
 #signupform table {
-  border-spacing: 0px;
+  border-spacing: 0;
   border-collapse: collapse;
   empty-cells: show;
 }

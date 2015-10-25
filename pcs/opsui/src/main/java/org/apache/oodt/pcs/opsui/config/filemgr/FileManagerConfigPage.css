@@ -17,14 +17,14 @@
 #fm_cfg_outer_shell{
 	width:100%;
 	height:570px;
-	border-spacing:0px;
+	border-spacing:0;
 	border: 1px solid #000000;
 }
 
 #sixpadded{
 	width:100px;
 	border:1px solid #000000;
-	border-spacing:0px;
+	border-spacing:0;
 	padding: 6px;
 }
 

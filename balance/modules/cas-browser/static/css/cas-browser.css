@@ -42,7 +42,7 @@ div#productTypeSearch_length {
 div#productTypeSearch_filter {
 	float:none;
 	margin-top:-20px;	
-	right:0px;	
+	right:0;
 	text-align:left;
 	width:450px;
 }
@@ -60,7 +60,7 @@ table.dataTable  {
 }
 .dataTables_filter input[type=text] {
 	padding:5px;
-	margin-left:0px;	
+	margin-left:0;
 	width:97%;
 }
 table.dataTable thead tr th {
@@ -96,20 +96,20 @@ table.dataTable tbody tr td a {
  */
 ul.tabs {
 	border-bottom:solid 1px #ccc;
-	margin:0px;
-	padding:0px;
+	margin:0;
+	padding:0;
 	padding-bottom:6px;
 }
 ul.tabs li {
 	display:inline;
-	margin:0px;
-	padding:0px;
+	margin:0;
+	padding:0;
 }
 ul.tabs li a {
 	border:solid 1px #ccc;
 	padding:8px 12px;
 	margin-right:5px;
-	margin-bottom:0px;
+	margin-bottom:0;
 	background-color:#ccc;
 }
 ul.tabs li a.selected {
@@ -121,11 +121,11 @@ ul.tabs li a.selected {
  * MET VIEWER
  */
 h4.toggler {
-	padding:5px 0px;
+	padding:5px 0;
 	text-decoration:underline;
 	cursor:pointer;
 	_cursor:hand;
-	margin-bottom:0px;
+	margin-bottom:0;
 }
 table.metwidget {
 	
@@ -160,8 +160,8 @@ table.metwidget.multivalue td {
 	border:none;	
 }
 table.metwidget table {
-	margin:0px;
-	padding:0px;
+	margin:0;
+	padding:0;
 }
 
 div#section_products {
@@ -174,18 +174,18 @@ div#cas_browser_dataset_download {
 ul.pp_productList {
 	margin-top:10px;
 	list-style:none;
-	padding-left:0px;
+	padding-left:0;
 }
 ul.pp_productList li {
 	line-height:28px;
-	padding-left:0px;
-	margin-left:0px;
+	padding-left:0;
+	margin-left:0;
 }
 ul.pp_productList li a {
 	text-decoration:none;
 	display:block;
 	background-color:#fff;
-	padding:0px 8px;
+	padding:0 8px;
 	width:100%;
 }
 ul.pp_productList li a:hover {
@@ -226,8 +226,8 @@ table.metwidget tr td {
 }
 
 ul.tabmenu {
-	margin:0px;
-	padding:0px;
+	margin:0;
+	padding:0;
 	margin-bottom:15px;
 	padding-bottom:7px;
 	border-bottom:solid 1px #ccc;	
@@ -260,8 +260,8 @@ div#section_filter_tools_container {
 div#section_filter_tools_buttons {
 	text-align:right;
 	position:absolute;
-	top:0px;
-	right:0px;
+	top:0;
+	right:0;
 }
 div#section_filter_tools {
 	margin-bottom:15px;	
@@ -269,7 +269,7 @@ div#section_filter_tools {
 div#filter_widget_exclusive_container {
 	position:absolute;
 	top:25px;
-	right:0px;
+	right:0;
 }
 
 

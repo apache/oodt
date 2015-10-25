@@ -26,22 +26,22 @@ div#cas-header {
     text-align:right;
     border-bottom:solid 1px #000;
     overflow:none;
-    background:url(blackfade-syncd.jpg) scroll 0px 0px repeat-x;
+    background:url(blackfade-syncd.jpg) scroll 0 0 repeat-x;
 }
 
 /* DIV.CAS-LOGO-LEFT */
 div#cas-logo-left {
     position:absolute;
-    top:0px;
-    left:0px;
+    top:0;
+    left:0;
     height:67px;
     width:500px;
 }
 /* DIV.CAS-LOGO-RIGHT */
 div#cas-logo-right {
     position:absolute;
-    top:0px;
-    right:0px;
+    top:0;
+    right:0;
     height:67px;
     width:290px;
 }
@@ -50,11 +50,11 @@ div#cas-logo-right {
 h2.app-title {
     position:absolute;
     top:67px;
-    right:0px;
-    margin:0px;
+    right:0;
+    margin:0;
     width:100%;
     padding:5px;
-    padding-left:0px;
+    padding-left:0;
     font-weight:normal;
     font-size:15px;
     letter-spacing:0.03em;
@@ -83,8 +83,8 @@ div#breadcrumbs {
 }
 div#breadcrumbs ul {
     list-style:none;
-    margin:0px;
-    padding:0px;
+    margin:0;
+    padding:0;
 }
 div#breadcrumbs ul li {
     display:inline;
@@ -147,7 +147,7 @@ div.success  {
 /* HEADERS (H1,H2,H3,......) */
 h2.title {
     padding:5px;
-    margin:0px;
+    margin:0;
     border-top:solid 2px #900;
     border-bottom:solid 1px #300;
     font-weight:normal;
@@ -166,7 +166,7 @@ h4 {
  
 /* LOGIN FORM */
 form#login-form {
-    border:solid 0px #f66;
+    border:solid 0 #f66;
     background-color:#fff;
     margin:5px;
     padding:3px;
@@ -174,8 +174,8 @@ form#login-form {
 }
 form#login-form h3 {
     color:#333;
-    margin-top:0px;
-    border-bottom:dotted 0px #444;
+    margin-top:0;
+    border-bottom:dotted 0 #444;
         
 }
 form#login-form input[type=text], form#login-form input[type=password] {
@@ -186,7 +186,7 @@ form#login-form input[type=text], form#login-form input[type=password] {
 form#login-form table {
     color:#333;
     margin:5px;
-    margin-top:0px;
+    margin-top:0;
     border:solid 1px #ccc;
     width:242px;
 }
@@ -206,7 +206,7 @@ div.info {
 }
 div.info input[type=button] {
     padding:2px;
-    margin:5px 0px;
+    margin:5px 0;
 }
 div#infoNoMetadataExtractorDefined {
     position:absolute;

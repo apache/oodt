@@ -39,8 +39,8 @@ h3 {
 
 fieldset {
         border: 1 solid #336699;
-	margin: 1em 0em 1em 0em;
-	padding: 0em 1em 1em 1em;
+	margin: 1em 0 1em 0;
+	padding: 0 1em 1em 1em;
 	line-height: 1.5em;
 	width: auto;
 }

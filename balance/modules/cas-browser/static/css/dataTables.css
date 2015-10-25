@@ -109,7 +109,7 @@
 
 .dataTables_processing {
 	position: absolute;
-	top: 0px;
+	top: 0;
 	left: 50%;
 	width: 250px;
 	margin-left: -125px;
