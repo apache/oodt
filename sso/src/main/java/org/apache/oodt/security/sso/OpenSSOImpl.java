@@ -95,7 +95,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
       return false;
     }
 
-    this.addCookie(SSO_COOKIE_KEY, "\"" + new String(ssoToken) + "\"");
+    this.addCookie(SSO_COOKIE_KEY, "\"" + ssoToken + "\"");
 
     this.addCookie(USER_COOKIE_KEY,
         "\"" + new String(Base64.encodeBase64(username.getBytes())) + "\"");
@@ -153,7 +153,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
   protected String getSSOToken() {
     String cookieVal = this.getCookieVal(SSO_COOKIE_KEY);
     if (cookieVal != null) {
-      return new String(cookieVal);
+      return cookieVal;
     } else
       return null;
   }

@@ -159,7 +159,7 @@ public class BooleanQueryCriteria extends QueryCriteria {
      * @return string equivement of the query
      */
     public String toString() {
-        String query = new String();
+        String query = "";
         if (operator == AND)
             query += "AND(";
         else if (operator == OR)

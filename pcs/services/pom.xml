@@ -23,8 +23,7 @@ the License.
     <version>0.11-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
-  <groupId>org.apache.oodt</groupId>
-  <artifactId>pcs-services</artifactId>
+    <artifactId>pcs-services</artifactId>
   <packaging>war</packaging>
   <name>OODT Process Control System JAX-RS service layer</name>
   <description>A web application for exposing services form the underlying 

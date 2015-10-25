@@ -330,7 +330,7 @@ public class CatalogSearch {
                 System.out.println("Exiting...");
                 System.exit(0);
             } else if (com.equalsIgnoreCase("query")) {
-                String query = new String();
+                String query = "";
                 while (tok.hasMoreTokens()) {
                     query += tok.nextToken() + " ";
                 }

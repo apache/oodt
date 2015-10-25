@@ -53,7 +53,7 @@ public class FreeTextQueryCriteria extends QueryCriteria {
      * Default constructor.
      */
     public FreeTextQueryCriteria() {
-        elementName = new String();
+        elementName = "";
         values = new ArrayList<String>();
 
         noiseWordHash = new HashSet<String>();

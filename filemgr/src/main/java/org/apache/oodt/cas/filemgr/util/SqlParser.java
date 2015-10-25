@@ -253,7 +253,7 @@ public class SqlParser {
             char curChar = statement.charAt(i);
             switch (curChar) {
             case '(':
-                stack.push(new String("("));
+                stack.push("(");
                 break;
             case ')':
                 String value = null;

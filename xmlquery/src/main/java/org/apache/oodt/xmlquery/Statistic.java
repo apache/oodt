@@ -43,7 +43,7 @@ public class Statistic implements java.io.Serializable, Cloneable
 
 	public Statistic()
         {
-		url = new String("UNKNOWN");
+		url = "UNKNOWN";
 		time = 0;
 	}
 

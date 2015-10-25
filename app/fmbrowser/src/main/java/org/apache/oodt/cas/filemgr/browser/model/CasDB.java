@@ -118,7 +118,7 @@ public class CasDB {
   }
 
   public String getElementID(String elementName) {
-    String elementID = new String();
+    String elementID = "";
     Element e;
     try {
       e = client.getElementByName(elementName);

@@ -182,18 +182,18 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 		}
 		if (keywordQuery == null) keywordQuery = "UNKNOWN";
 		// init query header (object attributes)
-		if (id == null) id = new String("UNKNOWN");
-		if (title == null) title = new String("UNKNOWN");
-		if (desc == null) desc = new String("UNKNOWN");
-		if (ddId == null) ddId = new String("UNKNOWN");
+		if (id == null) id = "UNKNOWN";
+		if (title == null) title = "UNKNOWN";
+		if (desc == null) desc = "UNKNOWN";
+		if (ddId == null) ddId = "UNKNOWN";
 		queryHeader = new QueryHeader(id, title, desc, /*type*/"QUERY", /*status*/"ACTIVE", /*security*/"UNKNOWN",
 			/*revision*/"1999-12-12 JSH V1.0 Under Development", ddId);
 
 		// init query attributes
-		if (resultModeId == null) resultModeId = new String("ATTRIBUTE");
+		if (resultModeId == null) resultModeId = "ATTRIBUTE";
 		if (propType == null) {
-			propType = new String("BROADCAST");
-			propLevels = new String("N/A");
+			propType = "BROADCAST";
+			propLevels = "N/A";
 		}
 		this.resultModeId = resultModeId;
 		this.propogationType = propType;

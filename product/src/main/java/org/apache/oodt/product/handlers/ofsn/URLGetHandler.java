@@ -64,11 +64,11 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 	protected static final String DEFAULT_RETURN_TYPE = "RAW";
 	
 	// Instance
-	private String prodServerHostname = new String();
-	private String prodServerPort = new String();
-	private String prodServerContext = new String();
-	private String productRoot = new String();	
-	private String returnType = new String();
+	private String prodServerHostname = "";
+	private String prodServerPort = "";
+	private String prodServerContext = "";
+	private String productRoot = "";
+	private String returnType = "";
 	
 	/*
 	 * (non-Javadoc)

@@ -136,7 +136,7 @@ public class WorkflowViewer extends Panel {
     // add '...' to end of summarized string if applicable
     if (summarizedString.length() > maxLengthTotal) {
     	return summarizedString.substring(0,
-    	        Math.min(maxLengthTotal, summarizedString.length()) - 3).toString() + "...";
+            Math.min(maxLengthTotal, summarizedString.length()) - 3) + "...";
     } else
     	return summarizedString.toString();
   }
