@@ -38,7 +38,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  */
 public final class DatabaseConnectionBuilder {
 
-    public static final DataSource buildDataSource(String user, String pass,
+    public static DataSource buildDataSource(String user, String pass,
             String driver, String url) {
 
         DataSource ds;

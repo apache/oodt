@@ -261,7 +261,7 @@ public class Product {
         this.rootRef = rootRef;
     }
 
-    public static final Product getDefaultFlatProduct(String name,
+    public static Product getDefaultFlatProduct(String name,
             String defaultProductTypeId) {
         Product defaultProduct = new Product();
         defaultProduct.setProductName(name);
