@@ -44,9 +44,6 @@ public interface Batchmgr {
      * 
      * @param job
      *            The {@link JobSpec} to execute.
-     * @param remoteHost
-     *            A {@link java.net.URL} pointer to the remote host to execute the job
-     *            on.
      * @return true if the job execution was successful, false otherwise.
      * @throws JobExecutionException
      *             If there is an exception executing the job on the remote

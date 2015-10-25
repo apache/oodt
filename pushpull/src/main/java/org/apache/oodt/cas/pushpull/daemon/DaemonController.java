@@ -41,8 +41,6 @@ public class DaemonController {
     /**
      * Constructor -- initializes the XmlRpcClient
      * 
-     * @param crawlUrlStr
-     *            The URL location where the CrawlDaemon server is running
      * @throws InstantiationException
      */
     public DaemonController(String rmiUrl) throws RemoteException {

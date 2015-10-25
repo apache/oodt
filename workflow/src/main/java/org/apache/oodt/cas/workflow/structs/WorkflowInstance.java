@@ -239,7 +239,7 @@ public class WorkflowInstance {
 
   /**
    * Convenience method to format and return the
-   * {@link #currentTaskStartDateTimeIsoStr} as a {@link Date}.
+   *  as a {@link Date}.
    * 
    * @return {@link Date} representation of
    *         {@link #getCurrentTaskStartDateTimeIsoStr()}.
@@ -250,7 +250,7 @@ public class WorkflowInstance {
 
   /**
    * Convenience method to format and return the
-   * {@link #currentTaskEndDateTimeIsoStr} as a {@link Date}.
+   *  as a {@link Date}.
    * 
    * @return {@link Date} representation of
    *         {@link #getCurrentTaskEndDateTimeIsoStr()}.

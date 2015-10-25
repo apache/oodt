@@ -158,8 +158,6 @@ public class CrawlDaemon {
     }
 
     /**
-     * @param running
-     *            the running to set
      */
     public boolean stop() {
         this.running = false;

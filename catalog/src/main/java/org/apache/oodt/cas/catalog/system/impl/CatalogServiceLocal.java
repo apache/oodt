@@ -98,7 +98,6 @@ public class CatalogServiceLocal implements CatalogService {
 	/**
 	 * Set the CatalogRepository for this CatalogService, with replace existing CatalogRepository
 	 * and immediately load all Catalogs from it.
-	 * @param repository The CatalogRepository to be used by this CatalogService
 	 * @throws CatalogServiceException On Error loading given CatalogRepository
 	 */
 	protected void setCatalogRepository(CatalogRepository catalogRepository) throws CatalogServiceException {
@@ -182,8 +181,7 @@ public class CatalogServiceLocal implements CatalogService {
 	}
 
 	/**
-	 * 
-	 * @param transactionIdClass
+	 *
 	 */
 	protected void setTransactionIdFactory(
 			TransactionIdFactory transactionIdFactory) {
@@ -323,7 +321,6 @@ public class CatalogServiceLocal implements CatalogService {
 	/**
 	 * Ability to dynamically add a Catalog to this CatalogService for managing
 	 * @param catalog Catalog for this CatalogService to manage
-	 * @param allowOverride True to allow adding Catalog to override existing Catalog with same URN
 	 * @throws CatalogServiceException When allowOverride=false and one of the adding Catalog
 	 * URNs equals that of an existing Catalog. 
 	 */
@@ -349,7 +346,6 @@ public class CatalogServiceLocal implements CatalogService {
 	
 	/**
 	 * 
-	 * @param catalogUrn
 	 * @throws CatalogServiceException
 	 */
 	public void removeCatalog(String catalogId, boolean preserveMapping) throws CatalogServiceException {
@@ -741,7 +737,6 @@ public class CatalogServiceLocal implements CatalogService {
 	/**
 	 * 
 	 * @param queryExpression
-	 * @param indexPage
 	 * @return
 	 * @throws CatalogServiceException
 	 */

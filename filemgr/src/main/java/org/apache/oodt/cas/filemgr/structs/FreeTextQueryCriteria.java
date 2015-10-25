@@ -64,8 +64,6 @@ public class FreeTextQueryCriteria extends QueryCriteria {
     /**
      * Constructor for the FreeTextQueryECriteria Class.
      * 
-     * @param elementId
-     *            The name of the element to search on.
      * @param v
      *            A List of terms to search for.
      */
@@ -92,9 +90,7 @@ public class FreeTextQueryCriteria extends QueryCriteria {
      * should be used when keywords have been parsed out of user-entered free
      * text. The query will JOIN on all of these values. In order to add
      * unparsed free text to a Query, see the addFreeText method of this class.
-     * 
-     * @param value
-     *            The values of the element to search on as a List of Strings.
+     *
      */
     public void setValue(List<String> v) {
         this.values = v;
@@ -148,9 +144,7 @@ public class FreeTextQueryCriteria extends QueryCriteria {
     /**
      * Implementation of the abstract method inherited from QueryCriteria for
      * mutating the element ID to search on.
-     * 
-     * @param elementId
-     *            The element ID to search on as a String.
+     *
      */
     public void setElementName(String elementName) {
         this.elementName = elementName;

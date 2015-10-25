@@ -132,9 +132,6 @@ public final class GenericResourceManagerObjectFactory {
    * Creates a new {@link QueueRepository} implementation from the given
    * {@link QueueRepositoryFactory} class name.
    *
-   * @param serviceFactory
-   *          The class name of the {@link QueueRepositoryFactory} to use to create new
-   *          {@link QueueRepository}s.
    * @return A new implementation of a {@link QueueRepository}.
    */
   public static QueueRepository getQueueRepositoryFromFactory(String queueRepositoryFactory) {
@@ -204,9 +201,6 @@ public final class GenericResourceManagerObjectFactory {
    * Creates a new {@link NodeRepository} implementation from the given
    * {@link QueueRepositoryFactory} class name.
    *
-   * @param serviceFactory
-   *          The class name of the {@link NodeRepositoryFactory} to use to create new
-   *          {@link QueueRepository}s.
    * @return A new implementation of a {@link NodeRepository}.
    */
   public static NodeRepository getNodeRepositoryFromFactory(String nodeRepositoryFactory) {

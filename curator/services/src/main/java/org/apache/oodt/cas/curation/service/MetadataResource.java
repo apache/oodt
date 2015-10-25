@@ -590,8 +590,6 @@ public class MetadataResource extends CurationService {
    * 
    * @param product
    *          The {@link Product} to update {@link Metadata} for.
-   * @param metadata
-   *          The new {@link Metadata} to persist into the {@link Catalog}.
    * @throws CatalogException
    *           If any error occurs during the update.
    * @throws IOException

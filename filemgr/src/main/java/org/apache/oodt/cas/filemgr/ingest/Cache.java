@@ -39,7 +39,7 @@ public interface Cache {
     String DEFAULT_UNIQUE_MET_KEY = "CAS.ProductName";
 
     /**
-     * Clears the current cache. This should be used before a re-{@link #sync(String, String))}
+     * Clears the current cache. This should be used before a re-
      * occurs.
      * 
      */

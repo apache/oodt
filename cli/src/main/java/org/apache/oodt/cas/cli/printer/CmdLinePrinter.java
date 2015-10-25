@@ -35,7 +35,7 @@ public interface CmdLinePrinter {
 
    /**
     * Should generate help message for action specified by
-    * {@link #CmdLineArgs.getSpecifiedAction()}.
+    * .
     * 
     * @param action
     *           {@link CmdLineAction} for which help will be generate

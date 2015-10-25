@@ -78,8 +78,6 @@ public interface CatalogRepository {
 	 * 
 	 * @param catalogUrn
 	 *            The URN that unique represents the Catalog to be removed
-	 * @param preserveMapping
-	 *            If true, don't erase TransactionId mapping for this catalog
 	 * @throws CatalogRepositoryException
 	 *             Any Error
 	 */

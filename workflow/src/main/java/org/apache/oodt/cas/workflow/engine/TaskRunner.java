@@ -38,12 +38,12 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTask;
  * The TaskRunner thread first pops a task off the list using
  * {@link TaskQuerier#getNext()} and then so long as the thread's
  * {@link #runner} has open slots as returned by
- * {@link EngineRunner#hasOpenSlots(WorkflowTask)}, and {@link #isPause()} is
+ * , and  is
  * false and {@link #isRunning()} is true, then the task is handed off to the
  * runner for execution.
  * 
  * The TaskRunner thread can be paused during which time it waits
- * {@link #waitSeconds} seconds, wakes up to see if it's unpaused, and then goes
+ *  seconds, wakes up to see if it's unpaused, and then goes
  * back to sleep if not, otherwise, resumes executing if it was unpaused.
  * 
  * @since Apache OODT 0.5

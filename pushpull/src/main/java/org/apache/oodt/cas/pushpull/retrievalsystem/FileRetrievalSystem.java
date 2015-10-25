@@ -187,11 +187,6 @@ public class FileRetrievalSystem {
      * Creates a Crawler based on the URL, DirStruct, and Config objects passed
      * in. If no DirStruct is needed then set it to null.
      *
-     * @param url
-     *            The URL for which you want this Crawler to crawl
-     * @param dirStruct
-     *            The specified directory structure located at the host -- use
-     *            to train crawler (see DirStruct).
      * @param config
      *            The Configuration file that is passed to this objects
      *            ProtocolHandler.
@@ -619,11 +614,6 @@ public class FileRetrievalSystem {
      * Gets an available downloading session Protocol. Returns null if none are
      * available
      *
-     * @param path
-     *            The session returned will be checked against the Path passed
-     *            in and if not presently connected to the Path's URL, it will
-     *            be disconnected from it's current server and connected to the
-     *            server specified by the Path.
      * @return The found downloading session Protocol
      * @throws RemoteCommunicationException
      *             If downloading session Protocol has to be reconnected and
@@ -713,8 +703,6 @@ public class FileRetrievalSystem {
      * @param session
      *            The downloading Protocol session to be used to download the
      *            ProtocolFile
-     * @param protocolFile
-     *            The file to be downloaded
      * @param newFile
      *            The location which the downloaded file will be stored
      */

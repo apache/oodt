@@ -352,7 +352,6 @@ public class ProfileUtils {
   
   /**
    * Utility method to discover the rewrite specification for a named variable, if available.
-   * @param name
    * @param conf
    */
   private static RewriteSpec getProfileElementSpec(String origName, OpendapConfig conf) {
@@ -384,7 +383,6 @@ public class ProfileUtils {
    * Method to add a (name,value) pair to the metadata container if the value is not null or empty,
    * and doesn't exist already.
    * @param met
-   * @param field
    * @param value
    */
   public static void addIfNotNull(Metadata met, String key, String value) {
@@ -399,10 +397,7 @@ public class ProfileUtils {
   
 	/**
 	 * Method to add multiple (key, value) pairs to the metadata container if not existing already.
-	 * @param met
-	 * @param field
-	 * @param value
-	 */
+     */
 	public static void addIfNotExisting(Metadata metadata, String key, Enumeration<String> values) {
 		if (StringUtils.hasText(key) && !metadata.containsKey(key)) {
 			while (values.hasMoreElements()) {

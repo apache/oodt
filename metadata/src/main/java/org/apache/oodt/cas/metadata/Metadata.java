@@ -154,9 +154,7 @@ public class Metadata {
 
   /**
    * Removes key
-   * 
-   * @param key
-   *          Key to remove
+   *
    */
   public void removeMetadataGroup(String group) {
     Group removeGroup = this.getGroup(group, false);

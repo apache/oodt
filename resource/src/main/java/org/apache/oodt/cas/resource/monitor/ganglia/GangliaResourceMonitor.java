@@ -57,10 +57,6 @@ public class GangliaResourceMonitor implements Monitor {
 	 *            LoadCalculator
 	 *            {@link org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator}
 	 *            to calculate load
-	 * @param nodes
-	 *            resource nodes
-	 *            {@link org.apache.oodt.cas.resource.structs.ResourceNode} to
-	 *            be monitored.
 	 */
 	public GangliaResourceMonitor(LoadCalculator loadCalculator,
 			String gmetadHost, int gmetadPort) {

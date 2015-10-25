@@ -292,7 +292,7 @@ public class MultiServer {
 	}
 
 	/**
-	 * Get the servers.  Keys are {@String} names and values are {@link #Server}s.
+	 * Get the servers.  Keys are {@String} names and values are s.
 	 *
 	 * @return a {@link Map} of the defined servers.
 	 */
@@ -381,7 +381,7 @@ public class MultiServer {
 	/** Name of this application. */
 	private static String appName;
 
-	/** Known servers.  Keys are {@String} names and values are {@link #Server}s. */
+	/** Known servers.  Keys are {@String} names and values are s. */
 	private static Map servers;
 
 	/** The naming context. */

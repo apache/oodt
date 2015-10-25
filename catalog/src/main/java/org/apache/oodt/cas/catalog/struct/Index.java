@@ -57,7 +57,6 @@ public interface Index {
 	
 	/**
 	 * 
-	 * @param catalogTransactionid
 	 * @return
 	 * @throws CatalogIndexException
 	 */

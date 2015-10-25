@@ -57,7 +57,6 @@ import org.apache.wicket.model.util.ListModel;
 public class HealthMonitor extends Panel {
 
   /**
-   * @param parameters
    * @throws InstantiationException
    */
   public HealthMonitor(String id, String fmUrlStr, String wmUrlStr,

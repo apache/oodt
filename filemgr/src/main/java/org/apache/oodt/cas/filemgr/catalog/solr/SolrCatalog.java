@@ -529,7 +529,6 @@ public class SolrCatalog implements Catalog {
 
 	/**
 	 * Factory method to create a {@link ProductPage} from a {@link QueryResponse}.
-	 * @param pageNumber
 	 * @param queryResponse
 	 * @return
 	 */

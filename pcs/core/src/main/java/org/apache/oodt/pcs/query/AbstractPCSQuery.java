@@ -44,7 +44,7 @@ public abstract class AbstractPCSQuery implements PCSQuery {
   }
 
   /**
-   * Wrapper method around {@link #fm.safeGetElementByName}.
+   * Wrapper method around .
    * 
    * @param elemName
    *          The name of the metadata element to obtain the ID for.

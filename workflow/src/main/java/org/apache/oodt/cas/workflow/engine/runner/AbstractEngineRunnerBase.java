@@ -50,10 +50,7 @@ public abstract class AbstractEngineRunnerBase extends EngineRunner {
   /**
    * Creates a new AbsractEngineRunnerBase with the provided
    * {@link WorkflowInstanceRepository}.
-   * 
-   * @param instRep
-   *          The {@link WorkflowInstanceRepository} to use to persist
-   *          {@link TaskProcessor} {@link WorkflowInstance} information.
+   *
    */
   public AbstractEngineRunnerBase() {
     this.instRep = null;

@@ -75,9 +75,7 @@ public class Config implements ConfigMetKeys {
 
     /**
      * Constructor
-     * 
-     * @param fileName
-     *            Name of the configuration file to parse
+     *
      */
     public Config() {
         pi = new ProtocolInfo();

@@ -38,7 +38,6 @@ public interface QueryService {
 
 	/**
 	 * Returns all the TransactionIds that fall under the given query
-	 * @param query The query for TransactionIds
 	 * @return Returns a List of TransactionIds that meet the query, otherwise
 	 * an empty List is no TransactionIds are found for the given query
 	 */

@@ -60,16 +60,9 @@ public class MimeExtractorRepo {
 	/**
 	 * Constructs a new MimeExtractorMappingFile with the given parameters.
 	 * 
-	 * @param defaultExtractorClassName
-	 *            The name of the default extractor to call if the mime type
-	 *            can't be determined.
-	 * @param repo
-	 *            The Mime Repository to use for mime resolution.
 	 * @param magic
 	 *            Whether or not mime magic should be used or not in resolution.
 	 * 
-	 * @param mappings
-	 *            {@link List} of {@link MimeExtractorMapping}s.
 	 * @throws FileNotFoundException
 	 */
 	public MimeExtractorRepo(List<MetExtractorSpec> defaultExtractorSpecs,
@@ -148,8 +141,6 @@ public class MimeExtractorRepo {
 	}
 
 	/**
-	 * @param defaultExtractorClassName
-	 *            the defaultExtractorClassName to set
 	 */
 	public void setDefaultMetExtractorSpecs(
 			List<MetExtractorSpec> defaultExtractorSpecs) {
@@ -183,8 +174,6 @@ public class MimeExtractorRepo {
 	}
 
 	/**
-	 * @param mimeRepo
-	 *            the mimeRepo to set
 	 * @throws FileNotFoundException
 	 */
 	public void setMimeRepoFile(String mimeRepoFile)

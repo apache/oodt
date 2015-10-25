@@ -53,7 +53,6 @@ public class SqlScript {
     private List statementList = null;
 
     /**
-     * @param args
      * @throws SQLException
      */
 

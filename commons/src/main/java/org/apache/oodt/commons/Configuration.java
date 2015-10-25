@@ -621,7 +621,6 @@ public class Configuration {
 
 	/** Create a new XML document with the configuration DTD.
 	 *
-	 * @param name Name to give to the document element.
 	 * @returns An XML DOM document with the doctype and the root document empty element in place.
 	 * @throws DOMException If we can't create the document.
 	 */

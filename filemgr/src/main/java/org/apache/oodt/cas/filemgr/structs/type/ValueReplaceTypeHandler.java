@@ -92,8 +92,6 @@ public abstract class ValueReplaceTypeHandler extends TypeHandler {
     /**
      * Converts the metadata element, for this TypeHandler, value from the 
      * Catalog value to the original value
-     * @param origValue The value for the element which this TypeHandler
-     *  is responsible for
      * @return The original value
      */
     protected abstract String getOrigValue(String databaseValue);

@@ -138,9 +138,7 @@ public class RangeQueryCriteria extends QueryCriteria {
     /**
      * Mutator method for the inclusive setting for the range. Note that flag
      * should be set to true for inclusive, false for exclusive.
-     * 
-     * @param inclusive
-     *            The boolean inclusive/exclusive flag.
+     *
      */
     public void setInclusive(boolean flag) {
         inclusive = flag;
