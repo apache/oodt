@@ -18,6 +18,8 @@ package org.apache.oodt.cas.catalog.server;
 
 //JDK imports
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 //OODT imports
 import org.apache.oodt.cas.cli.CmdLineUtility;
@@ -34,7 +36,7 @@ public class CatalogServiceServerLauncher {
 		
 	private CatalogServiceServerLauncher() {}
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws IOException {
       // Load Catalog Service properties.
       String propertiesFile = System
             .getProperty("org.apache.oodt.cas.catalog.properties.file");

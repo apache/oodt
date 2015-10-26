@@ -21,6 +21,7 @@ import org.apache.oodt.commons.database.SqlScript;
 
 //JDK imports
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @author bfoster
@@ -30,7 +31,7 @@ import java.io.File;
 public class InMemoryIngestMapper extends DataSourceIngestMapper {
 
 	public InMemoryIngestMapper(String user, String pass, String driver,
-			String jdbcUrl, String tablesFile) throws Exception {
+			String jdbcUrl, String tablesFile) throws IOException {
 		super(user, pass, driver, jdbcUrl);
         SqlScript coreSchemaScript = new SqlScript(new File(tablesFile).getAbsolutePath(), this.dataSource);
         coreSchemaScript.loadScript();

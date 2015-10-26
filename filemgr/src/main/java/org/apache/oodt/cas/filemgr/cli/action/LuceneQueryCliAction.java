@@ -16,10 +16,9 @@
  */
 package org.apache.oodt.cas.filemgr.cli.action;
 
-//JDK imports
-import java.util.List;
 
-//Apache imports
+import com.google.common.collect.Lists;
+
 import org.apache.commons.lang.Validate;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
@@ -30,17 +29,17 @@ import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.TermQuery;
-
-//OODT imports
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.tools.CASAnalyzer;
 
-//Google imports
-import com.google.common.collect.Lists;
+import java.util.List;
+
 
 /**
  * A {@link CmdLineAction} which converts a Lucene-like query into a File
@@ -61,7 +60,7 @@ public class LuceneQueryCliAction extends AbstractQueryCliAction {
    }
 
    @Override
-   public ComplexQuery getQuery() throws Exception {
+   public ComplexQuery getQuery() throws ParseException, CatalogException, QueryFormulationException {
       Validate.notNull(query, "Must specify query");
 
       ComplexQuery complexQuery = new ComplexQuery();
@@ -90,18 +89,18 @@ public class LuceneQueryCliAction extends AbstractQueryCliAction {
    }
 
    private QueryCriteria generateCASQuery(Query luceneQuery)
-         throws Exception {
+       throws CatalogException, QueryFormulationException {
       if (luceneQuery instanceof TermQuery) {
          Term t = ((TermQuery) luceneQuery).getTerm();
          if (t.field().equals(FREE_TEXT_BLOCK)) {
-            throw new Exception("Free text blocks not supported!");
+            throw new CatalogException("Free text blocks not supported!");
          } else {
             return new TermQueryCriteria(t.field(), t.text());
          }
       } else if (luceneQuery instanceof PhraseQuery) {
          Term[] t = ((PhraseQuery) luceneQuery).getTerms();
          if (t[0].field().equals(FREE_TEXT_BLOCK)) {
-            throw new Exception("Free text blocks not supported!");
+            throw new CatalogException("Free text blocks not supported!");
          } else {
             BooleanQueryCriteria bqc = new BooleanQueryCriteria();
             bqc.setOperator(BooleanQueryCriteria.AND);
@@ -128,7 +127,7 @@ public class LuceneQueryCliAction extends AbstractQueryCliAction {
          }
          return bqc;
       } else {
-         throw new Exception(
+         throw new CatalogException(
                "Error parsing query! Cannot determine clause type: ["
                      + luceneQuery.getClass().getName() + "] !");
       }

@@ -103,7 +103,7 @@ public class XmlQueueRepository implements QueueRepository {
 					  String nodeId = ((Element) nodeList.item(k))
 						  .getAttribute("id");
 					  Vector assignments = (Vector) XmlStructFactory
-						  .getQueueAssignment(onodeList
+						  .getQueueAssignment(nodeList
 							  .item(k));
 					  for (Object assignment : assignments) {
 						try {
