@@ -200,7 +200,7 @@ public class RetrievalSetup {
             synchronized (this) {
                 try {
                     this.wait(5000);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         }

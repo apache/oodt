@@ -105,17 +105,17 @@ public final class EnvUtilities {
             try {
                 if (p.getErrorStream() != null)
                     p.getErrorStream().close();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             try {
                 if (p.getInputStream() != null)
                     p.getInputStream().close();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             try {
                 if (p.getOutputStream() != null)
                     p.getOutputStream().close();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
 

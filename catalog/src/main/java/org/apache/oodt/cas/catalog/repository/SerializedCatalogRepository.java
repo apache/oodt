@@ -89,7 +89,7 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		}finally {
 			try {
 				catalogIn.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}
 	}
 	
@@ -136,7 +136,7 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		}finally {
 			try {
 				catalogOut.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}	
 	}
 	
@@ -156,7 +156,7 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		}finally {
 			try {
 				urlsOut.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}	
 	}
 
@@ -172,7 +172,7 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		}finally {
 			try {
 				urlsIn.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}
 	}
 

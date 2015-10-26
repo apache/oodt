@@ -122,7 +122,7 @@ public class ResultTest extends TestCase {
 		try {
 			Result r0 = new Result(bogus);
 			fail("Result constructor failed to throw exception when given invalid XML node");
-		} catch (IllegalArgumentException good) {}
+		} catch (IllegalArgumentException ignored) {}
 
 		Result r1 = new Result("1", "text/xml", "edaDataSetInv1", "geeba1", new ArrayList(), TEST_VALUE,
 			/*classified*/true, /*validity*/3456789);

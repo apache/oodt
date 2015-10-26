@@ -172,7 +172,7 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 		Object obj = null;
 		try {
 			obj = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return obj;
 	}
 

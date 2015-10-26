@@ -187,7 +187,7 @@ public class RemoteDataTransferer implements DataTransfer {
          } finally {
             try {
                fOut.close();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
          }
       }

@@ -86,13 +86,13 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -169,13 +169,13 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -198,10 +198,10 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -236,10 +236,10 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -268,10 +268,10 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -302,10 +302,10 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -339,13 +339,13 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -386,13 +386,13 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 	
@@ -419,13 +419,13 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -453,13 +453,13 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 	

@@ -191,7 +191,7 @@ public class CatalogServiceLocal implements CatalogService {
 		if (!this.containsCatalog(catalogId)) {
 			try {
 				this.replaceCatalog(new Catalog(catalogId, index, null, false, false));
-			}catch (Exception e) {
+			}catch (Exception ignored) {
 				
 			}
 		} else {
@@ -203,7 +203,7 @@ public class CatalogServiceLocal implements CatalogService {
 		if (!this.containsCatalog(catalogId)) {
 			try {
 				this.replaceCatalog(new Catalog(catalogId, index, dictionaries, false, false));
-			}catch (Exception e) {
+			}catch (Exception ignored) {
 				
 			}
 		} else {
@@ -215,7 +215,7 @@ public class CatalogServiceLocal implements CatalogService {
 		if (!this.containsCatalog(catalogId)) {
 			try {
 				this.replaceCatalog(new Catalog(catalogId, index, dictionaries, restrictQueryPermission, restrictIngestPermission));
-			}catch (Exception e) {
+			}catch (Exception ignored) {
 				
 			}
 		} else {

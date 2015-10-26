@@ -305,7 +305,7 @@ public class SolrClient {
 	  } finally {
 	    // must release the connection even if an exception occurred
 	    method.releaseConnection();
-	    if (br!=null) try { br.close(); } catch (Exception e) {}
+	    if (br!=null) try { br.close(); } catch (Exception ignored) {}
 	  }  
   
 	  return response.toString();

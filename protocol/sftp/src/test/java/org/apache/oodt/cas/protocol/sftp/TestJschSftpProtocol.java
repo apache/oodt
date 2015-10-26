@@ -280,8 +280,8 @@ public class TestJschSftpProtocol extends TestCase {
 			}
 			return publicKeyFile;
 		} finally {
-			try { ps.close(); } catch (Exception ingore) {}
-			try { br.close(); } catch (Exception ingore) {}
+			try { ps.close(); } catch (Exception ignored) {}
+			try { br.close(); } catch (Exception ignored) {}
 		}
 	}
 }

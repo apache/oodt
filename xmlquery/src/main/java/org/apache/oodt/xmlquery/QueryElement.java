@@ -119,7 +119,7 @@ public class QueryElement implements Serializable, Cloneable, Documentable {
 		Object rc = null;
 		try {
 			rc = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return rc;
 	}
 

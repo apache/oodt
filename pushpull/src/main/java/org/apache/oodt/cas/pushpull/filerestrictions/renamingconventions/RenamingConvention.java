@@ -139,7 +139,7 @@ public class RenamingConvention {
         String parentPath = "";
         try {
             parentPath = fileToGenNewNameFor.getProtocolFile().getParent().getPath();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return parentPath;
     }
@@ -148,7 +148,7 @@ public class RenamingConvention {
         String parentFileName = "";
         try {
             parentFileName = fileToGenNewNameFor.getProtocolFile().getParent().getName();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return parentFileName;
     }
@@ -158,7 +158,7 @@ public class RenamingConvention {
         try {
             grandParentPath = fileToGenNewNameFor.getProtocolFile().getParent()
                     .getParent().getPath();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return grandParentPath;
     }

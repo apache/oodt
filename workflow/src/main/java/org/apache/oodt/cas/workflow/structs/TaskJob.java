@@ -193,7 +193,7 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
             InetAddress addr = InetAddress.getLocalHost();
             // Get the host name
             return addr.getHostName();
-        } catch (UnknownHostException e) {
+        } catch (UnknownHostException ignored) {
         }
         return null;
     }

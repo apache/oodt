@@ -34,7 +34,7 @@ class CDEResultInputStream extends InputStream {
     String s = null;
     try {
       s = res.getNextRowAsString();
-    } catch (SQLException e) {
+    } catch (SQLException ignored) {
     }
     if (rowStream != null)
       rowStream.close();

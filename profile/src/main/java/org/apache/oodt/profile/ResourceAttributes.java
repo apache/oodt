@@ -194,7 +194,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable<O
 		Object clone = null;
 		try {
 			clone = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return clone;
 	}
 

@@ -165,7 +165,7 @@ public class XmlRpcBatchMgr implements Batchmgr {
         int reducedLoad = job.getLoadValue();
         try {
             mon.reduceLoad(node, reducedLoad);
-        } catch (MonitorException e) {
+        } catch (MonitorException ignored) {
         }
     }
 

@@ -180,7 +180,7 @@ public class ImapsProtocol implements Protocol {
     } finally {
       try {
         closeFolder(currentFolder);
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -242,7 +242,7 @@ public class ImapsProtocol implements Protocol {
     } finally {
       try {
         closeFolder(currentFolder);
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
     }
     // }
@@ -271,7 +271,7 @@ public class ImapsProtocol implements Protocol {
     } finally {
       try {
         closeFolder(currentFolder);
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
     }
     return currentFilesForCurrentFolder;
@@ -368,7 +368,7 @@ public class ImapsProtocol implements Protocol {
     if (openCalls <= 0) {
       try {
         folder.close(true);
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
     }
   }

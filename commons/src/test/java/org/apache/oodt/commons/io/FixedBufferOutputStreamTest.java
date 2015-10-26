@@ -38,32 +38,32 @@ public class FixedBufferOutputStreamTest extends TestCase {
 		try {
 			new FixedBufferOutputStream(-1);
 			fail("Illegal size failed to throw exception");
-		} catch (IllegalArgumentException good) {}
+		} catch (IllegalArgumentException ignored) {}
 		FixedBufferOutputStream out = new FixedBufferOutputStream(100);
 		try {
 			out.write(null);
 			fail("Writing a null byte array failed to throw exception");
-		} catch (NullPointerException good) {}
+		} catch (NullPointerException ignored) {}
 		try {
 			out.write(null, 0, 10);
 			fail("Writing a null byte array failed to throw exception");
-		} catch (NullPointerException good) {}
+		} catch (NullPointerException ignored) {}
 		try {
 			out.write(TEST_DATA, -1, 10);
 			fail("Writing with negative offset failed to throw exception");
-		} catch (IndexOutOfBoundsException good) {}
+		} catch (IndexOutOfBoundsException ignored) {}
 		try {
 			out.write(TEST_DATA, TEST_DATA.length + 1, 10);
 			fail("Writing with offset past end of array failed to throw exception");
-		} catch (IndexOutOfBoundsException good) {}
+		} catch (IndexOutOfBoundsException ignored) {}
 		try {
 			out.write(TEST_DATA, 0, -1);
 			fail("Writing with negative length array failed to throw exception");
-		} catch (IndexOutOfBoundsException good) {}
+		} catch (IndexOutOfBoundsException ignored) {}
 		try {
 			out.write(TEST_DATA, 2, 5);
 			fail("Writing with offset and length exceeding end of array failed to throw exception");
-		} catch (IndexOutOfBoundsException good) {}
+		} catch (IndexOutOfBoundsException ignored) {}
 	}
 
 	/** Test a stream with space for no bytes at all.
@@ -172,7 +172,7 @@ public class FixedBufferOutputStreamTest extends TestCase {
 		try {										    // ...and try...
 			out.write(1);								    // ...to write to it
 			fail("Writing to a closed stream failed to throw an exception");	    // Shouldn't get here
-		} catch (IOException good) {}							    // Should get here
+		} catch (IOException ignored) {}							    // Should get here
 	}
 
 	/** Some test data in an array. */

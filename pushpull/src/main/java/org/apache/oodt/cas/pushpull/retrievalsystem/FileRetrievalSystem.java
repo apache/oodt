@@ -382,7 +382,7 @@ public class FileRetrievalSystem {
                         return;
                     else
                         this.wait(5000);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
             throw new ProtocolException(
@@ -483,7 +483,7 @@ public class FileRetrievalSystem {
                             synchronized (this) {
                                 try {
                                     wait(5000);
-                                } catch (Exception e1) {
+                                } catch (Exception ignored) {
                                 }
                             }
                         } else {
@@ -572,7 +572,7 @@ public class FileRetrievalSystem {
         while ((session = getSession(file)) == null) {
             try {
                 waitMainThread();
-            } catch (InterruptedException e1) {
+            } catch (InterruptedException ignored) {
             }
         }
         return session;
@@ -659,7 +659,7 @@ public class FileRetrievalSystem {
                 e.printStackTrace();
                 try {
                     protocolHandler.disconnect(session);
-                } catch (Exception exc) {
+                } catch (Exception ignored) {
                 }
                 session = protocolHandler.getAppropriateProtocol(file, /* reuse */
                 false, /* navigate */true);
@@ -801,7 +801,7 @@ public class FileRetrievalSystem {
                                     + e.getMessage(), e);
                             try {
                                 protocolHandler.disconnect(curSession);
-                            } catch (Exception exc) {
+                            } catch (Exception ignored) {
                             }
                             try {
                                 curSession = protocolHandler
@@ -902,7 +902,7 @@ public class FileRetrievalSystem {
 
         try {
             this.resetVariables();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 

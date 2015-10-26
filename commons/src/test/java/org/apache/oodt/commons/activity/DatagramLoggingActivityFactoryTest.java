@@ -70,7 +70,7 @@ public class DatagramLoggingActivityFactoryTest extends TestCase {
 		try {
 			new DatagramLoggingActivityFactory();
 			fail("Can make a DatagramLoggingActivityFactory without host property set");
-		} catch (IllegalStateException ex) {}
+		} catch (IllegalStateException ignored) {}
 
 		System.setProperty("org.apache.oodt.commons.activity.DatagramLoggingActivityFactory.host", "localhost");
 		System.setProperty("activity.host", "non-existent-host");

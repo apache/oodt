@@ -307,7 +307,7 @@ public class ProtocolHandler {
               wait(1000);
             }
             System.out.println();
-          } catch (Exception e) {
+          } catch (Exception ignored) {
           }
         }
       }
@@ -316,7 +316,7 @@ public class ProtocolHandler {
         // make sure protocol is disconnected
         try {
           protocol.close();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         // try connecting Protocol

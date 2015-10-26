@@ -147,7 +147,7 @@ public class XmlRpcCommunicationChannelServer extends
         } finally {
         	try {
         		fOut.close();
-        	}catch(Exception e) {}
+        	}catch(Exception ignored) {}
         }
         return true;
     }

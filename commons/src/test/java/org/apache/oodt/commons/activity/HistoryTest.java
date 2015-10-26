@@ -71,7 +71,7 @@ public class HistoryTest extends TestCase implements Storage {
 		try {
 			history.addIncident(three);
 			fail("Able to add Incidents with non-matching activity IDs");
-		} catch (IllegalArgumentException good) {}
+		} catch (IllegalArgumentException ignored) {}
 	}
 
 	/**

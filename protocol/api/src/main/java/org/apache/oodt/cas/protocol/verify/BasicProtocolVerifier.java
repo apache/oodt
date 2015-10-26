@@ -75,7 +75,7 @@ public class BasicProtocolVerifier implements ProtocolVerifier {
                     + " failed compatibility test : " + e.getMessage(), e);
             return false;
         } finally {
-        	try { protocol.close(); } catch (Exception e) {}
+        	try { protocol.close(); } catch (Exception ignored) {}
         }
         return true;
     }

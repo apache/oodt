@@ -65,7 +65,7 @@ public class EnumeratedProfileElementTest extends ProfileElementTestCase {
 				"test", "test", "test", "test", "test", Collections.EMPTY_LIST, /*obligation*/true, /*maxOccur*/1,
 				"comment", Collections.singletonList(null));
 			fail("Null values must not be allowed as values in enumerated elements.");
-		} catch (IllegalArgumentException good) {}
+		} catch (IllegalArgumentException ignored) {}
 	}
 
 	protected void checkEnumFlag(String text) {

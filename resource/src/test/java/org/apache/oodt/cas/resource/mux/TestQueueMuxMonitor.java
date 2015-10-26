@@ -136,7 +136,7 @@ public class TestQueueMuxMonitor extends TestCase {
             try {
                 monitor.reduceLoad(superfluous, 2);
                 TestCase.fail("Exception not thrown for unknown queue.");
-            } catch (MonitorException e) {}
+            } catch (MonitorException ignored) {}
         } catch(MonitorException e) {
             TestCase.fail("Unanticipated monitor exception caught: "+e.getMessage());
         }
@@ -151,7 +151,7 @@ public class TestQueueMuxMonitor extends TestCase {
             try {
                 monitor.assignLoad(superfluous, 2);
                 TestCase.fail("Exception not thrown for unknown queue.");
-            } catch (MonitorException e) {}
+            } catch (MonitorException ignored) {}
         } catch(MonitorException e) {
             TestCase.fail("Unanticipated monitor exception caught: "+e.getMessage());
         }

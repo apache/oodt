@@ -339,7 +339,7 @@ public class WorkflowProcessorHelper {
     } catch (Exception e) {
       try {
         host = ExecHelper.exec(new String[] { "hostname" }).getOutput().trim();
-      } catch (Exception e1) {
+      } catch (Exception ignored) {
       }
     }
     if (host == null)

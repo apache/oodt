@@ -301,7 +301,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
             synchronized (this) {
                 try {
                     wait(length);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
             }
         }
@@ -319,7 +319,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
                                 + " on RMI registry port " + this.rmiRegPort
                                 + " has been stopped");
             this.wait(0);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         LOG.log(Level.INFO, "Daemon with ID = " + this.getDaemonID()
                             + " on RMI registry port " + this.rmiRegPort + " has resumed");

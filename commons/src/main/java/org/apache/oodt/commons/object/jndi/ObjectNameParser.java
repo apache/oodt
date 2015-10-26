@@ -26,7 +26,7 @@ import javax.naming.NamingException;
  * @author Kelly
  */
 class ObjectNameParser implements NameParser {
-	private static Properties syntax = new Properties(); {
+	private static Properties syntax = new Properties(); static {
 		syntax.put("jndi.syntax.direction", "flat");
 		syntax.put("jndi.syntax.ignorecase", "false");
 	}

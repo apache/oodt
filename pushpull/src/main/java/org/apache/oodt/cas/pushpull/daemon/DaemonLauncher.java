@@ -184,7 +184,7 @@ public class DaemonLauncher implements DaemonLauncherMBean {
         synchronized (daemonLauncher) {
             try {
                 daemonLauncher.wait();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     }

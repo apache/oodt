@@ -82,7 +82,7 @@ public class TaskProcessor extends WorkflowProcessor {
           try {
             requiredBlockTimeElapse = Integer
                 .parseInt(requiredBlockTimeElapseString);
-          } catch (Exception e) {
+          } catch (Exception ignored) {
           }
         }
         Calendar calendar = Calendar.getInstance();

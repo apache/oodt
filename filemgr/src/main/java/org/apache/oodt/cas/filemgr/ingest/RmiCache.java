@@ -59,7 +59,7 @@ public class RmiCache implements Cache {
     public void clear() {
         try {
             rmiCacheServer.clear();
-        } catch (RemoteException e) {
+        } catch (RemoteException ignored) {
         }
 
     }
@@ -85,7 +85,7 @@ public class RmiCache implements Cache {
     public void setFileManager(URL fmUrl) {
         try {
             rmiCacheServer.setFileManager(fmUrl);
-        } catch (RemoteException e) {
+        } catch (RemoteException ignored) {
             
         }
 
@@ -144,7 +144,7 @@ public class RmiCache implements Cache {
         try {
             rmiCacheServer
                     .setUniqueElementProductTypeNames(uniqueElementProductTypeNames);
-        } catch (RemoteException e) {
+        } catch (RemoteException ignored) {
         }
 
     }
@@ -170,7 +170,7 @@ public class RmiCache implements Cache {
     public void setUniqueElementName(String uniqueElementName) {
         try {
             rmiCacheServer.setUniqueElementName(uniqueElementName);
-        } catch (RemoteException e) {
+        } catch (RemoteException ignored) {
         }
     }
 

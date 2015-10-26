@@ -51,7 +51,7 @@ class ObjectCodec implements Codec {
 			ObjectOutputStream objStream = new ObjectOutputStream(base64);
 			objStream.writeObject(object);
 			objStream.close();
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		Element value = doc.createElement("resultValue");
 		value.appendChild(doc.createCDATASection(byteArray.toString()));
 		return value;
@@ -77,7 +77,7 @@ class ObjectCodec implements Codec {
 			throw ex;
 		} catch (OptionalDataException ex) {
 			throw ex;
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		return rc;
 	}
 

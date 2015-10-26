@@ -55,17 +55,17 @@ public final class UnsupportedShellProcessProvider extends
 		try {
 			stdin.getInputStream().close();
 			stdin.getOutputStream().close();
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		try {
 			stdout.getInputStream().close();
 			stdout.getOutputStream().close();
-		} catch (Exception ex1) {
+		} catch (Exception ignored) {
 		}
 		try {
 			stderr.getInputStream().close();
 			stderr.getOutputStream().close();
-		} catch (Exception ex2) {
+		} catch (Exception ignored) {
 		}
 	}
 

@@ -46,7 +46,7 @@ class CompressedStringCodec implements Codec {
 			GZIPOutputStream gzip = new GZIPOutputStream(base64);
 			gzip.write(object.toString().getBytes());
 			gzip.close();
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		Element value = doc.createElement("resultValue");
 		value.appendChild(doc.createCDATASection(byteArray.toString()));
 		return value;
@@ -70,7 +70,7 @@ class CompressedStringCodec implements Codec {
 				b.append(new String(buf, 0, numRead));
 			gzip.close();
 			rc = b.toString();
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		return rc;
 	}
 

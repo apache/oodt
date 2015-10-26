@@ -200,7 +200,7 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 		Object clone = null;
 		try {
 			clone = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return clone;
 	}
 

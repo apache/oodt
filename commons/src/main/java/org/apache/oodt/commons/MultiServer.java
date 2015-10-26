@@ -571,7 +571,7 @@ public class MultiServer {
 			public void run() {
 				try {
 					context.rebind(name, servant);
-				} catch (NamingException ex) {}
+				} catch (NamingException ignored) {}
 			}
 		}
 	}

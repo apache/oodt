@@ -54,7 +54,7 @@ class CompressedObjectCodec implements Codec {
 			ObjectOutputStream objStream = new ObjectOutputStream(gzip);
 			objStream.writeObject(object);
 			objStream.close();
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		Element value = doc.createElement("resultValue");
 		value.appendChild(doc.createCDATASection(byteArray.toString()));
 		return value;
@@ -81,7 +81,7 @@ class CompressedObjectCodec implements Codec {
 			throw ex;
 		} catch (OptionalDataException ex) {
 			throw ex;
-		} catch (IOException cantHappen) {}
+		} catch (IOException ignored) {}
 		return rc;
 	}
 

@@ -166,7 +166,7 @@ public class ResourceAttributesTest extends TestCase {
 		t.transform(s, r);
 	}
 	
-	static ResourceAttributes TEST_RESOURCE_ATTRIBUTES; {
+	static ResourceAttributes TEST_RESOURCE_ATTRIBUTES; static {
 		List contexts = Collections.singletonList("context");
 		List locations = Collections.singletonList("location");
 		TEST_RESOURCE_ATTRIBUTES = new ResourceAttributes(null, "identifier", "title",

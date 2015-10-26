@@ -82,7 +82,7 @@ public class XStreamJobRepository implements JobRepository {
 		}finally {
 			try {
 				os.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}
 	}
 
@@ -97,7 +97,7 @@ public class XStreamJobRepository implements JobRepository {
 		}finally {
 			try {
 				is.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}
 	}
 
@@ -132,7 +132,7 @@ public class XStreamJobRepository implements JobRepository {
 		}finally {
 			try {
 				os.close();
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 		}
 	}
 	

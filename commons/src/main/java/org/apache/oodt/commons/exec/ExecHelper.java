@@ -402,13 +402,13 @@ public final class ExecHelper {
     	}finally {
             try {
             	process.getErrorStream().close();
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
             try {
                	process.getInputStream().close();
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
             try {
             	process.getOutputStream().close();
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
     	}
     }
 

@@ -104,7 +104,7 @@ public class CasDB {
     try {
       e = client.getElementByName(elementName);
       elementID = e.getElementId();
-    } catch (ValidationLayerException e1) {
+    } catch (ValidationLayerException ignored) {
     }
     return elementID;
   }

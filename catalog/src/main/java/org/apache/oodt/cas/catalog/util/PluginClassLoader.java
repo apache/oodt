@@ -78,7 +78,7 @@ public class PluginClassLoader extends URLClassLoader {
 					}
 				}
 			}
-		}catch (Exception e) {}
+		}catch (Exception ignored) {}
 		return urls.toArray(new URL[urls.size()]);
 	}
 	
@@ -88,7 +88,7 @@ public class PluginClassLoader extends URLClassLoader {
 			if (clazz == null)
 				clazz = this.findClass(name);
 			return clazz;
-		}catch (Exception e) {}
+		}catch (Exception ignored) {}
 		return super.loadClass(name, resolve);
 	}
 

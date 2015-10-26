@@ -869,7 +869,7 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 		Object rc = null;
 		try {
 			rc = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return rc;
 	}
 
