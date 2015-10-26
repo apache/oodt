@@ -8,7 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Vector;
-
+@SuppressWarnings("all")
     public class QueryParser/*@bgen(jjtree)*/implements QueryParserTreeConstants, QueryParserConstants {/*@bgen(jjtree)*/
   protected JJTQueryParserState jjtree = new JJTQueryParserState();
         public static QueryExpression parseQueryExpression(String queryExpressionString) throws ParseException, TokenMgrError {
