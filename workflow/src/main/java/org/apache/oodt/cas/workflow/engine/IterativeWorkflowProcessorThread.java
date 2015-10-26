@@ -231,6 +231,11 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
           getHostname());
       workflowInst.getSharedContext().replaceMetadata(WORKFLOW_MANAGER_URL,
           this.wmgrParentUrl.toString());
+      workflowInst.getSharedContext().replaceMetadata(WORKFLOW_ID,
+              workflowInst.getParentChildWorkflow().getId());
+      workflowInst.getSharedContext().replaceMetadata(WORKFLOW_NAME,
+              workflowInst.getParentChildWorkflow().getName());
+
 
       if (rClient != null) {
         // build up the Job

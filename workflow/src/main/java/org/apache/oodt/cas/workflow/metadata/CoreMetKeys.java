@@ -31,6 +31,10 @@ public interface CoreMetKeys {
     String TASK_ID = "TaskId";
 
     String WORKFLOW_INST_ID = "WorkflowInstId";
+    
+    String WORKFLOW_ID = "WorkflowId";
+
+    String WORKFLOW_NAME = "WorkflowName";
 
     String JOB_ID = "JobId";
 
