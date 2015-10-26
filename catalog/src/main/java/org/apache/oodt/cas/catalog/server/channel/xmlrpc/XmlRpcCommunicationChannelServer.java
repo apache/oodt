@@ -144,9 +144,7 @@ public class XmlRpcCommunicationChannelServer extends
 	        	fOut = new FileOutputStream(outFile, false);
 	
 	        fOut.write(fileData, (int) offset, (int) numBytes);
-        }catch (Exception e) {
-        	throw e;
-        }finally {
+        } finally {
         	try {
         		fOut.close();
         	}catch(Exception e) {}

@@ -62,11 +62,7 @@ public class QueryBuilder {
       org.apache.lucene.search.Query luceneQ) {
     if (luceneQ instanceof TermQuery) {
       Term t = ((TermQuery) luceneQ).getTerm();
-      if (t.field().equals("__FREE__")) {
-        // if(casQuery.getCriteria().isEmpty()) casQuery.addCriterion(new
-        // FreeTextQueryCriteria());
-        // ((FreeTextQueryCriteria)casQuery.getCriteria().get(0)).addValue(t.text());
-      } else {
+      if (!t.field().equals("__FREE__")) {
         String element = database.getElementID(t.field());
         if (!element.equals("") && !t.text().equals("")) {
 
@@ -75,12 +71,7 @@ public class QueryBuilder {
       }
     } else if (luceneQ instanceof PhraseQuery) {
       Term[] t = ((PhraseQuery) luceneQ).getTerms();
-      if (t[0].field().equals("__FREE__")) {
-        // if(casQuery.getCriteria().isEmpty()) casQuery.addCriterion(new
-        // FreeTextQueryCriteria());
-        // for(int i=0;i<t.length;i++)
-        // ((FreeTextQueryCriteria)casQuery.getCriteria().get(0)).addValue(t[i].text());
-      } else {
+      if (!t[0].field().equals("__FREE__")) {
         for (Term aT : t) {
           String element = database.getElementID(aT.field());
           if (!element.equals("") && !aT.text().equals("")) {

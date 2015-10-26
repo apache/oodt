@@ -124,7 +124,6 @@ public class OFSNFileHandlerConfiguration {
   }
 
   private void cleanse(String path) {
-    if (path != null && !path.endsWith("/")) {
-    }
+
   }
 }

@@ -279,8 +279,6 @@ public class TestJschSftpProtocol extends TestCase {
 				ps.println(nextLine.replace("2022", Integer.toString(port)));
 			}
 			return publicKeyFile;
-		} catch (IOException e) {
-			throw e;
 		} finally {
 			try { ps.close(); } catch (Exception ingore) {}
 			try { br.close(); } catch (Exception ingore) {}

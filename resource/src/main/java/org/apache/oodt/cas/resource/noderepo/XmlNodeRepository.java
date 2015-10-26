@@ -18,11 +18,13 @@
 package org.apache.oodt.cas.resource.noderepo;
 
 //OODT imports
-import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.util.XmlStructFactory;
+import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
-//JDK imports
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -34,10 +36,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//JDK imports
 //DOM imports
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -75,9 +75,6 @@ public class XmlNodeRepository implements NodeRepository {
 				if (nodesDir.isDirectory()) {
 
 					String nodesDirStr = nodesDir.getAbsolutePath();
-
-					if (!nodesDirStr.endsWith("/")) {
-					}
 
 					// get all the workflow xml files
 					File[] nodesFiles = nodesDir.listFiles(nodesXmlFilter);

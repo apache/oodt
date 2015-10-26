@@ -177,8 +177,6 @@ public class XmlRpcBatchMgr implements Batchmgr {
         synchronized (this.specToProxyMap) {
             XmlRpcBatchMgrProxy proxy = (XmlRpcBatchMgrProxy) this.specToProxyMap
                     .remove(spec.getJob().getId());
-            if (proxy != null) {
-            }
         }
 
         try {
@@ -197,8 +195,7 @@ public class XmlRpcBatchMgr implements Batchmgr {
         synchronized (this.specToProxyMap) {
             XmlRpcBatchMgrProxy proxy = (XmlRpcBatchMgrProxy) this.specToProxyMap
                     .remove(spec.getJob().getId());
-            if (proxy != null) {
-            }
+
         }
 
         try {

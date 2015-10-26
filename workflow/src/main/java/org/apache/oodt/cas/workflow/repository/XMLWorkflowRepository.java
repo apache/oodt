@@ -531,10 +531,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
             try {
               File workflowDir = new File(new URI(dirUri));
               if (workflowDir.isDirectory()) {
-                String workflowDirStr = workflowDir.getAbsolutePath();
 
-                if (!workflowDirStr.endsWith("/")) {
-                }
 
                 // get all the workflow xml files
                 File[] workflowFiles = workflowDir

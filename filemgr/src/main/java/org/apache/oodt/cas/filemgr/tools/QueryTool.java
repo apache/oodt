@@ -129,17 +129,13 @@ public final class QueryTool {
             Query luceneQuery) {
         if (luceneQuery instanceof TermQuery) {
             Term t = ((TermQuery) luceneQuery).getTerm();
-            if (t.field().equals(freeTextBlock)) {
-                // nothing for now
-            } else {
+            if (!t.field().equals(freeTextBlock)) {
                 casQuery.addCriterion(new TermQueryCriteria(t.field(), 
                         t.text()));
             }
         } else if (luceneQuery instanceof PhraseQuery) {
             Term[] t = ((PhraseQuery) luceneQuery).getTerms();
-            if (t[0].field().equals(freeTextBlock)) {
-                // nothing for now
-            } else {
+            if (!t[0].field().equals(freeTextBlock)) {
                 for (Term aT : t) {
                     casQuery.addCriterion(new TermQueryCriteria(
                         aT.field(), aT.text()));

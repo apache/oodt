@@ -244,22 +244,13 @@ public class CatalogSearch {
             Query luceneQuery) {
         if (luceneQuery instanceof TermQuery) {
             Term t = ((TermQuery) luceneQuery).getTerm();
-            if (t.field().equals(freeTextBlock)) {
-                // if(casQuery.getCriteria().isEmpty())
-                // casQuery.addCriterion(new FreeTextQueryCriteria());
-                // ((FreeTextQueryCriteria)casQuery.getCriteria().get(0)).addValue(t.text());
-            } else {
+            if (!t.field().equals(freeTextBlock)) {
                 casQuery
                         .addCriterion(new TermQueryCriteria(t.field(), t.text()));
             }
         } else if (luceneQuery instanceof PhraseQuery) {
             Term[] t = ((PhraseQuery) luceneQuery).getTerms();
-            if (t[0].field().equals(freeTextBlock)) {
-                // if(casQuery.getCriteria().isEmpty())
-                // casQuery.addCriterion(new FreeTextQueryCriteria());
-                // for(int i=0;i<t.length;i++)
-                // ((FreeTextQueryCriteria)casQuery.getCriteria().get(0)).addValue(t[i].text());
-            } else {
+            if (!t[0].field().equals(freeTextBlock)) {
                 for (Term aT : t) {
                     casQuery.addCriterion(new TermQueryCriteria(aT.field(),
                         aT.text()));

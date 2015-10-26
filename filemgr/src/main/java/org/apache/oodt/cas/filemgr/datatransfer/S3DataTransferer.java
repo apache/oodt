@@ -115,8 +115,6 @@ public class S3DataTransferer implements DataTransfer {
 			outStream = new FileOutputStream(new File(directory, new File(
 			    stripProtocol(ref.getDataStoreReference(), false)).getName()));
 			IOUtils.copy(inStream, outStream);
-		} catch (IOException e) {
-			throw e;
 		} finally {
 			try { inStream.close(); } catch (Exception e) {}
 			try { outStream.close(); } catch (Exception e) {}

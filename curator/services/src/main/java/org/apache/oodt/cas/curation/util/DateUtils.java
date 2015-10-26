@@ -37,17 +37,15 @@ import java.util.Locale;
  */
 public final class DateUtils {
 
-  public static SimpleDateFormat ISO8601FORMAT = new SimpleDateFormat(
-      "yyyy-MM-dd'T'HH:mm:ssZ");
-
-  public static SimpleDateFormat RFC822DATEFORMAT = new SimpleDateFormat(
-      "EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z", Locale.US);
-
   public static String getDateAsRFC822String(Date date) {
+    SimpleDateFormat RFC822DATEFORMAT = new SimpleDateFormat(
+        "EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z", Locale.US);
     return RFC822DATEFORMAT.format(date);
   }
 
   public static String getDateAsISO8601String(Date date) {
+    SimpleDateFormat ISO8601FORMAT = new SimpleDateFormat(
+        "yyyy-MM-dd'T'HH:mm:ssZ");
     String result = ISO8601FORMAT.format(date);
     // convert YYYYMMDDTHH:mm:ss+HH00 into YYYYMMDDTHH:mm:ss+HH:00
     // - note the added colon for the Timezone

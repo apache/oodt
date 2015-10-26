@@ -58,8 +58,6 @@ public class ListingConf {
       InstantiationException {
     try {
       this.conf = new PGEConfigFileReader().read(new FileInputStream(file));
-    } catch (FileNotFoundException e) {
-      throw e;
     } catch (PGEConfigFileException e) {
       throw new InstantiationException(e.getMessage());
     } finally {

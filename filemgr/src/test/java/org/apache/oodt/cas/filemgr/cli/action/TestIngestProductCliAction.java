@@ -261,8 +261,6 @@ public class TestIngestProductCliAction extends TestCase {
          ps.println("    <val>" +  NOMINAL_DATE_MET_VAL + "</val>");
          ps.println("  </keyval>");
          ps.println("</cas:metadata>");
-      } catch (IOException e) {
-         throw e;
       } finally {
          ps.close();
       }
@@ -277,8 +275,6 @@ public class TestIngestProductCliAction extends TestCase {
          try {
             ps = new PrintStream(new FileOutputStream(new File(reference, subRef)));
             ps.println("This is a test sub-reference file");
-         } catch (IOException e) {
-            throw e;
          } finally {
             ps.close();
          }
@@ -293,8 +289,6 @@ public class TestIngestProductCliAction extends TestCase {
       try {
          ps = new PrintStream(new FileOutputStream(reference));
          ps.println("This is a test sub-reference file");
-      } catch (IOException e) {
-         throw e;
       } finally {
          ps.close();
       }

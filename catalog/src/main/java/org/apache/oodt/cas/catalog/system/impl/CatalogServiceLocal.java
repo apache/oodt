@@ -374,9 +374,7 @@ public class CatalogServiceLocal implements CatalogService {
 						try {
 							LOG.log(Level.INFO, "Deleting all index mappings for catalog '" + rmCatalog + "'");
 							this.ingestMapper.deleteAllMappingsForCatalog(catalogId);
-						}catch (Exception e) {
-							throw e;
-						}finally {
+						} finally {
 							this.ingestMapperLock.writeLock().unlock();
 						}
 					}

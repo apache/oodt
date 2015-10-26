@@ -241,11 +241,7 @@ public class LeafListener extends MouseAdapter{
 	       	if(e.isPopupTrigger()){
 	       		popup.show(tree,e.getX(),e.getY());
 	       	}
-	       	else{
-	       		//System.out.println("Wasn't popup trigger!");
-	       	}
 
-	       //}
 	    }
 	  }
 	  
@@ -278,11 +274,7 @@ public class LeafListener extends MouseAdapter{
 	       	if(e.isPopupTrigger()){
 	       		popup.show(tree,e.getX(),e.getY());
 	       	}
-	       	else{
-	       		//System.out.println("Wasn't popup trigger!");
-	       	}
 
-	       //}
 	    }
 	  }
 	  

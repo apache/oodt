@@ -489,10 +489,8 @@ public class DefaultProductSerializer implements ProductSerializer {
 	 * @param metadata : the metadata container
 	 */
 	protected void deserializeSingleValueField(String name, String value, Metadata metadata) {
-		
-		if (name.equals(Parameters.ID)) {
-			// ignore Solr internal identifier (as it is duplicate information of CAS.ProductId)
-		} else {
+	  	// ignore Solr internal identifier (as it is duplicate information of CAS.ProductId)
+		if (!name.equals(Parameters.ID)){
 			metadata.addMetadata(name, value);
 		}
 

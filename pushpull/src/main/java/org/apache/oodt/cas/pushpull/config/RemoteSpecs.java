@@ -110,7 +110,7 @@ public class RemoteSpecs implements ConfigParserMetKeys {
               .getAttribute(FIRSTRUN_DATETIME_ATTR);
           period = runInfo.getAttribute(PERIOD_ATTR);
           runOnReboot = (runInfo.getAttribute(RUNONREBOOT_ATTR)
-                                .toLowerCase().equals("yes")) ? true : false;
+                                .toLowerCase().equals("yes"));
           epsilon = runInfo.getAttribute(EPSILON_ATTR);
           if (epsilon.equals(""))
             epsilon = "0s";
