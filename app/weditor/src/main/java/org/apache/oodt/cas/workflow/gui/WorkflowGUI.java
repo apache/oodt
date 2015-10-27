@@ -41,6 +41,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -74,7 +75,7 @@ public class WorkflowGUI extends JFrame {
 
   private XmlWorkflowModelRepository repo;
 
-  public WorkflowGUI() throws Exception {
+  public WorkflowGUI() throws IOException, IllegalAccessException, InstantiationException {
 
     this.addWindowFocusListener(new WindowFocusListener() {
 

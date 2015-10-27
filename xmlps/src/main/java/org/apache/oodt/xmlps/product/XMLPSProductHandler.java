@@ -18,8 +18,10 @@
 package org.apache.oodt.xmlps.product;
 
 //OODT imports
+
 import org.apache.oodt.product.ProductException;
 import org.apache.oodt.product.QueryHandler;
+import org.apache.oodt.xmlps.exceptions.XmlpsException;
 import org.apache.oodt.xmlps.mapping.DatabaseTable;
 import org.apache.oodt.xmlps.mapping.FieldScope;
 import org.apache.oodt.xmlps.mapping.Mapping;
@@ -132,7 +134,7 @@ public class XMLPSProductHandler implements QueryHandler {
         return query;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws InstantiationException, ProductException {
         String usage = "XMLPSProductHandler <query>\n";
 
         if (args.length != 1) {
@@ -276,7 +278,7 @@ public class XMLPSProductHandler implements QueryHandler {
     }
 
     protected void translateToDomain(List<QueryElement> elemSet,
-            boolean selectSet) throws Exception {
+            boolean selectSet) throws XmlpsException {
         // go through each query element: use the mapping fields
         // to translate the names
 
@@ -318,7 +320,7 @@ public class XMLPSProductHandler implements QueryHandler {
                         break;
                     QueryElement litElem = i.next();
                     if (!litElem.getRole().equals(XMLQueryHelper.ROLE_LITERAL)) {
-                        throw new Exception("next query element not "
+                        throw new XmlpsException("next query element not "
                                 + XMLQueryHelper.ROLE_LITERAL + "! role is "
                                 + litElem.getRole() + " instead!");
                     }

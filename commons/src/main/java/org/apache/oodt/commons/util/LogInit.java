@@ -15,9 +15,13 @@
 
 package org.apache.oodt.commons.util;
 
-import java.util.*;
-import org.apache.oodt.commons.io.*;
+import org.apache.oodt.commons.io.Log;
+import org.apache.oodt.commons.io.LogFilter;
+import org.apache.oodt.commons.io.LogListener;
+
 import java.beans.PropertyChangeEvent;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
 	The <code>LogInit</code> class is intended to be used to initialize
@@ -51,7 +55,8 @@ public class LogInit {
 		@param source The default source to be included in messages.
 		@throws Exception If the logging capability cannot be initialized.
 	*/
-	public static void init(Properties props, String source) throws Exception {
+	public static void init(Properties props, String source)
+		throws ClassNotFoundException, IllegalAccessException, InstantiationException {
 		// Set up the log event pipeline: filter -> multiplexer -> memory
 		// log/user-specified log.  First the multiplexer.
 		LogEventMultiplexer mux = new LogEventMultiplexer();

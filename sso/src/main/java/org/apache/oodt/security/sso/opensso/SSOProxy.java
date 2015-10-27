@@ -17,7 +17,7 @@
 
 package org.apache.oodt.security.sso.opensso;
 
-//JDK imports
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-//APACHE imports
 
 /**
  * 
@@ -114,7 +112,7 @@ public class SSOProxy implements SSOMetKeys {
   }
 
   public IdentityDetails readIdentity(String username, String token)
-      throws Exception {
+      throws IOException, SingleSignOnException {
     HttpClient httpClient = new HttpClient();
     PostMethod post = new PostMethod(IDENT_READ_ENDPOINT);
     LOG.log(Level.INFO, "Obtaining identity: username: [" + username
@@ -127,14 +125,14 @@ public class SSOProxy implements SSOMetKeys {
 
     httpClient.executeMethod(post);
     if (post.getStatusCode() != HttpStatus.SC_OK) {
-      throw new Exception(post.getStatusLine().toString());
+      throw new SingleSignOnException(post.getStatusLine().toString());
     }
 
     return parseIdentityDetails(post.getResponseBodyAsString().trim());
 
   }
 
-  public UserDetails getUserAttributes(String token) throws Exception {
+  public UserDetails getUserAttributes(String token) throws IOException, SingleSignOnException {
     HttpClient httpClient = new HttpClient();
     PostMethod post = new PostMethod(IDENT_ATTR_ENDPOINT);
     LOG.log(Level.INFO, "Obtaining user attributes: token: [" + token
@@ -145,7 +143,7 @@ public class SSOProxy implements SSOMetKeys {
 
     httpClient.executeMethod(post);
     if (post.getStatusCode() != HttpStatus.SC_OK) {
-      throw new Exception(post.getStatusLine().toString());
+      throw new SingleSignOnException(post.getStatusLine().toString());
     }
 
     return parseUserDetails(post.getResponseBodyAsString().trim());
@@ -282,7 +280,7 @@ public class SSOProxy implements SSOMetKeys {
     return details;
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException, SingleSignOnException {
     String usage = "SSOProxy <cmd> [args]\n\n" + "Where cmd is one of:\n"
         + "authenticate <user> <pass>\n" + "identity <user> <token>\n"
         + "attributes <token>\nlogout <token>\n";

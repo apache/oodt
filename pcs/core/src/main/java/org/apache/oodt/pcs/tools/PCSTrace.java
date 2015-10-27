@@ -18,20 +18,21 @@
 package org.apache.oodt.pcs.tools;
 
 //JDK imports
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-
-//OODT imports
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.pcs.metadata.PCSConfigMetadata;
 import org.apache.oodt.pcs.metadata.PCSMetadata;
 import org.apache.oodt.pcs.pedigree.Pedigree;
 import org.apache.oodt.pcs.pedigree.PedigreeTree;
 import org.apache.oodt.pcs.util.FileManagerUtils;
 import org.apache.oodt.pcs.util.WorkflowManagerUtils;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+
+//OODT imports
 
 /**
  * 
@@ -190,7 +191,7 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
    * @param args
    * @throws Exception
    */
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     String productName = null;
     String workflowUrlStr = null, filemgrUrlStr = null;
     boolean enableNotCat = false;

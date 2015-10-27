@@ -19,6 +19,9 @@
 package org.apache.oodt.commons.date;
 
 //JDK imports
+
+import org.apache.oodt.commons.exceptions.CommonsException;
+
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -95,16 +98,16 @@ public class DateUtils {
     
     private DateUtils() {}
     
-    public static int getLeapSecsForDate(Calendar utcCal) throws Exception {
+    public static int getLeapSecsForDate(Calendar utcCal) throws CommonsException {
         long timeInMillis = utcCal.getTimeInMillis();
         for (int i = dateAndLeapSecs.length - 1; i >= 0; i--) {
             if (dateAndLeapSecs[i][IndexType.DATE.index] < timeInMillis)
                 return (int) dateAndLeapSecs[i][IndexType.LEAP_SECS.index];
         }
-        throw new Exception("No Leap Second found for given date!");
+        throw new CommonsException("No Leap Second found for given date!");
     }
     
-    public static synchronized Calendar toTai(Calendar cal) throws Exception {
+    public static synchronized Calendar toTai(Calendar cal) throws CommonsException {
         Calendar taiCal = Calendar.getInstance(createTaiTimeZone(getLeapSecsForDate(cal)));
         taiCal.setTimeInMillis(cal.getTimeInMillis() + getLeapSecsForDate(cal) * 1000);
         return taiCal;
@@ -116,11 +119,11 @@ public class DateUtils {
         return calUtc;
     }
     
-    private static Calendar taiToLocal(Calendar taiCal) throws Exception {
+    private static Calendar taiToLocal(Calendar taiCal)  {
         return toLocal(taiToUtc(taiCal));
     }
 
-    public static synchronized Calendar toLocal(Calendar cal) throws Exception {
+    public static synchronized Calendar toLocal(Calendar cal) {
         if (cal.getTimeZone().getID().equals("TAI")) {
             return taiToLocal(cal);
         } else {
@@ -130,7 +133,7 @@ public class DateUtils {
         }
     }
 
-    public static synchronized Calendar toUtc(Calendar cal) throws Exception {
+    public static synchronized Calendar toUtc(Calendar cal) {
         if (cal.getTimeZone().getID().equals("TAI")) {
             return taiToUtc(cal);
         } else {
@@ -140,7 +143,7 @@ public class DateUtils {
         }
     }
     
-    public static Calendar getCurrentUtcTime() throws Exception {
+    public static Calendar getCurrentUtcTime() {
         return toUtc(getCurrentLocalTime());
     }
     
@@ -148,7 +151,7 @@ public class DateUtils {
         return Calendar.getInstance();
     }
     
-    public static Calendar getCurrentTaiTime() throws Exception {
+    public static Calendar getCurrentTaiTime() throws CommonsException {
         return toTai(getCurrentUtcTime());
     }
     
@@ -197,7 +200,7 @@ public class DateUtils {
         return cal;
     }
     
-    public static double getTimeInSecs(Calendar cal, Calendar epoch) throws Exception {
+    public static double getTimeInSecs(Calendar cal, Calendar epoch) throws CommonsException {
         return getTimeInMillis(cal, epoch) / 1000.0;
     }
     
@@ -205,7 +208,7 @@ public class DateUtils {
         return new DecimalFormat("#.000").format(seconds);
     }
     
-    public static long getTimeInMillis(Calendar cal, Calendar epoch) throws Exception {
+    public static long getTimeInMillis(Calendar cal, Calendar epoch) throws CommonsException {
         long epochDiffInMilli;
         /**
          * Fixes date conversion issues preventing tests passing in the UK but working elsewhere in the world.
@@ -225,7 +228,7 @@ public class DateUtils {
         return new SimpleTimeZone(leapSecs * 1000, "TAI");
     }
     
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws ParseException, CommonsException {
         Calendar curTime = getCurrentLocalTime();
         System.out.println("Test Time: " + toString(toCalendar(toString(toTai(toCalendar("2008-01-20T16:29:55.000Z", 
                 FormatType.UTC_FORMAT))), FormatType.TAI_FORMAT)));

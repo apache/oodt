@@ -20,16 +20,16 @@ package org.apache.oodt.cas.crawl.daemon;
 
 //OODT imports
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlException;
+import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.XmlRpcException;
 
-//JDK imports
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 
+//JDK imports
 //APACHE imports
-import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
 
 /**
  * @author mattmann
@@ -155,7 +155,7 @@ public class CrawlDaemonController {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws CrawlException, InstantiationException {
         String avgCrawlOperation = "--getAverageCrawlTime\n";
         String getMilisCrawlOperation = "--getMilisCrawling\n";
         String getNumCrawlsOperation = "--getNumCrawls\n";

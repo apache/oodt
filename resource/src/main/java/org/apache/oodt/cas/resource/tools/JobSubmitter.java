@@ -21,6 +21,7 @@ package org.apache.oodt.cas.resource.tools;
 //JDK imports
 import java.io.File;
 import java.io.FileFilter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -95,7 +96,7 @@ public final class JobSubmitter {
         return submitJob(spec);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws MalformedURLException, JobExecutionException {
         String resMgrUrlStr = null;
         String jobFilePath = null, jobFileDirPath = null;
         String usage = "JobSubmitter --rUrl <resource mgr url> [options]\n"

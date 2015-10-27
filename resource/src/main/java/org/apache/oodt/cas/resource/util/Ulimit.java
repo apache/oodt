@@ -19,6 +19,9 @@
 package org.apache.oodt.cas.resource.util;
 
 //JDK imports
+
+import org.apache.oodt.cas.resource.exceptions.ResourceException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -166,14 +169,14 @@ public final class Ulimit implements UlimitMetKeys {
 
     }
 
-    public static Map getUlimitPropertiesMap() throws Exception {
+    public static Map getUlimitPropertiesMap() throws ResourceException, IOException {
         Process p;
         try {
             p = Runtime.getRuntime().exec(
                     new String[] { shell, runShellCmdOption, ulimitCommand });
         } catch (IOException e) {
             e.printStackTrace();
-            throw new Exception(
+            throw new ResourceException(
                     "IOException executing ulimit command: Message: "
                             + e.getMessage());
         }
@@ -197,16 +200,16 @@ public final class Ulimit implements UlimitMetKeys {
         return properties;
     }
 
-    public static List getUlimitProperties() throws Exception {
+    public static List getUlimitProperties() throws ResourceException, IOException {
         Process p;
         try {
             p = Runtime.getRuntime().exec(
                     new String[] { shell, runShellCmdOption, ulimitCommand });
         } catch (IOException e) {
             e.printStackTrace();
-            throw new Exception(
+            throw new ResourceException(
                     "IOException executing ulimit command: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
         }
         BufferedReader in = new BufferedReader(new InputStreamReader(p
                 .getInputStream()));

@@ -20,7 +20,14 @@
 
 package org.apache.oodt.cas.metadata.util;
 
-//JDK imports
+import org.apache.commons.lang.StringUtils;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
+import org.apache.oodt.commons.date.DateUtils;
+import org.apache.oodt.commons.exceptions.CommonsException;
+import org.apache.oodt.commons.exec.EnvUtilities;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,13 +36,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//APACHE imports
-import org.apache.commons.lang.StringUtils;
-
-//OODT imports
-import org.apache.oodt.commons.date.DateUtils;
-import org.apache.oodt.commons.exec.EnvUtilities;
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * @author mattmann
@@ -87,12 +87,13 @@ public final class PathUtils {
         return finalPath.toString();
     }
 
-    public static String doDynamicReplacement(String string) throws Exception {
+    public static String doDynamicReplacement(String string)
+        throws ParseException, CommonsException, CasMetadataException {
         return doDynamicReplacement(string, null);
     }
 
     public static String doDynamicReplacement(String string, Metadata metadata)
-            throws Exception {
+        throws ParseException, CommonsException, CasMetadataException {
         return PathUtils.replaceEnvVariables(doDynamicDateReplacement(
         		   doDynamicDateRollReplacement(
         			   doDynamicDateFormatReplacement(
@@ -109,7 +110,7 @@ public final class PathUtils {
     }
 
     public static String doDynamicDateReplacement(String string,
-            Metadata metadata) throws Exception {
+            Metadata metadata) throws CasMetadataException, CommonsException {
         Pattern datePattern = Pattern
                 .compile("\\[\\s*DATE\\s*(?:[+-]{1}[^\\.]{1,}?){0,1}\\.\\s*(?:(?:DAY)|(?:MONTH)|(?:YEAR)|(?:UTC)|(?:TAI)){1}\\s*\\]");
         Matcher dateMatcher = datePattern.matcher(string);
@@ -131,7 +132,7 @@ public final class PathUtils {
                                     "[\\+\\s]", ""));
                     gc.add(GregorianCalendar.DAY_OF_YEAR, rollDays);
                 } else
-                    throw new Exception(
+                    throw new CasMetadataException(
                             "Malformed dynamic date replacement specified (no dot separator) - '"
                                     + dateString + "'");
             }
@@ -139,7 +140,7 @@ public final class PathUtils {
             // determine type and make the appropriate replacement
             String[] splitDate = dateString.split("\\.");
             if (splitDate.length < 2)
-                throw new Exception("No date type specified - '" + dateString
+                throw new CasMetadataException("No date type specified - '" + dateString
                         + "'");
             String dateType = splitDate[1].replaceAll("[\\[\\]\\s]", "");
             String replacement;
@@ -158,7 +159,7 @@ public final class PathUtils {
             } else if (dateType.equals("TAI")) {
                 replacement = DateUtils.toString(DateUtils.toTai(gc));
             } else {
-                throw new Exception("Invalid date type specified '"
+                throw new CasMetadataException("Invalid date type specified '"
                         + dateString + "'");
             }
 
@@ -176,7 +177,7 @@ public final class PathUtils {
      *  current UTC time
      */
     public static String doDynamicDateRollReplacement(String string,
-            Metadata metadata) throws Exception {
+            Metadata metadata) throws ParseException, CasMetadataException, CommonsException {
         Pattern dateFormatPattern = Pattern
                 .compile("\\[\\s*DATE_ADD\\s*\\(.{1,}?,.{1,}?,.{1,}?,.{1,}?\\)\\s*\\]");
         Matcher dateFormatMatcher = dateFormatPattern.matcher(string);
@@ -227,7 +228,7 @@ public final class PathUtils {
     }
     
     public static String doDynamicDateFormatReplacement(String string,
-            Metadata metadata) throws Exception {
+            Metadata metadata) throws ParseException, CasMetadataException, CommonsException {
         Pattern dateFormatPattern = Pattern
                 .compile("\\[\\s*FORMAT\\s*\\(.{1,}?,.{1,}?,.{1,}?\\)\\s*\\]");
         Matcher dateFormatMatcher = dateFormatPattern.matcher(string);
@@ -265,7 +266,7 @@ public final class PathUtils {
      * with TAI time with format: "yyyy-MM-dd'T'HH:mm:ss.SSS-0000<leapSecs>"
      */
     public static String doDynamicUtcToTaiDateReplacement(String string,
-            Metadata metadata) throws Exception {
+            Metadata metadata) throws ParseException, CommonsException, CasMetadataException {
         Pattern utcToTaiPattern = Pattern.compile("\\[\\s*UTC_TO_TAI\\s*\\(.{1,}?\\)\\s*\\]");
         Matcher matcher = utcToTaiPattern.matcher(string);
         while (matcher.find()) {
@@ -288,7 +289,7 @@ public final class PathUtils {
      * with seconds between <epoch-date> and <date-string> 
      */
     public static String doDynamicDateToSecsReplacement(String string,
-            Metadata metadata) throws Exception {
+            Metadata metadata) throws CommonsException, ParseException, CasMetadataException {
         Pattern utcToTaiPattern = Pattern.compile("\\[\\s*DATE_TO_SECS\\s*\\(.{1,}?\\,.{1,}?,.{1,}?\\)\\s*\\]");
         Matcher matcher = utcToTaiPattern.matcher(string);
         while (matcher.find()) {
@@ -316,7 +317,7 @@ public final class PathUtils {
      * with milliseconds between <epoch-date> and <date-string> 
      */
     public static String doDynamicDateToMillisReplacement(String string,
-            Metadata metadata) throws Exception {
+            Metadata metadata) throws ParseException, CommonsException, CasMetadataException {
         Pattern utcToTaiPattern = Pattern.compile("\\[\\s*DATE_TO_MILLIS\\s*\\(.{1,}?\\,.{1,}?,.{1,}?\\)\\s*\\]");
         Matcher matcher = utcToTaiPattern.matcher(string);
         while (matcher.find()) {

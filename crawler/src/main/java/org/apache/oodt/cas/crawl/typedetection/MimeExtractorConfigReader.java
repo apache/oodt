@@ -17,12 +17,15 @@
 package org.apache.oodt.cas.crawl.typedetection;
 
 //OODT imports
+import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
 
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 
 //W3C imports
@@ -46,7 +49,9 @@ public final class MimeExtractorConfigReader implements
         throw new InstantiationException("Don't construct reader classes!");
     }
 
-    public static MimeExtractorRepo read(String mapFilePath) throws Exception {
+    public static MimeExtractorRepo read(String mapFilePath)
+        throws ClassNotFoundException, FileNotFoundException, MetExtractionException, InstantiationException,
+        IllegalAccessException, CrawlerActionException {
         try {
             Document doc = XMLUtils.getDocumentRoot(new FileInputStream(
                     mapFilePath));
@@ -158,18 +163,33 @@ public final class MimeExtractorConfigReader implements
                 extractorRepo.addMetExtractorSpecs(mimeType, specs);
             }
             return extractorRepo;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+        } catch (IllegalAccessException e) {
+          e.printStackTrace();
+          throw e;
+        } catch (InstantiationException e) {
+          e.printStackTrace();
+          throw e;
+        } catch (MetExtractionException e) {
+          e.printStackTrace();
+          throw e;
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+          throw e;
+        } catch (ClassNotFoundException e) {
+          e.printStackTrace();
+          throw e;
+        } catch (CrawlerActionException e) {
+          e.printStackTrace();
+          throw e;
         }
     }
 
-    private static String getNamingConventionId(Element parent) throws Exception {
+    private static String getNamingConventionId(Element parent) throws CrawlerActionException {
        NodeList namingConventions = parent
              .getElementsByTagName(NAMING_CONVENTION_TAG);
        if (namingConventions != null && namingConventions.getLength() > 0) {
           if (namingConventions.getLength() > 1) {
-             throw new Exception("Can only have 1 '"
+             throw new CrawlerActionException("Can only have 1 '"
                    + NAMING_CONVENTION_TAG + "' tag per mimetype");
           }
           Element namingConvention = (Element) namingConventions.item(0);

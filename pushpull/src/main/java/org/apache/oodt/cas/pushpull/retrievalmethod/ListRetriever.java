@@ -24,6 +24,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.pushpull.config.DataFilesInfo;
 import org.apache.oodt.cas.pushpull.config.DownloadInfo;
 import org.apache.oodt.cas.pushpull.exceptions.AlreadyInDatabaseException;
+import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 import org.apache.oodt.cas.pushpull.exceptions.RetrievalMethodException;
 import org.apache.oodt.cas.pushpull.exceptions.ToManyFailedDownloadsException;
 import org.apache.oodt.cas.pushpull.exceptions.UndefinedTypeException;
@@ -38,6 +39,7 @@ import org.apache.oodt.cas.pushpull.retrievalsystem.FileRetrievalSystem;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +61,7 @@ public class ListRetriever implements RetrievalMethod {
 
     public void processPropFile(FileRetrievalSystem frs, Parser propFileParser,
             File propFile, DataFilesInfo dfi, DataFileToPropFileLinker linker)
-            throws Exception {
+        throws FileNotFoundException, ParserException, RetrievalMethodException {
         RemoteSite remoteSite;
 
         // parse property file
@@ -97,7 +99,7 @@ public class ListRetriever implements RetrievalMethod {
                 e.printStackTrace();
                 linker.markAsFailed(propFile, "Failed to download " + file
                         + " from " + remoteSite + " : " + e.getMessage());
-                throw new Exception("Uknown error accured while downloading "
+                throw new RetrievalMethodException("Uknown error accured while downloading "
                         + file + " from " + remoteSite + " -- bailing out : "
                         + e.getMessage());
             }

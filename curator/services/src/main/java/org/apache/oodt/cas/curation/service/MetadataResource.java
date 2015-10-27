@@ -26,6 +26,7 @@ import net.sf.json.JSONSerializer;
 import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 import org.apache.oodt.cas.curation.util.CurationXmlStructFactory;
 import org.apache.oodt.cas.curation.util.ExtractorConfigReader;
+import org.apache.oodt.cas.curation.util.exceptions.CurationException;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager;
 import org.apache.oodt.cas.filemgr.structs.Element;
@@ -50,6 +51,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -686,7 +688,9 @@ public class MetadataResource extends CurationService {
   }
   
   private Metadata writeProductTypeMetadata(String policy,
-      String productTypeName, Metadata metadata) throws Exception {
+      String productTypeName, Metadata metadata)
+      throws MalformedURLException, InstantiationException, RepositoryManagerException, UnsupportedEncodingException,
+      CurationException {
     String rootPolicyPath = this.cleanse(CurationService.config
         .getPolicyUploadPath());
     String policyPath = new File(rootPolicyPath + policy).toURL()

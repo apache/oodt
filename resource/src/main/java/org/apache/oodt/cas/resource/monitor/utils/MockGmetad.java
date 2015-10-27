@@ -85,7 +85,7 @@ public class MockGmetad implements Runnable {
 
     }
     
-    public static void main(String [] args) throws Exception{
+    public static void main(String [] args){
     	String xmlPath;
     	int serverPort;
     	final String usage = "java MockGmetad <xml path> <port>\n";

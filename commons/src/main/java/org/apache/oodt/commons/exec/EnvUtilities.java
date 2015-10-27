@@ -145,7 +145,7 @@ public final class EnvUtilities {
     }
 
     protected static InputStream preProcessInputStream(InputStream is)
-            throws Exception {
+        throws IOException {
         // basically read this sucker into a BufferedReader
         // line by line, and replaceAll on \ with \\
         // so \\\\ with \\\\\\\\

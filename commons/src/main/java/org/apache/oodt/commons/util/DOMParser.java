@@ -16,10 +16,18 @@
 
 package org.apache.oodt.commons.util;
 
+import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+
 import java.io.IOException;
-import java.util.*;
-import org.xml.sax.*;
-import org.w3c.dom.*;
+import java.util.Locale;
+
 import javax.xml.parsers.DocumentBuilder;
 
 /** An XML Document Object Model parser.
@@ -73,7 +81,7 @@ public class DOMParser {
 	}
 
 	/** Resets or copies the parser. */
-	public void resetOrCopy() throws Exception {
+	public void resetOrCopy() {
 		reset();
 	}
 

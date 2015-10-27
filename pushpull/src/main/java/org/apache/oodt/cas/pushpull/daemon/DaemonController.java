@@ -153,7 +153,7 @@ public class DaemonController {
      * @throws Exception
      *             On error! :)
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws RemoteException {
         String avgCrawlOperation = "--getAverageRunTime\n";
         String getMilisCrawlOperation = "--getMilisCrawling\n";
         String getNumCrawlsOperation = "--getNumCrawls\n";

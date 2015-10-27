@@ -28,6 +28,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
@@ -55,7 +56,7 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
     fm = new FileManagerUtils(fmUrlStr);
     try {
       this.conf = new ListingConf(new File(confFile));
-    } catch (Exception e) {
+    } catch (FileNotFoundException e) {
       throw new InstantiationException(e.getMessage());
     }
   }
@@ -87,7 +88,7 @@ public class PCSLongLister implements PCSMetadata, CoreMetKeys {
 
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws InstantiationException {
     String usage = "PCSLongLister <conf file> <fmurl> [files]";
     List fileList;
 

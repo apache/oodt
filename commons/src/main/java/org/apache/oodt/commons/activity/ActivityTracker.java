@@ -59,7 +59,7 @@ public class ActivityTracker {
 	 *
 	 * @throws Exception if an error occurs.
 	 */
-	static void initializeFactories() throws Exception {
+	static void initializeFactories() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
 		String facNames = System.getProperty("org.apache.oodt.commons.activity.factories", System.getProperty("activity.factories", ""));
 		List factories = new ArrayList();
 		for (StringTokenizer tokens = new StringTokenizer(facNames, ",|"); tokens.hasMoreTokens();) {

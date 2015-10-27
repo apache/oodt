@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,32 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-package org.apache.oodt.cas.pushpull.exceptions;
+package org.apache.oodt.cas.workflow.gui.util.exceptions;
 
 /**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
- * Describe your class here
- * </p>.
+ * Workflow Exception for internal Exceptions.
  */
-public class RetrievalMethodException extends PushPullFrameworkException {
+public class WorkflowException extends Exception {
 
-    private static final long serialVersionUID = 310484176199522L;
-
-    public RetrievalMethodException() {
-        super();
-    }
-
-    public RetrievalMethodException(String msg) {
-        super(msg);
-    }
-
-    public RetrievalMethodException(String msg, Throwable t) {
-        super(msg, t);
-    }
+  public WorkflowException(String message){
+    super(message);
+  }
 }

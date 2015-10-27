@@ -16,20 +16,19 @@
  */
 package org.apache.oodt.cas.crawl;
 
-//OODT imports
+import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.MetExtractor;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.metadata.exceptions.NamingConventionException;
 import org.apache.oodt.cas.metadata.filenaming.NamingConvention;
 import org.apache.oodt.cas.metadata.preconditions.PreConditionComparator;
+import org.springframework.beans.factory.annotation.Required;
 
-//JDK imports
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-//Spring imports
-import org.springframework.beans.factory.annotation.Required;
 
 /**
  * @author mattmann
@@ -52,7 +51,7 @@ public class MetExtractorProductCrawler extends ProductCrawler {
     private String namingConventionId;
 
     @Override
-    protected Metadata getMetadataForProduct(File product) throws Exception {
+    protected Metadata getMetadataForProduct(File product) throws MetExtractionException {
         return metExtractor.extractMetadata(product);
     }
 
@@ -70,12 +69,12 @@ public class MetExtractorProductCrawler extends ProductCrawler {
 
     @Override
     protected File renameProduct(File product, Metadata productMetadata)
-          throws Exception {
+        throws CrawlerActionException, NamingConventionException {
        if (getNamingConventionId() != null) {
           NamingConvention namingConvention = (NamingConvention)
                 getApplicationContext().getBean(getNamingConventionId());
           if (namingConvention == null) {
-             throw new Exception("NamingConvention Id '" + getNamingConventionId()
+             throw new CrawlerActionException("NamingConvention Id '" + getNamingConventionId()
                    + "' is not defined");
           }
           return namingConvention.rename(product, productMetadata);

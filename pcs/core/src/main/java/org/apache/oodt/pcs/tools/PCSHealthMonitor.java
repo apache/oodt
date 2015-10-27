@@ -182,7 +182,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
 
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws InstantiationException {
     String usage = "PCSHealthMonitor <fm url> <wm url> <rm url> <crawler xml file path> <workflow states xml file path>\n";
     String fmUrlStr, wmUrlStr, rmUrlStr;
     String crawlerXmlFilePath, workflowStateXmlPath;

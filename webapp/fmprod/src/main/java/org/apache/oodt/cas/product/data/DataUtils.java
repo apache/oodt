@@ -19,6 +19,14 @@
 package org.apache.oodt.cas.product.data;
 
 //JDK imports
+
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.apache.oodt.cas.product.exceptions.CasProductException;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,11 +43,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.SerializableMetadata;
 
 /**
  * 
@@ -62,7 +65,7 @@ public final class DataUtils implements DataDeliveryKeys {
   };
 
   public static String createDatasetZipFile(ProductType type,
-      String workingDirPath) throws Exception {
+      String workingDirPath) throws IOException, CasProductException {
     String datasetZipFileName = type.getName() + ".zip";
     workingDirPath += workingDirPath.endsWith("/") ? "" : "/";
     String datasetZipFilePath = workingDirPath + datasetZipFileName;
@@ -85,7 +88,7 @@ public final class DataUtils implements DataDeliveryKeys {
     File[] productZipFiles = new File(workingDirPath).listFiles(ZIP_FILTER);
     if (productZipFiles == null || productZipFiles.length == 0)
     {
-      throw new Exception("No product zip files to include in dataset: ["
+      throw new CasProductException("No product zip files to include in dataset: ["
           + type.getName() + "]");
     }
 
@@ -121,7 +124,7 @@ public final class DataUtils implements DataDeliveryKeys {
   }
 
   public static String createProductZipFile(Product product, Metadata metadata,
-      String workingDirPath) throws Exception {
+      String workingDirPath) throws IOException {
     String productZipFileName = product.getProductName() + ".zip";
     workingDirPath += workingDirPath.endsWith("/") ? "" : "/";
     String productZipFilePath = workingDirPath + productZipFileName;
@@ -201,7 +204,7 @@ public final class DataUtils implements DataDeliveryKeys {
   }
 
   private static void addMetFileToProductZip(Metadata productMet,
-      String metFileBaseName, ZipOutputStream out) throws Exception {
+      String metFileBaseName, ZipOutputStream out) throws IOException {
 
     // get the product metadata, and add its met file to the stream
     ByteArrayOutputStream metOut = new ByteArrayOutputStream();

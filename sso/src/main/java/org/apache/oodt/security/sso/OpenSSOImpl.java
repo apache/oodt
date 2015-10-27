@@ -17,21 +17,19 @@
 
 package org.apache.oodt.security.sso;
 
-//JDK imports
 import org.apache.commons.codec.binary.Base64;
 import org.apache.oodt.security.sso.opensso.SSOMetKeys;
 import org.apache.oodt.security.sso.opensso.SSOProxy;
+import org.apache.oodt.security.sso.opensso.SingleSignOnException;
 import org.apache.oodt.security.sso.opensso.UserDetails;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.servlet.http.Cookie;
-
-//APACHE imports
-//LMMP imports
 
 /**
  * 
@@ -120,7 +118,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
    * @throws Exception
    *           If any error (e.g., HTTP REST error) occurs.
    */
-  public List<String> getGroupsForUser() throws Exception {
+  public List<String> getGroupsForUser() throws IOException, SingleSignOnException {
     String token = this.getSSOToken();
     if (token == null) {
       return Collections.EMPTY_LIST;

@@ -22,8 +22,13 @@ import org.apache.oodt.commons.util.LogInit;
 import org.apache.oodt.commons.util.PropertyMgr;
 import org.apache.oodt.commons.util.XML;
 import org.apache.xmlrpc.XmlRpcClientLite;
+import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcServer;
-import org.w3c.dom.*;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -141,8 +146,6 @@ public class ExecServer {
 		} catch (SAXException ex) {
 			System.err.println("Error " + ex.getClass().getName() + " while attempting to parse the configuration"
 				+ " file: " + ex.getMessage());
-		} catch (javax.naming.NamingException ex) {
-			System.err.println("Naming/directory error: " + ex.getClass().getName() + ": " + ex.getMessage());
 		} catch (java.lang.reflect.InvocationTargetException ex) {
 			Throwable target = ex.getTargetException();
 			System.err.println("Constructor for \"" + className + "\" threw " + target.getClass().getName() + ": "
@@ -313,7 +316,8 @@ public class ExecServer {
 	 * @return The return value from the method named by <var>method</var>.
 	 * @throws Exception If any error occurs.
 	 */
-	public Object callLocalServerManager(int port, String user, String password, String method, List params) throws Exception {
+	public Object callLocalServerManager(int port, String user, String password, String method, List params)
+		throws IOException, XmlRpcException {
 		XmlRpcClientLite local = new XmlRpcClientLite("localhost", port);
 		local.setBasicAuthentication(user, password);
 		return local.execute(method, new Vector(params));

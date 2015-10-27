@@ -20,6 +20,7 @@ package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 import org.apache.oodt.cas.pushpull.expressions.GlobalVariables;
@@ -28,6 +29,7 @@ import org.apache.oodt.cas.pushpull.expressions.Variable;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
+import org.apache.oodt.commons.exceptions.CommonsException;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,6 +37,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.FileInputStream;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -207,7 +210,7 @@ public class DirStructXmlParser implements Parser {
         return input;
     }
 
-    private void parseVariablesXML(NodeList list) throws Exception {
+    private void parseVariablesXML(NodeList list) throws ParseException, CommonsException, CasMetadataException {
 
         // loop through all variable elements
         for (int i = 0; i < list.getLength(); i++) {

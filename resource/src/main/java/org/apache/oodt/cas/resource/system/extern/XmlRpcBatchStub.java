@@ -62,7 +62,7 @@ public class XmlRpcBatchStub {
 
     private static Map jobThreadMap = null;
 
-    public XmlRpcBatchStub(int port) throws Exception {
+    public XmlRpcBatchStub(int port) {
         webServerPort = port;
 
         // start up the web server
@@ -181,7 +181,7 @@ public class XmlRpcBatchStub {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)  {
         int portNum = -1;
         String usage = "XmlRpcBatchStub --portNum <port number for xml rpc service>\n";
 

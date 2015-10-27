@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 //OODT imports
+import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.filemgr.ingest.Ingester;
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
@@ -182,7 +183,7 @@ public class IngestAncillary extends FileBasedAction {
     this.writeBackKeyPrefix = writeBackKeyPrefix;
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws CrawlerActionException {
     if (args.length != 6) {
       System.out
           .println("Usage: java "

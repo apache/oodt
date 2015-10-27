@@ -14,32 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-package org.apache.oodt.cas.pushpull.exceptions;
+package org.apache.oodt.cas.resource.exceptions;
 
 /**
- * 
- * @author bfoster
- * @version $Revision$
- * 
- * <p>
- * Describe your class here
- * </p>.
+ * Created by bugg on 27/10/15.
  */
-public class RetrievalMethodException extends PushPullFrameworkException {
+public class ResourceException extends Exception{
 
-    private static final long serialVersionUID = 310484176199522L;
+  public ResourceException(String message){
+    super(message);
+  }
 
-    public RetrievalMethodException() {
-        super();
-    }
-
-    public RetrievalMethodException(String msg) {
-        super(msg);
-    }
-
-    public RetrievalMethodException(String msg, Throwable t) {
-        super(msg, t);
-    }
+  public ResourceException(String message, Throwable t){
+    super(message, t);
+  }
 }

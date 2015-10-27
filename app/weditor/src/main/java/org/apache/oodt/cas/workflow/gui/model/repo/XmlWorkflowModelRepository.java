@@ -18,14 +18,24 @@
 package org.apache.oodt.cas.workflow.gui.model.repo;
 
 //OODT imports
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
 import org.apache.oodt.cas.workflow.gui.model.ModelNode;
+import org.apache.oodt.cas.workflow.gui.util.exceptions.WorkflowException;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
-//JDK imports
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,14 +54,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+
+//JDK imports
 
 /**
  * 
@@ -77,7 +83,8 @@ public class XmlWorkflowModelRepository {
         this.files.add(file);
   }
 
-  public void loadGraphs(Set<String> supportedProcessorIds) throws Exception {
+  public void loadGraphs(Set<String> supportedProcessorIds)
+      throws XPathExpressionException, WorkflowException, IOException, SAXException, ParserConfigurationException {
     this.graphs = new HashSet<ModelGraph>();
     HashMap<String, ConfigGroup> globalConfGroups = new HashMap<String, ConfigGroup>();
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -126,12 +133,12 @@ public class XmlWorkflowModelRepository {
     return this.files;
   }
 
-  public void save() throws Exception {
+  public void save() throws IOException, ParserConfigurationException {
     this.backupCurrentFiles();
     this.saveGraphs();
   }
 
-  private void backupCurrentFiles() throws Exception {
+  private void backupCurrentFiles() throws IOException {
     File backupDir = new File(this.workspace, ".backup");
     for (File file : this.files) {
       FileUtils.copyFile(file, new File(backupDir, file.getName()));
@@ -308,7 +315,7 @@ public class XmlWorkflowModelRepository {
   private ModelGraph loadGraph(List<FileBasedElement> rootElements,
       FileBasedElement workflowNode, Metadata staticMetadata,
       HashMap<String, ConfigGroup> globalConfGroups,
-      Set<String> supportedProcessorIds) throws Exception {
+      Set<String> supportedProcessorIds) throws XPathExpressionException, WorkflowException {
 
     String modelIdRef = null;
     String modelId = null;
@@ -427,7 +434,7 @@ public class XmlWorkflowModelRepository {
       graph = this.findGraph(rootElements, modelIdRef, new Metadata(
           staticMetadata), globalConfGroups, supportedProcessorIds);
       if (graph == null)
-        throw new Exception("Workflow '" + modelIdRef
+        throw new WorkflowException("Workflow '" + modelIdRef
             + "' has not been defined in this context");
       graph.setIsRef(true);
       graph.getModel().setStaticMetadata(new Metadata());
@@ -446,7 +453,7 @@ public class XmlWorkflowModelRepository {
   protected ModelGraph findGraph(List<FileBasedElement> rootElements,
       String modelIdRef, Metadata staticMetadata,
       HashMap<String, ConfigGroup> globalConfGroups,
-      Set<String> supportedProcessorIds) throws Exception {
+      Set<String> supportedProcessorIds) throws XPathExpressionException, WorkflowException {
     XPath xpath = XPathFactory.newInstance().newXPath();
     XPathExpression expr = xpath.compile("//*[@id = '" + modelIdRef + "']");
     for (FileBasedElement rootElement : rootElements) {
@@ -463,7 +470,7 @@ public class XmlWorkflowModelRepository {
 
   private void loadConfiguration(List<FileBasedElement> rootElements,
       FileBasedElement workflowNode, ModelNode modelNode,
-      HashMap<String, ConfigGroup> globalConfGroups) throws Exception {
+      HashMap<String, ConfigGroup> globalConfGroups)  {
     NodeList children = workflowNode.getElement().getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
       Node curChild = children.item(i);

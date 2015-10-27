@@ -20,6 +20,7 @@ import org.apache.oodt.commons.io.Base64EncodingOutputStream;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -181,7 +182,7 @@ public class Base64 {
 	 *
 	 * @param argv Command-line arguments.
 	 */
-	public static void main(String[] argv) throws Exception {
+	public static void main(String[] argv) throws IOException {
 		if (argv.length < 1 || argv.length > 2) {
 			System.err.println("Usage: encode|decode [file]");
 			System.exit(1);

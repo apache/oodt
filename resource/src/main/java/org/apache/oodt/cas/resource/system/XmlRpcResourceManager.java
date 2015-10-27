@@ -18,7 +18,6 @@
 
 package org.apache.oodt.cas.resource.system;
 
-//OODT imports
 import org.apache.oodt.cas.resource.scheduler.Scheduler;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
@@ -37,6 +36,7 @@ import org.apache.xmlrpc.WebServer;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -46,9 +46,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-//APACHE imports
-//JDK imports
 
 /**
  * @author woollard
@@ -74,7 +71,7 @@ public class XmlRpcResourceManager {
     /* our scheduler */
     private Scheduler scheduler = null;
 
-    public XmlRpcResourceManager(int port) throws Exception {
+    public XmlRpcResourceManager(int port) throws IOException {
         // load properties from workflow manager properties file, if specified
         if (System.getProperty("org.apache.oodt.cas.resource.properties") != null) {
             String configFile = System
@@ -427,7 +424,7 @@ public class XmlRpcResourceManager {
     	return report;
     }
     
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         int portNum = -1;
         String usage = "XmlRpcResourceManager --portNum <port number for xml rpc service>\n";
 

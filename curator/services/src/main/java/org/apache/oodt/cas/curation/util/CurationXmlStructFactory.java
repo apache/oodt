@@ -19,6 +19,8 @@
 package org.apache.oodt.cas.curation.util;
 
 //JDK imports
+
+import org.apache.oodt.cas.curation.util.exceptions.CurationException;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.util.XmlStructFactory;
 import org.apache.oodt.commons.xml.XMLUtils;
@@ -26,6 +28,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -44,12 +47,12 @@ import java.util.List;
 public class CurationXmlStructFactory {
 
   public static void writeProductTypeXmlDocument(
-      List<ProductType> productTypes, String xmlFilePath) throws Exception {
+      List<ProductType> productTypes, String xmlFilePath) throws UnsupportedEncodingException, CurationException {
     XMLUtils.writeXmlFile(getProductTypeXmlDocument(productTypes), xmlFilePath);
   }
 
   public static Document getProductTypeXmlDocument(
-      List<ProductType> productTypes) throws Exception {
+      List<ProductType> productTypes) throws UnsupportedEncodingException, CurationException {
     Document doc = XmlStructFactory.getProductTypeXmlDocument(productTypes);
 
     // for every product type, i want to add in the versioner info and the
@@ -68,7 +71,7 @@ public class CurationXmlStructFactory {
   }
 
   private static void augmentElement(List<ProductType> productTypes,
-      Element typeElem, Document doc) throws Exception {
+      Element typeElem, Document doc) throws UnsupportedEncodingException, CurationException {
     String productTypeName = typeElem.getAttribute("name");
     ProductType type = getType(productTypes, productTypeName);
 
@@ -86,7 +89,7 @@ public class CurationXmlStructFactory {
       for (String val : vals) {
         Element valElem = doc.createElement("val");
         if (val == null) {
-          throw new Exception("Attempt to write null value "
+          throw new CurationException("Attempt to write null value "
               + "for property: [" + key + "]: val: [null]");
         }
 
