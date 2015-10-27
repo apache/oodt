@@ -139,7 +139,7 @@ public final class MetadataDumper {
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws InstantiationException {
         String fileManagerUrlStr = null, productId = null, outDirPath = null;
         String usage = "MetadataDumper --url <filemgr url> --productId <id> [--out <dir path>]\n";
 

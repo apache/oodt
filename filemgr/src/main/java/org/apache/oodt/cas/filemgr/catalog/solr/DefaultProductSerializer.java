@@ -26,7 +26,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +38,7 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Default implementation of {@link ProductSerializer} 
@@ -472,10 +475,10 @@ public class DefaultProductSerializer implements ProductSerializer {
 		
 	}
 	
-	private Document parseXml(String xml) throws Exception {
+	private Document parseXml(String xml) throws IOException, SAXException, ParserConfigurationException {
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder parser = factory.newDocumentBuilder();
+		DocumentBuilder parser = factoriy.newDocumentBuilder();
 	  return parser.parse( new InputSource(new StringReader(xml)) );
     
 	}

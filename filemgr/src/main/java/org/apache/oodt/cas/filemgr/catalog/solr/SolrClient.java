@@ -27,6 +27,7 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -189,7 +190,7 @@ public class SolrClient {
 	 * Method to commit the current changes to the Solr index.
 	 * @throws Exception
 	 */
-	public void commit() throws Exception {
+	public void commit() throws IOException, CatalogException {
 		
 		String message = "<commit waitSearcher=\"true\"/>";
 		String url =  this.buildUpdateUrl();
@@ -227,7 +228,8 @@ public class SolrClient {
 	 * @param parameters
 	 * @return
 	 */
-	private String doGet(String url, Map<String, String[]> parameters, String mimeType)  throws Exception {
+	private String doGet(String url, Map<String, String[]> parameters, String mimeType)
+		throws IOException, CatalogException {
 				    
 		// build HTTP/GET request
     GetMethod method = new GetMethod(url);
@@ -253,7 +255,7 @@ public class SolrClient {
 	 * @param document
 	 * @return
 	 */
-	private String doPost(String url, String document, String mimeType) throws Exception {
+	private String doPost(String url, String document, String mimeType) throws IOException, CatalogException {
     
 		// build HTTP/POST request
     PostMethod method = new PostMethod(url);
@@ -271,7 +273,7 @@ public class SolrClient {
 	 * @return
 	 * @throws Exception
 	 */
-	private String doHttp(HttpMethod method) throws Exception {
+	private String doHttp(HttpMethod method) throws IOException, CatalogException {
 		
 		StringBuilder response = new StringBuilder();
 		BufferedReader br = null;

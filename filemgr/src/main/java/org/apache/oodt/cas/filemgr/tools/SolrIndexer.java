@@ -620,7 +620,7 @@ public class SolrIndexer {
 	 * @param args
 	 *          Command-line arguments.
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args)  {
 		Options options = SolrIndexer.buildCommandLine();
 		CommandLineParser parser = new GnuParser();
 		CommandLine line = null;

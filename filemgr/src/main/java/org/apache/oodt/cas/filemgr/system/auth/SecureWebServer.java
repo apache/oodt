@@ -18,13 +18,14 @@
 package org.apache.oodt.cas.filemgr.system.auth;
 
 //JDK imports
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Vector;
+import org.apache.xmlrpc.AuthenticatedXmlRpcHandler;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 //XML-RPC imports
-import org.apache.xmlrpc.AuthenticatedXmlRpcHandler;
 
 /**
  * An XML-RPC Web Server that requires authentication and authorization.
@@ -60,7 +61,7 @@ public final class SecureWebServer extends org.apache.xmlrpc.WebServer
      * @pass The password to use for the user.
      */
     public Object execute(String methodSpecifier, Vector params, String user,
-            String password) throws Exception {
+            String password) {
         for (Object dispatcher : dispatchers) {
             Result rc = ((Dispatcher) dispatcher).handleRequest(methodSpecifier,
                 params, user, password);

@@ -23,6 +23,7 @@ import org.apache.commons.httpclient.HttpMethodRetryHandler;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
+import org.apache.oodt.cas.filemgr.exceptions.FileManagerException;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -1179,7 +1180,7 @@ public class XmlRpcFileManagerClient {
     }
 
     public String ingestProduct(Product product, Metadata metadata,
-            boolean clientTransfer) throws Exception {
+            boolean clientTransfer) throws VersioningException, XmlRpcException, FileManagerException {
         try {
             // ingest product
             Vector<Object> argList = new Vector<Object>();
@@ -1293,7 +1294,7 @@ public class XmlRpcFileManagerClient {
             LOG.log(Level.SEVERE, "Failed to rollback ingest of product ["
                                   + product + "] : " + e2.getMessage());
           }
-          throw new Exception(e2);
+          throw e2;
         }
         catch (Exception e) {
           LOG.log(Level.SEVERE, "Failed to ingest product [ id: " + product.getProductId() +
@@ -1308,7 +1309,7 @@ public class XmlRpcFileManagerClient {
                 LOG.log(Level.SEVERE, "Failed to rollback ingest of product ["
                         + product + "] : " + e.getMessage());
             }
-            throw new Exception("Failed to ingest product [" + product + "] : "
+            throw new FileManagerException("Failed to ingest product [" + product + "] : "
                     + e.getMessage());
         }
 

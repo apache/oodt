@@ -18,6 +18,8 @@
 package org.apache.oodt.cas.filemgr.structs;
 
 //JDK imports
+
+import org.apache.oodt.cas.filemgr.exceptions.FileManagerException;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -274,7 +276,7 @@ public class Product {
         return defaultProduct;
     }
 
-    public Document toXML() throws Exception {
+    public Document toXML() throws UnsupportedEncodingException, FileManagerException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         Document doc;
@@ -315,7 +317,7 @@ public class Product {
         } catch (ParserConfigurationException pce) {
             LOG.log(Level.WARNING, "Error generating product xml file!: "
                     + pce.getMessage());
-            throw new Exception("Error generating product xml file!: "
+            throw new FileManagerException("Error generating product xml file!: "
                     + pce.getMessage());
         }
 

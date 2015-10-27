@@ -83,7 +83,7 @@ public class OptimizeLuceneCatalog {
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)  {
         String usage = "OptimizeLuceneCatalog [options]\n"
                 + "--catalogPath <path to lucene catalog>\n"
                 + "[--mergeFactor <merge factor for index>]\n";

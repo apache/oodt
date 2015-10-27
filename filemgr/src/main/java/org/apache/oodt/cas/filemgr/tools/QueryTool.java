@@ -17,7 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.tools;
 
-//JDK imports
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -46,9 +45,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-//OODT imports
-//APACHE imports
 
 /**
  * @author mattmann
@@ -173,7 +169,9 @@ public final class QueryTool {
         return prodTypes;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)
+        throws MalformedURLException, InstantiationException, CatalogException, QueryFormulationException,
+        ConnectionException {
         String usage = "Usage: QueryTool [options] \n"
             + "options: \n"
             + "--url <fm url> \n"

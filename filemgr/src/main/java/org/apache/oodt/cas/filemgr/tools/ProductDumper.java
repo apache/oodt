@@ -151,7 +151,7 @@ public final class ProductDumper {
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws InstantiationException {
         String fileManagerUrlStr = null, productId = null, outDirPath = null;
         String usage = "ProductDumper --url <filemgr url> --productId <id> [--out <dir path>]\n";
 

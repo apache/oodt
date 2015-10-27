@@ -54,6 +54,7 @@ import org.apache.oodt.cas.filemgr.versioning.VersioningUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.commons.date.DateUtils;
+import org.apache.oodt.commons.exceptions.CommonsException;
 import org.apache.xmlrpc.WebServer;
 
 import java.io.File;
@@ -64,6 +65,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -119,7 +121,7 @@ public class XmlRpcFileManager {
      *            The web server port to run the XML Rpc server on, defaults to
      *            1999.
      */
-    public XmlRpcFileManager(int port) throws Exception {
+    public XmlRpcFileManager(int port) throws IOException {
         webServerPort = port;
 
         // start up the web server
@@ -993,7 +995,7 @@ public class XmlRpcFileManager {
         return XmlRpcStructFactory.getXmlRpcQuery(this.getCatalogQuery(query, productType));
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         int portNum = -1;
         String usage = "FileManager --portNum <port number for xml rpc service>\n";
 
@@ -1129,15 +1131,11 @@ public class XmlRpcFileManager {
         return true;
     }
 
-    private void setProductType(List<Product> products) throws Exception {
+    private void setProductType(List<Product> products) throws RepositoryManagerException {
         if (products != null && products.size() > 0) {
           for (Product p : products) {
-            try {
               p.setProductType(repositoryManager.getProductTypeById(p
                   .getProductType().getProductTypeId()));
-            } catch (RepositoryManagerException e) {
-              throw new Exception(e.getMessage());
-            }
           }
         }
     }
@@ -1249,7 +1247,7 @@ public class XmlRpcFileManager {
     @SuppressWarnings("unchecked")
     private List<QueryResult> applyFilterToResults(
             List<QueryResult> queryResults, QueryFilter queryFilter)
-            throws Exception {
+        throws Exception {
         List<TimeEvent> events = new LinkedList<TimeEvent>();
         for (QueryResult queryResult : queryResults) {
             Metadata m = new Metadata();

@@ -17,12 +17,14 @@
 
 package org.apache.oodt.cas.filemgr.tools;
 
-//JDK imports
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -30,11 +32,11 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OODT imports
 
 /**
  * @author mattmann
@@ -83,7 +85,7 @@ public class MetadataBasedProductMover {
         }
     }
 
-    public void moveProducts(ProductType type) throws Exception {
+    public void moveProducts(ProductType type) throws CatalogException, URISyntaxException, DataTransferException {
         // paginate through the product list
 
         ProductPage page = fmgrClient.getFirstPage(type);
@@ -132,14 +134,17 @@ public class MetadataBasedProductMover {
     	
     }
     
-    public void moveProducts(String typeName) throws Exception {
+    public void moveProducts(String typeName)
+        throws RepositoryManagerException, CatalogException, DataTransferException, URISyntaxException {
         moveProducts(fmgrClient.getProductTypeByName(typeName));
     }
 
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)
+        throws URISyntaxException, CatalogException, RepositoryManagerException, DataTransferException,
+        InstantiationException {
         String typeName = null, pathSpec = null, fmUrlStr = null;
         String usage = "MetadataBasedProductMover [options]\n"
                 + "--typeName <product type>\n"

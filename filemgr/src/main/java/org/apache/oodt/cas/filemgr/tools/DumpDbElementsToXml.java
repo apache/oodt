@@ -18,14 +18,17 @@
 package org.apache.oodt.cas.filemgr.tools;
 
 //JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.List;
-
-//OODT imports
+import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.util.XmlStructFactory;
 import org.apache.oodt.cas.filemgr.validation.DataSourceValidationLayerFactory;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
+
+//OODT imports
 
 /**
  * @author mattmann
@@ -47,7 +50,7 @@ public final class DumpDbElementsToXml {
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException, ValidationLayerException {
         String propFile = null, outXmlFile = null;
         String usage = "DumpDbElementsToXml --propFile </path/to/propFile> --out </path/to/xml/file>\n";
 

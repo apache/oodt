@@ -17,25 +17,26 @@
 
 package org.apache.oodt.cas.filemgr.tools;
 
-// JDK imports
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
+import org.apache.oodt.cas.filemgr.exceptions.FileManagerException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// OODT imports
 
 /**
  * @author mattmann
@@ -137,7 +138,8 @@ public class ExpImpCatalog {
 
     }
 
-    public void doExpImport(List sourceProductTypes) throws Exception {
+    public void doExpImport(List sourceProductTypes)
+        throws FileManagerException, RepositoryManagerException, CatalogException {
 
         if (this.sourceClient != null && this.destClient != null) {
             // do validation of source/dest types
@@ -145,7 +147,7 @@ public class ExpImpCatalog {
             List destProductTypes = destClient.getProductTypes();
 
             if (!typesExist(sourceProductTypes, destProductTypes)) {
-                throw new Exception(
+                throw new FileManagerException(
                         "The source product types must be present in the dest file manager!");
             } else {
                 LOG
@@ -163,7 +165,7 @@ public class ExpImpCatalog {
         ProductType type = (ProductType) sourceProductType;
         try {
           exportTypeToDest(type);
-        } catch (Exception e) {
+        } catch (CatalogException e) {
           LOG.log(Level.WARNING, "Error exporting product type: ["
                                  + type.getName() + "] from source to dest: Message: "
                                  + e.getMessage(), e);
@@ -173,7 +175,7 @@ public class ExpImpCatalog {
 
     }
 
-    public void doExpImport() throws Exception {
+    public void doExpImport() throws RepositoryManagerException, FileManagerException, CatalogException {
         if (sourceClient == null)
             throw new RuntimeException(
                     "Cannot request exp/imp of all product types if no filemgr url specified!");
@@ -181,7 +183,7 @@ public class ExpImpCatalog {
         doExpImport(sourceProductTypes);
     }
 
-    private void exportTypeToDest(ProductType type) throws Exception {
+    private void exportTypeToDest(ProductType type) throws CatalogException, RepositoryManagerException {
         ProductPage page;
 
         if (this.srcCatalog != null) {
@@ -206,7 +208,7 @@ public class ExpImpCatalog {
     }
 
     private void exportProductsToDest(List products, ProductType type)
-            throws Exception {
+        throws CatalogException, RepositoryManagerException {
         if (products != null && products.size() > 0) {
           for (Object product : products) {
             Product p = (Product) product;
@@ -324,7 +326,9 @@ public class ExpImpCatalog {
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)
+        throws RepositoryManagerException, FileManagerException, MalformedURLException, InstantiationException,
+        CatalogException {
         String sourceUrl = null, destUrl = null, srcCatPropFile = null, destCatPropFile = null;
         boolean unique = false;
         List types = null;
