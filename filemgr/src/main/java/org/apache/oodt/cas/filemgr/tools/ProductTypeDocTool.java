@@ -40,7 +40,7 @@ import org.apache.commons.io.FileUtils;
  * <p>
  * A tool to output HTML documentation for {@link ProductType} policy xml files.
  * </p>.
- */o
+ */
 public final class ProductTypeDocTool {
 
     private String xslFilePath;

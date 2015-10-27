@@ -17,24 +17,24 @@
 package org.apache.oodt.cas.pge.writers;
 
 //Google static imports
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.annotations.VisibleForTesting;
 
-//OODT static imports
-import static org.apache.oodt.cas.pge.util.XmlHelper.fillIn;
+import org.apache.oodt.cas.metadata.Metadata;
 
-//JDK imports
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.logging.Logger;
 
-//Google imports
-import com.google.common.annotations.VisibleForTesting;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.oodt.cas.pge.util.XmlHelper.fillIn;
 
+//OODT static imports
+//JDK imports
+//Google imports
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * Text {@link SciPgeConfigFileWriter} which takes a template with envReplace
@@ -48,7 +48,7 @@ public class TextConfigFileWriter extends DynamicConfigFileWriter {
 
    @Override
    public File generateFile(String filePath, Metadata metadata, Logger logger,
-         Object... customArgs) throws Exception {
+         Object... customArgs) throws IOException {
       checkArgument(customArgs.length > 0,
             TextConfigFileWriter.class.getCanonicalName()
                   + " has no args specified");

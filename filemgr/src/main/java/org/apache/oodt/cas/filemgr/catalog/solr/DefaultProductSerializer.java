@@ -478,7 +478,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 	private Document parseXml(String xml) throws IOException, SAXException, ParserConfigurationException {
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder parser = factoriy.newDocumentBuilder();
+		DocumentBuilder parser = factory.newDocumentBuilder();
 	  return parser.parse( new InputSource(new StringReader(xml)) );
     
 	}

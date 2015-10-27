@@ -25,6 +25,7 @@ import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.datatransfer.RemoteDataTransferFactory;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 
@@ -34,6 +35,7 @@ import com.google.common.collect.Lists;
 
 //JDK imports
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -49,7 +51,7 @@ public class FileManagerFileStager extends FileStager {
 
    @Override
    public void stageFile(URI stageFile, File destDir,
-         PgeMetadata pgeMetadata, Logger logger) throws Exception {
+         PgeMetadata pgeMetadata, Logger logger) throws IOException, DataTransferException, InstantiationException {
       DataTransfer dataTransferer = createDataTransfer(pgeMetadata, logger);
       logger.log(Level.INFO, "Using DataTransfer ["
                + dataTransferer.getClass().getCanonicalName() + "]");

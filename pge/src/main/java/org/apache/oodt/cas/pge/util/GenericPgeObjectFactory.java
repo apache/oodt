@@ -53,11 +53,20 @@ public class GenericPgeObjectFactory {
          String clazz, Logger logger) {
       try {
          return (PgeConfigBuilder) Class.forName(clazz).newInstance();
-      } catch (Exception e) {
+      } catch (InstantiationException e) {
          logger.log(Level.SEVERE, "Failed to create PgeConfigBuilder ["
-               + clazz + "] : " + e.getMessage(), e);
+                                  + clazz + "] : " + e.getMessage(), e);
+         return null;
+      } catch (IllegalAccessException e) {
+         logger.log(Level.SEVERE, "Failed to create PgeConfigBuilder ["
+                                  + clazz + "] : " + e.getMessage(), e);
+         return null;
+      } catch (ClassNotFoundException e) {
+         logger.log(Level.SEVERE, "Failed to create PgeConfigBuilder ["
+                                  + clazz + "] : " + e.getMessage(), e);
          return null;
       }
+
    }
 
    public static ConfigFilePropertyAdder createConfigFilePropertyAdder(

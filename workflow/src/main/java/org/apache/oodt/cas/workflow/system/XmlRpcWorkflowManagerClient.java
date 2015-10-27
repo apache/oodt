@@ -26,6 +26,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
@@ -100,7 +101,7 @@ public class XmlRpcWorkflowManagerClient {
 
   }
 
-    public List getRegisteredEvents() throws XmlRpcException, IOException {
+    public List getRegisteredEvents() throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
 
             return (List) client.execute("workflowmgr.getRegisteredEvents",
@@ -190,7 +191,7 @@ public class XmlRpcWorkflowManagerClient {
         return XmlRpcStructFactory.getWorkflowInstancePageFromXmlRpc(pageHash);
     }
 
-    public List getWorkflowsByEvent(String eventName) throws XmlRpcException, IOException {
+    public List getWorkflowsByEvent(String eventName) throws XmlRpcException, IOException, RepositoryException {
         List workflows = new Vector();
         Vector workflowVector;
         Vector argList = new Vector();
@@ -349,7 +350,7 @@ public class XmlRpcWorkflowManagerClient {
 
     }
 
-    public WorkflowTask getTaskById(String taskId) throws XmlRpcException, IOException {
+    public WorkflowTask getTaskById(String taskId) throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
         argList.add(taskId);
 
@@ -360,7 +361,7 @@ public class XmlRpcWorkflowManagerClient {
     }
 
     public WorkflowCondition getConditionById(String conditionId)
-        throws XmlRpcException, IOException {
+        throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
         argList.add(conditionId);
 
@@ -371,7 +372,7 @@ public class XmlRpcWorkflowManagerClient {
     }
 
     public WorkflowInstance getWorkflowInstanceById(String wInstId)
-        throws XmlRpcException, IOException {
+        throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
         argList.add(wInstId);
 
@@ -382,7 +383,7 @@ public class XmlRpcWorkflowManagerClient {
 
     }
 
-    public Workflow getWorkflowById(String workflowId) throws XmlRpcException, IOException {
+    public Workflow getWorkflowById(String workflowId) throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
         argList.add(workflowId);
 
@@ -392,7 +393,7 @@ public class XmlRpcWorkflowManagerClient {
 
     }
 
-    public Vector getWorkflows() throws XmlRpcException, IOException {
+    public Vector getWorkflows() throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
         Vector works;
         Vector workflows;
@@ -481,7 +482,6 @@ public class XmlRpcWorkflowManagerClient {
             return instsUnpacked;
           } else
             return null;
-
     }
 
     public static void main(String[] args) {

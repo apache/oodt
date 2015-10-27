@@ -953,7 +953,7 @@ public class CatalogServiceLocal implements CatalogService {
 	}
 	
 	// check if transaction id was specified by user, otherwise generate a new one
-	protected TransactionId<?> getCatalogServiceTransactionId(Metadata metadata) throws Exception {
+	protected TransactionId<?> getCatalogServiceTransactionId(Metadata metadata) throws CatalogServiceException {
 		return this.getCatalogServiceTransactionId(metadata, true);
 	}
 	
