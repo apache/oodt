@@ -17,17 +17,38 @@
 package org.apache.oodt.cas.workflow.repository;
 
 //OODT imports
+
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
 import org.apache.oodt.cas.workflow.examples.BranchRedirector;
 import org.apache.oodt.cas.workflow.examples.NoOpTask;
-import org.apache.oodt.cas.workflow.structs.*;
+import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
+import org.apache.oodt.cas.workflow.structs.Graph;
+import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
+import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.XmlStructFactory;
+import org.apache.oodt.commons.exceptions.CommonsException;
 import org.apache.oodt.commons.xml.XMLUtils;
-import org.w3c.dom.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.File;
-import java.util.*;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -398,7 +419,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     }
   }
 
-  private void computeEvents() throws Exception {
+  private void computeEvents() throws WorkflowException {
     List<ParentChildWorkflow> workflows = new Vector<ParentChildWorkflow>();
     for (ParentChildWorkflow w : this.workflows.values()) {
       workflows.add(w);
@@ -441,13 +462,14 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
           }
         }
       } else
-        throw new Exception("Unsupported execution type: ["
+        throw new WorkflowException("Unsupported execution type: ["
             + workflow.getGraph().getExecutionType() + "]");
     }
   }
 
   private void loadTaskAndConditionDefinitions(List<Element> rootElements,
-      Element rootElem, Metadata staticMetadata) throws Exception {
+      Element rootElem, Metadata staticMetadata)
+      throws CommonsException, CasMetadataException, WorkflowException, ParseException {
 
     List<Element> conditionBlocks = this.getChildrenByTagName(rootElem,
         "condition");
@@ -474,7 +496,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   }
 
   private void loadGraphs(List<Element> rootElements, Element graphElem,
-      Graph parent, Metadata staticMetadata) throws Exception {
+      Graph parent, Metadata staticMetadata)
+      throws CommonsException, CasMetadataException, WorkflowException, ParseException {
 
     LOG.log(Level.FINEST, "Visiting node: [" + graphElem.getNodeName() + "]");
     loadConfiguration(rootElements, graphElem, staticMetadata);
@@ -520,7 +543,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   }
 
   private void loadConfiguration(List<Element> rootElements, Node workflowNode,
-      Metadata staticMetadata) throws Exception {
+      Metadata staticMetadata) throws ParseException, CommonsException, CasMetadataException, WorkflowException {
     NodeList children = workflowNode.getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
       Node curChild = children.item(i);
@@ -562,7 +585,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   }
 
   private Metadata loadConfGroup(List<Element> rootElements, String group,
-      Map<String, Metadata> globalConfGroups) throws Exception {
+      Map<String, Metadata> globalConfGroups)
+      throws ParseException, CommonsException, CasMetadataException, WorkflowException {
     for (final Element rootElement : rootElements) {
       NodeList nodes = rootElement.getElementsByTagName("configuration");
       for (int i = 0; i < nodes.getLength(); i++) {
@@ -572,7 +596,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
           return XmlStructFactory.getConfigurationAsMetadata(node);
       }
     }
-    throw new Exception("Configuration group '" + group + "' not defined!");
+    throw new WorkflowException("Configuration group '" + group + "' not defined!");
   }
 
   private void expandWorkflowTasksAndConditions(Graph graph,

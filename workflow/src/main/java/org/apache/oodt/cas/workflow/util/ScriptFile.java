@@ -19,13 +19,16 @@
 package org.apache.oodt.cas.workflow.util;
 
 //JDK imports
+
+import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Vector;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 
 /**
  * @author mattmann
@@ -104,7 +107,7 @@ public class ScriptFile {
         return rStr;
     }
 
-    public void writeScriptFile(String filePath) throws Exception {
+    public void writeScriptFile(String filePath) throws WorkflowException {
         PrintWriter pw = null;
 
         try {
@@ -113,7 +116,7 @@ public class ScriptFile {
             pw.println(toString());
         } catch (IOException e) {
             e.printStackTrace();
-            throw new Exception("Error writing script file!: " + e.getMessage());
+            throw new WorkflowException("Error writing script file!: " + e.getMessage());
         } finally {
             try {
                 pw.close();

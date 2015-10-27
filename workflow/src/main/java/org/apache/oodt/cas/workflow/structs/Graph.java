@@ -18,16 +18,19 @@
 package org.apache.oodt.cas.workflow.structs;
 
 //JDK imports
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.Vector;
+
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.Vector;
+
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * 
@@ -73,7 +76,7 @@ public class Graph {
   public static final List<String> processorIds = Arrays.asList(new String[] {
       "sequential", "parallel", "condition", "task" });
 
-  public Graph(Element graphElem, Metadata staticMetadata) throws Exception {
+  public Graph(Element graphElem, Metadata staticMetadata) throws WorkflowException {
     this();
     this.modelId = graphElem.getAttribute("id");
     this.modelName = graphElem.getAttribute("name");
@@ -100,14 +103,14 @@ public class Graph {
 
     if ((graphElem.getNodeName().equals("workflow") || graphElem.getNodeName()
         .equals("conditions")) && this.executionType == null) {
-      throw new Exception("workflow model '" + graphElem.getNodeName()
+      throw new WorkflowException("workflow model '" + graphElem.getNodeName()
           + "' missing execution type");
     } else {
       this.executionType = graphElem.getNodeName();
     }
 
     if (!processorIds.contains(this.executionType))
-      throw new Exception("Unsupported execution type id '"
+      throw new WorkflowException("Unsupported execution type id '"
           + this.executionType + "'");
 
     if (!checkValue(this.modelId) && !checkValue(this.modelIdRef)) {

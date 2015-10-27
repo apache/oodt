@@ -19,14 +19,17 @@
 package org.apache.oodt.cas.workflow.repository;
 
 //APACHE imports
+
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
+import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
+
+import javax.sql.DataSource;
 
 //JDK imports
-import javax.sql.DataSource;
 
 /**
  * @author mattmann
@@ -49,7 +52,7 @@ public class DataSourceWorkflowRepositoryFactory implements
      * Default Constructor
      * </p>.
      */
-    public DataSourceWorkflowRepositoryFactory() throws Exception {
+    public DataSourceWorkflowRepositoryFactory() throws WorkflowException {
         String jdbcUrl, user, pass, driver;
 
         jdbcUrl = System
@@ -64,7 +67,7 @@ public class DataSourceWorkflowRepositoryFactory implements
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {
-            throw new Exception("Cannot load driver: " + driver);
+            throw new WorkflowException("Cannot load driver: " + driver);
         }
 
         GenericObjectPool connectionPool = new GenericObjectPool(null);

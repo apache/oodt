@@ -17,24 +17,24 @@
 package org.apache.oodt.cas.workflow.engine.processor;
 
 //OODT imports
-import org.apache.oodt.commons.exec.ExecHelper;
+import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.structs.Graph;
-import org.apache.oodt.cas.workflow.structs.Priority;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
-import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.workflow.structs.Graph;
+import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
+import org.apache.oodt.cas.workflow.structs.Priority;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
+import org.apache.oodt.commons.exec.ExecHelper;
 
-//JDK imports
 import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+//JDK imports
 //APACHE imports
-import org.apache.commons.lang.StringUtils;
 
 /**
  * 
@@ -131,7 +131,7 @@ public class WorkflowProcessorHelper {
   public WorkflowProcessor buildProcessor(String instanceId,
       ParentChildWorkflow workflow,
       Map<String, Class<? extends WorkflowProcessor>> modelToProcessorMap,
-      boolean preCond) throws Exception {
+      boolean preCond) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
     List<WorkflowProcessor> subProcessors = new Vector<WorkflowProcessor>();
     List<WorkflowCondition> conditions = preCond ? workflow.getPreConditions()
         : workflow.getPostConditions();
@@ -151,7 +151,7 @@ public class WorkflowProcessorHelper {
   public WorkflowProcessor buildProcessor(String instanceId,
       ParentChildWorkflow model, boolean isCondition,
       Map<String, Class<? extends WorkflowProcessor>> modelToProcessorMap)
-      throws Exception {
+      throws IllegalAccessException, InstantiationException, ClassNotFoundException {
     WorkflowProcessor wp = modelToProcessorMap.get(
         model.getGraph().getExecutionType()).newInstance();
     WorkflowLifecycle wLifecycle = getLifecycle(model);

@@ -17,26 +17,28 @@
 
 package org.apache.oodt.cas.workflow.util;
 
-//JDK imports
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.HashMap;
-import java.util.logging.Logger;
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
-
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.commons.exceptions.CommonsException;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.logging.Logger;
+
 
 /**
  * * A class for constructing Workflow Manager objects from XML {@link Node}s
@@ -231,7 +233,7 @@ public final class XmlStructFactory {
   }
 
   public static Metadata getConfigurationAsMetadata(Node configNode)
-      throws Exception {
+      throws ParseException, CommonsException, CasMetadataException {
     Metadata curMetadata = new Metadata();
     NodeList curGrandChildren = configNode.getChildNodes();
     for (int k = 0; k < curGrandChildren.getLength(); k++) {

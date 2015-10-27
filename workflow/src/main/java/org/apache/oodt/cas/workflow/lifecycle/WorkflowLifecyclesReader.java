@@ -19,10 +19,16 @@
 package org.apache.oodt.cas.workflow.lifecycle;
 
 //OODT imports
+
+import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
+import org.apache.oodt.commons.exceptions.CommonsException;
 import org.apache.oodt.commons.xml.DOMUtil;
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-//JDK imports
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,12 +36,11 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -56,7 +61,7 @@ public final class WorkflowLifecyclesReader implements WorkflowLifecycleMetKeys 
     }
 
     public static List parseLifecyclesFile(String lifecyclesFilePath)
-            throws Exception {
+        throws CommonsException, WorkflowException {
         Document doc = getDocumentRoot(lifecyclesFilePath);
         Element rootElem = doc.getDocumentElement();
         List lifecycles = new Vector();
@@ -66,7 +71,7 @@ public final class WorkflowLifecyclesReader implements WorkflowLifecycleMetKeys 
                 DEFAULT_LIFECYCLE);
 
         if (defaultElem == null) {
-            throw new Exception("file: [" + lifecyclesFilePath
+            throw new WorkflowException("file: [" + lifecyclesFilePath
                     + "] must specify a default workflow lifecycle!");
         }
 

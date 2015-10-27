@@ -581,21 +581,17 @@ public class XmlRpcWorkflowManager {
     }
 
     public synchronized boolean updateWorkflowInstanceStatus(
-            String workflowInstanceId, String status) throws Exception {
+            String workflowInstanceId, String status) throws InstanceRepositoryException {
         WorkflowInstance wInst;
-        try {
             wInst = engine.getInstanceRepository().getWorkflowInstanceById(
                     workflowInstanceId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+
 
         wInst.setStatus(status);
         return doUpdateWorkflowInstance(wInst);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         int portNum = -1;
         String usage = "XmlRpcWorkflowManager --portNum <port number for xml rpc service>\n";
 

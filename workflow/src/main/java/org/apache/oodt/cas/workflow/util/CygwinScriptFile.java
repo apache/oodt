@@ -18,6 +18,8 @@
 
 package org.apache.oodt.cas.workflow.util;
 
+import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,7 +58,7 @@ public class CygwinScriptFile extends ScriptFile {
 	/**
 	 * Override writeScriptFile to ensure Windows (cygwin) compatibility for generated scripts
 	 */
-    public void writeScriptFile(String filePath) throws Exception {
+    public void writeScriptFile(String filePath) throws WorkflowException {
         PrintWriter pw = null;
 
         try {
@@ -65,7 +67,7 @@ public class CygwinScriptFile extends ScriptFile {
             pw.print(toString()); // Changed println to print for Cygwin compatibility
         } catch (IOException e) {
             e.printStackTrace();
-            throw new Exception("Error writing script file!: " + e.getMessage());
+            throw new WorkflowException("Error writing script file!: " + e.getMessage());
         } finally {
             try {
                 pw.close();
