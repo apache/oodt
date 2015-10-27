@@ -1,6 +1,8 @@
 Apache OODT Change Log
 ======================
 Release 0.11 - Current Development
+
+* ODT-862 Include the Workflow ID as part of the standard metadata (luca)
  
 * OODT-885 RegEx Precondition Comparator for DRAT --exclude feature (Karanjeet
   Singh via mattmann)
