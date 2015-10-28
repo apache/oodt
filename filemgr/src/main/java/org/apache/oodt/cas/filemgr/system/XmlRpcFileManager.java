@@ -248,7 +248,7 @@ public class XmlRpcFileManager {
                     "Catalog exception performing paged query for product type: ["
                             + type.getProductTypeId() + "] query: [" + query
                             + "]: Message: " + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         }
 
         return XmlRpcStructFactory.getXmlRpcProductPage(prodPage);
@@ -351,7 +351,7 @@ public class XmlRpcFileManager {
             LOG.log(Level.WARNING,
                     "Exception when getting num products: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         }
 
         return numProducts;
@@ -369,7 +369,7 @@ public class XmlRpcFileManager {
             LOG.log(Level.WARNING,
                     "Exception when getting topN products: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         }
     }
 
@@ -389,7 +389,7 @@ public class XmlRpcFileManager {
                     "Exception when getting topN products by product type: ["
                             + type.getProductTypeId() + "]: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         }
 
     }
@@ -426,7 +426,7 @@ public class XmlRpcFileManager {
             LOG.log(Level.SEVERE,
                     "Unable to obtain product types from repository manager: Message: "
                             + e.getMessage());
-            throw new RepositoryManagerException(e.getMessage());
+            throw new RepositoryManagerException(e.getMessage(), e);
         }
     }
 
@@ -444,7 +444,7 @@ public class XmlRpcFileManager {
             LOG.log(Level.SEVERE, "Unable to obtain references for product: ["
                     + product.getProductName() + "]: Message: "
                     + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         }
 
     }
@@ -467,13 +467,13 @@ public class XmlRpcFileManager {
             e.printStackTrace();
             LOG.log(Level.SEVERE, "Unable to obtain product by id: ["
                     + productId + "]: Message: " + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } catch (RepositoryManagerException e) {
             e.printStackTrace();
             LOG.log(Level.SEVERE, "Unable to obtain product type by id: ["
                     + product.getProductType().getProductTypeId()
                     + "]: Message: " + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         }
 
     }
@@ -496,13 +496,13 @@ public class XmlRpcFileManager {
             e.printStackTrace();
             LOG.log(Level.SEVERE, "Unable to obtain product by name: ["
                     + productName + "]: Message: " + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } catch (RepositoryManagerException e) {
             e.printStackTrace();
             LOG.log(Level.SEVERE, "Unable to obtain product type by id: ["
                     + product.getProductType().getProductTypeId()
                     + "]: Message: " + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         }
     }
 
@@ -521,7 +521,7 @@ public class XmlRpcFileManager {
             LOG.log(Level.SEVERE,
                     "Exception obtaining products by product type for type: ["
                             + type.getName() + "]: Message: " + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         }
     }
 
@@ -540,7 +540,7 @@ public class XmlRpcFileManager {
             LOG.log(Level.SEVERE,
                     "Exception obtaining elements for product type: ["
                             + type.getName() + "]: Message: " + e.getMessage());
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e.getMessage(), e);
         }
 
     }
@@ -556,7 +556,7 @@ public class XmlRpcFileManager {
             e.printStackTrace();
             LOG.log(Level.SEVERE, "exception retrieving element by id: ["
                     + elementId + "]: Message: " + e.getMessage());
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e.getMessage(), e);
         }
     }
 
@@ -572,7 +572,7 @@ public class XmlRpcFileManager {
             e.printStackTrace();
             LOG.log(Level.SEVERE, "exception retrieving element by name: ["
                     + elementName + "]: Message: " + e.getMessage());
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e.getMessage(), e);
         }
     }
 
@@ -631,7 +631,7 @@ public class XmlRpcFileManager {
         } catch (Exception e) {
             e.printStackTrace();
             throw new CatalogException("Failed to perform complex query : "
-                    + e.getMessage());
+                    + e.getMessage(), e);
         }
     }
     
@@ -664,7 +664,7 @@ public class XmlRpcFileManager {
             LOG.log(Level.SEVERE,
                     "Exception obtaining product type by id for product type: ["
                             + productTypeId + "]: Message: " + e.getMessage());
-            throw new RepositoryManagerException(e.getMessage());
+            throw new RepositoryManagerException(e.getMessage(), e);
         }
     }
     
@@ -770,7 +770,7 @@ public class XmlRpcFileManager {
     } catch (Exception e) {
       e.printStackTrace();
       throw new CatalogException("Error ingesting product [" + p + "] : "
-          + e.getMessage());
+          + e.getMessage(),e);
     }
 
   }
@@ -900,7 +900,7 @@ public class XmlRpcFileManager {
             try {
                 this.dataTransfer.transferProduct(p);
             } catch (IOException e) {
-                throw new DataTransferException(e.getMessage());
+                throw new DataTransferException(e);
             }
 
             // now delete the original copy
@@ -913,7 +913,7 @@ public class XmlRpcFileManager {
             } catch (URISyntaxException e) {
                 throw new DataTransferException(
                         "URI Syntax exception trying to remove original product ref: Message: "
-                                + e.getMessage());
+                                + e.getMessage(), e);
             }
 
             // now save the updated reference
@@ -921,7 +921,7 @@ public class XmlRpcFileManager {
                 this.catalog.modifyProduct(p);
                 return true;
             } catch (CatalogException e) {
-                throw new DataTransferException(e.getMessage());
+                throw new DataTransferException(e.getMessage(),e);
             }
         } else
             throw new UnsupportedOperationException(
@@ -1072,7 +1072,7 @@ public class XmlRpcFileManager {
                     "ingestProduct: General Exception when adding metadata "
                             + metadata + " for product: " + p.getProductName()
                             + ": Message: " + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(),e);
         }
 
         return metadata;
@@ -1169,7 +1169,7 @@ public class XmlRpcFileManager {
             LOG.log(Level.SEVERE,
                     "Exception performing query against catalog for product type: ["
                             + productType.getName() + "] Message: " + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(),e);
         }
     }
     
@@ -1189,7 +1189,7 @@ public class XmlRpcFileManager {
                     "Exception obtaining metadata from catalog for product: ["
                             + product.getProductId() + "]: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(),e);
         }
     }
     
@@ -1204,7 +1204,7 @@ public class XmlRpcFileManager {
                     "Exception obtaining metadata from catalog for product: ["
                             + product.getProductId() + "]: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(),e);
         }
     }
     

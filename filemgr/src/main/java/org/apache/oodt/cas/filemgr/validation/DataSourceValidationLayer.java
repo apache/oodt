@@ -122,7 +122,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                         "Unable to rollback addElement transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
 
             if (rs != null) {
@@ -190,7 +190,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                         "Unable to rollback modifyElement transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
 
             if (statement != null) {
@@ -249,7 +249,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                         "Unable to rollback removeElement transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
             if (statement != null) {
                 try {
@@ -315,7 +315,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                         "Unable to rollback addElementToProductType transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
             if (statement != null) {
                 try {
@@ -382,7 +382,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                         "Unable to rollback removeElementFromProductType transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
             if (statement != null) {
                 try {
@@ -441,7 +441,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                         "Unable to rollback addParentToProductType transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
             if (statement != null) {
                 try {
@@ -500,7 +500,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                         "Unable to rollback removeParentFromProductType transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
             if (statement != null) {
                 try {
@@ -563,7 +563,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 e.printStackTrace();
                 LOG.log(Level.WARNING, "Exception reading elements. Message: "
                         + e.getMessage());
-                throw new ValidationLayerException(e.getMessage());
+                throw new ValidationLayerException(e);
             } finally {
 
                 if (rs != null) {
@@ -620,7 +620,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 LOG.log(Level.WARNING,
                         "Exception reading product parent. Message: "
                                 + e.getMessage());
-                throw new ValidationLayerException(e.getMessage());
+                throw new ValidationLayerException(e);
             } finally {
                 if (rs != null) {
                     try {
@@ -683,7 +683,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             e.printStackTrace();
             LOG.log(Level.WARNING, "Exception reading elements. Message: "
                     + e.getMessage());
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
 
             if (rs != null) {
@@ -747,7 +747,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             e.printStackTrace();
             LOG.log(Level.WARNING, "Exception reading element. Message: "
                     + e.getMessage());
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
 
             if (rs != null) {
@@ -811,7 +811,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             e.printStackTrace();
             LOG.log(Level.WARNING, "Exception reading element. Message: "
                     + e.getMessage());
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
 
             if (rs != null) {

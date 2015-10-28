@@ -76,7 +76,7 @@ public class MoveFile extends CrawlerAction {
         	 return true; //File copied
       } catch (Exception e) {
          throw new CrawlerActionException("Failed to move file from " + mvFile
-               + " to " + this.toDir + " : " + e.getMessage());
+               + " to " + this.toDir + " : " + e.getMessage(), e);
       }
    }
 

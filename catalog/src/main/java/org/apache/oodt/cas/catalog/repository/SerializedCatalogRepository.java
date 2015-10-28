@@ -17,6 +17,12 @@
 package org.apache.oodt.cas.catalog.repository;
 
 //JDK imports
+import org.apache.commons.io.FileUtils;
+import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
+import org.apache.oodt.cas.catalog.system.Catalog;
+import org.apache.oodt.cas.catalog.util.PluginURL;
+import org.apache.oodt.cas.catalog.util.Serializer;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,13 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //APACHE imports
-import org.apache.commons.io.FileUtils;
-
 //OODT imports
-import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
-import org.apache.oodt.cas.catalog.system.Catalog;
-import org.apache.oodt.cas.catalog.util.PluginURL;
-import org.apache.oodt.cas.catalog.util.Serializer;
 
 /**
  * @author bfoster
@@ -56,6 +56,7 @@ public class SerializedCatalogRepository implements CatalogRepository {
 			new File(this.storageDir + "/classloaders").mkdirs();
 		}catch(Exception e) {
 			e.printStackTrace();
+		  	LOG.log(Level.SEVERE, e.getMessage());
 			throw new InstantiationException("Failed to instantiate SerializedCatalogRepository : " + e.getMessage());
 		}
 	}

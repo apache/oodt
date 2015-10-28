@@ -151,7 +151,7 @@ public class DataSourceCatalog implements Catalog {
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
-                            + ": Message: " + e.getMessage());
+                            + ": Message: " + e.getMessage(), e);
         }
 
       for (Element element : metadataTypes) {
@@ -206,7 +206,7 @@ public class DataSourceCatalog implements Catalog {
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
-                            + ": Message: " + e.getMessage());
+                            + ": Message: " + e.getMessage(), e);
         }
 
       for (Element element : metadataTypes) {
@@ -334,7 +334,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback addProduct transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -396,7 +396,6 @@ public class DataSourceCatalog implements Catalog {
             updateReferences(product);
 
         } catch (Exception e) {
-            e.printStackTrace();
             LOG.log(Level.WARNING, "Exception modifying product. Message: "
                     + e.getMessage());
             try {
@@ -407,7 +406,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback modifyProduct transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (statement != null) {
@@ -481,7 +480,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback removeProduct transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {
@@ -541,7 +540,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback setProductTransferStatus transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (statement != null) {
@@ -620,7 +619,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback addProductReferences transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (statement != null) {
@@ -682,7 +681,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback getProductById transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -755,7 +754,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback getProductByName transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -832,7 +831,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback getProductTypeById transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -909,7 +908,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback getProductstransaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -997,7 +996,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback getProductsByProductType transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -1058,7 +1057,7 @@ public class DataSourceCatalog implements Catalog {
                 throw new CatalogException(
                         "ValidationLayerException when trying to obtain element list for product type: "
                                 + product.getProductType().getName()
-                                + ": Message: " + e.getMessage());
+                                + ": Message: " + e.getMessage(), e);
             }
 
             while (rs.next()) {
@@ -1078,7 +1077,7 @@ public class DataSourceCatalog implements Catalog {
             e.printStackTrace();
             LOG.log(Level.WARNING, "Exception getting metadata. Message: "
                     + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -1148,7 +1147,7 @@ public class DataSourceCatalog implements Catalog {
                 throw new CatalogException(
                         "ValidationLayerException when trying to obtain element list for product type: "
                                 + product.getProductType().getName()
-                                + ": Message: " + e.getMessage());
+                                + ": Message: " + e.getMessage(), e);
             }
 
             while (rs.next()) {
@@ -1168,7 +1167,7 @@ public class DataSourceCatalog implements Catalog {
             e.printStackTrace();
             LOG.log(Level.WARNING, "Exception getting metadata. Message: "
                     + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -1282,7 +1281,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback get top N products. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(),e);
         } finally {
 
             if (rs != null) {
@@ -1372,7 +1371,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback add metadata value. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {
@@ -1436,7 +1435,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback remove metadata value. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {
@@ -1504,7 +1503,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback get num products. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -1827,7 +1826,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback get num results transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -2047,7 +2046,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback query transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -2191,7 +2190,7 @@ public class DataSourceCatalog implements Catalog {
                         "Unable to rollback updateProductReferences transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
           if (statement != null) {

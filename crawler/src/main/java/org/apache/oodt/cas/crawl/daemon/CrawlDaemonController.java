@@ -62,9 +62,9 @@ public class CrawlDaemonController {
             avgCrawlTime = (Double) client.execute(
                 "crawldaemon.getAverageCrawlTime", argList);
         } catch (XmlRpcException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         }
 
         return avgCrawlTime;
@@ -79,9 +79,9 @@ public class CrawlDaemonController {
             milisCrawling = (Integer) client.execute(
                 "crawldaemon.getMilisCrawling", argList);
         } catch (XmlRpcException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         }
 
         return milisCrawling;
@@ -96,9 +96,9 @@ public class CrawlDaemonController {
             waitInterval = (Integer) client.execute(
                 "crawldaemon.getWaitInterval", argList);
         } catch (XmlRpcException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         }
 
         return waitInterval;
@@ -112,9 +112,9 @@ public class CrawlDaemonController {
             numCrawls = (Integer) client.execute("crawldaemon.getNumCrawls",
                 argList);
         } catch (XmlRpcException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         }
 
         return numCrawls;
@@ -129,9 +129,9 @@ public class CrawlDaemonController {
             running = (Boolean) client.execute("crawldaemon.isRunning",
                 argList);
         } catch (XmlRpcException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         }
 
         return running;
@@ -144,9 +144,9 @@ public class CrawlDaemonController {
         try {
             running = (Boolean) client.execute("crawldaemon.stop", argList);
         } catch (XmlRpcException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new CrawlException(e.getMessage());
+            throw new CrawlException(e.getMessage(), e);
         }
 
         if (running) {

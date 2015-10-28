@@ -113,7 +113,7 @@ public class RmiCache implements Cache {
         try {
             rmiCacheServer.sync(uniqueElementProductTypeNames);
         } catch (RemoteException e) {
-            throw new CacheException(e.getMessage());
+            throw new CacheException(e.getMessage(), e);
         }
 
     }
@@ -129,7 +129,7 @@ public class RmiCache implements Cache {
         try {
             rmiCacheServer.sync(uniqueElementName, uniqueElementProductTypeNames);
         } catch (RemoteException e) {
-           throw new CacheException(e.getMessage());
+           throw new CacheException(e.getMessage(), e);
         }
 
     }
@@ -158,7 +158,7 @@ public class RmiCache implements Cache {
         try {
             rmiCacheServer.sync();
         } catch (RemoteException e) {
-            throw new CacheException(e.getMessage());
+            throw new CacheException(e.getMessage(), e);
         }
     }
 

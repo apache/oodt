@@ -199,7 +199,7 @@ public class LuceneCatalog implements Catalog {
 	            throw new CatalogException(
 	                    "ValidationLayerException when trying to obtain element list for product type: "
 	                            + product.getProductType().getName()
-	                            + ": Message: " + e.getMessage());
+	                            + ": Message: " + e.getMessage(), e);
 	        }
         } else {
         	// remove all metadata
@@ -396,7 +396,7 @@ public class LuceneCatalog implements Catalog {
                     "IOException when opening index directory: ["
                             + indexFilePath + "] for search: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (searcher != null) {
                 try {
@@ -445,7 +445,7 @@ public class LuceneCatalog implements Catalog {
                     "IOException when opening index directory: ["
                             + indexFilePath + "] for search: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (searcher != null) {
                 try {
@@ -510,7 +510,7 @@ public class LuceneCatalog implements Catalog {
                     "IOException when opening index directory: ["
                             + indexFilePath + "] for search: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (searcher != null) {
                 try {
@@ -567,7 +567,7 @@ public class LuceneCatalog implements Catalog {
                     "IOException when opening index directory: ["
                             + indexFilePath + "] for search: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (searcher != null) {
                 try {
@@ -604,7 +604,7 @@ public class LuceneCatalog implements Catalog {
                     "IOException when opening index directory: ["
                             + indexFilePath + "] for search: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (searcher != null) {
                 try {
@@ -689,7 +689,7 @@ public class LuceneCatalog implements Catalog {
                     "IOException when opening index directory: ["
                             + indexFilePath + "] for search: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (searcher != null) {
                 try {
@@ -920,7 +920,7 @@ public class LuceneCatalog implements Catalog {
             LOG.log(Level.WARNING,
                     "CatalogException when doing paged product query: Message: "
                             + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         }
 
     }
@@ -940,7 +940,7 @@ public class LuceneCatalog implements Catalog {
             LOG.log(Level.WARNING, "Exception removing product: ["
                     + product.getProductName() + "] from index: Message: "
                     + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (reader != null) {
                 try {
@@ -981,7 +981,7 @@ public class LuceneCatalog implements Catalog {
                     + e.getMessage(), e);
             throw new CatalogException("Unable to index product: ["
                     + cp.getProduct().getProductName() + "]: Message: "
-                    + e.getMessage());
+                    + e.getMessage(), e);
         } finally {
             try {
                 if (writer != null) {

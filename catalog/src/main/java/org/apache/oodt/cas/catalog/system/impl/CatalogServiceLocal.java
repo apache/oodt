@@ -89,7 +89,7 @@ public class CatalogServiceLocal implements CatalogService {
 			this.disableIntersectingCrossCatalogQueries = disableIntersectingCrossCatalogQueries;
 			this.crossCatalogResultSortingThreshold = crossCatalogResultSortingThreshold;
 		}catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE,e.getMessage());
 			throw new InstantiationException(e.getMessage());
 		}
 	}

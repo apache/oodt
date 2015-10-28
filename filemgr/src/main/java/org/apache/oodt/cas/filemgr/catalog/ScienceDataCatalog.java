@@ -200,7 +200,7 @@ public class ScienceDataCatalog implements Catalog {
       LOG.log(Level.WARNING,
           "Exception adding product metadata. Message: " + e.getMessage());
       e.printStackTrace();
-      throw new CatalogException(e.getMessage());
+      throw new CatalogException(e.getMessage(), e);
     }
   }
 
@@ -226,7 +226,7 @@ public class ScienceDataCatalog implements Catalog {
       LOG.log(Level.WARNING,
           "SQL Exception querying for granule existence. Last query was: "
               + queryExists + " , Message: " + e.getMessage());
-      throw new SQLException(e.getMessage());
+      throw new SQLException(e.getMessage(), e);
     } finally {
       if (statement != null) {
         try {
@@ -252,7 +252,7 @@ public class ScienceDataCatalog implements Catalog {
         String maxQuery = "SELECT MAX(granule_id) AS max_id FROM granule";
         granuleId = this.commitQuery(new StringBuffer(query), maxQuery);
       } catch (Exception e) {
-        throw new CatalogException(e.getMessage());
+        throw new CatalogException(e.getMessage(), e);
       }
     }
 
@@ -283,7 +283,7 @@ public class ScienceDataCatalog implements Catalog {
       LOG.log(Level.WARNING,
           "SQL Exception querying for parameter existence. Last query was: "
               + queryExists + " , Message: " + e.getMessage());
-      throw new SQLException(e.getMessage());
+      throw new SQLException(e.getMessage(), e);
     } finally {
       if (statement != null) {
         try {
@@ -311,7 +311,7 @@ public class ScienceDataCatalog implements Catalog {
         String maxQuery = "SELECT MAX(parameter_id) AS max_id FROM parameter";
         parameterId = this.commitQuery(new StringBuffer(query), maxQuery);
       } catch (Exception e) {
-        throw new CatalogException(e.getMessage());
+        throw new CatalogException(e.getMessage(), e);
       }
     }
 
@@ -357,7 +357,7 @@ public class ScienceDataCatalog implements Catalog {
             "Unable to rollback addMetadata transaction. Message: "
                 + e2.getMessage());
       }
-      throw new SQLException(e.getMessage());
+      throw new SQLException(e.getMessage(), e);
     } finally {
       if (statement != null) {
         try {
@@ -983,7 +983,7 @@ public class ScienceDataCatalog implements Catalog {
         LOG.log(Level.SEVERE, "Unable to rollback query transaction. Message: "
             + e2.getMessage());
       }
-      throw new CatalogException(e.getMessage());
+      throw new CatalogException(e.getMessage(), e);
     } finally {
 
       if (rs != null) {

@@ -127,13 +127,13 @@ public class CachedIngester extends StdIngester {
                                 + "]: Message: " + e.getMessage());
                 throw new CatalogException(
                         "Exception re-syncing cache to file manager: [" + fmUrl
-                                + "]: Message: " + e.getMessage());
+                                + "]: Message: " + e.getMessage(), e);
             }
             return cache.contains(productName);
         }
       } catch (URISyntaxException e) {
         LOG.log(Level.SEVERE, "Exception getting URI from URL");
-        throw new CatalogException("Exception getting URL from URL: Message: " + e.getMessage());
+        throw new CatalogException("Exception getting URL from URL: Message: " + e.getMessage(), e);
       }
     }
 

@@ -164,7 +164,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 		
 		} catch(Exception e) {
 			e.printStackTrace();
-			throw new CatalogException(e.getMessage());
+			throw new CatalogException(e.getMessage(), e);
 		}
 		
 	}

@@ -387,7 +387,7 @@ public class SolrCatalog implements Catalog {
 			return this.pagedQuery(new Query(), type, 1);
 			
 		} catch(CatalogException e) {
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -406,7 +406,7 @@ public class SolrCatalog implements Catalog {
 			return pagedQuery(new Query(), type, numOfPages);
 		
 		} catch(CatalogException e) {
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.getMessage(), e);
 		}
 		
 	}
@@ -421,7 +421,7 @@ public class SolrCatalog implements Catalog {
 			return this.pagedQuery(new Query(), type, currentPage.getPageNum()+1);
 			
 		} catch(CatalogException e) {
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.getMessage(), e);
 		}
 		
 	}
@@ -436,7 +436,7 @@ public class SolrCatalog implements Catalog {
 			return this.pagedQuery(new Query(), type, prevPageNumber);
 			
 		} catch(CatalogException e) {
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.getMessage(), e);
 		}
 		
 	}

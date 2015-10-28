@@ -150,7 +150,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
-                            + ": Message: " + e.getMessage());
+                            + ": Message: " + e.getMessage(), e);
         }
         
       } else {
@@ -234,7 +234,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             e.printStackTrace();
             LOG.log(Level.WARNING, "Exception getting metadata. Message: "
                     + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -283,7 +283,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
-                            + ": Message: " + e.getMessage());
+                            + ": Message: " + e.getMessage(), e);
         }
 
         while (rs.next()) {
@@ -363,7 +363,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             e.printStackTrace();
             LOG.log(Level.WARNING, "Exception getting metadata. Message: "
                     + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -454,7 +454,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                         "Unable to rollback add metadata value. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {
@@ -522,7 +522,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                         "Unable to rollback remove metadata value. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {
@@ -718,7 +718,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                         "Unable to rollback get num results transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
