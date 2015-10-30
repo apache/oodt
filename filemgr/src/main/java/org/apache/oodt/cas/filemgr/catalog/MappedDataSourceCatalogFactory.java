@@ -23,6 +23,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 //JDK imports
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 
@@ -52,7 +53,13 @@ public class MappedDataSourceCatalogFactory extends DataSourceCatalogFactory {
         String mapFilePath = PathUtils.replaceEnvVariables(System
                 .getProperty(TYPE_MAP_KEY));
         Properties props = new Properties();
-        props.load(new FileInputStream(mapFilePath));
+        InputStream is = new FileInputStream(mapFilePath);
+        try {
+            props.load(is);
+        }
+        finally{
+            is.close();
+        }
         this.typeMap = props;
     }
 

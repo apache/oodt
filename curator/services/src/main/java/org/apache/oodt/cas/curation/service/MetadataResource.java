@@ -52,6 +52,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -594,8 +595,13 @@ public class MetadataResource extends CurationService {
    */
   public void updateCatalogMetadata(Product product, Metadata newMetadata)
       throws CatalogException, IOException {
-    System.getProperties().load(
-        new FileInputStream(CurationService.config.getFileMgrProps()));
+    InputStream is = new FileInputStream(CurationService.config.getFileMgrProps());
+    try {
+      System.getProperties().load(is);
+    }
+    finally{
+      is.close();
+    }
     Catalog catalog = this.getCatalog();
     
     Metadata oldMetadata = catalog.getMetadata(product);

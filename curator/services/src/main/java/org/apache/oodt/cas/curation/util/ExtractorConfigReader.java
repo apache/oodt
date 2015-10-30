@@ -24,6 +24,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -33,9 +34,14 @@ public class ExtractorConfigReader {
       String configId) throws IOException {
     File propsFileDir = new File(directory, configId);
     Properties props = new Properties();
-    props
-        .load(new FileInputStream(new File(propsFileDir,
-        "config.properties")));
+    InputStream is = new FileInputStream(new File(propsFileDir,
+        "config.properties"));
+    try {
+      props.load(is);
+    }
+    finally{
+      is.close();
+    }
 
     String className = props.getProperty(ExtractorConfig.PROP_CLASS_NAME);
     List<File> files = new ArrayList<File>();

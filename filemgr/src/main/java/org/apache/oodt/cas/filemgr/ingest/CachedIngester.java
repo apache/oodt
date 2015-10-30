@@ -18,17 +18,20 @@
 package org.apache.oodt.cas.filemgr.ingest;
 
 //JDK imports
+
+import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 
 /**
  * @author mattmann
@@ -66,13 +69,21 @@ public class CachedIngester extends StdIngester {
     public CachedIngester(String transferService, String cacheServiceFactory,
             String cachePropFile) throws InstantiationException {
         super(transferService);
+
         try {
-            System.getProperties().load(new FileInputStream(cachePropFile));
+            InputStream is = new FileInputStream(cachePropFile);
+          try {
+            System.getProperties().load(is);
+          }
+          finally{
+            is.close();
+          }
         } catch (Exception e) {
             throw new InstantiationException(
                     "Unable to load cache properties from file: ["
                             + cachePropFile + "]");
         }
+
         this.cache = GenericFileManagerObjectFactory
                 .getCacheFromFactory(cacheServiceFactory);
         init(this.cache);

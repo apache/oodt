@@ -23,6 +23,7 @@ import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Properties;
 import java.util.Iterator;
 
@@ -42,9 +43,14 @@ public class ExtractorConfigWriter {
         files.append(",");
     }
     props.setProperty(ExtractorConfig.PROP_CONFIG_FILES, files.toString());
-    props
-        .store(new FileOutputStream(new File(configDir, "config.properties")),
-        "");
+    OutputStream os = new FileOutputStream(new File(configDir, "config.properties"));
+    try {
+      props
+          .store(os, "");
+    }
+    finally{
+      os.close();
+    }
   }
 
 }
