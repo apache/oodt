@@ -19,6 +19,10 @@
 package org.apache.oodt.commons.database;
 
 //JDK imports
+
+import org.apache.commons.dbcp.ConnectionFactory;
+import org.apache.commons.dbcp.DriverManagerConnectionFactory;
+import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
 
@@ -47,7 +51,10 @@ public final class DatabaseConnectionBuilder {
         }
 
         GenericObjectPool connectionPool = new GenericObjectPool(null);
-
+      ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(
+                          url, user, pass);
+              PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(
+                          connectionFactory, connectionPool, null, null, false, true);
       ds = new PoolingDataSource(connectionPool);
 
         return ds;
