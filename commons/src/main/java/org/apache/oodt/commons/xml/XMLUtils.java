@@ -137,7 +137,7 @@ public class XMLUtils {
 
     public static Element getFirstElement(String name, Element root) {
         NodeList list = root.getElementsByTagName(name);
-        if (list != null) {
+        if (list.getLength()>0) {
             return (Element) list.item(0);
         } else
             return null;

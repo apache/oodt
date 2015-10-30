@@ -274,10 +274,7 @@ public class JDBC_DB
 		//time = System.currentTimeMillis();
 		//System.err.println("###### Executing the query: " + (time - time0));
 
-		if (rs == null)
-		{
-			return(null);
-		}
+
 
 		return(rs);
 
@@ -306,11 +303,6 @@ public class JDBC_DB
 			rs.close();
 
 		rs = stmt.executeQuery(sql_command);
-
-		if (rs == null)
-		{
-			return(0);
-		}
 
 		count = 0;
 

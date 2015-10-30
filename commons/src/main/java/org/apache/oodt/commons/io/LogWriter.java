@@ -316,14 +316,11 @@ public class LogWriter extends java.io.Writer {
 			println("Null throwable");
 		else {
 			StackTraceElement[] frames = t.getStackTrace();
-			if (frames == null)
-				println("Null stack trace in " + t.getClass().getName());
-			else {
 				println(t.getClass().getName() + ":");
 			  for (StackTraceElement frame : frames) {
 				println(frame);
 			  }
-			}
+
 		}
 	}
 

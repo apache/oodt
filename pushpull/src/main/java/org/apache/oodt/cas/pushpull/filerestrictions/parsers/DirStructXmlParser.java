@@ -18,7 +18,6 @@
 
 package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -45,7 +44,6 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-//JDK imports
 
 /**
  * 
@@ -81,7 +79,6 @@ public class DirStructXmlParser implements Parser {
                     // parse out starting path
                     String startingPath = ((Element) node)
                             .getAttribute("starting_path");
-                    if (startingPath != null) {
                         root = (currentFile = new VirtualFile(
                                 initialCdDir = startingPath, true))
                                 .getRootDir();
@@ -91,10 +88,6 @@ public class DirStructXmlParser implements Parser {
                             temp.setNoFiles(true);
                             temp = temp.getParentFile();
                         }
-                    } else {
-                        currentFile = root = VirtualFile.createRootDir();
-                    }
-
                     // parse the directory structure
                     parseDirstructXML(node.getChildNodes(), currentFile);
 

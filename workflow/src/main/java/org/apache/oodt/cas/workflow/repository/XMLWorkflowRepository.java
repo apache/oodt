@@ -367,7 +367,6 @@ public class XMLWorkflowRepository implements WorkflowRepository {
 
         List workflows = repo.getWorkflows();
 
-        if (workflows != null) {
           for (Object workflow : workflows) {
             Workflow w = (Workflow) workflow;
             System.out.println("Workflow: [id=" + w.getId() + ", name="
@@ -416,9 +415,6 @@ public class XMLWorkflowRepository implements WorkflowRepository {
             }
 
           }
-        } else {
-            System.out.println("No workflows defined!");
-        }
 
     }
 

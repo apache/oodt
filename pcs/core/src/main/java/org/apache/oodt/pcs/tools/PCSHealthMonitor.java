@@ -325,7 +325,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   }
 
   private List getIngestHealth() {
-    if (this.crawlProps.getCrawlers() == null) {
+    if (this.crawlProps.getCrawlers().size()==0) {
       return new Vector();
     }
 
@@ -529,7 +529,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   }
 
   private void quickPrintIngestStatusHealth() {
-    if (this.crawlProps.getCrawlers() == null) {
+    if (this.crawlProps.getCrawlers().size()==0) {
       return;
     }
 

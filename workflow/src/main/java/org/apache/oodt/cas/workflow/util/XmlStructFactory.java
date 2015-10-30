@@ -213,9 +213,6 @@ public final class XmlStructFactory {
 
     NodeList configProperties = configNode.getElementsByTagName("property");
 
-    if (configProperties == null) {
-      return null;
-    }
 
     Properties properties = new Properties();
     for (int i = 0; i < configProperties.getLength(); i++) {
@@ -321,7 +318,7 @@ public final class XmlStructFactory {
 
   private static Element getFirstElement(String name, Element root) {
     NodeList list = root.getElementsByTagName(name);
-    if (list != null) {
+    if (list.getLength()>0) {
       return (Element) list.item(0);
     } else
       return null;

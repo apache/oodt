@@ -142,11 +142,7 @@ public class LuceneCatalog implements Catalog {
         	removeProduct(product);        		
         }
         
-        if (p == null) {
-            throw new CatalogException("Product ["+ product.getProductName()
-            		                     + "] not found either in local cache or in index");
-
-        } else {
+        if (p != null) {
             p.setMetadata(m);
             if (hasMetadataAndRefs(p)) {
                 LOG.log(Level.FINE,
@@ -174,15 +170,6 @@ public class LuceneCatalog implements Catalog {
             String prodId = product.getProductId();
             p = getCompleteProductById(prodId, true, true);
             removeProductDocument(product);
-        }
-
-        if (p == null) {
-            // not in index
-            throw new CatalogException(
-                    "Attempt to remove metadata to a product: ["
-                            + product.getProductName()
-                            + "] that isn't in the index or the local cache!");
-
         }
 
         Metadata currMet = p.getMetadata();
@@ -328,11 +315,7 @@ public class LuceneCatalog implements Catalog {
         	removeProduct(product);        		
         }
         
-        if (p == null) {
-            throw new CatalogException("Product ["+ product.getProductName()
-            		                     + "] not found either in local cache or in index");
- 
-        } else {
+        if (p != null) {
             p.getProduct().setProductReferences(product.getProductReferences());
             if (hasMetadataAndRefs(p)) {
                 LOG.log(Level.FINE,

@@ -142,14 +142,8 @@ public abstract class Server implements Serializable {
   public static Server create(Configuration configuration, Element elem)
       throws SAXException {
     String type = elem.getAttribute("type");
-    if (type == null)
-      throw new SAXException("type attribute missing from <"
-          + elem.getNodeName() + ">");
 
     String className = elem.getAttribute("className");
-    if (className == null)
-      throw new SAXException("className attribute missing from <"
-          + elem.getNodeName() + ">");
 
     // Replace with a factory some day...
     if ("product".equals(type))

@@ -19,8 +19,6 @@
 package org.apache.oodt.cas.curation.service;
 
 //OODT imports
-import net.sf.json.JSONObject;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -29,18 +27,28 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 
+import net.sf.json.JSONObject;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
@@ -89,11 +97,6 @@ public class PolicyResource extends CurationService {
     String policy;
     String productType;
 
-    if (pathToks == null) {
-      LOG.log(Level.WARNING, "malformed path token string: "
-          + Arrays.asList(pathToks));
-      return "";
-    }
 
     policy = pathToks.length > 0 ? pathToks[0]:null;
     productType = pathToks.length > 1 ? pathToks[1] : null;

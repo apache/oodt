@@ -102,7 +102,7 @@ public class Graph {
     }
 
     if ((graphElem.getNodeName().equals("workflow") || graphElem.getNodeName()
-        .equals("conditions")) && this.executionType == null) {
+        .equals("conditions")) && this.executionType.equals("")) {
       throw new WorkflowException("workflow model '" + graphElem.getNodeName()
           + "' missing execution type");
     } else {
@@ -113,7 +113,7 @@ public class Graph {
       throw new WorkflowException("Unsupported execution type id '"
           + this.executionType + "'");
 
-    if (!checkValue(this.modelId) && !checkValue(this.modelIdRef)) {
+    if (!checkValue(this.modelId) && !checkValue(this.modelIdRef)) {r
       this.modelId = UUID.randomUUID().toString();
     }
 

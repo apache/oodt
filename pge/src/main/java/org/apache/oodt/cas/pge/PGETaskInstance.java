@@ -16,10 +16,6 @@
  */
 package org.apache.oodt.cas.pge;
 
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-
 import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.crawl.AutoDetectProductCrawler;
 import org.apache.oodt.cas.crawl.ProductCrawler;
@@ -58,6 +54,11 @@ import org.apache.oodt.cas.workflow.util.ScriptFile;
 import org.apache.oodt.commons.exceptions.CommonsException;
 import org.apache.oodt.commons.exec.ExecUtils;
 import org.apache.xmlrpc.XmlRpcException;
+
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import java.io.File;
@@ -423,13 +424,9 @@ public class PGETaskInstance implements WorkflowTaskInstance {
          pgeMetadata.replaceMetadata(PGE_RUNTIME, Long.toString(runTime));
 
       } catch (WorkflowException e) {
-        throw new PGEException("Exception when executing PGE commands '"
-                               + (sf != null ? sf.getCommands() : "NULL") + "' : "
-                               + e.getMessage(), e);
+        throw new PGEException("Exception when executing PGE commands '" + (sf.getCommands()) + "' : " + e.getMessage(), e);
       } catch (IOException e) {
-        throw new PGEException("Exception when executing PGE commands '"
-                               + (sf != null ? sf.getCommands() : "NULL") + "' : "
-                               + e.getMessage(), e);
+        throw new PGEException("Exception when executing PGE commands '" + (sf.getCommands()) + "' : " + e.getMessage(), e);
       }
    }
 

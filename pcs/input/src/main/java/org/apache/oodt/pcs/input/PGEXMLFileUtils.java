@@ -58,7 +58,7 @@ public final class PGEXMLFileUtils {
     NodeList matrixs = group.getElementsByTagName("matrix");
 
     // if it's null, return null
-    if (matrixs == null) {
+    if (matrixs.getLength()==0) {
       return null;
     }
 
@@ -122,7 +122,7 @@ public final class PGEXMLFileUtils {
     NodeList matrixs = group.getElementsByTagName("matrix");
 
     // if it's null, return null
-    if (matrixs == null) {
+    if (matrixs.getLength()==0) {
       return null;
     }
 
@@ -187,7 +187,7 @@ public final class PGEXMLFileUtils {
     NodeList scalars = group.getElementsByTagName("scalar");
 
     // if it's null, return null
-    if (scalars == null) {
+    if (scalars.getLength()==0) {
       return null;
     }
 
@@ -215,7 +215,7 @@ public final class PGEXMLFileUtils {
     NodeList scalars = group.getElementsByTagName("scalar");
 
     // if it's null, return null
-    if (scalars == null) {
+    if (scalars.getLength()==0) {
       return null;
     }
 
@@ -244,7 +244,7 @@ public final class PGEXMLFileUtils {
     NodeList vectors = group.getElementsByTagName("vector");
 
     // if it's null, return null
-    if (vectors == null) {
+    if (vectors.getLength()==0) {
       return null;
     }
 
@@ -288,7 +288,7 @@ public final class PGEXMLFileUtils {
     NodeList vectors = group.getElementsByTagName("vector");
 
     // if it's null, return null
-    if (vectors == null) {
+    if (vectors.getLength()==0) {
       return null;
     }
 

@@ -40,10 +40,6 @@ public class GetNodeByIdCliAction extends ResourceCliAction {
 
          ResourceNode node = getClient().getNodeById(nodeId);
 
-         if (node == null) {
-            throw new Exception("ResourceManager returned null ResourceNode"
-                  + " for nodeId '" + nodeId + "'");
-         }
          printer.println("node: [id=" + node.getNodeId() + ",capacity="
                + node.getCapacity() + ",url=" + node.getIpAddr() + "]");
       } catch (Exception e) {
