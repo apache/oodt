@@ -39,6 +39,7 @@ the License.
     <jena.version>3.0.0</jena.version>
     <wicket.version>1.4.17</wicket.version>
     <jetty.version>6.1.25</jetty.version>
+    <sonar.language>java</sonar.language>
   </properties>
   <!-- All dependencies should be listed in core/pom.xml and be ordered alphabetically by package and artifact.
        Once the dependency is in the core pom, it can then be used in other modules without the version tags.
