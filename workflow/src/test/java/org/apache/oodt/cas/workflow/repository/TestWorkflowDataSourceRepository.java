@@ -234,7 +234,6 @@ public class TestWorkflowDataSourceRepository {
   }
 
   @Test
-  @Ignore
   public void testGetWorkflowsNoConditionsOrTasks() throws RepositoryException {
 
     DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
@@ -251,7 +250,6 @@ public class TestWorkflowDataSourceRepository {
 
   }
 
-  @Ignore
   @Test
   public void testGetTaskByWorkflowName() throws RepositoryException {
 
@@ -260,23 +258,23 @@ public class TestWorkflowDataSourceRepository {
 
     assertThat(tasks, allOf(notNullValue(), hasSize(2)));
 
+    assertThat(tasks.get(0).getTaskName(), equalTo("Test Task"));
 
+    assertThat(tasks.get(1).getTaskName(), equalTo("Test Task2"));
 
   }
 
-  @Ignore
   @Test
   public void testGetTasksByWorkflowNameNull() throws RepositoryException {
 
     DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
     List<WorkflowTask> tasks = repo.getTasksByWorkflowName(null);
 
-    assertThat(tasks, allOf(notNullValue(), hasSize(2)));
+    assertThat(tasks, nullValue());
 
   }
 
-  @Ignore
-  @Test
+  @Test(expected=RepositoryException.class)
   public void testGetTasksByWorkflowNameNoDataSource() throws RepositoryException {
     DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(null);
     List<WorkflowTask> tasks = repo.getTasksByWorkflowName(null);
@@ -285,45 +283,63 @@ public class TestWorkflowDataSourceRepository {
 
   }
 
-  @Ignore
   @Test
   public void testGetWorkflowsForEvent() throws RepositoryException {
     DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
-    List<WorkflowTask> tasks = repo.getWorkflowsForEvent("event");
+    List<Workflow> workflow = repo.getWorkflowsForEvent("event");
 
-    assertThat(tasks, allOf(notNullValue(), hasSize(2)));
+    assertThat(workflow, allOf(notNullValue(), hasSize(1)));
 
+    assertThat(workflow.get(0).getName(), equalTo("Test Workflow"));
 
   }
 
-  @Ignore
   @Test
   public void testGetworkflowsForEventNoTasksOrConditions() throws RepositoryException {
 
     DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
-    List<WorkflowTask> tasks = repo.getWorkflowsForEvent("event", false, false);
+    List<Workflow> workflow = repo.getWorkflowsForEvent("event", false, false);
 
-    assertThat(tasks, allOf(notNullValue(), hasSize(2)));
+    assertThat(workflow, allOf(notNullValue(), hasSize(1)));
+
+    assertThat(workflow.get(0).getPreConditions(), allOf(notNullValue(), hasSize(0)));
+    assertThat(workflow.get(0).getPostConditions(), allOf(notNullValue(), hasSize(0)));
+
+  }
+
+  @Test(expected=RepositoryException.class)
+  public void testGetWorkflowsForEventNoDataSource() throws RepositoryException {
+
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(null);
+    List<Workflow> workflow = repo.getWorkflowsForEvent("event", false, false);
+
+    assertThat(workflow, allOf(notNullValue(), hasSize(2)));
+
+    assertThat(workflow.get(0).getPreConditions(), allOf(notNullValue(), hasSize(0)));
+    assertThat(workflow.get(0).getPostConditions(), allOf(notNullValue(), hasSize(0)));
+
+  }
+
+  @Test
+  public void testGetConditionsByTaskName() throws RepositoryException {
+
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
+    List<WorkflowCondition> workflow = repo.getConditionsByTaskName("Test Task");
+
+    assertThat(workflow, allOf(notNullValue(), hasSize(1)));
+    assertThat(workflow.get(0).getConditionName(), equalTo("TrueCond"));
+
 
 
   }
 
-  @Ignore
-  @Test
-  public void testGetWorkflowsForEventNoDataSource(){
+  @Test(expected=RepositoryException.class)
+  public void testGetConditionsByTaskNameNoDataSource() throws RepositoryException {
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(null);
+    List<WorkflowCondition> workflow = repo.getConditionsByTaskName("Test Task");
 
-  }
-
-  @Ignore
-  @Test
-  public void testGetConditionsByTaskName(){
-
-  }
-
-  @Ignore
-  @Test
-  public void testGetConditionsByTaskNameNoDataSource(){
-
+    assertThat(workflow, allOf(notNullValue(), hasSize(1)));
+    assertThat(workflow.get(0).getConditionName(), equalTo("Test Condition"));
   }
 
   @Ignore

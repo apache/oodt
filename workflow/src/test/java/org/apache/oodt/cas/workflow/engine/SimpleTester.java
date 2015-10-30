@@ -33,8 +33,6 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OODT imports
-
 /**
  * 
  * A simple workflow task instance that writes its start date time to a file.

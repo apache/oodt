@@ -509,17 +509,17 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
     return tasks;
   }
 
-  public List getWorkflowsForEvent(String eventName) throws RepositoryException {
+  public List<Workflow> getWorkflowsForEvent(String eventName) throws RepositoryException {
     return getWorkflowsForEvent(eventName, true, true);
   }
 
-  public List getWorkflowsForEvent(String eventName, boolean getTasks,
+  public List<Workflow> getWorkflowsForEvent(String eventName, boolean getTasks,
       boolean getConditions) throws RepositoryException {
     Connection conn = null;
     Statement statement = null;
     ResultSet rs = null;
 
-    List workflows = null;
+    List<Workflow> workflows = null;
 
     try {
       conn = dataSource.getConnection();
@@ -602,7 +602,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
    * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#
    * getConditionsByTaskName(java.lang.String)
    */
-  public List getConditionsByTaskName(String taskName)
+  public List<WorkflowCondition> getConditionsByTaskName(String taskName)
       throws RepositoryException {
     Connection conn = null;
     Statement statement = null;

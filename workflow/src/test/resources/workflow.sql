@@ -79,3 +79,9 @@ INSERT INTO workflow_conditions VALUES ('2', 'FalseCond', 'org.apache.oodt.cas.w
 INSERT INTO workflow_conditions VALUES ('3', 'TrueCond', 'org.apache.oodt.cas.workflow.examples.TrueCondition', 30, true);
 INSERT INTO workflows VALUES ('1', 'Test Workflow');
 INSERT INTO workflow_condition_map VALUES ('1', '3', '1');
+INSERT INTO workflow_tasks VALUES ('1', 'Test Task', 'org.apache.org.cas.workflow.examples.LongTask');
+INSERT INTO workflow_task_map VALUES ('1','1', '1');
+INSERT INTO workflow_tasks VALUES ('2', 'Test Task2', 'org.apache.org.cas.workflow.examples.LongTask');
+INSERT INTO workflow_task_map VALUES ('1','2', '1');
+INSERT INTO event_workflow_map VALUES ('1', 'event');
+INSERT INTO task_condition_map VALUES ('1', '3', '1');
