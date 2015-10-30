@@ -44,8 +44,6 @@ public class GangliaResourceMonitorFactory implements MonitorFactory {
 		try {
 			String loadCalculatorFactoryStr = System
 					.getProperty("org.apache.oodt.cas.resource.monitor.loadcalc.factory");
-			String nodeRepoFactoryStr = System
-					.getProperty("org.apache.oodt.cas.resource.nodes.repo.factory");
 			
 			String gmetadHost = System
                      .getProperty("org.apache.oodt.cas.resource.monitor.ganglia.gemtad.host.address");

@@ -72,7 +72,7 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
    */
   public void getDataset(InvDataset dd, Object context) {
   	String url = this.datasetURL + dd.getCatalogUrl().split("#")[1];
-    String id = dd.getID();    
+
     LOG.log(Level.FINE, url + " is the computed access URL for this dataset");
     // look for an OpenDAP access URL, only extract metadata if it is found
     List<InvAccess> datasets = dd.getAccess();

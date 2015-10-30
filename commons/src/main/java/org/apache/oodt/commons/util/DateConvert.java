@@ -184,7 +184,6 @@ public class DateConvert {
 
 			// Validate the given offset.
 			offsetFormat.setLenient(false);
-			Date offsetDate = offsetFormat.parse(offsetString.substring(1));
 
 			// Set the time zone with the validated offset.
 			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT" + offsetString));

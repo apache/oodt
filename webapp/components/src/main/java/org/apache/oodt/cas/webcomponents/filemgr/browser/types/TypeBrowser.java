@@ -18,15 +18,6 @@
 package org.apache.oodt.cas.webcomponents.filemgr.browser.types;
 
 //JDK imports
-import java.io.Serializable;
-import java.text.NumberFormat;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
@@ -35,13 +26,10 @@ import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
-import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.webcomponents.filemgr.FMBrowserSession;
 import org.apache.oodt.cas.webcomponents.filemgr.FileManagerConn;
 import org.apache.oodt.cas.webcomponents.filemgr.browser.pagination.ProductPaginator;
 import org.apache.oodt.cas.webcomponents.filemgr.model.ProductModel;
-
-//Wicket imports
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -59,6 +47,17 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.util.ListModel;
+
+import java.io.Serializable;
+import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
+//Wicket imports
 
 /**
  * 
@@ -189,8 +188,6 @@ public class TypeBrowser extends Panel {
         refLink.setPopupSettings(refSettings);
         prodItem.add(refLink);
 
-        SerializableMetadata met = new SerializableMetadata(fm
-            .getMetadata(prodItem.getModelObject()));
         Link<String> metLink = new Link<String>("met_page_link", new Model(
             prodItem.getModelObject().getProductId())) {
 

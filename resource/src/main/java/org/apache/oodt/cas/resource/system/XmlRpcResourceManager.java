@@ -439,7 +439,7 @@ public class XmlRpcResourceManager {
             System.exit(1);
         }
 
-        XmlRpcResourceManager manager = new XmlRpcResourceManager(portNum);
+        new XmlRpcResourceManager(portNum);
 
         for (;;)
             try {

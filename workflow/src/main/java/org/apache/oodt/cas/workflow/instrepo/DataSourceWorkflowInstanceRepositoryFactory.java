@@ -18,20 +18,12 @@
 
 package org.apache.oodt.cas.workflow.instrepo;
 
-//OODT imports
-
-import org.apache.commons.dbcp.ConnectionFactory;
-import org.apache.commons.dbcp.DriverManagerConnectionFactory;
-import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
 
 import javax.sql.DataSource;
-
-//APACHE imports
-//JDK imports
 
 /**
  * @author mattmann
@@ -83,12 +75,8 @@ public class DataSourceWorkflowInstanceRepositoryFactory implements
         }
 
         GenericObjectPool connectionPool = new GenericObjectPool(null);
-        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(
-                jdbcUrl, user, pass);
-        PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(
-                connectionFactory, connectionPool, null, null, false, true);
 
-        dataSource = new PoolingDataSource(connectionPool);
+        dataSource = new PoolingDataSource(connectionPool);o
         quoteFields = Boolean
                 .getBoolean("org.apache.oodt.cas.workflow.instanceRep.datasource.quoteFields");
         pageSize = Integer.getInteger(

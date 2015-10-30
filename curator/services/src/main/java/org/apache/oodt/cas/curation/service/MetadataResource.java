@@ -19,10 +19,6 @@
 package org.apache.oodt.cas.curation.service;
 
 //JDK imports
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
 import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 import org.apache.oodt.cas.curation.util.CurationXmlStructFactory;
 import org.apache.oodt.cas.curation.util.ExtractorConfigReader;
@@ -44,6 +40,11 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+
 import org.springframework.util.StringUtils;
 
 import java.io.File;
@@ -523,7 +524,7 @@ public class MetadataResource extends CurationService {
     XmlRpcFileManagerClient fmClient = CurationService.config.getFileManagerClient();
  
     // empty metadata
-    Metadata metadata = new Metadata();
+    Metadata metadata;
     
     try {
     

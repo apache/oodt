@@ -154,13 +154,10 @@ public final class XmlRpcStructFactory {
       Metadata met = new Metadata();
       met.addMetadata((Hashtable) workflowInstance.get("sharedContext"));
       wInst.setSharedContext(met);
-    } else
+    } else {
       wInst.setSharedContext(new Metadata());
-
-    if (workflowInstance.get("priority") != null) {
-      Priority p = Priority.getPriority(Double
-          .valueOf((String) workflowInstance.get("priority")));
     }
+
 
     return wInst;
   }

@@ -17,7 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.tools;
 
-//OODT imports
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -43,9 +42,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-//JDK imports
-//Lucene imports
 
 /**
  * 

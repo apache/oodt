@@ -16,20 +16,23 @@
  */
 package org.apache.oodt.cas.workflow.system;
 
-//OODT static imports
-import com.google.common.base.Preconditions;
-
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.ThreadPoolWorkflowEngineFactory;
 import org.apache.oodt.cas.workflow.engine.WorkflowEngine;
 import org.apache.oodt.cas.workflow.repository.DataSourceWorkflowRepositoryFactory;
 import org.apache.oodt.cas.workflow.repository.WorkflowRepository;
-import org.apache.oodt.cas.workflow.structs.*;
+import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.XmlRpcStructFactory;
 import org.apache.xmlrpc.WebServer;
+
+import com.google.common.base.Preconditions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,11 +49,6 @@ import java.util.logging.Logger;
 
 import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getWorkflowEngineFromClassName;
 import static org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory.getWorkflowRepositoryFromClassName;
-
-//Apache imports
-//OODT imports
-//JDK imports
-//Google imports
 
 /**
  * An XML RPC-based Workflow manager.
@@ -70,8 +68,7 @@ public class XmlRpcWorkflowManager {
    public static final String ENGINE_RUNNER_FACTORY_PROPERTY = "workflow.engine.runner.factory";
    public static final String WORKFLOW_REPOSITORY_FACTORY_PROPERTY = "workflow.repo.factory";
 
-   private final int webServerPort;
-   private WebServer webServer;
+  private WebServer webServer;
    private final WorkflowEngine engine;
    private WorkflowRepository repo;
 
@@ -81,15 +78,14 @@ public class XmlRpcWorkflowManager {
 
    public XmlRpcWorkflowManager(int port) {
       Preconditions.checkArgument(port > 0, "Must specify a port greater than 0");
-      webServerPort = port;
 
-      engine = getWorkflowEngineFromProperty();
+     engine = getWorkflowEngineFromProperty();
       engine.setWorkflowManagerUrl(safeGetUrlFromString("http://"
-            + getHostname() + ":" + this.webServerPort));
+            + getHostname() + ":" + port));
       repo = getWorkflowRepositoryFromProperty();
 
       // start up the web server
-      webServer = new WebServer(webServerPort);
+      webServer = new WebServer(port);
       webServer.addHandler(XML_RPC_HANDLER_NAME, this);
       webServer.start();
 
@@ -607,7 +603,7 @@ public class XmlRpcWorkflowManager {
         }
 
         loadProperties();
-        XmlRpcWorkflowManager manager = new XmlRpcWorkflowManager(portNum);
+        new XmlRpcWorkflowManager(portNum);
 
         for (;;)
             try {
