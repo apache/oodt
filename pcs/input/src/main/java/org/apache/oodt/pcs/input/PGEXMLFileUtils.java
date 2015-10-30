@@ -25,6 +25,7 @@ import org.xml.sax.InputSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,7 @@ public final class PGEXMLFileUtils {
 
     // if it's null, return null
     if (matrixs.getLength()==0) {
-      return null;
+      return Collections.emptyMap();
     }
 
     Map matrixMap = new HashMap(matrixs.getLength());
@@ -123,7 +124,7 @@ public final class PGEXMLFileUtils {
 
     // if it's null, return null
     if (matrixs.getLength()==0) {
-      return null;
+      return Collections.emptyList();
     }
 
     List matrixList = new Vector(matrixs.getLength());
@@ -188,7 +189,7 @@ public final class PGEXMLFileUtils {
 
     // if it's null, return null
     if (scalars.getLength()==0) {
-      return null;
+      return Collections.emptyMap();
     }
 
     Map scalarMap = new HashMap(scalars.getLength());
@@ -216,7 +217,7 @@ public final class PGEXMLFileUtils {
 
     // if it's null, return null
     if (scalars.getLength()==0) {
-      return null;
+      return Collections.emptyList();
     }
 
     List scalarList = new Vector(scalars.getLength());
@@ -245,7 +246,7 @@ public final class PGEXMLFileUtils {
 
     // if it's null, return null
     if (vectors.getLength()==0) {
-      return null;
+      return Collections.emptyMap();
     }
 
     Map vectorMap = new HashMap(vectors.getLength());
@@ -289,7 +290,7 @@ public final class PGEXMLFileUtils {
 
     // if it's null, return null
     if (vectors.getLength()==0) {
-      return null;
+      return Collections.emptyList();
     }
 
     List vectorList = new Vector(vectors.getLength());

@@ -76,7 +76,7 @@ public class DataSourceWorkflowInstanceRepositoryFactory implements
 
         GenericObjectPool connectionPool = new GenericObjectPool(null);
 
-        dataSource = new PoolingDataSource(connectionPool);o
+        dataSource = new PoolingDataSource(connectionPool);
         quoteFields = Boolean
                 .getBoolean("org.apache.oodt.cas.workflow.instanceRep.datasource.quoteFields");
         pageSize = Integer.getInteger(
