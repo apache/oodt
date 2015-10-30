@@ -36,10 +36,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.*;
+
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
 
 
@@ -161,6 +165,28 @@ public class TestWorkflowDataSourceRepository {
     }
 
   @Test
+  public void testGetworkflowByIncorredId() throws RepositoryException {
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
+
+    Workflow w = repo.getWorkflowById("100");
+
+    assertNull(w);
+
+
+  }
+
+  @Test(expected=RepositoryException.class)
+  public void testGetworkflowByIdNoDataSource() throws RepositoryException {
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(null);
+
+    Workflow w = repo.getWorkflowById("1");
+
+    assertNull(w);
+
+
+  }
+
+  @Test
   public void testGetworkflowByName() throws RepositoryException {
     DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
 
@@ -187,6 +213,24 @@ public class TestWorkflowDataSourceRepository {
     DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(null);
 
     repo.getWorkflowByName("Broken Workflow");
+
+  }
+
+  @Test(expected=RepositoryException.class)
+  public void testGetWorkflowsNullRepository() throws RepositoryException {
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(null);
+    List flows = repo.getWorkflows();
+
+    assertNotNull(flows);
+
+  }
+
+  @Test
+  public void testGetWorkflows() throws RepositoryException {
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
+    List<Workflow> flows = repo.getWorkflows();
+
+    assertThat(flows, allOf(notNullValue(), hasSize(1)));
 
   }
     
