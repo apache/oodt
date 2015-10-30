@@ -23,6 +23,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
@@ -30,6 +31,7 @@ import org.apache.oodt.commons.database.SqlScript;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -41,9 +43,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import static org.hamcrest.Matchers.*;
-
-
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
 
 
@@ -233,6 +232,173 @@ public class TestWorkflowDataSourceRepository {
     assertThat(flows, allOf(notNullValue(), hasSize(1)));
 
   }
+
+  @Test
+  @Ignore
+  public void testGetWorkflowsNoConditionsOrTasks() throws RepositoryException {
+
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
+    List<Workflow> flows = repo.getWorkflows(false, false);
+
+    assertThat(flows, allOf(notNullValue(), hasSize(1)));
+
+    assertThat(flows.get(0).getPreConditions(), hasSize(0));
+
+    assertThat(flows.get(0).getPostConditions(), hasSize(0));
+
+    assertThat(flows.get(0).getTasks(), hasSize(0));
+
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetTaskByWorkflowName() throws RepositoryException {
+
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
+    List<WorkflowTask> tasks = repo.getTasksByWorkflowName("Test Workflow");
+
+    assertThat(tasks, allOf(notNullValue(), hasSize(2)));
+
+
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetTasksByWorkflowNameNull() throws RepositoryException {
+
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
+    List<WorkflowTask> tasks = repo.getTasksByWorkflowName(null);
+
+    assertThat(tasks, allOf(notNullValue(), hasSize(2)));
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetTasksByWorkflowNameNoDataSource() throws RepositoryException {
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(null);
+    List<WorkflowTask> tasks = repo.getTasksByWorkflowName(null);
+
+    assertThat(tasks, allOf(notNullValue(), hasSize(2)));
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetWorkflowsForEvent() throws RepositoryException {
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
+    List<WorkflowTask> tasks = repo.getWorkflowsForEvent("event");
+
+    assertThat(tasks, allOf(notNullValue(), hasSize(2)));
+
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetworkflowsForEventNoTasksOrConditions() throws RepositoryException {
+
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
+    List<WorkflowTask> tasks = repo.getWorkflowsForEvent("event", false, false);
+
+    assertThat(tasks, allOf(notNullValue(), hasSize(2)));
+
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetWorkflowsForEventNoDataSource(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetConditionsByTaskName(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetConditionsByTaskNameNoDataSource(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetConditionsByTaskId(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetConditionsByTaskIdNoDataSource(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetConfigurationByTaskId(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetConfigurationByTaskIdNoDataSource(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetWorkflowTaskById(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetWorkflowTaskByIdNoDataSource(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetRegisteredEvents(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testAddTask(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testAddWorkflow(){
+
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetTaskById(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetTaskByIdNoDataSource(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetConditions(){
+
+  }
+
     
 }
 

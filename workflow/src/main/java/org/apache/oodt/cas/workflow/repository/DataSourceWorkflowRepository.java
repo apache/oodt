@@ -424,13 +424,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
     return tasks;
   }
 
-  public List getTasksByWorkflowName(String workflowName)
+  public List<WorkflowTask> getTasksByWorkflowName(String workflowName)
       throws RepositoryException {
     Connection conn = null;
     Statement statement = null;
     ResultSet rs = null;
 
-    List tasks = null;
+    List<WorkflowTask> tasks = null;
 
     try {
       conn = dataSource.getConnection();

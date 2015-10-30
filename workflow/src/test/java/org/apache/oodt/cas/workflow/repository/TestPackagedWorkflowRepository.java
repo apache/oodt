@@ -165,7 +165,7 @@ public class TestPackagedWorkflowRepository {
    * @see junit.framework.TestCase#setUp()
    */
   @Before
-  protected void setUp() throws Exception {
+  public void setUp() throws Exception {
     repo = new PackagedWorkflowRepository(Collections.singletonList(new File(
         "src/main/resources/examples/wengine/GranuleMaps.xml")));
   }
@@ -176,7 +176,7 @@ public class TestPackagedWorkflowRepository {
    * @see junit.framework.TestCase#tearDown()
    */
   @After
-  protected void tearDown() throws Exception {
+  public void tearDown() throws Exception {
     repo = null;
   }
 
