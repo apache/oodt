@@ -18,22 +18,26 @@
 
 package org.apache.oodt.cas.workflow.repository;
 
-//Junit imports
-import junit.framework.TestCase;
 
 //JDK imports
+
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
+import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+
+import org.junit.Test;
+
 import java.io.File;
 import java.util.List;
 import java.util.Vector;
 
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.structs.Workflow;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
-import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
+
 
 /**
  * @author mattmann
@@ -44,7 +48,7 @@ import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
  * </p>
  * 
  */
-public class TestWorkflowRepository extends TestCase {
+public class TestWorkflowRepository  {
 
     private XMLWorkflowRepository workflowRepository = null;
 
@@ -64,6 +68,7 @@ public class TestWorkflowRepository extends TestCase {
     /**
      * @since OODT-205
      */
+    @Test
     public void testWorkflowConditions(){
       Workflow w = null;
       try{

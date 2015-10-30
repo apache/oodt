@@ -18,8 +18,6 @@
 
 package org.apache.oodt.commons.database;
 
-//JDK imports
-
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
@@ -27,8 +25,6 @@ import org.apache.commons.dbcp.PoolingDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
 
 import javax.sql.DataSource;
-
-//APACHE imports
 
 /**
  * @author mattmann
@@ -55,9 +51,8 @@ public final class DatabaseConnectionBuilder {
                           url, user, pass);
               PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(
                           connectionFactory, connectionPool, null, null, false, true);
-      ds = new PoolingDataSource(connectionPool);
 
-        return ds;
+      return new PoolingDataSource(connectionPool);
     }
 
 }

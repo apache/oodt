@@ -18,25 +18,30 @@
 
 package org.apache.oodt.cas.workflow.repository;
 
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import javax.sql.DataSource;
 
-//OODT imports
-import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
-import org.apache.oodt.commons.database.SqlScript;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
+import org.apache.oodt.commons.database.SqlScript;
 
-//Junit imports
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.*;
+
 
 /**
  * @author mattmann
@@ -47,7 +52,8 @@ import junit.framework.TestCase;
  * {@link DataSourceCatalogFactory}.
  * </p>.
  */
-public class TestWorkflowDataSourceRepository extends TestCase {
+
+public class TestWorkflowDataSourceRepository {
 
     private String tmpDirPath = null;
 
@@ -86,7 +92,8 @@ public class TestWorkflowDataSourceRepository extends TestCase {
      * 
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         ds = DatabaseConnectionBuilder.buildDataSource("sa", "", "org.hsqldb.jdbcDriver", "jdbc:hsqldb:file:" + tmpDirPath + "/testCat;shutdown=true");
         SqlScript coreSchemaScript = new SqlScript("src/test/resources/workflow.sql", ds);
         coreSchemaScript.loadScript();
@@ -99,13 +106,15 @@ public class TestWorkflowDataSourceRepository extends TestCase {
      * 
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         ds.getConnection().close();
     }
     
     /**
      * @since OODT-205
      */
+    @Test
     public void testWorkflowConditions(){
       DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
             
@@ -122,8 +131,9 @@ public class TestWorkflowDataSourceRepository extends TestCase {
       assertTrue(w.getConditions().size() > 0);
       assertEquals(w.getConditions().size(), 1);
     }
-    
-    
+
+
+    @Test
     public void testDataSourceRepo() throws SQLException, RepositoryException {
         DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
         
@@ -149,6 +159,36 @@ public class TestWorkflowDataSourceRepository extends TestCase {
         condInst = GenericWorkflowObjectFactory.getConditionObjectFromClassName(wc.getConditionInstanceClassName());
         assertTrue(condInst.evaluate(m, wc.getTaskConfig()));
     }
+
+  @Test
+  public void testGetworkflowByName() throws RepositoryException {
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
+
+    Workflow w = repo.getWorkflowByName("Test Workflow");
+
+    assertNotNull(w);
+
+    assertThat("Test Workflow", equalTo(w.getName()));
+
+
+  }
+
+  @Test
+  public void testGetWorkflowByNameIncorrect() throws RepositoryException{
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(ds);
+
+    Workflow w = repo.getWorkflowByName("Broken Workflow");
+
+    assertNull(w);
+  }
+
+  @Test(expected=RepositoryException.class)
+  public void testGetWorkflowByNameNoDataSource() throws RepositoryException {
+    DataSourceWorkflowRepository repo = new DataSourceWorkflowRepository(null);
+
+    repo.getWorkflowByName("Broken Workflow");
+
+  }
     
 }
 

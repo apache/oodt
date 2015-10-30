@@ -80,7 +80,12 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
     Workflow workflow = null;
 
     try {
-      conn = dataSource.getConnection();
+      if(dataSource!=null) {
+        conn = dataSource.getConnection();
+      }
+      else{
+        throw new RepositoryException("Null datasource");
+      }
       statement = conn.createStatement();
 
       String getWorkflowSql = "SELECT * from workflows WHERE workflow_name = '"
