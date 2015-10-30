@@ -113,7 +113,7 @@ public class Graph {
       throw new WorkflowException("Unsupported execution type id '"
           + this.executionType + "'");
 
-    if (!checkValue(this.modelId) && !checkValue(this.modelIdRef)) {r
+    if (!checkValue(this.modelId) && !checkValue(this.modelIdRef)) {
       this.modelId = UUID.randomUUID().toString();
     }
 

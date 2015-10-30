@@ -16,7 +16,7 @@
  */
 package org.apache.oodt.cas.catalog.repository;
 
-//JDK imports
+
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
 import org.apache.oodt.cas.catalog.system.Catalog;
@@ -33,8 +33,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//APACHE imports
-//OODT imports
 
 /**
  * @author bfoster
