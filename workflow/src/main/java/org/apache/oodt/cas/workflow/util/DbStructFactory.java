@@ -90,9 +90,9 @@ public final class DbStructFactory {
             task.setTaskInstanceClassName(taskClassName);
             task.setTaskId(String.valueOf(rs.getInt("workflow_task_id")));
             task.setTaskName(rs.getString("workflow_task_name"));
-            if (setOrder) {
+            /*if (setOrder) {
                 task.setOrder(rs.getInt("task_order"));
-            }
+            }*/
             return task;
         } else
             return null;
@@ -111,9 +111,9 @@ public final class DbStructFactory {
             condition.setConditionName(rs.getString("workflow_condition_name"));
             condition.setTimeoutSeconds(rs.getLong("workflow_condition_timeout"));
             condition.setOptional(rs.getBoolean("workflow_condition_optional"));
-            if (setOrder) {
+            /*if (setOrder) {
                 condition.setOrder(rs.getInt("condition_order"));
-            }
+            }*/
             return condition;
         } else
             return null;

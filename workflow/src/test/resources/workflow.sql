@@ -85,3 +85,5 @@ INSERT INTO workflow_tasks VALUES ('2', 'Test Task2', 'org.apache.org.cas.workfl
 INSERT INTO workflow_task_map VALUES ('1','2', '1');
 INSERT INTO event_workflow_map VALUES ('1', 'event');
 INSERT INTO task_condition_map VALUES ('1', '3', '1');
+INSERT INTO workflow_conditions VALUES (4, 'Test', 'Test', 1, false);
+INSERT INTO workflow_task_configuration VALUES (1, 'TestProp', 'TestVal');

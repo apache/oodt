@@ -779,7 +779,12 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
     WorkflowTaskConfiguration config = null;
 
     try {
-      conn = dataSource.getConnection();
+      if(dataSource!=null) {
+        conn = dataSource.getConnection();
+      }
+      else{
+        throw new RepositoryException("Null data source");
+      }
       statement = conn.createStatement();
 
       String getConfigurationSql = "SELECT * from workflow_task_configuration WHERE workflow_task_id = "
@@ -1082,7 +1087,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
    * org.apache.oodt.cas.workflow.repository.WorkflowRepository#getRegisteredEvents
    * ()
    */
-  public List getRegisteredEvents() throws RepositoryException {
+  public List<String> getRegisteredEvents() throws RepositoryException {
     Connection conn = null;
     Statement statement = null;
     ResultSet rs = null;
@@ -1402,7 +1407,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       conn.setAutoCommit(false);
       statement = conn.createStatement();
 
-      String sql = "INSERT INTO workflows (workflow_name) VALUES ('"
+      String sql = "INSERT INTO workflows (workflow_id, workflow_name) VALUES ('"+workflow.getId()+"','"
           + workflow.getName() + "')";
 
       LOG.log(Level.FINE, "commitWorkflowToDB: Executing: " + sql);
@@ -1572,7 +1577,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
       String getConditionsSql = "SELECT workflow_conditions.* "
           + "FROM workflow_conditions "
-          + "ORDER BY condition_id";
+          + "ORDER BY workflow_condition_id";
 
       LOG.log(Level.FINE, "getConditions: Executing: "
           + getConditionsSql);
@@ -1647,7 +1652,8 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       statement = conn.createStatement();
 
       String getTasksSql = "SELECT workflow_tasks.*, workflow_task_map.task_order "
-          + "FROM workflow_tasks " + "ORDER BY workflow_task_map.task_order";
+          + "FROM workflow_tasks, workflow_task_map WHERE workflow_tasks.workflow_task_id = workflow_task_map.workflow_task_id "
+                           + "ORDER BY workflow_task_map.task_order";
 
       LOG.log(Level.FINE, "getTasks: Executing: " + getTasksSql);
       rs = statement.executeQuery(getTasksSql);
