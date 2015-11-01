@@ -255,12 +255,9 @@ public class DataSourceCatalog implements Catalog {
             String addProductSql;
             String productTypeIdStr;
 
-            if (fieldIdStringFlag) {
-                productTypeIdStr = "'"
-                        + product.getProductType().getProductTypeId() + "'";
-            } else {
-                productTypeIdStr = product.getProductType().getProductTypeId();
-            }
+          productTypeIdStr = fieldIdStringFlag ? "'"
+                                                 + product.getProductType().getProductTypeId() + "'"
+                                               : product.getProductType().getProductTypeId();
 
 						if (!productIdString) {
 							
@@ -964,11 +961,7 @@ public class DataSourceCatalog implements Catalog {
             String getProductSql;
             String productTypeIdStr;
 
-            if (fieldIdStringFlag) {
-                productTypeIdStr = "'" + type.getProductTypeId() + "'";
-            } else {
-                productTypeIdStr = type.getProductTypeId();
-            }
+          productTypeIdStr = fieldIdStringFlag ? "'" + type.getProductTypeId() + "'" : type.getProductTypeId();
 
             getProductSql = "SELECT products.* " + "FROM products "
                     + "WHERE products.product_type_id = " + productTypeIdStr;
@@ -1705,12 +1698,10 @@ public class DataSourceCatalog implements Catalog {
 
                 String elementIdStr;
 
-                if (fieldIdStringFlag) {
-                  elementIdStr =
-                      "'" + this.validationLayer.getElementByName(criteria.getElementName()).getElementId() + "'";
-                } else {
-                  elementIdStr = this.validationLayer.getElementByName(criteria.getElementName()).getElementId();
-                }
+                elementIdStr =
+                    fieldIdStringFlag ? "'" + this.validationLayer.getElementByName(criteria.getElementName())
+                                                                  .getElementId() + "'"
+                                      : this.validationLayer.getElementByName(criteria.getElementName()).getElementId();
 
                 StringBuilder clause = new StringBuilder();
 
@@ -2135,14 +2126,13 @@ public class DataSourceCatalog implements Catalog {
                       "metadata_value" + (rqc.getInclusive() ? " >= " : " > ") + "'" + rqc.getStartValue() + "'";
                 }
                 if (rqc.getEndValue() != null) {
-                    if (rangeSubQuery == null) {
-                      rangeSubQuery =
-                          "metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc.getEndValue() + "'";
-                    } else {
-                      rangeSubQuery =
-                          "(" + rangeSubQuery + " AND metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'"
-                          + rqc.getEndValue() + "')";
-                    }
+                  rangeSubQuery =
+                      rangeSubQuery == null ? "metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc
+                          .getEndValue() + "'"
+                                            : "(" + rangeSubQuery + " AND metadata_value" + (rqc.getInclusive() ? " <= "
+                                                                                                                : " < ")
+                                              + "'"
+                                              + rqc.getEndValue() + "')";
                 }
                 sqlQuery.append(rangeSubQuery);
             } else {
@@ -2237,11 +2227,7 @@ public class DataSourceCatalog implements Catalog {
      * @return the quoted productId
      */
     protected String quoteIt(String productId) {
-    	if (this.productIdString) {
-    		return "'"+productId+"'";
-    	} else {
-    		return productId;
-    	}
+      return this.productIdString ? "'" + productId + "'" : productId;
     }
 
 }

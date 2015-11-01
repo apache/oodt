@@ -33,7 +33,7 @@ public class InMemoryIngestMapper extends DataSourceIngestMapper {
 	public InMemoryIngestMapper(String user, String pass, String driver,
 			String jdbcUrl, String tablesFile) throws IOException {
 		super(user, pass, driver, jdbcUrl);
-        SqlScript coreSchemaScript = new SqlScript(new File(tablesFile).getAbsolutePath(), this.dataSource);
+        SqlScript coreSchemaScript = new SqlScript(new File(tablesFile).getAbsolutePath(), this.getDataSource());
         coreSchemaScript.loadScript();
         coreSchemaScript.execute();
 	}

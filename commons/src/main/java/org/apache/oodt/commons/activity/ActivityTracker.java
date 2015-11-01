@@ -69,11 +69,8 @@ public class ActivityTracker {
 		}
 		if (factories.isEmpty()) {
 		  factory = new NullActivityFactory();
-		} else if (factories.size() == 1) {
-		  factory = (ActivityFactory) factories.get(0);
-		} else {
-		  factory = new CompositeActivityFactory(factories);
-		}
+		} else factory =
+			factories.size() == 1 ? (ActivityFactory) factories.get(0) : new CompositeActivityFactory(factories);
 	}
 
 	/**
