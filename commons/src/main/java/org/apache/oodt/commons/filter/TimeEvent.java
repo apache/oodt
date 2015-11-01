@@ -74,8 +74,9 @@ public class TimeEvent implements Comparable<TimeEvent> {
         if (obj instanceof TimeEvent) {
             TimeEvent te = (TimeEvent) obj;
             return te.startTime == this.startTime && te.endTime == this.endTime;
-        } else
+        } else {
             return false;
+        }
     }
 
     @Override

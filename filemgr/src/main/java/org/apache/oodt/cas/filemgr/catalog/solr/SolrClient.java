@@ -87,7 +87,9 @@ public class SolrClient {
 	    LOG.info(response);
 	    
 	    // commit changes ?
-	    if (commit) this.commit();
+	    if (commit) {
+		  this.commit();
+		}
 	    
 	    LOG.info(response);
 	    return response;
@@ -112,7 +114,9 @@ public class SolrClient {
 			
 			// build POST request
 			String url = this.buildUpdateUrl();
-			if (commit) url += "?commit=true";
+			if (commit) {
+			  url += "?commit=true";
+			}
 			String message = "<delete><query>id:"+id+"</query></delete>";
 			
 	    // send POST request
@@ -240,7 +244,9 @@ public class SolrClient {
     	}
     }
     // request results in JSON format
-    if (mimeType.equals(Parameters.MIME_TYPE_JSON)) nvps.add(new NameValuePair("wt", "json"));
+    if (mimeType.equals(Parameters.MIME_TYPE_JSON)) {
+	  nvps.add(new NameValuePair("wt", "json"));
+	}
     method.setQueryString( nvps.toArray( new NameValuePair[nvps.size()] ) );
     LOG.info("GET url: "+url+" query string: "+method.getQueryString());
     
@@ -307,7 +313,12 @@ public class SolrClient {
 	  } finally {
 	    // must release the connection even if an exception occurred
 	    method.releaseConnection();
-	    if (br!=null) try { br.close(); } catch (Exception ignored) {}
+	    if (br!=null) {
+		  try {
+			br.close();
+		  } catch (Exception ignored) {
+		  }
+		}
 	  }  
   
 	  return response.toString();

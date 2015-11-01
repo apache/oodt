@@ -49,7 +49,9 @@ public class GetWorkflowsByEventCliAction extends WorkflowCliAction {
         	 
              String taskIds = "";
              for (WorkflowTask wt : workflow.getTasks()) {
-            	 if (taskIds.length()>0) taskIds += ", ";
+            	 if (taskIds.length()>0) {
+                   taskIds += ", ";
+                 }
             	 taskIds += wt.getTaskId();
              }
         	 

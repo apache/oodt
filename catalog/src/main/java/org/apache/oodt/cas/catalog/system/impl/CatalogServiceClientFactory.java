@@ -53,8 +53,9 @@ public class CatalogServiceClientFactory implements CatalogServiceFactory {
 	
 	@Required
 	public void setAutoPagerSize(int autoPagerSize) {
-		if (autoPagerSize > 0)
-			this.autoPagerSize = autoPagerSize;
+		if (autoPagerSize > 0) {
+		  this.autoPagerSize = autoPagerSize;
+		}
 	}
 	
 	public String getServerUrl() {

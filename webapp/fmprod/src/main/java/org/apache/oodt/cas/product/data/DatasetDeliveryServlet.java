@@ -194,8 +194,9 @@ public class DatasetDeliveryServlet extends HttpServlet implements
       o2 = res.getOutputStream();
       byte[] buf = new byte[512];
       int n;
-      while ((n = in.read(buf)) != -1)
+      while ((n = in.read(buf)) != -1) {
         o2.write(buf, 0, n);
+      }
 
     } catch (Exception e) {
       e.printStackTrace();

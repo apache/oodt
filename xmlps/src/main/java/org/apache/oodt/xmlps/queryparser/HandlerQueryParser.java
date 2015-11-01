@@ -59,8 +59,9 @@ public class HandlerQueryParser implements ParseConstants {
 
     if (!queryStack.empty()) {
       qe = (QueryElement) queryStack.pop();
-    } else
+    } else {
       return null;
+    }
 
     if (qe.getRole().equalsIgnoreCase(XMLQUERY_LOGOP)) {
 
@@ -69,8 +70,9 @@ public class HandlerQueryParser implements ParseConstants {
         return new AndExpression(parse(queryStack, map), parse(queryStack, map));
       } else if (logOpType.equalsIgnoreCase(XMLQUERY_OR)) {
         return new OrExpression(parse(queryStack, map), parse(queryStack, map));
-      } else
+      } else {
         return null;
+      }
 
     } else if (qe.getRole().equalsIgnoreCase(XMLQUERY_RELOP)) {
       String relOpType = qe.getValue();
@@ -103,13 +105,15 @@ public class HandlerQueryParser implements ParseConstants {
         return new LessThanExpression(lhsVal, new Literal(rhsVal));
       } else if (relOpType.equalsIgnoreCase(XMLQUERY_LESS_THAN_OR_EQUAL_TO)) {
         return new LessThanEqualsExpression(lhsVal, new Literal(rhsVal));
-      } else
+      } else {
         return null;
+      }
 
     } else if (qe.getRole().equalsIgnoreCase(XMLQUERY_LITERAL)) {
       return new Literal(qe.getValue());
-    } else
+    } else {
       return null;
+    }
 
   }
 

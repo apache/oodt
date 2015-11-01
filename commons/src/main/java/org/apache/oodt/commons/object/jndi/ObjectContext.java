@@ -63,12 +63,14 @@ class ObjectContext implements Context {
 		} catch (Throwable ignored) {}
 
 		String registryList = (String) (environment != null ? environment.get("rmiregistries") : null);
-		if (registryList != null) for (Iterator i = Utility.parseCommaList(registryList); i.hasNext();) {
+		if (registryList != null) {
+		  for (Iterator i = Utility.parseCommaList(registryList); i.hasNext(); ) {
 			Hashtable rmiEnv = (Hashtable) this.environment.clone();
 			URI uri = URI.create((String) i.next());
 			rmiEnv.put("host", uri.getHost());
 			rmiEnv.put("port", uri.getPort());
 			contexts.add(new RMIContext(rmiEnv));
+		  }
 		}
 
 		Hashtable httpEnv = (Hashtable) this.environment.clone();
@@ -76,17 +78,19 @@ class ObjectContext implements Context {
 
 		String className = null;
 		for (Iterator i = org.apache.oodt.commons.util.Utility.parseCommaList(System.getProperty("org.apache.oodt.commons.object.contexts", ""));
-		        i.hasNext();) try {
+		        i.hasNext();) {
+		  try {
 			className = (String) i.next();
 			Class clazz = Class.forName(className);
 			contexts.add(clazz.newInstance());
-		} catch (ClassNotFoundException ex) {
+		  } catch (ClassNotFoundException ex) {
 			System.err.println("Ignoring not-found context class `" + className + "': " + ex.getMessage());
-		} catch (InstantiationException ex) {
+		  } catch (InstantiationException ex) {
 			System.err.println("Ignoring non-instantiable context class `" + className + "': " + ex.getMessage());
-		} catch (IllegalAccessException ex) {
+		  } catch (IllegalAccessException ex) {
 			System.err.println("Ignoring context class `" + className + "' with non-accessible no-args c'tor: "
-				+ ex.getMessage());
+							   + ex.getMessage());
+		  }
 		}
 
 		installAliases();
@@ -116,12 +120,18 @@ class ObjectContext implements Context {
 	 * @throws NamingException if an error occurs.
 	 */
 	public Object lookup(String name) throws NamingException {
-		if (name == null) throw new IllegalArgumentException("Name required");
-		if (name.length() == 0) return this;
+		if (name == null) {
+		  throw new IllegalArgumentException("Name required");
+		}
+		if (name.length() == 0) {
+		  return this;
+		}
 
 		// Let alias redirection do its magic
 		String alias = aliases.getProperty(name);
-		if (alias != null) name = alias;
+		if (alias != null) {
+		  name = alias;
+		}
 
 	  for (Object context : contexts) {
 		Context c = (Context) context;
@@ -140,18 +150,24 @@ class ObjectContext implements Context {
 	}
 
 	public synchronized void bind(String name, Object obj) throws NamingException {
-		if (name == null) throw new IllegalArgumentException("Name required");
-		if (name.length() == 0) throw new InvalidNameException("Cannot bind object named after context");
+		if (name == null) {
+		  throw new IllegalArgumentException("Name required");
+		}
+		if (name.length() == 0) {
+		  throw new InvalidNameException("Cannot bind object named after context");
+		}
 
 		// If it's an alias name, stop here.
-		if (aliases.containsKey(name))
-			throw new NameAlreadyBoundException("Name \"" + name + "\" already bound as an aliased name");
+		if (aliases.containsKey(name)) {
+		  throw new NameAlreadyBoundException("Name \"" + name + "\" already bound as an aliased name");
+		}
 
 		// Make sure it isn't bound anywhere
 		for (NamingEnumeration e = list(""); e.hasMore();) {
 			NameClassPair nameClassPair = (NameClassPair) e.next();
-			if (name.equals(nameClassPair.getName()))
-				throw new NameAlreadyBoundException("Name \"" + name + "\" already bound by a managed subcontext");
+			if (name.equals(nameClassPair.getName())) {
+			  throw new NameAlreadyBoundException("Name \"" + name + "\" already bound by a managed subcontext");
+			}
 		}
 		doRebind(name, obj);
 	}
@@ -162,12 +178,17 @@ class ObjectContext implements Context {
 
 	/** {@inheritDoc} */
 	public synchronized void rebind(String name, Object obj) throws NamingException {
-		if (name == null) throw new IllegalArgumentException("Name required");
-		if (name.length() == 0) throw new InvalidNameException("Cannot rebind object named after context");
+		if (name == null) {
+		  throw new IllegalArgumentException("Name required");
+		}
+		if (name.length() == 0) {
+		  throw new InvalidNameException("Cannot rebind object named after context");
+		}
 
 		// If it's an alias name, remove the alias
-		if (aliases.containsKey(name))
-			aliases.remove(name);
+		if (aliases.containsKey(name)) {
+		  aliases.remove(name);
+		}
 
 		doRebind(name, obj);
 	}
@@ -189,7 +210,9 @@ class ObjectContext implements Context {
 		} catch (NamingException ignored) {
 		}
 	  }
-		if (!bound) throw new InvalidNameException("Name \"" + name + "\" not compatible with any managed subcontext");
+		if (!bound) {
+		  throw new InvalidNameException("Name \"" + name + "\" not compatible with any managed subcontext");
+		}
 	}
 
 	public void rebind(Name name, Object obj) throws NamingException {
@@ -197,8 +220,12 @@ class ObjectContext implements Context {
 	}
 
 	public void unbind(String name) throws NamingException {
-		if (name == null) throw new IllegalArgumentException("Name required");
-		if (name.length() == 0) throw new InvalidNameException("Cannot unbind object named after context");
+		if (name == null) {
+		  throw new IllegalArgumentException("Name required");
+		}
+		if (name.length() == 0) {
+		  throw new InvalidNameException("Cannot unbind object named after context");
+		}
 
 		// See if it's an aliased name
 		if (aliases.containsKey(name)) {
@@ -215,7 +242,9 @@ class ObjectContext implements Context {
 		} catch (NamingException ignore) {
 		}
 	  }
-		if (!unbound) throw new InvalidNameException("Name \"" + name + "\" not compatible with any managed subcontext");
+		if (!unbound) {
+		  throw new InvalidNameException("Name \"" + name + "\" not compatible with any managed subcontext");
+		}
 	}
 
 	public void unbind(Name name) throws NamingException {
@@ -223,10 +252,12 @@ class ObjectContext implements Context {
 	}
 
 	public void rename(String oldName, String newName) throws NamingException {
-		if (oldName == null || newName == null)
-			throw new IllegalArgumentException("Name required");
-		if (oldName.length() == 0 || newName.length() == 0)
-			throw new InvalidNameException("Cannot rename object named after context");
+		if (oldName == null || newName == null) {
+		  throw new IllegalArgumentException("Name required");
+		}
+		if (oldName.length() == 0 || newName.length() == 0) {
+		  throw new InvalidNameException("Cannot rename object named after context");
+		}
 
 		// See if it's an aliased name
 		String oldValue = (String) aliases.remove(oldName);
@@ -244,7 +275,9 @@ class ObjectContext implements Context {
 		} catch (NamingException ignore) {
 		}
 	  }
-		if (!renamed) throw new InvalidNameException("Names not compatible with any managed subcontext");
+		if (!renamed) {
+		  throw new InvalidNameException("Names not compatible with any managed subcontext");
+		}
 	}
 
 	public void rename(Name oldName, Name newName) throws NamingException {
@@ -258,13 +291,16 @@ class ObjectContext implements Context {
 				= eachContext.hasNext()? ((Context) eachContext.next()).list(name) : null;
 			private boolean open = true;
 			public Object next() throws NamingException {
-				if (!open) throw new NamingException("closed");
-				if (enumeration != null && enumeration.hasMore())
-					return enumeration.next();
-				else if (eachContext.hasNext()) {
+				if (!open) {
+				  throw new NamingException("closed");
+				}
+				if (enumeration != null && enumeration.hasMore()) {
+				  return enumeration.next();
+				} else if (eachContext.hasNext()) {
 					enumeration = ((Context) eachContext.next()).list(name);
-					if (enumeration.hasMore())
-						return enumeration.next();
+					if (enumeration.hasMore()) {
+					  return enumeration.next();
+					}
 				}
 				throw new NoSuchElementException("No more objects in context");
 			}
@@ -276,12 +312,14 @@ class ObjectContext implements Context {
 				return rc;
 			}
 			public boolean hasMore() throws NamingException {
-				if (!open) return false;
-				if (enumeration == null)
-					return false;
-				else if (enumeration.hasMore())
-					return true;
-				else if (eachContext.hasNext()) {
+				if (!open) {
+				  return false;
+				}
+				if (enumeration == null) {
+				  return false;
+				} else if (enumeration.hasMore()) {
+				  return true;
+				} else if (eachContext.hasNext()) {
 					enumeration = ((Context) eachContext.next()).list(name);
 					return hasMore();
 				}
@@ -296,8 +334,9 @@ class ObjectContext implements Context {
 			}
 			public void close() throws NamingException {
 				open = false;
-				if (enumeration != null)
-					enumeration.close();
+				if (enumeration != null) {
+				  enumeration.close();
+				}
 			}
 		};
 	}
@@ -313,13 +352,16 @@ class ObjectContext implements Context {
 				= eachContext.hasNext()? ((Context) eachContext.next()).listBindings(name) : null;
 			private boolean open = true;
 			public Object next() throws NamingException {
-				if (!open) throw new NamingException("closed");
-				if (enumeration != null && enumeration.hasMore())
-					return enumeration.next();
-				else if (eachContext.hasNext()) {
+				if (!open) {
+				  throw new NamingException("closed");
+				}
+				if (enumeration != null && enumeration.hasMore()) {
+				  return enumeration.next();
+				} else if (eachContext.hasNext()) {
 					enumeration = ((Context) eachContext.next()).listBindings(name);
-					if (enumeration.hasMore())
-						return enumeration.next();
+					if (enumeration.hasMore()) {
+					  return enumeration.next();
+					}
 				}
 				throw new NoSuchElementException("No more objects in context");
 			}
@@ -331,12 +373,14 @@ class ObjectContext implements Context {
 				return rc;
 			}
 			public boolean hasMore() throws NamingException {
-				if (!open) return false;
-				if (enumeration == null)
-					return false;
-				else if (enumeration.hasMore())
-					return true;
-				else if (eachContext.hasNext()) {
+				if (!open) {
+				  return false;
+				}
+				if (enumeration == null) {
+				  return false;
+				} else if (enumeration.hasMore()) {
+				  return true;
+				} else if (eachContext.hasNext()) {
 					enumeration = ((Context) eachContext.next()).listBindings(name);
 					return hasMore();
 				}
@@ -351,8 +395,9 @@ class ObjectContext implements Context {
 			}
 			public void close() throws NamingException {
 				open = false;
-				if (enumeration != null)
-					enumeration.close();
+				if (enumeration != null) {
+				  enumeration.close();
+				}
 			}
 		};
 	}
@@ -405,17 +450,23 @@ class ObjectContext implements Context {
 	}
 
 	public Object addToEnvironment(String propName, Object propVal) throws NamingException {
-		if (environment == null) environment = new Hashtable();
+		if (environment == null) {
+		  environment = new Hashtable();
+		}
 		return environment.put(propName, propVal);
 	}
 
 	public Object removeFromEnvironment(String propName) throws NamingException {
-		if (environment == null) return null;
+		if (environment == null) {
+		  return null;
+		}
 		return environment.remove(propName);
 	}
 
 	public Hashtable getEnvironment() throws NamingException {
-		if (environment == null) return new Hashtable();
+		if (environment == null) {
+		  return new Hashtable();
+		}
 		return (Hashtable) environment.clone();
 	}
 
@@ -444,9 +495,12 @@ class ObjectContext implements Context {
 				throw new IllegalStateException("Cannot handle I/O exception reading alias file " + aliasFileName
 					+ ": " + ex.getMessage());
 			} finally {
-				if (in != null) try {
+				if (in != null) {
+				  try {
 					in.close();
-				} catch (IOException ignore) {}
+				  } catch (IOException ignore) {
+				  }
+				}
 			}
 		}
 	}

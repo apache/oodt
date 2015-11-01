@@ -64,8 +64,9 @@ public class PropFilesInfo {
 
     public LinkedList<File> getDownloadInfoPropFiles() {
         LinkedList<File> returnList = new LinkedList<File>();
-        for (Entry<File, Parser> entry : this.fileToParserMap.entrySet())
+        for (Entry<File, Parser> entry : this.fileToParserMap.entrySet()) {
             returnList.add(entry.getKey());
+        }
         return returnList;
     }
 
@@ -81,15 +82,17 @@ public class PropFilesInfo {
     public Parser getParserForFile(File propFile) {
         Parser parser = this.fileToParserMap == null ? null
                 : this.fileToParserMap.get(propFile);
-        if (parser == null)
+        if (parser == null) {
             parser = this.getParserForFilename(propFile.getName());
+        }
         return parser;
     }
 
     public Parser getParserForFilename(String propFilename) {
         for (RegExpAndParser pattern : patterns) {
-            if (pattern.isAcceptedByPattern(propFilename))
+            if (pattern.isAcceptedByPattern(propFilename)) {
                 return pattern.getParser();
+            }
         }
         return null;
     }

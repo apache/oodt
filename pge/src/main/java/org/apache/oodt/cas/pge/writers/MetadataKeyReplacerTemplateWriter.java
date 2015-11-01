@@ -69,8 +69,9 @@ public class MetadataKeyReplacerTemplateWriter extends
       if (metadata.isMultiValued(key)) {
         List<String> values = metadata.getAllMetadata(key);
         replaceVal = StringUtils.join(values, separator);
-      } else
+      } else {
         replaceVal = metadata.getMetadata(key);
+      }
       processedTemplate = processedTemplate.replaceAll("\\$" + key, replaceVal);
     }
 

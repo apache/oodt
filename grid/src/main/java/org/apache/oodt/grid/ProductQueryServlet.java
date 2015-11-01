@@ -99,12 +99,17 @@ public class ProductQueryServlet extends QueryServlet {
 			byte[] buf = new byte[512];				       // And a byte buffer for data
 			int num;						       // And a place to count data
 			while ((num = in.read(buf)) != -1)			       // While we read
-				res.getOutputStream().write(buf, 0, num);	       // We write
+			{
+			  res.getOutputStream().write(buf, 0, num);           // We write
+			}
 			res.getOutputStream().flush();				       // Flush to commit response
 		} finally {							       // And finally
-			if (in != null) try {					       // If we opened it
-				in.close();					       // Close it
-			} catch (IOException ignore) {}				       // Ignoring any error during closing
+			if (in != null) {
+			  try {                           // If we opened it
+				in.close();                           // Close it
+			  } catch (IOException ignore) {
+			  }                       // Ignoring any error during closing
+			}
 		}								       // Because come on, it's just closing!
 	}									       // For fsck's sake!
 
@@ -118,10 +123,13 @@ public class ProductQueryServlet extends QueryServlet {
 		String contentType = result.getMimeType();			       // Grab the content type
 		res.setContentType(contentType);				       // Set it
 		long size = result.getSize();					       // Grab the size
-		if (size >= 0)
-			res.addHeader("Content-Length", String.valueOf(size));	       // Don't use setContentLength(int)
+		if (size >= 0) {
+		  res.addHeader("Content-Length", String.valueOf(size));           // Don't use setContentLength(int)
+		}
 		if (!displayable(contentType))					       // Finally, if a browser can't show it
-			this.suggestFilename(handler, result, res);		       // Then suggest a save-as filename
+		{
+		  this.suggestFilename(handler, result, res);               // Then suggest a save-as filename
+		}
 	}
 
 	/**
@@ -149,7 +157,9 @@ public class ProductQueryServlet extends QueryServlet {
 	protected void suggestFilename(QueryHandler handler, Result result, HttpServletResponse res) {
 		
 		String resource = result.getResourceID();
-		if (resource == null || resource.length() == 0) resource = "product.dat";
+		if (resource == null || resource.length() == 0) {
+		  resource = "product.dat";
+		}
 		
 		// suggest some names based on resource mime type
 		String contentType = res.getContentType();

@@ -58,12 +58,13 @@ public abstract class TransactionId<NativeType> {
 	}
 	
 	public boolean equals(Object obj) {
-		if (obj instanceof TransactionId<?>)
-			return this.toString().equals(obj.toString());
-		else if (obj instanceof String)
-			return this.toString().equals((String) obj);
-		else
-			return false;
+		if (obj instanceof TransactionId<?>) {
+		  return this.toString().equals(obj.toString());
+		} else if (obj instanceof String) {
+		  return this.toString().equals((String) obj);
+		} else {
+		  return false;
+		}
 	}
 	
 	protected abstract NativeType fromString(String stringId);

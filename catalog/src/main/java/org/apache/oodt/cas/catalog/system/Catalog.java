@@ -58,8 +58,9 @@ public class Catalog {
 	public Catalog(String id, Index index, List<Dictionary> dictionaries, boolean restrictQueryPermissions, boolean restrictIngestPermissions) {
 		this.id = id;
 		this.index = index;
-		if (dictionaries != null)
-			this.dictionaries = new Vector<Dictionary>(dictionaries);
+		if (dictionaries != null) {
+		  this.dictionaries = new Vector<Dictionary>(dictionaries);
+		}
 		this.restrictQueryPermissions = restrictQueryPermissions;
 		this.restrictIngestPermissions = restrictIngestPermissions;
 	}
@@ -85,8 +86,9 @@ public class Catalog {
 	}
 	
 	public void addDictionary(Dictionary dictionary) {
-		if (this.dictionaries == null)
-			this.dictionaries = new Vector<Dictionary>();
+		if (this.dictionaries == null) {
+		  this.dictionaries = new Vector<Dictionary>();
+		}
 		this.dictionaries.add(dictionary);
 	}
 
@@ -170,10 +172,11 @@ public class Catalog {
 				if (termBuckets.size() > 0) {
 					LOG.log(Level.INFO, "Catalog '" + this + "' attemping update metadata for catalog TransactionId [id = '" + transactionId + "']");
 					IngestReceipt ingestReceipt = ((IngestService) this.index).update(transactionId, termBuckets);
-					if (ingestReceipt != null)
-						return new CatalogReceipt(ingestReceipt, this.getId());
-					else
-						return null;
+					if (ingestReceipt != null) {
+					  return new CatalogReceipt(ingestReceipt, this.getId());
+					} else {
+					  return null;
+					}
 				}else {
 					LOG.log(Level.WARNING, "Catalog '" + this + "' did not generate any TermBuckets from Metadata for catalog TransactionId [id = '" + transactionId + "']");
 					return null;
@@ -226,8 +229,9 @@ public class Catalog {
 			if (this.isQueriable()) {
 				QueryService queryService = (QueryService) this.index;
 				List<CatalogReceipt> catalogReceipts = new Vector<CatalogReceipt>();
-				for (IngestReceipt ingestReceipt : queryService.query(queryExpression)) 
-					catalogReceipts.add(new CatalogReceipt(ingestReceipt, this.getId()));
+				for (IngestReceipt ingestReceipt : queryService.query(queryExpression)) {
+				  catalogReceipts.add(new CatalogReceipt(ingestReceipt, this.getId()));
+				}
 				return Collections.unmodifiableList(catalogReceipts);
 			}else {
 				LOG.log(Level.WARNING, "Catalog '" + this + "' is not queriable");
@@ -244,8 +248,9 @@ public class Catalog {
 			if (this.isQueriable()) {
 				QueryService queryService = (QueryService) this.index;
 				List<CatalogReceipt> catalogReceipts = new Vector<CatalogReceipt>();
-				for (IngestReceipt ingestReceipt : queryService.query(queryExpression, startIndex, endIndex)) 
-					catalogReceipts.add(new CatalogReceipt(ingestReceipt, this.getId()));
+				for (IngestReceipt ingestReceipt : queryService.query(queryExpression, startIndex, endIndex)) {
+				  catalogReceipts.add(new CatalogReceipt(ingestReceipt, this.getId()));
+				}
 				return Collections.unmodifiableList(catalogReceipts);
 			}else {
 				LOG.log(Level.WARNING, "Catalog '" + this + "' is not queriable");
@@ -290,8 +295,9 @@ public class Catalog {
 			if (this.isQueriable()) {
 				QueryService queryService = (QueryService) this.index;
 				Map<TransactionId<?>, List<TermBucket>> termBucketMap = queryService.getBuckets(transactionIds);
-				for (TransactionId<?> transactionId : termBucketMap.keySet())
-					metadataMap.put(transactionId, this.getMetadataFromBuckets(termBucketMap.get(transactionId)));
+				for (TransactionId<?> transactionId : termBucketMap.keySet()) {
+				  metadataMap.put(transactionId, this.getMetadataFromBuckets(termBucketMap.get(transactionId)));
+				}
 			}else {
 				LOG.log(Level.WARNING, "Catalog '" + this + "' is not queriable");
 			}
@@ -304,9 +310,11 @@ public class Catalog {
 	public boolean isInterested(QueryExpression queryExpression) throws CatalogException {
 		try {
 			if (this.dictionaries != null) {
-				for (Dictionary dictionary : this.dictionaries)
-					if (dictionary.understands(queryExpression))
-						return true;
+				for (Dictionary dictionary : this.dictionaries) {
+				  if (dictionary.understands(queryExpression)) {
+					return true;
+				  }
+				}
 				return false;
 			}else {
 				return true;
@@ -320,8 +328,9 @@ public class Catalog {
 		Metadata metadata = new Metadata();
 		for (TermBucket termBucket : termBuckets) {
 			if (this.dictionaries != null) {
-				for (Dictionary dictionary : this.dictionaries) 
-					metadata.addMetadata(dictionary.reverseLookup(termBucket));
+				for (Dictionary dictionary : this.dictionaries) {
+				  metadata.addMetadata(dictionary.reverseLookup(termBucket));
+				}
 			}else {
 				metadata.addMetadata(this.asMetadata(termBuckets));
 			}
@@ -331,9 +340,11 @@ public class Catalog {
 	
 	protected Metadata asMetadata(List<TermBucket> termBuckets) {
 		Metadata m = new Metadata();
-		for (TermBucket bucket : termBuckets)
-			for (Term term : bucket.getTerms())
-				m.addMetadata(term.getName(), term.getValues());
+		for (TermBucket bucket : termBuckets) {
+		  for (Term term : bucket.getTerms()) {
+			m.addMetadata(term.getName(), term.getValues());
+		  }
+		}
 		return m;
 	}
     
@@ -342,14 +353,16 @@ public class Catalog {
 		if (this.dictionaries != null) {
 			for (Dictionary dictionary : this.dictionaries) {
 				TermBucket termBucket = dictionary.lookup(metadata);
-				if (termBucket != null)
-					termBuckets.add(termBucket);
+				if (termBucket != null) {
+				  termBuckets.add(termBucket);
+				}
 			}
 		}else {
 			LOG.log(Level.WARNING, "Catalog '" + this + "' has no dictionaries defined, attempting to send all Metadata in a default TermBucket");
 			TermBucket bucket = new TermBucket();
-			for (String key : metadata.getAllKeys())
-				bucket.addTerm(new Term(key, metadata.getAllMetadata(key)));
+			for (String key : metadata.getAllKeys()) {
+			  bucket.addTerm(new Term(key, metadata.getAllMetadata(key)));
+			}
 			termBuckets.add(bucket);
 		}
 		return termBuckets;
@@ -360,12 +373,13 @@ public class Catalog {
 	}
 	
 	public boolean equals(Object obj) {
-		if (obj instanceof Catalog) 
-			return ((Catalog) obj).getId().equals(this.getId());
-		else if (obj instanceof String) 
-			return this.getId().equals((String) obj);
-		else
-			return false;
+		if (obj instanceof Catalog) {
+		  return ((Catalog) obj).getId().equals(this.getId());
+		} else if (obj instanceof String) {
+		  return this.getId().equals((String) obj);
+		} else {
+		  return false;
+		}
 	}
 	
     public String toString() {

@@ -82,8 +82,9 @@ public abstract class MultiStatePerspective extends Perspective {
 
   public void setMode(Mode mode) {
     this.mode = mode;
-    for (ViewState state : states.values())
+    for (ViewState state : states.values()) {
       state.setMode(mode);
+    }
     this.refresh();
   }
 

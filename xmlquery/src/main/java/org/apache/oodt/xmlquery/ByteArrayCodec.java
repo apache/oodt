@@ -42,11 +42,14 @@ class ByteArrayCodec implements Codec {
 
 	public Object decode(Node node) {
 		String encodedValue;
-		if (node.getFirstChild() != null && node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE)
-			encodedValue = node.getFirstChild().getNodeValue();
-		else
-			encodedValue = XML.text(node);
-		if (encodedValue.length() <= 0) return new byte[0];
+		if (node.getFirstChild() != null && node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE) {
+		  encodedValue = node.getFirstChild().getNodeValue();
+		} else {
+		  encodedValue = XML.text(node);
+		}
+		if (encodedValue.length() <= 0) {
+		  return new byte[0];
+		}
 		return Base64.decode(encodedValue.getBytes());
 	}
 

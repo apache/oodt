@@ -142,10 +142,11 @@ public class XmlRpcCommunicationChannelServer extends
         FileOutputStream fOut = null;
         try {
             File outFile = new File(filePath);
-	        if (outFile.exists()) 
-	        	fOut = new FileOutputStream(outFile, true);
-	        else 
-	        	fOut = new FileOutputStream(outFile, false);
+	        if (outFile.exists()) {
+			  fOut = new FileOutputStream(outFile, true);
+			} else {
+			  fOut = new FileOutputStream(outFile, false);
+			}
 	
 	        fOut.write(fileData, (int) offset, (int) numBytes);
         } finally {

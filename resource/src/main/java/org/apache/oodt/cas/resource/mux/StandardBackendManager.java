@@ -60,8 +60,9 @@ public class StandardBackendManager implements BackendManager {
      */
     public Monitor getMonitor(String queue) throws QueueManagerException {
         BackendSet set = queueToBackend.get(queue);
-        if (set == null)
+        if (set == null) {
             throw new QueueManagerException("Queue '" + queue + "' does not exist");
+        }
         return set.monitor;
     }
     /**
@@ -72,8 +73,9 @@ public class StandardBackendManager implements BackendManager {
      */
     public Batchmgr getBatchmgr(String queue) throws QueueManagerException {
         BackendSet set = queueToBackend.get(queue);
-        if (set == null)
+        if (set == null) {
             throw new QueueManagerException("Queue '" + queue + "' does not exist");
+        }
         return set.batchmgr;
     }
     /**
@@ -84,8 +86,9 @@ public class StandardBackendManager implements BackendManager {
      */
     public Scheduler getScheduler(String queue) throws QueueManagerException {
         BackendSet set = queueToBackend.get(queue);
-        if (set == null)
+        if (set == null) {
             throw new QueueManagerException("Queue '" + queue + "' does not exist");
+        }
         return set.scheduler;
     }
     /**

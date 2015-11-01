@@ -48,8 +48,9 @@ public class DOMParser {
 	 * @return The document.
 	 */
 	public Document getDocument() {
-		if (document == null)
-			throw new IllegalStateException("Must parse something first");
+		if (document == null) {
+		  throw new IllegalStateException("Must parse something first");
+		}
 		return document;
 	}
 

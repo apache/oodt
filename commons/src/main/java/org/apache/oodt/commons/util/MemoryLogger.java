@@ -69,13 +69,20 @@ public class MemoryLogger implements LogListener {
 	 * @param size The new maximum cache size.
 	 */
 	public void setSize(int size) {
-		if (size < 0) throw new IllegalArgumentException("Log cache size can't be negative");
+		if (size < 0) {
+		  throw new IllegalArgumentException("Log cache size can't be negative");
+		}
 		int delta = this.size - size;
 		this.size = size;
-		if (delta <= 0) return;
-		if (messages.size() < size) return;
-		while (delta-- > 0)
-			messages.removeFirst();
+		if (delta <= 0) {
+		  return;
+		}
+		if (messages.size() < size) {
+		  return;
+		}
+		while (delta-- > 0) {
+		  messages.removeFirst();
+		}
 	}
 
 	public void streamStarted(LogEvent ignore) {}
@@ -85,8 +92,9 @@ public class MemoryLogger implements LogListener {
 	public void messageLogged(LogEvent event) {
 		messages.add(DateConvert.isoFormat(event.getTimestamp()) + " " + event.getSource() + " " + event.getCategory()
 			+ ": " + event.getMessage());
-		if (messages.size() > size)
-			messages.removeFirst();
+		if (messages.size() > size) {
+		  messages.removeFirst();
+		}
 	}
 
 	/** The list of messages. */

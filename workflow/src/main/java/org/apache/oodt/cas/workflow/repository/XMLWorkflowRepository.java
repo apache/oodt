@@ -241,8 +241,9 @@ public class XMLWorkflowRepository implements WorkflowRepository {
         WorkflowTask t = (WorkflowTask) taskMap.get(taskId);
         if (t != null) {
             return t.getConditions();
-        } else
-            return null;
+        } else {
+          return null;
+        }
     }
 
     /*
@@ -327,9 +328,11 @@ public class XMLWorkflowRepository implements WorkflowRepository {
     @Override
     public List<WorkflowCondition> getConditionsByWorkflowId(String workflowId)
         throws RepositoryException {
-      if(!workflowMap.containsKey(workflowId)) throw new
-         RepositoryException("Attempt to obtain conditions for a workflow: " +
-         		"["+workflowId+"] that does not exist!");
+      if(!workflowMap.containsKey(workflowId)) {
+        throw new
+            RepositoryException("Attempt to obtain conditions for a workflow: " +
+                                "[" + workflowId + "] that does not exist!");
+      }
       
       return ((Workflow) workflowMap.get(workflowId)).getConditions();
     }    

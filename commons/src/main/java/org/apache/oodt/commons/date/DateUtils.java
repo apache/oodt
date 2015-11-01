@@ -101,8 +101,9 @@ public class DateUtils {
     public static int getLeapSecsForDate(Calendar utcCal) throws CommonsException {
         long timeInMillis = utcCal.getTimeInMillis();
         for (int i = dateAndLeapSecs.length - 1; i >= 0; i--) {
-            if (dateAndLeapSecs[i][IndexType.DATE.index] < timeInMillis)
+            if (dateAndLeapSecs[i][IndexType.DATE.index] < timeInMillis) {
                 return (int) dateAndLeapSecs[i][IndexType.LEAP_SECS.index];
+            }
         }
         throw new CommonsException("No Leap Second found for given date!");
     }
@@ -218,8 +219,9 @@ public class DateUtils {
         }else {
             epochDiffInMilli = epoch.getTimeInMillis() - julianEpoch.getTimeInMillis() ;
         }
-        if (cal.getTimeZone().getID().equals("TAI"))
+        if (cal.getTimeZone().getID().equals("TAI")) {
             epochDiffInMilli += getLeapSecsForDate(epoch) * 1000;
+        }
         long milliseconds = cal.getTimeInMillis();
         return milliseconds - epochDiffInMilli;
     }

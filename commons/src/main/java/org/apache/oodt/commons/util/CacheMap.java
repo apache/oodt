@@ -71,8 +71,9 @@ public class CacheMap implements Map {
 	public CacheMap(int capacity) {
 		// FXN: [ c, C, M := capacity, {}, {} ]
 
-		if (capacity < 0)
-			throw new IllegalArgumentException("Can't have a negative size " + capacity + " cache map");
+		if (capacity < 0) {
+		  throw new IllegalArgumentException("Can't have a negative size " + capacity + " cache map");
+		}
 		this.capacity = capacity;
 	}
 
@@ -150,8 +151,9 @@ public class CacheMap implements Map {
 		}
 
 		cache.addFirst(key);
-		if (cache.size() > capacity)
-			map.remove(cache.removeLast());
+		if (cache.size() > capacity) {
+		  map.remove(cache.removeLast());
+		}
 		return null;
 	}
 	
@@ -159,8 +161,9 @@ public class CacheMap implements Map {
 		// FXN: [ key in M -> C, M, return value := C - key, M - (key, v), v
 		//      | true -> return value := null ]
 
-		if (!map.containsKey(key))
-			return null;
+		if (!map.containsKey(key)) {
+		  return null;
+		}
 		cache.remove(key);
 		return map.remove(key);
 	}
@@ -189,8 +192,12 @@ public class CacheMap implements Map {
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof CacheMap)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof CacheMap)) {
+		  return false;
+		}
 		CacheMap obj = (CacheMap) rhs;
 		return obj.cache.equals(cache);
 	}
@@ -209,7 +216,9 @@ public class CacheMap implements Map {
 		// FXN: [ C = advance(key, C) ]
 
 		boolean present = cache.remove(key);
-		if (!present) return;
+		if (!present) {
+		  return;
+		}
 		cache.addFirst(key);
 	}
 

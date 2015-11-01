@@ -459,9 +459,10 @@ public class PGETaskInstance implements WorkflowTaskInstance {
                      }
                  }
              }
-             if (outputMetadata.getAllKeys().size() > 0)
-               this.writeFromMetadata(outputMetadata, createdFile.getAbsolutePath() 
-                   + "." + this.pgeMetadata.getMetadata(MET_FILE_EXT));
+             if (outputMetadata.getAllKeys().size() > 0) {
+               this.writeFromMetadata(outputMetadata, createdFile.getAbsolutePath()
+                                                      + "." + this.pgeMetadata.getMetadata(MET_FILE_EXT));
+             }
          }
      }
  }

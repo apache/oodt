@@ -42,10 +42,11 @@ public class CasPropertyPlaceholderConfigurer extends
         		defaultValue = splitValue[1];
         	}
             String result = PathUtils.doDynamicReplacement(value);
-            if (result.equals("null"))
-            	return defaultValue;
-            else
-            	return result;
+            if (result.equals("null")) {
+              return defaultValue;
+            } else {
+              return result;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return value;

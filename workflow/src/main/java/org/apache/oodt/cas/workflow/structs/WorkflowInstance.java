@@ -168,8 +168,9 @@ public class WorkflowInstance {
     if (workflow != null && workflow instanceof ParentChildWorkflow) {
       this.workflow = (ParentChildWorkflow) workflow;
     } else {
-      if (workflow == null)
+      if (workflow == null) {
         workflow = new Workflow();
+      }
       this.workflow = new ParentChildWorkflow(workflow);
     }
   }
@@ -437,7 +438,9 @@ public class WorkflowInstance {
       
       return null;
     }
-    else return null;
+    else {
+      return null;
+    }
   }
 
 

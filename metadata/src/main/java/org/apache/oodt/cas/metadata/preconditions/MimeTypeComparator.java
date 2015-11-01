@@ -52,10 +52,11 @@ public class MimeTypeComparator extends PreConditionComparator<String> {
             throws PreconditionComparatorException {
         try {
             String tikaMimeType = this.mimeTypeUtils.getMimeType(product);
-            if (tikaMimeType == null && useMagic)
+            if (tikaMimeType == null && useMagic) {
                 tikaMimeType = this.mimeTypeUtils
-                        .getMimeTypeByMagic(MimeTypeUtils
-                                .readMagicHeader(new FileInputStream(product)));
+                    .getMimeTypeByMagic(MimeTypeUtils
+                        .readMagicHeader(new FileInputStream(product)));
+            }
             return tikaMimeType.compareTo(mimeType);
         } catch (Throwable e) {
             e.printStackTrace();

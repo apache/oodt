@@ -74,8 +74,9 @@ public class TransferStatusTracker {
 
         if (transfers != null && transfers.size() > 0) {
             return (FileTransferStatus) transfers.get(0);
-        } else
+        } else {
             return null;
+        }
     }
 
     public void transferringProduct(Product product) {

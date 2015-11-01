@@ -40,8 +40,9 @@ class OperatorExpression implements WhereExpression {
 	 * @param operator What operator to use
 	 */
 	public OperatorExpression(String value, String name, String operator) {
-		if (Arrays.binarySearch(VALID_OPERATORS, operator) < 0)
-			throw new IllegalArgumentException("Invalid operator \"" + operator + "\"");
+		if (Arrays.binarySearch(VALID_OPERATORS, operator) < 0) {
+		  throw new IllegalArgumentException("Invalid operator \"" + operator + "\"");
+		}
 
 		this.name = name;
 		this.value = value;
@@ -62,7 +63,9 @@ class OperatorExpression implements WhereExpression {
 			SearchableProfileElement element = (SearchableProfileElement) elements.get(name);
 
 			// Nope.  We can only give a false result.
-			if (element == null) return FalseResult.INSTANCE;
+			if (element == null) {
+			  return FalseResult.INSTANCE;
+			}
 
 			// Yep.  Ask the element to yield the result.
 			return element.result(value, operator);
@@ -76,22 +79,23 @@ class OperatorExpression implements WhereExpression {
 
 	public WhereExpression negate() {
 		String negated;
-		if (operator.equals("EQ"))
-			negated = "NE";
-		else if (operator.equals("NE"))
-			negated = "EQ";
-		else if (operator.equals("LT"))
-			negated = "GE";
-		else if (operator.equals("GT"))
-			negated = "LE";
-		else if (operator.equals("LE"))
-			negated = "GT";
-		else if (operator.equals("LIKE"))
-			negated = "NE";
-		else if (operator.equals("NOTLIKE"))
-			negated = "EQ";
-		else
-			negated = "LT";
+		if (operator.equals("EQ")) {
+		  negated = "NE";
+		} else if (operator.equals("NE")) {
+		  negated = "EQ";
+		} else if (operator.equals("LT")) {
+		  negated = "GE";
+		} else if (operator.equals("GT")) {
+		  negated = "LE";
+		} else if (operator.equals("LE")) {
+		  negated = "GT";
+		} else if (operator.equals("LIKE")) {
+		  negated = "NE";
+		} else if (operator.equals("NOTLIKE")) {
+		  negated = "EQ";
+		} else {
+		  negated = "LT";
+		}
 		return new OperatorExpression(value, name, negated);
 	}
 

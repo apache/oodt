@@ -308,8 +308,9 @@ public class Config implements ConfigMetKeys {
         this.writeMetFile = Boolean.getBoolean(WRITE_MET_FILE);
         String timeoutString = PropertiesUtils.getProperties(
                 PROTOCOL_TIMEOUT_MS, new String[] { "600000" })[0];
-        if (timeoutString == null)
+        if (timeoutString == null) {
             timeoutString = "0";
+        }
         pi.setDownloadTimeout(Long.parseLong(timeoutString));
         pi.setPageSize(Integer.parseInt(PropertiesUtils.getProperties(
                 PROTOCOL_PAGE_SIZE, new String[] { "8" })[0]));

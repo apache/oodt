@@ -94,8 +94,9 @@ public final class DbStructFactory {
                 task.setOrder(rs.getInt("task_order"));
             }*/
             return task;
-        } else
+        } else {
             return null;
+        }
     }
 
     public static WorkflowCondition getWorkflowCondition(ResultSet rs,
@@ -115,8 +116,9 @@ public final class DbStructFactory {
                 condition.setOrder(rs.getInt("condition_order"));
             }*/
             return condition;
-        } else
+        } else {
             return null;
+        }
     }
 
 }

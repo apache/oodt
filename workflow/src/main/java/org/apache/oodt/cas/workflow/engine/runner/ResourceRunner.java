@@ -145,10 +145,12 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
         LOG.log(Level.WARNING, "Attempt to kill " + "current resmgr job: ["
             + this.currentJobId + "]: failed");
         return false;
-      } else
+      } else {
         return true;
-    } else
+      }
+    } else {
       return false;
+    }
   }
 
 

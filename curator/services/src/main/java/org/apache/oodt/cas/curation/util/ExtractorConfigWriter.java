@@ -39,8 +39,9 @@ public class ExtractorConfigWriter {
     for (Iterator<File> i = config.getConfigFiles().iterator(); i.hasNext();) {
       File file = i.next();
       files.append(file.toURI());
-      if (i.hasNext())
+      if (i.hasNext()) {
         files.append(",");
+      }
     }
     props.setProperty(ExtractorConfig.PROP_CONFIG_FILES, files.toString());
     OutputStream os = new FileOutputStream(new File(configDir, "config.properties"));

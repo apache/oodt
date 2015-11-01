@@ -188,27 +188,32 @@ public final class QueryTool {
         QueryType queryType = null;
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--lucene")) {
-                if (queryType != null)
+                if (queryType != null) {
                     exit("ERROR: Can only perform one query at a time! \n" + usage);
-                if (args[++i].equals("-query"))
+                }
+                if (args[++i].equals("-query")) {
                     queryStr = args[++i];
-                else 
+                } else {
                     exit("ERROR: Must specify a query! \n" + usage);
+                }
                 queryType = QueryType.LUCENE;
             }else if (args[i].equals("--sql")) {
-                if (queryType != null)
+                if (queryType != null) {
                     exit("ERROR: Can only perform one query at a time! \n" + usage);
-                if (args[++i].equals("-query"))
+                }
+                if (args[++i].equals("-query")) {
                     queryStr = args[++i];
-                else 
+                } else {
                     exit("ERROR: Must specify a query! \n" + usage);
+                }
                 for (; i < args.length; i++) {
-                    if (args[i].equals("-sortBy"))
+                    if (args[i].equals("-sortBy")) {
                         sortBy = args[++i];
-                    else if (args[i].equals("-outputFormat"))
+                    } else if (args[i].equals("-outputFormat")) {
                         outputFormat = args[++i];
-                    else if (args[i].equals("-delimiter"))
+                    } else if (args[i].equals("-delimiter")) {
                         delimiter = args[++i];
+                    }
                 }
                 queryType = QueryType.SQL;
             }else if (args[i].equals("--url")) {
@@ -216,8 +221,9 @@ public final class QueryTool {
             }
         }
 
-        if (queryStr == null || fmUrlStr == null) 
+        if (queryStr == null || fmUrlStr == null) {
             exit("Must specify a query and filemgr url! \n" + usage);
+        }
         
         if (queryType == QueryType.LUCENE) {
             URL fmUrl = new URL(fmUrlStr);
@@ -245,8 +251,9 @@ public final class QueryTool {
         complexQuery.setToStringResultFormat(outputFormat);
         List<QueryResult> results = new XmlRpcFileManagerClient(new URL(filemgrUrl)).complexQuery(complexQuery);
         StringBuilder returnString = new StringBuilder("");
-        for (QueryResult qr : results) 
+        for (QueryResult qr : results) {
             returnString.append(qr.toString()).append(delimiter);
+        }
         return returnString.substring(0, returnString.length() - delimiter.length());
     }
     

@@ -334,8 +334,9 @@ public class IngestionResource extends CurationService {
             return -1;
           } else if (o1.getCreateDate().equals(o2.getCreateDate())) {
             return 0;
-          } else
+          } else {
             return 1;
+          }
         }
       });
       return taskList;

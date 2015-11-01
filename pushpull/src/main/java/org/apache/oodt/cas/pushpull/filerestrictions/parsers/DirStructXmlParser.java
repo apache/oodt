@@ -144,15 +144,17 @@ public class DirStructXmlParser implements Parser {
                             if ((ch <= 'Z' && ch >= 'A')
                                     || (ch <= 'z' && ch >= 'a')
                                     || (ch <= '9' && ch >= '0') 
-                                    || ch == '_')
-                                variable.append(ch);
-                            else
-                                break;
+                                    || ch == '_') {
+                              variable.append(ch);
+                            } else {
+                              break;
+                            }
                         }
                         Variable v = GlobalVariables.hashMap.get(variable
                                 .toString());
-                        if (v == null)
-                        	throw new Exception("No variable defined with name '" + variable.toString() + "'");
+                        if (v == null) {
+                          throw new Exception("No variable defined with name '" + variable.toString() + "'");
+                        }
                         input = input.replaceFirst("\\$\\{" + variable + "\\}", v.toString());
                         i = i + v.toString().length();
                     }
@@ -168,10 +170,11 @@ public class DirStructXmlParser implements Parser {
                         char ch = input.substring(j, j + 1).charAt(0);
                         if ((ch <= 'Z' && ch >= 'A')
                                 || (ch <= 'z' && ch >= 'a')
-                                || (ch <= '9' && ch >= '0') || ch == '_')
-                            method.append(ch);
-                        else
-                            break;
+                                || (ch <= '9' && ch >= '0') || ch == '_') {
+                          method.append(ch);
+                        } else {
+                          break;
+                        }
                     }
 
                     if (input.substring(j, j + 1).charAt(0) == '(') {
@@ -261,8 +264,9 @@ public class DirStructXmlParser implements Parser {
                 // determine if variable is an Integer or a String
                 if (type.equals("int")) {
                     variable.setValue(Integer.valueOf(value));
-                } else
-                    variable.setValue(value);
+                } else {
+                  variable.setValue(value);
+                }
 
                 // store Variable in list of Variables
                 GlobalVariables.hashMap.put(variable.getName(), variable);

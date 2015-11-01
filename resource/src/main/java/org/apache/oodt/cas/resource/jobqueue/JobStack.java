@@ -75,9 +75,10 @@ public class JobStack implements JobQueue {
       spec.getJob().setStatus(JobStatus.QUEUED);
       safeUpdateJob(spec);
       return jobId;
-    } else
+    } else {
       throw new JobQueueException("Reached max queue size: [" + maxQueueSize
-          + "]: Unable to add job: [" + spec.getJob().getId() + "]");
+                                  + "]: Unable to add job: [" + spec.getJob().getId() + "]");
+    }
   }
 
   /*

@@ -158,8 +158,12 @@ public class SQLDatabaseRetrieval implements Retrieval {
       }
       finally {
          try {
-            if (stmt != null) stmt.close();
-            if (conn != null) conn.close();
+            if (stmt != null) {
+               stmt.close();
+            }
+            if (conn != null) {
+               conn.close();
+            }
          }
          catch (SQLException ignored) {}
       }

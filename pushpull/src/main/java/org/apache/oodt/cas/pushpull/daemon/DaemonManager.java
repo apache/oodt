@@ -74,10 +74,11 @@ public class DaemonManager implements DaemonListener {
     }
 
     public void daemonFinished(Daemon daemon) {
-        if (daemon.equals(this.runningDaemon))
+        if (daemon.equals(this.runningDaemon)) {
             this.startNextOnWaitingList();
-        else
+        } else {
             this.waitingList.remove(daemon);
+        }
     }
 
     public synchronized HashSet<Integer> getUsedIDs() {

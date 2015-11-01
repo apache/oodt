@@ -83,9 +83,10 @@ public final class MimeExtractorConfigReader implements
                     if (preCondsElem != null) {
                        NodeList preCondComparators = 
                           preCondsElem.getElementsByTagName(PRECONDITION_COMPARATOR_TAG);
-                       for (int k = 0; k < preCondComparators.getLength(); k++)
-                           preCondComparatorIds.add(((Element) preCondComparators
-                                   .item(k)).getAttribute(ID_ATTR));
+                       for (int k = 0; k < preCondComparators.getLength(); k++) {
+                         preCondComparatorIds.add(((Element) preCondComparators
+                             .item(k)).getAttribute(ID_ATTR));
+                       }
                     }
                     // This seems wrong, so added support for CLASS_ATTR while still
                     //  supporting EXTRACTOR_CLASS_TAG as an attribute for specifying
@@ -150,10 +151,11 @@ public final class MimeExtractorConfigReader implements
                            NodeList preCondComparators = preCondsElem
                                  .getElementsByTagName(PRECONDITION_COMPARATOR_TAG);
                            LinkedList<String> preCondComparatorIds = new LinkedList<String>();
-                           for (int k = 0; k < preCondComparators.getLength(); k++)
-                               preCondComparatorIds
-                                       .add(((Element) preCondComparators.item(k))
-                                               .getAttribute(ID_ATTR));
+                           for (int k = 0; k < preCondComparators.getLength(); k++) {
+                             preCondComparatorIds
+                                 .add(((Element) preCondComparators.item(k))
+                                     .getAttribute(ID_ATTR));
+                           }
                            spec.setPreConditionComparatorIds(preCondComparatorIds);
                         }
 
@@ -203,8 +205,9 @@ public final class MimeExtractorConfigReader implements
         Element elem = XMLUtils.getFirstElement(elemName, root);
         if (elem != null) {
             filePath = elem.getAttribute(FILE_ATTR);
-            if (Boolean.valueOf(elem.getAttribute(ENV_REPLACE_ATTR)))
-                filePath = PathUtils.replaceEnvVariables(filePath);
+            if (Boolean.valueOf(elem.getAttribute(ENV_REPLACE_ATTR))) {
+              filePath = PathUtils.replaceEnvVariables(filePath);
+            }
         }
         return filePath;
     }

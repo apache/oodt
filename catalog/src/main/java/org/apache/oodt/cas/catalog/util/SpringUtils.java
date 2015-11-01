@@ -42,9 +42,10 @@ public class SpringUtils {
         for (String key : catalogsMap.keySet()) {
         	Catalog curCatalog = catalogsMap.get(key);
         	LOG.log(Level.INFO, "Loading catalog configuration for Catalog: '" + curCatalog + "'");
-        	if (catalogs.contains(curCatalog))
-        		throw new CatalogException("Catalog URN : '" + curCatalog + "' conflicts with another Catalog's URN.  "
-									 + "**NOTE: URNs are created based on the following rule: urn:<namespace>:<id or name (if set)>");
+        	if (catalogs.contains(curCatalog)) {
+			  throw new CatalogException("Catalog URN : '" + curCatalog + "' conflicts with another Catalog's URN.  "
+										 + "**NOTE: URNs are created based on the following rule: urn:<namespace>:<id or name (if set)>");
+			}
         	catalogs.add(curCatalog);
         }
         return catalogs;

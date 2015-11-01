@@ -49,13 +49,15 @@ public class QueueManager {
 	}
 	
 	public synchronized void addNodeToQueue(String nodeId, String queueName) throws QueueManagerException {
-		if (queueName == null || !this.queueToNodesMapping.containsKey(queueName)) 
-			throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		if (queueName == null || !this.queueToNodesMapping.containsKey(queueName)) {
+		  throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		}
 		
 		// add node to queue
 		LinkedHashSet<String> nodes = this.queueToNodesMapping.get(queueName);
-		if (nodes == null)
-			nodes = new LinkedHashSet<String>();
+		if (nodes == null) {
+		  nodes = new LinkedHashSet<String>();
+		}
 		nodes.add(nodeId);
 		
 		// put node list back into map
@@ -63,15 +65,17 @@ public class QueueManager {
 	}
 
 	public synchronized void addQueue(String queueName) {
-		if (queueName != null && !this.queueToNodesMapping.containsKey(queueName)) 
-			this.queueToNodesMapping.put(queueName, new LinkedHashSet<String>());
+		if (queueName != null && !this.queueToNodesMapping.containsKey(queueName)) {
+		  this.queueToNodesMapping.put(queueName, new LinkedHashSet<String>());
+		}
 	}
 
 	public synchronized List<String> getNodes(String queueName) throws QueueManagerException {
-		if (queueName != null && this.queueToNodesMapping.containsKey(queueName)) 
-			return new Vector<String>(this.queueToNodesMapping.get(queueName));
-		else
-			throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		if (queueName != null && this.queueToNodesMapping.containsKey(queueName)) {
+		  return new Vector<String>(this.queueToNodesMapping.get(queueName));
+		} else {
+		  throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		}
 	}
 	
 	public synchronized List<String> getQueues() {
@@ -80,22 +84,26 @@ public class QueueManager {
 
 	public synchronized List<String> getQueues(String nodeId) {
 		Vector<String> queueNames = new Vector<String>();
-		for (String queueName : this.queueToNodesMapping.keySet()) 
-			if (this.queueToNodesMapping.get(queueName).contains(nodeId))
-				queueNames.add(queueName);
+		for (String queueName : this.queueToNodesMapping.keySet()) {
+		  if (this.queueToNodesMapping.get(queueName).contains(nodeId)) {
+			queueNames.add(queueName);
+		  }
+		}
 		return queueNames;
 	}
 
 	public synchronized void removeNodeFromQueue(String nodeId, String queueName) throws QueueManagerException {
-		if (queueName != null && this.queueToNodesMapping.containsKey(queueName)) 
-			this.queueToNodesMapping.get(queueName).remove(nodeId);
-		else
-			throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		if (queueName != null && this.queueToNodesMapping.containsKey(queueName)) {
+		  this.queueToNodesMapping.get(queueName).remove(nodeId);
+		} else {
+		  throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		}
 	}
 
 	public synchronized void removeQueue(String queueName) {
-		if (queueName != null) 
-			this.queueToNodesMapping.remove(queueName);
+		if (queueName != null) {
+		  this.queueToNodesMapping.remove(queueName);
+		}
 	}
 	
 }

@@ -197,8 +197,9 @@ public class DaemonController {
         } else if (operation.equals("--isRunning")) {
             boolean running = controller.isRunning();
             System.out.println(running ? "Yes" : "No");
-        } else
+        } else {
             throw new IllegalArgumentException("Unknown Operation!");
+        }
     }
 
 }

@@ -1722,8 +1722,9 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
   }
 
   private boolean hasTaskId(List<WorkflowTask> tasks, String id) {
-    if (tasks == null || (tasks.size() == 0))
+    if (tasks == null || (tasks.size() == 0)) {
       return false;
+    }
 
     for (WorkflowTask task : tasks) {
       if (task.getTaskId().equals(id)) {
@@ -1735,8 +1736,9 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
   }
 
   private boolean hasConditionId(List<WorkflowCondition> conds, String id) {
-    if (conds == null || (conds.size() == 0))
+    if (conds == null || (conds.size() == 0)) {
       return false;
+    }
 
     for (WorkflowCondition cond : conds) {
       if (cond.getConditionId().equals(id)) {

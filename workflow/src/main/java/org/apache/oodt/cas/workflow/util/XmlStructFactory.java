@@ -87,10 +87,12 @@ public final class XmlStructFactory {
     Element taskElem = getFirstElement("tasks", workflowRoot);
     Element conditionsElem = getFirstElement("conditions", workflowRoot);
 
-    if (taskElem != null)
+    if (taskElem != null) {
       workflow.setTasks(getTasks(taskElem, tasks));
-    if (conditionsElem != null)
+    }
+    if (conditionsElem != null) {
       workflow.setConditions(getConditions(conditionsElem, conditions));
+    }
 
     return workflow;
   }
@@ -240,13 +242,15 @@ public final class XmlStructFactory {
         String envReplace = property.getAttribute("envReplace");
         String name = property.getAttribute("name");
         String value = property.getAttribute("value");
-        if (Boolean.parseBoolean(envReplace))
+        if (Boolean.parseBoolean(envReplace)) {
           value = PathUtils.doDynamicReplacement(value);
+        }
         List<String> values = new Vector<String>();
-        if (delim.length() > 0)
+        if (delim.length() > 0) {
           values.addAll(Arrays.asList(value.split("\\" + delim)));
-        else
+        } else {
           values.add(value);
+        }
         curMetadata.replaceMetadata(name, values);
       }
     }
@@ -320,15 +324,17 @@ public final class XmlStructFactory {
     NodeList list = root.getElementsByTagName(name);
     if (list.getLength()>0) {
       return (Element) list.item(0);
-    } else
+    } else {
       return null;
+    }
   }
 
   private static String getSimpleElementText(Element node) {
     if (node.getChildNodes().item(0) instanceof Text) {
       return node.getChildNodes().item(0).getNodeValue();
-    } else
+    } else {
       return null;
+    }
   }
 
   private static String getElementText(String elemName, Element root) {

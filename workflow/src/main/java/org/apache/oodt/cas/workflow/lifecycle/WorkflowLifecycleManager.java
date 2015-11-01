@@ -70,8 +70,9 @@ public class WorkflowLifecycleManager {
         WorkflowLifecycleStage stage = getStage(inst);
         if (stage != null) {
             return stage.getOrder();
-        } else
+        } else {
             return -1;
+        }
     }
 
     /**
@@ -90,8 +91,9 @@ public class WorkflowLifecycleManager {
         WorkflowLifecycle lifecycle = getLifecycleForWorkflow(workflow);
         if (lifecycle != null) {
             return lifecycle.getStages().size();
-        } else
+        } else {
             return -1;
+        }
     }
 
     /**
@@ -111,8 +113,9 @@ public class WorkflowLifecycleManager {
         if (lifecycle != null) {
             return lifecycle.getStageForWorkflow(inst
                     .getStatus());
-        } else
+        } else {
             return null;
+        }
     }
 
     /**
@@ -195,8 +198,9 @@ public class WorkflowLifecycleManager {
             }
 
             return defaultLifecycle;
-        } else
+        } else {
             return null;
+        }
     }
 
     /**
@@ -221,8 +225,9 @@ public class WorkflowLifecycleManager {
              inst.getState().getCategory().getName().equals("done")))
                 && currStageNum == getNumStages(inst.getWorkflow())) {
             return currStageNum;
-        } else
+        } else {
             return currStageNum - 1;
+        }
     }
 
 }

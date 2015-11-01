@@ -38,8 +38,8 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
  */
 public class QueryCliAction  extends CatalogServiceCliAction {
 
-   protected String query;
-   protected Set<String> catalogIds;
+   private String query;
+   private Set<String> catalogIds;
 
    @Override
    public void execute(ActionMessagePrinter printer)
@@ -79,5 +79,17 @@ public class QueryCliAction  extends CatalogServiceCliAction {
 
    public void setCatalogIds(List<String> catalogIds) {
       this.catalogIds = new HashSet<String>(catalogIds);
+   }
+
+   public String getQuery() {
+      return query;
+   }
+
+   public Set<String> getCatalogIds() {
+      return catalogIds;
+   }
+
+   public void setCatalogIds(Set<String> catalogIds) {
+      this.catalogIds = catalogIds;
    }
 }

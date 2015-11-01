@@ -139,8 +139,9 @@ public class XMLUtils {
         NodeList list = root.getElementsByTagName(name);
         if (list.getLength()>0) {
             return (Element) list.item(0);
-        } else
+        } else {
             return null;
+        }
     }
 
     public static String getSimpleElementText(Element node, boolean trim) {
@@ -153,8 +154,9 @@ public class XMLUtils {
             }
 
             return elemTxt;
-        } else
+        } else {
             return null;
+        }
     }
 
     public static String getSimpleElementText(Element node) {
@@ -166,8 +168,9 @@ public class XMLUtils {
         Element elem = getFirstElement(elemName, root);
         if (elem != null) {
             return getSimpleElementText(elem, trim);
-        } else
+        } else {
             return null;
+        }
     }
 
     public static String getElementText(String elemName, Element root) {

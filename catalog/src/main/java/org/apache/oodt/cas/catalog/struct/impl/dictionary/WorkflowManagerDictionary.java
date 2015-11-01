@@ -38,8 +38,9 @@ public class WorkflowManagerDictionary implements Dictionary {
 	public TermBucket lookup(Metadata metadata) {
 		if (metadata.getMetadata("ProductType") != null && metadata.getAllMetadata("ProductType").contains("Workflows")) {
 			TermBucket workflowBucket = new TermBucket("Workflows");
-			for (Object key : metadata.getHashtable().keySet()) 
-				workflowBucket.addTerm(new Term((String) key, metadata.getAllMetadata((String) key)));
+			for (Object key : metadata.getHashtable().keySet()) {
+			  workflowBucket.addTerm(new Term((String) key, metadata.getAllMetadata((String) key)));
+			}
 			return workflowBucket;
 		}else {
 			return null;
@@ -49,8 +50,9 @@ public class WorkflowManagerDictionary implements Dictionary {
 	public Metadata reverseLookup(TermBucket termBucket) {
 		Metadata metadata = new Metadata();
 		if (termBucket.getName().equals("Workflows")) {
-			for (Term term : termBucket.getTerms())
-				metadata.addMetadata(term.getName(), term.getValues());
+			for (Term term : termBucket.getTerms()) {
+			  metadata.addMetadata(term.getName(), term.getValues());
+			}
 		}
 		return metadata;
 	}

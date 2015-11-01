@@ -96,8 +96,9 @@ public class WorkflowProcessorQueue {
                   + "] into WorkflowProcessor: Message: " + e.getMessage());
           continue;
         }
-        if (processor != null)
+        if (processor != null) {
           processors.add(processor);
+        }
       }
     }
 
@@ -420,7 +421,9 @@ public class WorkflowProcessorQueue {
   private synchronized WorkflowTask toConditionTask(WorkflowCondition cond){    
     String taskId = cond.getConditionId()+"-task"; // TODO: this is incompat with DataSourceWorkflowRepository
     WorkflowTask condTask = safeGetTaskById(taskId);
-    if(condTask != null) return condTask;
+    if(condTask != null) {
+      return condTask;
+    }
     condTask = new WorkflowTask();
     condTask.setTaskId(taskId);
     condTask.setTaskInstanceClassName(ConditionTaskInstance.class.getCanonicalName());

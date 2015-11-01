@@ -229,7 +229,9 @@ public class GangliaResourceMonitor implements Monitor {
 
 	private ResourceNode nodeFromMap(Map<String, String> map)
 			throws MalformedURLException {
-		if (map == null) return null;
+		if (map == null) {
+		  return null;
+		}
 		ResourceNode node = new ResourceNode();
 		System.out.println("MAP IS "+map);
 		System.out.println("Setting hostname to "+map.get(NAME));

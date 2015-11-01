@@ -32,8 +32,9 @@ public class CompositeActivity extends Activity {
 	 * @param activities a {@link Collection} of {@link Activity} instances.
 	 */
 	public CompositeActivity(Collection activities) {
-		if (activities == null)
-			throw new IllegalArgumentException("Activities collection required");
+		if (activities == null) {
+		  throw new IllegalArgumentException("Activities collection required");
+		}
 	  for (Object activity : activities) {
 		if (!(activity instanceof Activity)) {
 		  throw new IllegalArgumentException("Non-Activity in activities collection");

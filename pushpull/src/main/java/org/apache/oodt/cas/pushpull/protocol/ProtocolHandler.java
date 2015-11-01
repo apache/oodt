@@ -107,10 +107,11 @@ public class ProtocolHandler {
     try {
       Protocol protocol = getAppropriateProtocol(pFile, allowReuse);
       if (protocol != null && navigateToPathLoc) {
-        if (pFile.isDir())
+        if (pFile.isDir()) {
           this.cd(protocol, pFile);
-        else if (pFile.getParent() != null)
+        } else if (pFile.getParent() != null) {
           this.cd(protocol, new RemoteSiteFile(pFile.getParent(), pFile.getSite()));
+        }
       }
       return protocol;
     } catch (Exception e) {
@@ -165,18 +166,20 @@ public class ProtocolHandler {
                   + " for " + remoteSite.getURL());
             }
           }
-          if (protocol == null)
+          if (protocol == null) {
             throw new ProtocolException("Failed to get appropriate protocol for "
-                + remoteSite);
+                                        + remoteSite);
+          }
         } else {
           connect(protocol = protocolFactory.newInstance(), remoteSite, false);
         }
-        if (allowReuse)
+        if (allowReuse) {
           try {
             this.reuseProtocols.put(remoteSite.getURL().toURI(), protocol);
           } catch (URISyntaxException e) {
             LOG.log(Level.SEVERE, "Couildn't covert URL to URI Mesage: " + e.getMessage());
           }
+        }
       }
     } catch (URISyntaxException e) {
       LOG.log(Level.SEVERE, "could not convert url to uri: Message: "+e.getMessage());
@@ -220,8 +223,9 @@ public class ProtocolHandler {
       List<RemoteSiteFile> page = new LinkedList<RemoteSiteFile>();
       int curLoc = pgInfo.getPageLoc();
       for (; page.size() < pi.getPageSize() && curLoc < fileList.size(); curLoc++) {
-        if (filter == null || filter.accept(fileList.get(curLoc)))
+        if (filter == null || filter.accept(fileList.get(curLoc))) {
           page.add(fileList.get(curLoc));
+        }
       }
       pgInfo.updatePageInfo(curLoc, fileList);
 
@@ -266,12 +270,13 @@ public class ProtocolHandler {
 
       // delete file is specified
       if (delete) {
-        if (!this.delete(protocol, fromFile))
+        if (!this.delete(protocol, fromFile)) {
           LOG.log(Level.WARNING, "Failed to delete file '" + fromFile
-              + "' from server '" + fromFile.getSite() + "'");
-        else
+                                 + "' from server '" + fromFile.getSite() + "'");
+        } else {
           LOG.log(Level.INFO, "Successfully deleted file '" + fromFile
-              + "' from server '" + fromFile.getSite() + "'");
+                              + "' from server '" + fromFile.getSite() + "'");
+        }
       }
 
       LOG.log(Level.INFO, "Finished downloading " + fromFile + " to " + toFile);
@@ -333,8 +338,9 @@ public class ProtocolHandler {
                   + " with protocol '" + protocol.getClass().getCanonicalName()
                   + "' and username '" + remoteSite.getUsername() + "'");
           return true;
-        } else
+        } else {
           return false;
+        }
 
       } catch (Exception e) {
         LOG.log(Level.WARNING, "Error occurred while connecting to "
@@ -354,14 +360,16 @@ public class ProtocolHandler {
       this.cdToHOME(protocol);
       RemoteSiteFile home = this.pwd(remoteSite, protocol);
       this.ls(remoteSite, protocol);
-      if (remoteSite.getCdTestDir() != null)
+      if (remoteSite.getCdTestDir() != null) {
         this.cd(protocol, new RemoteSiteFile(home, remoteSite.getCdTestDir(),
             true, remoteSite));
-      else
+      } else {
         this.cdToROOT(protocol);
+      }
       this.cdToHOME(protocol);
-      if (home == null || !home.equals(this.pwd(remoteSite, protocol)))
+      if (home == null || !home.equals(this.pwd(remoteSite, protocol))) {
         throw new ProtocolException("Home directory not the same after cd");
+      }
     } catch (Exception e) {
       LOG.log(Level.SEVERE, "Protocol "
           + protocol.getClass().getCanonicalName()
@@ -404,10 +412,11 @@ public class ProtocolHandler {
         System.out.println("IndexOfFile: " + indexOfFile + " PageIndex: "
             + pgInfo.getPageLoc());
         if (indexOfFile < pgInfo.getPageLoc()
-            || indexOfFile == fileList.size() - 1)
+            || indexOfFile == fileList.size() - 1) {
           pgInfo.updatePageInfo(pgInfo.getPageLoc() - 1, fileList);
-        else
+        } else {
           pgInfo.updatePageInfo(pgInfo.getPageLoc(), fileList);
+        }
         return true;
       } else {
         return false;
@@ -424,8 +433,9 @@ public class ProtocolHandler {
 
   private synchronized PagingInfo getPagingInfo(RemoteSiteFile pFile) {
     PagingInfo pgInfo = this.pageInfos.get(pFile);
-    if (pgInfo == null)
+    if (pgInfo == null) {
       this.putPgInfo(pgInfo = new PagingInfo(), pFile);
+    }
     return pgInfo;
   }
 
@@ -445,16 +455,18 @@ public class ProtocolHandler {
 
   public List<RemoteSiteFile> ls(RemoteSite site, Protocol protocol) throws ProtocolException {
     List<RemoteSiteFile> fileList = this.getDynamicFileList(site, protocol);
-    if (fileList == null)
+    if (fileList == null) {
       fileList = toRemoteSiteFiles(protocol.ls(), site);
+    }
     return fileList;
   }
 
   public List<RemoteSiteFile> ls(RemoteSite site, Protocol protocol, ProtocolFileFilter filter)
       throws ProtocolException {
     List<RemoteSiteFile> fileList = this.getDynamicFileList(site, protocol);
-    if (fileList == null)
+    if (fileList == null) {
       fileList = toRemoteSiteFiles(protocol.ls(filter), site);
+    }
     return fileList;
   }
 

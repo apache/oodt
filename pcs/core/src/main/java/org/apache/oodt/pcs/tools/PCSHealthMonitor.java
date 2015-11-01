@@ -294,8 +294,9 @@ public final class PCSHealthMonitor implements CoreMetKeys,
   private List getProductHealth() {
     if (getFmUp()) {
       return this.fm.safeGetTopNProducts(TOP_N_PRODUCTS);
-    } else
+    } else {
       return new Vector();
+    }
   }
 
   private List getJobStatusHealth() {

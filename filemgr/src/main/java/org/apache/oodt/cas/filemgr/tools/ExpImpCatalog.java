@@ -154,9 +154,10 @@ public class ExpImpCatalog {
                         .log(Level.INFO,
                                 "Source types and Dest types match: beginning processing");
             }
-        } else
-            LOG.log(Level.INFO,
-                    "Skipping type validation: catalog i/f impls being used.");
+        } else {
+          LOG.log(Level.INFO,
+              "Skipping type validation: catalog i/f impls being used.");
+        }
 
         // we'll use the get product page method for each product type
         // paginate through products using source product type
@@ -176,9 +177,10 @@ public class ExpImpCatalog {
     }
 
     public void doExpImport() throws RepositoryManagerException, FileManagerException, CatalogException {
-        if (sourceClient == null)
-            throw new RuntimeException(
-                    "Cannot request exp/imp of all product types if no filemgr url specified!");
+        if (sourceClient == null) {
+          throw new RuntimeException(
+              "Cannot request exp/imp of all product types if no filemgr url specified!");
+        }
         List sourceProductTypes = sourceClient.getProductTypes();
         doExpImport(sourceProductTypes);
     }
@@ -192,17 +194,20 @@ public class ExpImpCatalog {
             page = sourceClient.getFirstPage(type);
         }
 
-        if (page == null)
-            return;
+        if (page == null) {
+          return;
+        }
 
         exportProductsToDest(page.getPageProducts(), type);
         while (!page.isLastPage()) {
             if (this.srcCatalog != null) {
                 page = srcCatalog.getNextPage(type, page);
-            } else
-                page = sourceClient.getNextPage(type, page);
-            if (page == null)
-                break;
+            } else {
+              page = sourceClient.getNextPage(type, page);
+            }
+            if (page == null) {
+              break;
+            }
             exportProductsToDest(page.getPageProducts(), type);
         }
     }
@@ -373,14 +378,16 @@ public class ExpImpCatalog {
 
         if (srcCatPropFile != null) {
             tool = new ExpImpCatalog(srcCatPropFile, destCatPropFile, unique);
-        } else
-            tool = new ExpImpCatalog(new URL(sourceUrl), new URL(destUrl),
-                    unique);
+        } else {
+          tool = new ExpImpCatalog(new URL(sourceUrl), new URL(destUrl),
+              unique);
+        }
 
         if (types != null && types.size() > 0) {
             tool.doExpImport(types);
-        } else
-            tool.doExpImport();
+        } else {
+          tool.doExpImport();
+        }
     }
 
     private boolean typesExist(List sourceList, List destList) {

@@ -247,8 +247,9 @@ public final class XmlStructFactory {
             // Also print types without elements but just with parents
             ArrayList<String> allTypes = new ArrayList<String>(productTypeMap.keySet());
             for(String type: subToSuperMap.keySet()) {
-                if(!allTypes.contains(type))
+                if(!allTypes.contains(type)) {
                     allTypes.add(type);
+                }
             }
 
             for (String typeId : allTypes) {

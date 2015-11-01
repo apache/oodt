@@ -68,32 +68,34 @@ public class QueryHeader implements Serializable, Cloneable, Documentable {
 	 * @param node The &lt;queryAttributes&gt; node.
 	 */
 	public QueryHeader(Node node) {
-		if (!"queryAttributes".equals(node.getNodeName()))
-			throw new IllegalArgumentException("QueryHeader must be constructed from <queryAttributes> node, not <"
-				+ node.getNodeName() + ">");
+		if (!"queryAttributes".equals(node.getNodeName())) {
+		  throw new IllegalArgumentException("QueryHeader must be constructed from <queryAttributes> node, not <"
+											 + node.getNodeName() + ">");
+		}
 		NodeList children = node.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node child = children.item(i);
-			if ("queryId".equals(child.getNodeName()))
-				id = XML.unwrappedText(child);
-			else if ("queryTitle".equals(child.getNodeName()))
-				title = XML.unwrappedText(child);
-			else if ("queryDesc".equals(child.getNodeName()))
-				description = XML.unwrappedText(child);
-			else if ("queryType".equals(child.getNodeName()))
-				type = XML.unwrappedText(child);
-			else if ("queryStatusId".equals(child.getNodeName()))
-				statusID = XML.unwrappedText(child);
-			else if ("querySecurityType".equals(child.getNodeName()))
-				securityType = XML.unwrappedText(child);
-			else if ("queryParentId".equals(child.getNodeName()))
-				; // ignore
-			else if ("queryChildId".equals(child.getNodeName()))
-				; // ignore
-			else if ("queryRevisionNote".equals(child.getNodeName()))
-				revisionNote = XML.unwrappedText(child);
-			else if ("queryDataDictId".equals(child.getNodeName()))
-				dataDictID = XML.unwrappedText(child);
+			if ("queryId".equals(child.getNodeName())) {
+			  id = XML.unwrappedText(child);
+			} else if ("queryTitle".equals(child.getNodeName())) {
+			  title = XML.unwrappedText(child);
+			} else if ("queryDesc".equals(child.getNodeName())) {
+			  description = XML.unwrappedText(child);
+			} else if ("queryType".equals(child.getNodeName())) {
+			  type = XML.unwrappedText(child);
+			} else if ("queryStatusId".equals(child.getNodeName())) {
+			  statusID = XML.unwrappedText(child);
+			} else if ("querySecurityType".equals(child.getNodeName())) {
+			  securityType = XML.unwrappedText(child);
+			} else if ("queryParentId".equals(child.getNodeName())) {
+			  ; // ignore
+			} else if ("queryChildId".equals(child.getNodeName())) {
+			  ; // ignore
+			} else if ("queryRevisionNote".equals(child.getNodeName())) {
+			  revisionNote = XML.unwrappedText(child);
+			} else if ("queryDataDictId".equals(child.getNodeName())) {
+			  dataDictID = XML.unwrappedText(child);
+			}
 		}
 	}
 
@@ -253,8 +255,12 @@ public class QueryHeader implements Serializable, Cloneable, Documentable {
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof QueryHeader)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof QueryHeader)) {
+		  return false;
+		}
 		QueryHeader obj = (QueryHeader) rhs;
 		return getID().equals(obj.getID());
 	}

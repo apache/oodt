@@ -100,8 +100,9 @@ public final class MappingReader implements MappingReaderMetKeys {
       for (int i = 0; i < tableNodes.getLength(); i++) {
         Element tableElem = (Element) tableNodes.item(i);
         DatabaseTable tbl = readTable(tableElem);
-        if (tbl.getDefaultTableJoin() == null || tbl.getDefaultTableJoin().isEmpty())
+        if (tbl.getDefaultTableJoin() == null || tbl.getDefaultTableJoin().isEmpty()) {
           tbl.setDefaultTableJoin(map.getDefaultTable());
+        }
         map.addTable(tbl.getName(), tbl);
       }
     }
@@ -124,8 +125,9 @@ public final class MappingReader implements MappingReaderMetKeys {
     if (fldNodes != null && fldNodes.getLength() > 0) {
       for (int i = 0; i < fldNodes.getLength(); i++) {
         MappingField fld = readField((Element) fldNodes.item(i));
-        if (fld.getTableName() == null || fld.getTableName().isEmpty())
+        if (fld.getTableName() == null || fld.getTableName().isEmpty()) {
           fld.setTableName(map.getDefaultTable());
+        }
         map.addField(fld.getName(), fld);
       }
     }

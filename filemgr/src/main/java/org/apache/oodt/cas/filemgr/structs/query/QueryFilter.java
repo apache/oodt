@@ -74,8 +74,9 @@ public class QueryFilter {
     }
 
     public void setFilterAlgor(FilterAlgor filterAlgor) {
-        if (filterAlgor != null)
+        if (filterAlgor != null) {
             this.filterAlgor = filterAlgor;
+        }
     }
 
     public VersionConverter getConverter() {
@@ -83,8 +84,9 @@ public class QueryFilter {
     }
 
     public void setConverter(VersionConverter converter) {
-        if (converter != null)
+        if (converter != null) {
             this.converter = converter;
+        }
     }
 
 }

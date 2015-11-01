@@ -69,41 +69,45 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 		List<String> values = new ArrayList<String>();
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node node = children.item(i);
-			if ("elemId".equals(node.getNodeName()))
-				id = XML.unwrappedText(node);
-			else if ("elemName".equals(node.getNodeName()))
-				name = XML.unwrappedText(node);
-			else if ("elemDesc".equals(node.getNodeName()))
-				desc = XML.unwrappedText(node);
-			else if ("elemType".equals(node.getNodeName()))
-				type = XML.unwrappedText(node);
-			else if ("elemUnit".equals(node.getNodeName()))
-				unit = XML.unwrappedText(node);
-			else if ("elemEnumFlag".equals(node.getNodeName()))
-				ranged = "F".equals(XML.unwrappedText(node));
-			else if ("elemSynonym".equals(node.getNodeName()))
-				synonyms.add(XML.unwrappedText(node));
-			else if ("elemObligation".equals(node.getNodeName())) {
+			if ("elemId".equals(node.getNodeName())) {
+			  id = XML.unwrappedText(node);
+			} else if ("elemName".equals(node.getNodeName())) {
+			  name = XML.unwrappedText(node);
+			} else if ("elemDesc".equals(node.getNodeName())) {
+			  desc = XML.unwrappedText(node);
+			} else if ("elemType".equals(node.getNodeName())) {
+			  type = XML.unwrappedText(node);
+			} else if ("elemUnit".equals(node.getNodeName())) {
+			  unit = XML.unwrappedText(node);
+			} else if ("elemEnumFlag".equals(node.getNodeName())) {
+			  ranged = "F".equals(XML.unwrappedText(node));
+			} else if ("elemSynonym".equals(node.getNodeName())) {
+			  synonyms.add(XML.unwrappedText(node));
+			} else if ("elemObligation".equals(node.getNodeName())) {
 				String value = XML.unwrappedText(node);
 				obligation = "Required".equals(value) || "T".equals(value);
-			} else if ("elemMaxOccurrence".equals(node.getNodeName()))
-				try {
-					maxOccurrence = Integer.parseInt(XML.unwrappedText(node));
-				} catch (NumberFormatException ignore) {}
-			else if ("elemComment".equals(node.getNodeName()))
-				comments = XML.unwrappedText(node);
-			else if ("elemValue".equals(node.getNodeName())) {
+			} else if ("elemMaxOccurrence".equals(node.getNodeName())) {
+			  try {
+				maxOccurrence = Integer.parseInt(XML.unwrappedText(node));
+			  } catch (NumberFormatException ignore) {
+			  }
+			} else if ("elemComment".equals(node.getNodeName())) {
+			  comments = XML.unwrappedText(node);
+			} else if ("elemValue".equals(node.getNodeName())) {
 				values.add(text(node));
-			} else if ("elemMinValue".equals(node.getNodeName()))
-				try {
-					min = XML.unwrappedText(node);
-					gotMin = true;
-				} catch (NumberFormatException ignore) {}
-			else if ("elemMaxValue".equals(node.getNodeName()))
-				try {
-					max = XML.unwrappedText(node);
-					gotMax = true;
-				} catch (NumberFormatException ignore) {}
+			} else if ("elemMinValue".equals(node.getNodeName())) {
+			  try {
+				min = XML.unwrappedText(node);
+				gotMin = true;
+			  } catch (NumberFormatException ignore) {
+			  }
+			} else if ("elemMaxValue".equals(node.getNodeName())) {
+			  try {
+				max = XML.unwrappedText(node);
+				gotMax = true;
+			  } catch (NumberFormatException ignore) {
+			  }
+			}
 		}
 		if (ranged) {
 			if (gotMin && gotMax) {
@@ -112,9 +116,10 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 			}
 			return factory.createUnspecifiedProfileElement(profile, name, id, desc, type, unit, synonyms, obligation,
 				maxOccurrence, comments);
-		} else
-			return factory.createEnumeratedProfileElement(profile, name, id, desc, type, unit, synonyms, obligation,
-				maxOccurrence, comments, values);
+		} else {
+		  return factory.createEnumeratedProfileElement(profile, name, id, desc, type, unit, synonyms, obligation,
+			  maxOccurrence, comments, values);
+		}
 	}
 
 	/**
@@ -158,8 +163,12 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof ProfileElement)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof ProfileElement)) {
+		  return false;
+		}
 		ProfileElement obj = (ProfileElement) rhs;
 		return profile.equals(obj.profile) && name.equals(obj.name);
 	}
@@ -178,10 +187,12 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 
 	public int compareTo(Object rhs) {
 		ProfileElement obj = (ProfileElement) rhs;
-		if (profile.compareTo(obj.profile) < 0)
-			return -1;
-		if (profile.compareTo(obj.profile) == 0)
-			return name.compareTo(obj.name);
+		if (profile.compareTo(obj.profile) < 0) {
+		  return -1;
+		}
+		if (profile.compareTo(obj.profile) == 0) {
+		  return name.compareTo(obj.name);
+		}
 		return 1;
 	}
 
@@ -415,12 +426,16 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 		XML.addNonNull(profElement, "elemType", type);
 		XML.addNonNull(profElement, "elemUnit", unit);
 		XML.add(profElement, "elemEnumFlag", isEnumerated()? "T" : "F");
-		if (withValues) addValues(profElement);
+		if (withValues) {
+		  addValues(profElement);
+		}
 		XML.add(profElement, "elemSynonym", synonyms);
-		if (isObligatory())
-			XML.add(profElement, "elemObligation","Required");
-		if (getMaxOccurrence() >= 0)
-			XML.add(profElement, "elemMaxOccurrence", String.valueOf(getMaxOccurrence()));
+		if (isObligatory()) {
+		  XML.add(profElement, "elemObligation", "Required");
+		}
+		if (getMaxOccurrence() >= 0) {
+		  XML.add(profElement, "elemMaxOccurrence", String.valueOf(getMaxOccurrence()));
+		}
 		XML.add(profElement, "elemComment", comments);
 		return profElement;
 	}
@@ -563,8 +578,9 @@ public abstract class ProfileElement implements Serializable, Cloneable, Compara
 			return;
 		}
 		NodeList children = node.getChildNodes();
-		for (int i = 0; i < children.getLength(); ++i)
-			text0(b, children.item(i));
+		for (int i = 0; i < children.getLength(); ++i) {
+		  text0(b, children.item(i));
+		}
 	}
 }
 

@@ -86,8 +86,9 @@ public class AssignmentMonitor implements Monitor {
             throws MonitorException {
         int load = loadMap.get(node.getNodeId());
         int newVal = load - loadValue;
-        if (newVal < 0)
+        if (newVal < 0) {
             newVal = 0; // should not happen but just in case
+        }
         loadMap.remove(node.getNodeId());
         loadMap.put(node.getNodeId(), newVal);
         return true;
@@ -141,8 +142,9 @@ public class AssignmentMonitor implements Monitor {
 
     public void addNode(ResourceNode node) throws MonitorException {
         nodesMap.put(node.getNodeId(), node);
-        if (!loadMap.containsKey(node.getNodeId()))
+        if (!loadMap.containsKey(node.getNodeId())) {
             loadMap.put(node.getNodeId(), 0);
+        }
     }
 
     public void removeNodeById(String nodeId) throws MonitorException {

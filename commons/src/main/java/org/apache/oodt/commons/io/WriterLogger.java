@@ -68,8 +68,9 @@ public class WriterLogger implements LogListener {
 	 * logged. If false, don't call flush.
 	 */
 	public WriterLogger(Writer writer, boolean autoFlush) {
-		if (writer == null)
-			throw new IllegalArgumentException("Can't write to a null writer");
+		if (writer == null) {
+		  throw new IllegalArgumentException("Can't write to a null writer");
+		}
 		this.writer = writer;
 		this.autoFlush = autoFlush;
 		this.lineSep = System.getProperty("line.separator", "\n");
@@ -81,7 +82,9 @@ public class WriterLogger implements LogListener {
 	 * are ignored and not written.
 	 */
 	public final void close() {
-		if (writer == null) return;
+		if (writer == null) {
+		  return;
+		}
 		try {
 			writer.close();
 		} catch (IOException ignore) {}
@@ -96,11 +99,15 @@ public class WriterLogger implements LogListener {
 	 * @param event The event describing the message that was logged.
 	 */
 	public final void messageLogged(LogEvent event) {
-		if (writer == null) return;
+		if (writer == null) {
+		  return;
+		}
 		try {
 			writer.write(formatMessage(event.getTimestamp(), (String) event.getSource(), event.getCategory(),
 				event.getMessage()) + lineSep);
-			if (autoFlush) writer.flush();
+			if (autoFlush) {
+			  writer.flush();
+			}
 		} catch (IOException ignore) {}
 	}
 

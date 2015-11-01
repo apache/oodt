@@ -131,10 +131,11 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
    */
   @Override
   public void shutdown() {
-    for (Thread worker : this.workerMap.values())
+    for (Thread worker : this.workerMap.values()) {
       if (worker != null) {
         worker.interrupt();
       }
+    }
 
   }
 

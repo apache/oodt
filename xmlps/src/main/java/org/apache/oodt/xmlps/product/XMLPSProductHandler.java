@@ -150,8 +150,9 @@ public class XMLPSProductHandler implements QueryHandler {
 
     protected List<QueryElement> getElemNamesFromQueryElemSet(
             List<QueryElement> origSet) {
-        if (origSet == null || (origSet.size() == 0))
+        if (origSet == null || (origSet.size() == 0)) {
             return Collections.emptyList();
+        }
 
         List<QueryElement> newSet = new Vector<QueryElement>();
 
@@ -170,8 +171,9 @@ public class XMLPSProductHandler implements QueryHandler {
 
     protected List<QueryElement> getConstElemNamesFromQueryElemSet(
             List<QueryElement> origSet) {
-        if (origSet == null || (origSet.size() == 0))
+        if (origSet == null || (origSet.size() == 0)) {
             return Collections.emptyList();
+        }
 
         List<QueryElement> newSet = new Vector<QueryElement>();
 
@@ -258,8 +260,9 @@ public class XMLPSProductHandler implements QueryHandler {
     }
 
     private String toSQLSelectColumns(List<QueryElement> elems) {
-        if (elems == null || (elems.size() == 0))
+        if (elems == null || (elems.size() == 0)) {
             return null;
+        }
 
         StringBuilder buf = new StringBuilder();
         for (QueryElement qe : elems) {
@@ -316,8 +319,9 @@ public class XMLPSProductHandler implements QueryHandler {
                         && fld.getFuncs().size() > 0) {
                     // the next query element should be
                     // XMLQueryHelper.ROLE_LITERAL
-                    if (!i.hasNext())
+                    if (!i.hasNext()) {
                         break;
+                    }
                     QueryElement litElem = i.next();
                     if (!litElem.getRole().equals(XMLQueryHelper.ROLE_LITERAL)) {
                         throw new XmlpsException("next query element not "

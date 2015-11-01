@@ -65,9 +65,10 @@ public abstract class AbstractEngineRunnerBase extends EngineRunner {
            taskProcessor.getWorkflowInstance().getParentChildWorkflow().getGraph().getTask() != null) {
       return taskProcessor.getWorkflowInstance().getParentChildWorkflow()
             .getGraph().getTask();
-    } else
+    } else {
       return taskProcessor.getWorkflowInstance().getParentChildWorkflow()
-          .getTasks().get(0);
+                          .getTasks().get(0);
+    }
   }
 
   protected WorkflowLifecycle getLifecycle(TaskProcessor taskProcessor) {
@@ -75,7 +76,9 @@ public abstract class AbstractEngineRunnerBase extends EngineRunner {
   }
 
   protected synchronized void persist(WorkflowInstance instance) {
-    if(instRep == null) return;
+    if(instRep == null) {
+      return;
+    }
     try {
       if (instance.getId() == null || (instance.getId().equals(""))) {
         // we have to persist it by adding it

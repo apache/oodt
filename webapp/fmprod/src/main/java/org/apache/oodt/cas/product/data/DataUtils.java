@@ -178,28 +178,29 @@ public final class DataUtils implements DataDeliveryKeys {
    */
   public static String guessTypeFromName(String name) {
     name = name.toLowerCase();
-    if (name.endsWith(".jpg") || name.endsWith(".jpeg"))
+    if (name.endsWith(".jpg") || name.endsWith(".jpeg")) {
       return "image/jpeg";
-    else if (name.endsWith(".png"))
+    } else if (name.endsWith(".png")) {
       return "image/png";
-    else if (name.endsWith(".gif"))
+    } else if (name.endsWith(".gif")) {
       return "image/gif";
-    else if (name.endsWith(".doc"))
+    } else if (name.endsWith(".doc")) {
       return "application/msword";
-    else if (name.endsWith(".pdf"))
+    } else if (name.endsWith(".pdf")) {
       return "application/pdf";
-    else if (name.endsWith(".rtf"))
+    } else if (name.endsWith(".rtf")) {
       return "application/rtf";
-    else if (name.endsWith(".xls"))
+    } else if (name.endsWith(".xls")) {
       return "application/vnd.ms-excel";
-    else if (name.endsWith(".ppt"))
+    } else if (name.endsWith(".ppt")) {
       return "application/vnd.ms-powerpoint";
-    else if (name.endsWith(".html") || name.endsWith(".htm"))
+    } else if (name.endsWith(".html") || name.endsWith(".htm")) {
       return "text/html";
-    else if (name.endsWith(".xml"))
+    } else if (name.endsWith(".xml")) {
       return "text/xml";
-    else if (name.endsWith(".txt"))
+    } else if (name.endsWith(".txt")) {
       return "text/plain";
+    }
     return "application/octet-stream";
   }
 

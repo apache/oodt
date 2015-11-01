@@ -138,10 +138,11 @@ public class ProtocolInfo implements ConfigParserMetKeys {
     }
 
     public void setPageSize(int pgSize) {
-        if (pgSize != -1)
-            this.pgSize = pgSize;
-        else
-            this.pgSize = Integer.MAX_VALUE;
+        if (pgSize != -1) {
+          this.pgSize = pgSize;
+        } else {
+          this.pgSize = Integer.MAX_VALUE;
+        }
     }
 
     public LinkedList<Class<ProtocolFactory>> getProtocolClassesForProtocolType(

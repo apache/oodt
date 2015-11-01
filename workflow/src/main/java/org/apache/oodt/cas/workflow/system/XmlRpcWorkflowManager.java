@@ -98,8 +98,9 @@ public class XmlRpcWorkflowManager {
          webServer.shutdown();
          webServer = null;
          return true;
-      } else
-         return false;
+      } else {
+        return false;
+      }
    }
 
    public boolean refreshRepository() {
@@ -109,17 +110,19 @@ public class XmlRpcWorkflowManager {
 
   public String executeDynamicWorkflow(Vector<String> taskIds, Hashtable metadata)
       throws RepositoryException, EngineException {
-    if (taskIds == null || (taskIds.size() == 0))
+    if (taskIds == null || (taskIds.size() == 0)) {
       throw new RepositoryException(
           "Must specify task identifiers to build dynamic workflows!");
+    }
 
     Workflow dynamicWorkflow = new Workflow();
 
     for (String taskId : taskIds) {
       WorkflowTask task = this.repo.getWorkflowTaskById(taskId);
-      if (task == null)
+      if (task == null) {
         throw new RepositoryException("Dynamic workflow task: [" + taskId
-            + "] is not defined!");
+                                      + "] is not defined!");
+      }
       dynamicWorkflow.getTasks().add(task);
     }
 
@@ -165,10 +168,11 @@ public class XmlRpcWorkflowManager {
         if (page != null) {
             populateWorkflows(page.getPageWorkflows());
             return XmlRpcStructFactory.getXmlRpcWorkflowInstancePage(page);
-        } else
-            return XmlRpcStructFactory
-                    .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
-                            .blankPage());
+        } else {
+          return XmlRpcStructFactory
+              .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
+                  .blankPage());
+        }
     }
 
     public Hashtable getNextPage(Hashtable currentPage) {
@@ -180,10 +184,11 @@ public class XmlRpcWorkflowManager {
         if (page != null) {
             populateWorkflows(page.getPageWorkflows());
             return XmlRpcStructFactory.getXmlRpcWorkflowInstancePage(page);
-        } else
-            return XmlRpcStructFactory
-                    .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
-                            .blankPage());
+        } else {
+          return XmlRpcStructFactory
+              .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
+                  .blankPage());
+        }
     }
 
     public Hashtable getPrevPage(Hashtable currentPage) {
@@ -195,10 +200,11 @@ public class XmlRpcWorkflowManager {
         if (page != null) {
             populateWorkflows(page.getPageWorkflows());
             return XmlRpcStructFactory.getXmlRpcWorkflowInstancePage(page);
-        } else
-            return XmlRpcStructFactory
-                    .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
-                            .blankPage());
+        } else {
+          return XmlRpcStructFactory
+              .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
+                  .blankPage());
+        }
     }
 
     public Hashtable getLastPage() {
@@ -207,10 +213,11 @@ public class XmlRpcWorkflowManager {
         if (page != null) {
             populateWorkflows(page.getPageWorkflows());
             return XmlRpcStructFactory.getXmlRpcWorkflowInstancePage(page);
-        } else
-            return XmlRpcStructFactory
-                    .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
-                            .blankPage());
+        } else {
+          return XmlRpcStructFactory
+              .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
+                  .blankPage());
+        }
     }
 
     public Hashtable paginateWorkflowInstances(int pageNum, String status)
@@ -220,10 +227,11 @@ public class XmlRpcWorkflowManager {
         if (page != null) {
             populateWorkflows(page.getPageWorkflows());
             return XmlRpcStructFactory.getXmlRpcWorkflowInstancePage(page);
-        } else
-            return XmlRpcStructFactory
-                    .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
-                            .blankPage());
+        } else {
+          return XmlRpcStructFactory
+              .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
+                  .blankPage());
+        }
 
     }
 
@@ -234,10 +242,11 @@ public class XmlRpcWorkflowManager {
         if (page != null) {
             populateWorkflows(page.getPageWorkflows());
             return XmlRpcStructFactory.getXmlRpcWorkflowInstancePage(page);
-        } else
-            return XmlRpcStructFactory
-                    .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
-                            .blankPage());
+        } else {
+          return XmlRpcStructFactory
+              .getXmlRpcWorkflowInstancePage(WorkflowInstancePage
+                  .blankPage());
+        }
     }
 
     public Hashtable getWorkflowInstanceMetadata(String wInstId) {
@@ -307,8 +316,9 @@ public class XmlRpcWorkflowManager {
             }
           }
             return true;
-        } else
-            return false;
+        } else {
+          return false;
+        }
     }
 
     public Hashtable getWorkflowInstanceById(String wInstId) {
@@ -463,8 +473,9 @@ public class XmlRpcWorkflowManager {
                         "Exception getting workflow instances from workflow engine: Message: "
                                 + e.getMessage());
             }
-        } else
-            return null;
+        } else {
+          return null;
+        }
     }
 
     public Vector getWorkflows() throws RepositoryException {
@@ -491,8 +502,9 @@ public class XmlRpcWorkflowManager {
                                 + e.getMessage());
             }
 
-        } else
-            return null;
+        } else {
+          return null;
+        }
 
     }
 
@@ -605,11 +617,12 @@ public class XmlRpcWorkflowManager {
         loadProperties();
         new XmlRpcWorkflowManager(portNum);
 
-        for (;;)
-            try {
-                Thread.currentThread().join();
-            } catch (InterruptedException ignore) {
-            }
+        for (;;) {
+          try {
+            Thread.currentThread().join();
+          } catch (InterruptedException ignore) {
+          }
+        }
     }
 
     public static void loadProperties() throws IOException {

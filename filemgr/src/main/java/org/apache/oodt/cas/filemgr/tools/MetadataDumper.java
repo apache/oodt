@@ -161,8 +161,9 @@ public final class MetadataDumper {
         MetadataDumper dumper = new MetadataDumper(fileManagerUrlStr);
         if (outDirPath != null) {
             dumper.dumpMetadata(productId, outDirPath);
-        } else
+        } else {
             dumper.dumpMetadata(productId);
+        }
     }
 
 }

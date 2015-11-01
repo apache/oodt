@@ -52,8 +52,9 @@ public abstract class AbstractPCSQuery implements PCSQuery {
    */
   protected String getElemId(String elemName) {
     Element elem = fm.safeGetElementByName(elemName);
-    if (elem == null)
+    if (elem == null) {
       return null;
+    }
 
     return elem.getElementId();
   }

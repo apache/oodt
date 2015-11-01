@@ -91,8 +91,9 @@ public class MetExtractorSpec {
             ClassNotFoundException, MetExtractionException {
         this.metExtractor = (MetExtractor) Class.forName(extractorClassName)
                 .newInstance();
-        if (this.configFile != null)
+        if (this.configFile != null) {
             this.metExtractor.setConfigFile(this.configFile);
+        }
     }
 
     /**
@@ -103,8 +104,9 @@ public class MetExtractorSpec {
     public void setExtractorConfigFile(String extractorConfigFile)
             throws MetExtractionException {
         this.configFile = extractorConfigFile;
-        if (this.configFile != null && this.metExtractor != null)
+        if (this.configFile != null && this.metExtractor != null) {
             this.metExtractor.setConfigFile(this.configFile);
+        }
     }
 
     /**

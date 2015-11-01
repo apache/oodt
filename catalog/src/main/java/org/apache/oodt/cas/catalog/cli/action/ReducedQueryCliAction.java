@@ -40,9 +40,9 @@ import org.apache.oodt.cas.cli.exception.CmdLineActionException;
  */
 public class ReducedQueryCliAction extends CatalogServiceCliAction {
 
-   protected String query;
-   protected Set<String> catalogIds;
-   protected List<String> termNames;
+   private String query;
+   private Set<String> catalogIds;
+   private List<String> termNames;
 
    @Override
    public void execute(ActionMessagePrinter printer)
@@ -85,6 +85,26 @@ public class ReducedQueryCliAction extends CatalogServiceCliAction {
    }
 
    public void setReducedTerms(List<String> termNames) {
+      this.termNames = termNames;
+   }
+
+   public String getQuery() {
+      return query;
+   }
+
+   public Set<String> getCatalogIds() {
+      return catalogIds;
+   }
+
+   public void setCatalogIds(Set<String> catalogIds) {
+      this.catalogIds = catalogIds;
+   }
+
+   public List<String> getTermNames() {
+      return termNames;
+   }
+
+   public void setTermNames(List<String> termNames) {
       this.termNames = termNames;
    }
 }

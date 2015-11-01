@@ -188,8 +188,9 @@ public final class GenericWorkflowObjectFactory {
 								+ className + ": cannot instantiate!");
 				return null;
 			}
-		} else
-			return null;
+		} else {
+		  return null;
+		}
 	}
 
   /**
@@ -249,8 +250,9 @@ public final class GenericWorkflowObjectFactory {
                 + className + ": cannot instantiate!");
         return null;
       }
-    } else
-      return null;
+    } else {
+	  return null;
+	}
   }
 
 	/**
@@ -293,8 +295,9 @@ public final class GenericWorkflowObjectFactory {
 								+ className + ": cannot instantiate!");
 				return null;
 			}
-		} else
-			return null;
+		} else {
+		  return null;
+		}
 	}
 
 	/**
@@ -336,8 +339,9 @@ public final class GenericWorkflowObjectFactory {
 								+ className + ": cannot instantiate!");
 				return null;
 			}
-		} else
-			return null;
+		} else {
+		  return null;
+		}
 	}
 	
 	public static PrioritySorter getPrioritySorterFromClassName(String className){
@@ -365,7 +369,9 @@ public final class GenericWorkflowObjectFactory {
         return null;
       }
 	  }
-	  else return null;
+	  else {
+		return null;
+	  }
 	}
 
 	public static List copyWorkflows(List workflows){
@@ -379,7 +385,9 @@ public final class GenericWorkflowObjectFactory {
 
 			return newWorkflows;
 		}
-		else return null;
+		else {
+		  return null;
+		}
 	}
 
 	/**
@@ -427,7 +435,9 @@ public final class GenericWorkflowObjectFactory {
 
 			return newTaskList;
 		}
-		else return null;
+		else {
+		  return null;
+		}
 	}
 
 	public static WorkflowTask copyTask(WorkflowTask t){
@@ -461,7 +471,9 @@ public final class GenericWorkflowObjectFactory {
 
 			return newConditionList;
 		}
-		else return null;
+		else {
+		  return null;
+		}
 	}
 
 	public static WorkflowCondition copyCondition(WorkflowCondition c){

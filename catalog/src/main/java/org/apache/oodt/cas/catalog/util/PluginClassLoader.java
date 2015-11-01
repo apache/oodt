@@ -53,8 +53,9 @@ public class PluginClassLoader extends URLClassLoader {
 	}
 	
 	protected void addURLs(List<URL> urls) {
-		for (URL url : urls)
-			this.addURL(url);
+		for (URL url : urls) {
+		  this.addURL(url);
+		}
 	}
 	
 	public static URL[] getPluginURLs() {
@@ -85,8 +86,9 @@ public class PluginClassLoader extends URLClassLoader {
 	public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 		try {
 			Class<?> clazz = this.findLoadedClass(name);
-			if (clazz == null)
-				clazz = this.findClass(name);
+			if (clazz == null) {
+			  clazz = this.findClass(name);
+			}
 			return clazz;
 		}catch (Exception ignored) {}
 		return super.loadClass(name, resolve);

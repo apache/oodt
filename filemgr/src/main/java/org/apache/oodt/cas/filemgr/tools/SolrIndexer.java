@@ -561,8 +561,9 @@ public class SolrIndexer {
 	private String formatDate(SimpleDateFormat format, String value)
 	    throws java.text.ParseException {
 		// Ignore formating if its an ignore value
-		if (config.getIgnoreValues().contains(value.trim()))
-			return value;
+		if (config.getIgnoreValues().contains(value.trim())) {
+		  return value;
+		}
 		return solrFormat.format(format.parse(value));
 	}
 

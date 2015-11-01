@@ -291,8 +291,9 @@ public class WorkflowInstancesViewer extends Panel {
         }
 
         return null;
-    } else
-        return null;
+    } else {
+      return null;
+    }
 }
 
 }

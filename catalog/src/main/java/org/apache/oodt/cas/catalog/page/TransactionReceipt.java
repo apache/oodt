@@ -48,10 +48,11 @@ public class TransactionReceipt {
 		this.catalogReceipts = new Vector<CatalogReceipt>(catalogReceipts);
 		for (CatalogReceipt catalogReceipt : catalogReceipts) {
 			this.catalogIds.add(catalogReceipt.getCatalogId());
-			if (this.transactionDate == null)
-				this.transactionDate = catalogReceipt.getTransactionDate();
-			else if (this.transactionDate.before(catalogReceipt.getTransactionDate()))
-				this.transactionDate = catalogReceipt.getTransactionDate();
+			if (this.transactionDate == null) {
+			  this.transactionDate = catalogReceipt.getTransactionDate();
+			} else if (this.transactionDate.before(catalogReceipt.getTransactionDate())) {
+			  this.transactionDate = catalogReceipt.getTransactionDate();
+			}
 		}
 	}
 

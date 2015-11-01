@@ -54,10 +54,11 @@ class CompressedStringCodec implements Codec {
 
 	public Object decode(Node node) {
 		String encodedValue;
-		if (node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE)
-			encodedValue = node.getFirstChild().getNodeValue();
-		else
-			encodedValue = XML.text(node);
+		if (node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE) {
+		  encodedValue = node.getFirstChild().getNodeValue();
+		} else {
+		  encodedValue = XML.text(node);
+		}
 		String rc = null;
 		try {
 			ByteArrayInputStream byteArray = new ByteArrayInputStream(encodedValue.getBytes());
@@ -66,8 +67,9 @@ class CompressedStringCodec implements Codec {
 			StringBuilder b = new StringBuilder();
 			int numRead;
 			byte[] buf = new byte[1024];
-			while ((numRead = gzip.read(buf)) != -1)
-				b.append(new String(buf, 0, numRead));
+			while ((numRead = gzip.read(buf)) != -1) {
+			  b.append(new String(buf, 0, numRead));
+			}
 			gzip.close();
 			rc = b.toString();
 		} catch (IOException ignored) {}

@@ -175,8 +175,9 @@ public class RDFConfig {
   public String getKeyNs(String key) {
     if (this.keyNsMap != null && this.keyNsMap.containsKey(key)) {
       return this.keyNsMap.get(key);
-    } else
+    } else {
       return this.getDefaultKeyNs();
+    }
   }
 
   /**
@@ -192,8 +193,9 @@ public class RDFConfig {
   public String getTypeNs(String type) {
     if (this.typesNsMap != null && this.typesNsMap.containsKey(type)) {
       return this.typesNsMap.get(type);
-    } else
+    } else {
       return this.getDefaultTypeNs();
+    }
   }
 
 }

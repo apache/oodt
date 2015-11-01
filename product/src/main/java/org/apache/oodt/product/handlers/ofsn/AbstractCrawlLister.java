@@ -80,9 +80,10 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
 
   protected File[] crawlFiles(File dirRoot, boolean recur,
       boolean crawlForDirs) {
-    if (dirRoot == null || ((!dirRoot.exists())))
+    if (dirRoot == null || ((!dirRoot.exists()))) {
       throw new IllegalArgumentException("dir root: [" + dirRoot
-          + "] is null or non existant!");
+                                         + "] is null or non existant!");
+    }
 
     List<File> fileList = new Vector<File>();
 
@@ -104,10 +105,11 @@ public abstract class AbstractCrawlLister implements OFSNListHandler {
 
       if (recur) {
         File[] subdirs = dir.listFiles(DIR_FILTER);
-        if (subdirs != null)
+        if (subdirs != null) {
           for (File subdir : subdirs) {
             stack.push(subdir);
           }
+        }
       }
     }
 

@@ -66,8 +66,9 @@ public class ExternMetExtractor extends CmdLineMetExtractor implements
         // determine working directory
         String workingDirPath = ((ExternalMetExtractorConfig) this.config)
                 .getWorkingDirPath();
-        if (workingDirPath == null || workingDirPath.equals(""))
-            workingDirPath = file.getParentFile().getAbsolutePath();
+        if (workingDirPath == null || workingDirPath.equals("")) {
+          workingDirPath = file.getParentFile().getAbsolutePath();
+        }
         File workingDir = new File(workingDirPath);
 
         // determine met file path
@@ -81,16 +82,18 @@ public class ExternMetExtractor extends CmdLineMetExtractor implements
         commandLineList.add(((ExternalMetExtractorConfig) this.config)
                 .getExtractorBinPath());
         if (((ExternalMetExtractorConfig) this.config).getArgList() != null
-                && ((ExternalMetExtractorConfig) this.config).getArgList().length > 0)
-            commandLineList.addAll(Arrays
-                    .asList(((ExternalMetExtractorConfig) this.config)
-                            .getArgList()));
+                && ((ExternalMetExtractorConfig) this.config).getArgList().length > 0) {
+          commandLineList.addAll(Arrays
+              .asList(((ExternalMetExtractorConfig) this.config)
+                  .getArgList()));
+        }
         String[] commandLineArgs = new String[commandLineList.size()];
-        for (int i = 0; i < commandLineList.size(); i++)
-            commandLineArgs[i] = StringUtils.replace(StringUtils.replace(
-                    (String) commandLineList.get(i), MET_FILE_PLACE_HOLDER,
-                    metFilePath), DATA_FILE_PLACE_HOLDER, file
-                    .getAbsolutePath());
+        for (int i = 0; i < commandLineList.size(); i++) {
+          commandLineArgs[i] = StringUtils.replace(StringUtils.replace(
+              (String) commandLineList.get(i), MET_FILE_PLACE_HOLDER,
+              metFilePath), DATA_FILE_PLACE_HOLDER, file
+              .getAbsolutePath());
+        }
 
         // generate metadata file
         LOG.log(Level.INFO, "Generating met file for product file: ["

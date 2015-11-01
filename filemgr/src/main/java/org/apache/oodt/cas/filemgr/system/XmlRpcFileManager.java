@@ -173,8 +173,9 @@ public class XmlRpcFileManager {
                 .getCurrentFileTransfer();
         if (status == null) {
             return new Hashtable<String, Object>();
-        } else
-            return XmlRpcStructFactory.getXmlRpcFileTransferStatus(status);
+        } else {
+          return XmlRpcStructFactory.getXmlRpcFileTransferStatus(status);
+        }
     }
 
     public Vector<Hashtable<String, Object>> getCurrentFileTransfers() {
@@ -183,8 +184,9 @@ public class XmlRpcFileManager {
         if (currentTransfers != null && currentTransfers.size() > 0) {
             return XmlRpcStructFactory
                     .getXmlRpcFileTransferStatuses(currentTransfers);
-        } else
-            return new Vector<Hashtable<String, Object>>();
+        } else {
+          return new Vector<Hashtable<String, Object>>();
+        }
     }
 
     public double getProductPctTransferred(Hashtable<String, Object> productHash) {
@@ -589,9 +591,10 @@ public class XmlRpcFileManager {
             } else {
                 productTypes = new Vector<ProductType>();
                 for (String productTypeName : complexQuery
-                        .getReducedProductTypeNames())
-                    productTypes.add(this.repositoryManager
-                            .getProductTypeByName(productTypeName));
+                        .getReducedProductTypeNames()) {
+                  productTypes.add(this.repositoryManager
+                      .getProductTypeByName(productTypeName));
+                }
             }
 
             // get Metadata
@@ -623,9 +626,10 @@ public class XmlRpcFileManager {
             }
 
             // sort query results
-            if (complexQuery.getSortByMetKey() != null)
-                queryResults = sortQueryResultList(queryResults, complexQuery
-                        .getSortByMetKey());
+            if (complexQuery.getSortByMetKey() != null) {
+              queryResults = sortQueryResultList(queryResults, complexQuery
+                  .getSortByMetKey());
+            }
 
             return XmlRpcStructFactory.getXmlRpcQueryResults(queryResults);
         } catch (Exception e) {
@@ -923,9 +927,10 @@ public class XmlRpcFileManager {
             } catch (CatalogException e) {
                 throw new DataTransferException(e.getMessage(),e);
             }
-        } else
-            throw new UnsupportedOperationException(
-                    "Moving of heirarhical and stream products not supported yet");
+        } else {
+          throw new UnsupportedOperationException(
+              "Moving of heirarhical and stream products not supported yet");
+        }
     }
 
     public boolean removeFile(String filePath) throws DataTransferException, IOException {
@@ -1013,11 +1018,12 @@ public class XmlRpcFileManager {
         @SuppressWarnings("unused")
         XmlRpcFileManager manager = new XmlRpcFileManager(portNum);
 
-        for (;;)
-            try {
-                Thread.currentThread().join();
-            } catch (InterruptedException ignore) {
-            }
+        for (;;) {
+          try {
+            Thread.currentThread().join();
+          } catch (InterruptedException ignore) {
+          }
+        }
     }
 
     public boolean shutdown() {
@@ -1025,8 +1031,9 @@ public class XmlRpcFileManager {
             this.webServer.shutdown();
             this.webServer = null;
             return true;
-        } else
-            return false;
+        } else {
+          return false;
+        }
     }
 
     private synchronized String catalogProduct(Product p)
@@ -1181,7 +1188,9 @@ public class XmlRpcFileManager {
             }else {
                 m = this.getMetadata(product);
             }
-            if(this.expandProductMet) m = this.buildProductMetadata(product, m);            
+            if(this.expandProductMet) {
+              m = this.buildProductMetadata(product, m);
+            }
             return this.getOrigValues(m, product.getProductType());
         } catch (Exception e) {
             e.printStackTrace();
@@ -1196,7 +1205,9 @@ public class XmlRpcFileManager {
     private Metadata getMetadata(Product product) throws CatalogException {
         try {
             Metadata m = catalog.getMetadata(product);
-            if(this.expandProductMet) m = this.buildProductMetadata(product, m);
+            if(this.expandProductMet) {
+              m = this.buildProductMetadata(product, m);
+            }
             return this.getOrigValues(m, product.getProductType());
         } catch (Exception e) {
             e.printStackTrace();
@@ -1268,9 +1279,10 @@ public class XmlRpcFileManager {
         }
         events = queryFilter.getFilterAlgor().filterEvents(events);
         List<QueryResult> filteredQueryResults = new LinkedList<QueryResult>();
-        for (TimeEvent event : events)
-            filteredQueryResults.add(((ObjectTimeEvent<QueryResult>) event)
-                    .getTimeObject());
+        for (TimeEvent event : events) {
+          filteredQueryResults.add(((ObjectTimeEvent<QueryResult>) event)
+              .getTimeObject());
+        }
 
         return filteredQueryResults;
     }

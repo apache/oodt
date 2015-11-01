@@ -267,8 +267,9 @@ public class XmlRpcResourceManager {
             LOG.log(Level.WARNING, "Job: [" + jobId
                     + "] not currently executing on any known node");
             return "";
-        } else
+        } else {
             return execNode;
+        }
     }
 
     public List<String> getQueues() throws QueueManagerException {
@@ -326,8 +327,9 @@ public class XmlRpcResourceManager {
         this.webServer.shutdown();
         this.webServer = null;
         return true;
-    } else
-        return false;      
+    } else {
+          return false;
+      }
     }
     
     public String getNodeLoad(String nodeId) throws MonitorException{
@@ -441,11 +443,12 @@ public class XmlRpcResourceManager {
 
         new XmlRpcResourceManager(portNum);
 
-        for (;;)
+        for (;;) {
             try {
                 Thread.currentThread().join();
             } catch (InterruptedException ignore) {
             }
+        }
     }
     
     public boolean setNodeCapacity(String nodeId, int capacity){

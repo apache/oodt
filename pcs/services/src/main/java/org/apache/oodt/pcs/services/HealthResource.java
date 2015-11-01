@@ -221,8 +221,9 @@ public class HealthResource extends PCSService {
         .getProductTypeId()));
     p.setProductReferences(fm.safeGetProductReferences(p));
     Metadata prodMet = fm.safeGetMetadata(p);
-    if (prodMet == null)
+    if (prodMet == null) {
       prodMet = new Metadata();
+    }
     Map<String, Object> fileOutput = new HashMap<String, Object>();
     fileOutput.put("filepath", fm.getFilePath(p));
     fileOutput.put("receivedTime", prodMet.getMetadata("CAS."
@@ -253,9 +254,10 @@ public class HealthResource extends PCSService {
           break;
         }
       }
-      if (!found)
+      if (!found) {
         throw new ResourceNotFoundException(
             "No ingest crawler found with name: [" + crawlerName[0] + "]");
+      }
     } else {
       for (CrawlerHealth ch : (List<CrawlerHealth>) (List<?>) report
           .getCrawlerHealthStatus()) {
@@ -278,10 +280,11 @@ public class HealthResource extends PCSService {
           break;
         }
       }
-      if (!found)
+      if (!found) {
         throw new ResourceNotFoundException(
             "Unable to find any jobs with associated state: [" + jobState[0]
-                + "]");
+            + "]");
+      }
     } else {
       for (JobHealthStatus js : (List<JobHealthStatus>) (List<?>) report
           .getJobHealthStatus()) {
@@ -322,9 +325,10 @@ public class HealthResource extends PCSService {
           break;
         }
       }
-      if (!found)
+      if (!found) {
         throw new ResourceNotFoundException(
             "Unable to find any crawlers with name: [" + crawlerName[0] + "]");
+      }
     } else {
       for (CrawlerStatus cs : (List<CrawlerStatus>) (List<?>) report
           .getCrawlerStatus()) {
@@ -355,11 +359,13 @@ public class HealthResource extends PCSService {
             stubs.add(this.encodeDaemonStatus(bStatus));
           }
           daemonOutput.put("stubs", stubs);
-        } else
+        } else {
           throw new ResourceNotFoundException(
               "Resource Manager not running so no batch stubs to check.");
-      } else
+        }
+      } else {
         throw new ResourceNotFoundException("Daemon not found");
+      }
     } else {
       daemonOutput.put("fm", this.encodeDaemonStatus(report.getFmStatus()));
       daemonOutput.put("wm", this.encodeDaemonStatus(report.getWmStatus()));

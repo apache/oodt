@@ -148,10 +148,11 @@ public class BuildPerspective extends MultiStatePerspective {
   }
 
   public View getActiveView() {
-    if (this.getActiveState() != null)
+    if (this.getActiveState() != null) {
       return this.stateViews.get(this.getActiveState()).getActiveView();
-    else
+    } else {
       return null;
+    }
   }
 
   @Override
@@ -165,10 +166,11 @@ public class BuildPerspective extends MultiStatePerspective {
   @Override
   public void handleRemoveState(ViewState state) {
     this.stateViews.remove(state);
-    if (this.stateViews.size() > 0)
+    if (this.stateViews.size() > 0) {
       this.activeState = this.stateViews.keySet().iterator().next();
-    else
+    } else {
       this.activeState = null;
+    }
     this.refresh();
   }
 
@@ -186,11 +188,12 @@ public class BuildPerspective extends MultiStatePerspective {
       panel = new JPanel();
     }
 
-    if (this.projectView instanceof MultiStateView)
+    if (this.projectView instanceof MultiStateView) {
       ((MultiStateView) this.projectView).refreshView(this.activeState,
           this.getStates());
-    else
+    } else {
       this.projectView.refreshView(this.activeState);
+    }
 
     this.globalConfigView.refreshView(this.activeState);
 
@@ -200,12 +203,14 @@ public class BuildPerspective extends MultiStatePerspective {
     globalPanel.add(this.globalConfigView, BorderLayout.SOUTH);
 
     int dividerLocation = -1;
-    if (projectSplitPane != null)
+    if (projectSplitPane != null) {
       dividerLocation = projectSplitPane.getDividerLocation();
+    }
     projectSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, globalPanel,
         panel);
-    if (dividerLocation != -1)
+    if (dividerLocation != -1) {
       projectSplitPane.setDividerLocation(dividerLocation);
+    }
     this.add(projectSplitPane, BorderLayout.CENTER);
 
     this.revalidate();

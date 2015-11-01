@@ -17,6 +17,12 @@
 package org.apache.oodt.cas.catalog.mapping;
 
 //JDK imports
+import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
+import org.apache.oodt.cas.catalog.page.CatalogReceipt;
+import org.apache.oodt.cas.catalog.page.IndexPager;
+import org.apache.oodt.cas.catalog.struct.TransactionId;
+import org.apache.oodt.cas.catalog.struct.TransactionIdFactory;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,11 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.catalog.exception.CatalogRepositoryException;
-import org.apache.oodt.cas.catalog.page.CatalogReceipt;
-import org.apache.oodt.cas.catalog.page.IndexPager;
-import org.apache.oodt.cas.catalog.struct.TransactionId;
-import org.apache.oodt.cas.catalog.struct.TransactionIdFactory;
 
 /**
  * @author bfoster
@@ -87,10 +88,13 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 			throws CatalogRepositoryException {
 		TransactionIdMapping mapping = this.catalogServiceTransactionIdKeyMapping
 				.get(catalogServiceTransactionId.toString());
-		if (mapping != null)
-			for (CatalogReceipt receipt : mapping.getCatalogReceipts())
-				if (receipt.getCatalogId().equals(catalogId))
-					return receipt.getTransactionId();
+		if (mapping != null) {
+		  for (CatalogReceipt receipt : mapping.getCatalogReceipts()) {
+			if (receipt.getCatalogId().equals(catalogId)) {
+			  return receipt.getTransactionId();
+			}
+		  }
+		}
 		return null;
 	}
 	
@@ -105,9 +109,12 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 			String catalogId) throws CatalogRepositoryException {
 		Set<TransactionId<?>> catalogTransactionIds = new HashSet<TransactionId<?>>();
 		List<CatalogReceipt> catalogReceipts = this.catalogIdToCatalogReceiptMapping.get(catalogId);
-		if (catalogReceipts != null) 
-			for (int i = indexPager.getPageNum() * indexPager.getPageSize(); i < catalogReceipts.size() && i < (indexPager.getPageNum() + 1) * indexPager.getPageSize(); i++) 
-				catalogTransactionIds.add(catalogReceipts.get(i).getTransactionId());
+		if (catalogReceipts != null) {
+		  for (int i = indexPager.getPageNum() * indexPager.getPageSize();
+			   i < catalogReceipts.size() && i < (indexPager.getPageNum() + 1) * indexPager.getPageSize(); i++) {
+			catalogTransactionIds.add(catalogReceipts.get(i).getTransactionId());
+		  }
+		}
 		return catalogTransactionIds;
 	}
 
@@ -121,8 +128,9 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 		if (catalogReceipts != null) {
 			for (CatalogReceipt catalogReceipt : catalogReceipts) {
 				TransactionIdMapping mapping = this.catalogInfoKeyMapping.remove(generateKey(catalogReceipt.getTransactionId().toString(), catalogReceipt.getCatalogId()));
-				if (mapping != null)
-					mapping.getCatalogReceipts().remove(catalogReceipt);
+				if (mapping != null) {
+				  mapping.getCatalogReceipts().remove(catalogReceipt);
+				}
 			}
 		}		
 	}
@@ -135,11 +143,13 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 			TransactionId<?> catalogServiceTransactionId)
 			throws CatalogRepositoryException {
 		TransactionIdMapping mapping = this.catalogServiceTransactionIdKeyMapping.remove(catalogServiceTransactionId.toString());
-		if (mapping != null)
-			for (CatalogReceipt catalogReceipt : mapping.getCatalogReceipts()) {
-				this.catalogIdToCatalogReceiptMapping.get(catalogReceipt.getCatalogId()).remove(catalogReceipt);
-				this.catalogInfoKeyMapping.remove(generateKey(catalogReceipt.getTransactionId().toString(), catalogReceipt.getCatalogId()));
-			}
+		if (mapping != null) {
+		  for (CatalogReceipt catalogReceipt : mapping.getCatalogReceipts()) {
+			this.catalogIdToCatalogReceiptMapping.get(catalogReceipt.getCatalogId()).remove(catalogReceipt);
+			this.catalogInfoKeyMapping
+				.remove(generateKey(catalogReceipt.getTransactionId().toString(), catalogReceipt.getCatalogId()));
+		  }
+		}
 	}
 
 	/*
@@ -186,15 +196,17 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 			throws CatalogRepositoryException { 
 		TransactionIdMapping mapping = this.catalogServiceTransactionIdKeyMapping
 				.get(catalogServiceTransactionId.toString());
-		if (mapping == null)
-			mapping = new TransactionIdMapping(catalogServiceTransactionId);
+		if (mapping == null) {
+		  mapping = new TransactionIdMapping(catalogServiceTransactionId);
+		}
 		mapping.addCatalogReceipt(catalogReceipt);
 		this.catalogServiceTransactionIdKeyMapping.put(
 				catalogServiceTransactionId.toString(), mapping);
 		this.catalogInfoKeyMapping.put(generateKey(catalogReceipt.getTransactionId().toString(), catalogReceipt.getCatalogId()), mapping);
 		List<CatalogReceipt> catalogReceipts = this.catalogIdToCatalogReceiptMapping.get(catalogReceipt.getCatalogId());
-		if (catalogReceipts == null)
-			catalogReceipts = new Vector<CatalogReceipt>();
+		if (catalogReceipts == null) {
+		  catalogReceipts = new Vector<CatalogReceipt>();
+		}
 		catalogReceipts.add(catalogReceipt);
 		this.catalogIdToCatalogReceiptMapping.put(catalogReceipt.getCatalogId(), catalogReceipts);
 	}
@@ -212,8 +224,9 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 		HashSet<String> catalogs = new HashSet<String>();
 		TransactionIdMapping mapping = this.catalogServiceTransactionIdKeyMapping
 				.get(catalogServiceTransactionId.toString());
-		for (CatalogReceipt catalogReceipt : mapping.getCatalogReceipts())
-			catalogs.add(catalogReceipt.getCatalogId());
+		for (CatalogReceipt catalogReceipt : mapping.getCatalogReceipts()) {
+		  catalogs.add(catalogReceipt.getCatalogId());
+		}
 		return catalogs;
 	}
 
@@ -221,9 +234,11 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 			TransactionId<?> catalogServiceTransactionId, String catalogId)
 			throws CatalogRepositoryException {
 		TransactionIdMapping mapping = this.catalogServiceTransactionIdKeyMapping.get(catalogServiceTransactionId);
-		for (CatalogReceipt catalogReceipt : mapping.getCatalogReceipts())
-			if (catalogReceipt.getCatalogId().equals(catalogId))
-				return catalogReceipt;
+		for (CatalogReceipt catalogReceipt : mapping.getCatalogReceipts()) {
+		  if (catalogReceipt.getCatalogId().equals(catalogId)) {
+			return catalogReceipt;
+		  }
+		}
 		return null;
 	}
 
@@ -231,10 +246,10 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 		return catalogTransactionId + ":" + catalogId;
 	}
 	
-	private class TransactionIdMapping {
+	private static class TransactionIdMapping {
 
 		private TransactionId<?> catalogServiceTransactionId;
-		List<CatalogReceipt> catalogReceipts;
+		private List<CatalogReceipt> catalogReceipts;
 
 		public TransactionIdMapping(TransactionId<?> catalogServiceTransactionId) {
 			this.catalogServiceTransactionId = catalogServiceTransactionId;
@@ -253,39 +268,9 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 			return catalogServiceTransactionId;
 		}
 
+	  public void setCatalogReceipts(List<CatalogReceipt> catalogReceipts) {
+		this.catalogReceipts = catalogReceipts;
+	  }
 	}
 
-//	private class CatalogInfo {
-//
-//		private String catalogId;
-//		private TransactionId<?> catalogTransactionId;
-//
-//		public CatalogInfo(String catalogId,
-//				TransactionId<?> catalogTransactionId) {
-//			this.catalogId = catalogId;
-//			this.catalogTransactionId = catalogTransactionId;
-//		}
-//
-//		public String getCatalogUrn() {
-//			return this.catalogId;
-//		}
-//
-//		public TransactionId<?> getCatalogTransactionId() {
-//			return this.catalogTransactionId;
-//		}
-//		
-//		public boolean equals(Object obj) {
-//			if (obj instanceof CatalogInfo) {
-//				return this.toString().equals(obj.toString());
-//			}else {
-//				return false;
-//			}
-//		}
-//		
-//		public String toString() {
-//			return this.catalogId + ":" + this.catalogTransactionId;
-//		}
-//
-//	}
-	
 }

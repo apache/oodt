@@ -93,8 +93,9 @@ public class IngestProductCliAction extends FileManagerCliAction {
             List<String> uriRefs = Lists.newArrayList();
             for (String ref : references) {
                URI uri = URI.create(ref);
-               if (!uri.getScheme().equals("stream"))
-                  throw new IllegalArgumentException("Streaming data must use 'stream' scheme not "+uri.getScheme());
+               if (!uri.getScheme().equals("stream")) {
+                  throw new IllegalArgumentException("Streaming data must use 'stream' scheme not " + uri.getScheme());
+               }
                uriRefs.add(uri.toString());
             }
             references = uriRefs;

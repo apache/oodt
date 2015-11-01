@@ -50,13 +50,15 @@ public class ConfigServlet extends GridServlet {
       throws ServletException, IOException {
     Configuration config = getConfiguration(); // Get the singleton
                                                // configuration
-    if (!approveAccess(config, req, res))
+    if (!approveAccess(config, req, res)) {
       return; // Check if the user can access this page
+    }
 
     ConfigBean cb = getConfigBean(req); // Get the bean
     cb.setMessage(""); // Clear out any message
-    if (!cb.isAuthentic())
+    if (!cb.isAuthentic()) {
       throw new ServletException(new AuthenticationRequiredException());
+    }
     boolean needSave = false; // Assume no changes for now
 
     String newPass = req.getParameter("password"); // See if she wants to change
@@ -99,8 +101,9 @@ public class ConfigServlet extends GridServlet {
                                                 // property
     if (newKey != null && newKey.length() > 0) { // And make sure it's nonempty
       String newVal = req.getParameter("newval"); // Got one, get its value
-      if (newVal == null)
+      if (newVal == null) {
         newVal = ""; // Make sure it's at least an empty string
+      }
       config.getProperties().setProperty(newKey, newVal); // Set the new
                                                           // property
       needSave = true; // We need to save
@@ -245,11 +248,15 @@ public class ConfigServlet extends GridServlet {
         if (newClass != null && newClass.length() > 0) { // And nonempty
           Server server;
           if (type == 'd') // If it's data
+          {
             server = new ProductServer(config, newClass); // It's a product
-                                                          // server
+          }
+// server
           else
             // otherwise it's metadata
+          {
             server = new ProfileServer(config, newClass); // Which is a profile
+          }
                                                           // server
           servers.add(server); // Add it to the set of servers
           needSave = true; // And after all this, we need to save!

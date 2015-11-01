@@ -48,8 +48,9 @@ public abstract class View extends JPanel {
   public View(String name) {
     super();
     this.id = UUID.randomUUID().toString();
-    if (name != null)
+    if (name != null) {
       this.setName(name);
+    }
     this.listeners = new Vector<ViewListener>();
   }
 
@@ -74,8 +75,9 @@ public abstract class View extends JPanel {
   }
 
   public void notifyListeners(ViewChange<?> change) {
-    for (ViewListener listener : listeners)
+    for (ViewListener listener : listeners) {
       listener.stateChangeNotify(change);
+    }
   }
 
   public void notifyListeners() {

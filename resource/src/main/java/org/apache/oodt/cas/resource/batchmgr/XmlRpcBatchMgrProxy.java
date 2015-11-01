@@ -117,10 +117,11 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
             parent.jobExecuting(jobSpec);
             result = (Boolean) client
                 .execute("batchstub.executeJob", argList);
-            if (result)
-            	parent.jobSuccess(jobSpec);
-            else
-            	throw new Exception("batchstub.executeJob returned false");
+            if (result) {
+                parent.jobSuccess(jobSpec);
+            } else {
+                throw new Exception("batchstub.executeJob returned false");
+            }
         } catch (Exception e) {
         	LOG.log(Level.SEVERE, "Job execution failed for jobId '" + jobSpec.getJob().getId() + "' : " + e.getMessage(), e);
             parent.jobFailure(jobSpec);

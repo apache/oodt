@@ -63,21 +63,25 @@ public class MetadataListPcsMetFileWriter extends PcsMetFileWriter {
             for (int i = 0; i < metadataNodeList.getLength(); i++) {
                 Element metadataElement = (Element) metadataNodeList.item(i);
                 String key = metadataElement.getAttribute(KEY_ATTR);
-                if (key.equals(""))
-                	key = PathUtils.doDynamicReplacement(metadataElement.getAttribute(KEY_GEN_ATTR), inputMetadata);
+                if (key.equals("")) {
+                  key = PathUtils.doDynamicReplacement(metadataElement.getAttribute(KEY_GEN_ATTR), inputMetadata);
+                }
                 String val = metadataElement.getAttribute(VAL_ATTR);
-            	if (val.equals("")) 
-            		val = metadataElement.getTextContent();
+            	if (val.equals("")) {
+                  val = metadataElement.getTextContent();
+                }
                 if (val != null && !val.equals("")) {
-                    if (!metadataElement.getAttribute(ENV_REPLACE_ATTR).toLowerCase().equals("false"))
-                        val = PathUtils.doDynamicReplacement(val, inputMetadata);
+                    if (!metadataElement.getAttribute(ENV_REPLACE_ATTR).toLowerCase().equals("false")) {
+                      val = PathUtils.doDynamicReplacement(val, inputMetadata);
+                    }
                     String[] vals;
                     if (metadataElement.getAttribute(SPLIT_ATTR).toLowerCase().equals("false")) {
                         vals = new String[] { val };
                     } else {
                         String delimiter = metadataElement.getAttribute("delimiter");
-                        if (delimiter == null || delimiter.equals(""))
-                            delimiter = ",";
+                        if (delimiter == null || delimiter.equals("")) {
+                          delimiter = ",";
+                        }
                         vals = (val + delimiter).split(delimiter);
                     }
                     metadata.replaceMetadata(key, Arrays.asList(vals));

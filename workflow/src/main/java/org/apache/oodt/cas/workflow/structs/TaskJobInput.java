@@ -183,9 +183,12 @@ public class TaskJobInput implements JobInput {
         throw ex;
       } catch (Exception ignore) {
       } finally {
-        if (in != null) try {
-          in.close();
-        } catch (IOException ignore) {}
+        if (in != null) {
+          try {
+            in.close();
+          } catch (IOException ignore) {
+          }
+        }
       }
     }
 

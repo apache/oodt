@@ -104,8 +104,9 @@ public final class RunDirJobSubmitter {
 
         try {
             BufferedReader in = new BufferedReader(new FileReader(inputFname));
-            if (!in.ready())
+            if (!in.ready()) {
                 throw new IOException();
+            }
 
             String line;
             String jobId;

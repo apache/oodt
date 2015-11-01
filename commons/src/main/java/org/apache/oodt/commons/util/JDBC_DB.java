@@ -96,17 +96,21 @@ public class JDBC_DB
 	{
 		String url, classname;
 
-		if (stmt != null)
-			stmt.close();
+		if (stmt != null) {
+		  stmt.close();
+		}
 
-		if (rs != null)
-			rs.close();
+		if (rs != null) {
+		  rs.close();
+		}
 
-		if (keep_connect_open)
-			return;
+		if (keep_connect_open) {
+		  return;
+		}
 
-		if (connect != null)
-			connect.close();
+		if (connect != null) {
+		  connect.close();
+		}
 
 
 		rs_meta = null;
@@ -117,8 +121,9 @@ public class JDBC_DB
 		Properties props = new Properties();
 		props.put("user", username);
 
-		if (password != null)
-			props.put("password", password);
+		if (password != null) {
+		  props.put("password", password);
+		}
 
 
 		classname = serverProps.getProperty("org.apache.oodt.commons.util.JDBC_DB.driver", "oracle.jdbc.driver.OracleDriver");
@@ -202,26 +207,32 @@ public class JDBC_DB
 		*/
 		sql_command = cmd;
 
-		if (stmt!=null)
-			stmt.close();
+		if (stmt!=null) {
+		  stmt.close();
+		}
 
-		if (connect == null) openConnection();
+		if (connect == null) {
+		  openConnection();
+		}
 		if (connect == null) {
 			keep_connect_open = false;
 			openConnection();
 		}
-		if (connect == null)
-			throw new IllegalStateException("Connection is null!!!");
+		if (connect == null) {
+		  throw new IllegalStateException("Connection is null!!!");
+		}
 		
 		if (connect.isClosed()) {
 			connect = null;
 			keep_connect_open = false;
 			openConnection();
 		}
-		if (connect == null)
-			throw new IllegalStateException("Connection is still null!!!");
-		if (connect.isClosed())
-			throw new IllegalStateException("Connection got closed!");
+		if (connect == null) {
+		  throw new IllegalStateException("Connection is still null!!!");
+		}
+		if (connect.isClosed()) {
+		  throw new IllegalStateException("Connection got closed!");
+		}
 
 		stmt = connect.createStatement();
 		affected = stmt.executeUpdate(sql_command);
@@ -239,26 +250,32 @@ public class JDBC_DB
 		sql_command = cmd;
 
 
-		if (stmt!=null)
-			stmt.close();
+		if (stmt!=null) {
+		  stmt.close();
+		}
 
-		if (connect == null) openConnection();
+		if (connect == null) {
+		  openConnection();
+		}
 		if (connect == null) {
 			keep_connect_open = false;
 			openConnection();
 		}
-		if (connect == null)
-			throw new IllegalStateException("Connection is null!!!");
+		if (connect == null) {
+		  throw new IllegalStateException("Connection is null!!!");
+		}
 		
 		if (connect.isClosed()) {
 			connect = null;
 			keep_connect_open = false;
 			openConnection();
 		}
-		if (connect == null)
-			throw new IllegalStateException("Connection is still null!!!");
-		if (connect.isClosed())
-			throw new IllegalStateException("Connection got closed!");
+		if (connect == null) {
+		  throw new IllegalStateException("Connection is still null!!!");
+		}
+		if (connect.isClosed()) {
+		  throw new IllegalStateException("Connection got closed!");
+		}
 
 
 		//long time0 = System.currentTimeMillis();
@@ -267,8 +284,9 @@ public class JDBC_DB
 		//System.err.println("###### Creating a new statement: " + (time - time0));
 		//time0 = time;
 
-		if (rs!=null)
-			rs.close();
+		if (rs!=null) {
+		  rs.close();
+		}
 
 		rs = stmt.executeQuery(sql_command);
 		//time = System.currentTimeMillis();
@@ -294,13 +312,15 @@ public class JDBC_DB
 		int count;
 
 
-		if (stmt!=null)
-			stmt.close();
+		if (stmt!=null) {
+		  stmt.close();
+		}
 
 		stmt = connect.createStatement();
 
-		if (rs!=null)
-			rs.close();
+		if (rs!=null) {
+		  rs.close();
+		}
 
 		rs = stmt.executeQuery(sql_command);
 
@@ -342,8 +362,9 @@ public class JDBC_DB
 	{
 		try
 		{
-			if (connect != null)
-				connect.rollback();
+			if (connect != null) {
+			  connect.rollback();
+			}
 		}
 
 		catch (SQLException ignored)
@@ -410,13 +431,16 @@ public class JDBC_DB
 
 	public Connection getConnection() throws SQLException
 	{
-		if (connect == null) openConnection();
+		if (connect == null) {
+		  openConnection();
+		}
 		if (connect == null) {
 			keep_connect_open = false;
 			openConnection();
 		}
-		if (connect == null)
-			throw new IllegalStateException("getConnection can't get a connection pointer");
+		if (connect == null) {
+		  throw new IllegalStateException("getConnection can't get a connection pointer");
+		}
 		return(connect);
 	}
 }

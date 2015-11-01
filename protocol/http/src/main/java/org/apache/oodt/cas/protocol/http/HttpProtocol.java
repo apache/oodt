@@ -70,9 +70,10 @@ public class HttpProtocol implements Protocol {
       }
     	
       if (!HttpUtils
-          .isDirectory(httpFile.getLink(), file.getPath()))
+          .isDirectory(httpFile.getLink(), file.getPath())) {
         throw new ProtocolException(file
-            + " is not a directory (mime type must be text/html)");
+                                    + " is not a directory (mime type must be text/html)");
+      }
       this.currentFile = httpFile;
     } catch (Exception e) {
       throw new ProtocolException("Failed to cd to " + file + " : "
@@ -131,18 +132,20 @@ public class HttpProtocol implements Protocol {
       throw new ProtocolException("Failed to get file '" + fromFile + "' : "
           + e.getMessage(), e);
     } finally {
-      if (in != null)
+      if (in != null) {
         try {
           in.close();
         } catch (Exception e) {
           // log failure
         }
-      if (out != null)
+      }
+      if (out != null) {
         try {
           out.close();
         } catch (Exception e) {
           // log failure
         }
+      }
     }
   }
   
@@ -321,14 +324,16 @@ public class HttpProtocol implements Protocol {
   public static void main(String[] args) throws Exception {
     String urlString = null, downloadToDir = null;
     for (int i = 0; i < args.length; i++) {
-      if (args[i].equals("--url"))
+      if (args[i].equals("--url")) {
         urlString = args[++i];
-      else if (args[i].equals("--downloadToDir"))
+      } else if (args[i].equals("--downloadToDir")) {
         downloadToDir = args[++i];
+      }
     }
 
-    if (urlString == null)
+    if (urlString == null) {
       throw new Exception("Must specify a url to download: --url <url>");
+    }
 
     URL url = new URL(urlString);
     ProtocolFile urlFile = new HttpFile(url.getPath(), false, url);

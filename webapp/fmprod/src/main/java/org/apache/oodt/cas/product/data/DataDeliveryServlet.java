@@ -114,11 +114,13 @@ public class DataDeliveryServlet extends HttpServlet implements
       throws ServletException, IOException {
     try {
       String productID = req.getParameter("productID");
-      if (productID == null)
+      if (productID == null) {
         throw new IllegalArgumentException("productID is required");
+      }
       String refIndex = req.getParameter("refIndex");
-      if (refIndex == null)
+      if (refIndex == null) {
         refIndex = "0";
+      }
       int index = Integer.parseInt(refIndex);
       String format = req.getParameter("format");
 
@@ -187,8 +189,9 @@ public class DataDeliveryServlet extends HttpServlet implements
       o2 = res.getOutputStream();
       byte[] buf = new byte[512];
       int n;
-      while ((n = in.read(buf)) != -1)
+      while ((n = in.read(buf)) != -1) {
         o2.write(buf, 0, n);
+      }
     } catch (Exception e) {
       e.printStackTrace();
       LOG.log(Level.WARNING, "Exception delivering data!: Message: "
@@ -240,8 +243,9 @@ public class DataDeliveryServlet extends HttpServlet implements
     OutputStream out = res.getOutputStream();
     byte[] buf = new byte[512];
     int n;
-    while ((n = in.read(buf)) != -1)
+    while ((n = in.read(buf)) != -1) {
       out.write(buf, 0, n);
+    }
     in.close();
     out.close();
   }

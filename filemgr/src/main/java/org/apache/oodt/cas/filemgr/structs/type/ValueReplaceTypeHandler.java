@@ -63,10 +63,12 @@ public abstract class ValueReplaceTypeHandler extends TypeHandler {
      */
     @Override
     protected QueryCriteria handleRangeQueryCriteria(RangeQueryCriteria rqc) {
-        if (rqc.getEndValue() != null)
+        if (rqc.getEndValue() != null) {
             rqc.setEndValue(this.getCatalogValue(rqc.getEndValue()));
-        if (rqc.getStartValue() != null)
+        }
+        if (rqc.getStartValue() != null) {
             rqc.setStartValue(this.getCatalogValue(rqc.getStartValue()));
+        }
         return rqc;
     }
 
@@ -75,8 +77,9 @@ public abstract class ValueReplaceTypeHandler extends TypeHandler {
      */
     @Override
     protected QueryCriteria handleTermQueryCriteria(TermQueryCriteria tqc) {
-        if (tqc.getValue() != null)
+        if (tqc.getValue() != null) {
             tqc.setValue(this.getCatalogValue(tqc.getValue()));
+        }
         return tqc;
     }
     

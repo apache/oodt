@@ -296,7 +296,9 @@ public class DataSourceCatalog implements Catalog {
 							
 							// reuse the existing product id if possible, or generate a new UUID string
             	String productId = product.getProductId();
-            	if (!StringUtils.hasText(productId)) productId = UUID.randomUUID().toString();
+            	if (!StringUtils.hasText(productId)) {
+                  productId = UUID.randomUUID().toString();
+                }
             	// insert product in database
             	addProductSql = "INSERT INTO products (product_id, product_name, product_structure, product_transfer_status, product_type_id, product_datetime) "
                     + "VALUES ('"
@@ -806,7 +808,9 @@ public class DataSourceCatalog implements Catalog {
                     + product.getProductType().getName() + "_reference"
 		+ " WHERE product_id = " + quoteIt(product.getProductId()));
 
-            if(this.orderedValues) getProductRefSql.append(" ORDER BY pkey");
+            if(this.orderedValues) {
+              getProductRefSql.append(" ORDER BY pkey");
+            }
 
             LOG.log(Level.FINE, "getProductReferences: Executing: "
                     + getProductRefSql);
@@ -1042,7 +1046,9 @@ public class DataSourceCatalog implements Catalog {
                     + product.getProductType().getName() + "_metadata"
 		+ " WHERE product_id = " + quoteIt(product.getProductId()));
  
-	    if(this.orderedValues) metadataSql.append(" ORDER BY pkey");
+	    if(this.orderedValues) {
+          metadataSql.append(" ORDER BY pkey");
+        }
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql.toString());
@@ -1124,15 +1130,18 @@ public class DataSourceCatalog implements Catalog {
                 elementIds.append(" AND (element_id = '")
                           .append(this.validationLayer.getElementByName(elems.get(0)).getElementId
                               ()).append("'");
-                for (int i = 1; i < elems.size(); i++) 
-                    elementIds.append(" OR element_id = '").append(this.validationLayer.getElementByName(elems.get(i))
-                                                                                       .getElementId()).append("'");
+                for (int i = 1; i < elems.size(); i++) {
+                  elementIds.append(" OR element_id = '").append(this.validationLayer.getElementByName(elems.get(i))
+                                                                                     .getElementId()).append("'");
+                }
                 elementIds.append(")");
             }
             StringBuilder metadataSql = new StringBuilder("SELECT element_id,metadata_value FROM "
                     + product.getProductType().getName() + "_metadata"
 		+ " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds);
-            if(this.orderedValues) metadataSql.append(" ORDER BY pkey");
+            if(this.orderedValues) {
+              metadataSql.append(" ORDER BY pkey");
+            }
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql.toString());
@@ -2096,14 +2105,16 @@ public class DataSourceCatalog implements Catalog {
             }else {
                 sqlQuery.append("(").append(this.getSqlQuery(bqc.getTerms().get(0), type));
                 String op = bqc.getOperator() == BooleanQueryCriteria.AND ? "INTERSECT" : "UNION";
-                for (int i = 1; i < bqc.getTerms().size(); i++) 
-                    sqlQuery.append(") ").append(op).append(" (").append(this.getSqlQuery(bqc.getTerms().get(i), type));
+                for (int i = 1; i < bqc.getTerms().size(); i++) {
+                  sqlQuery.append(") ").append(op).append(" (").append(this.getSqlQuery(bqc.getTerms().get(i), type));
+                }
                 sqlQuery.append(")");
             }
         }else {
         	  String elementIdStr = this.validationLayer.getElementByName(queryCriteria.getElementName()).getElementId();
-            if (fieldIdStringFlag) 
-                elementIdStr = "'" + elementIdStr + "'";
+            if (fieldIdStringFlag) {
+              elementIdStr = "'" + elementIdStr + "'";
+            }
             if (!this.productIdString) {
             	sqlQuery.append("SELECT DISTINCT product_id FROM ").append(type.getName())
                         .append("_metadata WHERE element_id = ").append(elementIdStr).append(" AND ");
@@ -2119,13 +2130,19 @@ public class DataSourceCatalog implements Catalog {
             } else if (queryCriteria instanceof RangeQueryCriteria) {
                 RangeQueryCriteria rqc = (RangeQueryCriteria) queryCriteria;
                 String rangeSubQuery = null;
-                if (rqc.getStartValue() != null)
-                    rangeSubQuery = "metadata_value" + (rqc.getInclusive() ? " >= " : " > ") + "'" + rqc.getStartValue() + "'";
+                if (rqc.getStartValue() != null) {
+                  rangeSubQuery =
+                      "metadata_value" + (rqc.getInclusive() ? " >= " : " > ") + "'" + rqc.getStartValue() + "'";
+                }
                 if (rqc.getEndValue() != null) {
-                    if (rangeSubQuery == null)
-                        rangeSubQuery = "metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc.getEndValue() + "'";
-                    else
-                        rangeSubQuery = "(" + rangeSubQuery + " AND metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc.getEndValue() + "')";
+                    if (rangeSubQuery == null) {
+                      rangeSubQuery =
+                          "metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc.getEndValue() + "'";
+                    } else {
+                      rangeSubQuery =
+                          "(" + rangeSubQuery + " AND metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'"
+                          + rqc.getEndValue() + "')";
+                    }
                 }
                 sqlQuery.append(rangeSubQuery);
             } else {

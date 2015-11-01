@@ -175,11 +175,13 @@ public class RemoteDataTransferer implements DataTransfer {
             while (true) {
                fileData = (byte[]) client.retrieveFile(
                      dataStoreFile.getAbsolutePath(), offset, 1024);
-               if (fileData.length <= 0)
-                  break;
+               if (fileData.length <= 0) {
+                 break;
+               }
                fOut.write(fileData);
-               if (fileData.length < 1024)
-                  break;
+               if (fileData.length < 1024) {
+                 break;
+               }
                offset += 1024;
             }
          } catch (Exception e) {

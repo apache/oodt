@@ -67,8 +67,9 @@ public final class EnvUtilities {
      */
     public static Properties getEnv() {
         Properties envProps = new Properties();
-        for (Map.Entry<String, String> entry : System.getenv().entrySet())
+        for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
             envProps.setProperty(entry.getKey(), entry.getValue());
+        }
         return envProps;
     }
 
@@ -103,18 +104,21 @@ public final class EnvUtilities {
                     + e.getMessage());
         } finally {
             try {
-                if (p.getErrorStream() != null)
+                if (p.getErrorStream() != null) {
                     p.getErrorStream().close();
+                }
             } catch (Exception ignored) {
             }
             try {
-                if (p.getInputStream() != null)
+                if (p.getInputStream() != null) {
                     p.getInputStream().close();
+                }
             } catch (Exception ignored) {
             }
             try {
-                if (p.getOutputStream() != null)
+                if (p.getOutputStream() != null) {
                     p.getOutputStream().close();
+                }
             } catch (Exception ignored) {
             }
         }

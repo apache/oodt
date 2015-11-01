@@ -77,8 +77,9 @@ public class XMLRPC {
 	 * @throws DOMException If we can't construct the &lt;value&gt;.
 	 */
 	private static Element createValueElement(Document doc, Object value) throws DOMException {
-		if (value == null)
-			throw new IllegalArgumentException("Nulls not supported in XML-RPC");
+		if (value == null) {
+		  throw new IllegalArgumentException("Nulls not supported in XML-RPC");
+		}
 		Element valueElement = doc.createElement("value");
 		if (value instanceof Integer || value instanceof Short) {
 			XML.add(valueElement, "int", value.toString());
@@ -119,7 +120,9 @@ public class XMLRPC {
 		  for (Object aCollection : collection) {
 			dataElement.appendChild(createValueElement(doc, aCollection));
 		  }
-		} else throw new IllegalArgumentException(value.getClass().getName() + " not supported in XML-RPC");
+		} else {
+		  throw new IllegalArgumentException(value.getClass().getName() + " not supported in XML-RPC");
+		}
 		return valueElement;
 	}
 
@@ -138,8 +141,9 @@ public class XMLRPC {
 			doc.normalize();
 			XML.removeComments(doc);
 			Element methodResponseElement = doc.getDocumentElement();
-			if (!"methodResponse".equals(methodResponseElement.getNodeName()))
-				throw new SAXException("Not a <methodResponse> document");
+			if (!"methodResponse".equals(methodResponseElement.getNodeName())) {
+			  throw new SAXException("Not a <methodResponse> document");
+			}
 			Node child = methodResponseElement.getFirstChild();
 			if ("params".equals(child.getNodeName())) {
 				return parseValue(child.getFirstChild().getFirstChild());
@@ -151,7 +155,9 @@ public class XMLRPC {
 				} catch (ClassCastException ex) {
 					throw new SAXException("XML-RPC <fault> invalid");
 				}
-			} else throw new SAXException("XML-RPC response does not contain <params> or <fault>");
+			} else {
+			  throw new SAXException("XML-RPC response does not contain <params> or <fault>");
+			}
 		} catch (SAXException ex) {
 			throw new IllegalArgumentException(ex.getMessage());
 		} catch (IOException ex) {
@@ -166,7 +172,9 @@ public class XMLRPC {
 	 */
 	private static Object parseValue(Node node) {
 		String n = node.getNodeName();
-		if (!"value".equals(n)) throw new IllegalArgumentException("Expecting a <value>, not a <" + n + ">");
+		if (!"value".equals(n)) {
+		  throw new IllegalArgumentException("Expecting a <value>, not a <" + n + ">");
+		}
 		Node t = node.getFirstChild();
 		n = t.getNodeName();
 
@@ -180,9 +188,13 @@ public class XMLRPC {
 		if ("i4".equals(n) || "int".equals(n)) {
 			return Integer.valueOf(txt);
 		} else if ("boolean".equals(n)) {
-			if ("1".equals(txt))      return true;
-			else if ("0".equals(txt)) return false;
-			else throw new IllegalArgumentException(n + " does not contain a 0 or 1");
+			if ("1".equals(txt)) {
+			  return true;
+			} else if ("0".equals(txt)) {
+			  return false;
+			} else {
+			  throw new IllegalArgumentException(n + " does not contain a 0 or 1");
+			}
 		} else if ("string".equals(n)) {
 			return txt;
 		} else if ("double".equals(n)) {
@@ -200,28 +212,35 @@ public class XMLRPC {
 			NodeList memberNodes = t.getChildNodes();
 			for (int i = 0; i < memberNodes.getLength(); ++i) {
 				Node memberNode = memberNodes.item(i);
-				if (!"member".equals(memberNode.getNodeName()))
-					throw new IllegalArgumentException(n + " contains <" + memberNode.getNodeName()
-						+ ">, not <member>");
+				if (!"member".equals(memberNode.getNodeName())) {
+				  throw new IllegalArgumentException(n + " contains <" + memberNode.getNodeName()
+													 + ">, not <member>");
+				}
 				Node nameNode = memberNode.getFirstChild();
-				if (nameNode == null || !"name".equals(nameNode.getNodeName()))
-					throw new IllegalArgumentException("<member> missing <name> element");
+				if (nameNode == null || !"name".equals(nameNode.getNodeName())) {
+				  throw new IllegalArgumentException("<member> missing <name> element");
+				}
 				Node valueNode = nameNode.getNextSibling();
-				if (valueNode == null || !"value".equals(valueNode.getNodeName()))
-					throw new IllegalArgumentException("<member> missing <value> element");
+				if (valueNode == null || !"value".equals(valueNode.getNodeName())) {
+				  throw new IllegalArgumentException("<member> missing <value> element");
+				}
 				m.put(XML.unwrappedText(nameNode), parseValue(valueNode));
 			}
 			return m;
 		} else if ("array".equals(n)) {
 			Node dataNode = t.getFirstChild();
-			if (dataNode == null || !"data".equals(dataNode.getNodeName()))
-				throw new IllegalArgumentException("<array> missing <data> element");
+			if (dataNode == null || !"data".equals(dataNode.getNodeName())) {
+			  throw new IllegalArgumentException("<array> missing <data> element");
+			}
 			NodeList children = dataNode.getChildNodes();
 			List x = new ArrayList(children.getLength());
-			for (int i = 0; i < children.getLength(); ++i)
-				x.add(parseValue(children.item(i)));
+			for (int i = 0; i < children.getLength(); ++i) {
+			  x.add(parseValue(children.item(i)));
+			}
 			return x;
-		} else throw new IllegalArgumentException("Illegal type " + n + " in <value>");
+		} else {
+		  throw new IllegalArgumentException("Illegal type " + n + " in <value>");
+		}
 	}
 
 	/** Constructor that causes a runtime exception since this is a utility class.

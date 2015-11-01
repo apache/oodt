@@ -277,9 +277,15 @@ public class DefaultProductSerializer implements ProductSerializer {
 		}
 		
 		List<String> docs = new ArrayList<String>();
-		if (!delFields.isEmpty()) docs.add( toDoc(productId, delFields) );
-		if (!setFields.isEmpty()) docs.add( toDoc(productId, setFields) );
-		if (!addFields.isEmpty()) docs.add( toDoc(productId, addFields) );
+		if (!delFields.isEmpty()) {
+		  docs.add(toDoc(productId, delFields));
+		}
+		if (!setFields.isEmpty()) {
+		  docs.add(toDoc(productId, setFields));
+		}
+		if (!addFields.isEmpty()) {
+		  docs.add(toDoc(productId, addFields));
+		}
 		return docs;
 		
 	}
@@ -403,7 +409,9 @@ public class DefaultProductSerializer implements ProductSerializer {
 				if (name.startsWith(Parameters.NS)) {					
 						for (int k=0; k<values.getLength(); k++) {
 							// create this reference
-							if (references.size()<=k) references.add(new Reference());
+							if (references.size()<=k) {
+							  references.add(new Reference());
+							}
 							if (name.equals(Parameters.REFERENCE_ORIGINAL)) {
 								references.get(k).setOrigReference(vals.get(k));
 							} else if (name.equals(Parameters.REFERENCE_DATASTORE)) {
@@ -449,7 +457,9 @@ public class DefaultProductSerializer implements ProductSerializer {
 						
 					// CAS root reference
 					} else if (name.startsWith(Parameters.NS+Parameters.ROOT)) {
-						if (rootReference==null) rootReference = new Reference();
+						if (rootReference==null) {
+						  rootReference = new Reference();
+						}
 						if (name.equals(Parameters.ROOT_REFERENCE_ORIGINAL)) {
 							rootReference.setOrigReference(value);
 						} else if (name.equals(Parameters.ROOT_REFERENCE_DATASTORE)) {

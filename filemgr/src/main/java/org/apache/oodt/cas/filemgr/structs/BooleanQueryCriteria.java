@@ -160,17 +160,19 @@ public class BooleanQueryCriteria extends QueryCriteria {
      */
     public String toString() {
         String query = "";
-        if (operator == AND)
+        if (operator == AND) {
             query += "AND(";
-        else if (operator == OR)
+        } else if (operator == OR) {
             query += "OR(";
-        else
+        } else {
             query += "NOT(";
+        }
 
         for (int i = 0; i < terms.size(); i++) {
             query += ((QueryCriteria) terms.get(i)).toString();
-            if (i < (terms.size() - 1))
+            if (i < (terms.size() - 1)) {
                 query += ", ";
+            }
         }
         query += ")";
         return query;

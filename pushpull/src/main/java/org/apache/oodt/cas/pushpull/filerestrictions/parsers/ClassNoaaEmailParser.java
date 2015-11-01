@@ -51,12 +51,14 @@ public class ClassNoaaEmailParser implements Parser {
             VirtualFile root = VirtualFile.createRootDir();
             Scanner s = new Scanner(emailFile);
             StringBuffer sb = new StringBuffer("");
-            while (s.hasNextLine())
-                sb.append(s.nextLine()).append("\n");
+            while (s.hasNextLine()) {
+              sb.append(s.nextLine()).append("\n");
+            }
 
-            if (!validEmail(sb.toString()))
-                throw new ParserException(
-                        "Email not a IASI data processed notification email");
+            if (!validEmail(sb.toString())) {
+              throw new ParserException(
+                  "Email not a IASI data processed notification email");
+            }
 
             Pattern cdPattern = Pattern.compile("\\s*cd\\s{1,}.{1,}?(?:\\s|$)");
             Matcher cdMatcher = cdPattern.matcher(sb);
@@ -108,9 +110,11 @@ public class ClassNoaaEmailParser implements Parser {
         String[] containsStrings = (System.getProperties()
                 .getProperty("org.apache.oodt.cas.pushpull.filerestrictions.parsers.class.noaa.email.parser.contains.exprs")
                 + ",").split(",");
-        for (String containsString : containsStrings)
-            if (!email.contains(containsString))
-                return false;
+        for (String containsString : containsStrings) {
+          if (!email.contains(containsString)) {
+            return false;
+          }
+        }
         return true;
     }
 }

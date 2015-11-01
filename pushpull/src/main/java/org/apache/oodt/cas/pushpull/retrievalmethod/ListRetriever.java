@@ -70,8 +70,9 @@ public class ListRetriever implements RetrievalMethod {
                 propFile), fileMetadata);
         DownloadInfo di = dfi.getDownloadInfo();
         if (!di.isAllowAliasOverride()
-                || (remoteSite = vfs.getRemoteSite()) == null)
-            remoteSite = di.getRemoteSite();
+                || (remoteSite = vfs.getRemoteSite()) == null) {
+          remoteSite = di.getRemoteSite();
+        }
         LinkedList<String> fileList = FileRestrictions.toStringList(vfs
                 .getRootVirtualFile());
 
@@ -81,8 +82,9 @@ public class ListRetriever implements RetrievalMethod {
                 linker.addPropFileToDataFileLink(propFile, file);
                 if (!frs.addToDownloadQueue(remoteSite, file, di
                         .getRenamingConv(), di.getStagingArea(), dfi
-                        .getQueryMetadataElementName(), di.deleteFromServer(), fileMetadata))
-                    linker.eraseLinks(propFile);
+                        .getQueryMetadataElementName(), di.deleteFromServer(), fileMetadata)) {
+                  linker.eraseLinks(propFile);
+                }
             } catch (ToManyFailedDownloadsException e) {
                 throw new RetrievalMethodException(
                         "Connection appears to be down. . .unusual number of download failures. . .stopping : "

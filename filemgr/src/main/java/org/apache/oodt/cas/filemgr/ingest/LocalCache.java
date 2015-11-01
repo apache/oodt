@@ -117,10 +117,11 @@ public class LocalCache implements Cache {
             this.uniqueElementName = uniqueElementName;            
             this.uniqueElementProductTypeNames = uniqueElementProductTypeNames;
             List<Product> products = new Vector<Product>();
-            for (String productType : this.uniqueElementProductTypeNames)
+            for (String productType : this.uniqueElementProductTypeNames) {
                 products.addAll(getProductsOverDateRange(
                     this.rangeQueryElementName, productType, this.startOfQuery,
                     this.endOfQuery));
+            }
             clear();
             for (Product product : products) {
                 String value = getValueForMetadata(product, uniqueElementName);

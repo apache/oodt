@@ -114,8 +114,9 @@ public class SqlScript {
             boolean queryEnds;
 
             while ((line = reader.readLine()) != null) {
-                if (isComment(line))
+                if (isComment(line)) {
                     continue;
+                }
                 queryEnds = checkStatementEnds(line);
                 query.append(line);
                 if (queryEnds) {
@@ -161,8 +162,9 @@ public class SqlScript {
     }
 
     private boolean isComment(String line) {
-        if ((line != null) && (line.length() > 0))
+        if ((line != null) && (line.length() > 0)) {
             return (line.charAt(0) == '#');
+        }
         return false;
     }
 

@@ -68,8 +68,9 @@ public abstract class AbstractMetExtractor implements MetExtractor {
      * @see org.apache.oodt.cas.metadata.MetExtractor#extractMetadata(java.io.File)
      */
     public Metadata extractMetadata(File f) throws MetExtractionException {
-        if (f == null || !f.exists())
+        if (f == null || !f.exists()) {
             throw new MetExtractionException("File '" + f + "' does not exist");
+        }
         return this.extrMetadata(this.safeGetCanonicalFile(f));
     }
 

@@ -107,7 +107,9 @@ public class ParseException extends Exception {
     retval.append("Encountered \"");
     Token tok = currentToken.next;
     for (int i = 0; i < maxSize; i++) {
-      if (i != 0) retval.append(" ");
+      if (i != 0) {
+        retval.append(" ");
+      }
       if (tok.kind == 0) {
         retval.append(tokenImage[0]);
         break;

@@ -377,7 +377,9 @@ public class XML {
 	 * @throws DOMException If a DOM error occurs.
 	 */
 	public static void addNonNull(Node node, String name, String text) throws DOMException {
-		if (text == null) return;
+		if (text == null) {
+		  return;
+		}
 		add(node, name, text);
 	}
 
@@ -402,11 +404,17 @@ public class XML {
 	 * @throws DOMException If a DOM error occurs.
 	 */
 	public static void add(Node node, String name, String text) throws DOMException {
-		if (name == null) return;
-		if (node == null) throw new IllegalArgumentException("Can't add to a null node");
+		if (name == null) {
+		  return;
+		}
+		if (node == null) {
+		  throw new IllegalArgumentException("Can't add to a null node");
+		}
 		Document doc = node.getOwnerDocument();
 		Element element = doc.createElement(name);
-		if (text != null) element.appendChild(doc.createTextNode(text));
+		if (text != null) {
+		  element.appendChild(doc.createTextNode(text));
+		}
 		node.appendChild(element);
 	}
 
@@ -456,7 +464,9 @@ public class XML {
 	 * @return The text in its children, unwrapped.
 	 */
 	public static String unwrappedText(Node node) {
-		if (node == null) return null;
+		if (node == null) {
+		  return null;
+		}
 		StringBuffer buffer = new StringBuffer();
 		StringBuilder wrapped = new StringBuilder(text1(node, buffer));
 		boolean newline = false;
@@ -470,8 +480,9 @@ public class XML {
 				if (Character.isWhitespace(wrapped.charAt(i))) {
 					wrapped.deleteCharAt(i);
 					--i;
-				} else
-					newline = false;
+				} else {
+				  newline = false;
+				}
 			}
 		}
 		return wrapped.toString().trim();
@@ -560,16 +571,19 @@ public class XML {
 			// reference.  Non printables are below ASCII space but not tab or
 			// line terminator, ASCII delete, or above a certain Unicode
 			// threshold.
-			if ((ch < ' ' && ch != '\t' && ch != '\n' && ch != '\r') || ch > LAST_PRINTABLE || ch == 0xF7)
-				result.append("&#").append(Integer.toString(ch)).append(';');
-			else {
+			if ((ch < ' ' && ch != '\t' && ch != '\n' && ch != '\r') || ch > LAST_PRINTABLE || ch == 0xF7) {
+			  result.append("&#").append(Integer.toString(ch)).append(';');
+			} else {
 				// If there is a suitable entity reference for this
 				// character, print it. The list of available entity
 				// references is almost but not identical between XML and
 				// HTML.
 				charRef = getEntityRef(ch);
-				if (charRef == null) result.append(ch);
-				else                 result.append('&').append(charRef).append(';');
+				if (charRef == null) {
+				  result.append(ch);
+				} else {
+				  result.append('&').append(charRef).append(';');
+				}
 			}
 		}
 		return result.toString();
@@ -581,9 +595,9 @@ public class XML {
 	 * @param node Node to search.
 	 */
 	private static void findCommentNodes(List list, Node node) {
-		if (node.getNodeType() == Node.COMMENT_NODE)
-			list.add(node);
-		else {
+		if (node.getNodeType() == Node.COMMENT_NODE) {
+		  list.add(node);
+		} else {
 			NodeList children = node.getChildNodes();
 			for (int i = 0; i < children.getLength(); ++i) {
 				findCommentNodes(list, children.item(i));
@@ -616,10 +630,11 @@ public class XML {
 	 */
 	private static String text1(Node node, StringBuffer buffer) {
 		for (Node ch = node.getFirstChild(); ch != null; ch = ch.getNextSibling()) {
-			if (ch.getNodeType() == Node.ELEMENT_NODE || ch.getNodeType() == Node.ENTITY_REFERENCE_NODE)
-				buffer.append(text(ch));
-			else if (ch.getNodeType() == Node.TEXT_NODE)
-				buffer.append(ch.getNodeValue());
+			if (ch.getNodeType() == Node.ELEMENT_NODE || ch.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
+			  buffer.append(text(ch));
+			} else if (ch.getNodeType() == Node.TEXT_NODE) {
+			  buffer.append(ch.getNodeValue());
+			}
 		}
 		return buffer.toString();
 	}
@@ -633,12 +648,14 @@ public class XML {
 	 * @param node The tree to output.
 	 */
 	private static void dump(PrintWriter writer, Node node, int indentAmt) {
-		for (int i = 0; i < indentAmt; ++i)
-			writer.print(' ');
+		for (int i = 0; i < indentAmt; ++i) {
+		  writer.print(' ');
+		}
 		writer.println(typeOf(node) + "(" + node.getNodeName() + ", " + node.getNodeValue() + ")");
 		NodeList children = node.getChildNodes();
-		for (int i = 0; i < children.getLength(); ++i)
-			dump(writer, children.item(i), indentAmt + 2);
+		for (int i = 0; i < children.getLength(); ++i) {
+		  dump(writer, children.item(i), indentAmt + 2);
+		}
 	}
 
 	/** Return a human-readable representation of the type of the given node.

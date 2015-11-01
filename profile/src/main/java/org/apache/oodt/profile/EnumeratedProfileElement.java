@@ -64,8 +64,9 @@ public class EnumeratedProfileElement extends ProfileElement {
 	public EnumeratedProfileElement(Profile profile, String name, String id, String desc, String type, String unit,
 		List<?> synonyms, boolean obligation, int maxOccurrence, String comment, List<?> values) {
 		super(profile, name, id, desc, type, unit, synonyms, obligation, maxOccurrence, comment);
-		if (values.contains(null))
-			throw new IllegalArgumentException("Null item in 'values' not allowed for enumerated profile elements");
+		if (values.contains(null)) {
+		  throw new IllegalArgumentException("Null item in 'values' not allowed for enumerated profile elements");
+		}
 		this.values = values;
 	}
 
@@ -74,7 +75,9 @@ public class EnumeratedProfileElement extends ProfileElement {
 	}
 
 	protected void addValues(Node node) throws DOMException {
-		if (values == null) return;
+		if (values == null) {
+		  return;
+		}
 	  for (Object value : values) {
 		Element e = node.getOwnerDocument().createElement("elemValue");
 		e.appendChild(node.getOwnerDocument().createCDATASection((String) value));

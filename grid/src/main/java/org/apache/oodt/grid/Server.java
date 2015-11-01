@@ -84,9 +84,9 @@ public abstract class Server implements Serializable {
       InstantiationException, IllegalAccessException {
     List urlList = configuration.getCodeBases();
     Class clazz;
-    if (urlList.isEmpty())
+    if (urlList.isEmpty()) {
       clazz = Class.forName(className);
-    else {
+    } else {
       URL[] urls = (URL[]) urlList.toArray(new URL[urlList.size()]);
       URLClassLoader loader = new URLClassLoader(urls, getClass()
           .getClassLoader());
@@ -117,8 +117,9 @@ public abstract class Server implements Serializable {
   }
 
   public boolean equals(Object obj) {
-    if (obj == this)
+    if (obj == this) {
       return true;
+    }
     if (obj instanceof Server) {
       Server rhs = (Server) obj;
       return className.equals(rhs.className);
@@ -146,12 +147,13 @@ public abstract class Server implements Serializable {
     String className = elem.getAttribute("className");
 
     // Replace with a factory some day...
-    if ("product".equals(type))
+    if ("product".equals(type)) {
       return new ProductServer(configuration, className);
-    else if ("profile".equals(type))
+    } else if ("profile".equals(type)) {
       return new ProfileServer(configuration, className);
-    else
+    } else {
       throw new SAXException("unknown server type `" + type + "'");
+    }
   }
 
   /** Configuration. */

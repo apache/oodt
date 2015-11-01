@@ -93,8 +93,9 @@ public class HttpUtils {
 
     // Read in link
     StringBuilder sb = new StringBuilder("");
-    while (scanner.hasNext())
-      sb.append(scanner.nextLine());
+    while (scanner.hasNext()) {
+	  sb.append(scanner.nextLine());
+	}
     
     return sb.toString();
   }

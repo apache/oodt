@@ -59,8 +59,9 @@ public class MemoryJobRepository implements JobRepository {
       spec.getJob().setId(jobId);
       jobMap.put(jobId, spec);
       return jobId;
-    } else
+    } else {
       throw new JobRepositoryException("Exception persisting job: job is null!");
+    }
   }
 
   /*

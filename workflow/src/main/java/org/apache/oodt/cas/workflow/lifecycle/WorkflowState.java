@@ -70,10 +70,11 @@ public class WorkflowState {
 	}
 	
 	public boolean equals(Object obj) {
-		if (obj instanceof WorkflowState) 
-			return ((WorkflowState) obj).getName().equals(this.getName());
-		else
-			return false;
+		if (obj instanceof WorkflowState) {
+		  return ((WorkflowState) obj).getName().equals(this.getName());
+		} else {
+		  return false;
+		}
 	}
 		
 	public String toString() {

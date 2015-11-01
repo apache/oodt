@@ -77,41 +77,41 @@ public class URLGetHandler extends AbstractCrawlLister implements OFSNGetHandler
 	public void configure(Properties prop) {
 		
 		if (prop != null) {
-			if (prop.getProperty(PROD_SERVER_HOSTNAME) != null)
-				this.prodServerHostname = prop.getProperty(PROD_SERVER_HOSTNAME);
-			else { 
+			if (prop.getProperty(PROD_SERVER_HOSTNAME) != null) {
+			  this.prodServerHostname = prop.getProperty(PROD_SERVER_HOSTNAME);
+			} else {
 				LOG.warning("Configuration property ["+PROD_SERVER_HOSTNAME+"] not specified, using default");
 				this.prodServerHostname = DEFAULT_PROD_SERVER_HOSTNAME;
 			}
 			LOG.info("Property ["+PROD_SERVER_HOSTNAME+"] set with value ["+this.prodServerHostname+"]");
 			
-			if (prop.getProperty(PROD_SERVER_PORT) != null)
-				this.prodServerPort = prop.getProperty(PROD_SERVER_PORT);
-			else { 
+			if (prop.getProperty(PROD_SERVER_PORT) != null) {
+			  this.prodServerPort = prop.getProperty(PROD_SERVER_PORT);
+			} else {
 				LOG.warning("Configuration property ["+PROD_SERVER_PORT+"] not specified, using default");
 				this.prodServerPort = DEFAULT_PROD_SERVER_PORT;
 			}
 			LOG.info("Property ["+PROD_SERVER_PORT+"] set with value ["+this.prodServerPort+"]");
 			
-			if (prop.getProperty(PROD_SERVER_CONTEXT) != null)
-				this.prodServerContext = prop.getProperty(PROD_SERVER_CONTEXT);		
-			else { 
+			if (prop.getProperty(PROD_SERVER_CONTEXT) != null) {
+			  this.prodServerContext = prop.getProperty(PROD_SERVER_CONTEXT);
+			} else {
 				LOG.warning("Configuration property ["+PROD_SERVER_CONTEXT+"] not specified, using default");
 				this.prodServerContext = DEFAULT_PROD_SERVER_CONTEXT;
 			}
 			LOG.info("Property ["+PROD_SERVER_CONTEXT+"] set with value ["+this.prodServerContext+"]");
 			
-			if (prop.getProperty(PRODUCT_ROOT) != null)
-				this.productRoot = prop.getProperty(PRODUCT_ROOT);		
-			else { 
+			if (prop.getProperty(PRODUCT_ROOT) != null) {
+			  this.productRoot = prop.getProperty(PRODUCT_ROOT);
+			} else {
 				LOG.warning("Configuration property ["+PRODUCT_ROOT+"] not specified, using default");
 				this.productRoot = DEFAULT_PRODUCT_ROOT;
 			}
 			LOG.info("Property ["+PRODUCT_ROOT+"] set with value ["+this.productRoot+"]");
 			
-			if (prop.getProperty(RETURN_TYPE) != null)
-				this.returnType = prop.getProperty(RETURN_TYPE);
-			else { 
+			if (prop.getProperty(RETURN_TYPE) != null) {
+			  this.returnType = prop.getProperty(RETURN_TYPE);
+			} else {
 				LOG.warning("Configuration property ["+RETURN_TYPE+"] not specified, using default");
 				this.returnType = DEFAULT_RETURN_TYPE;
 			}

@@ -122,8 +122,9 @@ public class CatalogSearch {
             System.out.println("No product found with ID: " + filter);
             productFilter = "";
         }
-        if (!productFilter.equals(""))
+        if (!productFilter.equals("")) {
             System.out.println("Filtering for " + productFilter + " products.");
+        }
     }
 
     public static void removeFilter() {

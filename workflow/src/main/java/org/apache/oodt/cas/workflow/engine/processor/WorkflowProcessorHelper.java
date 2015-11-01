@@ -79,15 +79,19 @@ public class WorkflowProcessorHelper {
                                                                           // properties
     // =
     // " + processor.getStaticMetadata().asHashtable() + "]");
-    if (skeleton.getPreConditions() != null)
+    if (skeleton.getPreConditions() != null) {
       stringModel.append(indent).append("{PreCond:").append(indent).append("   ")
                  .append(toString(skeleton.getPreConditions(), indent + "      ")).append("}");
-    if (skeleton.getPostConditions() != null)
+    }
+    if (skeleton.getPostConditions() != null) {
       stringModel.append(indent).append("{PostCond:").append(indent).append("   ")
                  .append(toString(skeleton.getPostConditions(), indent + "      ")).append("}");
-    if (skeleton.getSubProcessors() != null)
-      for (WorkflowProcessor subProcessor : skeleton.getSubProcessors())
+    }
+    if (skeleton.getSubProcessors() != null) {
+      for (WorkflowProcessor subProcessor : skeleton.getSubProcessors()) {
         stringModel.append(indent).append(toString(subProcessor, indent + "   "));
+      }
+    }
     return stringModel.toString();
   }
 
@@ -115,16 +119,18 @@ public class WorkflowProcessorHelper {
                    ",")).append("'\n");
     stringModel.append("   - static metadata = \n");
     for (String key : skeleton.getWorkflowInstance().getSharedContext()
-        .getAllKeys())
+        .getAllKeys()) {
       stringModel.append("      + ").append(key).append(" -> '")
                  .append(StringUtils.join(skeleton.getWorkflowInstance().getSharedContext()
                                                   .getAllMetadata(key), ",")).append("'\n");
+    }
     stringModel.append("   - dynamic metadata = \n");
     for (String key : skeleton.getWorkflowInstance().getSharedContext()
-        .getAllKeys())
+        .getAllKeys()) {
       stringModel.append("      + ").append(key).append(" -> '")
                  .append(StringUtils.join(skeleton.getWorkflowInstance().getSharedContext()
                                                   .getAllMetadata(key), ",")).append("'\n");
+    }
     return stringModel.toString();
   }
 
@@ -159,12 +165,14 @@ public class WorkflowProcessorHelper {
     // need them in the PackagedWorkflowRepository, so not sure what they do.
     // wp.setExcusedSubProcessorIds(model.getGraph().getExcusedSubProcessorIds());
     wp.getWorkflowInstance().setId(instanceId);
-    if (model.getPreConditions() != null)
+    if (model.getPreConditions() != null) {
       wp.setPreConditions(buildProcessor(instanceId, model,
           modelToProcessorMap, true));
-    if (model.getPostConditions() != null)
+    }
+    if (model.getPostConditions() != null) {
       wp.setPostConditions(buildProcessor(instanceId, model,
           modelToProcessorMap, false));
+    }
     wp.getWorkflowInstance().setPriority(Priority.getDefault());
     wp.setMinReqSuccessfulSubProcessors(Integer.parseInt(model.getGraph()
         .getMinReqSuccessfulSubProcessors()));
@@ -172,24 +180,28 @@ public class WorkflowProcessorHelper {
     wp.getWorkflowInstance().setState(
         wLifecycle.createState("Loaded",
             wLifecycle.getStageForWorkflow("Loaded").getName(), ""));
-    if (wp instanceof TaskProcessor)
+    if (wp instanceof TaskProcessor) {
       ((TaskProcessor) wp)
           .setInstanceClass((Class<? extends WorkflowTaskInstance>) Class
               .forName(model.getGraph().getTask().getTaskInstanceClassName()));
+    }
     return wp;
   }
 
   public WorkflowProcessor findSkeleton(WorkflowProcessor skeleton,
       String modelId) {
     if (skeleton.getWorkflowInstance().getParentChildWorkflow().getGraph()
-        .getModelId().equals(modelId))
+        .getModelId().equals(modelId)) {
       return skeleton;
+    }
     WorkflowProcessor found = findSkeleton(skeleton.getSubProcessors(), modelId);
     if (found == null) {
-      if (skeleton.getPreConditions() != null)
+      if (skeleton.getPreConditions() != null) {
         found = findSkeleton(skeleton.getPreConditions(), modelId);
-      if (found == null && skeleton.getPostConditions() != null)
+      }
+      if (found == null && skeleton.getPostConditions() != null) {
         found = findSkeleton(skeleton.getPostConditions(), modelId);
+      }
     }
     return found;
   }
@@ -202,8 +214,9 @@ public class WorkflowProcessorHelper {
         return skeleton;
       } else {
         skeleton = findSkeleton(skeleton, modelId);
-        if (skeleton != null)
+        if (skeleton != null) {
           return skeleton;
+        }
       }
     }
     return null;
@@ -211,14 +224,17 @@ public class WorkflowProcessorHelper {
 
   public WorkflowProcessor findProcessor(WorkflowProcessor wp, String modelId) {
     if (wp.getWorkflowInstance().getParentChildWorkflow().getId()
-        .equals(modelId))
+        .equals(modelId)) {
       return wp;
+    }
     WorkflowProcessor found = findProcessor(wp.getSubProcessors(), modelId);
     if (found == null) {
-      if (wp.getPreConditions() != null)
+      if (wp.getPreConditions() != null) {
         found = findProcessor(wp.getPreConditions(), modelId);
-      if (found == null && wp.getPostConditions() != null)
+      }
+      if (found == null && wp.getPostConditions() != null) {
         found = findProcessor(wp.getPostConditions(), modelId);
+      }
     }
     return found;
   }
@@ -230,8 +246,9 @@ public class WorkflowProcessorHelper {
         return processor;
       } else {
         processor = findProcessor(processor, modelId);
-        if (processor != null)
+        if (processor != null) {
           return processor;
+        }
       }
     }
     return null;
@@ -249,10 +266,12 @@ public class WorkflowProcessorHelper {
    */
   public boolean allProcessorsSameCategory(
       List<WorkflowProcessor> workflowProcessors, String categoryName) {
-    for (WorkflowProcessor workflowProcessor : workflowProcessors)
+    for (WorkflowProcessor workflowProcessor : workflowProcessors) {
       if (!workflowProcessor.getWorkflowInstance().getState().getCategory()
-          .getName().equals(categoryName))
+                            .getName().equals(categoryName)) {
         return false;
+      }
+    }
     return true;
   }
 
@@ -312,12 +331,15 @@ public class WorkflowProcessorHelper {
       if (currentOption.getSubProcessors().isEmpty()) {
         tasks.add(currentOption);
       } else {
-        if (currentOption.getPreConditions() != null)
+        if (currentOption.getPreConditions() != null) {
           options.add(currentOption.getPreConditions());
-        if (currentOption.getPostConditions() != null)
+        }
+        if (currentOption.getPostConditions() != null) {
           options.add(currentOption.getPostConditions());
-        for (WorkflowProcessor ps : currentOption.getSubProcessors())
+        }
+        for (WorkflowProcessor ps : currentOption.getSubProcessors()) {
           options.add(ps);
+        }
       }
     }
     return tasks;
@@ -325,10 +347,12 @@ public class WorkflowProcessorHelper {
 
   public boolean containsCategory(List<WorkflowProcessor> workflowProcessors,
       String categoryName) {
-    for (WorkflowProcessor workflowProcessor : workflowProcessors)
+    for (WorkflowProcessor workflowProcessor : workflowProcessors) {
       if (workflowProcessor.getWorkflowInstance().getState().getCategory()
-          .getName().equals(categoryName))
+                           .getName().equals(categoryName)) {
         return true;
+      }
+    }
     return false;
   }
 
@@ -342,8 +366,9 @@ public class WorkflowProcessorHelper {
       } catch (Exception ignored) {
       }
     }
-    if (host == null)
+    if (host == null) {
       return "Unknown";
+    }
     return host;
   }
   
@@ -352,8 +377,9 @@ public class WorkflowProcessorHelper {
         && processor.getWorkflowInstance().getParentChildWorkflow() != null) {
       return processor.getLifecycleManager().getLifecycleForWorkflow(
           processor.getWorkflowInstance().getParentChildWorkflow());
-    } else
+    } else {
       return processor.getLifecycleManager().getDefaultLifecycle();
+    }
   }
 
   private WorkflowLifecycle getLifecycle(ParentChildWorkflow model) {

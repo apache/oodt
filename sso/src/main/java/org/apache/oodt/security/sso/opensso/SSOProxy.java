@@ -183,8 +183,9 @@ public class SSOProxy implements SSOMetKeys {
 
     try {
       while ((line = br.readLine()) != null) {
-        if (line.equals(IDENTITY_DETAILS_ATTR_SKIP_LINE))
+        if (line.equals(IDENTITY_DETAILS_ATTR_SKIP_LINE)) {
           continue;
+        }
         String key, val;
         if (line.startsWith(IDENTITY_DETAILS_REALM)) {
           // can't parse it the same way

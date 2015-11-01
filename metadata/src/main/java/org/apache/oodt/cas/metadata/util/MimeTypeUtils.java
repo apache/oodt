@@ -104,8 +104,9 @@ public final class MimeTypeUtils {
      *         mime type.
      */
     public static String cleanMimeType(String origType) {
-        if (origType == null)
+        if (origType == null) {
             return null;
+        }
 
         // take the origType and split it on ';'
         String[] tokenizedMimeType = origType.split(SEPARATOR);
@@ -310,10 +311,11 @@ public final class MimeTypeUtils {
     public String getSuperTypeForMimeType(String mimeType) {
     	try {
     		MediaType mediaType = this.mimeTypes.getMediaTypeRegistry().getSupertype(this.mimeTypes.forName(mimeType).getType());
-    		if (mediaType != null)
-    			return mediaType.getType() + "/" + mediaType.getSubtype();
-    		else
-    			return null;
+    		if (mediaType != null) {
+                return mediaType.getType() + "/" + mediaType.getSubtype();
+            } else {
+                return null;
+            }
     	}catch (Exception e) {
     		LOG.log(Level.WARNING, "Failed to get super-type for mimetype " 
     				+ mimeType + " : " + e.getMessage());

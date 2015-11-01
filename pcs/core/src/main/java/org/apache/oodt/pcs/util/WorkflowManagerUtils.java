@@ -73,8 +73,9 @@ public class WorkflowManagerUtils {
   }
 
   public List<WorkflowInstance> safeGetWorkflowInstances() {
-    if (!isConnected())
+    if (!isConnected()) {
       return Collections.EMPTY_LIST;
+    }
 
     try {
       return this.client.getWorkflowInstances();

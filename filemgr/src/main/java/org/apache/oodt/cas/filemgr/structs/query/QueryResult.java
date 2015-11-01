@@ -76,46 +76,58 @@ public class QueryResult {
     }
     
     private static String convertMetadataToString(Metadata metadata, String format) {
-        if (format == null)
-            return concatMetadataIntoString(metadata);
+        if (format == null) {
+          return concatMetadataIntoString(metadata);
+        }
         String outputString = format;
-        for (String key : metadata.getAllKeys())
-            outputString = outputString.replaceAll("\\$" + key,
-                StringUtils.collectionToCommaDelimitedString(metadata.getAllMetadata(key)));
+        for (String key : metadata.getAllKeys()) {
+          outputString = outputString.replaceAll("\\$" + key,
+              StringUtils.collectionToCommaDelimitedString(metadata.getAllMetadata(key)));
+        }
         return outputString;
     }
     
     private static String concatMetadataIntoString(Metadata metadata) {
         List<String> outputString = new ArrayList<String>();
-        for (String key : metadata.getAllKeys())
-            outputString.add(StringUtils.collectionToCommaDelimitedString(metadata.getAllMetadata(key)));
+        for (String key : metadata.getAllKeys()) {
+          outputString.add(StringUtils.collectionToCommaDelimitedString(metadata.getAllMetadata(key)));
+        }
         return StringUtils.collectionToCommaDelimitedString(outputString);
     }
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       QueryResult other = (QueryResult) obj;
       if (metadata == null) {
-        if (other.metadata != null)
+        if (other.metadata != null) {
           return false;
-      } else if (!metadata.equals(other.metadata))
+        }
+      } else if (!metadata.equals(other.metadata)) {
         return false;
+      }
       if (product == null) {
-        if (other.product != null)
+        if (other.product != null) {
           return false;
-      } else if (!product.equals(other.product))
+        }
+      } else if (!product.equals(other.product)) {
         return false;
+      }
       if (toStringFormat == null) {
-        if (other.toStringFormat != null)
+        if (other.toStringFormat != null) {
           return false;
-      } else if (!toStringFormat.equals(other.toStringFormat))
+        }
+      } else if (!toStringFormat.equals(other.toStringFormat)) {
         return false;
+      }
       return true;
     }
 

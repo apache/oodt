@@ -143,8 +143,9 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 	public Map<TransactionId<?>, List<TermBucket>> getBuckets(
 			List<TransactionId<?>> transactionIds) throws QueryServiceException {
 		Map<TransactionId<?>, List<TermBucket>> returnMap = new HashMap<TransactionId<?>, List<TermBucket>>();
-		for (TransactionId<?> transactionId : transactionIds) 
-			returnMap.put(transactionId, this.getBuckets(transactionId));
+		for (TransactionId<?> transactionId : transactionIds) {
+		  returnMap.put(transactionId, this.getBuckets(transactionId));
+		}
 		return returnMap;
 	}
 
@@ -161,8 +162,11 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 			rs = stmt.executeQuery(sqlQuery);
 			
 			List<IngestReceipt> receipts = new Vector<IngestReceipt>();
-			while (rs.next()) 
-                receipts.add(new IngestReceipt(new LongTransactionIdFactory().createTransactionId(rs.getString("workflow_instance_id")), DateConvert.isoParse(rs.getString("start_date_time"))));
+			while (rs.next()) {
+			  receipts.add(new IngestReceipt(
+				  new LongTransactionIdFactory().createTransactionId(rs.getString("workflow_instance_id")),
+				  DateConvert.isoParse(rs.getString("start_date_time"))));
+			}
 			return receipts;
 		}catch (Exception e) {
 			throw new QueryServiceException("Failed to query Workflow Instances Database : " + e.getMessage(), e);
@@ -192,9 +196,14 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 			
 			List<IngestReceipt> receipts = new Vector<IngestReceipt>();
 			int index = 0;
-			while (startIndex > index && rs.next()) index++;
-			while (rs.next() && index++ <= endIndex) 
-				receipts.add(new IngestReceipt(new LongTransactionIdFactory().createTransactionId(rs.getString("workflow_instance_id")), DateConvert.isoParse(rs.getString("start_date_time"))));
+			while (startIndex > index && rs.next()) {
+			  index++;
+			}
+			while (rs.next() && index++ <= endIndex) {
+			  receipts.add(new IngestReceipt(
+				  new LongTransactionIdFactory().createTransactionId(rs.getString("workflow_instance_id")),
+				  DateConvert.isoParse(rs.getString("start_date_time"))));
+			}
 			return receipts;
 		}catch (Exception e) {
 			throw new QueryServiceException("Failed to query Workflow Instances Database : " + e.getMessage(), e);
@@ -224,8 +233,9 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 			rs = stmt.executeQuery(sqlQuery);
 
 			int numInstances = 0;
-			while (rs.next())
-				numInstances = rs.getInt("numInstances");
+			while (rs.next()) {
+			  numInstances = rs.getInt("numInstances");
+			}
 
 			return numInstances;
 		} catch (Exception e) {
@@ -254,8 +264,9 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
         	QueryLogicalGroup qlg = (QueryLogicalGroup) queryExpression;
             sqlQuery.append("(").append(this.getSqlQuery(qlg.getExpressions().get(0)));
             String op = qlg.getOperator() == QueryLogicalGroup.Operator.AND ? "INTERSECT" : "UNION";
-            for (int i = 1; i < qlg.getExpressions().size(); i++) 
-                sqlQuery.append(") ").append(op).append(" (").append(this.getSqlQuery(qlg.getExpressions().get(i)));
+            for (int i = 1; i < qlg.getExpressions().size(); i++) {
+			  sqlQuery.append(") ").append(op).append(" (").append(this.getSqlQuery(qlg.getExpressions().get(i)));
+			}
             sqlQuery.append(")");
         }else if (queryExpression instanceof ComparisonQueryExpression){
         	ComparisonQueryExpression cqe = (ComparisonQueryExpression) queryExpression;
@@ -281,8 +292,9 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
         		String value = cqe.getTerm().getValues().get(i);
                 sqlQuery.append("workflow_met_val ").append(operator).append(" '")
 						.append(URLEncoder.encode(value, "UTF-8")).append("'");
-	            if ((i + 1) < cqe.getTerm().getValues().size())
-	            	sqlQuery.append("OR");
+	            if ((i + 1) < cqe.getTerm().getValues().size()) {
+				  sqlQuery.append("OR");
+				}
         	}
         	sqlQuery.append(")");
         }else if (queryExpression instanceof NotQueryExpression) {

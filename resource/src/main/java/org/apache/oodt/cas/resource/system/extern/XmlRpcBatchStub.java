@@ -162,16 +162,18 @@ public class XmlRpcBatchStub {
                                     + "]: killed: exiting gracefully");
                 synchronized (jobThreadMap) {
                     Thread endThread = (Thread) jobThreadMap.get(job.getId());
-                    if (endThread != null)
+                    if (endThread != null) {
                         endThread = null;
+                    }
                 }
                 return false;
             }
 
             synchronized (jobThreadMap) {
                 Thread endThread = (Thread) jobThreadMap.get(job.getId());
-                if (endThread != null)
+                if (endThread != null) {
                     endThread = null;
+                }
             }
 
             return runner.wasSuccessful();
@@ -198,11 +200,12 @@ public class XmlRpcBatchStub {
 
         XmlRpcBatchStub stub = new XmlRpcBatchStub(portNum);
 
-        for (;;)
+        for (;;) {
             try {
                 Thread.currentThread().join();
             } catch (InterruptedException ignore) {
             }
+        }
     }
 
     private class RunnableJob implements Runnable {

@@ -77,15 +77,18 @@ public class RMIContext implements Context {
 	* @param environment Its environment, currently unused.
 	*/
 	private void initEnv(Hashtable environment) {
-		if (environment == null)
-                        throw new IllegalArgumentException("Nonnull environment required");
+		if (environment == null) {
+		  throw new IllegalArgumentException("Nonnull environment required");
+		}
                 this.environment = (Hashtable) environment.clone();
         }
 
 	public Object lookup(String name) throws NamingException {
 		checkName(name);
 		name = toRMIName(name);
-		if (name.length() == 0) return new RMIContext(environment);
+		if (name.length() == 0) {
+		  return new RMIContext(environment);
+		}
 		Registry registry = getRegistry();
 		try {
 			return registry.lookup(name);
@@ -157,8 +160,9 @@ public class RMIContext implements Context {
 	}
 
 	public NamingEnumeration list(String name) throws NamingException {
-		if (name.length() > 0) 
-			throw new NotContextException("Subcontexts not supported");
+		if (name.length() > 0) {
+		  throw new NotContextException("Subcontexts not supported");
+		}
 				
 		final Iterator i = getCurrentBindings().iterator();
 		return new NamingEnumeration() {
@@ -195,8 +199,9 @@ public class RMIContext implements Context {
 	}
 
 	public NamingEnumeration listBindings(String name) throws NamingException {
-		if (name.length() > 0) 
-			throw new NotContextException("Subcontexts not supported");
+		if (name.length() > 0) {
+		  throw new NotContextException("Subcontexts not supported");
+		}
 		final Iterator i = getCurrentBindings().iterator();
 		return new NamingEnumeration() {
 			public void close() {}
@@ -270,17 +275,23 @@ public class RMIContext implements Context {
 	}
 
 	public Object addToEnvironment(String propName, Object propVal) throws NamingException {
-		if (environment == null) environment = new Hashtable();
+		if (environment == null) {
+		  environment = new Hashtable();
+		}
 		return environment.put(propName, propVal);
 	}
 
 	public Object removeFromEnvironment(String propName) throws NamingException {
-		if (environment == null) return null;
+		if (environment == null) {
+		  return null;
+		}
 		return environment.remove(propName);
 	}
 
 	public Hashtable getEnvironment() throws NamingException {
-		if (environment == null) return new Hashtable();
+		if (environment == null) {
+		  return new Hashtable();
+		}
 		return (Hashtable) environment.clone();
 	}
 
@@ -315,11 +326,15 @@ public class RMIContext implements Context {
 	 * @return rmiregistry name.
 	 */
 	private String toRMIName(String name) {
-		if (name == null) return "";
-		if (name.startsWith("urn:eda:rmi:"))
-			return name.substring(12);
-		if (name.startsWith("rmi:"))
-			return name.substring(4);
+		if (name == null) {
+		  return "";
+		}
+		if (name.startsWith("urn:eda:rmi:")) {
+		  return name.substring(12);
+		}
+		if (name.startsWith("rmi:")) {
+		  return name.substring(4);
+		}
 		return name;
 	}
 
@@ -330,7 +345,9 @@ public class RMIContext implements Context {
 	 * @throws NamingException if an error occurs.
 	 */
 	private Registry getRegistry() throws NamingException {
-		if (registry != null) return registry;
+		if (registry != null) {
+		  return registry;
+		}
 		try {
 			String host = environment.containsKey("host")? (String) environment.get("host") : "localhost";
 			int port = environment.containsKey("port")? (Integer) environment.get("port")
@@ -354,12 +371,15 @@ public class RMIContext implements Context {
 	 * @throws InvalidNameException If <var>name</var>'s not an RMI object context name.
 	 */
 	private void checkName(String name) throws InvalidNameException {
-		if (name == null)
-			throw new IllegalArgumentException("Can't check a null name");
-		if (name.length() == 0)
-			throw new InvalidNameException("Name's length is zero");
-		if (!name.startsWith("urn:eda:rmi:"))
-			throw new InvalidNameException("Not an RMI name; try urn:eda:rmi:yadda-yadda");
+		if (name == null) {
+		  throw new IllegalArgumentException("Can't check a null name");
+		}
+		if (name.length() == 0) {
+		  throw new InvalidNameException("Name's length is zero");
+		}
+		if (!name.startsWith("urn:eda:rmi:")) {
+		  throw new InvalidNameException("Not an RMI name; try urn:eda:rmi:yadda-yadda");
+		}
 	}
 
 	/** Context's environment; currently unused. */

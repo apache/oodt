@@ -108,10 +108,11 @@ public class Log {
 	 * @return A writer with which you can log messages.
 	 */
 	public static LogWriter get() {
-		if (lastWriter != null && !lastWriter.isFlushed())
-			return lastWriter;
-		else
-			return get(new Date(), getDefaultSource(), getDefaultCategory());
+		if (lastWriter != null && !lastWriter.isFlushed()) {
+		  return lastWriter;
+		} else {
+		  return get(new Date(), getDefaultSource(), getDefaultCategory());
+		}
 	}
 
 	/** Get a writer to log messages.
@@ -154,8 +155,9 @@ public class Log {
 		LogEvent event = null;
 		for (Enumeration e = listeners.elements(); e.hasMoreElements();) {
 			// Lazily create the event.
-			if (event == null)
-				event = new LogEvent(stream, timestamp, source);
+			if (event == null) {
+			  event = new LogEvent(stream, timestamp, source);
+			}
 			((LogListener) e.nextElement()).streamStarted(event);
 		}
 	}
@@ -170,8 +172,9 @@ public class Log {
 		LogEvent event = null;
 		for (Enumeration e = listeners.elements(); e.hasMoreElements();) {
 			// Lazily create the event.
-			if (event == null)
-				event = new LogEvent(stream);
+			if (event == null) {
+			  event = new LogEvent(stream);
+			}
 			((LogListener) e.nextElement()).streamStopped(event);
 		}
 	}
@@ -190,8 +193,9 @@ public class Log {
 		LogEvent event = null;
 		for (Enumeration e = listeners.elements(); e.hasMoreElements();) {
 			// Lazily create the event.
-			if (event == null)
-				event = new LogEvent(timestamp, source, category, message);
+			if (event == null) {
+			  event = new LogEvent(timestamp, source, category, message);
+			}
 			((LogListener) e.nextElement()).messageLogged(event);
 		}
 	}
@@ -203,8 +207,9 @@ public class Log {
 	 * @param source The new default source label.
 	 */
 	public static void setDefaultSource(String source) {
-		if (source == null)
-			throw new IllegalArgumentException("Can't set a null default source");
+		if (source == null) {
+		  throw new IllegalArgumentException("Can't set a null default source");
+		}
 		defaultSource = source;
 	}
 
@@ -223,8 +228,9 @@ public class Log {
 	 * @param category The new default category object.
 	 */
 	public static void setDefaultCategory(Object category) {
-		if (category == null)
-			throw new IllegalArgumentException("Can't set a null default category");
+		if (category == null) {
+		  throw new IllegalArgumentException("Can't set a null default category");
+		}
 		defaultCategory = category;
 	}
 
@@ -244,8 +250,9 @@ public class Log {
 	 * @param listener The listener to add.
 	 */
 	public static void addLogListener(LogListener listener) {
-		if (listener == null)
-			throw new IllegalArgumentException("Can't add a null log listener");
+		if (listener == null) {
+		  throw new IllegalArgumentException("Can't add a null log listener");
+		}
 		listeners.addElement(listener);
 	}
 
@@ -256,8 +263,9 @@ public class Log {
 	 * @param listener The listener to remove.
 	 */
 	public static void removeLogListener(LogListener listener) {
-		if (listener == null)
-			throw new IllegalArgumentException("Can't remove a null log listener");
+		if (listener == null) {
+		  throw new IllegalArgumentException("Can't remove a null log listener");
+		}
 		listeners.removeElement(listener);
 	}
 

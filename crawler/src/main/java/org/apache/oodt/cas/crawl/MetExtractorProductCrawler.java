@@ -60,8 +60,9 @@ public class MetExtractorProductCrawler extends ProductCrawler {
         if (this.getPreCondIds() != null) {
             for (String preCondId : this.getPreCondIds()) {
                 if (!((PreConditionComparator<?>) this.getApplicationContext()
-                        .getBean(preCondId)).passes(product))
-                    return false;
+                        .getBean(preCondId)).passes(product)) {
+                  return false;
+                }
             }
         }
         return product.exists() && product.length() > 0;
@@ -89,8 +90,9 @@ public class MetExtractorProductCrawler extends ProductCrawler {
             IllegalAccessException, ClassNotFoundException {
         this.metExtractor = (MetExtractor) Class.forName(metExtractor)
                 .newInstance();
-        if (metExtractorConfig != null && !metExtractorConfig.equals(""))
-            this.metExtractor.setConfigFile(metExtractorConfig);
+        if (metExtractorConfig != null && !metExtractorConfig.equals("")) {
+          this.metExtractor.setConfigFile(metExtractorConfig);
+        }
     }
 
     @Required
@@ -98,8 +100,9 @@ public class MetExtractorProductCrawler extends ProductCrawler {
             throws MetExtractionException {
         this.metExtractorConfig = metExtractorConfig;
         if (this.metExtractor != null && metExtractorConfig != null
-                && !metExtractorConfig.equals(""))
-            this.metExtractor.setConfigFile(metExtractorConfig);
+                && !metExtractorConfig.equals("")) {
+          this.metExtractor.setConfigFile(metExtractorConfig);
+        }
     }
 
     public List<String> getPreCondIds() {

@@ -192,8 +192,9 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
                 if ((timeTilNextRun = Daemon.this.calculateTimeTilNextRun()) != 0
                     && !(Daemon.this.beforeToday(daemonInfo
                     .getFirstRunDateTime()) && daemonInfo
-                             .runOnReboot()))
+                             .runOnReboot())) {
                     sleep(timeTilNextRun);
+                }
 
                 for (keepRunning = true; keepRunning;) {
                     long startTime = System.currentTimeMillis();
@@ -262,11 +263,11 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
         GregorianCalendar gcStartDateTime = new GregorianCalendar();
         gcStartDateTime.setTime(daemonInfo.getFirstRunDateTime());
         long diff = now.getTimeInMillis() - gcStartDateTime.getTimeInMillis();
-        if (Math.abs(diff) <= daemonInfo.getEpsilonInMilliseconds())
+        if (Math.abs(diff) <= daemonInfo.getEpsilonInMilliseconds()) {
             return 0;
-        else if (diff < 0)
+        } else if (diff < 0) {
             return gcStartDateTime.getTimeInMillis() - now.getTimeInMillis();
-        else if (daemonInfo.getTimeIntervalInMilliseconds() == 0) {
+        } else if (daemonInfo.getTimeIntervalInMilliseconds() == 0) {
             return 0;
         } else {
             int numOfPeriods = (int) (diff / daemonInfo
@@ -283,13 +284,15 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
     }
 
     private void notifyDaemonListenerOfStart() {
-        if (this.daemonListener != null)
+        if (this.daemonListener != null) {
             this.daemonListener.daemonStarting(this);
+        }
     }
 
     private void notifyDaemonListenerOfFinish() {
-        if (this.daemonListener != null)
+        if (this.daemonListener != null) {
             this.daemonListener.daemonFinished(this);
+        }
     }
 
     private void sleep(long length) {
@@ -457,8 +460,9 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
     public String getQueryMetadataElementName() {
         String element = this.daemonInfo.getDataFilesInfo()
                                         .getQueryMetadataElementName();
-        if (element == null || element.equals(""))
+        if (element == null || element.equals("")) {
             element = "Filename";
+        }
         return this.daemonInfo.getDataFilesInfo().getQueryMetadataElementName();
     }
 
@@ -541,10 +545,11 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
             boolean waitForCrawlNotification = false;
 
             for (int i = 0; i < args.length; ++i) {
-                if (args[i].equals("--rmiPort"))
+                if (args[i].equals("--rmiPort")) {
                     rmiPort = Integer.parseInt(args[++i]);
-                else if (args[i].equals("--waitForNotification"))
+                } else if (args[i].equals("--waitForNotification")) {
                     waitForCrawlNotification = true;
+                }
             }
 
             LocateRegistry.createRegistry(rmiPort);

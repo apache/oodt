@@ -68,10 +68,11 @@ public class DataFileToPropFileLinker implements DownloadListener {
 
     public synchronized void markAsFailed(File propFile, String errorMsg) {
         String errors = this.propFileToErrorsMap.get(propFile);
-        if (errors == null)
-            this.propFileToErrorsMap.put(propFile, errorMsg);
-        else
-            this.propFileToErrorsMap.put(propFile, errors + "," + errorMsg);
+        if (errors == null) {
+          this.propFileToErrorsMap.put(propFile, errorMsg);
+        } else {
+          this.propFileToErrorsMap.put(propFile, errors + "," + errorMsg);
+        }
     }
 
     public synchronized void markAsFailed(ProtocolFile pFile, String errorMsg) {
@@ -82,10 +83,11 @@ public class DataFileToPropFileLinker implements DownloadListener {
         File propFile = this.protocolFilePathAndPropFileMap.get(pFilePath);
         if (propFile != null) {
             String errors = this.propFileToErrorsMap.get(propFile);
-            if (errors == null)
-                this.propFileToErrorsMap.put(propFile, errorMsg);
-            else
-                this.propFileToErrorsMap.put(propFile, errors + "," + errorMsg);
+            if (errors == null) {
+              this.propFileToErrorsMap.put(propFile, errorMsg);
+            } else {
+              this.propFileToErrorsMap.put(propFile, errors + "," + errorMsg);
+            }
         }
     }
 
@@ -97,11 +99,14 @@ public class DataFileToPropFileLinker implements DownloadListener {
     public synchronized void eraseLinks(File propFile) {
         LinkedList<String> keysToRemove = new LinkedList<String>();
         for (Entry<String, File> entry : this.protocolFilePathAndPropFileMap
-                .entrySet())
-            if (entry.getValue().equals(propFile))
-                keysToRemove.add(entry.getKey());
-        for (String key : keysToRemove)
-            this.protocolFilePathAndPropFileMap.remove(key);
+                .entrySet()) {
+          if (entry.getValue().equals(propFile)) {
+            keysToRemove.add(entry.getKey());
+          }
+        }
+        for (String key : keysToRemove) {
+          this.protocolFilePathAndPropFileMap.remove(key);
+        }
     }
 
     public synchronized String getErrors(File propFile) {
@@ -145,8 +150,9 @@ public class DataFileToPropFileLinker implements DownloadListener {
             File propFile, LinkedList<ProtocolFile> list) {
         LinkedList<ProtocolFile> returnList = new LinkedList<ProtocolFile>();
         for (ProtocolFile pFile : list) {
-            if (this.protocolFilePathAndPropFileMap.get(pFile.getPath()) != null)
-                returnList.add(pFile);
+            if (this.protocolFilePathAndPropFileMap.get(pFile.getPath()) != null) {
+              returnList.add(pFile);
+            }
         }
         return returnList;
     }

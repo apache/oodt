@@ -57,15 +57,17 @@ public class OFSNFileHandlerConfiguration {
   public String getHandlerType(String handlerName) {
     if (this.handlerTable.containsKey(handlerName)) {
       return this.handlerTable.get(handlerName).getType();
-    } else
+    } else {
       return null;
+    }
   }
 
   public String getHandlerClass(String handlerName) {
     if (this.handlerTable.containsKey(handlerName)) {
       return this.handlerTable.get(handlerName).getClassName();
-    } else
+    } else {
       return null;
+    }
   }
 
   public List<OFSNHandlerConfig> getHandlerConfigs() {

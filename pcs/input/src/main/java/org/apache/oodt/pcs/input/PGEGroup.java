@@ -155,57 +155,65 @@ public class PGEGroup {
   public PGEScalar getScalar(String name) {
     if (this.scalars != null) {
       return this.scalars.get(name);
-    } else
+    } else {
       return null;
+    }
   }
 
   public PGEVector getVector(String name) {
     if (this.vectors != null) {
       return this.vectors.get(name);
-    } else
+    } else {
       return null;
+    }
   }
 
   public PGEMatrix getMatrix(String name) {
     if (this.matrixs != null) {
       return this.matrixs.get(name);
-    } else
+    } else {
       return null;
+    }
   }
 
   public PGEGroup getGroup(String name) {
     if (this.groups != null) {
       return this.groups.get(name);
-    } else
+    } else {
       return null;
+    }
   }
 
   public int getNumScalars() {
     if (this.scalars != null) {
       return this.scalars.size();
-    } else
+    } else {
       return 0;
+    }
   }
 
   public int getNumVectors() {
     if (this.vectors != null) {
       return this.vectors.size();
-    } else
+    } else {
       return 0;
+    }
   }
 
   public int getNumMatrixs() {
     if (this.matrixs != null) {
       return this.matrixs.size();
-    } else
+    } else {
       return 0;
+    }
   }
 
   public int getNumGroups() {
     if (this.groups != null) {
       return this.groups.size();
-    } else
+    } else {
       return 0;
+    }
   }
 
 }

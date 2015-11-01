@@ -89,8 +89,9 @@ public class TaskProcessor extends WorkflowProcessor {
         calendar.setTime(this.getWorkflowInstance().getState().getStartTime());
         long elapsedTime = ((System.currentTimeMillis() - calendar
             .getTimeInMillis()) / 1000) / 60;
-        if (elapsedTime >= requiredBlockTimeElapse)
+        if (elapsedTime >= requiredBlockTimeElapse) {
           tps.add(this);
+        }
       } else if (this.isAnyState("Loaded", "Queued", "PreConditionSuccess") && 
           !this.isAnyState("Executing") && this.passedPreConditions()){
         tps.add(this);

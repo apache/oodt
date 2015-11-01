@@ -63,8 +63,9 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
                     .getAttribute(WORKING_DIR_ATTR)));
             String metFileExt = PathUtils.replaceEnvVariables(execElement
                     .getAttribute(MET_FILE_EXT_ATTR));
-            if (!metFileExt.equals(""))
-                config.setMetFileExt(metFileExt);
+            if (!metFileExt.equals("")) {
+              config.setMetFileExt(metFileExt);
+            }
             Element binPathElem = XMLUtils.getFirstElement(
                     EXTRACTOR_BIN_PATH_TAG, execElement);
             String binPath = XMLUtils.getSimpleElementText(binPathElem);
@@ -91,19 +92,21 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
                         String argStr;
                         if (Boolean.valueOf(
                             argElem.getAttribute(IS_DATA_FILE_ATTR)
-                                   .toLowerCase()))
-                            argStr = DATA_FILE_PLACE_HOLDER;
-                        else if (Boolean.valueOf(
+                                   .toLowerCase())) {
+                          argStr = DATA_FILE_PLACE_HOLDER;
+                        } else if (Boolean.valueOf(
                             argElem.getAttribute(IS_MET_FILE_ATTR)
-                                   .toLowerCase()))
-                            argStr = MET_FILE_PLACE_HOLDER;
-                        else
-                            argStr = XMLUtils.getSimpleElementText(argElem);
+                                   .toLowerCase())) {
+                          argStr = MET_FILE_PLACE_HOLDER;
+                        } else {
+                          argStr = XMLUtils.getSimpleElementText(argElem);
+                        }
 
                         String appendExt;
                         if (!(appendExt = argElem.getAttribute(APPEND_EXT_ATTR))
-                                .equals(""))
-                            argStr += "." + appendExt;
+                                .equals("")) {
+                          argStr += "." + appendExt;
+                        }
 
                         if (Boolean.valueOf(
                             argElem.getAttribute(ENV_REPLACE_ATTR))) {

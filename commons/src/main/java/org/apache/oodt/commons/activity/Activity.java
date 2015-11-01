@@ -47,7 +47,9 @@ public abstract class Activity {
 	 * @param id New ID.
 	 */
 	public void setID(String id) {
-		if (id == null) throw new IllegalArgumentException("ID required");
+		if (id == null) {
+		  throw new IllegalArgumentException("ID required");
+		}
 		this.id = id;
 	}
 
@@ -65,7 +67,9 @@ public abstract class Activity {
 	 * further incidents may be logged after calling this method.
 	 */
 	public synchronized void stop() {
-		if (!started) return;
+		if (!started) {
+		  return;
+		}
 		this.started = false;
 		log(new ActivityStopped());
 	}

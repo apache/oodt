@@ -90,8 +90,9 @@ public abstract class Executable {
 		}.start();
 
 		// Spin until the process field is set.
-		while (process == null)
-			Thread.yield();
+		while (process == null) {
+		  Thread.yield();
+		}
 	}
 
 	/** Wait for the process to terminate.

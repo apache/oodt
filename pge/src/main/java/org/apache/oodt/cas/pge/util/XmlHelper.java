@@ -443,17 +443,19 @@ public class XmlHelper {
 		try {
 			while ((value = PathUtils
 					.doDynamicReplacement(value, inputMetadata)).contains("[")
-					&& envReplaceRecur)
-				;
+					&& envReplaceRecur) {
+			  ;
+			}
 			if (value.toUpperCase().matches(
-					"^\\s*SQL\\s*\\(.*\\)\\s*\\{.*\\}\\s*$"))
-				value = QueryUtils
-						.getQueryResultsAsString(new XmlRpcFileManagerClient(
-								new URL(inputMetadata
-										.getMetadata(QUERY_FILE_MANAGER_URL
-												.getName())))
-								.complexQuery(SqlParser
-										.parseSqlQueryMethod(value)));
+					"^\\s*SQL\\s*\\(.*\\)\\s*\\{.*\\}\\s*$")) {
+			  value = QueryUtils
+				  .getQueryResultsAsString(new XmlRpcFileManagerClient(
+					  new URL(inputMetadata
+						  .getMetadata(QUERY_FILE_MANAGER_URL
+							  .getName())))
+					  .complexQuery(SqlParser
+						  .parseSqlQueryMethod(value)));
+			}
 			return value;
 		} catch (Exception e) {
 			throw new PGEException("Failed to parse value: " + value, e);

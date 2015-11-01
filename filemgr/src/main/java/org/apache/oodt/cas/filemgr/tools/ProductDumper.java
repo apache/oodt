@@ -173,8 +173,9 @@ public final class ProductDumper {
         ProductDumper dumper = new ProductDumper(fileManagerUrlStr);
         if (outDirPath != null) {
             dumper.dumpProduct(productId, outDirPath);
-        } else
+        } else {
             dumper.dumpProduct(productId);
+        }
     }
 
 }

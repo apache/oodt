@@ -67,10 +67,12 @@ public class SerializedCatalogRepository implements CatalogRepository {
 			throws CatalogRepositoryException {
 		LOG.log(Level.INFO, "Deleting Catalog: '" + catalogUrn + "' . . . ");
 		boolean catalogFileDelete = this.getCatalogFile(catalogUrn).delete();
-		if (!catalogFileDelete)
-			throw new CatalogRepositoryException("Failed to deserialize catalog '" + catalogUrn + "', delete files returned false");
-		else 
-			LOG.log(Level.INFO, "Successfully deleting Catalog: '" + catalogUrn + "'");
+		if (!catalogFileDelete) {
+		  throw new CatalogRepositoryException(
+			  "Failed to deserialize catalog '" + catalogUrn + "', delete files returned false");
+		} else {
+		  LOG.log(Level.INFO, "Successfully deleting Catalog: '" + catalogUrn + "'");
+		}
 	}
 
 	/*
@@ -125,8 +127,9 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		try {
 			//serialize Catalog
 			new Serializer().serializeObject(catalog, (catalogOut = new FileOutputStream(this.getCatalogFileWorker(catalog.getId()))));
-			if (this.getCatalogFile(catalog.getId()).exists())
-				FileUtils.copyFile(this.getCatalogFile(catalog.getId()), this.getCatalogFileBkup(catalog.getId()), true);
+			if (this.getCatalogFile(catalog.getId()).exists()) {
+			  FileUtils.copyFile(this.getCatalogFile(catalog.getId()), this.getCatalogFileBkup(catalog.getId()), true);
+			}
 			FileUtils.copyFile(this.getCatalogFileWorker(catalog.getId()), this.getCatalogFile(catalog.getId()), true);
 			this.getCatalogFileWorker(catalog.getId()).delete();
 			this.getCatalogFileBkup(catalog.getId()).delete();
@@ -145,8 +148,9 @@ public class SerializedCatalogRepository implements CatalogRepository {
 		try {
 			//serialize URLs
 			new Serializer().serializeObject(urls, (urlsOut = new FileOutputStream(this.getClassLoaderUrlsFileWorker())));
-			if (this.getClassLoaderUrlsFile().exists())
-				FileUtils.copyFile(this.getClassLoaderUrlsFile(), this.getClassLoaderUrlsFileBkup(), true);
+			if (this.getClassLoaderUrlsFile().exists()) {
+			  FileUtils.copyFile(this.getClassLoaderUrlsFile(), this.getClassLoaderUrlsFileBkup(), true);
+			}
 			FileUtils.copyFile(this.getClassLoaderUrlsFileWorker(), this.getClassLoaderUrlsFile(), true);
 			this.getClassLoaderUrlsFileWorker().delete();
 			this.getClassLoaderUrlsFileBkup().delete();
@@ -162,10 +166,12 @@ public class SerializedCatalogRepository implements CatalogRepository {
 	public List<PluginURL> deserializePluginURLs() throws CatalogRepositoryException {
 		FileInputStream urlsIn = null;
 		try {
-			if (this.getClassLoaderUrlsFile().exists())
-				return new Serializer().deserializeObject(List.class, (urlsIn = new FileInputStream(this.getClassLoaderUrlsFile())));
-			else
-				return Collections.emptyList();
+			if (this.getClassLoaderUrlsFile().exists()) {
+			  return new Serializer()
+				  .deserializeObject(List.class, (urlsIn = new FileInputStream(this.getClassLoaderUrlsFile())));
+			} else {
+			  return Collections.emptyList();
+			}
 		}catch (Exception e) {
 			throw new CatalogRepositoryException("Failed to Deserialized All ClassLoader URLs from '" + this.storageDir + "' : " + e.getMessage(), e);
 		}finally {

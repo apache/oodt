@@ -66,10 +66,11 @@ public class SiteInfo {
         LinkedList<RemoteSite> remoteSites = new LinkedList<RemoteSite>();
         if (alias != null) {
             RemoteSite rs = this.aliasAndRemoteSite.get(alias);
-            if (rs != null)
-                remoteSites.add(rs);
-            else if (url != null && username != null & password != null)
-                remoteSites.add(new RemoteSite(alias, url, username, password));
+            if (rs != null) {
+              remoteSites.add(rs);
+            } else if (url != null && username != null & password != null) {
+              remoteSites.add(new RemoteSite(alias, url, username, password));
+            }
         } else if (url != null) {
             Set<Entry<String, RemoteSite>> set = this.aliasAndRemoteSite
                     .entrySet();
@@ -80,16 +81,18 @@ public class SiteInfo {
                             && (username == null || rs.getUsername().equals(
                                     username))
                             && (password == null || rs.getPassword().equals(
-                                    password)))
-                        remoteSites.add(rs);
+                                    password))) {
+                      remoteSites.add(rs);
+                    }
                 } catch (URISyntaxException e) {
                     LOG.log(Level.SEVERE, "Could not convert URL to URI Message: "+e.getMessage());
                 }
             }
             if (remoteSites.size() == 0) {
-                if (username != null && password != null)
-                    remoteSites.add(new RemoteSite(url.toString(), url,
-                            username, password));
+                if (username != null && password != null) {
+                  remoteSites.add(new RemoteSite(url.toString(), url,
+                      username, password));
+                }
             }
         } else if (username != null) {
             Set<Entry<String, RemoteSite>> set = this.aliasAndRemoteSite
@@ -98,16 +101,18 @@ public class SiteInfo {
                 RemoteSite rs = entry.getValue();
                 if (rs.getUsername().equals(username)
                         && (password == null || rs.getPassword().equals(
-                                password)))
-                    remoteSites.add(rs);
+                                password))) {
+                  remoteSites.add(rs);
+                }
             }
         } else if (password != null) {
             Set<Entry<String, RemoteSite>> set = this.aliasAndRemoteSite
                     .entrySet();
             for (Entry<String, RemoteSite> entry : set) {
                 RemoteSite rs = entry.getValue();
-                if (rs.getPassword().equals(password))
-                    remoteSites.add(rs);
+                if (rs.getPassword().equals(password)) {
+                  remoteSites.add(rs);
+                }
             }
         }
         return remoteSites;

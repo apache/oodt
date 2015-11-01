@@ -120,8 +120,9 @@ public class TableListener implements MouseListener, ActionListener {
 
         // write out excel file
         String fullFileName = (fc.getSelectedFile()).getAbsolutePath();
-        if (!fullFileName.endsWith(".xls"))
+        if (!fullFileName.endsWith(".xls")) {
           fullFileName += ".xls";
+        }
 
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet("results");

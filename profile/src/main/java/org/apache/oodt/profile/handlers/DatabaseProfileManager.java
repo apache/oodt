@@ -53,7 +53,9 @@ public abstract class DatabaseProfileManager implements ProfileManager
 	 * @throws DOMException If an error occurs.
 	 */
 	private static void add(Node node, String name, String value) throws DOMException {
-		if (value == null) return;
+		if (value == null) {
+		  return;
+		}
 		XML.add(node, name, value.trim());
 	}
 
@@ -260,7 +262,9 @@ public abstract class DatabaseProfileManager implements ProfileManager
 		// get connection
 		String url = props.getProperty("org.apache.oodt.util.JDBC_DB.url", "jdbc:oracle:@");
 		String database = props.getProperty("org.apache.oodt.util.JDBC_DB.database");
-		if(database != null) url += database;
+		if(database != null) {
+		  url += database;
+		}
 
                 Connection conn = DriverManager.getConnection(url,
                         		props.getProperty("org.apache.oodt.util.JDBC_DB.user"),

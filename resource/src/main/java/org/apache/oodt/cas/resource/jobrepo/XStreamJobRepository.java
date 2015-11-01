@@ -63,13 +63,16 @@ public class XStreamJobRepository implements JobRepository {
 	    XStream xstream = new XStream();
 	    FileOutputStream os = null;
 		try {
-			if (this.jobMap.size() >= this.maxHistory)
-				FileUtils.forceDelete(new File(jobMap.remove(jobPrecedence.remove(0))));
+			if (this.jobMap.size() >= this.maxHistory) {
+			  FileUtils.forceDelete(new File(jobMap.remove(jobPrecedence.remove(0))));
+			}
 			
-			if (spec.getJob().getId() == null)
-			    spec.getJob().setId(UUID.randomUUID().toString());
-			else if (this.jobMap.containsKey(spec.getJob().getId()))
-				throw new JobRepositoryException("JobId '" + spec.getJob().getId() + "' already in use -- must pick unique JobId");
+			if (spec.getJob().getId() == null) {
+			  spec.getJob().setId(UUID.randomUUID().toString());
+			} else if (this.jobMap.containsKey(spec.getJob().getId())) {
+			  throw new JobRepositoryException(
+				  "JobId '" + spec.getJob().getId() + "' already in use -- must pick unique JobId");
+			}
 			
 			File file = this.generateFilePath(spec.getJob().getId());
 			os = new FileOutputStream(file);

@@ -73,8 +73,9 @@ public class CDEResult extends Result {
 
   @Override
   public InputStream getInputStream() throws IOException {
-    if (rs == null || con == null)
+    if (rs == null || con == null) {
       throw new IOException("InputStream not ready, ResultSet or Connection is null!");
+    }
     return new CDEResultInputStream(this);
   }
 
@@ -84,17 +85,20 @@ public class CDEResult extends Result {
   }
 
  public void close() throws SQLException {
-    if (rs != null)
+    if (rs != null) {
       rs.close();
-    if (con != null)
+    }
+    if (con != null) {
       con.close();
+    }
   }
 
   public String getNextRowAsString() throws SQLException {
     if (rs.next()) {
       CDERow row = createCDERow();
-      if (mapping != null)
+      if (mapping != null) {
         applyMappingFuncs(row);
+      }
       if (this.constValues != null && ((this.orderedFields == null) || (this.orderedFields.size() == 0))){
         addConstValues(row);
       }
@@ -136,7 +140,9 @@ public class CDEResult extends Result {
         }
       }
     }
-    else row.getVals().addAll(orderedDbVals);
+    else {
+      row.getVals().addAll(orderedDbVals);
+    }
     
     
     return row;

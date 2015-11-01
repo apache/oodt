@@ -183,8 +183,9 @@ public class Product {
      */
     public void setProductStructure(String productStructure) {
         //Guard clause, according to a unit test null is a valid value
-        if (!java.util.Arrays.asList(VALID_STRUCTURES).contains(productStructure) && productStructure != null)
-            throw new IllegalArgumentException("Undefined product structure: "+productStructure);
+        if (!java.util.Arrays.asList(VALID_STRUCTURES).contains(productStructure) && productStructure != null) {
+            throw new IllegalArgumentException("Undefined product structure: " + productStructure);
+        }
         this.productStructure = productStructure;
     }
 

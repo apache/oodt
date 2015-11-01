@@ -91,7 +91,9 @@ final public class LightweightProfileServer implements ProfileHandler {
 
 		// Get the list of profiles from the cache, if it's there.
 	  profiles = (List) cache.get(url);
-	  if (profiles != null) return;
+	  if (profiles != null) {
+		return;
+	  }
 
 		// It wasn't in the cache, so create a parser to parse the file.  We only
 		// deal with correct files, so turn on validation and install an error
@@ -157,7 +159,9 @@ final public class LightweightProfileServer implements ProfileHandler {
 	 * @return a {@link Profile} value.
 	 */
 	public Profile get(String profID) {
-		if (profID == null) return null;
+		if (profID == null) {
+		  return null;
+		}
 		Profile rc = null;
 	  for (Object profile : profiles) {
 		Profile p = (Profile) profile;
@@ -221,10 +225,11 @@ final public class LightweightProfileServer implements ProfileHandler {
 	  }
 
 		// If there's nothing on the stack, we're given nothing, so give back everything.
-		if (stack.size() == 0)
-			return new ConstantExpression(true);
-		else if (stack.size() > 1)
-			throw new IllegalStateException("Imbalanced expression in query");
+		if (stack.size() == 0) {
+		  return new ConstantExpression(true);
+		} else if (stack.size() > 1) {
+		  throw new IllegalStateException("Imbalanced expression in query");
+		}
 		
 		// Simplify/optimize the where-expression and return it.
 		return ((WhereExpression) stack.pop()).simplify();

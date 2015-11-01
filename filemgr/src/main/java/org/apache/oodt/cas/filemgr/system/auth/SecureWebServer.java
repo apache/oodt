@@ -82,9 +82,10 @@ public final class SecureWebServer extends org.apache.xmlrpc.WebServer
      * 
      */
     public void addDispatcher(Dispatcher dispatcher) {
-        if (dispatcher == null)
+        if (dispatcher == null) {
             throw new IllegalArgumentException(
-                    "Non-null dispatchers are illegal");
+                "Non-null dispatchers are illegal");
+        }
         dispatchers.add(dispatcher);
     }
 

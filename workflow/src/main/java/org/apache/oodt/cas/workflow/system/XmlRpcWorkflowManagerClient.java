@@ -412,8 +412,9 @@ public class XmlRpcWorkflowManagerClient {
               }
 
                 return workflows;
-            } else
-                return null;
+            } else {
+              return null;
+            }
 
 
     }
@@ -458,8 +459,9 @@ public class XmlRpcWorkflowManagerClient {
                 instsUnpacked.add(inst);
               }
                 return instsUnpacked;
-            } else
-                return null;
+            } else {
+              return null;
+            }
 
 
     }
@@ -480,8 +482,9 @@ public class XmlRpcWorkflowManagerClient {
               instsUnpacked.add(inst);
             }
             return instsUnpacked;
-          } else
+          } else {
             return null;
+          }
     }
 
     public static void main(String[] args) {

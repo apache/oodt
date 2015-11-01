@@ -63,18 +63,21 @@ public class StreamGobbler extends Thread {
     public void run() {
         try {
             PrintWriter pw = null;
-            if (os != null)
+            if (os != null) {
                 pw = new PrintWriter(os);
+            }
 
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
             String line;
             while ((line = br.readLine()) != null && this.running) {
-                if (pw != null)
+                if (pw != null) {
                     pw.println(this.type + ": " + line);
+                }
             }
-            if (pw != null)
+            if (pw != null) {
                 pw.flush();
+            }
         } catch (IOException ioe) {
         	LOG.log(Level.FINEST, "StreamGobbler failed while gobbling : " + ioe.getMessage(), ioe);
         }

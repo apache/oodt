@@ -298,8 +298,9 @@ public class PgeMetadata {
       Validate.notNull(key, "key cannot be null");
 
       List<String> keyPath = Lists.newArrayList();
-      while (keyLinkMap.containsKey(key))
+      while (keyLinkMap.containsKey(key)) {
          keyPath.add(key = keyLinkMap.get(key));
+      }
       return keyPath;
    }
 

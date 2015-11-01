@@ -71,9 +71,11 @@ public final class PathUtils {
                         && metadata.getMetadata(data.getFieldName()) != null) {
                     List valList = metadata.getAllMetadata(data.getFieldName());
                     var = (String) valList.get(0);
-                    if (expand)
-                        for (int j = 1; j < valList.size(); j++)
+                    if (expand) {
+                        for (int j = 1; j < valList.size(); j++) {
                             var += DELIMITER + (String) valList.get(j);
+                        }
+                    }
                 } else {
                     var = EnvUtilities.getEnv(data.getFieldName());
                 }
@@ -131,17 +133,19 @@ public final class PathUtils {
                                             dotIndex), metadata).replaceAll(
                                     "[\\+\\s]", ""));
                     gc.add(GregorianCalendar.DAY_OF_YEAR, rollDays);
-                } else
+                } else {
                     throw new CasMetadataException(
-                            "Malformed dynamic date replacement specified (no dot separator) - '"
-                                    + dateString + "'");
+                        "Malformed dynamic date replacement specified (no dot separator) - '"
+                        + dateString + "'");
+                }
             }
 
             // determine type and make the appropriate replacement
             String[] splitDate = dateString.split("\\.");
-            if (splitDate.length < 2)
+            if (splitDate.length < 2) {
                 throw new CasMetadataException("No date type specified - '" + dateString
-                        + "'");
+                                               + "'");
+            }
             String dateType = splitDate[1].replaceAll("[\\[\\]\\s]", "");
             String replacement;
             if (dateType.equals("DAY")) {
@@ -203,18 +207,19 @@ public final class PathUtils {
             Date date = new SimpleDateFormat(dateFormat).parse(dateString);
             Calendar calendar = (Calendar) Calendar.getInstance().clone();
             calendar.setTime(date);
-            if (addUnits.equals("hr") || addUnits.equals("hour"))
-            	calendar.add(Calendar.HOUR_OF_DAY, addAmount);
-            else if (addUnits.equals("min") || addUnits.equals("minute"))
-            	calendar.add(Calendar.MINUTE, addAmount);
-            else if (addUnits.equals("sec") || addUnits.equals("second"))
-            	calendar.add(Calendar.SECOND, addAmount);
-            else if (addUnits.equals("day"))
-            	calendar.add(Calendar.DAY_OF_YEAR, addAmount);
-            else if (addUnits.equals("mo") || addUnits.equals("month"))
-            	calendar.add(Calendar.MONTH, addAmount);
-            else if (addUnits.equals("yr") || addUnits.equals("year"))
-            	calendar.add(Calendar.YEAR, addAmount);
+            if (addUnits.equals("hr") || addUnits.equals("hour")) {
+                calendar.add(Calendar.HOUR_OF_DAY, addAmount);
+            } else if (addUnits.equals("min") || addUnits.equals("minute")) {
+                calendar.add(Calendar.MINUTE, addAmount);
+            } else if (addUnits.equals("sec") || addUnits.equals("second")) {
+                calendar.add(Calendar.SECOND, addAmount);
+            } else if (addUnits.equals("day")) {
+                calendar.add(Calendar.DAY_OF_YEAR, addAmount);
+            } else if (addUnits.equals("mo") || addUnits.equals("month")) {
+                calendar.add(Calendar.MONTH, addAmount);
+            } else if (addUnits.equals("yr") || addUnits.equals("year")) {
+                calendar.add(Calendar.YEAR, addAmount);
+            }
             
             String newDateString = new SimpleDateFormat(dateFormat).format(calendar.getTime());
             

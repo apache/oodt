@@ -209,8 +209,9 @@ public class CrawlDaemonController {
             controller.stop();
             System.out.println("Crawl Daemon: [" + controller.client.getURL()
                     + "]: shutdown successful");
-        } else
+        } else {
             throw new IllegalArgumentException("Unknown Operation!");
+        }
 
     }
 

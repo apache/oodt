@@ -61,8 +61,9 @@ public class ListingConf {
     } catch (PGEConfigFileException e) {
       throw new InstantiationException(e.getMessage());
     } finally {
-      if (this.conf == null)
+      if (this.conf == null) {
         throw new InstantiationException("Configuration is null!");
+      }
     }
   }
 

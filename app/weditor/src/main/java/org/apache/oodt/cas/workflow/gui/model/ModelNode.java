@@ -135,28 +135,31 @@ public class ModelNode {
 
   public Color getColor() {
     if (this.isParentType()) {
-      if (this.getExecutionType().equals("sequential"))
+      if (this.getExecutionType().equals("sequential")) {
         return new Color(100, 149, 237);
-      else if (this.getExecutionType().equals("parallel"))
+      } else if (this.getExecutionType().equals("parallel")) {
         return new Color(143, 188, 143);
-      else
+      } else {
         return Color.darkGray;
+      }
     } else {
-      if (this.getExecutionType().equals("task"))
+      if (this.getExecutionType().equals("task")) {
         return Color.orange;
-      else
+      } else {
         return Color.cyan;
+      }
     }
   }
 
   public Color getGradientColor() {
     if (this.isParentType()) {
-      if (this.getExecutionType().equals("sequential"))
+      if (this.getExecutionType().equals("sequential")) {
         return new Color(200, 200, 200);
-      else if (this.getExecutionType().equals("parallel"))
+      } else if (this.getExecutionType().equals("parallel")) {
         return new Color(200, 200, 200);
-      else
+      } else {
         return Color.white;
+      }
     } else {
       return Color.darkGray;
     }
@@ -183,8 +186,9 @@ public class ModelNode {
   }
 
   public List<String> getExcusedSubProcessorIds() {
-    if (this.excusedSubProcessorIds == null)
+    if (this.excusedSubProcessorIds == null) {
       this.excusedSubProcessorIds = new Vector<String>();
+    }
     return this.excusedSubProcessorIds;
   }
 
@@ -198,18 +202,20 @@ public class ModelNode {
   }
 
   public boolean equals(Object obj) {
-    if (obj instanceof ModelNode)
+    if (obj instanceof ModelNode) {
       return this.getId().equals(((ModelNode) obj).getId());
-    else
+    } else {
       return false;
+    }
   }
 
   public String toString() {
     if (this.textVisible) {
-      if (this.isParentType())
+      if (this.isParentType()) {
         return this.getModelName() + " : " + this.getExecutionType();
-      else
+      } else {
         return this.getModelName();
+      }
     } else {
       return null;
     }
@@ -218,17 +224,19 @@ public class ModelNode {
   public ModelNode clone() {
     ModelNode clone = new ModelNode(this.file);
     clone.id = this.id;
-    if (this.excusedSubProcessorIds != null)
+    if (this.excusedSubProcessorIds != null) {
       clone.excusedSubProcessorIds = new Vector<String>(
           this.excusedSubProcessorIds);
+    }
     clone.executionType = this.executionType;
     clone.instanceClass = this.instanceClass;
     clone.modelId = this.modelId;
     clone.modelName = this.modelName;
     clone.staticMetadata = null;
     clone.textVisible = this.textVisible;
-    if (this.staticMetadata != null)
+    if (this.staticMetadata != null) {
       clone.staticMetadata = new Metadata(this.staticMetadata);
+    }
     return clone;
   }
 

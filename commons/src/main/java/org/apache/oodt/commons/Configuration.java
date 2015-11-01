@@ -73,7 +73,9 @@ public class Configuration {
 	  */
 	 public static Configuration getConfiguration() throws IOException, SAXException {
 		 // Got one?  Use it.
-		 if (configuration != null) return configuration;
+		 if (configuration != null) {
+		   return configuration;
+		 }
 
 		 URL url;
 
@@ -88,7 +90,9 @@ public class Configuration {
 			 String filename = System.getProperty("org.apache.oodt.commons.Configuration.file");
 			 if (filename != null) {
 				 file = new File(filename);
-				 if (!file.exists()) throw new IOException("File " + file + " not found");
+				 if (!file.exists()) {
+				   throw new IOException("File " + file + " not found");
+				 }
 			 } else {
 				 List candidates = new ArrayList();
 
@@ -124,9 +128,10 @@ public class Configuration {
 				   break;
 				 }
 			   }
-				 if (found && file == alt)
-					 System.err.println("WARNING: Using older config file " + alt + "; rename to "
-						 + homedirfile + " as soon as possible.");
+				 if (found && file == alt) {
+				   System.err.println("WARNING: Using older config file " + alt + "; rename to "
+									  + homedirfile + " as soon as possible.");
+				 }
 				 if (!found) {
 					 return getEmptyConfiguration();
 				 }
@@ -149,16 +154,18 @@ public class Configuration {
 	 */
 	public static Configuration getConfiguration(URL configFileUrl) throws SAXException, IOException {
 		synchronized (Configuration.class) {
-			if (configuration == null)
-				configuration = new Configuration(configFileUrl);
+			if (configuration == null) {
+			  configuration = new Configuration(configFileUrl);
+			}
 		}
 		return configuration;
 	}
 
 	private static Configuration getEmptyConfiguration() {
 		synchronized (Configuration.class) {
-			if (configuration == null)
-				configuration = new Configuration();
+			if (configuration == null) {
+			  configuration = new Configuration();
+			}
 		}
 		return configuration;
 	}
@@ -173,7 +180,9 @@ public class Configuration {
 	 */
 	public static Configuration getConfigurationWithoutException() {
 		// Got one?  Use it.  Do this out of a try block for performance.
-		if (configuration != null) return configuration;
+		if (configuration != null) {
+		  return configuration;
+		}
 
 		// Try to get it.
 		try {
@@ -215,7 +224,9 @@ public class Configuration {
 
 	Configuration(InputSource inputSource) throws IOException, SAXException {
 		String systemID = inputSource.getSystemId();
-		if (systemID == null) inputSource.setSystemId("file:/unknown");
+		if (systemID == null) {
+		  inputSource.setSystemId("file:/unknown");
+		}
 
 		// Get the document
 		DOMParser parser = XML.createDOMParser();
@@ -238,8 +249,9 @@ public class Configuration {
 		document.normalize();
 		
 		// See if this really is a <configuration> document.
-		if (!document.getDocumentElement().getNodeName().equals("configuration"))
-			throw new SAXException("Configuration " + inputSource.getSystemId() + " is not a <configuration> document");
+		if (!document.getDocumentElement().getNodeName().equals("configuration")) {
+		  throw new SAXException("Configuration " + inputSource.getSystemId() + " is not a <configuration> document");
+		}
 
 		NodeList list = document.getDocumentElement().getChildNodes();
 		for (int eachChild = 0; eachChild < list.getLength(); ++eachChild) {
@@ -248,27 +260,31 @@ public class Configuration {
 				NodeList children = childNode.getChildNodes();
 				for (int i = 0; i < children.getLength(); ++i) {
 					Node node = children.item(i);
-					if ("host".equals(node.getNodeName()))
-						webHost = XML.unwrappedText(node);
-					else if ("port".equals(node.getNodeName()))
-						webPort = XML.unwrappedText(node);
-					else if ("dir".equals(node.getNodeName()))
-						webServerDocumentDirectory = new File(XML.unwrappedText(node));
+					if ("host".equals(node.getNodeName())) {
+					  webHost = XML.unwrappedText(node);
+					} else if ("port".equals(node.getNodeName())) {
+					  webPort = XML.unwrappedText(node);
+					} else if ("dir".equals(node.getNodeName())) {
+					  webServerDocumentDirectory = new File(XML.unwrappedText(node));
+					}
 				}					
 				properties.setProperty("org.apache.oodt.commons.Configuration.webServer.baseURL", getWebServerBaseURL());
-				if (webServerDocumentDirectory == null)
-					webServerDocumentDirectory = new File(System.getProperty("user.home", "/")
-						+ "/dev/htdocs");
+				if (webServerDocumentDirectory == null) {
+				  webServerDocumentDirectory = new File(System.getProperty("user.home", "/")
+														+ "/dev/htdocs");
+				}
 			} else if (childNode.getNodeName().equals("nameServer")) {
 				Element nameServerNode = (Element) childNode;
 				String nameServerStateFrequencyString = nameServerNode.getAttribute("stateFrequency");
-				if (nameServerStateFrequencyString == null || nameServerStateFrequencyString.length() == 0)
-					nameServerStateFrequency = 0;
-				else try {
+				if (nameServerStateFrequencyString == null || nameServerStateFrequencyString.length() == 0) {
+				  nameServerStateFrequency = 0;
+				} else {
+				  try {
 					nameServerStateFrequency = Integer.parseInt(nameServerStateFrequencyString);
-				} catch (NumberFormatException ex) {
+				  } catch (NumberFormatException ex) {
 					throw new SAXException("Illegal nun-numeric value \"" + nameServerStateFrequencyString
-						+ "\" for stateFrequency attribute");
+										   + "\" for stateFrequency attribute");
+				  }
 				}
 				if (childNode.getFirstChild().getNodeName().equals("rir")) {
 					nameServerUsingRIRProtocol = true;
@@ -283,14 +299,15 @@ public class Configuration {
 					NodeList children = childNode.getFirstChild().getChildNodes();
 					for (int i = 0; i < children.getLength(); ++i) {
 						Node node = children.item(i);
-						if (node.getNodeName().equals("version"))
-							nameServerVersion = XML.unwrappedText(node);
-						else if (node.getNodeName().equals("host"))
-							nameServerHost = XML.unwrappedText(node);
-						else if (node.getNodeName().equals("port"))
-							nameServerPort = XML.unwrappedText(node);
-						else if (node.getNodeName().equals("objectKey"))
-							nameServerObjectKey = XML.unwrappedText(node);
+						if (node.getNodeName().equals("version")) {
+						  nameServerVersion = XML.unwrappedText(node);
+						} else if (node.getNodeName().equals("host")) {
+						  nameServerHost = XML.unwrappedText(node);
+						} else if (node.getNodeName().equals("port")) {
+						  nameServerPort = XML.unwrappedText(node);
+						} else if (node.getNodeName().equals("objectKey")) {
+						  nameServerObjectKey = XML.unwrappedText(node);
+						}
 					}
 				}
 			} else if (childNode.getNodeName().equals("xml")) {
@@ -300,11 +317,13 @@ public class Configuration {
 					if ("entityRef".equals(xmlNode.getNodeName())) {
 						NodeList dirNodes = xmlNode.getChildNodes();
 						StringBuilder refDirs = new StringBuilder(System.getProperty(ENTITY_DIRS_PROP, ""));
-						for (int j = 0; j < dirNodes.getLength(); ++j)
-							refDirs.append(',').append(XML.unwrappedText(dirNodes.item(j)));
-						if (refDirs.length() > 0)
-							System.setProperty(ENTITY_DIRS_PROP, refDirs.charAt(0) == ','?
-								refDirs.substring(1) : refDirs.toString());
+						for (int j = 0; j < dirNodes.getLength(); ++j) {
+						  refDirs.append(',').append(XML.unwrappedText(dirNodes.item(j)));
+						}
+						if (refDirs.length() > 0) {
+						  System.setProperty(ENTITY_DIRS_PROP, refDirs.charAt(0) == ',' ?
+															   refDirs.substring(1) : refDirs.toString());
+						}
 					}
 				}
 			} else if ("serverMgr".equals(childNode.getNodeName())) {
@@ -377,18 +396,22 @@ public class Configuration {
 		if (nameServerUsingRIRProtocol) {
 			Element rirNode = document.createElement("rir");
 			nameServerNode.appendChild(rirNode);
-			if (nameServerObjectKey != null)
-				XML.add(rirNode, "objectKey", nameServerObjectKey);
+			if (nameServerObjectKey != null) {
+			  XML.add(rirNode, "objectKey", nameServerObjectKey);
+			}
 		} else {
 			Element iiopNode = document.createElement("iiop");
 			nameServerNode.appendChild(iiopNode);
-			if (nameServerVersion != null)
-				XML.add(iiopNode, "version", nameServerVersion);
+			if (nameServerVersion != null) {
+			  XML.add(iiopNode, "version", nameServerVersion);
+			}
 			XML.add(iiopNode, "host", nameServerHost);
-			if (nameServerPort != null)
-				XML.add(iiopNode, "port", nameServerPort);
-			if (nameServerObjectKey != null)
-				XML.add(iiopNode, "objectKey", nameServerObjectKey);
+			if (nameServerPort != null) {
+			  XML.add(iiopNode, "port", nameServerPort);
+			}
+			if (nameServerObjectKey != null) {
+			  XML.add(iiopNode, "objectKey", nameServerObjectKey);
+			}
 		}
 
 		// <xml><entityRef><dir>...
@@ -408,8 +431,9 @@ public class Configuration {
 		}
 
 		// Global <properties>...</properties>
-		if (properties.size() > 0)
-			dumpProperties(properties, configurationNode);
+		if (properties.size() > 0) {
+		  dumpProperties(properties, configurationNode);
+		}
 
 		// <programs>...
 		if (execServers.size() > 0) {
@@ -482,8 +506,9 @@ public class Configuration {
                 ExecServerConfig execServerConfig = null;
                 for (Iterator i = execServers.iterator(); i.hasNext() && execServerConfig == null;) {
                         ExecServerConfig exec = (ExecServerConfig) i.next();
-                        if (objectKey.equals(exec.getObjectKey()))
-                                execServerConfig = exec;
+                        if (objectKey.equals(exec.getObjectKey())) {
+						  execServerConfig = exec;
+						}
                 }
                 return execServerConfig;
         }
@@ -495,8 +520,11 @@ public class Configuration {
 	public String getWebServerBaseURL() {
 		String proto = System.getProperty(WEB_PROTOCOL_PROPERTY);
 		if (proto == null) {
-			if ("443".equals(webPort)) proto = "https";
-			else proto = "http";
+			if ("443".equals(webPort)) {
+			  proto = "https";
+			} else {
+			  proto = "http";
+			}
 		}
 		return proto + "://" + webHost + ":" + webPort;
 	}
@@ -541,9 +569,10 @@ public class Configuration {
 	public Context getObjectContext() throws NamingException {
 		Context c;
 		final String className = (String) contextEnvironment.get(javax.naming.Context.INITIAL_CONTEXT_FACTORY);
-		if (className == null)
-			c = new InitialContext(contextEnvironment);
-		else try {
+		if (className == null) {
+		  c = new InitialContext(contextEnvironment);
+		} else {
+		  try {
 			// Work around iPlanet bug.  JNDI uses the thread's context class
 			// loader to load the initial context factory class.  For some
 			// reason, that loader fails to find things in iPlanet's
@@ -557,15 +586,17 @@ public class Configuration {
 			InitialContextThread thread = new InitialContextThread(loader);
 			thread.start();
 			try {
-				thread.join();
+			  thread.join();
 			} catch (InterruptedException ex) {
-				throw new NoInitialContextException("Initial context thread interrupted: " + ex.getMessage());
+			  throw new NoInitialContextException("Initial context thread interrupted: " + ex.getMessage());
 			}
 			c = thread.getContext();
-			if (c == null)
-				throw thread.getException();
-		} catch (ClassNotFoundException ex) {
+			if (c == null) {
+			  throw thread.getException();
+			}
+		  } catch (ClassNotFoundException ex) {
 			throw new NoInitialContextException("Class " + className + " not found");
+		  }
 		}
 		return c;
 	}
@@ -576,8 +607,9 @@ public class Configuration {
 	 */
 	public List getEntityRefDirs() {
 		List dirs = new ArrayList();
-		for (StringTokenizer t = new StringTokenizer(System.getProperty(ENTITY_DIRS_PROP, ""), ",;|"); t.hasMoreTokens();)
-			dirs.add(t.nextToken());
+		for (StringTokenizer t = new StringTokenizer(System.getProperty(ENTITY_DIRS_PROP, ""), ",;|"); t.hasMoreTokens();) {
+		  dirs.add(t.nextToken());
+		}
 		return dirs;
 	}
 

@@ -134,9 +134,12 @@ public class ExecServer {
 			});
 
 			// We're done here.
-			for (;;) try {
+			for (;;) {
+			  try {
 				Thread.currentThread().join();
-			} catch (InterruptedException ignore) {}
+			  } catch (InterruptedException ignore) {
+			  }
+			}
 		} catch (IOException ex) {
 			System.err.println("I/O error during initialization: " + ex.getMessage());
 			ex.printStackTrace();
@@ -283,8 +286,9 @@ public class ExecServer {
 
 		// Remove all the log messages from the document.
 		NodeList children = logElement.getChildNodes();
-		for (int i = 0; i < children.getLength(); ++i)
-			logElement.removeChild(children.item(i));
+		for (int i = 0; i < children.getLength(); ++i) {
+		  logElement.removeChild(children.item(i));
+		}
 
 		// Return the serialized form, which included the log messages.
 		System.err.println(rc);
@@ -352,12 +356,15 @@ public class ExecServer {
 
 	private void shutdown0() {
 		// Unbind.
-		if (!Boolean.getBoolean(DISABLE_BINDING)) try {
+		if (!Boolean.getBoolean(DISABLE_BINDING)) {
+		  try {
 			binder.stopBinding();
 			Context objectContext = configuration.getObjectContext();
 			objectContext.unbind(getName());
 			objectContext.close();
-		} catch (NamingException ignore) {}
+		  } catch (NamingException ignore) {
+		  }
+		}
 
 		// Kill the ORB.  YEAH!  KILL IT, KILL IT, KIIIIIIIIIIIIIIL IIIIIIIIT!!!!!!!1
 		try {
@@ -381,17 +388,20 @@ public class ExecServer {
 			keepBinding = true;
 		}
 		public void run() {
-			while (shouldKeepBinding()) try {
+			while (shouldKeepBinding()) {
+			  try {
 				Context objectContext = configuration.getObjectContext();
 				objectContext.rebind(name, server.getServant());
 				objectContext.close();
-			} catch (Throwable ex) {
+			  } catch (Throwable ex) {
 				System.err.println("Exception binding at " + new Date() + "; will keep trying...");
 				ex.printStackTrace();
-		        } finally {
+			  } finally {
 				try {
-					Thread.sleep(REBIND_PERIOD);
-				} catch (InterruptedException ignore) {}
+				  Thread.sleep(REBIND_PERIOD);
+				} catch (InterruptedException ignore) {
+				}
+			  }
 			}
 		}
 		public synchronized void stopBinding() {

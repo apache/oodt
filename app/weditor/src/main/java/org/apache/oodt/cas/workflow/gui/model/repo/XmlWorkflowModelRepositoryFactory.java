@@ -33,10 +33,12 @@ public class XmlWorkflowModelRepositoryFactory {
   private String workspace;
 
   public XmlWorkflowModelRepository createModelRepository() {
-    if (workspace == null)
+    if (workspace == null) {
       return null;
-    if (!new File(workspace).exists())
+    }
+    if (!new File(workspace).exists()) {
       new File(workspace).mkdirs();
+    }
     return new XmlWorkflowModelRepository(new File(workspace));
   }
 

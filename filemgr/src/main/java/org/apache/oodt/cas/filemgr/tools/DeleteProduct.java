@@ -113,8 +113,9 @@ public class DeleteProduct {
                 String prodId = (String) prodId1;
                 remover.remove(prodId);
             }
-        } else
+        } else {
             remover.remove(productId);
+        }
 
     }
 

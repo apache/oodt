@@ -42,8 +42,9 @@ public class GetNodesInQueueCliAction extends ResourceCliAction {
 
          List<String> nodeIds = getClient().getNodesInQueue(queueName);
          printer.println("Nodes in Queue '" + queueName + "':");
-         for (String nodeId : nodeIds)
+         for (String nodeId : nodeIds) {
             printer.println(" - " + nodeId);
+         }
          printer.println();
       } catch (Exception e) {
          throw new CmdLineActionException("Failed to get nodes in queue '"

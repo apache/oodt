@@ -140,10 +140,12 @@ public class MultiServer {
 		String config = System.getProperty("org.apache.oodt.commons.MultiServer.config", System.getProperty("MultiServer.config",
 			System.getProperty("multiserver.config", System.getProperty("config"))));
 		if (config == null) {
-			if (argv.length != 1)
-				throw new IllegalStateException("No org.apache.oodt.commons.MultiServer.config property or config URL argument");
-			else
-				config = argv[0];
+			if (argv.length != 1) {
+			  throw new IllegalStateException(
+				  "No org.apache.oodt.commons.MultiServer.config property or config URL argument");
+			} else {
+			  config = argv[0];
+			}
 		}
 
 		StringReader reader = new StringReader(CONFIG);
@@ -164,7 +166,9 @@ public class MultiServer {
 		ExecServer.runInitializers();
 		try {
 			LogInit.init(System.getProperties(), getAppName());
-			if (servers.isEmpty()) throw new IllegalStateException("No servers defined in config");
+			if (servers.isEmpty()) {
+			  throw new IllegalStateException("No servers defined in config");
+			}
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				public void run() {
@@ -179,9 +183,12 @@ public class MultiServer {
 			} catch (Throwable ignore) {}
 			System.exit(1);
 		}
-		for (;;) try {
+		for (;;) {
+		  try {
 			Thread.currentThread().join();
-		} catch (InterruptedException ignore) {}
+		  } catch (InterruptedException ignore) {
+		  }
+		}
 	}
 
 	/**
@@ -209,7 +216,9 @@ public class MultiServer {
 		Document doc = builder.parse(is);
 		Element root = doc.getDocumentElement();
 		appName = root.getAttribute("id");
-		if (appName == null) throw new SAXException("id attribute missing from multiserver element");
+		if (appName == null) {
+		  throw new SAXException("id attribute missing from multiserver element");
+		}
 
 		// Set properties
 		NodeList children = root.getChildNodes();
@@ -234,24 +243,32 @@ public class MultiServer {
 		for (int i = 0; i < serverNodes.getLength(); ++i) {
 			Element serverElem = (Element) serverNodes.item(i);
 			String name = serverElem.getAttribute("id");
-			if (name == null) throw new SAXException("id attribute missing from server element");
+			if (name == null) {
+			  throw new SAXException("id attribute missing from server element");
+			}
 			String className = serverElem.getAttribute("class");
-			if (className == null) throw new SAXException("class attribute missing from server element");
+			if (className == null) {
+			  throw new SAXException("class attribute missing from server element");
+			}
 			String bindKind = serverElem.getAttribute("bind");
-			if (bindKind == null) throw new SAXException("bind attribute missing from server element");
+			if (bindKind == null) {
+			  throw new SAXException("bind attribute missing from server element");
+			}
 			Server server;
-			if ("true".equals(bindKind))
-				server = new BindingServer(name, className);
-			else if ("false".equals(bindKind))
-				server = new NonbindingServer(name, className);
-			else if ("rebind".equals(bindKind))
-				server = new RebindingServer(name, className);
-			else try {
+			if ("true".equals(bindKind)) {
+			  server = new BindingServer(name, className);
+			} else if ("false".equals(bindKind)) {
+			  server = new NonbindingServer(name, className);
+			} else if ("rebind".equals(bindKind)) {
+			  server = new RebindingServer(name, className);
+			} else {
+			  try {
 				long period = Long.parseLong(bindKind);
 				server = new AutobindingServer(name, className, period);
-			} catch (NumberFormatException ex) {
+			  } catch (NumberFormatException ex) {
 				throw new SAXException("Expected true, false, rebind, or auto for bind attribute but got `"
-					+ bindKind + "'");
+									   + bindKind + "'");
+			  }
 			}
 			servers.put(name, server);
 		}
@@ -545,7 +562,9 @@ public class MultiServer {
 		 * @throws NamingException if an error occurs.
 		 */
 		public void stop() throws NamingException {
-			if (binder != null) binder.cancel();
+			if (binder != null) {
+			  binder.cancel();
+			}
 			context.unbind(name);
 		}
 

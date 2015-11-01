@@ -125,8 +125,9 @@ public class FreeTextQueryCriteria extends QueryCriteria {
         // filter noise words and add to values vector
         while (tok.hasMoreElements()) {
             token = tok.nextToken();
-            if (!noiseWordHash.contains(token))
+            if (!noiseWordHash.contains(token)) {
                 values.add(token);
+            }
         }
     }
 

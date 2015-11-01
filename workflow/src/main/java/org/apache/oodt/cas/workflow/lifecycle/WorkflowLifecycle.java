@@ -178,8 +178,9 @@ public class WorkflowLifecycle {
       }
 
       return null;
-    } else
+    } else {
       return null;
+    }
   }
 
   /**
@@ -219,8 +220,9 @@ public class WorkflowLifecycle {
     if (this.getStages() != null) {
       for (WorkflowLifecycleStage stage : (SortedSet<WorkflowLifecycleStage>) this
           .getStages()) {
-        if (category != null && !stage.getName().equals(category))
+        if (category != null && !stage.getName().equals(category)) {
           continue;
+        }
         if (stage.getStates() != null) {
           for (WorkflowState state : (List<WorkflowState>) stage.getStates()) {
             if (state.getName().equals(stateName)) {

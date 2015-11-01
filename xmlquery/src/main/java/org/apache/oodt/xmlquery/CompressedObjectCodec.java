@@ -63,10 +63,11 @@ class CompressedObjectCodec implements Codec {
 	public Object decode(Node node) throws ClassNotFoundException, InvalidClassException, StreamCorruptedException,
 		OptionalDataException {
 		String encodedValue;
-		if (node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE)
-			encodedValue = node.getFirstChild().getNodeValue();
-		else
-			encodedValue = XML.text(node);
+		if (node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE) {
+		  encodedValue = node.getFirstChild().getNodeValue();
+		} else {
+		  encodedValue = XML.text(node);
+		}
 		Object rc = null;
 		try {
 			ByteArrayInputStream byteArray = new ByteArrayInputStream(encodedValue.getBytes());

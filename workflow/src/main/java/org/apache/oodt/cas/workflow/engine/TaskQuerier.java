@@ -138,8 +138,9 @@ public class TaskQuerier implements Runnable {
           }
 
           synchronized (runnableProcessors) {
-            if (running)
+            if (running) {
               runnableProcessors = processorsToRun;
+            }
           }
 
         } else {
@@ -192,8 +193,9 @@ public class TaskQuerier implements Runnable {
    *         {@link #runnableProcessors}.
    */
   public TaskProcessor getNext() {
-    if (getRunnableProcessors().size() == 0)
+    if (getRunnableProcessors().size() == 0) {
       return null;
+    }
     return (TaskProcessor) getRunnableProcessors().remove(0);
   }
 

@@ -77,10 +77,11 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 			conn = this.dataSource.getConnection();
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT COUNT(transaction_id) AS numTransIds FROM transactions");
-			if (rs.next())
-				return rs.getInt("numTransIds");
-			else
-				throw new Exception("Failed to query for number of transactions");
+			if (rs.next()) {
+			  return rs.getInt("numTransIds");
+			} else {
+			  throw new Exception("Failed to query for number of transactions");
+			}
 		}catch (Exception e) {
 			throw new CatalogIndexException("Failed to get number of transactions : " + e.getMessage(), e);
 		}finally {
@@ -253,14 +254,22 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		try {
 			conn = this.dataSource.getConnection();
 			stmt = conn.createStatement();
-			for (TermBucket termBucket : termBuckets) 
-				for (Term term : termBucket.getTerms()) 
-					for (String value : term.getValues()) 
-						try {
-							stmt.execute("DELETE FROM transaction_terms WHERE transaction_id = '" + transactionId + "' AND bucket_name = '" + termBucket.getName() + "' AND term_name = '" + term.getName() + "' AND term_value = '" + (this.useUTF8 ? URLEncoder.encode(value, "UTF8") : value) + "'");
-						}catch (Exception e) {
-							LOG.log(Level.WARNING, "Failed to delete term: '" + transactionId + "','" + termBucket.getName() + "','" + term.getName() + "','" + value + "'");
-						}
+			for (TermBucket termBucket : termBuckets) {
+			  for (Term term : termBucket.getTerms()) {
+				for (String value : term.getValues()) {
+				  try {
+					stmt.execute("DELETE FROM transaction_terms WHERE transaction_id = '" + transactionId
+								 + "' AND bucket_name = '" + termBucket.getName() + "' AND term_name = '" + term
+									 .getName() + "' AND term_value = '" + (this.useUTF8 ? URLEncoder
+						.encode(value, "UTF8") : value) + "'");
+				  } catch (Exception e) {
+					LOG.log(Level.WARNING,
+						"Failed to delete term: '" + transactionId + "','" + termBucket.getName() + "','" + term
+							.getName() + "','" + value + "'");
+				  }
+				}
+			  }
+			}
 			conn.commit();
 			return true;
 		}catch (Exception e) {
@@ -285,15 +294,24 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		try {
 			conn = this.dataSource.getConnection();
 			stmt = conn.createStatement();
-			for (TermBucket termBucket : termBuckets) 
-				for (Term term : termBucket.getTerms()) 
-					for (String value : term.getValues())
-						try {
-							stmt.execute("DELETE FROM transaction_terms WHERE transaction_id = '" + transactionId + "' AND bucket_name = '" + termBucket.getName() + "' AND term_name = '" + term.getName() + "'");
-							stmt.execute("INSERT INTO transaction_terms VALUES ('" + transactionId + "','" + termBucket.getName() + "','" + term.getName() + "','" + (this.useUTF8 ? URLEncoder.encode(value, "UTF8") : value) + "')");
-						}catch (Exception e) {
-							LOG.log(Level.WARNING, "Failed to ingest term: '" + transactionId + "','" + termBucket.getName() + "','" + term.getName() + "','" + value + "'");
-						}
+			for (TermBucket termBucket : termBuckets) {
+			  for (Term term : termBucket.getTerms()) {
+				for (String value : term.getValues()) {
+				  try {
+					stmt.execute("DELETE FROM transaction_terms WHERE transaction_id = '" + transactionId
+								 + "' AND bucket_name = '" + termBucket.getName() + "' AND term_name = '" + term
+									 .getName() + "'");
+					stmt.execute(
+						"INSERT INTO transaction_terms VALUES ('" + transactionId + "','" + termBucket.getName() + "','"
+						+ term.getName() + "','" + (this.useUTF8 ? URLEncoder.encode(value, "UTF8") : value) + "')");
+				  } catch (Exception e) {
+					LOG.log(Level.WARNING,
+						"Failed to ingest term: '" + transactionId + "','" + termBucket.getName() + "','" + term
+							.getName() + "','" + value + "'");
+				  }
+				}
+			  }
+			}
 			Calendar calendar = DateUtils.getCurrentLocalTime();
 			stmt.execute("UPDATE transactions SET transaction_date = '" + DateUtils.toString(calendar) + "' WHERE transaction_id = '" + transactionId + "'");
 			return new IngestReceipt(transactionId, calendar.getTime());
@@ -327,8 +345,9 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
                 String termName = rs.getString("term_name");
                 String termValue = rs.getString("term_value");
                 TermBucket bucket = termBuckets.get(bucketName);
-                if (bucket == null)
-                	bucket = new TermBucket(bucketName);
+                if (bucket == null) {
+				  bucket = new TermBucket(bucketName);
+				}
                 Term term = new Term(termName, Collections.singletonList((this.useUTF8 ? URLDecoder.decode(termValue, "UTF8") : termValue)));
                 bucket.addTerm(term);
                 termBuckets.put(bucketName, bucket);
@@ -355,8 +374,9 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 	public Map<TransactionId<?>, List<TermBucket>> getBuckets(
 			List<TransactionId<?>> transactionIds) throws QueryServiceException {
 		HashMap<TransactionId<?>, List<TermBucket>> map = new HashMap<TransactionId<?>, List<TermBucket>>();
-		for (TransactionId<?> transactionId : transactionIds) 
-			map.put(transactionId, this.getBuckets(transactionId));
+		for (TransactionId<?> transactionId : transactionIds) {
+		  map.put(transactionId, this.getBuckets(transactionId));
+		}
 		return map;
 	}
 
@@ -378,8 +398,12 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 			rs = stmt.executeQuery(sqlQuery);
 
 			List<IngestReceipt> receipts = new Vector<IngestReceipt>();
-			while (rs.next()) 
-				receipts.add(new IngestReceipt(this.getTransactionIdFactory().createTransactionId(rs.getString("transaction_id")), DateUtils.toCalendar(rs.getString("transaction_date"), DateUtils.FormatType.LOCAL_FORMAT).getTime()));
+			while (rs.next()) {
+			  receipts.add(
+				  new IngestReceipt(this.getTransactionIdFactory().createTransactionId(rs.getString("transaction_id")),
+					  DateUtils.toCalendar(rs.getString("transaction_date"), DateUtils.FormatType.LOCAL_FORMAT)
+							   .getTime()));
+			}
 			return receipts;
 		}catch (Exception e) {
 			throw new QueryServiceException("Failed to query Workflow Instances Database : " + e.getMessage(), e);
@@ -410,9 +434,15 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 
 			List<IngestReceipt> receipts = new Vector<IngestReceipt>();
 			int index = 0;
-			while (startIndex > index && rs.next()) index++;
-			while (rs.next() && index++ <= endIndex) 
-				receipts.add(new IngestReceipt(this.getTransactionIdFactory().createTransactionId(rs.getString("transaction_id")), DateUtils.toCalendar(rs.getString("transaction_date"), DateUtils.FormatType.LOCAL_FORMAT).getTime()));
+			while (startIndex > index && rs.next()) {
+			  index++;
+			}
+			while (rs.next() && index++ <= endIndex) {
+			  receipts.add(
+				  new IngestReceipt(this.getTransactionIdFactory().createTransactionId(rs.getString("transaction_id")),
+					  DateUtils.toCalendar(rs.getString("transaction_date"), DateUtils.FormatType.LOCAL_FORMAT)
+							   .getTime()));
+			}
 			return receipts;
 		}catch (Exception e) {
 			throw new QueryServiceException("Failed to query Workflow Instances Database : " + e.getMessage(), e);
@@ -444,8 +474,9 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 			rs = stmt.executeQuery(sqlQuery);
 
 			int numTransactions = 0;
-            while (rs.next())
-            	numTransactions = rs.getInt("numTransactions");
+            while (rs.next()) {
+			  numTransactions = rs.getInt("numTransactions");
+			}
             
 			return numTransactions;
 		}catch (Exception e) {
@@ -468,20 +499,22 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
         StringBuilder sqlQuery = new StringBuilder();
 		StringBuilder bucketNameFilter = new StringBuilder("");
 		if (queryExpression.getBucketNames() != null) {
-			if (queryExpression.getBucketNames().size() == 1)
-				bucketNameFilter.append("bucket_name = '").append(queryExpression.getBucketNames().iterator().next())
-								.append("' ").append("AND ");
-			else if (queryExpression.getBucketNames().size() > 1)
-				bucketNameFilter.append("(bucket_name = '")
-								.append(StringUtils.join(queryExpression.getBucketNames().iterator(),
-									"' OR bucket_name = '")).append("') AND ");
+			if (queryExpression.getBucketNames().size() == 1) {
+			  bucketNameFilter.append("bucket_name = '").append(queryExpression.getBucketNames().iterator().next())
+							  .append("' ").append("AND ");
+			} else if (queryExpression.getBucketNames().size() > 1) {
+			  bucketNameFilter.append("(bucket_name = '")
+							  .append(StringUtils.join(queryExpression.getBucketNames().iterator(),
+								  "' OR bucket_name = '")).append("') AND ");
+			}
 		}
         if (queryExpression instanceof QueryLogicalGroup) {
         	QueryLogicalGroup qlg = (QueryLogicalGroup) queryExpression;
             sqlQuery.append("(").append(this.getSqlQuery(qlg.getExpressions().get(0)));
             String op = qlg.getOperator() == QueryLogicalGroup.Operator.AND ? "INTERSECT" : "UNION";
-            for (int i = 1; i < qlg.getExpressions().size(); i++) 
-                sqlQuery.append(") ").append(op).append(" (").append(this.getSqlQuery(qlg.getExpressions().get(i)));
+            for (int i = 1; i < qlg.getExpressions().size(); i++) {
+			  sqlQuery.append(") ").append(op).append(" (").append(this.getSqlQuery(qlg.getExpressions().get(i)));
+			}
             sqlQuery.append(")");
         }else if (queryExpression instanceof ComparisonQueryExpression){
         	ComparisonQueryExpression cqe = (ComparisonQueryExpression) queryExpression;
@@ -507,8 +540,9 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
         		String value = cqe.getTerm().getValues().get(i);
                 sqlQuery.append("term_value ").append(operator).append(" '")
 						.append(this.useUTF8 ? URLEncoder.encode(value, "UTF-8") : value).append("'");
-	            if ((i + 1) < cqe.getTerm().getValues().size())
-	            	sqlQuery.append(" OR ");
+	            if ((i + 1) < cqe.getTerm().getValues().size()) {
+				  sqlQuery.append(" OR ");
+				}
         	}
         	sqlQuery.append(")");
         }else if (queryExpression instanceof NotQueryExpression) {

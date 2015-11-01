@@ -172,8 +172,9 @@ public class StdIngester implements Ingester, CoreMetKeys {
             // try and guess the structure
             if (prodFile.isDirectory()) {
                 productStructure = Product.STRUCTURE_HIERARCHICAL;
-            } else
+            } else {
                 productStructure = Product.STRUCTURE_FLAT;
+            }
         }
 
         // create the product
@@ -235,8 +236,9 @@ public class StdIngester implements Ingester, CoreMetKeys {
             LOG.log(Level.WARNING, "Property: [" + propName
                     + "] is not provided");
             return false;
-        } else
+        } else {
             return true;
+        }
     }
 
     private void checkOrSetFileManager(URL url) {

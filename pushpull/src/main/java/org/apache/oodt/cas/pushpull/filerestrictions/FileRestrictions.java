@@ -482,8 +482,9 @@ public class FileRestrictions {
             vfDoesNotExist = true;
             lastFileIsDir = file.isDir();
             file = file.getParentFile();
-            if (file == null)
+            if (file == null) {
                 break;
+            }
         }
         return !(file == null || (vfDoesNotExist && ((lastFileIsDir && !vf
                 .allowNewDirs()) || (!lastFileIsDir && !vf.allowNewFiles()))));
@@ -505,11 +506,12 @@ public class FileRestrictions {
         LinkedList<String> stringList = new LinkedList<String>();
         for (VirtualFile child : children) {
             String currentPath = curPath + "/" + child.getRegExp();
-            if (!child.isDir())
+            if (!child.isDir()) {
                 stringList.add(currentPath);
-            else
+            } else {
                 stringList
-                        .addAll(toStringList(child.getChildren(), currentPath));
+                    .addAll(toStringList(child.getChildren(), currentPath));
+            }
         }
         return stringList;
     }

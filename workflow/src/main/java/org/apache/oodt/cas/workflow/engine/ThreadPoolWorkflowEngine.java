@@ -118,8 +118,9 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
 
     workerMap = new HashMap();
 
-    if (resUrl != null)
+    if (resUrl != null) {
       rClient = new XmlRpcResourceManagerClient(resUrl);
+    }
   }
 
   /*

@@ -277,7 +277,9 @@ public class ProfileUtils {
       }
   	}
     // only save profile elements with one or more values
-    if (epe.getValues().size()>0) profElements.put(name, epe);
+    if (epe.getValues().size()>0) {
+      profElements.put(name, epe);
+    }
   	
   }
 

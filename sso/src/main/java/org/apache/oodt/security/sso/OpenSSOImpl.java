@@ -68,8 +68,9 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
         }
         return details.getAttributes().getMetadata(UID_ATTRIBUTE_NAME) != null ? details
             .getAttributes().getMetadata(UID_ATTRIBUTE_NAME) : UNKNOWN_USER;
-      } else
+      } else {
         return UNKNOWN_USER;
+      }
     } else {
       return new String(Base64.decodeBase64(cookieVal.getBytes()));
     }
@@ -153,8 +154,9 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
     String cookieVal = this.getCookieVal(SSO_COOKIE_KEY);
     if (cookieVal != null) {
       return cookieVal;
-    } else
+    } else {
       return null;
+    }
   }
 
   private String getCookieVal(String name) {

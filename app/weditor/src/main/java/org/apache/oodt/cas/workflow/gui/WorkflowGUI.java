@@ -80,12 +80,15 @@ public class WorkflowGUI extends JFrame {
     this.addWindowFocusListener(new WindowFocusListener() {
 
       public void windowGainedFocus(WindowEvent e) {
-        if (menu != null)
+        if (menu != null) {
           menu.revalidate();
-        if (toolbox != null)
+        }
+        if (toolbox != null) {
           toolbox.revalidate();
-        if (perspective != null)
+        }
+        if (perspective != null) {
           perspective.refresh();
+        }
       }
 
       public void windowLostFocus(WindowEvent e) {
@@ -158,10 +161,11 @@ public class WorkflowGUI extends JFrame {
   }
 
   private void updateWorkspaceText() {
-    if (this.workspace == null)
+    if (this.workspace == null) {
       this.setTitle(null);
-    else
+    } else {
       this.setTitle(StringUtils.leftPad("Workspace: " + this.workspace, 100));
+    }
   }
 
   private void loadProjects() {
@@ -173,9 +177,11 @@ public class WorkflowGUI extends JFrame {
           "parallel", "task", "condition")));
       for (File file : repo.getFiles()) {
         List<ModelGraph> graphs = new Vector<ModelGraph>();
-        for (ModelGraph graph : repo.getGraphs())
-          if (graph.getModel().getFile().equals(file))
+        for (ModelGraph graph : repo.getGraphs()) {
+          if (graph.getModel().getFile().equals(file)) {
             graphs.add(graph);
+          }
+        }
         System.out.println(graphs);
         perspective.addState(new ViewState(file, null, graphs, repo
             .getGlobalConfigGroups()));
@@ -222,8 +228,9 @@ public class WorkflowGUI extends JFrame {
 
       public void actionPerformed(ActionEvent event) {
         try {
-          if (workspace == null)
+          if (workspace == null) {
             return;
+          }
           JFileChooser chooser = new JFileChooser(new File("."));
           int value = chooser.showOpenDialog(WorkflowGUI.this);
           if (value == JFileChooser.APPROVE_OPTION) {

@@ -222,7 +222,9 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             String metadataSql = "SELECT * FROM "
                     + product.getProductType().getName() + "_metadata "
 		+ "WHERE product_id = '" + product.getProductId()+"'";
-            if(this.orderedValues) metadataSql += " ORDER BY pkey" ;
+            if(this.orderedValues) {
+              metadataSql += " ORDER BY pkey";
+            }
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
@@ -333,15 +335,19 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             	  if (getValidationLayer()!=null) {
             	  	// validation layer: column "element_id" contains the element identifier (e.g. "urn:oodt:ProductReceivedTime")
 	                elementIds += " AND (element_id = '" + this.getValidationLayer().getElementByName(elems.get(0)).getElementId() + "'";
-	                for (int i = 1; i < elems.size(); i++) 
-	                    elementIds += " OR element_id = '" + this.getValidationLayer().getElementByName(elems.get(i)).getElementId() + "'";
+	                for (int i = 1; i < elems.size(); i++) {
+                      elementIds +=
+                          " OR element_id = '" + this.getValidationLayer().getElementByName(elems.get(i)).getElementId()
+                          + "'";
+                    }
 	                elementIds += ")";
             	 
             	  } else {
             	  	// no validation layer: column "element_id" contains the element name (e.g. "CAS.ProductReceivedTime")
 	                elementIds += " AND (element_id = '" + elems.get(0) + "'";
-	                for (int i = 1; i < elems.size(); i++) 
-	                    elementIds += " OR element_id = '" + elems.get(i) + "'";
+	                for (int i = 1; i < elems.size(); i++) {
+                      elementIds += " OR element_id = '" + elems.get(i) + "'";
+                    }
 	                elementIds += ")";
 	                
             	  }
@@ -350,7 +356,9 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             String metadataSql = "SELECT element_id,metadata_value FROM "
                     + product.getProductType().getName() + "_metadata"
 		+ " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds;
-            if(this.orderedValues) metadataSql += " ORDER BY pkey";
+            if(this.orderedValues) {
+              metadataSql += " ORDER BY pkey";
+            }
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql);
@@ -768,8 +776,9 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
           } else {
               sqlQuery = "(" + this.getSqlQuery(bqc.getTerms().get(0), type);
               String op = bqc.getOperator() == BooleanQueryCriteria.AND ? "INTERSECT" : "UNION";
-              for (int i = 1; i < bqc.getTerms().size(); i++) 
-                  sqlQuery += ") " + op + " (" + this.getSqlQuery(bqc.getTerms().get(i), type);
+              for (int i = 1; i < bqc.getTerms().size(); i++) {
+                sqlQuery += ") " + op + " (" + this.getSqlQuery(bqc.getTerms().get(i), type);
+              }
               sqlQuery += ")";
           }
       }else {
@@ -778,8 +787,9 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
       	  	elementIdStr = this.getValidationLayer().getElementByName(queryCriteria.getElementName()).getElementId();
       	  }
           
-          if (fieldIdStringFlag) 
-              elementIdStr = "'" + elementIdStr + "'";
+          if (fieldIdStringFlag) {
+            elementIdStr = "'" + elementIdStr + "'";
+          }
           if (!this.productIdString) {
           	sqlQuery = "SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE element_id = " + elementIdStr + " AND ";
           } else {
@@ -792,13 +802,19 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
           } else if (queryCriteria instanceof RangeQueryCriteria) {
               RangeQueryCriteria rqc = (RangeQueryCriteria) queryCriteria;
               String rangeSubQuery = null;
-              if (rqc.getStartValue() != null)
-                  rangeSubQuery = "metadata_value" + (rqc.getInclusive() ? " >= " : " > ") + "'" + rqc.getStartValue() + "'";
+              if (rqc.getStartValue() != null) {
+                rangeSubQuery =
+                    "metadata_value" + (rqc.getInclusive() ? " >= " : " > ") + "'" + rqc.getStartValue() + "'";
+              }
               if (rqc.getEndValue() != null) {
-                  if (rangeSubQuery == null)
-                      rangeSubQuery = "metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc.getEndValue() + "'";
-                  else
-                      rangeSubQuery = "(" + rangeSubQuery + " AND metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc.getEndValue() + "')";
+                  if (rangeSubQuery == null) {
+                    rangeSubQuery =
+                        "metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc.getEndValue() + "'";
+                  } else {
+                    rangeSubQuery =
+                        "(" + rangeSubQuery + " AND metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc
+                            .getEndValue() + "')";
+                  }
               }
               sqlQuery += rangeSubQuery;
           } else {

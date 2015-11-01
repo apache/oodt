@@ -82,22 +82,25 @@ public final class PaginationUtils {
         final int totalSize = originalList.size();
 
         int endIndex = startIndex + pageSize;
-        if (endIndex > totalSize)
+        if (endIndex > totalSize) {
             endIndex = totalSize;
+        }
 
         return originalList.subList(startIndex, endIndex);
     }
 
     public static int getTotalPage(List originalList, int pageSize) {
-        if (originalList == null || originalList.size() <= 0)
+        if (originalList == null || originalList.size() <= 0) {
             return 0;
+        }
         final int totalSize = originalList.size();
         return ((totalSize - 1) / pageSize) + 1;
     }
 
     public static int getTotalPage(int numTotal, int pageSize) {
-        if (numTotal <= 0)
+        if (numTotal <= 0) {
             return 0;
+        }
         return ((numTotal - 1) / pageSize) + 1;
     }
 

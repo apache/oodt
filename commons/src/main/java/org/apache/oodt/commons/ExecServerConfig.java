@@ -62,11 +62,13 @@ public class ExecServerConfig extends Executable implements Documentable {
 		for (int i = 2; i < children.getLength(); ++i) {
 			Node child = children.item(i);
 			String name = child.getNodeName();
-			if ("host".equals(name))
-				preferredHost = InetAddress.getByName(XML.unwrappedText(children.item(2)));
-			else if ("properties".equals(name))
-				Configuration.loadProperties(child, properties);
-			else throw new SAXException("Unknown node " + name + " in exec server XML");
+			if ("host".equals(name)) {
+			  preferredHost = InetAddress.getByName(XML.unwrappedText(children.item(2)));
+			} else if ("properties".equals(name)) {
+			  Configuration.loadProperties(child, properties);
+			} else {
+			  throw new SAXException("Unknown node " + name + " in exec server XML");
+			}
 		}
 	}		
 
@@ -133,8 +135,12 @@ public class ExecServerConfig extends Executable implements Documentable {
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof ExecServerConfig)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof ExecServerConfig)) {
+		  return false;
+		}
 		ExecServerConfig obj = (ExecServerConfig) rhs;
 		return className.equals(obj.className) && objectKey.equals(obj.objectKey) && properties.equals(obj.properties);
 	}

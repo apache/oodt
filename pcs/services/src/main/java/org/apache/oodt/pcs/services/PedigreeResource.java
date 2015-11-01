@@ -97,10 +97,12 @@ public class PedigreeResource extends PCSService {
 
   private String encodePedigreeAsJson(PedigreeTree up, PedigreeTree down) {
     Map<String, Object> output = new HashMap<String, Object>();
-    if (up != null)
+    if (up != null) {
       output.put("upstream", this.encodePedigreeTreeAsJson(up.getRoot()));
-    if (down != null)
+    }
+    if (down != null) {
       output.put("downstream", this.encodePedigreeTreeAsJson(down.getRoot()));
+    }
     JSONObject json = new JSONObject();
     json.put("pedigree", output);
     return json.toString();

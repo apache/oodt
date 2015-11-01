@@ -78,11 +78,12 @@ public class MetReaderExtractor extends CmdLineMetExtractor {
         // .met file
         // for the given product file
     	String extension = this.metFileExt;
-    	if (this.config != null)
-    		extension = ((MetReaderConfig) this.config)
-				.getProperty(
-						"org.apache.oodt.cas.metadata.extractors.MetReader.metFileExt",
-						this.metFileExt);
+    	if (this.config != null) {
+            extension = ((MetReaderConfig) this.config)
+                .getProperty(
+                    "org.apache.oodt.cas.metadata.extractors.MetReader.metFileExt",
+                    this.metFileExt);
+        }
         String metFileFullPath = file.getAbsolutePath() + "." + extension;
     	LOG.log(Level.INFO, "Reading metadata from " + metFileFullPath);
         // now read the met file and return it

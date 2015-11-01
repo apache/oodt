@@ -36,15 +36,17 @@ class CDEResultInputStream extends InputStream {
       s = res.getNextRowAsString();
     } catch (SQLException ignored) {
     }
-    if (rowStream != null)
+    if (rowStream != null) {
       rowStream.close();
+    }
     rowStream = s == null ? null : new ByteArrayInputStream(s.getBytes("UTF-8"));
     return rowStream != null;
   }
 
   private boolean ensureOpen() throws IOException {
-    if (rowStream == null || rowStream.available() <= 0)
+    if (rowStream == null || rowStream.available() <= 0) {
       return fetchNextRow();
+    }
     return true;
   }
 
@@ -55,8 +57,9 @@ class CDEResultInputStream extends InputStream {
 
   @Override
   public int read(byte[] b, int off, int len) throws IOException {
-    if (!ensureOpen())
+    if (!ensureOpen()) {
       return -1;
+    }
 
     if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length)
         || ((off + len) < 0)) {
@@ -69,8 +72,9 @@ class CDEResultInputStream extends InputStream {
     int n = rowStream.read(b, off, len);
     total += n;
     while (n != -1 && total < len) {
-      if (!fetchNextRow())
+      if (!fetchNextRow()) {
         return total;
+      }
       n = rowStream.read(b, off + total, len - total);
       total += n;
     }
@@ -79,8 +83,9 @@ class CDEResultInputStream extends InputStream {
 
   @Override
   public void close() throws IOException {
-    if (rowStream != null)
+    if (rowStream != null) {
       rowStream.close();
+    }
     rowStream = null;
 
     try {
@@ -92,8 +97,9 @@ class CDEResultInputStream extends InputStream {
 
   @Override
   public synchronized int available() throws IOException {
-    if (rowStream == null)
+    if (rowStream == null) {
       return 0;
+    }
     return rowStream.available();
   }
 

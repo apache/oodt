@@ -179,17 +179,29 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 			mimeAccept = new ArrayList();
 			mimeAccept.add("*/*");
 		}
-		if (keywordQuery == null) keywordQuery = "UNKNOWN";
+		if (keywordQuery == null) {
+		  keywordQuery = "UNKNOWN";
+		}
 		// init query header (object attributes)
-		if (id == null) id = "UNKNOWN";
-		if (title == null) title = "UNKNOWN";
-		if (desc == null) desc = "UNKNOWN";
-		if (ddId == null) ddId = "UNKNOWN";
+		if (id == null) {
+		  id = "UNKNOWN";
+		}
+		if (title == null) {
+		  title = "UNKNOWN";
+		}
+		if (desc == null) {
+		  desc = "UNKNOWN";
+		}
+		if (ddId == null) {
+		  ddId = "UNKNOWN";
+		}
 		queryHeader = new QueryHeader(id, title, desc, /*type*/"QUERY", /*status*/"ACTIVE", /*security*/"UNKNOWN",
 			/*revision*/"1999-12-12 JSH V1.0 Under Development", ddId);
 
 		// init query attributes
-		if (resultModeId == null) resultModeId = "ATTRIBUTE";
+		if (resultModeId == null) {
+		  resultModeId = "ATTRIBUTE";
+		}
 		if (propType == null) {
 			propType = "BROADCAST";
 			propLevels = "N/A";
@@ -223,7 +235,9 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
      * @param xmlQueryString  The XML query structure in string format.
      */
 	public XMLQuery (String xmlQueryString) throws SAXException {
-		if (xmlQueryString == null) xmlQueryString = BLANK;
+		if (xmlQueryString == null) {
+		  xmlQueryString = BLANK;
+		}
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setCoalescing(false);
@@ -828,8 +842,9 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 	    NodeList children = node.getChildNodes();
 	    for (int i = 0; i < children.getLength(); ++i) {
 		    Node n = children.item(i);
-		    if (n.getNodeType() == Node.ELEMENT_NODE)
-			    list.add(new QueryElement(n));
+		    if (n.getNodeType() == Node.ELEMENT_NODE) {
+			  list.add(new QueryElement(n));
+			}
 	    }
     }
 
@@ -854,8 +869,12 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof XMLQuery)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof XMLQuery)) {
+		  return false;
+		}
 		XMLQuery obj = (XMLQuery) rhs;
 		return resultModeId.equals(obj.resultModeId) && propogationType.equals(obj.propogationType)
 			&& propogationLevels.equals(obj.propogationLevels) && maxResults == obj.maxResults
@@ -905,8 +924,9 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 		XMLQuery q;
 		if (argv[0].equals("-expr")) {
 			StringBuilder expr = new StringBuilder();
-			for (int i = 1; i < argv.length; ++i)
-				expr.append(argv[i]).append(' ');
+			for (int i = 1; i < argv.length; ++i) {
+			  expr.append(argv[i]).append(' ');
+			}
 			q = new XMLQuery(expr.toString().trim(), "expr1", "Command-line Expression Query",
 				"The expression for this query came from the command-line", /*ddId*/ null,
 				/*resultModeId*/ null, /*propType*/ null, /*propLevels*/ null, XMLQuery.DEFAULT_MAX_RESULTS);
@@ -914,11 +934,14 @@ public class XMLQuery implements java.io.Serializable, Cloneable {
 			BufferedReader reader = new BufferedReader(new FileReader(argv[1]));
 			StringBuilder str = new StringBuilder();
 			String line;
-			while ((line = reader.readLine()) != null)
-				str.append(line).append('\n');
+			while ((line = reader.readLine()) != null) {
+			  str.append(line).append('\n');
+			}
 			reader.close();
 			q = new XMLQuery(str.toString());
-		} else throw new IllegalStateException("Can't get here; only -expr or -file allowed, but got \"" + argv[0] + "\"");
+		} else {
+		  throw new IllegalStateException("Can't get here; only -expr or -file allowed, but got \"" + argv[0] + "\"");
+		}
 				
 		System.out.println("kwdQueryString: " + q.getKwdQueryString());
 		System.out.println("fromElementSet: " + q.getFromElementSet());

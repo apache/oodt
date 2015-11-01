@@ -106,8 +106,9 @@ public class ViewState {
 
   public String getFirstPropertyValue(String key) {
     List<String> values = this.getProperty(key);
-    if (values == null || values.size() == 0)
+    if (values == null || values.size() == 0) {
       return null;
+    }
     return values.get(0);
   }
 
@@ -122,9 +123,11 @@ public class ViewState {
 
   public List<String> getKeysRecur(String subGroup) {
     Vector<String> keys = new Vector<String>();
-    for (String key : this.properties.getAllKeys())
-      if (key.contains(subGroup))
+    for (String key : this.properties.getAllKeys()) {
+      if (key.contains(subGroup)) {
         keys.add(key);
+      }
+    }
     return keys;
   }
 
@@ -138,16 +141,18 @@ public class ViewState {
   }
 
   public ModelGraph getSelected() {
-    if (this.mode.equals(Mode.EDIT))
+    if (this.mode.equals(Mode.EDIT)) {
       return this.selected;
-    else
+    } else {
       return null;
+    }
   }
 
   public Set<String> getGraphIds() {
     HashSet<String> graphIds = new HashSet<String>();
-    for (ModelGraph graph : this.getGraphs())
+    for (ModelGraph graph : this.getGraphs()) {
       graphIds.add(graph.getModel().getModelId());
+    }
     return graphIds;
   }
 
@@ -188,10 +193,12 @@ public class ViewState {
   public void save() {
     if (this.change) {
       Stack<ViewState> stack = undoHistory.get(this.id);
-      if (stack == null)
+      if (stack == null) {
         stack = new Stack<ViewState>();
-      if (stack.size() >= 100)
+      }
+      if (stack.size() >= 100) {
         stack.remove(stack.size() - 1);
+      }
       stack.push(this.clone());
       undoHistory.put(this.id, stack);
       this.change = false;
@@ -212,11 +219,13 @@ public class ViewState {
     this.selected = null;
     if (state.graphs != null) {
       this.graphs = new Vector<ModelGraph>();
-      for (ModelGraph graph : state.graphs)
+      for (ModelGraph graph : state.graphs) {
         this.graphs.add(graph.clone());
-      if (state.selected != null)
+      }
+      if (state.selected != null) {
         this.selected = GuiUtils.find(this.graphs, state.selected.getModel()
-            .getModelId());
+                                                                 .getModelId());
+      }
     }
     this.properties = new Metadata(state.properties);
     this.id = state.id;
@@ -229,11 +238,13 @@ public class ViewState {
     ModelGraph selected = null;
     if (this.graphs != null) {
       cloneGraphs = new Vector<ModelGraph>();
-      for (ModelGraph graph : this.graphs)
+      for (ModelGraph graph : this.graphs) {
         cloneGraphs.add(graph.clone());
-      if (this.selected != null)
+      }
+      if (this.selected != null) {
         selected = GuiUtils.find(cloneGraphs, this.selected.getModel()
-            .getModelId());
+                                                           .getModelId());
+      }
     }
     ViewState clone = new ViewState(this.file, selected, cloneGraphs,
         this.globalConfigGroups);

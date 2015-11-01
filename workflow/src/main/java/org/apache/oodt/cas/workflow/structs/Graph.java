@@ -109,9 +109,10 @@ public class Graph {
       this.executionType = graphElem.getNodeName();
     }
 
-    if (!processorIds.contains(this.executionType))
+    if (!processorIds.contains(this.executionType)) {
       throw new WorkflowException("Unsupported execution type id '"
-          + this.executionType + "'");
+                                  + this.executionType + "'");
+    }
 
     if (!checkValue(this.modelId) && !checkValue(this.modelIdRef)) {
       this.modelId = UUID.randomUUID().toString();

@@ -448,8 +448,9 @@ public class LuceneCatalog implements Catalog {
         Product prod = getProductById(product.getProductId(), true);
         if (prod != null) {
             return prod.getProductReferences();
-        } else
+        } else {
             return null;
+        }
     }
 
     /*
@@ -602,8 +603,9 @@ public class LuceneCatalog implements Catalog {
         Metadata fullMetadata = getMetadata(product);
         Metadata reducedMetadata = new Metadata();
         for (String element : elements) {
-            if (fullMetadata.containsKey(element))
+            if (fullMetadata.containsKey(element)) {
                 reducedMetadata.replaceMetadata(element, fullMetadata.getAllMetadata(element));
+            }
         }
         return reducedMetadata;
     }
@@ -1057,8 +1059,9 @@ public class LuceneCatalog implements Catalog {
                     r.setOrigReference(origRefs[i]);
                     r.setDataStoreReference(dataStoreRefs[i]);
                     r.setFileSize((Long.parseLong(refLengths[i])));
-                    if (refMimeTypes != null)
+                    if (refMimeTypes != null) {
                         r.setMimeType(refMimeTypes[i]);
+                    }
                     references.add(r);
                 }
 
@@ -1185,10 +1188,12 @@ public class LuceneCatalog implements Catalog {
                 }
 
                 return true;
-            } else
+            } else {
                 return false;
-        } else
+            }
+        } else {
             return false;
+        }
 
     }
 
@@ -1210,8 +1215,9 @@ public class LuceneCatalog implements Catalog {
             booleanQuery.add(prodTypeTermQuery, BooleanClause.Occur.MUST);
 
             //convert filemgr query into a lucene query
-            for (QueryCriteria queryCriteria : query.getCriteria()) 
+            for (QueryCriteria queryCriteria : query.getCriteria()) {
                 booleanQuery.add(this.getQuery(queryCriteria), BooleanClause.Occur.MUST);
+            }
 
             LOG.log(Level.FINE, "Querying LuceneCatalog: q: [" + booleanQuery
                     + "]");
@@ -1258,8 +1264,9 @@ public class LuceneCatalog implements Catalog {
             booleanQuery.add(prodTypeTermQuery, BooleanClause.Occur.MUST);
             
             //convert filemgr query into a lucene query
-            for (QueryCriteria queryCriteria : query.getCriteria()) 
+            for (QueryCriteria queryCriteria : query.getCriteria()) {
                 booleanQuery.add(this.getQuery(queryCriteria), BooleanClause.Occur.MUST);
+            }
             
             Sort sort = new Sort(new SortField("CAS.ProductReceivedTime",
                     SortField.STRING, true));
@@ -1343,8 +1350,9 @@ public class LuceneCatalog implements Catalog {
                 throw new CatalogException("Invalid BooleanQueryCriteria opertor [" 
                         + ((BooleanQueryCriteria) queryCriteria).getOperator() + "]");
             }
-            for (QueryCriteria qc : ((BooleanQueryCriteria) queryCriteria).getTerms())
+            for (QueryCriteria qc : ((BooleanQueryCriteria) queryCriteria).getTerms()) {
                 booleanQuery.add(this.getQuery(qc), occur);
+            }
 
             return booleanQuery;
         } else if (queryCriteria instanceof TermQueryCriteria) {

@@ -122,8 +122,9 @@ public class RetrievalSetup {
                 for (File propFile : propFiles) {
                     try {
                         if (pfi.getLocalDir().equals(pfi.getOnSuccessDir())
-                                || pfi.getLocalDir().equals(pfi.getOnFailDir()))
-                            alreadyProcessedPropFiles.add(propFile);
+                                || pfi.getLocalDir().equals(pfi.getOnFailDir())) {
+                          alreadyProcessedPropFiles.add(propFile);
+                        }
                         this.movePropsFileToFinalDestination(pfi, propFile,
                                 linker.getErrorsAndEraseLinks(propFile));
                     } catch (Exception e) {
@@ -138,8 +139,9 @@ public class RetrievalSetup {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (dataFilesFRS != null)
-                dataFilesFRS.shutdown();
+            if (dataFilesFRS != null) {
+              dataFilesFRS.shutdown();
+            }
             alreadyProcessedPropFiles.clear();
             linker.clear();
         }
@@ -184,8 +186,9 @@ public class RetrievalSetup {
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
-                        if (frs != null)
-                            frs.shutdown();
+                        if (frs != null) {
+                          frs.shutdown();
+                        }
                         RetrievalSetup.this.downloadingProps = false;
                     }
                 }

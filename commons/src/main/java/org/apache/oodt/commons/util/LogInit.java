@@ -66,15 +66,17 @@ public class LogInit {
 
 		// Another destination is any user-specified logger.
 		String userSpecifiedListener = props.getProperty("org.apache.oodt.commons.util.LogInit.listener");
-		if (userSpecifiedListener != null)
-			mux.addListener((LogListener) Class.forName(userSpecifiedListener).newInstance());
+		if (userSpecifiedListener != null) {
+		  mux.addListener((LogListener) Class.forName(userSpecifiedListener).newInstance());
+		}
 
 		// Ahead of the multiplexer is the filter.
 		String categoryList = props.getProperty("org.apache.oodt.commons.util.LogInit.categories", "");
 		StringTokenizer tokens = new StringTokenizer(categoryList);
 		Object[] categories = new Object[tokens.countTokens()];
-		for (int i = 0; i < categories.length; ++i)
-			categories[i] = tokens.nextToken();
+		for (int i = 0; i < categories.length; ++i) {
+		  categories[i] = tokens.nextToken();
+		}
 		EnterpriseLogFilter filter = new EnterpriseLogFilter(mux, true, categories);
 		Log.addLogListener(filter);
 

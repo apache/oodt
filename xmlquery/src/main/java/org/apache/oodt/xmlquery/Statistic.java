@@ -74,11 +74,12 @@ public class Statistic implements java.io.Serializable, Cloneable
                 	if (node instanceof Element)
                 	{
                     		nodeName = node.getNodeName();
-                    		if (nodeName.compareTo("url") == 0)
-                        	   url = XML.unwrappedText(node);
-                    		else
-                    		if (nodeName.compareTo("time") == 0)
-                        	   time = Long.parseLong(XML.unwrappedText(node));
+                    		if (nodeName.compareTo("url") == 0) {
+							  url = XML.unwrappedText(node);
+							} else
+                    		if (nodeName.compareTo("time") == 0) {
+							  time = Long.parseLong(XML.unwrappedText(node));
+							}
                  	}
          	}
    	}

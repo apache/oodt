@@ -77,8 +77,9 @@ public class SerializableMetadata extends Metadata implements Serializable {
     public SerializableMetadata(String xmlEncoding, boolean useCDATA)
             throws InstantiationException {
         super();
-        if (xmlEncoding == null)
+        if (xmlEncoding == null) {
             throw new InstantiationException("xmlEncoding cannot be null");
+        }
         this.xmlEncoding = xmlEncoding;
         this.useCDATA = useCDATA;
     }
@@ -177,10 +178,11 @@ public class SerializableMetadata extends Metadata implements Serializable {
             for (String key : this.getAllKeys()) {
                 Element metadataElem = document.createElement("keyval");
                 Element keyElem = document.createElement("key");
-                if (this.useCDATA)
+                if (this.useCDATA) {
                     keyElem.appendChild(document.createCDATASection(key));
-                else
+                } else {
                     keyElem.appendChild(document.createTextNode(URLEncoder.encode(key, this.xmlEncoding)));
+                }
                 
                 metadataElem.appendChild(keyElem);
 
@@ -192,12 +194,13 @@ public class SerializableMetadata extends Metadata implements Serializable {
                         throw new Exception("Attempt to write null value "
                                 + "for property: [" + key + "]: val: [null]");
                     }
-                    if (this.useCDATA)
+                    if (this.useCDATA) {
                         valElem.appendChild(document
-                                .createCDATASection(value));
-                    else
+                            .createCDATASection(value));
+                    } else {
                         valElem.appendChild(document.createTextNode(URLEncoder
-                                .encode(value, this.xmlEncoding)));
+                            .encode(value, this.xmlEncoding)));
+                    }
                     metadataElem.appendChild(valElem);
                 }
                 root.appendChild(metadataElem);

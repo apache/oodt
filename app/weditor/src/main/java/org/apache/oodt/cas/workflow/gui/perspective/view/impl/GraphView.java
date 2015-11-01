@@ -144,12 +144,14 @@ public class GraphView extends DefaultTreeView {
     this.myGraphListener = new MyGraphListener(state);
 
     Rectangle visible = null;
-    if (jgraph != null)
+    if (jgraph != null) {
       visible = jgraph.getVisibleRect();
+    }
 
     Cursor cursor = null;
-    if (jgraph != null)
+    if (jgraph != null) {
       cursor = jgraph.getCursor();
+    }
 
     this.edgeMap = new HashMap<String, Pair>();
 
@@ -158,18 +160,22 @@ public class GraphView extends DefaultTreeView {
     m_jgAdapter = new JungJGraphModelAdapter(directedGraph);
 
     jgraph = new JGraph(m_jgAdapter);
-    for (MouseListener ml : jgraph.getMouseListeners())
+    for (MouseListener ml : jgraph.getMouseListeners()) {
       jgraph.removeMouseListener(ml);
-    for (MouseMotionListener ml : jgraph.getMouseMotionListeners())
+    }
+    for (MouseMotionListener ml : jgraph.getMouseMotionListeners()) {
       jgraph.removeMouseMotionListener(ml);
-    for (MouseWheelListener ml : jgraph.getMouseWheelListeners())
+    }
+    for (MouseWheelListener ml : jgraph.getMouseWheelListeners()) {
       jgraph.removeMouseWheelListener(ml);
+    }
     jgraph.setBackground(Color.white);
     jgraph.setAntiAliased(true);
     jgraph.setMoveable(false);
     String scale = state.getFirstPropertyValue(SCALE);
-    if (scale == null)
+    if (scale == null) {
       state.setProperty(SCALE, scale = "1.0");
+    }
     jgraph.setScale(Double.parseDouble(scale));
 
     DragSource dragSource = DragSource.getDefaultDragSource();
@@ -193,18 +199,19 @@ public class GraphView extends DefaultTreeView {
                       ((ModelNode) ((DefaultGraphCell) moveCell)
                           .getUserObject()).getId());
 
-                  if (state.getMode() == View.Mode.MOVE)
+                  if (state.getMode() == View.Mode.MOVE) {
                     moveCell = GraphView.this.m_jgAdapter
                         .getVertexCell((moveGraph = moveGraph.getRootParent())
                             .getModel());
-                  else if (GuiUtils.isDummyNode(moveGraph.getModel()))
+                  } else if (GuiUtils.isDummyNode(moveGraph.getModel())) {
                     moveCell = GraphView.this.m_jgAdapter
                         .getVertexCell((moveGraph = moveGraph.getParent())
                             .getModel());
-                  else if (moveGraph.getModel().isRef()) {
+                  } else if (moveGraph.getModel().isRef()) {
                     while (moveGraph.getParent() != null
-                        && moveGraph.getParent().getModel().isRef())
+                        && moveGraph.getParent().getModel().isRef()) {
                       moveGraph = moveGraph.getParent();
+                    }
                     moveCell = GraphView.this.m_jgAdapter
                         .getVertexCell(moveGraph.getModel());
                   }
@@ -229,10 +236,11 @@ public class GraphView extends DefaultTreeView {
                         public Object getTransferData(DataFlavor flavor)
                             throws UnsupportedFlavorException, IOException {
                           if (flavor.getHumanPresentableName().equals(
-                              DefaultGraphCell.class.getSimpleName()))
+                              DefaultGraphCell.class.getSimpleName())) {
                             return this;
-                          else
+                          } else {
                             throw new UnsupportedFlavorException(flavor);
+                          }
                         }
 
                         public DataFlavor[] getTransferDataFlavors() {
@@ -253,8 +261,9 @@ public class GraphView extends DefaultTreeView {
 
                         public void dragDropEnd(DragSourceDropEvent dsde) {
                           System.out.println("DRAG END!!!!");
-                          if (moveCell == null)
+                          if (moveCell == null) {
                             return;
+                          }
                           Point dropPoint = new Point(dsde.getX()
                               - jgraph.getLocationOnScreen().x, dsde.getY()
                               - jgraph.getLocationOnScreen().y);
@@ -265,13 +274,15 @@ public class GraphView extends DefaultTreeView {
                                 state.getGraphs(),
                                 ((ModelNode) endCell.getUserObject()).getId());
                             if (!endGraph.getModel().isParentType()
-                                || GuiUtils.isSubGraph(moveGraph, endGraph))
+                                || GuiUtils.isSubGraph(moveGraph, endGraph)) {
                               return;
-                            if (moveGraph.getParent() == null)
+                            }
+                            if (moveGraph.getParent() == null) {
                               state.removeGraph(moveGraph);
-                            else
+                            } else {
                               GuiUtils.removeNode(state.getGraphs(),
                                   moveGraph.getModel());
+                            }
                             GraphView.this.removeShift(state, moveGraph);
                             GuiUtils.addChild(state.getGraphs(), endGraph
                                 .getModel().getId(), moveGraph);
@@ -352,12 +363,13 @@ public class GraphView extends DefaultTreeView {
                                           - jgraph.getLocationOnScreen().x,
                                       dsde.getY()
                                           - jgraph.getLocationOnScreen().y);
-                              if (mouseOverCell != null)
+                              if (mouseOverCell != null) {
                                 mouseOverGraph = GuiUtils.find(state
                                     .getGraphs(), ((ModelNode) mouseOverCell
                                     .getUserObject()).getId());
-                              else
+                              } else {
                                 mouseOverGraph = null;
+                              }
                             }
                             if (mouseOverGraph != null) {
                               if (GuiUtils.isDummyNode(mouseOverGraph
@@ -365,14 +377,16 @@ public class GraphView extends DefaultTreeView {
                                 mouseOverGraph = mouseOverGraph.getParent();
                               } else {
                                 while (mouseOverGraph != null
-                                    && mouseOverGraph.getModel().isRef())
+                                    && mouseOverGraph.getModel().isRef()) {
                                   mouseOverGraph = mouseOverGraph.getParent();
+                                }
                               }
-                              if (mouseOverGraph != null)
+                              if (mouseOverGraph != null) {
                                 mouseOverCell = GraphView.this.m_jgAdapter
                                     .getVertexCell(mouseOverGraph.getModel());
-                              else
+                              } else {
                                 mouseOverCell = null;
+                              }
                             }
                             GraphView.this.jgraph
                                 .setSelectionCells(new Object[] { mouseOverCell });
@@ -393,12 +407,14 @@ public class GraphView extends DefaultTreeView {
 
     List<Line> lines = GuiUtils.findLines(state.getGraphs());
     for (Line line : lines) {
-      if (!this.directedGraph.containsVertex(line.getFromModel()))
+      if (!this.directedGraph.containsVertex(line.getFromModel())) {
         this.directedGraph.addVertex(line.getFromModel());
+      }
 
       if (line.getToModel() != null) {
-        if (!this.directedGraph.containsVertex(line.getToModel()))
+        if (!this.directedGraph.containsVertex(line.getToModel())) {
           this.directedGraph.addVertex(line.getToModel());
+        }
         IdentifiableEdge edge = new IdentifiableEdge(line.getFromModel(), line.getToModel());
         directedGraph.addEdge(edge, line.getFromModel(), line.getToModel());
         this.edgeMap.put(edge.id, new Pair(line.getFromModel() != null ? line
@@ -423,8 +439,9 @@ public class GraphView extends DefaultTreeView {
     }
 
     String edgeDisplayMode = state.getFirstPropertyValue(EDGE_DISPLAY_MODE);
-    if (edgeDisplayMode == null)
+    if (edgeDisplayMode == null) {
       state.setProperty(EDGE_DISPLAY_MODE, edgeDisplayMode = WORKFLOW_MODE);
+    }
     if (edgeDisplayMode.equals(WORKFLOW_MODE)) {
       this.edgeMap = new HashMap<String, Pair>();
       removeAllEdges(this.directedGraph);
@@ -443,12 +460,14 @@ public class GraphView extends DefaultTreeView {
       if (graph != null) {
         DefaultGraphCell cell = this.m_jgAdapter
             .getVertexCell(graph.getModel());
-        if (cell != null)
+        if (cell != null) {
           this.jgraph.setSelectionCells(new Object[] { cell });
-        else
+        } else {
           this.jgraph.setSelectionCells(new Object[] {});
-      } else
+        }
+      } else {
         this.jgraph.setSelectionCells(new Object[] {});
+      }
     } else {
       this.jgraph.setSelectionCells(new Object[] {});
     }
@@ -467,8 +486,9 @@ public class GraphView extends DefaultTreeView {
       this.jgraph.scrollRectToVisible(visible);
     }
 
-    if (cursor != null)
+    if (cursor != null) {
       this.jgraph.setCursor(cursor);
+    }
 
     this.revalidate();
   }
@@ -498,9 +518,10 @@ public class GraphView extends DefaultTreeView {
         ArrayList<Point2D.Double> newPoints = new ArrayList<Point2D.Double>();
         Point shift = this.getShift(state, (DefaultGraphCell) entry.getKey(),
             nested);
-        for (Point2D.Double point : points)
+        for (Point2D.Double point : points) {
           newPoints
               .add(new Point2D.Double(point.x + shift.x, point.y + shift.y));
+        }
         ((Map<Object, Object>) entry.getValue()).put("points", newPoints);
       } else if (entry.getKey() instanceof DefaultGraphCell) {
         DefaultGraphCell cell = (DefaultGraphCell) entry.getKey();
@@ -525,8 +546,9 @@ public class GraphView extends DefaultTreeView {
       changed = false;
       for (int i = 0; i < state.getGraphs().size(); i++) {
         ModelGraph currentGraph = state.getGraphs().get(i);
-        if (this.ensureNoInternalOverlap(currentGraph, nested))
+        if (this.ensureNoInternalOverlap(currentGraph, nested)) {
           changed = true;
+        }
         DefaultGraphCell currentCell = this.m_jgAdapter
             .getVertexCell(currentGraph.getModel());
         Rectangle2D currentBounds = (Rectangle2D) ((Map) nested
@@ -537,8 +559,9 @@ public class GraphView extends DefaultTreeView {
             (int) (currentBounds.getY() + currentShift.getY()),
             (int) currentBounds.getWidth(), (int) currentBounds.getHeight());
         for (int j = 0; j < state.getGraphs().size(); j++) {
-          if (i == j)
+          if (i == j) {
             continue;
+          }
           ModelGraph graph = state.getGraphs().get(j);
           DefaultGraphCell cell = this.m_jgAdapter.getVertexCell(graph
               .getModel());
@@ -617,11 +640,12 @@ public class GraphView extends DefaultTreeView {
               .get(child1Cell)).get(GraphConstants.BOUNDS);
           Rectangle2D child2Bounds = (Rectangle2D) ((Map) nested
               .get(child2Cell)).get(GraphConstants.BOUNDS);
-          if (graph.getModel().getExecutionType().equals("parallel"))
+          if (graph.getModel().getExecutionType().equals("parallel")) {
             return Double.compare(child1Bounds.getMaxY(),
                 child2Bounds.getMaxY());
-          else
+          } else {
             return Double.compare(child1Bounds.getX(), child2Bounds.getX());
+          }
         }
 
       });
@@ -631,8 +655,9 @@ public class GraphView extends DefaultTreeView {
           .get(GraphConstants.BOUNDS);
       for (int i = 1; i < sortedChildren.size(); i++) {
         ModelGraph child2 = sortedChildren.get(i);
-        if (ensureNoInternalOverlap(child2, nested))
+        if (ensureNoInternalOverlap(child2, nested)) {
           changed = true;
+        }
         DefaultGraphCell child2Cell = this.m_jgAdapter.getVertexCell(child2
             .getModel());
         for (int j = i - 1; j >= 0; j--) {
@@ -690,8 +715,9 @@ public class GraphView extends DefaultTreeView {
 
   private void addGroups(List<ModelGraph> modelGraphs, Map nested,
       ViewState state) {
-    for (ModelGraph modelGraph : modelGraphs)
+    for (ModelGraph modelGraph : modelGraphs) {
       this.addGroups(modelGraph, nested, state);
+    }
   }
 
   private DefaultGraphCell addGroups(ModelGraph modelGraph, Map nested,
@@ -709,25 +735,31 @@ public class GraphView extends DefaultTreeView {
         DefaultGraphCell curCell = addGroups(child, nested, state);
         Rectangle2D bounds = (Rectangle2D) ((Map<Object, Object>) nested
             .get(curCell)).get("bounds");
-        if (bounds.getX() < top_x)
+        if (bounds.getX() < top_x) {
           top_x = bounds.getX();
-        if (bounds.getY() < top_y)
+        }
+        if (bounds.getY() < top_y) {
           top_y = bounds.getY();
-        if (bounds.getMaxX() > bottom_x)
+        }
+        if (bounds.getMaxX() > bottom_x) {
           bottom_x = bounds.getMaxX();
-        if (bounds.getMaxY() > bottom_y)
+        }
+        if (bounds.getMaxY() > bottom_y) {
           bottom_y = bounds.getMaxY();
+        }
       }
 
       map.put(GraphConstants.BOUNDS, new AttributeMap.SerializableRectangle2D(
           top_x - 5, top_y - 20, bottom_x - top_x + 10, bottom_y - top_y + 25));
       map.put(GraphConstants.FOREGROUND, Color.black);
-      if (modelGraph.getModel().isRef())
+      if (modelGraph.getModel().isRef()) {
         map.put(GraphConstants.BACKGROUND, Color.lightGray);
-      else
+      } else {
         map.put(GraphConstants.BACKGROUND, Color.white);
-      if (modelGraph.isExcused())
+      }
+      if (modelGraph.isExcused()) {
         map.put(GraphConstants.GRADIENTCOLOR, Color.gray);
+      }
       map.put(GraphConstants.HORIZONTAL_ALIGNMENT, SwingConstants.LEFT);
       map.put(GraphConstants.VERTICAL_ALIGNMENT, SwingConstants.TOP);
       map.put(GraphConstants.BORDER, new LineBorder(modelGraph.getModel()
@@ -740,18 +772,20 @@ public class GraphView extends DefaultTreeView {
         .getModel());
     ((Map<Object, Object>) nested.get(cell)).put(GraphConstants.FOREGROUND,
         Color.black);
-    if (modelGraph.isExcused())
+    if (modelGraph.isExcused()) {
       ((Map<Object, Object>) nested.get(cell)).put(
           GraphConstants.GRADIENTCOLOR, Color.gray);
-    else
+    } else {
       ((Map<Object, Object>) nested.get(cell)).put(
           GraphConstants.GRADIENTCOLOR, Color.white);
-    if (!((ModelNode) ((DefaultGraphCell) cell).getUserObject()).isRef())
+    }
+    if (!((ModelNode) ((DefaultGraphCell) cell).getUserObject()).isRef()) {
       ((Map<Object, Object>) nested.get(cell)).put(GraphConstants.BACKGROUND,
           modelGraph.getModel().getColor());
-    else
+    } else {
       ((Map<Object, Object>) nested.get(cell)).put(GraphConstants.BACKGROUND,
           Color.lightGray);
+    }
     return cell;
   }
   
@@ -810,12 +844,14 @@ public class GraphView extends DefaultTreeView {
             } else {
               while (mouseOverGraph != null
                   && mouseOverGraph.getParent() != null
-                  && mouseOverGraph.getParent().getModel().isRef())
+                  && mouseOverGraph.getParent().getModel().isRef()) {
                 mouseOverGraph = mouseOverGraph.getParent();
+              }
             }
-            if (mouseOverGraph != null)
+            if (mouseOverGraph != null) {
               mouseOverCell = GraphView.this.m_jgAdapter
                   .getVertexCell(mouseOverGraph.getModel());
+            }
           }
           state.setSelected(mouseOverGraph);
         } else {
@@ -845,12 +881,15 @@ public class GraphView extends DefaultTreeView {
               ModelGraph graph = GuiUtils.find(state.getGraphs(),
                   ((ModelNode) ((DefaultGraphCell) cell).getUserObject())
                       .getId());
-              if (graph.getModel().isRef())
+              if (graph.getModel().isRef()) {
                 while (graph.getParent() != null
-                    && graph.getParent().getModel().isRef())
+                       && graph.getParent().getModel().isRef()) {
                   graph = graph.getParent();
-              if (GuiUtils.isDummyNode(graph.getModel()))
+                }
+              }
+              if (GuiUtils.isDummyNode(graph.getModel())) {
                 graph = graph.getParent();
+              }
               state.setSelected(graph);
               GraphView.this.notifyListeners();
             }
@@ -929,8 +968,9 @@ public class GraphView extends DefaultTreeView {
         if (cell instanceof DefaultGraphCell) {
           ModelGraph graph = GuiUtils.find(state.getGraphs(),
               ((ModelNode) ((DefaultGraphCell) cell).getUserObject()).getId());
-          if (graph != null)
+          if (graph != null) {
             graph.addChild(newGraph);
+          }
         }
       } else {
         state.addGraph(newGraph);
@@ -964,11 +1004,12 @@ public class GraphView extends DefaultTreeView {
     }
     ModelGraph parent = GuiUtils.findRoot(state.getGraphs(), graph);
     Point shiftPoint = null;
-    if (state.containsProperty(parent.getModel().getId() + "/Shift"))
+    if (state.containsProperty(parent.getModel().getId() + "/Shift")) {
       shiftPoint = new Point(Integer.parseInt(state
           .getFirstPropertyValue(parent.getModel().getId() + "/Shift/x")),
           Integer.parseInt(state.getFirstPropertyValue(parent.getModel()
-              .getId() + "/Shift/y")));
+                                                             .getId() + "/Shift/y")));
+    }
     if (shiftPoint == null) {
       shiftPoint = new Point(100, 100);
       this.setShift(state, parent, shiftPoint);
@@ -1017,8 +1058,9 @@ public class GraphView extends DefaultTreeView {
               .isCondition()));
     } else {
       boolean isCondition = false;
-      if (state.getGraphs().size() > 0)
+      if (state.getGraphs().size() > 0) {
         isCondition = state.getGraphs().get(0).isCondition();
+      }
       viewReferrencedWorkflow.setEnabled(false);
       taskItem.setEnabled(!isCondition);
       condItem.setEnabled(isCondition);
@@ -1066,11 +1108,13 @@ public class GraphView extends DefaultTreeView {
         ModelGraph graph = state.getSelected();
         ModelGraph parent = graph.getParent();
         if (e.getActionCommand().equals(TO_FRONT_ITEM_NAME)) {
-          if (parent.getChildren().remove(graph))
+          if (parent.getChildren().remove(graph)) {
             parent.getChildren().add(0, graph);
+          }
         } else if (e.getActionCommand().equals(TO_BACK_ITEM_NAME)) {
-          if (parent.getChildren().remove(graph))
+          if (parent.getChildren().remove(graph)) {
             parent.getChildren().add(graph);
+          }
         } else if (e.getActionCommand().equals(FORWARD_ITEM_NAME)) {
           int index = parent.getChildren().indexOf(graph);
           if (index != -1) {

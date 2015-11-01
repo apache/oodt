@@ -52,12 +52,16 @@ class Utility {
 	static void addProperty(Model model, Resource resource, Property property, Object value, ProfileAttributes profAttr,
 		URI uri) {
 
-		if (value == null || value.toString().length() == 0) return;
+		if (value == null || value.toString().length() == 0) {
+		  return;
+		}
 
 		Object obj;
 		if (value instanceof Collection) {
 			Collection<?> collection = (Collection<?>) value;
-			if (collection.isEmpty()) return;
+			if (collection.isEmpty()) {
+			  return;
+			}
 			Bag bag = model.createBag(uri + "_" + property.getLocalName() + "_bag");
 		  for (Object aCollection : collection) {
 			bag.add(aCollection);
@@ -104,7 +108,9 @@ class Utility {
 	}
 
 	private static void addPotentiallyNullReifiedStatement(Resource reification, Property property, Object value) {
-		if (value == null || value.toString().length() == 0) return;
+		if (value == null || value.toString().length() == 0) {
+		  return;
+		}
 		reification.addProperty(property, value.toString());
 	}
 

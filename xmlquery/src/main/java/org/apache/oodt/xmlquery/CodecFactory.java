@@ -38,16 +38,18 @@ class CodecFactory {
 	 */
 	public static Codec createCodec(String className) {
 		Codec codec = (Codec) codecs.get(className);
-		if (codec == null) try {
+		if (codec == null) {
+		  try {
 			Class clazz = Class.forName(className);
 			codec = (Codec) clazz.newInstance();
 			codecs.put(className, codec);
-		} catch (ClassNotFoundException ex) {
+		  } catch (ClassNotFoundException ex) {
 			throw new RuntimeException("Class \"" + className + "\" not found");
-		} catch (InstantiationException ex) {
+		  } catch (InstantiationException ex) {
 			throw new RuntimeException("Class \"" + className + "\" is abstract or is an interface");
-		} catch (IllegalAccessException ex) {
+		  } catch (IllegalAccessException ex) {
 			throw new RuntimeException("Class \"" + className + "\" doesn't have public no-args constructor");
+		  }
 		}
 		return codec;
 	}

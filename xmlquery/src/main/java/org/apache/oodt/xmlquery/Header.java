@@ -43,8 +43,9 @@ public class Header implements Serializable, Cloneable, Documentable {
 	 * @return A list of <code>Header</code>s.
 	 */
 	public static List createHeaders(Node root) {
-		if (!"resultHeader".equals(root.getNodeName()))
-			throw new IllegalArgumentException("Expected <resultHeader> but got <" + root.getNodeName() + ">");
+		if (!"resultHeader".equals(root.getNodeName())) {
+		  throw new IllegalArgumentException("Expected <resultHeader> but got <" + root.getNodeName() + ">");
+		}
 		NodeList children = root.getChildNodes();
 		List rc = new ArrayList();
 		for (int i = 0; i < children.getLength(); ++i){
@@ -92,18 +93,20 @@ public class Header implements Serializable, Cloneable, Documentable {
 	 * @param node The DOM node, which must be a &lt;headerElement&gt; element.
 	 */
 	public Header(Node node) {
-		if (!"headerElement".equals(node.getNodeName()))
-			throw new IllegalArgumentException("Header must be constructed from <headerElement> node, not <"
-				+ node.getNodeName() + ">");
+		if (!"headerElement".equals(node.getNodeName())) {
+		  throw new IllegalArgumentException("Header must be constructed from <headerElement> node, not <"
+											 + node.getNodeName() + ">");
+		}
 		NodeList children = node.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node child = children.item(i);
-			if ("elemName".equals(child.getNodeName()))
-				name = XML.unwrappedText(child);
-			else if ("elemType".equals(child.getNodeName()))
-				type = XML.unwrappedText(child);
-			else if ("elemUnit".equals(child.getNodeName()))
-				unit = XML.unwrappedText(child);
+			if ("elemName".equals(child.getNodeName())) {
+			  name = XML.unwrappedText(child);
+			} else if ("elemType".equals(child.getNodeName())) {
+			  type = XML.unwrappedText(child);
+			} else if ("elemUnit".equals(child.getNodeName())) {
+			  unit = XML.unwrappedText(child);
+			}
 		}
 	}
 
@@ -168,8 +171,12 @@ public class Header implements Serializable, Cloneable, Documentable {
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof Header)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof Header)) {
+		  return false;
+		}
 		Header obj = (Header) rhs;
 		return name.equals(obj.name) && ((type == null && obj.type == null) || type.equals(obj.type))
 			&& ((unit == null && obj.unit == null) || unit.equals(obj.unit));

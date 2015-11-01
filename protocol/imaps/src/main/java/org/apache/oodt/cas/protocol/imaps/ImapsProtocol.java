@@ -84,11 +84,12 @@ public class ImapsProtocol implements Protocol {
   public synchronized void cd(ProtocolFile file) throws ProtocolException {
     try {
       String remotePath = file.getPath();
-      if (remotePath.startsWith("/"))
+      if (remotePath.startsWith("/")) {
         remotePath = remotePath.substring(1);
-      if (remotePath.trim().equals(""))
+      }
+      if (remotePath.trim().equals("")) {
         homeFolder = currentFolder = store.getDefaultFolder();
-      else {
+      } else {
         homeFolder = currentFolder = store.getFolder(remotePath);
       }
     } catch (Exception e) {
@@ -158,8 +159,9 @@ public class ImapsProtocol implements Protocol {
   }
 
   private synchronized void decrementConnections() {
-    if (connectCalls > 0)
+    if (connectCalls > 0) {
       connectCalls--;
+    }
   }
 
   public synchronized void get(ProtocolFile fromFile, File toFile)
@@ -196,21 +198,24 @@ public class ImapsProtocol implements Protocol {
 
     ps.print("From:");
     Address[] senders = message.getFrom();
-    for (Address address : senders)
+    for (Address address : senders) {
       ps.print(" " + address.toString());
+    }
 
     ps.print("\nTo:");
 		Set<Address> recipients = new LinkedHashSet<Address>(Arrays.asList(message
 				.getAllRecipients()));
-    for (Address address : recipients)
+    for (Address address : recipients) {
       ps.print(" " + address.toString());
+    }
 
     ps.println("\nSubject: " + message.getSubject());
 
     ps.println("----- ~ Message ~ -----");
     String content = this.getContentFromHTML(message);
-    if (content.equals(""))
+    if (content.equals("")) {
       content = this.getContentFromPlainText(message);
+    }
     ps.println(content);
 
     ps.close();
@@ -237,8 +242,9 @@ public class ImapsProtocol implements Protocol {
       }
       // changedDir = false;
     } catch (Exception e) {
-      if (!currentFolder.getFullName().equals(""))
+      if (!currentFolder.getFullName().equals("")) {
         throw new ProtocolException("Failed to ls : " + e.getMessage(), e);
+      }
     } finally {
       try {
         closeFolder(currentFolder);
@@ -266,8 +272,9 @@ public class ImapsProtocol implements Protocol {
         }
       }
     } catch (Exception e) {
-      if (!currentFolder.getFullName().equals(""))
+      if (!currentFolder.getFullName().equals("")) {
         throw new ProtocolException("Failed to ls : " + e.getMessage(), e);
+      }
     } finally {
       try {
         closeFolder(currentFolder);
@@ -281,8 +288,9 @@ public class ImapsProtocol implements Protocol {
       throws ProtocolException {
     try {
       String pwd = currentFolder.getFullName();
-      if (!pwd.equals("") && !pwd.startsWith("/"))
+      if (!pwd.equals("") && !pwd.startsWith("/")) {
         pwd = "/" + pwd;
+      }
       return new ProtocolFile(pwd, true);
     } catch (Exception e) {
       throw new ProtocolException("Failed to pwd : " + e.getMessage(), e);
@@ -311,12 +319,14 @@ public class ImapsProtocol implements Protocol {
     } else if (p.isMimeType("multipart/*")) {
       Multipart mp = (Multipart) p.getContent();
       int count = mp.getCount();
-      for (int i = 0; i < count; i++)
+      for (int i = 0; i < count; i++) {
         content.append(getContentFromPlainText(mp.getBodyPart(i)));
+      }
     } else {
       Object obj = p.getContent();
-      if (obj instanceof Part)
+      if (obj instanceof Part) {
         content.append(getContentFromPlainText((Part) p.getContent()));
+      }
     }
     return content.toString().replaceAll(" \\r\\n", "").replaceAll(" \\n", "");
   }
@@ -327,8 +337,9 @@ public class ImapsProtocol implements Protocol {
     if (p.isMimeType("multipart/*")) {
       Multipart mp = (Multipart) p.getContent();
       int count = mp.getCount();
-      for (int i = 0; i < count; i++)
+      for (int i = 0; i < count; i++) {
         content.append(getContentFromHTML(mp.getBodyPart(i)));
+      }
     } else if (p.isMimeType("text/html")) {
       HtmlParser parser = new HtmlParser();
       Metadata met = new Metadata();
@@ -339,8 +350,9 @@ public class ImapsProtocol implements Protocol {
       content.append(handler.toString());
     } else {
       Object obj = p.getContent();
-      if (obj instanceof Part)
+      if (obj instanceof Part) {
         content.append(getContentFromHTML((Part) p.getContent()));
+      }
     }
     return content.toString();
   }
@@ -362,8 +374,9 @@ public class ImapsProtocol implements Protocol {
   }
 
   private synchronized void closeFolder(Folder folder) {
-    if (openCalls > 0)
+    if (openCalls > 0) {
       openCalls--;
+    }
 
     if (openCalls <= 0) {
       try {

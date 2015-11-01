@@ -50,11 +50,14 @@ public class LogFilter implements LogListener {
 	 * is false).
 	 */
 	public LogFilter(LogListener listener, boolean passThrough, Object[] categories) {
-		if (listener == null)
-			throw new IllegalArgumentException("Can't filter messages to a null listener");
+		if (listener == null) {
+		  throw new IllegalArgumentException("Can't filter messages to a null listener");
+		}
 		this.listener = listener;
 		this.passThrough = passThrough;
-		if (categories == null) return;
+		if (categories == null) {
+		  return;
+		}
 	  for (Object category : categories) {
 		this.categories.put(category, DUMMY);
 	  }
@@ -116,8 +119,9 @@ public class LogFilter implements LogListener {
 	 */
 	public void messageLogged(LogEvent event) {
 		boolean found = categories.containsKey(event.getCategory());
-		if ((passThrough && !found) || (!passThrough && found))
-			listener.messageLogged(event);
+		if ((passThrough && !found) || (!passThrough && found)) {
+		  listener.messageLogged(event);
+		}
 	}
 
 	/** Ignore this event.

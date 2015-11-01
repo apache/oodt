@@ -57,9 +57,10 @@ public class DownloadThreadEvaluator {
     public synchronized void startTrackingDownloadRuntimeForFile(File file)
             throws ThreadEvaluatorException {
         long curTime = System.currentTimeMillis();
-        if (++this.currentThreadCount > this.MAX_THREADS)
+        if (++this.currentThreadCount > this.MAX_THREADS) {
             throw new ThreadEvaluatorException(
-                    "Number of threads exceeds max allows threads");
+                "Number of threads exceeds max allows threads");
+        }
         updateThreadCounts(curTime);
         fileAndDownloadingFileInfo.put(file, new DownloadingFileInfo(file,
                 curTime, this.currentThreadCount));
@@ -93,10 +94,11 @@ public class DownloadThreadEvaluator {
             long nextTime;
             for (int i = 0; i < tatcList.size(); i++) {
                 TimeAndThreadCount tatc = tatcList.get(i);
-                if (i + 1 >= tatcList.size())
+                if (i + 1 >= tatcList.size()) {
                     nextTime = finishTime;
-                else
+                } else {
                     nextTime = tatcList.get(i + 1).getStartTimeInMillis();
+                }
                 long threadCountTime = nextTime - tatc.getStartTimeInMillis();
                 total += ((double) (tatc.getThreadCount() * threadCountTime))
                         / (double) runtime;
@@ -107,10 +109,11 @@ public class DownloadThreadEvaluator {
             double downloadSpeed = (file.length() * avgThreadCountForFile)
                     / calculateRuntime(dfi.getStartTimeInMillis());
             double currentAvgSpeed = this.downloadSpeedsForEachThread[avgThreadCountForFile];
-            if (currentAvgSpeed == 0)
+            if (currentAvgSpeed == 0) {
                 this.downloadSpeedsForEachThread[avgThreadCountForFile] = downloadSpeed;
-            else
+            } else {
                 this.downloadSpeedsForEachThread[avgThreadCountForFile] = (currentAvgSpeed + downloadSpeed) / 2;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new ThreadEvaluatorException("Failed to register file "
@@ -137,14 +140,16 @@ public class DownloadThreadEvaluator {
         }
 
         if (curRecThreadCount != this.MAX_THREADS
-                && this.downloadSpeedsForEachThread[curRecThreadCount + 1] == 0)
+                && this.downloadSpeedsForEachThread[curRecThreadCount + 1] == 0) {
             curRecThreadCount++;
-        else if (this.downloadSpeedsForEachThread[curRecThreadCount - 1] == 0)
+        } else if (this.downloadSpeedsForEachThread[curRecThreadCount - 1] == 0) {
             curRecThreadCount--;
+        }
 
         System.out.print("[ ");
-        for (double time : downloadSpeedsForEachThread)
+        for (double time : downloadSpeedsForEachThread) {
             System.out.print(time + " ");
+        }
         System.out.println("]");
 
         System.out.println("Recommended Threads: " + curRecThreadCount);

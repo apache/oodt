@@ -54,8 +54,9 @@ public class XmlBackendRepository implements BackendRepository {
      * @param uri - uri of XML file containing mapping
      */
     public XmlBackendRepository(String uri) {
-        if (uri == null)
+        if (uri == null) {
             throw new NullPointerException("URI for queue-to-backend xml file cannot be null");
+        }
         this.uri = uri;
     }
     /* (non-Javadoc)
@@ -149,8 +150,9 @@ public class XmlBackendRepository implements BackendRepository {
         String factory = getFactoryAttribute(queue, node, SCHEDULER);
         LOG.log(Level.INFO,"Loading monitor from: "+factory);
         Scheduler sch = GenericResourceManagerObjectFactory.getSchedulerServiceFromFactory(factory);
-        if (sch != null)
+        if (sch != null) {
             return sch;
+        }
         throw new RepositoryException("Could instantiate from: "+factory);
     }
     /**

@@ -49,8 +49,9 @@ public class ObjectTimeEvent<objType> extends TimeEvent {
         if (obj instanceof ObjectTimeEvent) {
             ObjectTimeEvent<?> ote = (ObjectTimeEvent<?>) obj;
             return super.equals(obj) && this.timeObj.equals(ote.timeObj);
-        } else
+        } else {
             return false;
+        }
     }
     
     @Override

@@ -67,12 +67,13 @@ public class ActivityTracker {
 			Class factoryClass = Class.forName(factoryName);
 			factories.add(factoryClass.newInstance());
 		}
-		if (factories.isEmpty())
-			factory = new NullActivityFactory();
-		else if (factories.size() == 1)
-			factory = (ActivityFactory) factories.get(0);
-		else
-			factory = new CompositeActivityFactory(factories);
+		if (factories.isEmpty()) {
+		  factory = new NullActivityFactory();
+		} else if (factories.size() == 1) {
+		  factory = (ActivityFactory) factories.get(0);
+		} else {
+		  factory = new CompositeActivityFactory(factories);
+		}
 	}
 
 	/**

@@ -57,15 +57,17 @@ public class QueryResult implements Serializable, Cloneable, Documentable {
 	 * @param node The &lt;queryResultSet&gt; node.
 	 */
 	public QueryResult(Node node) {
-		if (!"queryResultSet".equals(node.getNodeName()))
-			throw new IllegalArgumentException("QueryResult must be constructed from <queryResultSet> node, not <"
-				+ node.getNodeName() + ">");
+		if (!"queryResultSet".equals(node.getNodeName())) {
+		  throw new IllegalArgumentException("QueryResult must be constructed from <queryResultSet> node, not <"
+											 + node.getNodeName() + ">");
+		}
 		list = new ArrayList();
 		NodeList children = node.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node child = children.item(i);
-			if (child.getNodeType() == Node.ELEMENT_NODE && "resultElement".equals(child.getNodeName()))
-				list.add(new Result(child));
+			if (child.getNodeType() == Node.ELEMENT_NODE && "resultElement".equals(child.getNodeName())) {
+			  list.add(new Result(child));
+			}
 		}
 	}
 
@@ -99,7 +101,9 @@ public class QueryResult implements Serializable, Cloneable, Documentable {
 	}
 
 	public boolean equals(Object obj) {
-		if (obj == this) return true;
+		if (obj == this) {
+		  return true;
+		}
 		if (obj instanceof QueryResult) {
 			QueryResult rhs = (QueryResult) obj;
 			return list.equals(rhs.list);

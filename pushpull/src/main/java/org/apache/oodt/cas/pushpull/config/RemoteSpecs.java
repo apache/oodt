@@ -79,8 +79,9 @@ public class RemoteSpecs implements ConfigParserMetKeys {
         // check if set to active (skip otherwise)
         if (PathUtils.replaceEnvVariables(
             ((Element) daemonNode).getAttribute(ACTIVE_ATTR))
-                     .equals("no"))
+                     .equals("no")) {
           continue;
+        }
 
         DaemonInfo di = null;
 
@@ -90,11 +91,12 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                 .getAttribute(ALIAS_ATTR));
         RemoteSite dataFilesRemoteSite = this.siteInfo
             .getSiteByAlias(siteAlias);
-        if (dataFilesRemoteSite == null)
+        if (dataFilesRemoteSite == null) {
           throw new ConfigException("Alias '" + siteAlias
                                     + "' in SiteInfo file '"
                                     + remoteSpecsFile.getAbsolutePath()
                                     + "' has not been defined");
+        }
 
         // get RUNINFO element
         NodeList runInfoList = ((Element) daemonNode)
@@ -109,8 +111,9 @@ public class RemoteSpecs implements ConfigParserMetKeys {
           runOnReboot = (runInfo.getAttribute(RUNONREBOOT_ATTR)
                                 .toLowerCase().equals("yes"));
           epsilon = runInfo.getAttribute(EPSILON_ATTR);
-          if (epsilon.equals(""))
+          if (epsilon.equals("")) {
             epsilon = "0s";
+          }
         }
 
         // get PROPINFO elements
@@ -146,12 +149,13 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                                   .replaceEnvVariables(((Element) propFilesNode)
                                       .getAttribute(PARSER_ATTR)))));
             }
-          } else
+          } else {
             throw new ConfigException(
                 "No propFiles element specified for deamon with alias '"
                 + siteAlias + "' in RemoteSpecs file '"
                 + remoteSpecsFile.getAbsolutePath()
                 + "'");
+          }
 
           // get DOWNLOADINFO element if given
           NodeList downloadInfoList = ((Element) propInfoNode)
@@ -175,16 +179,18 @@ public class RemoteSpecs implements ConfigParserMetKeys {
                 .equals("yes");
             RemoteSite propFilesRemoteSite = this.siteInfo
                 .getSiteByAlias(propFilesAlias);
-            if (propFilesRemoteSite == null)
+            if (propFilesRemoteSite == null) {
               throw new ConfigException("Alias '"
                                         + propFilesAlias
                                         + "' in RemoteSpecs file '"
                                         + remoteSpecsFile.getAbsolutePath()
                                         + "' has not been defined");
+            }
             String regExp = ((Element) downloadInfo)
                 .getAttribute(REG_EXP_ATTR);
-            if (regExp.equals(""))
+            if (regExp.equals("")) {
               regExp = propFilesRegExp;
+            }
             NodeList propsList = ((Element) propInfoNode)
                 .getElementsByTagName(PROP_FILE_TAG);
             HashMap<File, Parser> propFileToParserMap = new HashMap<File, Parser>();
@@ -226,11 +232,12 @@ public class RemoteSpecs implements ConfigParserMetKeys {
             pfi.setDeleteOnSuccess(deleteOnSuccess);
           }
 
-        } else
+        } else {
           throw new ConfigException(
               "No propInfo element specified for deamon with alias '"
               + siteAlias + "' in RemoteSpecs file '"
               + remoteSpecsFile.getAbsolutePath() + "'");
+        }
 
         // get DATAINFO elements
         NodeList dataInfoList = ((Element) daemonNode)
@@ -264,11 +271,12 @@ public class RemoteSpecs implements ConfigParserMetKeys {
           dfi = new DataFilesInfo(queryElement, new DownloadInfo(
               dataFilesRemoteSite, renamingConv,
               deleteFromServer, stagingArea, allowAliasOverride));
-        } else
+        } else {
           throw new ConfigException(
               "No dataInfo element specified for deamon with alias '"
               + siteAlias + "' in RemoteSpecs file '"
               + remoteSpecsFile.getAbsolutePath() + "'");
+        }
 
         daemonInfoList.add(new DaemonInfo(firstRunDateTimeString,
             period, epsilon, runOnReboot, pfi, dfi));

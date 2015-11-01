@@ -89,8 +89,9 @@ public class RemoteCrawler implements RetrievalMethod {
         // determine RemoteSite
         DownloadInfo di = dfi.getDownloadInfo();
         if (!di.isAllowAliasOverride()
-                || (remoteSite = vfs.getRemoteSite()) == null)
-            remoteSite = di.getRemoteSite();
+                || (remoteSite = vfs.getRemoteSite()) == null) {
+          remoteSite = di.getRemoteSite();
+        }
 
         // modify vfs to be root based if HOME directory based
         if (!vfs.isRootBased()) {
@@ -132,11 +133,12 @@ public class RemoteCrawler implements RetrievalMethod {
                             });
 
                     // if directory had more children then add them
-                    if (children.size() > 0)
-                        files.addAll(children);
-                    // otherwise remove the directory from the crawl list
-                    else
-                        files.pop();
+                    if (children.size() > 0) {
+                      files.addAll(children);
+                    }// otherwise remove the directory from the crawl list
+                    else {
+                      files.pop();
+                    }
 
                     // if file, then download it
                 } else {
@@ -144,8 +146,9 @@ public class RemoteCrawler implements RetrievalMethod {
                     if (!frs.addToDownloadQueue(files.pop(), di
                             .getRenamingConv(), di.getStagingArea(), dfi
                             .getQueryMetadataElementName(), di
-                            .deleteFromServer(), fileMetadata))
-                        linker.eraseLinks(propFile);
+                            .deleteFromServer(), fileMetadata)) {
+                      linker.eraseLinks(propFile);
+                    }
                 }
 
             } catch (ToManyFailedDownloadsException e) {

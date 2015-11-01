@@ -1054,9 +1054,10 @@ public class XmlRpcFileManagerClient {
 
         if (productTypeHash == null) {
             return null;
-        } else
-            return XmlRpcStructFactory
-                    .getProductTypeFromXmlRpc(productTypeHash);
+        } else {
+          return XmlRpcStructFactory
+              .getProductTypeFromXmlRpc(productTypeHash);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -1077,9 +1078,10 @@ public class XmlRpcFileManagerClient {
 
         if (productTypeHash == null) {
             return null;
-        } else
-            return XmlRpcStructFactory
-                    .getProductTypeFromXmlRpc(productTypeHash);
+        } else {
+          return XmlRpcStructFactory
+              .getProductTypeFromXmlRpc(productTypeHash);
+        }
     }
 
     @SuppressWarnings("unchecked")

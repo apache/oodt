@@ -116,8 +116,9 @@ public class CasDB {
       ProductType type = client.getProductTypeByName(productType);
       Vector<Product> products = (Vector<Product>) client.query(query, type);
       int maxVal = 20;
-      if (products.size() < maxVal)
+      if (products.size() < maxVal) {
         maxVal = products.size();
+      }
       for (int i = 0; i < maxVal; i++) {
         Metadata m = client.getMetadata(products.get(i));
         results.addProduct(m);
@@ -140,8 +141,9 @@ public class CasDB {
             .getProductsByProductType(type);
         // for(int i=0;i<products.size();i++){
         int maxVal = 20;
-        if (products.size() < maxVal)
+        if (products.size() < maxVal) {
           maxVal = products.size();
+        }
         for (int i = 0; i < maxVal; i++) {
           Metadata m = client.getMetadata(products.get(i));
           results.addProduct(m);
@@ -159,8 +161,9 @@ public class CasDB {
         type = client.getProductTypeByName(productType);
         Vector<Product> products = (Vector<Product>) client.query(casQ, type);
         int maxVal = 20;
-        if (products.size() < maxVal)
+        if (products.size() < maxVal) {
           maxVal = products.size();
+        }
         for (int i = 0; i < maxVal; i++) {
           Metadata m = client.getMetadata(products.get(i));
           results.addProduct(m);

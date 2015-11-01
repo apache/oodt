@@ -54,8 +54,9 @@ public class TermBucket extends Bucket {
 	public void setTerms(Set<Term> terms) {
 		if (terms != null) {
 			this.terms = new HashMap<String, Term>();
-			for (Term term : terms)
-				this.terms.put(term.name, term);
+			for (Term term : terms) {
+			  this.terms.put(term.name, term);
+			}
 		}
 	}
 	
@@ -65,8 +66,9 @@ public class TermBucket extends Bucket {
 	
 	public void addTerms(Set<Term> terms, boolean replace) {
 		if (replace) {
-			for (Term term : terms)
-				this.terms.put(term.name, term);
+			for (Term term : terms) {
+			  this.terms.put(term.name, term);
+			}
 		}else {
 			for (Term term : terms) {
 				Term found = this.terms.get(term.name);

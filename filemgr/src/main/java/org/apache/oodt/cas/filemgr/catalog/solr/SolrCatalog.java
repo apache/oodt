@@ -285,8 +285,12 @@ public class SolrCatalog implements Catalog {
 			
 			queryResponse.setNumFound( qr.getNumFound() );
 			start = offset+queryResponse.getCompleteProducts().size();
-			if (limit<0) limit = queryResponse.getNumFound(); // retrieve ALL results
-			if (start>=queryResponse.getNumFound()) break; // don't query any longer
+			if (limit<0) {
+			  limit = queryResponse.getNumFound(); // retrieve ALL results
+			}
+			if (start>=queryResponse.getNumFound()) {
+			  break; // don't query any longer
+			}
 			
 		}
 		
@@ -415,7 +419,9 @@ public class SolrCatalog implements Catalog {
 	public ProductPage getNextPage(ProductType type, ProductPage currentPage) {
 		
 		int nextPageNumber = currentPage.getPageNum()+1;
-		if (nextPageNumber>currentPage.getTotalPages()) throw new RuntimeException("Invalid next page number: "+nextPageNumber);
+		if (nextPageNumber>currentPage.getTotalPages()) {
+		  throw new RuntimeException("Invalid next page number: " + nextPageNumber);
+		}
 
 		try {
 			return this.pagedQuery(new Query(), type, currentPage.getPageNum()+1);
@@ -430,7 +436,9 @@ public class SolrCatalog implements Catalog {
 	public ProductPage getPrevPage(ProductType type, ProductPage currentPage) {
 		
 		int prevPageNumber = currentPage.getPageNum()-1;
-		if (prevPageNumber<=0) throw new RuntimeException("Invalid previous page number: "+prevPageNumber);
+		if (prevPageNumber<=0) {
+		  throw new RuntimeException("Invalid previous page number: " + prevPageNumber);
+		}
 		
 		try {
 			return this.pagedQuery(new Query(), type, prevPageNumber);

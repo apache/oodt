@@ -66,9 +66,12 @@ public class Utility {
 		} catch (IOException ex) {
 			System.err.println("I/O exception while loading \"" + resourceName + "\": " + ex.getMessage());
 		} finally {
-			if (in != null) try {
+			if (in != null) {
+			  try {
 				in.close();
-			} catch (IOException ignore) {}
+			  } catch (IOException ignore) {
+			  }
+			}
 		}
 	}
 
@@ -82,21 +85,26 @@ public class Utility {
 	 * @return The iterator over unique elements in the <var>list</var>.
 	 */
 	public static Iterator parseCommaList(final String list) {
-		if (list == null) return new Iterator() {
+		if (list == null) {
+		  return new Iterator() {
 			public boolean hasNext() {
-				return false;
+			  return false;
 			}
+
 			public Object next() {
-				throw new java.util.NoSuchElementException("There weren't ANY elements in this iterator, ever");
+			  throw new java.util.NoSuchElementException("There weren't ANY elements in this iterator, ever");
 			}
+
 			public void remove() {
-				throw new UnsupportedOperationException("Can't remove elements from this iterator");
+			  throw new UnsupportedOperationException("Can't remove elements from this iterator");
 			}
-		};
+		  };
+		}
 		HashSet set = new HashSet();
 		StringTokenizer tokens = new StringTokenizer(list, ",");
-		while (tokens.hasMoreTokens())
-			set.add(tokens.nextToken().trim());
+		while (tokens.hasMoreTokens()) {
+		  set.add(tokens.nextToken().trim());
+		}
 		return set.iterator();
 	}
 

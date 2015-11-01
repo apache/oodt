@@ -49,10 +49,11 @@ public class Query {
      * @param criteria
      */
     public Query(List<QueryCriteria> criteria) {
-        if (criteria == null)
+        if (criteria == null) {
             this.criteria = new Vector<QueryCriteria>();
-        else
+        } else {
             this.criteria = criteria;
+        }
     }
 
     /**
@@ -67,8 +68,9 @@ public class Query {
      *            The criteria to set.
      */
     public void setCriteria(List<QueryCriteria> criteria) {
-        if (criteria != null)
+        if (criteria != null) {
             this.criteria = criteria;
+        }
     }
 
     public void addCriterion(QueryCriteria qc) {
@@ -87,8 +89,9 @@ public class Query {
         for (int i = 0; i < numCriteria; i++) {
             QueryCriteria c = (QueryCriteria) criteria.get(i);
             rStr.append(c.toString());
-            if (i != numCriteria - 1)
+            if (i != numCriteria - 1) {
                 rStr.append(" AND ");
+            }
         }
 
         return rStr.toString();

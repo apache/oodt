@@ -71,17 +71,21 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 		List<Profile> profiles = new ArrayList<Profile>();
 		if ("profile".equals(root.getNodeName()))
 			// The root is a <profile>, so add the single profile to the list.
-			profiles.add(factory.createProfile((Element) root));
-		else if ("profiles".equals(root.getNodeName())) {
+		{
+		  profiles.add(factory.createProfile((Element) root));
+		} else if ("profiles".equals(root.getNodeName())) {
 			// The root is a <profiles>, so add each <profile> to the list.
 			NodeList children = root.getChildNodes();
 			for (int i = 0; i < children.getLength(); ++i) {
 				Node node = children.item(i);
-				if ("profile".equals(node.getNodeName()))
-					profiles.add(factory.createProfile((Element) node));
+				if ("profile".equals(node.getNodeName())) {
+				  profiles.add(factory.createProfile((Element) node));
+				}
 			}
-		} else throw new IllegalArgumentException("Expected a <profiles> or <profile> top level element but got "
-			+ root.getNodeName());
+		} else {
+		  throw new IllegalArgumentException("Expected a <profiles> or <profile> top level element but got "
+											 + root.getNodeName());
+		}
 		return profiles;
 	}
 
@@ -144,17 +148,18 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 	 * @param root The &lt;profile&gt; element.
 	 */
 	public Profile(Node root, ObjectFactory factory) {
-		if (!root.getNodeName().equals("profile"))
-			throw new IllegalArgumentException("Construct a Profile from a <profile> element, not a <"
-				+ root.getNodeName() + ">");
+		if (!root.getNodeName().equals("profile")) {
+		  throw new IllegalArgumentException("Construct a Profile from a <profile> element, not a <"
+											 + root.getNodeName() + ">");
+		}
 		NodeList children = root.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node node = children.item(i);
-			if ("profAttributes".equals(node.getNodeName()))
-				profAttr = factory.createProfileAttributes((Element) node);
-			else if ("resAttributes".equals(node.getNodeName()))
-				resAttr = factory.createResourceAttributes(this, (Element) node);
-			else if ("profElement".equals(node.getNodeName())) {
+			if ("profAttributes".equals(node.getNodeName())) {
+			  profAttr = factory.createProfileAttributes((Element) node);
+			} else if ("resAttributes".equals(node.getNodeName())) {
+			  resAttr = factory.createResourceAttributes(this, (Element) node);
+			} else if ("profElement".equals(node.getNodeName())) {
 				ProfileElement element = ProfileElement.createProfileElement((Element) node, this, factory);
 				elements.put(element.getName(), element);
 			}
@@ -170,7 +175,9 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 	public Profile(ProfileAttributes profAttr, ResourceAttributes resAttr) {
 		this.profAttr = profAttr;
 		this.resAttr = resAttr;
-		if (this.resAttr != null) this.resAttr.profile = this;
+		if (this.resAttr != null) {
+		  this.resAttr.profile = this;
+		}
 	}
 
 	public int hashCode() {
@@ -178,8 +185,12 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof Profile)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof Profile)) {
+		  return false;
+		}
 		Profile obj = (Profile) rhs;
 		return profAttr.equals(obj.profAttr);
 	}
@@ -307,10 +318,11 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 		Element profile = doc.createElement("profile");
 		profile.appendChild(profAttr.toXML(doc));
 		profile.appendChild(resAttr.toXML(doc));
-		if (withElements)
+		if (withElements) {
 		  for (ProfileElement profileElement : elements.values()) {
 			profile.appendChild((profileElement).toXML(doc));
 		  }
+		}
 		return profile;
 	}
 
@@ -373,8 +385,9 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 		BufferedReader reader = new BufferedReader(new FileReader(argv[0]));
 		char[] buf = new char[512];
 		int num;
-		while ((num = reader.read(buf)) != -1)
-			b.append(buf, 0, num);
+		while ((num = reader.read(buf)) != -1) {
+		  b.append(buf, 0, num);
+		}
 		reader.close();
 		Profile p = new Profile(b.toString());
 

@@ -732,8 +732,9 @@ public class MetadataResource extends CurationService {
   	if (catalog==null) {
   		String catalogFactoryClass = this.context.getInitParameter(CATALOG_FACTORY_CLASS);
   		// preserve backward compatibility
-  		if (!StringUtils.hasText(catalogFactoryClass))
-  			catalogFactoryClass = "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory";
+  		if (!StringUtils.hasText(catalogFactoryClass)) {
+          catalogFactoryClass = "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory";
+        }
   		catalog = GenericFileManagerObjectFactory.getCatalogServiceFromFactory(catalogFactoryClass);
   	}
   	
@@ -913,8 +914,9 @@ public class MetadataResource extends CurationService {
       try {
     	  for(ProductType type : xmlRepo.getProductTypes()) {
     		  for(Element el : vLayer.getElements(type)) {
-    			  if(el.getElementId().equals(elementId))
-    				  typeids.add(type.getProductTypeId());
+    			  if(el.getElementId().equals(elementId)) {
+                    typeids.add(type.getProductTypeId());
+                  }
     		  }
     	  }
       } catch (Exception e) {
@@ -941,8 +943,9 @@ public class MetadataResource extends CurationService {
           }
       }
       for(Element el: elements) {
-          if(!usedElementIds.containsKey(el.getElementId()))
-             vLayer.removeElement(el);
+          if(!usedElementIds.containsKey(el.getElementId())) {
+            vLayer.removeElement(el);
+          }
       }
   }  
 

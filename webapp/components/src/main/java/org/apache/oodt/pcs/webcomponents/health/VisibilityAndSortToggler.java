@@ -111,8 +111,9 @@ class VisibilityAndSortToggler extends VisibilityToggler {
           PCSDaemonStatus stat2 = (PCSDaemonStatus) o2;
 
           return stat1.getStatus().compareTo(stat2.getStatus());
-        } else
+        } else {
           return 0;
+        }
       }
 
     });
@@ -133,8 +134,9 @@ class VisibilityAndSortToggler extends VisibilityToggler {
           PCSDaemonStatus stat2 = (PCSDaemonStatus) o2;
 
           return stat1.getDaemonName().compareTo(stat2.getDaemonName());
-        } else
+        } else {
           return 0;
+        }
       }
 
     });

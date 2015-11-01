@@ -134,20 +134,26 @@ public final class XmlRpcStructFactory {
     
     public static Hashtable<String, Object> getXmlRpcComplexQuery(ComplexQuery complexQuery) {
         Hashtable<String, Object> complexQueryHash = getXmlRpcQuery(complexQuery);
-        if (complexQuery.getReducedProductTypeNames() != null)
-            complexQueryHash.put("reducedProductTypeNames", new Vector<String>(complexQuery.getReducedProductTypeNames()));
-        else 
+        if (complexQuery.getReducedProductTypeNames() != null) {
+            complexQueryHash
+                .put("reducedProductTypeNames", new Vector<String>(complexQuery.getReducedProductTypeNames()));
+        } else {
             complexQueryHash.put("reducedProductTypeNames", new Vector<String>());
-        if (complexQuery.getReducedMetadata() != null)
+        }
+        if (complexQuery.getReducedMetadata() != null) {
             complexQueryHash.put("reducedMetadata", new Vector<String>(complexQuery.getReducedMetadata()));
-        else 
+        } else {
             complexQueryHash.put("reducedMetadata", new Vector<String>());
-        if (complexQuery.getSortByMetKey() != null)
+        }
+        if (complexQuery.getSortByMetKey() != null) {
             complexQueryHash.put("sortByMetKey", complexQuery.getSortByMetKey());
-        if (complexQuery.getToStringResultFormat() != null)
+        }
+        if (complexQuery.getToStringResultFormat() != null) {
             complexQueryHash.put("toStringResultFormat", complexQuery.getToStringResultFormat());
-        if (complexQuery.getQueryFilter() != null)
+        }
+        if (complexQuery.getQueryFilter() != null) {
             complexQueryHash.put("queryFilter", getXmlRpcQueryFilter(complexQuery.getQueryFilter()));
+        }
         return complexQueryHash;
     }
     
@@ -155,14 +161,18 @@ public final class XmlRpcStructFactory {
     public static ComplexQuery getComplexQueryFromXmlRpc(Hashtable<String, Object> complexQueryHash) {
         ComplexQuery complexQuery = new ComplexQuery();
         complexQuery.setCriteria(getQueryFromXmlRpc(complexQueryHash).getCriteria());
-        if (((Vector<String>) complexQueryHash.get("reducedProductTypeNames")).size() > 0)
+        if (((Vector<String>) complexQueryHash.get("reducedProductTypeNames")).size() > 0) {
             complexQuery.setReducedProductTypeNames((Vector<String>) complexQueryHash.get("reducedProductTypeNames"));
-        if (((Vector<String>) complexQueryHash.get("reducedMetadata")).size() > 0)
+        }
+        if (((Vector<String>) complexQueryHash.get("reducedMetadata")).size() > 0) {
             complexQuery.setReducedMetadata((Vector<String>) complexQueryHash.get("reducedMetadata"));
+        }
         complexQuery.setSortByMetKey((String) complexQueryHash.get("sortByMetKey"));
         complexQuery.setToStringResultFormat((String) complexQueryHash.get("toStringResultFormat"));
-        if (complexQueryHash.get("queryFilter") != null)
-            complexQuery.setQueryFilter(getQueryFilterFromXmlRpc((Hashtable<String, Object>) complexQueryHash.get("queryFilter")));
+        if (complexQueryHash.get("queryFilter") != null) {
+            complexQuery.setQueryFilter(
+                getQueryFilterFromXmlRpc((Hashtable<String, Object>) complexQueryHash.get("queryFilter")));
+        }
         return complexQuery;
     }
     
@@ -204,22 +214,25 @@ public final class XmlRpcStructFactory {
     
     public static Vector<Hashtable<String, Object>> getXmlRpcQueryResults(List<QueryResult> queryResults) {
         Vector<Hashtable<String, Object>> queryResultHashVector = new Vector<Hashtable<String, Object>>();
-        for (QueryResult queryResult : queryResults)
+        for (QueryResult queryResult : queryResults) {
             queryResultHashVector.add(getXmlRpcQueryResult(queryResult));
+        }
         return queryResultHashVector;
     }
     
     public static List<QueryResult> getQueryResultsFromXmlRpc(Vector<Hashtable<String, Object>> queryResultHashVector) {
         List<QueryResult> queryResults = new Vector<QueryResult>();
-        for (Hashtable<String, Object> queryResultHash : queryResultHashVector)
+        for (Hashtable<String, Object> queryResultHash : queryResultHashVector) {
             queryResults.add(getQueryResultFromXmlRpc(queryResultHash));
+        }
         return queryResults;
     }
         
     public static Hashtable<String, Object> getXmlRpcQueryResult(QueryResult queryResult) {
         Hashtable<String, Object> queryResultHash = new Hashtable<String, Object>();
-        if (queryResult.getToStringFormat() != null)
+        if (queryResult.getToStringFormat() != null) {
             queryResultHash.put("toStringFormat", queryResult.getToStringFormat());
+        }
         queryResultHash.put("product", getXmlRpcProduct(queryResult.getProduct()));
         queryResultHash.put("metadata", queryResult.getMetadata().getHashtable());
         return queryResultHash;
@@ -470,8 +483,9 @@ public final class XmlRpcStructFactory {
             Hashtable<String, Object> typeHandlerHash) {
         TypeHandler typeHandler = GenericFileManagerObjectFactory
             .getTypeHandlerFromClassName((String) typeHandlerHash.get("className"));
-        if(typeHandler != null)
-          typeHandler.setElementName((String) typeHandlerHash.get("elementName"));
+        if(typeHandler != null) {
+            typeHandler.setElementName((String) typeHandlerHash.get("elementName"));
+        }
         return typeHandler;
     }
 

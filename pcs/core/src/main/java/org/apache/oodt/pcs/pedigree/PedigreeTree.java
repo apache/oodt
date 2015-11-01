@@ -39,8 +39,9 @@ public class PedigreeTree {
     public int getNumLevels() {
         if (root != null) {
             return traverse(root, 0) + 1;
-        } else
+        } else {
             return 0;
+        }
     }
 
     public PedigreeTreeNode getRoot() {

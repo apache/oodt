@@ -432,10 +432,12 @@ public class CmdLineUtils {
       Validate.notNull(optionName);
       Validate.notNull(optionInsts);
 
-      for (CmdLineOptionInstance optionInst : optionInsts)
+      for (CmdLineOptionInstance optionInst : optionInsts) {
          if (optionInst.getOption().getLongOption().equals(optionName)
-               || optionInst.getOption().getShortOption().equals(optionName))
+             || optionInst.getOption().getShortOption().equals(optionName)) {
             return optionInst;
+         }
+      }
       return null;
    }
 
@@ -1056,8 +1058,9 @@ public class CmdLineUtils {
          curLine.append(splitStrings[i]).append(" ");
 
          for (; i + 1 < splitStrings.length
-               && curLine.length() + splitStrings[i + 1].length() <= (endIndex - startIndex); i++)
+               && curLine.length() + splitStrings[i + 1].length() <= (endIndex - startIndex); i++) {
             curLine.append(splitStrings[i + 1]).append(" ");
+         }
 
          outputString.append(StringUtils.repeat(" ", startIndex)).append(curLine.toString()).append("\n");
       }
@@ -1069,23 +1072,27 @@ public class CmdLineUtils {
          InstantiationException, IllegalAccessException {
       if (type.equals(File.class)) {
          List<Object> files = new LinkedList<Object>();
-         for (String value : values)
+         for (String value : values) {
             files.add(new File(value));
+         }
          return files;
       } else if (type.equals(Boolean.class) || type.equals(Boolean.TYPE)) {
          List<Object> booleans = new LinkedList<Object>();
-         for (String value : values)
+         for (String value : values) {
             booleans.add(value.toLowerCase().trim().equals("true"));
+         }
          return booleans;
       } else if (type.equals(URL.class)) {
          List<Object> urls = new LinkedList<Object>();
-         for (String value : values)
+         for (String value : values) {
             urls.add(new URL(value));
+         }
          return urls;
       } else if (type.equals(Class.class)) {
          List<Object> classes = new LinkedList<Object>();
-         for (String value : values)
+         for (String value : values) {
             classes.add(Class.forName(value));
+         }
          return classes;
       } else if (type.equals(List.class)) {
          List<Object> lists = new LinkedList<Object>();
@@ -1093,23 +1100,27 @@ public class CmdLineUtils {
          return lists;
       } else if (type.equals(Integer.class) || type.equals(Integer.TYPE)) {
          List<Object> ints = new LinkedList<Object>();
-         for (String value : values)
+         for (String value : values) {
             ints.add(Integer.valueOf(value));
+         }
          return ints;
       } else if (type.equals(Long.class) || type.equals(Long.TYPE)) {
          List<Object> longs = new LinkedList<Object>();
-         for (String value : values)
+         for (String value : values) {
             longs.add(Long.valueOf(value));
+         }
          return longs;
       } else if (type.equals(Double.class) || type.equals(Double.TYPE)) {
          List<Object> doubles = new LinkedList<Object>();
-         for (String value : values)
+         for (String value : values) {
             doubles.add(new Double(value));
+         }
          return doubles;
       } else if (type.equals(String.class)) {
          StringBuilder combinedString = new StringBuilder("");
-         for (String value : values)
+         for (String value : values) {
             combinedString.append(value).append(" ");
+         }
          return Lists.newArrayList(combinedString.toString().trim());
       } else {
          List<Object> objects = new LinkedList<Object>();

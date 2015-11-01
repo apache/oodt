@@ -533,6 +533,8 @@ public class XmlRpcResourceManagerClient {
     } else if (status.equals(JobStatus.KILLED)) {
       return "KILLED";
     }
-    else return null;
+    else {
+        return null;
+    }
   }
 }

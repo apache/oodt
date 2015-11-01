@@ -144,8 +144,9 @@ public class DefaultPropView extends View {
       List<String> keys = completeMet.getAllKeys();
       Collections.sort(keys);
       for (String key : keys) {
-        if (key.endsWith("/envReplace"))
+        if (key.endsWith("/envReplace")) {
           continue;
+        }
         String values = StringUtils.join(completeMet.getAllMetadata(key), ",");
         Vector<String> row = new Vector<String>();
         row.add(keyToGroupMap.get(key));
@@ -182,13 +183,16 @@ public class DefaultPropView extends View {
         }
 
         public Object getValueAt(int row, int col) {
-          if (row >= rows.size())
+          if (row >= rows.size()) {
             return null;
+          }
           String value = rows.get(row).get(col);
-          if (value == null && col == 3)
+          if (value == null && col == 3) {
             return "false";
-          if (value == null && col == 0)
+          }
+          if (value == null && col == 0) {
             return "__local__";
+          }
           return value;
         }
 
@@ -197,8 +201,9 @@ public class DefaultPropView extends View {
             return selected.getModel().getStaticMetadata()
                            .containsGroup(state.getCurrentMetGroup());
           }
-          if (col == 0)
+          if (col == 0) {
             return false;
+          }
           String key = rows.get(row).get(1);
           return key == null
                  || (selected.getModel().getStaticMetadata() != null && selected
@@ -241,12 +246,14 @@ public class DefaultPropView extends View {
         if (column == 0) {
           field.setForeground(Color.gray);
         } else {
-          if (isSelected)
+          if (isSelected) {
             field.setBorder(new EtchedBorder(1));
-          if (table.isCellEditable(row, 1))
+          }
+          if (table.isCellEditable(row, 1)) {
             field.setForeground(Color.black);
-          else
+          } else {
             field.setForeground(Color.gray);
+          }
         }
         return field;
       }
@@ -309,16 +316,18 @@ public class DefaultPropView extends View {
         String key = getKey(
             (String) DefaultPropView.this.table.getValueAt(row, 1), state);
         Metadata staticMet = state.getSelected().getModel().getStaticMetadata();
-        if (staticMet == null)
+        if (staticMet == null) {
           staticMet = new Metadata();
+        }
         if (e.getActionCommand().equals(OVERRIDE)) {
           if (!staticMet.containsKey(key)) {
             staticMet.addMetadata(key,
                 (String) DefaultPropView.this.table.getValueAt(row, 2));
             String envReplace = (String) DefaultPropView.this.table.getValueAt(
                 row, 3);
-            if (Boolean.valueOf(envReplace))
+            if (Boolean.valueOf(envReplace)) {
               staticMet.addMetadata(key + "/envReplace", envReplace);
+            }
             state.getSelected().getModel().setStaticMetadata(staticMet);
             DefaultPropView.this.notifyListeners();
           }
@@ -333,8 +342,9 @@ public class DefaultPropView extends View {
         String key = getKey(
             (String) DefaultPropView.this.table.getValueAt(row, 1), state);
         Metadata staticMet = state.getSelected().getModel().getStaticMetadata();
-        if (staticMet == null)
+        if (staticMet == null) {
           staticMet = new Metadata();
+        }
         staticMet.removeMetadata(key);
         staticMet.removeMetadata(key + "/envReplace");
         state.getSelected().getModel().setStaticMetadata(staticMet);
@@ -350,8 +360,9 @@ public class DefaultPropView extends View {
       masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
       masterPanel.add(this.getModelIdPanel(state.getSelected(), state));
       masterPanel.add(this.getModelNamePanel(state.getSelected(), state));
-      if (!state.getSelected().getModel().isParentType())
+      if (!state.getSelected().getModel().isParentType()) {
         masterPanel.add(this.getInstanceClassPanel(state.getSelected(), state));
+      }
       masterPanel.add(this.getExecutionTypePanel(state.getSelected(), state));
       masterPanel.add(this.getPriorityPanel(state));
       masterPanel.add(this.getExecusedIds(state.getSelected()));
@@ -497,8 +508,9 @@ public class DefaultPropView extends View {
 
         private JList createJList(DefaultListModel model,
             final List<String> list) {
-          for (String value : list)
+          for (String value : list) {
             model.addElement(value);
+          }
           JList jList = new JList(model);
           jList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
           jList.setLayoutOrientation(JList.VERTICAL);
@@ -710,12 +722,13 @@ public class DefaultPropView extends View {
         checkbox.addItemListener(new ItemListener() {
 
           public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.DESELECTED)
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
               graph.getModel().setOptional(false);
-            else if (e.getStateChange() == ItemEvent.SELECTED)
+            } else if (e.getStateChange() == ItemEvent.SELECTED) {
               graph.getModel().setOptional(true);
-            else
+            } else {
               return;
+            }
             DefaultPropView.this.notifyListeners();
             DefaultPropView.this.refreshView(state);
           }
@@ -742,12 +755,13 @@ public class DefaultPropView extends View {
         checkbox.addItemListener(new ItemListener() {
 
           public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.DESELECTED)
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
               graph.getModel().getExcusedSubProcessorIds().remove(modelId);
-            else if (e.getStateChange() == ItemEvent.SELECTED)
+            } else if (e.getStateChange() == ItemEvent.SELECTED) {
               graph.getModel().getExcusedSubProcessorIds().add(modelId);
-            else
+            } else {
               return;
+            }
             DefaultPropView.this.notifyListeners();
           }
 
@@ -773,8 +787,9 @@ public class DefaultPropView extends View {
       System.out.println(oldKey + " " + oldValue + " " + oldEnvReplace);
       if (e.getType() == TableModelEvent.UPDATE) {
         Metadata staticMet = state.getSelected().getModel().getStaticMetadata();
-        if (staticMet == null)
+        if (staticMet == null) {
           staticMet = new Metadata();
+        }
         if (e.getColumn() == 1) {
           String newGrouplessKey = (String) table.getValueAt(e.getFirstRow(),
               e.getColumn());
@@ -789,11 +804,13 @@ public class DefaultPropView extends View {
           System.out.println("newKey: " + newKey);
           if (oldKey != null) {
             staticMet.replaceMetadata(newKey, staticMet.getAllMetadata(oldKey));
-            if (staticMet.containsKey(oldKey + "/envReplace"))
+            if (staticMet.containsKey(oldKey + "/envReplace")) {
               staticMet.replaceMetadata(newKey,
                   staticMet.getAllMetadata(oldKey + "/envReplace"));
-            if (!newKey.equals(oldKey))
+            }
+            if (!newKey.equals(oldKey)) {
               staticMet.removeMetadata(oldKey);
+            }
             notifyListeners();
           } else {
             staticMet.replaceMetadata(oldKey = newKey, (String) null);
@@ -804,11 +821,12 @@ public class DefaultPropView extends View {
                 e.getColumn());
             if (oldKey.endsWith("/envReplace")) {
               newValue = newValue.toLowerCase();
-              if (newValue.equals("false"))
+              if (newValue.equals("false")) {
                 staticMet.removeMetadata(oldKey);
-              else
+              } else {
                 staticMet.replaceMetadata(oldKey,
                     Arrays.asList(newValue.split(",")));
+              }
             } else {
               staticMet.replaceMetadata(oldKey,
                   Arrays.asList(newValue.split(",")));
@@ -819,10 +837,11 @@ public class DefaultPropView extends View {
           if (oldKey != null) {
             String newEnvReplace = ((String) table.getValueAt(e.getFirstRow(),
                 e.getColumn())).toLowerCase();
-            if (newEnvReplace.equals("true"))
+            if (newEnvReplace.equals("true")) {
               staticMet.replaceMetadata(oldKey + "/envReplace", newEnvReplace);
-            else
+            } else {
               staticMet.removeMetadata(oldKey + "/envReplace");
+            }
             notifyListeners();
           }
         }
@@ -840,10 +859,11 @@ public class DefaultPropView extends View {
   }
 
   private String getKey(String key, ViewState state) {
-    if (key != null && state.getCurrentMetGroup() != null)
+    if (key != null && state.getCurrentMetGroup() != null) {
       return state.getCurrentMetGroup() + "/" + key;
-    else
+    } else {
       return key;
+    }
   }
 
 }

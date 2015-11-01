@@ -215,8 +215,9 @@ public final class RangeQueryTester {
                 String productFile = (String) productFile1;
                 System.out.println(productFile);
             }
-        } else
+        } else {
             System.out.println("No results found!");
+        }
     }
 
     /**

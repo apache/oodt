@@ -128,10 +128,12 @@ public class RenamingConvention {
      
     private static String replace(String theString,
             String theValueToBeReplaced, String whatToReplaceWith) {
-        if (theValueToBeReplaced == null || theValueToBeReplaced.equals(""))
+        if (theValueToBeReplaced == null || theValueToBeReplaced.equals("")) {
             return theString;
-        if (whatToReplaceWith == null)
+        }
+        if (whatToReplaceWith == null) {
             whatToReplaceWith = "";
+        }
         return theString.replace(theValueToBeReplaced, whatToReplaceWith);
     }
 

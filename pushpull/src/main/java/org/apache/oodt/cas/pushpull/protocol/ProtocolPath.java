@@ -55,8 +55,9 @@ public class ProtocolPath implements Serializable {
     }
 
     protected String checkForDelimiters(String path) {
-        if (path.endsWith("/") && path.length() > 1)
+        if (path.endsWith("/") && path.length() > 1) {
             path = path.substring(0, path.length() - 1);
+        }
         relativeToHOME = !path.startsWith("/");
         return path;
     }
@@ -116,8 +117,9 @@ public class ProtocolPath implements Serializable {
     }
 
     public String getParentDirPath() {
-        if (path.length() <= 1)
+        if (path.length() <= 1) {
             return null;
+        }
         return path.substring(0, path.lastIndexOf("/"));
     }
 

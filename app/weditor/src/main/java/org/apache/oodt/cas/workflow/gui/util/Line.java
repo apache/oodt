@@ -49,17 +49,18 @@ public class Line {
 
   public boolean equals(Object obj) {
     if (obj instanceof Line) {
-      if (this.fromModel == null && this.toModel == null)
+      if (this.fromModel == null && this.toModel == null) {
         return ((Line) obj).fromModel == null && ((Line) obj).toModel == null;
-      else if (this.fromModel == null)
+      } else if (this.fromModel == null) {
         return ((Line) obj).fromModel == null
-            && ((Line) obj).toModel.equals(this.toModel);
-      else if (this.toModel == null)
+               && ((Line) obj).toModel.equals(this.toModel);
+      } else if (this.toModel == null) {
         return ((Line) obj).fromModel.equals(this.fromModel)
-            && ((Line) obj).toModel == null;
-      else
+               && ((Line) obj).toModel == null;
+      } else {
         return ((Line) obj).fromModel.equals(this.fromModel)
-            && ((Line) obj).toModel.equals(this.toModel);
+               && ((Line) obj).toModel.equals(this.toModel);
+      }
     } else {
       return false;
     }

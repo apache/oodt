@@ -70,10 +70,12 @@ public final class VersioningUtils {
     public static List<Reference> getReferencesFromDir(File dirRoot) {
         List<Reference> references;
 
-        if (dirRoot == null)
+        if (dirRoot == null) {
             throw new IllegalArgumentException("null");
-        if (!dirRoot.isDirectory())
+        }
+        if (!dirRoot.isDirectory()) {
             dirRoot = dirRoot.getParentFile();
+        }
 
         references = new Vector<Reference>();
 
@@ -115,10 +117,11 @@ public final class VersioningUtils {
 
             }
             File[] subdirs = dir.listFiles(DIR_FILTER);
-            if (subdirs != null)
+            if (subdirs != null) {
                 for (File subdir : subdirs) {
                     stack.push(subdir);
                 }
+            }
         }
 
         return references;
@@ -127,10 +130,12 @@ public final class VersioningUtils {
     public static List<String> getURIsFromDir(File dirRoot) {
         List<String> uris;
 
-        if (dirRoot == null)
+        if (dirRoot == null) {
             throw new IllegalArgumentException("null");
-        if (!dirRoot.isDirectory())
+        }
+        if (!dirRoot.isDirectory()) {
             dirRoot = dirRoot.getParentFile();
+        }
 
         uris = new Vector<String>();
 
@@ -152,10 +157,11 @@ public final class VersioningUtils {
             }
 
             File[] subdirs = dir.listFiles(DIR_FILTER);
-            if (subdirs != null)
+            if (subdirs != null) {
                 for (File subdir : subdirs) {
                     stack.push(subdir);
                 }
+            }
         }
 
         return uris;

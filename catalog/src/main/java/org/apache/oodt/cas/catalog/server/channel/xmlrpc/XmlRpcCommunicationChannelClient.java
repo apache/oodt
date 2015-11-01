@@ -252,8 +252,9 @@ public class XmlRpcCommunicationChannelClient extends AbstractCommunicationChann
 	        is = new FileInputStream(new File(fromUrl.getPath()));
             int offset = 0;
             int numBytes;
-	        while ((numBytes = is.read(buf, offset, chunkSize)) != -1)
-	            this.transferFile(new File(toURL.getPath()).getAbsolutePath(), buf, offset, numBytes);
+	        while ((numBytes = is.read(buf, offset, chunkSize)) != -1) {
+			  this.transferFile(new File(toURL.getPath()).getAbsolutePath(), buf, offset, numBytes);
+			}
         } catch (FileNotFoundException e) {
 		  throw new CatalogException("Transfer URL Failed: "+ e.getMessage(), e);
 		} catch (IOException e) {

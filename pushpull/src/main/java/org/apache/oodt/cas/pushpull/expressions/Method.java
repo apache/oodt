@@ -76,8 +76,9 @@ public class Method {
                 return false;
             }
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
     public void addArg(Variable v) {
@@ -113,10 +114,11 @@ public class Method {
                         // System.out.println("ch = " + ch);
                         if ((ch <= 'Z' && ch >= 'A')
                                 || (ch <= 'z' && ch >= 'a')
-                                || (ch <= '9' && ch >= '0') || ch == '_')
+                                || (ch <= '9' && ch >= '0') || ch == '_') {
                             variable.append(ch);
-                        else
+                        } else {
                             break;
+                        }
                     }
 
                     if (globalVar) {
@@ -138,10 +140,11 @@ public class Method {
                     int k = i + 1;
                     for (; k < infixArray.length; k++) {
                         char ch = infixArray[k];
-                        if (ch <= '9' && ch >= '0')
+                        if (ch <= '9' && ch >= '0') {
                             variableIntString.append(ch);
-                        else
+                        } else {
                             break;
+                        }
                     }
                     output.addLast(new Variable(null, new Integer(
                             variableIntString.toString())));
@@ -152,10 +155,11 @@ public class Method {
                     int l = i + 1;
                     for (; l < infixArray.length; l++) {
                         char ch = infixArray[l];
-                        if (ch != '"')
+                        if (ch != '"') {
                             variableString.append(ch);
-                        else
+                        } else {
                             break;
+                        }
                     }
                     output
                             .addLast(new Variable(null, variableString
@@ -178,8 +182,9 @@ public class Method {
                 case ')':
                     while (!stack.empty()) {
                         ValidInput vi = stack.pop();
-                        if (vi.toString().charAt(0) == '(')
+                        if (vi.toString().charAt(0) == '(') {
                             break;
+                        }
                         output.addLast(vi);
                     }
                     break;
@@ -189,8 +194,9 @@ public class Method {
 
                 }
             }
-            while (!stack.empty())
+            while (!stack.empty()) {
                 output.addLast(stack.pop());
+            }
 
             return output;
         } catch (Exception e) {

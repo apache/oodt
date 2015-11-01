@@ -41,8 +41,9 @@ public class RegExExcludeComparator extends PreConditionComparator<String> {
 		if (compareItem != null
 				&& !compareItem.trim().equals("")
 				&& Pattern.matches(compareItem.toLowerCase(), file
-						.getAbsolutePath().toLowerCase()))
-			return 0;
+						.getAbsolutePath().toLowerCase())) {
+		  return 0;
+		}
 		return 1;
   }
 
