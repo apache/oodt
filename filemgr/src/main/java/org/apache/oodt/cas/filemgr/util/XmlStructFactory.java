@@ -399,21 +399,26 @@ public final class XmlStructFactory {
 
                 // add type metadata
                 Element metElem = document.createElement("metadata");
-                for (String key : type.getTypeMetadata().getAllKeys()) {
+                Metadata typeMetadata = type.getTypeMetadata();
+                
+                // loop over all type metadata keys
+                for (String key : typeMetadata.getAllKeys()) {
                     Element keyValElem = document.createElement("keyval");
                     Element keyElem = document.createElement("key");
-                    Element valElem = document.createElement("val");
-
                     keyElem.appendChild(document.createTextNode(key));
-                    valElem.appendChild(document.createTextNode(
-                        type.getTypeMetadata().getMetadata(key)));
                     keyValElem.appendChild(keyElem);
-                    keyValElem.appendChild(valElem);
+                    
+                    // loop over all metadata values for that key
+                    for (String value : typeMetadata.getAllMetadata(key)) {
+	                    Element valElem = document.createElement("val");         
+	                    valElem.appendChild(document.createTextNode(value));
+	                    keyValElem.appendChild(valElem);
+                    }
 
                     metElem.appendChild(keyValElem);
                 }
+                
                 typeElem.appendChild(metElem);
-
                 root.appendChild(typeElem);
             }
 
