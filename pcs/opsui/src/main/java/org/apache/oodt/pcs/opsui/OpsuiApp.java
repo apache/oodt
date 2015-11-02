@@ -113,7 +113,7 @@ public class OpsuiApp extends WebApplication implements Serializable {
     try {
       return (Class<? extends Page>) Class.forName(getHomePageClass());
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return HomePage.class;
     }
   }

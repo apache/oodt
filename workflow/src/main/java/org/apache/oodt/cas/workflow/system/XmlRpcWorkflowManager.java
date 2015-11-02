@@ -154,7 +154,7 @@ public class XmlRpcWorkflowManager {
             return eventsVector;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new RepositoryException(
                     "Exception getting registered events from repository: Message: "
                             + e.getMessage());
@@ -274,7 +274,7 @@ public class XmlRpcWorkflowManager {
             return workflowList;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new RepositoryException(
                     "Exception getting workflows for event: " + eventName
                             + " from repository: Message: " + e.getMessage());
@@ -290,7 +290,7 @@ public class XmlRpcWorkflowManager {
         try {
             workflows = repo.getWorkflowsForEvent(eventName);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new RepositoryException(
                     "Exception getting workflows associated with event: "
                             + eventName + ": Message: " + e.getMessage());
@@ -308,7 +308,7 @@ public class XmlRpcWorkflowManager {
             try {
               engine.startWorkflow(w, m);
             } catch (Exception e) {
-              e.printStackTrace();
+              LOG.log(Level.SEVERE, e.getMessage());
               throw new EngineException(
                   "Engine exception when starting workflow: "
                   + w.getName() + ": Message: "
@@ -328,7 +328,7 @@ public class XmlRpcWorkflowManager {
             inst = engine.getInstanceRepository().getWorkflowInstanceById(
                     wInstId);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Error obtaining workflow instance with ID: [" + wInstId
                             + "]: Message: " + e.getMessage());
@@ -381,7 +381,7 @@ public class XmlRpcWorkflowManager {
             workflowInsts = engine.getInstanceRepository()
                     .getWorkflowInstancesByStatus(status);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting workflow instances by status: Message: ["
                             + e.getMessage() + "]");
@@ -414,7 +414,7 @@ public class XmlRpcWorkflowManager {
                 workflowInstances.add(workflowInstance);
               }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new EngineException(
                         "Exception getting workflow instances by statusfrom workflow engine: Message: "
                                 + e.getMessage());
@@ -433,7 +433,7 @@ public class XmlRpcWorkflowManager {
             workflowInsts = engine.getInstanceRepository()
                     .getWorkflowInstances();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting workflow instances: Message: ["
                             + e.getMessage() + "]");
@@ -468,7 +468,7 @@ public class XmlRpcWorkflowManager {
               }
                 return workflowInstances;
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new EngineException(
                         "Exception getting workflow instances from workflow engine: Message: "
                                 + e.getMessage());
@@ -496,7 +496,7 @@ public class XmlRpcWorkflowManager {
 
                 return workflows;
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new RepositoryException(
                         "Exception getting workflows from repository: Message: "
                                 + e.getMessage());
@@ -513,7 +513,7 @@ public class XmlRpcWorkflowManager {
             WorkflowTask t = repo.getWorkflowTaskById(taskId);
             return XmlRpcStructFactory.getXmlRpcWorkflowTask(t);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new RepositoryException(
                     "Exception getting task by id: Message: " + e.getMessage());
 
@@ -526,7 +526,7 @@ public class XmlRpcWorkflowManager {
             WorkflowCondition c = repo.getWorkflowConditionById(conditionId);
             return XmlRpcStructFactory.getXmlRpcWorkflowCondition(c);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new RepositoryException(
                     "Exception getting condition by id: Message: "
                             + e.getMessage());
@@ -539,7 +539,7 @@ public class XmlRpcWorkflowManager {
             Workflow workflow = repo.getWorkflowById(workflowId);
             return XmlRpcStructFactory.getXmlRpcWorkflow(workflow);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new RepositoryException(
                     "Exception getting workflow by id from the repository: Message: "
                             + e.getMessage());
@@ -567,7 +567,7 @@ public class XmlRpcWorkflowManager {
             wInst = this.engine.getInstanceRepository()
                     .getWorkflowInstanceById(wInstId);
         } catch (InstanceRepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return false;
         }
         wInst.setCurrentTaskStartDateTimeIsoStr(startDateTimeIsoStr);
@@ -581,7 +581,7 @@ public class XmlRpcWorkflowManager {
             wInst = this.engine.getInstanceRepository()
                     .getWorkflowInstanceById(wInstId);
         } catch (InstanceRepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return false;
         }
         wInst.setCurrentTaskEndDateTimeIsoStr(endDateTimeIsoStr);
@@ -672,7 +672,7 @@ public class XmlRpcWorkflowManager {
             engine.getInstanceRepository().updateWorkflowInstance(wInst);
             return true;
         } catch (InstanceRepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return false;
         }
     }
@@ -696,7 +696,7 @@ public class XmlRpcWorkflowManager {
                 LOG.log(Level.WARNING, "Attempting to look up workflow: [" + wInst.getWorkflow()
                                                                                   .getId()
                                        + "] in populate workflows. Message: " + e.getMessage());
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
               }
 
             }
@@ -708,7 +708,7 @@ public class XmlRpcWorkflowManager {
         try {
             return repo.getWorkflowById(workflowId);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Error getting workflow by its id: ["
                     + workflowId + "]: Message: " + e.getMessage());
             return new Workflow();

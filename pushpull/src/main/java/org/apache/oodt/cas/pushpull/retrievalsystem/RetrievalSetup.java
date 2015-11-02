@@ -128,7 +128,7 @@ public class RetrievalSetup {
                         this.movePropsFileToFinalDestination(pfi, propFile,
                                 linker.getErrorsAndEraseLinks(propFile));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.log(Level.SEVERE, e.getMessage());
                         LOG.log(Level.SEVERE,
                                 "Error occurred while writing errors to error dir for file '"
                                         + propFile + "' : " + e.getMessage());
@@ -137,7 +137,7 @@ public class RetrievalSetup {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         } finally {
             if (dataFilesFRS != null) {
               dataFilesFRS.shutdown();
@@ -184,7 +184,7 @@ public class RetrievalSetup {
                                             .getDownloadInfo()), linker);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.log(Level.SEVERE, e.getMessage());
                     } finally {
                         if (frs != null) {
                           frs.shutdown();

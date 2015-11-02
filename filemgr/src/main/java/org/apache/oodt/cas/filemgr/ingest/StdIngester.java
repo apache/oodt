@@ -100,7 +100,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
         try {
             met = extractor.extractMetadata(prodFile, metConfFile);
         } catch (MetExtractionException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new IngestException("Met extraction exception on product: ["
                     + prodFile + "]: Message: " + e.getMessage(), e);
         }
@@ -210,7 +210,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
         try {
             productID = fmClient.ingestProduct(product, met, true);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "exception ingesting product: ["
                     + productName + "]: Message: " + e.getMessage());
             throw new IngestException("exception ingesting product: ["
@@ -267,7 +267,7 @@ public class StdIngester implements Ingester, CoreMetKeys {
                     .setDataTransfer(GenericFileManagerObjectFactory
                             .getDataTransferServiceFromFactory(this.clientTransferServiceFactory));
         } catch (ConnectionException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Unable to connect to file manager: [" + url
                     + "]: message: " + e.getMessage());
         }

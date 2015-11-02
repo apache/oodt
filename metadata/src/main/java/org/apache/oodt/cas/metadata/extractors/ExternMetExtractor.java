@@ -128,7 +128,7 @@ public class ExternMetExtractor extends CmdLineMetExtractor implements
                 sm.loadMetadataFromXmlStream(new FileInputStream(metFile));
                 return sm;
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new MetExtractionException(e.getMessage());
             }
         }

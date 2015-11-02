@@ -24,16 +24,18 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.TermQuery;
-
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.tools.CASAnalyzer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class QueryBuilder {
 
   private CasDB database;
-
+  private static Logger LOG = Logger.getLogger(QueryBuilder.class.getName());
   public QueryBuilder(CasDB db) {
     database = db;
   }
@@ -49,7 +51,7 @@ public class QueryBuilder {
       luceneQ = parser.parse(query);
     } catch (org.apache.lucene.queryParser.ParseException e) {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
 
     System.out.println(luceneQ != null ? luceneQ.toString() : null);

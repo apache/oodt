@@ -31,6 +31,7 @@ import static org.apache.oodt.cas.cli.util.CmdLineUtils.isAdvancedOption;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 //Apache imports
 import org.apache.commons.lang.Validate;
@@ -79,7 +80,7 @@ import com.google.common.collect.Lists;
  * @author bfoster (Brian Foster)
  */
 public class CmdLineUtility {
-
+   private static Logger LOG = Logger.getLogger(CmdLineUtility.class.getName());
    private boolean debugMode;
    private CmdLineParser parser;
    private CmdLineConstructor constructor;
@@ -207,9 +208,8 @@ public class CmdLineUtility {
     *            On error constructing command line arguments.
     * @throws CmdLineOptionStoreException
     */
-   public CmdLineArgs parse(String[] args) throws CmdLineParserException,
-         CmdLineActionStoreException, CmdLineConstructionException,
-         CmdLineOptionStoreException {
+   public CmdLineArgs parse(String[] args) throws
+       CmdLineActionStoreException, CmdLineConstructionException {
       Validate.notNull(parser);
       Validate.notNull(optionStore);
 

@@ -83,6 +83,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -104,6 +105,7 @@ import javax.xml.transform.stream.StreamResult;
  * @author Kelly
  */
 public class XML {
+  private static Logger LOG = Logger.getLogger(XML.class.getName());
 	private static DocumentBuilder getStandardDocumentBuilder() {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -273,7 +275,7 @@ public class XML {
 	 * @param writer Where to write it.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public static void serialize(Document doc, Writer writer) throws IOException {
+	public static void serialize(Document doc, Writer writer) {
 		serialize(doc, writer, /*omitXMLDeclaration*/false);
 	}
 

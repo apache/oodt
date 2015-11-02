@@ -180,8 +180,7 @@ public class PGEConfigFileReader {
 
   }
 
-  private void addMonitorLevels(PGEConfigurationFile configFile, Element group)
-      throws PGEConfigFileException {
+  private void addMonitorLevels(PGEConfigurationFile configFile, Element group) {
 
     List scalars = PGEXMLFileUtils.getScalars(group);
 
@@ -290,8 +289,7 @@ public class PGEConfigFileReader {
     addScalarFilesToGroup(group, configFile.getRecordedAuxiliaryInputFiles());
   }
 
-  private void addScalarFilesToGroup(Element group, PGEGroup pgeGroup)
-      throws PGEConfigFileException {
+  private void addScalarFilesToGroup(Element group, PGEGroup pgeGroup) {
     // get the scalars, and add them to the group
     List scalars = PGEXMLFileUtils.getScalars(group);
 

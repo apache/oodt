@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -95,7 +96,7 @@ public class SolrClient {
 	    return response;
     
 		} catch(Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			throw new CatalogException(e.getMessage());
 		}
     
@@ -125,7 +126,7 @@ public class SolrClient {
 		  return doPost(url, message, Parameters.MIME_TYPE_XML);
     
 		} catch(Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			throw new CatalogException(e.getMessage());
 		}
 		
@@ -220,7 +221,7 @@ public class SolrClient {
 		  return this.doGet(url, parameters, mimeType);
 		
 		} catch(Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			throw new CatalogException(e.getMessage());
 		}
 		

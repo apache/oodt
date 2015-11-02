@@ -296,7 +296,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
                 .getWorkflowInstanceById(workflowInst.getId());
             workflowInst = updatedInst;
           } catch (InstanceRepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Unable to get " + "updated workflow "
                 + "instance record " + "when executing remote job: Message: "
                 + e.getMessage());
@@ -572,7 +572,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
       LOG.log(Level.INFO, "Executing task: [" + taskName + "] locally");
       instance.run(met, cfg);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception executing task: [" + taskName
           + "] locally: Message: " + e.getMessage());
     }

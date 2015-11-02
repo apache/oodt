@@ -89,7 +89,7 @@ public abstract class AbstractEngineRunnerBase extends EngineRunner {
         instRep.updateWorkflowInstance(instance);
       }
     } catch (InstanceRepositoryException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unabled to persist workflow instance: ["
           + instance.getId() + "]: Message: " + e.getMessage());
     }    

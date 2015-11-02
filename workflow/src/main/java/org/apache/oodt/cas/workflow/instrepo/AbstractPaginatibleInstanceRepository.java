@@ -59,7 +59,7 @@ public abstract class AbstractPaginatibleInstanceRepository implements
         try {
             firstPage = getPagedWorkflows(1);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting first page: Message: "
                     + e.getMessage());
         }

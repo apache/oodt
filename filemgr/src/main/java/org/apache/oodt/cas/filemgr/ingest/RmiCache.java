@@ -18,13 +18,17 @@
 package org.apache.oodt.cas.filemgr.ingest;
 
 //OODT imports
+
 import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
 
-//JDK imports
 import java.net.URL;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -37,14 +41,14 @@ import java.util.List;
  * </p>.
  */
 public class RmiCache implements Cache {
-
+    private static Logger LOG = Logger.getLogger(RmiCache.class.getName());
     private RemoteableCache rmiCacheServer;
 
     public RmiCache(String rmiCacheServerUrn) throws InstantiationException {
         try {
             rmiCacheServer = (RemoteableCache) Naming.lookup(rmiCacheServerUrn);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new InstantiationException(
                     "Unable to connect to Rmi Cache Server at: ["
                             + rmiCacheServerUrn + "]");

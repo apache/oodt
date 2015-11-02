@@ -19,10 +19,13 @@
 package org.apache.oodt.commons.exec;
 
 //JDK imports
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>
@@ -39,6 +42,7 @@ import java.io.Reader;
  * 
  */
 public final class ExecHelper {
+  private static Logger LOG = Logger.getLogger(ExecHelper.class.getName());
 
     /**
      * Executes the specified command and arguments in a separate process, and
@@ -398,7 +402,7 @@ public final class ExecHelper {
 	        this.output = output.toString();
 	        this.error = error.toString();
     	}catch (Exception e) {
-    		e.printStackTrace();
+    		LOG.log(Level.SEVERE, e.getMessage());
     		throw new IOException("Process exec failed : " + e.getMessage());
     	}finally {
             try {

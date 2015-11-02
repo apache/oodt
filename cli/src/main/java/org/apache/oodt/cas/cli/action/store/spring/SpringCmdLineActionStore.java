@@ -16,18 +16,17 @@
  */
 package org.apache.oodt.cas.cli.action.store.spring;
 
-//JDK imports
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-//OODT imports
 import org.apache.oodt.cas.cli.action.CmdLineAction;
 import org.apache.oodt.cas.cli.action.store.CmdLineActionStore;
-import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 
 /**
  * A Spring Framework based {@link CmdLineActionStore}.
@@ -45,8 +44,7 @@ public class SpringCmdLineActionStore implements CmdLineActionStore {
    }
 
    @Override
-   public Set<CmdLineAction> loadSupportedActions()
-         throws CmdLineActionStoreException {
+   public Set<CmdLineAction> loadSupportedActions() {
       @SuppressWarnings("unchecked")
       Map<String, CmdLineAction> actionsMap = appContext
             .getBeansOfType(CmdLineAction.class);

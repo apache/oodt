@@ -23,6 +23,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
 	This class is a wrapper for JDBC.
@@ -32,6 +34,7 @@ import java.util.Properties;
 */
 public class JDBC_DB
 {
+  private static Logger LOG = Logger.getLogger(JDBC_DB.class.getName());
 	Properties serverProps;
 	Connection connect;
 	String sql_command;
@@ -133,7 +136,7 @@ public class JDBC_DB
 			System.err.println("Loaded " + classname);
 		} catch (ClassNotFoundException e) {
 			System.err.println("Can't load JDBC driver \"" + classname + "\": " + e.getMessage());
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 		url = serverProps.getProperty("org.apache.oodt.commons.util.JDBC_DB.url", "jdbc:oracle:@");
 		try {
@@ -146,7 +149,7 @@ public class JDBC_DB
 			}
 		} catch (SQLException e) {
 			System.err.println("SQL Exception during connection creation: " + e.getMessage());
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			while (e != null) {
 				System.err.println(e.getMessage());
 				e = e.getNextException();
@@ -186,7 +189,7 @@ public class JDBC_DB
 		} catch (SQLException e) {
 			System.err.println("Ignoring database close connection exception");
 			//System.err.println("Ignoring exception " + e.getClass().getName() + ": " + e.getMessage());
-			//e.printStackTrace();
+			//LOG.log(Level.SEVERE, e.getMessage());
 		}
 	}
 

@@ -69,7 +69,6 @@ import javax.xml.transform.stream.StreamResult;
  * 
  */
 public class RSSProductServlet extends HttpServlet {
-
   /* serial Version UID */
   private static final long serialVersionUID = -465321738239885777L;
 
@@ -170,7 +169,7 @@ public class RSSProductServlet extends HttpServlet {
       }
 
     } catch (CatalogException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG
           .log(Level.WARNING,
               "Exception getting products from Catalog: Message: "
@@ -227,7 +226,7 @@ public class RSSProductServlet extends HttpServlet {
           try {
             productType = fm.getProductTypeById(productTypeIdStr);
           } catch (RepositoryManagerException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.SEVERE,
                 "Unable to obtain product type from product type id: ["
                 + ((Product) products.get(0)).getProductType()
@@ -296,7 +295,7 @@ public class RSSProductServlet extends HttpServlet {
     try {
       return fm.getMetadata(p);
     } catch (CatalogException ignore) {
-      ignore.printStackTrace();
+      LOG.log(Level.SEVERE, ignore.getMessage());
       return null;
     }
   }
@@ -305,7 +304,7 @@ public class RSSProductServlet extends HttpServlet {
     try {
       return fm.getProductReferences(p);
     } catch (CatalogException ignore) {
-      ignore.printStackTrace();
+      LOG.log(Level.SEVERE, ignore.getMessage());
       return null;
     }
   }

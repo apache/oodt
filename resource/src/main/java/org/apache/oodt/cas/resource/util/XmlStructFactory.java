@@ -19,22 +19,26 @@
 package org.apache.oodt.cas.resource.util;
 
 //JDK imports
-import java.net.URL;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.logging.Logger;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
 
-//OODT imports
-import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.JobInput;
 import org.apache.oodt.cas.resource.structs.JobSpec;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.commons.xml.XMLUtils;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.net.URL;
+import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * @author woollard
@@ -72,7 +76,7 @@ public final class XmlStructFactory {
 					: resourceNodeRoot.getAttribute("ip"));
             capacity = new Integer(resourceNodeRoot.getAttribute("capacity"));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return new ResourceNode(id, ip, capacity);

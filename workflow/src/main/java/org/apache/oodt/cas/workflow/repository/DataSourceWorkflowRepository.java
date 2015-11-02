@@ -108,7 +108,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting workflow. Message: " + e.getMessage());
       try {
@@ -201,7 +201,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting workflow. Message: " + e.getMessage());
       try {
@@ -294,7 +294,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting workflows. Message: " + e.getMessage());
       try {
@@ -380,7 +380,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting tasks for workflow. Message: "
           + e.getMessage());
       try {
@@ -465,7 +465,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting tasks for workflow. Message: "
           + e.getMessage());
       try {
@@ -552,7 +552,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting workflows for event. Message: "
           + e.getMessage());
       try {
@@ -640,7 +640,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting conditions for task. Message: "
           + e.getMessage());
       try {
@@ -726,7 +726,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting conditions for task. Message: "
           + e.getMessage());
       try {
@@ -805,7 +805,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting task configuration for taskId: " + taskId
               + " Message: " + e.getMessage());
@@ -880,7 +880,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting task configuration for condId: " + condId
               + " Message: " + e.getMessage());
@@ -958,7 +958,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting task by id. Message: " + e.getMessage());
       try {
@@ -1036,7 +1036,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting condition by id. Message: " + e.getMessage());
       try {
@@ -1115,7 +1115,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting registered events. Message: "
           + e.getMessage());
       try {
@@ -1270,7 +1270,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(
           Level.WARNING,
           "Exception getting conditions for workflow. Message: "
@@ -1352,7 +1352,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting tasks for workflow. Message: "
           + e.getMessage());
       try {
@@ -1430,7 +1430,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       conn.commit();
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception adding workflow. Message: " + e.getMessage());
       try {
@@ -1521,7 +1521,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       conn.commit();
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception adding task. Message: " + e.getMessage());
       try {
@@ -1596,7 +1596,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting conditions. Message: "
           + e.getMessage());
       try {
@@ -1676,7 +1676,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting tasks. Message: " + e.getMessage());
       try {

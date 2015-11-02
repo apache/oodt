@@ -272,16 +272,16 @@ public class XmlRpcResourceManager {
         }
     }
 
-    public List<String> getQueues() throws QueueManagerException {
+    public List<String> getQueues() {
     	return new Vector<String>(this.scheduler.getQueueManager().getQueues());
     }
     
-    public boolean addQueue(String queueName) throws QueueManagerException {
+    public boolean addQueue(String queueName) {
     	this.scheduler.getQueueManager().addQueue(queueName);
     	return true;
     }
     
-    public boolean removeQueue(String queueName) throws QueueManagerException {
+    public boolean removeQueue(String queueName) {
     	this.scheduler.getQueueManager().removeQueue(queueName);
     	return true;
     }
@@ -318,7 +318,7 @@ public class XmlRpcResourceManager {
     	return new Vector<String>(this.scheduler.getQueueManager().getNodes(queueName));
     }
     
-    public List<String> getQueuesWithNode(String nodeId) throws QueueManagerException {
+    public List<String> getQueuesWithNode(String nodeId) {
     	return new Vector<String>(this.scheduler.getQueueManager().getQueues(nodeId));
     }
     
@@ -339,7 +339,7 @@ public class XmlRpcResourceManager {
     	return load + "/" + capacity;
     }
     
-    public List getQueuedJobs() throws JobQueueException{
+    public List getQueuedJobs() {
     	Vector jobs = new Vector();
     	List jobSpecs = this.scheduler.getJobQueue().getQueuedJobs();
     	

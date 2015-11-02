@@ -201,7 +201,7 @@ public class FileRetrievalSystem {
             mimeTypeDetection = new MimeTypeUtils(config
                     .getProductTypeDetectionFile());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new InstantiationException(
                     "Failed to create FileRetrievalSystem : " + e.getMessage());
         }
@@ -296,7 +296,7 @@ public class FileRetrievalSystem {
     }
 
     public void changeToDir(String dir, RemoteSite remoteSite)
-            throws MalformedURLException, ProtocolException {
+            throws ProtocolException {
         if (validate(remoteSite)) {
           this
               .changeToDir(protocolHandler.getProtocolFileFor(remoteSite,
@@ -656,7 +656,7 @@ public class FileRetrievalSystem {
     }
 
     Protocol modifyAvailableSessionForPath(RemoteSiteFile file)
-            throws ProtocolException, RemoteConnectionException {
+            throws RemoteConnectionException {
         Protocol session = getAvailableSession();
         if (!file.getSite().getURL().getHost().equals(
                 file.getSite().getURL().getHost())
@@ -673,7 +673,7 @@ public class FileRetrievalSystem {
                       new RemoteSiteFile(file.getParent(), file.getSite()));
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 try {
                     protocolHandler.disconnect(session);
                 } catch (Exception ignored) {

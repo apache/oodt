@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.util;
 
 //OODT imports
+
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
@@ -27,14 +28,16 @@ import org.apache.oodt.cas.filemgr.structs.query.ComplexQuery;
 import org.apache.oodt.cas.filemgr.structs.query.QueryFilter;
 import org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor;
 
-
-//JDK imports
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+//JDK imports
 
 /**
  * 
@@ -72,7 +75,8 @@ import java.util.regex.Pattern;
  *          </p>
  */
 public class SqlParser {
-    
+
+    private static Logger LOG = Logger.getLogger(SqlParser.class.getName());
     private SqlParser() {
     }
     
@@ -97,7 +101,7 @@ public class SqlParser {
             
             return complexQuery;
         }catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new QueryFormulationException("Failed to parse SQL method : " + e.getMessage());
         }
     }

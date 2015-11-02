@@ -231,7 +231,7 @@ public class ProtocolHandler {
 
       return page;
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new RemoteConnectionException(
           "Failed getting next page for protocol " + protocol + "-- pgStart = "
               + pgInfo.getPageLoc() + " pgSize = " + pi.getPageSize() + " : "
@@ -486,7 +486,7 @@ public class ProtocolHandler {
       protocol.cdHome();
       return new RemoteSiteFile(protocol.pwd(), site);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -496,7 +496,7 @@ public class ProtocolHandler {
       protocol.cd(new ProtocolFile(path, isDir));
       return protocol.pwd().getAbsoluteFile().getPath();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }

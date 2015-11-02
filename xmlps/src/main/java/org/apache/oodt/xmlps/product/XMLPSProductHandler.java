@@ -103,9 +103,9 @@ public class XMLPSProductHandler implements QueryHandler {
                         .load(new FileInputStream(dbPropFilePath));
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new InstantiationException(e.getMessage());
             }
 
@@ -236,7 +236,7 @@ public class XMLPSProductHandler implements QueryHandler {
                 res.setConstValues(getConstValuesForQuery(query));
                 query.getResults().add(res);
             } catch (SQLException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING, "Error executing sql: ["
                         + sqlBuf.toString() + "]: Message: " + e.getMessage());
             }

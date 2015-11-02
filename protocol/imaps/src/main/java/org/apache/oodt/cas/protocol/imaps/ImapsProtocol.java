@@ -17,6 +17,19 @@
 package org.apache.oodt.cas.protocol.imaps;
 
 //JDK imports
+import org.apache.oodt.cas.protocol.Protocol;
+import org.apache.oodt.cas.protocol.ProtocolFile;
+import org.apache.oodt.cas.protocol.auth.Authentication;
+import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.html.HtmlParser;
+import org.apache.tika.sax.BodyContentHandler;
+import org.apache.tika.sax.TextContentHandler;
+
+import org.xml.sax.SAXException;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +42,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-//Javamail imports
 import javax.mail.Address;
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -40,24 +52,11 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
-import org.xml.sax.SAXException;
 
+//Javamail imports
 //APACHE imports
-import org.apache.commons.codec.DecoderException;
-
 //OODT imports
-import org.apache.oodt.cas.protocol.Protocol;
-import org.apache.oodt.cas.protocol.ProtocolFile;
-import org.apache.oodt.cas.protocol.auth.Authentication;
-import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
-import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
-
 //TIKA imports
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.html.HtmlParser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.apache.tika.sax.TextContentHandler;
 
 /**
  * IMAP Secure {@link Protocol} implementation
@@ -192,7 +191,7 @@ public class ImapsProtocol implements Protocol {
   }
   
   private void writeMessageToLocalFile(Message message, File toLocalFile)
-      throws MessagingException, IOException, DecoderException, SAXException,
+      throws MessagingException, IOException, SAXException,
       TikaException {
     PrintStream ps = new PrintStream(new FileOutputStream(toLocalFile));
 

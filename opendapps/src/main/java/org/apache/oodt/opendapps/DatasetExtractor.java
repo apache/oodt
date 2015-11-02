@@ -134,7 +134,7 @@ public class DatasetExtractor {
       try {
         dConn = new DConnect(datasetUrl, true);
       } catch (FileNotFoundException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING, datasetUrl
             + " is neither a valid URL nor a filename.");
       }
@@ -148,7 +148,7 @@ public class DatasetExtractor {
           datasetUrls.add(datasetUrl);
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.SEVERE, " Some DAP2Exception or not a validate DDS", e);
       }
     }

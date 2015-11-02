@@ -26,6 +26,7 @@ import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
 import org.apache.oodt.cas.workflow.gui.model.ModelNode;
 import org.apache.oodt.cas.workflow.gui.util.exceptions.WorkflowException;
 import org.apache.oodt.commons.xml.XMLUtils;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -34,7 +35,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,7 +150,7 @@ public class XmlWorkflowModelRepository {
     this.files.clear();
   }
 
-  private void saveGraphs() throws FileNotFoundException,
+  private void saveGraphs() throws
       ParserConfigurationException {
     Map<File, Document> documents = new HashMap<File, Document>();
     for (ModelGraph graph : this.graphs) {

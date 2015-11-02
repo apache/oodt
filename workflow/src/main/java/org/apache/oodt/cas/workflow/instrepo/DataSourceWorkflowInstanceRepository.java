@@ -132,7 +132,7 @@ public class DataSourceWorkflowInstanceRepository extends
             // now add its metadata
             addWorkflowInstanceMetadata(wInst);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception starting workflow. Message: "
                     + e.getMessage());
             try {
@@ -225,7 +225,7 @@ public class DataSourceWorkflowInstanceRepository extends
             addWorkflowInstanceMetadata(wInst);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception updating workflow instance. Message: "
                             + e.getMessage());
@@ -286,7 +286,7 @@ public class DataSourceWorkflowInstanceRepository extends
             removeWorkflowInstanceMetadata(wInst.getId());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception removing workflow instance. Message: "
                             + e.getMessage());
@@ -354,7 +354,7 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting workflow instance. Message: "
                             + e.getMessage());
@@ -433,7 +433,7 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting workflow instance. Message: "
                             + e.getMessage());
@@ -515,7 +515,7 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting workflow instance. Message: "
                             + e.getMessage());
@@ -586,7 +586,7 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting num workflow instances. Message: "
                             + e.getMessage());
@@ -659,7 +659,7 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting num workflow instances by status. Message: "
                             + e.getMessage());
@@ -775,7 +775,7 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception performing query. Message: "
                     + e.getMessage());
             try {
@@ -843,7 +843,7 @@ public class DataSourceWorkflowInstanceRepository extends
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting workflow instance metadata. Message: "
                             + e.getMessage());
@@ -927,7 +927,7 @@ public class DataSourceWorkflowInstanceRepository extends
 
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception adding metadata [" + key + "=>"
                     + val + "] to workflow inst: [" + wInstId + "]. Message: "
                     + e.getMessage());
@@ -981,7 +981,7 @@ public class DataSourceWorkflowInstanceRepository extends
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception removing workflow instance metadata. Message: "
                             + e.getMessage());

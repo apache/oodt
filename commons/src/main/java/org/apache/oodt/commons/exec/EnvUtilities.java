@@ -99,7 +99,7 @@ public final class EnvUtilities {
             envProps = new Properties();
             envProps.load(preProcessInputStream(p.getInputStream()));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Error executing env command: Message: "
                     + e.getMessage());
         } finally {

@@ -61,7 +61,7 @@ public class FileManagerFileStager extends FileStager {
 
    @VisibleForTesting
    static DataTransfer createDataTransfer(PgeMetadata pgeMetadata,
-         Logger logger) throws InstantiationException {
+         Logger logger) {
       if (pgeMetadata.getMetadata(QUERY_CLIENT_TRANSFER_SERVICE_FACTORY) != null) {
          return GenericFileManagerObjectFactory
                .getDataTransferServiceFromFactory(pgeMetadata

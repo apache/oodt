@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.product;
 
 //JDK imports
+
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
@@ -34,8 +35,14 @@ import org.apache.oodt.xmlquery.XMLQuery;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.apache.oodt.cas.filemgr.metadata.CoreMetKeys.PRODUCT_ID;
 import static org.apache.oodt.cas.product.CASProductHandlerMetKeys.CAS_PROFILE_ID;
@@ -53,6 +60,7 @@ import static org.apache.oodt.cas.product.CASProductHandlerMetKeys.FILE_HEADER;
  */
 public class CASProductHandler implements LargeProductQueryHandler {
 
+  private static Logger LOG = Logger.getLogger(CASProductHandler.class.getName());
     private XmlRpcFileManagerClient fm;
 
     public CASProductHandler() throws MalformedURLException,
@@ -146,7 +154,7 @@ public class CASProductHandler implements LargeProductQueryHandler {
                         + numRead + "]");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ProductException(
                     "IO exception retrieving chunk of product: [" + id
                             + "]: Message: " + e.getMessage());

@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.structs;
 
 //OODT imports
+
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
@@ -26,9 +27,12 @@ import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.mime.MimeTypesFactory;
 
-//JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -42,7 +46,7 @@ import java.io.FileInputStream;
  * 
  */
 public class Reference {
-
+    private static Logger LOG = Logger.getLogger(Reference.class.getName());
     /* the item's original location */
     private String origReference = null;
 
@@ -115,7 +119,7 @@ public class Reference {
         try {
             this.mimeType = mimeTypeRepository.forName(new Tika().detect(origRef));
         } catch (MimeTypeException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
     }
@@ -216,7 +220,7 @@ public class Reference {
         try {
           this.mimeType = mimeTypeRepository.forName(name);
         } catch (MimeTypeException e) {
-           e.printStackTrace();
+           LOG.log(Level.SEVERE, e.getMessage());
         }
     }
 

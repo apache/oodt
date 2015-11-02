@@ -18,17 +18,8 @@
 package org.apache.oodt.cas.filemgr.util;
 
 //JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-
-
-
-
-
-
-
-//OODT imports
+import org.apache.oodt.cas.filemgr.catalog.Catalog;
+import org.apache.oodt.cas.filemgr.catalog.CatalogFactory;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransfer;
 import org.apache.oodt.cas.filemgr.datatransfer.DataTransferFactory;
 import org.apache.oodt.cas.filemgr.ingest.Cache;
@@ -39,11 +30,14 @@ import org.apache.oodt.cas.filemgr.repository.RepositoryManagerFactory;
 import org.apache.oodt.cas.filemgr.structs.query.conv.VersionConverter;
 import org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor;
 import org.apache.oodt.cas.filemgr.structs.type.TypeHandler;
-import org.apache.oodt.cas.filemgr.catalog.Catalog;
-import org.apache.oodt.cas.filemgr.catalog.CatalogFactory;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayerFactory;
 import org.apache.oodt.cas.filemgr.versioning.Versioner;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * @author mattmann
@@ -89,17 +83,17 @@ public final class GenericFileManagerObjectFactory {
             dataTransferFactory = dataTransferFactoryClass.newInstance();
             return dataTransferFactory.createDataTransfer();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "ClassNotFoundException when loading data transfer factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "InstantiationException when loading data transfer factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "IllegalAccessException when loading data transfer factory class "
                             + serviceFactory + " Message: " + e.getMessage());
@@ -130,17 +124,17 @@ public final class GenericFileManagerObjectFactory {
             factory = clazz.newInstance();
             return factory.createRepositoryManager();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "ClassNotFoundException when loading data store factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "InstantiationException when loading data store factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "IllegalAccessException when loading data store factory class "
                             + serviceFactory + " Message: " + e.getMessage());
@@ -170,17 +164,17 @@ public final class GenericFileManagerObjectFactory {
             factory = clazz.newInstance();
             return factory.createCatalog();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "ClassNotFoundException when loading metadata store factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "InstantiationException when loading metadata store factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "IllegalAccessException when loading metadata store factory class "
                             + serviceFactory + " Message: " + e.getMessage());
@@ -212,17 +206,17 @@ public final class GenericFileManagerObjectFactory {
             factory = clazz.newInstance();
             return factory.createValidationLayer();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "ClassNotFoundException when loading validation layer factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "InstantiationException when loading validation layer factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "IllegalAccessException when loading validation layer factory class "
                             + serviceFactory + " Message: " + e.getMessage());
@@ -241,17 +235,17 @@ public final class GenericFileManagerObjectFactory {
             factory = clazz.newInstance();
             return factory.createCache();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "ClassNotFoundException when loading cache factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "InstantiationException when loading cache factory class "
                             + serviceFactory + " Message: " + e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "IllegalAccessException when loading cache factory class "
                             + serviceFactory + " Message: " + e.getMessage());
@@ -276,17 +270,17 @@ public final class GenericFileManagerObjectFactory {
             Class<Versioner> versionerClass = (Class<Versioner>) Class.forName(className);
             return versionerClass.newInstance();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "ClassNotFoundException when loading versioner class "
                             + className + " Message: " + e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "InstantiationException when loading versioner class "
                             + className + " Message: " + e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "IllegalAccessException when loading versioner class "
                             + className + " Message: " + e.getMessage());
@@ -301,17 +295,17 @@ public final class GenericFileManagerObjectFactory {
             Class<FilemgrMetExtractor> extractorClass = (Class<FilemgrMetExtractor>) Class.forName(className);
             return extractorClass.newInstance();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "ClassNotFoundException when loading extractor class "
                             + className + " Message: " + e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "InstantiationException when loading extractor class "
                             + className + " Message: " + e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "IllegalAccessException when loading extractor class "
                             + className + " Message: " + e.getMessage());
@@ -323,7 +317,7 @@ public final class GenericFileManagerObjectFactory {
         try {
             return (TypeHandler) Class.forName(className).newInstance();
         }catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Failed to load TypeHandler class '" + className + "' : " + e.getMessage());
         }
         return null;
@@ -333,7 +327,7 @@ public final class GenericFileManagerObjectFactory {
         try {
             return (FilterAlgor) Class.forName(className).newInstance();
         }catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Failed to load TypeHandler class '" + className + "' : " + e.getMessage());
         }
         return null;
@@ -343,7 +337,7 @@ public final class GenericFileManagerObjectFactory {
         try {
             return (VersionConverter) Class.forName(className).newInstance();
         }catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Failed to load TypeHandler class '" + className + "' : " + e.getMessage());
         }
         return null;

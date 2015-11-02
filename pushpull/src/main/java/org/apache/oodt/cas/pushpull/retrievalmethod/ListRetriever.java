@@ -98,7 +98,7 @@ public class ListRetriever implements RetrievalMethod {
             } catch (UndefinedTypeException e) {
                 LOG.log(Level.WARNING, "Skipping file : " + e.getMessage());
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 linker.markAsFailed(propFile, "Failed to download " + file
                         + " from " + remoteSite + " : " + e.getMessage());
                 throw new RetrievalMethodException("Uknown error accured while downloading "

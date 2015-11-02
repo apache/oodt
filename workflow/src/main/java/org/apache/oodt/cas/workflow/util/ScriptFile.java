@@ -29,6 +29,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -41,7 +43,7 @@ import java.util.Vector;
  * 
  */
 public class ScriptFile {
-
+    private static Logger LOG = Logger.getLogger(ScriptFile.class.getName());
     private String commandShell = null;
 
     private List commands = null;
@@ -115,7 +117,7 @@ public class ScriptFile {
                     new File(filePath))));
             pw.println(toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new WorkflowException("Error writing script file!: " + e.getMessage());
         } finally {
             try {

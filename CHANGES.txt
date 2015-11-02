@@ -57,6 +57,7 @@ Release 0.11 - Current Development
 
 * OODT-894 tidy up inefficient constructors - code quality from sonar (magicaltrout)
 
+* OODT-912 replace print stacttraces with log output - code quality from sonar (magicaltrout)
 Release 0.10 - 08/30/2015
 
 * OODT-871 Issues with OODT 0.10 RC#1 (lewismc, mattmann)

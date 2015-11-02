@@ -88,7 +88,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     try {
       this.init();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new InstantiationException(e.getMessage());
     }
   }
@@ -408,7 +408,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
         computeWorkflowConditions();
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new RepositoryException(e.getMessage());
     }
   }

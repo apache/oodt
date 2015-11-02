@@ -182,7 +182,7 @@ public class LuceneCatalog implements Catalog {
 	        			metadataTypes.add(element.getElementName());
 	        		}
 	        } catch (ValidationLayerException e) {
-	            e.printStackTrace();
+	            LOG.log(Level.SEVERE, e.getMessage());
 	            throw new CatalogException(
 	                    "ValidationLayerException when trying to obtain element list for product type: "
 	                            + product.getProductType().getName()
@@ -901,7 +901,7 @@ public class LuceneCatalog implements Catalog {
             retPage.setPageProducts(paginateQuery(query, type, pageNum, retPage));
             return retPage;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "CatalogException when doing paged product query: Message: "
                             + e.getMessage());
@@ -1312,7 +1312,7 @@ public class LuceneCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "IOException when opening index directory: ["
                             + indexFilePath + "] for search: Message: "

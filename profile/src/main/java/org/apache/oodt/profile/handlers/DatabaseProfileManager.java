@@ -225,7 +225,7 @@ public abstract class DatabaseProfileManager implements ProfileManager
 		}
 	}
 
-	public int size() throws ProfileException {
+	public int size() {
 	  return(size(conn));
 
 	}

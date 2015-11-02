@@ -211,7 +211,7 @@ public class TaskQuerier implements Runnable {
           repo.updateWorkflowInstance(instance);
         }
       } catch (InstanceRepositoryException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING, "Unable to update workflow instance: ["
             + instance.getId() + "] status to [" + instance.getState().getName()
             + "]. Message: " + e.getMessage());

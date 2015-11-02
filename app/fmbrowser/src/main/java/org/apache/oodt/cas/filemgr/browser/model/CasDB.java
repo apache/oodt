@@ -27,13 +27,15 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 import java.net.URL;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CasDB {
 
   URL filemgrUrl;
   XmlRpcFileManagerClient client;
   public Results results;
-
+  private static Logger LOG = Logger.getLogger(CasDB.class.getName());
   private static String freeTextBlock = "__FREE__";
 
   public CasDB() {
@@ -68,7 +70,7 @@ public class CasDB {
         types = new String[v.size()];
 
       } catch (RepositoryManagerException e) {
-        // e.printStackTrace();
+        // LOG.log(Level.SEVERE, e.getMessage());
       }
 
     } else {
@@ -89,7 +91,7 @@ public class CasDB {
         elements = new String[v.size()];
 
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
       }
     } else {
       elements = new String[1];

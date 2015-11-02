@@ -21,6 +21,7 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.Metadata;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,6 +36,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -54,7 +57,8 @@ import javax.xml.parsers.ParserConfigurationException;
  *
  */
 public class DefaultProductSerializer implements ProductSerializer {
-	
+
+  private static Logger LOG = Logger.getLogger(DefaultProductSerializer.class.getName());
 	/**
 	 * {@inheritDoc}
 	 */
@@ -163,7 +167,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 			return queryResponse;
 		
 		} catch(Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			throw new CatalogException(e.getMessage(), e);
 		}
 		

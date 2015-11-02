@@ -16,25 +16,27 @@
  */
 package org.apache.oodt.cas.crawl.typedetection;
 
-//OODT imports
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
 
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.LinkedList;
+import com.google.common.base.Strings;
 
-//W3C imports
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
+//W3C imports
 //Google imports
-import com.google.common.base.Strings;
 
 /**
  * Static reader class for {@link MimeExtractor}s.
@@ -44,7 +46,7 @@ import com.google.common.base.Strings;
  */
 public final class MimeExtractorConfigReader implements
         MimeExtractorConfigMetKeys {
-
+  private static Logger LOG = Logger.getLogger(MimeExtractorConfigReader.class.getName());
     private MimeExtractorConfigReader() throws InstantiationException {
         throw new InstantiationException("Don't construct reader classes!");
     }
@@ -166,22 +168,22 @@ public final class MimeExtractorConfigReader implements
             }
             return extractorRepo;
         } catch (IllegalAccessException e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           throw e;
         } catch (InstantiationException e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           throw e;
         } catch (MetExtractionException e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           throw e;
         } catch (FileNotFoundException e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           throw e;
         } catch (ClassNotFoundException e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           throw e;
         } catch (CrawlerActionException e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           throw e;
         }
     }

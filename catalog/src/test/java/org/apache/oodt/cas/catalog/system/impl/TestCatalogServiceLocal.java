@@ -17,15 +17,7 @@
 package org.apache.oodt.cas.catalog.system.impl;
 
 //JDK imports
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
 
-import junit.framework.TestCase;
-
-//OODT imports
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.catalog.exception.CatalogServiceException;
 import org.apache.oodt.cas.catalog.mapping.InMemoryIngestMapperFactory;
@@ -45,6 +37,18 @@ import org.apache.oodt.cas.catalog.struct.impl.transaction.UuidTransactionIdFact
 import org.apache.oodt.cas.catalog.system.CatalogFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import junit.framework.TestCase;
+
+//OODT imports
+
 /**
  * 
  * @author bfoster
@@ -55,7 +59,7 @@ public class TestCatalogServiceLocal extends TestCase {
 
 	private CatalogServiceLocal cs;
 	private File testDir;
-	
+  private static Logger LOG = Logger.getLogger(TestCatalogServiceLocal.class.getName());
 	public void setUp() {
 		try {
 			File tempFile = File.createTempFile("foo", "bar");
@@ -89,7 +93,7 @@ public class TestCatalogServiceLocal extends TestCase {
 					.setIndexFactory(getInMemoryDSFactory(testDir.getAbsolutePath() + "/index/2/"));
 			cs.addCatalog(catalogFactory.createCatalog());
 		}catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			TestCase.fail(e.getMessage());
 		}
 	}
@@ -98,7 +102,7 @@ public class TestCatalogServiceLocal extends TestCase {
 		try {
 			FileUtils.forceDelete(this.testDir);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			TestCase.fail(e.getMessage());
 		}
 	}

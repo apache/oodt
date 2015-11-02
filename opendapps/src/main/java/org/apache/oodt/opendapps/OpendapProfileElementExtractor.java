@@ -77,7 +77,7 @@ public class OpendapProfileElementExtractor {
         throw new NoSuchAttributeException("Att table for [" + varname + "] is null!");
       }
     } catch (NoSuchAttributeException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error extracting attribute table for element: ["
           + elemName + "]: Message: " + e.getMessage());
       throw e;
@@ -96,7 +96,7 @@ public class OpendapProfileElementExtractor {
         	try {
             attrValues = attr.getValues();
           } catch (NoSuchAttributeException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Attempt to resolve attribute: [" + attrName
                 + "] failed: Message: " + e.getMessage());
             continue;

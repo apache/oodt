@@ -19,20 +19,23 @@
 package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 
 //OODT imports
+
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
 import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
-import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 
-
-//JDK imports
 import java.io.FileInputStream;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+//JDK imports
 
 /**
  * 
@@ -42,7 +45,7 @@ import java.util.regex.Pattern;
  * <p>Describe your class here</p>.
  */
 public class ClassNoaaEmailParser implements Parser {
-
+  private static Logger LOG = Logger.getLogger(ClassNoaaEmailParser.class.getName());
     public ClassNoaaEmailParser() {}
 
     public VirtualFileStructure parse(FileInputStream emailFile, Metadata metadata)
@@ -100,7 +103,7 @@ public class ClassNoaaEmailParser implements Parser {
 
             return new VirtualFileStructure(remoteSite, "/", root);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ParserException("Failed to parse IASI email : "
                     + e.getMessage());
         }

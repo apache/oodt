@@ -19,14 +19,18 @@
 package org.apache.oodt.cas.pushpull.retrievalsystem;
 
 //OODT imports
+
 import org.apache.oodt.cas.pushpull.exceptions.ThreadEvaluatorException;
 
-//JDK imports
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
 
 /**
  * 
@@ -38,7 +42,7 @@ import java.util.Map.Entry;
  * </p>.
  */
 public class DownloadThreadEvaluator {
-
+    private static Logger LOG = Logger.getLogger(DownloadThreadEvaluator.class.getName());
     private HashMap<File, DownloadingFileInfo> fileAndDownloadingFileInfo;
 
     private final int MAX_THREADS;
@@ -115,7 +119,7 @@ public class DownloadThreadEvaluator {
                 this.downloadSpeedsForEachThread[avgThreadCountForFile] = (currentAvgSpeed + downloadSpeed) / 2;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ThreadEvaluatorException("Failed to register file "
                     + file + " as downloaded : " + e.getMessage());
         } finally {

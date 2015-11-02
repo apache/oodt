@@ -43,13 +43,11 @@ public class LoggerOutputStream extends OutputStream {
       this(logger, Level.INFO);
    }
 
-   public LoggerOutputStream(Logger logger, Level logLevel)
-         throws InstantiationException {
+   public LoggerOutputStream(Logger logger, Level logLevel) {
       this(logger, NUM_BYTES_PER_WRITE, logLevel);
    }
 
-   public LoggerOutputStream(Logger logger, int numOfBytesPerWrite)
-         throws InstantiationException {
+   public LoggerOutputStream(Logger logger, int numOfBytesPerWrite) {
       this(logger, numOfBytesPerWrite, Level.INFO);
    }
 

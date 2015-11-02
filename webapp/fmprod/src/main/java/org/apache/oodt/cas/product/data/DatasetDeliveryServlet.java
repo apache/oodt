@@ -156,7 +156,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
       } while ((page != null && !page.isLastPage())
           && (page.getPageProducts() != null && page.getPageProducts().size() > 0));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new ServletException(e.getMessage());
     }
 
@@ -199,7 +199,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception delivering dataset: Message: "
           + e.getMessage());
     } finally {

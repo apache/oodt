@@ -19,15 +19,15 @@
 package org.apache.oodt.cas.metadata.extractors;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.logging.Level;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.SerializableMetadata;
-import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
-import org.apache.oodt.cas.metadata.extractors.CmdLineMetExtractor;
 
 /**
  * @author mattmann
@@ -97,7 +97,7 @@ public class MetReaderExtractor extends CmdLineMetExtractor {
             met.loadMetadataFromXmlStream(new FileInputStream(metFileFullPath));
             return met;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new MetExtractionException(e.getMessage());
         }
     }

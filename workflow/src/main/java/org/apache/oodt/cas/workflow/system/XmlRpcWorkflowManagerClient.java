@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.workflow.system;
 
 //APACHE imports
+
 import org.apache.oodt.cas.cli.CmdLineUtility;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.Workflow;
@@ -36,6 +37,7 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //JDK imports
@@ -144,7 +146,7 @@ public class XmlRpcWorkflowManagerClient {
             pageHash = (Hashtable) client.execute("workflowmgr.getPrevPage",
                     argList);
         } catch (XmlRpcException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new Exception(e.getMessage());
         } catch (IOException e) {
             throw new Exception(e.getMessage());

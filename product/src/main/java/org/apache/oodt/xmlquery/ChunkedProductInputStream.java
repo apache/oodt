@@ -144,12 +144,8 @@ final class ChunkedProductInputStream extends InputStream {
 
 	public void close() throws IOException {
 		checkOpen();							       // Open?
-		try {
-			retriever.close(id);					       // Tell retriever we're done
-			open = false;						       // Flag it
-		} catch (ProductException ex) {
-			throw new IOException(ex.getMessage());
-		}
+	  retriever.close(id);					       // Tell retriever we're done
+	  open = false;						       // Flag it
 	}
 
 	/**

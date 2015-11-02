@@ -108,7 +108,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG
                     .log(Level.WARNING, "Exception adding element "
                             + element.getElementName() + ". Message: "
@@ -178,7 +178,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception modifying element. Message: "
                     + e.getMessage());
             try {
@@ -237,7 +237,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception removing element. Message: "
                     + e.getMessage());
             try {
@@ -302,7 +302,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception adding element "
                     + element.getElementName() + " to product type "
                     + type.getName() + " . Message: " + e.getMessage());
@@ -369,7 +369,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception removing element "
                     + element.getElementName() + " from product type "
                     + type.getName() + ". Message: " + e.getMessage());
@@ -428,7 +428,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             statement.execute(addParentInfoSql);
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception adding parent info to product type "
                             + type.getName() + " . Message: " + e.getMessage());
@@ -487,7 +487,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception removing parent from product type "
                             + type.getName() + ". Message: " + e.getMessage());
@@ -560,7 +560,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING, "Exception reading elements. Message: "
                         + e.getMessage());
                 throw new ValidationLayerException(e);
@@ -616,7 +616,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING,
                         "Exception reading product parent. Message: "
                                 + e.getMessage());
@@ -680,7 +680,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception reading elements. Message: "
                     + e.getMessage());
             throw new ValidationLayerException(e);
@@ -744,7 +744,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception reading element. Message: "
                     + e.getMessage());
             throw new ValidationLayerException(e);
@@ -808,7 +808,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception reading element. Message: "
                     + e.getMessage());
             throw new ValidationLayerException(e);

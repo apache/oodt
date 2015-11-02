@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.Cookie;
@@ -63,7 +64,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
         try {
           details = this.ssoProxy.getUserAttributes(ssoToken);
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           return UNKNOWN_USER;
         }
         return details.getAttributes().getMetadata(UID_ATTRIBUTE_NAME) != null ? details
@@ -91,7 +92,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
     try {
       ssoToken = this.ssoProxy.authenticate(username, password);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return false;
     }
 

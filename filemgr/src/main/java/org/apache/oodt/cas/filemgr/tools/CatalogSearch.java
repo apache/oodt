@@ -42,6 +42,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -54,7 +56,7 @@ import java.util.Vector;
  * 
  */
 public class CatalogSearch {
-
+    private static Logger LOG = Logger.getLogger(CatalogSearch.class.getName());
     private static QueryParser parser;
 
     private static XmlRpcFileManagerClient client;
@@ -74,7 +76,7 @@ public class CatalogSearch {
         } catch (RepositoryManagerException e) {
             System.out
                     .println("Error getting available product types from the File Manager.");
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
         for (Object product : products) {
             PostQuery(((ProductType) product).getProductTypeId(),
@@ -98,7 +100,7 @@ public class CatalogSearch {
             results = (Vector) client.query(casQuery, productType);
         } catch (CatalogException ignore) {
             System.out.println("Error querying the File Manager");
-            ignore.printStackTrace();
+            LOG.log(Level.SEVERE, ignore.getMessage());
             System.exit(-1);
         }
 
@@ -138,7 +140,7 @@ public class CatalogSearch {
         } catch (RepositoryManagerException e) {
             System.out
                     .println("Error getting available product types from the File Manager.");
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
         for (Object product : products) {
             System.out.print(((ProductType) product).getProductTypeId()
@@ -157,7 +159,7 @@ public class CatalogSearch {
         } catch (RepositoryManagerException e) {
             System.out
                     .println("Error getting available product types from the File Manager.");
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
     }
@@ -174,7 +176,7 @@ public class CatalogSearch {
                     + prodID);
         } catch (ValidationLayerException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         for (Object element : elements) {

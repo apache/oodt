@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.metadata.extractors;
 
 //JDK imports
+
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -28,6 +29,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //OODT imports
 
@@ -42,7 +45,7 @@ import java.util.Properties;
  */
 public abstract class AbstractFilemgrMetExtractor implements
         FilemgrMetExtractor {
-
+  private static Logger LOG = Logger.getLogger(AbstractFilemgrMetExtractor.class.getName());
     protected Properties configuration;
 
     /*
@@ -118,7 +121,7 @@ public abstract class AbstractFilemgrMetExtractor implements
                         .getProductReferences(), product.getProductType()
                         .getProductRepositoryPath()));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new MetExtractionException("URI exception parsing: ["
                         + product.getRootRef().getOrigReference() + "]");
             }

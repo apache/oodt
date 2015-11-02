@@ -89,9 +89,9 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
                         .load(new FileInputStream(dbPropFilePath));
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new InstantiationException(e.getMessage());
             }
 
@@ -114,7 +114,7 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
             translateToDomain(selectSet, true);
             translateToDomain(whereSet, false);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ProfileException(e.getMessage());
         }
         return queryAndPackageProfiles(query);
@@ -183,7 +183,7 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
                         .toString(), this.resLocationSpec);
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING, "Error executing sql: ["
                         + sqlBuf.toString() + "]: Message: " + e.getMessage());
             }

@@ -55,17 +55,17 @@ public final class OFSNObjectFactory {
           .forName(className);
       return listHandler.newInstance();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading list handler class " + className
               + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading list handler class " + className
               + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading list handler class " + className
               + " Message: " + e.getMessage());
@@ -90,17 +90,17 @@ public final class OFSNObjectFactory {
           .forName(className);
       return getHandler.newInstance();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "ClassNotFoundException when loading get handler class " + className
               + " Message: " + e.getMessage());
     } catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "InstantiationException when loading get handler class " + className
               + " Message: " + e.getMessage());
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "IllegalAccessException when loading get handler class " + className
               + " Message: " + e.getMessage());

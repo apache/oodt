@@ -146,7 +146,7 @@ public class TestSerializableMetadata extends TestCase {
     try {
       XMLUtils.writeXmlToStream(metadata.toXML(), out);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 
@@ -155,7 +155,7 @@ public class TestSerializableMetadata extends TestCase {
       metadata2 = new SerializableMetadata(new ByteArrayInputStream(out
           .toByteArray()));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 

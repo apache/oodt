@@ -93,7 +93,7 @@ public class DBMSExecutor {
       }
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw e;
     } finally {
       if (statement != null) {
@@ -147,7 +147,7 @@ public class DBMSExecutor {
           elem.getValues().add(elemDbVal);
         }
       } catch (SQLException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING, "Unable to obtain field: ["
                                + fld.getLocalName() + "] from result set: message: "
                                + e.getMessage());

@@ -18,21 +18,25 @@
 package org.apache.oodt.cas.filemgr.versioning;
 
 //JDK imports
+
+import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.io.File;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import junit.framework.TestCase;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.metadata.Metadata;
-
 //Junit imports
-import junit.framework.TestCase;
 
 /**
  * 
@@ -44,6 +48,7 @@ import junit.framework.TestCase;
  */
 public class TestAcquisitionDateVersioner extends TestCase {
 
+  private static Logger LOG = Logger.getLogger(TestAcquisitionDateVersioner.class.getName());
   private Properties initialProperties = new Properties(System.getProperties());
 
   public void setUp() throws Exception {
@@ -75,7 +80,7 @@ public class TestAcquisitionDateVersioner extends TestCase {
     try {
       versioner.createDataStoreReferences(p, met);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 
@@ -99,7 +104,7 @@ public class TestAcquisitionDateVersioner extends TestCase {
     try {
       versioner.createDataStoreReferences(p, met);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 
@@ -122,7 +127,7 @@ public class TestAcquisitionDateVersioner extends TestCase {
     try {
       versioner.createDataStoreReferences(p, met);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 

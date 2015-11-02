@@ -284,7 +284,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       types = fmgrClient.getProductTypes();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unable to retrieve product types from filemgr: ["
           + fmgrClient.getFileManagerUrl() + "]: reason: " + e.getMessage());
     }

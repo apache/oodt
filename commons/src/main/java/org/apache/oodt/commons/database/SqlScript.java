@@ -19,6 +19,7 @@
 package org.apache.oodt.commons.database;
 
 //JDK imports
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -28,6 +29,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -41,7 +44,7 @@ import javax.sql.DataSource;
  * </p>.
  */
 public class SqlScript {
-
+    private static Logger LOG = Logger.getLogger(SqlScript.class.getName());
     public final static char QUERY_ENDS = ';';
 
     private File script;
@@ -100,7 +103,7 @@ public class SqlScript {
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
     }
@@ -183,7 +186,7 @@ public class SqlScript {
             statement.execute(sql);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             System.out.println("Exception executing SQL: [" + sql
                     + "]: message: " + e.getMessage());
 
@@ -224,7 +227,7 @@ public class SqlScript {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             System.out
                     .println("Exception executing SQL batch statement: message: "
                             + e.getMessage());

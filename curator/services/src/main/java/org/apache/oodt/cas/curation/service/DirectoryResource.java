@@ -92,7 +92,7 @@ public class DirectoryResource extends CurationService {
     try {
       relativePath = this.cleansePath(path);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error decoding path: [" + path + "]: Message: "
           + e.getMessage());
       return html.toString();

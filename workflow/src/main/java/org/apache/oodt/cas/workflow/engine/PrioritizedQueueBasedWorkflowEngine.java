@@ -18,11 +18,7 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
-import java.net.URL;
-import java.util.Calendar;
-import java.util.logging.Logger;
 
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorQueue;
 import org.apache.oodt.cas.workflow.engine.runner.EngineRunner;
@@ -39,6 +35,13 @@ import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.EngineException;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+
+import java.net.URL;
+import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * 
@@ -250,7 +253,7 @@ public class PrioritizedQueueBasedWorkflowEngine implements WorkflowEngine {
         repo.updateWorkflowInstance(inst);
       }
     } catch (InstanceRepositoryException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new EngineException(e.getMessage());
     }
   }

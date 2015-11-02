@@ -19,15 +19,7 @@
 package org.apache.oodt.cas.filemgr.ingest;
 
 //JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
 
-//OODT imports
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
@@ -35,10 +27,22 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
-
-// Jnit imports
 import org.apache.oodt.commons.util.DateConvert;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import junit.framework.TestCase;
+
+//OODT imports
+// Jnit imports
 
 /**
  * @author mattmann
@@ -49,7 +53,7 @@ import junit.framework.TestCase;
  * </p>.
  */
 public class TestCachedIngester extends TestCase {
-
+    private static Logger LOG = Logger.getLogger(TestCachedIngester.class.getName());
     private static final int FM_PORT = 50010;
 
     private XmlRpcFileManager fm;
@@ -282,7 +286,7 @@ public class TestCachedIngester extends TestCase {
         try {
             fm = new XmlRpcFileManager(FM_PORT);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
     }

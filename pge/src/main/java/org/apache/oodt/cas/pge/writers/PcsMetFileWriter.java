@@ -50,29 +50,24 @@ public abstract class PcsMetFileWriter {
             PgeMetadata pgeMetadata, Object... customArgs)
         throws PGEException, MetExtractorConfigReaderException, MetExtractionException, CommonsException,
         FileNotFoundException, CasMetadataException, ParseException {
-        try {
-            Metadata inputMetadata = pgeMetadata.asMetadata();
+      Metadata inputMetadata = pgeMetadata.asMetadata();
 
-            inputMetadata.replaceMetadata(CoreMetKeys.FILENAME,
-                    sciPgeCreatedDataFile.getName());
-            inputMetadata.replaceMetadata(CoreMetKeys.FILE_LOCATION,
-                    sciPgeCreatedDataFile.getParentFile().getAbsolutePath());
-            inputMetadata.replaceMetadata(FILE_SIZE, Long.toString(new File(
-					inputMetadata.getMetadata(CoreMetKeys.FILE_LOCATION),
-					inputMetadata.getMetadata(CoreMetKeys.FILENAME)).length()));
-            
-            return this.getSciPgeSpecificMetadata(
-                    sciPgeCreatedDataFile, inputMetadata, customArgs);
-        } catch (PGEException e) {
-            throw new PGEException("Failed to create PCS metadata file for '"
-                    + sciPgeCreatedDataFile + "' : " + e.getMessage(), e);
-        }
+      inputMetadata.replaceMetadata(CoreMetKeys.FILENAME,
+              sciPgeCreatedDataFile.getName());
+      inputMetadata.replaceMetadata(CoreMetKeys.FILE_LOCATION,
+              sciPgeCreatedDataFile.getParentFile().getAbsolutePath());
+      inputMetadata.replaceMetadata(FILE_SIZE, Long.toString(new File(
+              inputMetadata.getMetadata(CoreMetKeys.FILE_LOCATION),
+              inputMetadata.getMetadata(CoreMetKeys.FILENAME)).length()));
+
+      return this.getSciPgeSpecificMetadata(
+              sciPgeCreatedDataFile, inputMetadata, customArgs);
     }
 
     protected abstract Metadata getSciPgeSpecificMetadata(
             File sciPgeCreatedDataFile, Metadata inputMetadata,
             Object... customArgs)
-        throws PGEException, MetExtractorConfigReaderException, MetExtractionException, FileNotFoundException,
+        throws MetExtractorConfigReaderException, MetExtractionException, FileNotFoundException,
         ParseException, CommonsException, CasMetadataException;
 
 }

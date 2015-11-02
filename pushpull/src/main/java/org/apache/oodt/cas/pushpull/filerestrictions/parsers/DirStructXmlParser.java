@@ -99,7 +99,7 @@ public class DirStructXmlParser implements Parser {
             }
             return new VirtualFileStructure(initialCdDir, root);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ParserException("Failed to parse XML file : "
                     + e.getMessage());
         }

@@ -18,6 +18,9 @@
 package org.apache.oodt.cas.workflow.system;
 
 //JDK imports
+import org.apache.commons.io.FileUtils;
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,12 +29,10 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//Junit imports
 import junit.framework.TestCase;
 
+//Junit imports
 //OODT imports
-import org.apache.commons.io.FileUtils;
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * 
@@ -63,7 +64,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
       try {
         workflowInsts = wmgr.getWorkflowInstances();
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
       }
 
       assertNotNull(workflowInsts);
@@ -94,7 +95,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
     try {
       client.sendEvent("long", new Metadata());
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new RuntimeException(e);
     }
 
@@ -153,7 +154,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
     try {
       wmgr = new XmlRpcWorkflowManager(WM_PORT);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 

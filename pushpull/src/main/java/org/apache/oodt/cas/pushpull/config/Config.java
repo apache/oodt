@@ -173,7 +173,7 @@ public class Config implements ConfigMetKeys {
      * @throws ClassNotFoundException
      * @throws ClassNotFoundException
      */
-    void loadProperties() throws ConfigException, InstantiationException {
+    void loadProperties() throws ConfigException {
         this.loadExternalConfigFiles();
         this.loadProtocolTypes();
         this.loadParserInfo();
@@ -261,7 +261,7 @@ public class Config implements ConfigMetKeys {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ConfigException("Failed to load Ingester : "
                     + e.getMessage());
         }

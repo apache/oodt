@@ -49,7 +49,6 @@ import javax.xml.transform.stream.StreamResult;
  */
 
 public class XMLUtils {
-
     /* our log stream */
     private final static Logger LOG = Logger
             .getLogger(XMLUtils.class.getName());
@@ -86,7 +85,7 @@ public class XMLUtils {
             xformer.setOutputProperty(OutputKeys.INDENT, "yes");
             xformer.transform(source, result);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
     }
@@ -108,7 +107,7 @@ public class XMLUtils {
                         DOMUtil.getSimpleElementText(valElem), encoding);
                 values.add(value);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING, "Error decoding tag: [" + elt
                         + "]: val: [" + DOMUtil.getSimpleElementText(valElem)
                         + "] from metadata. Message: " + e.getMessage());

@@ -27,7 +27,8 @@ import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.structs.exceptions.IngestException;
 import org.apache.oodt.cas.metadata.Metadata;
 
-//JDK imports
+import net.sf.json.JSONObject;
+
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
@@ -42,7 +43,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//JAX-RS imports
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -51,8 +51,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
+//JDK imports
+//JAX-RS imports
 //JSON imports
-import net.sf.json.JSONObject;
 
 /**
  * 
@@ -104,7 +105,7 @@ public class IngestionResource extends CurationService {
           CurationService.config.getMetExtrConfUploadPath()),
           metExtractorConfigId));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       String errorMsg = "Unable to load extractor config from metExtCfgId: ["
           + metExtractorConfigId + "]";
       LOG.log(Level.WARNING, errorMsg);
@@ -163,7 +164,7 @@ public class IngestionResource extends CurationService {
         fileMet = metService.getStagingMetadata(vFilePath, task.getExtConf()
             .getIdentifier(), false);
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         return this.encodeIngestResponseAsHTML(false, e.getMessage());
       }
 
@@ -171,7 +172,7 @@ public class IngestionResource extends CurationService {
         ingest.ingest(safeGetUrl(CurationService.config.getFileMgrURL()),
             new File(file), fileMet);
       } catch (IngestException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         return this.encodeIngestResponseAsHTML(false, e.getMessage());
       }
 
@@ -272,7 +273,7 @@ public class IngestionResource extends CurationService {
     try {
       return new URL(urlStr);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -297,7 +298,7 @@ public class IngestionResource extends CurationService {
     try {
       return fullFilePath.substring(startIdx);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }

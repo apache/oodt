@@ -150,7 +150,7 @@ public class FilemgrDeleteStep extends BaseStep implements StepInterface {
             logDetailed("Deleting Product: "+(String)r[idx]);
             worked = oodtproc.deleteProductByName(oodt, (String)r[idx]);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         // safely add the string "Hello World!" at the end of the output row

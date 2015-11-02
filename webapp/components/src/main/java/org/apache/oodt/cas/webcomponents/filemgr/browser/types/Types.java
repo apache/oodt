@@ -18,6 +18,18 @@
 package org.apache.oodt.cas.webcomponents.filemgr.browser.types;
 
 //JDK imports
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.webcomponents.filemgr.FileManagerConn;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.util.GenericBaseModel;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,19 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.webcomponents.filemgr.FileManagerConn;
-
 //Wicket imports
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.util.GenericBaseModel;
 
 /**
  * 
@@ -190,7 +190,7 @@ public class Types extends Panel {
       try {
         tuple.getCounts().add(fm.getFm().getNumProducts(type));
       } catch (CatalogException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING, "Unable to set count for product type: ["
             + type.getName() + "]: Reason: [" + e.getMessage() + "]");
       }

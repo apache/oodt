@@ -103,7 +103,7 @@ public class SSOProxy implements SSOMetKeys {
       response = post.getResponseBodyAsString().trim();
       ssoToken = response.substring(9);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       post.releaseConnection();
     }
@@ -165,10 +165,10 @@ public class SSOProxy implements SSOMetKeys {
       }
     } catch (HttpException e) {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } catch (IOException e) {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       post.releaseConnection();
     }
@@ -212,7 +212,7 @@ public class SSOProxy implements SSOMetKeys {
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error reading service response line: [" + line
           + "]: Message: " + e.getMessage());
     } finally {
@@ -262,7 +262,7 @@ public class SSOProxy implements SSOMetKeys {
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error reading service response line: [" + line
           + "]: Message: " + e.getMessage());
     } finally {

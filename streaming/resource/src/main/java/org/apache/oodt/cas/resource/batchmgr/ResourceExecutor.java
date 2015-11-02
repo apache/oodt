@@ -57,7 +57,7 @@ public class ResourceExecutor implements Executor {
             str = new PrintStream(new FileOutputStream(tmp));
             str.println(id+"Starting up new<<<<<");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
     }
     /* (non-Javadoc)
@@ -111,7 +111,7 @@ public class ResourceExecutor implements Executor {
                             status = TaskStatus.newBuilder().setTaskId(info.getTaskId())
                                     .setState(TaskState.TASK_FINISHED).build();
                         } catch (JobInputException e) {
-                            e.printStackTrace();
+                            LOG.log(Level.SEVERE, e.getMessage());
                             status = TaskStatus.newBuilder().setTaskId(info.getTaskId())
                                     .setState(TaskState.TASK_FAILED).build();
                         }

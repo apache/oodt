@@ -52,9 +52,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-//JDK imports
-//JAX-RS imports
-//JSON imports
 
 @Path("policy")
 public class PolicyResource extends CurationService {
@@ -125,7 +122,7 @@ public class PolicyResource extends CurationService {
       page = config.getFileManagerClient().pagedQuery(new Query(),
           productType, pageNum);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unable to obtain products for product type: ["
           + productTypeName + "]: Message: " + e.getMessage());
       return "";
@@ -188,7 +185,7 @@ public class PolicyResource extends CurationService {
     try {
       typeNames = this.getProductTypeNamesForPolicy(policy);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Unable to obtain product type names for policy: [" + policy
               + "]: Message: " + e.getMessage());

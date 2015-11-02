@@ -193,7 +193,7 @@ public class DataDeliveryServlet extends HttpServlet implements
         o2.write(buf, 0, n);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception delivering data!: Message: "
           + e.getMessage());
     } finally {

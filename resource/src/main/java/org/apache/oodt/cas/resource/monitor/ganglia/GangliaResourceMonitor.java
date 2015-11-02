@@ -22,9 +22,7 @@ import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
-import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.NAME;
 
-//JDK imports
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -33,6 +31,10 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.NAME;
+
+//JDK imports
 
 /**
  * @author rajith
@@ -67,7 +69,7 @@ public class GangliaResourceMonitor implements Monitor {
 		try {
 			this.initGmetaNodes(gmetadHost, gmetadPort);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			LOG.log(Level.WARNING,
 					"URL exception initializing gmetad nodes: [" + gmetadHost
 							+ ":" + gmetadPort + "]: Message: "
@@ -139,7 +141,7 @@ public class GangliaResourceMonitor implements Monitor {
 					try {
 						nodes.add(this.nodeFromMap(map));
 					} catch (MalformedURLException e) {
-						e.printStackTrace();
+						LOG.log(Level.SEVERE, e.getMessage());
 						throw new MonitorException(e.getMessage());
 					}
 				}
@@ -154,7 +156,7 @@ public class GangliaResourceMonitor implements Monitor {
 		try {
 			return this.nodeFromMap(this.locateNode(nodeId));
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			throw new MonitorException(e.getMessage());
 		}
 	}
@@ -175,7 +177,7 @@ public class GangliaResourceMonitor implements Monitor {
 						try {
 							return this.nodeFromMap(aNodes.get(aNodeId));
 						} catch (MalformedURLException e) {
-							e.printStackTrace();
+							LOG.log(Level.SEVERE, e.getMessage());
 							throw new MonitorException(e.getMessage());
 						}
 					}
@@ -218,7 +220,7 @@ public class GangliaResourceMonitor implements Monitor {
 					LOG.log(Level.WARNING,
 							"MonitorException contacting Ganglia: ["
 									+ adapter.getUrlString() + "]");
-					e.printStackTrace();
+					LOG.log(Level.SEVERE, e.getMessage());
 				}
 			}
 

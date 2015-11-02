@@ -50,6 +50,7 @@ import java.util.logging.Logger;
  */
 public class ExpImpCatalog {
 
+
     /* the client to the source catalog to export */
     private XmlRpcFileManagerClient sourceClient = null;
 
@@ -435,7 +436,7 @@ public class ExpImpCatalog {
             try {
                 return (destCatalog.getProductByName(productName) != null);
             } catch (CatalogException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG
                         .log(Level.WARNING,
                                 "Exceptiong checking for product type by name: ["
@@ -447,7 +448,7 @@ public class ExpImpCatalog {
             try {
                 return destClient.hasProduct(productName);
             } catch (CatalogException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG
                         .log(Level.WARNING,
                                 "Exceptiong checking for product type by name: ["

@@ -18,6 +18,7 @@
 package org.apache.oodt.xmlps.product;
 
 //OODT imports
+
 import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
 import org.apache.oodt.xmlps.structs.CDEResult;
 
@@ -25,6 +26,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -37,7 +40,7 @@ import javax.sql.DataSource;
  * .
  */
 public class DBMSExecutor {
-
+  private static Logger LOG = Logger.getLogger(DBMSExecutor.class.getName());
   private final DataSource dataSource;
 
   public DBMSExecutor() {
@@ -55,7 +58,7 @@ public class DBMSExecutor {
       ResultSet rs = statement.executeQuery(sql);
       return new CDEResult(rs, conn);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw e;
     }
     // do not close the Statement or Connection here

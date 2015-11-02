@@ -73,7 +73,7 @@ public final class JobSubmitter {
                     LOG.log(Level.INFO, "Job Submitted: id: [" + id + "]");
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOG.log(Level.SEVERE, e.getMessage());
                     LOG.log(Level.WARNING, "Exception submitting job file: ["
                                            + jobFile + "]: Message: " + e.getMessage());
                 }

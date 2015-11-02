@@ -256,7 +256,7 @@ public final class MimeTypeUtils {
         try {
             return tika.detect(name);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return null;
         }
     }
@@ -275,7 +275,7 @@ public final class MimeTypeUtils {
             return tika.detect(f);
         } catch (Exception e) {
             System.err.println("\n\n\n");
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             System.err.println("\n\n\n");
             return null;
         }

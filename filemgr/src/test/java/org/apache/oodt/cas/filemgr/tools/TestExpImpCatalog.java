@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.filemgr.tools;
 
 //OODT imports
+
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -27,14 +28,18 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 
-//JDK imports
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
-//Junit imports
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import junit.framework.TestCase;
+
+//JDK imports
+//Junit imports
 
 /**
  * @author mattmann
@@ -45,7 +50,7 @@ import junit.framework.TestCase;
  * </p>.
  */
 public class TestExpImpCatalog extends TestCase {
-
+    private static Logger LOG = Logger.getLogger(TestExpImpCatalog.class.getName());
     private static final int FM_PORT = 50010;
 
     private XmlRpcFileManager fm;
@@ -70,7 +75,7 @@ public class TestExpImpCatalog extends TestCase {
             expImp.doExpImport();
             expImp.doExpImport();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -99,7 +104,7 @@ public class TestExpImpCatalog extends TestCase {
 
             assertEquals(1, countProds);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }        
     }
@@ -111,7 +116,7 @@ public class TestExpImpCatalog extends TestCase {
             expImp.doExpImport();
             expImp.doExpImport();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -141,7 +146,7 @@ public class TestExpImpCatalog extends TestCase {
 
             assertEquals(2, countProds);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -151,7 +156,7 @@ public class TestExpImpCatalog extends TestCase {
         try {
             expImp.doExpImport();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -168,7 +173,7 @@ public class TestExpImpCatalog extends TestCase {
             assertNotNull(prod.getProductReferences());
             assertEquals(1, prod.getProductReferences().size());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
     }
@@ -190,7 +195,7 @@ public class TestExpImpCatalog extends TestCase {
             expImp = new ExpImpCatalog(new URL("http://localhost:" + FM_PORT),
                     new URL("http://localhost:" + (FM_PORT + 1)), true);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
     }

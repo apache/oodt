@@ -18,19 +18,35 @@
 package org.apache.oodt.pcs.tools;
 
 //JDK imports
+
 import org.apache.oodt.cas.crawl.daemon.CrawlDaemonController;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.commons.date.DateUtils;
-import org.apache.oodt.pcs.health.*;
+import org.apache.oodt.pcs.health.CrawlInfo;
+import org.apache.oodt.pcs.health.CrawlPropertiesFile;
+import org.apache.oodt.pcs.health.CrawlerHealth;
+import org.apache.oodt.pcs.health.CrawlerStatus;
+import org.apache.oodt.pcs.health.JobHealthStatus;
+import org.apache.oodt.pcs.health.PCSDaemonStatus;
+import org.apache.oodt.pcs.health.PCSHealthMonitorMetKeys;
+import org.apache.oodt.pcs.health.PCSHealthMonitorReport;
+import org.apache.oodt.pcs.health.WorkflowStatesFile;
 import org.apache.oodt.pcs.util.FileManagerUtils;
 import org.apache.oodt.pcs.util.ResourceManagerUtils;
 import org.apache.oodt.pcs.util.WorkflowManagerUtils;
 import org.apache.xmlrpc.XmlRpcClient;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //APACHE imports
 //OODT imports
@@ -44,7 +60,7 @@ import java.util.*;
  */
 public final class PCSHealthMonitor implements CoreMetKeys,
     PCSHealthMonitorMetKeys {
-
+  private static Logger LOG = Logger.getLogger(PCSHealthMonitor.class.getName());
   private FileManagerUtils fm;
 
   private WorkflowManagerUtils wm;
@@ -203,7 +219,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
     try {
       mon.quickPrintMonitorToConsole();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
   }
 

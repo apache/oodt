@@ -35,7 +35,7 @@ import org.apache.oodt.commons.database.SqlScript;
 public class InMemoryIndex extends DataSourceIndex {
 
 	public InMemoryIndex(String user, String pass, String driver,
-			String jdbcUrl, boolean useUTF8, String tablesFile) throws SQLException, IOException {
+			String jdbcUrl, boolean useUTF8, String tablesFile) throws IOException {
 		super(user, pass, driver, jdbcUrl, useUTF8);
         SqlScript coreSchemaScript = new SqlScript(new File(tablesFile).getAbsolutePath(), this.dataSource);
         coreSchemaScript.loadScript();

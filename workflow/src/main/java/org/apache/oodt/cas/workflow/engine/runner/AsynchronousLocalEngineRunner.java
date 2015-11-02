@@ -91,7 +91,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
           taskProcessor.getWorkflowInstance().setState(state);
           persist(taskProcessor.getWorkflowInstance());
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           String msg = "Exception executing task: ["
               + workflowTask.getTaskName() + "]: Message: " + e.getMessage();
           LOG.log(Level.WARNING, msg);

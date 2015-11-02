@@ -174,7 +174,7 @@ public class TransferStatusTracker {
         try {
             refs = catalog.getProductReferences(p);
         } catch (CatalogException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Error retreiving references for product: ["
                     + p.getProductId()
                     + "] from catalog in transfer status tracker: Message: "

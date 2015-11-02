@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.curation.service;
 
 //JDK imports
+
 import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 import org.apache.oodt.cas.curation.util.CurationXmlStructFactory;
 import org.apache.oodt.cas.curation.util.ExtractorConfigReader;
@@ -62,6 +63,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -114,7 +117,7 @@ public class MetadataResource extends CurationService {
   public static final String UPDATE = "update";
   
   public static final String DELETE = "delete";
-  
+  private static Logger LOG = Logger.getLogger(MetadataResource.class.getName());
   // single instance of CAS catalog shared among all requests
   private Catalog catalog = null;
     
@@ -294,7 +297,7 @@ public class MetadataResource extends CurationService {
           productId);
       this.updateCatalogMetadata(prod, metadata);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return "<div class=\"error\">" + e.getMessage() + "</div>";
     }
 
@@ -574,7 +577,7 @@ public class MetadataResource extends CurationService {
           
     } catch (Exception e) {
     	
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       // return error message
       throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
 
@@ -657,7 +660,7 @@ public class MetadataResource extends CurationService {
 
 	  } catch (Exception e) {
 
-		  e.printStackTrace();
+		  LOG.log(Level.SEVERE, e.getMessage());
 		  // return error message
 		  throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
 
@@ -753,7 +756,7 @@ public class MetadataResource extends CurationService {
       xmlRepo.removeProductType(type);
       return true;
     } catch (RepositoryManagerException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return false;
     }
   }
@@ -781,7 +784,7 @@ public class MetadataResource extends CurationService {
       vLayer.addParentForProductType(type, parentId);
       return true;
     } catch (RepositoryManagerException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -800,7 +803,7 @@ public class MetadataResource extends CurationService {
       vLayer.removeParentForProductType(type);
       return true;
     } catch (RepositoryManagerException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -826,7 +829,7 @@ public class MetadataResource extends CurationService {
       }
       return true;
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -848,7 +851,7 @@ public class MetadataResource extends CurationService {
       }
       return JSONSerializer.toJSON(elementIds).toString();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return null;
   }
@@ -870,7 +873,7 @@ public class MetadataResource extends CurationService {
       this.removeUnusedElements(elementList, xmlRepo, vLayer);
       return true;
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -897,7 +900,7 @@ public class MetadataResource extends CurationService {
       this.removeUnusedElements(elements, xmlRepo, vLayer);
       return true;
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -920,7 +923,7 @@ public class MetadataResource extends CurationService {
     		  }
     	  }
       } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
       }
       return JSONSerializer.toJSON(typeids).toString();
   }
@@ -956,7 +959,7 @@ public class MetadataResource extends CurationService {
 		try {
 			xmlRepo = new XMLRepositoryManager(Collections.singletonList(url));
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 
 		return xmlRepo;
@@ -969,7 +972,7 @@ public class MetadataResource extends CurationService {
 		try {
 			vLayer = new XMLValidationLayer(Collections.singletonList(url));
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 		return vLayer;
 	}

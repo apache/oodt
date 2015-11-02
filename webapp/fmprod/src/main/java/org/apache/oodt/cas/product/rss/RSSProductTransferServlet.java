@@ -157,7 +157,7 @@ public class RSSProductTransferServlet extends HttpServlet {
         try {
             currentTransfers = fClient.getCurrentFileTransfers();
         } catch (DataTransferException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting current transfers from file manager: Message: "
                             + e.getMessage());

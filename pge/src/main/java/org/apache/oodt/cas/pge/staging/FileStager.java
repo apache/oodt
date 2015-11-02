@@ -16,9 +16,6 @@
  */
 package org.apache.oodt.cas.pge.staging;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-
 import org.apache.commons.lang.Validate;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
@@ -29,6 +26,9 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.pge.config.FileStagingInfo;
 import org.apache.oodt.cas.pge.exceptions.PGEException;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 
 import java.io.File;
 import java.io.IOException;
@@ -123,5 +123,5 @@ public abstract class FileStager {
 
    protected abstract void stageFile(URI stageFile, File destDir,
          PgeMetadata pgeMetadata, Logger logger)
-       throws PGEException, IOException, DataTransferException, InstantiationException;
+       throws IOException, DataTransferException, InstantiationException;
 }

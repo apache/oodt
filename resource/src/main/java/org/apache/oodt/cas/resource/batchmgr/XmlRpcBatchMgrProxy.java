@@ -92,10 +92,10 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
         try {
             result = (Boolean) client.execute("batchstub.killJob", argList);
         } catch (XmlRpcException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             result = false;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             result = false;
         }
 

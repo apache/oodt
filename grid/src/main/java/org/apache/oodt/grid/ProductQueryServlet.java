@@ -17,13 +17,6 @@
 
 package org.apache.oodt.grid;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.oodt.product.HttpRedirectException;
 import org.apache.oodt.product.LargeProductQueryHandler;
 import org.apache.oodt.product.ProductException;
@@ -32,6 +25,13 @@ import org.apache.oodt.product.Retriever;
 import org.apache.oodt.xmlquery.LargeResult;
 import org.apache.oodt.xmlquery.Result;
 import org.apache.oodt.xmlquery.XMLQuery;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -212,7 +212,7 @@ public class ProductQueryServlet extends QueryServlet {
 		}
 
 		/** {@inheritDoc} */
-		public void close(String id) throws ProductException {
+		public void close(String id) {
 			handler.close(id);
 		}
 

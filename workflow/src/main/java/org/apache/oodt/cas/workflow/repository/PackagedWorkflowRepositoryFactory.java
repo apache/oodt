@@ -62,7 +62,7 @@ public class PackagedWorkflowRepositoryFactory implements
       return new PackagedWorkflowRepository(
           Arrays.asList(new File(this.wDirPath).listFiles()));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(
           Level.SEVERE,
           "Unable to create packaged workflow repository! Reason: "

@@ -19,21 +19,26 @@
 package org.apache.oodt.cas.pge.writers.xslt;
 
 //JDK imports
-import java.io.File;
-import java.io.IOException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.dom.DOMSource;
 
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+//OODT imports
 
 /**
  * 
@@ -46,7 +51,7 @@ import org.apache.oodt.cas.pge.writers.SciPgeConfigFileWriter;
  * </p>.
  */
 public class XslTransformWriter implements SciPgeConfigFileWriter {
-
+  private static Logger LOG = Logger.getLogger(XslTransformWriter.class.getName());
     public File createConfigFile(String sciPgeConfigFilePath,
             Metadata inputMetadata, Object... customArgs) throws IOException {
         try {
@@ -70,7 +75,7 @@ public class XslTransformWriter implements SciPgeConfigFileWriter {
 
             return sciPgeConfigFile;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new IOException("Failed to create science PGE config file '"
                     + sciPgeConfigFilePath + "' : " + e.getMessage());
         }

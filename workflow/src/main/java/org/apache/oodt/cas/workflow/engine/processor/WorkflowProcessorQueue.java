@@ -75,7 +75,7 @@ public class WorkflowProcessorQueue {
     try {
       page = repo.getPagedWorkflows(1);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unable to load workflow processors: Message: "
           + e.getMessage());
       return null;
@@ -90,7 +90,7 @@ public class WorkflowProcessorQueue {
         try {
           processor = fromWorkflowInstance(inst);
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           LOG.log(Level.WARNING,
               "Unable to convert workflow instance: [" + inst.getId()
                   + "] into WorkflowProcessor: Message: " + e.getMessage());
@@ -117,7 +117,7 @@ public class WorkflowProcessorQueue {
         repo.updateWorkflowInstance(inst);
       }
     } catch (InstanceRepositoryException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Unable to update workflow instance: [" + inst.getId()
               + "] with status: [" + inst.getState().getName() + "]: Message: "
@@ -362,7 +362,7 @@ public class WorkflowProcessorQueue {
         modelRepo.addTask(task);
       }
       catch(RepositoryException e){
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
       }
     }
   }
@@ -372,7 +372,7 @@ public class WorkflowProcessorQueue {
       try {
         modelRepo.addWorkflow(workflow);
       } catch (RepositoryException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
       }
     }
   }
@@ -445,7 +445,7 @@ public class WorkflowProcessorQueue {
         }
       }
       catch(RepositoryException e){
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
       }
     
     return null;

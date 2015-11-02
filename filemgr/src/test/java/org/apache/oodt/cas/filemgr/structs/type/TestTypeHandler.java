@@ -17,9 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.structs.type;
 
-import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
-import org.apache.oodt.commons.database.SqlScript;
-import org.apache.oodt.commons.pagination.PaginationUtils;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.catalog.DataSourceCatalog;
 import org.apache.oodt.cas.filemgr.catalog.DataSourceCatalogFactory;
@@ -38,6 +35,11 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.commons.database.DatabaseConnectionBuilder;
+import org.apache.oodt.commons.database.SqlScript;
+import org.apache.oodt.commons.pagination.PaginationUtils;
+import org.apache.xmlrpc.XmlRpcException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -53,12 +55,15 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.sql.DataSource;
-import org.apache.xmlrpc.XmlRpcException;
+
 import junit.framework.TestCase;
 
 public class TestTypeHandler extends TestCase {
-    
+
+    private static Logger LOG = Logger.getLogger(TestTypeHandler.class.getName());
+
     String tmpDirPath;
     
     DataSource publicDataSource;
@@ -156,7 +161,7 @@ public class TestTypeHandler extends TestCase {
             testProduct.setProductType(fmClient.getProductTypeByName("GenericFile"));
             testProduct.setProductId(fmClient.ingestProduct(testProduct, met, false));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -188,7 +193,7 @@ public class TestTypeHandler extends TestCase {
             testProduct.setProductType(genericFile = fmClient.getProductTypeByName("GenericFile"));
             testProduct.setProductId(fmClient.ingestProduct(testProduct, met, false));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
         
@@ -290,7 +295,7 @@ public class TestTypeHandler extends TestCase {
             coreSchemaScript.loadScript();
             coreSchemaScript.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -332,8 +337,6 @@ public class TestTypeHandler extends TestCase {
             super(ds, valLayer, fieldId, pageSize, cacheUpdateMin);
         }
 
-        private final Logger LOG = Logger
-                .getLogger(HsqlDbFriendlyDataSourceCatalog.class.getName());
 
         /*
          * (non-Javadoc)
@@ -631,7 +634,7 @@ public class TestTypeHandler extends TestCase {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING, "Exception performing query. Message: "
                         + e.getMessage());
                 try {
@@ -831,7 +834,7 @@ public class TestTypeHandler extends TestCase {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING,
                         "Exception performing get num results. Message: "
                                 + e.getMessage());

@@ -124,7 +124,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception adding product type. Message: "
                     + e.getMessage());
             try {
@@ -201,7 +201,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception modifying product type. Message: "
                             + e.getMessage());
@@ -268,7 +268,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception removing product type. Message: "
                     + e.getMessage());
             try {
@@ -331,7 +331,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting product type. Message: "
                     + e.getMessage());
             try {
@@ -404,7 +404,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting product type. Message: "
                     + e.getMessage());
             try {
@@ -481,7 +481,7 @@ public class DataSourceRepositoryManager implements RepositoryManager {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting product types. Message: "
                     + e.getMessage());
             try {

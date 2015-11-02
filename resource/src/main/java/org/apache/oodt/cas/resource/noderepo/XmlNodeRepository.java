@@ -88,7 +88,7 @@ public class XmlNodeRepository implements NodeRepository {
 						  .getDocumentRoot(new FileInputStream(
 							  nodesFile));
 					} catch (FileNotFoundException e) {
-					  e.printStackTrace();
+					  LOG.log(Level.SEVERE, e.getMessage());
 					  return null;
 					}
 

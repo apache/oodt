@@ -113,7 +113,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             try {
               addMetadataValue(metadataId, product, value);
             } catch (Exception e) {
-              e.printStackTrace();
+              LOG.log(Level.SEVERE, e.getMessage());
               LOG
                   .log(
                       Level.WARNING,
@@ -146,7 +146,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             }
             
         } catch (ValidationLayerException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
@@ -190,7 +190,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
                 try {
                   removeMetadataValue(metadataId, product, value);
                 } catch (Exception e) {
-                  e.printStackTrace();
+                  LOG.log(Level.SEVERE, e.getMessage());
                   LOG
                       .log(
                           Level.WARNING,
@@ -233,7 +233,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             m = populateProductMetadata(rs, product);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting metadata. Message: "
                     + e.getMessage());
             throw new CatalogException(e.getMessage(), e);
@@ -281,7 +281,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
       	try {
             elements = getValidationLayer().getElements(product.getProductType());
         } catch (ValidationLayerException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
@@ -368,7 +368,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting metadata. Message: "
                     + e.getMessage());
             throw new CatalogException(e.getMessage(), e);
@@ -450,7 +450,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception adding metadata value. Message: "
                     + e.getMessage());
             try {
@@ -517,7 +517,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             statement.execute(metRemoveSql);
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception removing metadata value. Message: "
                             + e.getMessage());
@@ -713,7 +713,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception performing get num results. Message: "
                             + e.getMessage());

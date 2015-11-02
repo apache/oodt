@@ -35,6 +35,8 @@ import java.io.FileInputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -43,7 +45,7 @@ import java.util.LinkedList;
  * @author bfoster (Brian Foster)
  */
 public class RemoteSpecs implements ConfigParserMetKeys {
-
+  private static Logger LOG = Logger.getLogger(RemoteSpecs.class.getName());
   LinkedList<Parser> parsers;
 
   LinkedList<RenamingConvention> renamingConvs;
@@ -282,7 +284,7 @@ public class RemoteSpecs implements ConfigParserMetKeys {
             period, epsilon, runOnReboot, pfi, dfi));
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new ConfigException("Failed to load crawl elements : "
                                 + e.getMessage());
     }

@@ -137,7 +137,7 @@ public interface ProfileManager extends ProfileHandler {
 	 * @return The number of available profiles.
 	 * @throws ProfileException If any error occurs.
 	 */
-	int size() throws ProfileException;
+	int size();
 
 	/**
 	 * Replace a profile into the set of profiles managed by this profile server.

@@ -17,7 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
-//OODT imports
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -147,7 +146,7 @@ public class DataSourceCatalog implements Catalog {
             metadataTypes = validationLayer.getElements(product
                     .getProductType());
         } catch (ValidationLayerException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
@@ -169,7 +168,7 @@ public class DataSourceCatalog implements Catalog {
           try {
             addMetadataValue(element, product, value);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG
                 .log(
                     Level.WARNING,
@@ -202,7 +201,7 @@ public class DataSourceCatalog implements Catalog {
             metadataTypes = validationLayer.getElements(product
                     .getProductType());
         } catch (ValidationLayerException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
@@ -217,7 +216,7 @@ public class DataSourceCatalog implements Catalog {
             try {
               removeMetadataValue(element, product, value);
             } catch (Exception e) {
-              e.printStackTrace();
+              LOG.log(Level.SEVERE, e.getMessage());
               LOG
                   .log(
                       Level.WARNING,
@@ -321,7 +320,7 @@ public class DataSourceCatalog implements Catalog {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception adding product. Message: "
                     + e.getMessage());
             try {
@@ -467,7 +466,7 @@ public class DataSourceCatalog implements Catalog {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception removing product. Message: "
                     + e.getMessage());
             try {
@@ -526,7 +525,7 @@ public class DataSourceCatalog implements Catalog {
             statement.execute(modifyProductSql);
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception setting transfer status for product. Message: "
                             + e.getMessage());
@@ -605,7 +604,7 @@ public class DataSourceCatalog implements Catalog {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception adding product references. Message: "
                             + e.getMessage());
@@ -668,7 +667,7 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting product. Message: "
                     + e.getMessage());
             try {
@@ -741,7 +740,7 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting product. Message: "
                     + e.getMessage());
             try {
@@ -820,7 +819,7 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting product type. Message: "
                     + e.getMessage());
             try {
@@ -897,7 +896,7 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting products. Message: "
                     + e.getMessage());
             try {
@@ -981,7 +980,7 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting products. Message: "
                     + e.getMessage());
             try {
@@ -1052,7 +1051,7 @@ public class DataSourceCatalog implements Catalog {
             try {
                 elements = validationLayer.getElements(product.getProductType());
             } catch (ValidationLayerException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new CatalogException(
                         "ValidationLayerException when trying to obtain element list for product type: "
                                 + product.getProductType().getName()
@@ -1073,7 +1072,7 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting metadata. Message: "
                     + e.getMessage());
             throw new CatalogException(e.getMessage(), e);
@@ -1145,7 +1144,7 @@ public class DataSourceCatalog implements Catalog {
             try {
                 elements = validationLayer.getElements(product.getProductType());
             } catch (ValidationLayerException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new CatalogException(
                         "ValidationLayerException when trying to obtain element list for product type: "
                                 + product.getProductType().getName()
@@ -1166,7 +1165,7 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting metadata. Message: "
                     + e.getMessage());
             throw new CatalogException(e.getMessage(), e);
@@ -1270,7 +1269,7 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting top N products. Message: "
                             + e.getMessage());
@@ -1361,7 +1360,7 @@ public class DataSourceCatalog implements Catalog {
             statement.execute(metaIngestSql);
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception adding metadata value. Message: "
                     + e.getMessage());
             try {
@@ -1424,7 +1423,7 @@ public class DataSourceCatalog implements Catalog {
             statement.execute(metRemoveSql.toString());
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception removing metadata value. Message: "
                             + e.getMessage());
@@ -1493,7 +1492,7 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting num products. Message: "
                     + e.getMessage());
             try {
@@ -1813,7 +1812,7 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception performing get num results. Message: "
                             + e.getMessage());
@@ -2034,7 +2033,7 @@ public class DataSourceCatalog implements Catalog {
             return productIds;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception performing query. Message: "
                     + e.getMessage());
             try {
@@ -2184,7 +2183,7 @@ public class DataSourceCatalog implements Catalog {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception updating product references. Message: "
                             + e.getMessage());

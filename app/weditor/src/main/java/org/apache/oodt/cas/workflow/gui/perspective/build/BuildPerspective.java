@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.workflow.gui.perspective.build;
 
 //JDK imports
+
 import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
 import org.apache.oodt.cas.workflow.gui.perspective.MultiStatePerspective;
 import org.apache.oodt.cas.workflow.gui.perspective.view.MultiStateView;
@@ -42,6 +43,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -77,7 +80,7 @@ public class BuildPerspective extends MultiStatePerspective {
   private ViewState activeState;
 
   public static final int MAIN_VIEW = 1;
-
+  private static Logger LOG = Logger.getLogger(BuildPerspective.class.getName());
   private static final int WIDTH = 1000;
   private static final int HEIGHT = 700;
 
@@ -85,8 +88,7 @@ public class BuildPerspective extends MultiStatePerspective {
 
   private boolean findSelectedInTab = false;
 
-  public BuildPerspective() throws InstantiationException,
-      IllegalAccessException {
+  public BuildPerspective() {
     this(TreeProjectView.class, GraphView.class, DefaultTreeView.class,
         DefaultPropView.class, GlobalConfigView.class);
   }
@@ -221,7 +223,7 @@ public class BuildPerspective extends MultiStatePerspective {
     try {
       return this.mainViewClass.getConstructor(String.class).newInstance(name);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -231,7 +233,7 @@ public class BuildPerspective extends MultiStatePerspective {
       return this.treeViewClass.getConstructor(String.class).newInstance(
           this.treeViewClass.getSimpleName());
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -241,7 +243,7 @@ public class BuildPerspective extends MultiStatePerspective {
       return this.globalViewClass.getConstructor(String.class).newInstance(
           this.globalViewClass.getSimpleName());
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -253,7 +255,7 @@ public class BuildPerspective extends MultiStatePerspective {
       view.registerListener(this);
       return view;
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -263,7 +265,7 @@ public class BuildPerspective extends MultiStatePerspective {
       return this.propViewClass.getConstructor(String.class).newInstance(
           this.propViewClass.getSimpleName());
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }

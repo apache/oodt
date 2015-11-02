@@ -115,8 +115,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
      * @throws SecurityException
      */
     public Daemon(int rmiRegPort, int daemonID, Config config,
-                  DaemonInfo daemonInfo, SiteInfo siteInfo) throws RemoteException,
-        InstantiationException {
+                  DaemonInfo daemonInfo, SiteInfo siteInfo) throws RemoteException {
         super();
 
         this.rmiRegPort = rmiRegPort;
@@ -155,15 +154,14 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
         return "Daemon" + this.getDaemonID();
     }
 
-    private void registerRMIServer() throws RemoteException,
-        MalformedURLException, NotBoundException, AlreadyBoundException {
+    private void registerRMIServer() throws RemoteException {
         try {
             Naming.bind("//localhost:" + this.rmiRegPort + "/daemon"
                         + this.getDaemonID(), this);
             LOG.log(Level.INFO, "Created Daemon ID = " + this.getDaemonID()
                                 + " on RMI registry port " + this.rmiRegPort);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new RemoteException("Failed to bind Daemon with ID = "
                                       + this.getDaemonID() + " to RMI registry at port "
                                       + this.rmiRegPort);
@@ -214,7 +212,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
                         rs.retrieveFiles(daemonInfo.getPropFilesInfo(),
                             daemonInfo.getDataFilesInfo());
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.log(Level.SEVERE, e.getMessage());
                     } finally {
                         numberOfCrawls++;
                     }
@@ -250,7 +248,7 @@ public class Daemon extends UnicastRemoteObject implements DaemonRmiInterface,
             UnicastRemoteObject.unexportObject(this, true);
             this.daemonListener.wasUnregisteredWith(this);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
     }
 

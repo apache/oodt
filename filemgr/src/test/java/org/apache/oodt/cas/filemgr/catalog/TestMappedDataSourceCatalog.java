@@ -21,6 +21,8 @@ package org.apache.oodt.cas.filemgr.catalog;
 import java.io.File;
 import java.net.URL;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -33,6 +35,7 @@ import java.util.Properties;
  */
 public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
 
+    private static Logger LOG = Logger.getLogger(TestDataSourceCatalog.class.getName());
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -54,7 +57,7 @@ public class TestMappedDataSourceCatalog extends TestDataSourceCatalog {
         try {
             return new MappedDataSourceCatalogFactory().createCatalog();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return null;
         }
     }

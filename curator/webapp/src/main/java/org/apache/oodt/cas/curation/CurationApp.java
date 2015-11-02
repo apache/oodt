@@ -68,7 +68,7 @@ public class CurationApp extends WebApplication {
     try {
       return (Class<? extends Page>) Class.forName(getHomePageClass());
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return HomePage.class;
     }
   }

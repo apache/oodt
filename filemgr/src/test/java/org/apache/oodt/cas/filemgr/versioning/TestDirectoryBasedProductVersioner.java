@@ -18,18 +18,22 @@
 package org.apache.oodt.cas.filemgr.versioning;
 
 //JDK imports
-import java.io.File;
 
-import java.net.URL;
-import java.util.Properties;
-//OODT imports
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.metadata.Metadata;
 
-//Junit imports
+import java.io.File;
+import java.net.URL;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import junit.framework.TestCase;
+
+//OODT imports
+//Junit imports
 
 /**
  * 
@@ -41,6 +45,7 @@ import junit.framework.TestCase;
  */
 public class TestDirectoryBasedProductVersioner extends TestCase {
 
+  private static Logger LOG = Logger.getLogger(TestDirectoryBasedProductVersioner.class.getName());
   private Properties initialProperties = new Properties(System.getProperties());
 
   public void setUp() throws Exception {
@@ -69,7 +74,7 @@ public class TestDirectoryBasedProductVersioner extends TestCase {
     try {
       versioner.createDataStoreReferences(p, met);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 

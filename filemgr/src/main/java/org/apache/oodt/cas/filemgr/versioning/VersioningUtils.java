@@ -92,7 +92,7 @@ public final class VersioningUtils {
                     r.setFileSize(dir.length());
                     references.add(r);
                 } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    LOG.log(Level.SEVERE, e.getMessage());
                     LOG.log(Level.WARNING,
                             "MalformedURLException when generating reference for dir: "
                                     + dir);
@@ -109,7 +109,7 @@ public final class VersioningUtils {
                     r.setFileSize(file.length());
                     references.add(r);
                 } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    LOG.log(Level.SEVERE, e.getMessage());
                     LOG.log(Level.WARNING,
                         "MalformedURLException when generating reference for file: "
                         + file);

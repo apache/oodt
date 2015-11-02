@@ -53,7 +53,7 @@ public class SerializedCatalogRepository implements CatalogRepository {
 			new File(this.storageDir + "/catalogs").mkdirs();
 			new File(this.storageDir + "/classloaders").mkdirs();
 		}catch(Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		  	LOG.log(Level.SEVERE, e.getMessage());
 			throw new InstantiationException("Failed to instantiate SerializedCatalogRepository : " + e.getMessage());
 		}

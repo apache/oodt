@@ -18,10 +18,13 @@
 package org.apache.oodt.xmlps.mapping;
 
 //APACHE imports
+
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlps.structs.CDEValue;
 
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
@@ -29,7 +32,7 @@ import junit.framework.TestCase;
  * Test suite for XMLPS xml map file reader.
  */
 public class TestMappingReader extends TestCase {
-
+    private static Logger LOG = Logger.getLogger(TestMappingReader.class.getName());
     private static final String expectedName = "Test Query Handler";
 
     private static final String expectedId = "urn:oodt:xmlps:testps";
@@ -152,7 +155,7 @@ public class TestMappingReader extends TestCase {
         try {
             mapping = MappingReader.getMapping(configFileIs);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 

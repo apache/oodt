@@ -18,13 +18,17 @@
 package org.apache.oodt.cas.workflow.structs;
 
 //JDK imports
-import java.text.ParseException;
-import java.util.Date;
 
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.commons.util.DateConvert;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * A WorkflowInstance is an instantiation of the abstract description of a
@@ -57,7 +61,7 @@ import org.apache.oodt.commons.util.DateConvert;
  * 
  */
 public class WorkflowInstance {
-
+  private static Logger LOG = Logger.getLogger(WorkflowInstance.class.getName());
   private ParentChildWorkflow workflow;
 
   private String id;
@@ -308,7 +312,7 @@ public class WorkflowInstance {
       try {
         this.endDate = DateConvert.isoParse(endDateTimeIsoStr);
       } catch (ParseException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         // fail silently besides this: it's just a setter
       }
     }
@@ -333,7 +337,7 @@ public class WorkflowInstance {
       try {
         this.startDate = DateConvert.isoParse(startDateTimeIsoStr);
       } catch (ParseException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         // fail silently besides this: it's just a setter
       }
     }
@@ -364,7 +368,7 @@ public class WorkflowInstance {
         this.getTaskById(currentTaskId).
           setEndDate(DateConvert.isoParse(currentTaskEndDateTimeIsoStr));
       } catch (ParseException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         // fail silently besides this: it's just a setter
       }
     }
@@ -394,7 +398,7 @@ public class WorkflowInstance {
         this.getTaskById(currentTaskId).setStartDate(DateConvert
             .isoParse(currentTaskStartDateTimeIsoStr));
       } catch (ParseException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         // fail silently besides this: it's just a setter
       }
     }

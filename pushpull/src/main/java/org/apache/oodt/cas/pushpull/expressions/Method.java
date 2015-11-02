@@ -19,11 +19,15 @@
 package org.apache.oodt.cas.pushpull.expressions;
 
 //OODT imports
+
 import org.apache.oodt.cas.pushpull.exceptions.MethodException;
 
-//JDK imports
 import java.util.LinkedList;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
 
 /**
  * 
@@ -36,6 +40,7 @@ import java.util.Stack;
  */
 public class Method {
 
+    private static Logger LOG = Logger.getLogger(Method.class.getName());
     private String name;
 
     private String infix;
@@ -126,7 +131,7 @@ public class Method {
                             output.addLast(GlobalVariables.hashMap.get(variable
                                     .toString()));
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            LOG.log(Level.SEVERE, e.getMessage());
                         }
                     } else {
                         i--;

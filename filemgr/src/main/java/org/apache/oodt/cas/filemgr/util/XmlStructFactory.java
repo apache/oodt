@@ -192,7 +192,7 @@ public final class XmlStructFactory {
                         typeHandler.setElementName(elementName);
                         handlers.add(typeHandler);
                     }catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.log(Level.SEVERE, e.getMessage());
                         LOG.log(Level.WARNING, "Failed to load handler for ProductType [name = " + name 
                                 + "] and element [name = " + elementName + "] : " + e.getMessage());
                     }

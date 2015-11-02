@@ -90,7 +90,7 @@ public class XmlQueueRepository implements QueueRepository {
 						.getDocumentRoot(new FileInputStream(
 							nodesFile));
 				  } catch (FileNotFoundException e) {
-					e.printStackTrace();
+					LOG.log(Level.SEVERE, e.getMessage());
 					return null;
 				  }
 
@@ -133,7 +133,7 @@ public class XmlQueueRepository implements QueueRepository {
 				}
 			  }
 			} catch (URISyntaxException e) {
-			  e.printStackTrace();
+			  LOG.log(Level.SEVERE, e.getMessage());
 			  LOG
 				  .log(
 					  Level.WARNING,

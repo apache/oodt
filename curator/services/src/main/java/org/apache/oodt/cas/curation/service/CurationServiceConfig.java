@@ -58,7 +58,6 @@ import javax.servlet.ServletContext;
  */
 public class CurationServiceConfig implements CuratorConfMetKeys {
   private static CurationServiceConfig instance;
-
   private final Map<String, String> parameters = new HashMap<String, String>();
 
   private XmlRpcFileManagerClient fmClient = null;
@@ -129,7 +128,7 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
     try {
       return new XmlRpcFileManagerClient(new URL(this.getFileMgrURL()));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -193,7 +192,7 @@ public class CurationServiceConfig implements CuratorConfMetKeys {
     try {
       fmClient = new XmlRpcFileManagerClient(new URL(this.getFileMgrURL()));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unable to build CurationServiceConfig: Message: " + e.getMessage());
     }
   }

@@ -261,7 +261,7 @@ public class RemoteDataTransferer implements DataTransfer {
       try {
          client.transferringProduct(p);
       } catch (DataTransferException e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
          LOG.log(Level.WARNING,
                "Error notifying file manager of product transfer initiation for product: ["
                      + p.getProductId() + "]: Message: " + e.getMessage());
@@ -272,7 +272,7 @@ public class RemoteDataTransferer implements DataTransfer {
       try {
          client.removeProductTransferStatus(p);
       } catch (DataTransferException e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
          LOG.log(Level.WARNING,
                "Error notifying file manager of product transfer completion for product: ["
                      + p.getProductId() + "]: Message: " + e.getMessage());

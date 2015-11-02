@@ -170,13 +170,12 @@ public final class PGEConfigFileWriter implements PGEConfigFileKeys,
       return document;
 
     } catch (ParserConfigurationException pce) {
-      pce.printStackTrace();
       LOG.log(Level.WARNING, "Error generating pge configuration file!: "
           + pce.getMessage());
       throw new Exception("Error generating pge configuration file!: "
           + pce.getMessage());
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw e;
     }
 

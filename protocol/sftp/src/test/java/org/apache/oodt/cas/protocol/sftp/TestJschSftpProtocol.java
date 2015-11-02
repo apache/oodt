@@ -17,26 +17,14 @@
 package org.apache.oodt.cas.protocol.sftp;
 
 //JUnit imports
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 
-//JAVAX imports
-import javax.xml.parsers.ParserConfigurationException;
-
-//OODT imports
 import org.apache.commons.io.FileUtils;
 import org.apache.mina.util.AvailablePortFinder;
 import org.apache.oodt.cas.protocol.ProtocolFile;
 import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
 import org.apache.oodt.cas.protocol.sftp.auth.HostKeyAuthentication;
 import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.xml.sax.SAXException;
 
-//SshTools imports
 import com.sshtools.daemon.SshDaemon;
 import com.sshtools.daemon.configuration.PlatformConfiguration;
 import com.sshtools.daemon.configuration.ServerConfiguration;
@@ -44,12 +32,35 @@ import com.sshtools.daemon.configuration.XmlServerConfigurationContext;
 import com.sshtools.j2ssh.configuration.ConfigurationException;
 import com.sshtools.j2ssh.configuration.ConfigurationLoader;
 
-//JUnit imports
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.xml.sax.SAXException;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import junit.framework.TestCase;
-import org.mockito.*;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+
+//JAVAX imports
+//OODT imports
+//SshTools imports
+//JUnit imports
 
 /**
  * Test class for {@link JschSftpProtocol}.
@@ -82,7 +93,7 @@ public class TestJschSftpProtocol extends TestCase {
 				try {
 					SshDaemon.start();
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOG.log(Level.SEVERE, e.getMessage());
 				}
 			}
     	
@@ -184,7 +195,7 @@ public class TestJschSftpProtocol extends TestCase {
             }
 		  return build.toString();
         }catch(IOException ioe){
-            ioe.printStackTrace();
+            LOG.log(Level.SEVERE, ioe.getMessage());
         }finally{
             try{
                 buffReader.close();

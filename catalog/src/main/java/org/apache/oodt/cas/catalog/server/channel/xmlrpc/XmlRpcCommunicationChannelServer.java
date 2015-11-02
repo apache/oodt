@@ -138,7 +138,7 @@ public class XmlRpcCommunicationChannelServer extends
 	}
 	
     public boolean xmlrpc_transferFile(String filePath, byte[] fileData, int offset, int numBytes)
-		throws CatalogServiceException, IOException {
+		throws IOException {
         FileOutputStream fOut = null;
         try {
             File outFile = new File(filePath);

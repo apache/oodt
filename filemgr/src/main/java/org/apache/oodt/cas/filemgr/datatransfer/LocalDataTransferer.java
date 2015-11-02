@@ -85,7 +85,7 @@ public class LocalDataTransferer implements DataTransfer {
          LOG.log(Level.INFO, "Local Data Transfer to: ["
                + client.getFileManagerUrl().toString() + "] enabled");
       } catch (ConnectionException e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
       }
    }
 
@@ -197,7 +197,7 @@ public class LocalDataTransferer implements DataTransfer {
                .create(System
                      .getProperty("org.apache.oodt.cas.filemgr.mime.type.repository"));
       } catch (MimeTypeException e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
          throw new IOException(e.getMessage());
       }
 
@@ -407,7 +407,7 @@ public class LocalDataTransferer implements DataTransfer {
       try {
          client.transferringProduct(p);
       } catch (DataTransferException e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
          LOG.log(Level.WARNING,
                "Error notifying file manager of product transfer initiation for product: ["
                      + p.getProductId() + "]: Message: " + e.getMessage());
@@ -424,7 +424,7 @@ public class LocalDataTransferer implements DataTransfer {
       try {
          client.removeProductTransferStatus(p);
       } catch (DataTransferException e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
          LOG.log(Level.WARNING,
                "Error notifying file manager of product transfer completion for product: ["
                      + p.getProductId() + "]: Message: " + e.getMessage());

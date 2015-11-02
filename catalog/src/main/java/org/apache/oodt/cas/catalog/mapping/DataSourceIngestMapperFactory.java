@@ -19,6 +19,9 @@ package org.apache.oodt.cas.catalog.mapping;
 //Spring imports
 import org.springframework.beans.factory.annotation.Required;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * @author bfoster
  * @version $Revision$
@@ -29,7 +32,9 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class DataSourceIngestMapperFactory implements IngestMapperFactory {
 
-    protected String jdbcUrl;
+  private static Logger LOG = Logger.getLogger(DataSourceIngestMapperFactory.class.getName());
+
+  protected String jdbcUrl;
     protected String user;
     protected String pass;
     protected String driver;
@@ -77,7 +82,7 @@ public class DataSourceIngestMapperFactory implements IngestMapperFactory {
 			return new DataSourceIngestMapper(user, pass,
 	                driver, jdbcUrl);
 		}catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			return null;
 		}
 	}

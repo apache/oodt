@@ -17,7 +17,6 @@
 package org.apache.oodt.cas.catalog.system;
 
 //OODT imports
-import org.apache.oodt.cas.catalog.exception.CatalogDictionaryException;
 import org.apache.oodt.cas.catalog.exception.CatalogException;
 import org.apache.oodt.cas.catalog.exception.CatalogIndexException;
 import org.apache.oodt.cas.catalog.page.CatalogReceipt;
@@ -25,15 +24,25 @@ import org.apache.oodt.cas.catalog.page.IndexPager;
 import org.apache.oodt.cas.catalog.page.IngestReceipt;
 import org.apache.oodt.cas.catalog.query.QueryExpression;
 import org.apache.oodt.cas.catalog.struct.Dictionary;
-import org.apache.oodt.cas.catalog.struct.*;
+import org.apache.oodt.cas.catalog.struct.Index;
+import org.apache.oodt.cas.catalog.struct.IngestService;
+import org.apache.oodt.cas.catalog.struct.QueryService;
+import org.apache.oodt.cas.catalog.struct.TransactionId;
+import org.apache.oodt.cas.catalog.struct.TransactionIdFactory;
 import org.apache.oodt.cas.catalog.term.Term;
 import org.apache.oodt.cas.catalog.term.TermBucket;
 import org.apache.oodt.cas.metadata.Metadata;
 
-//JDK imports
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+//JDK imports
 
 
 /**
@@ -69,7 +78,7 @@ public class Catalog {
 		return this.id;
 	}
 
-	public TransactionIdFactory getTransactionIdFactory() throws CatalogIndexException {
+	public TransactionIdFactory getTransactionIdFactory() {
 		return this.index.getTransactionIdFactory();
 	}
 	
@@ -108,7 +117,7 @@ public class Catalog {
 		return this.index instanceof IngestService && !this.restrictIngestPermissions;
 	}
 	
-	public List<TransactionId<?>> getPage(IndexPager indexPage) throws CatalogIndexException {
+	public List<TransactionId<?>> getPage(IndexPager indexPage) {
 		return this.index.getPage(indexPage);
 	}
 	
@@ -324,7 +333,7 @@ public class Catalog {
 		}
 	}
 	
-	protected Metadata getMetadataFromBuckets(List<TermBucket> termBuckets) throws CatalogDictionaryException {
+	protected Metadata getMetadataFromBuckets(List<TermBucket> termBuckets) {
 		Metadata metadata = new Metadata();
 		for (TermBucket termBucket : termBuckets) {
 			if (this.dictionaries != null) {
@@ -348,7 +357,7 @@ public class Catalog {
 		return m;
 	}
     
-	protected List<TermBucket> getTermBuckets(Metadata metadata) throws CatalogDictionaryException {
+	protected List<TermBucket> getTermBuckets(Metadata metadata) {
 		List<TermBucket> termBuckets = new Vector<TermBucket>();
 		if (this.dictionaries != null) {
 			for (Dictionary dictionary : this.dictionaries) {

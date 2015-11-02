@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * @author bfoster (Brian Foster)
  */
 public final class ExecUtils {
-
+   private static Logger LOG = Logger.getLogger(ExecUtils.class.getName());
    private ExecUtils() throws InstantiationException {
       throw new InstantiationException("Don't construct utility classes!");
    }
@@ -105,7 +105,7 @@ public final class ExecUtils {
          returnVal = progProcess.waitFor();
          return returnVal;
       } catch (Exception e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
          throw new IOException("Failed to run '" + commandLine
                + "' -- return val = " + returnVal + " : " + e.getMessage());
       } finally {

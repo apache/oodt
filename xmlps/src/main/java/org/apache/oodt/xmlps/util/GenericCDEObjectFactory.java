@@ -18,11 +18,12 @@
 package org.apache.oodt.xmlps.util;
 
 //JDK imports
+import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 
 /**
  * 
@@ -48,17 +49,17 @@ public final class GenericCDEObjectFactory {
             func = (MappingFunc) funcClazz.newInstance();
             return func;
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Unable to load class: [" + className
                     + "]: class not found! message: " + e.getMessage(), e);
             return null;
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Unable to load class: [" + className
                     + "]: cannot instantiate! message: " + e.getMessage(), e);
             return null;
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Unable to load class: [" + className
                     + "]: illegal access! message: " + e.getMessage(), e);
             return null;

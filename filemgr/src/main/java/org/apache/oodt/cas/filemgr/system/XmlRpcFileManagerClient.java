@@ -999,7 +999,7 @@ public class XmlRpcFileManagerClient {
             return XmlRpcStructFactory
                     .getQueryResultsFromXmlRpc(queryResultHashVector);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new CatalogException(e);
         }
     }
@@ -1021,11 +1021,11 @@ public class XmlRpcFileManagerClient {
             productVector = (Vector<Hashtable<String, Object>>) client.execute(
                     "filemgr.query", argList);
         } catch (XmlRpcException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new CatalogException(e);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new CatalogException(e);
         }
 
@@ -1277,7 +1277,7 @@ public class XmlRpcFileManagerClient {
 
             // error versioning file
         } catch (VersioningException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.SEVERE,
                 "ingestProduct: VersioningException when versioning Product: "
                         + product.getProductName() + " with Versioner "

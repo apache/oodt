@@ -19,8 +19,11 @@
 package org.apache.oodt.cas.pushpull.daemon;
 
 //JDK imports
+
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author bfoster
@@ -35,7 +38,7 @@ import java.rmi.RemoteException;
  * </p>.
  */
 public class DaemonController {
-
+    private static Logger LOG = Logger.getLogger(DaemonController.class.getName());
     private DaemonRmiInterface daemon;
 
     /**
@@ -48,7 +51,7 @@ public class DaemonController {
             daemon = (DaemonRmiInterface) Naming.lookup(rmiUrl);
             System.out.println(!daemon.getHasBeenToldToQuit());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
     }
 

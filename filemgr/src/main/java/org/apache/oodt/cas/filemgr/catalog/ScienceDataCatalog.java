@@ -17,22 +17,6 @@
 package org.apache.oodt.cas.filemgr.catalog;
 
 //JDK imports
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import javax.sql.DataSource;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-//OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -44,6 +28,24 @@ import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.commons.pagination.PaginationUtils;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.sql.DataSource;
+
+//OODT imports
 
 /**
  * 
@@ -199,7 +201,7 @@ public class ScienceDataCatalog implements Catalog {
     } catch (Exception e) {
       LOG.log(Level.WARNING,
           "Exception adding product metadata. Message: " + e.getMessage());
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new CatalogException(e.getMessage(), e);
     }
   }
@@ -418,7 +420,7 @@ public class ScienceDataCatalog implements Catalog {
         numProducts = rs.getInt("num_products");
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -461,7 +463,7 @@ public class ScienceDataCatalog implements Catalog {
         product = DbStructFactory.toScienceDataProduct(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -505,7 +507,7 @@ public class ScienceDataCatalog implements Catalog {
         product = DbStructFactory.toScienceDataProduct(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -553,7 +555,7 @@ public class ScienceDataCatalog implements Catalog {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -598,7 +600,7 @@ public class ScienceDataCatalog implements Catalog {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -656,7 +658,7 @@ public class ScienceDataCatalog implements Catalog {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -704,7 +706,7 @@ public class ScienceDataCatalog implements Catalog {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -972,7 +974,7 @@ public class ScienceDataCatalog implements Catalog {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception performing query. Message: " + e.getMessage());
       try {
@@ -1033,7 +1035,7 @@ public class ScienceDataCatalog implements Catalog {
         size = rs.getInt("result_size");
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -1082,7 +1084,7 @@ public class ScienceDataCatalog implements Catalog {
         startDateTime = DateUtils.toString(cal);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -1131,7 +1133,7 @@ public class ScienceDataCatalog implements Catalog {
         endDateTime = DateUtils.toString(cal);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {

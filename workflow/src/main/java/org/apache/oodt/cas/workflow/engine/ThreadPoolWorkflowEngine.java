@@ -333,7 +333,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
             + ", however, this engine is "
             + "not tracking its execution and the id: [" + workflowInstId
             + "] " + "was never persisted to " + "the instance repository");
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         return new Metadata();
       }
     }
@@ -445,7 +445,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
         instRep.updateWorkflowInstance(wInst);
       }
     } catch (InstanceRepositoryException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new EngineException(e.getMessage());
     }
 
@@ -463,7 +463,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     try {
       return DateConvert.isoParse(isoTimeStr);
     } catch (Exception ignore) {
-      ignore.printStackTrace();
+      LOG.log(Level.SEVERE, ignore.getMessage());
       return null;
     }
   }

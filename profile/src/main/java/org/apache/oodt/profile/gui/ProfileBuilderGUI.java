@@ -21,6 +21,7 @@ import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileElement;
 import org.apache.oodt.profile.RangedProfileElement;
 import org.apache.oodt.profile.gui.pstructs.ProfilePrinter;
+
 import org.xml.sax.SAXException;
 
 import java.awt.BorderLayout;
@@ -33,6 +34,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -56,6 +59,7 @@ import javax.swing.tree.TreeNode;
 * a license - please visit www.cloudgarden.com for details.
 */
 public class ProfileBuilderGUI extends javax.swing.JFrame {
+  private static Logger LOG = Logger.getLogger(ProfileBuilderGUI.class.getName());
 	private JButton jButton1;
 	private JEditorPane jEditorPane1;
 	private JScrollPane jPanel3;
@@ -97,7 +101,7 @@ public class ProfileBuilderGUI extends javax.swing.JFrame {
 			try {
 				javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 			} catch(Exception e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage());
 			}
 			jPanel1 = new JPanel();
 			jPanel2 = new JScrollPane();
@@ -264,7 +268,7 @@ public class ProfileBuilderGUI extends javax.swing.JFrame {
 	
 			postInitGUI();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 	}
 	/** Add your pre-init code in here 	*/
@@ -288,7 +292,7 @@ public class ProfileBuilderGUI extends javax.swing.JFrame {
 			inst.getJTree1().addMouseListener(new LeafListener(inst.getJTree1()));
 		    inst.getJTree1().setExpandsSelectedPaths(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -311,7 +315,7 @@ public class ProfileBuilderGUI extends javax.swing.JFrame {
 			ProfileBuilderGUI inst = new ProfileBuilderGUI();
 			inst.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 	}
 /**
@@ -863,7 +867,7 @@ return jEditorPane1;	}
 	    	fr = new FileReader(selFile);
 	    }
 	    catch(FileNotFoundException fne){
-	    	fne.printStackTrace();
+	    	LOG.log(Level.SEVERE, fne.getMessage());
 	    	System.out.println(fne.getMessage());
 	    }
 	    
@@ -881,7 +885,7 @@ return jEditorPane1;	}
 		  }
 		}
 	    catch(IOException ioe){
-	    	ioe.printStackTrace();
+	    	LOG.log(Level.SEVERE, ioe.getMessage());
 	    	System.out.println(ioe.getMessage());	    	
 	    }
 	    
@@ -893,7 +897,7 @@ return jEditorPane1;	}
 			getJTree1().setModel(generateModelFromProfile(createdProfile));
 			//getJTree1().addMouseListener(new LeafListener(getJTree1()));
 	    }catch(SAXException se){
-	    	se.printStackTrace();
+	    	LOG.log(Level.SEVERE, se.getMessage());
 	    	System.out.println(se.getMessage());
 	    }
 
@@ -937,11 +941,11 @@ return jEditorPane1;	}
         	fos.write(new ProfilePrinter(createdProfile,"http://oodt.jpl.nasa.gov/dtd/prof.dtd").toXMLString().getBytes());
         }
         catch(FileNotFoundException fne){
-        	fne.printStackTrace();
+        	LOG.log(Level.SEVERE, fne.getMessage());
         	System.out.println(fne.getMessage());
         }
         catch(IOException ioe){
-        	ioe.printStackTrace();
+        	LOG.log(Level.SEVERE, ioe.getMessage());
         	System.out.println(ioe.getMessage());
         }
         finally{

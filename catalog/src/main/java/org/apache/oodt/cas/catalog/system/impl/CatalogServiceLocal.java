@@ -823,7 +823,7 @@ public class CatalogServiceLocal implements CatalogService {
 			LOG.log(Level.INFO, "Query returned " + transactionReceipts.size() + " results");
 			return transactionReceipts;
 		}catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			throw new CatalogServiceException("Failed to get TransactionId to Metadata map for query '" + queryExpression + "' : " + e.getMessage(), e);
 		}
 	}

@@ -134,7 +134,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             types = fmClient.getProductTypes();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return types;
@@ -146,7 +146,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             products = fmClient.getProductsByProductType(type);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return products;
@@ -158,7 +158,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             type = fmClient.getProductTypeByName(name);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return type;
@@ -170,7 +170,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             met = fmClient.getMetadata(p);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return met;
@@ -182,7 +182,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             references = fmClient.getProductReferences(p);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return references;
@@ -194,7 +194,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             elem = fmClient.getElementByName(name);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return elem;
@@ -272,7 +272,7 @@ public class CASProfileHandler implements ProfileHandler {
                         profiles.add(ProfileUtils.buildProfile(p, met,
                             dataDelivBaseUrlStr));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.log(Level.SEVERE, e.getMessage());
                     }
 
                 }

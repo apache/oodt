@@ -32,10 +32,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.FileOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 
 public class TableListener implements MouseListener, ActionListener {
+
+  private static Logger LOG = Logger.getLogger(TableListener.class.getName());
 
   private Component caller;
   private TablePane table;
@@ -157,7 +161,7 @@ public class TableListener implements MouseListener, ActionListener {
           fileOut.close();
 
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
         }
       }
 

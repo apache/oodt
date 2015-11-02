@@ -411,7 +411,7 @@ public class LuceneWorkflowInstanceRepository extends
                             + inst.getId() + "]");
             reader.deleteDocuments(new Term("workflow_inst_id", inst.getId()));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG
                     .log(Level.WARNING,
                             "Exception removing workflow instance: ["

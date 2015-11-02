@@ -23,7 +23,6 @@ import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractorConfigReaderException;
 import org.apache.oodt.cas.metadata.extractors.ExternConfigReader;
 import org.apache.oodt.cas.metadata.extractors.ExternMetExtractor;
-import org.apache.oodt.cas.pge.exceptions.PGEException;
 import org.apache.oodt.commons.exceptions.CommonsException;
 
 import java.io.File;
@@ -42,7 +41,7 @@ public class ExternExtractorMetWriter extends PcsMetFileWriter {
 
   @Override
   protected Metadata getSciPgeSpecificMetadata(File sciPgeConfigFilePath, Metadata inputMetadata, Object... customArgs)
-      throws PGEException, MetExtractorConfigReaderException, MetExtractionException, FileNotFoundException,
+      throws MetExtractorConfigReaderException, MetExtractionException, FileNotFoundException,
       ParseException, CommonsException, CasMetadataException {
     ExternMetExtractor extractor = new ExternMetExtractor();
     extractor.setConfigFile(new ExternConfigReader().parseConfigFile(new File(

@@ -129,8 +129,7 @@ public class XmlRpcBatchStub {
         return true;
     }
 
-    private boolean genericExecuteJob(Hashtable jobHash, Object jobInput)
-        throws JobException {
+    private boolean genericExecuteJob(Hashtable jobHash, Object jobInput) {
         JobInstance exec = null;
         JobInput in = null;
         try {
@@ -178,7 +177,7 @@ public class XmlRpcBatchStub {
 
             return runner.wasSuccessful();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return false;
         }
     }
@@ -231,7 +230,7 @@ public class XmlRpcBatchStub {
             try {
                 this.successful = job.execute(in);
             } catch (JobInputException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 this.successful = false;
             }
 

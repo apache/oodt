@@ -18,9 +18,8 @@
 package org.apache.oodt.cas.workflow.gui;
 
 //Commons import
-import org.apache.commons.lang.StringUtils;
 
-//OODT imports
+import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.workflow.gui.menu.EditMenu;
 import org.apache.oodt.cas.workflow.gui.menu.FileMenu;
 import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
@@ -34,8 +33,9 @@ import org.apache.oodt.cas.workflow.gui.toolbox.Tool;
 import org.apache.oodt.cas.workflow.gui.toolbox.ToolBox;
 import org.apache.oodt.cas.workflow.gui.util.IconLoader;
 
-//JDK imports
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -47,8 +47,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+//OODT imports
+//JDK imports
 
 /**
  * 
@@ -60,7 +69,7 @@ import javax.swing.*;
  * 
  */
 public class WorkflowGUI extends JFrame {
-
+  private static Logger LOG = Logger.getLogger(WorkflowGUI.class.getName());
   private static final long serialVersionUID = -8217540440195126377L;
 
   private ToolBox toolbox;
@@ -187,7 +196,7 @@ public class WorkflowGUI extends JFrame {
             .getGlobalConfigGroups()));
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
   }
 
@@ -244,7 +253,7 @@ public class WorkflowGUI extends JFrame {
             }
           }
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
         }
       }
 
@@ -278,7 +287,7 @@ public class WorkflowGUI extends JFrame {
       	try {
       		repo.save();
       	} catch (Exception e) {
-      		e.printStackTrace();
+      		LOG.log(Level.SEVERE, e.getMessage());
       	}
       }
     });
@@ -289,7 +298,7 @@ public class WorkflowGUI extends JFrame {
         try {
           perspective.undo();
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
         }
       }
     });
@@ -307,7 +316,7 @@ public class WorkflowGUI extends JFrame {
           gui.pack();
           gui.setVisible(true);
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
         }
       }
     });

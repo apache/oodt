@@ -77,7 +77,7 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
       statement = conn.createStatement();
       statement.execute(sql);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (statement != null) {
         try {
@@ -122,7 +122,7 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
         productType = DbStructFactory.toScienceDataProductType(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -174,7 +174,7 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
         productType = DbStructFactory.toScienceDataProductType(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -223,7 +223,7 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
         productTypes.add(DbStructFactory.toScienceDataProductType(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
@@ -272,7 +272,7 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
       statement = conn.createStatement();
       statement.execute(sql);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (statement != null) {
         try {
@@ -312,7 +312,7 @@ public class ScienceDataRepositoryManager implements RepositoryManager {
       statement = conn.createStatement();
       statement.execute(sql);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (statement != null) {
         try {
