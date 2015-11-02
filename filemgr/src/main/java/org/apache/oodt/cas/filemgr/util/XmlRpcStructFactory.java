@@ -39,6 +39,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -493,9 +494,9 @@ public final class XmlRpcStructFactory {
         Properties props = new Properties();
 
         if (propHash != null && propHash.keySet().size() > 0) {
-            for (String propName : propHash.keySet()) {
+            for (Map.Entry<String, String> propName : propHash.entrySet()) {
                 String propValue = propHash.get(propName);
-                props.setProperty(propName, propValue);
+                props.setProperty(propName.getKey(), propValue);
             }
         }
 

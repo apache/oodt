@@ -239,9 +239,9 @@ public class SolrClient {
 		// build HTTP/GET request
     GetMethod method = new GetMethod(url);
     List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-    for (String key : parameters.keySet()) {
-    	for (String value : parameters.get(key)) {
-    		nvps.add(new NameValuePair(key, value));
+    for (Map.Entry<String, String[]> key : parameters.entrySet()) {
+    	for (String value : key.getValue()) {
+    		nvps.add(new NameValuePair(key.getKey(), value));
     	}
     }
     // request results in JSON format

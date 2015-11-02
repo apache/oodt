@@ -30,6 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,8 +87,8 @@ public class TransferStatusTracker {
     public List<FileTransferStatus> getCurrentFileTransfers() {
         List<FileTransferStatus> currTransfers = new Vector<FileTransferStatus>();
 
-        for (String productId : currentProductTransfers.keySet()) {
-            Product p = (Product) currentProductTransfers.get(productId);
+        for (Map.Entry<String, Product> productId : currentProductTransfers.entrySet()) {
+            Product p = productId.getValue();
 
             // get its references
             List<Reference> refs = quietGetReferences(p);

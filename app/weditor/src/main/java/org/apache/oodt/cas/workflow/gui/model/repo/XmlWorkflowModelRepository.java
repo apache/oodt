@@ -78,9 +78,11 @@ public class XmlWorkflowModelRepository {
 
   public XmlWorkflowModelRepository(File workspace) {
     this.files = new Vector<File>();
-    for (File file : (this.workspace = workspace).listFiles()) {
-      if (!file.isDirectory()) {
-        this.files.add(file);
+    if(workspace!=null) {
+      for (File file : (this.workspace = workspace).listFiles()) {
+        if (!file.isDirectory()) {
+          this.files.add(file);
+        }
       }
     }
   }
@@ -168,8 +170,8 @@ public class XmlWorkflowModelRepository {
   }
 
   private void writeOutDocuments(Map<File, Document> documents) {
-    for (File file : documents.keySet()) {
-      XMLUtils.writeXmlFile(documents.get(file), file.getAbsolutePath());
+    for (Map.Entry<File, Document> file : documents.entrySet()) {
+      XMLUtils.writeXmlFile(documents.get(file.getKey()), file.getKey().getAbsolutePath());
     }
   }
 
@@ -183,8 +185,8 @@ public class XmlWorkflowModelRepository {
       document.appendChild(document.createElement("workflows"));
       documents.put(globalConfigGroupsFile, document);
     }
-    for (String configName : this.globalConfigGroups.keySet()) {
-      ConfigGroup globalConfig = this.globalConfigGroups.get(configName);
+    for (Map.Entry<String, ConfigGroup> configName : this.globalConfigGroups.entrySet()) {
+      ConfigGroup globalConfig = configName.getValue();
       Element configElem = document.createElement("configuration");
       document.getDocumentElement().appendChild(configElem);
       configElem.setAttribute("name", globalConfig.getName());

@@ -45,10 +45,10 @@ import java.util.Vector;
 public class AssignmentMonitor implements Monitor {
 	
     /* our nodes map */
-    private static HashMap<String, ResourceNode> nodesMap;
+    private HashMap<String, ResourceNode> nodesMap;
 
     /* our load map */
-    private static HashMap<String, Integer> loadMap;
+    private HashMap<String, Integer> loadMap;
 
     public AssignmentMonitor(List<ResourceNode> nodes) {
         nodesMap = new HashMap<String, ResourceNode>();

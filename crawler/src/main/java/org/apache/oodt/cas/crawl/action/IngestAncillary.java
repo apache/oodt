@@ -66,9 +66,9 @@ public class IngestAncillary extends FileBasedAction {
   public boolean performFileAction(File actionFile, Metadata metadata) {
     Metadata ingestMetadata = new Metadata();
     if (ancillaryMetadata != null) {
-      for (String key : this.ancillaryMetadata.keySet()) {
-        for (String value : this.ancillaryMetadata.get(key)) {
-          ingestMetadata.addMetadata(key, PathUtils.replaceEnvVariables(value));
+      for (Map.Entry<String, List<String>> entry : this.ancillaryMetadata.entrySet()) {
+        for (String value : entry.getValue()) {
+          ingestMetadata.addMetadata(entry.getKey(), PathUtils.replaceEnvVariables(value));
         }
       }
     }

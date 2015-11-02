@@ -39,7 +39,7 @@ public class DummyImpl extends AbstractWebBasedSingleSignOn {
   
   private static final String DEFAULT_GROUP = "guest";
 
-  private static boolean connected = false;
+  private boolean connected = false;
 
   /*
    * (non-Javadoc)
@@ -58,7 +58,7 @@ public class DummyImpl extends AbstractWebBasedSingleSignOn {
    */
   public boolean getLastConnectionStatus() {
     // TODO Auto-generated method stub
-    return DummyImpl.connected;
+    return this.connected;
   }
 
   /*
@@ -68,7 +68,7 @@ public class DummyImpl extends AbstractWebBasedSingleSignOn {
    */
   public boolean isLoggedIn() {
     // TODO Auto-generated method stub
-    return DummyImpl.connected;
+    return this.connected;
   }
 
   /*
@@ -79,8 +79,8 @@ public class DummyImpl extends AbstractWebBasedSingleSignOn {
    * java.lang.String)
    */
   public boolean login(String username, String password) {
-    DummyImpl.connected = true;
-    return DummyImpl.connected;
+    this.connected = true;
+    return true;
   }
 
   /*
@@ -89,7 +89,7 @@ public class DummyImpl extends AbstractWebBasedSingleSignOn {
    * @see org.apache.oodt.cas.security.sso.SingleSignOn#logout()
    */
   public void logout() {
-    DummyImpl.connected = false;
+    this.connected = false;
   }
 
   /* (non-Javadoc)

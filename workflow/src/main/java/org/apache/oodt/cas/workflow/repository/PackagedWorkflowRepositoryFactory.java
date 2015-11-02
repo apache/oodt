@@ -59,10 +59,17 @@ public class PackagedWorkflowRepositoryFactory implements
   @Override
   public WorkflowRepository createRepository() {
     try {
-      return new PackagedWorkflowRepository(
-          Arrays.asList(new File(this.wDirPath).listFiles()));
+      if(this.wDirPath!=null) {
+        return new PackagedWorkflowRepository(
+            Arrays.asList(new File(this.wDirPath).listFiles()));
+      }
+      else {
+        LOG.log(
+            Level.SEVERE,
+            "Unable to create packaged workflow repository! Reason: empty wDirPath");
+        return null;
+      }
     } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(
           Level.SEVERE,
           "Unable to create packaged workflow repository! Reason: "

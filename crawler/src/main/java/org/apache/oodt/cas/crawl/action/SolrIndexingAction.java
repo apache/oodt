@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 //OODT imports
-import org.apache.oodt.cas.crawl.action.CrawlerAction;
 import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.filemgr.tools.SolrIndexer;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -71,8 +70,8 @@ public class SolrIndexingAction extends CrawlerAction {
 		
 		// set environment from bean configuration
 		// (including indexer.properties)
-		for (String s : env.keySet()) {
-			System.setProperty(s, env.get(s));
+		for (Map.Entry<String, String> s : env.entrySet()) {
+			System.setProperty(s.getKey(), env.get(s.getValue()));
 		}
 		
 		// instantiate indexing service

@@ -44,10 +44,10 @@ public class PreCondEvalUtils implements PreConditionOperatorMetKeys {
     private static Logger LOG = Logger.getLogger(PreCondEvalUtils.class
             .getName());
 
-    private static ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     public PreCondEvalUtils(ApplicationContext applicationContext) {
-        PreCondEvalUtils.applicationContext = applicationContext;
+        this.applicationContext = applicationContext;
     }
 
     /**

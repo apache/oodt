@@ -59,6 +59,7 @@ public class DirectoryResource extends CurationService {
     if (FORMAT_HTML.equals(format)) {
       return this.getDirectoryAreaAsHTML(
           CurationService.config.getStagingAreaPath(), path, showFiles);
+
     }
     return this.getDirectoryAreaAsJSON(
         CurationService.config.getStagingAreaPath(), path, showFiles);

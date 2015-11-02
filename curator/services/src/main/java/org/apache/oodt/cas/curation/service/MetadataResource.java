@@ -62,6 +62,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,11 +85,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-//JAX-RS imports
-//JSON imports
-//OODT imports
-//SPRING imports
 
 @Path("metadata")
 /**
@@ -391,10 +387,10 @@ public class MetadataResource extends CurationService {
   private Metadata getMetadataFromMap(MultivaluedMap<String, String> formParams) {
     Metadata metadata = new Metadata();
     
-    for (String key : formParams.keySet()) {
-      if (key.startsWith("metadata.")) {
-        String newKey = key.substring(key.indexOf('.') + 1);
-        for (String value : formParams.get(key)) {
+    for (Map.Entry<String, List<String>> entry : formParams.entrySet()) {
+      if (entry.getKey().startsWith("metadata.")) {
+        String newKey = entry.getKey().substring(entry.getKey().indexOf('.') + 1);
+        for (String value : entry.getValue()) {
           metadata.addMetadata(newKey, value);
         }
       }

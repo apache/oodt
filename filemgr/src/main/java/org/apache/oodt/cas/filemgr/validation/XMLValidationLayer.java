@@ -23,7 +23,11 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.util.XmlStructFactory;
 
-//JDK imports
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,15 +36,15 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -199,8 +203,8 @@ public class XMLValidationLayer implements ValidationLayer {
      */
     public Element getElementByName(String elementName)
             throws ValidationLayerException {
-      for (String elementId : elementMap.keySet()) {
-        Element element = (Element) elementMap.get(elementId);
+      for (Map.Entry<String, Element> elementId : elementMap.entrySet()) {
+        Element element = elementId.getValue();
         if (element.getElementName().equals(elementName)) {
           return element;
         }

@@ -82,6 +82,7 @@ public class XmlQueueRepository implements QueueRepository {
 				// get all the workflow xml files
 				File[] nodesFiles = nodesDir.listFiles(queuesXmlFilter);
 
+				if(nodesFiles!=null){
 				for (File nodesFile : nodesFiles) {
 
 				  Document nodesRoot;
@@ -130,6 +131,7 @@ public class XmlQueueRepository implements QueueRepository {
 					  }
 					}
 				  }
+				}
 				}
 			  }
 			} catch (URISyntaxException e) {

@@ -54,7 +54,7 @@ public class DeleteProduct {
     private static final Logger LOG = Logger.getLogger(DeleteProduct.class.getName());
 
     /* our File Manager client */
-    private static XmlRpcFileManagerClient client = null;
+    private XmlRpcFileManagerClient client = null;
 
     /* whether or not we should commit our deletions */
     private boolean commit = true;

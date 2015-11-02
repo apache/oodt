@@ -101,25 +101,27 @@ public final class VersioningUtils {
 
             File[] files = dir.listFiles(FILE_FILTER);
 
-            for (File file : files) {
-                // add the file references
-                try {
-                    Reference r = new Reference();
-                    r.setOrigReference(file.toURL().toExternalForm());
-                    r.setFileSize(file.length());
-                    references.add(r);
-                } catch (MalformedURLException e) {
-                    LOG.log(Level.SEVERE, e.getMessage());
-                    LOG.log(Level.WARNING,
-                        "MalformedURLException when generating reference for file: "
-                        + file);
-                }
+            if(files!=null) {
+                for (File file : files) {
+                    // add the file references
+                    try {
+                        Reference r = new Reference();
+                        r.setOrigReference(file.toURL().toExternalForm());
+                        r.setFileSize(file.length());
+                        references.add(r);
+                    } catch (MalformedURLException e) {
+                        LOG.log(Level.SEVERE, e.getMessage());
+                        LOG.log(Level.WARNING,
+                            "MalformedURLException when generating reference for file: "
+                            + file);
+                    }
 
-            }
-            File[] subdirs = dir.listFiles(DIR_FILTER);
-            if (subdirs != null) {
-                for (File subdir : subdirs) {
-                    stack.push(subdir);
+                }
+                File[] subdirs = dir.listFiles(DIR_FILTER);
+                if (subdirs != null) {
+                    for (File subdir : subdirs) {
+                        stack.push(subdir);
+                    }
                 }
             }
         }
@@ -151,9 +153,11 @@ public final class VersioningUtils {
 
             File[] files = dir.listFiles(FILE_FILTER);
 
-            for (File file : files) {
-                // add the file references
-                uris.add(file.toURI().toString());
+            if(files!=null) {
+                for (File file : files) {
+                    // add the file references
+                    uris.add(file.toURI().toString());
+                }
             }
 
             File[] subdirs = dir.listFiles(DIR_FILTER);

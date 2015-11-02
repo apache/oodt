@@ -536,34 +536,36 @@ public class XMLWorkflowRepository implements WorkflowRepository {
                 File[] workflowFiles = workflowDir
                     .listFiles(workflowXmlFilter);
 
-                for (File workflowFile : workflowFiles) {
-                  String workflowXmlFile = workflowFile
-                      .getAbsolutePath();
-                  Document workflowRoot = getDocumentRoot(workflowXmlFile);
+                if(workflowFiles!=null) {
+                  for (File workflowFile : workflowFiles) {
+                    String workflowXmlFile = workflowFile
+                        .getAbsolutePath();
+                    Document workflowRoot = getDocumentRoot(workflowXmlFile);
 
-                  String workflowId = workflowRoot
-                      .getDocumentElement().getAttribute("id");
-                  if (workflowMap.get(workflowId) == null) {
-                    Workflow w = XmlStructFactory.getWorkflow(
-                        workflowRoot.getDocumentElement(),
-                        taskMap, conditionMap);
+                    String workflowId = workflowRoot
+                        .getDocumentElement().getAttribute("id");
+                    if (workflowMap.get(workflowId) == null) {
+                      Workflow w = XmlStructFactory.getWorkflow(
+                          workflowRoot.getDocumentElement(),
+                          taskMap, conditionMap);
 
-                    if (w.getConditions() != null && w.getConditions().size() > 0) {
-                      // add a virtual first task, with the conditions
-                      w.getTasks().add(0, getGlobalWorkflowConditionsTask(w.getName(), w.getId(), w.getConditions()));
+                      if (w.getConditions() != null && w.getConditions().size() > 0) {
+                        // add a virtual first task, with the conditions
+                        w.getTasks().add(0, getGlobalWorkflowConditionsTask(w.getName(), w.getId(), w.getConditions()));
+                      }
+                      workflowMap.put(workflowId, w);
+                    } else {
+                      LOG
+                          .log(
+                              Level.FINE,
+                              "Ignoring workflow file: "
+                              + workflowXmlFile
+                              + " when loading workflows, workflow id: "
+                              + workflowId
+                              + " already loaded");
                     }
-                    workflowMap.put(workflowId, w);
-                  } else {
-                    LOG
-                        .log(
-                            Level.FINE,
-                            "Ignoring workflow file: "
-                            + workflowXmlFile
-                            + " when loading workflows, workflow id: "
-                            + workflowId
-                            + " already loaded");
-                  }
 
+                  }
                 }
               }
             } catch (URISyntaxException e) {

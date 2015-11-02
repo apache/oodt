@@ -60,7 +60,7 @@ public class XmlRpcBatchStub {
     private static Logger LOG = Logger.getLogger(XmlRpcBatchStub.class
         .getName());
 
-    private static Map jobThreadMap = null;
+    private Map jobThreadMap = null;
 
     public XmlRpcBatchStub(int port) {
         webServerPort = port;

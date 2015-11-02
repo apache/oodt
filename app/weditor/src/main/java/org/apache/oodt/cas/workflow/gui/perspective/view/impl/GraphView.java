@@ -18,9 +18,6 @@
 package org.apache.oodt.cas.workflow.gui.perspective.view.impl;
 
 //JDK imports
-import com.jgraph.layout.JGraphFacade;
-import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
-
 import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
 import org.apache.oodt.cas.workflow.gui.model.ModelNode;
 import org.apache.oodt.cas.workflow.gui.perspective.view.View;
@@ -29,6 +26,10 @@ import org.apache.oodt.cas.workflow.gui.perspective.view.ViewState;
 import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
 import org.apache.oodt.cas.workflow.gui.util.IconLoader;
 import org.apache.oodt.cas.workflow.gui.util.Line;
+
+import com.jgraph.layout.JGraphFacade;
+import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
+
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.DefaultEdge;
@@ -132,7 +133,7 @@ public class GraphView extends DefaultTreeView {
   private static final String TASK_MODE = "Task";
   private static final String WORKFLOW_MODE = "Workflow";
 
-  private static boolean scrollSelectedToVisible = false;
+  private boolean scrollSelectedToVisible = false;
 
   public GraphView(String name) {
     super(name);

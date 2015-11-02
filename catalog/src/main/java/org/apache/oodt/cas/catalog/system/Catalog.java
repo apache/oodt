@@ -304,9 +304,10 @@ public class Catalog {
 			if (this.isQueriable()) {
 				QueryService queryService = (QueryService) this.index;
 				Map<TransactionId<?>, List<TermBucket>> termBucketMap = queryService.getBuckets(transactionIds);
-				for (TransactionId<?> transactionId : termBucketMap.keySet()) {
-				  metadataMap.put(transactionId, this.getMetadataFromBuckets(termBucketMap.get(transactionId)));
-				}
+
+			  for(Map.Entry<TransactionId<?>, List<TermBucket>> entry :  termBucketMap.entrySet()){
+				metadataMap.put(entry.getKey(), this.getMetadataFromBuckets(entry.getValue()));
+			  }
 			}else {
 				LOG.log(Level.WARNING, "Catalog '" + this + "' is not queriable");
 			}

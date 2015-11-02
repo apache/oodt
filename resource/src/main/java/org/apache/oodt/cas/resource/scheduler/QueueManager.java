@@ -82,11 +82,12 @@ public class QueueManager {
 		return new Vector<String>(this.queueToNodesMapping.keySet());
 	}
 
-	public synchronized List<String> getQueues(String nodeId) {
-		Vector<String> queueNames = new Vector<String>();
-		for (String queueName : this.queueToNodesMapping.keySet()) {
-		  if (this.queueToNodesMapping.get(queueName).contains(nodeId)) {
-			queueNames.add(queueName);
+	public synchronized Vector<String> getQueues(String nodeId) {
+		Vector<String>
+			queueNames = new Vector<String>();
+		for (Map.Entry<String, LinkedHashSet<String>> queueName : this.queueToNodesMapping.entrySet()) {
+		  if (queueName.getValue().contains(nodeId)) {
+			queueNames.add(queueName.getKey());
 		  }
 		}
 		return queueNames;

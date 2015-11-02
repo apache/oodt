@@ -170,10 +170,12 @@ public class Utility {
 	public static boolean delete(File file) {
 		if (file.isDirectory()) {
 			File[] entries = file.listFiles();
-		  for (File entry : entries) {
-			if (!delete(entry)) {
-			  return false;
-			}
+		  if (entries != null) {
+			for (File entry : entries) {
+              if (!delete(entry)) {
+                return false;
+              }
+            }
 		  }
 		}
 		return file.delete();

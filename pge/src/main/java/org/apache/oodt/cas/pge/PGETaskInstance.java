@@ -437,6 +437,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
    protected void processOutput() throws IOException {
      for (final OutputDir outputDir : this.pgeConfig.getOuputDirs()) {
          File[] createdFiles = new File(outputDir.getPath()).listFiles();
+       if (createdFiles != null) {
          for (File createdFile : createdFiles) {
              Metadata outputMetadata = new Metadata();
              for (RegExprOutputFiles regExprFiles : outputDir
@@ -448,7 +449,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
                                  .forName(regExprFiles.getConverterClass())
                                  .newInstance();
                          outputMetadata.replaceMetadata(this.getMetadataForFile(
-                 (regExprFiles.getRenamingConv() != null) 
+                 (regExprFiles.getRenamingConv() != null)
                ? createdFile = this.renameFile(createdFile, regExprFiles.getRenamingConv())
                : createdFile, writer, regExprFiles.getArgs()));
                      } catch (Exception e) {
@@ -464,6 +465,7 @@ public class PGETaskInstance implements WorkflowTaskInstance {
                                                       + "." + this.pgeMetadata.getMetadata(MET_FILE_EXT));
              }
          }
+       }
      }
  }
 

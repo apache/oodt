@@ -167,15 +167,15 @@ public class GangliaResourceMonitor implements Monitor {
 			for (GangliaAdapter adapter : this.gmetaAdapters.values()) {
 				Map<String, Map<String, String>> aNodes = adapter
 						.getResourceNodeStatus();
-				for (String aNodeId : aNodes.keySet()) {
+				for (Map.Entry<String, Map<String, String>> aNodeId : aNodes.entrySet()) {
 					String host = ipAddr.getHost();
 					int port = ipAddr.getPort();
-					Map<String, String> nodeProps = aNodes.get(aNodeId);
-					if (aNodeId.equals(host)
+					Map<String, String> nodeProps = aNodeId.getValue();
+					if (aNodeId.getKey().equals(host)
 							&& nodeProps.get(DEFAULT_PORT).equals(
 									String.valueOf(port))) {
 						try {
-							return this.nodeFromMap(aNodes.get(aNodeId));
+							return this.nodeFromMap(aNodeId.getValue());
 						} catch (MalformedURLException e) {
 							LOG.log(Level.SEVERE, e.getMessage());
 							throw new MonitorException(e.getMessage());
@@ -205,8 +205,8 @@ public class GangliaResourceMonitor implements Monitor {
 
 	private Map<String, String> locateNode(String nodeId) {
 		if (this.gmetaAdapters != null && this.gmetaAdapters.size() > 0) {
-			for (String nId : this.gmetaAdapters.keySet()) {
-				GangliaAdapter adapter = this.gmetaAdapters.get(nId);
+			for (Map.Entry<String, GangliaAdapter> nId : this.gmetaAdapters.entrySet()) {
+				GangliaAdapter adapter = nId.getValue();
 				try {
 					System.out.println("Querying gmetad: ["+adapter.getUrlString()+"]");
 					Map<String, Map<String, String>> nodeStatus = adapter

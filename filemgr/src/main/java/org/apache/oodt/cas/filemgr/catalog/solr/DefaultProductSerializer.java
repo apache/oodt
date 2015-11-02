@@ -230,9 +230,9 @@ public class DefaultProductSerializer implements ProductSerializer {
 		doc.append( encodeIndexField(Parameters.ID, productId) );
 		
 		// all other fields
-		for (String key : fields.keySet()) {
-			for (String value : fields.get(key)) {
-				doc.append( encodeIndexField(key, value) );
+		for (Map.Entry<String, List<String>> key : fields.entrySet()) {
+			for (String value : key.getValue()) {
+				doc.append( encodeIndexField(key.getKey(), value) );
 			}
 		}
 
@@ -256,25 +256,25 @@ public class DefaultProductSerializer implements ProductSerializer {
 		List<String> delFields = new ArrayList<String>();
 		
 		// encode update instructions
-		for (String key : fields.keySet()) {
+		for (Map.Entry<String, List<String>> key : fields.entrySet()) {
 			
-			List<String> values = fields.get(key);
+			List<String> values = key.getValue();
 			
 			if (replace) {
 				
 				if (values.isEmpty()) {
 					// use special value to flag removal
-					delFields.add( this.encodeUpdateField(key, Parameters.NULL, true) );
+					delFields.add( this.encodeUpdateField(key.getKey(), Parameters.NULL, true) );
 					
 				} else {
 					for (String value : values) {
-						setFields.add( this.encodeUpdateField(key, value, true) );
+						setFields.add( this.encodeUpdateField(key.getKey(), value, true) );
 					}
 				}
 				
 			} else {
 				for (String value : values) {
-					addFields.add( this.encodeUpdateField(key, value, false) );
+					addFields.add( this.encodeUpdateField(key.getKey(), value, false) );
 				}
 			}
 			

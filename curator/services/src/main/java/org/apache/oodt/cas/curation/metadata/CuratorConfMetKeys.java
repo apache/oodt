@@ -48,5 +48,5 @@ public interface CuratorConfMetKeys {
   String FM_PROPS = "org.apache.oodt.cas.curator.fmProps";
   
   String CATALOG_FACTORY_CLASS = "org.apache.oodt.cas.curator.catalogFactoryClass";
-  
+
 }

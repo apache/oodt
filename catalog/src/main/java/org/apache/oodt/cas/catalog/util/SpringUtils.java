@@ -39,8 +39,8 @@ public class SpringUtils {
         FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext(catalogBeanRepo);
         Map<String, Catalog> catalogsMap = appContext.getBeansOfType(Catalog.class);
         HashSet<Catalog> catalogs = new HashSet<Catalog>();
-        for (String key : catalogsMap.keySet()) {
-        	Catalog curCatalog = catalogsMap.get(key);
+        for (Map.Entry<String, Catalog> key : catalogsMap.entrySet()) {
+        	Catalog curCatalog = key.getValue();
         	LOG.log(Level.INFO, "Loading catalog configuration for Catalog: '" + curCatalog + "'");
         	if (catalogs.contains(curCatalog)) {
 			  throw new CatalogException("Catalog URN : '" + curCatalog + "' conflicts with another Catalog's URN.  "

@@ -17,6 +17,8 @@
 package org.apache.oodt.cas.catalog.util;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.util.PathUtils;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
@@ -27,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.util.PathUtils;
 
 /**
  * 
@@ -64,19 +65,21 @@ public class PluginClassLoader extends URLClassLoader {
 			String pluginDirs = System.getProperty("org.apache.oodt.cas.catalog.plugin.dirs");
 			if (pluginDirs != null) {
 				for (String pluginDir : PathUtils.doDynamicReplacement(pluginDirs).split(",")) {
-					File[] jarFiles = new File(pluginDir).listFiles(new FileFilter() {
-						public boolean accept(File pathname) {
-							return pathname.getName().endsWith(".jar");
-						}					
-					});
-					for (File jarFile : jarFiles) {
-						try {
-							urls.add(jarFile.toURL());
-						}catch (Exception e) {
-							LOG.log(Level.SEVERE, "Failed to load jar file '" + jarFile + "' : " + e.getMessage(), e);
-						}
-					
+				  File[] jarFiles = new File(pluginDir).listFiles(new FileFilter() {
+					public boolean accept(File pathname) {
+					  return pathname.getName().endsWith(".jar");
 					}
+				  });
+				  if (jarFiles != null) {
+					for (File jarFile : jarFiles) {
+					  try {
+						urls.add(jarFile.toURL());
+					  } catch (Exception e) {
+						LOG.log(Level.SEVERE, "Failed to load jar file '" + jarFile + "' : " + e.getMessage(), e);
+					  }
+
+					}
+				  }
 				}
 			}
 		}catch (Exception ignored) {}

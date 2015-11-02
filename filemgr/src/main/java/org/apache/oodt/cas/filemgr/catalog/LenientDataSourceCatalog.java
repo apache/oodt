@@ -44,8 +44,6 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-//JDK imports
-
 /**
  * @author luca
  * @version $Revision$
@@ -96,8 +94,8 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
         Map<String, String> metadataTypes = getMetadataTypes(m, product);
 
         // loop over metadata types
-        for (String metadataId : metadataTypes.keySet()) {
-        	String metadataName = metadataTypes.get(metadataId);
+        for (Map.Entry<String, String> metadataId : metadataTypes.entrySet()) {
+        	String metadataName = metadataId.getValue();
         	
             List<String> values = m.getAllMetadata(metadataName);
 
@@ -180,15 +178,15 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
       	Map<String, String> metadataTypes = getMetadataTypes(m, product);
             
         // loop over metadata types
-        for (String metadataId : metadataTypes.keySet()) {
-           	String metadataName = metadataTypes.get(metadataId);
+        for (Map.Entry<String, String> metadataId : metadataTypes.entrySet()) {
+           	String metadataName = metadataId.getValue();
             	
             List<String> values = m.getAllMetadata(metadataName);
 
             if (values != null) {
               for (String value : values) {
                 try {
-                  removeMetadataValue(metadataId, product, value);
+                  removeMetadataValue(metadataId.getKey(), product, value);
                 } catch (Exception e) {
                   LOG.log(Level.SEVERE, e.getMessage());
                   LOG
@@ -403,7 +401,7 @@ public class LenientDataSourceCatalog extends DataSourceCatalog {
         return m;
     }
 
-    private synchronized void addMetadataValue(String key,
+    private synchronized void addMetadataValue(Map.Entry<String, String> key,
             Product product, String value) throws CatalogException {
 
         Connection conn = null;

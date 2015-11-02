@@ -401,14 +401,13 @@ public class Metadata {
   public void addMetadata(Hashtable<String, Object> metadata, boolean replace) {
     // for back compat: the old method allowed us to give it a
     // Hashtable<String,String> and it still worked
-	for (String key : metadata.keySet()) {
-	  List<String> vals = (metadata.get(key) instanceof List) ? (List<String>) metadata
-        .get(key)
-        : Collections.singletonList(metadata.get(key).toString());
+	for (Map.Entry<String, Object> key : metadata.entrySet()) {
+	  List<String> vals = (key.getValue() instanceof List) ? (List<String>) key.getValue()
+        : Collections.singletonList(key.getValue().toString());
       if (replace) {
-        this.replaceMetadata(key, vals);
+        this.replaceMetadata(key.getKey(), vals);
       } else {
-        this.addMetadata(key, vals);
+        this.addMetadata(key.getKey(), vals);
       }
     }
   }

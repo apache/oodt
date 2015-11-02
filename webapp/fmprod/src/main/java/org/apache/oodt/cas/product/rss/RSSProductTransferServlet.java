@@ -18,7 +18,6 @@
 
 package org.apache.oodt.cas.product.rss;
 
-//JDK imports
 import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
@@ -57,7 +56,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import static org.apache.oodt.cas.product.rss.RSSConfigMetKeys.RSS_TRANSFER_CONF_KEY;
 
-//OODT imports
 
 /**
  * @author mattmann
@@ -76,7 +74,7 @@ public class RSSProductTransferServlet extends HttpServlet {
     private static final long serialVersionUID = -7983832512818339079L;
 
     /* our client to the file manager */
-    private static XmlRpcFileManagerClient fClient = null;
+    private XmlRpcFileManagerClient fClient = null;
 
     /* RSS config */
     private RSSConfig rssconf;

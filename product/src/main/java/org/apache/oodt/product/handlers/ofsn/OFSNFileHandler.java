@@ -18,7 +18,6 @@
 
 package org.apache.oodt.product.handlers.ofsn;
 
-//JDK imports
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.apache.oodt.product.LargeProductQueryHandler;
 import org.apache.oodt.product.ProductException;
@@ -45,8 +44,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//APACHE imports
-//OODT imports
 
 /**
  * 
@@ -74,7 +71,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
 
   private OFSNFileHandlerConfiguration conf;
 
-  private static Map<String, Object> HANDLER_CACHE;
+  private Map<String, Object> HANDLER_CACHE;
 
   public OFSNFileHandler() throws InstantiationException {
     // init conf here

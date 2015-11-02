@@ -72,7 +72,7 @@ public class RDFDatasetServlet extends HttpServlet {
   private static final long serialVersionUID = -3660991271642533985L;
 
   /* our client to the file manager */
-  private static XmlRpcFileManagerClient fClient = null;
+  private XmlRpcFileManagerClient fClient = null;
 
   /* our log stream */
   private Logger LOG = Logger.getLogger(RDFProductServlet.class.getName());

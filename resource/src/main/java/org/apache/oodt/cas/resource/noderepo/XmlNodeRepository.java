@@ -74,30 +74,32 @@ public class XmlNodeRepository implements NodeRepository {
 				File nodesDir = new File(new URI(dirUri));
 				if (nodesDir.isDirectory()) {
 
-					String nodesDirStr = nodesDir.getAbsolutePath();
+				  String nodesDirStr = nodesDir.getAbsolutePath();
 
-					// get all the workflow xml files
-					File[] nodesFiles = nodesDir.listFiles(nodesXmlFilter);
+				  // get all the workflow xml files
+				  File[] nodesFiles = nodesDir.listFiles(nodesXmlFilter);
 
-				  for (File nodesFile : nodesFiles) {
+				  if (nodesFiles != null) {
+					for (File nodesFile : nodesFiles) {
 
-					String nodesXmlFile = nodesFile.getAbsolutePath();
-					Document nodesRoot = null;
-					try {
-					  nodesRoot = XMLUtils
-						  .getDocumentRoot(new FileInputStream(
-							  nodesFile));
-					} catch (FileNotFoundException e) {
-					  LOG.log(Level.SEVERE, e.getMessage());
-					  return null;
-					}
+					  String nodesXmlFile = nodesFile.getAbsolutePath();
+					  Document nodesRoot = null;
+					  try {
+						nodesRoot = XMLUtils
+							.getDocumentRoot(new FileInputStream(
+								nodesFile));
+					  } catch (FileNotFoundException e) {
+						LOG.log(Level.SEVERE, e.getMessage());
+						return null;
+					  }
 
-					NodeList nodeList = nodesRoot
-						.getElementsByTagName("node");
-					if (nodeList != null) {
-					  for (int k = 0; k < nodeList.getLength(); k++) {
-						nodes.add(XmlStructFactory
-							.getNodes((Element) nodeList.item(k)));
+					  NodeList nodeList = nodesRoot
+						  .getElementsByTagName("node");
+					  if (nodeList != null) {
+						for (int k = 0; k < nodeList.getLength(); k++) {
+						  nodes.add(XmlStructFactory
+							  .getNodes((Element) nodeList.item(k)));
+						}
 					  }
 					}
 				  }

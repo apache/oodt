@@ -97,14 +97,12 @@ public abstract class ProductCrawler extends ProductCrawlerBean {
          LOG.log(Level.INFO, "Crawling " + dir);
 
          File[] productFiles;
-         if (isCrawlForDirs()) {
-            productFiles = dir.listFiles(DIR_FILTER);
-         } else {
-            productFiles = dir.listFiles(FILE_FILTER);
-         }
+         productFiles = isCrawlForDirs() ? dir.listFiles(DIR_FILTER) : dir.listFiles(FILE_FILTER);
 
-         for (File productFile : productFiles) {
-            ingestStatus.add(handleFile(productFile));
+         if(productFiles!=null) {
+            for (File productFile : productFiles) {
+               ingestStatus.add(handleFile(productFile));
+            }
          }
 
          if (!isNoRecur()) {

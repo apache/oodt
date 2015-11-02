@@ -31,6 +31,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -130,8 +131,8 @@ public class XMLRepositoryManager implements RepositoryManager {
      */
     public ProductType getProductTypeByName(String productTypeName)
             throws RepositoryManagerException {
-      for (String typeId : productTypeMap.keySet()) {
-        ProductType type = (ProductType) productTypeMap.get(typeId);
+      for (Map.Entry<String, ProductType> typeId : productTypeMap.entrySet()) {
+        ProductType type = typeId.getValue();
         if (type.getName().equals(productTypeName)) {
           return type;
         }

@@ -94,9 +94,11 @@ public class DirectorySelector {
     	
     	// recursion over sub-directories
     	File[] subdirs = dir.listFiles( directoryFilter );
-        for (File subdir : subdirs) {
-        	traverseDir(subdir, subDirs);
-        }
+	  if(subdirs!=null) {
+		for (File subdir : subdirs) {
+		  traverseDir(subdir, subDirs);
+		}
+	  }
     	
     }
 

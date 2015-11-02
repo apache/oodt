@@ -845,8 +845,8 @@ public class CatalogServiceLocal implements CatalogService {
  					returnList.add(new TransactionReceipt(null, Collections.singletonList(catalogReceipt)));
  				}
  			}
- 			for (TransactionId<?> transactionId : existing.keySet()) {
-			  returnList.add(new TransactionReceipt(transactionId, existing.get(transactionId)));
+ 			for (Entry<TransactionId<?>, List<CatalogReceipt>> transactionId : existing.entrySet()) {
+			  returnList.add(new TransactionReceipt(transactionId.getKey(), existing.get(transactionId.getValue())));
 			}
  			return returnList;
 		}catch (Exception e) {

@@ -18,11 +18,11 @@
 package org.apache.oodt.cas.curation.service;
 
 //OODT imports
-import net.sf.json.JSONArray;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.curation.metadata.CuratorConfMetKeys;
 import org.apache.oodt.security.sso.SingleSignOn;
+
+import net.sf.json.JSONArray;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -41,9 +41,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriInfo;
 
-//JDK imports
-//JAX-RS imports
-//APACHE imports
 
 /**
  * 
@@ -64,7 +61,7 @@ public class CurationService extends HttpServlet implements CuratorConfMetKeys {
   private static final Logger LOG = Logger.getLogger(CurationService.class
       .getName());
   
-  protected static CurationServiceConfig config = null;
+  public static CurationServiceConfig config = null;
   
   protected final static String FORMAT_JSON = "json";
   

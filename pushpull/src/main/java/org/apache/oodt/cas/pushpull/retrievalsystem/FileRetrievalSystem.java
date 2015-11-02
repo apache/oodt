@@ -547,10 +547,12 @@ public class FileRetrievalSystem {
                     return pathname.getName().startsWith("Downloading_");
                 }
             });
-            for (File file : failedDownloads) {
+            if(failedDownloads!=null) {
+              for (File file : failedDownloads) {
                 LOG.log(Level.INFO, "Removing failed download file "
-                        + file.getAbsolutePath());
+                                    + file.getAbsolutePath());
                 file.delete();
+              }
             }
         } else {
             LOG.log(Level.INFO, "Staging area " + stagingArea.getAbsolutePath()
