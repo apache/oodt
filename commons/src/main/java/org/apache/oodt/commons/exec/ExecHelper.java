@@ -42,6 +42,7 @@ import java.util.logging.Logger;
  * 
  */
 public final class ExecHelper {
+  public static final int INT = 1024;
   private static Logger LOG = Logger.getLogger(ExecHelper.class.getName());
 
     /**
@@ -349,7 +350,7 @@ public final class ExecHelper {
 	            stdout = new InputStreamReader(process.getInputStream(), charset);
 	            stderr = new InputStreamReader(process.getErrorStream(), charset);
 	        }
-	        char[] buffer = new char[1024];
+	        char[] buffer = new char[INT];
 	
 	        boolean done = false;
 	        boolean stdoutclosed = false;

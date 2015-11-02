@@ -60,6 +60,7 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
     OFSNMetKeys {
+  public static final int INT = 1024;
   private static Logger LOG = Logger.getLogger(OFSNUtils.class.getName());
   public static String extractFieldFromQuery(XMLQuery query, String name) {
     for (Iterator<QueryElement> i = query.getWhereElementSet().iterator(); i
@@ -136,7 +137,7 @@ public final class OFSNUtils implements OODTMetKeys, OFSNXMLMetKeys,
 
   public static File buildZipFile(String zipFileFullPath, File[] files) {
     // Create a buffer for reading the files
-    byte[] buf = new byte[1024];
+    byte[] buf = new byte[INT];
     ZipOutputStream out = null;
 
     try {

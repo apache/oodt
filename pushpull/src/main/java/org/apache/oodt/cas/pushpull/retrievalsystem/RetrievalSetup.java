@@ -46,7 +46,8 @@ import java.util.logging.Logger;
  */
 public class RetrievalSetup {
 
-    private final Config config;
+  public static final int TIMEOUT = 5000;
+  private final Config config;
 
     private final HashSet<File> alreadyProcessedPropFiles;
 
@@ -202,7 +203,7 @@ public class RetrievalSetup {
                             "Waiting data download thread for 5 secs to give the property files download thread a head start");
             synchronized (this) {
                 try {
-                    this.wait(5000);
+                    this.wait(TIMEOUT);
                 } catch (Exception ignored) {
                 }
             }

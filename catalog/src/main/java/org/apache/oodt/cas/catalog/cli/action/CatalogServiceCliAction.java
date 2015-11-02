@@ -30,6 +30,9 @@ import org.apache.oodt.cas.cli.action.CmdLineAction;
  */
 public abstract class CatalogServiceCliAction extends CmdLineAction {
 
+   public static final int VAL = 1024;
+   public static final int VAL1 = 20;
+   public static final int VAL2 = 60;
    private CatalogServiceClient client;
 
    private String getUrl() {
@@ -37,15 +40,15 @@ public abstract class CatalogServiceCliAction extends CmdLineAction {
    }
 
    private int getChunkSize() {
-      return Integer.getInteger("org.apache.oodt.cas.catalog.chunkSize", 1024);
+      return Integer.getInteger("org.apache.oodt.cas.catalog.chunkSize", VAL);
    }
 
    private int getRequestTimeout() {
-      return Integer.getInteger("org.apache.oodt.cas.catalog.requestTimeout", 20);
+      return Integer.getInteger("org.apache.oodt.cas.catalog.requestTimeout", VAL1);
    }
 
    private int getConnectionTimeout() {
-      return Integer.getInteger("org.apache.oodt.cas.catalog.connectionTimeout", 60);
+      return Integer.getInteger("org.apache.oodt.cas.catalog.connectionTimeout", VAL2);
    }
 
    private int getAutoPagerSize() {

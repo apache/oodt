@@ -21,16 +21,9 @@ package org.apache.oodt.profile;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-
-import java.io.Serializable;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.oodt.commons.util.Documentable;
 import org.apache.oodt.commons.util.XML;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -42,6 +35,12 @@ import org.xml.sax.SAXException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A profile.
@@ -51,13 +50,14 @@ import java.io.OutputStreamWriter;
  * @author Kelly
  */
 public class Profile implements Serializable, Cloneable, Comparable<Object>, Documentable {
-        /** Serial version unique ID. */
+  /** Serial version unique ID. */
         static final long serialVersionUID = -3936851809184360591L;
 
 	/** The formal public identifier of the profiles DTD. */
 	public static final String PROFILES_DTD_FPI = "-//JPL//DTD Profile 1.1//EN";
+  public static final int INT = 512;
 
-	/** The system identifier of the profiles DTD. */
+  /** The system identifier of the profiles DTD. */
 	public static String PROFILES_DTD_URL = "http://oodt.jpl.nasa.gov/grid-profile/dtd/prof.dtd";
 
 	/**
@@ -383,7 +383,7 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 		}
 		StringBuilder b = new StringBuilder();
 		BufferedReader reader = new BufferedReader(new FileReader(argv[0]));
-		char[] buf = new char[512];
+		char[] buf = new char[INT];
 		int num;
 		while ((num = reader.read(buf)) != -1) {
 		  b.append(buf, 0, num);

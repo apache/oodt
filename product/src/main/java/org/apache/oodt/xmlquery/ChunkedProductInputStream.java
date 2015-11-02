@@ -209,6 +209,7 @@ final class ChunkedProductInputStream extends InputStream {
 	/** Is the stream open? */
 	private boolean open;
 
-	/** Size of chunks. */
-	private static final int BLOCK_SIZE = Integer.getInteger("org.apache.oodt.xmlquery.blockSize", 4096);
+  public static final int VAL = 4096;
+  /** Size of chunks. */
+	private static final int BLOCK_SIZE = Integer.getInteger("org.apache.oodt.xmlquery.blockSize", VAL);
 }

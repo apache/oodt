@@ -62,7 +62,7 @@ public class MimeTypeComparator extends PreConditionComparator<String> {
                         .readMagicHeader(new FileInputStream(product)));
             }
             return tikaMimeType.compareTo(mimeType);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage());
             throw new PreconditionComparatorException(
                     "Failed to get mime-type for " + product + " : "

@@ -49,10 +49,11 @@ import java.util.logging.Logger;
  */
 public class MetadataBasedProductMover {
 
+    public static final double DOUBLE = 1000.0;
     /*
-     * the metadata path sepc string, e.g.,
-     * /path/to/final/loc/[LocalDay]/[Filename]
-     */
+             * the metadata path sepc string, e.g.,
+             * /path/to/final/loc/[LocalDay]/[Filename]
+             */
     private String pathSpec = null;
 
     /* the client to the file manager */
@@ -113,7 +114,7 @@ public class MetadataBasedProductMover {
                     long timeBefore = System.currentTimeMillis();
                     fmgrClient.moveProduct(p, newLocPath);
                     long timeAfter = System.currentTimeMillis();
-                    double seconds = ((timeAfter - timeBefore) * 1.0) / (1000.0);
+                    double seconds = ((timeAfter - timeBefore) * 1.0) / DOUBLE;
                     LOG.log(Level.INFO, "Product: [" + p.getProductName()
                                         + "] move successful: took: [" + seconds
                                         + "] seconds");

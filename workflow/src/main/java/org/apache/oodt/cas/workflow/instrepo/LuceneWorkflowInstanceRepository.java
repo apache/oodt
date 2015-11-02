@@ -69,6 +69,7 @@ import org.safehaus.uuid.UUIDGenerator;
 public class LuceneWorkflowInstanceRepository extends
         AbstractPaginatibleInstanceRepository {
 
+    public static final int MERGE_FACTOR = 20;
     /* path to lucene index directory to store wInst info */
     private String idxFilePath = null;
 
@@ -443,7 +444,7 @@ public class LuceneWorkflowInstanceRepository extends
         try {
             writer = new IndexWriter(idxFilePath, new StandardAnalyzer(),
                     createIndex);
-            writer.setMergeFactor(20);
+            writer.setMergeFactor(MERGE_FACTOR);
 
             Document doc = toDoc(wInst);
             writer.addDocument(doc);

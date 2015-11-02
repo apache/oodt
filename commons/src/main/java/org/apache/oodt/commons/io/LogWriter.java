@@ -34,14 +34,17 @@ import java.util.Date;
  * @author Kelly
  */
 public class LogWriter extends java.io.Writer {
-	/** Constructor.
+
+  public static final int CAPACITY = 80;
+
+  /** Constructor.
 	 *
 	 * @param timestamp The time for messages logged with the returned writer.
 	 * @param source The source of the log message.
 	 * @param category The messages' category.
 	 */
 	LogWriter(Date timestamp, String source, Object category) {
-		buf = new StringBuffer(/*length*/ 80);
+		buf = new StringBuffer(/*length*/  CAPACITY);
 		lock = buf;
 		this.timestamp = timestamp;
 		this.source = source;

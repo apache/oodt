@@ -80,7 +80,7 @@ public class WorkflowManagerUtils {
 
     try {
       return this.client.getWorkflowInstances();
-    } catch (Throwable ignore) {
+    } catch (Exception ignore) {
       return Collections.EMPTY_LIST;
     }
   }

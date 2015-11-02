@@ -55,14 +55,15 @@ import java.util.Vector;
  */
 public class XmlRpcCommunicationChannelClient extends AbstractCommunicationChannelClient {
 
-	protected XmlRpcClient client;
+  public static final int INT = 60;
+  protected XmlRpcClient client;
 	protected int chunkSize;
 	
 	public XmlRpcCommunicationChannelClient(URL serverUrl, int connectionTimeout, int requestTimeout, int chunkSize) {
 		super();
         CommonsXmlRpcTransportFactory transportFactory = new CommonsXmlRpcTransportFactory(serverUrl);
-        transportFactory.setConnectionTimeout(connectionTimeout * 60 * 1000);
-        transportFactory.setTimeout(requestTimeout * 60 * 1000);        
+        transportFactory.setConnectionTimeout(connectionTimeout * INT * 1000);
+        transportFactory.setTimeout(requestTimeout * INT * 1000);
 		this.client = new XmlRpcClient(serverUrl, transportFactory);
 		this.chunkSize = chunkSize;
 	}

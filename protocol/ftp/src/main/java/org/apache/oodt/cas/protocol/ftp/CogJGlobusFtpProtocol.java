@@ -39,13 +39,14 @@ import java.util.Vector;
  */
 public class CogJGlobusFtpProtocol implements Protocol {
 
+  public static final int PORT = 21;
   private FTPClient ftp;
   private boolean isConnected;
   private int port;
   private String homeDir;
   
   public CogJGlobusFtpProtocol() {
-  	this(21);
+  	this(PORT);
   }
   
   public CogJGlobusFtpProtocol(int port) {

@@ -40,7 +40,8 @@ import org.apache.lucene.index.IndexWriter;
 public class LuceneWorkflowInstanceRepositoryFactory implements
         WorkflowInstanceRepositoryFactory {
 
-    /* the path to the lucene index directory */
+  public static final int VAL = 20;
+  /* the path to the lucene index directory */
     private String indexFilePath = null;
 
     private int pageSize = -1;
@@ -62,7 +63,7 @@ public class LuceneWorkflowInstanceRepositoryFactory implements
         // do env variable replacement
         indexFilePath = PathUtils.replaceEnvVariables(indexFilePath);
         pageSize = Integer.getInteger(
-            "org.apache.oodt.cas.workflow.instanceRep.pageSize", 20);
+            "org.apache.oodt.cas.workflow.instanceRep.pageSize", VAL);
     }
 
     /*

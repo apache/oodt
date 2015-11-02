@@ -59,6 +59,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
 
   /* serial version UID */
   private static final long serialVersionUID = -6692665690674186105L;
+  public static final int INT = 512;
 
   /* our file manager client */
   private XmlRpcFileManagerClient client;
@@ -192,7 +193,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
 
       // 3. Deliver the data.
       o2 = res.getOutputStream();
-      byte[] buf = new byte[512];
+      byte[] buf = new byte[INT];
       int n;
       while ((n = in.read(buf)) != -1) {
         o2.write(buf, 0, n);

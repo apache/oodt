@@ -57,7 +57,10 @@ import javax.naming.NamingException;
  * @author Kelly
  */
 public class ExecServer {
-	/** Start a server.
+
+  public static final int MILLIS = 15000;
+
+  /** Start a server.
 	 *
 	 * The command-line should have two arguments:
 	 *
@@ -339,7 +342,7 @@ public class ExecServer {
 		new Thread() {
 			public void run() {
 				try {
-					Thread.sleep(15000);
+					Thread.sleep(MILLIS);
 				} catch (InterruptedException ignore) {}
 				System.exit(1);
 			}
@@ -373,7 +376,8 @@ public class ExecServer {
 				org.omg.CORBA.ORB orb = s._orb();
 				orb.shutdown(false/*=>terminate without waiting for reqs to complete*/);
 			}
-		} catch (Throwable ignore) {}
+		} catch (Exception ignore) {
+		}
 	}
 
 	/**
@@ -393,7 +397,7 @@ public class ExecServer {
 				Context objectContext = configuration.getObjectContext();
 				objectContext.rebind(name, server.getServant());
 				objectContext.close();
-			  } catch (Throwable ex) {
+			  } catch (Exception ex) {
 				System.err.println("Exception binding at " + new Date() + "; will keep trying...");
 				ex.printStackTrace();
 			  } finally {

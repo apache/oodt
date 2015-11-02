@@ -43,6 +43,7 @@ public final class EnvUtilities {
 
     private static final Logger LOG = Logger.getLogger(EnvUtilities.class
             .getName());
+    public static final int INT = 4096;
 
     private EnvUtilities() throws InstantiationException {
         throw new InstantiationException("Don't construct utility classes!");
@@ -141,7 +142,7 @@ public final class EnvUtilities {
      */
     public static String slurp(InputStream in) throws IOException {
         StringBuilder out = new StringBuilder();
-        byte[] b = new byte[4096];
+        byte[] b = new byte[INT];
         for (int n; (n = in.read(b)) != -1;) {
             out.append(new String(b, 0, n));
         }

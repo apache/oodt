@@ -49,6 +49,7 @@ import java.util.Map;
  */
 public class HttpProtocol implements Protocol {
 
+  public static final int INT = 1024;
   private static Map<String, List<HttpFile>> linkChildren = new HashMap<String, List<HttpFile>>();
 
   private HttpFile parentFile;
@@ -119,7 +120,7 @@ public class HttpProtocol implements Protocol {
     	  in = HttpUtils.resolveUri(currentFile.getLink().toURI(), fromFile.getPath()).toURL().openStream();
       }
 
-      byte[] buffer = new byte[1024];
+      byte[] buffer = new byte[INT];
       int numRead;
       long numWritten = 0;
       while ((numRead = in.read(buffer)) != -1) {

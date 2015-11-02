@@ -41,7 +41,11 @@ import org.apache.lucene.index.IndexWriter;
  */
 public class LuceneCatalogFactory implements CatalogFactory {
 
-	/* path to the index directory for lucene catalogs */
+  public static final int VAL = 20;
+  public static final int VAL1 = 60;
+  public static final int VAL2 = 60;
+  public static final int VAL3 = 20;
+  /* path to the index directory for lucene catalogs */
 	private String indexFilePath = null;
 
 	/* our validation layer */
@@ -92,18 +96,18 @@ public class LuceneCatalogFactory implements CatalogFactory {
 				.getValidationLayerFromFactory(validationLayerFactoryClass);
 		}
 		
-		pageSize = Integer.getInteger("org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", 20);
+		pageSize = Integer.getInteger("org.apache.oodt.cas.filemgr.catalog.lucene.pageSize", VAL);
 		
 		commitLockTimeOut = Long
 			.getLong(
 				"org.apache.oodt.cas.filemgr.catalog.lucene.commitLockTimeout.seconds",
-				60);
+				VAL1);
 		writeLockTimeOut = Long
 			.getLong(
 				"org.apache.oodt.cas.filemgr.catalog.lucene.writeLockTimeout.seconds",
-				60);
+				VAL2);
 		mergeFactor = Integer.getInteger(
-			"org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor", 20);
+			"org.apache.oodt.cas.filemgr.catalog.lucene.mergeFactor", VAL3);
 	}
 
 	/*

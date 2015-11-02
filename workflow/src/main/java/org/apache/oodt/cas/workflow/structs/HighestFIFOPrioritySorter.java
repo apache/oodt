@@ -43,6 +43,7 @@ import java.util.logging.Logger;
  */
 public class HighestFIFOPrioritySorter implements PrioritySorter {
 
+  public static final double DOUBLE = 1000.0;
   private int secondsBetweenBoosts;
   private double boostAmount;
   private double boostCap;
@@ -86,7 +87,7 @@ public class HighestFIFOPrioritySorter implements PrioritySorter {
       aliveTime = 0.0;
     }
 
-    double boostPercentage = aliveTime / 1000.0
+    double boostPercentage = aliveTime / DOUBLE
         / (double) this.secondsBetweenBoosts;
     return Math.max(
         processorStub.getWorkflowInstance().getPriority().getValue(),

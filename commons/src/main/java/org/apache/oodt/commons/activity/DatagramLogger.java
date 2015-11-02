@@ -37,14 +37,18 @@ import java.util.Map;
  * @version $Revision: 1.1 $
  */
 class DatagramLogger {
-	public static void main(String[] argv) throws Throwable {
+
+  public static final int VAL = 4556;
+  public static final int INT = 2048;
+
+  public static void main(String[] argv) throws Throwable {
 		if (argv.length > 0) {
 			System.err.println("This program takes NO command line arguments.");
 			System.err.println("Set the activity.port property to adjust the port number.");
 			System.err.println("Set the activity.storage property to set the Storage class to use.");
 			System.exit(1);
 		}
-		int port = Integer.getInteger("activity.port", 4556);
+		int port = Integer.getInteger("activity.port", VAL);
 		String className = System.getProperty("activity.storage");
 		if (className == null) {
 			System.err.println("No Storage class defined via the `activity.storage' property; exiting...");
@@ -53,7 +57,7 @@ class DatagramLogger {
 		Class storageClass = Class.forName(className);
 		storage = (Storage) storageClass.newInstance();
 		DatagramSocket socket = new DatagramSocket(port);
-		byte[] buf = new byte[2048];
+		byte[] buf = new byte[INT];
 		DatagramPacket packet = new DatagramPacket(buf, buf.length);
 		for (;;) {
 			socket.receive(packet);

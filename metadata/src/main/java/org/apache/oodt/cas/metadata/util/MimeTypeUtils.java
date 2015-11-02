@@ -51,6 +51,7 @@ import org.apache.tika.mime.MimeTypesFactory;
 public final class MimeTypeUtils {
 
     private static final String SEPARATOR = ";";
+    public static final int HEADER_BYTE_SIZE = 1024;
 
     /* our Tika mime type registry */
     private MimeTypes mimeTypes;
@@ -338,7 +339,7 @@ public final class MimeTypeUtils {
     }
     
     public static byte[] readMagicHeader(InputStream stream) throws IOException {
-    	return readMagicHeader(stream, 1024);
+    	return readMagicHeader(stream, HEADER_BYTE_SIZE);
     }
     
     public static byte[] readMagicHeader(InputStream stream, int headerByteSize) 

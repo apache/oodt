@@ -18,19 +18,21 @@
 
 package org.apache.oodt.xmlquery;
 
+import org.apache.oodt.commons.io.Base64DecodingInputStream;
+import org.apache.oodt.commons.io.Base64EncodingOutputStream;
+import org.apache.oodt.commons.util.XML;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import org.apache.oodt.commons.io.Base64DecodingInputStream;
-import org.apache.oodt.commons.io.Base64EncodingOutputStream;
-import org.apache.oodt.commons.util.XML;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /** A result encoder/decoder for compressed strings.
  *
@@ -39,7 +41,10 @@ import org.w3c.dom.Node;
  * @author Kelly
  */
 class CompressedStringCodec implements Codec {
-	public Node encode(Object object, Document doc) throws DOMException {
+
+  public static final int INT = 1024;
+
+  public Node encode(Object object, Document doc) throws DOMException {
 		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
 		try {
 			Base64EncodingOutputStream base64 = new Base64EncodingOutputStream(byteArray);
@@ -66,7 +71,7 @@ class CompressedStringCodec implements Codec {
 			GZIPInputStream gzip = new GZIPInputStream(base64);
 			StringBuilder b = new StringBuilder();
 			int numRead;
-			byte[] buf = new byte[1024];
+			byte[] buf = new byte[INT];
 			while ((numRead = gzip.read(buf)) != -1) {
 			  b.append(new String(buf, 0, numRead));
 			}

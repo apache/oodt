@@ -40,6 +40,7 @@ import java.util.logging.Logger;
  */
 public class CrawlDaemon {
 
+    public static final double DOUBLE = 1000.0;
     /* our log stream */
     private static Logger LOG = Logger.getLogger(CrawlDaemon.class.getName());
 
@@ -95,9 +96,9 @@ public class CrawlDaemon {
         LOG.log(Level.INFO, "Crawl Daemon: Shutting down gracefully");
         LOG.log(Level.INFO, "Num Crawls: [" + this.numCrawls + "]");
         LOG.log(Level.INFO, "Total time spent crawling: ["
-                + (this.milisCrawling / 1000.0) + "] seconds");
+                + (this.milisCrawling / DOUBLE) + "] seconds");
         LOG.log(Level.INFO, "Average Crawl Time: ["
-                + (this.getAverageCrawlTime() / 1000.0) + "] seconds");
+                + (this.getAverageCrawlTime() / DOUBLE) + "] seconds");
         server.shutdown();
     }
 

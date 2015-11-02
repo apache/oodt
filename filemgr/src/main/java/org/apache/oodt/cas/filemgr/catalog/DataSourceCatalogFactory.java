@@ -36,7 +36,9 @@ import javax.sql.DataSource;
  * 
  */
 public class DataSourceCatalogFactory implements CatalogFactory {
-    /* our data source */
+  public static final int VAL = 20;
+  public static final long VAL1 = 5L;
+  /* our data source */
     protected DataSource dataSource = null;
 
     /* our validation layer */
@@ -129,11 +131,11 @@ public class DataSourceCatalogFactory implements CatalogFactory {
 			pageSize = Integer
                 .getInteger(
                     "org.apache.oodt.cas.filemgr.catalog.datasource.pageSize",
-                    20);
+                    VAL);
 			cacheUpdateMinutes = Long
                 .getLong(
                     "org.apache.oodt.cas.filemgr.catalog.datasource.cacheUpdateMinutes",
-                    5L);
+                    VAL1);
 			
 			productIdString = Boolean.parseBoolean( 
 				System.getProperty("org.apache.oodt.cas.filemgr.catalog.datasource.productId.string", "false") );

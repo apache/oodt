@@ -63,6 +63,7 @@ public final class DataUtils implements DataDeliveryKeys {
     }
 
   };
+  public static final int INT = 512;
 
   public static String createDatasetZipFile(ProductType type,
       String workingDirPath) throws IOException, CasProductException {
@@ -218,7 +219,7 @@ public final class DataUtils implements DataDeliveryKeys {
 
   private static void addZipEntryFromStream(InputStream is, ZipOutputStream os,
       String filename) throws IOException {
-    byte[] buf = new byte[512];
+    byte[] buf = new byte[INT];
     os.putNextEntry(new ZipEntry(filename));
 
     int len;

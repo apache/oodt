@@ -18,15 +18,16 @@
 package org.apache.oodt.cas.workflow.engine.processor;
 
 //JDK imports
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
+import org.apache.oodt.cas.workflow.structs.Priority;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
 //OODT imports
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleManager;
-import org.apache.oodt.cas.workflow.structs.Priority;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 
 /**
  * 
@@ -39,6 +40,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
  */
 public class TaskProcessor extends WorkflowProcessor {
 
+  public static final double DOUBLE = 0.1;
+  public static final int INT = 60;
   private Class<? extends WorkflowTaskInstance> instanceClass;
   private String jobId;
   
@@ -66,7 +69,7 @@ public class TaskProcessor extends WorkflowProcessor {
   @Override
   public void setWorkflowInstance(WorkflowInstance instance) {
     instance.setPriority(Priority
-        .getPriority(instance.getPriority().getValue() + 0.1));
+        .getPriority(instance.getPriority().getValue() + DOUBLE));
     super.setWorkflowInstance(instance);
   }
 
@@ -88,7 +91,7 @@ public class TaskProcessor extends WorkflowProcessor {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(this.getWorkflowInstance().getState().getStartTime());
         long elapsedTime = ((System.currentTimeMillis() - calendar
-            .getTimeInMillis()) / 1000) / 60;
+            .getTimeInMillis()) / 1000) / INT;
         if (elapsedTime >= requiredBlockTimeElapse) {
           tps.add(this);
         }

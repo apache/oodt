@@ -50,6 +50,7 @@ public class LRUScheduler implements Scheduler {
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(LRUScheduler.class
             .getName());
+    public static final double DOUBLE = 1000.0;
 
     private LRUQueueManager queueManager;
     
@@ -86,7 +87,7 @@ public class LRUScheduler implements Scheduler {
         for (;;) {
 
             try {
-            	long sleepTime = (long)(waitTime * 1000.0);
+            	long sleepTime = (long)(waitTime * DOUBLE);
                 Thread.currentThread().sleep(sleepTime);
             } catch (Exception ignore) {}
 

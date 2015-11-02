@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 
 public class CasDB {
 
+  public static final int INT = 20;
   URL filemgrUrl;
   XmlRpcFileManagerClient client;
   public Results results;
@@ -117,7 +118,7 @@ public class CasDB {
     try {
       ProductType type = client.getProductTypeByName(productType);
       Vector<Product> products = (Vector<Product>) client.query(query, type);
-      int maxVal = 20;
+      int maxVal = INT;
       if (products.size() < maxVal) {
         maxVal = products.size();
       }
@@ -142,7 +143,7 @@ public class CasDB {
         Vector<Product> products = (Vector<Product>) client
             .getProductsByProductType(type);
         // for(int i=0;i<products.size();i++){
-        int maxVal = 20;
+        int maxVal = INT;
         if (products.size() < maxVal) {
           maxVal = products.size();
         }
@@ -162,7 +163,7 @@ public class CasDB {
       try {
         type = client.getProductTypeByName(productType);
         Vector<Product> products = (Vector<Product>) client.query(casQ, type);
-        int maxVal = 20;
+        int maxVal = INT;
         if (products.size() < maxVal) {
           maxVal = products.size();
         }

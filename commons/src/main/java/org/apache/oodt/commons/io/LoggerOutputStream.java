@@ -32,8 +32,9 @@ public class LoggerOutputStream extends OutputStream {
 
    public static final String NUM_BYTES_PER_WRITE_PROPERTY =
          "org.apache.oodt.commons.io.logger.os.bytes.per.write";
+   public static final int VAL = 512;
    private static final int NUM_BYTES_PER_WRITE = Integer.getInteger(
-         NUM_BYTES_PER_WRITE_PROPERTY, 512);
+         NUM_BYTES_PER_WRITE_PROPERTY, VAL);
 
    private Logger logger;
    private CharBuffer buffer;

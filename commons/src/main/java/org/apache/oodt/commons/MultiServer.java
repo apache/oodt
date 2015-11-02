@@ -17,6 +17,16 @@
 
 package org.apache.oodt.commons;
 
+import org.apache.oodt.commons.util.LogInit;
+import org.apache.oodt.commons.util.XML;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
@@ -28,20 +38,13 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.spi.NamingManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.oodt.commons.util.LogInit;
-import org.apache.oodt.commons.util.XML;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * The MultiServer runs multiple server objects in a single JVM.  Instead of running a
@@ -176,11 +179,11 @@ public class MultiServer {
 				}
 			});
 			startup();
-		} catch (Throwable ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			try {
 				shutdown();
-			} catch (Throwable ignore) {}
+			} catch (Exception ignore) {}
 			System.exit(1);
 		}
 		for (;;) {

@@ -17,18 +17,38 @@
 
 package org.apache.oodt.commons;
 
-import java.io.*;
+import org.apache.oodt.commons.util.DOMParser;
+import org.apache.oodt.commons.util.XML;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-import org.apache.oodt.commons.util.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import java.rmi.registry.Registry;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.NoInitialContextException;
-import java.rmi.registry.Registry;
 
 /** EDA Configuration.
  *
@@ -37,7 +57,9 @@ import java.rmi.registry.Registry;
  * @author Kelly
  */
 public class Configuration {
-	/** The singleton configuration. */
+  public static final int INT = 7577;
+  public static final int INT1 = 6000000;
+  /** The singleton configuration. */
 	static Configuration configuration = null;
 
 	/** Name of property that specifies the direcotries that contains XML entities. */
@@ -198,8 +220,8 @@ public class Configuration {
 	}
 
 	Configuration() {
-		serverMgrPort = 7577;
-		nameServerStateFrequency = 6000000;
+		serverMgrPort = INT;
+		nameServerStateFrequency = INT1;
 		nameServerObjectKey = "StandardNS%20POA";
 		nameServerPort = "10000";
 		nameServerHost = "localhost";
@@ -732,7 +754,7 @@ public class Configuration {
 				context = new InitialContext(contextEnvironment);
 			} catch (NamingException ex) {
 				exception = ex;
-			} catch (Throwable t) {
+			} catch (Exception t) {
 				System.err.println("Unexpected throwable " + t.getClass().getName() + " getting initial context: "
 					+ t.getMessage());
 				t.printStackTrace();

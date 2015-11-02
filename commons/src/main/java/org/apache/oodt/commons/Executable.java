@@ -28,7 +28,10 @@ import java.io.*;
  * @author Kelly
  */
 public abstract class Executable {
-	/** Construct an executable.
+
+  public static final int INT = 1024;
+
+  /** Construct an executable.
 	 */
 	public Executable() {}
 
@@ -70,7 +73,7 @@ public abstract class Executable {
 				new Thread() {
 					public void run() {
 						try {
-							byte[] buf = new byte[1024];
+							byte[] buf = new byte[INT];
 							for (;;) {
 								int numRead = in.read(buf);
 								if (numRead == -1) {

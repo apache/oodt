@@ -37,6 +37,8 @@ import org.apache.lucene.index.IndexWriter;
  */
 public class OptimizeLuceneCatalog {
 
+    public static final double DOUBLE = 1000.0;
+    public static final int INT = 20;
     /* the path to the lucene index directory */
     private String catalogPath = null;
 
@@ -66,7 +68,7 @@ public class OptimizeLuceneCatalog {
             long timeBefore = System.currentTimeMillis();
             writer.optimize();
             long timeAfter = System.currentTimeMillis();
-            double numSeconds = ((timeAfter - timeBefore) * 1.0) / 1000.0;
+            double numSeconds = ((timeAfter - timeBefore) * 1.0) / DOUBLE;
             LOG.log(Level.INFO, "LuceneCatalog: [" + this.catalogPath
                     + "] optimized: took: [" + numSeconds + "] seconds");
         } catch (IOException e) {
@@ -105,7 +107,7 @@ public class OptimizeLuceneCatalog {
         }
 
         if (mergeFactor == -1) {
-            mergeFactor = 20; // default
+            mergeFactor = INT; // default
         }
 
         OptimizeLuceneCatalog optimizer = new OptimizeLuceneCatalog(catPath,

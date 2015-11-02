@@ -56,6 +56,10 @@ import java.util.logging.Logger;
  */
 public class XmlRpcResourceManagerClient {
 
+    public static final int VAL = 20;
+    public static final int INT = 60;
+    public static final int VAL1 = 60;
+    public static final int INT1 = 60;
     /* our xml rpc client */
     private XmlRpcClient client = null;
 
@@ -99,13 +103,13 @@ public class XmlRpcResourceManagerClient {
         int connectionTimeoutMins = Integer
             .getInteger(
                 "org.apache.oodt.cas.resource.system.xmlrpc.connectionTimeout.minutes",
-                20);
-        int connectionTimeout = connectionTimeoutMins * 60 * 1000;
+                VAL);
+        int connectionTimeout = connectionTimeoutMins * INT * 1000;
         int requestTimeoutMins = Integer
             .getInteger(
                 "org.apache.oodt.cas.resource.system.xmlrpc.requestTimeout.minutes",
-                60);
-        int requestTimeout = requestTimeoutMins * 60 * 1000;
+                VAL1);
+        int requestTimeout = requestTimeoutMins * INT1 * 1000;
         transportFactory.setConnectionTimeout(connectionTimeout);
         transportFactory.setTimeout(requestTimeout);
         client = new XmlRpcClient(url, transportFactory);

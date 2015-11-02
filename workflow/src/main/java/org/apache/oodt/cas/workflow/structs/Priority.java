@@ -45,9 +45,10 @@ public abstract class Priority implements Comparable<Priority> {
       return "LOW";
     }
   };
+  public static final double DOUBLE = 2.5;
   public static final Priority MEDIUM_LOW = new Priority() {
     public double getValue() {
-      return 2.5;
+      return DOUBLE;
     }
 
     public String getName() {
@@ -63,9 +64,10 @@ public abstract class Priority implements Comparable<Priority> {
       return "MEDIUM";
     }
   };
+  public static final double DOUBLE1 = 7.5;
   public static final Priority MEDIUM_HIGH = new Priority() {
     public double getValue() {
-      return 7.5;
+      return DOUBLE1;
     }
 
     public String getName() {

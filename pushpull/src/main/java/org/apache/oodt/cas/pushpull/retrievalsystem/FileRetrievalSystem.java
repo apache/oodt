@@ -119,13 +119,17 @@ import com.google.common.base.Strings;
  */
 public class FileRetrievalSystem {
 
-    /* our log stream */
+  /* our log stream */
     private static final Logger LOG = Logger
             .getLogger(FileRetrievalSystem.class.getName());
 
     private final static int MAX_RETRIES = 3;
+  public static final int INT = 180;
+  public static final int TIMEOUT = 5000;
+  public static final int TIMEOUT1 = 5000;
+  public static final int TIMEOUT2 = 600;
 
-    private LinkedList<ProtocolFile> failedDownloadList;
+  private LinkedList<ProtocolFile> failedDownloadList;
 
     private HashSet<ProtocolFile> currentlyDownloading;
 
@@ -386,12 +390,12 @@ public class FileRetrievalSystem {
     public void waitUntilAllCurrentDownloadsAreComplete()
             throws ProtocolException {
         synchronized (this) {
-            for (int i = 0; i < 180; i++) {
+            for (int i = 0; i < INT; i++) {
                 try {
                     if (this.avaliableSessions.size() == this.numberOfSessions) {
                       return;
                     } else {
-                      this.wait(5000);
+                      this.wait(TIMEOUT);
                     }
                 } catch (Exception ignored) {
                 }
@@ -495,7 +499,7 @@ public class FileRetrievalSystem {
                                     + file + " . . . retrying in 5 secs");
                             synchronized (this) {
                                 try {
-                                    wait(5000);
+                                    wait(TIMEOUT1);
                                 } catch (Exception ignored) {
                                 }
                             }
@@ -919,7 +923,7 @@ public class FileRetrievalSystem {
             // close out threadpool
             threadController.shutdown();
             // give a max of 10 minutes to finish downloading any files
-            threadController.awaitTermination(600, TimeUnit.SECONDS);
+            threadController.awaitTermination(TIMEOUT2, TimeUnit.SECONDS);
         } catch (Exception e) {
             // log failure
         }

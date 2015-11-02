@@ -60,6 +60,8 @@ import java.util.logging.Logger;
  */
 public final class PCSHealthMonitor implements CoreMetKeys,
     PCSHealthMonitorMetKeys {
+  public static final double DOUBLE = 1000.0;
+  public static final double DOUBLE1 = 1000.0;
   private static Logger LOG = Logger.getLogger(PCSHealthMonitor.class.getName());
   private FileManagerUtils fm;
 
@@ -359,7 +361,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
         health.setCrawlerName(info.getCrawlerName());
         health.setNumCrawls(controller.getNumCrawls());
         health
-            .setAvgCrawlTime((double) (controller.getAverageCrawlTime() / 1000.0));
+            .setAvgCrawlTime((double) (controller.getAverageCrawlTime() / DOUBLE));
         statuses.add(health);
 
       } catch (Exception e) {
@@ -560,7 +562,7 @@ public final class PCSHealthMonitor implements CoreMetKeys,
         System.out.println(info.getCrawlerName() + ":");
         System.out.println("Number of Crawls: " + controller.getNumCrawls());
         System.out.println("Average Crawl Time (seconds): "
-                           + (double) (controller.getAverageCrawlTime() / 1000.0));
+                           + (double) (controller.getAverageCrawlTime() / DOUBLE1));
         System.out.println("");
 
       } catch (Exception e) {

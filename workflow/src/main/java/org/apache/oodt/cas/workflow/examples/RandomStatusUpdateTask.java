@@ -45,6 +45,7 @@ import java.util.logging.Logger;
  * programmatically.
  */
 public class RandomStatusUpdateTask implements WorkflowTaskInstance {
+    public static final long MILLIS = 5000L;
     private static Logger LOG = Logger.getLogger(RandomStatusUpdateTask.class.getName());
     private static final String[] statuses = new String[] { "THINKING",
             "RUNNING", "WAITING", "INFINITELY WAITING", "WATCHING TV",
@@ -75,7 +76,7 @@ public class RandomStatusUpdateTask implements WorkflowTaskInstance {
             String statusPicked = statuses[idx];
             updateWorkflowInstanceStatus(workflowInstId, statusPicked);
             try {
-                Thread.currentThread().sleep(5000L);
+                Thread.currentThread().sleep(MILLIS);
             } catch (InterruptedException ignore) {
             }
             numPicked++;

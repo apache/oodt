@@ -50,10 +50,11 @@ import java.util.logging.Logger;
  */
 public class RemoteDataTransferer implements DataTransfer {
 
-   /*
-    * the url pointer to the file manager that we'll remotely transfer the file
-    * to
-    */
+  public static final int NUM_BYTES = 1024;
+  /*
+        * the url pointer to the file manager that we'll remotely transfer the file
+        * to
+        */
    private URL fileManagerUrl = null;
 
    /*
@@ -174,15 +175,15 @@ public class RemoteDataTransferer implements DataTransfer {
             int offset = 0;
             while (true) {
                fileData = (byte[]) client.retrieveFile(
-                     dataStoreFile.getAbsolutePath(), offset, 1024);
+                     dataStoreFile.getAbsolutePath(), offset, NUM_BYTES);
                if (fileData.length <= 0) {
                  break;
                }
                fOut.write(fileData);
-               if (fileData.length < 1024) {
+               if (fileData.length < NUM_BYTES) {
                  break;
                }
-               offset += 1024;
+               offset += NUM_BYTES;
             }
          } catch (Exception e) {
             throw new DataTransferException("", e);

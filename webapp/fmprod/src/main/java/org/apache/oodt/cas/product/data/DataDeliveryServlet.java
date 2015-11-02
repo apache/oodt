@@ -55,6 +55,8 @@ import javax.servlet.ServletException;
 public class DataDeliveryServlet extends HttpServlet implements
     DataDeliveryKeys {
 
+  public static final int INT = 512;
+
   /** {@inheritDoc} */
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
@@ -187,7 +189,7 @@ public class DataDeliveryServlet extends HttpServlet implements
 
       // 3. Deliver the data.
       o2 = res.getOutputStream();
-      byte[] buf = new byte[512];
+      byte[] buf = new byte[INT];
       int n;
       while ((n = in.read(buf)) != -1) {
         o2.write(buf, 0, n);
@@ -241,7 +243,7 @@ public class DataDeliveryServlet extends HttpServlet implements
     URLConnection c = url.openConnection();
     InputStream in = c.getInputStream();
     OutputStream out = res.getOutputStream();
-    byte[] buf = new byte[512];
+    byte[] buf = new byte[INT];
     int n;
     while ((n = in.read(buf)) != -1) {
       out.write(buf, 0, n);

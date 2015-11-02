@@ -46,6 +46,7 @@ import java.util.Map;
 public class GangliaAdapter {
 
     private static final String ENCODING = "ISO-8859-1";
+    public static final int PORT = -9999;
 
     private String host;
     
@@ -58,7 +59,7 @@ public class GangliaAdapter {
     }
 
     protected GangliaAdapter(){
-    	this(null, -9999);
+    	this(null, PORT);
     }
     
     /**

@@ -38,7 +38,8 @@ import javax.sql.DataSource;
 public class DataSourceWorkflowInstanceRepositoryFactory implements
         WorkflowInstanceRepositoryFactory {
 
-    /* our data source */
+  public static final int VAL = 20;
+  /* our data source */
     private DataSource dataSource = null;
 
     /* whether or not we are quoting the task_id and workflow_id fields */
@@ -80,7 +81,7 @@ public class DataSourceWorkflowInstanceRepositoryFactory implements
         quoteFields = Boolean
                 .getBoolean("org.apache.oodt.cas.workflow.instanceRep.datasource.quoteFields");
         pageSize = Integer.getInteger(
-            "org.apache.oodt.cas.workflow.instanceRep.pageSize", 20);
+            "org.apache.oodt.cas.workflow.instanceRep.pageSize", VAL);
 
     }
 

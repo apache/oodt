@@ -41,7 +41,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class ProductQueryServlet extends QueryServlet {
-	/** {@inheritDoc} */
+
+  public static final int INT = 512;
+
+  /** {@inheritDoc} */
 	protected List getServers(Configuration config) {
 		return config.getProductServers();
 	}
@@ -96,7 +99,7 @@ public class ProductQueryServlet extends QueryServlet {
 		BufferedInputStream in = null;					       // Start with no input stream
 		try {								       // Then try ...
 			in = new BufferedInputStream(result.getInputStream());	       // To open the input stream
-			byte[] buf = new byte[512];				       // And a byte buffer for data
+			byte[] buf = new byte[INT];				       // And a byte buffer for data
 			int num;						       // And a place to count data
 			while ((num = in.read(buf)) != -1)			       // While we read
 			{

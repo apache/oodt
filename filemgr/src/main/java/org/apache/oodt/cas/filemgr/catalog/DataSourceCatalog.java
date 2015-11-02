@@ -69,7 +69,8 @@ import javax.sql.DataSource;
  */
 public class DataSourceCatalog implements Catalog {
 
-    /* our sql data source */
+  public static final int INT = 60;
+  /* our sql data source */
     protected DataSource dataSource = null;
 
     /* our log stream */
@@ -1874,7 +1875,7 @@ public class DataSourceCatalog implements Catalog {
                 long timeDifferenceMilis = currentTime.getTime()
                         - lastUpdateTimeDate.getTime();
                 long timeDifferenceSeconds = timeDifferenceMilis * 1000;
-                long timeDifferenceMinutes = timeDifferenceSeconds / 60;
+                long timeDifferenceMinutes = timeDifferenceSeconds / INT;
 
               return timeDifferenceMinutes < cacheUpdateMinutes;
             } catch (Exception e) {
