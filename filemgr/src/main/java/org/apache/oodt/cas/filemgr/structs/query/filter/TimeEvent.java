@@ -85,5 +85,16 @@ public class TimeEvent implements Comparable<TimeEvent> {
     public int compareTo(TimeEvent te) {
         return new Long(this.startTime).compareTo(te.startTime);
     }
-    
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = (int) (startTime ^ (startTime >>> 32));
+        result = 31 * result + (int) (endTime ^ (endTime >>> 32));
+        result = 31 * result + (int) (dur ^ (dur >>> 32));
+        temp = Double.doubleToLongBits(priority);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }

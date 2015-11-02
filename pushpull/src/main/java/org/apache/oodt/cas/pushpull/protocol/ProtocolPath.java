@@ -131,4 +131,12 @@ public class ProtocolPath implements Serializable {
         return new ProtocolPath(path.substring(0, path.lastIndexOf("/")), true);
     }
 
+    @Override
+    public int hashCode() {
+        int result = path != null ? path.hashCode() : 0;
+        result = 31 * result + (remotePath != null ? remotePath.hashCode() : 0);
+        result = 31 * result + (relativeToHOME ? 1 : 0);
+        result = 31 * result + (isDir ? 1 : 0);
+        return result;
+    }
 }

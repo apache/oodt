@@ -402,4 +402,32 @@ public class TimeEventWeightedHash {
       return output;
   }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        TimeEventWeightedHash that = (TimeEventWeightedHash) o;
+
+        if (epsilon != that.epsilon) {
+            return false;
+        }
+        if (root != null ? !root.equals(that.root) : that.root != null) {
+            return false;
+        }
+        return !(leafNodes != null ? !leafNodes.equals(that.leafNodes) : that.leafNodes != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = root != null ? root.hashCode() : 0;
+        result = 31 * result + (int) (epsilon ^ (epsilon >>> 32));
+        result = 31 * result + (leafNodes != null ? leafNodes.hashCode() : 0);
+        return result;
+    }
 }

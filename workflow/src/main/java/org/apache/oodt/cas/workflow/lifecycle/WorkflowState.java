@@ -136,5 +136,15 @@ public class WorkflowState {
   public void setPrevState(WorkflowState prevState) {
     this.prevState = prevState;
   }
-	
+
+  @Override
+  public int hashCode() {
+	int result = name != null ? name.hashCode() : 0;
+	result = 31 * result + (description != null ? description.hashCode() : 0);
+	result = 31 * result + (message != null ? message.hashCode() : 0);
+	result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
+	result = 31 * result + (category != null ? category.hashCode() : 0);
+	result = 31 * result + (prevState != null ? prevState.hashCode() : 0);
+	return result;
+  }
 }

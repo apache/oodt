@@ -18,14 +18,15 @@
 package org.apache.oodt.cas.filemgr.structs.query;
 
 //JDK imports
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.metadata.Metadata;
 
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * 
@@ -131,4 +132,11 @@ public class QueryResult {
       return true;
     }
 
+  @Override
+  public int hashCode() {
+    int result = product != null ? product.hashCode() : 0;
+    result = 31 * result + (metadata != null ? metadata.hashCode() : 0);
+    result = 31 * result + (toStringFormat != null ? toStringFormat.hashCode() : 0);
+    return result;
+  }
 }

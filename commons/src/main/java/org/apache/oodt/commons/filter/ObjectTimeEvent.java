@@ -59,4 +59,8 @@ public class ObjectTimeEvent<objType> extends TimeEvent {
         return super.toString() + " - " + timeObj;
     }
 
+    @Override
+    public int hashCode() {
+        return timeObj != null ? timeObj.hashCode() : 0;
+    }
 }

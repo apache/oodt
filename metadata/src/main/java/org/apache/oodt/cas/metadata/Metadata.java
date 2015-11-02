@@ -602,4 +602,8 @@ public class Metadata {
     }
   }
 
+  @Override
+  public int hashCode() {
+    return root != null ? root.hashCode() : 0;
+  }
 }

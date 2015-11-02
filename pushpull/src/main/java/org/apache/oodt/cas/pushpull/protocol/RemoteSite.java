@@ -115,4 +115,15 @@ public class RemoteSite {
                 + "'  username = '" + this.username + "' cdTestDir = '" 
                 + this.cdTestDir + "' maxConnections = '" + this.maxConnections + "'";
     }
+
+    @Override
+    public int hashCode() {
+        int result = alias != null ? alias.hashCode() : 0;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (cdTestDir != null ? cdTestDir.hashCode() : 0);
+        result = 31 * result + maxConnections;
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        return result;
+    }
 }

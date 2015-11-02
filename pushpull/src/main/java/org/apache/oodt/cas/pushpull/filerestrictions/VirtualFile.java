@@ -302,4 +302,16 @@ public class VirtualFile {
         return output;
     }
 
+    @Override
+    public int hashCode() {
+        int result = regExp != null ? regExp.hashCode() : 0;
+        result = 31 * result + (children != null ? children.hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        result = 31 * result + (noDirs ? 1 : 0);
+        result = 31 * result + (noFiles ? 1 : 0);
+        result = 31 * result + (isDir ? 1 : 0);
+        result = 31 * result + (allowNewFiles ? 1 : 0);
+        result = 31 * result + (allowNewDirs ? 1 : 0);
+        return result;
+    }
 }
