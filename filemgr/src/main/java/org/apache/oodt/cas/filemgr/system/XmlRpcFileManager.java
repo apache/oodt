@@ -178,7 +178,7 @@ public class XmlRpcFileManager {
         }
     }
 
-    public Vector<Map<String, Object>> getCurrentFileTransfers() {
+    public List<Map<String, Object>> getCurrentFileTransfers() {
         List<FileTransferStatus> currentTransfers = transferStatusTracker.getCurrentFileTransfers();
 
         if (currentTransfers != null && currentTransfers.size() > 0) {
@@ -359,7 +359,7 @@ public class XmlRpcFileManager {
         return numProducts;
     }
 
-    public Vector<Map<String, Object>> getTopNProducts(int n)
+    public List<Map<String, Object>> getTopNProducts(int n)
             throws CatalogException {
         List<Product> topNProducts;
 
@@ -375,7 +375,7 @@ public class XmlRpcFileManager {
         }
     }
 
-    public Vector<Map<String, Object>> getTopNProducts(int n,
+    public List<Map<String, Object>> getTopNProducts(int n,
             Map<String, Object> productTypeHash)
             throws CatalogException {
         ProductType type = XmlRpcStructFactory
@@ -415,7 +415,7 @@ public class XmlRpcFileManager {
         return this.getReducedMetadata(product, elements).getMap();
     }
 
-    public Vector<Map<String, Object>> getProductTypes()
+    public List<Map<String, Object>> getProductTypes()
             throws RepositoryManagerException {
         List<ProductType> productTypeList;
 
@@ -432,7 +432,7 @@ public class XmlRpcFileManager {
         }
     }
 
-    public Vector<Map<String, Object>> getProductReferences(
+    public List<Map<String, Object>> getProductReferences(
             Map<String, Object> productHash)
             throws CatalogException {
         List<Reference> referenceList;
@@ -508,7 +508,7 @@ public class XmlRpcFileManager {
         }
     }
 
-    public Vector<Map<String, Object>> getProductsByProductType(
+    public List<Map<String, Object>> getProductsByProductType(
             Map<String, Object> productTypeHash)
             throws CatalogException {
         ProductType type = XmlRpcStructFactory
@@ -527,7 +527,7 @@ public class XmlRpcFileManager {
         }
     }
 
-    public Vector<Map<String, Object>> getElementsByProductType(
+    public List<Map<String, Object>> getElementsByProductType(
             Map<String, Object> productTypeHash)
             throws ValidationLayerException {
         ProductType type = XmlRpcStructFactory
@@ -578,7 +578,7 @@ public class XmlRpcFileManager {
         }
     }
 
-    public Vector<Map<String, Object>> complexQuery(
+    public List<Map<String, Object>> complexQuery(
             Map<String, Object> complexQueryHash) throws CatalogException {
         try {
             ComplexQuery complexQuery = XmlRpcStructFactory
@@ -639,7 +639,7 @@ public class XmlRpcFileManager {
         }
     }
     
-    public Vector<Map<String, Object>> query(
+    public List<Map<String, Object>> query(
             Map<String, Object> queryHash,
             Map<String, Object> productTypeHash)
             throws CatalogException {

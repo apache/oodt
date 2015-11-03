@@ -272,7 +272,7 @@ public class MockXmlRpcWorkflowManagerClient extends
       return workflowRepo.getWorkflowById(workflowId);
    }
 
-   public Vector<Workflow> getWorkflows() throws RepositoryException {
+   public List<Workflow> getWorkflows() throws RepositoryException {
       lastMethodCallDetails = new MethodCallDetails(
             "getWorkflows",
             Lists.newArrayList());
@@ -293,14 +293,14 @@ public class MockXmlRpcWorkflowManagerClient extends
       return 1;
    }
 
-   public Vector<WorkflowInstance> getWorkflowInstancesByStatus(String status)  {
+   public List<WorkflowInstance> getWorkflowInstancesByStatus(String status)  {
       lastMethodCallDetails = new MethodCallDetails(
             "getWorkflowInstancesByStatus",
             Lists.newArrayList((Object) status));
       return new Vector<WorkflowInstance>();
    }
 
-   public Vector<WorkflowInstance> getWorkflowInstances() {
+   public List<WorkflowInstance> getWorkflowInstances() {
       lastMethodCallDetails = new MethodCallDetails(
             "getWorkflowInstances",
             Lists.newArrayList());

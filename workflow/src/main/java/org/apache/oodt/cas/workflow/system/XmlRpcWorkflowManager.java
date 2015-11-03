@@ -136,7 +136,7 @@ public class XmlRpcWorkflowManager {
     return inst.getId();
   }
 
-    public Vector getRegisteredEvents() throws RepositoryException {
+    public List getRegisteredEvents() throws RepositoryException {
 
         List events;
         Vector eventsVector = new Vector();
@@ -254,7 +254,7 @@ public class XmlRpcWorkflowManager {
         return met.getMap();
     }
 
-    public Vector getWorkflowsByEvent(String eventName)
+    public List getWorkflowsByEvent(String eventName)
             throws RepositoryException {
         List workflows;
         Vector workflowList = new Vector();
@@ -371,7 +371,7 @@ public class XmlRpcWorkflowManager {
         return engine.getInstanceRepository().getNumWorkflowInstances();
     }
 
-    public Vector getWorkflowInstancesByStatus(String status)
+    public List getWorkflowInstancesByStatus(String status)
             throws EngineException {
         List workflowInsts;
 
@@ -424,7 +424,7 @@ public class XmlRpcWorkflowManager {
         return workflowInstances;
     }
 
-    public Vector getWorkflowInstances() throws EngineException {
+    public List getWorkflowInstances() throws EngineException {
         List workflowInsts;
 
         Vector workflowInstances = new Vector();
@@ -478,7 +478,7 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public Vector getWorkflows() throws RepositoryException {
+    public List getWorkflows() throws RepositoryException {
         List workflowList = repo.getWorkflows();
         Vector workflows = new Vector();
 

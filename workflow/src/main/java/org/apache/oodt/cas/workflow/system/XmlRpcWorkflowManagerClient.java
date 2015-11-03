@@ -395,7 +395,7 @@ public class XmlRpcWorkflowManagerClient {
 
     }
 
-    public Vector getWorkflows() throws XmlRpcException, IOException, RepositoryException {
+    public List getWorkflows() throws XmlRpcException, IOException, RepositoryException {
         Vector argList = new Vector();
         Vector works;
         Vector workflows;
@@ -444,7 +444,7 @@ public class XmlRpcWorkflowManagerClient {
         return numInsts;
     }
 
-    public Vector getWorkflowInstancesByStatus(String status) throws XmlRpcException, IOException {
+    public List getWorkflowInstancesByStatus(String status) throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(status);
         Vector insts;
@@ -468,7 +468,7 @@ public class XmlRpcWorkflowManagerClient {
 
     }
 
-    public Vector getWorkflowInstances() throws XmlRpcException, IOException {
+    public List getWorkflowInstances() throws XmlRpcException, IOException {
         Vector argList = new Vector();
         Vector insts;
         Vector instsUnpacked;
