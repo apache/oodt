@@ -41,6 +41,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.List;
 import java.util.Vector;
@@ -321,6 +322,45 @@ public class XmlRpcWorkflowManager {
         }
     }
 
+  public boolean handleEvent(String eventName, Hashtable metadata)
+      throws RepositoryException, EngineException {
+    LOG.log(Level.INFO, "WorkflowManager: Received event: " + eventName);
+
+    List workflows;
+
+    try {
+      workflows = repo.getWorkflowsForEvent(eventName);
+    } catch (Exception e) {
+      LOG.log(Level.SEVERE, e.getMessage());
+      throw new RepositoryException(
+          "Exception getting workflows associated with event: "
+          + eventName + ": Message: " + e.getMessage());
+    }
+
+    if (workflows != null) {
+      for (Object workflow : workflows) {
+        Workflow w = (Workflow) workflow;
+        LOG.log(Level.INFO, "WorkflowManager: Workflow " + w.getName()
+                            + " retrieved for event " + eventName);
+
+        Metadata m = new Metadata();
+        m.addMetadata(metadata);
+
+        try {
+          engine.startWorkflow(w, m);
+        } catch (Exception e) {
+          LOG.log(Level.SEVERE, e.getMessage());
+          throw new EngineException(
+              "Engine exception when starting workflow: "
+              + w.getName() + ": Message: "
+              + e.getMessage());
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
     public Map getWorkflowInstanceById(String wInstId) {
         WorkflowInstance inst;
 

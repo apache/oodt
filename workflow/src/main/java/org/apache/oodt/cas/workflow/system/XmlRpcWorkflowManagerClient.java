@@ -93,7 +93,7 @@ public class XmlRpcWorkflowManagerClient {
     String instId;
     
     argList.add(taskIdVector);
-    argList.add(metadata.getMap());
+    argList.add(metadata.getHashTable());
 
       instId = (String) client.execute("workflowmgr.executeDynamicWorkflow",
           argList);
@@ -333,7 +333,7 @@ public class XmlRpcWorkflowManagerClient {
             String workflowInstId, Metadata metadata) throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(workflowInstId);
-        argList.add(metadata.getMap());
+        argList.add(metadata.getHashTable());
 
             return (Boolean) client.execute(
                 "workflowmgr.updateMetadataForWorkflow", argList);
@@ -345,7 +345,7 @@ public class XmlRpcWorkflowManagerClient {
         throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(eventName);
-        argList.add(metadata.getMap());
+        argList.add(metadata.getHashTable());
 
             return (Boolean) client
                 .execute("workflowmgr.handleEvent", argList);

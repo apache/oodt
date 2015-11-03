@@ -596,6 +596,7 @@ public class Metadata {
 
   }
 
+
   @Deprecated
   public Hashtable<String, Object> getHashTable() {
     Hashtable<String, Object> table = new Hashtable<String, Object>();
