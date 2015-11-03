@@ -30,10 +30,10 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -51,7 +51,7 @@ public class EnterpriseEntityResolver implements EntityResolver {
 
 	/** Initialize the class by reading the entites.xml file. */
 	static {
-		entities = new ConcurrentHashMap();
+		entities = new HashMap();
 		try {
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			factory.setNamespaceAware(false);

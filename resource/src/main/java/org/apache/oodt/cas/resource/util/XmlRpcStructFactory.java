@@ -25,6 +25,7 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -46,8 +47,8 @@ public final class XmlRpcStructFactory {
 		throw new InstantiationException("Don't construct factory classes!");
 	}
 
-	public static HashMap<String, Object> getXmlRpcJob(Job job) {
-	  HashMap<String, Object> jobHash = new HashMap<String, Object>();
+	public static Hashtable<String, Object> getXmlRpcJob(Job job) {
+	  Hashtable<String, Object> jobHash = new Hashtable<String, Object>();
 		jobHash.put("job.id", job.getId() != null ? job.getId():"");
 		jobHash.put("job.name", job.getName());
 		jobHash.put("job.instanceClassName", job.getJobInstanceClassName());
@@ -120,8 +121,8 @@ public final class XmlRpcStructFactory {
     return resNodes;
   }
 
-  public static HashMap<String,String> getXmlRpcResourceNode(ResourceNode node) {
-    HashMap<String, String> resNodeHash = new HashMap<String, String>();
+  public static Hashtable<String,String> getXmlRpcResourceNode(ResourceNode node) {
+    Hashtable<String, String> resNodeHash = new Hashtable<String, String>();
     resNodeHash.put("node.id", node.getNodeId());
     resNodeHash.put("node.capacity", String.valueOf(node.getCapacity()));
     resNodeHash.put("node.url", node.getIpAddr().toExternalForm());

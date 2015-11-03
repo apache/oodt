@@ -16,15 +16,15 @@
  */
 package org.apache.oodt.cas.resource.mux;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.scheduler.Scheduler;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This manager keeps track of the mux-able backends for the resource manager.
@@ -40,7 +40,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
  * @author starchmd
  */
 public class StandardBackendManager implements BackendManager {
-    Map<String,BackendSet> queueToBackend = new ConcurrentHashMap<String,BackendSet>();
+    Map<String,BackendSet> queueToBackend = new HashMap<String,BackendSet>();
 
     /**
      * Add in a backend set to this manager.
