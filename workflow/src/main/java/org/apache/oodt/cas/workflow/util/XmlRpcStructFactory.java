@@ -29,7 +29,8 @@ import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,17 +54,17 @@ public final class XmlRpcStructFactory {
   }
 
   /**
-   * Gets a {@link Hashtable} representation of a {@link WorkflowInstancePage}
+   * Gets a {@link HashMap} representation of a {@link WorkflowInstancePage}
    * that is serializable over the XML-RPC wire.
    * 
    * @param page
-   *          The {@link WorkflowInstancePage} to turn into a {@link Hashtable}.
-   * @return A {@link Hashtable} representation of a
+   *          The {@link WorkflowInstancePage} to turn into a {@link HashMap}.
+   * @return A {@link HashMap} representation of a
    *         {@link WorkflowInstancePage}.
    */
-  public static Hashtable getXmlRpcWorkflowInstancePage(
+  public static HashMap getXmlRpcWorkflowInstancePage(
       WorkflowInstancePage page) {
-    Hashtable pageHash = new Hashtable();
+    HashMap pageHash = new HashMap();
     pageHash.put("totalPages", String.valueOf(page.getTotalPages()));
     pageHash.put("pageNum", String.valueOf(page.getPageNum()));
     pageHash.put("pageSize", String.valueOf(page.getPageSize()));
@@ -76,14 +77,14 @@ public final class XmlRpcStructFactory {
 
   /**
    * Gets a {@link WorkflowInstancePage} off of the XML-RPC wire by converting
-   * the XML-RPC {@link Hashtable} representation of the page into a
+   * the XML-RPC {@link HashMap} representation of the page into a
    * {@link WorkflowInstancePage}.
    * 
    * @param pageHash
-   *          The XML-RPC {@link Hashtable} representation of this
+   *          The XML-RPC {@link HashMap} representation of this
    *          {@link WorkflowInstancePage}.
    * @return The {@link WorkflowInstancePage} that this XML-RPC
-   *         {@link Hashtable} provided represents.
+   *         {@link HashMap} provided represents.
    */
   public static WorkflowInstancePage getWorkflowInstancePageFromXmlRpc(
       Map pageHash) {
@@ -100,16 +101,16 @@ public final class XmlRpcStructFactory {
 
   /**
    * <p>
-   * Gets a {@link Hashtable} representation of a {@link WorkflowInstance} to be
+   * Gets a {@link HashMap} representation of a {@link WorkflowInstance} to be
    * sent across the XML-RPC wire.
    * </p>
    * 
    * @param wInst
-   *          The WorkflowInstance to turned into a java.util.Hashtable.
-   * @return A {@link Hashtable} representation of a {@link WorkflowInstance}.
+   *          The WorkflowInstance to turned into a java.util.HashMap.
+   * @return A {@link HashMap} representation of a {@link WorkflowInstance}.
    */
-  public static Hashtable getXmlRpcWorkflowInstance(WorkflowInstance wInst) {
-    Hashtable workflowInstance = new Hashtable();
+  public static HashMap getXmlRpcWorkflowInstance(WorkflowInstance wInst) {
+    HashMap workflowInstance = new HashMap();
     workflowInstance.put("current_task_id", wInst.getCurrentTaskId());
     workflowInstance.put("status", wInst.getStatus());
     workflowInstance.put("id", wInst.getId());
@@ -130,7 +131,7 @@ public final class XmlRpcStructFactory {
             .getCurrentTaskEndDateTimeIsoStr() : "");
     workflowInstance.put("sharedContext",
         wInst.getSharedContext() != null ? wInst.getSharedContext()
-            .getMap() : new Hashtable());
+            .getMap() : new HashMap());
     workflowInstance.put(
         "priority",
         wInst.getPriority() != null ? String.valueOf(wInst.getPriority()
@@ -144,7 +145,7 @@ public final class XmlRpcStructFactory {
     wInst.setCurrentTaskId((String) workflowInstance.get("current_task_id"));
     wInst.setStatus((String) workflowInstance.get("status"));
     wInst.setId((String) workflowInstance.get("id"));
-    wInst.setWorkflow(getWorkflowFromXmlRpc((Hashtable) workflowInstance
+    wInst.setWorkflow(getWorkflowFromXmlRpc((HashMap) workflowInstance
         .get("workflow")));
     wInst.setStartDateTimeIsoStr((String) workflowInstance
         .get("start_date_time"));
@@ -155,7 +156,7 @@ public final class XmlRpcStructFactory {
         .get("current_task_end_date_time"));
     if (workflowInstance.get("sharedContext") != null) {
       Metadata met = new Metadata();
-      met.addMetadata((Hashtable) workflowInstance.get("sharedContext"));
+      met.addMetadata((HashMap) workflowInstance.get("sharedContext"));
       wInst.setSharedContext(met);
     } else {
       wInst.setSharedContext(new Metadata());
@@ -167,20 +168,20 @@ public final class XmlRpcStructFactory {
 
   /**
    * Gets a {@link List} of {@link WorkflowInstance}s from their representations
-   * as {@link Hashtable}s in XML-RPC.
+   * as {@link HashMap}s in XML-RPC.
    * 
    * @param instsVector
-   *          The {@link Vector} of {@link Hashtable} representations of
+   *          The {@link Vector} of {@link HashMap} representations of
    *          {@link WorkflowInstance}s.
    * @return A {@link List} of {@link WorkflowInstance}s from their
-   *         representations as {@link Hashtable}s in XML-RPC.
+   *         representations as {@link HashMap}s in XML-RPC.
    */
   public static List getWorkflowInstancesFromXmlRpc(Vector instsVector) {
     List wInsts = new Vector();
 
     if (instsVector != null && instsVector.size() > 0) {
       for (Object anInstsVector : instsVector) {
-        Hashtable wInstHash = (Hashtable) anInstsVector;
+        HashMap wInstHash = (HashMap) anInstsVector;
         WorkflowInstance inst = getWorkflowInstanceFromXmlRpc(wInstHash);
         wInsts.add(inst);
       }
@@ -190,12 +191,12 @@ public final class XmlRpcStructFactory {
   }
 
   /**
-   * Gets an XML-RPC serializable {@link Vector} of {@link Hashtable}
+   * Gets an XML-RPC serializable {@link Vector} of {@link HashMap}
    * representations of {@link WorkflowInstance}s.
    * 
    * @param wInsts
    *          The {@link List} of {@link WorkflowInstance}s to serialize.
-   * @return A XML-RPC serializable {@link Vector} of {@link Hashtable}
+   * @return A XML-RPC serializable {@link Vector} of {@link HashMap}
    *         representations of {@link WorkflowInstance}s.
    */
   public static Vector getXmlRpcWorkflowInstances(List wInsts) {
@@ -213,16 +214,16 @@ public final class XmlRpcStructFactory {
 
   /**
    * <p>
-   * Gets a {@link Hashtable} representation of a {@link Workflow} to be sent
+   * Gets a {@link HashMap} representation of a {@link Workflow} to be sent
    * across the XML-RPC wire.
    * </p>
    * 
    * @param w
-   *          The Workflow to be turned into a java.util.Hashtable
-   * @return A {@link Hashtable} representation of a {@link Workflow}.
+   *          The Workflow to be turned into a java.util.HashMap
+   * @return A {@link HashMap} representation of a {@link Workflow}.
    */
-  public static Hashtable getXmlRpcWorkflow(Workflow w) {
-    Hashtable workflow = new Hashtable();
+  public static HashMap getXmlRpcWorkflow(Workflow w) {
+    HashMap workflow = new HashMap();
     workflow.put("id", w.getId());
     workflow.put("name", w.getName() != null ? w.getName() : "");
     workflow.put("tasks", getXmlRpcWorkflowTasks(w.getTasks()));
@@ -233,12 +234,12 @@ public final class XmlRpcStructFactory {
 
   /**
    * <p>
-   * Gets a {@link Workflow} from the XML-RPC {@link Hashtable} version.
+   * Gets a {@link Workflow} from the XML-RPC {@link HashMap} version.
    * </p>
    * 
    * @param w
-   *          The Hashtable to obtain a Workflow from.
-   * @return a {@link Workflow} from the XML-RPC {@link Hashtable} version.
+   *          The HashMap to obtain a Workflow from.
+   * @return a {@link Workflow} from the XML-RPC {@link HashMap} version.
    */
   public static Workflow getWorkflowFromXmlRpc(Map w) {
     Workflow workflow = new Workflow();
@@ -257,12 +258,12 @@ public final class XmlRpcStructFactory {
    * </p>
    * 
    * @param t
-   *          The WorkflowTask to obtain an XML-RPC Hashtable from.
+   *          The WorkflowTask to obtain an XML-RPC HashMap from.
    * @return an XML-RPC version of the {@link WorkflowTask} to send over the
    *         wire.
    */
-  public static Hashtable getXmlRpcWorkflowTask(WorkflowTask t) {
-    Hashtable task = new Hashtable();
+  public static HashMap getXmlRpcWorkflowTask(WorkflowTask t) {
+    HashMap task = new HashMap();
     task.put("class", t.getTaskInstanceClassName());
     task.put("id", t.getTaskId());
     task.put("name", t.getTaskName());
@@ -296,7 +297,7 @@ public final class XmlRpcStructFactory {
 
     for (Object task1 : tasks) {
       WorkflowTask t = (WorkflowTask) task1;
-      Hashtable task = getXmlRpcWorkflowTask(t);
+      HashMap task = getXmlRpcWorkflowTask(t);
       wTasks.add(task);
     }
 
@@ -305,13 +306,13 @@ public final class XmlRpcStructFactory {
 
   /**
    * <p>
-   * Gets a {@link WorkflowTask} from an XML-RPC {@link Hashtable} sent over the
+   * Gets a {@link WorkflowTask} from an XML-RPC {@link HashMap} sent over the
    * wire.
    * </p>
    * 
    * @param task
-   *          The XML-RPC Hashtable version of the WorkflowTask.
-   * @return a {@link WorkflowTask} from an XML-RPC {@link Hashtable} sent over
+   *          The XML-RPC HashMap version of the WorkflowTask.
+   * @return a {@link WorkflowTask} from an XML-RPC {@link HashMap} sent over
    *         the wire.
    */
   public static WorkflowTask getWorkflowTaskFromXmlRpc(Map task) {
@@ -320,7 +321,7 @@ public final class XmlRpcStructFactory {
     t.setTaskId((String) task.get("id"));
     t.setTaskName((String) task.get("name"));
     t.setOrder(Integer.valueOf((String) task.get("order")));
-    t.setTaskConfig(getWorkflowTaskConfigurationFromXmlRpc((Hashtable) task
+    t.setTaskConfig(getWorkflowTaskConfigurationFromXmlRpc((HashMap) task
         .get("configuration")));
     t.setConditions(getWorkflowConditionsFromXmlRpc((Vector) task
         .get("conditions")));
@@ -345,8 +346,8 @@ public final class XmlRpcStructFactory {
     List tasks = new Vector();
 
     for (Object tsk : tsks) {
-      Hashtable taskHashtable = (Hashtable) tsk;
-      WorkflowTask task = getWorkflowTaskFromXmlRpc(taskHashtable);
+      HashMap taskHashMap = (HashMap) tsk;
+      WorkflowTask task = getWorkflowTaskFromXmlRpc(taskHashMap);
       tasks.add(task);
 
     }
@@ -355,17 +356,17 @@ public final class XmlRpcStructFactory {
 
   /**
    * <p>
-   * Gets an XML-RPC {@link Hashtable} representation of the
+   * Gets an XML-RPC {@link HashMap} representation of the
    * {@link WorkflowCondition} to send over the wire.
    * </p>
    * 
    * @param c
-   *          The WorkflowCondition to turn into an XML-RPC Hashtable.
-   * @return an XML-RPC {@link Hashtable} representation of the
+   *          The WorkflowCondition to turn into an XML-RPC HashMap.
+   * @return an XML-RPC {@link HashMap} representation of the
    *         {@link WorkflowCondition} to send over the wire.
    */
-  public static Hashtable getXmlRpcWorkflowCondition(WorkflowCondition c) {
-    Hashtable condition = new Hashtable();
+  public static HashMap getXmlRpcWorkflowCondition(WorkflowCondition c) {
+    HashMap condition = new HashMap();
     condition.put("class", c.getConditionInstanceClassName());
     condition.put("id", c.getConditionId());
     condition.put("name", c.getConditionName());
@@ -384,13 +385,13 @@ public final class XmlRpcStructFactory {
    * 
    * @param conf
    *          The {@link WorkflowConditionConfiguration} to transform into an
-   *          XML-RPC {@link Hashtable}.
+   *          XML-RPC {@link HashMap}.
    * @return an XML-RPC friendly version of a
    *         {@link WorkflowConditionConfiguration}.
    */
-  public static Hashtable getXmlRpcWorkflowConditionConfig(
+  public static HashMap getXmlRpcWorkflowConditionConfig(
       WorkflowConditionConfiguration conf) {
-    Hashtable confHash = new Hashtable();
+    HashMap confHash = new HashMap();
     for (String propName : (Set<String>) (Set<?>) conf.getProperties().keySet()) {
       confHash.put(propName, conf.getProperty(propName));
     }
@@ -421,7 +422,7 @@ public final class XmlRpcStructFactory {
 
     for (Object condition1 : conditions) {
       WorkflowCondition c = (WorkflowCondition) condition1;
-      Hashtable condition = getXmlRpcWorkflowCondition(c);
+      HashMap condition = getXmlRpcWorkflowCondition(c);
       wConditions.add(condition);
     }
 
@@ -477,12 +478,12 @@ public final class XmlRpcStructFactory {
 
   /**
    * <p>
-   * Gets a {@link WorkflowCondition} from an XML-RPC {@link Hashtable}.
+   * Gets a {@link WorkflowCondition} from an XML-RPC {@link HashMap}.
    * </p>
    * 
    * @param cond
-   *          The Hashtable to turn into a real WorkflowCondition.
-   * @return a {@link WorkflowCondition} from an XML-RPC {@link Hashtable}.
+   *          The HashMap to turn into a real WorkflowCondition.
+   * @return a {@link WorkflowCondition} from an XML-RPC {@link HashMap}.
    */
   public static WorkflowCondition getWorkflowConditionFromXmlRpc(Map cond) {
     WorkflowCondition condition = new WorkflowCondition();
@@ -495,7 +496,7 @@ public final class XmlRpcStructFactory {
             .get("timeout") : "-1"));
     condition.setOptional(Boolean.valueOf((String) cond.get("optional")));
     condition
-        .setCondConfig(getWorkflowConditionConfigurationFromXmlRpc((Hashtable) cond
+        .setCondConfig(getWorkflowConditionConfigurationFromXmlRpc((HashMap) cond
             .get("configuration")));
     return condition;
   }
@@ -504,12 +505,12 @@ public final class XmlRpcStructFactory {
    * Unravels a {@link WorkflowConditionConfiguration} from XML-RPC.
    * 
    * @param conf
-   *          XML-RPC friendly Hashtable representing a
+   *          XML-RPC friendly HashMap representing a
    *          {@link WorkflowConditionConfiguration}.
    * @return A {@link WorkflowConditionConfiguration} from XML-RPC.
    */
   public static WorkflowConditionConfiguration getWorkflowConditionConfigurationFromXmlRpc(
-      Hashtable conf) {
+      HashMap conf) {
     WorkflowConditionConfiguration config = new WorkflowConditionConfiguration();
     for (String key : (Set<String>) (Set<?>) conf.keySet()) {
       config.addConfigProperty(key, (String) conf.get(key));
@@ -534,7 +535,7 @@ public final class XmlRpcStructFactory {
 
     if (conds != null && conds.size() > 0) {
       for (Object cond1 : conds) {
-        Hashtable cond = (Hashtable) cond1;
+        HashMap cond = (HashMap) cond1;
         WorkflowCondition condition = getWorkflowConditionFromXmlRpc(cond);
         conditions.add(condition);
       }
@@ -545,19 +546,19 @@ public final class XmlRpcStructFactory {
 
   /**
    * <p>
-   * Gets a {@link Hashtable} representation of the passed in
+   * Gets a {@link HashMap} representation of the passed in
    * {@link WorkflowTaskConfiguration}'s {@link Properties} to be sent across
    * the XML-RPC wire.
    * </p>t
    * 
    * @param config
-   *          The WorkflowTaskConfiguration to convert to a Hashtable.
-   * @return A {@link Hashtable} representation of the passed in
+   *          The WorkflowTaskConfiguration to convert to a HashMap.
+   * @return A {@link HashMap} representation of the passed in
    *         {@link WorkflowTaskConfiguration}'s {@link Properties}.
    */
-  public static Hashtable getXmlRpcWorkflowTaskConfiguration(
+  public static HashMap getXmlRpcWorkflowTaskConfiguration(
       WorkflowTaskConfiguration config) {
-    Hashtable configuration = new Hashtable();
+    HashMap configuration = new HashMap();
 
     for (Object o : config.getProperties().keySet()) {
       String name = (String) o;
@@ -570,12 +571,12 @@ public final class XmlRpcStructFactory {
 
   /**
    * <p>
-   * Gets a {@link WorkflowTaskConfiguration} from an XML-RPC {@link Hashtable}.
+   * Gets a {@link WorkflowTaskConfiguration} from an XML-RPC {@link HashMap}.
    * 
    * @param config
-   *          The original Hashtable version of the WorkflowTaskConfiguration.
+   *          The original HashMap version of the WorkflowTaskConfiguration.
    * @return A {@link WorkflowTaskConfiguration} from an XML-RPC
-   *         {@link Hashtable}.
+   *         {@link HashMap}.
    */
   public static WorkflowTaskConfiguration getWorkflowTaskConfigurationFromXmlRpc(
       Map config) {

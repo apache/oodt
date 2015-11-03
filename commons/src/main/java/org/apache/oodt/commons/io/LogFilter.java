@@ -15,7 +15,8 @@
 
 package org.apache.oodt.commons.io;
 
-import java.util.Hashtable;
+
+import java.util.HashMap;
 
 /** A filter for log messages.
  *
@@ -137,7 +138,7 @@ public class LogFilter implements LogListener {
 	 * This table maps all values to {@link #DUMMY}.  In Java2, we can get rid of
 	 * <code>DUMMY</code> and use a {@link java.util.HashSet} instead.
 	 */
-	protected Hashtable categories = new Hashtable();
+	protected HashMap categories = new HashMap();
 
 	/** The DUMMY value for all mappings in the {@link #categories} table.
 	 */

@@ -24,7 +24,7 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -46,8 +46,8 @@ public final class XmlRpcStructFactory {
 		throw new InstantiationException("Don't construct factory classes!");
 	}
 
-	public static Hashtable getXmlRpcJob(Job job) {
-		Hashtable jobHash = new Hashtable();
+	public static HashMap<String, Object> getXmlRpcJob(Job job) {
+	  HashMap<String, Object> jobHash = new HashMap<String, Object>();
 		jobHash.put("job.id", job.getId() != null ? job.getId():"");
 		jobHash.put("job.name", job.getName());
 		jobHash.put("job.instanceClassName", job.getJobInstanceClassName());
@@ -84,47 +84,44 @@ public final class XmlRpcStructFactory {
 		return jobVector;
 	}
 	
-	public static List getJobListFromXmlRpc(Vector jobVector){
+	public static List getJobListFromXmlRpc(Vector<HashMap> jobVector){
 		List jobs = new Vector();
 		
 		if(jobVector != null && jobVector.size() > 0){
-		  for (Object aJobVector : jobVector) {
-			Hashtable jobHash = (Hashtable) aJobVector;
-			jobs.add(getJobFromXmlRpc(jobHash));
+		  for (HashMap aJobVector : jobVector) {
+			jobs.add(getJobFromXmlRpc(aJobVector));
 		  }
 		}
 		
 		return jobs;
 	}
 
- public static Vector getXmlRpcResourceNodeList(List resNodes) {
+ public static Vector getXmlRpcResourceNodeList(List<ResourceNode> resNodes) {
     Vector resNodeVector = new Vector();
 
     if (resNodes != null && resNodes.size() > 0) {
-	  for (Object resNode : resNodes) {
-		ResourceNode node = (ResourceNode) resNode;
-		resNodeVector.add(getXmlRpcResourceNode(node));
+	  for (ResourceNode resNode : resNodes) {
+		resNodeVector.add(getXmlRpcResourceNode(resNode));
 	  }
     }
 
     return resNodeVector;
   }
 
-  public static List getResourceNodeListFromXmlRpc(Vector resNodeVector) {
+  public static List getResourceNodeListFromXmlRpc(Vector<HashMap> resNodeVector) {
     List resNodes = new Vector();
 
     if (resNodeVector != null && resNodeVector.size() > 0) {
-	  for (Object aResNodeVector : resNodeVector) {
-		Hashtable resNodeHash = (Hashtable) aResNodeVector;
-		resNodes.add(getResourceNodeFromXmlRpc(resNodeHash));
+	  for (HashMap aResNodeVector : resNodeVector) {
+		resNodes.add(getResourceNodeFromXmlRpc(aResNodeVector));
 	  }
     }
 
     return resNodes;
   }
 
-  public static Hashtable getXmlRpcResourceNode(ResourceNode node) {
-    Hashtable resNodeHash = new Hashtable();
+  public static HashMap<String,String> getXmlRpcResourceNode(ResourceNode node) {
+    HashMap<String, String> resNodeHash = new HashMap<String, String>();
     resNodeHash.put("node.id", node.getNodeId());
     resNodeHash.put("node.capacity", String.valueOf(node.getCapacity()));
     resNodeHash.put("node.url", node.getIpAddr().toExternalForm());
