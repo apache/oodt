@@ -16,7 +16,7 @@
 package org.apache.oodt.pcs.input;
 
 //JDK imports
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 /**
@@ -34,16 +34,16 @@ public class PGEGroup {
   /* the name of the PGEGroup */
   private String name = null;
 
-  /* the HashMap of PGEScalars */
+  /* the ConcurrentHashMap of PGEScalars */
   private Map<String, PGEScalar> scalars = null;
 
-  /* the HashMap of PGEVectors */
+  /* the ConcurrentHashMap of PGEVectors */
   private Map<String, PGEVector> vectors = null;
 
-  /* the HashMap of PGEMatrixs */
+  /* the ConcurrentHashMap of PGEMatrixs */
   private Map<String, PGEMatrix> matrixs = null;
 
-  /* the HashMap of PGEGroups */
+  /* the ConcurrentHashMap of PGEGroups */
   private Map<String, PGEGroup> groups = null;
 
   /**
@@ -53,10 +53,10 @@ public class PGEGroup {
    */
   public PGEGroup(String name) {
     this.name = name;
-    this.scalars = new HashMap<String, PGEScalar>();
-    this.vectors = new HashMap<String, PGEVector>();
-    this.matrixs = new HashMap<String, PGEMatrix>();
-    this.groups = new HashMap<String, PGEGroup>();
+    this.scalars = new ConcurrentHashMap<String, PGEScalar>();
+    this.vectors = new ConcurrentHashMap<String, PGEVector>();
+    this.matrixs = new ConcurrentHashMap<String, PGEMatrix>();
+    this.groups = new ConcurrentHashMap<String, PGEGroup>();
   }
 
   /**

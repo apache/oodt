@@ -30,7 +30,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -137,7 +137,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
             + type.getName() + "]");
       }
 
-      Map productHash = new HashMap();
+      Map productHash = new ConcurrentHashMap();
 
       do {
         for (Product product : page.getPageProducts()) {

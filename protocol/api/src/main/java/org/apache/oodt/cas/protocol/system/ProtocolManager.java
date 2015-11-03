@@ -26,7 +26,7 @@ import org.apache.oodt.cas.protocol.ProtocolFactory;
 
 //JDK imports
 import java.net.URI;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -46,7 +46,7 @@ public class ProtocolManager {
     public ProtocolManager(ProtocolConfig protocolConfig) {
     	Validate.notNull(protocolConfig, "protocolConfig must not be NULL");
     	this.protocolConfig = protocolConfig;
-    	verifiedMap = new HashMap<URI, ProtocolFactory>();
+    	verifiedMap = new ConcurrentHashMap<URI, ProtocolFactory>();
     }
     
     public ProtocolConfig getConfig() {

@@ -38,7 +38,7 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -365,7 +365,7 @@ public class Profile implements Serializable, Cloneable, Comparable<Object>, Doc
 	 *
 	 * This mapping is from element name (a {@link String}) to {@link ProfileElement}.
 	 */
-	protected Map<String, ProfileElement> elements = new HashMap<String, ProfileElement>();
+	protected Map<String, ProfileElement> elements = new ConcurrentHashMap<String, ProfileElement>();
 
 	/**
 	 * Try to parse an XML profile in a file in its XML vocabulary.  If successful,

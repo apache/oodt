@@ -16,7 +16,7 @@
 package org.apache.oodt.pcs.input;
 
 //JDK imports
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.xml.sax.Attributes;
@@ -40,13 +40,13 @@ public class PGEDataHandler extends DefaultHandler implements PGEDataParseKeys {
       .getName());
 
   /* scalars to be set as tags are encountered */
-  private Map scalars = new HashMap();
+  private Map scalars = new ConcurrentHashMap();
 
   /* vectors to be set as tags are encountered */
-  private Map vectors = new HashMap();
+  private Map vectors = new ConcurrentHashMap();
 
   /* matrices to be set as tags are encountered */
-  private Map matrices = new HashMap();
+  private Map matrices = new ConcurrentHashMap();
 
   /* the status of the parse handler */
   private int parseStatus = UNSET;

@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.workflow.repository;
 
 //OODT imports
+
 import org.apache.oodt.cas.workflow.examples.NoOpTask;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
@@ -26,24 +27,32 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.XmlStructFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-//JDK imports
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+//JDK imports
 
 
 /**
@@ -78,16 +87,16 @@ public class XMLWorkflowRepository implements WorkflowRepository {
             .getName());
 
     /* our task map */
-    private static HashMap taskMap = new HashMap();
+    private static ConcurrentHashMap taskMap = new ConcurrentHashMap();
 
     /* our condition map */
-    private static HashMap conditionMap = new HashMap();
+    private static ConcurrentHashMap conditionMap = new ConcurrentHashMap();
 
     /* our workflow map */
-    private static HashMap workflowMap = new HashMap();
+    private static ConcurrentHashMap workflowMap = new ConcurrentHashMap();
 
     /* our event map */
-    private static HashMap eventMap = new HashMap();
+    private static ConcurrentHashMap eventMap = new ConcurrentHashMap();
 
     private static FileFilter workflowXmlFilter = new FileFilter() {
         public boolean accept(File pathname) {

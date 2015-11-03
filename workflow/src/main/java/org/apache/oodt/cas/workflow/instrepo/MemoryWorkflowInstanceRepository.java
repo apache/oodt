@@ -26,7 +26,7 @@ import org.apache.oodt.commons.util.DateConvert;
 //JDK imports
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Date;
 import java.util.Arrays;
@@ -47,7 +47,7 @@ public class MemoryWorkflowInstanceRepository extends
         AbstractPaginatibleInstanceRepository {
 
     /* our workflow instance map: maps workfllowInstId to WorkflowInstance */
-    private HashMap workflowInstMap = null;
+    private ConcurrentHashMap workflowInstMap = null;
 
     /* our log stream */
     private static final Logger LOG = Logger
@@ -59,7 +59,7 @@ public class MemoryWorkflowInstanceRepository extends
      * </p>
      */
     public MemoryWorkflowInstanceRepository(int pageSize) {
-        workflowInstMap = new HashMap();
+        workflowInstMap = new ConcurrentHashMap();
         this.pageSize = pageSize;
     }
 

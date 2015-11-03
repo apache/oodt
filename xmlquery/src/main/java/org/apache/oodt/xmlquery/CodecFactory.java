@@ -18,7 +18,8 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.util.*;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** A factory for codecs.
  *
@@ -55,5 +56,5 @@ class CodecFactory {
 	}
 
 	/** Cachec codecs; the mapping is from {@link String} class name to {@link Codec} object. */
-	private static Map codecs = new HashMap();
+	private static Map codecs = new ConcurrentHashMap();
 }

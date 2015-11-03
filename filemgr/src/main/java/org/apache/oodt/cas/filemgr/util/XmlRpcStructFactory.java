@@ -37,7 +37,7 @@ import org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor;
 import org.apache.oodt.cas.filemgr.structs.type.TypeHandler;
 import org.apache.oodt.cas.metadata.Metadata;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -65,7 +65,7 @@ public final class XmlRpcStructFactory {
 
     public static Map<String, Object> getXmlRpcFileTransferStatus(
             FileTransferStatus status) {
-        Map<String, Object> statusHash = new HashMap<String, Object>();
+        Map<String, Object> statusHash = new ConcurrentHashMap<String, Object>();
         statusHash.put("bytesTransferred",Long.toString(status
                 .getBytesTransferred()));
         statusHash.put("parentProduct", getXmlRpcProduct(status
@@ -112,7 +112,7 @@ public final class XmlRpcStructFactory {
     }
 
     public static Map<String, Object> getXmlRpcProductPage(ProductPage page) {
-        Map<String, Object>productPageHash = new HashMap<String, Object>();
+        Map<String, Object>productPageHash = new ConcurrentHashMap<String, Object>();
         productPageHash.put("totalPages", page.getTotalPages());
         productPageHash.put("pageNum", page.getPageNum());
         productPageHash.put("pageSize", page.getPageSize());
@@ -178,7 +178,7 @@ public final class XmlRpcStructFactory {
     }
     
     public static Map<String, Object> getXmlRpcQueryFilter(QueryFilter queryFilter) {
-        Map<String, Object> queryFilterHash = new HashMap<String, Object>();
+        Map<String, Object> queryFilterHash = new ConcurrentHashMap<String, Object>();
         queryFilterHash.put("startDateTimeMetKey", queryFilter.getStartDateTimeMetKey());
         queryFilterHash.put("endDateTimeMetKey", queryFilter.getEndDateTimeMetKey());
         queryFilterHash.put("priorityMetKey", queryFilter.getPriorityMetKey());
@@ -199,7 +199,7 @@ public final class XmlRpcStructFactory {
     }
 
     public static Map<String, Object> getXmlRpcFilterAlgor(FilterAlgor filterAlgor) {
-        Map<String, Object> filterAlgorHash = new HashMap<String, Object>();
+        Map<String, Object> filterAlgorHash = new ConcurrentHashMap<String, Object>();
         filterAlgorHash.put("class", filterAlgor.getClass().getCanonicalName());
         filterAlgorHash.put("epsilon", Long.toString(filterAlgor.getEpsilon()));
         return filterAlgorHash;
@@ -230,7 +230,7 @@ public final class XmlRpcStructFactory {
     }
         
     public static Map<String, Object> getXmlRpcQueryResult(QueryResult queryResult) {
-        Map<String, Object> queryResultHash = new HashMap<String, Object>();
+        Map<String, Object> queryResultHash = new ConcurrentHashMap<String, Object>();
         if (queryResult.getToStringFormat() != null) {
             queryResultHash.put("toStringFormat", queryResult.getToStringFormat());
         }
@@ -250,7 +250,7 @@ public final class XmlRpcStructFactory {
     }
     
     public static Map<String, Object> getXmlRpcProduct(Product product) {
-        Map<String, Object> productHash = new HashMap<String, Object>();
+        Map<String, Object> productHash = new ConcurrentHashMap<String, Object>();
         if (product.getProductId() != null) {
            productHash.put("id", product.getProductId());
         }
@@ -351,7 +351,7 @@ public final class XmlRpcStructFactory {
     }
 
     public static Map<String, Object> getXmlRpcProductType(ProductType type) {
-        Map<String, Object> productTypeHash = new HashMap<String, Object>();
+        Map<String, Object> productTypeHash = new ConcurrentHashMap<String, Object>();
         // TODO(bfoster): ProductType ID is currently required by XmlRpcFileManager.
         productTypeHash.put("id", type.getProductTypeId());
         if (type.getName() != null) {
@@ -417,7 +417,7 @@ public final class XmlRpcStructFactory {
     }
 
     public static Map<String, Object> getXmlRpcExtractorSpec(ExtractorSpec spec) {
-        Map<String, Object> extractorHash = new HashMap<String, Object>();
+        Map<String, Object> extractorHash = new ConcurrentHashMap<String, Object>();
         extractorHash.put("className", spec.getClassName());
         extractorHash.put("config",
                 getXmlRpcProperties(spec.getConfiguration()));
@@ -437,7 +437,7 @@ public final class XmlRpcStructFactory {
     }
     
     public static Map<String, Object> getXmlRpcTypeHandler(TypeHandler typeHandler) {
-        Map<String, Object> handlerHash = new HashMap<String, Object>();
+        Map<String, Object> handlerHash = new ConcurrentHashMap<String, Object>();
         handlerHash.put("className", typeHandler != null ? 
             typeHandler.getClass().getCanonicalName():"");
         handlerHash.put("elementName", typeHandler != null ? 
@@ -504,7 +504,7 @@ public final class XmlRpcStructFactory {
     }
 
     public static Map<String, String> getXmlRpcProperties(Properties props) {
-        Map<String, String> propHash = new HashMap<String, String>();
+        Map<String, String> propHash = new ConcurrentHashMap<String, String>();
 
         if (props != null && props.keySet().size() > 0) {
             for (Object o : props.keySet()) {
@@ -542,7 +542,7 @@ public final class XmlRpcStructFactory {
     }
 
     public static Map<String, Object> getXmlRpcReference(Reference reference) {
-        Map<String, Object> referenceHash = new HashMap<String, Object>();
+        Map<String, Object> referenceHash = new ConcurrentHashMap<String, Object>();
         referenceHash.put("origReference", reference.getOrigReference());
         referenceHash.put("dataStoreReference", reference
                 .getDataStoreReference() != null ? reference
@@ -583,7 +583,7 @@ public final class XmlRpcStructFactory {
     }
 
     public static Map<String, Object> getXmlRpcElement(Element element) {
-        Map<String, Object> elementHash = new HashMap<String, Object>();
+        Map<String, Object> elementHash = new ConcurrentHashMap<String, Object>();
 
         elementHash.put("id", element.getElementId());
         elementHash.put("name", element.getElementName());
@@ -607,7 +607,7 @@ public final class XmlRpcStructFactory {
     }
 
     public static Map<String, Object> getXmlRpcQuery(Query query) {
-        Map<String, Object> queryHash = new HashMap<String, Object>();
+        Map<String, Object> queryHash = new ConcurrentHashMap<String, Object>();
         Vector<Map<String, Object>> criteriaVector = getXmlRpcQueryCriteriaList(query.getCriteria());
         queryHash.put("criteria", criteriaVector);
         return queryHash;
@@ -643,7 +643,7 @@ public final class XmlRpcStructFactory {
     }
 
     public static Map<String, Object> getXmlRpcQueryCriteria(QueryCriteria criteria) {
-        Map<String, Object> criteriaHash = new HashMap<String, Object>();
+        Map<String, Object> criteriaHash = new ConcurrentHashMap<String, Object>();
         criteriaHash.put("class",criteria.getClass().getCanonicalName());
         
         if(criteria instanceof TermQueryCriteria){  

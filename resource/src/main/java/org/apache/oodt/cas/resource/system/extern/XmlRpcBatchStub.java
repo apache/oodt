@@ -29,7 +29,7 @@ import org.apache.oodt.cas.resource.util.XmlRpcStructFactory;
 import org.apache.xmlrpc.WebServer;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -69,7 +69,7 @@ public class XmlRpcBatchStub {
         webServer.addHandler("batchstub", this);
         webServer.start();
 
-        jobThreadMap = new HashMap();
+        jobThreadMap = new ConcurrentHashMap();
 
         LOG.log(Level.INFO, "XmlRpc Batch Stub started by "
                             + System.getProperty("user.name", "unknown"));

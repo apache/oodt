@@ -31,7 +31,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 //JDK imports
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -61,8 +61,8 @@ public class XmlRpcBatchMgr implements Batchmgr {
     private Map specToProxyMap;
 
     public XmlRpcBatchMgr() {
-        nodeToJobMap = new HashMap();
-        specToProxyMap = new HashMap();
+        nodeToJobMap = new ConcurrentHashMap();
+        specToProxyMap = new ConcurrentHashMap();
     }
 
     /*

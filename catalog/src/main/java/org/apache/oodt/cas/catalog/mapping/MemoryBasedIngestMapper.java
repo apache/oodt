@@ -23,7 +23,7 @@ import org.apache.oodt.cas.catalog.page.IndexPager;
 import org.apache.oodt.cas.catalog.struct.TransactionId;
 import org.apache.oodt.cas.catalog.struct.TransactionIdFactory;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,14 +45,14 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 
 	private static Logger LOG = Logger.getLogger(MemoryBasedIngestMapper.class.getName());
 	
-	protected HashMap<String, TransactionIdMapping> catalogServiceTransactionIdKeyMapping;
-	protected HashMap<String, TransactionIdMapping> catalogInfoKeyMapping;
-	protected HashMap<String, List<CatalogReceipt>> catalogIdToCatalogReceiptMapping;
+	protected ConcurrentHashMap<String, TransactionIdMapping> catalogServiceTransactionIdKeyMapping;
+	protected ConcurrentHashMap<String, TransactionIdMapping> catalogInfoKeyMapping;
+	protected ConcurrentHashMap<String, List<CatalogReceipt>> catalogIdToCatalogReceiptMapping;
 	
 	public MemoryBasedIngestMapper() {
-		this.catalogServiceTransactionIdKeyMapping = new HashMap<String, TransactionIdMapping>();
-		this.catalogInfoKeyMapping = new HashMap<String, TransactionIdMapping>();
-		this.catalogIdToCatalogReceiptMapping = new HashMap<String, List<CatalogReceipt>>();
+		this.catalogServiceTransactionIdKeyMapping = new ConcurrentHashMap<String, TransactionIdMapping>();
+		this.catalogInfoKeyMapping = new ConcurrentHashMap<String, TransactionIdMapping>();
+		this.catalogIdToCatalogReceiptMapping = new ConcurrentHashMap<String, List<CatalogReceipt>>();
 	}
 	
 	/*

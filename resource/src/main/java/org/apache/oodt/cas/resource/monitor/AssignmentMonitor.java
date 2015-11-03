@@ -22,7 +22,7 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 import java.net.URL;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -45,14 +45,14 @@ import java.util.Vector;
 public class AssignmentMonitor implements Monitor {
 	
     /* our nodes map */
-    private HashMap<String, ResourceNode> nodesMap;
+    private ConcurrentHashMap<String, ResourceNode> nodesMap;
 
     /* our load map */
-    private HashMap<String, Integer> loadMap;
+    private ConcurrentHashMap<String, Integer> loadMap;
 
     public AssignmentMonitor(List<ResourceNode> nodes) {
-        nodesMap = new HashMap<String, ResourceNode>();
-        loadMap = new HashMap<String, Integer>();
+        nodesMap = new ConcurrentHashMap<String, ResourceNode>();
+        loadMap = new ConcurrentHashMap<String, Integer>();
         
         for (ResourceNode node : nodes) {
             nodesMap.put(node.getNodeId(), node);

@@ -128,7 +128,7 @@ public class Method {
 
                     if (globalVar) {
                         try {
-                            output.addLast(GlobalVariables.hashMap.get(variable
+                            output.addLast(GlobalVariables.ConcurrentHashMap.get(variable
                                     .toString()));
                         } catch (Exception e) {
                             LOG.log(Level.SEVERE, e.getMessage());

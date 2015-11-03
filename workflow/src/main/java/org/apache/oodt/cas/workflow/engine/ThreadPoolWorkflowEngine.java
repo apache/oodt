@@ -34,7 +34,7 @@ import org.apache.oodt.commons.util.DateConvert;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,7 +61,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
   private PooledExecutor pool = null;
 
   /* our worker thread hash mapping worker threads to workflow instance ids */
-  private HashMap workerMap = null;
+  private ConcurrentHashMap workerMap = null;
 
   /* our log stream */
   private static final Logger LOG = Logger
@@ -116,7 +116,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     pool.setMinimumPoolSize(minPoolSize);
     pool.setKeepAliveTime(1000 * 60 * threadKeepAliveTime);
 
-    workerMap = new HashMap();
+    workerMap = new ConcurrentHashMap();
 
     if (resUrl != null) {
       rClient = new XmlRpcResourceManagerClient(resUrl);

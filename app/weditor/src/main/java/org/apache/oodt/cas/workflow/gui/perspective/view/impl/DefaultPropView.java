@@ -42,7 +42,7 @@ import java.text.DecimalFormat;
 import java.text.Format;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -108,7 +108,7 @@ public class DefaultPropView extends View {
     final ModelGraph selected = state.getSelected();
     if (selected != null) {
       final Vector<Vector<String>> rows = new Vector<Vector<String>>();
-      HashMap<String, String> keyToGroupMap = new HashMap<String, String>();
+      ConcurrentHashMap<String, String> keyToGroupMap = new ConcurrentHashMap<String, String>();
       Metadata staticMet = selected.getModel().getStaticMetadata();
       Metadata inheritedMet = selected.getInheritedStaticMetadata(state);
       Metadata completeMet = new Metadata();

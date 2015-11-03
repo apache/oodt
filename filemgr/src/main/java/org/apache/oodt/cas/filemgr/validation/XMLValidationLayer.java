@@ -34,7 +34,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -64,13 +64,13 @@ public class XMLValidationLayer implements ValidationLayer {
             .getName());
 
     /* product type ID to element map */
-    private HashMap<String, List<Element>> productTypeElementMap = new HashMap<String, List<Element>>();
+    private ConcurrentHashMap<String, List<Element>> productTypeElementMap = new ConcurrentHashMap<String, List<Element>>();
 
     /* sub-type to super-type map */
-    private HashMap<String, String> subToSuperMap = new HashMap<String, String>();
+    private ConcurrentHashMap<String, String> subToSuperMap = new ConcurrentHashMap<String, String>();
 
     /* element map */
-    private HashMap<String, Element> elementMap = new HashMap<String, Element>();
+    private ConcurrentHashMap<String, Element> elementMap = new ConcurrentHashMap<String, Element>();
 
     /*
      * URIs pointing to directories with product-type-element-map.xml and
@@ -244,9 +244,9 @@ public class XMLValidationLayer implements ValidationLayer {
     /**
      * Gets the parent-child relationship between product types
      * 
-     * @return HashMap of {@link ProductType} ids mapped to their parent id
+     * @return ConcurrentHashMap of {@link ProductType} ids mapped to their parent id
      */
-    public HashMap<String, String> getSubToSuperMap() {
+    public ConcurrentHashMap<String, String> getSubToSuperMap() {
     	return subToSuperMap;
     }
     

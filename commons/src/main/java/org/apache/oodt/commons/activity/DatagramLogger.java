@@ -25,7 +25,7 @@ import java.io.OptionalDataException;
 import java.io.StreamCorruptedException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 /**
@@ -71,7 +71,7 @@ class DatagramLogger {
 	private static Storage storage;
 
 	/** History awaiting long-term storage.  Keys are {@link String} activity IDs, and values are {@link History} objects. */
-	private static Map histories = new HashMap();
+	private static Map histories = new ConcurrentHashMap();
 
 	/**
 	 * Thread that saves off an incident into a history so the main thread can go back

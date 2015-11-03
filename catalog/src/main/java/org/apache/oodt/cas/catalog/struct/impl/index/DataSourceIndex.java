@@ -17,6 +17,7 @@
 package org.apache.oodt.cas.catalog.struct.impl.index;
 
 //JDK imports
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.catalog.exception.CatalogIndexException;
 import org.apache.oodt.cas.catalog.exception.IngestServiceException;
@@ -25,8 +26,16 @@ import org.apache.oodt.cas.catalog.page.IndexPager;
 import org.apache.oodt.cas.catalog.page.IngestReceipt;
 import org.apache.oodt.cas.catalog.page.PageInfo;
 import org.apache.oodt.cas.catalog.page.ProcessedPageInfo;
-import org.apache.oodt.cas.catalog.query.*;
-import org.apache.oodt.cas.catalog.struct.*;
+import org.apache.oodt.cas.catalog.query.ComparisonQueryExpression;
+import org.apache.oodt.cas.catalog.query.NotQueryExpression;
+import org.apache.oodt.cas.catalog.query.QueryExpression;
+import org.apache.oodt.cas.catalog.query.QueryLogicalGroup;
+import org.apache.oodt.cas.catalog.query.StdQueryExpression;
+import org.apache.oodt.cas.catalog.struct.Index;
+import org.apache.oodt.cas.catalog.struct.IngestService;
+import org.apache.oodt.cas.catalog.struct.QueryService;
+import org.apache.oodt.cas.catalog.struct.TransactionId;
+import org.apache.oodt.cas.catalog.struct.TransactionIdFactory;
 import org.apache.oodt.cas.catalog.struct.impl.transaction.UuidTransactionIdFactory;
 import org.apache.oodt.cas.catalog.term.Term;
 import org.apache.oodt.cas.catalog.term.TermBucket;
@@ -39,7 +48,13 @@ import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -336,7 +351,7 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
-			HashMap<String, TermBucket> termBuckets = new HashMap<String, TermBucket>();
+			ConcurrentHashMap<String, TermBucket> termBuckets = new ConcurrentHashMap<String, TermBucket>();
 			conn = this.dataSource.getConnection();
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT bucket_name,term_name,term_value FROM transaction_terms WHERE transaction_id = '" + transactionId + "'");
@@ -373,7 +388,7 @@ public class DataSourceIndex implements Index, IngestService, QueryService {
 	 */
 	public Map<TransactionId<?>, List<TermBucket>> getBuckets(
 			List<TransactionId<?>> transactionIds) throws QueryServiceException {
-		HashMap<TransactionId<?>, List<TermBucket>> map = new HashMap<TransactionId<?>, List<TermBucket>>();
+		ConcurrentHashMap<TransactionId<?>, List<TermBucket>> map = new ConcurrentHashMap<TransactionId<?>, List<TermBucket>>();
 		for (TransactionId<?> transactionId : transactionIds) {
 		  map.put(transactionId, this.getBuckets(transactionId));
 		}

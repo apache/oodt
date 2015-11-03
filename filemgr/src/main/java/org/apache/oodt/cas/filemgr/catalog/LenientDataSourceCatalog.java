@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.catalog;
 
 // OODT imports
+
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;

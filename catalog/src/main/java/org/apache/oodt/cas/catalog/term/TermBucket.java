@@ -18,7 +18,7 @@ package org.apache.oodt.cas.catalog.term;
 
 //JDK imports
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,16 +34,16 @@ import java.util.Vector;
  */
 public class TermBucket extends Bucket {
 
-	private HashMap<String, Term> terms;
+	private ConcurrentHashMap<String, Term> terms;
 	
 	public TermBucket() {
 		super();
-		this.terms = new HashMap<String, Term>();
+		this.terms = new ConcurrentHashMap<String, Term>();
 	}
 	
 	public TermBucket(String name) {
 		super(name);
-		this.terms = new HashMap<String, Term>();
+		this.terms = new ConcurrentHashMap<String, Term>();
 	}
 	
 	public TermBucket(String name, Set<Term> terms) {
@@ -53,7 +53,7 @@ public class TermBucket extends Bucket {
 	
 	public void setTerms(Set<Term> terms) {
 		if (terms != null) {
-			this.terms = new HashMap<String, Term>();
+			this.terms = new ConcurrentHashMap<String, Term>();
 			for (Term term : terms) {
 			  this.terms.put(term.name, term);
 			}

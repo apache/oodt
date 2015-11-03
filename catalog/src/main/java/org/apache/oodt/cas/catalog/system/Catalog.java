@@ -34,7 +34,7 @@ import org.apache.oodt.cas.catalog.term.TermBucket;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -300,7 +300,7 @@ public class Catalog {
 	
 	public Map<TransactionId<?>, Metadata> getMetadata(List<TransactionId<?>> transactionIds) throws CatalogException {
 		try {
-			Map<TransactionId<?>, Metadata> metadataMap = new HashMap<TransactionId<?>, Metadata>();
+			Map<TransactionId<?>, Metadata> metadataMap = new ConcurrentHashMap<TransactionId<?>, Metadata>();
 			if (this.isQueriable()) {
 				QueryService queryService = (QueryService) this.index;
 				Map<TransactionId<?>, List<TermBucket>> termBucketMap = queryService.getBuckets(transactionIds);

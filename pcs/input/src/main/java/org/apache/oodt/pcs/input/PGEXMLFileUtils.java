@@ -26,7 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -63,7 +63,7 @@ public final class PGEXMLFileUtils {
       return Collections.emptyMap();
     }
 
-    Map matrixMap = new HashMap(matrixs.getLength());
+    Map matrixMap = new ConcurrentHashMap(matrixs.getLength());
 
     // for each matrix in the list, create a PGEMatrix with the name
     // attribute and the appropriate value
@@ -192,7 +192,7 @@ public final class PGEXMLFileUtils {
       return Collections.emptyMap();
     }
 
-    Map scalarMap = new HashMap(scalars.getLength());
+    Map scalarMap = new ConcurrentHashMap(scalars.getLength());
 
     // for each scalar in the list, create a PGEScalar with the name
     // attribute, and appropriate value
@@ -249,7 +249,7 @@ public final class PGEXMLFileUtils {
       return Collections.emptyMap();
     }
 
-    Map vectorMap = new HashMap(vectors.getLength());
+    Map vectorMap = new ConcurrentHashMap(vectors.getLength());
 
     // for each vector in the list, create a PGEVector with the name
     // attribute, and appropriate value

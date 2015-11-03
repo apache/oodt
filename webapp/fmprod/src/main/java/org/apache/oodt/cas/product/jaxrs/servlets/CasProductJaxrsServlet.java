@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -167,9 +167,9 @@ public class CasProductJaxrsServlet extends CXFNonSpringJaxrsServlet
   public void initializeConfigurations(ServletContext context)
   {
     Map<String, RdfConfiguration> rdfConfigurations =
-      new HashMap<String, RdfConfiguration>();
+      new ConcurrentHashMap<String, RdfConfiguration>();
     Map<String, RssConfiguration> rssConfigurations =
-      new HashMap<String, RssConfiguration>();
+      new ConcurrentHashMap<String, RssConfiguration>();
 
     Enumeration<String> enumeration = context.getInitParameterNames();
     while (enumeration.hasMoreElements())

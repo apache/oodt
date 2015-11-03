@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.resource.structs;
 
 //JDK imports
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -91,7 +91,7 @@ public class NameValueJobInput implements JobInput {
    * @see org.apache.oodt.cas.resource.util.XmlRpcWriteable#write()
    */
   public Object write() {
-    Map writeable = new HashMap();
+    Map writeable = new ConcurrentHashMap();
     if (props != null && props.size() > 0) {
       for (Object o : props.keySet()) {
         String key = (String) o;

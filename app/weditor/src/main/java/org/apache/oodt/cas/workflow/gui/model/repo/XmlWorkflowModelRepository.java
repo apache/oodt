@@ -17,8 +17,6 @@
 
 package org.apache.oodt.cas.workflow.gui.model.repo;
 
-//OODT imports
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -38,13 +36,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,8 +54,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-//JDK imports
 
 /**
  * 
@@ -90,7 +86,7 @@ public class XmlWorkflowModelRepository {
   public void loadGraphs(Set<String> supportedProcessorIds)
       throws XPathExpressionException, WorkflowException, IOException, SAXException, ParserConfigurationException {
     this.graphs = new HashSet<ModelGraph>();
-    HashMap<String, ConfigGroup> globalConfGroups = new HashMap<String, ConfigGroup>();
+    ConcurrentHashMap<String, ConfigGroup> globalConfGroups = new ConcurrentHashMap<String, ConfigGroup>();
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware(true);
     DocumentBuilder parser = factory.newDocumentBuilder();
@@ -130,7 +126,7 @@ public class XmlWorkflowModelRepository {
   }
 
   public void setGlobalConfigGroups(Map<String, ConfigGroup> globalConfigGroups) {
-    this.globalConfigGroups = new HashMap<String, ConfigGroup>(
+    this.globalConfigGroups = new ConcurrentHashMap<String, ConfigGroup>(
         globalConfigGroups);
   }
 
@@ -154,7 +150,7 @@ public class XmlWorkflowModelRepository {
 
   private void saveGraphs() throws
       ParserConfigurationException {
-    Map<File, Document> documents = new HashMap<File, Document>();
+    Map<File, Document> documents = new ConcurrentHashMap<File, Document>();
     for (ModelGraph graph : this.graphs) {
       Document document = documents.get(graph.getModel().getFile());
       if (document == null) {
@@ -321,7 +317,7 @@ public class XmlWorkflowModelRepository {
 
   private ModelGraph loadGraph(List<FileBasedElement> rootElements,
       FileBasedElement workflowNode, Metadata staticMetadata,
-      HashMap<String, ConfigGroup> globalConfGroups,
+      ConcurrentHashMap<String, ConfigGroup> globalConfGroups,
       Set<String> supportedProcessorIds) throws XPathExpressionException, WorkflowException {
 
     String modelIdRef = null;
@@ -464,7 +460,7 @@ public class XmlWorkflowModelRepository {
 
   protected ModelGraph findGraph(List<FileBasedElement> rootElements,
       String modelIdRef, Metadata staticMetadata,
-      HashMap<String, ConfigGroup> globalConfGroups,
+      ConcurrentHashMap<String, ConfigGroup> globalConfGroups,
       Set<String> supportedProcessorIds) throws XPathExpressionException, WorkflowException {
     XPath xpath = XPathFactory.newInstance().newXPath();
     XPathExpression expr = xpath.compile("//*[@id = '" + modelIdRef + "']");
@@ -482,7 +478,7 @@ public class XmlWorkflowModelRepository {
 
   private void loadConfiguration(List<FileBasedElement> rootElements,
       FileBasedElement workflowNode, ModelNode modelNode,
-      HashMap<String, ConfigGroup> globalConfGroups)  {
+      ConcurrentHashMap<String, ConfigGroup> globalConfGroups)  {
     NodeList children = workflowNode.getElement().getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
       Node curChild = children.item(i);
@@ -515,7 +511,7 @@ public class XmlWorkflowModelRepository {
   }
 
   private Metadata loadConfiguration(List<FileBasedElement> rootElements,
-      Node configNode, HashMap<String, ConfigGroup> globalConfGroups) {
+      Node configNode, ConcurrentHashMap<String, ConfigGroup> globalConfGroups) {
     Metadata curMetadata = new Metadata();
     NodeList curGrandChildren = configNode.getChildNodes();
     for (int k = 0; k < curGrandChildren.getLength(); k++) {

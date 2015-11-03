@@ -18,7 +18,7 @@ package org.apache.oodt.cas.metadata;
 //JDK imports
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -405,7 +405,7 @@ public class Metadata {
    * combined.
    */
   @Deprecated
-  public void addMetadata(HashMap<String, Object> metadata, boolean replace) {
+  public void addMetadata(ConcurrentHashMap<String, Object> metadata, boolean replace) {
     // for back compat: the old method allowed us to give it a
     // Map<String,String> and it still worked
 	for (Map.Entry<String, Object> key : metadata.entrySet()) {
@@ -499,7 +499,7 @@ public class Metadata {
     public Group(String name) {
       this.name = name;
       this.values = new Vector<String>();
-      this.children = new HashMap<String, Group>();
+      this.children = new ConcurrentHashMap<String, Group>();
     }
 
     public String getName() {
@@ -606,7 +606,7 @@ public class Metadata {
   }
 
   public Map<String, Object> getMap() {
-    Map<String, Object> table = new HashMap<String, Object>();
+    Map<String, Object> table = new ConcurrentHashMap<String, Object>();
     for (String key : this.getAllKeys()) {
       table.put(key, this.getAllMetadata(key));
     }

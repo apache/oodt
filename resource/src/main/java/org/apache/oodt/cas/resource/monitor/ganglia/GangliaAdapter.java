@@ -34,7 +34,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -88,10 +88,10 @@ public class GangliaAdapter {
      */
     private Map<String, Map<String,String>> filterNodes (List<Cluster> gridStatus){
 
-        Map<String, Map<String,String>> nodes = new HashMap<String, Map<String,String>>();
+        Map<String, Map<String,String>> nodes = new ConcurrentHashMap<String, Map<String,String>>();
         for (Cluster cluster : gridStatus) {
             for (Host host : cluster.getHosts()) {
-                    Map<String, String> metrics = new HashMap<String, String>();
+                    Map<String, String> metrics = new ConcurrentHashMap<String, String>();
                     for (Metric metric : host.getMetrics()) {
                         metrics.put(metric.getName(), metric.getValue());
                     }

@@ -28,7 +28,7 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -41,14 +41,14 @@ import java.util.logging.Logger;
  * @version $Revision$
  * 
  * <p>
- * An abstract base class for data transfers that uses an in-memory HashMap to
+ * An abstract base class for data transfers that uses an in-memory ConcurrentHashMap to
  * keep track of data transfer status information.
  * </p>
  * 
  */
 public class TransferStatusTracker {
-    /* HashMap containing a list of current product transfers */
-    protected HashMap<String, Product> currentProductTransfers = new HashMap<String, Product>();
+    /* ConcurrentHashMap containing a list of current product transfers */
+    protected ConcurrentHashMap<String, Product> currentProductTransfers = new ConcurrentHashMap<String, Product>();
 
     /* our catalog object */
     private Catalog catalog = null;

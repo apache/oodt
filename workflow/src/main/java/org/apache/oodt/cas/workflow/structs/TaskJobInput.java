@@ -29,7 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -112,7 +112,7 @@ public class TaskJobInput implements JobInput {
    */
   public Object write() {
     // need to create a Map with the task metadata and the task config
-    Map outHash = new HashMap();
+    Map outHash = new ConcurrentHashMap();
     outHash.put("task.config", XmlRpcStructFactory
         .getXmlRpcWorkflowTaskConfiguration(this.taskConfig));
     outHash.put("task.metadata", this.dynMetadata.getMap());

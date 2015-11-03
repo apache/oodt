@@ -18,14 +18,16 @@
 package org.apache.oodt.cas.resource.scheduler;
 
 //OODT imports
+
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 
-//JDK imports
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+//JDK imports
 
 /**
  * 

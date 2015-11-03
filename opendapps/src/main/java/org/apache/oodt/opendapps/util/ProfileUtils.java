@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -188,7 +188,7 @@ public class ProfileUtils {
       OpendapConfig conf, DConnect dConn, Metadata datasetMet, Profile profile) throws Exception {
   	
     OpendapProfileElementExtractor pe = new OpendapProfileElementExtractor(conf);
-    Map<String, ProfileElement> profElements = new HashMap<String, ProfileElement>();
+    Map<String, ProfileElement> profElements = new ConcurrentHashMap<String, ProfileElement>();
 
     // extracts all variables defined in DDS
     try {

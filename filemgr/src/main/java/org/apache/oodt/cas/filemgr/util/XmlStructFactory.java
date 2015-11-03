@@ -20,7 +20,7 @@ package org.apache.oodt.cas.filemgr.util;
 //JDK imports
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
@@ -213,8 +213,8 @@ public final class XmlStructFactory {
         return productType;
     }
 
-    public static void writeProductTypeMapXmLDocument(HashMap<String, List<org.apache.oodt.cas.filemgr.structs.Element>> productTypeMap,
-            HashMap<String, String> subToSuperMap, String xmlFilePath) {
+    public static void writeProductTypeMapXmLDocument(ConcurrentHashMap<String, List<org.apache.oodt.cas.filemgr.structs.Element>> productTypeMap,
+            ConcurrentHashMap<String, String> subToSuperMap, String xmlFilePath) {
         XMLUtils.writeXmlFile(getProductTypeMapXmlDocument(productTypeMap,
                 subToSuperMap), xmlFilePath);
     }
@@ -229,8 +229,8 @@ public final class XmlStructFactory {
                 xmlFilePath);
     }
 
-    public static Document getProductTypeMapXmlDocument(HashMap<String, List<org.apache.oodt.cas.filemgr.structs.Element>> productTypeMap,
-            HashMap<String, String> subToSuperMap) {
+    public static Document getProductTypeMapXmlDocument(ConcurrentHashMap<String, List<org.apache.oodt.cas.filemgr.structs.Element>> productTypeMap,
+            ConcurrentHashMap<String, String> subToSuperMap) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         Document document;
@@ -456,13 +456,13 @@ public final class XmlStructFactory {
         return element;
     }
 
-    public static HashMap<String, List<org.apache.oodt.cas.filemgr.structs.Element>> 
-            getProductTypeElementList(Node typeMapNode, HashMap<String, org.apache.oodt.cas.filemgr.structs.Element> elements) {
+    public static ConcurrentHashMap<String, List<org.apache.oodt.cas.filemgr.structs.Element>>
+            getProductTypeElementList(Node typeMapNode, ConcurrentHashMap<String, org.apache.oodt.cas.filemgr.structs.Element> elements) {
         org.w3c.dom.Element typeMapElement = (org.w3c.dom.Element) typeMapNode;
 
         String typeId = typeMapElement.getAttribute("id");
 
-        HashMap<String, List<org.apache.oodt.cas.filemgr.structs.Element>> productTypeElementMap = new HashMap<String, List<org.apache.oodt.cas.filemgr.structs.Element>>();
+        ConcurrentHashMap<String, List<org.apache.oodt.cas.filemgr.structs.Element>> productTypeElementMap = new ConcurrentHashMap<String, List<org.apache.oodt.cas.filemgr.structs.Element>>();
 
         org.w3c.dom.Element elementListRoot = XMLUtils.getFirstElement(
                 "elements", typeMapElement);

@@ -18,13 +18,26 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.*;
-import java.util.*;
-
-import org.apache.oodt.commons.util.*;
-import org.w3c.dom.*;
+import org.apache.oodt.commons.util.Documentable;
+import org.apache.oodt.commons.util.XML;
 import org.apache.oodt.product.Retriever;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** A single result.
  *
@@ -405,7 +418,7 @@ public class Result implements Serializable, Cloneable, Documentable {
 
 	/** Initialize the set of valid MIME types. */
 	static {
-		codecs = new HashMap();
+		codecs = new ConcurrentHashMap();
 		try {
 			java.io.InputStream inp = Result.class.getResourceAsStream("mime.properties");
 			BufferedInputStream in = new BufferedInputStream(inp);

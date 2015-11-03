@@ -31,7 +31,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -113,7 +113,7 @@ public class CDEResult extends Result {
     CDERow row = new CDERow();
     ResultSetMetaData met = rs.getMetaData();
     int count = met.getColumnCount();
-    Map<String, CDEValue> dbValMap = new HashMap<String, CDEValue>();
+    Map<String, CDEValue> dbValMap = new ConcurrentHashMap<String, CDEValue>();
     Map<String, CDEValue> constValMap = cdeListToMap(this.constValues);
     List<CDEValue> orderedDbVals = new Vector<CDEValue>();
     
@@ -165,7 +165,7 @@ public class CDEResult extends Result {
   }  
   
   private Map<String, CDEValue> cdeListToMap(List<CDEValue> vals){
-    Map<String, CDEValue> map = new HashMap<String, CDEValue>();
+    Map<String, CDEValue> map = new ConcurrentHashMap<String, CDEValue>();
     if(vals != null){
       for(CDEValue val: vals){
         map.put(val.getCdeName(), val);

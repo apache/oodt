@@ -34,7 +34,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -217,7 +217,7 @@ public class PolicyResource extends CurationService {
   }
 
   private String encodePoliciesAsJSON(String[] policyDirs) {
-    Map<String, String> retMap = new HashMap<String, String>();
+    Map<String, String> retMap = new ConcurrentHashMap<String, String>();
     for (String policyDir : policyDirs) {
       retMap.put("policy", policyDir);
     }
@@ -246,11 +246,11 @@ public class PolicyResource extends CurationService {
   }
 
   private String encodeProductTypesAsJSON(String policy, String[] typeNames) {
-    Map<String, Object> retMap = new HashMap<String, Object>();
+    Map<String, Object> retMap = new ConcurrentHashMap<String, Object>();
     retMap.put("policy", policy);
     List<Map<String, String>> typeList = new Vector<Map<String, String>>();
     for (String typeName : typeNames) {
-      Map<String, String> typeMap = new HashMap<String, String>();
+      Map<String, String> typeMap = new ConcurrentHashMap<String, String>();
       typeMap.put("name", typeName);
       typeList.add(typeMap);
     }

@@ -31,7 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -208,7 +208,7 @@ public class XMLRPC {
 		} else if ("base64".equals(n)) {
 			return Base64.decode(txt.getBytes());
 		} else if ("struct".equals(n)) {
-			Map m = new HashMap();
+			Map m = new ConcurrentHashMap();
 			NodeList memberNodes = t.getChildNodes();
 			for (int i = 0; i < memberNodes.getLength(); ++i) {
 				Node memberNode = memberNodes.item(i);

@@ -25,6 +25,7 @@ import org.apache.oodt.profile.ProfileException;
 import org.apache.oodt.profile.handlers.ProfileHandler;
 import org.apache.oodt.xmlquery.QueryElement;
 import org.apache.oodt.xmlquery.XMLQuery;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.ErrorHandler;
@@ -36,7 +37,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A lightweight profile server.
@@ -256,7 +264,7 @@ final public class LightweightProfileServer implements ProfileHandler {
 	 * using just the one file, so there should be no need for this cache.  Who added
 	 * this?  And if it were me, what was I smoking?
 	 */
-	private static Map cache = new HashMap();
+	private static Map cache = new ConcurrentHashMap();
 
 	/** My ID. */
 	private String id;

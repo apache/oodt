@@ -21,7 +21,7 @@ package org.apache.oodt.cas.pushpull.config;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Element;
@@ -46,14 +46,14 @@ import org.apache.oodt.commons.xml.XMLUtils;
  */
 public class ParserInfo implements ConfigParserMetKeys{
 
-    private HashMap<String, String> parserToRetrievalMethodMap;
+    private ConcurrentHashMap<String, String> parserToRetrievalMethodMap;
 
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(ParserInfo.class
             .getName());
 
     public ParserInfo() {
-        parserToRetrievalMethodMap = new HashMap<String, String>();
+        parserToRetrievalMethodMap = new ConcurrentHashMap<String, String>();
     }
 
     public void loadParserInfo(File xmlFile) throws ConfigException {

@@ -21,7 +21,7 @@ package org.apache.oodt.cas.workflow.gui.perspective.view.impl;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.geom.Rectangle2D;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,7 +73,7 @@ public class JungJGraphModelAdapter extends DefaultGraphModel {
       final ObservableGraph<ModelNode, IdentifiableEdge> jungGraph) {
     this.jungGraph = jungGraph;
     this.jungGraph.addGraphEventListener(new WorkflowChangeListener(this));
-    this.cellMap = new HashMap<String, DefaultGraphCell>();
+    this.cellMap = new ConcurrentHashMap<String, DefaultGraphCell>();
     this.addGraphModelListener(new GraphModelListener() {
 
       @Override

@@ -15,7 +15,11 @@
 
 package org.apache.oodt.commons.util;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 // Definitions for intended functions:
 //
@@ -229,7 +233,7 @@ public class CacheMap implements Map {
 	private LinkedList cache = new LinkedList();
 
 	/** The map (M). */
-	private Map map = new HashMap();
+	private Map map = new ConcurrentHashMap();
 
 	/** The capacity of this cache map (c). */
 	private int capacity;

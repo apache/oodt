@@ -28,7 +28,7 @@ import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryExcepti
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 
 //JDK imports
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -62,7 +62,7 @@ public class WorkflowProcessorQueue {
     this.repo = repo;
     this.lifecycle = lifecycle;
     this.modelRepo = modelRepo;
-    this.processorCache = new HashMap<String, WorkflowProcessor>();
+    this.processorCache = new ConcurrentHashMap<String, WorkflowProcessor>();
   }
 
   /**

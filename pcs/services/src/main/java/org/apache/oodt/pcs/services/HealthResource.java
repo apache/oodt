@@ -19,7 +19,7 @@ package org.apache.oodt.pcs.services;
 
 //JDK imports
 import java.net.MalformedURLException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -80,7 +80,7 @@ public class HealthResource extends PCSService {
   @Produces("text/plain")
   public String healthReport() {
     PCSHealthMonitorReport report = mon.getReport();
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
     output.put("daemonStatus", this.encodeDaemonOutput(report));
     output.put("crawlerStatus", this.encodeCrawlerHealthReportOutput(report));
@@ -95,7 +95,7 @@ public class HealthResource extends PCSService {
   @Produces("text/plain")
   public String ingestReport() {
     PCSHealthMonitorReport report = mon.getReport();
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
     output.put("ingestHealth", this.encodeIngestHealthList(report));
     return this.encodeReportAsJson(output);
@@ -106,7 +106,7 @@ public class HealthResource extends PCSService {
   @Produces("text/plain")
   public String ingestReportByName(@PathParam("cname") String crawlerName) {
     PCSHealthMonitorReport report = mon.getReport();
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
     output.put("ingestHealth", this
         .encodeIngestHealthList(report, crawlerName));
@@ -118,7 +118,7 @@ public class HealthResource extends PCSService {
   @Produces("text/plain")
   public String jobsReport() {
     PCSHealthMonitorReport report = mon.getReport();
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
     output.put("jobHealth", this.encodeJobHealthStatusList(report));
     return this.encodeReportAsJson(output);
@@ -129,7 +129,7 @@ public class HealthResource extends PCSService {
   @Produces("text/plain")
   public String jobsReportByState(@PathParam("state") String jobState) {
     PCSHealthMonitorReport report = mon.getReport();
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
     output.put("jobHealth", this.encodeJobHealthStatusList(report, jobState));
     return this.encodeReportAsJson(output);
@@ -140,7 +140,7 @@ public class HealthResource extends PCSService {
   @Produces("text/plain")
   public String daemonReport() {
     PCSHealthMonitorReport report = mon.getReport();
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
     output.put("daemonStatus", this.encodeDaemonOutput(report));
     return this.encodeReportAsJson(output);
@@ -151,7 +151,7 @@ public class HealthResource extends PCSService {
   @Produces("text/plain")
   public String daemonReportByName(@PathParam("dname") String daemonName) {
     PCSHealthMonitorReport report = mon.getReport();
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
     output.put("daemonStatus", this.encodeDaemonOutput(report, daemonName));
     return this.encodeReportAsJson(output);
@@ -163,7 +163,7 @@ public class HealthResource extends PCSService {
   @Produces("text/plain")
   public String crawlerHealthReport() {
     PCSHealthMonitorReport report = mon.getReport();
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
     output.put("crawlerStatus", this.encodeCrawlerHealthReportOutput(report));
     return this.encodeReportAsJson(output);
@@ -175,7 +175,7 @@ public class HealthResource extends PCSService {
   public String getCrawlerHealthReportByName(
       @PathParam("cname") String crawlerName) {
     PCSHealthMonitorReport report = mon.getReport();
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
     output.put("crawlerStatus", this.encodeCrawlerHealthReportOutput(report,
         crawlerName));
@@ -187,7 +187,7 @@ public class HealthResource extends PCSService {
   @Produces("text/plain")
   public String getLatestIngestedFiles() {
     PCSHealthMonitorReport report = mon.getReport();
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("generated", report.getCreateDateIsoFormat());
     output.put("latestFiles", this.encodeLatestFilesOutput(report));
     return this.encodeReportAsJson(output);
@@ -200,7 +200,7 @@ public class HealthResource extends PCSService {
   }
 
   private Map<String, Object> encodeCrawlerHealth(CrawlerHealth health) {
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("crawler", health.getCrawlerName());
     output.put("avgCrawlTime", health.getAvgCrawlTime());
     output.put("numCrawls", health.getNumCrawls());
@@ -208,7 +208,7 @@ public class HealthResource extends PCSService {
   }
 
   private Map<String, Object> encodeJobStatus(JobHealthStatus status) {
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     output.put("state", status.getStatus());
     output.put("numJobs", status.getNumPipelines());
     return output;
@@ -224,7 +224,7 @@ public class HealthResource extends PCSService {
     if (prodMet == null) {
       prodMet = new Metadata();
     }
-    Map<String, Object> fileOutput = new HashMap<String, Object>();
+    Map<String, Object> fileOutput = new ConcurrentHashMap<String, Object>();
     fileOutput.put("filepath", fm.getFilePath(p));
     fileOutput.put("receivedTime", prodMet.getMetadata("CAS."
         + CoreMetKeys.PRODUCT_RECEVIED_TIME) != null ? prodMet
@@ -233,7 +233,7 @@ public class HealthResource extends PCSService {
   }
 
   private Map<String, String> encodeCrawlerStatus(CrawlerStatus status) {
-    Map<String, String> output = new HashMap<String, String>();
+    Map<String, String> output = new ConcurrentHashMap<String, String>();
     output.put("crawlerName", status.getInfo().getCrawlerName());
     output.put("crawlerPort", status.getInfo().getCrawlerPort());
     output.put("url", status.getCrawlHost());
@@ -296,7 +296,7 @@ public class HealthResource extends PCSService {
 
   private Map<String, Object> encodeLatestFilesOutput(
       PCSHealthMonitorReport report) {
-    Map<String, Object> latestFilesOutput = new HashMap<String, Object>();
+    Map<String, Object> latestFilesOutput = new ConcurrentHashMap<String, Object>();
     latestFilesOutput.put("topN", PCSHealthMonitor.TOP_N_PRODUCTS);
     List<Object> latestFilesList = new Vector<Object>();
     for (Product prod : (List<Product>) (List<?>) report
@@ -341,7 +341,7 @@ public class HealthResource extends PCSService {
 
   private Map<String, Object> encodeDaemonOutput(PCSHealthMonitorReport report,
       String... daemonName) {
-    Map<String, Object> daemonOutput = new HashMap<String, Object>();
+    Map<String, Object> daemonOutput = new ConcurrentHashMap<String, Object>();
     if (daemonName.length > 0) {
       if (daemonName[0].equals("fm")) {
         daemonOutput.put("fm", this.encodeDaemonStatus(report.getFmStatus()));
@@ -385,7 +385,7 @@ public class HealthResource extends PCSService {
   }
 
   private Map<String, String> encodeDaemonStatus(PCSDaemonStatus status) {
-    Map<String, String> output = new HashMap<String, String>();
+    Map<String, String> output = new ConcurrentHashMap<String, String>();
     output.put("daemon", status.getDaemonName());
     output.put("url", status.getUrlStr());
     output.put("status", status.getStatus());

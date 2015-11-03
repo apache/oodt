@@ -33,7 +33,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +50,7 @@ import java.util.Map;
 public class HttpProtocol implements Protocol {
 
   public static final int INT = 1024;
-  private static Map<String, List<HttpFile>> linkChildren = new HashMap<String, List<HttpFile>>();
+  private static Map<String, List<HttpFile>> linkChildren = new ConcurrentHashMap<String, List<HttpFile>>();
 
   private HttpFile parentFile;
   private HttpFile currentFile;

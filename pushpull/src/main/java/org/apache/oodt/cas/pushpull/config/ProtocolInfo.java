@@ -27,7 +27,7 @@ import org.apache.oodt.commons.xml.XMLUtils;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +52,7 @@ public class ProtocolInfo implements ConfigParserMetKeys {
 
     private static final int DEFAULT_PG_SIZE = 8;
 
-    private HashMap<String, LinkedList<Class<ProtocolFactory>>> protocolClassReference;
+    private ConcurrentHashMap<String, LinkedList<Class<ProtocolFactory>>> protocolClassReference;
 
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(ProtocolInfo.class
@@ -61,7 +61,7 @@ public class ProtocolInfo implements ConfigParserMetKeys {
     public ProtocolInfo() {
         timeout = 0;
         pgSize = DEFAULT_PG_SIZE;
-        protocolClassReference = new HashMap<String, LinkedList<Class<ProtocolFactory>>>();
+        protocolClassReference = new ConcurrentHashMap<String, LinkedList<Class<ProtocolFactory>>>();
     }
 
     public void loadProtocolFactoryInfoFromFile(File protocolFactoryInfo)

@@ -59,7 +59,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -933,7 +933,7 @@ public class MetadataResource extends CurationService {
 				  throws ValidationLayerException, RepositoryManagerException {
       // Remove Elements that aren't used in any product type
       List<ProductType> ptypelist = xmlRepo.getProductTypes();
-      HashMap<String, Boolean> usedElementIds = new HashMap<String, Boolean>();
+      ConcurrentHashMap<String, Boolean> usedElementIds = new ConcurrentHashMap<String, Boolean>();
       for(ProductType ptype: ptypelist) {
           List<Element> ptypeElements = 
               vLayer.getElements(ptype);

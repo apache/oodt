@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -104,7 +104,7 @@ public class CurationService extends HttpServlet implements CuratorConfMetKeys {
 
     List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
     for (String aF : f) {
-      Map<String, Object> entry = new HashMap<String, Object>();
+      Map<String, Object> entry = new ConcurrentHashMap<String, Object>();
       String children[] = getFilesInDirectory(startingPath + "/" + aF,
           showFiles);
       entry.put("text", aF);

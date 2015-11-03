@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -225,7 +225,7 @@ public class IngestionResource extends CurationService {
   private String encodeTaskListAsJSON(List<IngestionTask> taskList) {
     List<Map<String, String>> jsonFriendlyTaskList = new Vector<Map<String, String>>();
     for (IngestionTask task : taskList) {
-      Map<String, String> taskPropMap = new HashMap<String, String>();
+      Map<String, String> taskPropMap = new ConcurrentHashMap<String, String>();
       taskPropMap.put("id", task.getId());
       taskPropMap.put("createDate", DateUtils.getDateAsISO8601String(task
           .getCreateDate()));
@@ -256,7 +256,7 @@ public class IngestionResource extends CurationService {
   }
 
   private String encodeIngestResponseAsJSON(boolean success, String msg) {
-    Map<String, Object> resMap = new HashMap<String, Object>();
+    Map<String, Object> resMap = new ConcurrentHashMap<String, Object>();
     resMap.put("success", success);
     resMap.put("msg", msg);
     JSONObject resObj = new JSONObject();
@@ -305,10 +305,10 @@ public class IngestionResource extends CurationService {
 
   class IngestionTaskList {
 
-    private HashMap<String, IngestionTask> taskMap;
+    private ConcurrentHashMap<String, IngestionTask> taskMap;
 
     public IngestionTaskList() {
-      this.taskMap = new HashMap<String, IngestionTask>();
+      this.taskMap = new ConcurrentHashMap<String, IngestionTask>();
     }
 
     public synchronized String addIngestionTask(IngestionTask task) {

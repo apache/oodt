@@ -489,8 +489,8 @@
     <!-- Solr Internal Query Caches
 
          There are two implementations of cache available for Solr,
-         LRUCache, based on a synchronized LinkedHashMap, and
-         FastLRUCache, based on a ConcurrentHashMap.  
+         LRUCache, based on a synchronized LinkedConcurrentHashMap, and
+         FastLRUCache, based on a ConcurrentConcurrentHashMap.
 
          FastLRUCache has faster gets and slower puts in single
          threaded operation and thus is generally faster than LRUCache
@@ -513,7 +513,7 @@
                (LRUCache or FastLRUCache)
            size - the maximum number of entries in the cache
            initialSize - the initial capacity (number of entries) of
-               the cache.  (see java.util.HashMap)
+               the cache.  (see java.util.ConcurrentHashMap)
            autowarmCount - the number of entries to prepopulate from
                and old cache.  
       -->

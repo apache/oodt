@@ -18,16 +18,24 @@
 package org.apache.oodt.opendapps;
 
 //JDK imports
+
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.opendapps.config.OpendapConfig;
 import org.apache.oodt.opendapps.extractors.MetadataExtractor;
 import org.apache.oodt.opendapps.extractors.ThreddsMetadataExtractor;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import thredds.catalog.*;
+import thredds.catalog.InvAccess;
+import thredds.catalog.InvCatalogRef;
+import thredds.catalog.InvDataset;
+import thredds.catalog.InvService;
+import thredds.catalog.ServiceType;
 import thredds.catalog.crawl.CatalogCrawler;
 
 /**
@@ -48,7 +56,7 @@ public class DatasetCrawler implements CatalogCrawler.Listener {
 
   public DatasetCrawler(String datasetURL, OpendapConfig conf) {
     this.datasetURL = datasetURL.endsWith("/") ? datasetURL : datasetURL + "/";
-    this.datasetMet = new HashMap<String, Metadata>();
+    this.datasetMet = new ConcurrentHashMap<String, Metadata>();
     this.conf = conf;
   }
 

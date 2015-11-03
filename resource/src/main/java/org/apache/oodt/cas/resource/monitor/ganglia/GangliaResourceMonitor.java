@@ -25,7 +25,7 @@ import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -63,9 +63,9 @@ public class GangliaResourceMonitor implements Monitor {
 	public GangliaResourceMonitor(LoadCalculator loadCalculator,
 			String gmetadHost, int gmetadPort) {
 		this.loadCalculator = loadCalculator;
-		this.loadMap = new HashMap<String, Integer>();
-		this.gmetaNodes = new HashMap<String, Map<String, String>>();
-		this.gmetaAdapters = new HashMap<String, GangliaAdapter>();
+		this.loadMap = new ConcurrentHashMap<String, Integer>();
+		this.gmetaNodes = new ConcurrentHashMap<String, Map<String, String>>();
+		this.gmetaAdapters = new ConcurrentHashMap<String, GangliaAdapter>();
 		try {
 			this.initGmetaNodes(gmetadHost, gmetadPort);
 		} catch (Exception e) {
@@ -252,7 +252,7 @@ public class GangliaResourceMonitor implements Monitor {
 	}
 
 	private void addGmetadNode(String host, int port) {
-		Map<String, String> rootNode = new HashMap<String, String>();
+		Map<String, String> rootNode = new ConcurrentHashMap<String, String>();
 		rootNode.put("host", host);
 		rootNode.put("port", String.valueOf(port));
 		this.gmetaNodes.put(host, rootNode);

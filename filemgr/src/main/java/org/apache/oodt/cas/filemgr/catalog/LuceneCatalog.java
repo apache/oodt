@@ -18,26 +18,48 @@
 package org.apache.oodt.cas.filemgr.catalog;
 
 //JDK imports
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.*;
-import org.apache.oodt.cas.filemgr.structs.*;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.RangeQuery;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.WildcardQuery;
+import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.Element;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Query;
+import org.apache.oodt.cas.filemgr.structs.QueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.pagination.PaginationUtils;
+
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,7 +92,7 @@ public class LuceneCatalog implements Catalog {
      * temporary Cache of product/metadata/reference information before it is
      * written to the index
      */
-    private static HashMap<String, CompleteProduct> CATALOG_CACHE = new HashMap<String, CompleteProduct>();
+    private static ConcurrentHashMap<String, CompleteProduct> CATALOG_CACHE = new ConcurrentHashMap<String, CompleteProduct>();
 
     /* our product ID generator */
     private static UUIDGenerator generator = UUIDGenerator.getInstance();

@@ -44,7 +44,7 @@ import java.io.File;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -385,11 +385,11 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   }  
 
   private void init() throws RepositoryException {
-    this.workflows = new HashMap<String, ParentChildWorkflow>();
-    this.tasks = new HashMap<String, WorkflowTask>();
-    this.conditions = new HashMap<String, WorkflowCondition>();
-    this.eventWorkflowMap = new HashMap<String, List<ParentChildWorkflow>>();
-    this.globalConfGroups = new HashMap<String, Metadata>();
+    this.workflows = new ConcurrentHashMap<String, ParentChildWorkflow>();
+    this.tasks = new ConcurrentHashMap<String, WorkflowTask>();
+    this.conditions = new ConcurrentHashMap<String, WorkflowCondition>();
+    this.eventWorkflowMap = new ConcurrentHashMap<String, List<ParentChildWorkflow>>();
+    this.globalConfGroups = new ConcurrentHashMap<String, Metadata>();
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder parser;
 

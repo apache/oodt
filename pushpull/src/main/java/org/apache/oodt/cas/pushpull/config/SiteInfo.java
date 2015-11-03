@@ -23,7 +23,7 @@ import org.apache.oodt.cas.pushpull.protocol.RemoteSite;
 
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -47,10 +47,10 @@ public class SiteInfo {
     private final static Logger LOG = Logger.getLogger(SiteInfo.class
         .getName());
 
-    private HashMap<String, RemoteSite> aliasAndRemoteSite;
+    private ConcurrentHashMap<String, RemoteSite> aliasAndRemoteSite;
 
     public SiteInfo() {
-        aliasAndRemoteSite = new HashMap<String, RemoteSite>();
+        aliasAndRemoteSite = new ConcurrentHashMap<String, RemoteSite>();
     }
 
     public void addSite(RemoteSite rs) {

@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -195,7 +195,7 @@ public class RemoteSpecs implements ConfigParserMetKeys {
             }
             NodeList propsList = ((Element) propInfoNode)
                 .getElementsByTagName(PROP_FILE_TAG);
-            HashMap<File, Parser> propFileToParserMap = new HashMap<File, Parser>();
+            ConcurrentHashMap<File, Parser> propFileToParserMap = new ConcurrentHashMap<File, Parser>();
             for (int p = 0; p < propsList.getLength(); p++) {
               Element propElem = (Element) propsList.item(p);
               propFileToParserMap

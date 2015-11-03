@@ -23,7 +23,7 @@ import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 
 //JDK imports
 import java.io.File;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -47,7 +47,7 @@ public class PropFilesInfo {
 
     private LinkedList<RegExpAndParser> patterns;
 
-    private HashMap<File, Parser> fileToParserMap;
+    private ConcurrentHashMap<File, Parser> fileToParserMap;
 
     private DownloadInfo di;
 
@@ -57,7 +57,7 @@ public class PropFilesInfo {
     }
 
     public void setDownloadInfo(DownloadInfo di,
-            HashMap<File, Parser> fileToParserMap) {
+            ConcurrentHashMap<File, Parser> fileToParserMap) {
         this.di = di;
         this.fileToParserMap = fileToParserMap;
     }

@@ -19,7 +19,7 @@
 package org.apache.oodt.cas.pushpull.expressions;
 
 //JDK imports
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
@@ -32,7 +32,7 @@ import java.util.HashMap;
  */
 public class GlobalVariables {
 
-    public static final HashMap<String, Variable> hashMap = new HashMap<String, Variable>();
+    public static final ConcurrentHashMap<String, Variable> ConcurrentHashMap = new ConcurrentHashMap<String, Variable>();
 
     private GlobalVariables() {
     }

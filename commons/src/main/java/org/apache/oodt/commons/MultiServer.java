@@ -33,7 +33,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.registry.Registry;
 import java.rmi.server.RemoteObject;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Timer;
@@ -242,7 +242,7 @@ public class MultiServer {
 
 		// Create servers
 		NodeList serverNodes = root.getElementsByTagName("server");
-		servers = new HashMap();
+		servers = new ConcurrentHashMap();
 		for (int i = 0; i < serverNodes.getLength(); ++i) {
 			Element serverElem = (Element) serverNodes.item(i);
 			String name = serverElem.getAttribute("id");

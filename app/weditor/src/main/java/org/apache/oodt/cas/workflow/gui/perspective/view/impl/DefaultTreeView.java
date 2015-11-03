@@ -28,7 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Stack;
 import javax.swing.JLabel;
@@ -108,8 +108,8 @@ public class DefaultTreeView extends View {
         for (int i = 0; i < node.getChildCount(); i++) {
           stack.push((DefaultMutableTreeNode) node.getChildAt(i));
         }
-      } else if (node.getUserObject() instanceof HashMap) {
-        String key = (String) ((HashMap<String, String>) node.getUserObject())
+      } else if (node.getUserObject() instanceof ConcurrentHashMap) {
+        String key = (String) ((ConcurrentHashMap<String, String>) node.getUserObject())
             .keySet().iterator().next();
         if (lookingForPath.equals(key)) {
           return new TreePath(node.getPath());
@@ -230,7 +230,7 @@ public class DefaultTreeView extends View {
             state.setProperty(EXPAND_POSTCONDITIONS, Boolean.toString(node
                 .getUserObject().equals("post-conditions")));
             DefaultTreeView.this.notifyListeners();
-          } else if (node.getUserObject() instanceof HashMap) {
+          } else if (node.getUserObject() instanceof ConcurrentHashMap) {
             DefaultMutableTreeNode metNode = null;
             String group = null;
             Object[] path = e.getPath().getPath();
@@ -238,12 +238,12 @@ public class DefaultTreeView extends View {
               if (((DefaultMutableTreeNode) path[i]).getUserObject() instanceof ModelGraph) {
                 metNode = (DefaultMutableTreeNode) path[i];
                 break;
-              } else if (((DefaultMutableTreeNode) path[i]).getUserObject() instanceof HashMap) {
+              } else if (((DefaultMutableTreeNode) path[i]).getUserObject() instanceof ConcurrentHashMap) {
                 if (group == null) {
-                  group = (String) ((HashMap<String, String>) ((DefaultMutableTreeNode) path[i])
+                  group = (String) ((ConcurrentHashMap<String, String>) ((DefaultMutableTreeNode) path[i])
                       .getUserObject()).keySet().iterator().next();
                 } else {
-                  group = (String) ((HashMap<String, String>) ((DefaultMutableTreeNode) path[i])
+                  group = (String) ((ConcurrentHashMap<String, String>) ((DefaultMutableTreeNode) path[i])
                       .getUserObject()).keySet().iterator().next()
                           + "/"
                           + group;
@@ -291,15 +291,15 @@ public class DefaultTreeView extends View {
           panel.add(idLabel, BorderLayout.CENTER);
           panel.setBackground(selected ? Color.lightGray : Color.white);
           return panel;
-        } else if (node.getUserObject() instanceof HashMap) {
+        } else if (node.getUserObject() instanceof ConcurrentHashMap) {
           JPanel panel = new JPanel();
           panel.setLayout(new BorderLayout());
-          String group = (String) ((HashMap<String, String>) node
+          String group = (String) ((ConcurrentHashMap<String, String>) node
               .getUserObject()).keySet().iterator().next();
           JLabel nameLabel = new JLabel(group + " : ");
           nameLabel.setForeground(Color.blue);
           nameLabel.setBackground(Color.white);
-          JLabel valueLabel = new JLabel(((HashMap<String, String>) node
+          JLabel valueLabel = new JLabel(((ConcurrentHashMap<String, String>) node
               .getUserObject()).get(group));
           valueLabel.setForeground(Color.darkGray);
           valueLabel.setBackground(Color.white);
@@ -404,12 +404,12 @@ public class DefaultTreeView extends View {
     for (String group : staticMetadata.getGroups()) {
       Object userObj;
       if (staticMetadata.getMetadata(group) != null) {
-        HashMap<String, String> map = new HashMap<String, String>();
+        ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
         map.put(group,
             StringUtils.join(staticMetadata.getAllMetadata(group), ","));
         userObj = map;
       } else {
-        HashMap<String, String> map = new HashMap<String, String>();
+        ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
         map.put(group, null);
         userObj = map;
       }

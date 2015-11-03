@@ -23,7 +23,7 @@ package org.apache.oodt.cas.pushpull.retrievalsystem;
 import org.apache.oodt.cas.pushpull.exceptions.ThreadEvaluatorException;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  */
 public class DownloadThreadEvaluator {
     private static Logger LOG = Logger.getLogger(DownloadThreadEvaluator.class.getName());
-    private HashMap<File, DownloadingFileInfo> fileAndDownloadingFileInfo;
+    private ConcurrentHashMap<File, DownloadingFileInfo> fileAndDownloadingFileInfo;
 
     private final int MAX_THREADS;
 
@@ -54,7 +54,7 @@ public class DownloadThreadEvaluator {
     public DownloadThreadEvaluator(int maxThreads) {
         this.MAX_THREADS = maxThreads;
         downloadSpeedsForEachThread = new double[maxThreads + 1];
-        fileAndDownloadingFileInfo = new HashMap<File, DownloadingFileInfo>();
+        fileAndDownloadingFileInfo = new ConcurrentHashMap<File, DownloadingFileInfo>();
         currentThreadCount = 0;
     }
 

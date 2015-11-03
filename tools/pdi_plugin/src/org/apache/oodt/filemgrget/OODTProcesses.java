@@ -61,7 +61,7 @@ public class OODTProcesses {
             throw new Exception("FileManager returned null product page");
         }
 
-        Map<String, Map<String, String>> o = new HashMap<String, Map<String, String>>();
+        Map<String, Map<String, String>> o = new ConcurrentHashMap<String, Map<String, String>>();
 
         for (int pid = 0; pid < firstPage.getTotalPages(); pid++) {
             if (pid > 0) {
@@ -70,7 +70,7 @@ public class OODTProcesses {
             for (Product p : firstPage.getPageProducts()) {
                 Metadata met = client.getMetadata(p);
 
-                Map<String, String> h = new HashMap<String, String>();
+                Map<String, String> h = new ConcurrentHashMap<String, String>();
                 h.put("name", p.getProductName());
                 h.put("type", p.getProductType().getName());
                 h.put("structure", p.getProductStructure());

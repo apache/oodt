@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -73,7 +73,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 	@Override
 	public List<String> serialize(Product product, boolean create) {
 		
-		Map<String, List<String>> fields = new HashMap<String, List<String>>();
+		Map<String, List<String>> fields = new ConcurrentHashMap<String, List<String>>();
 		List<String> docs = new ArrayList<String>();
 		
 		// add core product attributes to map
@@ -111,7 +111,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 	 */
 	public List<String> serialize(String productId, Reference rootReference, List<Reference> references, boolean replace) {
 		
-		Map<String, List<String>> fields = new HashMap<String, List<String>>();
+		Map<String, List<String>> fields = new ConcurrentHashMap<String, List<String>>();
 		
 		// product root reference
 		if (rootReference!=null) {
@@ -178,7 +178,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 	 */
 	public List<String> serialize(String productId, Metadata metadata, boolean replace) {
 		
-		Map<String, List<String>> fields = new HashMap<String, List<String>>();
+		Map<String, List<String>> fields = new ConcurrentHashMap<String, List<String>>();
 		
 		for (String key : metadata.getKeys()) {
 			if (! (key.startsWith(Parameters.NS)              // skip metadata keys starting with reserved namespace

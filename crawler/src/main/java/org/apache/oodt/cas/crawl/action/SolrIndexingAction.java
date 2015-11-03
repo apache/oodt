@@ -19,7 +19,7 @@ package org.apache.oodt.cas.crawl.action;
 
 // JDK imports
 import java.io.File;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -41,7 +41,7 @@ public class SolrIndexingAction extends CrawlerAction {
 	private String fileManagerUrl = "http://localhost:9000/";
 	
 	// environment variables (containing location of indexer.properties)
-	private Map<String, String> env = new HashMap<String,String>();
+	private Map<String, String> env = new ConcurrentHashMap<String,String>();
 	
 	// service responsible for metadata migration
 	private SolrIndexer solrIndexer = null;

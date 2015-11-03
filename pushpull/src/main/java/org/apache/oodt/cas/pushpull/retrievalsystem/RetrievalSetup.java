@@ -27,7 +27,7 @@ import org.apache.oodt.cas.pushpull.retrievalmethod.RetrievalMethod;
 
 //JDK imports
 import java.io.*;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -51,7 +51,7 @@ public class RetrievalSetup {
 
     private final HashSet<File> alreadyProcessedPropFiles;
 
-    private final HashMap<Class<RetrievalMethod>, RetrievalMethod> classToRmMap;
+    private final ConcurrentHashMap<Class<RetrievalMethod>, RetrievalMethod> classToRmMap;
 
     private boolean downloadingProps;
 
@@ -67,7 +67,7 @@ public class RetrievalSetup {
         this.config = config;
         this.siteInfo = siteInfo;
         alreadyProcessedPropFiles = new HashSet<File>();
-        classToRmMap = new HashMap<Class<RetrievalMethod>, RetrievalMethod>();
+        classToRmMap = new ConcurrentHashMap<Class<RetrievalMethod>, RetrievalMethod>();
         linker = new DataFileToPropFileLinker();
     }
 

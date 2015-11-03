@@ -37,7 +37,7 @@ import org.xml.sax.InputSource;
 
 import java.io.FileInputStream;
 import java.text.ParseException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +59,7 @@ public class DirStructXmlParser implements Parser {
     private static final Logger LOG = Logger.getLogger(DirStructXmlParser.class
             .getName());
     
-    private static final HashMap<String, Method> methodRepo = new HashMap<String, Method>();
+    private static final ConcurrentHashMap<String, Method> methodRepo = new ConcurrentHashMap<String, Method>();
 
     public DirStructXmlParser() {}
 
@@ -150,7 +150,7 @@ public class DirStructXmlParser implements Parser {
                               break;
                             }
                         }
-                        Variable v = GlobalVariables.hashMap.get(variable
+                        Variable v = GlobalVariables.ConcurrentHashMap.get(variable
                                 .toString());
                         if (v == null) {
                           throw new Exception("No variable defined with name '" + variable.toString() + "'");
@@ -269,7 +269,7 @@ public class DirStructXmlParser implements Parser {
                 }
 
                 // store Variable in list of Variables
-                GlobalVariables.hashMap.put(variable.getName(), variable);
+                GlobalVariables.ConcurrentHashMap.put(variable.getName(), variable);
             }
         }
     }

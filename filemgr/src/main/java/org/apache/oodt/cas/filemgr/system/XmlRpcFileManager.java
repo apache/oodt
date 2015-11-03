@@ -65,7 +65,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
@@ -172,7 +172,7 @@ public class XmlRpcFileManager {
         FileTransferStatus status = transferStatusTracker
                 .getCurrentFileTransfer();
         if (status == null) {
-            return new HashMap<String, Object>();
+            return new ConcurrentHashMap<String, Object>();
         } else {
           return XmlRpcStructFactory.getXmlRpcFileTransferStatus(status);
         }

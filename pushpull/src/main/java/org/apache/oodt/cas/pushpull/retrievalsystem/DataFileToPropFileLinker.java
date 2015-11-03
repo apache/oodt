@@ -20,7 +20,7 @@ package org.apache.oodt.cas.pushpull.retrievalsystem;
 
 //JDK imports
 import java.io.File;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
@@ -38,9 +38,9 @@ import org.apache.oodt.cas.protocol.ProtocolFile;
  */
 public class DataFileToPropFileLinker implements DownloadListener {
 
-    private HashMap<String, File> protocolFilePathAndPropFileMap;
+    private ConcurrentHashMap<String, File> protocolFilePathAndPropFileMap;
 
-    private HashMap<File, String> propFileToErrorsMap;
+    private ConcurrentHashMap<File, String> propFileToErrorsMap;
 
     private LinkedList<ProtocolFile> downloadingDataFiles;
 
@@ -49,8 +49,8 @@ public class DataFileToPropFileLinker implements DownloadListener {
     private LinkedList<ProtocolFile> successDataFiles;
 
     public DataFileToPropFileLinker() {
-        this.protocolFilePathAndPropFileMap = new HashMap<String, File>();
-        this.propFileToErrorsMap = new HashMap<File, String>();
+        this.protocolFilePathAndPropFileMap = new ConcurrentHashMap<String, File>();
+        this.propFileToErrorsMap = new ConcurrentHashMap<File, String>();
         downloadingDataFiles = new LinkedList<ProtocolFile>();
         failedDataFiles = new LinkedList<ProtocolFile>();
         successDataFiles = new LinkedList<ProtocolFile>();

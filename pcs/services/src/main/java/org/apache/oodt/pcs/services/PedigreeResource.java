@@ -20,7 +20,7 @@ package org.apache.oodt.pcs.services;
 //JDK imports
 import java.net.MalformedURLException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -96,7 +96,7 @@ public class PedigreeResource extends PCSService {
   }
 
   private String encodePedigreeAsJson(PedigreeTree up, PedigreeTree down) {
-    Map<String, Object> output = new HashMap<String, Object>();
+    Map<String, Object> output = new ConcurrentHashMap<String, Object>();
     if (up != null) {
       output.put("upstream", this.encodePedigreeTreeAsJson(up.getRoot()));
     }
@@ -110,7 +110,7 @@ public class PedigreeResource extends PCSService {
 
   private Object encodePedigreeTreeAsJson(PedigreeTreeNode node) {
     if (node.getNumChildren() > 0) {
-      Map<String, Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new ConcurrentHashMap<String, Object>();
       List<Object> list = new Vector<Object>();
       for (int i = 0; i < node.getNumChildren(); i++) {
         list.add(this

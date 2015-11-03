@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,7 +55,7 @@ public class XStreamJobRepository implements JobRepository {
 	public XStreamJobRepository(File workingDir, int maxHistory) {
 		this.workingDir = workingDir;
 		this.maxHistory = Math.max(maxHistory == -1 ? Integer.MAX_VALUE : maxHistory, 1);
-		this.jobMap = Collections.synchronizedMap(new HashMap<String, String>());
+		this.jobMap = Collections.synchronizedMap(new ConcurrentHashMap<String, String>());
 		this.jobPrecedence = new Vector<String>();
 	}
 	

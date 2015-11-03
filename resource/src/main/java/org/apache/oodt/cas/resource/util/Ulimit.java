@@ -25,7 +25,7 @@ import org.apache.oodt.cas.resource.exceptions.ResourceException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -187,7 +187,7 @@ public final class Ulimit implements UlimitMetKeys {
                 .getInputStream()));
 
         String line;
-        Map properties = new HashMap();
+        Map properties = new ConcurrentHashMap();
 
         while ((line = in.readLine()) != null) {
             UlimitProperty property = parseProperty(line);

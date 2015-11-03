@@ -17,8 +17,6 @@
 
 package org.apache.oodt.cas.workflow.system;
 
-//JDK imports
-
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -32,8 +30,6 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
-//Junit imports
-//OODT imports
 
 /**
  * 

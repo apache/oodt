@@ -26,7 +26,7 @@ import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
 
 //JDK imports
 import java.io.File;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +45,7 @@ import java.util.Vector;
  */
 public class ViewState {
 
-  private static final HashMap<String, Stack<ViewState>> undoHistory = new HashMap<String, Stack<ViewState>>();
+  private static final ConcurrentHashMap<String, Stack<ViewState>> undoHistory = new ConcurrentHashMap<String, Stack<ViewState>>();
 
   private ModelGraph selected;
   private List<ModelGraph> graphs;

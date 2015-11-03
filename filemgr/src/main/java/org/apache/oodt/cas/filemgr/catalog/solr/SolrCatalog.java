@@ -17,7 +17,7 @@
 package org.apache.oodt.cas.filemgr.catalog.solr;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -218,7 +218,7 @@ public class SolrCatalog implements Catalog {
 	public List<Product> getProducts() throws CatalogException {
 				
 		// build query parameters
-		Map<String, String[]> params = new HashMap<String, String[]>();
+		Map<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[] { "*:*" } );
 		//params.put("rows", new String[] { "20" } ); // control pagination ?
 		
@@ -241,7 +241,7 @@ public class SolrCatalog implements Catalog {
 	private QueryResponse getProducts(Query query, ProductType type, int offset, int limit) throws CatalogException {
 		
 		// build HTTP request
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		// product type constraint
 		params.put("q", new String[]{Parameters.PRODUCT_TYPE_NAME+":"+type.getName()} );
     // convert filemgr query into a Solr query
@@ -304,7 +304,7 @@ public class SolrCatalog implements Catalog {
 	public List<Product> getProductsByProductType(ProductType type) throws CatalogException {
 
 		// build query parameters
-		Map<String, String[]> params = new HashMap<String, String[]>();
+		Map<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[] { "*:*" } );
 		// use the product type name as query parameter
 		params.put("fq", new String[] { Parameters.PRODUCT_TYPE_NAME+":"+type.getName() } );
@@ -326,7 +326,7 @@ public class SolrCatalog implements Catalog {
 	public Metadata getReducedMetadata(Product product, List<String> elements) throws CatalogException {
 		
 		// build HTTP request
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[]{Parameters.PRODUCT_ID+":"+product.getProductId()} );
 		// request metadata elements explicitly
 		params.put("fl", elements.toArray(new String[elements.size()]) );
@@ -486,7 +486,7 @@ public class SolrCatalog implements Catalog {
 	public int getNumProducts(ProductType type) throws CatalogException {
 		
 		// build query parameters
-		Map<String, String[]> params = new HashMap<String, String[]>();
+		Map<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[] { "*:*" } );
 		params.put("rows", new String[] { "0" } ); // don't return any results
 		

@@ -43,7 +43,7 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -104,7 +104,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
   private static Logger LOG = Logger
       .getLogger(IterativeWorkflowProcessorThread.class.getName());
 
-  private Map CONDITION_CACHE = new HashMap();
+  private Map CONDITION_CACHE = new ConcurrentHashMap();
 
   /* the parent workflow manager url that executed this processor thread */
   private URL wmgrParentUrl = null;
@@ -510,7 +510,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
 
       // see if we've already cached this condition instance
       if (CONDITION_CACHE.get(taskId) != null) {
-        HashMap conditionMap = (HashMap) CONDITION_CACHE.get(taskId);
+        ConcurrentHashMap conditionMap = (ConcurrentHashMap) CONDITION_CACHE.get(taskId);
 
         /*
          * okay we have some conditions cached for this task, see if we have the
@@ -530,7 +530,7 @@ public class IterativeWorkflowProcessorThread implements WorkflowStatus,
       }
       /* no conditions cached yet, so set everything up */
       else {
-        HashMap conditionMap = new HashMap();
+        ConcurrentHashMap conditionMap = new ConcurrentHashMap();
         cInst = GenericWorkflowObjectFactory.getConditionObjectFromClassName(c
             .getConditionInstanceClassName());
         conditionMap.put(c.getConditionId(), cInst);

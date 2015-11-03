@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.pushpull.protocol;
 
 //OODT imports
+
 import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFactory;
 import org.apache.oodt.cas.protocol.ProtocolFile;
@@ -27,15 +28,20 @@ import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 import org.apache.oodt.cas.pushpull.config.ProtocolInfo;
 import org.apache.oodt.cas.pushpull.exceptions.RemoteConnectionException;
 
-//JDK imports
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+//JDK imports
 
 
 /**
@@ -54,13 +60,13 @@ import java.util.logging.Logger;
  */
 public class ProtocolHandler {
 
-  private final HashMap<URI, ProtocolFactory> urlAndProtocolFactory;
+  private final ConcurrentHashMap<URI, ProtocolFactory> urlAndProtocolFactory;
 
-  private final HashMap<URI, Protocol> reuseProtocols;
+  private final ConcurrentHashMap<URI, Protocol> reuseProtocols;
 
-  private final HashMap<RemoteSiteFile, PagingInfo> pageInfos;
+  private final ConcurrentHashMap<RemoteSiteFile, PagingInfo> pageInfos;
 
-  private final HashMap<RemoteSiteFile, List<RemoteSiteFile>> pathAndFileListMap;
+  private final ConcurrentHashMap<RemoteSiteFile, List<RemoteSiteFile>> pathAndFileListMap;
 
   private final ProtocolInfo pi;
 
@@ -76,10 +82,10 @@ public class ProtocolHandler {
    */
   public ProtocolHandler(ProtocolInfo pi) {
     this.pi = pi;
-    urlAndProtocolFactory = new HashMap<URI, ProtocolFactory>();
-    reuseProtocols = new HashMap<URI, Protocol>();
-    pageInfos = new HashMap<RemoteSiteFile, PagingInfo>();
-    pathAndFileListMap = new HashMap<RemoteSiteFile, List<RemoteSiteFile>>();
+    urlAndProtocolFactory = new ConcurrentHashMap<URI, ProtocolFactory>();
+    reuseProtocols = new ConcurrentHashMap<URI, Protocol>();
+    pageInfos = new ConcurrentHashMap<RemoteSiteFile, PagingInfo>();
+    pathAndFileListMap = new ConcurrentHashMap<RemoteSiteFile, List<RemoteSiteFile>>();
   }
 
   /**

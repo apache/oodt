@@ -26,7 +26,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -59,7 +59,7 @@ public class AsynchronousLocalEngineRunner extends AbstractEngineRunnerBase {
   public AsynchronousLocalEngineRunner(int numThreads) {
     super();
     this.executor = Executors.newFixedThreadPool(numThreads);
-    this.workerMap = new HashMap<String, Thread>();
+    this.workerMap = new ConcurrentHashMap<String, Thread>();
   }
 
   /*

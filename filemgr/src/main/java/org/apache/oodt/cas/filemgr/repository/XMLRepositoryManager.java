@@ -29,7 +29,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -60,7 +60,7 @@ public class XMLRepositoryManager implements RepositoryManager {
     private List<String> productTypeHomeUris = null;
 
     /* our map of product types that the system knows about */
-    private HashMap<String, ProductType> productTypeMap = new HashMap<String, ProductType>();
+    private ConcurrentHashMap<String, ProductType> productTypeMap = new ConcurrentHashMap<String, ProductType>();
 
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(XMLRepositoryManager.class

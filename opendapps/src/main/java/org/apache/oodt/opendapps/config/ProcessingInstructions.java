@@ -17,7 +17,7 @@
 package org.apache.oodt.opendapps.config;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +39,7 @@ public class ProcessingInstructions {
 	 * Local storage for processing instructions.
 	 * Note that the order of the XML elements is not preserved (on purpose).
 	 */
-	private final Map<String, Set<String>> instructions = new HashMap<String, Set<String>>();
+	private final Map<String, Set<String>> instructions = new ConcurrentHashMap<String, Set<String>>();
 	
 	/**
 	 * Returns all values for a named instruction,

@@ -30,7 +30,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -139,7 +139,7 @@ public class SolrClient {
 	 */
 	public String queryProductById(String id, String mimeType) throws CatalogException {
 		
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[]{Parameters.PRODUCT_ID+":"+id} );
 		return query(params, mimeType);
 		
@@ -153,7 +153,7 @@ public class SolrClient {
 	 */
 	public String queryProductByName(String name, String mimeType) throws CatalogException {
 		
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[]{Parameters.PRODUCT_NAME+":"+name} );
 		return query(params, mimeType);
 		
@@ -167,7 +167,7 @@ public class SolrClient {
 	 */
 	public String queryProductsByDate(int n, String mimeType) throws CatalogException {
 		
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[]{ "*:*"} );
 		params.put("rows", new String[]{ ""+n} );
 		params.put("sort", new String[]{ Parameters.PRODUCT_RECEIVED_TIME+" desc"} );
@@ -183,7 +183,7 @@ public class SolrClient {
 	 */
 	public String queryProductsByDateAndType(int n, ProductType type, String mimeType) throws CatalogException {
 		
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[]{ Parameters.PRODUCT_TYPE_NAME+type.getName() } );
 		params.put("rows", new String[]{ ""+n} );
 		params.put("sort", new String[]{ Parameters.PRODUCT_RECEIVED_TIME+" desc"} );

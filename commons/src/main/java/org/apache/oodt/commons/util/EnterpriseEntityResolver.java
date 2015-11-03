@@ -21,10 +21,19 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -42,7 +51,7 @@ public class EnterpriseEntityResolver implements EntityResolver {
 
 	/** Initialize the class by reading the entites.xml file. */
 	static {
-		entities = new HashMap();
+		entities = new ConcurrentHashMap();
 		try {
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			factory.setNamespaceAware(false);

@@ -17,7 +17,7 @@
 
 package org.apache.oodt.cas.webcomponents.curation.workbench;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +45,7 @@ public class Workbench extends Panel {
     Set<String> resources = new Reflections(packageName, new ResourcesScanner())
         .getResources(pattern);
     Set<String> filteredResources = new HashSet<String>();
-    Map<String, Boolean> resMap = new HashMap<String, Boolean>();
+    Map<String, Boolean> resMap = new ConcurrentHashMap<String, Boolean>();
     for (String res : resources) {
       String resName = new File(res).getName();
       if (!resMap.containsKey(resName)) {

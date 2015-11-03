@@ -40,7 +40,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -76,7 +76,7 @@ public class BuildPerspective extends MultiStatePerspective {
   private Class<? extends View> propViewClass;
   private Class<? extends View> globalViewClass;
 
-  private HashMap<ViewState, BuildPanel> stateViews;
+  private ConcurrentHashMap<ViewState, BuildPanel> stateViews;
   private ViewState activeState;
 
   public static final int MAIN_VIEW = 1;
@@ -102,7 +102,7 @@ public class BuildPerspective extends MultiStatePerspective {
     this.treeViewClass = treeViewClass;
     this.propViewClass = propViewClass;
     this.globalViewClass = globalViewClass;
-    this.stateViews = new HashMap<ViewState, BuildPanel>();
+    this.stateViews = new ConcurrentHashMap<ViewState, BuildPanel>();
     this.projectView = this.createProjectView();
     this.projectView.setPreferredSize(new Dimension(WIDTH / 10, HEIGHT / 2));
     this.globalConfigView = this.createGlobalConfigView();
@@ -288,7 +288,7 @@ public class BuildPerspective extends MultiStatePerspective {
     public BuildPanel(ViewState state) {
       this.state = state;
 
-      mainViews = new HashMap<View, ViewState>();
+      mainViews = new ConcurrentHashMap<View, ViewState>();
 
       propView = createPropView();
       if (propView != null) {

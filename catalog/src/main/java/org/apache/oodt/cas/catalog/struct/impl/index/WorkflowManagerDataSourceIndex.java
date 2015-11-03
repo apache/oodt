@@ -17,11 +17,16 @@
 package org.apache.oodt.cas.catalog.struct.impl.index;
 
 //JDK imports
+
 import org.apache.oodt.cas.catalog.exception.CatalogIndexException;
 import org.apache.oodt.cas.catalog.exception.QueryServiceException;
 import org.apache.oodt.cas.catalog.page.IndexPager;
 import org.apache.oodt.cas.catalog.page.IngestReceipt;
-import org.apache.oodt.cas.catalog.query.*;
+import org.apache.oodt.cas.catalog.query.ComparisonQueryExpression;
+import org.apache.oodt.cas.catalog.query.NotQueryExpression;
+import org.apache.oodt.cas.catalog.query.QueryExpression;
+import org.apache.oodt.cas.catalog.query.QueryLogicalGroup;
+import org.apache.oodt.cas.catalog.query.StdQueryExpression;
 import org.apache.oodt.cas.catalog.struct.Index;
 import org.apache.oodt.cas.catalog.struct.QueryService;
 import org.apache.oodt.cas.catalog.struct.TransactionId;
@@ -38,7 +43,12 @@ import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -142,7 +152,7 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 
 	public Map<TransactionId<?>, List<TermBucket>> getBuckets(
 			List<TransactionId<?>> transactionIds) throws QueryServiceException {
-		Map<TransactionId<?>, List<TermBucket>> returnMap = new HashMap<TransactionId<?>, List<TermBucket>>();
+		Map<TransactionId<?>, List<TermBucket>> returnMap = new ConcurrentHashMap<TransactionId<?>, List<TermBucket>>();
 		for (TransactionId<?> transactionId : transactionIds) {
 		  returnMap.put(transactionId, this.getBuckets(transactionId));
 		}

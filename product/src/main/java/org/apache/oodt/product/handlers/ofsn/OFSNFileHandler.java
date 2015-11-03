@@ -39,7 +39,7 @@ import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -100,7 +100,7 @@ public class OFSNFileHandler implements LargeProductQueryHandler,
     }
 
     // used to cache handlers -- map of RT type to Get/List handler instance
-    HANDLER_CACHE = new HashMap<String, Object>();
+    HANDLER_CACHE = new ConcurrentHashMap<String, Object>();
   }
 
   /*

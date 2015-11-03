@@ -69,7 +69,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -126,7 +126,7 @@ public class GraphView extends DefaultTreeView {
   private static final String FORWARD_ITEM_NAME = "Move Forward";
   private static final String BACKWARDS_ITEM_NAME = "Move Backwards";
 
-  private HashMap<String, Pair> edgeMap;
+  private ConcurrentHashMap<String, Pair> edgeMap;
 
   private static final String SCALE = "GraphView/scale";
   private static final String EDGE_DISPLAY_MODE = "GraphView/EdgeDisplay/Mode";
@@ -154,7 +154,7 @@ public class GraphView extends DefaultTreeView {
       cursor = jgraph.getCursor();
     }
 
-    this.edgeMap = new HashMap<String, Pair>();
+    this.edgeMap = new ConcurrentHashMap<String, Pair>();
 
     directedGraph = new ObservableGraph<ModelNode, IdentifiableEdge>(
         new DirectedSparseGraph<ModelNode, IdentifiableEdge>());
@@ -444,7 +444,7 @@ public class GraphView extends DefaultTreeView {
       state.setProperty(EDGE_DISPLAY_MODE, edgeDisplayMode = WORKFLOW_MODE);
     }
     if (edgeDisplayMode.equals(WORKFLOW_MODE)) {
-      this.edgeMap = new HashMap<String, Pair>();
+      this.edgeMap = new ConcurrentHashMap<String, Pair>();
       removeAllEdges(this.directedGraph);
       lines = GuiUtils.findSequentialLines(state.getGraphs());
       for (Line line : lines) {
@@ -730,7 +730,7 @@ public class GraphView extends DefaultTreeView {
           .getModel());
 
 
-      HashMap<Object, Object> map = new HashMap<Object, Object>();
+      ConcurrentHashMap<Object, Object> map = new ConcurrentHashMap<Object, Object>();
       for (int i = 0; i < modelGraph.getChildren().size(); i++) {
         ModelGraph child = modelGraph.getChildren().get(i);
         DefaultGraphCell curCell = addGroups(child, nested, state);
