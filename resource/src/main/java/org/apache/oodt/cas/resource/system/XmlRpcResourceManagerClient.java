@@ -38,7 +38,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -143,10 +143,10 @@ public class XmlRpcResourceManagerClient {
         Vector argList = new Vector();
         argList.add(jobId);
 
-        Hashtable jobHash;
+        Map jobHash;
 
         try {
-            jobHash = (Hashtable) client.execute("resourcemgr.getJobInfo",
+            jobHash = (Map) client.execute("resourcemgr.getJobInfo",
                     argList);
         } catch (XmlRpcException e) {
             throw new JobRepositoryException(e.getMessage(), e);
@@ -289,10 +289,10 @@ public class XmlRpcResourceManagerClient {
         Vector argList = new Vector();
         argList.add(nodeId);
 
-        Hashtable resNodeHash;
+        Map resNodeHash;
 
         try {
-            resNodeHash = (Hashtable) client.execute("resourcemgr.getNodeById",
+            resNodeHash = (Map) client.execute("resourcemgr.getNodeById",
                     argList);
         } catch (XmlRpcException e) {
             throw new MonitorException(e.getMessage(), e);

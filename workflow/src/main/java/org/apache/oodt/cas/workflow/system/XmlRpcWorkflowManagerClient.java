@@ -34,7 +34,7 @@ import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -93,7 +93,7 @@ public class XmlRpcWorkflowManagerClient {
     String instId;
     
     argList.add(taskIdVector);
-    argList.add(metadata.getHashtable());
+    argList.add(metadata.getMap());
 
       instId = (String) client.execute("workflowmgr.executeDynamicWorkflow",
           argList);
@@ -113,9 +113,9 @@ public class XmlRpcWorkflowManagerClient {
 
     public WorkflowInstancePage getFirstPage() throws XmlRpcException, IOException {
         Vector argList = new Vector();
-        Hashtable pageHash;
+        Map pageHash;
 
-            pageHash = (Hashtable) client.execute("workflowmgr.getFirstPage",
+            pageHash = (Map) client.execute("workflowmgr.getFirstPage",
                     argList);
 
         return XmlRpcStructFactory.getWorkflowInstancePageFromXmlRpc(pageHash);
@@ -126,9 +126,9 @@ public class XmlRpcWorkflowManagerClient {
         Vector argList = new Vector();
         argList.add(XmlRpcStructFactory
                 .getXmlRpcWorkflowInstancePage(currentPage));
-        Hashtable pageHash;
+        Map pageHash;
 
-            pageHash = (Hashtable) client.execute("workflowmgr.getNextPage",
+            pageHash = (Map) client.execute("workflowmgr.getNextPage",
                     argList);
 
 
@@ -140,10 +140,10 @@ public class XmlRpcWorkflowManagerClient {
         Vector argList = new Vector();
         argList.add(XmlRpcStructFactory
                 .getXmlRpcWorkflowInstancePage(currentPage));
-        Hashtable pageHash;
+        Map pageHash;
 
         try {
-            pageHash = (Hashtable) client.execute("workflowmgr.getPrevPage",
+            pageHash = (Map) client.execute("workflowmgr.getPrevPage",
                     argList);
         } catch (XmlRpcException e) {
             LOG.log(Level.SEVERE, e.getMessage());
@@ -157,9 +157,9 @@ public class XmlRpcWorkflowManagerClient {
 
     public WorkflowInstancePage getLastPage() throws XmlRpcException, IOException {
         Vector argList = new Vector();
-        Hashtable pageHash;
+        Map pageHash;
 
-            pageHash = (Hashtable) client.execute("workflowmgr.getLastPage",
+            pageHash = (Map) client.execute("workflowmgr.getLastPage",
                     argList);
 
 
@@ -171,9 +171,9 @@ public class XmlRpcWorkflowManagerClient {
         Vector argList = new Vector();
         argList.add(pageNum);
         argList.add(status);
-        Hashtable pageHash;
+        Map pageHash;
 
-            pageHash = (Hashtable) client.execute(
+            pageHash = (Map) client.execute(
                     "workflowmgr.paginateWorkflowInstances", argList);
 
 
@@ -184,9 +184,9 @@ public class XmlRpcWorkflowManagerClient {
         throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(pageNum);
-        Hashtable pageHash;
+        Map pageHash;
 
-            pageHash = (Hashtable) client.execute(
+            pageHash = (Map) client.execute(
                     "workflowmgr.paginateWorkflowInstances", argList);
 
 
@@ -205,7 +205,7 @@ public class XmlRpcWorkflowManagerClient {
 
             if (workflowVector != null) {
               for (Object aWorkflowVector : workflowVector) {
-                Hashtable workflowHash = (Hashtable) aWorkflowVector;
+                Map workflowHash = (Map) aWorkflowVector;
                 Workflow w = XmlRpcStructFactory
                     .getWorkflowFromXmlRpc(workflowHash);
                 workflows.add(w);
@@ -221,7 +221,7 @@ public class XmlRpcWorkflowManagerClient {
         argList.add(wInstId);
         Metadata met;
 
-            Hashtable instMetHash = (Hashtable) client.execute(
+            Map instMetHash = (Map) client.execute(
                     "workflowmgr.getWorkflowInstanceMetadata", argList);
             met = new Metadata();
             met.addMetadata(instMetHash);
@@ -333,7 +333,7 @@ public class XmlRpcWorkflowManagerClient {
             String workflowInstId, Metadata metadata) throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(workflowInstId);
-        argList.add(metadata.getHashtable());
+        argList.add(metadata.getMap());
 
             return (Boolean) client.execute(
                 "workflowmgr.updateMetadataForWorkflow", argList);
@@ -345,7 +345,7 @@ public class XmlRpcWorkflowManagerClient {
         throws XmlRpcException, IOException {
         Vector argList = new Vector();
         argList.add(eventName);
-        argList.add(metadata.getHashtable());
+        argList.add(metadata.getMap());
 
             return (Boolean) client
                 .execute("workflowmgr.handleEvent", argList);
@@ -356,7 +356,7 @@ public class XmlRpcWorkflowManagerClient {
         Vector argList = new Vector();
         argList.add(taskId);
 
-            Hashtable t = (Hashtable) client.execute("workflowmgr.getTaskById",
+            Map t = (Map) client.execute("workflowmgr.getTaskById",
                     argList);
             return XmlRpcStructFactory.getWorkflowTaskFromXmlRpc(t);
 
@@ -367,7 +367,7 @@ public class XmlRpcWorkflowManagerClient {
         Vector argList = new Vector();
         argList.add(conditionId);
 
-            Hashtable c = (Hashtable) client.execute(
+            Map c = (Map) client.execute(
                     "workflowmgr.getConditionById", argList);
             return XmlRpcStructFactory.getWorkflowConditionFromXmlRpc(c);
 
@@ -378,7 +378,7 @@ public class XmlRpcWorkflowManagerClient {
         Vector argList = new Vector();
         argList.add(wInstId);
 
-            Hashtable workflowInstance = (Hashtable) client.execute(
+            Map workflowInstance = (Map) client.execute(
                     "workflowmgr.getWorkflowInstanceById", argList);
           return XmlRpcStructFactory
                   .getWorkflowInstanceFromXmlRpc(workflowInstance);
@@ -389,7 +389,7 @@ public class XmlRpcWorkflowManagerClient {
         Vector argList = new Vector();
         argList.add(workflowId);
 
-            Hashtable workflow = (Hashtable) client.execute(
+            Map workflow = (Map) client.execute(
                     "workflowmgr.getWorkflowById", argList);
           return XmlRpcStructFactory.getWorkflowFromXmlRpc(workflow);
 
@@ -407,7 +407,7 @@ public class XmlRpcWorkflowManagerClient {
                 workflows = new Vector(works.size());
 
               for (Object work : works) {
-                Hashtable workflw = (Hashtable) work;
+                Map workflw = (Map) work;
                 Workflow w = XmlRpcStructFactory
                     .getWorkflowFromXmlRpc(workflw);
                 workflows.add(w);
@@ -455,7 +455,7 @@ public class XmlRpcWorkflowManagerClient {
             if (insts != null) {
                 instsUnpacked = new Vector(insts.size());
               for (Object inst1 : insts) {
-                Hashtable hWinst = (Hashtable) inst1;
+                Map hWinst = (Map) inst1;
                 WorkflowInstance inst = XmlRpcStructFactory
                     .getWorkflowInstanceFromXmlRpc(hWinst);
                 instsUnpacked.add(inst);
@@ -478,7 +478,7 @@ public class XmlRpcWorkflowManagerClient {
           if (insts != null) {
             instsUnpacked = new Vector(insts.size());
             for (Object inst1 : insts) {
-              Hashtable hWinst = (Hashtable) inst1;
+              Map hWinst = (Map) inst1;
               WorkflowInstance inst = XmlRpcStructFactory
                   .getWorkflowInstanceFromXmlRpc(hWinst);
               instsUnpacked.add(inst);

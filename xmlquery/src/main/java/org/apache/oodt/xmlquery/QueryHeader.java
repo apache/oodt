@@ -18,15 +18,17 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.Serializable;
-import java.net.URI;
 import org.apache.oodt.commons.util.Documentable;
 import org.apache.oodt.commons.util.XML;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.io.Serializable;
+import java.net.URI;
 
 /** Header of a query
  *
@@ -88,9 +90,7 @@ public class QueryHeader implements Serializable, Cloneable, Documentable {
 			} else if ("querySecurityType".equals(child.getNodeName())) {
 			  securityType = XML.unwrappedText(child);
 			} else if ("queryParentId".equals(child.getNodeName())) {
-			  ; // ignore
 			} else if ("queryChildId".equals(child.getNodeName())) {
-			  ; // ignore
 			} else if ("queryRevisionNote".equals(child.getNodeName())) {
 			  revisionNote = XML.unwrappedText(child);
 			} else if ("queryDataDictId".equals(child.getNodeName())) {

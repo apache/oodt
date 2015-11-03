@@ -37,7 +37,7 @@ import org.apache.oodt.cas.filemgr.structs.query.filter.FilterAlgor;
 import org.apache.oodt.cas.filemgr.structs.type.TypeHandler;
 import org.apache.oodt.cas.metadata.Metadata;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -63,9 +63,9 @@ public final class XmlRpcStructFactory {
                 "Don't instantiate XmlRpcStructFactories!");
     }
 
-    public static Hashtable<String, Object> getXmlRpcFileTransferStatus(
+    public static Map<String, Object> getXmlRpcFileTransferStatus(
             FileTransferStatus status) {
-        Hashtable<String, Object> statusHash = new Hashtable<String, Object>();
+        Map<String, Object> statusHash = new HashMap<String, Object>();
         statusHash.put("bytesTransferred",Long.toString(status
                 .getBytesTransferred()));
         statusHash.put("parentProduct", getXmlRpcProduct(status
@@ -76,17 +76,17 @@ public final class XmlRpcStructFactory {
 
     @SuppressWarnings("unchecked")
     public static FileTransferStatus getFileTransferStatusFromXmlRpc(
-            Hashtable<String, Object> statusHash) {
+            Map<String, Object> statusHash) {
         FileTransferStatus status = new FileTransferStatus();
         status.setBytesTransferred(Long.parseLong(statusHash
                 .get("bytesTransferred").toString()));
-        status.setParentProduct(getProductFromXmlRpc((Hashtable<String, Object>) statusHash.get("parentProduct")));
-        status.setFileRef(getReferenceFromXmlRpc((Hashtable<String, Object>) statusHash.get("fileRef")));
+        status.setParentProduct(getProductFromXmlRpc((Map<String, Object>) statusHash.get("parentProduct")));
+        status.setFileRef(getReferenceFromXmlRpc((Map<String, Object>) statusHash.get("fileRef")));
         return status;
     }
 
-    public static Vector<Hashtable<String, Object>> getXmlRpcFileTransferStatuses(List<FileTransferStatus> statuses) {
-        Vector<Hashtable<String, Object>> statusVector = new Vector<Hashtable<String, Object>>();
+    public static Vector<Map<String, Object>> getXmlRpcFileTransferStatuses(List<FileTransferStatus> statuses) {
+        Vector<Map<String, Object>> statusVector = new Vector<Map<String, Object>>();
 
         if (statuses != null && statuses.size() > 0) {
 
@@ -98,11 +98,11 @@ public final class XmlRpcStructFactory {
         return statusVector;
     }
 
-    public static List<FileTransferStatus> getFileTransferStatusesFromXmlRpc(Vector<Hashtable<String, Object>> statusVector) {
+    public static List<FileTransferStatus> getFileTransferStatusesFromXmlRpc(Vector<Map<String, Object>> statusVector) {
         List<FileTransferStatus> statuses = new Vector<FileTransferStatus>();
 
         if (statusVector != null && statusVector.size() > 0) {
-            for (Hashtable<String, Object> statusHash : statusVector) {
+            for (Map<String, Object> statusHash : statusVector) {
                 FileTransferStatus status = getFileTransferStatusFromXmlRpc(statusHash);
                 statuses.add(status);
             }
@@ -111,8 +111,8 @@ public final class XmlRpcStructFactory {
         return statuses;
     }
 
-    public static Hashtable<String, Object> getXmlRpcProductPage(ProductPage page) {
-        Hashtable<String, Object>productPageHash = new Hashtable<String, Object>();
+    public static Map<String, Object> getXmlRpcProductPage(ProductPage page) {
+        Map<String, Object>productPageHash = new HashMap<String, Object>();
         productPageHash.put("totalPages", page.getTotalPages());
         productPageHash.put("pageNum", page.getPageNum());
         productPageHash.put("pageSize", page.getPageSize());
@@ -122,19 +122,19 @@ public final class XmlRpcStructFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static ProductPage getProductPageFromXmlRpc(Hashtable<String, Object> productPageHash) {
+    public static ProductPage getProductPageFromXmlRpc(Map<String, Object> productPageHash) {
         ProductPage page = new ProductPage();
         page.setPageNum((Integer) productPageHash.get("pageNum"));
         page
                 .setPageSize((Integer) productPageHash.get("pageSize"));
         page.setTotalPages((Integer) productPageHash.get("totalPages"));
-        page.setPageProducts(getProductListFromXmlRpc((Vector<Hashtable<String, Object>>) productPageHash
+        page.setPageProducts(getProductListFromXmlRpc((Vector<Map<String, Object>>) productPageHash
                 .get("pageProducts")));
         return page;
     }
     
-    public static Hashtable<String, Object> getXmlRpcComplexQuery(ComplexQuery complexQuery) {
-        Hashtable<String, Object> complexQueryHash = getXmlRpcQuery(complexQuery);
+    public static Map<String, Object> getXmlRpcComplexQuery(ComplexQuery complexQuery) {
+        Map<String, Object> complexQueryHash = getXmlRpcQuery(complexQuery);
         if (complexQuery.getReducedProductTypeNames() != null) {
             complexQueryHash
                 .put("reducedProductTypeNames", new Vector<String>(complexQuery.getReducedProductTypeNames()));
@@ -159,7 +159,7 @@ public final class XmlRpcStructFactory {
     }
     
     @SuppressWarnings("unchecked")
-    public static ComplexQuery getComplexQueryFromXmlRpc(Hashtable<String, Object> complexQueryHash) {
+    public static ComplexQuery getComplexQueryFromXmlRpc(Map<String, Object> complexQueryHash) {
         ComplexQuery complexQuery = new ComplexQuery();
         complexQuery.setCriteria(getQueryFromXmlRpc(complexQueryHash).getCriteria());
         if (((Vector<String>) complexQueryHash.get("reducedProductTypeNames")).size() > 0) {
@@ -172,13 +172,13 @@ public final class XmlRpcStructFactory {
         complexQuery.setToStringResultFormat((String) complexQueryHash.get("toStringResultFormat"));
         if (complexQueryHash.get("queryFilter") != null) {
             complexQuery.setQueryFilter(
-                getQueryFilterFromXmlRpc((Hashtable<String, Object>) complexQueryHash.get("queryFilter")));
+                getQueryFilterFromXmlRpc((Map<String, Object>) complexQueryHash.get("queryFilter")));
         }
         return complexQuery;
     }
     
-    public static Hashtable<String, Object> getXmlRpcQueryFilter(QueryFilter queryFilter) {
-        Hashtable<String, Object> queryFilterHash = new Hashtable<String, Object>();
+    public static Map<String, Object> getXmlRpcQueryFilter(QueryFilter queryFilter) {
+        Map<String, Object> queryFilterHash = new HashMap<String, Object>();
         queryFilterHash.put("startDateTimeMetKey", queryFilter.getStartDateTimeMetKey());
         queryFilterHash.put("endDateTimeMetKey", queryFilter.getEndDateTimeMetKey());
         queryFilterHash.put("priorityMetKey", queryFilter.getPriorityMetKey());
@@ -187,25 +187,25 @@ public final class XmlRpcStructFactory {
         return queryFilterHash;
     }
     
-    public static QueryFilter getQueryFilterFromXmlRpc(Hashtable<String, Object> queryFilterHash) {
+    public static QueryFilter getQueryFilterFromXmlRpc(Map<String, Object> queryFilterHash) {
         String startDateTimeMetKey = (String) queryFilterHash.get("startDateTimeMetKey");
         String endDateTimeMetKey = (String) queryFilterHash.get("endDateTimeMetKey");
         String priorityMetKey = (String) queryFilterHash.get("priorityMetKey");
         @SuppressWarnings("unchecked")
-        FilterAlgor filterAlgor = getFilterAlgorFromXmlRpc((Hashtable<String, Object>) queryFilterHash.get("filterAlgor"));
+        FilterAlgor filterAlgor = getFilterAlgorFromXmlRpc((Map<String, Object>) queryFilterHash.get("filterAlgor"));
         QueryFilter queryFilter = new QueryFilter(startDateTimeMetKey, endDateTimeMetKey, priorityMetKey, filterAlgor);
         queryFilter.setConverter(GenericFileManagerObjectFactory.getVersionConverterFromClassName((String) queryFilterHash.get("versionConverterClass")));
         return queryFilter;
     }
 
-    public static Hashtable<String, Object> getXmlRpcFilterAlgor(FilterAlgor filterAlgor) {
-        Hashtable<String, Object> filterAlgorHash = new Hashtable<String, Object>();
+    public static Map<String, Object> getXmlRpcFilterAlgor(FilterAlgor filterAlgor) {
+        Map<String, Object> filterAlgorHash = new HashMap<String, Object>();
         filterAlgorHash.put("class", filterAlgor.getClass().getCanonicalName());
         filterAlgorHash.put("epsilon", Long.toString(filterAlgor.getEpsilon()));
         return filterAlgorHash;
     }
     
-    public static FilterAlgor getFilterAlgorFromXmlRpc(Hashtable<String, Object> filterAlgorHash) {
+    public static FilterAlgor getFilterAlgorFromXmlRpc(Map<String, Object> filterAlgorHash) {
         FilterAlgor filterAlgor = GenericFileManagerObjectFactory.getFilterAlgorFromClassName((String) filterAlgorHash.get("class"));
         if (filterAlgor != null) {
             filterAlgor.setEpsilon(Long.parseLong((String) filterAlgorHash.get("epsilon")));
@@ -213,44 +213,44 @@ public final class XmlRpcStructFactory {
         return filterAlgor;
     }
     
-    public static Vector<Hashtable<String, Object>> getXmlRpcQueryResults(List<QueryResult> queryResults) {
-        Vector<Hashtable<String, Object>> queryResultHashVector = new Vector<Hashtable<String, Object>>();
+    public static Vector<Map<String, Object>> getXmlRpcQueryResults(List<QueryResult> queryResults) {
+        Vector<Map<String, Object>> queryResultHashVector = new Vector<Map<String, Object>>();
         for (QueryResult queryResult : queryResults) {
             queryResultHashVector.add(getXmlRpcQueryResult(queryResult));
         }
         return queryResultHashVector;
     }
     
-    public static List<QueryResult> getQueryResultsFromXmlRpc(Vector<Hashtable<String, Object>> queryResultHashVector) {
+    public static List<QueryResult> getQueryResultsFromXmlRpc(Vector<Map<String, Object>> queryResultHashVector) {
         List<QueryResult> queryResults = new Vector<QueryResult>();
-        for (Hashtable<String, Object> queryResultHash : queryResultHashVector) {
+        for (Map<String, Object> queryResultHash : queryResultHashVector) {
             queryResults.add(getQueryResultFromXmlRpc(queryResultHash));
         }
         return queryResults;
     }
         
-    public static Hashtable<String, Object> getXmlRpcQueryResult(QueryResult queryResult) {
-        Hashtable<String, Object> queryResultHash = new Hashtable<String, Object>();
+    public static Map<String, Object> getXmlRpcQueryResult(QueryResult queryResult) {
+        Map<String, Object> queryResultHash = new HashMap<String, Object>();
         if (queryResult.getToStringFormat() != null) {
             queryResultHash.put("toStringFormat", queryResult.getToStringFormat());
         }
         queryResultHash.put("product", getXmlRpcProduct(queryResult.getProduct()));
-        queryResultHash.put("metadata", queryResult.getMetadata().getHashtable());
+        queryResultHash.put("metadata", queryResult.getMetadata().getMap());
         return queryResultHash;
     }
     
     @SuppressWarnings("unchecked")
-    public static QueryResult getQueryResultFromXmlRpc(Hashtable<String, Object> queryResultHash) {
-        Product product = getProductFromXmlRpc((Hashtable<String, Object>) queryResultHash.get("product"));
+    public static QueryResult getQueryResultFromXmlRpc(Map<String, Object> queryResultHash) {
+        Product product = getProductFromXmlRpc((Map<String, Object>) queryResultHash.get("product"));
         Metadata metadata = new Metadata();
-        metadata.addMetadata((Hashtable<String, Object>) queryResultHash.get("metadata"));
+        metadata.addMetadata((Map<String, Object>) queryResultHash.get("metadata"));
         QueryResult queryResult = new QueryResult(product, metadata);
         queryResult.setToStringFormat((String) queryResultHash.get("toStringFormat"));
         return queryResult;
     }
     
-    public static Hashtable<String, Object> getXmlRpcProduct(Product product) {
-        Hashtable<String, Object> productHash = new Hashtable<String, Object>();
+    public static Map<String, Object> getXmlRpcProduct(Product product) {
+        Map<String, Object> productHash = new HashMap<String, Object>();
         if (product.getProductId() != null) {
            productHash.put("id", product.getProductId());
         }
@@ -278,32 +278,32 @@ public final class XmlRpcStructFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static Product getProductFromXmlRpc(Hashtable<?, ?> productHash) {
+    public static Product getProductFromXmlRpc(Map<?, ?> productHash) {
         Product product = new Product();
         product.setProductId((String) productHash.get("id"));
         product.setProductName((String) productHash.get("name"));
         if (productHash.get("type") != null) {
            product.setProductType(getProductTypeFromXmlRpc(
-                 (Hashtable<String, Object>) productHash.get("type")));
+                 (Map<String, Object>) productHash.get("type")));
         }
         product.setProductStructure((String) productHash.get("structure"));
         product.setTransferStatus((String) productHash.get("transferStatus"));
         if (productHash.get("references") != null) {
            product.setProductReferences(getReferencesFromXmlRpc(
-                 (Vector<Hashtable<String, Object>>) productHash
+                 (Vector<Map<String, Object>>) productHash
                         .get("references")));
         }
         if (productHash.get("rootReference") != null) {
            product.setRootRef(getReferenceFromXmlRpc(
-                 (Hashtable<String, Object>) productHash.get("rootReference")));
+                 (Map<String, Object>) productHash.get("rootReference")));
         }
         return product;
     }
 
-    public static List<Product> getProductListFromXmlRpc(Vector<Hashtable<String, Object>> productVector) {
+    public static List<Product> getProductListFromXmlRpc(Vector<Map<String, Object>> productVector) {
         List<Product> productList = new Vector<Product>();
 
-        for (Hashtable<String, Object> productHash : productVector) {
+        for (Map<String, Object> productHash : productVector) {
             Product product = getProductFromXmlRpc(productHash);
             productList.add(product);
         }
@@ -311,38 +311,38 @@ public final class XmlRpcStructFactory {
         return productList;
     }
 
-    public static Vector<Hashtable<String, Object>> getXmlRpcProductList(List<Product> products) {
-        Vector<Hashtable<String, Object>> productVector = new Vector<Hashtable<String, Object>>();
+    public static Vector<Map<String, Object>> getXmlRpcProductList(List<Product> products) {
+        Vector<Map<String, Object>> productVector = new Vector<Map<String, Object>>();
 
         if (products == null) {
             return productVector;
         }
 
         for (Product product : products) {
-            Hashtable<String, Object> productHash = getXmlRpcProduct(product);
+            Map<String, Object> productHash = getXmlRpcProduct(product);
             productVector.add(productHash);
         }
 
         return productVector;
     }
 
-    public static Vector<Hashtable<String, Object>> getXmlRpcProductTypeList(List<ProductType> productTypes) {
-        Vector<Hashtable<String, Object>> productTypeVector = new Vector<Hashtable<String, Object>>();
+    public static Vector<Map<String, Object>> getXmlRpcProductTypeList(List<ProductType> productTypes) {
+        Vector<Map<String, Object>> productTypeVector = new Vector<Map<String, Object>>();
 
         if (productTypes == null) {
             return productTypeVector;
         }
 
         for (ProductType type : productTypes) {
-            Hashtable<String, Object> typeHash = getXmlRpcProductType(type);
+            Map<String, Object> typeHash = getXmlRpcProductType(type);
             productTypeVector.add(typeHash);
         }
         return productTypeVector;
     }
 
-    public static List<ProductType> getProductTypeListFromXmlRpc(Vector<Hashtable<String, Object>> productTypeVector) {
+    public static List<ProductType> getProductTypeListFromXmlRpc(Vector<Map<String, Object>> productTypeVector) {
         List<ProductType> productTypeList = new Vector<ProductType>();
-        for (Hashtable<String, Object> productTypeHash : productTypeVector) {
+        for (Map<String, Object> productTypeHash : productTypeVector) {
             ProductType type = getProductTypeFromXmlRpc(productTypeHash);
             productTypeList.add(type);
         }
@@ -350,8 +350,8 @@ public final class XmlRpcStructFactory {
         return productTypeList;
     }
 
-    public static Hashtable<String, Object> getXmlRpcProductType(ProductType type) {
-        Hashtable<String, Object> productTypeHash = new Hashtable<String, Object>();
+    public static Map<String, Object> getXmlRpcProductType(ProductType type) {
+        Map<String, Object> productTypeHash = new HashMap<String, Object>();
         // TODO(bfoster): ProductType ID is currently required by XmlRpcFileManager.
         productTypeHash.put("id", type.getProductTypeId());
         if (type.getName() != null) {
@@ -367,7 +367,7 @@ public final class XmlRpcStructFactory {
            productTypeHash.put("versionerClass", type.getVersioner());
         }
         if (type.getTypeMetadata() != null) {
-           productTypeHash.put("typeMetadata", type.getTypeMetadata().getHashtable());
+           productTypeHash.put("typeMetadata", type.getTypeMetadata().getMap());
         }
         if (type.getExtractors() != null) {
            productTypeHash.put("typeExtractors", getXmlRpcTypeExtractors(type.getExtractors()));
@@ -379,7 +379,7 @@ public final class XmlRpcStructFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static ProductType getProductTypeFromXmlRpc(Hashtable<String, Object> productTypeHash) {
+    public static ProductType getProductTypeFromXmlRpc(Map<String, Object> productTypeHash) {
         ProductType type = new ProductType();
         type.setDescription((String) productTypeHash.get("description"));
         type.setName((String) productTypeHash.get("name"));
@@ -388,24 +388,24 @@ public final class XmlRpcStructFactory {
         type.setVersioner((String) productTypeHash.get("versionerClass"));
         if (productTypeHash.get("typeMetadata") != null) {
            Metadata typeMet = new Metadata();
-           typeMet.addMetadata((Hashtable<String, Object>) productTypeHash.get("typeMetadata"));
+           typeMet.addMetadata((Map<String, Object>) productTypeHash.get("typeMetadata"));
            type.setTypeMetadata(typeMet);
         }
         if (productTypeHash.get("typeExtractors") != null) {
             type.setExtractors(getTypeExtractorsFromXmlRpc(
-                  (Vector<Hashtable<String, Object>>) productTypeHash
+                  (Vector<Map<String, Object>>) productTypeHash
                      .get("typeExtractors")));
         }
         if (productTypeHash.get("typeHandlers") != null) {
             type.setHandlers(getTypeHandlersFromXmlRpc(
-                  (Vector<Hashtable<String, Object>>) productTypeHash
+                  (Vector<Map<String, Object>>) productTypeHash
                         .get("typeHandlers")));
         }
         return type;
     }
 
-    public static Vector<Hashtable<String, Object>> getXmlRpcTypeExtractors(List<ExtractorSpec> extractors) {
-        Vector<Hashtable<String, Object>> extractorsVector = new Vector<Hashtable<String, Object>>();
+    public static Vector<Map<String, Object>> getXmlRpcTypeExtractors(List<ExtractorSpec> extractors) {
+        Vector<Map<String, Object>> extractorsVector = new Vector<Map<String, Object>>();
 
         if (extractors != null && extractors.size() > 0) {
             for (ExtractorSpec spec : extractors) {
@@ -416,16 +416,16 @@ public final class XmlRpcStructFactory {
         return extractorsVector;
     }
 
-    public static Hashtable<String, Object> getXmlRpcExtractorSpec(ExtractorSpec spec) {
-        Hashtable<String, Object> extractorHash = new Hashtable<String, Object>();
+    public static Map<String, Object> getXmlRpcExtractorSpec(ExtractorSpec spec) {
+        Map<String, Object> extractorHash = new HashMap<String, Object>();
         extractorHash.put("className", spec.getClassName());
         extractorHash.put("config",
                 getXmlRpcProperties(spec.getConfiguration()));
         return extractorHash;
     }
     
-    public static Vector<Hashtable<String, Object>> getXmlRpcTypeHandlers(List<TypeHandler> typeHandlers) {
-        Vector<Hashtable<String, Object>> handlersVector = new Vector<Hashtable<String, Object>>();
+    public static Vector<Map<String, Object>> getXmlRpcTypeHandlers(List<TypeHandler> typeHandlers) {
+        Vector<Map<String, Object>> handlersVector = new Vector<Map<String, Object>>();
 
         if (typeHandlers != null && typeHandlers.size() > 0) {
             for (TypeHandler typeHandler : typeHandlers) {
@@ -436,8 +436,8 @@ public final class XmlRpcStructFactory {
         return handlersVector;
     }
     
-    public static Hashtable<String, Object> getXmlRpcTypeHandler(TypeHandler typeHandler) {
-        Hashtable<String, Object> handlerHash = new Hashtable<String, Object>();
+    public static Map<String, Object> getXmlRpcTypeHandler(TypeHandler typeHandler) {
+        Map<String, Object> handlerHash = new HashMap<String, Object>();
         handlerHash.put("className", typeHandler != null ? 
             typeHandler.getClass().getCanonicalName():"");
         handlerHash.put("elementName", typeHandler != null ? 
@@ -445,11 +445,11 @@ public final class XmlRpcStructFactory {
         return handlerHash;
     }
 
-    public static List<ExtractorSpec> getTypeExtractorsFromXmlRpc(Vector<Hashtable<String, Object>> extractorsVector) {
+    public static List<ExtractorSpec> getTypeExtractorsFromXmlRpc(Vector<Map<String, Object>> extractorsVector) {
         List<ExtractorSpec> extractors = new Vector<ExtractorSpec>();
 
         if (extractorsVector != null && extractorsVector.size() > 0) {
-            for (Hashtable<String, Object> extractorSpecHash : extractorsVector) {
+            for (Map<String, Object> extractorSpecHash : extractorsVector) {
                 extractors.add(getExtractorSpecFromXmlRpc(extractorSpecHash));
             }
         }
@@ -459,20 +459,20 @@ public final class XmlRpcStructFactory {
 
     @SuppressWarnings("unchecked")
     public static ExtractorSpec getExtractorSpecFromXmlRpc(
-            Hashtable<String, Object> extractorSpecHash) {
+            Map<String, Object> extractorSpecHash) {
         ExtractorSpec spec = new ExtractorSpec();
         spec.setClassName((String) extractorSpecHash.get("className"));
         spec
-                .setConfiguration(getPropertiesFromXmlRpc((Hashtable<String, String>) extractorSpecHash
+                .setConfiguration(getPropertiesFromXmlRpc((Map<String, String>) extractorSpecHash
                         .get("config")));
         return spec;
     }
     
-    public static List<TypeHandler> getTypeHandlersFromXmlRpc(Vector<Hashtable<String, Object>> handlersVector) {
+    public static List<TypeHandler> getTypeHandlersFromXmlRpc(Vector<Map<String, Object>> handlersVector) {
         List<TypeHandler> handlers = new Vector<TypeHandler>();
 
         if (handlersVector != null && handlersVector.size() > 0) {
-            for (Hashtable<String, Object> typeHandlerHash : handlersVector) {
+            for (Map<String, Object> typeHandlerHash : handlersVector) {
                 handlers.add(getTypeHandlerFromXmlRpc(typeHandlerHash));
             }
         }
@@ -481,7 +481,7 @@ public final class XmlRpcStructFactory {
     }
     
     public static TypeHandler getTypeHandlerFromXmlRpc(
-            Hashtable<String, Object> typeHandlerHash) {
+            Map<String, Object> typeHandlerHash) {
         TypeHandler typeHandler = GenericFileManagerObjectFactory
             .getTypeHandlerFromClassName((String) typeHandlerHash.get("className"));
         if(typeHandler != null) {
@@ -490,7 +490,7 @@ public final class XmlRpcStructFactory {
         return typeHandler;
     }
 
-    public static Properties getPropertiesFromXmlRpc(Hashtable<String, String> propHash) {
+    public static Properties getPropertiesFromXmlRpc(Map<String, String> propHash) {
         Properties props = new Properties();
 
         if (propHash != null && propHash.keySet().size() > 0) {
@@ -503,8 +503,8 @@ public final class XmlRpcStructFactory {
         return props;
     }
 
-    public static Hashtable<String, String> getXmlRpcProperties(Properties props) {
-        Hashtable<String, String> propHash = new Hashtable<String, String>();
+    public static Map<String, String> getXmlRpcProperties(Properties props) {
+        Map<String, String> propHash = new HashMap<String, String>();
 
         if (props != null && props.keySet().size() > 0) {
             for (Object o : props.keySet()) {
@@ -517,32 +517,32 @@ public final class XmlRpcStructFactory {
         return propHash;
     }
 
-    public static Vector<Hashtable<String, Object>> getXmlRpcReferences(List<Reference> references) {
-        Vector<Hashtable<String, Object>> refVector = new Vector<Hashtable<String, Object>>();
+    public static Vector<Map<String, Object>> getXmlRpcReferences(List<Reference> references) {
+        Vector<Map<String, Object>> refVector = new Vector<Map<String, Object>>();
 
         if (references == null) {
             return refVector;
         }
 
         for (Reference reference : references) {
-            Hashtable<String, Object> refHash = getXmlRpcReference(reference);
+            Map<String, Object> refHash = getXmlRpcReference(reference);
             refVector.add(refHash);
         }
 
         return refVector;
     }
 
-    public static List<Reference> getReferencesFromXmlRpc(Vector<Hashtable<String, Object>> referenceVector) {
+    public static List<Reference> getReferencesFromXmlRpc(Vector<Map<String, Object>> referenceVector) {
         List<Reference> references = new Vector<Reference>();
-        for (Hashtable<String, Object> aReferenceVector : referenceVector) {
+        for (Map<String, Object> aReferenceVector : referenceVector) {
             Reference r = getReferenceFromXmlRpc(aReferenceVector);
             references.add(r);
         }
         return references;
     }
 
-    public static Hashtable<String, Object> getXmlRpcReference(Reference reference) {
-        Hashtable<String, Object> referenceHash = new Hashtable<String, Object>();
+    public static Map<String, Object> getXmlRpcReference(Reference reference) {
+        Map<String, Object> referenceHash = new HashMap<String, Object>();
         referenceHash.put("origReference", reference.getOrigReference());
         referenceHash.put("dataStoreReference", reference
                 .getDataStoreReference() != null ? reference
@@ -554,7 +554,7 @@ public final class XmlRpcStructFactory {
         return referenceHash;
     }
 
-    public static Reference getReferenceFromXmlRpc(Hashtable<String, Object> referenceHash) {
+    public static Reference getReferenceFromXmlRpc(Map<String, Object> referenceHash) {
         Reference reference = new Reference();
         reference.setDataStoreReference((String) referenceHash
                 .get("dataStoreReference"));
@@ -564,26 +564,26 @@ public final class XmlRpcStructFactory {
         return reference;
     }
 
-    public static Vector<Hashtable<String, Object>> getXmlRpcElementList(List<Element> elementList) {
-        Vector<Hashtable<String, Object>> elementVector = new Vector<Hashtable<String, Object>>(elementList.size());
+    public static Vector<Map<String, Object>> getXmlRpcElementList(List<Element> elementList) {
+        Vector<Map<String, Object>> elementVector = new Vector<Map<String, Object>>(elementList.size());
         for (Element element : elementList) {
-            Hashtable<String, Object> elementHash = getXmlRpcElement(element);
+            Map<String, Object> elementHash = getXmlRpcElement(element);
             elementVector.add(elementHash);
         }
         return elementVector;
     }
 
-    public static List<Element> getElementListFromXmlRpc(Vector<Hashtable<String, Object>> elementVector) {
+    public static List<Element> getElementListFromXmlRpc(Vector<Map<String, Object>> elementVector) {
         List<Element> elementList = new Vector<Element>(elementVector.size());
-        for (Hashtable<String, Object> elementHash : elementVector) {
+        for (Map<String, Object> elementHash : elementVector) {
             Element element = getElementFromXmlRpc(elementHash);
             elementList.add(element);
         }
         return elementList;
     }
 
-    public static Hashtable<String, Object> getXmlRpcElement(Element element) {
-        Hashtable<String, Object> elementHash = new Hashtable<String, Object>();
+    public static Map<String, Object> getXmlRpcElement(Element element) {
+        Map<String, Object> elementHash = new HashMap<String, Object>();
 
         elementHash.put("id", element.getElementId());
         elementHash.put("name", element.getElementName());
@@ -596,7 +596,7 @@ public final class XmlRpcStructFactory {
         return elementHash;
     }
 
-    public static Element getElementFromXmlRpc(Hashtable<String, Object> elementHash) {
+    public static Element getElementFromXmlRpc(Map<String, Object> elementHash) {
         Element element = new Element();
         element.setElementId((String) elementHash.get("id"));
         element.setElementName((String) elementHash.get("name"));
@@ -606,44 +606,44 @@ public final class XmlRpcStructFactory {
         return element;
     }
 
-    public static Hashtable<String, Object> getXmlRpcQuery(Query query) {
-        Hashtable<String, Object> queryHash = new Hashtable<String, Object>();
-        Vector<Hashtable<String, Object>> criteriaVector = getXmlRpcQueryCriteriaList(query.getCriteria());
+    public static Map<String, Object> getXmlRpcQuery(Query query) {
+        Map<String, Object> queryHash = new HashMap<String, Object>();
+        Vector<Map<String, Object>> criteriaVector = getXmlRpcQueryCriteriaList(query.getCriteria());
         queryHash.put("criteria", criteriaVector);
         return queryHash;
     }
 
-    public static Query getQueryFromXmlRpc(Hashtable<String, Object> queryHash) {
+    public static Query getQueryFromXmlRpc(Map<String, Object> queryHash) {
         Query query = new Query();
         @SuppressWarnings("unchecked")
-        List<QueryCriteria> criteria = getQueryCriteriaListFromXmlRpc((Vector<Hashtable<String, Object>>) queryHash
+        List<QueryCriteria> criteria = getQueryCriteriaListFromXmlRpc((Vector<Map<String, Object>>) queryHash
                 .get("criteria"));
         query.setCriteria(criteria);
         return query;
     }
 
-    public static Vector<Hashtable<String, Object>> getXmlRpcQueryCriteriaList(List<QueryCriteria> criteriaList) {
-        Vector<Hashtable<String, Object>> criteriaVector = new Vector<Hashtable<String, Object>>(criteriaList.size());
+    public static Vector<Map<String, Object>> getXmlRpcQueryCriteriaList(List<QueryCriteria> criteriaList) {
+        Vector<Map<String, Object>> criteriaVector = new Vector<Map<String, Object>>(criteriaList.size());
         for (QueryCriteria criteria : criteriaList) {
-            Hashtable<String, Object> criteriaHash = getXmlRpcQueryCriteria(criteria);
+            Map<String, Object> criteriaHash = getXmlRpcQueryCriteria(criteria);
             criteriaVector.add(criteriaHash);
         }
 
         return criteriaVector;
     }
 
-    public static List<QueryCriteria> getQueryCriteriaListFromXmlRpc(Vector<Hashtable<String, Object>> criteriaVector) {
+    public static List<QueryCriteria> getQueryCriteriaListFromXmlRpc(Vector<Map<String, Object>> criteriaVector) {
 
         List<QueryCriteria> criteriaList = new Vector<QueryCriteria>(criteriaVector.size());
-        for (Hashtable<String, Object> criteriaHash : criteriaVector) {
+        for (Map<String, Object> criteriaHash : criteriaVector) {
             QueryCriteria criteria = getQueryCriteriaFromXmlRpc(criteriaHash);
             criteriaList.add(criteria);
         }
         return criteriaList;
     }
 
-    public static Hashtable<String, Object> getXmlRpcQueryCriteria(QueryCriteria criteria) {
-        Hashtable<String, Object> criteriaHash = new Hashtable<String, Object>();
+    public static Map<String, Object> getXmlRpcQueryCriteria(QueryCriteria criteria) {
+        Map<String, Object> criteriaHash = new HashMap<String, Object>();
         criteriaHash.put("class",criteria.getClass().getCanonicalName());
         
         if(criteria instanceof TermQueryCriteria){  
@@ -659,11 +659,11 @@ public final class XmlRpcStructFactory {
         } else if(criteria instanceof BooleanQueryCriteria){
             BooleanQueryCriteria boolQuery = (BooleanQueryCriteria) criteria;
             criteriaHash.put("operator", boolQuery.getOperator());
-            Vector<Hashtable<String, Object>> termsHash = new Vector<Hashtable<String, Object>>();
+            Vector<Map<String, Object>> termsHash = new Vector<Map<String, Object>>();
             List<QueryCriteria> terms = boolQuery.getTerms();
 
             for (QueryCriteria term : terms) {
-                Hashtable<String, Object> termHash = getXmlRpcQueryCriteria(term);
+                Map<String, Object> termHash = getXmlRpcQueryCriteria(term);
                 termsHash.add(termHash);
             }
             criteriaHash.put("terms", termsHash);
@@ -674,7 +674,7 @@ public final class XmlRpcStructFactory {
         return criteriaHash;
     }
     
-    public static QueryCriteria getQueryCriteriaFromXmlRpc(Hashtable<String, Object> criteriaHash) {
+    public static QueryCriteria getQueryCriteriaFromXmlRpc(Map<String, Object> criteriaHash) {
         QueryCriteria criteria = null;
         if(criteriaHash.get("class").equals(TermQueryCriteria.class.getCanonicalName())){
             criteria = new TermQueryCriteria();
@@ -698,8 +698,8 @@ public final class XmlRpcStructFactory {
                 System.out.println("Error generating Boolean Query.");
             }
             @SuppressWarnings("unchecked")
-            List<Hashtable<String, Object>> terms = (List<Hashtable<String, Object>>) criteriaHash.get("terms");
-            for (Hashtable<String, Object> term : terms) {
+            List<Map<String, Object>> terms = (List<Map<String, Object>>) criteriaHash.get("terms");
+            for (Map<String, Object> term : terms) {
                 QueryCriteria termCriteria = getQueryCriteriaFromXmlRpc(term);
                 try {
                     ((BooleanQueryCriteria) criteria).addTerm(termCriteria);

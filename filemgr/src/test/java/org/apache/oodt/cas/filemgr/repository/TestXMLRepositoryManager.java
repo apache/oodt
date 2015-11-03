@@ -191,7 +191,7 @@ public class TestXMLRepositoryManager extends TestCase {
 
         assertTrue(type.getTypeMetadata().containsKey("Creator"));
         assertTrue(type.getTypeMetadata().containsKey("Contributor"));
-        assertEquals(2, type.getTypeMetadata().getHashtable().keySet().size());
+        assertEquals(2, type.getTypeMetadata().getMap().keySet().size());
         assertNotNull(type.getTypeMetadata().getAllMetadata("Creator"));
         assertEquals(2, type.getTypeMetadata().getAllMetadata("Creator").size());
         assertNotNull(type.getTypeMetadata().getAllMetadata("Contributor"));

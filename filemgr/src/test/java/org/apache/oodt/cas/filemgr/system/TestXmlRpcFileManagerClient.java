@@ -100,17 +100,17 @@ public class TestXmlRpcFileManagerClient extends TestCase {
             reducedMet = fmc.getReducedMetadata(product, arrayListElems);
             assertNotNull(reducedMet);
             assertTrue(reducedMet.containsKey(CoreMetKeys.FILENAME));
-            assertEquals(reducedMet.getHashtable().keySet().size(), 1);
+            assertEquals(reducedMet.getMap().keySet().size(), 1);
 
             reducedMet = fmc.getReducedMetadata(product, vectorElemList);
             assertNotNull(reducedMet);
             assertTrue(reducedMet.containsKey(CoreMetKeys.FILENAME));
-            assertEquals(reducedMet.getHashtable().keySet().size(), 1);
+            assertEquals(reducedMet.getMap().keySet().size(), 1);
 
             reducedMet = fmc.getReducedMetadata(product, linkedListElemList);
             assertNotNull(reducedMet);
             assertTrue(reducedMet.containsKey(CoreMetKeys.FILENAME));
-            assertEquals(reducedMet.getHashtable().keySet().size(), 1);
+            assertEquals(reducedMet.getMap().keySet().size(), 1);
             
         } catch (Exception e) {
             fail(e.getMessage());

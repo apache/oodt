@@ -77,7 +77,7 @@ public class CurationXmlStructFactory {
 
     Element metadataRootElem = doc.createElement("metadata");
     
-    for (Object metKey : type.getTypeMetadata().getHashtable().keySet()) {
+    for (Object metKey : type.getTypeMetadata().getMap().keySet()) {
       String key = (String) metKey;
       List<String> vals = type.getTypeMetadata().getAllMetadata(key);
 

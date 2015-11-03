@@ -18,15 +18,18 @@
 package org.apache.oodt.cas.resource.util;
 
 //OODT imports
+
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 
-//JDK imports
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -55,7 +58,7 @@ public final class XmlRpcStructFactory {
     return jobHash;
 	}
 
-	public static Job getJobFromXmlRpc(Hashtable jobHash) {
+	public static Job getJobFromXmlRpc(Map jobHash) {
 		Job job = new Job();
 		job.setId((String) jobHash.get("job.id"));
 		job.setName((String) jobHash.get("job.name"));
@@ -129,7 +132,7 @@ public final class XmlRpcStructFactory {
     return resNodeHash;
   }
 
-  public static ResourceNode getResourceNodeFromXmlRpc(Hashtable resNodeHash) {
+  public static ResourceNode getResourceNodeFromXmlRpc(Map resNodeHash) {
     ResourceNode node = new ResourceNode();
     node.setId((String) resNodeHash.get("node.id"));
     node.setCapacity(Integer

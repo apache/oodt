@@ -30,7 +30,6 @@ import org.apache.xmlrpc.WebServer;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -80,42 +79,42 @@ public class XmlRpcBatchStub {
         return true;
     }
 
-    public boolean executeJob(Hashtable jobHash, Hashtable jobInput)
+    public boolean executeJob(Map jobHash, Map jobInput)
         throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
-    public boolean executeJob(Hashtable jobHash, Date jobInput)
+    public boolean executeJob(Map jobHash, Date jobInput)
         throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
-    public boolean executeJob(Hashtable jobHash, double jobInput)
+    public boolean executeJob(Map jobHash, double jobInput)
         throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
-    public boolean executeJob(Hashtable jobHash, int jobInput)
+    public boolean executeJob(Map jobHash, int jobInput)
         throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
-    public boolean executeJob(Hashtable jobHash, boolean jobInput)
+    public boolean executeJob(Map jobHash, boolean jobInput)
         throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
-    public boolean executeJob(Hashtable jobHash, Vector jobInput)
+    public boolean executeJob(Map jobHash, Vector jobInput)
         throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
-    public boolean executeJob(Hashtable jobHash, byte[] jobInput)
+    public boolean executeJob(Map jobHash, byte[] jobInput)
         throws JobException {
         return genericExecuteJob(jobHash, jobInput);
     }
 
-    public synchronized boolean killJob(Hashtable jobHash) {
+    public synchronized boolean killJob(Map jobHash) {
         Job job = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
         Thread jobThread = (Thread) jobThreadMap.get(job.getId());
         if (jobThread == null) {
@@ -129,7 +128,7 @@ public class XmlRpcBatchStub {
         return true;
     }
 
-    private boolean genericExecuteJob(Hashtable jobHash, Object jobInput) {
+    private boolean genericExecuteJob(Map jobHash, Object jobInput) {
         JobInstance exec = null;
         JobInput in = null;
         try {

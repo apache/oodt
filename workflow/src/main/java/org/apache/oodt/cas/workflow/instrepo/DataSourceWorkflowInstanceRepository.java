@@ -892,8 +892,8 @@ public class DataSourceWorkflowInstanceRepository extends
             throws InstanceRepositoryException {
 
         if (inst.getSharedContext() != null
-                && inst.getSharedContext().getHashtable().keySet().size() > 0) {
-            for (String key : inst.getSharedContext().getHashtable().keySet()) {
+                && inst.getSharedContext().getMap().keySet().size() > 0) {
+            for (String key : inst.getSharedContext().getMap().keySet()) {
                 List vals = inst.getSharedContext().getAllMetadata(key);
                 if (vals != null && vals.size() > 0) {
                     for (Object val1 : vals) {

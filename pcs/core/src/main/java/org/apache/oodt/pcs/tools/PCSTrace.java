@@ -134,9 +134,9 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
     System.out.println(REPORT_LINE_SEPARATOR);
     System.out.println("Metadata: ");
     Metadata met = fm.safeGetMetadata(prod);
-    if (met != null && met.getHashtable() != null
-        && met.getHashtable().keySet().size() > 0) {
-      for (String key : met.getHashtable().keySet()) {
+    if (met != null && met.getMap() != null
+        && met.getMap().keySet().size() > 0) {
+      for (String key : met.getMap().keySet()) {
         List vals = met.getAllMetadata(key);
         System.out.println(key + "=>" + vals);
       }

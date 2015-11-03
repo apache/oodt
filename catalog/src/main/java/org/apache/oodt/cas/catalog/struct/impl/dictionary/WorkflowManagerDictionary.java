@@ -38,7 +38,7 @@ public class WorkflowManagerDictionary implements Dictionary {
 	public TermBucket lookup(Metadata metadata) {
 		if (metadata.getMetadata("ProductType") != null && metadata.getAllMetadata("ProductType").contains("Workflows")) {
 			TermBucket workflowBucket = new TermBucket("Workflows");
-			for (Object key : metadata.getHashtable().keySet()) {
+			for (Object key : metadata.getMap().keySet()) {
 			  workflowBucket.addTerm(new Term((String) key, metadata.getAllMetadata((String) key)));
 			}
 			return workflowBucket;

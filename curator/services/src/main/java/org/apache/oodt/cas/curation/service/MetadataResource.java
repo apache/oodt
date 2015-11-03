@@ -368,7 +368,7 @@ public class MetadataResource extends CurationService {
   
 
   private JSONObject getMetadataAsJSON(Metadata metadata) {
-    return JSONObject.fromObject(metadata.getHashtable());
+    return JSONObject.fromObject(metadata.getMap());
   }
 
   private Metadata getMetadataFromJSON(String metadataJSON) {
@@ -407,7 +407,7 @@ public class MetadataResource extends CurationService {
     StringBuilder html = new StringBuilder();
 
     html.append("<table>\r\n");
-    for (String key : (Set<String>) metadata.getHashtable().keySet()) {
+    for (String key : (Set<String>) metadata.getMap().keySet()) {
       html.append(" <tr>\r\n");
       html.append("  <th>").append(key).append("</th>\r\n");
       html.append("  <td class=\"").append(key).append("\">");

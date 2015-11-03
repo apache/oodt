@@ -919,7 +919,7 @@ public class CatalogServiceLocal implements CatalogService {
 					}
 				}
 			}
-			if (metadata.getHashtable().keySet().size() > 0) {
+			if (metadata.getMap().keySet().size() > 0) {
 			  metadataSet.add(new TransactionalMetadata(
 				  new TransactionReceipt(transactionReceipt.getTransactionId(), successfulCatalogReceipts), metadata));
 			}
@@ -936,7 +936,7 @@ public class CatalogServiceLocal implements CatalogService {
 				try {
 					CatalogReceipt catalogReceipt = this.ingestMapper.getCatalogReceipt(catalogServiceTransactionId, catalog.getId());
 					if (catalogReceipt != null) {
-						metadata.addMetadata(catalog.getMetadata(catalogReceipt.getTransactionId()).getHashtable());
+						metadata.addMetadata(catalog.getMetadata(catalogReceipt.getTransactionId()).getMap());
 						catalogReceipts.add(catalogReceipt);
 					}
 				}catch (Exception e) {
@@ -951,7 +951,7 @@ public class CatalogServiceLocal implements CatalogService {
 					}
 				}
 			}
-			if (metadata.getHashtable().keySet().size() > 0) {
+			if (metadata.getMap().keySet().size() > 0) {
 			  metadataSet.add(
 				  new TransactionalMetadata(new TransactionReceipt(catalogServiceTransactionId, catalogReceipts),
 					  metadata));

@@ -219,8 +219,8 @@ public class TestLuceneWorkflowInstanceRepository extends TestCase implements
         assertNotNull(foundInst);
         assertEquals(foundInst.getId(), wInstId);
         assertNotNull(foundInst.getSharedContext());
-        assertNotNull(foundInst.getSharedContext().getHashtable());
-        assertEquals(2, foundInst.getSharedContext().getHashtable().keySet()
+        assertNotNull(foundInst.getSharedContext().getMap());
+        assertEquals(2, foundInst.getSharedContext().getMap().keySet()
                 .size());
         assertNotNull(foundInst.getSharedContext().getAllMetadata("TestKey1"));
         assertEquals(2, foundInst.getSharedContext().getAllMetadata("TestKey1")

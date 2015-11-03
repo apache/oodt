@@ -19,7 +19,8 @@
 package org.apache.oodt.cas.resource.structs;
 
 //JDK imports
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -69,13 +70,13 @@ public class NameValueJobInput implements JobInput {
    */
   public void read(Object in) {
     // we want to make sure that we're reading in
-    // a java.util.Hashtable
+    // a java.util.Map
     // if not then just return
-    if (!(in instanceof Hashtable)) {
+    if (!(in instanceof Map)) {
       return;
     }
 
-    Hashtable readable = (Hashtable) in;
+    Map readable = (Map) in;
     for (Object o : readable.keySet()) {
       String key = (String) o;
       String value = (String) readable.get(key);
@@ -90,7 +91,7 @@ public class NameValueJobInput implements JobInput {
    * @see org.apache.oodt.cas.resource.util.XmlRpcWriteable#write()
    */
   public Object write() {
-    Hashtable writeable = new Hashtable();
+    Map writeable = new HashMap();
     if (props != null && props.size() > 0) {
       for (Object o : props.keySet()) {
         String key = (String) o;

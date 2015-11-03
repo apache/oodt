@@ -16,6 +16,7 @@
 package org.apache.oodt.cas.metadata;
 
 //JDK imports
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -386,21 +387,27 @@ public class Metadata {
     return values;
   }
 
+  @Deprecated
   public void addMetadata(Hashtable<String, Object> metadata) {
     addMetadata(metadata, false);
   }
 
+  public void addMetadata(Map<String, Object> metadata) {
+    addMetadata(metadata, false);
+  }
+
   /**
-   * Takes a hashtable of String keys and Object values.  Values of type List
+   * Takes a Map of String keys and Object values.  Values of type List
    * must be a List of Strings; all other values will have its toString() method
    * invoked.
-   * @param metadata Hashtable based metadata to add
+   * @param metadata Map based metadata to add
    * @param replace If true, existing keys will be replaced, other values will be
    * combined.
    */
-  public void addMetadata(Hashtable<String, Object> metadata, boolean replace) {
+  @Deprecated
+  public void addMetadata(HashMap<String, Object> metadata, boolean replace) {
     // for back compat: the old method allowed us to give it a
-    // Hashtable<String,String> and it still worked
+    // Map<String,String> and it still worked
 	for (Map.Entry<String, Object> key : metadata.entrySet()) {
 	  List<String> vals = (key.getValue() instanceof List) ? (List<String>) key.getValue()
         : Collections.singletonList(key.getValue().toString());
@@ -412,7 +419,21 @@ public class Metadata {
     }
   }
 
-  public void replaceMetadata(Hashtable<String, Object> metadata) {
+  public void addMetadata(Map<String, Object> metadata, boolean replace) {
+    // for back compat: the old method allowed us to give it a
+    // Map<String,String> and it still worked
+    for (Map.Entry<String, Object> key : metadata.entrySet()) {
+      List<String> vals = (key.getValue() instanceof List) ? (List<String>) key.getValue()
+                                                           : Collections.singletonList(key.getValue().toString());
+      if (replace) {
+        this.replaceMetadata(key.getKey(), vals);
+      } else {
+        this.addMetadata(key.getKey(), vals);
+      }
+    }
+  }
+
+  public void replaceMetadata(Map<String, Object> metadata) {
     this.root = this.createNewRoot();
     this.addMetadata(metadata);
   }
@@ -575,8 +596,17 @@ public class Metadata {
 
   }
 
-  public Hashtable<String, Object> getHashtable() {
+  @Deprecated
+  public Hashtable<String, Object> getHashTable() {
     Hashtable<String, Object> table = new Hashtable<String, Object>();
+    for (String key : this.getAllKeys()) {
+      table.put(key, this.getAllMetadata(key));
+    }
+    return table;
+  }
+
+  public Map<String, Object> getMap() {
+    Map<String, Object> table = new HashMap<String, Object>();
     for (String key : this.getAllKeys()) {
       table.put(key, this.getAllMetadata(key));
     }

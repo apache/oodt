@@ -18,11 +18,12 @@
 package org.apache.oodt.security.sso.opensso;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.util.List;
 import java.util.Vector;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * 
@@ -129,7 +130,7 @@ public class IdentityDetails {
 
   public String toString() {
     return "[name=" + this.name + ",type=" + this.type + ",realm=" + this.realm + ",roles=" + this.groups
-           + ",attributes=" + this.attributes.getHashtable() + "]";
+           + ",attributes=" + this.attributes.getMap() + "]";
   }
 
 }

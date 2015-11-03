@@ -131,7 +131,7 @@ public class DaemonLauncher implements DaemonLauncherMBean {
 
     private synchronized int getNextDaemonId() {
         while (this.dm.getUsedIDs().contains(++this.nextDaemonId)) {
-            ;
+
         }
         return this.nextDaemonId;
     }

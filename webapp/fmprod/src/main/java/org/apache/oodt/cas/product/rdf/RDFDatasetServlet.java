@@ -207,7 +207,7 @@ public class RDFDatasetServlet extends HttpServlet {
         // and add RDF nodes underneath the RdfDesc for this product
 
         if (type.getTypeMetadata() != null) {
-          for (String key : type.getTypeMetadata().getHashtable().keySet()) {
+          for (String key : type.getTypeMetadata().getMap().keySet()) {
             List<String> vals = type.getTypeMetadata().getAllMetadata(key);
 
             if (vals != null && vals.size() > 0) {

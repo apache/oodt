@@ -70,7 +70,7 @@ public final class WorkflowInstanceMetMap implements WorkflowInstanceMetMapKeys{
     }
 
     public List getWorkflows() {
-        return Arrays.asList(map.getHashtable().keySet().toArray());
+        return Arrays.asList(map.getMap().keySet().toArray());
     }
 
 }

@@ -19,26 +19,6 @@
 package org.apache.oodt.cas.workflow.instrepo;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleStage;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
-import org.apache.oodt.cas.workflow.structs.Priority;
-import org.apache.oodt.cas.workflow.structs.Workflow;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
-
-//JDK imports
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//Lucene imports
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -52,10 +32,30 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleStage;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
+import org.apache.oodt.cas.workflow.structs.Priority;
+import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 
-//JUG imports
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
+//Lucene imports
+//JUG imports
 
 /**
  * @author mattmann
@@ -554,8 +554,8 @@ public class LuceneWorkflowInstanceRepository extends
     }
 
     private void addInstanceMetadataToDoc(Document doc, Metadata met) {
-        if (met != null && met.getHashtable().keySet().size() > 0) {
-            for (String metKey : met.getHashtable().keySet()) {
+        if (met != null && met.getMap().keySet().size() > 0) {
+            for (String metKey : met.getMap().keySet()) {
                 List metVals = met.getAllMetadata(metKey);
                 if (metVals != null && metVals.size() > 0) {
                     for (Object metVal1 : metVals) {

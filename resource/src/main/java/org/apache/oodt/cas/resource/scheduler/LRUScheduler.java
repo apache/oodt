@@ -19,7 +19,6 @@
 package org.apache.oodt.cas.resource.scheduler;
 
 //JDKimports
-import java.lang.Double;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

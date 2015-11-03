@@ -263,7 +263,7 @@ public class SerializableMetadata extends Metadata implements Serializable {
      */
     public Metadata getMetadata() {
         Metadata metadata = new Metadata();
-        metadata.addMetadata(this.getHashtable());
+        metadata.addMetadata(this.getMap());
         return metadata;
     }
 

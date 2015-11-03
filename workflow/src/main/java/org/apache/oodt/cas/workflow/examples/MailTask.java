@@ -19,8 +19,14 @@
 package org.apache.oodt.cas.workflow.examples;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
+import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
+
 import java.util.Date;
 import java.util.Properties;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -29,10 +35,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
-import org.apache.oodt.cas.workflow.structs.exceptions.WorkflowTaskInstanceException;
 
 /**
  * 
@@ -85,7 +87,7 @@ public class MailTask implements WorkflowTaskInstance {
 
   private String getMsgStringFromMet(Metadata met) {
     StringBuilder buf = new StringBuilder();
-    for (Object key : met.getHashtable().keySet()) {
+    for (Object key : met.getMap().keySet()) {
       String keyStr = (String) key;
       StringBuilder val = new StringBuilder();
       for (Object value : met.getAllMetadata(keyStr)) {

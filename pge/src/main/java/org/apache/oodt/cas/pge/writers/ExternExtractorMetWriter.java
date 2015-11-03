@@ -48,6 +48,6 @@ public class ExternExtractorMetWriter extends PcsMetFileWriter {
         (String) customArgs[0])));
     Metadata m = new Metadata();
     m.addMetadata(extractor.extractMetadata(sciPgeConfigFilePath)
-                           .getHashtable(), true);
+                           .getMap(), true);
     return m;  }
 }

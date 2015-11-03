@@ -84,7 +84,7 @@ public class AutoDetectProductCrawler extends ProductCrawler implements
          Metadata m = spec.getMetExtractor()
                           .extractMetadata(product);
          if (m != null) {
-            metadata.addMetadata(m.getHashtable(), true);
+            metadata.addMetadata(m.getMap(), true);
          }
       }
       return metadata;

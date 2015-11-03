@@ -131,8 +131,8 @@ public class TestXmlRpcWorkflowManagerClient extends TestCase {
     met = WInst.getSharedContext();
     assertNotNull(met);
 
-    assertNotNull(met.getHashtable());
-    assertEquals(2, met.getHashtable().keySet().size());
+    assertNotNull(met.getMap());
+    assertEquals(2, met.getMap().keySet().size());
     assertNotNull(met.getAllMetadata("key1"));
     assertEquals(3, met.getAllMetadata("key1").size());
     assertNotNull(met.getAllMetadata("key2"));

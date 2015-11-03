@@ -92,6 +92,6 @@ public class UserDetails {
   }
 
   public String toString() {
-    return "[token=" + this.token + ",roles=" + this.roles + ",attributes=" + this.attributes.getHashtable() + "]";
+    return "[token=" + this.token + ",roles=" + this.roles + ",attributes=" + this.attributes.getMap() + "]";
   }
 }

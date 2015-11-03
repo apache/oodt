@@ -41,7 +41,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -108,7 +108,7 @@ public class XmlRpcWorkflowManager {
      return true;
    }
 
-  public String executeDynamicWorkflow(Vector<String> taskIds, Hashtable metadata)
+  public String executeDynamicWorkflow(Vector<String> taskIds, Map metadata)
       throws RepositoryException, EngineException {
     if (taskIds == null || (taskIds.size() == 0)) {
       throw new RepositoryException(
@@ -162,7 +162,7 @@ public class XmlRpcWorkflowManager {
 
     }
 
-    public Hashtable getFirstPage() {
+    public Map getFirstPage() {
     	WorkflowInstancePage page = engine.getInstanceRepository()
                 .getFirstPage();
         if (page != null) {
@@ -175,7 +175,7 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public Hashtable getNextPage(Hashtable currentPage) {
+    public Map getNextPage(Map currentPage) {
         // first unpack current page
         WorkflowInstancePage currPage = XmlRpcStructFactory
                 .getWorkflowInstancePageFromXmlRpc(currentPage);
@@ -191,7 +191,7 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public Hashtable getPrevPage(Hashtable currentPage) {
+    public Map getPrevPage(Map currentPage) {
         // first unpack current page
         WorkflowInstancePage currPage = XmlRpcStructFactory
                 .getWorkflowInstancePageFromXmlRpc(currentPage);
@@ -207,7 +207,7 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public Hashtable getLastPage() {
+    public Map getLastPage() {
         WorkflowInstancePage page = engine.getInstanceRepository()
                 .getLastPage();
         if (page != null) {
@@ -220,7 +220,7 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public Hashtable paginateWorkflowInstances(int pageNum, String status)
+    public Map paginateWorkflowInstances(int pageNum, String status)
             throws InstanceRepositoryException {
         WorkflowInstancePage page = engine.getInstanceRepository()
                 .getPagedWorkflows(pageNum, status);
@@ -235,7 +235,7 @@ public class XmlRpcWorkflowManager {
 
     }
 
-    public Hashtable paginateWorkflowInstances(int pageNum)
+    public Map paginateWorkflowInstances(int pageNum)
             throws InstanceRepositoryException {
         WorkflowInstancePage page = engine.getInstanceRepository()
                 .getPagedWorkflows(pageNum);
@@ -249,9 +249,9 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public Hashtable getWorkflowInstanceMetadata(String wInstId) {
+    public Map getWorkflowInstanceMetadata(String wInstId) {
         Metadata met = engine.getWorkflowInstanceMetadata(wInstId);
-        return met.getHashtable();
+        return met.getMap();
     }
 
     public Vector getWorkflowsByEvent(String eventName)
@@ -265,7 +265,7 @@ public class XmlRpcWorkflowManager {
             if (workflows != null) {
               for (Object workflow1 : workflows) {
                 Workflow w = (Workflow) workflow1;
-                Hashtable workflow = XmlRpcStructFactory
+                Map workflow = XmlRpcStructFactory
                     .getXmlRpcWorkflow(w);
                 workflowList.add(workflow);
               }
@@ -281,7 +281,7 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public boolean handleEvent(String eventName, Hashtable metadata)
+    public boolean handleEvent(String eventName, Map metadata)
             throws RepositoryException, EngineException {
         LOG.log(Level.INFO, "WorkflowManager: Received event: " + eventName);
 
@@ -321,7 +321,7 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public Hashtable getWorkflowInstanceById(String wInstId) {
+    public Map getWorkflowInstanceById(String wInstId) {
         WorkflowInstance inst;
 
         try {
@@ -409,7 +409,7 @@ public class XmlRpcWorkflowManager {
                   repo.addWorkflow(wDesc);
                 }
                 wInst.setWorkflow(wDesc);
-                Hashtable workflowInstance = XmlRpcStructFactory
+                Map workflowInstance = XmlRpcStructFactory
                     .getXmlRpcWorkflowInstance(wInst);
                 workflowInstances.add(workflowInstance);
               }
@@ -462,7 +462,7 @@ public class XmlRpcWorkflowManager {
                 // here, bad
                 // design
                 wInst.setWorkflow(wDesc);
-                Hashtable workflowInstance = XmlRpcStructFactory
+                Map workflowInstance = XmlRpcStructFactory
                     .getXmlRpcWorkflowInstance(wInst);
                 workflowInstances.add(workflowInstance);
               }
@@ -489,7 +489,7 @@ public class XmlRpcWorkflowManager {
             try {
               for (Object aWorkflowList : workflowList) {
                 Workflow w = (Workflow) aWorkflowList;
-                Hashtable workflow = XmlRpcStructFactory
+                Map workflow = XmlRpcStructFactory
                     .getXmlRpcWorkflow(w);
                 workflows.add(workflow);
               }
@@ -508,7 +508,7 @@ public class XmlRpcWorkflowManager {
 
     }
 
-    public Hashtable getTaskById(String taskId) throws RepositoryException {
+    public Map getTaskById(String taskId) throws RepositoryException {
         try {
             WorkflowTask t = repo.getWorkflowTaskById(taskId);
             return XmlRpcStructFactory.getXmlRpcWorkflowTask(t);
@@ -520,7 +520,7 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public Hashtable getConditionById(String conditionId)
+    public Map getConditionById(String conditionId)
             throws RepositoryException {
         try {
             WorkflowCondition c = repo.getWorkflowConditionById(conditionId);
@@ -533,7 +533,7 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public Hashtable getWorkflowById(String workflowId)
+    public Map getWorkflowById(String workflowId)
             throws RepositoryException {
         try {
             Workflow workflow = repo.getWorkflowById(workflowId);
@@ -547,13 +547,13 @@ public class XmlRpcWorkflowManager {
     }
 
     public synchronized boolean updateMetadataForWorkflow(
-            String workflowInstId, Hashtable metadata) {
+            String workflowInstId, Map metadata) {
         Metadata met = new Metadata();
         met.addMetadata(metadata);
         return this.engine.updateMetadata(workflowInstId, met);
     }
 
-    public synchronized boolean updateWorkflowInstance(Hashtable workflowInst) {
+    public synchronized boolean updateWorkflowInstance(Map workflowInst) {
         WorkflowInstance wInst = XmlRpcStructFactory
                 .getWorkflowInstanceFromXmlRpc(workflowInst);
         return doUpdateWorkflowInstance(wInst);

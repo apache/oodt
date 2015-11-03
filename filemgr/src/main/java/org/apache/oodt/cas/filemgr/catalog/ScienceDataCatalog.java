@@ -94,7 +94,7 @@ public class ScienceDataCatalog implements Catalog {
       // that do not already exist in the database
       Metadata paramMetadata = getMetadataSubset(m, Pattern.compile("param_*"));
 
-      for (Enumeration keys = paramMetadata.getHashtable().keys(); keys
+      for (Enumeration keys = paramMetadata.getHashTable().keys(); keys
           .hasMoreElements();) {
 
         String key = (String) keys.nextElement();
@@ -1183,7 +1183,7 @@ public class ScienceDataCatalog implements Catalog {
 
     Metadata subset = new Metadata();
 
-    for (Object key : m.getHashtable().keySet()) {
+    for (Object key : m.getMap().keySet()) {
 
       Matcher matcher = pattern.matcher((String) key);
       if (matcher.lookingAt()) {

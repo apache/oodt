@@ -107,7 +107,7 @@ public abstract class AbstractFilemgrMetExtractor implements
     }
 
     protected void merge(Metadata src, Metadata dest) {
-        dest.addMetadata(src.getHashtable());
+        dest.addMetadata(src.getMap());
     }
 
     protected File getProductFile(Product product)

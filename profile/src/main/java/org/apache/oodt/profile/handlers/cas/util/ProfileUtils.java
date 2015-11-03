@@ -89,7 +89,7 @@ public final class ProfileUtils {
     prof.setResourceAttributes(resAttrs);
 
     // build up profile elements
-    for (String key : met.getHashtable().keySet()) {
+    for (String key : met.getMap().keySet()) {
       List vals = met.getAllMetadata(key);
 
       EnumeratedProfileElement elem = new EnumeratedProfileElement(prof);
