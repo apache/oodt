@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.workflow.system;
 
 //JDK imports
+
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 
@@ -25,7 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,7 +58,7 @@ public class TestXmlRpcWorkflowManager extends TestCase {
 
   public void testGetWorkflowInstances() {
 
-    Vector workflowInsts = null;
+    List workflowInsts = null;
 
     int numInsts = -1;
     while (numInsts != 2) {

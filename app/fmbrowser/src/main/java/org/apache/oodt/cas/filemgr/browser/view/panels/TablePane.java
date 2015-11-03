@@ -28,7 +28,7 @@ import javax.swing.border.LineBorder;
 
 public class TablePane extends JPanel{ 
 	
-	public List<Integer> hiddenCols;
+	public Vector<Integer> hiddenCols;
 	public HeaderRow header;
 	
 	private TableListener listener;
