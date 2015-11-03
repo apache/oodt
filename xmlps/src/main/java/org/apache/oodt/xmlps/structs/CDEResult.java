@@ -18,23 +18,26 @@
 package org.apache.oodt.xmlps.structs;
 
 //OODT imports
+
 import org.apache.oodt.xmlps.mapping.Mapping;
 import org.apache.oodt.xmlps.mapping.MappingField;
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlquery.QueryElement;
 import org.apache.oodt.xmlquery.Result;
 
-//JDK imports
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+
+//JDK imports
 
 /**
  * A {@link Result} that wraps a {@link ResultSet} and returns rows as Strings,
@@ -113,7 +116,7 @@ public class CDEResult extends Result {
     CDERow row = new CDERow();
     ResultSetMetaData met = rs.getMetaData();
     int count = met.getColumnCount();
-    Map<String, CDEValue> dbValMap = new ConcurrentHashMap<String, CDEValue>();
+    Map<String, CDEValue> dbValMap = new HashMap<String, CDEValue>();
     Map<String, CDEValue> constValMap = cdeListToMap(this.constValues);
     List<CDEValue> orderedDbVals = new Vector<CDEValue>();
     
@@ -165,7 +168,7 @@ public class CDEResult extends Result {
   }  
   
   private Map<String, CDEValue> cdeListToMap(List<CDEValue> vals){
-    Map<String, CDEValue> map = new ConcurrentHashMap<String, CDEValue>();
+    Map<String, CDEValue> map = new HashMap<String, CDEValue>();
     if(vals != null){
       for(CDEValue val: vals){
         map.put(val.getCdeName(), val);
