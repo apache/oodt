@@ -33,7 +33,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.registry.Registry;
 import java.rmi.server.RemoteObject;
-import java.util.concurrent.ConcurrentHashMap;;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Timer;
