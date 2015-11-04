@@ -487,15 +487,17 @@ public class Metadata {
       this.children = new Hashtable<String, Group>();
     }
 
+    /**
+     * Create Metadata Group.
+     * By default we create a group using a Hashtable for XMLRPC support. Once this has been superceeded by the Avro
+     * Impl we should make the HashMap implementation the default.
+     * @param name
+     * @param legacy
+     */
     public Group(String name, boolean legacy) {
       this.name = name;
       this.values = new Vector<String>();
-      if(legacy){
-        this.children = new Hashtable<String, Group>();
-      }
-      else{
-        this.children = new ConcurrentHashMap<String, Group>();
-      }
+      this.children = legacy ? new Hashtable<String, Group>() : new ConcurrentHashMap<String, Group>();
 
     }
 
