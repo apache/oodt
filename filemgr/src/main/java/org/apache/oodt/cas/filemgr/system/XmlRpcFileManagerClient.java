@@ -223,7 +223,7 @@ public class XmlRpcFileManagerClient {
     public boolean transferringProduct(Product product)
             throws DataTransferException {
         Vector<Object> argList = new Vector<Object>();
-        Hashtable<String, Object> productHash = XmlRpcStructFactory
+        Map<String, Object> productHash = XmlRpcStructFactory
                 .getXmlRpcProduct(product);
         argList.add(productHash);
 
@@ -636,10 +636,10 @@ public class XmlRpcFileManagerClient {
         Vector<Object> argList = new Vector<Object>();
         argList.add(n);
 
-        Vector<Hashtable<String, Object>> topNProducts;
+        Vector<Map<String, Object>> topNProducts;
 
         try {
-            topNProducts = (Vector<Hashtable<String, Object>>) client.execute(
+            topNProducts = (Vector<Map<String, Object>>) client.execute(
                     "filemgr.getTopNProducts", argList);
         } catch (XmlRpcException e) {
             throw new CatalogException(e);
@@ -660,10 +660,10 @@ public class XmlRpcFileManagerClient {
                 .getXmlRpcProductType(type);
         argList.add(productTypeHash);
 
-        Vector<Hashtable<String, Object>> topNProducts;
+        Vector<Map<String, Object>> topNProducts;
 
         try {
-            topNProducts = (Vector<Hashtable<String, Object>>) client.execute(
+            topNProducts = (Vector<Map<String, Object>>) client.execute(
                     "filemgr.getTopNProducts", argList);
         } catch (XmlRpcException e) {
             throw new CatalogException(e);
@@ -869,10 +869,10 @@ public class XmlRpcFileManagerClient {
                 .getXmlRpcProductType(type);
         argList.add(productTypeHash);
 
-        Vector<Hashtable<String, Object>> productVector;
+        Vector<Map<String, Object>> productVector;
 
         try {
-            productVector = (Vector<Hashtable<String, Object>>) client.execute(
+            productVector = (Vector<Map<String, Object>>) client.execute(
                     "filemgr.getProductsByProductType", argList);
         } catch (XmlRpcException e) {
             throw new CatalogException(e);
@@ -896,10 +896,10 @@ public class XmlRpcFileManagerClient {
 
         argList.add(productTypeHash);
 
-        Vector<Hashtable<String, Object>> elementVector;
+        Vector<Map<String, Object>> elementVector;
 
         try {
-            elementVector = (Vector<Hashtable<String, Object>>) client.execute(
+            elementVector = (Vector<Map<String, Object>>) client.execute(
                     "filemgr.getElementsByProductType", argList);
         } catch (XmlRpcException e) {
             throw new ValidationLayerException(e);
@@ -990,12 +990,12 @@ public class XmlRpcFileManagerClient {
     public List<QueryResult> complexQuery(ComplexQuery complexQuery)
             throws CatalogException {
         try {
-            Hashtable<String, Object> complexQueryHash = XmlRpcStructFactory
+            Map<String, Object> complexQueryHash = XmlRpcStructFactory
                     .getXmlRpcComplexQuery(complexQuery);
             Vector<Object> argList = new Vector<Object>();
             argList.add(complexQueryHash);
             @SuppressWarnings("unchecked")
-            Vector<Hashtable<String, Object>> queryResultHashVector = (Vector<Hashtable<String, Object>>) client
+            Vector<Map<String, Object>> queryResultHashVector = (Vector<Map<String, Object>>) client
                     .execute("filemgr.complexQuery", argList);
             return XmlRpcStructFactory
                     .getQueryResultsFromXmlRpc(queryResultHashVector);
@@ -1016,10 +1016,10 @@ public class XmlRpcFileManagerClient {
         argList.add(queryHash);
         argList.add(typeHash);
 
-        Vector<Hashtable<String, Object>> productVector;
+        Vector<Map<String, Object>> productVector;
 
         try {
-            productVector = (Vector<Hashtable<String, Object>>) client.execute(
+            productVector = (Vector<Map<String, Object>>) client.execute(
                     "filemgr.query", argList);
         } catch (XmlRpcException e) {
             LOG.log(Level.SEVERE, e.getMessage());
@@ -1114,13 +1114,13 @@ public class XmlRpcFileManagerClient {
             throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
 
-        Vector<Hashtable<String, Object>> productReferenceVector;
-        Hashtable<String, Object> productHash = XmlRpcStructFactory
+        Vector<Map<String, Object>> productReferenceVector;
+        Map<String, Object> productHash = XmlRpcStructFactory
                 .getXmlRpcProduct(product);
         argList.add(productHash);
 
         try {
-            productReferenceVector = (Vector<Hashtable<String, Object>>) client
+            productReferenceVector = (Vector<Map<String, Object>>) client
                     .execute("filemgr.getProductReferences", argList);
         } catch (XmlRpcException e) {
             throw new CatalogException(e);
@@ -1140,11 +1140,11 @@ public class XmlRpcFileManagerClient {
     public Product getProductById(String productId) throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
 
-        Hashtable<String, Object> productHash;
+        Map<String, Object> productHash;
         argList.add(productId);
 
         try {
-            productHash = (Hashtable<String, Object>) client.execute(
+            productHash = (Map<String, Object>) client.execute(
                     "filemgr.getProductById", argList);
         } catch (XmlRpcException e) {
             throw new CatalogException(e);
@@ -1163,11 +1163,11 @@ public class XmlRpcFileManagerClient {
     public Product getProductByName(String productName) throws CatalogException {
         Vector<Object> argList = new Vector<Object>();
 
-        Hashtable<String, Object> productHash;
+        Map<String, Object> productHash;
         argList.add(productName);
 
         try {
-            productHash = (Hashtable<String, Object>) client.execute(
+            productHash = (Map<String, Object>) client.execute(
                     "filemgr.getProductByName", argList);
         } catch (XmlRpcException e) {
             throw new CatalogException(e);
@@ -1187,7 +1187,7 @@ public class XmlRpcFileManagerClient {
         try {
             // ingest product
             Vector<Object> argList = new Vector<Object>();
-            Hashtable<String, Object> productHash = XmlRpcStructFactory
+            Map<String, Object> productHash = XmlRpcStructFactory
                     .getXmlRpcProduct(product);
             argList.add(productHash);
             argList.add(metadata.getHashTable());

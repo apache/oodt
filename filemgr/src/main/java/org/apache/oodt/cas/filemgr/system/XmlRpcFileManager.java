@@ -56,6 +56,7 @@ import org.apache.xmlrpc.WebServer;
 
 import com.google.common.collect.Lists;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -162,13 +163,17 @@ public class XmlRpcFileManager {
       return status;
     }
 
-    public boolean transferringProduct(Map<String, Object> productHash) {
+  public boolean transferringProduct(Hashtable<String, Object> productHash) {
+    return this.transferringProductCore(productHash);
+  }
+
+  public boolean transferringProductCore(Map<String, Object> productHash) {
         Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
         transferStatusTracker.transferringProduct(p);
         return true;
     }
 
-    public Map<String, Object> getCurrentFileTransfer() {
+    public Map<String, Object> getCurrentFileTransferCore() {
         FileTransferStatus status = transferStatusTracker
                 .getCurrentFileTransfer();
         if (status == null) {
@@ -189,12 +194,18 @@ public class XmlRpcFileManager {
         }
     }
 
-    public double getProductPctTransferred(Map<String, Object> productHash) {
+  public double getProductPctTransferred(Hashtable<String, Object> productHash) {
+    return this.getProductPctTransferredCore(productHash);
+  }
+    public double getProductPctTransferredCore(Map<String, Object> productHash) {
         Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
       return transferStatusTracker.getPctTransferred(product);
     }
 
-    public double getRefPctTransferred(Map<String, Object> refHash) {
+  public double getRefPctTransferred(Hashtable<String, Object> refHash) {
+    return getRefPctTransferredCore(refHash);
+  }
+    public double getRefPctTransferredCore(Map<String, Object> refHash) {
         Reference reference = XmlRpcStructFactory
                 .getReferenceFromXmlRpc(refHash);
         double pct = 0.0;
@@ -211,18 +222,29 @@ public class XmlRpcFileManager {
         return pct;
     }
 
-    public boolean removeProductTransferStatus(Map<String, Object> productHash) {
+  public boolean removeProductTransferStatus(Hashtable<String, Object> productHash) {
+    return removeProductTransferStatusCore(productHash);
+  }
+    public boolean removeProductTransferStatusCore(Map<String, Object> productHash) {
         Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
         transferStatusTracker.removeProductTransferStatus(product);
         return true;
     }
-
-    public boolean isTransferComplete(Map<String, Object> productHash) {
+  public boolean isTransferComplete(Hashtable<String, Object> productHash) {
+    return this.isTransferCompleteCore(productHash);
+  }
+    public boolean isTransferCompleteCore(Map<String, Object> productHash) {
         Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
         return transferStatusTracker.isTransferComplete(product);
     }
+  public Map<String, Object> pagedQuery(
+      Hashtable<String, Object> queryHash,
+      Hashtable<String, Object> productTypeHash,
+      int pageNum) throws CatalogException {
+  return this.pagedQueryCore(queryHash,productTypeHash,pageNum);
+  }
 
-    public Map<String, Object> pagedQuery(
+    public Map<String, Object> pagedQueryCore(
             Map<String, Object> queryHash,
             Map<String, Object> productTypeHash,
             int pageNum) throws CatalogException {
@@ -256,23 +278,13 @@ public class XmlRpcFileManager {
         return XmlRpcStructFactory.getXmlRpcProductPage(prodPage);
     }
 
-    public Map<String, Object> getFirstPage(
-            Map<String, Object> productTypeHash) {
-        ProductType type = XmlRpcStructFactory
-                .getProductTypeFromXmlRpc(productTypeHash);
-        ProductPage page = catalog.getFirstPage(type);
-        try {
-            setProductType(page.getPageProducts());
-        } catch (Exception e) {
-            LOG.log(Level.WARNING,
-                    "Unable to set product types for product page list: ["
-                            + page + "]");
-        }
-        return XmlRpcStructFactory.getXmlRpcProductPage(page);
-    }
+  public Map<String, Object> getFirstPage(
+      Hashtable<String, Object> productTypeHash){
+    return this.getFirstPageCore(productTypeHash);
+  }
 
-  public Hashtable<String, Object> getFirstPage(
-      Hashtable<String, Object> productTypeHash) {
+  public Map<String, Object> getFirstPageCore(
+      Map<String, Object> productTypeHash) {
     ProductType type = XmlRpcStructFactory
         .getProductTypeFromXmlRpc(productTypeHash);
     ProductPage page = catalog.getFirstPage(type);
@@ -286,7 +298,12 @@ public class XmlRpcFileManager {
     return XmlRpcStructFactory.getXmlRpcProductPage(page);
   }
 
-    public Map<String, Object> getLastPage(
+
+  public Map<String, Object> getLastPage(
+      Hashtable<String, Object> productTypeHash){
+    return this.getLastPageCore(productTypeHash);
+  }
+    public Map<String, Object> getLastPageCore(
             Map<String, Object> productTypeHash) {
         ProductType type = XmlRpcStructFactory
                 .getProductTypeFromXmlRpc(productTypeHash);
@@ -301,7 +318,12 @@ public class XmlRpcFileManager {
         return XmlRpcStructFactory.getXmlRpcProductPage(page);
     }
 
-    public Map<String, Object> getNextPage(
+  public Map<String, Object> getNextPage(
+      Hashtable<String, Object> productTypeHash,
+      Hashtable<String, Object> currentPageHash){
+    return this.getNextPageCore(productTypeHash, currentPageHash);
+  }
+    public Map<String, Object> getNextPageCore(
             Map<String, Object> productTypeHash,
             Map<String, Object> currentPageHash) {
         ProductType type = XmlRpcStructFactory
@@ -318,8 +340,12 @@ public class XmlRpcFileManager {
         }
         return XmlRpcStructFactory.getXmlRpcProductPage(page);
     }
-
-    public Map<String, Object> getPrevPage(
+  public Map<String, Object> getPrevPage(
+      Hashtable<String, Object> productTypeHash,
+      Hashtable<String, Object> currentPageHash){
+    return this.getPrevPageCore(productTypeHash, currentPageHash);
+  }
+  public Map<String, Object> getPrevPageCore(
             Map<String, Object> productTypeHash,
             Map<String, Object> currentPageHash) {
         ProductType type = XmlRpcStructFactory
@@ -337,7 +363,12 @@ public class XmlRpcFileManager {
         return XmlRpcStructFactory.getXmlRpcProductPage(page);
     }
 
-    public String addProductType(Map<String, Object> productTypeHash)
+  public String addProductType(Hashtable<String, Object> productTypeHash)
+      throws RepositoryManagerException {
+    return this.addProductTypeCore(productTypeHash);
+  }
+
+    public String addProductTypeCore(Map<String, Object> productTypeHash)
             throws RepositoryManagerException {
         ProductType productType = XmlRpcStructFactory
                 .getProductTypeFromXmlRpc(productTypeHash);
@@ -346,43 +377,25 @@ public class XmlRpcFileManager {
 
     }
 
-    public synchronized boolean setProductTransferStatus(
-            Map<String, Object> productHash)
-            throws CatalogException {
-        Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-        catalog.setProductTransferStatus(product);
-        return true;
-    }
-
   public synchronized boolean setProductTransferStatus(
       Hashtable<String, Object> productHash)
+      throws CatalogException {
+    return this.setProductTransferStatusCore(productHash);
+  }
+
+  public synchronized boolean setProductTransferStatusCore(
+      Map<String, Object> productHash)
       throws CatalogException {
     Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
     catalog.setProductTransferStatus(product);
     return true;
   }
 
-  public int getNumProducts(Map<String, Object> productTypeHash)
-            throws CatalogException {
-        int numProducts;
-
-        ProductType type = XmlRpcStructFactory
-                .getProductTypeFromXmlRpc(productTypeHash);
-
-        try {
-            numProducts = catalog.getNumProducts(type);
-        } catch (CatalogException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.WARNING,
-                    "Exception when getting num products: Message: "
-                            + e.getMessage());
-            throw new CatalogException(e.getMessage(), e);
-        }
-
-        return numProducts;
-    }
-
   public int getNumProducts(Hashtable<String, Object> productTypeHash)
+      throws CatalogException {
+    return this.getNumProductsCore(productTypeHash);
+  }
+  public int getNumProductsCore(Map<String, Object> productTypeHash)
       throws CatalogException {
     int numProducts;
 
@@ -418,7 +431,7 @@ public class XmlRpcFileManager {
         }
     }
 
-  public List<Hashtable<String, Object>> getTopNProducts(int n)
+  public List<Map<String, Object>> getTopNProducts(int n)
       throws CatalogException {
     List<Product> topNProducts;
 
@@ -434,27 +447,12 @@ public class XmlRpcFileManager {
     }
   }
 
-  public List<Hashtable<String, Object>> getTopNProducts(int n,
+  public List<Map<String, Object>> getTopNProducts(int n,
                                                    Hashtable<String, Object> productTypeHash)
       throws CatalogException {
-    ProductType type = XmlRpcStructFactory
-        .getProductTypeFromXmlRpc(productTypeHash);
-    List<Product> topNProducts;
-
-    try {
-      topNProducts = catalog.getTopNProducts(n, type);
-      return XmlRpcStructFactory.getXmlRpcProductList(topNProducts);
-    } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.WARNING,
-          "Exception when getting topN products by product type: ["
-          + type.getProductTypeId() + "]: Message: "
-          + e.getMessage());
-      throw new CatalogException(e.getMessage(), e);
-    }
-
+    return this.getTopNProductsCore(n, productTypeHash);
   }
-    public List<Map<String, Object>> getTopNProducts(int n,
+    public List<Map<String, Object>> getTopNProductsCore(int n,
             Map<String, Object> productTypeHash)
             throws CatalogException {
         ProductType type = XmlRpcStructFactory
@@ -481,31 +479,29 @@ public class XmlRpcFileManager {
                 && p.getTransferStatus().equals(Product.STATUS_RECEIVED);
     }
 
-    public Map<String, Object> getMetadata(
+
+  public Map<String, Object> getMetadata(
+      Hashtable<String, Object> productHash) throws CatalogException {
+    return this.getMetadataCore(productHash);
+  }
+    public Map<String, Object> getMetadataCore(
         Map<String, Object> productHash) throws CatalogException {
         Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-        return this.getMetadata(product).getMap();
+        return this.getMetadata(product).getHashTable();
     }
 
-  public Hashtable<String, Object> getMetadata(
-      Hashtable<String, Object> productHash) throws CatalogException {
-    Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-    return this.getMetadata(product).getHashTable();
+  public Map<String, Object> getReducedMetadata(
+      Hashtable<String, Object> productHash, Vector<String> elements)
+      throws CatalogException {
+    return this.getReducedMetadataCore(productHash, elements);
   }
-
-    public Map<String, Object> getReducedMetadata(
+    public Map<String, Object> getReducedMetadataCore(
             Map<String, Object> productHash, Vector<String> elements)
             throws CatalogException {
         Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-        return this.getReducedMetadata(product, elements).getMap();
+        return this.getReducedMetadata(product, elements).getHashTable();
     }
 
-  public Hashtable<String, Object> getReducedMetadata(
-      Hashtable<String, Object> productHash, Vector<String> elements)
-      throws CatalogException {
-    Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-    return this.getReducedMetadata(product, elements).getHashTable();
-  }
     public List<Map<String, Object>> getProductTypes()
             throws RepositoryManagerException {
         List<ProductType> productTypeList;
@@ -523,27 +519,14 @@ public class XmlRpcFileManager {
         }
     }
 
-    public List<Map<String, Object>> getProductReferences(
-            Map<String, Object> productHash)
-            throws CatalogException {
-        List<Reference> referenceList;
-        Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-
-        try {
-            referenceList = catalog.getProductReferences(product);
-            return XmlRpcStructFactory.getXmlRpcReferencesMap(referenceList);
-        } catch (CatalogException e) {
-            LOG.log(Level.SEVERE, e.getMessage());
-            LOG.log(Level.SEVERE, "Unable to obtain references for product: ["
-                    + product.getProductName() + "]: Message: "
-                    + e.getMessage());
-            throw new CatalogException(e.getMessage(), e);
-        }
-
-    }
-
-  public List<Hashtable<String, Object>> getProductReferences(
+  public List<Map<String, Object>> getProductReferences(
       Hashtable<String, Object> productHash)
+      throws CatalogException {
+    return this.getProductReferencesCore(productHash);
+  }
+
+  public List<Map<String, Object>> getProductReferencesCore(
+      Map<String, Object> productHash)
       throws CatalogException {
     List<Reference> referenceList;
     Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
@@ -617,7 +600,12 @@ public class XmlRpcFileManager {
         }
     }
 
-    public List<Map<String, Object>> getProductsByProductType(
+  public List<Map<String, Object>> getProductsByProductType(
+      Hashtable<String, Object> productTypeHash)
+      throws CatalogException {
+    return this.getProductsByProductTypeCore(productTypeHash);
+  }
+    public List<Map<String, Object>> getProductsByProductTypeCore(
             Map<String, Object> productTypeHash)
             throws CatalogException {
         ProductType type = XmlRpcStructFactory
@@ -636,24 +624,6 @@ public class XmlRpcFileManager {
         }
     }
 
-  public List<Hashtable<String, Object>> getProductsByProductType(
-      Hashtable<String, Object> productTypeHash)
-      throws CatalogException {
-    ProductType type = XmlRpcStructFactory
-        .getProductTypeFromXmlRpc(productTypeHash);
-    List<Product> productList;
-
-    try {
-      productList = catalog.getProductsByProductType(type);
-      return XmlRpcStructFactory.getXmlRpcProductList(productList);
-    } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      LOG.log(Level.SEVERE,
-          "Exception obtaining products by product type for type: ["
-          + type.getName() + "]: Message: " + e.getMessage());
-      throw new CatalogException(e.getMessage(), e);
-    }
-  }
     public List<Map<String, Object>> getElementsByProductType(
             Map<String, Object> productTypeHash)
             throws ValidationLayerException {
@@ -706,7 +676,11 @@ public class XmlRpcFileManager {
         }
     }
 
-    public List<Map<String, Object>> complexQueryMap(
+  public List<Map<String,Object>> complexQuery(Hashtable<String, Object> complexQueryHash) throws CatalogException{
+    return this.complexQueryCore(complexQueryHash);
+  }
+
+    public List<Map<String, Object>> complexQueryCore(
             Map<String, Object> complexQueryHash) throws CatalogException {
         try {
             ComplexQuery complexQuery = XmlRpcStructFactory
@@ -766,80 +740,16 @@ public class XmlRpcFileManager {
                     + e.getMessage(), e);
         }
     }
-
-  public List<Hashtable<String, Object>> complexQuery(
-      Hashtable<String, Object> complexQueryHash) throws CatalogException {
-    try {
-      ComplexQuery complexQuery = XmlRpcStructFactory
-          .getComplexQueryFromXmlRpc(complexQueryHash);
-
-      // get ProductTypes
-      List<ProductType> productTypes;
-      if (complexQuery.getReducedProductTypeNames() == null) {
-        productTypes = this.repositoryManager.getProductTypes();
-      } else {
-        productTypes = new Vector<ProductType>();
-        for (String productTypeName : complexQuery
-            .getReducedProductTypeNames()) {
-          productTypes.add(this.repositoryManager
-              .getProductTypeByName(productTypeName));
-        }
-      }
-
-      // get Metadata
-      List<QueryResult> queryResults = new LinkedList<QueryResult>();
-      for (ProductType productType : productTypes) {
-        List<String> productIds = catalog.query(this.getCatalogQuery(
-            complexQuery, productType), productType);
-        for (String productId : productIds) {
-          Product product = catalog.getProductById(productId);
-          product.setProductType(productType);
-          QueryResult qr = new QueryResult(product, this
-              .getReducedMetadata(product, complexQuery
-                  .getReducedMetadata()));
-          qr.setToStringFormat(complexQuery
-              .getToStringResultFormat());
-          queryResults.add(qr);
-        }
-      }
-
-      LOG.log(Level.INFO, "Query returned " + queryResults.size()
-                          + " results");
-
-      // filter query results
-      if (complexQuery.getQueryFilter() != null) {
-        queryResults = applyFilterToResults(queryResults, complexQuery
-            .getQueryFilter());
-        LOG.log(Level.INFO, "Filter returned " + queryResults.size()
-                            + " results");
-      }
-
-      // sort query results
-      if (complexQuery.getSortByMetKey() != null) {
-        queryResults = sortQueryResultList(queryResults, complexQuery
-            .getSortByMetKey());
-      }
-
-      return XmlRpcStructFactory.getXmlRpcQueryResults(queryResults);
-    } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      throw new CatalogException("Failed to perform complex query : "
-                                 + e.getMessage(), e);
-    }
-  }
-    public List<Map<String, Object>> query(
-            Map<String, Object> queryHash,
-            Map<String, Object> productTypeHash)
-            throws CatalogException {
-        Query query = XmlRpcStructFactory.getQueryFromXmlRpcMap(queryHash);
-        ProductType type = XmlRpcStructFactory
-                .getProductTypeFromXmlRpc(productTypeHash);
-        return XmlRpcStructFactory.getXmlRpcProductListMap(this.query(query, type));
-    }
-
-  public List<Hashtable<String, Object>> query(
+  public List<Map<String, Object>> query(
       Hashtable<String, Object> queryHash,
       Hashtable<String, Object> productTypeHash)
+      throws CatalogException {
+    return this.queryCore(queryHash, productTypeHash);
+  }
+
+  public List<Map<String, Object>> queryCore(
+      Map<String, Object> queryHash,
+      Map<String, Object> productTypeHash)
       throws CatalogException {
     Query query = XmlRpcStructFactory.getQueryFromXmlRpc(queryHash);
     ProductType type = XmlRpcStructFactory
@@ -854,7 +764,7 @@ public class XmlRpcFileManager {
         return XmlRpcStructFactory.getXmlRpcProductType(type);
     }
 
-  public Hashtable<String, Object> getProductTypeByName(String productTypeName)
+  public Map<String, Object> getProductTypeByName(String productTypeName)
       throws RepositoryManagerException {
     ProductType type = repositoryManager
         .getProductTypeByName(productTypeName);
@@ -876,8 +786,13 @@ public class XmlRpcFileManager {
             throw new RepositoryManagerException(e.getMessage(), e);
         }
     }
-    
-    public synchronized boolean updateMetadata(Map<String, Object> productHash, 
+  public synchronized boolean updateMetadata(Hashtable<String, Object> productHash,
+                                                 Hashtable<String, Object> metadataHash) throws CatalogException{
+
+    return this.updateMetadataCore(productHash, metadataHash);
+  }
+
+    public synchronized boolean updateMetadataCore(Map<String, Object> productHash,
         Map<String, Object> metadataHash) throws CatalogException{
         Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
         Metadata met = new Metadata();
@@ -888,28 +803,22 @@ public class XmlRpcFileManager {
         return true;
     }
 
-  public synchronized boolean updateMetadata(Hashtable<String, Object> productHash,
-                                             Hashtable<String, Object> metadataHash) throws CatalogException{
-    Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-    Metadata met = new Metadata();
-    met.addMetadata(metadataHash);
-    Metadata oldMetadata = catalog.getMetadata(product);
-    catalog.removeMetadata(oldMetadata, product);
-    catalog.addMetadata(met, product);
-    return true;
+  public synchronized String catalogProduct(Hashtable<String, Object> productHash)
+      throws CatalogException {
+    return this.catalogProductCore(productHash);
+
   }
-    public synchronized String catalogProduct(Map<String, Object> productHash)
+    public synchronized String catalogProductCore(Map<String, Object> productHash)
             throws CatalogException {
         Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
         return catalogProduct(p);
     }
 
-  public synchronized String catalogProduct(Hashtable<String, Object> productHash)
-      throws CatalogException {
-    Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-    return catalogProduct(p);
+  public synchronized boolean addMetadata(Hashtable<String, Object> productHash,
+                                          Hashtable<String, String> metadata) throws CatalogException {
+    return this.addMetadataCore(productHash, metadata);
   }
-    public synchronized boolean addMetadata(Map<String, Object> productHash,
+    public synchronized boolean addMetadataCore(Map<String, Object> productHash,
             Map<String, String> metadata) throws CatalogException {
         Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
         Metadata m = new Metadata();
@@ -917,14 +826,7 @@ public class XmlRpcFileManager {
         return addMetadata(p, m) != null;
     }
 
-  public synchronized boolean addMetadata(Hashtable<String, Object> productHash,
-                                          Hashtable<String, String> metadata) throws CatalogException {
-    Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-    Metadata m = new Metadata();
-    m.addMetadata((Map)metadata);
-    return addMetadata(p, m) != null;
-  }
-    public synchronized boolean addProductReferences(Map<String, Object> productHash)
+    public synchronized boolean addProductReferencesCore(Map<String, Object> productHash)
             throws CatalogException {
         Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
         return addProductReferences(product);
@@ -932,12 +834,16 @@ public class XmlRpcFileManager {
 
   public synchronized boolean addProductReferences(Hashtable<String, Object> productHash)
       throws CatalogException {
-    Product product = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-    return addProductReferences(product);
+    return this.addProductReferencesCore(productHash);
+  }
+
+  public String ingestProduct(Hashtable<String, Object> ph, Hashtable<String, String> m, boolean ct)
+      throws CatalogException {
+    return this.ingestProductCore(ph, m, ct);
   }
 
 
-  public String ingestProduct(Map<String, Object> productHash,
+  public String ingestProductCore(Map<String, Object> productHash,
       Map<String, String> metadata, boolean clientTransfer)
       throws
         CatalogException {
@@ -1012,83 +918,7 @@ public class XmlRpcFileManager {
     }
 
   }
-
-  public String ingestProduct(Hashtable<String, Object> productHash,
-                              Hashtable<String, String> metadata, boolean clientTransfer)
-      throws
-      CatalogException {
-
-    Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-
-    try {
-      // first, create the product
-      p.setTransferStatus(Product.STATUS_TRANSFER);
-      catalogProduct(p);
-
-      // now add the metadata
-      Metadata m = new Metadata();
-      m.addMetadata((Map)metadata);
-      Metadata expandedMetdata = addMetadata(p, m);
-
-      // version the product
-      if (!clientTransfer || (Boolean.getBoolean("org.apache.oodt.cas.filemgr.serverside.versioning"))) {
-        Versioner versioner;
-        try {
-          versioner = GenericFileManagerObjectFactory
-              .getVersionerFromClassName(p.getProductType().getVersioner());
-          if (versioner != null) {
-            versioner.createDataStoreReferences(p, expandedMetdata);
-          }
-        } catch (Exception e) {
-          LOG.log(Level.SEVERE,
-              "ingestProduct: VersioningException when versioning Product: "
-              + p.getProductName() + " with Versioner "
-              + p.getProductType().getVersioner() + ": Message: "
-              + e.getMessage());
-          throw new VersioningException(e);
-        }
-
-        // add the newly versioned references to the data store
-        addProductReferences(p);
-      }
-
-      if (!clientTransfer) {
-        LOG.log(Level.FINEST,
-            "File Manager: ingest: no client transfer enabled, "
-            + "server transfering product: [" + p.getProductName() + "]");
-
-        // now transfer the product
-        try {
-          dataTransfer.transferProduct(p);
-          // now update the product's transfer status in the data store
-          p.setTransferStatus(Product.STATUS_RECEIVED);
-
-          try {
-            catalog.setProductTransferStatus(p);
-          } catch (CatalogException e) {
-            LOG.log(Level.SEVERE, "ingestProduct: CatalogException "
-                                  + "when updating product transfer status for Product: "
-                                  + p.getProductName() + " Message: " + e.getMessage());
-            throw e;
-          }
-        } catch (Exception e) {
-          LOG.log(Level.SEVERE,
-              "ingestProduct: DataTransferException when transfering Product: "
-              + p.getProductName() + ": Message: " + e.getMessage());
-          throw new DataTransferException(e);
-        }
-      }
-
-      // that's it!
-      return p.getProductId();
-    } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      throw new CatalogException("Error ingesting product [" + p + "] : "
-                                 + e.getMessage(),e);
-    }
-
-  }
-   public byte[] retrieveFile(String filePath, int offset, int numBytes)
+  public byte[] retrieveFile(String filePath, int offset, int numBytes)
          throws DataTransferException {
       FileInputStream is = null;
       try {
@@ -1174,7 +1004,12 @@ public class XmlRpcFileManager {
       return success;
     }
 
-    public boolean moveProduct(Map<String, Object> productHash, String newPath)
+  public boolean moveProduct(Hashtable<String, Object> productHash, String newPath)
+      throws DataTransferException {
+
+    return this.moveProductCore(productHash, newPath);
+  }
+    public boolean moveProductCore(Map<String, Object> productHash, String newPath)
             throws DataTransferException {
 
         Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
@@ -1242,73 +1077,6 @@ public class XmlRpcFileManager {
         }
     }
 
-  public boolean moveProduct(Hashtable<String, Object> productHash, String newPath)
-      throws DataTransferException {
-
-    Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
-
-    // first thing we care about is if the product is flat or heirarchical
-    if (p.getProductStructure().equals(Product.STRUCTURE_FLAT)) {
-      // we just need to get its first reference
-      if (p.getProductReferences() == null || (p.getProductReferences().size() != 1)) {
-        throw new DataTransferException(
-            "Flat products must have a single reference: cannot move");
-      }
-
-      // okay, it's fine to move it
-      // first, we need to update the data store ref
-      Reference r = p.getProductReferences().get(0);
-      if (r.getDataStoreReference().equals(
-          new File(newPath).toURI().toString())) {
-        throw new DataTransferException("cannot move product: ["
-                                        + p.getProductName() + "] to same location: ["
-                                        + r.getDataStoreReference() + "]");
-      }
-
-      // create a copy of the current data store path: we'll need it to
-      // do the data transfer
-      Reference copyRef = new Reference(r);
-
-      // update the copyRef to have the data store ref as the orig ref
-      // the the newLoc as the new ref
-      copyRef.setOrigReference(r.getDataStoreReference());
-      copyRef.setDataStoreReference(new File(newPath).toURI().toString());
-
-      p.getProductReferences().clear();
-      p.getProductReferences().add(copyRef);
-
-      // now transfer it
-      try {
-        this.dataTransfer.transferProduct(p);
-      } catch (IOException e) {
-        throw new DataTransferException(e);
-      }
-
-      // now delete the original copy
-      try {
-        if (!new File(new URI(copyRef.getOrigReference())).delete()) {
-          LOG.log(Level.WARNING, "Deletion of original file: ["
-                                 + r.getDataStoreReference()
-                                 + "] on product move returned false");
-        }
-      } catch (URISyntaxException e) {
-        throw new DataTransferException(
-            "URI Syntax exception trying to remove original product ref: Message: "
-            + e.getMessage(), e);
-      }
-
-      // now save the updated reference
-      try {
-        this.catalog.modifyProduct(p);
-        return true;
-      } catch (CatalogException e) {
-        throw new DataTransferException(e.getMessage(),e);
-      }
-    } else {
-      throw new UnsupportedOperationException(
-          "Moving of heirarhical and stream products not supported yet");
-    }
-  }
     public boolean removeFile(String filePath) throws DataTransferException, IOException {
       // TODO(bfoster): Clean this up so that it deletes by product not file.
       Product product = new Product();
@@ -1319,7 +1087,10 @@ public class XmlRpcFileManager {
       return true;
     }
 
-    public boolean modifyProduct(Map<?, ?> productHash) throws CatalogException {
+  public boolean modifyProduct(Hashtable<?, ?> productHash) throws CatalogException {
+    return this.modifyProductCore(productHash);
+  }
+    public boolean modifyProductCore(Map<?, ?> productHash) throws CatalogException {
         Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
 
         try {
@@ -1346,48 +1117,46 @@ public class XmlRpcFileManager {
 
         return true;
     }
-    
-    public Map<String, Object> getCatalogValues(
+  public Map<String, Object> getCatalogValues(
+      Hashtable<String, Object> metadataHash,
+      Hashtable<String, Object> productTypeHash)
+      throws RepositoryManagerException {
+    return this.getCatalogValuesCore(metadataHash, productTypeHash);
+  }
+    public Map<String, Object> getCatalogValuesCore(
             Map<String, Object> metadataHash,
             Map<String, Object> productTypeHash)
             throws RepositoryManagerException {
         Metadata m = new Metadata();
         m.addMetadata(metadataHash);
         ProductType productType = XmlRpcStructFactory.getProductTypeFromXmlRpc(productTypeHash);
-        return this.getCatalogValues(m, productType).getMap();
+        return this.getCatalogValues(m, productType).getHashTable();
     }
 
-  public Hashtable<String, Object> getCatalogValues(
+  public Map<String, Object> getOrigValues(
       Hashtable<String, Object> metadataHash,
       Hashtable<String, Object> productTypeHash)
       throws RepositoryManagerException {
-    Metadata m = new Metadata();
-    m.addMetadata(metadataHash);
-    ProductType productType = XmlRpcStructFactory.getProductTypeFromXmlRpc(productTypeHash);
-    return this.getCatalogValues(m, productType).getHashTable();
+    return this.getOrigValuesCore(metadataHash, productTypeHash);
   }
 
-  public Map<String, Object> getOrigValues(
+    public Map<String, Object> getOrigValuesCore(
         Map<String, Object> metadataHash,
         Map<String, Object> productTypeHash)
             throws RepositoryManagerException {
         Metadata m = new Metadata();
         m.addMetadata(metadataHash);
         ProductType productType = XmlRpcStructFactory.getProductTypeFromXmlRpc(productTypeHash);
-        return this.getOrigValues(m, productType).getMap();
+        return this.getOrigValues(m, productType).getHashTable();
     }
 
-  public Hashtable<String, Object> getOrigValues(
-      Hashtable<String, Object> metadataHash,
+  public Map<String, Object> getCatalogQuery(
+      Hashtable<String, Object> queryHash,
       Hashtable<String, Object> productTypeHash)
-      throws RepositoryManagerException {
-    Metadata m = new Metadata();
-    m.addMetadata(metadataHash);
-    ProductType productType = XmlRpcStructFactory.getProductTypeFromXmlRpc(productTypeHash);
-    return this.getOrigValues(m, productType).getHashTable();
+      throws RepositoryManagerException, QueryFormulationException {
+    return this.getCatalogQueryCore(queryHash, productTypeHash);
   }
-    
-    public Map<String, Object> getCatalogQuery(
+    public Map<String, Object> getCatalogQueryCore(
             Map<String, Object> queryHash,
             Map<String, Object> productTypeHash)
             throws RepositoryManagerException, QueryFormulationException {
@@ -1396,14 +1165,6 @@ public class XmlRpcFileManager {
         return XmlRpcStructFactory.getXmlRpcQuery(this.getCatalogQuery(query, productType));
     }
 
-  public Hashtable<String, Object> getCatalogQuery(
-      Hashtable<String, Object> queryHash,
-      Hashtable<String, Object> productTypeHash)
-      throws RepositoryManagerException, QueryFormulationException {
-    Query query = XmlRpcStructFactory.getQueryFromXmlRpc(queryHash);
-    ProductType productType = XmlRpcStructFactory.getProductTypeFromXmlRpc(productTypeHash);
-    return XmlRpcStructFactory.getXmlRpcQuery(this.getCatalogQuery(query, productType));
-  }
 
   public static void main(String[] args) throws IOException {
         int portNum = -1;
@@ -1508,7 +1269,7 @@ public class XmlRpcFileManager {
         }
 
         Metadata met = new Metadata();
-        met.addMetadata(metadata.getMap());
+        met.addMetadata(metadata.getHashTable());
 
         if (product.getProductType().getExtractors() != null) {
             for (ExtractorSpec spec: product.getProductType().getExtractors()) {

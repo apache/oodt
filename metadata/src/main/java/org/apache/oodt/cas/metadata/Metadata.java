@@ -15,8 +15,6 @@
 
 package org.apache.oodt.cas.metadata;
 
-//JDK imports
-
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Hashtable;
@@ -486,7 +484,19 @@ public class Metadata {
     public Group(String name) {
       this.name = name;
       this.values = new Vector<String>();
-      this.children = new ConcurrentHashMap<String, Group>();
+      this.children = new Hashtable<String, Group>();
+    }
+
+    public Group(String name, boolean legacy) {
+      this.name = name;
+      this.values = new Vector<String>();
+      if(legacy){
+        this.children = new Hashtable<String, Group>();
+      }
+      else{
+        this.children = new ConcurrentHashMap<String, Group>();
+      }
+
     }
 
     public String getName() {
