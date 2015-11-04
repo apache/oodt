@@ -58,9 +58,6 @@ import java.util.logging.Logger;
  */
 public class XmlRpcResourceManager {
 
-    /* the port to run the XML RPC web server on, default is 2000 */
-    private int webServerPort = 2000;
-
     /* our log stream */
     private Logger LOG = Logger
             .getLogger(XmlRpcResourceManager.class.getName());
@@ -93,10 +90,10 @@ public class XmlRpcResourceManager {
         // start up the scheduler
         new Thread(scheduler).start();
 
-        webServerPort = port;
+
 
         // start up the web server
-        webServer = new WebServer(webServerPort);
+        webServer = new WebServer(port);
         webServer.addHandler("resourcemgr", this);
         webServer.start();
 

@@ -405,7 +405,7 @@ public class Metadata {
    * combined.
    */
   @Deprecated
-  public void addMetadata(ConcurrentHashMap<String, Object> metadata, boolean replace) {
+  public void addMetadata(Map<String, Object> metadata, boolean replace) {
     // for back compat: the old method allowed us to give it a
     // Map<String,String> and it still worked
 	for (Map.Entry<String, Object> key : metadata.entrySet()) {
@@ -419,19 +419,6 @@ public class Metadata {
     }
   }
 
-  public void addMetadata(Map<String, Object> metadata, boolean replace) {
-    // for back compat: the old method allowed us to give it a
-    // Map<String,String> and it still worked
-    for (Map.Entry<String, Object> key : metadata.entrySet()) {
-      List<String> vals = (key.getValue() instanceof List) ? (List<String>) key.getValue()
-                                                           : Collections.singletonList(key.getValue().toString());
-      if (replace) {
-        this.replaceMetadata(key.getKey(), vals);
-      } else {
-        this.addMetadata(key.getKey(), vals);
-      }
-    }
-  }
 
   public void replaceMetadata(Map<String, Object> metadata) {
     this.root = this.createNewRoot();

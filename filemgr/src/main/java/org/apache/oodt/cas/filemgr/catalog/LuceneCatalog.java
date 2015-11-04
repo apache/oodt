@@ -154,26 +154,26 @@ public class LuceneCatalog implements Catalog {
      */
     public synchronized void addMetadata(Metadata m, Product product)
             throws CatalogException {
-        CompleteProduct p = CATALOG_CACHE.get(product.getProductId());
+        if(product.getProductId()!=null && CATALOG_CACHE.containsKey(product.getProductId())) {
+            CompleteProduct p = CATALOG_CACHE.get(product.getProductId());
 
-        if (p == null) {
-        	// move product from index to cache
-        	// it will be moved back after metadata is added
-        	p = getCompleteProductById(product.getProductId(), true, true);
-        	LOG.log(Level.FINE, "Product not found in local cache, retrieved from index");
-        	removeProduct(product);        		
-        }
-        
-        if (p != null) {
-            p.setMetadata(m);
-            if (hasMetadataAndRefs(p)) {
-                LOG.log(Level.FINE,
+                p.setMetadata(m);
+                if (hasMetadataAndRefs(p)) {
+                    LOG.log(Level.FINE,
                         "metadata and references present for product: ["
-                                + product.getProductId() + "]");
-                addCompleteProductToIndex(p);
-                // now remove its entry from the cache
-                CATALOG_CACHE.remove(product.getProductId());
+                        + product.getProductId() + "]");
+                    addCompleteProductToIndex(p);
+                    // now remove its entry from the cache
+                    CATALOG_CACHE.remove(product.getProductId());
             }
+        }
+        else{
+                // move product from index to cache
+                // it will be moved back after metadata is added
+                CompleteProduct p = getCompleteProductById(product.getProductId(), true, true);
+                LOG.log(Level.FINE, "Product not found in local cache, retrieved from index");
+                removeProduct(product);
+
         }
     }
 
@@ -185,14 +185,19 @@ public class LuceneCatalog implements Catalog {
      */
     public synchronized void removeMetadata(Metadata m, Product product)
             throws CatalogException {
-        CompleteProduct p = CATALOG_CACHE.get(product.getProductId());
-        
-        if (p == null) {
-            // not in local cache, get doc and rewrite index
+        CompleteProduct p=null;
+
+        if(product.getProductId()!=null && CATALOG_CACHE.containsKey(product.getProductId())) {
+             p = CATALOG_CACHE.get(product.getProductId());
+        }
+        else{
             String prodId = product.getProductId();
             p = getCompleteProductById(prodId, true, true);
             removeProductDocument(product);
         }
+
+
+
 
         Metadata currMet = p.getMetadata();
         List<String> metadataTypes = new ArrayList<String>();
@@ -238,29 +243,31 @@ public class LuceneCatalog implements Catalog {
      */
     public synchronized void addProduct(Product product)
             throws CatalogException {
-        CompleteProduct p = CATALOG_CACHE.get(product
-                .getProductId());
+        if(product.getProductId()!=null && CATALOG_CACHE.containsKey(product.getProductId())) {
+            throw new CatalogException(
+                "Attempt to add a product that already existed: product: ["
+                + product.getProductName() + "]");
 
-        if (p == null) {
+
+
+
+
+        } else {
             // haven't cached this product yet, so let's cache it
             CompleteProduct completeProduct = new CompleteProduct();
 
             // NOTE: reuse existing ID if possible
             if (product.getProductId() == null) {
-	            synchronized (completeProduct) {
-	                // now generate a unique ID for the product
-	                UUID prodUUID = generator.generateTimeBasedUUID();
-	                product.setProductId(prodUUID.toString());
-	            }
+                synchronized (completeProduct) {
+                    // now generate a unique ID for the product
+                    UUID prodUUID = generator.generateTimeBasedUUID();
+                    product.setProductId(prodUUID.toString());
+                }
             }
 
             completeProduct.setProduct(product);
             CATALOG_CACHE.put(product.getProductId(), completeProduct);
 
-        } else {
-            throw new CatalogException(
-                    "Attempt to add a product that already existed: product: ["
-                            + product.getProductName() + "]");
         }
 
     }
@@ -272,7 +279,7 @@ public class LuceneCatalog implements Catalog {
      */
     public synchronized void modifyProduct(Product product)
             throws CatalogException {
-        if (CATALOG_CACHE.get(product.getProductId()) != null) {
+        if (product.getProductId()!=null && CATALOG_CACHE.containsKey(product.getProductId())) {
             LOG.log(Level.FINE, "Modifying product: [" + product.getProductId()
                     + "]: found product in cache!");
             CompleteProduct cp = CATALOG_CACHE.get(product
@@ -326,29 +333,28 @@ public class LuceneCatalog implements Catalog {
      */
     public synchronized void addProductReferences(Product product)
             throws CatalogException {
-        CompleteProduct p = CATALOG_CACHE.get(product
+        if(product.getProductId()!=null && CATALOG_CACHE.containsKey(product.getProductId())) {
+            CompleteProduct p = CATALOG_CACHE.get(product
                 .getProductId());
-
-        if (p == null) {
-        	// move product from index to cache
-        	// it will be moved back after metadata is added
-        	p = getCompleteProductById(product.getProductId(), true, true);
-        	LOG.log(Level.FINE, "Product not found in local cache, retrieved from index");
-        	removeProduct(product);        		
-        }
-        
-        if (p != null) {
             p.getProduct().setProductReferences(product.getProductReferences());
-            if (hasMetadataAndRefs(p)) {
-                LOG.log(Level.FINE,
+                if (hasMetadataAndRefs(p)) {
+                    LOG.log(Level.FINE,
                         "metadata and references present for product: ["
-                                + product.getProductId() + "]");
-                addCompleteProductToIndex(p);
-                // now remove its entry from the cache
-                CATALOG_CACHE.remove(product.getProductId());
-            }
-        }
+                        + product.getProductId() + "]");
+                    addCompleteProductToIndex(p);
+                    // now remove its entry from the cache
+                    CATALOG_CACHE.remove(product.getProductId());
+                }
 
+        }
+        else{
+                // move product from index to cache
+                // it will be moved back after metadata is added
+                CompleteProduct p = getCompleteProductById(product.getProductId(), true, true);
+                LOG.log(Level.FINE, "Product not found in local cache, retrieved from index");
+                removeProduct(product);
+
+        }
     }
 
     /*
