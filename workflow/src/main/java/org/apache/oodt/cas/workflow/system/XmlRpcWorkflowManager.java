@@ -109,7 +109,12 @@ public class XmlRpcWorkflowManager {
      return true;
    }
 
-  public String executeDynamicWorkflow(Vector<String> taskIds, Map metadata)
+  public String executeDynamicWorkflow(Vector<String> taskIds, Hashtable metadata)
+      throws RepositoryException, EngineException {
+    return this.executeDynamicWorkflowCore(taskIds, metadata);
+  }
+
+  public String executeDynamicWorkflowCore(Vector<String> taskIds, Map metadata)
       throws RepositoryException, EngineException {
     if (taskIds == null || (taskIds.size() == 0)) {
       throw new RepositoryException(
@@ -176,7 +181,10 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public Map getNextPage(Map currentPage) {
+  public Map getNextPage(Hashtable currentPage) {
+    return this.getNextPageCore(currentPage);
+  }
+    public Map getNextPageCore(Map currentPage) {
         // first unpack current page
         WorkflowInstancePage currPage = XmlRpcStructFactory
                 .getWorkflowInstancePageFromXmlRpc(currentPage);
@@ -192,7 +200,11 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-    public Map getPrevPage(Map currentPage) {
+  public Map getPrevPage(Hashtable currentPage) {
+    return this.getNextPageCore(currentPage);
+  }
+
+    public Map getPrevPageCore(Map currentPage) {
         // first unpack current page
         WorkflowInstancePage currPage = XmlRpcStructFactory
                 .getWorkflowInstancePageFromXmlRpc(currentPage);
@@ -281,8 +293,11 @@ public class XmlRpcWorkflowManager {
                             + " from repository: Message: " + e.getMessage());
         }
     }
-
-    public boolean handleEvent(String eventName, Map metadata)
+  public boolean handleEvent(String eventName, Hashtable metadata)
+      throws RepositoryException, EngineException {
+    return this.handleEventCore(eventName, metadata);
+  }
+    public boolean handleEventCore(String eventName, Map metadata)
             throws RepositoryException, EngineException {
         LOG.log(Level.INFO, "WorkflowManager: Received event: " + eventName);
 
@@ -322,45 +337,6 @@ public class XmlRpcWorkflowManager {
         }
     }
 
-  public boolean handleEvent(String eventName, Hashtable metadata)
-      throws RepositoryException, EngineException {
-    LOG.log(Level.INFO, "WorkflowManager: Received event: " + eventName);
-
-    List workflows;
-
-    try {
-      workflows = repo.getWorkflowsForEvent(eventName);
-    } catch (Exception e) {
-      LOG.log(Level.SEVERE, e.getMessage());
-      throw new RepositoryException(
-          "Exception getting workflows associated with event: "
-          + eventName + ": Message: " + e.getMessage());
-    }
-
-    if (workflows != null) {
-      for (Object workflow : workflows) {
-        Workflow w = (Workflow) workflow;
-        LOG.log(Level.INFO, "WorkflowManager: Workflow " + w.getName()
-                            + " retrieved for event " + eventName);
-
-        Metadata m = new Metadata();
-        m.addMetadata(metadata);
-
-        try {
-          engine.startWorkflow(w, m);
-        } catch (Exception e) {
-          LOG.log(Level.SEVERE, e.getMessage());
-          throw new EngineException(
-              "Engine exception when starting workflow: "
-              + w.getName() + ": Message: "
-              + e.getMessage());
-        }
-      }
-      return true;
-    } else {
-      return false;
-    }
-  }
     public Map getWorkflowInstanceById(String wInstId) {
         WorkflowInstance inst;
 
@@ -587,13 +563,16 @@ public class XmlRpcWorkflowManager {
     }
 
     public synchronized boolean updateMetadataForWorkflow(
-            String workflowInstId, Map metadata) {
+            String workflowInstId, Hashtable metadata) {
         Metadata met = new Metadata();
         met.addMetadata(metadata);
         return this.engine.updateMetadata(workflowInstId, met);
     }
 
-    public synchronized boolean updateWorkflowInstance(Map workflowInst) {
+  public synchronized boolean updateWorkflowInstance(Hashtable workflowInst) {
+    return this.updateWorkflowInstanceCore(workflowInst);
+  }
+    public synchronized boolean updateWorkflowInstanceCore(Map workflowInst) {
         WorkflowInstance wInst = XmlRpcStructFactory
                 .getWorkflowInstanceFromXmlRpc(workflowInst);
         return doUpdateWorkflowInstance(wInst);

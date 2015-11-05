@@ -41,8 +41,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -155,82 +156,83 @@ public class XmlRpcResourceManager {
         return XmlRpcStructFactory.getXmlRpcJob(spec.getJob());
     }
 
-    public String handleJob(Map jobHash, Map jobIn)
+
+    public String handleJob(Hashtable jobHash, Map jobIn)
             throws SchedulerException {
         return genericHandleJob(jobHash, jobIn);
     }
 
-    public String handleJob(Map jobHash, int jobIn)
+    public String handleJob(Hashtable jobHash, int jobIn)
             throws SchedulerException {
         return genericHandleJob(jobHash, jobIn);
     }
 
-    public String handleJob(Map jobHash, boolean jobIn)
+    public String handleJob(Hashtable jobHash, boolean jobIn)
             throws SchedulerException {
         return genericHandleJob(jobHash, jobIn);
     }
 
-    public String handleJob(Map jobHash, String jobIn)
+    public String handleJob(Hashtable jobHash, String jobIn)
             throws SchedulerException {
         return genericHandleJob(jobHash, jobIn);
     }
 
-    public String handleJob(Map jobHash, double jobIn)
+    public String handleJob(Hashtable jobHash, double jobIn)
             throws SchedulerException {
         return genericHandleJob(jobHash, jobIn);
     }
 
-    public String handleJob(Map jobHash, Date jobIn)
+    public String handleJob(Hashtable jobHash, Date jobIn)
             throws SchedulerException {
         return genericHandleJob(jobHash, jobIn);
     }
 
-    public String handleJob(Map jobHash, Vector jobIn)
+    public String handleJob(Hashtable jobHash, Vector jobIn)
             throws SchedulerException {
         return genericHandleJob(jobHash, jobIn);
     }
 
-    public String handleJob(Map jobHash, byte[] jobIn)
+    public String handleJob(Hashtable jobHash, byte[] jobIn)
             throws SchedulerException {
         return genericHandleJob(jobHash, jobIn);
     }
 
-    public boolean handleJob(Map jobHash, Map jobIn, String urlStr)
+    public boolean handleJob(Hashtable jobHash, Hashtable jobIn, String urlStr)
             throws JobExecutionException {
         return genericHandleJob(jobHash, jobIn, urlStr);
     }
 
-    public boolean handleJob(Map jobHash, int jobIn, String urlStr)
+    public boolean handleJob(Hashtable jobHash, int jobIn, String urlStr)
             throws JobExecutionException {
         return genericHandleJob(jobHash, jobIn, urlStr);
     }
 
-    public boolean handleJob(Map jobHash, boolean jobIn, String urlStr)
+    public boolean handleJob(Hashtable jobHash, boolean jobIn, String urlStr)
             throws JobExecutionException {
         return genericHandleJob(jobHash, jobIn, urlStr);
     }
 
-    public boolean handleJob(Map jobHash, String jobIn, String urlStr)
+    public boolean handleJob(Hashtable jobHash, String jobIn, String urlStr)
             throws JobExecutionException {
         return genericHandleJob(jobHash, jobIn, urlStr);
     }
 
-    public boolean handleJob(Map jobHash, double jobIn, String urlStr)
+    public boolean handleJob(Hashtable jobHash, double jobIn, String urlStr)
             throws JobExecutionException {
         return genericHandleJob(jobHash, jobIn, urlStr);
     }
 
-    public boolean handleJob(Map jobHash, Date jobIn, String urlStr)
+    public boolean handleJob(Hashtable jobHash, Date jobIn, String urlStr)
             throws JobExecutionException {
         return genericHandleJob(jobHash, jobIn, urlStr);
     }
 
-    public boolean handleJob(Map jobHash, Vector jobIn, String urlStr)
+    public boolean handleJob(Hashtable jobHash, Vector jobIn, String urlStr)
             throws JobExecutionException {
         return genericHandleJob(jobHash, jobIn, urlStr);
     }
 
-    public boolean handleJob(Map jobHash, byte[] jobIn, String urlStr)
+    public boolean handleJob(Hashtable jobHash, byte[] jobIn, String urlStr)
             throws JobExecutionException {
         return genericHandleJob(jobHash, jobIn, urlStr);
     }
@@ -282,8 +284,11 @@ public class XmlRpcResourceManager {
     	this.scheduler.getQueueManager().removeQueue(queueName);
     	return true;
     }
-    
-    public boolean addNode(Map hashNode) throws MonitorException {
+
+    public boolean addNode(Hashtable hashNode) throws MonitorException {
+        this.addNodeCore(hashNode);
+    }
+    public boolean addNodeCore(Map hashNode) throws MonitorException {
     	this.scheduler.getMonitor().addNode(XmlRpcStructFactory.getResourceNodeFromXmlRpc(hashNode));
     	return true;
     }
@@ -459,7 +464,11 @@ public class XmlRpcResourceManager {
     	return true;
     }
 
-    private String genericHandleJob(Map jobHash, Object jobIn)
+    private String genericHandleJob(Hashtable jobHash, Object jobIn)
+        throws SchedulerException {
+        return this.genericHandleJobCore(jobHash, jobIn);
+    }
+        private String genericHandleJobCore(Map jobHash, Object jobIn)
             throws SchedulerException {
 
         Job exec = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
@@ -485,6 +494,10 @@ public class XmlRpcResourceManager {
     }
 
     private boolean genericHandleJob(Map jobHash, Object jobIn,
+                                         String urlStr) throws JobExecutionException {
+        return this.genericHandleJobCore(jobHash,jobIn,urlStr);
+    }
+    private boolean genericHandleJobCore(Map jobHash, Object jobIn,
             String urlStr) throws JobExecutionException {
         Job exec = XmlRpcStructFactory.getJobFromXmlRpc(jobHash);
         JobInput in = GenericResourceManagerObjectFactory
