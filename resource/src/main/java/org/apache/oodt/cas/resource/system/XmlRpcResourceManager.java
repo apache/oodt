@@ -286,7 +286,7 @@ public class XmlRpcResourceManager {
     }
 
     public boolean addNode(Hashtable hashNode) throws MonitorException {
-        this.addNodeCore(hashNode);
+        return this.addNodeCore(hashNode);
     }
     public boolean addNodeCore(Map hashNode) throws MonitorException {
     	this.scheduler.getMonitor().addNode(XmlRpcStructFactory.getResourceNodeFromXmlRpc(hashNode));
