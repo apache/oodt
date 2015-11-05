@@ -41,6 +41,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
@@ -78,6 +79,8 @@ public class TestXmlRpcWorkflowManagerClient {
   private static final String catalogPath = new File("./target/instTestMetCat")
       .getAbsolutePath();
 
+  private static XmlRpcWorkflowManagerClient fmc = null;
+
   private static LuceneWorkflowInstanceRepository repo = null;
   private static WorkflowInstance testWrkInst = null;
   private static Workflow testWrkFlw;
@@ -93,7 +96,7 @@ public class TestXmlRpcWorkflowManagerClient {
   }
 
   @BeforeClass
-  public static void setup(){
+  public static void setup() throws MalformedURLException {
 
     testWrkInst = new WorkflowInstance();
     testWrkFlw = new Workflow();
@@ -143,6 +146,8 @@ public class TestXmlRpcWorkflowManagerClient {
     testWrkInst.setSharedContext(sharedContext);
     startXmlRpcWorkflowManager();
     startWorkflow();
+    fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
   }
 
 
@@ -174,8 +179,7 @@ public class TestXmlRpcWorkflowManagerClient {
   @Test
   public void testGetWorkflowInstanceMetadataActuallyUsingTheXmlRpcWorkflowManagerClient()
       throws IOException, RepositoryException, XmlRpcException {
-    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
-        "http://localhost:" + WM_PORT));
+
     List<Workflow> workflows = fmc.getWorkflows();
     assertThat(workflows, is(not(empty())));
 
@@ -186,9 +190,8 @@ public class TestXmlRpcWorkflowManagerClient {
 
   @Test
   public void testGetPages() throws Exception {
-    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
-        "http://localhost:" + WM_PORT));
 
+    Thread.sleep(3000);
     WorkflowInstancePage page = fmc.getFirstPage();
 
     assertNotNull(page);
@@ -210,8 +213,6 @@ public class TestXmlRpcWorkflowManagerClient {
 
   @Test
   public void testGetWorkflowsByEvent() throws Exception {
-    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
-        "http://localhost:" + WM_PORT));
 
     List<Workflow> wflows = fmc.getWorkflowsByEvent("long");
 
@@ -225,8 +226,6 @@ public class TestXmlRpcWorkflowManagerClient {
   }
   @Test
   public void testGetWorkflowInstancesByStatus() throws Exception {
-    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
-        "http://localhost:" + WM_PORT));
 
     List<WorkflowInstance> wflows = fmc.getWorkflowInstancesByStatus("QUEUED");
 
@@ -235,8 +234,6 @@ public class TestXmlRpcWorkflowManagerClient {
   }
   @Test
   public void testGetWorkflowInstanceMetadata2() throws Exception {
-    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
-        "http://localhost:" + WM_PORT));
     WorkflowInstance wf = (WorkflowInstance) fmc.getFirstPage().getPageWorkflows().get(0);
 
     assertThat(wf, is(not(Matchers.nullValue())));
@@ -253,13 +250,18 @@ public class TestXmlRpcWorkflowManagerClient {
     XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
         "http://localhost:" + WM_PORT));
 
-    //fmc.getWorkflowCurrentTaskWallClockMinutes();
+    List<WorkflowInstance> wfinstances = fmc.getWorkflowInstances();
+
+    assertNotNull(wfinstances);
+
+
+    double clock = fmc.getWorkflowCurrentTaskWallClockMinutes(wfinstances.get(0).getId());
+
+    assertThat(clock, is(not(Matchers.nullValue())));
 
   }
   @Test
   public void testGetTaskById() throws Exception {
-    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
-        "http://localhost:" + WM_PORT));
 
     WorkflowTask task = fmc.getTaskById("urn:oodt:HelloWorld");
 
@@ -272,8 +274,6 @@ public class TestXmlRpcWorkflowManagerClient {
   }
   @Test
   public void testGetRegisteredEvents() throws Exception {
-    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
-        "http://localhost:" + WM_PORT));
 
     List<String> events = fmc.getRegisteredEvents();
 
@@ -288,8 +288,6 @@ public class TestXmlRpcWorkflowManagerClient {
   @Ignore
   @Test
   public void testGetNumWorkflowInstancesByStatus() throws Exception {
-    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
-        "http://localhost:" + WM_PORT));
 
     int inst = fmc.getNumWorkflowInstancesByStatus("QUEUED");
 
@@ -298,8 +296,6 @@ public class TestXmlRpcWorkflowManagerClient {
   }
   @Test
   public void testGetConditionById() throws Exception {
-    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
-        "http://localhost:" + WM_PORT));
 
     WorkflowCondition cond = fmc.getConditionById("urn:oodt:TrueCondition");
 
@@ -311,8 +307,6 @@ public class TestXmlRpcWorkflowManagerClient {
 
   @Test
   public void testGetNumWorkflowInstances() throws Exception{
-    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
-        "http://localhost:" + WM_PORT));
 
     int num = fmc.getNumWorkflowInstances();
 
@@ -322,13 +316,12 @@ public class TestXmlRpcWorkflowManagerClient {
 
   }
 
-  @Ignore
   @Test
   public void testGetWorkflowInstances() throws IOException, XmlRpcException {
 
-    //List wfinstances = fmc.getWorkflowInstances();
+    List<WorkflowInstance> wfinstances = fmc.getWorkflowInstances();
 
-    ///assertNotNull(wfinstances);
+    assertNotNull(wfinstances);
   }
 
 
