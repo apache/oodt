@@ -53,9 +53,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//JDK imports
-//Lucene imports
-//JUG imports
 
 /**
  * @author mattmann

@@ -18,44 +18,82 @@
 package org.apache.oodt.cas.workflow.system;
 
 //OODT imports
+
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstancePage;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
+import org.apache.xmlrpc.XmlRpcException;
 
-//JDK imports
+import org.hamcrest.Matchers;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-//Junit imports
-import junit.framework.TestCase;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.junit.Assert.*;
+
 
 /**
  * 
  * Test harness for the {@link XmlRpcWorkflowManagerClient}.
  * 
  */
-public class TestXmlRpcWorkflowManagerClient extends TestCase {
+public class TestXmlRpcWorkflowManagerClient {
+
+  private static final int WM_PORT = 50002;
+  public static final int MILLIS = 1;
+
+  private static XmlRpcWorkflowManager wmgr;
+
+  private static String luceneCatLoc;
+
+  private static final Logger LOG = Logger
+      .getLogger(TestXmlRpcWorkflowManager.class.getName());
 
   private static final String catalogPath = new File("./target/instTestMetCat")
       .getAbsolutePath();
 
-  private LuceneWorkflowInstanceRepository repo = null;
-  private WorkflowInstance testWrkInst = null;
-  private Workflow testWrkFlw;
-  private WorkflowTask testTask;
-  private WorkflowCondition testCond;
+  private static LuceneWorkflowInstanceRepository repo = null;
+  private static WorkflowInstance testWrkInst = null;
+  private static Workflow testWrkFlw;
+  private static WorkflowTask testTask;
+  private static WorkflowCondition testCond;
 
   private static final int stdPgSz = 20;
 
   public TestXmlRpcWorkflowManagerClient() {
+
+
+
+  }
+
+  @BeforeClass
+  public static void setup(){
 
     testWrkInst = new WorkflowInstance();
     testWrkFlw = new Workflow();
@@ -103,9 +141,189 @@ public class TestXmlRpcWorkflowManagerClient extends TestCase {
     sharedContext.addMetadata("key2", "val4");
     sharedContext.addMetadata("key2", "val5");
     testWrkInst.setSharedContext(sharedContext);
+    startXmlRpcWorkflowManager();
+    startWorkflow();
+  }
+
+
+  private static void startWorkflow() {
+    XmlRpcWorkflowManagerClient client = null;
+    try {
+      client = new XmlRpcWorkflowManagerClient(new URL("http://localhost:"
+                                                       + WM_PORT));
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    try {
+      client.sendEvent("long", new Metadata());
+    } catch (Exception e) {
+      LOG.log(Level.SEVERE, e.getMessage());
+      throw new RuntimeException(e);
+    }
 
   }
 
+
+  @AfterClass
+  public static void cleandown(){
+
+    stopXmlRpcWorkflowManager();
+  }
+
+  @Test
+  public void testGetWorkflowInstanceMetadataActuallyUsingTheXmlRpcWorkflowManagerClient()
+      throws IOException, RepositoryException, XmlRpcException {
+    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
+    List<Workflow> workflows = fmc.getWorkflows();
+    assertThat(workflows, is(not(empty())));
+
+
+    assertNotNull(workflows.get(0).getName());
+
+  }
+
+  @Test
+  public void testGetPages() throws Exception {
+    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
+
+    WorkflowInstancePage page = fmc.getFirstPage();
+
+    assertNotNull(page);
+
+    WorkflowInstancePage lastpage = fmc.getLastPage();
+
+    assertNotNull(lastpage);
+
+
+    WorkflowInstancePage nextpage = fmc.getNextPage(page);
+
+    assertNotNull(nextpage);
+
+    WorkflowInstancePage prevpage = fmc.getPrevPage(nextpage);
+
+    assertNotNull(prevpage);
+
+  }
+
+  @Test
+  public void testGetWorkflowsByEvent() throws Exception {
+    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
+
+    List<Workflow> wflows = fmc.getWorkflowsByEvent("long");
+
+    assertNotNull(wflows);
+
+    assertThat(wflows, hasSize(2));
+
+    assertThat(wflows.get(0).getName(), equalTo("Long Workflow"));
+
+
+  }
+  @Test
+  public void testGetWorkflowInstancesByStatus() throws Exception {
+    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
+
+    List<WorkflowInstance> wflows = fmc.getWorkflowInstancesByStatus("QUEUED");
+
+    assertNotNull(wflows);
+
+  }
+  @Test
+  public void testGetWorkflowInstanceMetadata2() throws Exception {
+    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
+    WorkflowInstance wf = (WorkflowInstance) fmc.getFirstPage().getPageWorkflows().get(0);
+
+    assertThat(wf, is(not(Matchers.nullValue())));
+
+
+
+    Metadata meta = fmc.getWorkflowInstanceMetadata(wf.getId());
+
+    assertNotNull(meta);
+
+  }
+  @Test
+  public void testGetWorkflowCurrentTaskWallClockMinutes() throws Exception {
+    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
+
+    //fmc.getWorkflowCurrentTaskWallClockMinutes();
+
+  }
+  @Test
+  public void testGetTaskById() throws Exception {
+    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
+
+    WorkflowTask task = fmc.getTaskById("urn:oodt:HelloWorld");
+
+    assertThat(task, is(not(nullValue())));
+
+    assertThat(task.getTaskName(), equalTo("Hello World"));
+
+
+
+  }
+  @Test
+  public void testGetRegisteredEvents() throws Exception {
+    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
+
+    List<String> events = fmc.getRegisteredEvents();
+
+    assertThat(events, is(not(nullValue())));
+
+    assertThat(events, hasSize(12));
+
+    assertThat(events, hasItem("stuck"));
+
+  }
+
+  @Ignore
+  @Test
+  public void testGetNumWorkflowInstancesByStatus() throws Exception {
+    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
+
+    int inst = fmc.getNumWorkflowInstancesByStatus("QUEUED");
+
+    fail();
+
+  }
+  @Test
+  public void testGetConditionById() throws Exception {
+    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
+
+    WorkflowCondition cond = fmc.getConditionById("urn:oodt:TrueCondition");
+
+    assertNotNull(cond);
+
+    assertThat(cond.getConditionName(), equalTo("True Condition"));
+
+  }
+
+  @Test
+  public void testGetNumWorkflowInstances() throws Exception{
+    XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
+        "http://localhost:" + WM_PORT));
+
+    int num = fmc.getNumWorkflowInstances();
+
+    assertThat(num, is(not(0)));
+
+
+
+  }
+
+
+  @Test
   public void testGetWorkflowInstanceMetadata() {
 
     try {
@@ -165,5 +383,121 @@ public class TestXmlRpcWorkflowManagerClient extends TestCase {
     }
 
     assertTrue(checkVal4 && checkVal5);
+  }
+
+
+
+
+  private static void startXmlRpcWorkflowManager() {
+    System.setProperty("java.util.logging.config.file", new File(
+        "./src/main/resources/logging.properties").getAbsolutePath());
+
+    try {
+      System.getProperties().load(
+          new FileInputStream("./src/main/resources/workflow.properties"));
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+    try {
+      luceneCatLoc = Files.createTempDirectory("repo").toString();
+      LOG.log(Level.INFO, "Lucene instance repository: [" + luceneCatLoc + "]");
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+
+    if (new File(luceneCatLoc).exists()) {
+      // blow away lucene cat
+      LOG.log(Level.INFO, "Removing workflow instance repository: ["
+                          + luceneCatLoc + "]");
+      try {
+        FileUtils.deleteDirectory(new File(luceneCatLoc));
+      } catch (IOException e) {
+        fail(e.getMessage());
+      }
+    }
+
+    System
+        .setProperty("workflow.engine.instanceRep.factory",
+            "org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepositoryFactory");
+    System
+        .setProperty("org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath",
+            luceneCatLoc);
+
+    try {
+      System.setProperty("org.apache.oodt.cas.workflow.repo.dirs", "file://"
+                                                                   + new File("./src/main/resources/examples").getCanonicalPath());
+      System.setProperty("org.apache.oodt.cas.workflow.lifecycle.filePath",
+          new File("./src/main/resources/examples/workflow-lifecycle.xml")
+              .getCanonicalPath());
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    try {
+      wmgr = new XmlRpcWorkflowManager(WM_PORT);
+      Thread.sleep(MILLIS);
+    } catch (Exception e) {
+      LOG.log(Level.SEVERE, e.getMessage());
+      fail(e.getMessage());
+    }
+
+  }
+
+
+  private static void stopXmlRpcWorkflowManager() {
+    System.setProperty("java.util.logging.config.file", new File(
+        "./src/main/resources/logging.properties").getAbsolutePath());
+
+    try {
+      System.getProperties().load(
+          new FileInputStream("./src/main/resources/workflow.properties"));
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+    System
+        .setProperty("workflow.engine.instanceRep.factory",
+            "org.apache.oodt.cas.workflow.instrepo.LuceneWorkflowInstanceRepositoryFactory");
+    System
+        .setProperty("org.apache.oodt.cas.workflow.instanceRep.lucene.idxPath",
+            luceneCatLoc);
+
+    try {
+      System.setProperty("org.apache.oodt.cas.workflow.repo.dirs", "file://"
+                                                                   + new File("./src/main/resources/examples").getCanonicalPath());
+      System.setProperty("org.apache.oodt.cas.workflow.lifecycle.filePath",
+          new File("./src/main/resources/examples/workflow-lifecycle.xml")
+              .getCanonicalPath());
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    try {
+      wmgr.shutdown();
+    } catch (Exception e) {
+      LOG.log(Level.SEVERE, e.getMessage());
+      fail(e.getMessage());
+    }
+
+    /**
+     * Sleep before removing to prevent file not found issues.
+     */
+
+    try {
+      Thread.sleep(MILLIS);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
+    if (new File(luceneCatLoc).exists()) {
+      // blow away lucene cat
+      LOG.log(Level.INFO, "Removing workflow instance repository: ["
+                          + luceneCatLoc + "]");
+      try {
+        FileUtils.deleteDirectory(new File(luceneCatLoc));
+      } catch (IOException e) {
+        fail(e.getMessage());
+      }
+    }
   }
 }

@@ -264,7 +264,7 @@ public class XmlRpcWorkflowManager {
 
     public Map getWorkflowInstanceMetadata(String wInstId) {
         Metadata met = engine.getWorkflowInstanceMetadata(wInstId);
-        return met.getMap();
+        return met.getHashTable();
     }
 
     public List getWorkflowsByEvent(String eventName)

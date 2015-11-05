@@ -129,7 +129,7 @@ public final class XmlRpcStructFactory {
             .getCurrentTaskEndDateTimeIsoStr() : "");
     workflowInstance.put("sharedContext",
         wInst.getSharedContext() != null ? wInst.getSharedContext()
-            .getMap() : new Hashtable());
+            .getHashTable() : new Hashtable());
     workflowInstance.put(
         "priority",
         wInst.getPriority() != null ? String.valueOf(wInst.getPriority()
@@ -197,12 +197,12 @@ public final class XmlRpcStructFactory {
    * @return A XML-RPC serializable {@link Vector} of {@link HashMap}
    *         representations of {@link WorkflowInstance}s.
    */
-  public static Vector getXmlRpcWorkflowInstances(List wInsts) {
+  public static Vector getXmlRpcWorkflowInstances(List<WorkflowInstance> wInsts) {
     Vector instsVector = new Vector();
 
     if (wInsts != null && wInsts.size() > 0) {
-      for (Object wInst : wInsts) {
-        WorkflowInstance inst = (WorkflowInstance) wInst;
+      for (WorkflowInstance wInst : wInsts) {
+        WorkflowInstance inst = wInst;
         instsVector.add(getXmlRpcWorkflowInstance(inst));
       }
     }

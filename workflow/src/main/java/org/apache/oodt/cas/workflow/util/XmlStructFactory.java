@@ -26,6 +26,7 @@ import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.commons.exceptions.CommonsException;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -33,8 +34,8 @@ import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -66,15 +67,15 @@ public final class XmlStructFactory {
    * @param node
    *          The XML node to construct the Workflow from.
    * @param tasks
-   *          The {@link ConcurrentHashMap} of existing {@link WorkflowTask}s.
+   *          The {@link Map} of existing {@link WorkflowTask}s.
    * 
    * @param conditions
-   *          The {@link ConcurrentHashMap} of existing {@link WorkflowCondition}s.
+   *          The {@link Map} of existing {@link WorkflowCondition}s.
    * 
    * @return A new {@link Workflow} created from the XML node.
    */
-  public static Workflow getWorkflow(Node node, ConcurrentHashMap tasks,
-      ConcurrentHashMap conditions) {
+  public static Workflow getWorkflow(Node node, Map tasks,
+                                     Map conditions) {
     Element workflowRoot = (Element) node;
 
     String id = workflowRoot.getAttribute("id");
@@ -100,17 +101,17 @@ public final class XmlStructFactory {
   /**
    * <p>
    * Constructs a new {@link WorkflowTask} from the given XML node and
-   * {@link ConcurrentHashMap} of {@link WorkflowCondition}s.
+   * {@link Map} of {@link WorkflowCondition}s.
    * </p>
    * 
    * @param node
    *          The XML node to construct the {@link WorkflowTask} from.
    * @param conditions
-   *          The {@link ConcurrentHashMap} of {@link WorkflowCondition}s to use when
+   *          The {@link Map} of {@link WorkflowCondition}s to use when
    *          constructing the WorkflowTask.
    * @return A new {@link WorkflowTask} created from the given XML node.
    */
-  public static WorkflowTask getWorkflowTask(Node node, ConcurrentHashMap conditions) {
+  public static WorkflowTask getWorkflowTask(Node node, Map conditions) {
     Element taskNode = (Element) node;
 
     String taskClassName = taskNode.getAttribute("class");
@@ -257,7 +258,7 @@ public final class XmlStructFactory {
     return curMetadata;
   }
 
-  private static List<WorkflowTask> getTasks(Element rootNode, ConcurrentHashMap tasks) {
+  private static List<WorkflowTask> getTasks(Element rootNode, Map tasks) {
     NodeList taskList = rootNode.getElementsByTagName("task");
     List<WorkflowTask> workflowTasks = null;
 
@@ -289,7 +290,7 @@ public final class XmlStructFactory {
   }
 
   private static List<WorkflowCondition> getConditions(Element rootNode,
-      ConcurrentHashMap conditions) {
+                                                       Map conditions) {
     List<WorkflowCondition> conditionList = new Vector<WorkflowCondition>();
     NodeList conditionNodes = rootNode.getElementsByTagName("condition");
 
