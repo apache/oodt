@@ -24,7 +24,6 @@ import org.apache.oodt.cas.resource.structs.ResourceNode;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -85,11 +84,11 @@ public final class XmlRpcStructFactory {
 		return jobVector;
 	}
 	
-	public static List getJobListFromXmlRpc(Vector<HashMap> jobVector){
+	public static List getJobListFromXmlRpc(Vector<Map> jobVector){
 		List jobs = new Vector();
 		
 		if(jobVector != null && jobVector.size() > 0){
-		  for (HashMap aJobVector : jobVector) {
+		  for (Map aJobVector : jobVector) {
 			jobs.add(getJobFromXmlRpc(aJobVector));
 		  }
 		}
@@ -109,11 +108,11 @@ public final class XmlRpcStructFactory {
     return resNodeVector;
   }
 
-  public static List getResourceNodeListFromXmlRpc(Vector<HashMap> resNodeVector) {
+  public static List getResourceNodeListFromXmlRpc(Vector<Map> resNodeVector) {
     List resNodes = new Vector();
 
     if (resNodeVector != null && resNodeVector.size() > 0) {
-	  for (HashMap aResNodeVector : resNodeVector) {
+	  for (Map aResNodeVector : resNodeVector) {
 		resNodes.add(getResourceNodeFromXmlRpc(aResNodeVector));
 	  }
     }
