@@ -322,6 +322,15 @@ public class TestXmlRpcWorkflowManagerClient {
 
   }
 
+  @Ignore
+  @Test
+  public void testGetWorkflowInstances() throws IOException, XmlRpcException {
+
+    //List wfinstances = fmc.getWorkflowInstances();
+
+    ///assertNotNull(wfinstances);
+  }
+
 
   @Test
   public void testGetWorkflowInstanceMetadata() {

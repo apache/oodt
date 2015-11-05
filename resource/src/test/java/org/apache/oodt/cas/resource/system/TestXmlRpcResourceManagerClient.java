@@ -1,6 +1,8 @@
 package org.apache.oodt.cas.resource.system;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.oodt.cas.resource.structs.ResourceNode;
+import org.apache.oodt.cas.resource.structs.exceptions.JobQueueException;
 import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
@@ -12,9 +14,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,11 +34,14 @@ public class TestXmlRpcResourceManagerClient {
 
   private static XmlRpcResourceManager rm;
   private static File thetmpPolicyDir;
+  private static XmlRpcResourceManagerClient rmc;
 
   @BeforeClass
   public static void setUp() throws Exception {
     generateTestConfiguration();
     rm = new XmlRpcResourceManager(RM_PORT);
+    rmc = new XmlRpcResourceManagerClient(new URL("http://localhost:" +RM_PORT));
+
   }
 
   private static void generateTestConfiguration() throws IOException {
@@ -79,7 +84,7 @@ public class TestXmlRpcResourceManagerClient {
 
   @Test
   public void testGetNodes() throws MonitorException {
-    List<Hashtable> nodes = rm.getNodes();
+    List<Hashtable> nodes = rmc.getNodes();
 
     assertThat(nodes, is(not(nullValue())));
     assertThat(nodes, hasSize(1));
@@ -89,7 +94,7 @@ public class TestXmlRpcResourceManagerClient {
   @Test
   public void testGetExecutionReport() throws JobRepositoryException {
 
-    String execreport = rm.getExecutionReport();
+    String execreport = rmc.getExecReport();
 
 
     assertThat(execreport, is(not(nullValue())));
@@ -99,7 +104,7 @@ public class TestXmlRpcResourceManagerClient {
 
   @Test
   public void testJobQueueCapacity() throws JobRepositoryException {
-    int capacity = rm.getJobQueueCapacity();
+    int capacity = rmc.getJobQueueCapacity();
 
     assertThat(capacity, equalTo(1000));
 
@@ -107,7 +112,7 @@ public class TestXmlRpcResourceManagerClient {
 
   @Test
   public void testGetJobQueueSize() throws JobRepositoryException {
-    int size = rm.getJobQueueSize();
+    int size = rmc.getJobQueueSize();
 
     assertThat(size, equalTo(0));
 
@@ -117,22 +122,22 @@ public class TestXmlRpcResourceManagerClient {
 
   @Test
   public void testGetNodeById() throws MonitorException {
-    List<Hashtable> nodelist = rm.getNodes();
+    List<ResourceNode> nodelist = rmc.getNodes();
 
-    Map node = rm.getNodeById((String) nodelist.get(0).get("node.id"));
+    ResourceNode node = rmc.getNodeById(nodelist.get(0).getNodeId());
 
     assertThat(node, is(not(nullValue())));
 
-    assertThat((String)node.get("node.id"), equalTo("localhost"));
+    assertThat(node.getNodeId(), equalTo("localhost"));
   }
 
 
   @Test
   public void testGetNodeLoad() throws MonitorException {
 
-    List<Hashtable> nodelist = rm.getNodes();
+    List<ResourceNode> nodelist = rmc.getNodes();
 
-    String node = rm.getNodeLoad((String) nodelist.get(0).get("node.id"));
+    String node = rmc.getNodeLoad(nodelist.get(0).getNodeId());
 
     assertNotNull(node);
 
@@ -142,14 +147,14 @@ public class TestXmlRpcResourceManagerClient {
 
   @Test
   public void testNodeReport() throws MonitorException {
-    String report = rm.getNodeReport();
+    String report = rmc.getNodeReport();
 
     assertThat(report, is(not(nullValue())));
   }
 
   @Test
   public void testGetNodesInQueue() throws QueueManagerException {
-    List<String> nodes = rm.getNodesInQueue("long");
+    List<String> nodes = rmc.getNodesInQueue("long");
 
     assertThat(nodes, is(not(nullValue())));
 
@@ -159,8 +164,8 @@ public class TestXmlRpcResourceManagerClient {
 
 
   @Test
-  public void testQueuedJobs(){
-    List jobs = rm.getQueuedJobs();
+  public void testQueuedJobs() throws JobQueueException {
+    List jobs = rmc.getQueuedJobs();
 
     assertThat(jobs, is(not(nullValue())));
 
@@ -168,19 +173,19 @@ public class TestXmlRpcResourceManagerClient {
   }
 
   @Test
-  public void testQueuesWithNode() throws MonitorException {
-    List<Hashtable> nodelist = rm.getNodes();
+  public void testQueuesWithNode() throws MonitorException, QueueManagerException {
+    List<ResourceNode> nodelist = rmc.getNodes();
 
 
-    List<String> queues = rm.getQueuesWithNode((String) nodelist.get(0).get("node.id"));
+    List<String> queues = rmc.getQueuesWithNode(nodelist.get(0).getNodeId());
     assertThat(queues, hasSize(3));
 
     assertThat(queues, containsInAnyOrder("high", "quick", "long"));
   }
 
   @Test
-  public void testQueues(){
-    List<String> queues = rm.getQueues();
+  public void testQueues() throws QueueManagerException {
+    List<String> queues = rmc.getQueues();
 
     assertThat(queues, hasSize(3));
 
