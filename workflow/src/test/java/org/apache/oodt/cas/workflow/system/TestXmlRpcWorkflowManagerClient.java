@@ -1,18 +1,14 @@
 /**
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements.  See the NOTICE
+ * file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+ * to You under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License.  You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package org.apache.oodt.cas.workflow.system;
@@ -60,9 +56,9 @@ import static org.junit.Assert.*;
 
 
 /**
- * 
+ *
  * Test harness for the {@link XmlRpcWorkflowManagerClient}.
- * 
+ *
  */
 public class TestXmlRpcWorkflowManagerClient {
 
@@ -90,7 +86,6 @@ public class TestXmlRpcWorkflowManagerClient {
   private static final int stdPgSz = 20;
 
   public TestXmlRpcWorkflowManagerClient() {
-
 
 
   }
@@ -171,7 +166,7 @@ public class TestXmlRpcWorkflowManagerClient {
 
 
   @AfterClass
-  public static void cleandown(){
+  public static void cleandown() {
 
     stopXmlRpcWorkflowManager();
   }
@@ -224,6 +219,7 @@ public class TestXmlRpcWorkflowManagerClient {
 
 
   }
+
   @Test
   public void testGetWorkflowInstancesByStatus() throws Exception {
 
@@ -232,6 +228,7 @@ public class TestXmlRpcWorkflowManagerClient {
     assertNotNull(wflows);
 
   }
+
   @Test
   public void testGetWorkflowInstanceMetadata2() throws Exception {
     WorkflowInstance wf = (WorkflowInstance) fmc.getFirstPage().getPageWorkflows().get(0);
@@ -239,12 +236,12 @@ public class TestXmlRpcWorkflowManagerClient {
     assertThat(wf, is(not(Matchers.nullValue())));
 
 
-
     Metadata meta = fmc.getWorkflowInstanceMetadata(wf.getId());
 
     assertNotNull(meta);
 
   }
+
   @Test
   public void testGetWorkflowCurrentTaskWallClockMinutes() throws Exception {
     XmlRpcWorkflowManagerClient fmc = new XmlRpcWorkflowManagerClient(new URL(
@@ -260,6 +257,7 @@ public class TestXmlRpcWorkflowManagerClient {
     assertThat(clock, is(not(Matchers.nullValue())));
 
   }
+
   @Test
   public void testGetTaskById() throws Exception {
 
@@ -270,8 +268,8 @@ public class TestXmlRpcWorkflowManagerClient {
     assertThat(task.getTaskName(), equalTo("Hello World"));
 
 
-
   }
+
   @Test
   public void testGetRegisteredEvents() throws Exception {
 
@@ -294,6 +292,7 @@ public class TestXmlRpcWorkflowManagerClient {
     fail();
 
   }
+
   @Test
   public void testGetConditionById() throws Exception {
 
@@ -306,12 +305,11 @@ public class TestXmlRpcWorkflowManagerClient {
   }
 
   @Test
-  public void testGetNumWorkflowInstances() throws Exception{
+  public void testGetNumWorkflowInstances() throws Exception {
 
     int num = fmc.getNumWorkflowInstances();
 
     assertThat(num, is(not(0)));
-
 
 
   }
@@ -388,8 +386,6 @@ public class TestXmlRpcWorkflowManagerClient {
   }
 
 
-
-
   private static void startXmlRpcWorkflowManager() {
     System.setProperty("java.util.logging.config.file", new File(
         "./src/main/resources/logging.properties").getAbsolutePath());
@@ -428,7 +424,8 @@ public class TestXmlRpcWorkflowManagerClient {
 
     try {
       System.setProperty("org.apache.oodt.cas.workflow.repo.dirs", "file://"
-                                                                   + new File("./src/main/resources/examples").getCanonicalPath());
+                                                                   + new File("./src/main/resources/examples")
+                                                                       .getCanonicalPath());
       System.setProperty("org.apache.oodt.cas.workflow.lifecycle.filePath",
           new File("./src/main/resources/examples/workflow-lifecycle.xml")
               .getCanonicalPath());
@@ -466,7 +463,8 @@ public class TestXmlRpcWorkflowManagerClient {
 
     try {
       System.setProperty("org.apache.oodt.cas.workflow.repo.dirs", "file://"
-                                                                   + new File("./src/main/resources/examples").getCanonicalPath());
+                                                                   + new File("./src/main/resources/examples")
+                                                                       .getCanonicalPath());
       System.setProperty("org.apache.oodt.cas.workflow.lifecycle.filePath",
           new File("./src/main/resources/examples/workflow-lifecycle.xml")
               .getCanonicalPath());
