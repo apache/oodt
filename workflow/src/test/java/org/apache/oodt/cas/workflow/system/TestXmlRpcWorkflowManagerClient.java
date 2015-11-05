@@ -283,13 +283,12 @@ public class TestXmlRpcWorkflowManagerClient {
 
   }
 
-  @Ignore
   @Test
   public void testGetNumWorkflowInstancesByStatus() throws Exception {
 
     int inst = fmc.getNumWorkflowInstancesByStatus("QUEUED");
 
-    fail();
+    assertThat(inst, equalTo(0));
 
   }
 
@@ -322,7 +321,167 @@ public class TestXmlRpcWorkflowManagerClient {
     assertNotNull(wfinstances);
   }
 
+  @Test
+  public void testGetWFMUrl(){
 
+    URL url = fmc.getWorkflowManagerUrl();
+
+    assertThat(url, is(not(nullValue())));
+
+    assertThat(url.toString(), equalTo("http://localhost:"+WM_PORT));
+  }
+
+  @Ignore
+  @Test
+  public void testGetNullWorkflowInstances()
+      throws RepositoryException, XmlRpcException, IOException, InterruptedException {
+
+    Thread.sleep(3000);
+    WorkflowInstance instance = fmc.getWorkflowInstanceById("1234");
+
+    assertThat(instance, is(nullValue()));
+
+  }
+
+  @Test
+  public void testGetNullWorkflowInstancesByStatus() throws XmlRpcException, IOException {
+    List<WorkflowInstance> instances = fmc.getWorkflowInstancesByStatus("NULL");
+
+    assertThat(instances, is(empty()));
+
+  }
+
+  @Test
+  public void testGetWorkflowById() throws RepositoryException, XmlRpcException, IOException {
+    List<Workflow> workflowlist = fmc.getWorkflows();
+
+    assertThat(workflowlist, is(not(nullValue())));
+
+    assertThat(workflowlist.size(), is(not(0)));
+
+    Workflow work = fmc.getWorkflowById(workflowlist.get(0).getId());
+
+    assertThat(work, is(not(nullValue())));
+
+  }
+
+  @Test
+  public void testGetWorkflowInstanceById() throws XmlRpcException, IOException, RepositoryException {
+
+    List<WorkflowInstance> workflowlist = fmc.getWorkflowInstances();
+
+    assertThat(workflowlist, is(not(nullValue())));
+
+    assertThat(workflowlist.size(), is(not(0)));
+
+    WorkflowInstance instance = fmc.getWorkflowInstanceById(workflowlist.get(0).getId());
+
+    assertThat(instance, is(not(nullValue())));
+
+  }
+
+  @Ignore
+  @Test
+  public void testUpdateMetadataForWorkflow(){
+
+  }
+
+  @Test
+  public void testUpdateWorkflowInstanceStatus() throws XmlRpcException, IOException, RepositoryException {
+
+    List<WorkflowInstance> workflowlist = fmc.getWorkflowInstances();
+
+    assertThat(workflowlist, is(not(nullValue())));
+
+    assertThat(workflowlist.size(), is(not(0)));
+
+    WorkflowInstance instance = fmc.getWorkflowInstanceById(workflowlist.get(0).getId());
+
+    assertThat(instance, is(not(nullValue())));
+
+    boolean upd = fmc.updateWorkflowInstanceStatus(instance.getId(), "RUNNING");
+
+    assertThat(upd, equalTo(true));
+
+
+  }
+
+  @Ignore
+  @Test
+  public void testSetWorkflowInstanceCurrentTaskEndDateTime(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testResumeWorkflowInstance(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testPauseWorkflowInstance(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testStopWorkflowInstances(){
+
+  }
+
+  @Test
+  public void testGetWorkflowWallClockMinutes() throws RepositoryException, XmlRpcException, IOException {
+    List<WorkflowInstance> workflowlist = fmc.getWorkflowInstances();
+
+    assertThat(workflowlist, is(not(nullValue())));
+
+    assertThat(workflowlist.size(), is(not(0)));
+
+    WorkflowInstance instance = fmc.getWorkflowInstanceById(workflowlist.get(0).getId());
+
+    assertThat(instance, is(not(nullValue())));
+
+    double clock = fmc.getWorkflowWallClockMinutes(instance.getId());
+
+    assertThat(clock, is(not(nullValue())));
+  }
+
+  @Ignore
+  @Test
+  public void testSetWorkflowInstanceCurrentTaskStartDateTime(){
+
+  }
+
+  @Test
+  public void testPaginateWorkflowInstances() throws XmlRpcException, IOException {
+
+    WorkflowInstancePage paginate = fmc.paginateWorkflowInstances(2);
+
+    assertThat(paginate, is(not(nullValue())));
+  }
+
+  @Test
+  public void testPaginateWorkflowInstancesByStatus() throws XmlRpcException, IOException {
+
+    WorkflowInstancePage paginate = fmc.paginateWorkflowInstances(2, "QUEUED");
+
+    assertThat(paginate, is(not(nullValue())));
+  }
+  @Ignore
+  @Test
+  public void testExecuteDynamicWorkflow(){
+
+  }
+
+  @Ignore
+  @Test
+  public void testRefreshRepository() throws XmlRpcException, IOException {
+
+    boolean refresh = fmc.refreshRepository();
+
+    assertThat(refresh, equalTo(true));
+  }
   @Test
   public void testGetWorkflowInstanceMetadata() {
 
