@@ -64,7 +64,7 @@ public class SpringCatalogRepository implements CatalogRepository {
 		throw new CatalogRepositoryException("Modification not allowed during runtime");
 	}
 
-	public boolean isModifiable() throws CatalogRepositoryException {
+	public boolean isModifiable() {
 		return false;
 	}
 

@@ -75,44 +75,45 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable<O
 		NodeList children = root.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node node = children.item(i);
-			if ("Identifier".equals(node.getNodeName()))
-				identifier = XML.unwrappedText(node);
-			else if ("Title".equals(node.getNodeName()))
-				title = XML.unwrappedText(node);
-			else if ("Format".equals(node.getNodeName()))
-				formats.add(XML.unwrappedText(node));
-			else if ("Description".equals(node.getNodeName()))
-				description = XML.unwrappedText(node);
-			else if ("Creator".equals(node.getNodeName()))
-				creators.add(XML.unwrappedText(node));
-			else if ("Subject".equals(node.getNodeName()))
-				subjects.add(XML.unwrappedText(node));
-			else if ("Publisher".equals(node.getNodeName()))
-				publishers.add(XML.unwrappedText(node));
-			else if ("Contributor".equals(node.getNodeName()))
-				contributors.add(XML.unwrappedText(node));
-			else if ("Date".equals(node.getNodeName()))
-				dates.add(XML.unwrappedText(node));
-			else if ("Type".equals(node.getNodeName()))
-				types.add(XML.unwrappedText(node));
-			else if ("Source".equals(node.getNodeName()))
-				sources.add(XML.unwrappedText(node));
-			else if ("Language".equals(node.getNodeName()))
-				languages.add(XML.unwrappedText(node));
-			else if ("Relation".equals(node.getNodeName()))
-				relations.add(XML.unwrappedText(node));
-			else if ("Coverage".equals(node.getNodeName()))
-				coverages.add(XML.unwrappedText(node));
-			else if ("Rights".equals(node.getNodeName()))
-				rights.add(XML.unwrappedText(node));
-			else if ("resContext".equals(node.getNodeName()))
-				contexts.add(XML.unwrappedText(node));
-			else if ("resAggregation".equals(node.getNodeName()))
-				aggregation = XML.unwrappedText(node);
-			else if ("resClass".equals(node.getNodeName()))
-				clazz = XML.unwrappedText(node);
-			else if ("resLocation".equals(node.getNodeName()))
-				locations.add(XML.unwrappedText(node));
+			if ("Identifier".equals(node.getNodeName())) {
+			  identifier = XML.unwrappedText(node);
+			} else if ("Title".equals(node.getNodeName())) {
+			  title = XML.unwrappedText(node);
+			} else if ("Format".equals(node.getNodeName())) {
+			  formats.add(XML.unwrappedText(node));
+			} else if ("Description".equals(node.getNodeName())) {
+			  description = XML.unwrappedText(node);
+			} else if ("Creator".equals(node.getNodeName())) {
+			  creators.add(XML.unwrappedText(node));
+			} else if ("Subject".equals(node.getNodeName())) {
+			  subjects.add(XML.unwrappedText(node));
+			} else if ("Publisher".equals(node.getNodeName())) {
+			  publishers.add(XML.unwrappedText(node));
+			} else if ("Contributor".equals(node.getNodeName())) {
+			  contributors.add(XML.unwrappedText(node));
+			} else if ("Date".equals(node.getNodeName())) {
+			  dates.add(XML.unwrappedText(node));
+			} else if ("Type".equals(node.getNodeName())) {
+			  types.add(XML.unwrappedText(node));
+			} else if ("Source".equals(node.getNodeName())) {
+			  sources.add(XML.unwrappedText(node));
+			} else if ("Language".equals(node.getNodeName())) {
+			  languages.add(XML.unwrappedText(node));
+			} else if ("Relation".equals(node.getNodeName())) {
+			  relations.add(XML.unwrappedText(node));
+			} else if ("Coverage".equals(node.getNodeName())) {
+			  coverages.add(XML.unwrappedText(node));
+			} else if ("Rights".equals(node.getNodeName())) {
+			  rights.add(XML.unwrappedText(node));
+			} else if ("resContext".equals(node.getNodeName())) {
+			  contexts.add(XML.unwrappedText(node));
+			} else if ("resAggregation".equals(node.getNodeName())) {
+			  aggregation = XML.unwrappedText(node);
+			} else if ("resClass".equals(node.getNodeName())) {
+			  clazz = XML.unwrappedText(node);
+			} else if ("resLocation".equals(node.getNodeName())) {
+			  locations.add(XML.unwrappedText(node));
+			}
 		}
 	}
 
@@ -176,8 +177,12 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable<O
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof ResourceAttributes)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof ResourceAttributes)) {
+		  return false;
+		}
 		return ((ResourceAttributes) rhs).identifier.equals(identifier);
 	}
 
@@ -194,7 +199,7 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable<O
 		Object clone = null;
 		try {
 			clone = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return clone;
 	}
 
@@ -230,12 +235,14 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable<O
 	public URI getURI() {
 		String identification;
 		if (identifier == null || identifier.length() == 0) {
-			if (locations.isEmpty())
-				identification = null;
-			else
-				identification = (String) locations.get(0);
-		} else
-			identification = identifier;
+			if (locations.isEmpty()) {
+			  identification = null;
+			} else {
+			  identification = (String) locations.get(0);
+			}
+		} else {
+		  identification = identifier;
+		}
 
 		return identification == null? UNKNOWN_URI : URI.create(identification);
 	}
@@ -564,10 +571,14 @@ public class ResourceAttributes implements Serializable, Cloneable, Comparable<O
 		XML.add(root, "Coverage", coverages);
 		XML.add(root, "Rights", rights);
 		List<String> contexts = new ArrayList<String>(this.contexts);
-		if (contexts.isEmpty()) contexts.add("UNKNOWN");
+		if (contexts.isEmpty()) {
+		  contexts.add("UNKNOWN");
+		}
 		XML.add(root, "resContext", contexts);
 		XML.addNonNull(root, "resAggregation", aggregation);
-		if(clazz==null) clazz="UNKNOWN";
+		if(clazz==null) {
+		  clazz = "UNKNOWN";
+		}
 		XML.addNonNull(root, "resClass", clazz);
 		XML.add(root, "resLocation", locations);
 

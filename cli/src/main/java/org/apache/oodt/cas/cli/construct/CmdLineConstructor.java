@@ -34,7 +34,7 @@ import org.apache.oodt.cas.cli.util.ParsedArg;
  */
 public interface CmdLineConstructor {
 
-   public Set<CmdLineOptionInstance> construct(CmdLineIterable<ParsedArg> parsedArgs,
-         Set<CmdLineOption> validOptions) throws CmdLineConstructionException;
+   Set<CmdLineOptionInstance> construct(CmdLineIterable<ParsedArg> parsedArgs,
+                                        Set<CmdLineOption> validOptions) throws CmdLineConstructionException;
 
 }

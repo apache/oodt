@@ -28,20 +28,20 @@ package org.apache.oodt.cas.workflow.structs;
 public interface WorkflowStatus {
 
     /* A set of final Strings representing the status of a workflow, or Process */
-    public static final String STARTED = "STARTED";
+    String STARTED = "STARTED";
 
-    public static final String FINISHED = "FINISHED";
+    String FINISHED = "FINISHED";
 
-    public static final String PAUSED = "PAUSED";
+    String PAUSED = "PAUSED";
 
-    public static final String ERROR = "ERROR";
+    String ERROR = "ERROR";
     
-    public static final String QUEUED = "QUEUED";
+    String QUEUED = "QUEUED";
     
-    public static final String CREATED = "CREATED";
+    String CREATED = "CREATED";
     
-    public static final String RESMGR_SUBMIT = "RSUBMIT";
+    String RESMGR_SUBMIT = "RSUBMIT";
     
-    public static final String METADATA_MISSING = "METMISS";
+    String METADATA_MISSING = "METMISS";
     
 }

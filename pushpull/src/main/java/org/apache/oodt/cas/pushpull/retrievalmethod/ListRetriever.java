@@ -24,6 +24,7 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.pushpull.config.DataFilesInfo;
 import org.apache.oodt.cas.pushpull.config.DownloadInfo;
 import org.apache.oodt.cas.pushpull.exceptions.AlreadyInDatabaseException;
+import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 import org.apache.oodt.cas.pushpull.exceptions.RetrievalMethodException;
 import org.apache.oodt.cas.pushpull.exceptions.ToManyFailedDownloadsException;
 import org.apache.oodt.cas.pushpull.exceptions.UndefinedTypeException;
@@ -38,6 +39,7 @@ import org.apache.oodt.cas.pushpull.retrievalsystem.FileRetrievalSystem;
 //JDK imports
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,8 +61,8 @@ public class ListRetriever implements RetrievalMethod {
 
     public void processPropFile(FileRetrievalSystem frs, Parser propFileParser,
             File propFile, DataFilesInfo dfi, DataFileToPropFileLinker linker)
-            throws Exception {
-        RemoteSite remoteSite = null;
+        throws FileNotFoundException, ParserException, RetrievalMethodException {
+        RemoteSite remoteSite;
 
         // parse property file
         Metadata fileMetadata = new Metadata();
@@ -68,8 +70,9 @@ public class ListRetriever implements RetrievalMethod {
                 propFile), fileMetadata);
         DownloadInfo di = dfi.getDownloadInfo();
         if (!di.isAllowAliasOverride()
-                || (remoteSite = vfs.getRemoteSite()) == null)
-            remoteSite = di.getRemoteSite();
+                || (remoteSite = vfs.getRemoteSite()) == null) {
+          remoteSite = di.getRemoteSite();
+        }
         LinkedList<String> fileList = FileRestrictions.toStringList(vfs
                 .getRootVirtualFile());
 
@@ -79,8 +82,9 @@ public class ListRetriever implements RetrievalMethod {
                 linker.addPropFileToDataFileLink(propFile, file);
                 if (!frs.addToDownloadQueue(remoteSite, file, di
                         .getRenamingConv(), di.getStagingArea(), dfi
-                        .getQueryMetadataElementName(), di.deleteFromServer(), fileMetadata))
-                    linker.eraseLinks(propFile);
+                        .getQueryMetadataElementName(), di.deleteFromServer(), fileMetadata)) {
+                  linker.eraseLinks(propFile);
+                }
             } catch (ToManyFailedDownloadsException e) {
                 throw new RetrievalMethodException(
                         "Connection appears to be down. . .unusual number of download failures. . .stopping : "
@@ -94,10 +98,10 @@ public class ListRetriever implements RetrievalMethod {
             } catch (UndefinedTypeException e) {
                 LOG.log(Level.WARNING, "Skipping file : " + e.getMessage());
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 linker.markAsFailed(propFile, "Failed to download " + file
                         + " from " + remoteSite + " : " + e.getMessage());
-                throw new Exception("Uknown error accured while downloading "
+                throw new RetrievalMethodException("Uknown error accured while downloading "
                         + file + " from " + remoteSite + " -- bailing out : "
                         + e.getMessage());
             }

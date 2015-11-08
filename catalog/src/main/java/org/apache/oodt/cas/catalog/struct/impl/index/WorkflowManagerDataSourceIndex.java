@@ -17,11 +17,16 @@
 package org.apache.oodt.cas.catalog.struct.impl.index;
 
 //JDK imports
+
 import org.apache.oodt.cas.catalog.exception.CatalogIndexException;
 import org.apache.oodt.cas.catalog.exception.QueryServiceException;
 import org.apache.oodt.cas.catalog.page.IndexPager;
 import org.apache.oodt.cas.catalog.page.IngestReceipt;
-import org.apache.oodt.cas.catalog.query.*;
+import org.apache.oodt.cas.catalog.query.ComparisonQueryExpression;
+import org.apache.oodt.cas.catalog.query.NotQueryExpression;
+import org.apache.oodt.cas.catalog.query.QueryExpression;
+import org.apache.oodt.cas.catalog.query.QueryLogicalGroup;
+import org.apache.oodt.cas.catalog.query.StdQueryExpression;
 import org.apache.oodt.cas.catalog.struct.Index;
 import org.apache.oodt.cas.catalog.struct.QueryService;
 import org.apache.oodt.cas.catalog.struct.TransactionId;
@@ -38,7 +43,12 @@ import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,25 +72,24 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 	
 	protected DataSource dataSource;
 	
-	public WorkflowManagerDataSourceIndex(String user, String pass, String driver, String jdbcUrl) throws InstantiationException {
+	public WorkflowManagerDataSourceIndex(String user, String pass, String driver, String jdbcUrl) {
 		this.dataSource = DatabaseConnectionBuilder.buildDataSource(user, pass, driver, jdbcUrl);
 	}
 	
-	public List<TransactionId<?>> getPage(IndexPager indexPage)
-			throws CatalogIndexException {
+	public List<TransactionId<?>> getPage(IndexPager indexPage) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Properties getProperties() throws CatalogIndexException {
+	public Properties getProperties() {
 		return new Properties();
 	}
 
-	public String getProperty(String key) throws CatalogIndexException {
+	public String getProperty(String key) {
 		return null;
 	}
 
-	public TransactionIdFactory getTransactionIdFactory() throws CatalogIndexException {
+	public TransactionIdFactory getTransactionIdFactory() {
 		return new LongTransactionIdFactory();
 	}
 
@@ -99,13 +108,13 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -131,21 +140,22 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
 	public Map<TransactionId<?>, List<TermBucket>> getBuckets(
 			List<TransactionId<?>> transactionIds) throws QueryServiceException {
-		Map<TransactionId<?>, List<TermBucket>> returnMap = new HashMap<TransactionId<?>, List<TermBucket>>();
-		for (TransactionId<?> transactionId : transactionIds) 
-			returnMap.put(transactionId, this.getBuckets(transactionId));
+		Map<TransactionId<?>, List<TermBucket>> returnMap = new ConcurrentHashMap<TransactionId<?>, List<TermBucket>>();
+		for (TransactionId<?> transactionId : transactionIds) {
+		  returnMap.put(transactionId, this.getBuckets(transactionId));
+		}
 		return returnMap;
 	}
 
@@ -162,21 +172,24 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 			rs = stmt.executeQuery(sqlQuery);
 			
 			List<IngestReceipt> receipts = new Vector<IngestReceipt>();
-			while (rs.next()) 
-                receipts.add(new IngestReceipt(new LongTransactionIdFactory().createTransactionId(rs.getString("workflow_instance_id")), DateConvert.isoParse(rs.getString("start_date_time"))));
+			while (rs.next()) {
+			  receipts.add(new IngestReceipt(
+				  new LongTransactionIdFactory().createTransactionId(rs.getString("workflow_instance_id")),
+				  DateConvert.isoParse(rs.getString("start_date_time"))));
+			}
 			return receipts;
 		}catch (Exception e) {
 			throw new QueryServiceException("Failed to query Workflow Instances Database : " + e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 	
@@ -193,22 +206,27 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 			
 			List<IngestReceipt> receipts = new Vector<IngestReceipt>();
 			int index = 0;
-			while (startIndex > index && rs.next()) index++;
-			while (rs.next() && index++ <= endIndex) 
-				receipts.add(new IngestReceipt(new LongTransactionIdFactory().createTransactionId(rs.getString("workflow_instance_id")), DateConvert.isoParse(rs.getString("start_date_time"))));
+			while (startIndex > index && rs.next()) {
+			  index++;
+			}
+			while (rs.next() && index++ <= endIndex) {
+			  receipts.add(new IngestReceipt(
+				  new LongTransactionIdFactory().createTransactionId(rs.getString("workflow_instance_id")),
+				  DateConvert.isoParse(rs.getString("start_date_time"))));
+			}
 			return receipts;
 		}catch (Exception e) {
 			throw new QueryServiceException("Failed to query Workflow Instances Database : " + e.getMessage(), e);
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 	
@@ -225,8 +243,9 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 			rs = stmt.executeQuery(sqlQuery);
 
 			int numInstances = 0;
-			while (rs.next())
-				numInstances = rs.getInt("numInstances");
+			while (rs.next()) {
+			  numInstances = rs.getInt("numInstances");
+			}
 
 			return numInstances;
 		} catch (Exception e) {
@@ -236,15 +255,15 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
 		} finally {
 			try {
 				conn.close();
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 			}
 			try {
 				stmt.close();
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 			}
 			try {
 				rs.close();
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 			}
 		}
 	}
@@ -255,8 +274,9 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
         	QueryLogicalGroup qlg = (QueryLogicalGroup) queryExpression;
             sqlQuery.append("(").append(this.getSqlQuery(qlg.getExpressions().get(0)));
             String op = qlg.getOperator() == QueryLogicalGroup.Operator.AND ? "INTERSECT" : "UNION";
-            for (int i = 1; i < qlg.getExpressions().size(); i++) 
-                sqlQuery.append(") ").append(op).append(" (").append(this.getSqlQuery(qlg.getExpressions().get(i)));
+            for (int i = 1; i < qlg.getExpressions().size(); i++) {
+			  sqlQuery.append(") ").append(op).append(" (").append(this.getSqlQuery(qlg.getExpressions().get(i)));
+			}
             sqlQuery.append(")");
         }else if (queryExpression instanceof ComparisonQueryExpression){
         	ComparisonQueryExpression cqe = (ComparisonQueryExpression) queryExpression;
@@ -282,8 +302,9 @@ public class WorkflowManagerDataSourceIndex implements Index, QueryService {
         		String value = cqe.getTerm().getValues().get(i);
                 sqlQuery.append("workflow_met_val ").append(operator).append(" '")
 						.append(URLEncoder.encode(value, "UTF-8")).append("'");
-	            if ((i + 1) < cqe.getTerm().getValues().size())
-	            	sqlQuery.append("OR");
+	            if ((i + 1) < cqe.getTerm().getValues().size()) {
+				  sqlQuery.append("OR");
+				}
         	}
         	sqlQuery.append(")");
         }else if (queryExpression instanceof NotQueryExpression) {

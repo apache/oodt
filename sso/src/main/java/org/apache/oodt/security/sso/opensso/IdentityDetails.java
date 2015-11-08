@@ -18,11 +18,12 @@
 package org.apache.oodt.security.sso.opensso;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.util.List;
 import java.util.Vector;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * 
@@ -128,19 +129,8 @@ public class IdentityDetails {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer();
-    sb.append("[name=");
-    sb.append(this.name);
-    sb.append(",type=");
-    sb.append(this.type);
-    sb.append(",realm=");
-    sb.append(this.realm);
-    sb.append(",roles=");
-    sb.append(this.groups);
-    sb.append(",attributes=");
-    sb.append(this.attributes.getHashtable());
-    sb.append("]");
-    return sb.toString();
+    return "[name=" + this.name + ",type=" + this.type + ",realm=" + this.realm + ",roles=" + this.groups
+           + ",attributes=" + this.attributes.getMap() + "]";
   }
 
 }

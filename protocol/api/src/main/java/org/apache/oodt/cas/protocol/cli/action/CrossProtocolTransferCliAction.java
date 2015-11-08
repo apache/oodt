@@ -107,7 +107,7 @@ public class CrossProtocolTransferCliAction extends ProtocolCliAction {
       } finally {
          try {
             bogusFile.delete();
-         } catch (Exception e) {
+         } catch (Exception ignored) {
          }
       }
    }

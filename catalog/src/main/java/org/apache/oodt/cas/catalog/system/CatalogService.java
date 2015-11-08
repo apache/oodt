@@ -47,82 +47,84 @@ import org.apache.oodt.cas.metadata.Metadata;
  */
 public interface CatalogService {
 		
-	public static final String CATALOG_SERVICE_TRANSACTION_ID_MET_KEY = "urn:CatalogService:TransactionId";
-	public static final String CATALOG_IDS_MET_KEY = "urn:CatalogService:CatalogIds";
-	public static final String ENABLE_UPDATE_MET_KEY = "urn:CatalogService:EnableUpdate";
-	public static final String CATALOG_TRANSACTION_ID_MET_KEY = "urn:Catalog:TransactionId";
-	public static final String CATALOG_ID_MET_KEY = "urn:Catalog:Id";
+	String CATALOG_SERVICE_TRANSACTION_ID_MET_KEY = "urn:CatalogService:TransactionId";
+	String CATALOG_IDS_MET_KEY = "urn:CatalogService:CatalogIds";
+	String ENABLE_UPDATE_MET_KEY = "urn:CatalogService:EnableUpdate";
+	String CATALOG_TRANSACTION_ID_MET_KEY = "urn:Catalog:TransactionId";
+	String CATALOG_ID_MET_KEY = "urn:Catalog:Id";
 
-	public void shutdown() throws CatalogServiceException;
+	void shutdown() throws CatalogServiceException;
 	
-	public boolean isRestrictQueryPermissions() throws CatalogServiceException;
+	boolean isRestrictQueryPermissions() throws CatalogServiceException;
 
-	public boolean isRestrictIngestPermissions() throws CatalogServiceException;
+	boolean isRestrictIngestPermissions() throws CatalogServiceException;
 
-	public void addCatalog(Catalog catalog) throws CatalogServiceException;
+	void addCatalog(Catalog catalog) throws CatalogServiceException;
 	
-	public void replaceCatalog(Catalog catalog) throws CatalogServiceException;
+	void replaceCatalog(Catalog catalog) throws CatalogServiceException;
 	
-	public void addCatalog(String catalogId, Index index) throws CatalogServiceException;
+	void addCatalog(String catalogId, Index index) throws CatalogServiceException;
 	
-	public void addCatalog(String catalogId, Index index, List<Dictionary> dictionaries) throws CatalogServiceException;
+	void addCatalog(String catalogId, Index index, List<Dictionary> dictionaries) throws CatalogServiceException;
 
-	public void addCatalog(String catalogId, Index index, List<Dictionary> dictionaries, boolean restrictQueryPermission, boolean restrictIngestPermission) throws CatalogServiceException;
+	void addCatalog(String catalogId, Index index, List<Dictionary> dictionaries, boolean restrictQueryPermission,
+					boolean restrictIngestPermission) throws CatalogServiceException;
 
-	public void addDictionary(String catalogId, Dictionary dictionary) throws CatalogServiceException;
+	void addDictionary(String catalogId, Dictionary dictionary) throws CatalogServiceException;
 
-	public void replaceDictionaries(String catalogId, List<Dictionary> dictionaries) throws CatalogServiceException;
+	void replaceDictionaries(String catalogId, List<Dictionary> dictionaries) throws CatalogServiceException;
 	
-	public void replaceIndex(String catalogId, Index index) throws CatalogServiceException;
+	void replaceIndex(String catalogId, Index index) throws CatalogServiceException;
 
-	public void modifyIngestPermission(String catalogId, boolean restrictIngestPermission) throws CatalogServiceException;
+	void modifyIngestPermission(String catalogId, boolean restrictIngestPermission) throws CatalogServiceException;
 	
-	public void modifyQueryPermission(String catalogId, boolean restrictQueryPermission) throws CatalogServiceException;
+	void modifyQueryPermission(String catalogId, boolean restrictQueryPermission) throws CatalogServiceException;
 		
-	public void removeCatalog(String catalogId) throws CatalogServiceException;
+	void removeCatalog(String catalogId) throws CatalogServiceException;
 
-	public URL getPluginStorageDir() throws CatalogServiceException;
+	URL getPluginStorageDir() throws CatalogServiceException;
 	
-	public List<PluginURL> getPluginUrls() throws CatalogServiceException;
+	List<PluginURL> getPluginUrls() throws CatalogServiceException;
 
-	public void addPluginUrls(List<PluginURL> pluginURLs) throws CatalogServiceException;
+	void addPluginUrls(List<PluginURL> pluginURLs) throws CatalogServiceException;
 
-	public Set<String> getCurrentCatalogIds() throws CatalogServiceException;
+	Set<String> getCurrentCatalogIds() throws CatalogServiceException;
 		
-	public TransactionReceipt ingest(Metadata metadata) throws CatalogServiceException;
+	TransactionReceipt ingest(Metadata metadata) throws CatalogServiceException;
 	
-	public void delete(Metadata metadata) throws CatalogServiceException;
+	void delete(Metadata metadata) throws CatalogServiceException;
 	
-	public List<String> getProperty(String key) throws CatalogServiceException;
+	List<String> getProperty(String key) throws CatalogServiceException;
 
-	public Properties getCalalogProperties() throws CatalogServiceException;
+	Properties getCalalogProperties() throws CatalogServiceException;
 	
-	public Properties getCalalogProperties(String catalogUrn) throws CatalogServiceException;
+	Properties getCalalogProperties(String catalogUrn) throws CatalogServiceException;
 	
-	public Page getNextPage(Page page) throws CatalogServiceException;
+	Page getNextPage(Page page) throws CatalogServiceException;
 		
-	public Page getPage(PageInfo pageInfo, QueryExpression queryExpression) throws CatalogServiceException;
+	Page getPage(PageInfo pageInfo, QueryExpression queryExpression) throws CatalogServiceException;
 	
-	public Page getPage(PageInfo pageInfo, QueryExpression queryExpression, Set<String> catalogIds) throws CatalogServiceException;
+	Page getPage(PageInfo pageInfo, QueryExpression queryExpression, Set<String> catalogIds) throws CatalogServiceException;
 
-	public List<TransactionalMetadata> getMetadata(Page page) throws CatalogServiceException;
+	List<TransactionalMetadata> getMetadata(Page page) throws CatalogServiceException;
 	
-	public QueryPager query(QueryExpression queryExpression) throws CatalogServiceException;
+	QueryPager query(QueryExpression queryExpression) throws CatalogServiceException;
 
-	public QueryPager query(QueryExpression queryExpression, Set<String> catalogIds) throws CatalogServiceException;
+	QueryPager query(QueryExpression queryExpression, Set<String> catalogIds) throws CatalogServiceException;
 	 
-	public List<TransactionalMetadata> getNextPage(QueryPager queryPager) throws CatalogServiceException;
+	List<TransactionalMetadata> getNextPage(QueryPager queryPager) throws CatalogServiceException;
 	
-	public List<TransactionalMetadata> getAllPages(QueryPager queryPager) throws CatalogServiceException;
+	List<TransactionalMetadata> getAllPages(QueryPager queryPager) throws CatalogServiceException;
 	
-	public List<TransactionalMetadata> getMetadataFromTransactionIdStrings(List<String> catalogServiceTransactionIdStrings) throws CatalogServiceException;
+	List<TransactionalMetadata> getMetadataFromTransactionIdStrings(List<String> catalogServiceTransactionIdStrings) throws CatalogServiceException;
 	
-	public List<TransactionalMetadata> getMetadataFromTransactionIds(List<TransactionId<?>> catalogServiceTransactionIds) throws CatalogServiceException;
+	List<TransactionalMetadata> getMetadataFromTransactionIds(List<TransactionId<?>> catalogServiceTransactionIds) throws CatalogServiceException;
 	
-	public List<TransactionId<?>> getCatalogServiceTransactionIds(List<TransactionId<?>> catalogTransactionIds, String catalogUrn) throws CatalogServiceException;
+	List<TransactionId<?>> getCatalogServiceTransactionIds(List<TransactionId<?>> catalogTransactionIds,
+														   String catalogUrn) throws CatalogServiceException;
 	
-	public TransactionId<?> getCatalogServiceTransactionId(TransactionId<?> catalogTransactionId, String catalogUrn) throws CatalogServiceException;
+	TransactionId<?> getCatalogServiceTransactionId(TransactionId<?> catalogTransactionId, String catalogUrn) throws CatalogServiceException;
 	
-	public TransactionId<?> getCatalogServiceTransactionId(CatalogReceipt catalogReceipt, boolean generateNew) throws CatalogServiceException;
+	TransactionId<?> getCatalogServiceTransactionId(CatalogReceipt catalogReceipt, boolean generateNew) throws CatalogServiceException;
 	
 }

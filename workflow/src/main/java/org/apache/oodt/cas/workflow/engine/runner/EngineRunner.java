@@ -44,7 +44,7 @@ public abstract class EngineRunner {
    *           If any error occurs.
    */
   public abstract void execute(TaskProcessor taskProcessor)
-      throws Exception;
+  ;
 
   /**
    * Shuts this runner down and frees its resources.
@@ -53,7 +53,7 @@ public abstract class EngineRunner {
    *           If any error occurs while freeing resources.
    *
    */
-  public abstract void shutdown() throws Exception;
+  public abstract void shutdown();
   
   /**
    * Decides whether or not there are available slots within this runner
@@ -63,7 +63,7 @@ public abstract class EngineRunner {
    * @return True if there is an open slot, false otherwise.
    * @throws Exception If any error occurs.
    */
-  public abstract boolean hasOpenSlots(TaskProcessor taskProcessor) throws Exception;  
+  public abstract boolean hasOpenSlots(TaskProcessor taskProcessor);
   
   
   public abstract void setInstanceRepository(WorkflowInstanceRepository instRep);

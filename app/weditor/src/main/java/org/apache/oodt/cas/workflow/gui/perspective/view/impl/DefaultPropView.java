@@ -18,6 +18,13 @@
 package org.apache.oodt.cas.workflow.gui.perspective.view.impl;
 
 //JDK imports
+import org.apache.commons.lang.StringUtils;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
+import org.apache.oodt.cas.workflow.gui.perspective.view.View;
+import org.apache.oodt.cas.workflow.gui.perspective.view.ViewState;
+import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
+
 import java.awt.BorderLayout;
 import java.awt.Checkbox;
 import java.awt.Color;
@@ -35,10 +42,11 @@ import java.text.DecimalFormat;
 import java.text.Format;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -66,14 +74,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 //Apache imports
-import org.apache.commons.lang.StringUtils;
-
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
-import org.apache.oodt.cas.workflow.gui.perspective.view.View;
-import org.apache.oodt.cas.workflow.gui.perspective.view.ViewState;
-import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
 
 /**
  * 
@@ -103,11 +104,11 @@ public class DefaultPropView extends View {
   }
 
   private JTable createTable(final ViewState state) {
-    JTable table = null;
+    JTable table;
     final ModelGraph selected = state.getSelected();
     if (selected != null) {
       final Vector<Vector<String>> rows = new Vector<Vector<String>>();
-      HashMap<String, String> keyToGroupMap = new HashMap<String, String>();
+      ConcurrentHashMap<String, String> keyToGroupMap = new ConcurrentHashMap<String, String>();
       Metadata staticMet = selected.getModel().getStaticMetadata();
       Metadata inheritedMet = selected.getInheritedStaticMetadata(state);
       Metadata completeMet = new Metadata();
@@ -143,8 +144,9 @@ public class DefaultPropView extends View {
       List<String> keys = completeMet.getAllKeys();
       Collections.sort(keys);
       for (String key : keys) {
-        if (key.endsWith("/envReplace"))
+        if (key.endsWith("/envReplace")) {
           continue;
+        }
         String values = StringUtils.join(completeMet.getAllMetadata(key), ",");
         Vector<String> row = new Vector<String>();
         row.add(keyToGroupMap.get(key));
@@ -181,33 +183,32 @@ public class DefaultPropView extends View {
         }
 
         public Object getValueAt(int row, int col) {
-          if (row >= rows.size())
+          if (row >= rows.size()) {
             return null;
+          }
           String value = rows.get(row).get(col);
-          if (value == null && col == 3)
+          if (value == null && col == 3) {
             return "false";
-          if (value == null && col == 0)
+          }
+          if (value == null && col == 0) {
             return "__local__";
+          }
           return value;
         }
 
         public boolean isCellEditable(int row, int col) {
           if (row >= rows.size()) {
-            if (selected.getModel().getStaticMetadata()
-                .containsGroup(state.getCurrentMetGroup()))
-              return true;
-            else
-              return false;
+            return selected.getModel().getStaticMetadata()
+                           .containsGroup(state.getCurrentMetGroup());
           }
-          if (col == 0)
+          if (col == 0) {
             return false;
+          }
           String key = rows.get(row).get(1);
-          if (key == null
-              || (selected.getModel().getStaticMetadata() != null && selected
-                  .getModel().getStaticMetadata()
-                  .containsKey(getKey(key, state))))
-            return true;
-          return false;
+          return key == null
+                 || (selected.getModel().getStaticMetadata() != null && selected
+              .getModel().getStaticMetadata()
+              .containsKey(getKey(key, state)));
         }
 
         public void setValueAt(Object value, int row, int col) {
@@ -245,12 +246,14 @@ public class DefaultPropView extends View {
         if (column == 0) {
           field.setForeground(Color.gray);
         } else {
-          if (isSelected)
+          if (isSelected) {
             field.setBorder(new EtchedBorder(1));
-          if (table.isCellEditable(row, 1))
+          }
+          if (table.isCellEditable(row, 1)) {
             field.setForeground(Color.black);
-          else
+          } else {
             field.setForeground(Color.gray);
+          }
         }
         return field;
       }
@@ -313,16 +316,18 @@ public class DefaultPropView extends View {
         String key = getKey(
             (String) DefaultPropView.this.table.getValueAt(row, 1), state);
         Metadata staticMet = state.getSelected().getModel().getStaticMetadata();
-        if (staticMet == null)
+        if (staticMet == null) {
           staticMet = new Metadata();
+        }
         if (e.getActionCommand().equals(OVERRIDE)) {
           if (!staticMet.containsKey(key)) {
             staticMet.addMetadata(key,
                 (String) DefaultPropView.this.table.getValueAt(row, 2));
             String envReplace = (String) DefaultPropView.this.table.getValueAt(
                 row, 3);
-            if (Boolean.valueOf(envReplace))
+            if (Boolean.valueOf(envReplace)) {
               staticMet.addMetadata(key + "/envReplace", envReplace);
+            }
             state.getSelected().getModel().setStaticMetadata(staticMet);
             DefaultPropView.this.notifyListeners();
           }
@@ -337,8 +342,9 @@ public class DefaultPropView extends View {
         String key = getKey(
             (String) DefaultPropView.this.table.getValueAt(row, 1), state);
         Metadata staticMet = state.getSelected().getModel().getStaticMetadata();
-        if (staticMet == null)
+        if (staticMet == null) {
           staticMet = new Metadata();
+        }
         staticMet.removeMetadata(key);
         staticMet.removeMetadata(key + "/envReplace");
         state.getSelected().getModel().setStaticMetadata(staticMet);
@@ -354,8 +360,9 @@ public class DefaultPropView extends View {
       masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
       masterPanel.add(this.getModelIdPanel(state.getSelected(), state));
       masterPanel.add(this.getModelNamePanel(state.getSelected(), state));
-      if (!state.getSelected().getModel().isParentType())
+      if (!state.getSelected().getModel().isParentType()) {
         masterPanel.add(this.getInstanceClassPanel(state.getSelected(), state));
+      }
       masterPanel.add(this.getExecutionTypePanel(state.getSelected(), state));
       masterPanel.add(this.getPriorityPanel(state));
       masterPanel.add(this.getExecusedIds(state.getSelected()));
@@ -501,8 +508,9 @@ public class DefaultPropView extends View {
 
         private JList createJList(DefaultListModel model,
             final List<String> list) {
-          for (String value : list)
+          for (String value : list) {
             model.addElement(value);
+          }
           JList jList = new JList(model);
           jList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
           jList.setLayoutOrientation(JList.VERTICAL);
@@ -714,12 +722,13 @@ public class DefaultPropView extends View {
         checkbox.addItemListener(new ItemListener() {
 
           public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.DESELECTED)
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
               graph.getModel().setOptional(false);
-            else if (e.getStateChange() == ItemEvent.SELECTED)
+            } else if (e.getStateChange() == ItemEvent.SELECTED) {
               graph.getModel().setOptional(true);
-            else
+            } else {
               return;
+            }
             DefaultPropView.this.notifyListeners();
             DefaultPropView.this.refreshView(state);
           }
@@ -746,12 +755,13 @@ public class DefaultPropView extends View {
         checkbox.addItemListener(new ItemListener() {
 
           public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.DESELECTED)
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
               graph.getModel().getExcusedSubProcessorIds().remove(modelId);
-            else if (e.getStateChange() == ItemEvent.SELECTED)
+            } else if (e.getStateChange() == ItemEvent.SELECTED) {
               graph.getModel().getExcusedSubProcessorIds().add(modelId);
-            else
+            } else {
               return;
+            }
             DefaultPropView.this.notifyListeners();
           }
 
@@ -777,8 +787,9 @@ public class DefaultPropView extends View {
       System.out.println(oldKey + " " + oldValue + " " + oldEnvReplace);
       if (e.getType() == TableModelEvent.UPDATE) {
         Metadata staticMet = state.getSelected().getModel().getStaticMetadata();
-        if (staticMet == null)
+        if (staticMet == null) {
           staticMet = new Metadata();
+        }
         if (e.getColumn() == 1) {
           String newGrouplessKey = (String) table.getValueAt(e.getFirstRow(),
               e.getColumn());
@@ -793,11 +804,13 @@ public class DefaultPropView extends View {
           System.out.println("newKey: " + newKey);
           if (oldKey != null) {
             staticMet.replaceMetadata(newKey, staticMet.getAllMetadata(oldKey));
-            if (staticMet.containsKey(oldKey + "/envReplace"))
+            if (staticMet.containsKey(oldKey + "/envReplace")) {
               staticMet.replaceMetadata(newKey,
                   staticMet.getAllMetadata(oldKey + "/envReplace"));
-            if (!newKey.equals(oldKey))
+            }
+            if (!newKey.equals(oldKey)) {
               staticMet.removeMetadata(oldKey);
+            }
             notifyListeners();
           } else {
             staticMet.replaceMetadata(oldKey = newKey, (String) null);
@@ -808,11 +821,12 @@ public class DefaultPropView extends View {
                 e.getColumn());
             if (oldKey.endsWith("/envReplace")) {
               newValue = newValue.toLowerCase();
-              if (newValue.equals("false"))
+              if (newValue.equals("false")) {
                 staticMet.removeMetadata(oldKey);
-              else
+              } else {
                 staticMet.replaceMetadata(oldKey,
                     Arrays.asList(newValue.split(",")));
+              }
             } else {
               staticMet.replaceMetadata(oldKey,
                   Arrays.asList(newValue.split(",")));
@@ -823,10 +837,11 @@ public class DefaultPropView extends View {
           if (oldKey != null) {
             String newEnvReplace = ((String) table.getValueAt(e.getFirstRow(),
                 e.getColumn())).toLowerCase();
-            if (newEnvReplace.equals("true"))
+            if (newEnvReplace.equals("true")) {
               staticMet.replaceMetadata(oldKey + "/envReplace", newEnvReplace);
-            else
+            } else {
               staticMet.removeMetadata(oldKey + "/envReplace");
+            }
             notifyListeners();
           }
         }
@@ -844,10 +859,11 @@ public class DefaultPropView extends View {
   }
 
   private String getKey(String key, ViewState state) {
-    if (key != null && state.getCurrentMetGroup() != null)
+    if (key != null && state.getCurrentMetGroup() != null) {
       return state.getCurrentMetGroup() + "/" + key;
-    else
+    } else {
       return key;
+    }
   }
 
 }

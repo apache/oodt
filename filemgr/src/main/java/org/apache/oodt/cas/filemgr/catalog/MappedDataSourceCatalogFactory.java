@@ -22,8 +22,8 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 
 //JDK imports
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 
@@ -47,13 +47,19 @@ public class MappedDataSourceCatalogFactory extends DataSourceCatalogFactory {
     private static final String TYPE_MAP_KEY = "org.apache.oodt.cas.filemgr."
             + "catalog.mappeddatasource.mapFile";
 
-    public MappedDataSourceCatalogFactory() throws FileNotFoundException,
-            IOException {
+    public MappedDataSourceCatalogFactory() throws
+        IOException {
         super();
         String mapFilePath = PathUtils.replaceEnvVariables(System
                 .getProperty(TYPE_MAP_KEY));
         Properties props = new Properties();
-        props.load(new FileInputStream(mapFilePath));
+        InputStream is = new FileInputStream(mapFilePath);
+        try {
+            props.load(is);
+        }
+        finally{
+            is.close();
+        }
         this.typeMap = props;
     }
 

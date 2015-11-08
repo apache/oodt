@@ -68,24 +68,31 @@ final class History {
 	 * @param incident an {@link Incident} value.
 	 */
 	synchronized void addIncident(Incident incident) {
-		if (!incident.getActivityID().equals(id))
-			throw new IllegalArgumentException("Incident's activity ID " + incident.getActivityID()
-				+ " doesn't match History's ID " + id);
-		if (incidents == null) return;
+		if (!incident.getActivityID().equals(id)) {
+		  throw new IllegalArgumentException("Incident's activity ID " + incident.getActivityID()
+											 + " doesn't match History's ID " + id);
+		}
+		if (incidents == null) {
+		  return;
+		}
 		incidents.add(incident);
-		if (expireHistoryTask != null)
-			expireHistoryTask.cancel();
-		if (incident instanceof ActivityStopped)
-			commit();
-		else if (closeHistoryTask == null)
-			scheduleExpiration();
+		if (expireHistoryTask != null) {
+		  expireHistoryTask.cancel();
+		}
+		if (incident instanceof ActivityStopped) {
+		  commit();
+		} else if (closeHistoryTask == null) {
+		  scheduleExpiration();
+		}
 	}
 
 	/**
 	 * Commit this history by starting the commit-to-close timer.
 	 */
 	private void commit() {
-		if (closeHistoryTask != null) return;
+		if (closeHistoryTask != null) {
+		  return;
+		}
 		TIMER.schedule(closeHistoryTask = new CloseHistoryTask(), closeTime);
 	}
 
@@ -132,7 +139,9 @@ final class History {
 				// current expiration task is this task, then we're clear
 				// to commit the history, and any incidents that arrive
 				// won't reset it.
-				if (expireHistoryTask == this) commit();
+				if (expireHistoryTask == this) {
+				  commit();
+				}
 			}
 		}
 	}
@@ -150,8 +159,8 @@ final class History {
  	private static final Timer TIMER = new Timer(/*isDaemon*/true);
 
 	/** How many milliseconds to wait before giving up on an idle history. */
-	static long idleTime = Long.getLong("org.apache.oodt.commons.activity.History.idle", 5*60*1000).longValue();
+	static long idleTime = Long.getLong("org.apache.oodt.commons.activity.History.idle", 5 * 60 * 1000);
 
 	/** How many milliseconds to wait to give a history extra time to receive incidents before saving it to storage. */
-	static long closeTime = Long.getLong("org.apache.oodt.commons.activity.History.close", 5*60*1000).longValue();
+	static long closeTime = Long.getLong("org.apache.oodt.commons.activity.History.close", 5 * 60 * 1000);
 }

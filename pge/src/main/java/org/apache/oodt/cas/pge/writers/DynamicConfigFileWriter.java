@@ -17,12 +17,15 @@
 package org.apache.oodt.cas.pge.writers;
 
 //JDK imports
+
+import org.apache.oodt.cas.metadata.Metadata;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
 
 /**
  * Abstract interface for generating PGE config input files defining the input
@@ -51,7 +54,7 @@ public abstract class DynamicConfigFileWriter implements SciPgeConfigFileWriter 
 			return this.generateFile(sciPgeConfigFilePath, inputMetadata,
 					logger, customArgs);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 			throw new IOException(e);
 		}
 	}

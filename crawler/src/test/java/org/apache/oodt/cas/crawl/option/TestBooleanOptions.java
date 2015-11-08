@@ -39,7 +39,7 @@ public final class TestBooleanOptions extends TestCase {
         try {
             crawler.getClass().getMethod("setNoRecur",
                     new Class[] { boolean.class }).invoke(crawler,
-                    new Object[] { new Boolean(true) });
+                    new Object[] { true });
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -47,7 +47,7 @@ public final class TestBooleanOptions extends TestCase {
         try {
             crawler.getClass().getMethod("setCrawlForDirs",
                     new Class[] { boolean.class }).invoke(crawler,
-                    new Object[] { new Boolean(true) });
+                    new Object[] { true });
         } catch (Exception e) {
             fail(e.getMessage());
         }

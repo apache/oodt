@@ -43,6 +43,7 @@ public final class EnvUtilities {
 
     private static final Logger LOG = Logger.getLogger(EnvUtilities.class
             .getName());
+    public static final int INT = 4096;
 
     private EnvUtilities() throws InstantiationException {
         throw new InstantiationException("Don't construct utility classes!");
@@ -67,8 +68,9 @@ public final class EnvUtilities {
      */
     public static Properties getEnv() {
         Properties envProps = new Properties();
-        for (Map.Entry<String, String> entry : System.getenv().entrySet())
+        for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
             envProps.setProperty(entry.getKey(), entry.getValue());
+        }
         return envProps;
     }
 
@@ -98,24 +100,27 @@ public final class EnvUtilities {
             envProps = new Properties();
             envProps.load(preProcessInputStream(p.getInputStream()));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Error executing env command: Message: "
                     + e.getMessage());
         } finally {
             try {
-                if (p.getErrorStream() != null)
+                if (p.getErrorStream() != null) {
                     p.getErrorStream().close();
-            } catch (Exception e) {
+                }
+            } catch (Exception ignored) {
             }
             try {
-                if (p.getInputStream() != null)
+                if (p.getInputStream() != null) {
                     p.getInputStream().close();
-            } catch (Exception e) {
+                }
+            } catch (Exception ignored) {
             }
             try {
-                if (p.getOutputStream() != null)
+                if (p.getOutputStream() != null) {
                     p.getOutputStream().close();
-            } catch (Exception e) {
+                }
+            } catch (Exception ignored) {
             }
         }
 
@@ -136,8 +141,8 @@ public final class EnvUtilities {
      *             If any error occurs.
      */
     public static String slurp(InputStream in) throws IOException {
-        StringBuffer out = new StringBuffer();
-        byte[] b = new byte[4096];
+        StringBuilder out = new StringBuilder();
+        byte[] b = new byte[INT];
         for (int n; (n = in.read(b)) != -1;) {
             out.append(new String(b, 0, n));
         }
@@ -145,27 +150,23 @@ public final class EnvUtilities {
     }
 
     protected static InputStream preProcessInputStream(InputStream is)
-            throws Exception {
+        throws IOException {
         // basically read this sucker into a BufferedReader
         // line by line, and replaceAll on \ with \\
         // so \\\\ with \\\\\\\\
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        String line = null;
-        StringBuffer buf = new StringBuffer();
+        String line;
+        StringBuilder buf = new StringBuilder();
 
         while ((line = reader.readLine()) != null) {
             // fix the line
             line = line.replaceAll("\\\\", "\\\\\\\\");
-            buf.append(line + "\n");
+            buf.append(line).append("\n");
         }
 
-        if (reader != null) {
-            try {
-                reader.close();
-            } catch (Exception ignore) {
-            }
-
-            reader = null;
+        try {
+            reader.close();
+        } catch (Exception ignore) {
         }
 
         return new ByteArrayInputStream(buf.toString().getBytes());

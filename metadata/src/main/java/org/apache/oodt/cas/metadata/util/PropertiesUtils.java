@@ -74,8 +74,6 @@ public final class PropertiesUtils {
      * 
      * @param property
      *            The property to read from the system properties.
-     * @param defaultValues
-     *            A default value to use for the property.
      * @return A string properties value
      */
     public static String getProperty(String property, String defaultValue) {

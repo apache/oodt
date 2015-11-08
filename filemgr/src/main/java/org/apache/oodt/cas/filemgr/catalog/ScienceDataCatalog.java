@@ -17,24 +17,6 @@
 package org.apache.oodt.cas.filemgr.catalog;
 
 //JDK imports
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import javax.sql.DataSource;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-//OODT imports
-import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -46,6 +28,24 @@ import org.apache.oodt.cas.filemgr.validation.ValidationLayer;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.commons.date.DateUtils;
 import org.apache.oodt.commons.pagination.PaginationUtils;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.sql.DataSource;
+
+//OODT imports
 
 /**
  * 
@@ -94,7 +94,7 @@ public class ScienceDataCatalog implements Catalog {
       // that do not already exist in the database
       Metadata paramMetadata = getMetadataSubset(m, Pattern.compile("param_*"));
 
-      for (Enumeration keys = paramMetadata.getHashtable().keys(); keys
+      for (Enumeration keys = paramMetadata.getHashTable().keys(); keys
           .hasMoreElements();) {
 
         String key = (String) keys.nextElement();
@@ -201,8 +201,8 @@ public class ScienceDataCatalog implements Catalog {
     } catch (Exception e) {
       LOG.log(Level.WARNING,
           "Exception adding product metadata. Message: " + e.getMessage());
-      e.printStackTrace();
-      throw new CatalogException(e.getMessage());
+      LOG.log(Level.SEVERE, e.getMessage());
+      throw new CatalogException(e.getMessage(), e);
     }
   }
 
@@ -218,9 +218,8 @@ public class ScienceDataCatalog implements Catalog {
     try {
       conn = this.dataSource.getConnection();
       conn.setAutoCommit(true);
-      int count = 0;
       statement = conn.createStatement();
-      ResultSet rs = statement.executeQuery(queryExists.toString());
+      ResultSet rs = statement.executeQuery(queryExists);
       while (rs.next()) {
         granuleId = rs.getInt("granule_id");
       }
@@ -229,7 +228,7 @@ public class ScienceDataCatalog implements Catalog {
       LOG.log(Level.WARNING,
           "SQL Exception querying for granule existence. Last query was: "
               + queryExists + " , Message: " + e.getMessage());
-      throw new SQLException(e.getMessage());
+      throw new SQLException(e.getMessage(), e);
     } finally {
       if (statement != null) {
         try {
@@ -237,7 +236,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -246,7 +244,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -257,7 +254,7 @@ public class ScienceDataCatalog implements Catalog {
         String maxQuery = "SELECT MAX(granule_id) AS max_id FROM granule";
         granuleId = this.commitQuery(new StringBuffer(query), maxQuery);
       } catch (Exception e) {
-        throw new CatalogException(e.getMessage());
+        throw new CatalogException(e.getMessage(), e);
       }
     }
 
@@ -279,7 +276,7 @@ public class ScienceDataCatalog implements Catalog {
       conn.setAutoCommit(true);
       int count = 0;
       statement = conn.createStatement();
-      ResultSet rs = statement.executeQuery(queryExists.toString());
+      ResultSet rs = statement.executeQuery(queryExists);
       while (rs.next()) {
         parameterId = rs.getInt("parameter_id");
       }
@@ -288,7 +285,7 @@ public class ScienceDataCatalog implements Catalog {
       LOG.log(Level.WARNING,
           "SQL Exception querying for parameter existence. Last query was: "
               + queryExists + " , Message: " + e.getMessage());
-      throw new SQLException(e.getMessage());
+      throw new SQLException(e.getMessage(), e);
     } finally {
       if (statement != null) {
         try {
@@ -296,7 +293,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -305,7 +301,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -318,7 +313,7 @@ public class ScienceDataCatalog implements Catalog {
         String maxQuery = "SELECT MAX(parameter_id) AS max_id FROM parameter";
         parameterId = this.commitQuery(new StringBuffer(query), maxQuery);
       } catch (Exception e) {
-        throw new CatalogException(e.getMessage());
+        throw new CatalogException(e.getMessage(), e);
       }
     }
 
@@ -355,14 +350,16 @@ public class ScienceDataCatalog implements Catalog {
           "SQL Exception adding product metadata. Last query was: " + query
               + " , Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(
             Level.SEVERE,
             "Unable to rollback addMetadata transaction. Message: "
                 + e2.getMessage());
       }
-      throw new SQLException(e.getMessage());
+      throw new SQLException(e.getMessage(), e);
     } finally {
       if (statement != null) {
         try {
@@ -370,7 +367,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -379,7 +375,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
   }
@@ -425,14 +420,13 @@ public class ScienceDataCatalog implements Catalog {
         numProducts = rs.getInt("num_products");
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -440,7 +434,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -448,7 +441,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
     }
 
@@ -471,14 +463,13 @@ public class ScienceDataCatalog implements Catalog {
         product = DbStructFactory.toScienceDataProduct(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -486,7 +477,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -494,7 +484,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -518,14 +507,13 @@ public class ScienceDataCatalog implements Catalog {
         product = DbStructFactory.toScienceDataProduct(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -533,7 +521,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -541,7 +528,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -569,14 +555,13 @@ public class ScienceDataCatalog implements Catalog {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -584,7 +569,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -592,7 +576,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -617,14 +600,13 @@ public class ScienceDataCatalog implements Catalog {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -632,7 +614,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -640,7 +621,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -678,14 +658,13 @@ public class ScienceDataCatalog implements Catalog {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -693,7 +672,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -701,7 +679,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -729,14 +706,13 @@ public class ScienceDataCatalog implements Catalog {
         products.add(DbStructFactory.toScienceDataProduct(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -744,7 +720,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -752,7 +727,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -760,7 +734,7 @@ public class ScienceDataCatalog implements Catalog {
     return products;
   }
 
-  public ValidationLayer getValidationLayer() throws CatalogException {
+  public ValidationLayer getValidationLayer() {
     return this.validationLayer;
   }
 
@@ -922,8 +896,7 @@ public class ScienceDataCatalog implements Catalog {
     if (productIds != null && productIds.size() > 0) {
       List<Product> products = new Vector<Product>(productIds.size());
 
-      for (Iterator<String> i = productIds.iterator(); i.hasNext();) {
-        String productId = i.next();
+      for (String productId : productIds) {
         Product p = getProductById(productId);
         products.add(p);
       }
@@ -971,7 +944,7 @@ public class ScienceDataCatalog implements Catalog {
         // must call next first, or else no relative cursor
         if (rs.next()) {
           // grab the first one
-          int numGrabbed = -1;
+          int numGrabbed;
 
           if (pageNum == 1) {
             numGrabbed = 1;
@@ -1001,16 +974,18 @@ public class ScienceDataCatalog implements Catalog {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception performing query. Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE, "Unable to rollback query transaction. Message: "
             + e2.getMessage());
       }
-      throw new CatalogException(e.getMessage());
+      throw new CatalogException(e.getMessage(), e);
     } finally {
 
       if (rs != null) {
@@ -1019,7 +994,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -1028,7 +1002,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -1038,7 +1011,6 @@ public class ScienceDataCatalog implements Catalog {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -1063,14 +1035,13 @@ public class ScienceDataCatalog implements Catalog {
         size = rs.getInt("result_size");
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -1078,7 +1049,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -1086,7 +1056,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -1115,14 +1084,13 @@ public class ScienceDataCatalog implements Catalog {
         startDateTime = DateUtils.toString(cal);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -1130,7 +1098,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -1138,7 +1105,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
     }
 
@@ -1167,14 +1133,13 @@ public class ScienceDataCatalog implements Catalog {
         endDateTime = DateUtils.toString(cal);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -1182,7 +1147,6 @@ public class ScienceDataCatalog implements Catalog {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -1190,7 +1154,6 @@ public class ScienceDataCatalog implements Catalog {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
     }
 
@@ -1220,7 +1183,7 @@ public class ScienceDataCatalog implements Catalog {
 
     Metadata subset = new Metadata();
 
-    for (Object key : m.getHashtable().keySet()) {
+    for (Object key : m.getMap().keySet()) {
 
       Matcher matcher = pattern.matcher((String) key);
       if (matcher.lookingAt()) {

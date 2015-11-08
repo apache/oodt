@@ -45,7 +45,7 @@ public class UseMockClientCmdLineActionStore extends SpringCmdLineActionStore {
       }
    }
 
-   public Set<CmdLineAction> loadSupportedActions() throws CmdLineActionStoreException {
+   public Set<CmdLineAction> loadSupportedActions() {
       Set<CmdLineAction> actions = super.loadSupportedActions();
       for (CmdLineAction action : actions) {
          if (action instanceof FileManagerCliAction) {

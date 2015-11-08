@@ -32,16 +32,16 @@ import org.apache.oodt.cas.resource.structs.exceptions.JobRepositoryException;
  */
 public interface JobRepository {
 
-  public String addJob(JobSpec spec) throws JobRepositoryException;
+  String addJob(JobSpec spec) throws JobRepositoryException;
 
-  public void updateJob(JobSpec spec) throws JobRepositoryException;
+  void updateJob(JobSpec spec) throws JobRepositoryException;
 
-  public void removeJob(JobSpec spec) throws JobRepositoryException;
+  void removeJob(JobSpec spec) throws JobRepositoryException;
   
-  public JobSpec getJobById(String jobId) throws JobRepositoryException;
+  JobSpec getJobById(String jobId) throws JobRepositoryException;
 
-  public String getStatus(JobSpec spec) throws JobRepositoryException;
+  String getStatus(JobSpec spec) throws JobRepositoryException;
 
-  public boolean jobFinished(JobSpec spec) throws JobRepositoryException;
+  boolean jobFinished(JobSpec spec) throws JobRepositoryException;
 
 }

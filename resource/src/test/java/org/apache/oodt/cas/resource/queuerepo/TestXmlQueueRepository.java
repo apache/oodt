@@ -18,15 +18,17 @@
 package org.apache.oodt.cas.resource.queuerepo;
 
 //JDK imports
-import java.io.File;
-import java.util.Arrays;
-
-//OODT imports
 import org.apache.oodt.cas.resource.scheduler.QueueManager;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 
-//Junit imports
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
+
 import junit.framework.TestCase;
+
+//OODT imports
+//Junit imports
 
 /**
  * @author bfoster
@@ -50,21 +52,21 @@ public class TestXmlQueueRepository extends TestCase {
 	
 	public void testMapping() throws QueueManagerException {
 	  assertTrue(this.queueManager.getQueues().containsAll(Arrays.asList("quick", "high", "long")));
-		assertEquals(this.queueManager.getNodes("quick"), Arrays.asList("localhost"));
-		assertEquals(this.queueManager.getNodes("high"), Arrays.asList("localhost"));
-		assertEquals(this.queueManager.getNodes("long"), Arrays.asList("localhost"));
+		assertEquals(this.queueManager.getNodes("quick"), Collections.singletonList("localhost"));
+		assertEquals(this.queueManager.getNodes("high"), Collections.singletonList("localhost"));
+		assertEquals(this.queueManager.getNodes("long"), Collections.singletonList("localhost"));
 		assertTrue(this.queueManager.getQueues("localhost").containsAll(Arrays.asList("quick", "high", "long")));
 		
 		this.queueManager.addQueue("test-queue-1");
 		this.queueManager.addNodeToQueue("test-node-1", "test-queue-1");
 		
-		assertEquals(this.queueManager.getQueues("test-node-1"), Arrays.asList("test-queue-1"));
+		assertEquals(this.queueManager.getQueues("test-node-1"), Collections.singletonList("test-queue-1"));
 
 		this.queueManager.addNodeToQueue("test-node-1","quick");
 		assertEquals(this.queueManager.getQueues("test-node-1"), Arrays.asList("quick", "test-queue-1"));
 		
 		this.queueManager.removeQueue("quick");
-		assertEquals(this.queueManager.getQueues("test-node-1"), Arrays.asList("test-queue-1"));
+		assertEquals(this.queueManager.getQueues("test-node-1"), Collections.singletonList("test-queue-1"));
 		assertEquals(this.queueManager.getQueues("localhost"), Arrays.asList("high", "long"));
 	}
 	

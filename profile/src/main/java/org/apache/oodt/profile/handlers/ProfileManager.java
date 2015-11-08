@@ -66,7 +66,7 @@ public interface ProfileManager extends ProfileHandler {
 	 * @return True if <var>profile</var> is present in the server, false otherwise.
 	 * @throws ProfileException If any error occurs.
 	 */
-	boolean contains(Profile profile) throws ProfileException;
+	boolean contains(Profile profile);
 
 	/**
 	 * Tell if the given collection of profiles are managed by this server.
@@ -76,7 +76,7 @@ public interface ProfileManager extends ProfileHandler {
 	 * the server, false otherwise.
 	 * @throws ProfileException If any error occurs.
 	 */
-	boolean containsAll(Collection collection) throws ProfileException;
+	boolean containsAll(Collection collection);
 
 	/**
 	 * Get all profiles.
@@ -84,7 +84,7 @@ public interface ProfileManager extends ProfileHandler {
 	 * @return  A collection of profiles
 	 * @throws ProfileException If any error occurs.
 	 */
-	Collection getAll() throws ProfileException;
+	Collection getAll();
 
 	/**
 	 * Tell if the set of profiles managed by this server is empty.
@@ -92,7 +92,7 @@ public interface ProfileManager extends ProfileHandler {
 	 * @return True if there are no profiles in this server.
 	 * @throws ProfileException If any error occurs.
 	 */
-	boolean isEmpty() throws ProfileException;
+	boolean isEmpty();
 
 	/**
 	 * Iterate over the available profiles.
@@ -104,7 +104,7 @@ public interface ProfileManager extends ProfileHandler {
 	 * @return An iterator over {@link Profile}s.
 	 * @throws ProfileException If any error occurs.
 	 */
-	Iterator iterator() throws ProfileException;
+	Iterator iterator();
 
 	/**
 	 * Remove the profile with the given ID.
@@ -137,7 +137,7 @@ public interface ProfileManager extends ProfileHandler {
 	 * @return The number of available profiles.
 	 * @throws ProfileException If any error occurs.
 	 */
-	int size() throws ProfileException;
+	int size();
 
 	/**
 	 * Replace a profile into the set of profiles managed by this profile server.

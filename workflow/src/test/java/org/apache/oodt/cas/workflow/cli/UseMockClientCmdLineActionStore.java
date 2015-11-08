@@ -17,14 +17,14 @@
 package org.apache.oodt.cas.workflow.cli;
 
 //JDK imports
+import org.apache.oodt.cas.cli.action.CmdLineAction;
+import org.apache.oodt.cas.cli.action.store.spring.SpringCmdLineActionStore;
+import org.apache.oodt.cas.workflow.cli.action.WorkflowCliAction;
+import org.apache.oodt.cas.workflow.system.MockXmlRpcWorkflowManagerClient;
+
 import java.util.Set;
 
 //OODT imports
-import org.apache.oodt.cas.cli.action.CmdLineAction;
-import org.apache.oodt.cas.cli.action.store.spring.SpringCmdLineActionStore;
-import org.apache.oodt.cas.cli.exception.CmdLineActionStoreException;
-import org.apache.oodt.cas.workflow.cli.action.WorkflowCliAction;
-import org.apache.oodt.cas.workflow.system.MockXmlRpcWorkflowManagerClient;
 
 /**
  * A {@link SpringCmdLineActionStore} which sets {@link WorkflowCliAction}s
@@ -45,7 +45,7 @@ public class UseMockClientCmdLineActionStore extends SpringCmdLineActionStore {
       }
    }
 
-   public Set<CmdLineAction> loadSupportedActions() throws CmdLineActionStoreException {
+   public Set<CmdLineAction> loadSupportedActions() {
       Set<CmdLineAction> actions = super.loadSupportedActions();
       for (CmdLineAction action : actions) {
          if (action instanceof WorkflowCliAction) {

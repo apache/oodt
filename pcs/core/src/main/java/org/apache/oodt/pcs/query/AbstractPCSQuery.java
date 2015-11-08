@@ -44,7 +44,7 @@ public abstract class AbstractPCSQuery implements PCSQuery {
   }
 
   /**
-   * Wrapper method around {@link #fm.safeGetElementByName}.
+   * Wrapper method around .
    * 
    * @param elemName
    *          The name of the metadata element to obtain the ID for.
@@ -52,8 +52,9 @@ public abstract class AbstractPCSQuery implements PCSQuery {
    */
   protected String getElemId(String elemName) {
     Element elem = fm.safeGetElementByName(elemName);
-    if (elem == null)
+    if (elem == null) {
       return null;
+    }
 
     return elem.getElementId();
   }

@@ -29,5 +29,5 @@ public interface BackendRepository {
      * Load the backend.
      * @return BackendManager all set up and ready to go.
      */
-    public BackendManager load() throws RepositoryException;
+    BackendManager load() throws RepositoryException;
 }

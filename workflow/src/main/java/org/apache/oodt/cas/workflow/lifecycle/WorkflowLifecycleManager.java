@@ -20,7 +20,6 @@ package org.apache.oodt.cas.workflow.lifecycle;
 
 //JDK imports
 import java.text.NumberFormat;
-import java.util.Iterator;
 import java.util.List;
 
 //OODT imports
@@ -71,8 +70,9 @@ public class WorkflowLifecycleManager {
         WorkflowLifecycleStage stage = getStage(inst);
         if (stage != null) {
             return stage.getOrder();
-        } else
+        } else {
             return -1;
+        }
     }
 
     /**
@@ -91,8 +91,9 @@ public class WorkflowLifecycleManager {
         WorkflowLifecycle lifecycle = getLifecycleForWorkflow(workflow);
         if (lifecycle != null) {
             return lifecycle.getStages().size();
-        } else
+        } else {
             return -1;
+        }
     }
 
     /**
@@ -110,11 +111,11 @@ public class WorkflowLifecycleManager {
         WorkflowLifecycle lifecycle = getLifecycleForWorkflow(inst
                 .getWorkflow());
         if (lifecycle != null) {
-            WorkflowLifecycleStage stage = lifecycle.getStageForWorkflow(inst
+            return lifecycle.getStageForWorkflow(inst
                     .getStatus());
-            return stage;
-        } else
+        } else {
             return null;
+        }
     }
 
     /**
@@ -131,8 +132,7 @@ public class WorkflowLifecycleManager {
         int numStages = getNumStages(inst.getWorkflow());
         int lastCompletedStageNum = getLastCompletedStageNum(inst);
 
-        double pct = (double) ((lastCompletedStageNum * 1.0) / (numStages * 1.0));
-        return pct;
+        return (double) ((lastCompletedStageNum * 1.0) / (numStages * 1.0));
     }
 
     /**
@@ -157,11 +157,11 @@ public class WorkflowLifecycleManager {
         WorkflowLifecycle defaultLifecycle = null;
 
         if (this.lifecycles != null && this.lifecycles.size() > 0) {
-            for (Iterator i = this.lifecycles.iterator(); i.hasNext();) {
-                WorkflowLifecycle lifecycle = (WorkflowLifecycle) i.next();
+            for (Object lifecycle1 : this.lifecycles) {
+                WorkflowLifecycle lifecycle = (WorkflowLifecycle) lifecycle1;
 
                 if (lifecycle.getName().equals(
-                        WorkflowLifecycle.DEFAULT_LIFECYCLE)) {
+                    WorkflowLifecycle.DEFAULT_LIFECYCLE)) {
                     defaultLifecycle = lifecycle;
                 }
             }
@@ -185,21 +185,22 @@ public class WorkflowLifecycleManager {
         WorkflowLifecycle defaultLifecycle = null;
 
         if (this.lifecycles != null && this.lifecycles.size() > 0) {
-            for (Iterator i = this.lifecycles.iterator(); i.hasNext();) {
-                WorkflowLifecycle lifecycle = (WorkflowLifecycle) i.next();
+            for (Object lifecycle1 : this.lifecycles) {
+                WorkflowLifecycle lifecycle = (WorkflowLifecycle) lifecycle1;
                 if (lifecycle.getWorkflowId().equals(workflow.getId())) {
                     return lifecycle;
                 }
 
                 if (lifecycle.getName().equals(
-                        WorkflowLifecycle.DEFAULT_LIFECYCLE)) {
+                    WorkflowLifecycle.DEFAULT_LIFECYCLE)) {
                     defaultLifecycle = lifecycle;
                 }
             }
 
             return defaultLifecycle;
-        } else
+        } else {
             return null;
+        }
     }
 
     /**
@@ -213,7 +214,7 @@ public class WorkflowLifecycleManager {
     public int getLastCompletedStageNum(WorkflowInstance inst) {  
         int currStageNum = getStageNum(inst);
         if(inst.getState().getCategory() == null){
-          WorkflowLifecycleStage category = null;
+          WorkflowLifecycleStage category;
           if((category = getStage(inst)) != null){
             inst.getState().setCategory(category);
           }          
@@ -224,8 +225,9 @@ public class WorkflowLifecycleManager {
              inst.getState().getCategory().getName().equals("done")))
                 && currStageNum == getNumStages(inst.getWorkflow())) {
             return currStageNum;
-        } else
+        } else {
             return currStageNum - 1;
+        }
     }
 
 }

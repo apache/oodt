@@ -18,14 +18,16 @@
 package org.apache.oodt.cas.resource.scheduler;
 
 //OODT imports
+
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
 
-//JDK imports
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+//JDK imports
 
 /**
  * 
@@ -49,53 +51,62 @@ public class QueueManager {
 	}
 	
 	public synchronized void addNodeToQueue(String nodeId, String queueName) throws QueueManagerException {
-		if (queueName == null || !this.queueToNodesMapping.containsKey(queueName)) 
-			throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		if (queueName == null || !this.queueToNodesMapping.containsKey(queueName)) {
+		  throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		}
 		
 		// add node to queue
 		LinkedHashSet<String> nodes = this.queueToNodesMapping.get(queueName);
-		if (nodes == null)
-			nodes = new LinkedHashSet<String>();
+		if (nodes == null) {
+		  nodes = new LinkedHashSet<String>();
+		}
 		nodes.add(nodeId);
 		
 		// put node list back into map
 		this.queueToNodesMapping.put(queueName, nodes);
 	}
 
-	public synchronized void addQueue(String queueName) throws QueueManagerException {
-		if (queueName != null && !this.queueToNodesMapping.containsKey(queueName)) 
-			this.queueToNodesMapping.put(queueName, new LinkedHashSet<String>());
+	public synchronized void addQueue(String queueName) {
+		if (queueName != null && !this.queueToNodesMapping.containsKey(queueName)) {
+		  this.queueToNodesMapping.put(queueName, new LinkedHashSet<String>());
+		}
 	}
 
 	public synchronized List<String> getNodes(String queueName) throws QueueManagerException {
-		if (queueName != null && this.queueToNodesMapping.containsKey(queueName)) 
-			return new Vector<String>(this.queueToNodesMapping.get(queueName));
-		else
-			throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		if (queueName != null && this.queueToNodesMapping.containsKey(queueName)) {
+		  return new Vector<String>(this.queueToNodesMapping.get(queueName));
+		} else {
+		  throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		}
 	}
 	
-	public synchronized List<String> getQueues() throws QueueManagerException {
+	public synchronized List<String> getQueues() {
 		return new Vector<String>(this.queueToNodesMapping.keySet());
 	}
 
-	public synchronized List<String> getQueues(String nodeId) throws QueueManagerException {
-		Vector<String> queueNames = new Vector<String>();
-		for (String queueName : this.queueToNodesMapping.keySet()) 
-			if (this.queueToNodesMapping.get(queueName).contains(nodeId))
-				queueNames.add(queueName);
+	public synchronized Vector<String> getQueues(String nodeId) {
+		Vector<String>
+			queueNames = new Vector<String>();
+		for (Map.Entry<String, LinkedHashSet<String>> queueName : this.queueToNodesMapping.entrySet()) {
+		  if (queueName.getValue().contains(nodeId)) {
+			queueNames.add(queueName.getKey());
+		  }
+		}
 		return queueNames;
 	}
 
 	public synchronized void removeNodeFromQueue(String nodeId, String queueName) throws QueueManagerException {
-		if (queueName != null && this.queueToNodesMapping.containsKey(queueName)) 
-			this.queueToNodesMapping.get(queueName).remove(nodeId);
-		else
-			throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		if (queueName != null && this.queueToNodesMapping.containsKey(queueName)) {
+		  this.queueToNodesMapping.get(queueName).remove(nodeId);
+		} else {
+		  throw new QueueManagerException("Queue '" + queueName + "' does not exist");
+		}
 	}
 
-	public synchronized void removeQueue(String queueName) throws QueueManagerException {
-		if (queueName != null) 
-			this.queueToNodesMapping.remove(queueName);
+	public synchronized void removeQueue(String queueName) {
+		if (queueName != null) {
+		  this.queueToNodesMapping.remove(queueName);
+		}
 	}
 	
 }

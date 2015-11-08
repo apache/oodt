@@ -27,14 +27,15 @@ import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.structs.exceptions.IngestException;
 import org.apache.oodt.cas.metadata.Metadata;
 
-//JDK imports
+import net.sf.json.JSONObject;
+
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -42,7 +43,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//JAX-RS imports
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -51,8 +51,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
+//JDK imports
+//JAX-RS imports
 //JSON imports
-import net.sf.json.JSONObject;
 
 /**
  * 
@@ -104,7 +105,7 @@ public class IngestionResource extends CurationService {
           CurationService.config.getMetExtrConfUploadPath()),
           metExtractorConfigId));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       String errorMsg = "Unable to load extractor config from metExtCfgId: ["
           + metExtractorConfigId + "]";
       LOG.log(Level.WARNING, errorMsg);
@@ -153,7 +154,7 @@ public class IngestionResource extends CurationService {
     Ingester ingest = this.configureIngester();
     MetadataResource metService = new MetadataResource();
     for (String file : task.getFileList()) {
-      Metadata fileMet = null;
+      Metadata fileMet;
       try {
         String vFilePath = this.getVirtualPath(CurationService.config
             .getStagingAreaPath(), file);
@@ -163,7 +164,7 @@ public class IngestionResource extends CurationService {
         fileMet = metService.getStagingMetadata(vFilePath, task.getExtConf()
             .getIdentifier(), false);
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         return this.encodeIngestResponseAsHTML(false, e.getMessage());
       }
 
@@ -171,7 +172,7 @@ public class IngestionResource extends CurationService {
         ingest.ingest(safeGetUrl(CurationService.config.getFileMgrURL()),
             new File(file), fileMet);
       } catch (IngestException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         return this.encodeIngestResponseAsHTML(false, e.getMessage());
       }
 
@@ -183,7 +184,7 @@ public class IngestionResource extends CurationService {
   }
 
   private String encodeTaskListAsHTML(List<IngestionTask> taskList) {
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
 
     for (IngestionTask task : taskList) {
       out.append("<tr>");
@@ -224,7 +225,7 @@ public class IngestionResource extends CurationService {
   private String encodeTaskListAsJSON(List<IngestionTask> taskList) {
     List<Map<String, String>> jsonFriendlyTaskList = new Vector<Map<String, String>>();
     for (IngestionTask task : taskList) {
-      Map<String, String> taskPropMap = new HashMap<String, String>();
+      Map<String, String> taskPropMap = new ConcurrentHashMap<String, String>();
       taskPropMap.put("id", task.getId());
       taskPropMap.put("createDate", DateUtils.getDateAsISO8601String(task
           .getCreateDate()));
@@ -245,7 +246,7 @@ public class IngestionResource extends CurationService {
   }
 
   private String encodeIngestResponseAsHTML(boolean success, String msg) {
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
     if (success) {
       out.append("Success");
     } else {
@@ -255,7 +256,7 @@ public class IngestionResource extends CurationService {
   }
 
   private String encodeIngestResponseAsJSON(boolean success, String msg) {
-    Map<String, Object> resMap = new HashMap<String, Object>();
+    Map<String, Object> resMap = new ConcurrentHashMap<String, Object>();
     resMap.put("success", success);
     resMap.put("msg", msg);
     JSONObject resObj = new JSONObject();
@@ -265,15 +266,14 @@ public class IngestionResource extends CurationService {
   }
 
   private Ingester configureIngester() {
-    StdIngester ingest = new StdIngester(DATA_TRANSFER_SERVICE);
-    return ingest;
+    return new StdIngester(DATA_TRANSFER_SERVICE);
   }
 
   private URL safeGetUrl(String urlStr) {
     try {
       return new URL(urlStr);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -298,17 +298,17 @@ public class IngestionResource extends CurationService {
     try {
       return fullFilePath.substring(startIdx);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
 
   class IngestionTaskList {
 
-    private HashMap<String, IngestionTask> taskMap;
+    private ConcurrentHashMap<String, IngestionTask> taskMap;
 
     public IngestionTaskList() {
-      this.taskMap = new HashMap<String, IngestionTask>();
+      this.taskMap = new ConcurrentHashMap<String, IngestionTask>();
     }
 
     public synchronized String addIngestionTask(IngestionTask task) {
@@ -335,8 +335,9 @@ public class IngestionResource extends CurationService {
             return -1;
           } else if (o1.getCreateDate().equals(o2.getCreateDate())) {
             return 0;
-          } else
+          } else {
             return 1;
+          }
         }
       });
       return taskList;

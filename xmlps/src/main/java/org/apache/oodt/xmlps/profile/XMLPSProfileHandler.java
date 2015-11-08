@@ -17,31 +17,27 @@
 
 package org.apache.oodt.xmlps.profile;
 
-//OODT imports
+import org.apache.oodt.profile.Profile;
+import org.apache.oodt.profile.ProfileException;
+import org.apache.oodt.profile.handlers.ProfileHandler;
+import org.apache.oodt.xmlps.exceptions.XmlpsException;
 import org.apache.oodt.xmlps.mapping.DatabaseTable;
 import org.apache.oodt.xmlps.mapping.MappingReader;
 import org.apache.oodt.xmlps.product.XMLPSProductHandler;
-import org.apache.oodt.xmlps.profile.DBMSExecutor;
 import org.apache.oodt.xmlps.queryparser.Expression;
 import org.apache.oodt.xmlps.queryparser.HandlerQueryParser;
+import org.apache.oodt.xmlquery.QueryElement;
+import org.apache.oodt.xmlquery.XMLQuery;
 
-//JDK imports
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OODT imports
-import org.apache.oodt.profile.Profile;
-import org.apache.oodt.profile.ProfileException;
-import org.apache.oodt.profile.handlers.ProfileHandler;
-import org.apache.oodt.xmlquery.QueryElement;
-import org.apache.oodt.xmlquery.XMLQuery;
 
 /**
  * 
@@ -93,9 +89,9 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
                         .load(new FileInputStream(dbPropFilePath));
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new InstantiationException(e.getMessage());
             }
 
@@ -118,11 +114,10 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
             translateToDomain(selectSet, true);
             translateToDomain(whereSet, false);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ProfileException(e.getMessage());
         }
-        List<Profile> profs = queryAndPackageProfiles(query);
-        return profs;
+        return queryAndPackageProfiles(query);
     }
 
     /*
@@ -150,16 +145,16 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
                 this.mapping);
         List<Profile> profs = null;
 
-        StringBuffer sqlBuf = new StringBuffer("SELECT *");
+        StringBuilder sqlBuf = new StringBuilder("SELECT *");
         sqlBuf.append(" FROM ");
         sqlBuf.append(mapping.getDefaultTable());
         sqlBuf.append(" ");
 
         if (mapping.getNumTables() > 0) {
-            for (Iterator<String> i = mapping.getTableNames().iterator(); i
-                    .hasNext();) {
-                String tableName = i.next();
-                if(tableName.equals(mapping.getDefaultTable())) continue;
+            for (String tableName : mapping.getTableNames()) {
+                if (tableName.equals(mapping.getDefaultTable())) {
+                    continue;
+                }
                 DatabaseTable tbl = mapping.getTableByName(tableName);
                 sqlBuf.append("INNER JOIN ");
                 sqlBuf.append(tbl.getName());
@@ -188,7 +183,7 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
                         .toString(), this.resLocationSpec);
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING, "Error executing sql: ["
                         + sqlBuf.toString() + "]: Message: " + e.getMessage());
             }
@@ -198,7 +193,7 @@ public class XMLPSProfileHandler extends XMLPSProductHandler implements
     }
 
     protected void translateToDomain(List<QueryElement> elemSet,
-            boolean selectSet) throws Exception {
+            boolean selectSet) throws XmlpsException {
         super.translateToDomain(elemSet, selectSet);
     }
 

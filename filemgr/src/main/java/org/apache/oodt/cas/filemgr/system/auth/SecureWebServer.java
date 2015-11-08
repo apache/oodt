@@ -18,14 +18,14 @@
 package org.apache.oodt.cas.filemgr.system.auth;
 
 //JDK imports
-import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
-import java.util.Vector;
+import org.apache.xmlrpc.AuthenticatedXmlRpcHandler;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 //XML-RPC imports
-import org.apache.xmlrpc.AuthenticatedXmlRpcHandler;
 
 /**
  * An XML-RPC Web Server that requires authentication and authorization.
@@ -44,7 +44,7 @@ public final class SecureWebServer extends org.apache.xmlrpc.WebServer
      * @throws IOException
      *             If any error occurs.
      */
-    public SecureWebServer(int port) throws IOException {
+    public SecureWebServer(int port) {
         super(port);
         addHandler("$default", this);
     }
@@ -61,12 +61,13 @@ public final class SecureWebServer extends org.apache.xmlrpc.WebServer
      * @pass The password to use for the user.
      */
     public Object execute(String methodSpecifier, Vector params, String user,
-            String password) throws Exception {
-        for (Iterator i = dispatchers.iterator(); i.hasNext();) {
-            Result rc = ((Dispatcher) i.next()).handleRequest(methodSpecifier,
-                    params, user, password);
-            if (rc != null)
+            String password) {
+        for (Object dispatcher : dispatchers) {
+            Result rc = ((Dispatcher) dispatcher).handleRequest(methodSpecifier,
+                params, user, password);
+            if (rc != null) {
                 return rc.getValue();
+            }
         }
         throw new IllegalStateException(
                 "No request dispatcher was able to return a non-null value to the XML-RPC caller");
@@ -81,9 +82,10 @@ public final class SecureWebServer extends org.apache.xmlrpc.WebServer
      * 
      */
     public void addDispatcher(Dispatcher dispatcher) {
-        if (dispatcher == null)
+        if (dispatcher == null) {
             throw new IllegalArgumentException(
-                    "Non-null dispatchers are illegal");
+                "Non-null dispatchers are illegal");
+        }
         dispatchers.add(dispatcher);
     }
 

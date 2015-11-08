@@ -15,8 +15,14 @@
 
 package org.apache.oodt.commons.util;
 
-import java.io.*;
-import org.apache.oodt.commons.io.*;
+import org.apache.oodt.commons.io.Base64DecodingInputStream;
+import org.apache.oodt.commons.io.Base64EncodingOutputStream;
+
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /** Base 64 encoding and decoding.
  *
@@ -55,19 +61,25 @@ public class Base64 {
 	 * @return Base-64 encoded <var>data</var>
 	 */
 	public static byte[] encode(final byte[] data, int offset, int length) {
-		if (data == null) return null;
-		if (offset < 0 || offset > data.length)
-			throw new IndexOutOfBoundsException("Can't encode at index " + offset + " which is beyond array bounds 0.."
-				+ data.length);
-		if (length < 0) throw new IllegalArgumentException("Can't encode a negative amount of data");
-		if (offset + length > data.length)
-			throw new IndexOutOfBoundsException("Can't encode beyond right edge of array");
+		if (data == null) {
+		  return null;
+		}
+		if (offset < 0 || offset > data.length) {
+		  throw new IndexOutOfBoundsException("Can't encode at index " + offset + " which is beyond array bounds 0.."
+											  + data.length);
+		}
+		if (length < 0) {
+		  throw new IllegalArgumentException("Can't encode a negative amount of data");
+		}
+		if (offset + length > data.length) {
+		  throw new IndexOutOfBoundsException("Can't encode beyond right edge of array");
+		}
 		
 		int i, j;
 		byte dest[] = new byte[((length+2)/3)*4];
 
 		// Convert groups of 3 bytes into 4.
-		for (i = 0 + offset, j = 0; i < offset + length - 2; i += 3) {
+		for (i = offset, j = 0; i < offset + length - 2; i += 3) {
 			dest[j++] = (byte) ((data[i] >>> 2) & 077);
 			dest[j++] = (byte) ((data[i+1] >>> 4) & 017 | (data[i] << 4) & 077);
 			dest[j++] = (byte) ((data[i+2] >>> 6) & 003 | (data[i+1] << 2) & 077);
@@ -80,21 +92,30 @@ public class Base64 {
 			if (i < offset + length - 1) {
 				dest[j++] = (byte) ((data[i+1] >>> 4) & 017 | (data[i] << 4) & 077);
 				dest[j++] = (byte) ((data[i+1] << 2) & 077);
-			} else
-				dest[j++] = (byte) ((data[i] << 4) & 077);
+			} else {
+			  dest[j++] = (byte) ((data[i] << 4) & 077);
+			}
 		}
 
 		// Now, map those onto base 64 printable ASCII.
 		for (i = 0; i <j; i++) {
-			if      (dest[i] < 26)  dest[i] = (byte)(dest[i] + 'A');
-			else if (dest[i] < 52)  dest[i] = (byte)(dest[i] + 'a'-26);
-			else if (dest[i] < 62)  dest[i] = (byte)(dest[i] + '0'-52);
-			else if (dest[i] < 63)  dest[i] = (byte) '+';
-			else                    dest[i] = (byte) '/';
+			if      (dest[i] < 26) {
+			  dest[i] = (byte) (dest[i] + 'A');
+			} else if (dest[i] < 52) {
+			  dest[i] = (byte) (dest[i] + 'a' - 26);
+			} else if (dest[i] < 62) {
+			  dest[i] = (byte) (dest[i] + '0' - 52);
+			} else if (dest[i] < 63) {
+			  dest[i] = (byte) '+';
+			} else {
+			  dest[i] = (byte) '/';
+			}
 		}
 
 		// Pad the result with and we're done.
-		for (; i < dest.length; i++) dest[i] = (byte) '=';
+		for (; i < dest.length; i++) {
+		  dest[i] = (byte) '=';
+		}
 		return dest;
 	}
 
@@ -121,31 +142,42 @@ public class Base64 {
 	 * @return Decoded <var>data</var>.
 	 */
 	public static byte[] decode(final byte[] data, int offset, int length) {
-		if (data == null) return null;
-		if (offset < 0 || offset >= data.length)
-			throw new IndexOutOfBoundsException("Can't decode at index " + offset + " which is beyond array bounds 0.."
-				+ (data.length-1));
-		if (length < 0) throw new IllegalArgumentException("Can't decode a negative amount of data");
-		if (offset + length > data.length)
-			throw new IndexOutOfBoundsException("Can't decode beyond right edge of array");
+		if (data == null) {
+		  return null;
+		}
+		if (offset < 0 || offset >= data.length) {
+		  throw new IndexOutOfBoundsException("Can't decode at index " + offset + " which is beyond array bounds 0.."
+											  + (data.length - 1));
+		}
+		if (length < 0) {
+		  throw new IllegalArgumentException("Can't decode a negative amount of data");
+		}
+		if (offset + length > data.length) {
+		  throw new IndexOutOfBoundsException("Can't decode beyond right edge of array");
+		}
 
 		// Ignore any padding at the end.
 		int tail = offset + length - 1;
-		while (tail >= offset && data[tail] == '=')
-			--tail;
+		while (tail >= offset && data[tail] == '=') {
+		  --tail;
+		}
 		byte dest[] = new byte[tail + offset + 1 - length/4];
 
 		// First, convert from base-64 ascii to 6 bit bytes.
 		for (int i = offset; i < offset+length; i++) {
-			if      (data[i] == '=') data[i] = 0;
-			else if (data[i] == '/') data[i] = 63;
-			else if (data[i] == '+') data[i] = 62;
-			else if (data[i] >= '0' && data[i] <= '9')
-				data[i] = (byte)(data[i] - ('0' - 52));
-			else if (data[i] >= 'a'  &&  data[i] <= 'z')
-				data[i] = (byte)(data[i] - ('a' - 26));
-			else if (data[i] >= 'A'  &&  data[i] <= 'Z')
-				data[i] = (byte)(data[i] - 'A');
+			if      (data[i] == '=') {
+			  data[i] = 0;
+			} else if (data[i] == '/') {
+			  data[i] = 63;
+			} else if (data[i] == '+') {
+			  data[i] = 62;
+			} else if (data[i] >= '0' && data[i] <= '9') {
+			  data[i] = (byte) (data[i] - ('0' - 52));
+			} else if (data[i] >= 'a'  &&  data[i] <= 'z') {
+			  data[i] = (byte) (data[i] - ('a' - 26));
+			} else if (data[i] >= 'A'  &&  data[i] <= 'Z') {
+			  data[i] = (byte) (data[i] - 'A');
+			}
 		}
 
 		// Map those from 4 6-bit byte groups onto 3 8-bit byte groups.
@@ -157,10 +189,12 @@ public class Base64 {
 		}
 
 		// And get the leftover ...
-		if (j < dest.length)
-			dest[j] = (byte) (((data[i] << 2) & 255) | ((data[i+1] >>> 4) & 003));
-		if (++j < dest.length)
-			dest[j] = (byte) (((data[i+1] << 4) & 255) | ((data[i+2] >>> 2) & 017));
+		if (j < dest.length) {
+		  dest[j] = (byte) (((data[i] << 2) & 255) | ((data[i + 1] >>> 4) & 003));
+		}
+		if (++j < dest.length) {
+		  dest[j] = (byte) (((data[i + 1] << 4) & 255) | ((data[i + 2] >>> 2) & 017));
+		}
 
 		// That's it.
 		return dest;
@@ -176,17 +210,17 @@ public class Base64 {
 	 *
 	 * @param argv Command-line arguments.
 	 */
-	public static void main(String[] argv) throws Exception {
+	public static void main(String[] argv) throws IOException {
 		if (argv.length < 1 || argv.length > 2) {
 			System.err.println("Usage: encode|decode [file]");
 			System.exit(1);
 		}
 		boolean encode = true;
-		if ("encode".equals(argv[0]))
-			encode = true;
-		else if ("decode".equals(argv[0]))
-			encode = false;
-		else {
+		if ("encode".equals(argv[0])) {
+		  encode = true;
+		} else if ("decode".equals(argv[0])) {
+		  encode = false;
+		} else {
 			System.err.println("Specify either \"encode\" or \"decode\"");
 			System.exit(1);
 		}
@@ -202,8 +236,9 @@ public class Base64 {
 		}
 		byte[] buf = new byte[512];
 		int numRead;
-		while ((numRead = in.read(buf)) != -1)
-			out.write(buf, 0, numRead);
+		while ((numRead = in.read(buf)) != -1) {
+		  out.write(buf, 0, numRead);
+		}
 		in.close();
 		out.close();
 		System.exit(0);

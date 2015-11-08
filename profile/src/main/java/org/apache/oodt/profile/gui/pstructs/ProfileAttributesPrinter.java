@@ -25,7 +25,6 @@ package org.apache.oodt.profile.gui.pstructs;
 
 
 import org.apache.oodt.profile.ProfileAttributes;
-import java.util.Iterator;
 
 /**
  * @author mattmann
@@ -55,18 +54,18 @@ public class ProfileAttributesPrinter {
 		rStr+="\t<profStatusId>"+myProfAttributes.getStatusID()+"</profStatusId>\n";
 		rStr+="\t<profSecurityType>"+myProfAttributes.getSecurityType()+"</profSecurityType>\n";
 		rStr+="\t<profParentId>"+myProfAttributes.getParent()+"</profParentId>\n";
-		
-		for(Iterator i = myProfAttributes.getChildren().iterator(); i.hasNext(); ){
-			String theChild = (String)i.next();
-			rStr+="\t<profChildId>"+theChild+"</profChildId>\n";
-		}
+
+	  for (Object o1 : myProfAttributes.getChildren()) {
+		String theChild = (String) o1;
+		rStr += "\t<profChildId>" + theChild + "</profChildId>\n";
+	  }
 		
 		rStr+="\t<profRegAuthority>"+myProfAttributes.getRegAuthority()+"</profRegAuthority>\n";
-		
-		for(Iterator i = myProfAttributes.getRevisionNotes().iterator(); i.hasNext(); ){
-			String theNote = (String)i.next();
-			rStr+="\t<profRevisionNote>"+theNote+"</profRevisionNote>\n";
-		}
+
+	  for (Object o : myProfAttributes.getRevisionNotes()) {
+		String theNote = (String) o;
+		rStr += "\t<profRevisionNote>" + theNote + "</profRevisionNote>\n";
+	  }
 		
 		rStr+="</profAttributes>\n\n";
 		

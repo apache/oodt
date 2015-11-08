@@ -24,14 +24,15 @@ import org.apache.oodt.cas.metadata.MetExtractorConfigReader;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractorConfigReaderException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
-
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Vector;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Vector;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -62,13 +63,13 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
                     .getAttribute(WORKING_DIR_ATTR)));
             String metFileExt = PathUtils.replaceEnvVariables(execElement
                     .getAttribute(MET_FILE_EXT_ATTR));
-            if (!metFileExt.equals(""))
-                config.setMetFileExt(metFileExt);
+            if (!metFileExt.equals("")) {
+              config.setMetFileExt(metFileExt);
+            }
             Element binPathElem = XMLUtils.getFirstElement(
                     EXTRACTOR_BIN_PATH_TAG, execElement);
             String binPath = XMLUtils.getSimpleElementText(binPathElem);
-            if (Boolean.valueOf(binPathElem.getAttribute(ENV_REPLACE_ATTR))
-                    .booleanValue()) {
+            if (Boolean.valueOf(binPathElem.getAttribute(ENV_REPLACE_ATTR))) {
                 binPath = PathUtils.replaceEnvVariables(binPath);
             }
 
@@ -88,31 +89,31 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
                     Vector argVector = new Vector();
                     for (int i = 0; i < argNodes.getLength(); i++) {
                         Element argElem = (Element) argNodes.item(i);
-                        String argStr = null;
+                        String argStr;
                         if (Boolean.valueOf(
-                                argElem.getAttribute(IS_DATA_FILE_ATTR)
-                                        .toLowerCase()).booleanValue())
-                            argStr = DATA_FILE_PLACE_HOLDER;
-                        else if (Boolean.valueOf(
-                                argElem.getAttribute(IS_MET_FILE_ATTR)
-                                        .toLowerCase()).booleanValue())
-                            argStr = MET_FILE_PLACE_HOLDER;
-                        else
-                            argStr = XMLUtils.getSimpleElementText(argElem);
+                            argElem.getAttribute(IS_DATA_FILE_ATTR)
+                                   .toLowerCase())) {
+                          argStr = DATA_FILE_PLACE_HOLDER;
+                        } else if (Boolean.valueOf(
+                            argElem.getAttribute(IS_MET_FILE_ATTR)
+                                   .toLowerCase())) {
+                          argStr = MET_FILE_PLACE_HOLDER;
+                        } else {
+                          argStr = XMLUtils.getSimpleElementText(argElem);
+                        }
 
-                        String appendExt = null;
+                        String appendExt;
                         if (!(appendExt = argElem.getAttribute(APPEND_EXT_ATTR))
-                                .equals(""))
-                            argStr += "." + appendExt;
+                                .equals("")) {
+                          argStr += "." + appendExt;
+                        }
 
                         if (Boolean.valueOf(
-                                argElem.getAttribute(ENV_REPLACE_ATTR))
-                                .booleanValue()) {
+                            argElem.getAttribute(ENV_REPLACE_ATTR))) {
                             argStr = PathUtils.replaceEnvVariables(argStr);
                         }
 
-                        if (Boolean.valueOf(argElem.getAttribute(IS_PATH_ATTR))
-                                .booleanValue()) {
+                        if (Boolean.valueOf(argElem.getAttribute(IS_PATH_ATTR))) {
                             argStr = argStr.replaceAll("\\s", "\\\\ ");
                         }
 
@@ -120,7 +121,7 @@ public final class ExternConfigReader implements MetExtractorConfigReader,
                     }
 
                     config.setArgList((String[]) argVector
-                            .toArray(new String[] {}));
+                        .toArray(new String[argVector.size()]));
                 }
             }
 

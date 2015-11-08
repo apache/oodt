@@ -17,7 +17,7 @@
 package org.apache.oodt.cas.catalog.repository;
 
 //JDK imports
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,11 +40,11 @@ import org.apache.oodt.cas.catalog.util.PluginURL;
  */
 public class MemoryBasedCatalogRepository implements CatalogRepository {
 	
-	protected HashMap<String, Catalog> catalogMap;
+	protected ConcurrentHashMap<String, Catalog> catalogMap;
 	protected List<PluginURL> classLoaderUrls;
 
 	public MemoryBasedCatalogRepository() {
-		this.catalogMap = new HashMap<String, Catalog>();
+		this.catalogMap = new ConcurrentHashMap<String, Catalog>();
 		this.classLoaderUrls = new Vector<PluginURL>();
 	}
 	
@@ -77,8 +77,7 @@ public class MemoryBasedCatalogRepository implements CatalogRepository {
 	 * org.apache.oodt.cas.catalog.repository.CatalogRepository#deserializeCatalog
 	 * (java.lang.String)
 	 */
-	public Catalog deserializeCatalog(String catalogUrn)
-			throws CatalogRepositoryException {
+	public Catalog deserializeCatalog(String catalogUrn) {
 		return this.catalogMap.get(catalogUrn);
 	}
 	
@@ -88,8 +87,7 @@ public class MemoryBasedCatalogRepository implements CatalogRepository {
 	 * @seeorg.apache.oodt.cas.catalog.repository.CatalogRepository#
 	 * isCatalogSerialized(java.lang.String)
 	 */
-	public boolean isCatalogSerialized(String catalogUrn)
-			throws CatalogRepositoryException {
+	public boolean isCatalogSerialized(String catalogUrn) {
 		return this.catalogMap.containsKey(catalogUrn);
 	}
 	
@@ -115,8 +113,7 @@ public class MemoryBasedCatalogRepository implements CatalogRepository {
 		return new Vector<PluginURL>(this.classLoaderUrls);
 	}
 	
-	public boolean isModifiable() 
-			throws CatalogRepositoryException {
+	public boolean isModifiable() {
 		return true;
 	}
 

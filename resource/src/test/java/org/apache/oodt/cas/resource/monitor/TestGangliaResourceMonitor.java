@@ -18,21 +18,23 @@
 package org.apache.oodt.cas.resource.monitor;
 
 //Junit imports
-import junit.framework.TestCase;
 
-
-//OODT imports
 import org.apache.oodt.cas.resource.monitor.ganglia.GangliaResourceMonitor;
 import org.apache.oodt.cas.resource.monitor.ganglia.GangliaResourceMonitorFactory;
 import org.apache.oodt.cas.resource.monitor.utils.MockGmetad;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 
-
-//JDK imports
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import junit.framework.TestCase;
+
+//OODT imports
+//JDK imports
 
 /**
  * @author rajith
@@ -42,6 +44,7 @@ import java.util.List;
  * Test Suite for the {@link org.apache.oodt.cas.resource.monitor.ganglia.GangliaResourceMonitor}
  */
 public class TestGangliaResourceMonitor extends TestCase {
+    private static Logger LOG = Logger.getLogger(TestGangliaResourceMonitor.class.getName());
 
     private GangliaResourceMonitor gangliaResourceMonitor;
     private ThreadLocal<MockGmetad> mockGmetad = new ThreadLocal<MockGmetad>();
@@ -66,7 +69,7 @@ public class TestGangliaResourceMonitor extends TestCase {
             resourceNode.setId("localhost");
             assertEquals(1, gangliaResourceMonitor.getLoad(resourceNode));
         } catch (Exception e) {
-        	e.printStackTrace();
+        	LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
     }
@@ -76,7 +79,7 @@ public class TestGangliaResourceMonitor extends TestCase {
             gangliaResourceMonitor.removeNodeById("localhost");
             assertNull(gangliaResourceMonitor.getNodeById("remotenode"));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
     }
@@ -105,7 +108,7 @@ public class TestGangliaResourceMonitor extends TestCase {
     		assertTrue(hasLocal&&hasLocal2&&hasRemote);
     	}
     	catch (Exception e){
-    		e.printStackTrace();
+    		LOG.log(Level.SEVERE, e.getMessage());
     		fail(e.getMessage());
     	}
     }
@@ -123,7 +126,7 @@ public class TestGangliaResourceMonitor extends TestCase {
     		assertEquals("remotenode", node.getNodeId());
     	}
     	catch(Exception e){
-    		e.printStackTrace();
+    		LOG.log(Level.SEVERE, e.getMessage());
     		fail(e.getMessage());
     	}
     }

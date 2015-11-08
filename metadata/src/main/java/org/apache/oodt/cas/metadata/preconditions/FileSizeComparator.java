@@ -39,7 +39,7 @@ public class FileSizeComparator extends PreConditionComparator<Long> {
     @Override
     protected int performCheck(File product, Long compareItem)
             throws PreconditionComparatorException {
-        return new Long(product.length()).compareTo(compareItem);
+        return Long.valueOf(product.length()).compareTo(compareItem);
     }
 
 }

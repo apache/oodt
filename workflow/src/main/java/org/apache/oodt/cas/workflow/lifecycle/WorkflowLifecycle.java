@@ -20,7 +20,6 @@ package org.apache.oodt.cas.workflow.lifecycle;
 
 //JDK imports
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -169,18 +168,19 @@ public class WorkflowLifecycle {
   @Deprecated
   public WorkflowLifecycleStage getStageForWorkflow(String status) {
     if (this.stages != null && this.stages.size() > 0) {
-      for (Iterator i = this.stages.iterator(); i.hasNext();) {
-        WorkflowLifecycleStage stage = (WorkflowLifecycleStage) i.next();
-        for(WorkflowState state: stage.getStates()){
-          if(state.getName().equals(status)){
+      for (Object stage1 : this.stages) {
+        WorkflowLifecycleStage stage = (WorkflowLifecycleStage) stage1;
+        for (WorkflowState state : stage.getStates()) {
+          if (state.getName().equals(status)) {
             return stage;
           }
         }
       }
 
       return null;
-    } else
+    } else {
       return null;
+    }
   }
 
   /**
@@ -220,8 +220,9 @@ public class WorkflowLifecycle {
     if (this.getStages() != null) {
       for (WorkflowLifecycleStage stage : (SortedSet<WorkflowLifecycleStage>) this
           .getStages()) {
-        if (category != null && !stage.getName().equals(category))
+        if (category != null && !stage.getName().equals(category)) {
           continue;
+        }
         if (stage.getStates() != null) {
           for (WorkflowState state : (List<WorkflowState>) stage.getStates()) {
             if (state.getName().equals(stateName)) {

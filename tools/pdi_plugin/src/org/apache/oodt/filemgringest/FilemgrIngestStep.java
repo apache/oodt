@@ -158,7 +158,7 @@ public class FilemgrIngestStep extends BaseStep implements StepInterface {
         /*try {
             logError("does file exist?"+oodtproc.isAlreadyInDatabase(oodt, (String)r[idx]));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }*/
 
         try {

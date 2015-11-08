@@ -114,3 +114,9 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
+
+# test by-products
+*.log
+
+# Apple OS X folder attributes
+.DS_Store

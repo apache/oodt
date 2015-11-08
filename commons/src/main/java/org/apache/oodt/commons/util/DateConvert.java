@@ -30,7 +30,7 @@ import java.util.TimeZone;
  */
 public class DateConvert {
 
-	/**
+  /**
 		The number of milliseconds in a minute.
 	*/
 	private final static long MS_IN_MINUTE = 60000;
@@ -71,9 +71,13 @@ public class DateConvert {
 		The format string representing the Year-Month-Day format.
 	*/
 	private final static String YMD_FORMAT = "yyyy-MM-dd";
+  public static final int INT = 24;
+  public static final int BEGIN_INDEX = 23;
+  public static final int ERROR_OFFSET = 24;
+  public static final int ERROR_OFFSET1 = 25;
 
 
-	/**
+  /**
 		Constructor given no arguments.
 
 		This is a static-only class that may not be instantiated.
@@ -132,7 +136,7 @@ public class DateConvert {
 
 			// Determine the sign of the offset.
 			String sign = "+";
-			if (String.valueOf(tzOffsetMS).indexOf("-") != -1) {
+			if (String.valueOf(tzOffsetMS).contains("-")) {
 				sign = "-";
 			}
 
@@ -161,12 +165,12 @@ public class DateConvert {
 		dateFormat.setLenient(false);
 
 		// The length of the input string should be at least 24 characters.
-		if (inputString == null || inputString.length() < 24) {
+		if (inputString == null || inputString.length() < INT) {
 			throw new ParseException("An exception occurred because the input date/time string was null or under 24 characters in length.", inputString.length());
 		}
 
 		// Evaluate the the specified offset and set the time zone.
-		String offsetString = inputString.substring(23);
+		String offsetString = inputString.substring(BEGIN_INDEX);
 		if (offsetString.equals("Z")) {
 			dateFormat.setTimeZone(TimeZone.getTimeZone("Greenwich Mean Time"));
 		}
@@ -179,24 +183,24 @@ public class DateConvert {
 				offsetFormat.applyPattern("HH:mm");
 			}
 			else {
-				throw new ParseException("An exception occurred because the offset portion was not the valid length of 3 or 6 characters.", 25);
+				throw new ParseException("An exception occurred because the offset portion was not the valid length of 3 or 6 characters.",
+					ERROR_OFFSET1);
 			}
 
 			// Validate the given offset.
 			offsetFormat.setLenient(false);
-			Date offsetDate = offsetFormat.parse(offsetString.substring(1));
 
 			// Set the time zone with the validated offset.
 			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT" + offsetString));
 		}
 		else {
-			throw new ParseException("An exception occurred because the offset portion of the input date/time string was not 'Z' or did not start with '+' or '-'.", 24);
+			throw new ParseException("An exception occurred because the offset portion of the input date/time string was not 'Z' or did not start with '+' or '-'.",
+				ERROR_OFFSET);
 		}
 
 		// Parse the given string.
-		Date parseDate = dateFormat.parse(inputString);
 
-		return(parseDate);
+	  return(dateFormat.parse(inputString));
 	}
 
 
@@ -213,9 +217,8 @@ public class DateConvert {
 
 		// Setup the date format and convert the given date.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DOY_FORMAT);
-		String dateString = dateFormat.format(inputDate);
 
-		return(dateString);
+	  return(dateFormat.format(inputDate));
 	}
 
 
@@ -235,9 +238,8 @@ public class DateConvert {
 		// Setup the date format and parse the given string.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DOY_FORMAT);
 		dateFormat.setLenient(false);
-		Date parseDate = dateFormat.parse(inputString);
 
-		return(parseDate);
+	  return(dateFormat.parse(inputString));
 	}
 
 
@@ -254,9 +256,8 @@ public class DateConvert {
 
 		// Setup the date format and convert the given date.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(TS_FORMAT);
-		String dateString = dateFormat.format(inputDate);
 
-		return(dateString);
+	  return(dateFormat.format(inputDate));
 	}
 
 
@@ -276,9 +277,8 @@ public class DateConvert {
 		// Setup the date format and parse the given string.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(TS_FORMAT);
 		dateFormat.setLenient(false);
-		Date parseDate = dateFormat.parse(inputString);
 
-		return(parseDate);
+	  return(dateFormat.parse(inputString));
 	}
 
 
@@ -295,9 +295,8 @@ public class DateConvert {
 
 		// Setup the date format and convert the given date.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DBMS_FORMAT);
-		String dateString = dateFormat.format(inputDate);
 
-		return(dateString);
+	  return(dateFormat.format(inputDate));
 	}
 
 
@@ -317,9 +316,8 @@ public class DateConvert {
 		// Setup the date format and parse the given string.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DBMS_FORMAT);
 		dateFormat.setLenient(false);
-		Date parseDate = dateFormat.parse(inputString);
 
-		return(parseDate);
+	  return(dateFormat.parse(inputString));
 	}
 
 
@@ -336,9 +334,8 @@ public class DateConvert {
 
 		// Setup the date format and convert the given date.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(YMD_FORMAT);
-		String dateString = dateFormat.format(inputDate);
 
-		return(dateString);
+	  return(dateFormat.format(inputDate));
 	}
 
 
@@ -358,9 +355,8 @@ public class DateConvert {
 		// Setup the date format and parse the given string.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(YMD_FORMAT);
 		dateFormat.setLenient(false);
-		Date parseDate = dateFormat.parse(inputString);
 
-		return(parseDate);
+	  return(dateFormat.parse(inputString));
 	}
 
 

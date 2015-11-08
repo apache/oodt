@@ -48,7 +48,7 @@ public interface ValidationLayer {
      * @throws ValidationLayerException
      *             If any error occurs during the add.
      */
-    public void addElement(Element element) throws ValidationLayerException;
+    void addElement(Element element) throws ValidationLayerException;
 
     /**
      * <p>
@@ -60,7 +60,7 @@ public interface ValidationLayer {
      * @throws ValidationLayerException
      *             If any error occurs.
      */
-    public void modifyElement(Element element) throws ValidationLayerException;
+    void modifyElement(Element element) throws ValidationLayerException;
 
     /**
      * <p>
@@ -71,7 +71,7 @@ public interface ValidationLayer {
      * @throws ValidationLayerException
      *             If any error occurs.
      */
-    public void removeElement(Element element) throws ValidationLayerException;
+    void removeElement(Element element) throws ValidationLayerException;
 
     /**
      * <p>
@@ -86,7 +86,7 @@ public interface ValidationLayer {
      * @throws ValidationLayerException
      *             If any error occurs.
      */
-    public void addElementToProductType(ProductType type, Element element)
+    void addElementToProductType(ProductType type, Element element)
             throws ValidationLayerException;
 
     /**
@@ -104,7 +104,7 @@ public interface ValidationLayer {
      * @throws ValidationLayerException
      *             If any error occurs.
      */
-    public void removeElementFromProductType(ProductType type, Element element)
+    void removeElementFromProductType(ProductType type, Element element)
             throws ValidationLayerException;
 
     /**
@@ -120,7 +120,7 @@ public interface ValidationLayer {
      * @throws ValidationLayerException
      *             If any error occurs.
      */
-    public List<Element> getElements(ProductType type)
+    List<Element> getElements(ProductType type)
             throws ValidationLayerException;
 
     /**
@@ -129,7 +129,7 @@ public interface ValidationLayer {
      * @throws ValidationLayerException
      *             If any error occurs.
      */
-    public List<Element> getElements() throws ValidationLayerException;
+    List<Element> getElements() throws ValidationLayerException;
 
     /**
      * Gets an element by its String identifier.
@@ -140,7 +140,7 @@ public interface ValidationLayer {
      * @throws ValidationLayerException
      *             If any error occurs.
      */
-    public Element getElementById(String elementId)
+    Element getElementById(String elementId)
             throws ValidationLayerException;
 
     /**
@@ -152,7 +152,7 @@ public interface ValidationLayer {
      * @throws ValidationLayerException
      *             If any error occurs.
      */
-    public Element getElementByName(String elementName)
+    Element getElementByName(String elementName)
             throws ValidationLayerException;
 
 }

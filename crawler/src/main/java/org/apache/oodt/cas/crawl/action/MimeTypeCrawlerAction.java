@@ -51,8 +51,9 @@ public class MimeTypeCrawlerAction extends CrawlerAction {
          throws CrawlerActionException {
       List<String> mimeTypeHierarchy = productMetadata
             .getAllMetadata(MIME_TYPES_HIERARCHY);
-      if (mimeTypeHierarchy == null)
+      if (mimeTypeHierarchy == null) {
          mimeTypeHierarchy = new Vector<String>();
+      }
       if (mimeTypes == null || (!Collections.disjoint(mimeTypes,
           mimeTypeHierarchy))) {
          return this.actionToCall.performAction(product, productMetadata);

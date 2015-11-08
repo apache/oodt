@@ -55,12 +55,13 @@ public class HandlerQueryParser implements ParseConstants {
    */
   public static Expression parse(Stack<QueryElement> queryStack, Mapping map) {
 
-    QueryElement qe = null;
+    QueryElement qe;
 
     if (!queryStack.empty()) {
       qe = (QueryElement) queryStack.pop();
-    } else
+    } else {
       return null;
+    }
 
     if (qe.getRole().equalsIgnoreCase(XMLQUERY_LOGOP)) {
 
@@ -69,8 +70,9 @@ public class HandlerQueryParser implements ParseConstants {
         return new AndExpression(parse(queryStack, map), parse(queryStack, map));
       } else if (logOpType.equalsIgnoreCase(XMLQUERY_OR)) {
         return new OrExpression(parse(queryStack, map), parse(queryStack, map));
-      } else
+      } else {
         return null;
+      }
 
     } else if (qe.getRole().equalsIgnoreCase(XMLQUERY_RELOP)) {
       String relOpType = qe.getValue();
@@ -103,13 +105,15 @@ public class HandlerQueryParser implements ParseConstants {
         return new LessThanExpression(lhsVal, new Literal(rhsVal));
       } else if (relOpType.equalsIgnoreCase(XMLQUERY_LESS_THAN_OR_EQUAL_TO)) {
         return new LessThanEqualsExpression(lhsVal, new Literal(rhsVal));
-      } else
+      } else {
         return null;
+      }
 
     } else if (qe.getRole().equalsIgnoreCase(XMLQUERY_LITERAL)) {
       return new Literal(qe.getValue());
-    } else
+    } else {
       return null;
+    }
 
   }
 
@@ -117,8 +121,8 @@ public class HandlerQueryParser implements ParseConstants {
 
     Stack<QueryElement> ret = new Stack<QueryElement>();
 
-    for (int i = 0; i < l.size(); i++) {
-      ret.push(l.get(i));
+    for (QueryElement aL : l) {
+      ret.push(aL);
     }
 
     return ret;

@@ -17,10 +17,11 @@
 package org.apache.oodt.cas.catalog.page;
 
 //JDK imports
+import org.apache.oodt.cas.catalog.struct.TransactionId;
+
 import java.util.Date;
 
 //OODT imports
-import org.apache.oodt.cas.catalog.struct.TransactionId;
 
 /**
  * @author bfoster
@@ -29,9 +30,9 @@ import org.apache.oodt.cas.catalog.struct.TransactionId;
  */
 public class CatalogReceipt {
 
-	protected TransactionId<?> transactionId;
-	protected Date transactionDate;
-	protected String catalogId;
+	private TransactionId<?> transactionId;
+	private Date transactionDate;
+	private String catalogId;
 	
 	public CatalogReceipt(IngestReceipt ingestReceipt, String catalogId) {
 		this.transactionId = ingestReceipt.getCatalogTransactionId();
@@ -67,5 +68,16 @@ public class CatalogReceipt {
 	public String toString() {
 		return ("{CatalogReceipt(tID=" + this.transactionId + ",tDate=" + this.transactionDate + ",catID=" + this.catalogId + ")}");
 	}
-	
+
+  public void setTransactionId(TransactionId<?> transactionId) {
+	this.transactionId = transactionId;
+  }
+
+  public void setTransactionDate(Date transactionDate) {
+	this.transactionDate = transactionDate;
+  }
+
+  public void setCatalogId(String catalogId) {
+	this.catalogId = catalogId;
+  }
 }

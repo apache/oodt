@@ -45,17 +45,22 @@ import java.net.UnknownHostException;
  * @version $Revision: 1.1 $
  */
 public class DatagramLoggingActivityFactory implements ActivityFactory {
-	/**
+
+  public static final int VAL = 4556;
+
+  /**
 	 * Creates a new {@link DatagramLoggingActivityFactory} instance.
 	 */
 	public DatagramLoggingActivityFactory() {
 		String hostname = System.getProperty("org.apache.oodt.commons.activity.DatagramLoggingActivityFactory.host",
 			System.getProperty("activity.host", ""));
 		port = Integer.getInteger("org.apache.oodt.commons.activity.DatagramLoggingActivityFactory.port",
-			Integer.getInteger("activity.port", 4556)).intValue();
-		if (hostname.length() == 0)
-			throw new IllegalStateException("System property `org.apache.oodt.commons.activity.DatagramLoggingActivityFactory.host'"
-				+ " (or simply `activity.host') not defined or is empty");
+			Integer.getInteger("activity.port", VAL));
+		if (hostname.length() == 0) {
+		  throw new IllegalStateException(
+			  "System property `org.apache.oodt.commons.activity.DatagramLoggingActivityFactory.host'"
+			  + " (or simply `activity.host') not defined or is empty");
+		}
 		try {
 			host = InetAddress.getByName(hostname);
 			socket = new DatagramSocket();

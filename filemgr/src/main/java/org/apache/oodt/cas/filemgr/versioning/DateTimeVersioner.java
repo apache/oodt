@@ -27,7 +27,6 @@ import org.apache.oodt.commons.util.DateConvert;
 //JDK imports
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
-import java.util.Iterator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -87,7 +86,7 @@ public class DateTimeVersioner implements Versioner {
         if (productionDateTime == null) { // generate it ourselves then
             productionDateTime = dateFormatter.format(new Date());
         } else {
-            Date prodDateTime = null;
+            Date prodDateTime;
             try {
                 prodDateTime = DateConvert.isoParse(productionDateTime);
             } catch (ParseException e) {
@@ -105,44 +104,42 @@ public class DateTimeVersioner implements Versioner {
             // productTypeRepo/productName/fileName.productionDateTime
             // we'll use the format: yyyy.dd.MM.HH.mm.ss
 
-            for (Iterator<Reference> i = product.getProductReferences().iterator(); i
-                    .hasNext();) {
-                Reference r = i.next();
-                String dataStoreRef = null;
+          for (Reference r : product.getProductReferences()) {
+            String dataStoreRef;
 
-                try {
-                    dataStoreRef = new File(new URI(product.getProductType()
-                            .getProductRepositoryPath())).toURL()
-                            .toExternalForm()
-                            + "/"
-                            + product.getProductName()
-                            + "/"
-                            + new File(new URI(r.getOrigReference())).getName()
-                            + "." + productionDateTime;
-                    LOG.log(Level.FINER,
-                            "DateTimeVersioner: Generated dataStoreRef: "
-                                    + dataStoreRef + " from original ref: "
-                                    + r.getOrigReference());
-                    r.setDataStoreReference(dataStoreRef);
-                } catch (URISyntaxException e) {
-                    LOG
-                            .log(
-                                    Level.WARNING,
-                                    "DateTimeVersioner: Error generating URI to get name "
-                                            + "of original ref while generating data store ref for orig ref: "
-                                            + r.getOrigReference()
-                                            + ": Message: " + e.getMessage());
-                    // try and keep generating
-                } catch (MalformedURLException e) {
-                    LOG.log(Level.WARNING,
-                            "DateTimeVersioner: Error getting URL for product repository path "
-                                    + product.getProductType()
-                                            .getProductRepositoryPath()
-                                    + ": Message: " + e.getMessage());
-                    // try and keep generating
-                }
-
+            try {
+              dataStoreRef = new File(new URI(product.getProductType()
+                                                     .getProductRepositoryPath())).toURL()
+                                                                                  .toExternalForm()
+                             + "/"
+                             + product.getProductName()
+                             + "/"
+                             + new File(new URI(r.getOrigReference())).getName()
+                             + "." + productionDateTime;
+              LOG.log(Level.FINER,
+                  "DateTimeVersioner: Generated dataStoreRef: "
+                  + dataStoreRef + " from original ref: "
+                  + r.getOrigReference());
+              r.setDataStoreReference(dataStoreRef);
+            } catch (URISyntaxException e) {
+              LOG
+                  .log(
+                      Level.WARNING,
+                      "DateTimeVersioner: Error generating URI to get name "
+                      + "of original ref while generating data store ref for orig ref: "
+                      + r.getOrigReference()
+                      + ": Message: " + e.getMessage());
+              // try and keep generating
+            } catch (MalformedURLException e) {
+              LOG.log(Level.WARNING,
+                  "DateTimeVersioner: Error getting URL for product repository path "
+                  + product.getProductType()
+                           .getProductRepositoryPath()
+                  + ": Message: " + e.getMessage());
+              // try and keep generating
             }
+
+          }
         } else if (product.getProductStructure().equals(Product.STRUCTURE_STREAM)) {
                 VersioningUtils.createBasicDataStoreRefsStream(product.getProductName(), product.getProductType().getProductRepositoryPath(),
                         product.getProductReferences(), productionDateTime);
@@ -201,13 +198,12 @@ public class DateTimeVersioner implements Versioner {
 
     private void addProductDateTimeToReferences(List<Reference> references,
             String productionDateTime) {
-        for (Iterator<Reference> i = references.iterator(); i.hasNext();) {
-            Reference r = i.next();
-            if (!r.getOrigReference().endsWith("/")) {
-                r.setDataStoreReference(r.getDataStoreReference() + "."
-                        + productionDateTime);
-            }
+      for (Reference r : references) {
+        if (!r.getOrigReference().endsWith("/")) {
+          r.setDataStoreReference(r.getDataStoreReference() + "."
+                                  + productionDateTime);
         }
+      }
     }
 
 }

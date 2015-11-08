@@ -40,7 +40,7 @@ public class GetLastPageCliAction extends WorkflowCliAction {
          throws CmdLineActionException {
       try {
          XmlRpcWorkflowManagerClient client = getClient();
-         WorkflowInstancePage page = null;
+         WorkflowInstancePage page;
          if (status != null && !status.equals("")) {
             WorkflowInstancePage firstPage = client.paginateWorkflowInstances(
                   1, status);

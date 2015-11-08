@@ -25,54 +25,54 @@ package org.apache.oodt.pcs.metadata;
 public interface PCSMetadata {
 
   /* Met Fields */
-  public static final String APPLICATION_SUCCESS_FLAG = "ApplicationSuccessFlag";
+  String APPLICATION_SUCCESS_FLAG = "ApplicationSuccessFlag";
 
-  public static final String ON_DISK = "OnDisk";
+  String ON_DISK = "OnDisk";
 
-  public static final String TAPE_LOCATION = "TapeLocation";
+  String TAPE_LOCATION = "TapeLocation";
 
-  public static final String PRODUCTION_LOCATION = "ProductionLocation";
+  String PRODUCTION_LOCATION = "ProductionLocation";
 
-  public static final String PRODUCTION_LOCATION_CODE = "ProductionLocationCode";
+  String PRODUCTION_LOCATION_CODE = "ProductionLocationCode";
 
-  public static final String DATA_VERSION = "DataVersion";
+  String DATA_VERSION = "DataVersion";
 
-  public static final String DATA_PROVIDER = "DataProvider";
+  String DATA_PROVIDER = "DataProvider";
 
-  public static final String COLLECTION_LABEL = "CollectionLabel";
+  String COLLECTION_LABEL = "CollectionLabel";
 
-  public static final String COMMENTS = "Comments";
+  String COMMENTS = "Comments";
 
-  public static final String EXECUTABLE_PATHNAMES = "ExecutablePathnames";
+  String EXECUTABLE_PATHNAMES = "ExecutablePathnames";
 
-  public static final String EXECUTABLE_VERSIONS = "ExecutableVersions";
+  String EXECUTABLE_VERSIONS = "ExecutableVersions";
 
-  public static final String PROCESSING_LEVEL = "ProcessingLevel";
+  String PROCESSING_LEVEL = "ProcessingLevel";
 
-  public static final String JOB_ID = "JobId";
+  String JOB_ID = "JobId";
 
-  public static final String TASK_ID = "TaskId";
+  String TASK_ID = "TaskId";
 
-  public static final String PRODUCTION_DATE_TIME = "ProductionDateTime";
+  String PRODUCTION_DATE_TIME = "ProductionDateTime";
 
-  public static final String INPUT_FILES = "InputFiles";
+  String INPUT_FILES = "InputFiles";
 
-  public static final String PGE_NAME = "PGEName";
+  String PGE_NAME = "PGEName";
 
-  public static final String OUTPUT_FILES = "OutputFiles";
+  String OUTPUT_FILES = "OutputFiles";
   
-  public static final String TEST_TAG = "TestTag";
+  String TEST_TAG = "TestTag";
 
-  public static final String SUB_TEST_TAG = "SubTestTag";
+  String SUB_TEST_TAG = "SubTestTag";
 
-  public static final String TEST_LOCATION = "TestLocation";
+  String TEST_LOCATION = "TestLocation";
 
-  public static final String TEST_COUNTER = "TestCounter";
+  String TEST_COUNTER = "TestCounter";
 
-  public static final String TEST_DATE = "TestDate";
+  String TEST_DATE = "TestDate";
   
-  public static final String START_DATE_TIME = "StartDateTime";
+  String START_DATE_TIME = "StartDateTime";
 
-  public static final String END_DATE_TIME = "EndDateTime";
+  String END_DATE_TIME = "EndDateTime";
 
 }

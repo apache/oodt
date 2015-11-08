@@ -17,6 +17,7 @@
 package org.apache.oodt.cas.filemgr.util;
 
 //OODT imports
+
 import org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory;
 import org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory;
 import org.apache.oodt.cas.filemgr.structs.ExtractorSpec;
@@ -30,19 +31,20 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManager;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.metadata.Metadata;
 
-//Google imports
 import com.google.common.collect.Lists;
 
-//JDK imports
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 
-//JUnit imports
 import junit.framework.TestCase;
+
+//Google imports
+//JDK imports
+//JUnit imports
 
 /**
  * Test class for {@link XmlRpcStructFactory}.
@@ -78,7 +80,7 @@ public class TestXmlRpcStructFactory extends TestCase {
         fmClient.setDataTransfer(new LocalDataTransferFactory().createDataTransfer());
         
         ProductType productType = fmClient.getProductTypeByName("GenericFile");
-        Hashtable<String, Object> productTypeHash = XmlRpcStructFactory.getXmlRpcProductType(productType);
+        Map<String, Object> productTypeHash = XmlRpcStructFactory.getXmlRpcProductType(productType);
         ProductType convBackProdType = XmlRpcStructFactory.getProductTypeFromXmlRpc(productTypeHash);
         
         assertTrue(productType.getProductTypeId().equals(convBackProdType.getProductTypeId()));

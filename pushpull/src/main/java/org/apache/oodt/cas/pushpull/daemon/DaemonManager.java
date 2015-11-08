@@ -60,11 +60,11 @@ public class DaemonManager implements DaemonListener {
     }
 
     public synchronized void wasRegisteredWith(Daemon daemon) {
-        this.usedIDs.add(new Integer(daemon.getDaemonID()));
+        this.usedIDs.add(daemon.getDaemonID());
     }
 
     public synchronized void wasUnregisteredWith(Daemon daemon) {
-        this.usedIDs.remove(new Integer(daemon.getDaemonID()));
+        this.usedIDs.remove(Integer.valueOf(daemon.getDaemonID()));
     }
 
     public void daemonStarting(Daemon daemon) {
@@ -74,10 +74,11 @@ public class DaemonManager implements DaemonListener {
     }
 
     public void daemonFinished(Daemon daemon) {
-        if (daemon.equals(this.runningDaemon))
+        if (daemon.equals(this.runningDaemon)) {
             this.startNextOnWaitingList();
-        else
+        } else {
             this.waitingList.remove(daemon);
+        }
     }
 
     public synchronized HashSet<Integer> getUsedIDs() {

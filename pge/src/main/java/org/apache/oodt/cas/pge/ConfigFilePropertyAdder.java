@@ -35,6 +35,6 @@ import org.apache.oodt.cas.pge.metadata.PgeMetadata;
  */
 public interface ConfigFilePropertyAdder {
 
-    public void addConfigProperties(PgeMetadata metadata, Object... objs);
+    void addConfigProperties(PgeMetadata metadata, Object... objs);
 
 }

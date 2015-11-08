@@ -17,32 +17,34 @@
 
 package org.apache.oodt.commons;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.rmi.registry.Registry;
-import java.rmi.server.RemoteObject;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import javax.naming.Context;
-import javax.naming.NamingException;
-import javax.naming.spi.NamingManager;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.oodt.commons.util.LogInit;
 import org.apache.oodt.commons.util.XML;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.rmi.registry.Registry;
+import java.rmi.server.RemoteObject;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.naming.Context;
+import javax.naming.NamingException;
+import javax.naming.spi.NamingManager;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * The MultiServer runs multiple server objects in a single JVM.  Instead of running a
@@ -141,10 +143,12 @@ public class MultiServer {
 		String config = System.getProperty("org.apache.oodt.commons.MultiServer.config", System.getProperty("MultiServer.config",
 			System.getProperty("multiserver.config", System.getProperty("config"))));
 		if (config == null) {
-			if (argv.length != 1)
-				throw new IllegalStateException("No org.apache.oodt.commons.MultiServer.config property or config URL argument");
-			else
-				config = argv[0];
+			if (argv.length != 1) {
+			  throw new IllegalStateException(
+				  "No org.apache.oodt.commons.MultiServer.config property or config URL argument");
+			} else {
+			  config = argv[0];
+			}
 		}
 
 		StringReader reader = new StringReader(CONFIG);
@@ -157,7 +161,7 @@ public class MultiServer {
 		String registryList = System.getProperty("org.apache.oodt.commons.rmiregistries", System.getProperty("rmiregistries"));
 		if (registryList == null) {
 			String host = System.getProperty("rmiregistry.host", "localhost");
-			int port = Integer.getInteger("rmiregistry.port", Registry.REGISTRY_PORT).intValue();
+			int port = Integer.getInteger("rmiregistry.port", Registry.REGISTRY_PORT);
 			registryList = "rmi://" + host + ":" + port;
 		}
 		t.put("rmiregistries", registryList);
@@ -165,7 +169,9 @@ public class MultiServer {
 		ExecServer.runInitializers();
 		try {
 			LogInit.init(System.getProperties(), getAppName());
-			if (servers.isEmpty()) throw new IllegalStateException("No servers defined in config");
+			if (servers.isEmpty()) {
+			  throw new IllegalStateException("No servers defined in config");
+			}
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				public void run() {
@@ -173,16 +179,19 @@ public class MultiServer {
 				}
 			});
 			startup();
-		} catch (Throwable ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			try {
 				shutdown();
-			} catch (Throwable ignore) {}
+			} catch (Exception ignore) {}
 			System.exit(1);
 		}
-		for (;;) try {
+		for (;;) {
+		  try {
 			Thread.currentThread().join();
-		} catch (InterruptedException ignore) {}
+		  } catch (InterruptedException ignore) {
+		  }
+		}
 	}
 
 	/**
@@ -210,7 +219,9 @@ public class MultiServer {
 		Document doc = builder.parse(is);
 		Element root = doc.getDocumentElement();
 		appName = root.getAttribute("id");
-		if (appName == null) throw new SAXException("id attribute missing from multiserver element");
+		if (appName == null) {
+		  throw new SAXException("id attribute missing from multiserver element");
+		}
 
 		// Set properties
 		NodeList children = root.getChildNodes();
@@ -231,28 +242,36 @@ public class MultiServer {
 
 		// Create servers
 		NodeList serverNodes = root.getElementsByTagName("server");
-		servers = new HashMap();
+		servers = new ConcurrentHashMap();
 		for (int i = 0; i < serverNodes.getLength(); ++i) {
 			Element serverElem = (Element) serverNodes.item(i);
 			String name = serverElem.getAttribute("id");
-			if (name == null) throw new SAXException("id attribute missing from server element");
+			if (name == null) {
+			  throw new SAXException("id attribute missing from server element");
+			}
 			String className = serverElem.getAttribute("class");
-			if (className == null) throw new SAXException("class attribute missing from server element");
+			if (className == null) {
+			  throw new SAXException("class attribute missing from server element");
+			}
 			String bindKind = serverElem.getAttribute("bind");
-			if (bindKind == null) throw new SAXException("bind attribute missing from server element");
+			if (bindKind == null) {
+			  throw new SAXException("bind attribute missing from server element");
+			}
 			Server server;
-			if ("true".equals(bindKind))
-				server = new BindingServer(name, className);
-			else if ("false".equals(bindKind))
-				server = new NonbindingServer(name, className);
-			else if ("rebind".equals(bindKind))
-				server = new RebindingServer(name, className);
-			else try {
+			if ("true".equals(bindKind)) {
+			  server = new BindingServer(name, className);
+			} else if ("false".equals(bindKind)) {
+			  server = new NonbindingServer(name, className);
+			} else if ("rebind".equals(bindKind)) {
+			  server = new RebindingServer(name, className);
+			} else {
+			  try {
 				long period = Long.parseLong(bindKind);
 				server = new AutobindingServer(name, className, period);
-			} catch (NumberFormatException ex) {
+			  } catch (NumberFormatException ex) {
 				throw new SAXException("Expected true, false, rebind, or auto for bind attribute but got `"
-					+ bindKind + "'");
+									   + bindKind + "'");
+			  }
 			}
 			servers.put(name, server);
 		}
@@ -265,20 +284,23 @@ public class MultiServer {
 	 * @throws NamingException if an error occurs.
 	 */
 	static void startup() throws NamingException {
-		for (Iterator i = servers.values().iterator(); i.hasNext();) {
-			Server s = (Server) i.next();
-			s.start();
-		}
+	  for (Object o : servers.values()) {
+		Server s = (Server) o;
+		s.start();
+	  }
 	}
 
 	/**
 	 * Stop each server.
 	 */
 	static void shutdown() {
-		for (Iterator i = servers.values().iterator(); i.hasNext();) try {
-			Server s = (Server) i.next();
-			s.stop();
-		} catch (NamingException ignore) {}
+	  for (Object o : servers.values()) {
+		try {
+		  Server s = (Server) o;
+		  s.stop();
+		} catch (NamingException ignore) {
+		}
+	  }
 		TIMER.cancel();
 	}
 
@@ -292,7 +314,7 @@ public class MultiServer {
 	}
 
 	/**
-	 * Get the servers.  Keys are {@String} names and values are {@link #Server}s.
+	 * Get the servers.  Keys are {@String} names and values are s.
 	 *
 	 * @return a {@link Map} of the defined servers.
 	 */
@@ -381,7 +403,7 @@ public class MultiServer {
 	/** Name of this application. */
 	private static String appName;
 
-	/** Known servers.  Keys are {@String} names and values are {@link #Server}s. */
+	/** Known servers.  Keys are {@String} names and values are s. */
 	private static Map servers;
 
 	/** The naming context. */
@@ -543,7 +565,9 @@ public class MultiServer {
 		 * @throws NamingException if an error occurs.
 		 */
 		public void stop() throws NamingException {
-			if (binder != null) binder.cancel();
+			if (binder != null) {
+			  binder.cancel();
+			}
 			context.unbind(name);
 		}
 
@@ -569,7 +593,7 @@ public class MultiServer {
 			public void run() {
 				try {
 					context.rebind(name, servant);
-				} catch (NamingException ex) {}
+				} catch (NamingException ignored) {}
 			}
 		}
 	}

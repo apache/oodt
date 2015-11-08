@@ -69,8 +69,9 @@ public class GlobalConfigView extends View {
   public void refreshView(ViewState state) {
 
     Rectangle visibleRect = null;
-    if (this.tree != null)
+    if (this.tree != null) {
       visibleRect = this.tree.getVisibleRect();
+    }
 
     DefaultMutableTreeNode root = new DefaultMutableTreeNode("GlobalConfig");
 
@@ -79,8 +80,9 @@ public class GlobalConfigView extends View {
           && globalConfig.keySet().equals(
               state.getGlobalConfigGroups().keySet())
           && globalConfig.values().equals(
-              state.getGlobalConfigGroups().values()))
+              state.getGlobalConfigGroups().values())) {
         return;
+      }
 
       this.removeAll();
 
@@ -205,8 +207,9 @@ public class GlobalConfigView extends View {
 
     this.add(tabbedPane, BorderLayout.CENTER);
 
-    if (visibleRect != null)
+    if (visibleRect != null) {
       this.tree.scrollRectToVisible(visibleRect);
+    }
 
     this.revalidate();
   }

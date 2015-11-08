@@ -18,10 +18,6 @@ package org.apache.oodt.cas.pge;
 
 //OODT static imports
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.crawl.AutoDetectProductCrawler;
 import org.apache.oodt.cas.crawl.ProductCrawler;
@@ -40,6 +36,11 @@ import org.apache.oodt.cas.pge.writers.MockDynamicConfigFileWriter;
 import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 import org.junit.After;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -52,7 +53,12 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.StringReader;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -328,7 +334,7 @@ public class TestPGETaskInstance {
 
    private static Document parseXmlFile(File file) throws Exception{
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      Document dom = null;
+      Document dom;
       DocumentBuilder db = dbf.newDocumentBuilder();
       dom = db.parse(file);
       return dom;
@@ -386,8 +392,8 @@ public class TestPGETaskInstance {
        assertEquals(dumpValList.getLength(), expectedValList.getLength());
        
        
-       Map<String, String> dumpKeyValMap = new HashMap<String, String>();
-       Map<String, String> expectedKeyValMap = new HashMap<String, String>();
+       Map<String, String> dumpKeyValMap = new ConcurrentHashMap<String, String>();
+       Map<String, String> expectedKeyValMap = new ConcurrentHashMap<String, String>();
        
        for (int i = 0; i < dumpKeyList.getLength(); i++) {
            

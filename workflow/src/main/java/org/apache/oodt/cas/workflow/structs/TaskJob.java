@@ -192,9 +192,8 @@ public class TaskJob implements JobInstance, WorkflowStatus, CoreMetKeys{
             // Get hostname by textual representation of IP address
             InetAddress addr = InetAddress.getLocalHost();
             // Get the host name
-            String hostname = addr.getHostName();
-            return hostname;
-        } catch (UnknownHostException e) {
+            return addr.getHostName();
+        } catch (UnknownHostException ignored) {
         }
         return null;
     }

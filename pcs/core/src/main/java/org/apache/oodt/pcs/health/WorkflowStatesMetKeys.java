@@ -26,8 +26,8 @@ package org.apache.oodt.pcs.health;
  */
 public interface WorkflowStatesMetKeys {
 
-  public static final String WORKFLOW_STATES_GROUP = "WorkflowStatesGroup";
+  String WORKFLOW_STATES_GROUP = "WorkflowStatesGroup";
 
-  public static final String WORKFLOW_STATES_VECTOR = "States";
+  String WORKFLOW_STATES_VECTOR = "States";
 
 }

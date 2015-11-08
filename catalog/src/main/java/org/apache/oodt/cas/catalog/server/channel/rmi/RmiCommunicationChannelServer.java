@@ -54,8 +54,7 @@ public class RmiCommunicationChannelServer implements
 
 	}
 
-	public void startup()
-			throws IOException {
+	public void startup() {
 		// TODO Auto-generated method stub
 
 	}
@@ -261,13 +260,12 @@ public class RmiCommunicationChannelServer implements
 		
 	}
 
-	public void setCatalogService(CatalogService catalogService)
-			throws Exception {
+	public void setCatalogService(CatalogService catalogService) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void setPort(int port) throws Exception {
+	public void setPort(int port) {
 		// TODO Auto-generated method stub
 		
 	}

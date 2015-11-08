@@ -18,12 +18,6 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorHelper;
@@ -34,6 +28,13 @@ import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
 import org.apache.oodt.cas.workflow.structs.PrioritySorter;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * 
@@ -132,13 +133,14 @@ public class TaskQuerier implements Runnable {
             processorsToRun.add(tp);
           }
 
-          if (processorsToRun != null && processorsToRun.size() > 1) {
+          if (processorsToRun.size() > 1) {
             prioritizer.sort(processorsToRun);
           }
 
           synchronized (runnableProcessors) {
-            if (running)
+            if (running) {
               runnableProcessors = processorsToRun;
+            }
           }
 
         } else {
@@ -191,16 +193,16 @@ public class TaskQuerier implements Runnable {
    *         {@link #runnableProcessors}.
    */
   public TaskProcessor getNext() {
-    if (getRunnableProcessors().size() == 0)
+    if (getRunnableProcessors().size() == 0) {
       return null;
+    }
     return (TaskProcessor) getRunnableProcessors().remove(0);
   }
 
   private synchronized void persist(WorkflowInstance instance) {
     if (this.repo != null) {
       try {
-        if (instance.getId() == null
-            || (instance.getId() != null && instance.getId().equals(""))) {
+        if (instance.getId() == null || (instance.getId().equals(""))) {
           // we have to persist it by adding it
           // rather than updating it
           repo.addWorkflowInstance(instance);
@@ -209,7 +211,7 @@ public class TaskQuerier implements Runnable {
           repo.updateWorkflowInstance(instance);
         }
       } catch (InstanceRepositoryException e) {
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         LOG.log(Level.WARNING, "Unable to update workflow instance: ["
             + instance.getId() + "] status to [" + instance.getState().getName()
             + "]. Message: " + e.getMessage());

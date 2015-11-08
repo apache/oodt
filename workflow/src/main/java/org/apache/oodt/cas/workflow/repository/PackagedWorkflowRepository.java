@@ -17,17 +17,38 @@
 package org.apache.oodt.cas.workflow.repository;
 
 //OODT imports
+
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
 import org.apache.oodt.cas.workflow.examples.BranchRedirector;
 import org.apache.oodt.cas.workflow.examples.NoOpTask;
-import org.apache.oodt.cas.workflow.structs.*;
+import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
+import org.apache.oodt.cas.workflow.structs.Graph;
+import org.apache.oodt.cas.workflow.structs.ParentChildWorkflow;
+import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowConditionConfiguration;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.XmlStructFactory;
+import org.apache.oodt.commons.exceptions.CommonsException;
 import org.apache.oodt.commons.xml.XMLUtils;
-import org.w3c.dom.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.File;
-import java.util.*;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,8 +71,6 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
 
   private Map<String, ParentChildWorkflow> workflows;
 
-  private List<Graph> graphs;
-
   private Map<String, WorkflowCondition> conditions;
 
   private Map<String, WorkflowTask> tasks;
@@ -69,7 +88,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     try {
       this.init();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new InstantiationException(e.getMessage());
     }
   }
@@ -145,8 +164,9 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     Workflow w = this.getWorkflowByName(workflowName);
     if (w != null) {
       return w.getTasks();
-    } else
+    } else {
       return Collections.emptyList();
+    }
   }
 
   /*
@@ -161,8 +181,9 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     List<ParentChildWorkflow> workflows = this.eventWorkflowMap.get(eventName);
     if (workflows != null && workflows.size() > 0) {
       return workflows;
-    } else
+    } else {
       return Collections.emptyList();
+    }
   }
 
   /*
@@ -194,8 +215,9 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   public List getConditionsByTaskId(String taskId) throws RepositoryException {
     if (this.tasks.get(taskId) != null) {
       return this.tasks.get(taskId).getConditions();
-    } else
+    } else {
       return Collections.emptyList();
+    }
   }
 
   /*
@@ -316,7 +338,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
 		workflow.setId(workflowId);
 	}
       
-    ParentChildWorkflow pcw = null;
+    ParentChildWorkflow pcw;
     if(workflow instanceof ParentChildWorkflow) {
         pcw = (ParentChildWorkflow) workflow;
     }
@@ -344,10 +366,11 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   @Override
   public List<WorkflowCondition> getConditionsByWorkflowId(String workflowId)
       throws RepositoryException {
-    if (!this.workflows.containsKey(workflowId))
+    if (!this.workflows.containsKey(workflowId)) {
       throw new RepositoryException(
           "Attempt to obtain conditions for a workflow: " + "[" + workflowId
-              + "] that does not exist!");
+          + "] that does not exist!");
+    }
 
     return this.workflows.get(workflowId).getConditions();
   }
@@ -362,20 +385,20 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   }  
 
   private void init() throws RepositoryException {
-    this.workflows = new HashMap<String, ParentChildWorkflow>();
-    this.tasks = new HashMap<String, WorkflowTask>();
-    this.conditions = new HashMap<String, WorkflowCondition>();
-    this.eventWorkflowMap = new HashMap<String, List<ParentChildWorkflow>>();
-    this.globalConfGroups = new HashMap<String, Metadata>();
-    this.graphs = new Vector<Graph>();
+    this.workflows = new ConcurrentHashMap<String, ParentChildWorkflow>();
+    this.tasks = new ConcurrentHashMap<String, WorkflowTask>();
+    this.conditions = new ConcurrentHashMap<String, WorkflowCondition>();
+    this.eventWorkflowMap = new ConcurrentHashMap<String, List<ParentChildWorkflow>>();
+    this.globalConfGroups = new ConcurrentHashMap<String, Metadata>();
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder parser = null;
+    DocumentBuilder parser;
 
     try {
       parser = factory.newDocumentBuilder();
       List<Element> rootElements = new Vector<Element>();
-      for (File file : files)
+      for (File file : files) {
         rootElements.add(parser.parse(file).getDocumentElement());
+      }
       for (Element root : rootElements) {
         Metadata staticMetadata = new Metadata();
         loadConfiguration(rootElements, root, staticMetadata);
@@ -385,12 +408,12 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
         computeWorkflowConditions();
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new RepositoryException(e.getMessage());
     }
   }
 
-  private void computeWorkflowConditions() throws Exception {
+  private void computeWorkflowConditions() {
     if (this.workflows != null && this.workflows.values().size() > 0) {
       for (ParentChildWorkflow w : this.workflows.values()) {
         if (w.getConditions() != null && w.getConditions().size() > 0) {
@@ -401,7 +424,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
     }
   }
 
-  private void computeEvents() throws Exception {
+  private void computeEvents() throws WorkflowException {
     List<ParentChildWorkflow> workflows = new Vector<ParentChildWorkflow>();
     for (ParentChildWorkflow w : this.workflows.values()) {
       workflows.add(w);
@@ -443,14 +466,16 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
             this.eventWorkflowMap.get(workflow.getId()).add(w);
           }
         }
-      } else
-        throw new Exception("Unsupported execution type: ["
-            + workflow.getGraph().getExecutionType() + "]");
+      } else {
+        throw new WorkflowException("Unsupported execution type: ["
+                                    + workflow.getGraph().getExecutionType() + "]");
+      }
     }
   }
 
   private void loadTaskAndConditionDefinitions(List<Element> rootElements,
-      Element rootElem, Metadata staticMetadata) throws Exception {
+      Element rootElem, Metadata staticMetadata)
+      throws CommonsException, CasMetadataException, WorkflowException, ParseException {
 
     List<Element> conditionBlocks = this.getChildrenByTagName(rootElem,
         "condition");
@@ -477,7 +502,8 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   }
 
   private void loadGraphs(List<Element> rootElements, Element graphElem,
-      Graph parent, Metadata staticMetadata) throws Exception {
+      Graph parent, Metadata staticMetadata)
+      throws CommonsException, CasMetadataException, WorkflowException, ParseException {
 
     LOG.log(Level.FINEST, "Visiting node: [" + graphElem.getNodeName() + "]");
     loadConfiguration(rootElements, graphElem, staticMetadata);
@@ -523,20 +549,22 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   }
 
   private void loadConfiguration(List<Element> rootElements, Node workflowNode,
-      Metadata staticMetadata) throws Exception {
+      Metadata staticMetadata) throws ParseException, CommonsException, CasMetadataException, WorkflowException {
     NodeList children = workflowNode.getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
       Node curChild = children.item(i);
 
       if (curChild.getNodeName().equals("configuration")) {
         Metadata curMetadata = new Metadata();
-        if (!((Element) curChild).getAttribute("extends").equals(""))
+        if (!((Element) curChild).getAttribute("extends").equals("")) {
           for (String extension : ((Element) curChild).getAttribute("extends")
-              .split(","))
+                                                      .split(",")) {
             curMetadata
                 .replaceMetadata(globalConfGroups.containsKey(extension) ? globalConfGroups
                     .get(extension) : this.loadConfGroup(rootElements,
                     extension, globalConfGroups));
+          }
+        }
         curMetadata.replaceMetadata(XmlStructFactory
             .getConfigurationAsMetadata(curChild));
         NamedNodeMap attrMap = curChild.getAttributes();
@@ -565,21 +593,23 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
   }
 
   private Metadata loadConfGroup(List<Element> rootElements, String group,
-      Map<String, Metadata> globalConfGroups) throws Exception {
+      Map<String, Metadata> globalConfGroups)
+      throws ParseException, CommonsException, CasMetadataException, WorkflowException {
     for (final Element rootElement : rootElements) {
       NodeList nodes = rootElement.getElementsByTagName("configuration");
       for (int i = 0; i < nodes.getLength(); i++) {
         Node node = nodes.item(i);
         String name = ((Element) node).getAttribute("name");
-        if (name.equals(group))
+        if (name.equals(group)) {
           return XmlStructFactory.getConfigurationAsMetadata(node);
+        }
       }
     }
-    throw new Exception("Configuration group '" + group + "' not defined!");
+    throw new WorkflowException("Configuration group '" + group + "' not defined!");
   }
 
   private void expandWorkflowTasksAndConditions(Graph graph,
-      Metadata staticMetadata) throws Exception {
+      Metadata staticMetadata) {
     if (graph.getExecutionType().equals("workflow")
         || graph.getExecutionType().equals("sequential")
         || graph.getExecutionType().equals("parallel")) {
@@ -597,7 +627,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       }
       this.workflows.put(graph.getModelId(), workflow);
     } else if (graph.getExecutionType().equals("condition")) {
-      WorkflowCondition cond = null;
+      WorkflowCondition cond;
 
       if (graph.getModelIdRef() != null && !graph.getModelIdRef().equals("")) {
         cond = this.conditions.get(graph.getModelIdRef());
@@ -639,7 +669,7 @@ public class PackagedWorkflowRepository implements WorkflowRepository {
       // is null and it's a condition definition, just add it
 
     } else if (graph.getExecutionType().equals("task")) {
-      WorkflowTask task = null;
+      WorkflowTask task;
       if (graph.getModelIdRef() != null && !graph.getModelIdRef().equals("")) {
         LOG.log(Level.FINER, "Model ID-Ref to: [" + graph.getModelIdRef() + "]");
         task = this.tasks.get(graph.getModelIdRef());

@@ -28,7 +28,7 @@ import java.util.LinkedList;
 /**
  * This class allows the creation of restrictions for files and directories created below an actual directory which is passed
  * into the constructor.  These restriction are loaded by passing a FileInputStream which contains a XML File
- * into the {@link #loadRestrictions(java.io.InputStream)} method and can be tested against by using the {@link #isAllowed(VirtualFile)} method.
+ * into the  method and can be tested against by using the  method.
  * 
  * <pre>
  * The XML file schema is:
@@ -477,25 +477,22 @@ public class FileRestrictions {
 
     public static boolean isAllowed(VirtualFile file, VirtualFile root) {
         boolean vfDoesNotExist = false, lastFileIsDir = file.isDir();
-        VirtualFile vf = null;
+        VirtualFile vf;
         while ((vf = root.getChildRecursive(file)) == null) {
             vfDoesNotExist = true;
             lastFileIsDir = file.isDir();
             file = file.getParentFile();
-            if (file == null)
+            if (file == null) {
                 break;
+            }
         }
         return !(file == null || (vfDoesNotExist && ((lastFileIsDir && !vf
                 .allowNewDirs()) || (!lastFileIsDir && !vf.allowNewFiles()))));
     }
 
     private static boolean isValidPath(ProtocolPath path) {
-        if (path != null && !path.getFileName().equals(".")
-                && !path.getFileName().equals("..")) {
-            return true;
-        } else {
-            return false;
-        }
+        return path != null && !path.getFileName().equals(".")
+               && !path.getFileName().equals("..");
     }
 
     public static LinkedList<String> toStringList(VirtualFile root) {
@@ -509,11 +506,12 @@ public class FileRestrictions {
         LinkedList<String> stringList = new LinkedList<String>();
         for (VirtualFile child : children) {
             String currentPath = curPath + "/" + child.getRegExp();
-            if (!child.isDir())
+            if (!child.isDir()) {
                 stringList.add(currentPath);
-            else
+            } else {
                 stringList
-                        .addAll(toStringList(child.getChildren(), currentPath));
+                    .addAll(toStringList(child.getChildren(), currentPath));
+            }
         }
         return stringList;
     }

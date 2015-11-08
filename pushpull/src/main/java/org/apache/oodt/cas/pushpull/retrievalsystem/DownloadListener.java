@@ -32,10 +32,10 @@ import org.apache.oodt.cas.protocol.ProtocolFile;
  */
 public interface DownloadListener {
 
-    public void downloadStarted(ProtocolFile pFile);
+    void downloadStarted(ProtocolFile pFile);
 
-    public void downloadFinished(ProtocolFile pFile);
+    void downloadFinished(ProtocolFile pFile);
 
-    public void downloadFailed(ProtocolFile pFile, String errorMsg);
+    void downloadFailed(ProtocolFile pFile, String errorMsg);
 
 }

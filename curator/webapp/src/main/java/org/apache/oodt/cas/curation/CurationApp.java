@@ -68,7 +68,7 @@ public class CurationApp extends WebApplication {
     try {
       return (Class<? extends Page>) Class.forName(getHomePageClass());
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return HomePage.class;
     }
   }
@@ -109,10 +109,12 @@ public class CurationApp extends WebApplication {
 
   private Set<String> filterBenchResources(Set<String> bench,
       Set<String> local, String localPrefix) {
-    if (local == null || (local.size() == 0))
+    if (local == null || (local.size() == 0)) {
       return bench;
-    if (bench == null || (bench.size() == 0))
+    }
+    if (bench == null || (bench.size() == 0)) {
       return bench;
+    }
     Set<String> filtered = new HashSet<String>();
     for (String bResource : bench) {
       String localName = new File(bResource).getName();

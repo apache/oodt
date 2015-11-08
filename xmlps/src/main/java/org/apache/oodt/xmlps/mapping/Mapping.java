@@ -88,10 +88,7 @@ public class Mapping {
       return true; // leave it out
     }
 
-    if (fld.getType() == FieldType.CONSTANT) {
-      return true;
-    } else
-      return false;
+    return fld.getType() == FieldType.CONSTANT;
   }
 
   public int getNumFields() {

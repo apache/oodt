@@ -24,16 +24,18 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.TermQuery;
-
 import org.apache.oodt.cas.filemgr.structs.Query;
 import org.apache.oodt.cas.filemgr.structs.RangeQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.TermQueryCriteria;
 import org.apache.oodt.cas.filemgr.tools.CASAnalyzer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class QueryBuilder {
 
   private CasDB database;
-
+  private static Logger LOG = Logger.getLogger(QueryBuilder.class.getName());
   public QueryBuilder(CasDB db) {
     database = db;
   }
@@ -49,10 +51,10 @@ public class QueryBuilder {
       luceneQ = parser.parse(query);
     } catch (org.apache.lucene.queryParser.ParseException e) {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
 
-    System.out.println(luceneQ.toString());
+    System.out.println(luceneQ != null ? luceneQ.toString() : null);
     GenerateCASQuery(casQ, luceneQ);
 
     return casQ;
@@ -62,11 +64,7 @@ public class QueryBuilder {
       org.apache.lucene.search.Query luceneQ) {
     if (luceneQ instanceof TermQuery) {
       Term t = ((TermQuery) luceneQ).getTerm();
-      if (t.field().equals("__FREE__")) {
-        // if(casQuery.getCriteria().isEmpty()) casQuery.addCriterion(new
-        // FreeTextQueryCriteria());
-        // ((FreeTextQueryCriteria)casQuery.getCriteria().get(0)).addValue(t.text());
-      } else {
+      if (!t.field().equals("__FREE__")) {
         String element = database.getElementID(t.field());
         if (!element.equals("") && !t.text().equals("")) {
 
@@ -75,16 +73,11 @@ public class QueryBuilder {
       }
     } else if (luceneQ instanceof PhraseQuery) {
       Term[] t = ((PhraseQuery) luceneQ).getTerms();
-      if (t[0].field().equals("__FREE__")) {
-        // if(casQuery.getCriteria().isEmpty()) casQuery.addCriterion(new
-        // FreeTextQueryCriteria());
-        // for(int i=0;i<t.length;i++)
-        // ((FreeTextQueryCriteria)casQuery.getCriteria().get(0)).addValue(t[i].text());
-      } else {
-        for (int i = 0; i < t.length; i++) {
-          String element = database.getElementID(t[i].field());
-          if (!element.equals("") && !t[i].text().equals("")) {
-            casQ.addCriterion(new TermQueryCriteria(element, t[i].text()));
+      if (!t[0].field().equals("__FREE__")) {
+        for (Term aT : t) {
+          String element = database.getElementID(aT.field());
+          if (!element.equals("") && !aT.text().equals("")) {
+            casQ.addCriterion(new TermQueryCriteria(element, aT.text()));
           }
         }
       }
@@ -99,8 +92,8 @@ public class QueryBuilder {
       }
     } else if (luceneQ instanceof BooleanQuery) {
       BooleanClause[] clauses = ((BooleanQuery) luceneQ).getClauses();
-      for (int i = 0; i < clauses.length; i++) {
-        GenerateCASQuery(casQ, (clauses[i]).getQuery());
+      for (BooleanClause clause : clauses) {
+        GenerateCASQuery(casQ, (clause).getQuery());
       }
     } else {
       System.out.println("Error Parsing Query");

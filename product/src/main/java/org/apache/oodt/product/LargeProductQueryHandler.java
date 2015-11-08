@@ -53,5 +53,5 @@ public interface LargeProductQueryHandler extends QueryHandler {
 	 * @param id Product ID.
 	 * @throws ProductException if an error occurs.
 	 */
-	void close(String id) throws ProductException;
+	void close(String id);
 }

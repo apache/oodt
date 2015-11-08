@@ -1,6 +1,10 @@
 Apache OODT Change Log
 ======================
 Release 0.11 - Current Development
+
+* OODT-913 Multiple metadata values not written out into product-types.xml (luca)
+
+* ODT-862 Include the Workflow ID as part of the standard metadata (luca)
  
 * OODT-885 RegEx Precondition Comparator for DRAT --exclude feature (Karanjeet
   Singh via mattmann)
@@ -23,8 +27,39 @@ Release 0.11 - Current Development
 
 * OODT-892 Tidy up null assignments (magicaltrout)
 
-* OODT-755 Fix error message in FM client when ingestion fails 
+* OODT-755 Fix error message in FM client when ingestion fails  - code quality from sonar (magicaltrout)
 
+* OODT-894 Remove inefficient constructors - code quality from sonar (magicaltrout)
+
+* OODT-909 create more explicit exceptions - code quality from sonar (magicaltrout)
+
+* OODT-907 remove never queries collections - code quality from sonar (magicaltrout)
+
+* OODT-906 remove redundant assignments - code quality from sonar (magicaltrout)
+
+* OODT-904 remove redundant throws - code quality from sonar (magicaltrout)
+
+* OODT-903 simplify flows - code quality from sonar (magicaltrout)
+
+* OODT-902 remove redundant modifiers from enums - code quality from sonar (magicaltrout)
+
+* OODT-901 resolve javadoc issues - code quality from sonar (magicaltrout)
+
+* OODT-900 remove boxing/unboxing etc in code - code quality from sonar (magicaltrout)
+
+* OODT-899 remove redundant local variables - code quality from sonar (magicaltrout)
+
+* OODT-898 remove redundant finals - code quality from sonar (magicaltrout)
+
+* OODT-897 remove module dependencies - code quality from sonar (magicaltrout)
+
+* OODT-896 remove interface modifers - code quality from sonar (magicaltrout) 
+
+* OODT-895 remove redundant measure unit - code quality from sonar (magicaltrout)
+
+* OODT-894 tidy up inefficient constructors - code quality from sonar (magicaltrout)
+
+* OODT-912 replace print stacttraces with log output - code quality from sonar (magicaltrout)
 Release 0.10 - 08/30/2015
 
 * OODT-871 Issues with OODT 0.10 RC#1 (lewismc, mattmann)

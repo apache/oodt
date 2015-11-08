@@ -91,14 +91,14 @@ public class ParseException extends Exception {
     String eol = System.getProperty("line.separator", "\n");
     StringBuilder expected = new StringBuilder();
     int maxSize = 0;
-    for (int i = 0; i < expectedTokenSequences.length; i++) {
-      if (maxSize < expectedTokenSequences[i].length) {
-        maxSize = expectedTokenSequences[i].length;
+    for (int[] expectedTokenSequence : expectedTokenSequences) {
+      if (maxSize < expectedTokenSequence.length) {
+        maxSize = expectedTokenSequence.length;
       }
-      for (int j = 0; j < expectedTokenSequences[i].length; j++) {
-        expected.append(tokenImage[expectedTokenSequences[i][j]]).append(' ');
+      for (int anExpectedTokenSequence : expectedTokenSequence) {
+        expected.append(tokenImage[anExpectedTokenSequence]).append(' ');
       }
-      if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
+      if (expectedTokenSequence[expectedTokenSequence.length - 1] != 0) {
         expected.append("...");
       }
       expected.append(eol).append("    ");
@@ -107,7 +107,9 @@ public class ParseException extends Exception {
     retval.append("Encountered \"");
     Token tok = currentToken.next;
     for (int i = 0; i < maxSize; i++) {
-      if (i != 0) retval.append(" ");
+      if (i != 0) {
+        retval.append(" ");
+      }
       if (tok.kind == 0) {
         retval.append(tokenImage[0]);
         break;
@@ -179,7 +181,6 @@ public class ParseException extends Exception {
               } else {
                  retval.append(ch);
               }
-              continue;
         }
       }
       return retval.toString();

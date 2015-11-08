@@ -27,17 +27,17 @@ package org.apache.oodt.product.handlers.ofsn.metadata;
  */
 public interface OFSNXMLMetKeys {
     
-    public static final String DIR_RESULT_TAG = "dirResult";
+    String DIR_RESULT_TAG = "dirResult";
     
-    public static final String DIR_ENTRY_TAG = "dirEntry";
+    String DIR_ENTRY_TAG = "dirEntry";
     
-    public static final String OFSN_TAG = "OFSN";
+    String OFSN_TAG = "OFSN";
     
-    public static final String FILE_SIZE_TAG = "fileSize";
+    String FILE_SIZE_TAG = "fileSize";
     
-    public static final String XML_MIME_TYPE = "text/xml";
+    String XML_MIME_TYPE = "text/xml";
     
     // FIXME: change namespace URI?
-    public static final String DIR_LISTING_NS = "http://oodt.jpl.nasa.gov/xml/namespaces/dirlist/1.0";
+    String DIR_LISTING_NS = "http://oodt.jpl.nasa.gov/xml/namespaces/dirlist/1.0";
 
 }

@@ -91,7 +91,7 @@ public class FilemgrCheckStep extends BaseStep implements StepInterface {
             logError("loading ingester");
             oodt.loadIngester(meta.getServerURLField());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return super.init(meta, data);
@@ -154,7 +154,7 @@ public class FilemgrCheckStep extends BaseStep implements StepInterface {
         try {
             logError("does file exist?"+oodtproc.isAlreadyInDatabase(oodt, (String)r[idx]));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         // safely add the string "Hello World!" at the end of the output row

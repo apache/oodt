@@ -36,14 +36,14 @@ public class TestBasicAuthentication extends TestCase {
 		try {
 			new BasicAuthentication(null, "pass");
 			fail("Should have thrown IllegalArgumentException");
-		}catch (IllegalArgumentException e) {}
+		}catch (IllegalArgumentException ignored) {}
 		try {
 			new BasicAuthentication("user", null);
 			fail("Should have thrown IllegalArgumentException");
-		}catch (IllegalArgumentException e) {}
+		}catch (IllegalArgumentException ignored) {}
 		try {
 			new BasicAuthentication(null, null);
 			fail("Should have thrown IllegalArgumentException");
-		}catch (IllegalArgumentException e) {}
+		}catch (IllegalArgumentException ignored) {}
 	}
 }

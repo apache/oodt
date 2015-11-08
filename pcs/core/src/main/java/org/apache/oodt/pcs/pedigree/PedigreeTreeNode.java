@@ -65,8 +65,9 @@ public class PedigreeTreeNode {
   }
 
   public int getNumChildren() {
-    if (this.children == null)
+    if (this.children == null) {
       return 0;
+    }
     return this.children.size();
   }
 

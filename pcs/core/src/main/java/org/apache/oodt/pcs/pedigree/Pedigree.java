@@ -28,7 +28,6 @@ import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.metadata.Metadata;
 
 //JDK imports
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;

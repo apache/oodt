@@ -19,8 +19,7 @@
 package org.apache.oodt.xmlquery;
 
 import java.io.*;
-import java.util.*;
-import java.util.zip.*;
+
 import org.apache.oodt.commons.util.*;
 import org.w3c.dom.*;
 
@@ -51,16 +50,18 @@ public class QueryElement implements Serializable, Cloneable, Documentable {
 	}
 
 	public QueryElement(Node node) {
-		if (!"queryElement".equals(node.getNodeName()))
-			throw new IllegalArgumentException("Query element must be constructed from <queryElement> node, not <"
-				+ node.getNodeName() + ">");
+		if (!"queryElement".equals(node.getNodeName())) {
+		  throw new IllegalArgumentException("Query element must be constructed from <queryElement> node, not <"
+											 + node.getNodeName() + ">");
+		}
 		NodeList children = node.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node child = children.item(i);
-			if ("tokenRole".equals(child.getNodeName()))
-				role = XML.unwrappedText(child);
-			else if ("tokenValue".equals(child.getNodeName()))
-				value = XML.unwrappedText(child);
+			if ("tokenRole".equals(child.getNodeName())) {
+			  role = XML.unwrappedText(child);
+			} else if ("tokenValue".equals(child.getNodeName())) {
+			  value = XML.unwrappedText(child);
+			}
 		}
 	}
 
@@ -85,7 +86,9 @@ public class QueryElement implements Serializable, Cloneable, Documentable {
 	 * @param role The new role this element plays.
 	 */
 	public void setRole(String role) {
-		if (role == null) role = "UNKNOWN";
+		if (role == null) {
+		  role = "UNKNOWN";
+		}
 		this.role = role;
 	}
 
@@ -94,7 +97,9 @@ public class QueryElement implements Serializable, Cloneable, Documentable {
 	 * @param value The new value of this element.
 	 */
 	public void setValue(String value) {
-		if (value == null) value = "UNKNOWN";
+		if (value == null) {
+		  value = "UNKNOWN";
+		}
 		this.value = value;
 	}
 
@@ -106,8 +111,12 @@ public class QueryElement implements Serializable, Cloneable, Documentable {
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof QueryElement)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof QueryElement)) {
+		  return false;
+		}
 		QueryElement obj = (QueryElement) rhs;
 		return role.equals(obj.role) && value.equals(obj.value);
 	}
@@ -120,7 +129,7 @@ public class QueryElement implements Serializable, Cloneable, Documentable {
 		Object rc = null;
 		try {
 			rc = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return rc;
 	}
 

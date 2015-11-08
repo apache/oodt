@@ -18,17 +18,21 @@
 package org.apache.oodt.cas.filemgr.metadata.extractors;
 
 //JDK imports
+
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 
 /**
  * @author mattmann
@@ -41,7 +45,7 @@ import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
  */
 public abstract class AbstractFilemgrMetExtractor implements
         FilemgrMetExtractor {
-
+  private static Logger LOG = Logger.getLogger(AbstractFilemgrMetExtractor.class.getName());
     protected Properties configuration;
 
     /*
@@ -74,17 +78,16 @@ public abstract class AbstractFilemgrMetExtractor implements
 
     protected void validateProduct(Product product, Metadata met)
             throws MetExtractionException {
-        if (product.getProductType() == null
-                || (product.getProductType() != null && (product
-                        .getProductType().getName() == null || (product
-                        .getProductType().getName() != null && product
-                        .getProductType().getName().equals(""))))) {
+        if (product.getProductType() == null || ((product
+                                                      .getProductType().getName() == null || (product
+                                                                                                  .getProductType()
+                                                                                                  .getName()
+                                                                                                  .equals(""))))) {
             throw new MetExtractionException("Product Type undefined");
         }
 
-        if (product.getProductReferences() == null
-                || (product.getProductReferences() != null && product
-                        .getProductReferences().size() == 0)) {
+        if (product.getProductReferences() == null || (product
+                                                           .getProductReferences().size() == 0)) {
             throw new MetExtractionException("Product references undefined");
         }
 
@@ -104,12 +107,12 @@ public abstract class AbstractFilemgrMetExtractor implements
     }
 
     protected void merge(Metadata src, Metadata dest) {
-        dest.addMetadata(src.getHashtable());
+        dest.addMetadata(src.getMap());
     }
 
     protected File getProductFile(Product product)
             throws MetExtractionException {
-        File prodFile = null;
+        File prodFile;
 
         if (product.getProductStructure()
                 .equals(Product.STRUCTURE_HIERARCHICAL)) {
@@ -118,7 +121,7 @@ public abstract class AbstractFilemgrMetExtractor implements
                         .getProductReferences(), product.getProductType()
                         .getProductRepositoryPath()));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new MetExtractionException("URI exception parsing: ["
                         + product.getRootRef().getOrigReference() + "]");
             }

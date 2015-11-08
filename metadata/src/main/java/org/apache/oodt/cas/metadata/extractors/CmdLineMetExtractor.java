@@ -55,7 +55,7 @@ public abstract class CmdLineMetExtractor extends AbstractMetExtractor {
           CmdLineMetExtractor extractor) throws Exception {
       String usage = "Usage: " + extractor.getClass().getName()
               + " <file> <configfile>";
-      String extractFilePath = null, configFilePath = null;
+      String extractFilePath, configFilePath;
 
       if (args.length < 2) {
           System.err.println(usage);
@@ -75,7 +75,7 @@ public abstract class CmdLineMetExtractor extends AbstractMetExtractor {
           CmdLineMetExtractor extractor, OutputStream os) throws Exception {
       String usage = "Usage: " + extractor.getClass().getName()
               + " <file> <configfile>";
-      String extractFilePath = null, configFilePath = null;
+      String extractFilePath, configFilePath;
 
       if (args.length < 2) {
           System.err.println(usage);

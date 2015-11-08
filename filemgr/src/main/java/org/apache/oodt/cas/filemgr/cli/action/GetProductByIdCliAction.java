@@ -21,6 +21,10 @@ import org.apache.commons.lang.Validate;
 
 //OODT imports
 import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+
+import java.net.MalformedURLException;
 
 /**
  * A {@link CmdLineAction} which gets information about a {@link Product}
@@ -33,12 +37,12 @@ public class GetProductByIdCliAction extends AbstractGetProductCliAction {
    private String productId;
 
    @Override
-   public Product getProduct() throws Exception {
+   public Product getProduct() throws MalformedURLException, ConnectionException, CatalogException {
       Validate.notNull(productId, "Must specify productId");
 
       Product p = getClient().getProductById(productId);
       if (p == null) {
-         throw new Exception("FileManager returned null product for id '"
+         throw new CatalogException("FileManager returned null product for id '"
                + productId + "'");
       }
       return p;

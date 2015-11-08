@@ -20,15 +20,19 @@ package org.apache.oodt.cas.workflow.examples;
 
 
 //OODT imports
+
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskInstance;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 
-//JDK imports
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
 
 
 /**
@@ -41,7 +45,8 @@ import java.util.Random;
  * programmatically.
  */
 public class RandomStatusUpdateTask implements WorkflowTaskInstance {
-
+    public static final long MILLIS = 5000L;
+    private static Logger LOG = Logger.getLogger(RandomStatusUpdateTask.class.getName());
     private static final String[] statuses = new String[] { "THINKING",
             "RUNNING", "WAITING", "INFINITELY WAITING", "WATCHING TV",
             "SLEEPING", "DREAMING", "WORKING", "WATCHING MOVIES" };
@@ -71,7 +76,7 @@ public class RandomStatusUpdateTask implements WorkflowTaskInstance {
             String statusPicked = statuses[idx];
             updateWorkflowInstanceStatus(workflowInstId, statusPicked);
             try {
-                Thread.currentThread().sleep(5000L);
+                Thread.currentThread().sleep(MILLIS);
             } catch (InterruptedException ignore) {
             }
             numPicked++;
@@ -84,7 +89,7 @@ public class RandomStatusUpdateTask implements WorkflowTaskInstance {
         try {
             this.client.updateWorkflowInstanceStatus(wInstId, status);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
     }
@@ -98,7 +103,7 @@ public class RandomStatusUpdateTask implements WorkflowTaskInstance {
         try {
             return new URL(urlStr);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return null;
         }
     }

@@ -73,7 +73,7 @@ public class ExternAction extends CrawlerAction {
       this.executeCommand = executeCommand;
    }
 
-   public void setWorkingDir(String workingDir) throws Exception {
+   public void setWorkingDir(String workingDir) {
       this.workingDir = workingDir;
    }
 }

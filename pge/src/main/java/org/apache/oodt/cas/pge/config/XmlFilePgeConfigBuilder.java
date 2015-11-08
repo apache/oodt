@@ -17,42 +17,23 @@
 package org.apache.oodt.cas.pge.config;
 
 //OODT static imports
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CONFIG_FILE_PATH;
-import static org.apache.oodt.cas.pge.util.XmlHelper.fillIn;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getCustomMetadataElement;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getDir;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getDynamicConfigFiles;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getExeCmds;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getFileStaging;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getImports;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getMetadataElements;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getMetadataKey;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getMetadataKeyRef;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getMetadataValues;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getOuputDirs;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getOutput;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getRootElement;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getShellType;
-import static org.apache.oodt.cas.pge.util.XmlHelper.getStageFilesMetKeys;
-import static org.apache.oodt.cas.pge.util.XmlHelper.isForceStage;
-import static org.apache.oodt.cas.pge.util.XmlHelper.isWorkflowMetKey;
+import com.google.common.collect.Lists;
 
-//JDK imports
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.List;
-
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.pge.exceptions.PGEException;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 import org.apache.oodt.cas.pge.util.Pair;
 import org.apache.oodt.cas.pge.util.XmlHelper;
-
-//DOM imports
 import org.w3c.dom.Element;
 
-import com.google.common.collect.Lists;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.CONFIG_FILE_PATH;
+import static org.apache.oodt.cas.pge.util.XmlHelper.*;
+
 
 /**
  * An implementation of the {@link PgeConfigBuilder} that reads an XML file
@@ -90,7 +71,7 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
    }
 
    private PgeMetadata loadConfigFile(String configFile, PgeConfig pgeConfig,
-         PgeMetadata parentPgeMetadata) throws Exception {
+         PgeMetadata parentPgeMetadata) throws FileNotFoundException, PGEException {
       PgeMetadata pgeMetadata = new PgeMetadata(parentPgeMetadata);
       Element root = getRootElement(configFile);
 
@@ -148,7 +129,7 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
    }
 
    private void loadCustomMetadata(Element root, PgeMetadata pgeMetadata)
-         throws MalformedURLException, Exception {
+       throws PGEException {
 
       // Check if there is a 'customMetadata' elem and load it.
       Element customMetadataElem = getCustomMetadataElement(root);
@@ -167,7 +148,7 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
 
          // Check that either val or key-ref is given.
          if (!values.isEmpty() && keyRef != null) {
-            throw new Exception(
+            throw new PGEException(
                   "Cannot specify both values and keyref for metadata key '"
                         + key + "'");
 
@@ -188,7 +169,7 @@ public class XmlFilePgeConfigBuilder implements PgeConfigBuilder {
    }
 
    private void loadFileStagingInfo(Element root, PgeConfig pgeConfig,
-         PgeMetadata pgeMetadata) throws Exception {
+         PgeMetadata pgeMetadata) throws PGEException {
       Metadata metadata = pgeMetadata.asMetadata();
       Element fileStagingElem = getFileStaging(root);
 

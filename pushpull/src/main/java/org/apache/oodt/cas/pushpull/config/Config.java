@@ -75,9 +75,7 @@ public class Config implements ConfigMetKeys {
 
     /**
      * Constructor
-     * 
-     * @param fileName
-     *            Name of the configuration file to parse
+     *
      */
     public Config() {
         pi = new ProtocolInfo();
@@ -175,8 +173,7 @@ public class Config implements ConfigMetKeys {
      * @throws ClassNotFoundException
      * @throws ClassNotFoundException
      */
-    void loadProperties() throws ConfigException, InstantiationException,
-            FileNotFoundException, IOException, ClassNotFoundException {
+    void loadProperties() throws ConfigException {
         this.loadExternalConfigFiles();
         this.loadProtocolTypes();
         this.loadParserInfo();
@@ -230,7 +227,7 @@ public class Config implements ConfigMetKeys {
         }
     }
 
-    void loadIngester() throws InstantiationException, ConfigException {
+    void loadIngester() throws ConfigException {
         try {
             String fmUrlStr = PropertiesUtils.getProperties(INGESTER_FM_URL,
                     new String[] { NO_FM_SPECIFIED })[0];
@@ -264,7 +261,7 @@ public class Config implements ConfigMetKeys {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ConfigException("Failed to load Ingester : "
                     + e.getMessage());
         }
@@ -311,8 +308,9 @@ public class Config implements ConfigMetKeys {
         this.writeMetFile = Boolean.getBoolean(WRITE_MET_FILE);
         String timeoutString = PropertiesUtils.getProperties(
                 PROTOCOL_TIMEOUT_MS, new String[] { "600000" })[0];
-        if (timeoutString == null)
+        if (timeoutString == null) {
             timeoutString = "0";
+        }
         pi.setDownloadTimeout(Long.parseLong(timeoutString));
         pi.setPageSize(Integer.parseInt(PropertiesUtils.getProperties(
                 PROTOCOL_PAGE_SIZE, new String[] { "8" })[0]));

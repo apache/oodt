@@ -60,16 +60,9 @@ public class MimeExtractorRepo {
 	/**
 	 * Constructs a new MimeExtractorMappingFile with the given parameters.
 	 * 
-	 * @param defaultExtractorClassName
-	 *            The name of the default extractor to call if the mime type
-	 *            can't be determined.
-	 * @param repo
-	 *            The Mime Repository to use for mime resolution.
 	 * @param magic
 	 *            Whether or not mime magic should be used or not in resolution.
 	 * 
-	 * @param mappings
-	 *            {@link List} of {@link MimeExtractorMapping}s.
 	 * @throws FileNotFoundException
 	 */
 	public MimeExtractorRepo(List<MetExtractorSpec> defaultExtractorSpecs,
@@ -101,8 +94,9 @@ public class MimeExtractorRepo {
 			MetExtractorSpec spec) {
 		List<MetExtractorSpec> specs = this.mimeTypeToMetExtractorSpecsMap
 				.remove(mimeType);
-		if (specs == null)
-			specs = new LinkedList<MetExtractorSpec>();
+		if (specs == null) {
+		  specs = new LinkedList<MetExtractorSpec>();
+		}
 		specs.add(spec);
 		this.mimeTypeToMetExtractorSpecsMap.put(mimeType, specs);
 	}
@@ -111,8 +105,9 @@ public class MimeExtractorRepo {
 			List<MetExtractorSpec> specs) {
 		List<MetExtractorSpec> existingSpecs = this.mimeTypeToMetExtractorSpecsMap
 				.remove(mimeType);
-		if (existingSpecs == null)
-			existingSpecs = new LinkedList<MetExtractorSpec>();
+		if (existingSpecs == null) {
+		  existingSpecs = new LinkedList<MetExtractorSpec>();
+		}
 		existingSpecs.addAll(specs);
 		this.mimeTypeToMetExtractorSpecsMap.put(mimeType, existingSpecs);
 	}
@@ -122,8 +117,9 @@ public class MimeExtractorRepo {
 		List<MetExtractorSpec> extractorSpecs = new LinkedList<MetExtractorSpec>();
 		while (mimeType != null && !mimeType.equals("application/octet-stream")) {
 			List<MetExtractorSpec> specs = this.mimeTypeToMetExtractorSpecsMap.get(mimeType);
-			if (specs != null)
-				extractorSpecs.addAll(specs);
+			if (specs != null) {
+			  extractorSpecs.addAll(specs);
+			}
 			mimeType = this.mimeRepo.getSuperTypeForMimeType(mimeType);
 		}
 		return !extractorSpecs.isEmpty() ? extractorSpecs : this
@@ -131,11 +127,12 @@ public class MimeExtractorRepo {
 	}
 
 	public synchronized List<MetExtractorSpec> getExtractorSpecsForFile(
-			File file) throws FileNotFoundException, IOException {
+			File file) throws IOException {
 		String mimeType = this.mimeRepo.getMimeType(file);
-		if (mimeType == null && magic)
-			mimeType = this.mimeRepo.getMimeTypeByMagic(MimeTypeUtils
-					.readMagicHeader(new FileInputStream(file)));
+		if (mimeType == null && magic) {
+		  mimeType = this.mimeRepo.getMimeTypeByMagic(MimeTypeUtils
+			  .readMagicHeader(new FileInputStream(file)));
+		}
 		return this.getExtractorSpecsForMimeType(mimeType);
 	}
 
@@ -148,8 +145,6 @@ public class MimeExtractorRepo {
 	}
 
 	/**
-	 * @param defaultExtractorClassName
-	 *            the defaultExtractorClassName to set
 	 */
 	public void setDefaultMetExtractorSpecs(
 			List<MetExtractorSpec> defaultExtractorSpecs) {
@@ -178,19 +173,19 @@ public class MimeExtractorRepo {
 	 */
 	public void setMagic(boolean magic) {
 		this.magic = magic;
-		if (this.mimeRepo != null)
-			this.mimeRepo.setMimeMagic(magic);
+		if (this.mimeRepo != null) {
+		  this.mimeRepo.setMimeMagic(magic);
+		}
 	}
 
 	/**
-	 * @param mimeRepo
-	 *            the mimeRepo to set
 	 * @throws FileNotFoundException
 	 */
 	public void setMimeRepoFile(String mimeRepoFile)
 			throws FileNotFoundException {
-		if (mimeRepoFile != null)
-			this.mimeRepo = new MimeTypeUtils(mimeRepoFile, this.magic);
+		if (mimeRepoFile != null) {
+		  this.mimeRepo = new MimeTypeUtils(mimeRepoFile, this.magic);
+		}
 	}
 
 	public String getMimeType(File file) {
@@ -208,8 +203,9 @@ public class MimeExtractorRepo {
 	    String mimeType = getMimeType(file);
 	    mimeTypes.add(mimeType);
 	    while ((mimeType = this.mimeRepo.getSuperTypeForMimeType(mimeType)) != null
-                && !mimeType.equals("application/octet-stream"))
-	        mimeTypes.add(mimeType);
+                && !mimeType.equals("application/octet-stream")) {
+		  mimeTypes.add(mimeType);
+		}
 	    return mimeTypes;
 	}
 }

@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.pushpull.util;
 
 //AWT Imports
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -26,8 +27,9 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-//Swing Imports
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -35,6 +37,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+//Swing Imports
 
 /**
  * 
@@ -46,7 +50,7 @@ import javax.swing.SwingUtilities;
  * </p>.
  */
 public class ExpressionValidator extends JPanel {
-
+  private static Logger LOG = Logger.getLogger(ExpressionValidator.class.getName());
 	private static final long serialVersionUID = -2840589940304298547L;
 
 	private JLabel exprLabel;
@@ -97,7 +101,7 @@ public class ExpressionValidator extends JPanel {
 					boolean value = ((String) validateField.getText()).matches((String) exprField.getText());
 					resultField.setText(value + "");
 				}catch (Exception e) {
-					e.printStackTrace();
+					LOG.log(Level.SEVERE, e.getMessage());
 				}
 			}
 		});

@@ -109,7 +109,7 @@ public class MetadataBasedFileVersioner implements Versioner {
 
     private String parseFilePathSpec(String filePathSpec,
             String productTypeRepoPath, Metadata metadata) {
-        StringBuffer finalFilePath = new StringBuffer();
+        StringBuilder finalFilePath = new StringBuilder();
         finalFilePath.append(productTypeRepoPath);
 
         if (finalFilePath.charAt(finalFilePath.length() - 1) == '/') {

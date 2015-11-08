@@ -26,7 +26,6 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Property;
 
-import java.util.Iterator;
 import java.util.Collection;
 
 import org.apache.jena.rdf.model.Bag;
@@ -53,15 +52,20 @@ class Utility {
 	static void addProperty(Model model, Resource resource, Property property, Object value, ProfileAttributes profAttr,
 		URI uri) {
 
-		if (value == null || value.toString().length() == 0) return;
+		if (value == null || value.toString().length() == 0) {
+		  return;
+		}
 
 		Object obj;
 		if (value instanceof Collection) {
 			Collection<?> collection = (Collection<?>) value;
-			if (collection.isEmpty()) return;
+			if (collection.isEmpty()) {
+			  return;
+			}
 			Bag bag = model.createBag(uri + "_" + property.getLocalName() + "_bag");
-			for (Iterator<?> i = collection.iterator(); i.hasNext();)
-				bag.add(i.next());
+		  for (Object aCollection : collection) {
+			bag.add(aCollection);
+		  }
 			resource.addProperty(property, bag);
 			obj = bag;
 		} else {
@@ -87,22 +91,26 @@ class Utility {
 		List<?> children = profAttr.getChildren();
 		if (!children.isEmpty()) {
 			Bag bag = model.createBag(uri + "_" + property.getLocalName() + "_childrenBag");
-			for (Iterator<?> i = children.iterator(); i.hasNext();)
-				bag.add(i.next());
+		  for (Object aChildren : children) {
+			bag.add(aChildren);
+		  }
 			reification.addProperty(edmChild, bag);
 		}
 
 		List<?> revNotes = profAttr.getRevisionNotes();
 		if (!revNotes.isEmpty()) {
 			Seq seq = model.createSeq(uri + "_" + property.getLocalName() + "_revNotesSeq");
-			for (Iterator<?> i = revNotes.iterator(); i.hasNext();)
-				seq.add(i.next());
+		  for (Object revNote : revNotes) {
+			seq.add(revNote);
+		  }
 			reification.addProperty(edmRevNote, seq);
 		}
 	}
 
 	private static void addPotentiallyNullReifiedStatement(Resource reification, Property property, Object value) {
-		if (value == null || value.toString().length() == 0) return;
+		if (value == null || value.toString().length() == 0) {
+		  return;
+		}
 		reification.addProperty(property, value.toString());
 	}
 

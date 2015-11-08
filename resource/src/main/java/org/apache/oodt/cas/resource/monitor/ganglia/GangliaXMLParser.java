@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 
 /**
@@ -43,7 +43,7 @@ public class GangliaXMLParser extends DefaultHandler implements GangliaMetKeys {
     private Host currentHost;
     private List<Metric> currentHostMetrics;
     private Metric currentMetric;
-    private HashMap<String, String> extraData;
+    private ConcurrentHashMap<String, String> extraData;
 
     /**
      * {@inheritDoc}
@@ -78,7 +78,7 @@ public class GangliaXMLParser extends DefaultHandler implements GangliaMetKeys {
             this.currentMetric = new Metric(atts.getValue(NAME), atts.getValue(VAL), atts.getValue(TYPE),
                     atts.getValue(UNITS), atts.getValue(TN), atts.getValue(TMAX), atts.getValue(DMAX),
                     atts.getValue(SLOPE), atts.getValue(SOURCE));
-            this.extraData = new HashMap<String, String>();
+            this.extraData = new ConcurrentHashMap<String, String>();
 
         } else if (name.equals(EXTRA_ELEMENT)) {
             this.extraData.put(atts.getValue(NAME), atts.getValue(VAL));

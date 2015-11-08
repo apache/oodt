@@ -29,53 +29,53 @@ import org.apache.oodt.cas.cli.option.require.RequirementRule;
  */
 public interface CmdLineOption {
 
-   public void setLongOption(String longOption);
+   void setLongOption(String longOption);
 
-   public String getLongOption();
+   String getLongOption();
 
-   public void setShortOption(String shortOption);
+   void setShortOption(String shortOption);
 
-   public String getShortOption();
+   String getShortOption();
 
-   public void setDescription(String description);
+   void setDescription(String description);
 
-   public String getDescription();
+   String getDescription();
 
-   public void setType(Class<?> type);
+   void setType(Class<?> type);
 
-   public Class<?> getType();
+   Class<?> getType();
 
-   public void setRepeating(boolean repeating);
+   void setRepeating(boolean repeating);
 
-   public boolean isRepeating();
+   boolean isRepeating();
 
-   public void setHasArgs(boolean hasArgs);
+   void setHasArgs(boolean hasArgs);
 
-   public boolean hasArgs();
+   boolean hasArgs();
 
-   public void setArgsDescription(String argDescription);
+   void setArgsDescription(String argDescription);
 
-   public String getArgsDescription();
+   String getArgsDescription();
 
-   public void setStaticArgs(List<String> values);
+   void setStaticArgs(List<String> values);
 
-   public List<String> getStaticArgs();
+   List<String> getStaticArgs();
 
-   public boolean hasStaticArgs();
+   boolean hasStaticArgs();
 
-   public void setRequired(boolean required);
+   void setRequired(boolean required);
 
-   public boolean isRequired();
+   boolean isRequired();
 
-   public void setRequirementRules(List<RequirementRule> requirementRules);
+   void setRequirementRules(List<RequirementRule> requirementRules);
 
-   public List<RequirementRule> getRequirementRules();
+   List<RequirementRule> getRequirementRules();
 
-   public void setIsSubOption(boolean isSubOption);
+   void setIsSubOption(boolean isSubOption);
 
-   public boolean isSubOption();
+   boolean isSubOption();
 
-   public boolean equals(Object obj);
+   boolean equals(Object obj);
 
-   public int hashCode();
+   int hashCode();
 }

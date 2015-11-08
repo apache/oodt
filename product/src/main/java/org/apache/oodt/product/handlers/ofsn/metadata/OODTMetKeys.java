@@ -26,6 +26,6 @@ package org.apache.oodt.product.handlers.ofsn.metadata;
  */
 public interface OODTMetKeys {
     
-    public static final String XMLQUERY_QUERYELEM_ROLE_ELEM = "elemName";
+    String XMLQUERY_QUERYELEM_ROLE_ELEM = "elemName";
 
 }

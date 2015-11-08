@@ -17,24 +17,32 @@
 
 package org.apache.oodt.cas.workflow.gui.model.repo;
 
-//OODT imports
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
 import org.apache.oodt.cas.workflow.gui.model.ModelNode;
+import org.apache.oodt.cas.workflow.gui.util.exceptions.WorkflowException;
 import org.apache.oodt.commons.xml.XMLUtils;
 
-//JDK imports
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,14 +52,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -72,14 +74,19 @@ public class XmlWorkflowModelRepository {
 
   public XmlWorkflowModelRepository(File workspace) {
     this.files = new Vector<File>();
-    for (File file : (this.workspace = workspace).listFiles())
-      if (!file.isDirectory())
-        this.files.add(file);
+    if(workspace!=null) {
+      for (File file : (this.workspace = workspace).listFiles()) {
+        if (!file.isDirectory()) {
+          this.files.add(file);
+        }
+      }
+    }
   }
 
-  public void loadGraphs(Set<String> supportedProcessorIds) throws Exception {
+  public void loadGraphs(Set<String> supportedProcessorIds)
+      throws XPathExpressionException, WorkflowException, IOException, SAXException, ParserConfigurationException {
     this.graphs = new HashSet<ModelGraph>();
-    HashMap<String, ConfigGroup> globalConfGroups = new HashMap<String, ConfigGroup>();
+    ConcurrentHashMap<String, ConfigGroup> globalConfGroups = new ConcurrentHashMap<String, ConfigGroup>();
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware(true);
     DocumentBuilder parser = factory.newDocumentBuilder();
@@ -92,17 +99,18 @@ public class XmlWorkflowModelRepository {
     for (FileBasedElement root : rootElements) {
       loadConfiguration(rootElements, root, null, globalConfGroups);
       NodeList rootChildren = root.getElement().getChildNodes();
-      for (int i = 0; i < rootChildren.getLength(); i++)
+      for (int i = 0; i < rootChildren.getLength(); i++) {
         if (rootChildren.item(i).getNodeType() == Node.ELEMENT_NODE
             && !rootChildren.item(i).getNodeName().equals("configuration")
             && !rootChildren.item(i).getNodeName().equals("event")) {
           System.out.println("node name: ["
-              + rootChildren.item(i).getNodeName() + "]");
+                             + rootChildren.item(i).getNodeName() + "]");
           ModelGraph graph = this.loadGraph(rootElements, new FileBasedElement(
-              root.getFile(), (Element) rootChildren.item(i)), new Metadata(),
+                  root.getFile(), (Element) rootChildren.item(i)), new Metadata(),
               globalConfGroups, supportedProcessorIds);
           this.graphs.add(graph);
         }
+      }
     }
     ensureUniqueIds(graphs);
     this.globalConfigGroups = globalConfGroups;
@@ -118,7 +126,7 @@ public class XmlWorkflowModelRepository {
   }
 
   public void setGlobalConfigGroups(Map<String, ConfigGroup> globalConfigGroups) {
-    this.globalConfigGroups = new HashMap<String, ConfigGroup>(
+    this.globalConfigGroups = new ConcurrentHashMap<String, ConfigGroup>(
         globalConfigGroups);
   }
 
@@ -126,12 +134,12 @@ public class XmlWorkflowModelRepository {
     return this.files;
   }
 
-  public void save() throws Exception {
+  public void save() throws IOException, ParserConfigurationException {
     this.backupCurrentFiles();
     this.saveGraphs();
   }
 
-  private void backupCurrentFiles() throws Exception {
+  private void backupCurrentFiles() throws IOException {
     File backupDir = new File(this.workspace, ".backup");
     for (File file : this.files) {
       FileUtils.copyFile(file, new File(backupDir, file.getName()));
@@ -140,9 +148,9 @@ public class XmlWorkflowModelRepository {
     this.files.clear();
   }
 
-  private void saveGraphs() throws FileNotFoundException,
+  private void saveGraphs() throws
       ParserConfigurationException {
-    Map<File, Document> documents = new HashMap<File, Document>();
+    Map<File, Document> documents = new ConcurrentHashMap<File, Document>();
     for (ModelGraph graph : this.graphs) {
       Document document = documents.get(graph.getModel().getFile());
       if (document == null) {
@@ -158,8 +166,8 @@ public class XmlWorkflowModelRepository {
   }
 
   private void writeOutDocuments(Map<File, Document> documents) {
-    for (File file : documents.keySet()) {
-      XMLUtils.writeXmlFile(documents.get(file), file.getAbsolutePath());
+    for (Map.Entry<File, Document> file : documents.entrySet()) {
+      XMLUtils.writeXmlFile(documents.get(file.getKey()), file.getKey().getAbsolutePath());
     }
   }
 
@@ -173,8 +181,8 @@ public class XmlWorkflowModelRepository {
       document.appendChild(document.createElement("workflows"));
       documents.put(globalConfigGroupsFile, document);
     }
-    for (String configName : this.globalConfigGroups.keySet()) {
-      ConfigGroup globalConfig = this.globalConfigGroups.get(configName);
+    for (Map.Entry<String, ConfigGroup> configName : this.globalConfigGroups.entrySet()) {
+      ConfigGroup globalConfig = configName.getValue();
       Element configElem = document.createElement("configuration");
       document.getDocumentElement().appendChild(configElem);
       configElem.setAttribute("name", globalConfig.getName());
@@ -196,8 +204,7 @@ public class XmlWorkflowModelRepository {
     }
   }
 
-  private void saveGraph(ModelGraph graph, Element parentElem, Document document)
-      throws FileNotFoundException, ParserConfigurationException {
+  private void saveGraph(ModelGraph graph, Element parentElem, Document document) {
     ModelNode node = graph.getModel();
 
     Element workflowElem = document.createElement(node.getExecutionType());
@@ -296,11 +303,13 @@ public class XmlWorkflowModelRepository {
       while (!stack.isEmpty()) {
         ModelGraph currentGraph = stack.remove(0);
         String currentId = currentGraph.getId();
-        for (int i = 1; names.contains(currentId); i++)
+        for (int i = 1; names.contains(currentId); i++) {
           currentId = currentGraph.getId() + "-" + i;
+        }
         names.add(currentId);
-        if (!currentId.equals(currentGraph.getId()))
+        if (!currentId.equals(currentGraph.getId())) {
           currentGraph.getModel().setModelId(currentId);
+        }
         stack.addAll(currentGraph.getChildren());
       }
     }
@@ -308,8 +317,8 @@ public class XmlWorkflowModelRepository {
 
   private ModelGraph loadGraph(List<FileBasedElement> rootElements,
       FileBasedElement workflowNode, Metadata staticMetadata,
-      HashMap<String, ConfigGroup> globalConfGroups,
-      Set<String> supportedProcessorIds) throws Exception {
+      ConcurrentHashMap<String, ConfigGroup> globalConfGroups,
+      Set<String> supportedProcessorIds) throws XPathExpressionException, WorkflowException {
 
     String modelIdRef = null;
     String modelId = null;
@@ -355,8 +364,9 @@ public class XmlWorkflowModelRepository {
       }
     }
 
-    if (modelId == null && modelIdRef == null)
+    if (modelId == null && modelIdRef == null) {
       modelId = UUID.randomUUID().toString();
+    }
 
     ModelGraph graph = null;
     if (modelId != null) {
@@ -374,9 +384,10 @@ public class XmlWorkflowModelRepository {
         executionType = workflowNode.getElement().getNodeName();
       }
 
-      if (!supportedProcessorIds.contains(executionType))
+      if (!supportedProcessorIds.contains(executionType)) {
         LOG.log(Level.WARNING, "Unsupported execution type id '"
-            + executionType + "'");
+                               + executionType + "'");
+      }
 
       ModelNode modelNode = new ModelNode(workflowNode.getFile());
       modelNode.setModelId(modelId);
@@ -401,18 +412,20 @@ public class XmlWorkflowModelRepository {
           if (curChild.getNodeName().equals("conditions")) {
             boolean isPreCondition = !loadedPreConditions;
             String type = ((Element) curChild).getAttribute("type");
-            if (type.length() > 0)
+            if (type.length() > 0) {
               isPreCondition = type.toLowerCase().equals("pre");
-            if (isPreCondition)
+            }
+            if (isPreCondition) {
               graph.setPreConditions(this.loadGraph(rootElements,
                   new FileBasedElement(workflowNode.getFile(),
                       (Element) curChild), new Metadata(staticMetadata),
                   globalConfGroups, supportedProcessorIds));
-            else
+            } else {
               graph.setPostConditions(this.loadGraph(rootElements,
                   new FileBasedElement(workflowNode.getFile(),
                       (Element) curChild), new Metadata(staticMetadata),
                   globalConfGroups, supportedProcessorIds));
+            }
             loadedPreConditions = true;
           } else if (!curChild.getNodeName().equals("configuration")
               && !curChild.getNodeName().equals("requiredMetFields")) {
@@ -427,9 +440,10 @@ public class XmlWorkflowModelRepository {
     } else if (modelIdRef != null) {
       graph = this.findGraph(rootElements, modelIdRef, new Metadata(
           staticMetadata), globalConfGroups, supportedProcessorIds);
-      if (graph == null)
-        throw new Exception("Workflow '" + modelIdRef
-            + "' has not been defined in this context");
+      if (graph == null) {
+        throw new WorkflowException("Workflow '" + modelIdRef
+                                    + "' has not been defined in this context");
+      }
       graph.setIsRef(true);
       graph.getModel().setStaticMetadata(new Metadata());
       loadConfiguration(rootElements, workflowNode, graph.getModel(),
@@ -446,8 +460,8 @@ public class XmlWorkflowModelRepository {
 
   protected ModelGraph findGraph(List<FileBasedElement> rootElements,
       String modelIdRef, Metadata staticMetadata,
-      HashMap<String, ConfigGroup> globalConfGroups,
-      Set<String> supportedProcessorIds) throws Exception {
+      ConcurrentHashMap<String, ConfigGroup> globalConfGroups,
+      Set<String> supportedProcessorIds) throws XPathExpressionException, WorkflowException {
     XPath xpath = XPathFactory.newInstance().newXPath();
     XPathExpression expr = xpath.compile("//*[@id = '" + modelIdRef + "']");
     for (FileBasedElement rootElement : rootElements) {
@@ -464,16 +478,17 @@ public class XmlWorkflowModelRepository {
 
   private void loadConfiguration(List<FileBasedElement> rootElements,
       FileBasedElement workflowNode, ModelNode modelNode,
-      HashMap<String, ConfigGroup> globalConfGroups) throws Exception {
+      ConcurrentHashMap<String, ConfigGroup> globalConfGroups)  {
     NodeList children = workflowNode.getElement().getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
       Node curChild = children.item(i);
       if (curChild.getNodeName().equals("configuration")) {
         Metadata curMetadata = new Metadata();
         if (modelNode != null
-            && !((Element) curChild).getAttribute("extends").equals(""))
+            && !((Element) curChild).getAttribute("extends").equals("")) {
           modelNode.setExtendsConfig(Arrays.asList(((Element) curChild)
               .getAttribute("extends").split(",")));
+        }
         curMetadata.replaceMetadata(this.loadConfiguration(rootElements,
             curChild, globalConfGroups));
         if (!((Element) curChild).getAttribute("name").equals("")) {
@@ -496,8 +511,7 @@ public class XmlWorkflowModelRepository {
   }
 
   private Metadata loadConfiguration(List<FileBasedElement> rootElements,
-      Node configNode, HashMap<String, ConfigGroup> globalConfGroups)
-      throws Exception {
+      Node configNode, ConcurrentHashMap<String, ConfigGroup> globalConfGroups) {
     Metadata curMetadata = new Metadata();
     NodeList curGrandChildren = configNode.getChildNodes();
     for (int k = 0; k < curGrandChildren.getLength(); k++) {
@@ -507,13 +521,15 @@ public class XmlWorkflowModelRepository {
         String envReplace = property.getAttribute("envReplace");
         String name = property.getAttribute("name");
         String value = property.getAttribute("value");
-        if (Boolean.parseBoolean(envReplace))
+        if (Boolean.parseBoolean(envReplace)) {
           curMetadata.replaceMetadata(name + "/envReplace", "true");
+        }
         List<String> values = new Vector<String>();
-        if (delim.length() > 0)
+        if (delim.length() > 0) {
           values.addAll(Arrays.asList(value.split("\\" + delim)));
-        else
+        } else {
           values.add(value);
+        }
         curMetadata.replaceMetadata(name, values);
       }
     }
@@ -584,8 +600,9 @@ public class XmlWorkflowModelRepository {
       if (obj instanceof ConfigGroup) {
         ConfigGroup comp = (ConfigGroup) obj;
         return comp.name.equals(this.name);
-      } else
+      } else {
         return false;
+      }
     }
 
     public String toString() {

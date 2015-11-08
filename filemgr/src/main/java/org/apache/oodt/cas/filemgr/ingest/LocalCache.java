@@ -29,7 +29,6 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 //JDK imports
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -118,10 +117,11 @@ public class LocalCache implements Cache {
             this.uniqueElementName = uniqueElementName;            
             this.uniqueElementProductTypeNames = uniqueElementProductTypeNames;
             List<Product> products = new Vector<Product>();
-            for (String productType : this.uniqueElementProductTypeNames)
+            for (String productType : this.uniqueElementProductTypeNames) {
                 products.addAll(getProductsOverDateRange(
                     this.rangeQueryElementName, productType, this.startOfQuery,
                     this.endOfQuery));
+            }
             clear();
             for (Product product : products) {
                 String value = getValueForMetadata(product, uniqueElementName);
@@ -129,7 +129,7 @@ public class LocalCache implements Cache {
             }
         } catch (Exception e) {
             throw new CacheException("Failed to sync with database : "
-                    + e.getMessage());
+                    + e.getMessage(), e);
         }
     }
 
@@ -229,7 +229,7 @@ public class LocalCache implements Cache {
             throw new CacheException(
                     "Unable to check for product reception from file manager: ["
                             + fm.getFileManagerUrl() + "]: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
         }
     }
 
@@ -281,7 +281,7 @@ public class LocalCache implements Cache {
         } catch (Exception e) {
             throw new CacheException("Failed to query for product via element "
                     + elementName + " and range " + startOfQuery + " to "
-                    + endOfQuery + " : " + e.getMessage());
+                    + endOfQuery + " : " + e.getMessage(), e);
         }
         
         return products;
@@ -293,7 +293,7 @@ public class LocalCache implements Cache {
             return fm.query(query, fm.getProductTypeByName(productType));
         } catch (Exception e) {
             throw new CacheException("Failed to get product list for query "
-                    + query + " : " + e.getMessage());
+                    + query + " : " + e.getMessage(), e);
         }
     }
 
@@ -303,7 +303,7 @@ public class LocalCache implements Cache {
             return fm.getMetadata(product).getMetadata(metadataElementName);
         } catch (Exception e) {
             throw new CacheException("Failed to get metadata value for "
-                    + metadataElementName + " : " + e.getMessage());
+                    + metadataElementName + " : " + e.getMessage(), e);
         }
     }
 

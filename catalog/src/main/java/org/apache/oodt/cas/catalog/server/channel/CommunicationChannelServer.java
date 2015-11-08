@@ -43,21 +43,21 @@ import java.util.Set;
  */
 public interface CommunicationChannelServer {
 
-	public void setCatalogService(CatalogService catalogService) throws Exception;
+	void setCatalogService(CatalogService catalogService);
 	
-	public void setPort(int port) throws Exception;
+	void setPort(int port);
 
-	public int getPort();
+	int getPort();
 	
-	public void startup() throws Exception;
+	void startup();
 
-	public void shutdown() throws Exception;
+	void shutdown() throws Exception;
 
-	public boolean isRestrictQueryPermissions() throws Exception;
+	boolean isRestrictQueryPermissions() throws Exception;
 //
 //	public void setRestrictQueryPermissions(boolean restrictQueryPermissions) throws Exception;
 //
-	public boolean isRestrictIngestPermissions() throws Exception;
+boolean isRestrictIngestPermissions() throws Exception;
 //
 //	public void setHasIngestPermissions(boolean restrictIngestPermissions) throws Exception;
 
@@ -65,88 +65,90 @@ public interface CommunicationChannelServer {
 //
 //	public void setTransactionIdClass(Class<? extends TransactionId<?>> transactionIdClass) throws Exception;
 //	
-	public void addCatalog(Catalog catalog) throws Exception;
+void addCatalog(Catalog catalog) throws Exception;
 
-	public void replaceCatalog(Catalog catalog) throws Exception;
+	void replaceCatalog(Catalog catalog) throws Exception;
 	
-	public void addCatalog(String catalogId, Index index) throws Exception;
+	void addCatalog(String catalogId, Index index) throws Exception;
 	
-	public void addCatalog(String catalogId, Index index, List<Dictionary> dictionaries) throws Exception;
+	void addCatalog(String catalogId, Index index, List<Dictionary> dictionaries) throws Exception;
 
-	public void addCatalog(String catalogId, Index index, List<Dictionary> dictionaries, boolean restrictQueryPermission, boolean restrictIngestPermission) throws Exception;
+	void addCatalog(String catalogId, Index index, List<Dictionary> dictionaries, boolean restrictQueryPermission,
+					boolean restrictIngestPermission) throws Exception;
 
-	public void addDictionary(String catalogId, Dictionary dictionary) throws Exception;
+	void addDictionary(String catalogId, Dictionary dictionary) throws Exception;
 
-	public void replaceDictionaries(String catalogId, List<Dictionary> dictionaries) throws Exception;
+	void replaceDictionaries(String catalogId, List<Dictionary> dictionaries) throws Exception;
 	
-	public void replaceIndex(String catalogId, Index index) throws Exception;
+	void replaceIndex(String catalogId, Index index) throws Exception;
 
-	public void modifyIngestPermission(String catalogId, boolean restrictIngestPermission) throws Exception;
+	void modifyIngestPermission(String catalogId, boolean restrictIngestPermission) throws Exception;
 	
-	public void modifyQueryPermission(String catalogId, boolean restrictQueryPermission) throws Exception;
+	void modifyQueryPermission(String catalogId, boolean restrictQueryPermission) throws Exception;
 		
-	public void removeCatalog(String catalogUrn) throws Exception;
+	void removeCatalog(String catalogUrn) throws Exception;
 	
 //	public void removeCatalog(String catalogUrn, boolean preserveMapping) throws Exception;
 
-	public List<PluginURL> getPluginUrls() throws Exception;
+	List<PluginURL> getPluginUrls() throws Exception;
 	
-	public void addPluginUrls(List<PluginURL> pluginURLs) throws Exception;
+	void addPluginUrls(List<PluginURL> pluginURLs) throws Exception;
 	
-	public URL getPluginStorageDir() throws Exception;
+	URL getPluginStorageDir() throws Exception;
 	
 //	public Set<Catalog> getCurrentCatalogList() throws Exception;
 //	
 //	public Catalog getCatalog(String catalogUrn) throws Exception;
 
-	public Set<String> getCurrentCatalogIds() throws Exception;
+	Set<String> getCurrentCatalogIds() throws Exception;
 		
-	public TransactionReceipt ingest(Metadata metadata) throws Exception;
+	TransactionReceipt ingest(Metadata metadata) throws Exception;
 	
-	public void delete(Metadata metadata) throws Exception;
+	void delete(Metadata metadata) throws Exception;
 	
-	public List<String> getProperty(String key) throws Exception;
+	List<String> getProperty(String key) throws Exception;
 
-	public Properties getCalalogProperties() throws Exception;
+	Properties getCalalogProperties() throws Exception;
 	
-	public Properties getCalalogProperties(String catalogUrn) throws Exception;
+	Properties getCalalogProperties(String catalogUrn) throws Exception;
 	
 //	public Page getFirstPage(QueryExpression queryExpression) throws Exception;
 //
 //	public Page getFirstPage(QueryExpression queryExpression, Set<String> catalogIds) throws Exception;
 	
-	public Page getNextPage(Page page) throws Exception;
+	Page getNextPage(Page page) throws Exception;
 	
-	public Page getPage(PageInfo pageInfo, QueryExpression queryExpression) throws Exception;
+	Page getPage(PageInfo pageInfo, QueryExpression queryExpression) throws Exception;
 	
-	public Page getPage(PageInfo pageInfo, QueryExpression queryExpression, Set<String> catalogIds) throws Exception;
+	Page getPage(PageInfo pageInfo, QueryExpression queryExpression, Set<String> catalogIds) throws Exception;
 	
 //	public Page getLastPage(QueryExpression queryExpression) throws Exception;
 //
 //	public Page getLastPage(QueryExpression queryExpression, Set<String> catalogIds) throws Exception;
 	
-	public List<TransactionalMetadata> getMetadata(Page page) throws Exception;
+	List<TransactionalMetadata> getMetadata(Page page) throws Exception;
 	
-	public QueryPager query(QueryExpression queryExpression) throws Exception;
+	QueryPager query(QueryExpression queryExpression) throws Exception;
 
-	public QueryPager query(QueryExpression queryExpression, Set<String> catalogIds) throws Exception;
+	QueryPager query(QueryExpression queryExpression, Set<String> catalogIds) throws Exception;
 
 //	public QueryPager query(QueryExpression queryExpression, boolean sortResults) throws Exception;
  
-	public List<TransactionalMetadata> getNextPage(QueryPager queryPager) throws Exception;
+	List<TransactionalMetadata> getNextPage(QueryPager queryPager) throws Exception;
 
 //	public List<TransactionId<?>> getTransactionIdsForAllPages(QueryPager queryPager) throws Exception;
 	
-	public List<TransactionalMetadata> getAllPages(QueryPager queryPager) throws Exception;
+	List<TransactionalMetadata> getAllPages(QueryPager queryPager) throws Exception;
 	
-	public List<TransactionalMetadata> getMetadataFromTransactionIdStrings(List<String> catalogServiceTransactionIdStrings) throws Exception;
+	List<TransactionalMetadata> getMetadataFromTransactionIdStrings(List<String> catalogServiceTransactionIdStrings) throws Exception;
 	
-	public List<TransactionalMetadata> getMetadataFromTransactionIds(List<TransactionId<?>> catalogServiceTransactionIds) throws Exception;
+	List<TransactionalMetadata> getMetadataFromTransactionIds(List<TransactionId<?>> catalogServiceTransactionIds) throws Exception;
 	
-	public List<TransactionId<?>> getCatalogServiceTransactionIds(List<TransactionId<?>> catalogTransactionIds, String catalogUrn) throws Exception;
+	List<TransactionId<?>> getCatalogServiceTransactionIds(List<TransactionId<?>> catalogTransactionIds,
+														   String catalogUrn) throws Exception;
 	
-	public TransactionId<?> getCatalogServiceTransactionId(TransactionId<?> catalogTransactionId, String catalogUrn) throws Exception;
+	TransactionId<?> getCatalogServiceTransactionId(TransactionId<?> catalogTransactionId, String catalogUrn) throws Exception;
 	
-	public TransactionId<?> getCatalogServiceTransactionId(CatalogReceipt catalogReceipt, boolean generateNew) throws Exception;
+	TransactionId<?> getCatalogServiceTransactionId(CatalogReceipt catalogReceipt, boolean generateNew) throws Exception;
 	
 }

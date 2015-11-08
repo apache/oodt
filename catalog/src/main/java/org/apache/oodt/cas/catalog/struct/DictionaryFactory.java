@@ -24,6 +24,6 @@ package org.apache.oodt.cas.catalog.struct;
  */
 public interface DictionaryFactory {
 
-	public Dictionary createDictionary();
+	Dictionary createDictionary();
 	
 }

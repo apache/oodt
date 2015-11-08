@@ -19,8 +19,13 @@
 package org.apache.oodt.cas.filemgr.catalog;
 
 //JDK imports
+
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
-import org.apache.oodt.cas.filemgr.structs.*;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.structs.Query;
+import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.util.SqlParser;
 import org.apache.oodt.cas.metadata.Metadata;
@@ -33,6 +38,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -52,6 +59,7 @@ import static org.junit.Assert.assertThat;
  */
 public class TestDataSourceCatalog extends TestCase {
 
+    private static Logger LOG = Logger.getLogger(TestDataSourceCatalog.class.getName());
     protected Catalog myCat;
 
     private String tmpDirPath = null;
@@ -88,7 +96,7 @@ public class TestDataSourceCatalog extends TestCase {
 
             // get a temp directory
             File tempDir = null;
-            File tempFile = null;
+            File tempFile;
 
             try {
                 tempFile = File.createTempFile("foo", "bar");
@@ -169,8 +177,8 @@ public class TestDataSourceCatalog extends TestCase {
             File[] tmpFiles = tmpDir.listFiles();
 
             if (tmpFiles != null && tmpFiles.length > 0) {
-                for (int i = 0; i < tmpFiles.length; i++) {
-                    tmpFiles[i].delete();
+                for (File tmpFile : tmpFiles) {
+                    tmpFile.delete();
                 }
 
                 tmpDir.delete();
@@ -264,7 +272,7 @@ public class TestDataSourceCatalog extends TestCase {
         Product testProd = getTestProduct();
         Metadata met = getTestMetadata("test");
 
-        for (int i = 0; i < this.catPageSize; i++) {
+        for (int i = 0; i < catPageSize; i++) {
             try {
                 myCat.addProduct(testProd);
                 myCat.addMetadata(met, testProd);
@@ -317,7 +325,7 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addProduct(testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -349,7 +357,7 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addMetadata(met, testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -375,14 +383,14 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addMetadata(met, testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
         try {
             myCat.removeMetadata(met, testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -410,7 +418,7 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addProductReferences(testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -518,7 +526,7 @@ public class TestDataSourceCatalog extends TestCase {
         try {
             myCat.addProduct(testProduct);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -573,7 +581,7 @@ public class TestDataSourceCatalog extends TestCase {
             coreSchemaScript.loadScript();
             coreSchemaScript.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 

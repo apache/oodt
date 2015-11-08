@@ -37,11 +37,13 @@ public class SearchableEnumeratedProfileElement extends EnumeratedProfileElement
 		Result rc = FalseResult.INSTANCE;
 		if (operator.equals("EQ") || operator.equals("LE") || operator.equals("GE") ||
 			operator.equals("LIKE")) {
-			if (values.contains(value))
-				rc = new MatchingResult(this);
+			if (values.contains(value)) {
+			  rc = new MatchingResult(this);
+			}
 		} else if (operator.equals("NE") || operator.equals("NOTLIKE")) {
-			if (!values.contains(value))
-				rc = new MatchingResult(this);
+			if (!values.contains(value)) {
+			  rc = new MatchingResult(this);
+			}
 		}
 		return rc;
 	}

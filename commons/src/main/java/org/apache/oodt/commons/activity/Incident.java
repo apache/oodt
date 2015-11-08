@@ -69,8 +69,12 @@ public class Incident implements Serializable, Comparable {
 	 * @return True if incidents are equal.
 	 */
 	public boolean equals(Object obj) {
-		if (obj == this) return true;
-		if (!(obj instanceof Incident)) return false;
+		if (obj == this) {
+		  return true;
+		}
+		if (!(obj instanceof Incident)) {
+		  return false;
+		}
 		Incident rhs = (Incident) obj;
 		return ((id == null && rhs.id == null) || id.equals(rhs.id)) && time.equals(rhs.time);
 	}
@@ -84,12 +88,13 @@ public class Incident implements Serializable, Comparable {
 	 */
 	public int compareTo(Object obj) {
 		Incident rhs = (Incident) obj;
-		int idComp = id == null && rhs.id != null? -1 : id == null && rhs.id == null? 0 : id != null && rhs.id == null? 1
+		int idComp = id == null && rhs.id != null ? -1 : id == null ? 0 : rhs.id == null ? 1
 			: id.compareTo(rhs.id);
-		if (idComp == 0)
-			return time.compareTo(rhs.time);
-		else
-			return idComp;
+		if (idComp == 0) {
+		  return time.compareTo(rhs.time);
+		} else {
+		  return idComp;
+		}
 	}
 
 	public String toString() {

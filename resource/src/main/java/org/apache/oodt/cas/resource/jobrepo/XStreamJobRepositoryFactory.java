@@ -38,13 +38,15 @@ public class XStreamJobRepositoryFactory implements JobRepositoryFactory {
 	public XStreamJobRepository createRepository() {
 		try {
 			String workingDirPropVal = System.getProperty("org.apache.oodt.cas.resource.jobrepo.xstream.working.dir");
-			if (workingDirPropVal == null)
-				return null;
-			else
-				workingDirPropVal = PathUtils.doDynamicReplacement(workingDirPropVal);
+			if (workingDirPropVal == null) {
+			  return null;
+			} else {
+			  workingDirPropVal = PathUtils.doDynamicReplacement(workingDirPropVal);
+			}
 			File working = new File(workingDirPropVal);
-			if (!working.exists())
-				working.mkdirs();
+			if (!working.exists()) {
+			  working.mkdirs();
+			}
 			int maxHistory = Integer.parseInt(System.getProperty("org.apache.oodt.cas.resource.jobrepo.xstream.max.history", "-1"));
 			return new XStreamJobRepository(working, maxHistory);
 		}catch (Exception e) {

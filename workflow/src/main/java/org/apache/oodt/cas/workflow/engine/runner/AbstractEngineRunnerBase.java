@@ -18,16 +18,17 @@
 package org.apache.oodt.cas.workflow.engine.runner;
 
 //JDK imports
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.workflow.engine.processor.TaskProcessor;
 import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
 import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycle;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * 
@@ -50,10 +51,7 @@ public abstract class AbstractEngineRunnerBase extends EngineRunner {
   /**
    * Creates a new AbsractEngineRunnerBase with the provided
    * {@link WorkflowInstanceRepository}.
-   * 
-   * @param instRep
-   *          The {@link WorkflowInstanceRepository} to use to persist
-   *          {@link TaskProcessor} {@link WorkflowInstance} information.
+   *
    */
   public AbstractEngineRunnerBase() {
     this.instRep = null;
@@ -67,9 +65,10 @@ public abstract class AbstractEngineRunnerBase extends EngineRunner {
            taskProcessor.getWorkflowInstance().getParentChildWorkflow().getGraph().getTask() != null) {
       return taskProcessor.getWorkflowInstance().getParentChildWorkflow()
             .getGraph().getTask();
-    } else
+    } else {
       return taskProcessor.getWorkflowInstance().getParentChildWorkflow()
-          .getTasks().get(0);
+                          .getTasks().get(0);
+    }
   }
 
   protected WorkflowLifecycle getLifecycle(TaskProcessor taskProcessor) {
@@ -77,10 +76,11 @@ public abstract class AbstractEngineRunnerBase extends EngineRunner {
   }
 
   protected synchronized void persist(WorkflowInstance instance) {
-    if(instRep == null) return;
+    if(instRep == null) {
+      return;
+    }
     try {
-      if (instance.getId() == null
-          || (instance.getId() != null && instance.getId().equals(""))) {
+      if (instance.getId() == null || (instance.getId().equals(""))) {
         // we have to persist it by adding it
         // rather than updating it
         instRep.addWorkflowInstance(instance);
@@ -89,7 +89,7 @@ public abstract class AbstractEngineRunnerBase extends EngineRunner {
         instRep.updateWorkflowInstance(instance);
       }
     } catch (InstanceRepositoryException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unabled to persist workflow instance: ["
           + instance.getId() + "]: Message: " + e.getMessage());
     }    

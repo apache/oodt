@@ -18,21 +18,21 @@
 package org.apache.oodt.pcs.tools;
 
 //JDK imports
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-//OODT imports
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import org.apache.oodt.pcs.metadata.PCSConfigMetadata;
 import org.apache.oodt.pcs.metadata.PCSMetadata;
 import org.apache.oodt.pcs.pedigree.Pedigree;
 import org.apache.oodt.pcs.pedigree.PedigreeTree;
 import org.apache.oodt.pcs.util.FileManagerUtils;
 import org.apache.oodt.pcs.util.WorkflowManagerUtils;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+
+//OODT imports
 
 /**
  * 
@@ -134,10 +134,9 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
     System.out.println(REPORT_LINE_SEPARATOR);
     System.out.println("Metadata: ");
     Metadata met = fm.safeGetMetadata(prod);
-    if (met != null && met.getHashtable() != null
-        && met.getHashtable().keySet().size() > 0) {
-      for (Iterator i = met.getHashtable().keySet().iterator(); i.hasNext();) {
-        String key = (String) i.next();
+    if (met != null && met.getMap() != null
+        && met.getMap().keySet().size() > 0) {
+      for (String key : met.getMap().keySet()) {
         List vals = met.getAllMetadata(key);
         System.out.println(key + "=>" + vals);
       }
@@ -146,7 +145,7 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
     System.out.println(REPORT_LINE_SEPARATOR);
     System.out.println("Generated from workflow:");
     System.out.println("");
-    WorkflowInstance inst = null;
+    WorkflowInstance inst;
 
     try {
       inst = getWorkflowInstanceById(wm.safeGetWorkflowInstances(), met
@@ -159,8 +158,8 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
       if (wInstProds != null && wInstProds.size() > 0) {
         System.out.println("Associated products:");
         System.out.println("");
-        for (Iterator i = wInstProds.iterator(); i.hasNext();) {
-          Product wInstProd = (Product) i.next();
+        for (Object wInstProd1 : wInstProds) {
+          Product wInstProd = (Product) wInstProd1;
           System.out.println(wInstProd.getProductName());
         }
       }
@@ -192,7 +191,7 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
    * @param args
    * @throws Exception
    */
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     String productName = null;
     String workflowUrlStr = null, filemgrUrlStr = null;
     boolean enableNotCat = false;
@@ -238,8 +237,8 @@ public final class PCSTrace implements PCSMetadata, PCSConfigMetadata {
       return null;
     }
 
-    for (Iterator i = insts.iterator(); i.hasNext();) {
-      WorkflowInstance inst = (WorkflowInstance) i.next();
+    for (Object inst1 : insts) {
+      WorkflowInstance inst = (WorkflowInstance) inst1;
       if (inst.getId().equals(id)) {
         return inst;
       }

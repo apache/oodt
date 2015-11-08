@@ -21,10 +21,19 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -56,9 +65,9 @@ public class EnterpriseEntityResolver implements EntityResolver {
 						token.append(ch, start, length);
 					}
 					public void endElement(String ns, String name, String qual) {
-						if ("pi".equals(qual))
-							pi = token.toString().trim();
-						else if ("filename".equals(qual)) {
+						if ("pi".equals(qual)) {
+						  pi = token.toString().trim();
+						} else if ("filename".equals(qual)) {
 							entities.put(pi, token.toString().trim());
 						}
 						token.delete(0, token.length());
@@ -78,20 +87,26 @@ public class EnterpriseEntityResolver implements EntityResolver {
 
 	public InputSource resolveEntity(String publicID, String systemID) throws SAXException, IOException {
 		String filename = computeFilename(publicID, systemID);
-		if (filename == null) return null;
+		if (filename == null) {
+		  return null;
+		}
 
 		// Resolve it using class loader first.  Any DTD in the toplevel directory
 		// of any jar present to the application is a potential source.
 		InputStream in = getClass().getResourceAsStream("/" + filename);
-		if (in != null)
-			return new InputSource(new BufferedReader(new InputStreamReader(in)));
+		if (in != null) {
+		  return new InputSource(new BufferedReader(new InputStreamReader(in)));
+		}
 
 		// OK, try the filesystem next.  You can control what directories get
 		// searched by setting the entity.dirs property.
 		File file = findFile(getEntityRefDirs(System.getProperty("entity.dirs", "")), filename);
-		if (file != null) try {
+		if (file != null) {
+		  try {
 			return new InputSource(new BufferedReader(new FileReader(file)));
-		} catch (IOException ignore) {}
+		  } catch (IOException ignore) {
+		  }
+		}
 
 		// No luck either way.
 		return null;
@@ -109,11 +124,14 @@ public class EnterpriseEntityResolver implements EntityResolver {
 	 */
 	static String computeFilename(String publicID, String systemID) {
 		String name = (String) entities.get(publicID);
-		if (name == null) try {
+		if (name == null) {
+		  try {
 			URL url = new URL(systemID);
 			File file = new File(url.getFile());
 			name = file.getName();
-		} catch (MalformedURLException ignore) {}
+		  } catch (MalformedURLException ignore) {
+		  }
+		}
 		return name;
 	}
 
@@ -125,8 +143,9 @@ public class EnterpriseEntityResolver implements EntityResolver {
 	 */
 	static List getEntityRefDirs(String spec) {
 		List dirs = new ArrayList();
-		for (StringTokenizer t = new StringTokenizer(spec, ",;|"); t.hasMoreTokens();)
-			dirs.add(t.nextToken());
+		for (StringTokenizer t = new StringTokenizer(spec, ",;|"); t.hasMoreTokens();) {
+		  dirs.add(t.nextToken());
+		}
 		return dirs;
 	}
 
@@ -138,10 +157,12 @@ public class EnterpriseEntityResolver implements EntityResolver {
 	 * or null if no directory in <var>dirs</var> contains a file named <var>filename</var>.
 	 */
 	static File findFile(List dirs, String filename) {
-		for (Iterator i = dirs.iterator(); i.hasNext();) {
-			File potentialFile = new File((String) i.next(), filename);
-			if (potentialFile.isFile()) return potentialFile;
+	  for (Object dir : dirs) {
+		File potentialFile = new File((String) dir, filename);
+		if (potentialFile.isFile()) {
+		  return potentialFile;
 		}
+	  }
 		return null;
 	}
 }

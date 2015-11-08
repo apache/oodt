@@ -27,15 +27,15 @@ package org.apache.oodt.product.handlers.ofsn.metadata;
  */
 public interface OFSNMetKeys {
 
-  public static final String LISTING_CMD = "listing";
+  String LISTING_CMD = "listing";
 
-  public static final String GET_CMD = "get";
+  String GET_CMD = "get";
   
-  public static final String OFSN_XML_CONF_FILE_KEY = "org.apache.oodt.product.handlers.ofsn.xmlConfigFilePath";
+  String OFSN_XML_CONF_FILE_KEY = "org.apache.oodt.product.handlers.ofsn.xmlConfigFilePath";
   
-  public static final String OFSN_COMPUTE_DIR_SIZE = "org.apache.oodt.product.handlers.ofsn.computeDirSize";
+  String OFSN_COMPUTE_DIR_SIZE = "org.apache.oodt.product.handlers.ofsn.computeDirSize";
   
-  public static final String OFSN_COMPUTE_FILE_SIZE = "org.apache.oodt.product.handlers.ofsn.computeFileSize";
+  String OFSN_COMPUTE_FILE_SIZE = "org.apache.oodt.product.handlers.ofsn.computeFileSize";
 
 
 }

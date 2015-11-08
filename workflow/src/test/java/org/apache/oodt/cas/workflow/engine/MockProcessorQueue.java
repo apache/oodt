@@ -18,11 +18,14 @@
 package org.apache.oodt.cas.workflow.engine;
 
 //JDK imports
-import java.util.List;
-import java.util.Vector;
 
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorQueue;
+
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -33,6 +36,8 @@ import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessorQueue;
  * 
  */
 public class MockProcessorQueue extends WorkflowProcessorQueue {
+
+  private static Logger LOG = Logger.getLogger(MockProcessorQueue.class.getName());
 
   private QuerierAndRunnerUtils utils;
 
@@ -61,7 +66,7 @@ public class MockProcessorQueue extends WorkflowProcessorQueue {
         this.consumed = true;
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new RuntimeException(e);
     }
 

@@ -44,10 +44,10 @@ public class TestHttpFile extends TestCase {
 		try {
 			 new HttpFile(null, false, new URL("http://some-site"));
 			fail("Should have thrown an IllegalArgumentException");
-		} catch (IllegalArgumentException e) {}
+		} catch (IllegalArgumentException ignored) {}
 		try {
 			 new HttpFile("/path/to/file", false, null);
 			fail("Should have thrown an IllegalArgumentException");
-		} catch (IllegalArgumentException e) {}
+		} catch (IllegalArgumentException ignored) {}
 	}
 }

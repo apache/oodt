@@ -19,13 +19,18 @@
 package org.apache.oodt.cas.resource.util;
 
 //JDK imports
+
+import org.apache.oodt.cas.resource.exceptions.ResourceException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -37,6 +42,7 @@ import java.util.Vector;
  * </p>.
  */
 public final class Ulimit implements UlimitMetKeys {
+    private static Logger LOG = Logger.getLogger(Ulimit.class.getName());
     private static final String shell = "/bin/bash";
 
     private static final String runShellCmdOption = "-c";
@@ -50,7 +56,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     CORE_FILE_SIZE)).getValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return UNKNOWN_VALUE;
         }
 
@@ -61,7 +67,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     DATA_SEGMENT_SIZE)).getValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return UNKNOWN_VALUE;
         }
 
@@ -72,7 +78,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(FILE_SIZE))
                     .getValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return UNKNOWN_VALUE;
         }
 
@@ -83,7 +89,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_LOCKED_MEMORY)).getValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return UNKNOWN_VALUE;
         }
 
@@ -94,7 +100,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_MEMORY_SIZE)).getValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return UNKNOWN_VALUE;
         }
 
@@ -105,7 +111,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_OPEN_FILES)).getValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return UNKNOWN_VALUE;
         }
 
@@ -116,7 +122,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap()
                     .get(MAX_PIPE_SIZE)).getValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return UNKNOWN_VALUE;
         }
 
@@ -127,7 +133,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_STACK_SIZE)).getValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return UNKNOWN_VALUE;
         }
 
@@ -138,7 +144,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(MAX_CPU_TIME))
                     .getValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return UNKNOWN_VALUE;
         }
 
@@ -149,7 +155,7 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_USER_PROCESSES)).getValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return UNKNOWN_VALUE;
         }
 
@@ -160,28 +166,28 @@ public final class Ulimit implements UlimitMetKeys {
             return ((UlimitProperty) getUlimitPropertiesMap().get(
                     MAX_VIRTUAL_MEMORY)).getValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             return UNKNOWN_VALUE;
         }
 
     }
 
-    public static Map getUlimitPropertiesMap() throws Exception {
-        Process p = null;
+    public static Map getUlimitPropertiesMap() throws ResourceException, IOException {
+        Process p;
         try {
             p = Runtime.getRuntime().exec(
                     new String[] { shell, runShellCmdOption, ulimitCommand });
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception(
+            LOG.log(Level.SEVERE, e.getMessage());
+            throw new ResourceException(
                     "IOException executing ulimit command: Message: "
                             + e.getMessage());
         }
         BufferedReader in = new BufferedReader(new InputStreamReader(p
                 .getInputStream()));
 
-        String line = null;
-        Map properties = new HashMap();
+        String line;
+        Map properties = new ConcurrentHashMap();
 
         while ((line = in.readLine()) != null) {
             UlimitProperty property = parseProperty(line);
@@ -197,21 +203,21 @@ public final class Ulimit implements UlimitMetKeys {
         return properties;
     }
 
-    public static List getUlimitProperties() throws Exception {
-        Process p = null;
+    public static List getUlimitProperties() throws ResourceException, IOException {
+        Process p;
         try {
             p = Runtime.getRuntime().exec(
                     new String[] { shell, runShellCmdOption, ulimitCommand });
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception(
+            LOG.log(Level.SEVERE, e.getMessage());
+            throw new ResourceException(
                     "IOException executing ulimit command: Message: "
-                            + e.getMessage());
+                            + e.getMessage(), e);
         }
         BufferedReader in = new BufferedReader(new InputStreamReader(p
                 .getInputStream()));
 
-        String line = null;
+        String line;
         List properties = new Vector();
 
         while ((line = in.readLine()) != null) {

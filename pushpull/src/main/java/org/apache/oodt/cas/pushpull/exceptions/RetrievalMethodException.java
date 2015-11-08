@@ -38,4 +38,8 @@ public class RetrievalMethodException extends PushPullFrameworkException {
     public RetrievalMethodException(String msg) {
         super(msg);
     }
+
+    public RetrievalMethodException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

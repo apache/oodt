@@ -19,7 +19,6 @@ package org.apache.oodt.commons.activity;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -60,7 +59,7 @@ public class ActivityTracker {
 	 *
 	 * @throws Exception if an error occurs.
 	 */
-	static void initializeFactories() throws Exception {
+	static void initializeFactories() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
 		String facNames = System.getProperty("org.apache.oodt.commons.activity.factories", System.getProperty("activity.factories", ""));
 		List factories = new ArrayList();
 		for (StringTokenizer tokens = new StringTokenizer(facNames, ",|"); tokens.hasMoreTokens();) {
@@ -68,12 +67,10 @@ public class ActivityTracker {
 			Class factoryClass = Class.forName(factoryName);
 			factories.add(factoryClass.newInstance());
 		}
-		if (factories.isEmpty())
-			factory = new NullActivityFactory();
-		else if (factories.size() == 1)
-			factory = (ActivityFactory) factories.get(0);
-		else
-			factory = new CompositeActivityFactory(factories);
+		if (factories.isEmpty()) {
+		  factory = new NullActivityFactory();
+		} else factory =
+			factories.size() == 1 ? (ActivityFactory) factories.get(0) : new CompositeActivityFactory(factories);
 	}
 
 	/**
@@ -125,10 +122,10 @@ public class ActivityTracker {
 		 */
 		public Activity createActivity() {
 			List activities = new ArrayList();
-			for (Iterator i = factories.iterator(); i.hasNext();) {
-				ActivityFactory factory = (ActivityFactory) i.next();
-				activities.add(factory.createActivity());
-			}
+		  for (Object factory1 : factories) {
+			ActivityFactory factory = (ActivityFactory) factory1;
+			activities.add(factory.createActivity());
+		  }
 			return new CompositeActivity(activities);
 		}
 

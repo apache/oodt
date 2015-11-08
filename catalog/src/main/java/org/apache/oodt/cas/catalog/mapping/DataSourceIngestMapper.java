@@ -48,10 +48,10 @@ import org.apache.oodt.commons.date.DateUtils;
  */
 public class DataSourceIngestMapper implements IngestMapper {
 
-	protected DataSource dataSource;
+	private DataSource dataSource;
 	
 	public DataSourceIngestMapper(String user, String pass, String driver,
-			String jdbcUrl) throws InstantiationException {
+			String jdbcUrl) {
 		this.dataSource = DatabaseConnectionBuilder.buildDataSource(user, pass,
                 driver, jdbcUrl);
 	}
@@ -69,10 +69,10 @@ public class DataSourceIngestMapper implements IngestMapper {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -91,10 +91,10 @@ public class DataSourceIngestMapper implements IngestMapper {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -113,10 +113,10 @@ public class DataSourceIngestMapper implements IngestMapper {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -131,8 +131,10 @@ public class DataSourceIngestMapper implements IngestMapper {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT CAT_SERV_TRANS_ID,CAT_SERV_TRANS_FACTORY FROM CatalogServiceMapper WHERE CAT_TRANS_ID = '"+ catalogTransactionId + "' AND CATALOG_ID = '" + catalogId + "'");
 			
-			while(rs.next())
-				return ((TransactionIdFactory) Class.forName(rs.getString("CAT_SERV_TRANS_FACTORY")).newInstance()).createTransactionId(rs.getString("CAT_SERV_TRANS_ID"));
+			while(rs.next()) {
+			  return ((TransactionIdFactory) Class.forName(rs.getString("CAT_SERV_TRANS_FACTORY")).newInstance())
+				  .createTransactionId(rs.getString("CAT_SERV_TRANS_ID"));
+			}
 
 			return null;
 		}catch (Exception e) {
@@ -140,13 +142,13 @@ public class DataSourceIngestMapper implements IngestMapper {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -161,8 +163,10 @@ public class DataSourceIngestMapper implements IngestMapper {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT CAT_TRANS_ID,CAT_TRANS_FACTORY FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '"+ catalogServiceTransactionId + "' AND CATALOG_ID = '" + catalogId + "'");
 			
-			while(rs.next())
-				return ((TransactionIdFactory) Class.forName(rs.getString("CAT_TRANS_FACTORY")).newInstance()).createTransactionId(rs.getString("CAT_TRANS_ID"));
+			while(rs.next()) {
+			  return ((TransactionIdFactory) Class.forName(rs.getString("CAT_TRANS_FACTORY")).newInstance())
+				  .createTransactionId(rs.getString("CAT_TRANS_ID"));
+			}
 
 			return null;
 		}catch (Exception e) {
@@ -170,13 +174,13 @@ public class DataSourceIngestMapper implements IngestMapper {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -192,8 +196,9 @@ public class DataSourceIngestMapper implements IngestMapper {
 			rs = stmt.executeQuery("SELECT CATALOG_ID FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '"+ catalogServiceTransactionId + "'");
 			
 			Set<String> catalogIds = new HashSet<String>();
-			while(rs.next())
-				catalogIds.add(rs.getString("CATALOG_ID"));
+			while(rs.next()) {
+			  catalogIds.add(rs.getString("CATALOG_ID"));
+			}
 
 			return catalogIds;
 		}catch (Exception e) {
@@ -201,13 +206,13 @@ public class DataSourceIngestMapper implements IngestMapper {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}	
 	}
 
@@ -228,8 +233,10 @@ public class DataSourceIngestMapper implements IngestMapper {
 				+ "WHERE r >= " + ((indexPager.getPageSize() * indexPager.getPageNum()) + 1));
 			
 			Set<TransactionId<?>> transactionIds = new HashSet<TransactionId<?>>();
-			while(rs.next())
-				transactionIds.add(((TransactionIdFactory) Class.forName(rs.getString("CAT_TRANS_FACTORY")).newInstance()).createTransactionId(rs.getString("CAT_TRANS_ID")));
+			while(rs.next()) {
+			  transactionIds.add(((TransactionIdFactory) Class.forName(rs.getString("CAT_TRANS_FACTORY")).newInstance())
+				  .createTransactionId(rs.getString("CAT_TRANS_ID")));
+			}
 				
 			return transactionIds;
 		}catch (Exception e) {
@@ -237,13 +244,13 @@ public class DataSourceIngestMapper implements IngestMapper {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -263,13 +270,13 @@ public class DataSourceIngestMapper implements IngestMapper {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -299,10 +306,10 @@ public class DataSourceIngestMapper implements IngestMapper {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
@@ -329,14 +336,21 @@ public class DataSourceIngestMapper implements IngestMapper {
 		}finally {
 			try {
 				conn.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				stmt.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 			try {
 				rs.close();
-			}catch(Exception e) {}
+			}catch(Exception ignored) {}
 		}
 	}
 
+  public DataSource getDataSource() {
+	return dataSource;
+  }
+
+  public void setDataSource(DataSource dataSource) {
+	this.dataSource = dataSource;
+  }
 }

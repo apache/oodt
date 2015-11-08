@@ -22,8 +22,8 @@
 
 body {
     background-color:#FFF;
-    margin:0px;
-    padding:0px;
+    margin:0;
+    padding:0;
     font-family: verdana, arial,  sans-serif;
 }
 
@@ -74,8 +74,8 @@ body {
   position:absolute;
   bottom:20px;
   width:100%;
-  padding:10px 0px;
-  border-spacing:0px;
+  padding:10px 0;
+  border-spacing:0;
   border-top:solid 1px #2e3e4e;
   color:#234;
   font-size:90%;

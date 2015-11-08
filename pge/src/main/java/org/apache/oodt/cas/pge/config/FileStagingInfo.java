@@ -17,12 +17,13 @@
 package org.apache.oodt.cas.pge.config;
 
 //JDK imports
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import java.util.List;
 import java.util.Set;
 
 //Google imports
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * Configuration information about which files should be staged and where.
@@ -63,8 +64,8 @@ public class FileStagingInfo {
       productIds.add(productId);
    }
 
-   public void addProductIds(List<String> productIds) {
-      productIds.addAll(productIds);
+   public void addProductIds(List<String> productIdsInc) {
+      productIds.addAll(productIdsInc);
    }
 
    public List<String> getProductIds() {

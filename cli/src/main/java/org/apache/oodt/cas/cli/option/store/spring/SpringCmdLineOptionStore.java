@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 
 //OODT imports
-import org.apache.oodt.cas.cli.exception.CmdLineOptionStoreException;
 import org.apache.oodt.cas.cli.option.CmdLineOption;
 import org.apache.oodt.cas.cli.option.store.CmdLineOptionStore;
 
@@ -46,8 +45,7 @@ public class SpringCmdLineOptionStore implements CmdLineOptionStore {
    }
 
    @Override
-   public Set<CmdLineOption> loadSupportedOptions()
-         throws CmdLineOptionStoreException {
+   public Set<CmdLineOption> loadSupportedOptions() {
       @SuppressWarnings("unchecked")
       Map<String, CmdLineOption> optionsMap = appContext
             .getBeansOfType(CmdLineOption.class);

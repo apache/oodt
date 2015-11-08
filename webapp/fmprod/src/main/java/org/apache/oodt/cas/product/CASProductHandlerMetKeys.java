@@ -26,10 +26,10 @@ package org.apache.oodt.cas.product;
  */
 public interface CASProductHandlerMetKeys {
     
-    public static final String FILE_HEADER = "File";
+    String FILE_HEADER = "File";
     
-    public static final String CAS_PROFILE_ID = "CAS.Profile.Id";
+    String CAS_PROFILE_ID = "CAS.Profile.Id";
     
-    public static final String UNKNOWN = "UNKNOWN";
+    String UNKNOWN = "UNKNOWN";
 
 }

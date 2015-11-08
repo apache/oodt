@@ -239,10 +239,12 @@ public class MappingField {
    */
   public String getLocalName() {
     String dbColName = getName();
-    if (getDbName() != null && !getDbName().isEmpty())
+    if (getDbName() != null && !getDbName().isEmpty()) {
       dbColName = getDbName();
-    if (getTableName() == null || getTableName().isEmpty())
+    }
+    if (getTableName() == null || getTableName().isEmpty()) {
       return dbColName;
+    }
     return getTableName() + "." + dbColName;
   }
 

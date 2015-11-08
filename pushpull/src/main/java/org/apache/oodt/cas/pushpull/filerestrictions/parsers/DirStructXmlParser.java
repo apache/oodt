@@ -18,8 +18,8 @@
 
 package org.apache.oodt.cas.pushpull.filerestrictions.parsers;
 
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.CasMetadataException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.pushpull.exceptions.ParserException;
 import org.apache.oodt.cas.pushpull.expressions.GlobalVariables;
@@ -28,22 +28,22 @@ import org.apache.oodt.cas.pushpull.expressions.Variable;
 import org.apache.oodt.cas.pushpull.filerestrictions.Parser;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFile;
 import org.apache.oodt.cas.pushpull.filerestrictions.VirtualFileStructure;
+import org.apache.oodt.commons.exceptions.CommonsException;
 import org.apache.oodt.commons.xml.XMLUtils;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.FileInputStream;
-import java.util.HashMap;
+import java.text.ParseException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-//JDK imports
 
 /**
  * 
@@ -59,7 +59,7 @@ public class DirStructXmlParser implements Parser {
     private static final Logger LOG = Logger.getLogger(DirStructXmlParser.class
             .getName());
     
-    private static final HashMap<String, Method> methodRepo = new HashMap<String, Method>();
+    private static final ConcurrentHashMap<String, Method> methodRepo = new ConcurrentHashMap<String, Method>();
 
     public DirStructXmlParser() {}
 
@@ -79,7 +79,6 @@ public class DirStructXmlParser implements Parser {
                     // parse out starting path
                     String startingPath = ((Element) node)
                             .getAttribute("starting_path");
-                    if (startingPath != null) {
                         root = (currentFile = new VirtualFile(
                                 initialCdDir = startingPath, true))
                                 .getRootDir();
@@ -89,10 +88,6 @@ public class DirStructXmlParser implements Parser {
                             temp.setNoFiles(true);
                             temp = temp.getParentFile();
                         }
-                    } else {
-                        currentFile = root = VirtualFile.createRootDir();
-                    }
-
                     // parse the directory structure
                     parseDirstructXML(node.getChildNodes(), currentFile);
 
@@ -104,7 +99,7 @@ public class DirStructXmlParser implements Parser {
             }
             return new VirtualFileStructure(initialCdDir, root);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ParserException("Failed to parse XML file : "
                     + e.getMessage());
         }
@@ -149,15 +144,17 @@ public class DirStructXmlParser implements Parser {
                             if ((ch <= 'Z' && ch >= 'A')
                                     || (ch <= 'z' && ch >= 'a')
                                     || (ch <= '9' && ch >= '0') 
-                                    || ch == '_')
-                                variable.append(ch);
-                            else
-                                break;
+                                    || ch == '_') {
+                              variable.append(ch);
+                            } else {
+                              break;
+                            }
                         }
-                        Variable v = GlobalVariables.hashMap.get(variable
+                        Variable v = GlobalVariables.ConcurrentHashMap.get(variable
                                 .toString());
-                        if (v == null)
-                        	throw new Exception("No variable defined with name '" + variable.toString() + "'");
+                        if (v == null) {
+                          throw new Exception("No variable defined with name '" + variable.toString() + "'");
+                        }
                         input = input.replaceFirst("\\$\\{" + variable + "\\}", v.toString());
                         i = i + v.toString().length();
                     }
@@ -173,10 +170,11 @@ public class DirStructXmlParser implements Parser {
                         char ch = input.substring(j, j + 1).charAt(0);
                         if ((ch <= 'Z' && ch >= 'A')
                                 || (ch <= 'z' && ch >= 'a')
-                                || (ch <= '9' && ch >= '0') || ch == '_')
-                            method.append(ch);
-                        else
-                            break;
+                                || (ch <= '9' && ch >= '0') || ch == '_') {
+                          method.append(ch);
+                        } else {
+                          break;
+                        }
                     }
 
                     if (input.substring(j, j + 1).charAt(0) == '(') {
@@ -208,7 +206,7 @@ public class DirStructXmlParser implements Parser {
         return input;
     }
 
-    private void parseVariablesXML(NodeList list) throws DOMException, Exception {
+    private void parseVariablesXML(NodeList list) throws ParseException, CommonsException, CasMetadataException {
 
         // loop through all variable elements
         for (int i = 0; i < list.getLength(); i++) {
@@ -265,12 +263,13 @@ public class DirStructXmlParser implements Parser {
                 }
                 // determine if variable is an Integer or a String
                 if (type.equals("int")) {
-                    variable.setValue(new Integer(value));
-                } else
-                    variable.setValue(value);
+                    variable.setValue(Integer.valueOf(value));
+                } else {
+                  variable.setValue(value);
+                }
 
                 // store Variable in list of Variables
-                GlobalVariables.hashMap.put(variable.getName(), variable);
+                GlobalVariables.ConcurrentHashMap.put(variable.getName(), variable);
             }
         }
     }

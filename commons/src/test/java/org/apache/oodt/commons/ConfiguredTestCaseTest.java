@@ -16,7 +16,6 @@
 package org.apache.oodt.commons;
 
 import junit.framework.TestCase;
-import org.xml.sax.SAXParseException;
 
 /**
  * Unit test the ConfiguredTestCase class.

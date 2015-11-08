@@ -90,7 +90,8 @@ public class TestApplyToActionHandler extends TestCase {
    }
 
    public static class TestCmdLineAction extends CmdLineAction {
-      public enum CallType { ADD, SET };
+      public enum CallType { ADD, SET }
+
       private CallType callType;
 
       @Override

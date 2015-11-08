@@ -33,6 +33,6 @@ public interface JobRepositoryFactory {
    * 
    * @return A new {@link JobRepository} implementation.
    */
-  public JobRepository createRepository();
+  JobRepository createRepository();
 
 }

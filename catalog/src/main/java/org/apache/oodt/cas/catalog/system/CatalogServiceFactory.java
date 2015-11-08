@@ -26,6 +26,6 @@ package org.apache.oodt.cas.catalog.system;
  */
 public interface CatalogServiceFactory {
 
-	public CatalogService createCatalogService();
+	CatalogService createCatalogService();
 	
 }

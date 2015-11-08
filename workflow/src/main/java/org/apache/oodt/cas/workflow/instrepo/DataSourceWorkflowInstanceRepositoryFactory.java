@@ -18,19 +18,11 @@
 
 package org.apache.oodt.cas.workflow.instrepo;
 
-//OODT imports
-import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepository;
-import org.apache.oodt.cas.workflow.instrepo.WorkflowInstanceRepositoryFactory;
-
-//APACHE imports
-import org.apache.commons.dbcp.ConnectionFactory;
-import org.apache.commons.dbcp.DriverManagerConnectionFactory;
-import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
 
-//JDK imports
 import javax.sql.DataSource;
 
 /**
@@ -46,7 +38,8 @@ import javax.sql.DataSource;
 public class DataSourceWorkflowInstanceRepositoryFactory implements
         WorkflowInstanceRepositoryFactory {
 
-    /* our data source */
+  public static final int VAL = 20;
+  /* our data source */
     private DataSource dataSource = null;
 
     /* whether or not we are quoting the task_id and workflow_id fields */
@@ -60,8 +53,8 @@ public class DataSourceWorkflowInstanceRepositoryFactory implements
      * Default constructor
      * </p>
      */
-    public DataSourceWorkflowInstanceRepositoryFactory() throws Exception {
-        String jdbcUrl = null, user = null, pass = null, driver = null;
+    public DataSourceWorkflowInstanceRepositoryFactory() throws WorkflowException {
+        String jdbcUrl, user, pass, driver;
 
         jdbcUrl = PathUtils
                 .replaceEnvVariables(System
@@ -79,21 +72,16 @@ public class DataSourceWorkflowInstanceRepositoryFactory implements
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {
-            throw new Exception("Cannot load driver: " + driver);
+            throw new WorkflowException("Cannot load driver: " + driver);
         }
 
         GenericObjectPool connectionPool = new GenericObjectPool(null);
-        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(
-                jdbcUrl, user, pass);
-        PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(
-                connectionFactory, connectionPool, null, null, false, true);
 
         dataSource = new PoolingDataSource(connectionPool);
         quoteFields = Boolean
                 .getBoolean("org.apache.oodt.cas.workflow.instanceRep.datasource.quoteFields");
         pageSize = Integer.getInteger(
-                "org.apache.oodt.cas.workflow.instanceRep.pageSize", 20)
-                .intValue();
+            "org.apache.oodt.cas.workflow.instanceRep.pageSize", VAL);
 
     }
 

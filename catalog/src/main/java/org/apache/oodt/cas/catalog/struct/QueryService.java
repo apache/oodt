@@ -38,11 +38,10 @@ public interface QueryService {
 
 	/**
 	 * Returns all the TransactionIds that fall under the given query
-	 * @param query The query for TransactionIds
 	 * @return Returns a List of TransactionIds that meet the query, otherwise
 	 * an empty List is no TransactionIds are found for the given query
 	 */
-	public List<IngestReceipt> query(QueryExpression queryExpression) throws QueryServiceException;
+	List<IngestReceipt> query(QueryExpression queryExpression) throws QueryServiceException;
 	
 	/**
 	 * Returns the results of the given query such that: [startIndex, endIndex)
@@ -52,7 +51,7 @@ public interface QueryService {
 	 * @return The results of the given query such that: [startIndex, endIndex)
 	 * @throws QueryServiceException on an error
 	 */
-	public List<IngestReceipt> query(QueryExpression queryExpression, int startIndex, int endIndex) throws QueryServiceException;
+	List<IngestReceipt> query(QueryExpression queryExpression, int startIndex, int endIndex) throws QueryServiceException;
 
 	/**
 	 * Returns the number of results found for the given query
@@ -60,7 +59,7 @@ public interface QueryService {
 	 * @return The number of results found for the given query
 	 * @throws QueryServiceException on an error
 	 */
-	public int sizeOf(QueryExpression queryExpression) throws QueryServiceException;
+	int sizeOf(QueryExpression queryExpression) throws QueryServiceException;
 	
 	/**
 	 * Returns a List of TermBuckets ingested for a given TransactionId
@@ -68,7 +67,7 @@ public interface QueryService {
 	 * @return A List of TermBuckets for the given TransactionId or empty list
 	 * if no record of the give TranactionId exists
 	 */
-	public List<TermBucket> getBuckets(TransactionId<?> transactionId) throws QueryServiceException;
+	List<TermBucket> getBuckets(TransactionId<?> transactionId) throws QueryServiceException;
 	
 	/**
 	 * Does the same as getBuckets(TransactionId), except is performed over a list
@@ -76,6 +75,6 @@ public interface QueryService {
 	 * @param transactionIds A List of TransactionIds for which TermBuckets are wanted
 	 * @return A Map of TransactionIds to TermBuckets
 	 */
-	public Map<TransactionId<?>, List<TermBucket>> getBuckets(List<TransactionId<?>> transactionIds) throws QueryServiceException;
+	Map<TransactionId<?>, List<TermBucket>> getBuckets(List<TransactionId<?>> transactionIds) throws QueryServiceException;
 
 }

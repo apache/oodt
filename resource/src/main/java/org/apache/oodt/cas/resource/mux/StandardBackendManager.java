@@ -16,15 +16,15 @@
  */
 package org.apache.oodt.cas.resource.mux;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.oodt.cas.resource.batchmgr.Batchmgr;
 import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.scheduler.Scheduler;
 import org.apache.oodt.cas.resource.structs.exceptions.QueueManagerException;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This manager keeps track of the mux-able backends for the resource manager.
@@ -60,8 +60,9 @@ public class StandardBackendManager implements BackendManager {
      */
     public Monitor getMonitor(String queue) throws QueueManagerException {
         BackendSet set = queueToBackend.get(queue);
-        if (set == null)
+        if (set == null) {
             throw new QueueManagerException("Queue '" + queue + "' does not exist");
+        }
         return set.monitor;
     }
     /**
@@ -72,8 +73,9 @@ public class StandardBackendManager implements BackendManager {
      */
     public Batchmgr getBatchmgr(String queue) throws QueueManagerException {
         BackendSet set = queueToBackend.get(queue);
-        if (set == null)
+        if (set == null) {
             throw new QueueManagerException("Queue '" + queue + "' does not exist");
+        }
         return set.batchmgr;
     }
     /**
@@ -84,8 +86,9 @@ public class StandardBackendManager implements BackendManager {
      */
     public Scheduler getScheduler(String queue) throws QueueManagerException {
         BackendSet set = queueToBackend.get(queue);
-        if (set == null)
+        if (set == null) {
             throw new QueueManagerException("Queue '" + queue + "' does not exist");
+        }
         return set.scheduler;
     }
     /**

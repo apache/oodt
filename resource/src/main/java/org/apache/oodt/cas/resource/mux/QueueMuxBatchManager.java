@@ -18,7 +18,7 @@
 package org.apache.oodt.cas.resource.mux;
 
 import java.util.List;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +43,7 @@ public class QueueMuxBatchManager implements Batchmgr {
     private Logger LOG = Logger.getLogger(QueueMuxBatchManager.class.getName());
 
     BackendManager backend;
-    Map<String,String> jobIdToQueue = new HashMap<String,String>();
+    Map<String,String> jobIdToQueue = new ConcurrentHashMap<String,String>();
     JobRepository repo;
 
     /**

@@ -32,5 +32,5 @@ public interface SchedulerFactory {
 	/**
 	 * @return A new implementation of the {@link Scheduler} interface.
 	 */
-	public Scheduler createScheduler();
+	Scheduler createScheduler();
 }

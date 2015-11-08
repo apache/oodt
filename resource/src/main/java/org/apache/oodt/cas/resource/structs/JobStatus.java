@@ -26,16 +26,16 @@ package org.apache.oodt.cas.resource.structs;
  */
 public interface JobStatus {
   
-  public static final String QUEUED = "__Queued__";
+  String QUEUED = "__Queued__";
   
-  public static final String EXECUTED = "__Executed__";
+  String EXECUTED = "__Executed__";
   
-  public static final String SCHEDULED = "__Scheduled__";
+  String SCHEDULED = "__Scheduled__";
   
-  public static final String SUCCESS = "__Success__";
+  String SUCCESS = "__Success__";
   
-  public static final String FAILURE = "__Failure__";
+  String FAILURE = "__Failure__";
   
-  public static final String KILLED = "__Killed__";
+  String KILLED = "__Killed__";
 
 }

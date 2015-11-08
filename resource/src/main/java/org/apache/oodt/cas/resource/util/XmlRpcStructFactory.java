@@ -18,16 +18,18 @@
 package org.apache.oodt.cas.resource.util;
 
 //OODT imports
+
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 
-//JDK imports
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -44,8 +46,8 @@ public final class XmlRpcStructFactory {
 		throw new InstantiationException("Don't construct factory classes!");
 	}
 
-	public static Hashtable getXmlRpcJob(Job job) {
-		Hashtable jobHash = new Hashtable();
+	public static Hashtable<String, Object> getXmlRpcJob(Job job) {
+	  Hashtable<String, Object> jobHash = new Hashtable<String, Object>();
 		jobHash.put("job.id", job.getId() != null ? job.getId():"");
 		jobHash.put("job.name", job.getName());
 		jobHash.put("job.instanceClassName", job.getJobInstanceClassName());
@@ -56,7 +58,7 @@ public final class XmlRpcStructFactory {
     return jobHash;
 	}
 
-	public static Job getJobFromXmlRpc(Hashtable jobHash) {
+	public static Job getJobFromXmlRpc(Map jobHash) {
 		Job job = new Job();
 		job.setId((String) jobHash.get("job.id"));
 		job.setName((String) jobHash.get("job.name"));
@@ -73,56 +75,53 @@ public final class XmlRpcStructFactory {
 		Vector jobVector = new Vector();
 		
 		if(jobs != null && jobs.size() > 0){
-			for(Iterator i = jobs.iterator(); i.hasNext();){
-				Job job = (Job)i.next();
-				jobVector.add(getXmlRpcJob(job));
-			}
+		  for (Object job1 : jobs) {
+			Job job = (Job) job1;
+			jobVector.add(getXmlRpcJob(job));
+		  }
 		}
 		
 		return jobVector;
 	}
 	
-	public static List getJobListFromXmlRpc(Vector jobVector){
+	public static List getJobListFromXmlRpc(Vector<Map> jobVector){
 		List jobs = new Vector();
 		
 		if(jobVector != null && jobVector.size() > 0){
-			for(Iterator i = jobVector.iterator(); i.hasNext(); ){
-				Hashtable jobHash = (Hashtable)i.next();
-				jobs.add(getJobFromXmlRpc(jobHash));
-			}
+		  for (Map aJobVector : jobVector) {
+			jobs.add(getJobFromXmlRpc(aJobVector));
+		  }
 		}
 		
 		return jobs;
 	}
 
- public static Vector getXmlRpcResourceNodeList(List resNodes) {
+ public static Vector getXmlRpcResourceNodeList(List<ResourceNode> resNodes) {
     Vector resNodeVector = new Vector();
 
     if (resNodes != null && resNodes.size() > 0) {
-      for (Iterator i = resNodes.iterator(); i.hasNext();) {
-        ResourceNode node = (ResourceNode) i.next();
-        resNodeVector.add(getXmlRpcResourceNode(node));
-      }
+	  for (ResourceNode resNode : resNodes) {
+		resNodeVector.add(getXmlRpcResourceNode(resNode));
+	  }
     }
 
     return resNodeVector;
   }
 
-  public static List getResourceNodeListFromXmlRpc(Vector resNodeVector) {
+  public static List getResourceNodeListFromXmlRpc(Vector<Map> resNodeVector) {
     List resNodes = new Vector();
 
     if (resNodeVector != null && resNodeVector.size() > 0) {
-      for (Iterator i = resNodeVector.iterator(); i.hasNext();) {
-        Hashtable resNodeHash = (Hashtable) i.next();
-        resNodes.add(getResourceNodeFromXmlRpc(resNodeHash));
-      }
+	  for (Map aResNodeVector : resNodeVector) {
+		resNodes.add(getResourceNodeFromXmlRpc(aResNodeVector));
+	  }
     }
 
     return resNodes;
   }
 
-  public static Hashtable getXmlRpcResourceNode(ResourceNode node) {
-    Hashtable resNodeHash = new Hashtable();
+  public static Hashtable<String,String> getXmlRpcResourceNode(ResourceNode node) {
+    Hashtable<String, String> resNodeHash = new Hashtable<String, String>();
     resNodeHash.put("node.id", node.getNodeId());
     resNodeHash.put("node.capacity", String.valueOf(node.getCapacity()));
     resNodeHash.put("node.url", node.getIpAddr().toExternalForm());
@@ -130,7 +129,7 @@ public final class XmlRpcStructFactory {
     return resNodeHash;
   }
 
-  public static ResourceNode getResourceNodeFromXmlRpc(Hashtable resNodeHash) {
+  public static ResourceNode getResourceNodeFromXmlRpc(Map resNodeHash) {
     ResourceNode node = new ResourceNode();
     node.setId((String) resNodeHash.get("node.id"));
     node.setCapacity(Integer

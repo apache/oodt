@@ -19,15 +19,7 @@
 package org.apache.oodt.cas.filemgr.ingest;
 
 //JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
 
-//OODT imports
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
@@ -38,8 +30,20 @@ import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.commons.util.DateConvert;
 
-//Junit imports
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import junit.framework.TestCase;
+
+//OODT imports
+//Junit imports
 
 /**
  * @author mattmann
@@ -51,6 +55,7 @@ import junit.framework.TestCase;
  */
 public class TestLocalCache extends TestCase {
 
+    private static Logger LOG = Logger.getLogger(TestLocalCache.class.getName());
     private LocalCache cache;
 
     private static final int FM_PORT = 50010;
@@ -181,7 +186,7 @@ public class TestLocalCache extends TestCase {
     }
 
     private void doIngest() {
-        Metadata prodMet = null;
+        Metadata prodMet;
 
         try {
             URL ingestUrl = this.getClass().getResource("/ingest");
@@ -197,7 +202,7 @@ public class TestLocalCache extends TestCase {
             ingester.ingest(new URL("http://localhost:" + FM_PORT), new File(
                 refUrl.getFile()), prodMet);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -209,7 +214,6 @@ public class TestLocalCache extends TestCase {
             assertNotNull(p);
             assertEquals(Product.STATUS_RECEIVED, p.getTransferStatus());
             assertTrue(fmClient.hasProduct("test.txt"));
-            fmClient = null;
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -220,8 +224,8 @@ public class TestLocalCache extends TestCase {
         File[] delFiles = startDirFile.listFiles();
 
         if (delFiles != null && delFiles.length > 0) {
-            for (int i = 0; i < delFiles.length; i++) {
-                delFiles[i].delete();
+            for (File delFile : delFiles) {
+                delFile.delete();
             }
         }
 

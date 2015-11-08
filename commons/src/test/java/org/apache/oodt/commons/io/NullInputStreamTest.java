@@ -16,7 +16,7 @@
 package org.apache.oodt.commons.io;
 
 import java.io.IOException;
-import java.io.InputStream;
+
 import junit.framework.TestCase;
 
 /**

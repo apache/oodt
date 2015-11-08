@@ -19,9 +19,13 @@ package org.apache.oodt.cas.filemgr.tools;
 
 //JDK imports
 import java.io.File;
+import java.io.IOException;
+
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -52,7 +56,7 @@ public final class ProductTypeDocTool {
     }
 
     public void doProductTypeDoc(String productTypeXmlFilePath,
-            String elementXmlFilePath) throws Exception {
+            String elementXmlFilePath) throws IOException, TransformerException {
         // copy element xml to current path
         FileUtils.copyFileToDirectory(new File(elementXmlFilePath), new File(
                 "."));
@@ -91,7 +95,7 @@ public final class ProductTypeDocTool {
         new File(elementLocalFilePath).delete();
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException, TransformerException {
         String productTypeXmlFilePath = null, xslFilePath = null, outputDirPath = null, elementXmlFilePath = null;
         String usage = "ProductTypeDocTool --productTypeXml <path> "
                 + "--elementXml <path> --xsl <path> --out <dir path>\n";

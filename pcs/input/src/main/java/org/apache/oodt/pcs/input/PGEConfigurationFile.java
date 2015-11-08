@@ -16,7 +16,7 @@
 package org.apache.oodt.pcs.input;
 
 //OCO imports
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 /**
@@ -70,7 +70,7 @@ public class PGEConfigurationFile implements PGEConfigFileKeys {
    * </p>
    */
   public PGEConfigurationFile() {
-    this.pgeSpecificGroups = new HashMap<String, PGEGroup>();
+    this.pgeSpecificGroups = new ConcurrentHashMap<String, PGEGroup>();
     this.inputProductFiles = new PGEGroup(INPUT_PRODUCT_FILES_GROUP);
     this.staticFileIdentificationFiles = new PGEGroup(SFIF_FILE_GROUP);
     this.dynamicAuxiliaryInputFiles = new PGEGroup(

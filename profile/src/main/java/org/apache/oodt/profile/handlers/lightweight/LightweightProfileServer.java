@@ -25,6 +25,7 @@ import org.apache.oodt.profile.ProfileException;
 import org.apache.oodt.profile.handlers.ProfileHandler;
 import org.apache.oodt.xmlquery.QueryElement;
 import org.apache.oodt.xmlquery.XMLQuery;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.ErrorHandler;
@@ -36,7 +37,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A lightweight profile server.
@@ -91,7 +99,9 @@ final public class LightweightProfileServer implements ProfileHandler {
 
 		// Get the list of profiles from the cache, if it's there.
 	  profiles = (List) cache.get(url);
-	  if (profiles != null) return;
+	  if (profiles != null) {
+		return;
+	  }
 
 		// It wasn't in the cache, so create a parser to parse the file.  We only
 		// deal with correct files, so turn on validation and install an error
@@ -134,16 +144,17 @@ final public class LightweightProfileServer implements ProfileHandler {
 		WhereExpression whereExpression = createWhereExpression(query);
 
 		// Search each profile, and add the results of the search to the set of results.
-		for (Iterator i = profiles.iterator(); i.hasNext();) {
-			SearchableProfile profile = (SearchableProfile) i.next();
+	  for (Object profile1 : profiles) {
+		SearchableProfile profile = (SearchableProfile) profile1;
 
-			// Search the profile with the where-expression.
-			Result result = profile.search(whereExpression);
+		// Search the profile with the where-expression.
+		Result result = profile.search(whereExpression);
 
-			// If there are any matching elements, add the profile to the set.
-			if (!result.matchingElements().isEmpty())
-				matchingProfiles.add(profile);
+		// If there are any matching elements, add the profile to the set.
+		if (!result.matchingElements().isEmpty()) {
+		  matchingProfiles.add(profile);
 		}
+	  }
 
 		// Convert from set to list.
 		return new ArrayList(matchingProfiles);
@@ -156,15 +167,17 @@ final public class LightweightProfileServer implements ProfileHandler {
 	 * @return a {@link Profile} value.
 	 */
 	public Profile get(String profID) {
-		if (profID == null) return null;
-		Profile rc = null;
-		for (Iterator i = profiles.iterator(); i.hasNext();) {
-			Profile p = (Profile) i.next();
-			if (p.getProfileAttributes().getID().equals(profID)) {
-				rc = p;
-				break;
-			}
+		if (profID == null) {
+		  return null;
 		}
+		Profile rc = null;
+	  for (Object profile : profiles) {
+		Profile p = (Profile) profile;
+		if (p.getProfileAttributes().getID().equals(profID)) {
+		  rc = p;
+		  break;
+		}
+	  }
 		return rc;
 	}
 
@@ -186,42 +199,45 @@ final public class LightweightProfileServer implements ProfileHandler {
 		}
 		
 		// For each item in the where-set
-		for (Iterator i = allElements.iterator(); i.hasNext();) {
-			QueryElement queryElement = (QueryElement) i.next();
+	  for (Object allElement : allElements) {
+		QueryElement queryElement = (QueryElement) allElement;
 
-			// Get the keyword and its type.
-			String keyword = queryElement.getValue();
-			String type = queryElement.getRole();
+		// Get the keyword and its type.
+		String keyword = queryElement.getValue();
+		String type = queryElement.getRole();
 
-			if (type.equals("elemName")) {
-				// It's an element name, so push the element name.
-				stack.push(keyword);
-			} else if (type.equals("LITERAL")) {
-				// It's a literal value, so push the value.
-				stack.push(keyword);
-			} else if (type.equals("LOGOP")) {
-				// It's a logical operator.  Pop the operands off the
-				// stack and push the appropriate operator back on.
-				if (keyword.equals("AND")) {
-					stack.push(new AndExpression((WhereExpression) stack.pop(), (WhereExpression)stack.pop()));
-				} else if (keyword.equals("OR")) {
-					stack.push(new OrExpression((WhereExpression) stack.pop(), (WhereExpression)stack.pop()));
-				} else if (keyword.equals("NOT")) {
-					stack.push(new NotExpression((WhereExpression) stack.pop()));
-				} else throw new IllegalArgumentException("Illegal operator \"" + keyword + "\" in query");
-			} else if (type.equals("RELOP")) {
-				// It's a relational operator.  Pop the element name and
-				// literal value off the stack, and push the operator
-				// expression on with the given operator.
-				stack.push(new OperatorExpression((String) stack.pop(), (String) stack.pop(), keyword));
-			}
+		if (type.equals("elemName")) {
+		  // It's an element name, so push the element name.
+		  stack.push(keyword);
+		} else if (type.equals("LITERAL")) {
+		  // It's a literal value, so push the value.
+		  stack.push(keyword);
+		} else if (type.equals("LOGOP")) {
+		  // It's a logical operator.  Pop the operands off the
+		  // stack and push the appropriate operator back on.
+		  if (keyword.equals("AND")) {
+			stack.push(new AndExpression((WhereExpression) stack.pop(), (WhereExpression) stack.pop()));
+		  } else if (keyword.equals("OR")) {
+			stack.push(new OrExpression((WhereExpression) stack.pop(), (WhereExpression) stack.pop()));
+		  } else if (keyword.equals("NOT")) {
+			stack.push(new NotExpression((WhereExpression) stack.pop()));
+		  } else {
+			throw new IllegalArgumentException("Illegal operator \"" + keyword + "\" in query");
+		  }
+		} else if (type.equals("RELOP")) {
+		  // It's a relational operator.  Pop the element name and
+		  // literal value off the stack, and push the operator
+		  // expression on with the given operator.
+		  stack.push(new OperatorExpression((String) stack.pop(), (String) stack.pop(), keyword));
 		}
+	  }
 
 		// If there's nothing on the stack, we're given nothing, so give back everything.
-		if (stack.size() == 0)
-			return new ConstantExpression(true);
-		else if (stack.size() > 1)
-			throw new IllegalStateException("Imbalanced expression in query");
+		if (stack.size() == 0) {
+		  return new ConstantExpression(true);
+		} else if (stack.size() > 1) {
+		  throw new IllegalStateException("Imbalanced expression in query");
+		}
 		
 		// Simplify/optimize the where-expression and return it.
 		return ((WhereExpression) stack.pop()).simplify();
@@ -248,7 +264,7 @@ final public class LightweightProfileServer implements ProfileHandler {
 	 * using just the one file, so there should be no need for this cache.  Who added
 	 * this?  And if it were me, what was I smoking?
 	 */
-	private static Map cache = new HashMap();
+	private static Map cache = new ConcurrentHashMap();
 
 	/** My ID. */
 	private String id;
@@ -271,9 +287,10 @@ final public class LightweightProfileServer implements ProfileHandler {
 		LightweightProfileServer lp = new LightweightProfileServer();
 
 		// Gather together the command-line arguments into a single long string.
-		StringBuffer b = new StringBuffer();
-		for (int i = 0; i < argv.length; ++i)
-			b.append(argv[i]).append(' ');
+		StringBuilder b = new StringBuilder();
+	  for (String anArgv : argv) {
+		b.append(anArgv).append(' ');
+	  }
 
 		// Create the query object from the expression.
 		XMLQuery query = new XMLQuery(b.toString().trim(), /*id*/"cli1", /*title*/"CmdLine-1",

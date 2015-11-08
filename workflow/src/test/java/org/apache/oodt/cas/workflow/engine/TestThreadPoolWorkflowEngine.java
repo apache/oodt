@@ -59,9 +59,8 @@ public class TestThreadPoolWorkflowEngine extends TestCase {
         workflow.getTasks().add(task);
         inst.setParentChildWorkflow(workflow);
         inst.setCurrentTaskId("urn:oodt:testTask");
-        assertEquals(Double.valueOf(0.0), Double
-                .valueOf(ThreadPoolWorkflowEngine
-                        .getCurrentTaskWallClockMinutes(inst)));
+        assertEquals(0.0, ThreadPoolWorkflowEngine
+            .getCurrentTaskWallClockMinutes(inst));
 
         // now set start date time, and assert that wall clock minutes > 0
         inst.setCurrentTaskStartDateTimeIsoStr(DateConvert
@@ -81,20 +80,17 @@ public class TestThreadPoolWorkflowEngine extends TestCase {
         inst.setCurrentTaskEndDateTimeIsoStr(endDateTimeIsoStr);
         double wallClockMins = ThreadPoolWorkflowEngine
                 .getCurrentTaskWallClockMinutes(inst);
-        assertEquals(Double.valueOf(wallClockMins), Double
-                .valueOf(ThreadPoolWorkflowEngine
-                        .getCurrentTaskWallClockMinutes(inst)));
-        assertEquals(Double.valueOf(wallClockMins), Double
-                .valueOf(ThreadPoolWorkflowEngine
-                        .getCurrentTaskWallClockMinutes(inst)));
+        assertEquals(wallClockMins, ThreadPoolWorkflowEngine
+            .getCurrentTaskWallClockMinutes(inst));
+        assertEquals(wallClockMins, ThreadPoolWorkflowEngine
+            .getCurrentTaskWallClockMinutes(inst));
 
         // set the start date time after the end date time
         // make sure that the wall cock time is 0.0
         inst.setCurrentTaskStartDateTimeIsoStr(DateConvert
                 .isoFormat(new Date()));
-        assertEquals(Double.valueOf(0.0), Double
-                .valueOf(ThreadPoolWorkflowEngine
-                        .getCurrentTaskWallClockMinutes(inst)));
+        assertEquals(0.0, ThreadPoolWorkflowEngine
+            .getCurrentTaskWallClockMinutes(inst));
 
     }
 }

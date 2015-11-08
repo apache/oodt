@@ -75,8 +75,9 @@ public abstract class TypeHandler {
      */
     public Query preQueryHandle(Query query) throws QueryFormulationException {
         LinkedList<QueryCriteria> qcList = new LinkedList<QueryCriteria>();
-        for (QueryCriteria qc : query.getCriteria())
+        for (QueryCriteria qc : query.getCriteria()) {
             qcList.add(this.handleQueryCriteria(qc));
+        }
         query.setCriteria(qcList);
         return query;
     }
@@ -84,13 +85,15 @@ public abstract class TypeHandler {
     private QueryCriteria handleQueryCriteria(QueryCriteria qc) throws QueryFormulationException {
         if (qc instanceof BooleanQueryCriteria) {
             LinkedList<QueryCriteria> qcList = new LinkedList<QueryCriteria>();
-            for (QueryCriteria criteria : ((BooleanQueryCriteria) qc).getTerms()) 
+            for (QueryCriteria criteria : ((BooleanQueryCriteria) qc).getTerms()) {
                 qcList.add(this.handleQueryCriteria(criteria));
+            }
             BooleanQueryCriteria bqc = new BooleanQueryCriteria();
             bqc.setOperator(((BooleanQueryCriteria) qc).getOperator());
             bqc.setElementName(qc.getElementName());
-            for (QueryCriteria criteria : qcList)
+            for (QueryCriteria criteria : qcList) {
                 bqc.addTerm(criteria);
+            }
             return bqc;
         }else if (qc.getElementName().equals(elementName) && qc instanceof TermQueryCriteria) {
             return this.handleTermQueryCriteria((TermQueryCriteria) qc);

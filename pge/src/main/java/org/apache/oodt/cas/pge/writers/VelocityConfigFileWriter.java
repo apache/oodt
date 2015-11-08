@@ -18,16 +18,18 @@
 package org.apache.oodt.cas.pge.writers;
 
 //JDK imports
-import java.io.File;
-import java.io.StringWriter;
-import java.util.logging.Logger;
-
-//APACHE imports
 import org.apache.commons.io.FileUtils;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.logging.Logger;
+
+//APACHE imports
 
 /**
  * 
@@ -53,7 +55,7 @@ public class VelocityConfigFileWriter extends DynamicConfigFileWriter {
    */
   @Override
   public File generateFile(String filePath, Metadata metadata, Logger logger,
-      Object... args) throws Exception {
+      Object... args) throws IOException {
     File configFile = new File(filePath);
     VelocityMetadata velocityMetadata = new VelocityMetadata(metadata);
     // Velocity requires you to set a path of where to look for

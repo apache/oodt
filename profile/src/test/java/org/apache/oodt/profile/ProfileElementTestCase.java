@@ -172,7 +172,7 @@ public abstract class ProfileElementTestCase extends TestCase {
 			} else if ("elemMaxValue".equals(name)) {
 				checkMaxValue(text);
 			} else if ("elemSynonym".equals(name)) {
-				; // ignore
+			  // ignore
 			} else if ("elemObligation".equals(name)) {
 				assertEquals("Optional", text);
 			} else if ("elemMaxOccurrence".equals(name)) {

@@ -25,57 +25,57 @@ package org.apache.oodt.security.sso.opensso;
 public interface SSOMetKeys {
 
   /* service endpoints */
-  public static final String AUTHENTICATE_ENDPOINT = "https://host/opensso/identity/authenticate";
+  String AUTHENTICATE_ENDPOINT = "https://host/opensso/identity/authenticate";
 
-  public static final String IDENTITY_READ_ENDPOINT = "https://host/opensso/identity/read";
+  String IDENTITY_READ_ENDPOINT = "https://host/opensso/identity/read";
 
-  public static final String IDENTITY_ATTRIBUTES_ENDPOINT = "https://host/opensso/identity/attributes";
+  String IDENTITY_ATTRIBUTES_ENDPOINT = "https://host/opensso/identity/attributes";
 
-  public static final String LOGOUT_ENDPOINT = "https://host/opensso/identity/logout";
+  String LOGOUT_ENDPOINT = "https://host/opensso/identity/logout";
 
   /* cookie names */
 
-  public static final String SSO_COOKIE_KEY = "iPlanetDirectoryPro";
+  String SSO_COOKIE_KEY = "iPlanetDirectoryPro";
 
-  public static final String USER_COOKIE_KEY = "curationWebapp";
+  String USER_COOKIE_KEY = "curationWebapp";
 
   /* Identity Details response object */
 
-  public static final String IDENTITY_DETAILS_NAME = "identitydetails.name";
+  String IDENTITY_DETAILS_NAME = "identitydetails.name";
 
-  public static final String IDENTITY_DETAILS_TYPE = "identitydetails.type";
+  String IDENTITY_DETAILS_TYPE = "identitydetails.type";
 
-  public static final String IDENTITY_DETAILS_REALM = "identitydetails.realm";
+  String IDENTITY_DETAILS_REALM = "identitydetails.realm";
 
-  public static final String IDENTITY_DETAILS_GROUP = "identitydetails.group";
+  String IDENTITY_DETAILS_GROUP = "identitydetails.group";
 
-  public static final String IDENTITY_DETAILS_ATTR_NAME = "identitydetails.attribute.name";
+  String IDENTITY_DETAILS_ATTR_NAME = "identitydetails.attribute.name";
 
-  public static final String IDENTITY_DETAILS_ATTR_VALUE = "identitydetails.attribute.value";
+  String IDENTITY_DETAILS_ATTR_VALUE = "identitydetails.attribute.value";
   
-  public static final String IDENTITY_DETAILS_ATTR_SKIP_LINE = "identitydetails.attribute=";
+  String IDENTITY_DETAILS_ATTR_SKIP_LINE = "identitydetails.attribute=";
 
   /* User Details response object */
-  public static final String USER_DETAILS_TOKEN = "userdetails.token.id";
+  String USER_DETAILS_TOKEN = "userdetails.token.id";
 
-  public static final String USER_DETAILS_ROLE = "userdetails.role=id";
+  String USER_DETAILS_ROLE = "userdetails.role=id";
 
-  public static final String USER_DETAILS_ATTR_NAME = "userdetails.attribute.name";
+  String USER_DETAILS_ATTR_NAME = "userdetails.attribute.name";
 
-  public static final String USER_DETAILS_ATTR_VALUE = "userdetails.attribute.value";
+  String USER_DETAILS_ATTR_VALUE = "userdetails.attribute.value";
   
-  public static final String UID_ATTRIBUTE_NAME = "uid";
+  String UID_ATTRIBUTE_NAME = "uid";
 
   /* commands available from SSOProxy command line */
-  public static final String AUTH_COMMAND = "authenticate";
+  String AUTH_COMMAND = "authenticate";
 
-  public static final String IDENTITY_COMMAND = "identity";
+  String IDENTITY_COMMAND = "identity";
 
-  public static final String ATTRIBUTES_COMMAND = "attributes";
+  String ATTRIBUTES_COMMAND = "attributes";
   
-  public static final String LOGOUT_COMMAND = "logout";
+  String LOGOUT_COMMAND = "logout";
 
   /* general stuff */
-  public static final String UNKNOWN_USER = "Unknown";
+  String UNKNOWN_USER = "Unknown";
 
 }

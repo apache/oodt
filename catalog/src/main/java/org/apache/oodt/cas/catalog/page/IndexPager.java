@@ -65,8 +65,9 @@ public class IndexPager {
 	}
 
 	public void incrementPageNumber() {
-		if (this.pageNum + 1 <= this.totalPages)
-			this.pageNum++;
+		if (this.pageNum + 1 <= this.totalPages) {
+		  this.pageNum++;
+		}
 	}
 	
 	public boolean isLastPage() {

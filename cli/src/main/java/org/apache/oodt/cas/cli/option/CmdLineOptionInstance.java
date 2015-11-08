@@ -17,18 +17,16 @@
 package org.apache.oodt.cas.cli.option;
 
 //JDK imports
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.isActionOption;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.isGroupOption;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.isHelpOption;
-import static org.apache.oodt.cas.cli.util.CmdLineUtils.isPrintSupportedActionsOption;
+import org.apache.commons.lang.Validate;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.apache.oodt.cas.cli.util.CmdLineUtils.*;
+
 //Apache imports
-import org.apache.commons.lang.Validate;
 
 /**
  * A specified {@link CmdLineOption} with its specified argument values.
@@ -131,6 +129,14 @@ public class CmdLineOptionInstance {
       } else {
          return false;
       }
+   }
+
+   @Override
+   public int hashCode() {
+      int result = option != null ? option.hashCode() : 0;
+      result = 31 * result + (values != null ? values.hashCode() : 0);
+      result = 31 * result + (subOptions != null ? subOptions.hashCode() : 0);
+      return result;
    }
 
    public String toString() {

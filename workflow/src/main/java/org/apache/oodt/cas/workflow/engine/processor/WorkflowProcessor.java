@@ -219,8 +219,9 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
    */
   @Override
   public void notifyChange(WorkflowProcessor processor, ChangeType changeType) {
-    for (WorkflowProcessorListener listener : this.getListeners())
+    for (WorkflowProcessorListener listener : this.getListeners()) {
       listener.notifyChange(this, changeType);
+    }
   }
 
   public synchronized List<TaskProcessor> getRunnableWorkflowProcessors() {
@@ -238,8 +239,9 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
     } else if (this.isDone().getName().equals("ResultsFailure")) {
       // do nothing -- this workflow failed!!!
     } else if (this.isDone().getName().equals("ResultsBail")) {
-      for (WorkflowProcessor subProcessor : this.getRunnableSubProcessors())
+      for (WorkflowProcessor subProcessor : this.getRunnableSubProcessors()) {
         runnableTasks.addAll(subProcessor.getRunnableWorkflowProcessors());
+      }
     } else if (!this.passedPostConditions()) {
       for (WorkflowProcessor subProcessor : this.getPostConditions()
           .getRunnableSubProcessors()) {
@@ -402,10 +404,11 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
       List<WorkflowProcessor> failedSubProcessors = this.helper
           .getWorkflowProcessorsByState(this.getSubProcessors(), "Failure");
       if (this.minReqSuccessfulSubProcessors != -1
-          && failedSubProcessors.size() > (this.getSubProcessors().size() - this.minReqSuccessfulSubProcessors))
+          && failedSubProcessors.size() > (this.getSubProcessors().size() - this.minReqSuccessfulSubProcessors)) {
         return lifecycleManager.getDefaultLifecycle().createState(
             "ResultsFailure", "results",
             "More than the allowed number of sub-processors failed");
+      }
       for (WorkflowProcessor subProcessor : failedSubProcessors) {
         if (!this.getExcusedSubProcessorIds().contains(
             subProcessor.getWorkflowInstance().getId())) {
@@ -417,12 +420,13 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
         }
       }
       if (this.helper
-          .allProcessorsSameCategory(this.getSubProcessors(), "done"))
+          .allProcessorsSameCategory(this.getSubProcessors(), "done")) {
         return lifecycleManager.getDefaultLifecycle().createState(
             "ResultsSuccess",
             "results",
             "Workflow Processor: processing instance id: ["
-                + workflowInstance.getId() + "] is Done.");
+            + workflowInstance.getId() + "] is Done.");
+      }
     }
     return lifecycleManager.getDefaultLifecycle().createState(
         "ResultsBail",

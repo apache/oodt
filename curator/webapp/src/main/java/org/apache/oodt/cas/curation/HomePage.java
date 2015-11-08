@@ -30,7 +30,7 @@ public class HomePage extends WebPage {
   public HomePage() {
     super();
     CurationApp app = ((CurationApp) Application.get());
-    String loggedInLabel = null;
+    String loggedInLabel;
     String logoutLabel = "Log Out";
     CurationSession session = (CurationSession)getSession();
 

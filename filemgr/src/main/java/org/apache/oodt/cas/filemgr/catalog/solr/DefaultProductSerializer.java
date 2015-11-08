@@ -16,26 +16,32 @@
  */
 package org.apache.oodt.cas.filemgr.catalog.solr;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.Reference;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.Metadata;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Default implementation of {@link ProductSerializer} 
@@ -51,7 +57,8 @@ import org.xml.sax.InputSource;
  *
  */
 public class DefaultProductSerializer implements ProductSerializer {
-	
+
+  private static Logger LOG = Logger.getLogger(DefaultProductSerializer.class.getName());
 	/**
 	 * {@inheritDoc}
 	 */
@@ -66,7 +73,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 	@Override
 	public List<String> serialize(Product product, boolean create) {
 		
-		Map<String, List<String>> fields = new HashMap<String, List<String>>();
+		Map<String, List<String>> fields = new ConcurrentHashMap<String, List<String>>();
 		List<String> docs = new ArrayList<String>();
 		
 		// add core product attributes to map
@@ -104,7 +111,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 	 */
 	public List<String> serialize(String productId, Reference rootReference, List<Reference> references, boolean replace) {
 		
-		Map<String, List<String>> fields = new HashMap<String, List<String>>();
+		Map<String, List<String>> fields = new ConcurrentHashMap<String, List<String>>();
 		
 		// product root reference
 		if (rootReference!=null) {
@@ -160,8 +167,8 @@ public class DefaultProductSerializer implements ProductSerializer {
 			return queryResponse;
 		
 		} catch(Exception e) {
-			e.printStackTrace();
-			throw new CatalogException(e.getMessage());
+			LOG.log(Level.SEVERE, e.getMessage());
+			throw new CatalogException(e.getMessage(), e);
 		}
 		
 	}
@@ -171,12 +178,13 @@ public class DefaultProductSerializer implements ProductSerializer {
 	 */
 	public List<String> serialize(String productId, Metadata metadata, boolean replace) {
 		
-		Map<String, List<String>> fields = new HashMap<String, List<String>>();
+		Map<String, List<String>> fields = new ConcurrentHashMap<String, List<String>>();
 		
 		for (String key : metadata.getKeys()) {
 			if (! (key.startsWith(Parameters.NS)              // skip metadata keys starting with reserved namespace
-				     || Parameters.PRODUCT_TYPE_NAME.indexOf(key)>=0 // skip 'ProductType' as already stored as 'CAS.ProductTypeName'
-				     || Parameters.PRODUCT_STRUCTURE.indexOf(key)>=0)) { // skip 'ProductType' as already stored as 'CAS.ProductStructure'
+				     || Parameters.PRODUCT_TYPE_NAME.contains(key)
+				   // skip 'ProductType' as already stored as 'CAS.ProductTypeName'
+				     || Parameters.PRODUCT_STRUCTURE.contains(key))) { // skip 'ProductType' as already stored as 'CAS.ProductStructure'
 				for (String value : metadata.getAllMetadata(key)) {
 					this.addKeyValueToMap(fields, key, value);
 				}
@@ -222,9 +230,9 @@ public class DefaultProductSerializer implements ProductSerializer {
 		doc.append( encodeIndexField(Parameters.ID, productId) );
 		
 		// all other fields
-		for (String key : fields.keySet()) {
-			for (String value : fields.get(key)) {
-				doc.append( encodeIndexField(key, value) );
+		for (Map.Entry<String, List<String>> key : fields.entrySet()) {
+			for (String value : key.getValue()) {
+				doc.append( encodeIndexField(key.getKey(), value) );
 			}
 		}
 
@@ -248,34 +256,40 @@ public class DefaultProductSerializer implements ProductSerializer {
 		List<String> delFields = new ArrayList<String>();
 		
 		// encode update instructions
-		for (String key : fields.keySet()) {
+		for (Map.Entry<String, List<String>> key : fields.entrySet()) {
 			
-			List<String> values = fields.get(key);
+			List<String> values = key.getValue();
 			
 			if (replace) {
 				
 				if (values.isEmpty()) {
 					// use special value to flag removal
-					delFields.add( this.encodeUpdateField(key, Parameters.NULL, replace) );
+					delFields.add( this.encodeUpdateField(key.getKey(), Parameters.NULL, true) );
 					
 				} else {
 					for (String value : values) {
-						setFields.add( this.encodeUpdateField(key, value, replace) );
+						setFields.add( this.encodeUpdateField(key.getKey(), value, true) );
 					}
 				}
 				
 			} else {
 				for (String value : values) {
-					addFields.add( this.encodeUpdateField(key, value, replace) );
+					addFields.add( this.encodeUpdateField(key.getKey(), value, false) );
 				}
 			}
 			
 		}
 		
 		List<String> docs = new ArrayList<String>();
-		if (!delFields.isEmpty()) docs.add( toDoc(productId, delFields) );
-		if (!setFields.isEmpty()) docs.add( toDoc(productId, setFields) );
-		if (!addFields.isEmpty()) docs.add( toDoc(productId, addFields) );
+		if (!delFields.isEmpty()) {
+		  docs.add(toDoc(productId, delFields));
+		}
+		if (!setFields.isEmpty()) {
+		  docs.add(toDoc(productId, setFields));
+		}
+		if (!addFields.isEmpty()) {
+		  docs.add(toDoc(productId, addFields));
+		}
 		return docs;
 		
 	}
@@ -331,7 +345,7 @@ public class DefaultProductSerializer implements ProductSerializer {
 	 */
 	protected String encodeUpdateField(String key, String value, boolean replace) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<field name=\""+key+"\"");
+		sb.append("<field name=\"").append(key).append("\"");
 		
 		if (replace) {
 			
@@ -343,13 +357,13 @@ public class DefaultProductSerializer implements ProductSerializer {
 			} else {
 				
 				// (2) replace existing values with new values
-				sb.append(" update=\"set\">" + value + "</field>");
+				sb.append(" update=\"set\">").append(value).append("</field>");
 			}
 			
 		} else {
 			
 			// (1) add new values to existing values
-			sb.append(" update=\"add\">"+value+"</field>");
+			sb.append(" update=\"add\">").append(value).append("</field>");
 			
 		}
 
@@ -399,7 +413,9 @@ public class DefaultProductSerializer implements ProductSerializer {
 				if (name.startsWith(Parameters.NS)) {					
 						for (int k=0; k<values.getLength(); k++) {
 							// create this reference
-							if (references.size()<=k) references.add(new Reference());
+							if (references.size()<=k) {
+							  references.add(new Reference());
+							}
 							if (name.equals(Parameters.REFERENCE_ORIGINAL)) {
 								references.get(k).setOrigReference(vals.get(k));
 							} else if (name.equals(Parameters.REFERENCE_DATASTORE)) {
@@ -445,7 +461,9 @@ public class DefaultProductSerializer implements ProductSerializer {
 						
 					// CAS root reference
 					} else if (name.startsWith(Parameters.NS+Parameters.ROOT)) {
-						if (rootReference==null) rootReference = new Reference();
+						if (rootReference==null) {
+						  rootReference = new Reference();
+						}
 						if (name.equals(Parameters.ROOT_REFERENCE_ORIGINAL)) {
 							rootReference.setOrigReference(value);
 						} else if (name.equals(Parameters.ROOT_REFERENCE_DATASTORE)) {
@@ -471,12 +489,11 @@ public class DefaultProductSerializer implements ProductSerializer {
 		
 	}
 	
-	private Document parseXml(String xml) throws Exception {
+	private Document parseXml(String xml) throws IOException, SAXException, ParserConfigurationException {
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder parser = factory.newDocumentBuilder();
-    Document document = parser.parse( new InputSource(new StringReader(xml)) );
-    return document;
+	  return parser.parse( new InputSource(new StringReader(xml)) );
     
 	}
 	
@@ -489,10 +506,8 @@ public class DefaultProductSerializer implements ProductSerializer {
 	 * @param metadata : the metadata container
 	 */
 	protected void deserializeSingleValueField(String name, String value, Metadata metadata) {
-		
-		if (name.equals(Parameters.ID)) {
-			// ignore Solr internal identifier (as it is duplicate information of CAS.ProductId)
-		} else {
+	  	// ignore Solr internal identifier (as it is duplicate information of CAS.ProductId)
+		if (!name.equals(Parameters.ID)){
 			metadata.addMetadata(name, value);
 		}
 

@@ -44,7 +44,7 @@ public class PreCondEvalUtils implements PreConditionOperatorMetKeys {
     private static Logger LOG = Logger.getLogger(PreCondEvalUtils.class
             .getName());
 
-    private static ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     public PreCondEvalUtils(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -64,7 +64,7 @@ public class PreCondEvalUtils implements PreConditionOperatorMetKeys {
      */
     public boolean eval(List<String> preCondComparatorIds, File product) {
         for (String preCondComparatorId : preCondComparatorIds) {
-            if (!((PreConditionComparator<?>) this.applicationContext.getBean(
+            if (!((PreConditionComparator<?>) applicationContext.getBean(
                     preCondComparatorId, PreConditionComparator.class))
                     .passes(product)) {
                 LOG.log(Level.INFO, "Failed precondition comparator id "

@@ -38,7 +38,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -110,8 +109,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
     List typeList = new Vector();
 
     if (typeNames != null && typeNames.size() > 0) {
-      for (Iterator i = typeNames.iterator(); i.hasNext();) {
-        String typeName = (String) i.next();
+      for (Object typeName1 : typeNames) {
+        String typeName = (String) typeName1;
         ProductType type = safeGetProductTypeByName(typeName);
         if (type != null) {
           typeList.add(type);
@@ -126,8 +125,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
     List products = new Vector();
 
     if (typeList != null && typeList.size() > 0) {
-      for (Iterator i = typeList.iterator(); i.hasNext();) {
-        ProductType type = (ProductType) i.next();
+      for (Object aTypeList : typeList) {
+        ProductType type = (ProductType) aTypeList;
         List prods = safeIssueQuery(query, type);
         if (prods != null && prods.size() > 0) {
           products.addAll(prods);
@@ -161,8 +160,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
     List products = new Vector();
 
     if (productTypes != null && productTypes.size() > 0) {
-      for (Iterator i = productTypes.iterator(); i.hasNext();) {
-        ProductType type = (ProductType) i.next();
+      for (Object productType : productTypes) {
+        ProductType type = (ProductType) productType;
         if (excludeTypeList != null && excludeTypeList.contains(type.getName())) {
           // System.out.println("Skipping: [" + type.getName() + "]");
           continue;
@@ -285,7 +284,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
     try {
       types = fmgrClient.getProductTypes();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Unable to retrieve product types from filemgr: ["
           + fmgrClient.getFileManagerUrl() + "]: reason: " + e.getMessage());
     }
@@ -294,7 +293,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
   }
 
   public Product getLatestProduct(Query query, ProductType type) {
-    List products = null;
+    List products;
 
     try {
       products = fmgrClient.query(query, type);
@@ -358,7 +357,7 @@ public class FileManagerUtils implements PCSConfigMetadata {
   public static boolean check(String propName, String propValue,
       Metadata metadata) {
     if (propValue == null) {
-      LOG.log(Level.SEVERE, "PCS: " + propName + ": value: " + propValue);
+      LOG.log(Level.SEVERE, "PCS: " + propName + ": value: " + null);
       metadata.replaceMetadata("ApplicationSuccess", "false");
       return false;
     } else {
@@ -428,8 +427,8 @@ public class FileManagerUtils implements PCSConfigMetadata {
   public static Reference getRootReference(String productName, List refs) {
     Reference r = null;
 
-    for (Iterator i = refs.iterator(); i.hasNext();) {
-      Reference ref = (Reference) i.next();
+    for (Object ref1 : refs) {
+      Reference ref = (Reference) ref1;
       if (isRootDir(ref, productName)) {
         r = ref;
       }

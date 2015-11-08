@@ -19,6 +19,9 @@
 package org.apache.oodt.cas.metadata.preconditions;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
+import org.springframework.util.StringUtils;
+
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,12 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
-import org.apache.oodt.cas.metadata.preconditions.ExistanceCheckComparator;
-import org.apache.oodt.cas.metadata.preconditions.PreConditionComparator;
-
 //Spring imports
-import org.springframework.util.StringUtils;
 
 /**
  * Precondition class that checks the product name (i.e. the directory name)
@@ -66,11 +64,11 @@ public class ProductNameCheckComparator extends PreConditionComparator<Boolean> 
 		Matcher matcher = pattern.matcher(product.getName());
 		if (matcher.matches()) {
 			LOG.log(Level.FINEST, "Product: "+product.getName()+" passes 'regex' check: "+pattern.toString());
-			return new Boolean(true).compareTo(compareItem);
+			return Boolean.TRUE.compareTo(compareItem);
 		} else {
 
 			LOG.log(Level.FINEST, "Product: "+product.getName()+" failed 'regex' check: "+pattern.toString());
-			return new Boolean(false).compareTo(compareItem);
+			return Boolean.FALSE.compareTo(compareItem);
 		}
 
 	}

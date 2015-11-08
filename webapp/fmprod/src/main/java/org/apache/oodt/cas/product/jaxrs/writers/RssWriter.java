@@ -57,7 +57,7 @@ public abstract class RssWriter
   public String getBaseUri()
   {
     String baseUri = uriInfo.getBaseUri().toString();
-    return baseUri += baseUri.endsWith("/") ? "" : "/";
+    return baseUri.endsWith("/") ? "" : "/";
   }
 
 

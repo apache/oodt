@@ -45,7 +45,7 @@ public class Results {
     if (products.size() > 0) {
       data = new String[products.size() + 1][];
 
-      Hashtable hash = products.firstElement().getHashtable();
+      Hashtable hash = products.firstElement().getHashTable();
       int numCols = hash.size();
       data[0] = new String[numCols];
       int i = 0;

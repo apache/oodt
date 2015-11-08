@@ -28,30 +28,30 @@ package org.apache.oodt.cas.pushpull.retrievalsystem;
  */
 public interface RemoteFileMetKeys {
 
-    public static final String PRODUCT_NAME = "ProductName";
+    String PRODUCT_NAME = "ProductName";
 
-    public static final String RETRIEVED_FROM_LOC = "RetrievedFromLoc";
+    String RETRIEVED_FROM_LOC = "RetrievedFromLoc";
 
-    public static final String FILENAME = "Filename";
+    String FILENAME = "Filename";
 
-    public static final String DATA_PROVIDER = "DataProvider";
+    String DATA_PROVIDER = "DataProvider";
 
-    public static final String FILE_SIZE = "FileSize";
+    String FILE_SIZE = "FileSize";
 
-    public static final String RENAMING_STRING = "RenamingString";
+    String RENAMING_STRING = "RenamingString";
 
-    public static final String DOWNLOAD_TO_DIR = "DownloadToDir";
+    String DOWNLOAD_TO_DIR = "DownloadToDir";
 
-    public static final String PRODUCT_TYPE = "ProductType";
+    String PRODUCT_TYPE = "ProductType";
 
-    public static final String MIME_TYPE = "MimeType";
+    String MIME_TYPE = "MimeType";
     
-    public static final String SUPER_TYPE = "SuperType";
+    String SUPER_TYPE = "SuperType";
 
-    public static final String DELETE_AFTER_DOWNLOAD = "DeleteAfterDownload";
+    String DELETE_AFTER_DOWNLOAD = "DeleteAfterDownload";
     
-    public static final String PRODUCT_NAME_GENERATOR = "ProductNameGenerator";
+    String PRODUCT_NAME_GENERATOR = "ProductNameGenerator";
     
-    public static final String UNIQUE_ELEMENT = "UniqueElement";
+    String UNIQUE_ELEMENT = "UniqueElement";
 
 }

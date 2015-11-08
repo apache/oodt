@@ -19,7 +19,6 @@ package org.apache.oodt.cas.filemgr.tools;
 
 //JDK imports
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -150,7 +149,6 @@ public final class RangeQueryTester {
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -213,12 +211,13 @@ public final class RangeQueryTester {
         List productFiles = queryTester.doRangeQuery(productTypeId);
 
         if (productFiles != null && productFiles.size() > 0) {
-            for (Iterator i = productFiles.iterator(); i.hasNext();) {
-                String productFile = (String) i.next();
+            for (Object productFile1 : productFiles) {
+                String productFile = (String) productFile1;
                 System.out.println(productFile);
             }
-        } else
+        } else {
             System.out.println("No results found!");
+        }
     }
 
     /**

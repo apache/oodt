@@ -22,7 +22,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -51,13 +50,15 @@ public class ConfigServlet extends GridServlet {
       throws ServletException, IOException {
     Configuration config = getConfiguration(); // Get the singleton
                                                // configuration
-    if (!approveAccess(config, req, res))
+    if (!approveAccess(config, req, res)) {
       return; // Check if the user can access this page
+    }
 
     ConfigBean cb = getConfigBean(req); // Get the bean
     cb.setMessage(""); // Clear out any message
-    if (!cb.isAuthentic())
+    if (!cb.isAuthentic()) {
       throw new ServletException(new AuthenticationRequiredException());
+    }
     boolean needSave = false; // Assume no changes for now
 
     String newPass = req.getParameter("password"); // See if she wants to change
@@ -100,8 +101,9 @@ public class ConfigServlet extends GridServlet {
                                                 // property
     if (newKey != null && newKey.length() > 0) { // And make sure it's nonempty
       String newVal = req.getParameter("newval"); // Got one, get its value
-      if (newVal == null)
+      if (newVal == null) {
         newVal = ""; // Make sure it's at least an empty string
+      }
       config.getProperties().setProperty(newKey, newVal); // Set the new
                                                           // property
       needSave = true; // We need to save
@@ -158,22 +160,22 @@ public class ConfigServlet extends GridServlet {
     List codeBases = config.getCodeBases(); // Get the current code bases
 
     List toRemove = new ArrayList(); // Hold indexes of code bases to remove
-    for (Iterator i = params.entrySet().iterator(); i.hasNext();) { // For each
-                                                                    // parameter
-      Map.Entry entry = (Map.Entry) i.next(); // Get its entry
+    for (Object o : params.entrySet()) { // For each
+      // parameter
+      Map.Entry entry = (Map.Entry) o; // Get its entry
       String key = (String) entry.getKey(); // And its name
       String value = ((String[]) entry.getValue())[0]; // And its zeroth value
       if (key.startsWith("delcb-") && "on".equals(value)) { // If it's checked
-        Integer index = new Integer(key.substring(6)); // Parse out the index
+        Integer index = Integer.valueOf(key.substring(6)); // Parse out the index
         toRemove.add(index); // Add it to the list
       }
     }
     if (!toRemove.isEmpty()) { // And if we have any indexes
       Collections.sort(toRemove); // Sort 'em and put 'em in reverse ...
       Collections.reverse(toRemove); // ... order so we can safely remove them
-      for (Iterator i = toRemove.iterator(); i.hasNext();) { // For each index
-                                                             // to remove
-        int index = ((Integer) i.next()).intValue(); // Get the index value
+      for (Object aToRemove : toRemove) { // For each index
+        // to remove
+        int index = (Integer) aToRemove; // Get the index value
         codeBases.remove(index); // And buh-bye.
       }
       needSave = true; // Definitely need to save changes now
@@ -212,14 +214,14 @@ public class ConfigServlet extends GridServlet {
 
     List toRemove = new ArrayList(); // Start with empty list of indexes to
                                      // remove
-    for (Iterator i = params.entrySet().iterator(); i.hasNext();) { // Go
-                                                                    // through
-                                                                    // each
-                                                                    // parameter
-      Map.Entry entry = (Map.Entry) i.next(); // Get its key/value
+    for (Object o : params.entrySet()) { // Go
+      // through
+      // each
+      // parameter
+      Map.Entry entry = (Map.Entry) o; // Get its key/value
       String name = (String) entry.getKey(); // The key is a String
       if (name.startsWith(type + "rm-")) { // Is it an "drm-" or "mrm-"?
-        Integer index = new Integer(name.substring(4)); // Yes, get it sindex
+        Integer index = Integer.valueOf(name.substring(4)); // Yes, get it sindex
         toRemove.add(index); // Add it to the list
       }
     }
@@ -228,8 +230,8 @@ public class ConfigServlet extends GridServlet {
       Collections.sort(toRemove); // We need to go through them in reverse ord-
       Collections.reverse(toRemove); // -er, so that removals don't shift
                                      // indexes
-      for (Iterator i = toRemove.iterator(); i.hasNext();) { // For each index
-        int index = ((Integer) i.next()).intValue(); // Get its int value
+      for (Object aToRemove : toRemove) { // For each index
+        int index = (Integer) aToRemove; // Get its int value
         servers.remove(index); // and buh-bye
       }
       needSave = true; // Gotta save after all that, whew.
@@ -246,11 +248,15 @@ public class ConfigServlet extends GridServlet {
         if (newClass != null && newClass.length() > 0) { // And nonempty
           Server server;
           if (type == 'd') // If it's data
+          {
             server = new ProductServer(config, newClass); // It's a product
-                                                          // server
+          }
+// server
           else
             // otherwise it's metadata
+          {
             server = new ProfileServer(config, newClass); // Which is a profile
+          }
                                                           // server
           servers.add(server); // Add it to the set of servers
           needSave = true; // And after all this, we need to save!
@@ -272,15 +278,15 @@ public class ConfigServlet extends GridServlet {
    */
   private boolean updateProperties(Properties props, Map params) {
     boolean needSave = false; // Assume no save for now
-    for (Iterator i = params.entrySet().iterator(); i.hasNext();) { // Go
-                                                                    // through
-                                                                    // each
-                                                                    // request
-                                                                    // parameter
-      Map.Entry entry = (Map.Entry) i.next(); // Get the key/value
+    for (Object o : params.entrySet()) { // Go
+      // through
+      // each
+      // request
+      // parameter
+      Map.Entry entry = (Map.Entry) o; // Get the key/value
       String name = (String) entry.getKey(); // Key is always a string
       String newValue = ((String[]) entry.getValue())[0]; // Value is String[],
-                                                          // get the zeroth
+      // get the zeroth
       if (name.startsWith("val-")) { // If the param is "val-"
         String key = name.substring(4); // Then find the key
         if (props.containsKey(key)) { // If that key exists

@@ -29,27 +29,27 @@ package org.apache.oodt.product.handlers.ofsn.metadata;
  */
 public interface OFSNXMLConfigMetKeys {
 
-  public static final String OFSN_CFG_ID_ATTR = "id";
+  String OFSN_CFG_ID_ATTR = "id";
 
-  public static final String OFSN_CFG_NAME_ATTR = "name";
+  String OFSN_CFG_NAME_ATTR = "name";
 
-  public static final String OFSN_PRODUCT_ROOT_ATTR = "productRoot";
+  String OFSN_PRODUCT_ROOT_ATTR = "productRoot";
 
-  public static final String HANDLER_TAG = "handler";
+  String HANDLER_TAG = "handler";
 
-  public static final String HANDLER_CLASSNAME_ATTR = "class";
+  String HANDLER_CLASSNAME_ATTR = "class";
 
-  public static final String HANDLER_NAME_ATTR = "name";
+  String HANDLER_NAME_ATTR = "name";
 
-  public static final String HANDLER_TYPE_ATTR = "type";
+  String HANDLER_TYPE_ATTR = "type";
 
-  public static final String PROPERTY_TAG = "property";
+  String PROPERTY_TAG = "property";
 
-  public static final String PROPERTY_NAME_ATTR = "name";
+  String PROPERTY_NAME_ATTR = "name";
 
-  public static final String PROPERTY_VALUE_ATTR = "value";
+  String PROPERTY_VALUE_ATTR = "value";
   
   /* optional handler property attributes supported by all handlers */
-  public static final String PROPERTY_MIMETYPE_ATTR = "mimeType"; 
+  String PROPERTY_MIMETYPE_ATTR = "mimeType";
 
 }

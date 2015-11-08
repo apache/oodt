@@ -37,17 +37,29 @@ public class SearchableRangedProfileElement extends RangedProfileElement impleme
 		Result rc = FalseResult.INSTANCE;
 		double numeric = Double.parseDouble(value);
 		if (operator.equals("EQ") || operator.equals("LIKE")) {
-			if (Double.parseDouble(min) <= numeric && numeric <= Double.parseDouble(max)) rc = new MatchingResult(this);
+			if (Double.parseDouble(min) <= numeric && numeric <= Double.parseDouble(max)) {
+			  rc = new MatchingResult(this);
+			}
 		} else if (operator.equals("NE") || operator.equals("NOTLIKE")) {
-			if (numeric < Double.parseDouble(min) || numeric > Double.parseDouble(max)) rc = new MatchingResult(this);
+			if (numeric < Double.parseDouble(min) || numeric > Double.parseDouble(max)) {
+			  rc = new MatchingResult(this);
+			}
 		} else if (operator.equals("LT")) {
-			if (numeric > Double.parseDouble(min)) rc = new MatchingResult(this);
+			if (numeric > Double.parseDouble(min)) {
+			  rc = new MatchingResult(this);
+			}
 		} else if (operator.equals("GT")) {
-			if (numeric < Double.parseDouble(max)) rc = new MatchingResult(this);
+			if (numeric < Double.parseDouble(max)) {
+			  rc = new MatchingResult(this);
+			}
 		} else if (operator.equals("LE")) {
-			if (numeric >= Double.parseDouble(min)) rc = new MatchingResult(this);
+			if (numeric >= Double.parseDouble(min)) {
+			  rc = new MatchingResult(this);
+			}
 		} else {
-			if (numeric <= Double.parseDouble(max)) rc = new MatchingResult(this);
+			if (numeric <= Double.parseDouble(max)) {
+			  rc = new MatchingResult(this);
+			}
 		}
 		return rc;
 	}

@@ -30,8 +30,8 @@ import org.apache.oodt.cas.cli.option.validator.CmdLineOptionValidator;
  */
 public interface ValidatableCmdLineOption {
 
-   public void setValidators(List<CmdLineOptionValidator> validators);
+   void setValidators(List<CmdLineOptionValidator> validators);
 
-   public List<CmdLineOptionValidator> getValidators();
+   List<CmdLineOptionValidator> getValidators();
 
 }

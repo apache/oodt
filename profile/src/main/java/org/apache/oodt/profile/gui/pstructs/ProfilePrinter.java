@@ -26,7 +26,6 @@ package org.apache.oodt.profile.gui.pstructs;
 
 import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileElement;
-import java.util.Iterator;
 
 
 /**
@@ -64,14 +63,12 @@ public class ProfilePrinter {
 		ResourceAttributesPrinter rap = new ResourceAttributesPrinter(myProfile.getResourceAttributes());
 		rStr+=rap.toXMLString();
 
-		
-		for(Iterator i = myProfile.getProfileElements().keySet().iterator(); i.hasNext(); ){
-			String profElemName = (String)i.next();
-			
-			ProfileElement pe = (ProfileElement)myProfile.getProfileElements().get(profElemName);
-			ProfileElementPrinter pPrinter = new ProfileElementPrinter(pe);
-			rStr+=pPrinter.toXMLString();
-		}
+
+	  for (String profElemName : myProfile.getProfileElements().keySet()) {
+		ProfileElement pe = (ProfileElement) myProfile.getProfileElements().get(profElemName);
+		ProfileElementPrinter pPrinter = new ProfileElementPrinter(pe);
+		rStr += pPrinter.toXMLString();
+	  }
 		
 		rStr+="</profile>\n";
 		

@@ -35,13 +35,13 @@ public interface Pagination {
     /**
      * @return The first page of products for a particular {@link ProductType}.
      */
-    public WorkflowInstancePage getFirstPage();
+    WorkflowInstancePage getFirstPage();
 
     /**
      * 
      * @return The last page of products for a particular {@link ProductType}.
      */
-    public WorkflowInstancePage getLastPage();
+    WorkflowInstancePage getLastPage();
 
     /**
      * 
@@ -51,7 +51,7 @@ public interface Pagination {
      * @return The next page in the ProductType product list, given the
      *         currentPage.
      */
-    public WorkflowInstancePage getNextPage(WorkflowInstancePage currentPage);
+    WorkflowInstancePage getNextPage(WorkflowInstancePage currentPage);
 
     /**
      * 
@@ -61,7 +61,7 @@ public interface Pagination {
      * @return The previous page in the ProductType product list, given the
      *         currentPage.
      */
-    public WorkflowInstancePage getPrevPage(WorkflowInstancePage currentPage);
+    WorkflowInstancePage getPrevPage(WorkflowInstancePage currentPage);
 
     /**
      * Gets the {@link WorkflowInstancePage} identified by its
@@ -74,7 +74,7 @@ public interface Pagination {
      * @throws InstanceRepositoryException
      *             If any error occurs.
      */
-    public WorkflowInstancePage getPagedWorkflows(int pageNum)
+    WorkflowInstancePage getPagedWorkflows(int pageNum)
             throws InstanceRepositoryException;
 
     /**
@@ -92,7 +92,7 @@ public interface Pagination {
      * @throws InstanceRepositoryException
      *             If any error occurs.
      */
-    public WorkflowInstancePage getPagedWorkflows(int pageNum, String status)
+    WorkflowInstancePage getPagedWorkflows(int pageNum, String status)
             throws InstanceRepositoryException;
 
 }

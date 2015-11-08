@@ -17,7 +17,6 @@
 
 package org.apache.oodt.cas.workflow.repository;
 
-//OODT imports
 import org.apache.oodt.cas.workflow.examples.NoOpTask;
 import org.apache.oodt.cas.workflow.structs.*;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
@@ -33,8 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
-
-//JDK imports
 
 /**
  * 
@@ -83,7 +80,12 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
     Workflow workflow = null;
 
     try {
-      conn = dataSource.getConnection();
+      if(dataSource!=null) {
+        conn = dataSource.getConnection();
+      }
+      else{
+        throw new RepositoryException("Null datasource");
+      }
       statement = conn.createStatement();
 
       String getWorkflowSql = "SELECT * from workflows WHERE workflow_name = '"
@@ -106,11 +108,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting workflow. Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(
             Level.SEVERE,
@@ -126,7 +130,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -135,7 +138,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -145,7 +147,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -172,8 +173,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
     Workflow workflow = null;
 
     try {
-      conn = dataSource.getConnection();
-      statement = conn.createStatement();
+
+      if(dataSource!=null) {
+        conn = dataSource.getConnection();
+      }
+      else{
+        throw new RepositoryException("Null datasource");
+      }      statement = conn.createStatement();
 
       String getWorkflowSql = "SELECT * from workflows WHERE workflow_id = '"
           + workflowId + "'";
@@ -195,11 +201,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting workflow. Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(
             Level.SEVERE,
@@ -215,7 +223,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -224,7 +231,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -234,7 +240,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -289,11 +294,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting workflows. Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(
             Level.SEVERE,
@@ -309,7 +316,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -318,7 +324,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -328,7 +333,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -376,11 +380,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting tasks for workflow. Message: "
           + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getTasksByWorkflowId transaction. Message: "
@@ -395,7 +401,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -404,7 +409,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -414,20 +418,19 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
     return tasks;
   }
 
-  public List getTasksByWorkflowName(String workflowName)
+  public List<WorkflowTask> getTasksByWorkflowName(String workflowName)
       throws RepositoryException {
     Connection conn = null;
     Statement statement = null;
     ResultSet rs = null;
 
-    List tasks = null;
+    List<WorkflowTask> tasks = null;
 
     try {
       conn = dataSource.getConnection();
@@ -462,11 +465,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting tasks for workflow. Message: "
           + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getTasksByWorkflowName transaction. Message: "
@@ -481,7 +486,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -490,7 +494,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -500,24 +503,23 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
     return tasks;
   }
 
-  public List getWorkflowsForEvent(String eventName) throws RepositoryException {
+  public List<Workflow> getWorkflowsForEvent(String eventName) throws RepositoryException {
     return getWorkflowsForEvent(eventName, true, true);
   }
 
-  public List getWorkflowsForEvent(String eventName, boolean getTasks,
+  public List<Workflow> getWorkflowsForEvent(String eventName, boolean getTasks,
       boolean getConditions) throws RepositoryException {
     Connection conn = null;
     Statement statement = null;
     ResultSet rs = null;
 
-    List workflows = null;
+    List<Workflow> workflows = null;
 
     try {
       conn = dataSource.getConnection();
@@ -550,11 +552,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting workflows for event. Message: "
           + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getWorkflowsForEvent transaction. Message: "
@@ -569,7 +573,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -578,7 +581,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -588,7 +590,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -601,7 +602,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
    * @see org.apache.oodt.cas.workflow.repository.WorkflowRepository#
    * getConditionsByTaskName(java.lang.String)
    */
-  public List getConditionsByTaskName(String taskName)
+  public List<WorkflowCondition> getConditionsByTaskName(String taskName)
       throws RepositoryException {
     Connection conn = null;
     Statement statement = null;
@@ -639,11 +640,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting conditions for task. Message: "
           + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getConditionsByTaskName transaction. Message: "
@@ -658,7 +661,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -667,7 +669,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -677,7 +678,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -726,11 +726,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting conditions for task. Message: "
           + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getConditionsByTaskId transaction. Message: "
@@ -745,7 +747,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -754,7 +755,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -764,7 +764,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -780,7 +779,12 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
     WorkflowTaskConfiguration config = null;
 
     try {
-      conn = dataSource.getConnection();
+      if(dataSource!=null) {
+        conn = dataSource.getConnection();
+      }
+      else{
+        throw new RepositoryException("Null data source");
+      }
       statement = conn.createStatement();
 
       String getConfigurationSql = "SELECT * from workflow_task_configuration WHERE workflow_task_id = "
@@ -801,12 +805,14 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting task configuration for taskId: " + taskId
               + " Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getConfigurationBytaskId transaction. Message: "
@@ -821,7 +827,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -830,7 +835,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -840,7 +844,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -877,12 +880,14 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting task configuration for condId: " + condId
               + " Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getConfigurationByConfigurationId transaction. Message: "
@@ -897,7 +902,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -906,7 +910,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -916,7 +919,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -956,11 +958,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting task by id. Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getWorkflowTaskById transaction. Message: "
@@ -975,7 +979,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -984,7 +987,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -994,7 +996,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -1029,15 +1030,19 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       while (rs.next()) {
         // get an instance of the class name
         condition = DbStructFactory.getWorkflowCondition(rs, false);
-        condition.setCondConfig(getConfigurationByConditionId(conditionId));
+        if (condition != null) {
+          condition.setCondConfig(getConfigurationByConditionId(conditionId));
+        }
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting condition by id. Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getWorkflowConditionById transaction. Message: "
@@ -1052,7 +1057,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -1061,7 +1065,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -1071,7 +1074,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -1085,7 +1087,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
    * org.apache.oodt.cas.workflow.repository.WorkflowRepository#getRegisteredEvents
    * ()
    */
-  public List getRegisteredEvents() throws RepositoryException {
+  public List<String> getRegisteredEvents() throws RepositoryException {
     Connection conn = null;
     Statement statement = null;
     ResultSet rs = null;
@@ -1113,11 +1115,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting registered events. Message: "
           + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getRegisteredEvents transaction. Message: "
@@ -1132,7 +1136,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -1141,7 +1144,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -1151,7 +1153,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -1179,9 +1180,8 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         }              
       }
     }
-    
-    String taskId = this.commitTask(null, task);
-    return taskId;
+
+    return this.commitTask(null, task);
   }
 
   /*
@@ -1194,15 +1194,14 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
   @Override
   public String addWorkflow(Workflow workflow) throws RepositoryException {
     // first check to see that its tasks are all present
-    if (workflow.getTasks() == null
-        || (workflow.getTasks() != null && workflow.getTasks().size() == 0)) {
+    if (workflow.getTasks() == null || (workflow.getTasks().size() == 0)) {
       throw new RepositoryException("Attempt to define a new worklfow: ["
           + workflow.getName() + "] with no tasks.");
     }
 
     List<WorkflowTask> allTasks = this.getTasks();
 
-    for (WorkflowTask task : (List<WorkflowTask>) workflow.getTasks()) {
+    for (WorkflowTask task : workflow.getTasks()) {
       if (!this.hasTaskId(allTasks, task.getTaskId())) {
         throw new RepositoryException("Reference in new workflow: ["
             + workflow.getName() + "] to undefined task with id: ["
@@ -1224,8 +1223,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
     }
 
-    String workflowId = this.commitWorkflow(workflow);
-    return workflowId;
+    return this.commitWorkflow(workflow);
   }
 
   /*
@@ -1272,13 +1270,15 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(
           Level.WARNING,
           "Exception getting conditions for workflow. Message: "
               + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getConditionsByWorkflowId transaction. Message: "
@@ -1293,7 +1293,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -1302,7 +1301,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -1312,7 +1310,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -1355,11 +1352,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting tasks for workflow. Message: "
           + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getTasksByWorkflowId transaction. Message: "
@@ -1374,7 +1373,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -1383,7 +1381,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -1393,7 +1390,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -1411,7 +1407,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       conn.setAutoCommit(false);
       statement = conn.createStatement();
 
-      String sql = "INSERT INTO workflows (workflow_name) VALUES ('"
+      String sql = "INSERT INTO workflows (workflow_id, workflow_name) VALUES ('"+workflow.getId()+"','"
           + workflow.getName() + "')";
 
       LOG.log(Level.FINE, "commitWorkflowToDB: Executing: " + sql);
@@ -1434,11 +1430,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       conn.commit();
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception adding workflow. Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(
             Level.SEVERE,
@@ -1454,7 +1452,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -1463,7 +1460,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -1473,7 +1469,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -1501,7 +1496,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
       synchronized (taskId) {
-        taskId = String.valueOf(new Integer(taskId) + 1);
+        taskId = String.valueOf(Integer.valueOf(taskId) + 1);
       }
 
       task.setTaskId(taskId);
@@ -1526,11 +1521,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       conn.commit();
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception adding task. Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE, "Unable to rollback task transaction. Message: "
             + e2.getMessage());
@@ -1544,7 +1541,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -1553,7 +1549,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -1563,7 +1558,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -1583,7 +1577,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
       String getConditionsSql = "SELECT workflow_conditions.* "
           + "FROM workflow_conditions "
-          + "ORDER BY condition_id";
+          + "ORDER BY workflow_condition_id";
 
       LOG.log(Level.FINE, "getConditions: Executing: "
           + getConditionsSql);
@@ -1602,11 +1596,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception getting conditions. Message: "
           + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(Level.SEVERE,
             "Unable to rollback getConditions transaction. Message: "
@@ -1621,7 +1617,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -1630,7 +1625,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -1640,7 +1634,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -1659,7 +1652,8 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       statement = conn.createStatement();
 
       String getTasksSql = "SELECT workflow_tasks.*, workflow_task_map.task_order "
-          + "FROM workflow_tasks " + "ORDER BY workflow_task_map.task_order";
+          + "FROM workflow_tasks, workflow_task_map WHERE workflow_tasks.workflow_task_id = workflow_task_map.workflow_task_id "
+                           + "ORDER BY workflow_task_map.task_order";
 
       LOG.log(Level.FINE, "getTasks: Executing: " + getTasksSql);
       rs = statement.executeQuery(getTasksSql);
@@ -1682,11 +1676,13 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING,
           "Exception getting tasks. Message: " + e.getMessage());
       try {
-        conn.rollback();
+        if (conn != null) {
+          conn.rollback();
+        }
       } catch (SQLException e2) {
         LOG.log(
             Level.SEVERE,
@@ -1702,7 +1698,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        rs = null;
       }
 
       if (statement != null) {
@@ -1711,7 +1706,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        statement = null;
       }
 
       if (conn != null) {
@@ -1721,7 +1715,6 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
         } catch (SQLException ignore) {
         }
 
-        conn = null;
       }
     }
 
@@ -1729,8 +1722,9 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
   }
 
   private boolean hasTaskId(List<WorkflowTask> tasks, String id) {
-    if (tasks == null || (tasks.size() == 0))
+    if (tasks == null || (tasks.size() == 0)) {
       return false;
+    }
 
     for (WorkflowTask task : tasks) {
       if (task.getTaskId().equals(id)) {
@@ -1742,8 +1736,9 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
   }
 
   private boolean hasConditionId(List<WorkflowCondition> conds, String id) {
-    if (conds == null || (conds.size() == 0))
+    if (conds == null || (conds.size() == 0)) {
       return false;
+    }
 
     for (WorkflowCondition cond : conds) {
       if (cond.getConditionId().equals(id)) {
@@ -1756,8 +1751,7 @@ public class DataSourceWorkflowRepository implements WorkflowRepository {
 
   private void handleGlobalWorkflowConditions(Workflow workflow) throws RepositoryException {
     if (workflow.getConditions() != null && workflow.getConditions().size() > 0) {
-      if (workflow.getTasks() == null
-          || (workflow.getTasks() != null && workflow.getTasks().size() == 0)) {
+      if (workflow.getTasks() == null || (workflow.getTasks().size() == 0)) {
         workflow.setTasks(new Vector<WorkflowTask>());
       }
 

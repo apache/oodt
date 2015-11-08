@@ -17,7 +17,6 @@
 package org.apache.oodt.cas.catalog.struct.impl.dictionary;
 
 //OODT imports
-import org.apache.oodt.cas.catalog.exception.CatalogDictionaryException;
 import org.apache.oodt.cas.catalog.query.*;
 import org.apache.oodt.cas.catalog.struct.Dictionary;
 import org.apache.oodt.cas.catalog.term.Term;
@@ -36,39 +35,35 @@ import java.util.Set;
  */
 public class WorkflowManagerDictionary implements Dictionary {
 
-	public TermBucket lookup(Metadata metadata)
-			throws CatalogDictionaryException {
+	public TermBucket lookup(Metadata metadata) {
 		if (metadata.getMetadata("ProductType") != null && metadata.getAllMetadata("ProductType").contains("Workflows")) {
 			TermBucket workflowBucket = new TermBucket("Workflows");
-			for (Object key : metadata.getHashtable().keySet()) 
-				workflowBucket.addTerm(new Term((String) key, metadata.getAllMetadata((String) key)));
+			for (Object key : metadata.getMap().keySet()) {
+			  workflowBucket.addTerm(new Term((String) key, metadata.getAllMetadata((String) key)));
+			}
 			return workflowBucket;
 		}else {
 			return null;
 		}
 	}
 
-	public Metadata reverseLookup(TermBucket termBucket)
-			throws CatalogDictionaryException {
+	public Metadata reverseLookup(TermBucket termBucket) {
 		Metadata metadata = new Metadata();
 		if (termBucket.getName().equals("Workflows")) {
-			for (Term term : termBucket.getTerms())
-				metadata.addMetadata(term.getName(), term.getValues());
+			for (Term term : termBucket.getTerms()) {
+			  metadata.addMetadata(term.getName(), term.getValues());
+			}
 		}
 		return metadata;
 	}
 
-	public boolean understands(QueryExpression queryExpression)
-			throws CatalogDictionaryException {
+	public boolean understands(QueryExpression queryExpression) {
 		Set<String> bucketNames = queryExpression.getBucketNames();
 		if (bucketNames == null || bucketNames.contains("Workflows")) {
-			if (queryExpression instanceof NotQueryExpression 
-					|| queryExpression instanceof ComparisonQueryExpression 
-					|| queryExpression instanceof StdQueryExpression 
-					|| queryExpression instanceof QueryLogicalGroup) {
-				return true;
-			} else
-				return false;	
+		  return queryExpression instanceof NotQueryExpression
+				 || queryExpression instanceof ComparisonQueryExpression
+				 || queryExpression instanceof StdQueryExpression
+				 || queryExpression instanceof QueryLogicalGroup;
 		}
 		return false;
 	}

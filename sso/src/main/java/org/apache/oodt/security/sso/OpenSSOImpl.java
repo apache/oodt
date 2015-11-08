@@ -17,20 +17,20 @@
 
 package org.apache.oodt.security.sso;
 
-//JDK imports
+import org.apache.commons.codec.binary.Base64;
+import org.apache.oodt.security.sso.opensso.SSOMetKeys;
+import org.apache.oodt.security.sso.opensso.SSOProxy;
+import org.apache.oodt.security.sso.opensso.SingleSignOnException;
+import org.apache.oodt.security.sso.opensso.UserDetails;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.Cookie;
-
-//APACHE imports
-import org.apache.commons.codec.binary.Base64;
-
-//LMMP imports
-import org.apache.oodt.security.sso.opensso.SSOMetKeys;
-import org.apache.oodt.security.sso.opensso.SSOProxy;
-import org.apache.oodt.security.sso.opensso.UserDetails;
 
 /**
  * 
@@ -60,17 +60,18 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
       // and pull the username from there
       String ssoToken = this.getSSOToken();
       if (ssoToken != null) {
-        UserDetails details = null;
+        UserDetails details;
         try {
           details = this.ssoProxy.getUserAttributes(ssoToken);
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           return UNKNOWN_USER;
         }
         return details.getAttributes().getMetadata(UID_ATTRIBUTE_NAME) != null ? details
             .getAttributes().getMetadata(UID_ATTRIBUTE_NAME) : UNKNOWN_USER;
-      } else
+      } else {
         return UNKNOWN_USER;
+      }
     } else {
       return new String(Base64.decodeBase64(cookieVal.getBytes()));
     }
@@ -82,20 +83,20 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
 
   public boolean isLoggedIn() {
     // TODO: make sure the token is valid?
-    return (this.getSSOToken() == null) ? false : true;
+    return (this.getSSOToken() != null);
   }
 
   public boolean login(String username, String password) {
 
-    String ssoToken = null;
+    String ssoToken;
     try {
       ssoToken = this.ssoProxy.authenticate(username, password);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return false;
     }
 
-    this.addCookie(SSO_COOKIE_KEY, "\"" + new String(ssoToken) + "\"");
+    this.addCookie(SSO_COOKIE_KEY, "\"" + ssoToken + "\"");
 
     this.addCookie(USER_COOKIE_KEY,
         "\"" + new String(Base64.encodeBase64(username.getBytes())) + "\"");
@@ -119,7 +120,7 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
    * @throws Exception
    *           If any error (e.g., HTTP REST error) occurs.
    */
-  public List<String> getGroupsForUser() throws Exception {
+  public List<String> getGroupsForUser() throws IOException, SingleSignOnException {
     String token = this.getSSOToken();
     if (token == null) {
       return Collections.EMPTY_LIST;
@@ -153,19 +154,19 @@ public class OpenSSOImpl extends AbstractWebBasedSingleSignOn implements
   protected String getSSOToken() {
     String cookieVal = this.getCookieVal(SSO_COOKIE_KEY);
     if (cookieVal != null) {
-      return new String(cookieVal);
-    } else
+      return cookieVal;
+    } else {
       return null;
+    }
   }
 
   private String getCookieVal(String name) {
     Cookie[] cookies = this.req.getCookies();
     for (Cookie cookie : cookies) {
       if (cookie.getName().equals(name)) {
-        String cookieVal = cookie.getValue().startsWith("\"")
+        return cookie.getValue().startsWith("\"")
             && cookie.getValue().endsWith("\"") ? cookie.getValue().substring(
             1, cookie.getValue().length() - 1) : cookie.getValue();
-        return cookieVal;
       }
     }
 

@@ -16,11 +16,23 @@
  */
 package org.apache.oodt.cas.pge.staging;
 
-//OODT static imports
-import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.QUERY_FILE_MANAGER_URL;
+import org.apache.commons.lang.Validate;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.Reference;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.pge.config.FileStagingInfo;
+import org.apache.oodt.cas.pge.exceptions.PGEException;
+import org.apache.oodt.cas.pge.metadata.PgeMetadata;
 
-//JDK imports
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -28,18 +40,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//OODT imports
-import org.apache.commons.lang.Validate;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.Reference;
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import org.apache.oodt.cas.pge.config.FileStagingInfo;
-import org.apache.oodt.cas.pge.metadata.PgeMetadata;
-
-//Google imports
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
+import static org.apache.oodt.cas.pge.metadata.PgeTaskMetKeys.QUERY_FILE_MANAGER_URL;
 
 /**
  * Responsible for transferring Product files to a directory accessible by
@@ -50,7 +51,9 @@ import com.google.common.collect.Lists;
 public abstract class FileStager {
 
    public void stageFiles(FileStagingInfo fileStagingInfo,
-         PgeMetadata pgeMetadata, Logger logger) throws Exception {
+         PgeMetadata pgeMetadata, Logger logger)
+       throws PGEException, CatalogException, URISyntaxException, IOException, ConnectionException,
+       InstantiationException, DataTransferException {
       logger.log(Level.INFO, "Creating staging directory ["
             + fileStagingInfo.getStagingDir() + "]");
       new File(fileStagingInfo.getStagingDir()).mkdirs();
@@ -84,10 +87,10 @@ public abstract class FileStager {
 
    @VisibleForTesting
    static XmlRpcFileManagerClient createFileManagerClient(PgeMetadata pgeMetadata)
-         throws Exception {
+       throws PGEException, MalformedURLException, ConnectionException {
       String filemgrUrl = pgeMetadata.getMetadata(QUERY_FILE_MANAGER_URL);
       if (filemgrUrl == null) {
-         throw new Exception("Must specify [" + QUERY_FILE_MANAGER_URL
+         throw new PGEException("Must specify [" + QUERY_FILE_MANAGER_URL
                + "] if you want to stage product IDs");
       }
       return new XmlRpcFileManagerClient(new URL(filemgrUrl));
@@ -108,7 +111,7 @@ public abstract class FileStager {
    }
 
    @VisibleForTesting
-   static URI asURI(String path) throws URISyntaxException {
+   static URI asURI(String path) {
       Validate.notNull(path, "path must not be null");
 
       URI uri = URI.create(path);
@@ -119,5 +122,6 @@ public abstract class FileStager {
    }
 
    protected abstract void stageFile(URI stageFile, File destDir,
-         PgeMetadata pgeMetadata, Logger logger) throws Exception;
+         PgeMetadata pgeMetadata, Logger logger)
+       throws IOException, DataTransferException, InstantiationException;
 }

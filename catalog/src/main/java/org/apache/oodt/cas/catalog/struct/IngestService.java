@@ -42,7 +42,7 @@ public interface IngestService {
 	 * @return IngestReceipt Receipt of ingest
 	 * @throws IngestServiceException Any error 
 	 */
-	public IngestReceipt ingest(List<TermBucket> termBuckets) throws IngestServiceException;
+	IngestReceipt ingest(List<TermBucket> termBuckets) throws IngestServiceException;
 	
 	/**
 	 * TermBucket updates to given TransactionId.  A new TransactionId can be returned in IngestReceipt
@@ -53,7 +53,7 @@ public interface IngestService {
 	 * @param termBuckets
 	 * @throws IngestServiceException
 	 */
-	public IngestReceipt update(TransactionId<?> transactionId, List<TermBucket> termBuckets) throws IngestServiceException;
+	IngestReceipt update(TransactionId<?> transactionId, List<TermBucket> termBuckets) throws IngestServiceException;
 	
 	/**
 	 * Deletes all TermBuckets attached to given TransactionId -- there should be no trace of 
@@ -61,7 +61,7 @@ public interface IngestService {
 	 * @param transactionId The ID for given transaction which should be erased
 	 * @throws IngestServiceException Any error 
 	 */
-	public boolean delete(TransactionId<?> transactionId) throws IngestServiceException;
+	boolean delete(TransactionId<?> transactionId) throws IngestServiceException;
 	
 	/**
 	 * Deletes only the Terms in the given TermBuckets from the given TransactionId
@@ -69,6 +69,6 @@ public interface IngestService {
 	 * @param termBuckets The reduction set of Terms for each TermBucket
 	 * @throws IngestServiceException Any error
 	 */
-	public boolean reduce(TransactionId<?> transactionId, List<TermBucket> termBuckets) throws IngestServiceException;
+	boolean reduce(TransactionId<?> transactionId, List<TermBucket> termBuckets) throws IngestServiceException;
 		
 }

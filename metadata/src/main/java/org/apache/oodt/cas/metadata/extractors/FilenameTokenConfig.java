@@ -85,8 +85,9 @@ public class FilenameTokenConfig implements MetExtractorConfig {
     PGEGroup substrOffsetGroup = this.conf.getPgeSpecificGroups().get(
         SUBSTRING_OFFSET_GROUP);
     Metadata met = new Metadata();
-    if (substrOffsetGroup == null)
+    if (substrOffsetGroup == null) {
       return met;
+    }
     String filename = file.getName();
 
     for (PGEVector vec : substrOffsetGroup.getVectors().values()) {

@@ -31,5 +31,5 @@ public interface CatalogFactory {
 	/**
 	 * @return A new {@link Catalog} object implementation.
 	 */
-	public Catalog createCatalog();
+	Catalog createCatalog();
 }

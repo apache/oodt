@@ -99,8 +99,8 @@ public class CASProfileHandler implements ProfileHandler {
         List profs = new Vector();
 
         if (productTypeFilter != null && productTypeFilter.size() > 0) {
-            for (Iterator i = productTypeFilter.iterator(); i.hasNext();) {
-                ProductType type = (ProductType) i.next();
+            for (Object aProductTypeFilter : productTypeFilter) {
+                ProductType type = (ProductType) aProductTypeFilter;
                 Query cQuery = convertQuery(query);
 
                 profs.addAll(queryAndBuildProfiles(type, cQuery));
@@ -134,7 +134,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             types = fmClient.getProductTypes();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return types;
@@ -146,7 +146,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             products = fmClient.getProductsByProductType(type);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return products;
@@ -158,7 +158,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             type = fmClient.getProductTypeByName(name);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return type;
@@ -170,7 +170,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             met = fmClient.getMetadata(p);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return met;
@@ -182,7 +182,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             references = fmClient.getProductReferences(p);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return references;
@@ -194,7 +194,7 @@ public class CASProfileHandler implements ProfileHandler {
         try {
             elem = fmClient.getElementByName(name);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
         return elem;
@@ -258,21 +258,21 @@ public class CASProfileHandler implements ProfileHandler {
     private List queryAndBuildProfiles(ProductType type, Query query) {
         List profiles = new Vector();
 
-        List products = null;
+        List products;
 
         try {
             products = fmClient.query(query, type);
 
             if (products != null && products.size() > 0) {
-                for (Iterator i = products.iterator(); i.hasNext();) {
-                    Product p = (Product) i.next();
+                for (Object product : products) {
+                    Product p = (Product) product;
                     p.setProductReferences(safeGetProductReferences(p));
                     Metadata met = safeGetMetadata(p);
                     try {
                         profiles.add(ProfileUtils.buildProfile(p, met,
-                                dataDelivBaseUrlStr));
+                            dataDelivBaseUrlStr));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.log(Level.SEVERE, e.getMessage());
                     }
 
                 }

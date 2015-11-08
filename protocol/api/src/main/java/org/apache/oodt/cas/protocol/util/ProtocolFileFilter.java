@@ -27,6 +27,6 @@ import org.apache.oodt.cas.protocol.ProtocolFile;
  */
 public interface ProtocolFileFilter {
 
-    public boolean accept(ProtocolFile file);
+    boolean accept(ProtocolFile file);
 
 }

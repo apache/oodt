@@ -41,9 +41,10 @@ public class QueryUtils {
     
     public static String getQueryResultsAsString(
             List<QueryResult> queryResults, String delimiter) {
-        StringBuffer returnString = new StringBuffer("");
-        for (QueryResult qr : queryResults) 
-            returnString.append(qr.toString() + delimiter);
+        StringBuilder returnString = new StringBuilder("");
+        for (QueryResult qr : queryResults) {
+            returnString.append(qr.toString()).append(delimiter);
+        }
         return returnString.substring(0, returnString.length() - delimiter.length());
     }
     

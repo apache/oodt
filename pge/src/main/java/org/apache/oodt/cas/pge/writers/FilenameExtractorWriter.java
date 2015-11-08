@@ -16,14 +16,12 @@
  */
 
 package org.apache.oodt.cas.pge.writers;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.metadata.extractors.FilenameTokenMetExtractor;
 
-//JDK imports
 import java.io.File;
 
-//OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.extractors.FilenameTokenMetExtractor;
-import org.apache.oodt.cas.pge.writers.PcsMetFileWriter;
 
 /**
  * 
@@ -45,7 +43,7 @@ public class FilenameExtractorWriter extends PcsMetFileWriter {
    */
   @Override
   protected Metadata getSciPgeSpecificMetadata(File generatedFile,
-      Metadata workflowMet, Object... args) throws Exception {
+      Metadata workflowMet, Object... args) throws MetExtractionException {
     String metConfFilePath = String.valueOf(args[0]);
     FilenameTokenMetExtractor extractor = new FilenameTokenMetExtractor();
     extractor.setConfigFile(metConfFilePath);

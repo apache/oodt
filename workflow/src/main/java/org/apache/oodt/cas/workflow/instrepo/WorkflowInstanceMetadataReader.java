@@ -19,9 +19,15 @@
 package org.apache.oodt.cas.workflow.instrepo;
 
 //OODT imports
-import org.apache.oodt.commons.xml.DOMUtil;
 
-//JDK imports
+import org.apache.oodt.cas.workflow.exceptions.WorkflowException;
+import org.apache.oodt.commons.exceptions.CommonsException;
+import org.apache.oodt.commons.xml.DOMUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,12 +35,11 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -56,7 +61,7 @@ public final class WorkflowInstanceMetadataReader implements
     }
 
     public static WorkflowInstanceMetMap parseMetMapFile(String mapFilePath)
-            throws Exception {
+        throws CommonsException, WorkflowException {
         Document doc = getDocumentRoot(mapFilePath);
         Element rootElem = doc.getDocumentElement();
         WorkflowInstanceMetMap map = new WorkflowInstanceMetMap();
@@ -66,7 +71,7 @@ public final class WorkflowInstanceMetadataReader implements
                 DEFAULT_WORKFLOW_MAP);
 
         if (defaultElem == null) {
-            throw new Exception("file: [" + mapFilePath
+            throw new WorkflowException("file: [" + mapFilePath
                     + "] must specify a default workflow to field map!");
         }
 
@@ -106,12 +111,12 @@ public final class WorkflowInstanceMetadataReader implements
 
     private static Document getDocumentRoot(String xmlFile) {
         // open up the XML file
-        DocumentBuilderFactory factory = null;
-        DocumentBuilder parser = null;
-        Document document = null;
-        InputSource inputSource = null;
+        DocumentBuilderFactory factory;
+        DocumentBuilder parser;
+        Document document;
+        InputSource inputSource;
 
-        InputStream xmlInputStream = null;
+        InputStream xmlInputStream;
 
         try {
             xmlInputStream = new File(xmlFile).toURL().openStream();

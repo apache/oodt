@@ -19,6 +19,7 @@
 package org.apache.oodt.cas.workflow.repository;
 
 //OODT imports
+
 import org.apache.oodt.cas.workflow.examples.NoOpTask;
 import org.apache.oodt.cas.workflow.structs.Workflow;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
@@ -26,24 +27,32 @@ import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.XmlStructFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-//JDK imports
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+//JDK imports
 
 
 /**
@@ -78,16 +87,16 @@ public class XMLWorkflowRepository implements WorkflowRepository {
             .getName());
 
     /* our task map */
-    private static HashMap taskMap = new HashMap();
+    private static ConcurrentHashMap taskMap = new ConcurrentHashMap();
 
     /* our condition map */
-    private static HashMap conditionMap = new HashMap();
+    private static ConcurrentHashMap conditionMap = new ConcurrentHashMap();
 
     /* our workflow map */
-    private static HashMap workflowMap = new HashMap();
+    private static ConcurrentHashMap workflowMap = new ConcurrentHashMap();
 
     /* our event map */
-    private static HashMap eventMap = new HashMap();
+    private static ConcurrentHashMap eventMap = new ConcurrentHashMap();
 
     private static FileFilter workflowXmlFilter = new FileFilter() {
         public boolean accept(File pathname) {
@@ -152,14 +161,14 @@ public class XMLWorkflowRepository implements WorkflowRepository {
      */
     public Workflow getWorkflowByName(String workflowName)
             throws RepositoryException {
-        for (Iterator i = workflowMap.keySet().iterator(); i.hasNext();) {
-            String workflowId = (String) i.next();
-            Workflow w = (Workflow) workflowMap.get(workflowId);
+      for (Object o : workflowMap.keySet()) {
+        String workflowId = (String) o;
+        Workflow w = (Workflow) workflowMap.get(workflowId);
 
-            if (w.getName().equals(workflowName)) {
-                return w;
-            }
+        if (w.getName().equals(workflowName)) {
+          return w;
         }
+      }
 
         return null;
     }
@@ -222,12 +231,12 @@ public class XMLWorkflowRepository implements WorkflowRepository {
      */
     public List getConditionsByTaskName(String taskName)
             throws RepositoryException {
-        for (Iterator i = taskMap.values().iterator(); i.hasNext();) {
-            WorkflowTask t = (WorkflowTask) i.next();
-            if (t.getTaskName().equals(taskName)) {
-                return t.getConditions();
-            }
+      for (Object o : taskMap.values()) {
+        WorkflowTask t = (WorkflowTask) o;
+        if (t.getTaskName().equals(taskName)) {
+          return t.getConditions();
         }
+      }
 
         return null;
     }
@@ -241,8 +250,9 @@ public class XMLWorkflowRepository implements WorkflowRepository {
         WorkflowTask t = (WorkflowTask) taskMap.get(taskId);
         if (t != null) {
             return t.getConditions();
-        } else
-            return null;
+        } else {
+          return null;
+        }
     }
 
     /*
@@ -265,13 +275,13 @@ public class XMLWorkflowRepository implements WorkflowRepository {
       // check its conditions
       if(task.getPreConditions() != null && task.getPreConditions().size() > 0){
         for(WorkflowCondition cond: task.getPreConditions()){
-          if(!this.conditionMap.containsKey(cond.getConditionId())){
+          if(!conditionMap.containsKey(cond.getConditionId())){
             throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined pre condition ith id: ["+cond.getConditionId()+"]");            
           }          
         }
         
         for(WorkflowCondition cond: task.getPostConditions()){
-          if(!this.conditionMap.containsKey(cond.getConditionId())){
+          if(!conditionMap.containsKey(cond.getConditionId())){
             throw new RepositoryException("Reference in new task: ["+task.getTaskName()+"] to undefined post condition ith id: ["+cond.getConditionId()+"]");            
           }              
         }
@@ -279,7 +289,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
       
         String taskId = task.getTaskId() != null ? 
              task.getTaskId():UUID.randomUUID().toString();
-        this.taskMap.put(taskId, task);
+        taskMap.put(taskId, task);
         return taskId;
     }
     
@@ -290,19 +300,19 @@ public class XMLWorkflowRepository implements WorkflowRepository {
     @Override
     public String addWorkflow(Workflow workflow) throws RepositoryException {
        // first check to see that its tasks are all present
-      if(workflow.getTasks() == null || (workflow.getTasks() != null && workflow.getTasks().size() == 0)){
+      if(workflow.getTasks() == null || (workflow.getTasks().size() == 0)){
         throw new RepositoryException("Attempt to define a new worklfow: ["+workflow.getName()+"] with no tasks.");
       }
       
       for(WorkflowTask task: (List<WorkflowTask>)workflow.getTasks()){
-        if(!this.taskMap.containsKey(task.getTaskId())){
+        if(!taskMap.containsKey(task.getTaskId())){
           throw new RepositoryException("Reference in new workflow: ["+workflow.getName()+"] to undefined task with id: ["+task.getTaskId()+"]");
         }
         
         // check its conditions
         if(task.getConditions() != null && task.getConditions().size() > 0){
           for(WorkflowCondition cond: (List<WorkflowCondition>)task.getConditions()){
-            if(!this.conditionMap.containsKey(cond.getConditionId())){
+            if(!conditionMap.containsKey(cond.getConditionId())){
               throw new RepositoryException("Reference in new workflow: ["+workflow.getName()+"] to undefined condition ith id: ["+cond.getConditionId()+"]");
             }
           }
@@ -315,8 +325,8 @@ public class XMLWorkflowRepository implements WorkflowRepository {
 			workflowId = UUID.randomUUID().toString();
 			workflow.setId(workflowId);
 		}
-		this.workflowMap.put(workflowId, workflow);
-		this.eventMap.put(workflowId, Collections.singletonList(workflow));
+		workflowMap.put(workflowId, workflow);
+		eventMap.put(workflowId, Collections.singletonList(workflow));
 		return workflowId;
 		
     }    
@@ -327,11 +337,13 @@ public class XMLWorkflowRepository implements WorkflowRepository {
     @Override
     public List<WorkflowCondition> getConditionsByWorkflowId(String workflowId)
         throws RepositoryException {
-      if(!this.workflowMap.containsKey(workflowId)) throw new 
-         RepositoryException("Attempt to obtain conditions for a workflow: " +
-         		"["+workflowId+"] that does not exist!");
+      if(!workflowMap.containsKey(workflowId)) {
+        throw new
+            RepositoryException("Attempt to obtain conditions for a workflow: " +
+                                "[" + workflowId + "] that does not exist!");
+      }
       
-      return ((Workflow)this.workflowMap.get(workflowId)).getConditions();
+      return ((Workflow) workflowMap.get(workflowId)).getConditions();
     }    
     
 
@@ -340,7 +352,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
      */
     @Override
     public WorkflowTask getTaskById(String taskId) throws RepositoryException {
-      return (WorkflowTask)this.taskMap.get(taskId);
+      return (WorkflowTask) taskMap.get(taskId);
     }    
 
     /**
@@ -348,7 +360,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
      */
     public static void main(String[] args) throws RepositoryException {
         String usage = "XmlWorkflowRepository <uri 1>...<uri n>\n";
-        List uris = null;
+        List uris;
 
         if (args.length == 0) {
             System.err.println(usage);
@@ -357,17 +369,16 @@ public class XMLWorkflowRepository implements WorkflowRepository {
 
         uris = new Vector(args.length);
 
-        for (int i = 0; i < args.length; i++) {
-            if (args[i] != null) {
-                uris.add(args[i]);
-            }
+      for (String arg : args) {
+        if (arg != null) {
+          uris.add(arg);
         }
+      }
 
         XMLWorkflowRepository repo = new XMLWorkflowRepository(uris);
 
         List workflows = repo.getWorkflows();
 
-        if (workflows != null) {
           for (Object workflow : workflows) {
             Workflow w = (Workflow) workflow;
             System.out.println("Workflow: [id=" + w.getId() + ", name="
@@ -416,9 +427,6 @@ public class XMLWorkflowRepository implements WorkflowRepository {
             }
 
           }
-        } else {
-            System.out.println("No workflows defined!");
-        }
 
     }
 
@@ -531,44 +539,42 @@ public class XMLWorkflowRepository implements WorkflowRepository {
             try {
               File workflowDir = new File(new URI(dirUri));
               if (workflowDir.isDirectory()) {
-                String workflowDirStr = workflowDir.getAbsolutePath();
 
-                if (!workflowDirStr.endsWith("/")) {
-                  workflowDirStr += "/";
-                }
 
                 // get all the workflow xml files
                 File[] workflowFiles = workflowDir
                     .listFiles(workflowXmlFilter);
 
-                for (File workflowFile : workflowFiles) {
-                  String workflowXmlFile = workflowFile
-                      .getAbsolutePath();
-                  Document workflowRoot = getDocumentRoot(workflowXmlFile);
+                if(workflowFiles!=null) {
+                  for (File workflowFile : workflowFiles) {
+                    String workflowXmlFile = workflowFile
+                        .getAbsolutePath();
+                    Document workflowRoot = getDocumentRoot(workflowXmlFile);
 
-                  String workflowId = workflowRoot
-                      .getDocumentElement().getAttribute("id");
-                  if (workflowMap.get(workflowId) == null) {
-                    Workflow w = XmlStructFactory.getWorkflow(
-                        workflowRoot.getDocumentElement(),
-                        taskMap, conditionMap);
+                    String workflowId = workflowRoot
+                        .getDocumentElement().getAttribute("id");
+                    if (workflowMap.get(workflowId) == null) {
+                      Workflow w = XmlStructFactory.getWorkflow(
+                          workflowRoot.getDocumentElement(),
+                          taskMap, conditionMap);
 
-                    if (w.getConditions() != null && w.getConditions().size() > 0) {
-                      // add a virtual first task, with the conditions
-                      w.getTasks().add(0, getGlobalWorkflowConditionsTask(w.getName(), w.getId(), w.getConditions()));
+                      if (w.getConditions() != null && w.getConditions().size() > 0) {
+                        // add a virtual first task, with the conditions
+                        w.getTasks().add(0, getGlobalWorkflowConditionsTask(w.getName(), w.getId(), w.getConditions()));
+                      }
+                      workflowMap.put(workflowId, w);
+                    } else {
+                      LOG
+                          .log(
+                              Level.FINE,
+                              "Ignoring workflow file: "
+                              + workflowXmlFile
+                              + " when loading workflows, workflow id: "
+                              + workflowId
+                              + " already loaded");
                     }
-                    workflowMap.put(workflowId, w);
-                  } else {
-                    LOG
-                        .log(
-                            Level.FINE,
-                            "Ignoring workflow file: "
-                            + workflowXmlFile
-                            + " when loading workflows, workflow id: "
-                            + workflowId
-                            + " already loaded");
-                  }
 
+                  }
                 }
               }
             } catch (URISyntaxException e) {
@@ -614,7 +620,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
 
                     String eventName = eventElem
                         .getAttribute("name");
-                    Workflow w = null;
+                    Workflow w;
 
                     NodeList workflowNodeList = eventElem
                         .getElementsByTagName("workflow");
@@ -694,7 +700,7 @@ public class XMLWorkflowRepository implements WorkflowRepository {
       task.setTaskId(workflowId+"-global-conditions-eval");
       task.setTaskName(workflowName+"-global-conditions-eval");
       task.setTaskInstanceClassName(NoOpTask.class.getName());
-      this.taskMap.put(task.getTaskId(), task);
+      taskMap.put(task.getTaskId(), task);
       return task;
     }
 

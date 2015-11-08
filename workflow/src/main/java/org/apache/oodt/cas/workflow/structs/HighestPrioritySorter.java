@@ -27,7 +27,7 @@ import org.apache.oodt.cas.workflow.engine.processor.WorkflowProcessor;
 
 /**
  * 
- * Sorts strictly based on associated {@link WorkflowProcessor#getPriority()} in
+ * Sorts strictly based on associated  in
  * reverse natural order.
  * 
  * @author mattmann

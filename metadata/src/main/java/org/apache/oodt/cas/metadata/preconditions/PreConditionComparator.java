@@ -63,9 +63,10 @@ public abstract class PreConditionComparator<CompareType> implements SpringSetId
     
     public boolean passes(File product) {
         try {
-            if (fileExtension != null)
+            if (fileExtension != null) {
                 product = new File(product.getAbsolutePath() + "."
-                        + this.fileExtension);
+                                   + this.fileExtension);
+            }
             return eval(this.type, this.performCheck(product, this.compareItem));
         } catch (Exception e) {
             return false;
@@ -100,14 +101,15 @@ public abstract class PreConditionComparator<CompareType> implements SpringSetId
     private static boolean eval(String opKey, int preconditionResult)
             throws MetExtractionException {
         opKey = opKey.toUpperCase();
-        if (preconditionResult == 0)
+        if (preconditionResult == 0) {
             return EQUAL_TO.equals(opKey);
-        else if (preconditionResult > 0)
+        } else if (preconditionResult > 0) {
             return NOT_EQUAL_TO.equals(opKey) || GREATER_THAN.equals(opKey);
-        else if (preconditionResult < 0)
+        } else if (preconditionResult < 0) {
             return NOT_EQUAL_TO.equals(opKey) || LESS_THAN.equals(opKey);
-        else
+        } else {
             throw new MetExtractionException("evalType is not a valid type");
+        }
     }
 
 }

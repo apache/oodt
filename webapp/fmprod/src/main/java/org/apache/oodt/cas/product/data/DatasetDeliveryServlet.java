@@ -30,7 +30,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,6 +59,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
 
   /* serial version UID */
   private static final long serialVersionUID = -6692665690674186105L;
+  public static final int INT = 512;
 
   /* our file manager client */
   private XmlRpcFileManagerClient client;
@@ -127,7 +128,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
     // for each product, zip it up
     // after you zip up all products then create the dataset zip
 
-    ProductPage page = null;
+    ProductPage page;
 
     try {
       page = client.getFirstPage(type);
@@ -136,7 +137,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
             + type.getName() + "]");
       }
 
-      Map productHash = new HashMap();
+      Map productHash = new ConcurrentHashMap();
 
       do {
         for (Product product : page.getPageProducts()) {
@@ -144,7 +145,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
             continue;
           }
 
-          Metadata metadata = null;
+          Metadata metadata;
           product.setProductReferences(client.getProductReferences(product));
           metadata = client.getMetadata(product);
           DataUtils.createProductZipFile(product, metadata, productDirPath);
@@ -156,7 +157,7 @@ public class DatasetDeliveryServlet extends HttpServlet implements
       } while ((page != null && !page.isLastPage())
           && (page.getPageProducts() != null && page.getPageProducts().size() > 0));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new ServletException(e.getMessage());
     }
 
@@ -192,13 +193,14 @@ public class DatasetDeliveryServlet extends HttpServlet implements
 
       // 3. Deliver the data.
       o2 = res.getOutputStream();
-      byte[] buf = new byte[512];
+      byte[] buf = new byte[INT];
       int n;
-      while ((n = in.read(buf)) != -1)
+      while ((n = in.read(buf)) != -1) {
         o2.write(buf, 0, n);
+      }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Exception delivering dataset: Message: "
           + e.getMessage());
     } finally {

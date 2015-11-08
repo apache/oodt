@@ -109,7 +109,7 @@ public class OpendapProfileHandler implements ProfileHandler {
           	LOG.log(Level.FINE,"Connecting to opendapurl="+opendapUrl);
   
             Profile profile = new Profile();
-            DConnect dConn = null;
+            DConnect dConn;
             try {
               dConn = new DConnect(opendapUrl, true);
             } catch (FileNotFoundException e) {

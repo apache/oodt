@@ -56,13 +56,15 @@ public class MoveFile extends CrawlerAction {
       try {
          if (mvFile == null) {
             mvFile = product.getAbsolutePath();
-            if (this.fileExtension != null)
+            if (this.fileExtension != null) {
                mvFile += "." + this.fileExtension;
+            }
          }
          File srcFile = new File(mvFile);
          File toFile = new File(toDir + "/" + srcFile.getName());
-         if (createToDir)
+         if (createToDir) {
             toFile.getParentFile().mkdirs();
+         }
          LOG.log(Level.INFO, "Moving file " + srcFile.getAbsolutePath()
                + " to " + toFile.getAbsolutePath());
          if(!srcFile.renameTo(toFile)) {//If the file failed to copy
@@ -72,11 +74,12 @@ public class MoveFile extends CrawlerAction {
         	 FileUtils.forceDelete(srcFile); //Need to delete the old file
         	 return true; //File copied on second attempt
          }
-         else
-        	 return true; //File copied
+         else {
+            return true; //File copied
+         }
       } catch (Exception e) {
          throw new CrawlerActionException("Failed to move file from " + mvFile
-               + " to " + this.toDir + " : " + e.getMessage());
+               + " to " + this.toDir + " : " + e.getMessage(), e);
       }
    }
 

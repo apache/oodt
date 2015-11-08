@@ -16,8 +16,6 @@
  */
 package org.apache.oodt.cas.workflow.cli.action;
 
-import java.util.Iterator;
-
 //OODT imports
 import org.apache.oodt.cas.cli.exception.CmdLineActionException;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
@@ -39,10 +37,12 @@ public class GetTaskByIdCliAction extends WorkflowCliAction {
          WorkflowTask task = getClient().getTaskById(taskId);
          
          String requiredMetFields = "";
-         for (Iterator i = task.getRequiredMetFields().iterator(); i.hasNext();) {
-        	 if (requiredMetFields.length()>0) requiredMetFields += ", ";
-             requiredMetFields += (String) i.next();
-         }
+        for (Object o : task.getRequiredMetFields()) {
+          if (requiredMetFields.length() > 0) {
+            requiredMetFields += ", ";
+          }
+          requiredMetFields += (String) o;
+        }
          
          printer.println("Task: [id=" + task.getTaskId() 
                + ", name=" + task.getTaskName() 

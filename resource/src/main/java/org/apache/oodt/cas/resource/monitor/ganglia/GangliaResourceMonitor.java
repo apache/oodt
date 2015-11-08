@@ -22,17 +22,19 @@ import org.apache.oodt.cas.resource.monitor.Monitor;
 import org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator;
 import org.apache.oodt.cas.resource.structs.ResourceNode;
 import org.apache.oodt.cas.resource.structs.exceptions.MonitorException;
-import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.NAME;
 
-//JDK imports
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.apache.oodt.cas.resource.monitor.ganglia.GangliaMetKeys.NAME;
+
+//JDK imports
 
 /**
  * @author rajith
@@ -57,21 +59,17 @@ public class GangliaResourceMonitor implements Monitor {
 	 *            LoadCalculator
 	 *            {@link org.apache.oodt.cas.resource.monitor.ganglia.loadcalc.LoadCalculator}
 	 *            to calculate load
-	 * @param nodes
-	 *            resource nodes
-	 *            {@link org.apache.oodt.cas.resource.structs.ResourceNode} to
-	 *            be monitored.
 	 */
 	public GangliaResourceMonitor(LoadCalculator loadCalculator,
 			String gmetadHost, int gmetadPort) {
 		this.loadCalculator = loadCalculator;
-		this.loadMap = new HashMap<String, Integer>();
-		this.gmetaNodes = new HashMap<String, Map<String, String>>();
-		this.gmetaAdapters = new HashMap<String, GangliaAdapter>();
+		this.loadMap = new ConcurrentHashMap<String, Integer>();
+		this.gmetaNodes = new ConcurrentHashMap<String, Map<String, String>>();
+		this.gmetaAdapters = new ConcurrentHashMap<String, GangliaAdapter>();
 		try {
 			this.initGmetaNodes(gmetadHost, gmetadPort);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			LOG.log(Level.WARNING,
 					"URL exception initializing gmetad nodes: [" + gmetadHost
 							+ ":" + gmetadPort + "]: Message: "
@@ -82,7 +80,7 @@ public class GangliaResourceMonitor implements Monitor {
 
 	@Override
 	public int getLoad(ResourceNode node) throws MonitorException {
-		Map<String, String> nodeProperties = null;
+		Map<String, String> nodeProperties;
 		String nodeId = node.getNodeId();
 		nodeProperties = this.locateNode(nodeId);
 		if (nodeProperties == null) {
@@ -94,7 +92,7 @@ public class GangliaResourceMonitor implements Monitor {
 		// calculate load
 		double calcLoad = this.loadCalculator.calculateLoad(nodeProperties);
 		System.out.println(calcLoad);
-		int load = new Long(Math.round(calcLoad)).intValue();
+		int load = Long.valueOf(Math.round(calcLoad)).intValue();
 		System.out.println("LOAD is: "+load);
 		return load;
 	}
@@ -143,7 +141,7 @@ public class GangliaResourceMonitor implements Monitor {
 					try {
 						nodes.add(this.nodeFromMap(map));
 					} catch (MalformedURLException e) {
-						e.printStackTrace();
+						LOG.log(Level.SEVERE, e.getMessage());
 						throw new MonitorException(e.getMessage());
 					}
 				}
@@ -158,7 +156,7 @@ public class GangliaResourceMonitor implements Monitor {
 		try {
 			return this.nodeFromMap(this.locateNode(nodeId));
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			throw new MonitorException(e.getMessage());
 		}
 	}
@@ -169,17 +167,17 @@ public class GangliaResourceMonitor implements Monitor {
 			for (GangliaAdapter adapter : this.gmetaAdapters.values()) {
 				Map<String, Map<String, String>> aNodes = adapter
 						.getResourceNodeStatus();
-				for (String aNodeId : aNodes.keySet()) {
+				for (Map.Entry<String, Map<String, String>> aNodeId : aNodes.entrySet()) {
 					String host = ipAddr.getHost();
 					int port = ipAddr.getPort();
-					Map<String, String> nodeProps = aNodes.get(aNodeId);
-					if (aNodeId.equals(host)
+					Map<String, String> nodeProps = aNodeId.getValue();
+					if (aNodeId.getKey().equals(host)
 							&& nodeProps.get(DEFAULT_PORT).equals(
 									String.valueOf(port))) {
 						try {
-							return this.nodeFromMap(aNodes.get(aNodeId));
+							return this.nodeFromMap(aNodeId.getValue());
 						} catch (MalformedURLException e) {
-							e.printStackTrace();
+							LOG.log(Level.SEVERE, e.getMessage());
 							throw new MonitorException(e.getMessage());
 						}
 					}
@@ -207,8 +205,8 @@ public class GangliaResourceMonitor implements Monitor {
 
 	private Map<String, String> locateNode(String nodeId) {
 		if (this.gmetaAdapters != null && this.gmetaAdapters.size() > 0) {
-			for (String nId : this.gmetaAdapters.keySet()) {
-				GangliaAdapter adapter = this.gmetaAdapters.get(nId);
+			for (Map.Entry<String, GangliaAdapter> nId : this.gmetaAdapters.entrySet()) {
+				GangliaAdapter adapter = nId.getValue();
 				try {
 					System.out.println("Querying gmetad: ["+adapter.getUrlString()+"]");
 					Map<String, Map<String, String>> nodeStatus = adapter
@@ -222,7 +220,7 @@ public class GangliaResourceMonitor implements Monitor {
 					LOG.log(Level.WARNING,
 							"MonitorException contacting Ganglia: ["
 									+ adapter.getUrlString() + "]");
-					e.printStackTrace();
+					LOG.log(Level.SEVERE, e.getMessage());
 				}
 			}
 
@@ -233,7 +231,9 @@ public class GangliaResourceMonitor implements Monitor {
 
 	private ResourceNode nodeFromMap(Map<String, String> map)
 			throws MalformedURLException {
-		if (map == null) return null;
+		if (map == null) {
+		  return null;
+		}
 		ResourceNode node = new ResourceNode();
 		System.out.println("MAP IS "+map);
 		System.out.println("Setting hostname to "+map.get(NAME));
@@ -242,8 +242,7 @@ public class GangliaResourceMonitor implements Monitor {
 		return node;
 	}
 
-	private void initGmetaNodes(String host, int port)
-			throws MalformedURLException {
+	private void initGmetaNodes(String host, int port) {
 		this.addGmetadNode(host, port);
 	}
 
@@ -253,7 +252,7 @@ public class GangliaResourceMonitor implements Monitor {
 	}
 
 	private void addGmetadNode(String host, int port) {
-		Map<String, String> rootNode = new HashMap<String, String>();
+		Map<String, String> rootNode = new ConcurrentHashMap<String, String>();
 		rootNode.put("host", host);
 		rootNode.put("port", String.valueOf(port));
 		this.gmetaNodes.put(host, rootNode);

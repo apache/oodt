@@ -18,22 +18,27 @@
 
 package org.apache.oodt.cas.workflow.repository;
 
-//Junit imports
-import junit.framework.TestCase;
 
 //JDK imports
-import java.io.File;
-import java.util.List;
-import java.util.Vector;
 
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.workflow.structs.Workflow;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
 import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
 import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
+
+import org.junit.Test;
+
+import java.io.File;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.*;
+
 
 /**
  * @author mattmann
@@ -44,8 +49,9 @@ import org.apache.oodt.cas.workflow.util.GenericWorkflowObjectFactory;
  * </p>
  * 
  */
-public class TestWorkflowRepository extends TestCase {
+public class TestWorkflowRepository  {
 
+    private static Logger LOG = Logger.getLogger(TestWorkflowRepository.class.getName());
     private XMLWorkflowRepository workflowRepository = null;
 
     private static List workflowDirUris = new Vector();
@@ -64,6 +70,7 @@ public class TestWorkflowRepository extends TestCase {
     /**
      * @since OODT-205
      */
+    @Test
     public void testWorkflowConditions(){
       Workflow w = null;
       try{
@@ -85,7 +92,7 @@ public class TestWorkflowRepository extends TestCase {
         try {
             w = workflowRepository.getWorkflowByName("backwardsTestWorkflow");
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -99,7 +106,7 @@ public class TestWorkflowRepository extends TestCase {
             w = workflowRepository
                     .getWorkflowById("urn:oodt:backwardsTestWorkflow");
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -112,7 +119,7 @@ public class TestWorkflowRepository extends TestCase {
         try {
             workflows = workflowRepository.getWorkflows();
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -126,7 +133,7 @@ public class TestWorkflowRepository extends TestCase {
         try {
             workflows = workflowRepository.getWorkflowsForEvent("test");
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -136,7 +143,7 @@ public class TestWorkflowRepository extends TestCase {
         try {
             workflows = workflowRepository.getWorkflowsForEvent("backwards");
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -147,7 +154,7 @@ public class TestWorkflowRepository extends TestCase {
         try {
             workflows = workflowRepository.getWorkflowsForEvent("externalScript");
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -162,7 +169,7 @@ public class TestWorkflowRepository extends TestCase {
             tasks = workflowRepository
                     .getTasksByWorkflowId("urn:oodt:backwardsTestWorkflow");
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -176,7 +183,7 @@ public class TestWorkflowRepository extends TestCase {
             tasks = workflowRepository
                     .getTasksByWorkflowName("backwardsTestWorkflow");
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -190,7 +197,7 @@ public class TestWorkflowRepository extends TestCase {
             conditions = workflowRepository
                     .getConditionsByTaskId("urn:oodt:GoodbyeWorld");
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -204,7 +211,7 @@ public class TestWorkflowRepository extends TestCase {
             conditions = workflowRepository
                     .getConditionsByTaskName("Goodbye World");
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -220,7 +227,7 @@ public class TestWorkflowRepository extends TestCase {
         cond = workflowRepository.getWorkflowConditionById("urn:oodt:TimeoutCondition");
       }
       catch(Exception e){
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         fail(e.getMessage());
       }
       
@@ -236,7 +243,7 @@ public class TestWorkflowRepository extends TestCase {
         cond = workflowRepository.getWorkflowConditionById("urn:oodt:OptionalCondition");
       }
       catch(Exception e){
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         fail(e.getMessage());
       }
       
@@ -250,7 +257,7 @@ public class TestWorkflowRepository extends TestCase {
             config = workflowRepository
                     .getConfigurationByTaskId("urn:oodt:GoodbyeWorld");
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 
@@ -264,7 +271,7 @@ public class TestWorkflowRepository extends TestCase {
             config = workflowRepository
                     .getConfigurationByTaskId("urn:oodt:PropReplaceTask");
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             fail(e.getMessage());
         }
 

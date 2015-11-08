@@ -48,14 +48,14 @@ public class TestTaskQuerier extends TestCase {
   public void testGetNext(){
     FILOPrioritySorter prioritizer = new FILOPrioritySorter();
     MockProcessorQueue processorQueue = new MockProcessorQueue();
-    List<WorkflowProcessor> queued = null;
+    List<WorkflowProcessor> queued;
     assertNotNull(queued = processorQueue.getProcessors());
     assertEquals(3, queued.size());
     processorQueue = new MockProcessorQueue();
     TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer, null, WAIT_SECS);
     Thread querierThread = new Thread(querier);
     querierThread.start();
-    List<WorkflowProcessor> runnables = null;
+    List<WorkflowProcessor> runnables;
     while ((runnables = querier.getRunnableProcessors()) != null && 
         runnables.size() < 2) {
       assertNotNull(runnables);
@@ -72,14 +72,14 @@ public class TestTaskQuerier extends TestCase {
   public void testGetRunnableProcessors() {
     FILOPrioritySorter prioritizer = new FILOPrioritySorter();
     MockProcessorQueue processorQueue = new MockProcessorQueue();    
-    List<WorkflowProcessor> queued = null;
+    List<WorkflowProcessor> queued;
     assertNotNull(queued = processorQueue.getProcessors());
     assertEquals(3, queued.size());
     processorQueue = new MockProcessorQueue();
     TaskQuerier querier = new TaskQuerier(processorQueue, prioritizer, null, WAIT_SECS);
     Thread querierThread = new Thread(querier);
     querierThread.start();
-    List<WorkflowProcessor> runnables = null;
+    List<WorkflowProcessor> runnables;
     while ((runnables = querier.getRunnableProcessors()) != null && 
         runnables.size() < 2) {
       assertNotNull(runnables);

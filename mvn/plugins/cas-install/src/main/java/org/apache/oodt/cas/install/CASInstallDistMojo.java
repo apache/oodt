@@ -238,19 +238,19 @@ public class CASInstallDistMojo extends AbstractMojo {
                                 + e.getMessage());
             }
 
-            for (int i = 0; i < customLibs.length; i++) {
-                getLog().info(
-                        "installing [" + customLibs[i] + "] to "
-                                + libDir.getAbsolutePath() + "]");
-                try {
-                    FileUtils.copyFileToDirectory(customLibs[i], libDir);
-                } catch (IOException e) {
-                    getLog().warn(
-                            "IOException installing [" + customLibs[i]
-                                    + "] to " + libDir.getAbsolutePath()
-                                    + "]: Message: " + e.getMessage());
-                }
+          for (File customLib : customLibs) {
+            getLog().info(
+                "installing [" + customLib + "] to "
+                + libDir.getAbsolutePath() + "]");
+            try {
+              FileUtils.copyFileToDirectory(customLib, libDir);
+            } catch (IOException e) {
+              getLog().warn(
+                  "IOException installing [" + customLib
+                  + "] to " + libDir.getAbsolutePath()
+                  + "]: Message: " + e.getMessage());
             }
+          }
         }
 
         if (envVarReplaceFiles != null && envVarReplaceFiles.length > 0) {

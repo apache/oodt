@@ -19,6 +19,7 @@
 package org.apache.oodt.commons.database;
 
 //JDK imports
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -26,9 +27,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.sql.DataSource;
 
 /**
@@ -41,7 +44,7 @@ import javax.sql.DataSource;
  * </p>.
  */
 public class SqlScript {
-
+    private static Logger LOG = Logger.getLogger(SqlScript.class.getName());
     public final static char QUERY_ENDS = ';';
 
     private File script;
@@ -53,11 +56,10 @@ public class SqlScript {
     private List statementList = null;
 
     /**
-     * @param args
      * @throws SQLException
      */
 
-    public SqlScript(String scriptFileName, DataSource ds) throws SQLException {
+    public SqlScript(String scriptFileName, DataSource ds) {
         script = new File(scriptFileName);
         statementList = new Vector();
         this.ds = ds;
@@ -99,12 +101,9 @@ public class SqlScript {
             sqlScript.loadScript();
             sqlScript.execute();
 
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
     }
@@ -113,13 +112,14 @@ public class SqlScript {
         BufferedReader reader = new BufferedReader(new FileReader(script));
 
         try {
-            String line = null;
-            StringBuffer query = new StringBuffer();
-            boolean queryEnds = false;
+            String line;
+            StringBuilder query = new StringBuilder();
+            boolean queryEnds;
 
             while ((line = reader.readLine()) != null) {
-                if (isComment(line))
+                if (isComment(line)) {
                     continue;
+                }
                 queryEnds = checkStatementEnds(line);
                 query.append(line);
                 if (queryEnds) {
@@ -133,13 +133,13 @@ public class SqlScript {
         }
     }
 
-    public void execute() throws SQLException {
+    public void execute() {
         if (useBatch) {
             doExecuteBatch();
         } else {
             if (statementList != null && statementList.size() > 0) {
-                for (Iterator i = statementList.iterator(); i.hasNext();) {
-                    String sqlStatement = (String) i.next();
+                for (Object aStatementList : statementList) {
+                    String sqlStatement = (String) aStatementList;
                     doExecuteIndividual(sqlStatement);
 
                 }
@@ -165,8 +165,9 @@ public class SqlScript {
     }
 
     private boolean isComment(String line) {
-        if ((line != null) && (line.length() > 0))
+        if ((line != null) && (line.length() > 0)) {
             return (line.charAt(0) == '#');
+        }
         return false;
     }
 
@@ -185,7 +186,7 @@ public class SqlScript {
             statement.execute(sql);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             System.out.println("Exception executing SQL: [" + sql
                     + "]: message: " + e.getMessage());
 
@@ -196,7 +197,6 @@ public class SqlScript {
                 } catch (Exception ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -205,7 +205,6 @@ public class SqlScript {
                 } catch (Exception ignore) {
                 }
 
-                conn = null;
             }
         }
     }
@@ -219,8 +218,8 @@ public class SqlScript {
                 conn = ds.getConnection();
                 statement = conn.createStatement();
 
-                for (Iterator i = statementList.iterator(); i.hasNext();) {
-                    String sqlStatement = (String) i.next();
+                for (Object aStatementList : statementList) {
+                    String sqlStatement = (String) aStatementList;
                     statement.addBatch(sqlStatement);
                 }
 
@@ -228,7 +227,7 @@ public class SqlScript {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             System.out
                     .println("Exception executing SQL batch statement: message: "
                             + e.getMessage());
@@ -240,7 +239,6 @@ public class SqlScript {
                 } catch (Exception ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -249,7 +247,6 @@ public class SqlScript {
                 } catch (Exception ignore) {
                 }
 
-                conn = null;
             }
         }
     }

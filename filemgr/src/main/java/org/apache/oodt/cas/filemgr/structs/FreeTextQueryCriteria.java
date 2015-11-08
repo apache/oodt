@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.filemgr.structs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -53,19 +54,16 @@ public class FreeTextQueryCriteria extends QueryCriteria {
      * Default constructor.
      */
     public FreeTextQueryCriteria() {
-        elementName = new String();
+        elementName = "";
         values = new ArrayList<String>();
 
         noiseWordHash = new HashSet<String>();
-        for (int i = 0; i < noiseWords.length; i++)
-            noiseWordHash.add(noiseWords[i]);
+        Collections.addAll(noiseWordHash, noiseWords);
     }
 
     /**
      * Constructor for the FreeTextQueryECriteria Class.
      * 
-     * @param elementId
-     *            The name of the element to search on.
      * @param v
      *            A List of terms to search for.
      */
@@ -74,8 +72,7 @@ public class FreeTextQueryCriteria extends QueryCriteria {
         values = v;
 
         noiseWordHash = new HashSet<String>();
-        for (int i = 0; i < noiseWords.length; i++)
-            noiseWordHash.add(noiseWords[i]);
+        Collections.addAll(noiseWordHash, noiseWords);
     }
 
     /**
@@ -92,9 +89,7 @@ public class FreeTextQueryCriteria extends QueryCriteria {
      * should be used when keywords have been parsed out of user-entered free
      * text. The query will JOIN on all of these values. In order to add
      * unparsed free text to a Query, see the addFreeText method of this class.
-     * 
-     * @param value
-     *            The values of the element to search on as a List of Strings.
+     *
      */
     public void setValue(List<String> v) {
         this.values = v;
@@ -125,13 +120,14 @@ public class FreeTextQueryCriteria extends QueryCriteria {
 
         // tokenize string using default delimiters
         StringTokenizer tok = new StringTokenizer(text);
-        String token = null;
+        String token;
 
         // filter noise words and add to values vector
         while (tok.hasMoreElements()) {
             token = tok.nextToken();
-            if (!noiseWordHash.contains(token))
+            if (!noiseWordHash.contains(token)) {
                 values.add(token);
+            }
         }
     }
 
@@ -148,9 +144,7 @@ public class FreeTextQueryCriteria extends QueryCriteria {
     /**
      * Implementation of the abstract method inherited from QueryCriteria for
      * mutating the element ID to search on.
-     * 
-     * @param elementId
-     *            The element ID to search on as a String.
+     *
      */
     public void setElementName(String elementName) {
         this.elementName = elementName;
@@ -165,8 +159,9 @@ public class FreeTextQueryCriteria extends QueryCriteria {
      */
     public String toString() {
         String serial = elementName + ":(";
-        for (int i = 0; i < values.size(); i++)
-            serial += "+" + (String) values.get(i);
+        for (String value : values) {
+            serial += "+" + (String) value;
+        }
         serial += ")";
         return serial;
     }

@@ -34,7 +34,7 @@ import org.apache.oodt.commons.util.DateConvert;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,7 +61,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
   private PooledExecutor pool = null;
 
   /* our worker thread hash mapping worker threads to workflow instance ids */
-  private HashMap workerMap = null;
+  private ConcurrentHashMap workerMap = null;
 
   /* our log stream */
   private static final Logger LOG = Logger
@@ -105,7 +105,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
       long threadKeepAliveTime, boolean unlimitedQueue, URL resUrl) {
 
     this.instRep = instRep;
-    Channel c = null;
+    Channel c;
     if (unlimitedQueue) {
       c = new LinkedQueue();
     } else {
@@ -116,10 +116,11 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     pool.setMinimumPoolSize(minPoolSize);
     pool.setKeepAliveTime(1000 * 60 * threadKeepAliveTime);
 
-    workerMap = new HashMap();
+    workerMap = new ConcurrentHashMap();
 
-    if (resUrl != null)
+    if (resUrl != null) {
       rClient = new XmlRpcResourceManagerClient(resUrl);
+    }
   }
 
   /*
@@ -332,7 +333,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
             + ", however, this engine is "
             + "not tracking its execution and the id: [" + workflowInstId
             + "] " + "was never persisted to " + "the instance repository");
-        e.printStackTrace();
+        LOG.log(Level.SEVERE, e.getMessage());
         return new Metadata();
       }
     }
@@ -363,12 +364,11 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
         .getEndDateTimeIsoStr().equals("null")) ? safeDateConvert(inst
         .getEndDateTimeIsoStr()) : new Date();
 
-    Date workflowStartDateTime = null;
+    Date workflowStartDateTime;
 
-    if (inst.getStartDateTimeIsoStr() == null
-        || (inst.getStartDateTimeIsoStr() != null && (inst
-            .getStartDateTimeIsoStr().equals("") || inst
-            .getStartDateTimeIsoStr().equals("null")))) {
+    if (inst.getStartDateTimeIsoStr() == null || ((inst
+                                                       .getStartDateTimeIsoStr().equals("") || inst
+                                                       .getStartDateTimeIsoStr().equals("null")))) {
       return 0.0;
     }
 
@@ -382,8 +382,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     long diffMs = currentDateOrStopTime.getTime()
         - workflowStartDateTime.getTime();
     double diffSecs = (diffMs * 1.0 / 1000.0);
-    double diffMins = diffSecs / 60.0;
-    return diffMins;
+    return diffSecs / 60.0;
 
   }
 
@@ -397,12 +396,12 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
         .getCurrentTaskEndDateTimeIsoStr().equals("null")) ? safeDateConvert(inst
         .getCurrentTaskEndDateTimeIsoStr()) : new Date();
 
-    Date workflowTaskStartDateTime = null;
+    Date workflowTaskStartDateTime;
 
-    if (inst.getCurrentTaskStartDateTimeIsoStr() == null
-        || (inst.getCurrentTaskStartDateTimeIsoStr() != null && (inst
-            .getCurrentTaskStartDateTimeIsoStr().equals("") || inst
-            .getCurrentTaskStartDateTimeIsoStr().equals("null")))) {
+    if (inst.getCurrentTaskStartDateTimeIsoStr() == null || ((inst
+                                                                  .getCurrentTaskStartDateTimeIsoStr().equals("")
+                                                              || inst
+                                                                  .getCurrentTaskStartDateTimeIsoStr().equals("null")))) {
       return 0.0;
     }
 
@@ -429,16 +428,14 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     long diffMs = currentDateOrStopTime.getTime()
         - workflowTaskStartDateTime.getTime();
     double diffSecs = (diffMs * 1.0 / 1000.0);
-    double diffMins = diffSecs / 60.0;
-    return diffMins;
+    return diffSecs / 60.0;
   }
 
   private synchronized void persistWorkflowInstance(WorkflowInstance wInst)
       throws EngineException {
 
     try {
-      if (wInst.getId() == null
-          || (wInst.getId() != null && wInst.getId().equals(""))) {
+      if (wInst.getId() == null || (wInst.getId().equals(""))) {
         // we have to persist it by adding it
         // rather than updating it
         instRep.addWorkflowInstance(wInst);
@@ -448,7 +445,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
         instRep.updateWorkflowInstance(wInst);
       }
     } catch (InstanceRepositoryException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new EngineException(e.getMessage());
     }
 
@@ -466,7 +463,7 @@ public class ThreadPoolWorkflowEngine implements WorkflowEngine, WorkflowStatus 
     try {
       return DateConvert.isoParse(isoTimeStr);
     } catch (Exception ignore) {
-      ignore.printStackTrace();
+      LOG.log(Level.SEVERE, ignore.getMessage());
       return null;
     }
   }

@@ -17,6 +17,19 @@
 package org.apache.oodt.cas.protocol.imaps;
 
 //JDK imports
+import org.apache.oodt.cas.protocol.Protocol;
+import org.apache.oodt.cas.protocol.ProtocolFile;
+import org.apache.oodt.cas.protocol.auth.Authentication;
+import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
+import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.html.HtmlParser;
+import org.apache.tika.sax.BodyContentHandler;
+import org.apache.tika.sax.TextContentHandler;
+
+import org.xml.sax.SAXException;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +42,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-//Javamail imports
 import javax.mail.Address;
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -40,24 +52,11 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
-import org.xml.sax.SAXException;
 
+//Javamail imports
 //APACHE imports
-import org.apache.commons.codec.DecoderException;
-
 //OODT imports
-import org.apache.oodt.cas.protocol.Protocol;
-import org.apache.oodt.cas.protocol.ProtocolFile;
-import org.apache.oodt.cas.protocol.auth.Authentication;
-import org.apache.oodt.cas.protocol.exceptions.ProtocolException;
-import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
-
 //TIKA imports
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.html.HtmlParser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.apache.tika.sax.TextContentHandler;
 
 /**
  * IMAP Secure {@link Protocol} implementation
@@ -84,11 +83,12 @@ public class ImapsProtocol implements Protocol {
   public synchronized void cd(ProtocolFile file) throws ProtocolException {
     try {
       String remotePath = file.getPath();
-      if (remotePath.startsWith("/"))
+      if (remotePath.startsWith("/")) {
         remotePath = remotePath.substring(1);
-      if (remotePath.trim().equals(""))
+      }
+      if (remotePath.trim().equals("")) {
         homeFolder = currentFolder = store.getDefaultFolder();
-      else {
+      } else {
         homeFolder = currentFolder = store.getFolder(remotePath);
       }
     } catch (Exception e) {
@@ -158,8 +158,9 @@ public class ImapsProtocol implements Protocol {
   }
 
   private synchronized void decrementConnections() {
-    if (connectCalls > 0)
+    if (connectCalls > 0) {
       connectCalls--;
+    }
   }
 
   public synchronized void get(ProtocolFile fromFile, File toFile)
@@ -180,7 +181,7 @@ public class ImapsProtocol implements Protocol {
     } finally {
       try {
         closeFolder(currentFolder);
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -190,27 +191,30 @@ public class ImapsProtocol implements Protocol {
   }
   
   private void writeMessageToLocalFile(Message message, File toLocalFile)
-      throws MessagingException, IOException, DecoderException, SAXException,
+      throws MessagingException, IOException, SAXException,
       TikaException {
     PrintStream ps = new PrintStream(new FileOutputStream(toLocalFile));
 
     ps.print("From:");
     Address[] senders = message.getFrom();
-    for (Address address : senders)
+    for (Address address : senders) {
       ps.print(" " + address.toString());
+    }
 
     ps.print("\nTo:");
 		Set<Address> recipients = new LinkedHashSet<Address>(Arrays.asList(message
 				.getAllRecipients()));
-    for (Address address : recipients)
+    for (Address address : recipients) {
       ps.print(" " + address.toString());
+    }
 
     ps.println("\nSubject: " + message.getSubject());
 
     ps.println("----- ~ Message ~ -----");
     String content = this.getContentFromHTML(message);
-    if (content.equals(""))
+    if (content.equals("")) {
       content = this.getContentFromPlainText(message);
+    }
     ps.println(content);
 
     ps.close();
@@ -237,12 +241,13 @@ public class ImapsProtocol implements Protocol {
       }
       // changedDir = false;
     } catch (Exception e) {
-      if (!currentFolder.getFullName().equals(""))
+      if (!currentFolder.getFullName().equals("")) {
         throw new ProtocolException("Failed to ls : " + e.getMessage(), e);
+      }
     } finally {
       try {
         closeFolder(currentFolder);
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
     }
     // }
@@ -266,12 +271,13 @@ public class ImapsProtocol implements Protocol {
         }
       }
     } catch (Exception e) {
-      if (!currentFolder.getFullName().equals(""))
+      if (!currentFolder.getFullName().equals("")) {
         throw new ProtocolException("Failed to ls : " + e.getMessage(), e);
+      }
     } finally {
       try {
         closeFolder(currentFolder);
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
     }
     return currentFilesForCurrentFolder;
@@ -281,8 +287,9 @@ public class ImapsProtocol implements Protocol {
       throws ProtocolException {
     try {
       String pwd = currentFolder.getFullName();
-      if (!pwd.equals("") && !pwd.startsWith("/"))
+      if (!pwd.equals("") && !pwd.startsWith("/")) {
         pwd = "/" + pwd;
+      }
       return new ProtocolFile(pwd, true);
     } catch (Exception e) {
       throw new ProtocolException("Failed to pwd : " + e.getMessage(), e);
@@ -304,31 +311,34 @@ public class ImapsProtocol implements Protocol {
   }
 
   private String getContentFromPlainText(Part p) throws MessagingException,
-      IOException, DecoderException {
-    StringBuffer content = new StringBuffer("");
+      IOException {
+    StringBuilder content = new StringBuilder("");
     if (p.isMimeType("text/plain")) {
       content.append((String) p.getContent());
     } else if (p.isMimeType("multipart/*")) {
       Multipart mp = (Multipart) p.getContent();
       int count = mp.getCount();
-      for (int i = 0; i < count; i++)
+      for (int i = 0; i < count; i++) {
         content.append(getContentFromPlainText(mp.getBodyPart(i)));
+      }
     } else {
       Object obj = p.getContent();
-      if (obj instanceof Part)
+      if (obj instanceof Part) {
         content.append(getContentFromPlainText((Part) p.getContent()));
+      }
     }
     return content.toString().replaceAll(" \\r\\n", "").replaceAll(" \\n", "");
   }
 
   private String getContentFromHTML(Part p) throws MessagingException,
-      IOException, DecoderException, SAXException, TikaException {
-    StringBuffer content = new StringBuffer("");
+      IOException, SAXException, TikaException {
+    StringBuilder content = new StringBuilder("");
     if (p.isMimeType("multipart/*")) {
       Multipart mp = (Multipart) p.getContent();
       int count = mp.getCount();
-      for (int i = 0; i < count; i++)
+      for (int i = 0; i < count; i++) {
         content.append(getContentFromHTML(mp.getBodyPart(i)));
+      }
     } else if (p.isMimeType("text/html")) {
       HtmlParser parser = new HtmlParser();
       Metadata met = new Metadata();
@@ -339,8 +349,9 @@ public class ImapsProtocol implements Protocol {
       content.append(handler.toString());
     } else {
       Object obj = p.getContent();
-      if (obj instanceof Part)
+      if (obj instanceof Part) {
         content.append(getContentFromHTML((Part) p.getContent()));
+      }
     }
     return content.toString();
   }
@@ -362,13 +373,14 @@ public class ImapsProtocol implements Protocol {
   }
 
   private synchronized void closeFolder(Folder folder) {
-    if (openCalls > 0)
+    if (openCalls > 0) {
       openCalls--;
+    }
 
     if (openCalls <= 0) {
       try {
         folder.close(true);
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
     }
   }

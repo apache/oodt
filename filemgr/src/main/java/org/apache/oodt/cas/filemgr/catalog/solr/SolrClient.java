@@ -27,11 +27,13 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -86,13 +88,15 @@ public class SolrClient {
 	    LOG.info(response);
 	    
 	    // commit changes ?
-	    if (commit) this.commit();
+	    if (commit) {
+		  this.commit();
+		}
 	    
 	    LOG.info(response);
 	    return response;
     
 		} catch(Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			throw new CatalogException(e.getMessage());
 		}
     
@@ -111,17 +115,18 @@ public class SolrClient {
 			
 			// build POST request
 			String url = this.buildUpdateUrl();
-			if (commit) url += "?commit=true";
+			if (commit) {
+			  url += "?commit=true";
+			}
 			String message = "<delete><query>id:"+id+"</query></delete>";
 			
 	    // send POST request
 	    LOG.info("Posting message:"+message+" to URL:"+url);
-	    String response = doPost(url, message, Parameters.MIME_TYPE_XML);
 
-	    return response;
+		  return doPost(url, message, Parameters.MIME_TYPE_XML);
     
 		} catch(Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			throw new CatalogException(e.getMessage());
 		}
 		
@@ -134,7 +139,7 @@ public class SolrClient {
 	 */
 	public String queryProductById(String id, String mimeType) throws CatalogException {
 		
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[]{Parameters.PRODUCT_ID+":"+id} );
 		return query(params, mimeType);
 		
@@ -148,7 +153,7 @@ public class SolrClient {
 	 */
 	public String queryProductByName(String name, String mimeType) throws CatalogException {
 		
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[]{Parameters.PRODUCT_NAME+":"+name} );
 		return query(params, mimeType);
 		
@@ -162,7 +167,7 @@ public class SolrClient {
 	 */
 	public String queryProductsByDate(int n, String mimeType) throws CatalogException {
 		
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[]{ "*:*"} );
 		params.put("rows", new String[]{ ""+n} );
 		params.put("sort", new String[]{ Parameters.PRODUCT_RECEIVED_TIME+" desc"} );
@@ -178,7 +183,7 @@ public class SolrClient {
 	 */
 	public String queryProductsByDateAndType(int n, ProductType type, String mimeType) throws CatalogException {
 		
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		ConcurrentHashMap<String, String[]> params = new ConcurrentHashMap<String, String[]>();
 		params.put("q", new String[]{ Parameters.PRODUCT_TYPE_NAME+type.getName() } );
 		params.put("rows", new String[]{ ""+n} );
 		params.put("sort", new String[]{ Parameters.PRODUCT_RECEIVED_TIME+" desc"} );
@@ -190,7 +195,7 @@ public class SolrClient {
 	 * Method to commit the current changes to the Solr index.
 	 * @throws Exception
 	 */
-	public void commit() throws Exception {
+	public void commit() throws IOException, CatalogException {
 		
 		String message = "<commit waitSearcher=\"true\"/>";
 		String url =  this.buildUpdateUrl();
@@ -213,11 +218,10 @@ public class SolrClient {
 			String url = this.buildSelectUrl();
 			
 			// execute request
-			String response = this.doGet(url, parameters, mimeType);
-			return response;
+		  return this.doGet(url, parameters, mimeType);
 		
 		} catch(Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 			throw new CatalogException(e.getMessage());
 		}
 		
@@ -229,18 +233,21 @@ public class SolrClient {
 	 * @param parameters
 	 * @return
 	 */
-	private String doGet(String url, Map<String, String[]> parameters, String mimeType)  throws Exception {
+	private String doGet(String url, Map<String, String[]> parameters, String mimeType)
+		throws IOException, CatalogException {
 				    
 		// build HTTP/GET request
     GetMethod method = new GetMethod(url);
     List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-    for (String key : parameters.keySet()) {
-    	for (String value : parameters.get(key)) {
-    		nvps.add(new NameValuePair(key, value));
+    for (Map.Entry<String, String[]> key : parameters.entrySet()) {
+    	for (String value : key.getValue()) {
+    		nvps.add(new NameValuePair(key.getKey(), value));
     	}
     }
     // request results in JSON format
-    if (mimeType.equals(Parameters.MIME_TYPE_JSON)) nvps.add(new NameValuePair("wt", "json"));
+    if (mimeType.equals(Parameters.MIME_TYPE_JSON)) {
+	  nvps.add(new NameValuePair("wt", "json"));
+	}
     method.setQueryString( nvps.toArray( new NameValuePair[nvps.size()] ) );
     LOG.info("GET url: "+url+" query string: "+method.getQueryString());
     
@@ -255,7 +262,7 @@ public class SolrClient {
 	 * @param document
 	 * @return
 	 */
-	private String doPost(String url, String document, String mimeType) throws Exception {
+	private String doPost(String url, String document, String mimeType) throws IOException, CatalogException {
     
 		// build HTTP/POST request
     PostMethod method = new PostMethod(url);
@@ -273,7 +280,7 @@ public class SolrClient {
 	 * @return
 	 * @throws Exception
 	 */
-	private String doHttp(HttpMethod method) throws Exception {
+	private String doHttp(HttpMethod method) throws IOException, CatalogException {
 		
 		StringBuilder response = new StringBuilder();
 		BufferedReader br = null;
@@ -307,7 +314,12 @@ public class SolrClient {
 	  } finally {
 	    // must release the connection even if an exception occurred
 	    method.releaseConnection();
-	    if (br!=null) try { br.close(); } catch (Exception e) {}
+	    if (br!=null) {
+		  try {
+			br.close();
+		  } catch (Exception ignored) {
+		  }
+		}
 	  }  
   
 	  return response.toString();

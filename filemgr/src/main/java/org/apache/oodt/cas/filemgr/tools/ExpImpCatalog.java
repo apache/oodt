@@ -17,25 +17,26 @@
 
 package org.apache.oodt.cas.filemgr.tools;
 
-// JDK imports
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
+import org.apache.oodt.cas.filemgr.exceptions.FileManagerException;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.RepositoryManagerException;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory;
 import org.apache.oodt.cas.metadata.Metadata;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// OODT imports
 
 /**
  * @author mattmann
@@ -48,6 +49,7 @@ import java.util.logging.Logger;
  * 
  */
 public class ExpImpCatalog {
+
 
     /* the client to the source catalog to export */
     private XmlRpcFileManagerClient sourceClient = null;
@@ -137,7 +139,8 @@ public class ExpImpCatalog {
 
     }
 
-    public void doExpImport(List sourceProductTypes) throws Exception {
+    public void doExpImport(List sourceProductTypes)
+        throws FileManagerException, RepositoryManagerException, CatalogException {
 
         if (this.sourceClient != null && this.destClient != null) {
             // do validation of source/dest types
@@ -145,16 +148,17 @@ public class ExpImpCatalog {
             List destProductTypes = destClient.getProductTypes();
 
             if (!typesExist(sourceProductTypes, destProductTypes)) {
-                throw new Exception(
+                throw new FileManagerException(
                         "The source product types must be present in the dest file manager!");
             } else {
                 LOG
                         .log(Level.INFO,
                                 "Source types and Dest types match: beginning processing");
             }
-        } else
-            LOG.log(Level.INFO,
-                    "Skipping type validation: catalog i/f impls being used.");
+        } else {
+          LOG.log(Level.INFO,
+              "Skipping type validation: catalog i/f impls being used.");
+        }
 
         // we'll use the get product page method for each product type
         // paginate through products using source product type
@@ -163,7 +167,7 @@ public class ExpImpCatalog {
         ProductType type = (ProductType) sourceProductType;
         try {
           exportTypeToDest(type);
-        } catch (Exception e) {
+        } catch (CatalogException e) {
           LOG.log(Level.WARNING, "Error exporting product type: ["
                                  + type.getName() + "] from source to dest: Message: "
                                  + e.getMessage(), e);
@@ -173,16 +177,17 @@ public class ExpImpCatalog {
 
     }
 
-    public void doExpImport() throws Exception {
-        if (sourceClient == null)
-            throw new RuntimeException(
-                    "Cannot request exp/imp of all product types if no filemgr url specified!");
+    public void doExpImport() throws RepositoryManagerException, FileManagerException, CatalogException {
+        if (sourceClient == null) {
+          throw new RuntimeException(
+              "Cannot request exp/imp of all product types if no filemgr url specified!");
+        }
         List sourceProductTypes = sourceClient.getProductTypes();
         doExpImport(sourceProductTypes);
     }
 
-    private void exportTypeToDest(ProductType type) throws Exception {
-        ProductPage page = null;
+    private void exportTypeToDest(ProductType type) throws CatalogException, RepositoryManagerException {
+        ProductPage page;
 
         if (this.srcCatalog != null) {
             page = srcCatalog.getFirstPage(type);
@@ -190,23 +195,26 @@ public class ExpImpCatalog {
             page = sourceClient.getFirstPage(type);
         }
 
-        if (page == null)
-            return;
+        if (page == null) {
+          return;
+        }
 
         exportProductsToDest(page.getPageProducts(), type);
         while (!page.isLastPage()) {
             if (this.srcCatalog != null) {
                 page = srcCatalog.getNextPage(type, page);
-            } else
-                page = sourceClient.getNextPage(type, page);
-            if (page == null)
-                break;
+            } else {
+              page = sourceClient.getNextPage(type, page);
+            }
+            if (page == null) {
+              break;
+            }
             exportProductsToDest(page.getPageProducts(), type);
         }
     }
 
     private void exportProductsToDest(List products, ProductType type)
-            throws Exception {
+        throws CatalogException, RepositoryManagerException {
         if (products != null && products.size() > 0) {
           for (Object product : products) {
             Product p = (Product) product;
@@ -324,7 +332,9 @@ public class ExpImpCatalog {
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)
+        throws RepositoryManagerException, FileManagerException, MalformedURLException, InstantiationException,
+        CatalogException {
         String sourceUrl = null, destUrl = null, srcCatPropFile = null, destCatPropFile = null;
         boolean unique = false;
         List types = null;
@@ -369,14 +379,16 @@ public class ExpImpCatalog {
 
         if (srcCatPropFile != null) {
             tool = new ExpImpCatalog(srcCatPropFile, destCatPropFile, unique);
-        } else
-            tool = new ExpImpCatalog(new URL(sourceUrl), new URL(destUrl),
-                    unique);
+        } else {
+          tool = new ExpImpCatalog(new URL(sourceUrl), new URL(destUrl),
+              unique);
+        }
 
         if (types != null && types.size() > 0) {
             tool.doExpImport(types);
-        } else
-            tool.doExpImport();
+        } else {
+          tool.doExpImport();
+        }
     }
 
     private boolean typesExist(List sourceList, List destList) {
@@ -424,7 +436,7 @@ public class ExpImpCatalog {
             try {
                 return (destCatalog.getProductByName(productName) != null);
             } catch (CatalogException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG
                         .log(Level.WARNING,
                                 "Exceptiong checking for product type by name: ["
@@ -436,7 +448,7 @@ public class ExpImpCatalog {
             try {
                 return destClient.hasProduct(productName);
             } catch (CatalogException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG
                         .log(Level.WARNING,
                                 "Exceptiong checking for product type by name: ["

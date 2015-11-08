@@ -66,13 +66,15 @@ public class TreeProjectView extends MultiStateView {
     this.selectedState = activeState;
     DefaultMutableTreeNode selected = null;
     DefaultMutableTreeNode root = new DefaultMutableTreeNode("Projects");
-    for (ViewState state : states)
+    for (ViewState state : states) {
       if (selectedState != null
-          && state.getFile().equals(selectedState.getFile()))
+          && state.getFile().equals(selectedState.getFile())) {
         root.add(selected = new DefaultMutableTreeNode(state.getFile()
-            .getName()));
-      else
+                                                            .getName()));
+      } else {
         root.add(new DefaultMutableTreeNode(state.getFile().getName()));
+      }
+    }
 
     tree = new JTree(root);
     tree.setEditable(true);
@@ -104,10 +106,11 @@ public class TreeProjectView extends MultiStateView {
             for (ViewState state : states) {
               if (state.getFile().getName().equals(stateName)) {
                 selectedState = state;
-                if (e.getClickCount() == 2)
+                if (e.getClickCount() == 2) {
                   TreeProjectView.this
                       .notifyListeners(new ViewChange.NEW_ACTIVE_STATE(
                           selectedState, TreeProjectView.this));
+                }
                 break;
               }
             }
@@ -128,12 +131,13 @@ public class TreeProjectView extends MultiStateView {
       }
 
     });
-    if (selected != null)
+    if (selected != null) {
       tree.setSelectionPath(new TreePath(new DefaultMutableTreeNode[] { root,
           selected }));
-    else if (states.size() > 0)
+    } else if (states.size() > 0) {
       tree.setSelectionPath(new TreePath(new DefaultMutableTreeNode[] { root,
           (DefaultMutableTreeNode) root.getChildAt(0) }));
+    }
 
     tree.setRootVisible(false);
     this.setBorder(new EtchedBorder());

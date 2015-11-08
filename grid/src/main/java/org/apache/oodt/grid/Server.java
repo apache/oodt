@@ -84,10 +84,10 @@ public abstract class Server implements Serializable {
       InstantiationException, IllegalAccessException {
     List urlList = configuration.getCodeBases();
     Class clazz;
-    if (urlList.isEmpty())
+    if (urlList.isEmpty()) {
       clazz = Class.forName(className);
-    else {
-      URL[] urls = (URL[]) urlList.toArray(EMPTY_URL_ARRAY);
+    } else {
+      URL[] urls = (URL[]) urlList.toArray(new URL[urlList.size()]);
       URLClassLoader loader = new URLClassLoader(urls, getClass()
           .getClassLoader());
       clazz = loader.loadClass(className);
@@ -117,8 +117,9 @@ public abstract class Server implements Serializable {
   }
 
   public boolean equals(Object obj) {
-    if (obj == this)
+    if (obj == this) {
       return true;
+    }
     if (obj instanceof Server) {
       Server rhs = (Server) obj;
       return className.equals(rhs.className);
@@ -142,22 +143,17 @@ public abstract class Server implements Serializable {
   public static Server create(Configuration configuration, Element elem)
       throws SAXException {
     String type = elem.getAttribute("type");
-    if (type == null)
-      throw new SAXException("type attribute missing from <"
-          + elem.getNodeName() + ">");
 
     String className = elem.getAttribute("className");
-    if (className == null)
-      throw new SAXException("className attribute missing from <"
-          + elem.getNodeName() + ">");
 
     // Replace with a factory some day...
-    if ("product".equals(type))
+    if ("product".equals(type)) {
       return new ProductServer(configuration, className);
-    else if ("profile".equals(type))
+    } else if ("profile".equals(type)) {
       return new ProfileServer(configuration, className);
-    else
+    } else {
       throw new SAXException("unknown server type `" + type + "'");
+    }
   }
 
   /** Configuration. */

@@ -17,43 +17,39 @@
 
 package org.apache.oodt.profile.gui;
 
-import javax.swing.JSeparator;
-import javax.swing.JMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JEditorPane;
-import javax.swing.JScrollPane;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.BorderLayout;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreeModel;
-import javax.swing.JFileChooser;
-
 import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileElement;
 import org.apache.oodt.profile.RangedProfileElement;
-import org.apache.oodt.profile.gui.profileTree;
-
 import org.apache.oodt.profile.gui.pstructs.ProfilePrinter;
 
+import org.xml.sax.SAXException;
 
-import java.util.Iterator;
-import java.util.Enumeration;
-import java.util.List;
-
-
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
-import org.xml.sax.SAXException;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 
 /**
 * This code was generated using CloudGarden's Jigloo
@@ -63,6 +59,7 @@ import org.xml.sax.SAXException;
 * a license - please visit www.cloudgarden.com for details.
 */
 public class ProfileBuilderGUI extends javax.swing.JFrame {
+  private static Logger LOG = Logger.getLogger(ProfileBuilderGUI.class.getName());
 	private JButton jButton1;
 	private JEditorPane jEditorPane1;
 	private JScrollPane jPanel3;
@@ -104,7 +101,7 @@ public class ProfileBuilderGUI extends javax.swing.JFrame {
 			try {
 				javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 			} catch(Exception e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage());
 			}
 			jPanel1 = new JPanel();
 			jPanel2 = new JScrollPane();
@@ -271,7 +268,7 @@ public class ProfileBuilderGUI extends javax.swing.JFrame {
 	
 			postInitGUI();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 	}
 	/** Add your pre-init code in here 	*/
@@ -295,7 +292,7 @@ public class ProfileBuilderGUI extends javax.swing.JFrame {
 			inst.getJTree1().addMouseListener(new LeafListener(inst.getJTree1()));
 		    inst.getJTree1().setExpandsSelectedPaths(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -318,7 +315,7 @@ public class ProfileBuilderGUI extends javax.swing.JFrame {
 			ProfileBuilderGUI inst = new ProfileBuilderGUI();
 			inst.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 	}
 /**
@@ -509,7 +506,7 @@ return jEditorPane1;	}
 		
 		for(Enumeration e = theProfElemRoot.children(); e.hasMoreElements(); ){
 			DefaultMutableTreeNode profElemN_Root = (DefaultMutableTreeNode)e.nextElement();
-			System.out.println("Got Profile Element "+(String)profElemN_Root.getUserObject());
+			System.out.println("Got Profile Element "+ profElemN_Root.getUserObject());
 			ProfileElement profElem = makeProfileElementFromTreeNode(p,profElemN_Root);
 			
 			if(profElem != null){
@@ -580,13 +577,13 @@ return jEditorPane1;	}
 		//version String
 		
 		DefaultMutableTreeNode profAttr_children = new DefaultMutableTreeNode("Children");
-		
-		for(Iterator i = p.getProfileAttributes().getChildren().iterator(); i.hasNext(); ){
-			String theChild = (String)i.next();
-			
-			DefaultMutableTreeNode profAttr_childN = new DefaultMutableTreeNode(theChild);
-			profAttr_children.add(profAttr_childN);
-		}
+
+	  for (Object o : p.getProfileAttributes().getChildren()) {
+		String theChild = (String) o;
+
+		DefaultMutableTreeNode profAttr_childN = new DefaultMutableTreeNode(theChild);
+		profAttr_children.add(profAttr_childN);
+	  }
 		
 		
 		DefaultMutableTreeNode profAttr_id = new DefaultMutableTreeNode("Id");
@@ -599,13 +596,13 @@ return jEditorPane1;	}
 		profAttr_regAuth.add(new DefaultMutableTreeNode(p.getProfileAttributes().getRegAuthority()));		
 		
 		DefaultMutableTreeNode profAttr_revNotes = new DefaultMutableTreeNode("Revision Notes");
-		
-		for(Iterator i = p.getProfileAttributes().getRevisionNotes().iterator(); i.hasNext(); ){
-			String revNoteString = (String)i.next();
-			
-			DefaultMutableTreeNode revNote_Child = new DefaultMutableTreeNode(revNoteString);
-			profAttr_revNotes.add(revNote_Child);
-		}
+
+	  for (Object o : p.getProfileAttributes().getRevisionNotes()) {
+		String revNoteString = (String) o;
+
+		DefaultMutableTreeNode revNote_Child = new DefaultMutableTreeNode(revNoteString);
+		profAttr_revNotes.add(revNote_Child);
+	  }
 
 		DefaultMutableTreeNode profAttr_securityType = new DefaultMutableTreeNode("Security Type");
 		profAttr_securityType.add(new DefaultMutableTreeNode(p.getProfileAttributes().getSecurityType()));		
@@ -658,140 +655,112 @@ return jEditorPane1;	}
 		
 		
 		DefaultMutableTreeNode resAttr_contexts = new DefaultMutableTreeNode("Contexts");
-		
-		for(Iterator i = p.getResourceAttributes().getResContexts().iterator(); i.hasNext(); ){
-			String theContext = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_contextN = new DefaultMutableTreeNode(theContext);
-			resAttr_contexts.add(resAttr_contextN);
-		}
+
+	  for (String theContext : p.getResourceAttributes().getResContexts()) {
+		DefaultMutableTreeNode resAttr_contextN = new DefaultMutableTreeNode(theContext);
+		resAttr_contexts.add(resAttr_contextN);
+	  }
 
 		DefaultMutableTreeNode resAttr_contributors = new DefaultMutableTreeNode("Contributors");
-		
-		for(Iterator i = p.getResourceAttributes().getContributors().iterator(); i.hasNext(); ){
-			String theContributor = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_contribN = new DefaultMutableTreeNode(theContributor);
-			resAttr_contributors.add(resAttr_contribN);
-		}
+
+	  for (String theContributor : p.getResourceAttributes().getContributors()) {
+		DefaultMutableTreeNode resAttr_contribN = new DefaultMutableTreeNode(theContributor);
+		resAttr_contributors.add(resAttr_contribN);
+	  }
 		
 		DefaultMutableTreeNode resAttr_coverages = new DefaultMutableTreeNode("Coverages");
-		
-		for(Iterator i = p.getResourceAttributes().getCoverages().iterator(); i.hasNext(); ){
-			String theCoverage = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_coverageN= new DefaultMutableTreeNode(theCoverage);
-			resAttr_coverages.add(resAttr_coverageN);
-		}
+
+	  for (String theCoverage : p.getResourceAttributes().getCoverages()) {
+		DefaultMutableTreeNode resAttr_coverageN = new DefaultMutableTreeNode(theCoverage);
+		resAttr_coverages.add(resAttr_coverageN);
+	  }
 		
 		DefaultMutableTreeNode resAttr_creators = new DefaultMutableTreeNode("Creators");
-		
-		for(Iterator i = p.getResourceAttributes().getCreators().iterator(); i.hasNext(); ){
-			String theCreator = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_creatorN = new DefaultMutableTreeNode(theCreator);
-			resAttr_creators.add(resAttr_creatorN);
-		}
+
+	  for (String theCreator : p.getResourceAttributes().getCreators()) {
+		DefaultMutableTreeNode resAttr_creatorN = new DefaultMutableTreeNode(theCreator);
+		resAttr_creators.add(resAttr_creatorN);
+	  }
 
 		DefaultMutableTreeNode resAttr_dates = new DefaultMutableTreeNode("Dates");
-		
-		for(Iterator i = p.getResourceAttributes().getDates().iterator(); i.hasNext(); ){
-			String theDate = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_dateN = new DefaultMutableTreeNode(theDate);
-			resAttr_dates.add(resAttr_dateN);
-		}
+
+	  for (String theDate : p.getResourceAttributes().getDates()) {
+		DefaultMutableTreeNode resAttr_dateN = new DefaultMutableTreeNode(theDate);
+		resAttr_dates.add(resAttr_dateN);
+	  }
 	
 		DefaultMutableTreeNode resAttr_description = new DefaultMutableTreeNode("Description");
 		resAttr_description.add(new DefaultMutableTreeNode(p.getResourceAttributes().getDescription()));		
 
 		DefaultMutableTreeNode resAttr_formats = new DefaultMutableTreeNode("Formats");
-		
-		for(Iterator i = p.getResourceAttributes().getFormats().iterator(); i.hasNext(); ){
-			String theFormat = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_formatN = new DefaultMutableTreeNode(theFormat);
-			resAttr_formats.add(resAttr_formatN);
-		}
+
+	  for (String theFormat : p.getResourceAttributes().getFormats()) {
+		DefaultMutableTreeNode resAttr_formatN = new DefaultMutableTreeNode(theFormat);
+		resAttr_formats.add(resAttr_formatN);
+	  }
 		
 		DefaultMutableTreeNode resAttr_identifier = new DefaultMutableTreeNode("Identifier");
 		resAttr_identifier.add(new DefaultMutableTreeNode(p.getResourceAttributes().getIdentifier()));		
 
 		DefaultMutableTreeNode resAttr_languages = new DefaultMutableTreeNode("Languages");
-		
-		for(Iterator i = p.getResourceAttributes().getLanguages().iterator(); i.hasNext(); ){
-			String theLanguage = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_langN = new DefaultMutableTreeNode(theLanguage);
-			resAttr_languages.add(resAttr_langN);
-		}
+
+	  for (String theLanguage : p.getResourceAttributes().getLanguages()) {
+		DefaultMutableTreeNode resAttr_langN = new DefaultMutableTreeNode(theLanguage);
+		resAttr_languages.add(resAttr_langN);
+	  }
 		
 		DefaultMutableTreeNode resAttr_locations = new DefaultMutableTreeNode("Resource Locations");
-		
-		for(Iterator i = p.getResourceAttributes().getResLocations().iterator(); i.hasNext(); ){
-			String theLoc = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_locN = new DefaultMutableTreeNode(theLoc);
-			resAttr_locations.add(resAttr_locN);
-		}
+
+	  for (String theLoc : p.getResourceAttributes().getResLocations()) {
+		DefaultMutableTreeNode resAttr_locN = new DefaultMutableTreeNode(theLoc);
+		resAttr_locations.add(resAttr_locN);
+	  }
 
 		DefaultMutableTreeNode resAttr_publishers = new DefaultMutableTreeNode("Publishers");
-		
-		for(Iterator i = p.getResourceAttributes().getPublishers().iterator(); i.hasNext(); ){
-			String thePublisher = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_pubN = new DefaultMutableTreeNode(thePublisher);
-			resAttr_publishers.add(resAttr_pubN);
-		}
+
+	  for (String thePublisher : p.getResourceAttributes().getPublishers()) {
+		DefaultMutableTreeNode resAttr_pubN = new DefaultMutableTreeNode(thePublisher);
+		resAttr_publishers.add(resAttr_pubN);
+	  }
 		
 		DefaultMutableTreeNode resAttr_relations = new DefaultMutableTreeNode("Relations");
-		
-		for(Iterator i = p.getResourceAttributes().getRelations().iterator(); i.hasNext(); ){
-			String theRelation = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_relationN = new DefaultMutableTreeNode(theRelation);
-			resAttr_relations.add(resAttr_relationN);
-		}
+
+	  for (String theRelation : p.getResourceAttributes().getRelations()) {
+		DefaultMutableTreeNode resAttr_relationN = new DefaultMutableTreeNode(theRelation);
+		resAttr_relations.add(resAttr_relationN);
+	  }
 
 		
 		DefaultMutableTreeNode resAttr_rights = new DefaultMutableTreeNode("Rights");
-		
-		for(Iterator i = p.getResourceAttributes().getRights().iterator(); i.hasNext(); ){
-			String theRight = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_rightN = new DefaultMutableTreeNode(theRight);
-			resAttr_rights.add(resAttr_rightN);
-		}
+
+	  for (String theRight : p.getResourceAttributes().getRights()) {
+		DefaultMutableTreeNode resAttr_rightN = new DefaultMutableTreeNode(theRight);
+		resAttr_rights.add(resAttr_rightN);
+	  }
 
 		DefaultMutableTreeNode resAttr_sources = new DefaultMutableTreeNode("Sources");
-		
-		for(Iterator i = p.getResourceAttributes().getSources().iterator(); i.hasNext(); ){
-			String theSource = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_sourceN = new DefaultMutableTreeNode(theSource);
-			resAttr_sources.add(resAttr_sourceN);
-		}
+
+	  for (String theSource : p.getResourceAttributes().getSources()) {
+		DefaultMutableTreeNode resAttr_sourceN = new DefaultMutableTreeNode(theSource);
+		resAttr_sources.add(resAttr_sourceN);
+	  }
 
 		DefaultMutableTreeNode resAttr_subjects = new DefaultMutableTreeNode("Subjects");
-		
-		for(Iterator i = p.getResourceAttributes().getSubjects().iterator(); i.hasNext(); ){
-			String theSubject = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_subjectN = new DefaultMutableTreeNode(theSubject);
-			resAttr_subjects.add(resAttr_subjectN);
-		}
+
+	  for (String theSubject : p.getResourceAttributes().getSubjects()) {
+		DefaultMutableTreeNode resAttr_subjectN = new DefaultMutableTreeNode(theSubject);
+		resAttr_subjects.add(resAttr_subjectN);
+	  }
 
 		DefaultMutableTreeNode resAttr_title = new DefaultMutableTreeNode("Title");
 		resAttr_title.add(new DefaultMutableTreeNode(p.getResourceAttributes().getTitle()));		
 	
 		DefaultMutableTreeNode resAttr_types = new DefaultMutableTreeNode("Types");
-		
-		for(Iterator i = p.getResourceAttributes().getTypes().iterator(); i.hasNext(); ){
-			String theType = (String)i.next();
-			
-			DefaultMutableTreeNode resAttr_typeN = new DefaultMutableTreeNode(theType);
-			resAttr_types.add(resAttr_typeN);
-		}
+
+	  for (String theType : p.getResourceAttributes().getTypes()) {
+		DefaultMutableTreeNode resAttr_typeN = new DefaultMutableTreeNode(theType);
+		resAttr_types.add(resAttr_typeN);
+	  }
 	
 
 		resAttrRoot.add(resAttr_aggregation);
@@ -814,59 +783,57 @@ return jEditorPane1;	}
 		resAttrRoot.add(resAttr_title);
 		resAttrRoot.add(resAttr_types);
 
-        for(Iterator i = p.getProfileElements().keySet().iterator(); i.hasNext(); ){
-        	String peKey = (String)i.next();
-        	
-        	ProfileElement theProfileElement = (ProfileElement)p.getProfileElements().get(peKey);
-        	DefaultMutableTreeNode thePENode = new DefaultMutableTreeNode(theProfileElement.getName());
-        	DefaultMutableTreeNode theCommentsRoot = new DefaultMutableTreeNode("Comments");
-        	DefaultMutableTreeNode theComments = new DefaultMutableTreeNode(theProfileElement.getComments());
-        	
-        	theCommentsRoot.add(theComments);
-        	
-        	DefaultMutableTreeNode theDesc = new DefaultMutableTreeNode(theProfileElement.getDescription());
-        	DefaultMutableTreeNode theDescRoot = new DefaultMutableTreeNode("Description");
-        	
-        	theDescRoot.add(theDesc);
-        	
-        	
-        	
-        	DefaultMutableTreeNode theID = new DefaultMutableTreeNode(theProfileElement.getID());
-        	DefaultMutableTreeNode theIDRoot = new DefaultMutableTreeNode("ID");
-        	
-        	theIDRoot.add(theID);
-        	
-        	DefaultMutableTreeNode theMO = new DefaultMutableTreeNode(new Integer(theProfileElement.getMaxOccurrence()).toString());
-        	DefaultMutableTreeNode theMORoot = new DefaultMutableTreeNode("Max Occurence");
-        	theMORoot.add(theMO);
-        	
-        	DefaultMutableTreeNode theSynonyms = new DefaultMutableTreeNode("Synonyms");
-        	
-        	for(Iterator i2 = theProfileElement.getSynonyms().iterator(); i2.hasNext(); ){
-        		String theSynonym = (String)i2.next();
-        		DefaultMutableTreeNode sNode = new DefaultMutableTreeNode(theSynonym);
-        		theSynonyms.add(sNode);
-        	}
+	  for (String peKey : p.getProfileElements().keySet()) {
+		ProfileElement theProfileElement = p.getProfileElements().get(peKey);
+		DefaultMutableTreeNode thePENode = new DefaultMutableTreeNode(theProfileElement.getName());
+		DefaultMutableTreeNode theCommentsRoot = new DefaultMutableTreeNode("Comments");
+		DefaultMutableTreeNode theComments = new DefaultMutableTreeNode(theProfileElement.getComments());
 
-        	DefaultMutableTreeNode theType = new DefaultMutableTreeNode(theProfileElement.getType());
-        	DefaultMutableTreeNode theTypeRoot = new DefaultMutableTreeNode("Type");
-        	theTypeRoot.add(theType);
-        	
-        	
-        	DefaultMutableTreeNode theUnit = new DefaultMutableTreeNode(theProfileElement.getUnit());
-        	DefaultMutableTreeNode theUnitRoot = new DefaultMutableTreeNode("Unit");
-        	theUnitRoot.add(theUnit);
-        	
-        	thePENode.add(theCommentsRoot);
-        	thePENode.add(theDescRoot);
-        	thePENode.add(theIDRoot);
-        	thePENode.add(theMORoot);
-        	thePENode.add(theSynonyms);
-        	thePENode.add(theTypeRoot);
-        	thePENode.add(theUnitRoot);
-        	
-        	profElemRoot.add(thePENode);
-        }
+		theCommentsRoot.add(theComments);
+
+		DefaultMutableTreeNode theDesc = new DefaultMutableTreeNode(theProfileElement.getDescription());
+		DefaultMutableTreeNode theDescRoot = new DefaultMutableTreeNode("Description");
+
+		theDescRoot.add(theDesc);
+
+
+		DefaultMutableTreeNode theID = new DefaultMutableTreeNode(theProfileElement.getID());
+		DefaultMutableTreeNode theIDRoot = new DefaultMutableTreeNode("ID");
+
+		theIDRoot.add(theID);
+
+		DefaultMutableTreeNode theMO =
+			new DefaultMutableTreeNode(Integer.toString(theProfileElement.getMaxOccurrence()));
+		DefaultMutableTreeNode theMORoot = new DefaultMutableTreeNode("Max Occurence");
+		theMORoot.add(theMO);
+
+		DefaultMutableTreeNode theSynonyms = new DefaultMutableTreeNode("Synonyms");
+
+		for (Object o : theProfileElement.getSynonyms()) {
+		  String theSynonym = (String) o;
+		  DefaultMutableTreeNode sNode = new DefaultMutableTreeNode(theSynonym);
+		  theSynonyms.add(sNode);
+		}
+
+		DefaultMutableTreeNode theType = new DefaultMutableTreeNode(theProfileElement.getType());
+		DefaultMutableTreeNode theTypeRoot = new DefaultMutableTreeNode("Type");
+		theTypeRoot.add(theType);
+
+
+		DefaultMutableTreeNode theUnit = new DefaultMutableTreeNode(theProfileElement.getUnit());
+		DefaultMutableTreeNode theUnitRoot = new DefaultMutableTreeNode("Unit");
+		theUnitRoot.add(theUnit);
+
+		thePENode.add(theCommentsRoot);
+		thePENode.add(theDescRoot);
+		thePENode.add(theIDRoot);
+		thePENode.add(theMORoot);
+		thePENode.add(theSynonyms);
+		thePENode.add(theTypeRoot);
+		thePENode.add(theUnitRoot);
+
+		profElemRoot.add(thePENode);
+	  }
 		
 		root.add(profAttrRoot);
 		root.add(resAttrRoot);
@@ -900,23 +867,25 @@ return jEditorPane1;	}
 	    	fr = new FileReader(selFile);
 	    }
 	    catch(FileNotFoundException fne){
-	    	fne.printStackTrace();
+	    	LOG.log(Level.SEVERE, fne.getMessage());
 	    	System.out.println(fne.getMessage());
 	    }
 	    
 	    char [] buf = new char[256];
-	    StringBuffer sb = new StringBuffer();
+	    StringBuilder sb = new StringBuilder();
 	    
-	    int numRead = -1;
+	    int numRead;
 	    
 	    try{
-		    while((numRead = fr.read(buf,0,256)) != -1){
-		      sb.append(buf,0,numRead);
-		      buf = new char[256];
-		    }
-	    }
+		  if (fr != null) {
+			while((numRead = fr.read(buf,0,256)) != -1){
+              sb.append(buf,0,numRead);
+              buf = new char[256];
+            }
+		  }
+		}
 	    catch(IOException ioe){
-	    	ioe.printStackTrace();
+	    	LOG.log(Level.SEVERE, ioe.getMessage());
 	    	System.out.println(ioe.getMessage());	    	
 	    }
 	    
@@ -928,7 +897,7 @@ return jEditorPane1;	}
 			getJTree1().setModel(generateModelFromProfile(createdProfile));
 			//getJTree1().addMouseListener(new LeafListener(getJTree1()));
 	    }catch(SAXException se){
-	    	se.printStackTrace();
+	    	LOG.log(Level.SEVERE, se.getMessage());
 	    	System.out.println(se.getMessage());
 	    }
 
@@ -972,17 +941,19 @@ return jEditorPane1;	}
         	fos.write(new ProfilePrinter(createdProfile,"http://oodt.jpl.nasa.gov/dtd/prof.dtd").toXMLString().getBytes());
         }
         catch(FileNotFoundException fne){
-        	fne.printStackTrace();
+        	LOG.log(Level.SEVERE, fne.getMessage());
         	System.out.println(fne.getMessage());
         }
         catch(IOException ioe){
-        	ioe.printStackTrace();
+        	LOG.log(Level.SEVERE, ioe.getMessage());
         	System.out.println(ioe.getMessage());
         }
         finally{
         	try{
-        		fos.close();
-        	}catch(Exception ignore){
+			  if (fos != null) {
+				fos.close();
+			  }
+			}catch(Exception ignore){
         		//ignore
         	}
         }

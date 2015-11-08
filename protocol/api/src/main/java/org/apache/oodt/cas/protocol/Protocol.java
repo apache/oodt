@@ -33,28 +33,28 @@ import java.util.List;
  */
 public interface Protocol {
 
-    public void connect(String host, Authentication authentication) throws ProtocolException;
+    void connect(String host, Authentication authentication) throws ProtocolException;
     
-    public void close() throws ProtocolException;
+    void close() throws ProtocolException;
 
-    public boolean connected();
+    boolean connected();
     
-    public void cd(ProtocolFile file) throws ProtocolException;
+    void cd(ProtocolFile file) throws ProtocolException;
 
-    public void cdRoot() throws ProtocolException;
+    void cdRoot() throws ProtocolException;
 
-    public void cdHome() throws ProtocolException;
+    void cdHome() throws ProtocolException;
 
-    public void get(ProtocolFile fromFile, File toFile) throws ProtocolException;
+    void get(ProtocolFile fromFile, File toFile) throws ProtocolException;
 
-    public void put(File fromFile, ProtocolFile toFile) throws ProtocolException;
+    void put(File fromFile, ProtocolFile toFile) throws ProtocolException;
     
-    public ProtocolFile pwd() throws ProtocolException;
+    ProtocolFile pwd() throws ProtocolException;
 
-    public List<ProtocolFile> ls() throws ProtocolException;
+    List<ProtocolFile> ls() throws ProtocolException;
 
-    public List<ProtocolFile> ls(ProtocolFileFilter filter) throws ProtocolException;
+    List<ProtocolFile> ls(ProtocolFileFilter filter) throws ProtocolException;
 
-    public void delete(ProtocolFile file) throws ProtocolException;
+    void delete(ProtocolFile file) throws ProtocolException;
 
 }

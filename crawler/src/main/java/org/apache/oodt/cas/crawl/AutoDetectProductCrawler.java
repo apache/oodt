@@ -17,16 +17,21 @@
 package org.apache.oodt.cas.crawl;
 
 //OODT imports
+import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
 import org.apache.oodt.cas.crawl.typedetection.MetExtractorSpec;
 import org.apache.oodt.cas.crawl.typedetection.MimeExtractorConfigReader;
 import org.apache.oodt.cas.crawl.typedetection.MimeExtractorRepo;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
+import org.apache.oodt.cas.metadata.exceptions.NamingConventionException;
 import org.apache.oodt.cas.metadata.filenaming.NamingConvention;
 import org.apache.oodt.cas.metadata.preconditions.PreCondEvalUtils;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -69,17 +74,17 @@ public class AutoDetectProductCrawler extends ProductCrawler implements
    private MimeExtractorRepo mimeExtractorRepo;
 
    @Override
-   protected Metadata getMetadataForProduct(File product) throws Exception {
+   protected Metadata getMetadataForProduct(File product) throws IOException, MetExtractionException {
       List<MetExtractorSpec> specs = this.mimeExtractorRepo
             .getExtractorSpecsForFile(product);
       Metadata metadata = new Metadata();
       metadata.addMetadata(MIME_TYPES_HIERARCHY,
             mimeExtractorRepo.getMimeTypes(product));
-      for (int i = 0; i < specs.size(); i++) {
-         Metadata m = specs.get(i).getMetExtractor()
-               .extractMetadata(product);
+      for (MetExtractorSpec spec : specs) {
+         Metadata m = spec.getMetExtractor()
+                          .extractMetadata(product);
          if (m != null) {
-            metadata.addMetadata(m.getHashtable(), true);
+            metadata.addMetadata(m.getMap(), true);
          }
       }
       return metadata;
@@ -94,11 +99,11 @@ public class AutoDetectProductCrawler extends ProductCrawler implements
             if (this.getApplicationContext() != null) {
                PreCondEvalUtils evalUtils = new PreCondEvalUtils(
                      this.getApplicationContext());
-               for (int i = 0; i < specs.size(); i++) {
-                  List<String> preCondComparatorIds = specs
-                        .get(i).getPreCondComparatorIds();
-                  if (!evalUtils.eval(preCondComparatorIds, product))
+               for (MetExtractorSpec spec : specs) {
+                  List<String> preCondComparatorIds = spec.getPreCondComparatorIds();
+                  if (!evalUtils.eval(preCondComparatorIds, product)) {
                      return false;
+                  }
                }
             }
             return true;
@@ -116,7 +121,7 @@ public class AutoDetectProductCrawler extends ProductCrawler implements
 
    @Override
    protected File renameProduct(File product, Metadata productMetadata)
-         throws Exception {
+       throws NamingConventionException {
       String namingConventionId = mimeExtractorRepo
             .getNamingConventionId(mimeExtractorRepo.getMimeType(product));
       if (namingConventionId != null) {
@@ -129,7 +134,9 @@ public class AutoDetectProductCrawler extends ProductCrawler implements
    }
 
    @Required
-   public void setMimeExtractorRepo(String mimeExtractorRepo) throws Exception {
+   public void setMimeExtractorRepo(String mimeExtractorRepo)
+       throws IllegalAccessException, CrawlerActionException, MetExtractionException, InstantiationException,
+       FileNotFoundException, ClassNotFoundException {
       this.mimeExtractorRepo = MimeExtractorConfigReader
             .read(mimeExtractorRepo);
    }

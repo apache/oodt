@@ -18,12 +18,20 @@
 package org.apache.oodt.xmlps.mapping;
 
 //OODT imports
+
 import org.apache.oodt.commons.xml.XMLUtils;
+import org.apache.oodt.xmlps.exceptions.XmlpsException;
 import org.apache.oodt.xmlps.mapping.funcs.MappingFunc;
 import org.apache.oodt.xmlps.util.GenericCDEObjectFactory;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -43,7 +51,7 @@ public final class MappingReader implements MappingReaderMetKeys {
     throw new InstantiationException("Don't construct reader objects!");
   }
 
-  public static Mapping getMapping(InputStream is) throws Exception {
+  public static Mapping getMapping(InputStream is) throws XmlpsException {
     Document mappingDoc = XMLUtils.getDocumentRoot(is);
     Mapping map = new Mapping();
 
@@ -58,20 +66,20 @@ public final class MappingReader implements MappingReaderMetKeys {
 
   }
 
-  public static Mapping getMapping(URL mappingUrl) throws Exception {
+  public static Mapping getMapping(URL mappingUrl) throws IOException, XmlpsException {
     return getMapping(mappingUrl.openStream());
   }
 
-  public static Mapping getMapping(String filePath) throws Exception {
+  public static Mapping getMapping(String filePath) throws FileNotFoundException, XmlpsException {
     return getMapping(new FileInputStream(filePath));
 
   }
 
   private static void readTables(Element rootElem, Mapping map)
-      throws Exception {
+      throws XmlpsException {
     Element tblsElem = XMLUtils.getFirstElement(TABLES_OUTER_TAG, rootElem);
     if (tblsElem == null) {
-      throw new Exception("Unable to parse mapping XML file: [" + map.getName()
+      throw new XmlpsException("Unable to parse mapping XML file: [" + map.getName()
           + "]: reason: no defined tables tag element!");
 
     }
@@ -79,7 +87,7 @@ public final class MappingReader implements MappingReaderMetKeys {
     String defaultTbl = tblsElem.getAttribute("default");
     // make sure that the default attribute is set
     if (defaultTbl == null || (defaultTbl.equals(""))) {
-      throw new Exception("Unable to parse mapping XML file: [" + map.getName()
+      throw new XmlpsException("Unable to parse mapping XML file: [" + map.getName()
           + "]: reason: there needs to be a default table defined "
           + "by the \"default\" attribute!");
     }
@@ -92,8 +100,9 @@ public final class MappingReader implements MappingReaderMetKeys {
       for (int i = 0; i < tableNodes.getLength(); i++) {
         Element tableElem = (Element) tableNodes.item(i);
         DatabaseTable tbl = readTable(tableElem);
-        if (tbl.getDefaultTableJoin() == null || tbl.getDefaultTableJoin().isEmpty())
+        if (tbl.getDefaultTableJoin() == null || tbl.getDefaultTableJoin().isEmpty()) {
           tbl.setDefaultTableJoin(map.getDefaultTable());
+        }
         map.addTable(tbl.getName(), tbl);
       }
     }
@@ -116,8 +125,9 @@ public final class MappingReader implements MappingReaderMetKeys {
     if (fldNodes != null && fldNodes.getLength() > 0) {
       for (int i = 0; i < fldNodes.getLength(); i++) {
         MappingField fld = readField((Element) fldNodes.item(i));
-        if (fld.getTableName() == null || fld.getTableName().isEmpty())
+        if (fld.getTableName() == null || fld.getTableName().isEmpty()) {
           fld.setTableName(map.getDefaultTable());
+        }
         map.addField(fld.getName(), fld);
       }
     }

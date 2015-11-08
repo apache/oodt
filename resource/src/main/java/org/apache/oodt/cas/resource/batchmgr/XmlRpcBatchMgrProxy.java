@@ -69,11 +69,10 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
         client = new XmlRpcClient(remoteHost.getIpAddr());
         Vector argList = new Vector();
 
-        boolean alive = false;
+        boolean alive;
 
         try {
-            alive = ((Boolean) client.execute("batchstub.isAlive", argList))
-                    .booleanValue();
+            alive = (Boolean) client.execute("batchstub.isAlive", argList);
         } catch (XmlRpcException e) {
             alive = false;
         } catch (IOException e) {
@@ -89,15 +88,14 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
         Vector argList = new Vector();
         argList.add(XmlRpcStructFactory.getXmlRpcJob(jobSpec.getJob()));
 
-        boolean result = false;
+        boolean result;
         try {
-            result = ((Boolean) client.execute("batchstub.killJob", argList))
-                    .booleanValue();
+            result = (Boolean) client.execute("batchstub.killJob", argList);
         } catch (XmlRpcException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             result = false;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             result = false;
         }
 
@@ -114,15 +112,16 @@ public class XmlRpcBatchMgrProxy extends Thread implements Runnable {
         argList.add(XmlRpcStructFactory.getXmlRpcJob(jobSpec.getJob()));
         argList.add(jobSpec.getIn().write());
 
-        boolean result = false;
+        boolean result;
         try {
             parent.jobExecuting(jobSpec);
-            result = ((Boolean) client
-                    .execute("batchstub.executeJob", argList)).booleanValue();
-            if (result)
-            	parent.jobSuccess(jobSpec);
-            else
-            	throw new Exception("batchstub.executeJob returned false");
+            result = (Boolean) client
+                .execute("batchstub.executeJob", argList);
+            if (result) {
+                parent.jobSuccess(jobSpec);
+            } else {
+                throw new Exception("batchstub.executeJob returned false");
+            }
         } catch (Exception e) {
         	LOG.log(Level.SEVERE, "Job execution failed for jobId '" + jobSpec.getJob().getId() + "' : " + e.getMessage(), e);
             parent.jobFailure(jobSpec);

@@ -23,6 +23,8 @@ import org.apache.oodt.cas.metadata.Metadata;
 import java.io.File;
 import java.net.URL;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author mattmann
@@ -34,7 +36,7 @@ import java.util.Properties;
  *          .
  */
 public class TestOrderedDataSourceCatalog extends TestDataSourceCatalog {
-
+  private static Logger LOG = Logger.getLogger(TestOrderedDataSourceCatalog.class.getName());
   @Override
   protected void setUp() throws Exception {
     super.setUp();
@@ -53,7 +55,7 @@ public class TestOrderedDataSourceCatalog extends TestDataSourceCatalog {
     try {
       return new DataSourceCatalogFactory().createCatalog();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -80,7 +82,7 @@ public class TestOrderedDataSourceCatalog extends TestDataSourceCatalog {
       myCat.addProduct(testProduct);
       myCat.addMetadata(testMet, testProduct);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 

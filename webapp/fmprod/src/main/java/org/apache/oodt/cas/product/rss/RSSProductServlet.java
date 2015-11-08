@@ -41,7 +41,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,7 +69,6 @@ import javax.xml.transform.stream.StreamResult;
  * 
  */
 public class RSSProductServlet extends HttpServlet {
-
   /* serial Version UID */
   private static final long serialVersionUID = -465321738239885777L;
 
@@ -109,10 +107,6 @@ public class RSSProductServlet extends HttpServlet {
 	} catch (Exception e) {
 		throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
 	}
-    if (fileManagerUrl == null) {
-      // try the default port
-      fileManagerUrl = "http://localhost:9000";
-    }
 
     this.getFileManager(fileManagerUrl);
     try {
@@ -143,7 +137,7 @@ public class RSSProductServlet extends HttpServlet {
     int top = 20;
 
     if (topN != null) {
-      top = Integer.valueOf(topN).intValue();
+      top = Integer.valueOf(topN);
     }
 
     String requestUrl = req.getRequestURL().toString();
@@ -155,7 +149,7 @@ public class RSSProductServlet extends HttpServlet {
     channelMet.addMetadata("TopN", String.valueOf(topN));
     channelMet.addMetadata("BaseUrl", base);
 
-    List products = null;
+    List products;
 
     try {
       if (productTypeName.equals("ALL")) {
@@ -175,7 +169,7 @@ public class RSSProductServlet extends HttpServlet {
       }
 
     } catch (CatalogException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG
           .log(Level.WARNING,
               "Exception getting products from Catalog: Message: "
@@ -184,7 +178,7 @@ public class RSSProductServlet extends HttpServlet {
     }
 
     if (products != null && products.size() > 0) {
-      String channelDesc = null;
+      String channelDesc;
 
       if (!productTypeName.equals("ALL")) {
         channelDesc = type.getDescription();
@@ -223,20 +217,20 @@ public class RSSProductServlet extends HttpServlet {
         XMLUtils.addNode(doc, channel, "generator", "CAS File Manager");
         XMLUtils.addNode(doc, channel, "lastBuildDate", buildPubDate);
 
-        for (Iterator i = products.iterator(); i.hasNext();) {
-          Product p = (Product) i.next();
+        for (Object product : products) {
+          Product p = (Product) product;
 
           String productTypeIdStr = p.getProductType().getProductTypeId();
-          ProductType productType = null;
+          ProductType productType;
 
           try {
             productType = fm.getProductTypeById(productTypeIdStr);
           } catch (RepositoryManagerException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.SEVERE,
                 "Unable to obtain product type from product type id: ["
-                    + ((Product) products.get(0)).getProductType()
-                        .getProductTypeId() + "]: Message: " + e.getMessage());
+                + ((Product) products.get(0)).getProductType()
+                                             .getProductTypeId() + "]: Message: " + e.getMessage());
             return;
           }
 
@@ -247,9 +241,9 @@ public class RSSProductServlet extends HttpServlet {
 
           XMLUtils.addNode(doc, item, "title", p.getProductName());
           XMLUtils.addNode(doc, item, "description", p.getProductType()
-              .getName());
+                                                      .getName());
           XMLUtils.addNode(doc, item, "link", base + "/data?productID="
-              + p.getProductId());
+                                              + p.getProductId());
 
           Metadata m = this.safeGetMetadata(p);
           String productReceivedTime = m.getMetadata("CAS.ProductReceivedTime");
@@ -269,7 +263,7 @@ public class RSSProductServlet extends HttpServlet {
           if (p.getProductReferences() != null
               && p.getProductReferences().size() == 1) {
             m.addMetadata("FileSize", String.valueOf(p.getProductReferences()
-                .get(0).getFileSize()));
+                                                      .get(0).getFileSize()));
           }
 
           // add additional elements from the RSSConfig
@@ -301,7 +295,7 @@ public class RSSProductServlet extends HttpServlet {
     try {
       return fm.getMetadata(p);
     } catch (CatalogException ignore) {
-      ignore.printStackTrace();
+      LOG.log(Level.SEVERE, ignore.getMessage());
       return null;
     }
   }
@@ -310,14 +304,14 @@ public class RSSProductServlet extends HttpServlet {
     try {
       return fm.getProductReferences(p);
     } catch (CatalogException ignore) {
-      ignore.printStackTrace();
+      LOG.log(Level.SEVERE, ignore.getMessage());
       return null;
     }
   }
 
   private void getFileManager(String fileManagerUrl) {
     try {
-      this.fm = new XmlRpcFileManagerClient(new URL(fileManagerUrl));
+      fm = new XmlRpcFileManagerClient(new URL(fileManagerUrl));
     } catch (MalformedURLException e) {
       LOG.log(Level.SEVERE,
           "Unable to initialize file manager url in RSS Servlet: [url="

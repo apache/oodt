@@ -18,13 +18,17 @@
 package org.apache.oodt.cas.filemgr.ingest;
 
 //OODT imports
+
 import org.apache.oodt.cas.filemgr.structs.exceptions.CacheException;
 
-//JDK imports
 import java.net.URL;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -37,14 +41,14 @@ import java.util.List;
  * </p>.
  */
 public class RmiCache implements Cache {
-
+    private static Logger LOG = Logger.getLogger(RmiCache.class.getName());
     private RemoteableCache rmiCacheServer;
 
     public RmiCache(String rmiCacheServerUrn) throws InstantiationException {
         try {
             rmiCacheServer = (RemoteableCache) Naming.lookup(rmiCacheServerUrn);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new InstantiationException(
                     "Unable to connect to Rmi Cache Server at: ["
                             + rmiCacheServerUrn + "]");
@@ -59,7 +63,7 @@ public class RmiCache implements Cache {
     public void clear() {
         try {
             rmiCacheServer.clear();
-        } catch (RemoteException e) {
+        } catch (RemoteException ignored) {
         }
 
     }
@@ -85,7 +89,7 @@ public class RmiCache implements Cache {
     public void setFileManager(URL fmUrl) {
         try {
             rmiCacheServer.setFileManager(fmUrl);
-        } catch (RemoteException e) {
+        } catch (RemoteException ignored) {
             
         }
 
@@ -113,7 +117,7 @@ public class RmiCache implements Cache {
         try {
             rmiCacheServer.sync(uniqueElementProductTypeNames);
         } catch (RemoteException e) {
-            throw new CacheException(e.getMessage());
+            throw new CacheException(e.getMessage(), e);
         }
 
     }
@@ -129,7 +133,7 @@ public class RmiCache implements Cache {
         try {
             rmiCacheServer.sync(uniqueElementName, uniqueElementProductTypeNames);
         } catch (RemoteException e) {
-           throw new CacheException(e.getMessage());
+           throw new CacheException(e.getMessage(), e);
         }
 
     }
@@ -144,7 +148,7 @@ public class RmiCache implements Cache {
         try {
             rmiCacheServer
                     .setUniqueElementProductTypeNames(uniqueElementProductTypeNames);
-        } catch (RemoteException e) {
+        } catch (RemoteException ignored) {
         }
 
     }
@@ -158,7 +162,7 @@ public class RmiCache implements Cache {
         try {
             rmiCacheServer.sync();
         } catch (RemoteException e) {
-            throw new CacheException(e.getMessage());
+            throw new CacheException(e.getMessage(), e);
         }
     }
 
@@ -170,7 +174,7 @@ public class RmiCache implements Cache {
     public void setUniqueElementName(String uniqueElementName) {
         try {
             rmiCacheServer.setUniqueElementName(uniqueElementName);
-        } catch (RemoteException e) {
+        } catch (RemoteException ignored) {
         }
     }
 

@@ -35,7 +35,7 @@ import org.apache.oodt.cas.metadata.Metadata;
  */
 public interface WorkflowEngine {
 
-    public static final String X_POINT_ID = WorkflowEngine.class.getName();
+    String X_POINT_ID = WorkflowEngine.class.getName();
 
 
     /**
@@ -57,7 +57,7 @@ public interface WorkflowEngine {
      * @throws EngineException
      *             If any error occurs.
      */
-    public WorkflowInstance startWorkflow(Workflow workflow, Metadata metadata)
+    WorkflowInstance startWorkflow(Workflow workflow, Metadata metadata)
             throws EngineException;
 
     /**
@@ -67,7 +67,7 @@ public interface WorkflowEngine {
      * @param workflowInstId
      *            The identifier of the {@link WorkflowInstance} to stop.
      */
-    public void stopWorkflow(String workflowInstId);
+    void stopWorkflow(String workflowInstId);
 
     /**
      * <p>
@@ -78,7 +78,7 @@ public interface WorkflowEngine {
      * @param workflowInstId
      *            The ID of the Workflow Instance to pause.
      */
-    public void pauseWorkflowInstance(String workflowInstId);
+    void pauseWorkflowInstance(String workflowInstId);
 
     /**
      * <p>
@@ -89,7 +89,7 @@ public interface WorkflowEngine {
      * @param workflowInstId
      *            The ID of the {@link WorkflowInstance} to resume.
      */
-    public void resumeWorkflowInstance(String workflowInstId);
+    void resumeWorkflowInstance(String workflowInstId);
 
     /**
      * Gets the {@link WorkflowInstanceRepository} used by this
@@ -98,7 +98,7 @@ public interface WorkflowEngine {
      * @return The {@link WorkflowInstanceRepository} used by this
      *         {@link WorkflowEngine}.
      */
-    public WorkflowInstanceRepository getInstanceRepository();
+    WorkflowInstanceRepository getInstanceRepository();
 
     /**
      * Updates the {@link Metadata} context for the {@link WorkflowInstance}
@@ -111,7 +111,7 @@ public interface WorkflowEngine {
      *            The new {@link Metadata} context.
      * @return true if the update was successful, false otherwise.
      */
-    public boolean updateMetadata(String workflowInstId, Metadata met);
+    boolean updateMetadata(String workflowInstId, Metadata met);
 
     /**
      * Sets a pointer to the Workflow Manager that this {@link WorkflowEngine}
@@ -121,7 +121,7 @@ public interface WorkflowEngine {
      *            The {@link URL} pointer to the Workflow Manager that this
      *            {@link WorkflowEngine} belongs to.
      */
-    public void setWorkflowManagerUrl(URL url);
+    void setWorkflowManagerUrl(URL url);
 
     /**
      * Gets the amount of wall clock minutes that a particular
@@ -136,7 +136,7 @@ public interface WorkflowEngine {
      * @return The amount of wall clock minutes that a particular
      *         {@link WorkflowInstance} has been executing for.
      */
-    public double getWallClockMinutes(String workflowInstId);
+    double getWallClockMinutes(String workflowInstId);
 
     /**
      * Gets the amount of wall clock minutes that the particular
@@ -150,7 +150,7 @@ public interface WorkflowEngine {
      *         {@link WorkflowInstance}'s current {@link WorkflowTask} has been
      *         executing for.
      */
-    public double getCurrentTaskWallClockMinutes(String workflowInstId);
+    double getCurrentTaskWallClockMinutes(String workflowInstId);
 
     /**
      * Gets the {@link Metadata} associated with the {@link WorkflowInstance}
@@ -163,6 +163,6 @@ public interface WorkflowEngine {
      *         {@link WorkflowInstance} with the given identifier.
      *
      */
-    public Metadata getWorkflowInstanceMetadata(String workflowInstId);
+    Metadata getWorkflowInstanceMetadata(String workflowInstId);
 
 }

@@ -28,9 +28,9 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,14 +41,14 @@ import java.util.logging.Logger;
  * @version $Revision$
  * 
  * <p>
- * An abstract base class for data transfers that uses an in-memory HashMap to
+ * An abstract base class for data transfers that uses an in-memory ConcurrentHashMap to
  * keep track of data transfer status information.
  * </p>
  * 
  */
 public class TransferStatusTracker {
-    /* HashMap containing a list of current product transfers */
-    protected HashMap<String, Product> currentProductTransfers = new HashMap<String, Product>();
+    /* ConcurrentHashMap containing a list of current product transfers */
+    protected ConcurrentHashMap<String, Product> currentProductTransfers = new ConcurrentHashMap<String, Product>();
 
     /* our catalog object */
     private Catalog catalog = null;
@@ -75,8 +75,9 @@ public class TransferStatusTracker {
 
         if (transfers != null && transfers.size() > 0) {
             return (FileTransferStatus) transfers.get(0);
-        } else
+        } else {
             return null;
+        }
     }
 
     public void transferringProduct(Product product) {
@@ -86,22 +87,18 @@ public class TransferStatusTracker {
     public List<FileTransferStatus> getCurrentFileTransfers() {
         List<FileTransferStatus> currTransfers = new Vector<FileTransferStatus>();
 
-        for (Iterator<String> i = currentProductTransfers.keySet().iterator(); i
-                .hasNext();) {
-            String productId = i.next();
-            Product p = (Product) currentProductTransfers.get(productId);
+        for (Map.Entry<String, Product> productId : currentProductTransfers.entrySet()) {
+            Product p = productId.getValue();
 
             // get its references
             List<Reference> refs = quietGetReferences(p);
 
             if (refs != null && refs.size() > 0) {
-                for (Iterator<Reference> j = refs.iterator(); j.hasNext();) {
-                    Reference r = j.next();
-
+                for (Reference r : refs) {
                     long bytesTransferred = getBytesTransferred(r);
 
                     if (bytesTransferred > 0
-                            && bytesTransferred < r.getFileSize() && !isDir(r)) {
+                        && bytesTransferred < r.getFileSize() && !isDir(r)) {
                         FileTransferStatus status = new FileTransferStatus();
                         status.setBytesTransferred(bytesTransferred);
                         status.setFileRef(r);
@@ -122,9 +119,7 @@ public class TransferStatusTracker {
         long totalProductSize = 0L;
 
         if (refs.size() > 0) {
-            for (Iterator<Reference> j = refs.iterator(); j.hasNext();) {
-                Reference r = (Reference) j.next();
-
+            for (Reference r : refs) {
                 long bytesTransferred = getBytesTransferred(r);
 
                 if (!isDir(r)) {
@@ -160,12 +155,11 @@ public class TransferStatusTracker {
     }
 
     private long getBytesTransferred(Reference r) {
-        File destFile = null;
+        File destFile;
 
         try {
             destFile = new File(new URI(r.getDataStoreReference()));
-            long bytesTransferred = destFile.length();
-            return bytesTransferred;
+            return destFile.length();
         } catch (URISyntaxException e) {
             LOG.log(Level.WARNING,
                     "URISyntaxException when checking size of destFile: ["
@@ -176,12 +170,12 @@ public class TransferStatusTracker {
     }
 
     private List<Reference> quietGetReferences(Product p) {
-        List<Reference> refs = null;
+        List<Reference> refs;
 
         try {
             refs = catalog.getProductReferences(p);
         } catch (CatalogException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Error retreiving references for product: ["
                     + p.getProductId()
                     + "] from catalog in transfer status tracker: Message: "
@@ -193,7 +187,7 @@ public class TransferStatusTracker {
     }
 
     private boolean isDir(Reference r) {
-        File fileRef = null;
+        File fileRef;
 
         try {
             fileRef = new File(new URI(r.getDataStoreReference()));

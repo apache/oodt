@@ -20,7 +20,6 @@ package org.apache.oodt.cas.cli.parser;
 import java.util.List;
 
 //OODT imports
-import org.apache.oodt.cas.cli.exception.CmdLineParserException;
 import org.apache.oodt.cas.cli.util.ParsedArg;
 
 /**
@@ -31,6 +30,6 @@ import org.apache.oodt.cas.cli.util.ParsedArg;
  */
 public interface CmdLineParser {
 
-   public List<ParsedArg> parse(String[] args) throws CmdLineParserException;
+   List<ParsedArg> parse(String[] args);
 
 }

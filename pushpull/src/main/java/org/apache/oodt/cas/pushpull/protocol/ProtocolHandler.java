@@ -18,6 +18,7 @@
 package org.apache.oodt.cas.pushpull.protocol;
 
 //OODT imports
+
 import org.apache.oodt.cas.protocol.Protocol;
 import org.apache.oodt.cas.protocol.ProtocolFactory;
 import org.apache.oodt.cas.protocol.ProtocolFile;
@@ -27,16 +28,20 @@ import org.apache.oodt.cas.protocol.util.ProtocolFileFilter;
 import org.apache.oodt.cas.pushpull.config.ProtocolInfo;
 import org.apache.oodt.cas.pushpull.exceptions.RemoteConnectionException;
 
-//JDK imports
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+//JDK imports
 
 
 /**
@@ -55,13 +60,13 @@ import java.util.logging.Logger;
  */
 public class ProtocolHandler {
 
-  private final HashMap<URI, ProtocolFactory> urlAndProtocolFactory;
+  private final ConcurrentHashMap<URI, ProtocolFactory> urlAndProtocolFactory;
 
-  private final HashMap<URI, Protocol> reuseProtocols;
+  private final ConcurrentHashMap<URI, Protocol> reuseProtocols;
 
-  private final HashMap<RemoteSiteFile, PagingInfo> pageInfos;
+  private final ConcurrentHashMap<RemoteSiteFile, PagingInfo> pageInfos;
 
-  private final HashMap<RemoteSiteFile, List<RemoteSiteFile>> pathAndFileListMap;
+  private final ConcurrentHashMap<RemoteSiteFile, List<RemoteSiteFile>> pathAndFileListMap;
 
   private final ProtocolInfo pi;
 
@@ -77,10 +82,10 @@ public class ProtocolHandler {
    */
   public ProtocolHandler(ProtocolInfo pi) {
     this.pi = pi;
-    urlAndProtocolFactory = new HashMap<URI, ProtocolFactory>();
-    reuseProtocols = new HashMap<URI, Protocol>();
-    pageInfos = new HashMap<RemoteSiteFile, PagingInfo>();
-    pathAndFileListMap = new HashMap<RemoteSiteFile, List<RemoteSiteFile>>();
+    urlAndProtocolFactory = new ConcurrentHashMap<URI, ProtocolFactory>();
+    reuseProtocols = new ConcurrentHashMap<URI, Protocol>();
+    pageInfos = new ConcurrentHashMap<RemoteSiteFile, PagingInfo>();
+    pathAndFileListMap = new ConcurrentHashMap<RemoteSiteFile, List<RemoteSiteFile>>();
   }
 
   /**
@@ -108,10 +113,11 @@ public class ProtocolHandler {
     try {
       Protocol protocol = getAppropriateProtocol(pFile, allowReuse);
       if (protocol != null && navigateToPathLoc) {
-        if (pFile.isDir())
+        if (pFile.isDir()) {
           this.cd(protocol, pFile);
-        else if (pFile.getParent() != null)
+        } else if (pFile.getParent() != null) {
           this.cd(protocol, new RemoteSiteFile(pFile.getParent(), pFile.getSite()));
+        }
       }
       return protocol;
     } catch (Exception e) {
@@ -122,7 +128,7 @@ public class ProtocolHandler {
   }
 
   private Protocol getAppropriateProtocol(RemoteSiteFile pFile,
-      boolean allowReuse) throws ProtocolException, MalformedURLException {
+      boolean allowReuse) throws ProtocolException {
     return this.getAppropriateProtocolBySite(pFile.getSite(), allowReuse);
   }
 
@@ -166,18 +172,20 @@ public class ProtocolHandler {
                   + " for " + remoteSite.getURL());
             }
           }
-          if (protocol == null)
+          if (protocol == null) {
             throw new ProtocolException("Failed to get appropriate protocol for "
-                + remoteSite);
+                                        + remoteSite);
+          }
         } else {
           connect(protocol = protocolFactory.newInstance(), remoteSite, false);
         }
-        if (allowReuse)
+        if (allowReuse) {
           try {
             this.reuseProtocols.put(remoteSite.getURL().toURI(), protocol);
           } catch (URISyntaxException e) {
             LOG.log(Level.SEVERE, "Couildn't covert URL to URI Mesage: " + e.getMessage());
           }
+        }
       }
     } catch (URISyntaxException e) {
       LOG.log(Level.SEVERE, "could not convert url to uri: Message: "+e.getMessage());
@@ -221,14 +229,15 @@ public class ProtocolHandler {
       List<RemoteSiteFile> page = new LinkedList<RemoteSiteFile>();
       int curLoc = pgInfo.getPageLoc();
       for (; page.size() < pi.getPageSize() && curLoc < fileList.size(); curLoc++) {
-        if (filter == null || filter.accept(fileList.get(curLoc)))
+        if (filter == null || filter.accept(fileList.get(curLoc))) {
           page.add(fileList.get(curLoc));
+        }
       }
       pgInfo.updatePageInfo(curLoc, fileList);
 
       return page;
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       throw new RemoteConnectionException(
           "Failed getting next page for protocol " + protocol + "-- pgStart = "
               + pgInfo.getPageLoc() + " pgSize = " + pi.getPageSize() + " : "
@@ -238,17 +247,12 @@ public class ProtocolHandler {
   }
 
   private boolean passesDynamicDetection(PagingInfo pgInfo,
-      List<RemoteSiteFile> newLS) throws MalformedURLException,
-      ProtocolException {
-    if (pgInfo.getSizeOfLastLS() != -1
-        && (pgInfo.getSizeOfLastLS() != newLS.size() || (newLS.size() != 0
-            && pgInfo.getPageLoc() < newLS.size() && (newLS.get(pgInfo
-            .getPageLoc()) == null || !newLS.get(pgInfo.getPageLoc()).equals(
-            pgInfo.getRemoteSiteFileAtPageLoc()))))) {
-      return false;
-    } else {
-      return true;
-    }
+      List<RemoteSiteFile> newLS) {
+    return !(pgInfo.getSizeOfLastLS() != -1
+             && (pgInfo.getSizeOfLastLS() != newLS.size() || (newLS.size() != 0
+                                                              && pgInfo.getPageLoc() < newLS.size() && (newLS.get(pgInfo
+        .getPageLoc()) == null || !newLS.get(pgInfo.getPageLoc()).equals(
+        pgInfo.getRemoteSiteFileAtPageLoc())))));
   }
 
   public void download(Protocol protocol, RemoteSiteFile fromFile, File toFile,
@@ -272,12 +276,13 @@ public class ProtocolHandler {
 
       // delete file is specified
       if (delete) {
-        if (!this.delete(protocol, fromFile))
+        if (!this.delete(protocol, fromFile)) {
           LOG.log(Level.WARNING, "Failed to delete file '" + fromFile
-              + "' from server '" + fromFile.getSite() + "'");
-        else
+                                 + "' from server '" + fromFile.getSite() + "'");
+        } else {
           LOG.log(Level.INFO, "Successfully deleted file '" + fromFile
-              + "' from server '" + fromFile.getSite() + "'");
+                              + "' from server '" + fromFile.getSite() + "'");
+        }
       }
 
       LOG.log(Level.INFO, "Finished downloading " + fromFile + " to " + toFile);
@@ -313,7 +318,7 @@ public class ProtocolHandler {
               wait(1000);
             }
             System.out.println();
-          } catch (Exception e) {
+          } catch (Exception ignored) {
           }
         }
       }
@@ -322,7 +327,7 @@ public class ProtocolHandler {
         // make sure protocol is disconnected
         try {
           protocol.close();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         // try connecting Protocol
@@ -339,8 +344,9 @@ public class ProtocolHandler {
                   + " with protocol '" + protocol.getClass().getCanonicalName()
                   + "' and username '" + remoteSite.getUsername() + "'");
           return true;
-        } else
+        } else {
           return false;
+        }
 
       } catch (Exception e) {
         LOG.log(Level.WARNING, "Error occurred while connecting to "
@@ -360,14 +366,16 @@ public class ProtocolHandler {
       this.cdToHOME(protocol);
       RemoteSiteFile home = this.pwd(remoteSite, protocol);
       this.ls(remoteSite, protocol);
-      if (remoteSite.getCdTestDir() != null)
+      if (remoteSite.getCdTestDir() != null) {
         this.cd(protocol, new RemoteSiteFile(home, remoteSite.getCdTestDir(),
             true, remoteSite));
-      else
+      } else {
         this.cdToROOT(protocol);
+      }
       this.cdToHOME(protocol);
-      if (home == null || !home.equals(this.pwd(remoteSite, protocol)))
+      if (home == null || !home.equals(this.pwd(remoteSite, protocol))) {
         throw new ProtocolException("Home directory not the same after cd");
+      }
     } catch (Exception e) {
       LOG.log(Level.SEVERE, "Protocol "
           + protocol.getClass().getCanonicalName()
@@ -385,8 +393,7 @@ public class ProtocolHandler {
     protocol.cdHome();
   }
 
-  public boolean isProtocolConnected(Protocol protocol)
-      throws ProtocolException {
+  public boolean isProtocolConnected(Protocol protocol) {
     return protocol.connected();
   }
 
@@ -400,8 +407,7 @@ public class ProtocolHandler {
     return this.getProtocolFileByProtocol(site, protocol, file, isDir);
   }
 
-  public synchronized boolean delete(Protocol protocol, RemoteSiteFile file)
-      throws MalformedURLException, ProtocolException {
+  public synchronized boolean delete(Protocol protocol, RemoteSiteFile file) {
     try {
       PagingInfo pgInfo = this.getPagingInfo(file.getRemoteParent());
       List<RemoteSiteFile> fileList = this.ls(protocol, file.getRemoteParent());
@@ -412,10 +418,11 @@ public class ProtocolHandler {
         System.out.println("IndexOfFile: " + indexOfFile + " PageIndex: "
             + pgInfo.getPageLoc());
         if (indexOfFile < pgInfo.getPageLoc()
-            || indexOfFile == fileList.size() - 1)
+            || indexOfFile == fileList.size() - 1) {
           pgInfo.updatePageInfo(pgInfo.getPageLoc() - 1, fileList);
-        else
+        } else {
           pgInfo.updatePageInfo(pgInfo.getPageLoc(), fileList);
+        }
         return true;
       } else {
         return false;
@@ -432,8 +439,9 @@ public class ProtocolHandler {
 
   private synchronized PagingInfo getPagingInfo(RemoteSiteFile pFile) {
     PagingInfo pgInfo = this.pageInfos.get(pFile);
-    if (pgInfo == null)
+    if (pgInfo == null) {
       this.putPgInfo(pgInfo = new PagingInfo(), pFile);
+    }
     return pgInfo;
   }
 
@@ -453,16 +461,18 @@ public class ProtocolHandler {
 
   public List<RemoteSiteFile> ls(RemoteSite site, Protocol protocol) throws ProtocolException {
     List<RemoteSiteFile> fileList = this.getDynamicFileList(site, protocol);
-    if (fileList == null)
+    if (fileList == null) {
       fileList = toRemoteSiteFiles(protocol.ls(), site);
+    }
     return fileList;
   }
 
   public List<RemoteSiteFile> ls(RemoteSite site, Protocol protocol, ProtocolFileFilter filter)
       throws ProtocolException {
     List<RemoteSiteFile> fileList = this.getDynamicFileList(site, protocol);
-    if (fileList == null)
+    if (fileList == null) {
       fileList = toRemoteSiteFiles(protocol.ls(filter), site);
+    }
     return fileList;
   }
 
@@ -482,7 +492,7 @@ public class ProtocolHandler {
       protocol.cdHome();
       return new RemoteSiteFile(protocol.pwd(), site);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -492,7 +502,7 @@ public class ProtocolHandler {
       protocol.cd(new ProtocolFile(path, isDir));
       return protocol.pwd().getAbsoluteFile().getPath();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -569,8 +579,7 @@ public class ProtocolHandler {
       this.pFileAtPageLoc = null;
     }
 
-    synchronized void updatePageInfo(int newPageLoc, List<RemoteSiteFile> ls)
-        throws MalformedURLException, ProtocolException {
+    synchronized void updatePageInfo(int newPageLoc, List<RemoteSiteFile> ls) {
       this.sizeOfLastLS = ls.size();
       this.pageLoc = newPageLoc < 0 ? 0 : newPageLoc;
       this.pFileAtPageLoc = (this.sizeOfLastLS > 0 && newPageLoc < ls.size()) ? ls

@@ -56,24 +56,25 @@ public class ProfileAttributes implements Serializable, Cloneable, Comparable, D
 		NodeList childNodes = root.getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); ++i) {
 			Node node = childNodes.item(i);
-			if ("profId".equals(node.getNodeName()))
-				id = XML.unwrappedText(node);
-			else if ("profVersion".equals(node.getNodeName()))
-				version = XML.unwrappedText(node);
-			else if ("profType".equals(node.getNodeName()))
-				type = XML.unwrappedText(node);
-			else if ("profStatusId".equals(node.getNodeName()))
-				statusID = XML.unwrappedText(node);
-			else if ("profSecurityType".equals(node.getNodeName()))
-				securityType = XML.unwrappedText(node);
-			else if ("profParentId".equals(node.getNodeName()))
-				parent = XML.unwrappedText(node);
-			else if ("profChildId".equals(node.getNodeName()))
-				children.add(XML.unwrappedText(node));
-			else if ("profRegAuthority".equals(node.getNodeName()))
-				regAuthority = XML.unwrappedText(node);
-			else if ("profRevisionNote".equals(node.getNodeName()))
-				revisionNotes.add(XML.unwrappedText(node));
+			if ("profId".equals(node.getNodeName())) {
+			  id = XML.unwrappedText(node);
+			} else if ("profVersion".equals(node.getNodeName())) {
+			  version = XML.unwrappedText(node);
+			} else if ("profType".equals(node.getNodeName())) {
+			  type = XML.unwrappedText(node);
+			} else if ("profStatusId".equals(node.getNodeName())) {
+			  statusID = XML.unwrappedText(node);
+			} else if ("profSecurityType".equals(node.getNodeName())) {
+			  securityType = XML.unwrappedText(node);
+			} else if ("profParentId".equals(node.getNodeName())) {
+			  parent = XML.unwrappedText(node);
+			} else if ("profChildId".equals(node.getNodeName())) {
+			  children.add(XML.unwrappedText(node));
+			} else if ("profRegAuthority".equals(node.getNodeName())) {
+			  regAuthority = XML.unwrappedText(node);
+			} else if ("profRevisionNote".equals(node.getNodeName())) {
+			  revisionNotes.add(XML.unwrappedText(node));
+			}
 		}
 	}
 
@@ -108,8 +109,12 @@ public class ProfileAttributes implements Serializable, Cloneable, Comparable, D
 	}
 
 	public boolean equals(Object rhs) {
-		if (rhs == this) return true;
-		if (rhs == null || !(rhs instanceof ProfileAttributes)) return false;
+		if (rhs == this) {
+		  return true;
+		}
+		if (rhs == null || !(rhs instanceof ProfileAttributes)) {
+		  return false;
+		}
 		return ((ProfileAttributes) rhs).id.equals(id);
 	}
 
@@ -126,7 +131,7 @@ public class ProfileAttributes implements Serializable, Cloneable, Comparable, D
 		Object clone = null;
 		try {
 			clone = super.clone();
-		} catch (CloneNotSupportedException cantHappen) {}
+		} catch (CloneNotSupportedException ignored) {}
 		return clone;
 	}
 

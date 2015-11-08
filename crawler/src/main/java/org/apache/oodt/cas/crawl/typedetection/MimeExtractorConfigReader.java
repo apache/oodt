@@ -16,22 +16,27 @@
  */
 package org.apache.oodt.cas.crawl.typedetection;
 
-//OODT imports
+import org.apache.oodt.cas.crawl.structs.exceptions.CrawlerActionException;
+import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.commons.xml.XMLUtils;
 
-//JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.LinkedList;
+import com.google.common.base.Strings;
 
-//W3C imports
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//JDK imports
+//W3C imports
 //Google imports
-import com.google.common.base.Strings;
 
 /**
  * Static reader class for {@link MimeExtractor}s.
@@ -41,12 +46,14 @@ import com.google.common.base.Strings;
  */
 public final class MimeExtractorConfigReader implements
         MimeExtractorConfigMetKeys {
-
+  private static Logger LOG = Logger.getLogger(MimeExtractorConfigReader.class.getName());
     private MimeExtractorConfigReader() throws InstantiationException {
         throw new InstantiationException("Don't construct reader classes!");
     }
 
-    public static MimeExtractorRepo read(String mapFilePath) throws Exception {
+    public static MimeExtractorRepo read(String mapFilePath)
+        throws ClassNotFoundException, FileNotFoundException, MetExtractionException, InstantiationException,
+        IllegalAccessException, CrawlerActionException {
         try {
             Document doc = XMLUtils.getDocumentRoot(new FileInputStream(
                     mapFilePath));
@@ -54,7 +61,7 @@ public final class MimeExtractorConfigReader implements
 
             MimeExtractorRepo extractorRepo = new MimeExtractorRepo();
             extractorRepo.setMagic(Boolean.valueOf(
-                    root.getAttribute(MAGIC_ATTR)).booleanValue());
+                root.getAttribute(MAGIC_ATTR)));
             String mimeTypeFile = PathUtils.replaceEnvVariables(root
                   .getAttribute(MIME_REPO_ATTR));
             if (!mimeTypeFile.startsWith("/")) {
@@ -78,9 +85,10 @@ public final class MimeExtractorConfigReader implements
                     if (preCondsElem != null) {
                        NodeList preCondComparators = 
                           preCondsElem.getElementsByTagName(PRECONDITION_COMPARATOR_TAG);
-                       for (int k = 0; k < preCondComparators.getLength(); k++)
-                           preCondComparatorIds.add(((Element) preCondComparators
-                                   .item(k)).getAttribute(ID_ATTR));
+                       for (int k = 0; k < preCondComparators.getLength(); k++) {
+                         preCondComparatorIds.add(((Element) preCondComparators
+                             .item(k)).getAttribute(ID_ATTR));
+                       }
                     }
                     // This seems wrong, so added support for CLASS_ATTR while still
                     //  supporting EXTRACTOR_CLASS_TAG as an attribute for specifying
@@ -145,10 +153,11 @@ public final class MimeExtractorConfigReader implements
                            NodeList preCondComparators = preCondsElem
                                  .getElementsByTagName(PRECONDITION_COMPARATOR_TAG);
                            LinkedList<String> preCondComparatorIds = new LinkedList<String>();
-                           for (int k = 0; k < preCondComparators.getLength(); k++)
-                               preCondComparatorIds
-                                       .add(((Element) preCondComparators.item(k))
-                                               .getAttribute(ID_ATTR));
+                           for (int k = 0; k < preCondComparators.getLength(); k++) {
+                             preCondComparatorIds
+                                 .add(((Element) preCondComparators.item(k))
+                                     .getAttribute(ID_ATTR));
+                           }
                            spec.setPreConditionComparatorIds(preCondComparatorIds);
                         }
 
@@ -158,18 +167,33 @@ public final class MimeExtractorConfigReader implements
                 extractorRepo.addMetExtractorSpecs(mimeType, specs);
             }
             return extractorRepo;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+        } catch (IllegalAccessException e) {
+          LOG.log(Level.SEVERE, e.getMessage());
+          throw e;
+        } catch (InstantiationException e) {
+          LOG.log(Level.SEVERE, e.getMessage());
+          throw e;
+        } catch (MetExtractionException e) {
+          LOG.log(Level.SEVERE, e.getMessage());
+          throw e;
+        } catch (FileNotFoundException e) {
+          LOG.log(Level.SEVERE, e.getMessage());
+          throw e;
+        } catch (ClassNotFoundException e) {
+          LOG.log(Level.SEVERE, e.getMessage());
+          throw e;
+        } catch (CrawlerActionException e) {
+          LOG.log(Level.SEVERE, e.getMessage());
+          throw e;
         }
     }
 
-    private static String getNamingConventionId(Element parent) throws Exception {
+    private static String getNamingConventionId(Element parent) throws CrawlerActionException {
        NodeList namingConventions = parent
              .getElementsByTagName(NAMING_CONVENTION_TAG);
        if (namingConventions != null && namingConventions.getLength() > 0) {
           if (namingConventions.getLength() > 1) {
-             throw new Exception("Can only have 1 '"
+             throw new CrawlerActionException("Can only have 1 '"
                    + NAMING_CONVENTION_TAG + "' tag per mimetype");
           }
           Element namingConvention = (Element) namingConventions.item(0);
@@ -183,9 +207,9 @@ public final class MimeExtractorConfigReader implements
         Element elem = XMLUtils.getFirstElement(elemName, root);
         if (elem != null) {
             filePath = elem.getAttribute(FILE_ATTR);
-            if (Boolean.valueOf(elem.getAttribute(ENV_REPLACE_ATTR))
-                    .booleanValue())
-                filePath = PathUtils.replaceEnvVariables(filePath);
+            if (Boolean.valueOf(elem.getAttribute(ENV_REPLACE_ATTR))) {
+              filePath = PathUtils.replaceEnvVariables(filePath);
+            }
         }
         return filePath;
     }

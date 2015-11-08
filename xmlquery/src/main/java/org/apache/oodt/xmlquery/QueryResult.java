@@ -18,17 +18,18 @@
 
 package org.apache.oodt.xmlquery;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import org.apache.oodt.product.Retriever;
 import org.apache.oodt.commons.util.Documentable;
+import org.apache.oodt.product.Retriever;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Results of a query.
@@ -58,15 +59,17 @@ public class QueryResult implements Serializable, Cloneable, Documentable {
 	 * @param node The &lt;queryResultSet&gt; node.
 	 */
 	public QueryResult(Node node) {
-		if (!"queryResultSet".equals(node.getNodeName()))
-			throw new IllegalArgumentException("QueryResult must be constructed from <queryResultSet> node, not <"
-				+ node.getNodeName() + ">");
+		if (!"queryResultSet".equals(node.getNodeName())) {
+		  throw new IllegalArgumentException("QueryResult must be constructed from <queryResultSet> node, not <"
+											 + node.getNodeName() + ">");
+		}
 		list = new ArrayList();
 		NodeList children = node.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i) {
 			Node child = children.item(i);
-			if (child.getNodeType() == Node.ELEMENT_NODE && "resultElement".equals(child.getNodeName()))
-				list.add(new Result(child));
+			if (child.getNodeType() == Node.ELEMENT_NODE && "resultElement".equals(child.getNodeName())) {
+			  list.add(new Result(child));
+			}
 		}
 	}
 
@@ -88,10 +91,10 @@ public class QueryResult implements Serializable, Cloneable, Documentable {
 
 	public Node toXML(Document doc) throws DOMException {
 		Element root = doc.createElement("queryResultSet");
-		for (Iterator i = list.iterator(); i.hasNext();) {
-			Result r = (Result) i.next();
-			root.appendChild(r.toXML(doc));
-		}
+	  for (Object aList : list) {
+		Result r = (Result) aList;
+		root.appendChild(r.toXML(doc));
+	  }
 		return root;
 	}
 
@@ -100,7 +103,9 @@ public class QueryResult implements Serializable, Cloneable, Documentable {
 	}
 
 	public boolean equals(Object obj) {
-		if (obj == this) return true;
+		if (obj == this) {
+		  return true;
+		}
 		if (obj instanceof QueryResult) {
 			QueryResult rhs = (QueryResult) obj;
 			return list.equals(rhs.list);
@@ -121,18 +126,18 @@ public class QueryResult implements Serializable, Cloneable, Documentable {
 	}
 
 	public void setRetriever(Retriever retriever) {
-		for (Iterator i = list.iterator(); i.hasNext();) {
-			Result r = (Result) i.next();
-			r.setRetriever(retriever);
-		}
+	  for (Object aList : list) {
+		Result r = (Result) aList;
+		r.setRetriever(retriever);
+	  }
 	}
 
 	public long getSize() {
 		long size = 0;
-		for (Iterator i = list.iterator(); i.hasNext();) {
-			Result r = (Result) i.next();
-			size += r.getSize();
-		}
+	  for (Object aList : list) {
+		Result r = (Result) aList;
+		size += r.getSize();
+	  }
 		return size;
 	}
 
@@ -141,4 +146,6 @@ public class QueryResult implements Serializable, Cloneable, Documentable {
 
 	/** Serial version unique ID. */
 	static final long serialVersionUID = 9156030927051226848L;
+
+
 }

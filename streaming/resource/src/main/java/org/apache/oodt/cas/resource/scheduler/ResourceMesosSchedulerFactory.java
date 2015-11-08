@@ -91,7 +91,7 @@ public class ResourceMesosSchedulerFactory implements SchedulerFactory {
             return scheduler;
         } catch(IOException ioe) {
             LOG.log(Level.SEVERE,"Exception detected: "+ioe.getMessage());
-            ioe.printStackTrace();
+            ioLOG.log(Level.SEVERE, e.getMessage());
             throw new RuntimeException(ioe);
         }
     }

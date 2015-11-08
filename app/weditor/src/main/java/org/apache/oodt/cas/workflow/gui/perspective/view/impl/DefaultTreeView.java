@@ -28,7 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Stack;
 import javax.swing.JLabel;
@@ -86,8 +86,9 @@ public class DefaultTreeView extends View {
         // node.getChildAt(i)).getUserObject());
         TreePath treePath = this.getTreePath(
             (DefaultMutableTreeNode) node.getChildAt(i), graph);
-        if (treePath != null)
+        if (treePath != null) {
           return treePath;
+        }
       }
       return null;
     }
@@ -98,15 +99,17 @@ public class DefaultTreeView extends View {
     Stack<DefaultMutableTreeNode> stack = new Stack<DefaultMutableTreeNode>();
     DefaultMutableTreeNode baseNode = (DefaultMutableTreeNode) currentPath
         .getLastPathComponent();
-    for (int i = 0; i < baseNode.getChildCount(); i++)
+    for (int i = 0; i < baseNode.getChildCount(); i++) {
       stack.push((DefaultMutableTreeNode) baseNode.getChildAt(i));
+    }
     while (!stack.empty()) {
       DefaultMutableTreeNode node = stack.pop();
       if (node.getUserObject().equals("static-metadata")) {
-        for (int i = 0; i < node.getChildCount(); i++)
+        for (int i = 0; i < node.getChildCount(); i++) {
           stack.push((DefaultMutableTreeNode) node.getChildAt(i));
-      } else if (node.getUserObject() instanceof HashMap) {
-        String key = (String) ((HashMap<String, String>) node.getUserObject())
+        }
+      } else if (node.getUserObject() instanceof ConcurrentHashMap) {
+        String key = (String) ((ConcurrentHashMap<String, String>) node.getUserObject())
             .keySet().iterator().next();
         if (lookingForPath.equals(key)) {
           return new TreePath(node.getPath());
@@ -114,8 +117,9 @@ public class DefaultTreeView extends View {
           lookingForPath = lookingForPath
               .substring(lookingForPath.indexOf("/") + 1);
           stack.clear();
-          for (int i = 0; i < node.getChildCount(); i++)
+          for (int i = 0; i < node.getChildCount(); i++) {
             stack.add((DefaultMutableTreeNode) node.getChildAt(i));
+          }
         }
       }
     }
@@ -131,16 +135,18 @@ public class DefaultTreeView extends View {
   @Override
   public void refreshView(final ViewState state) {
     Rectangle visibleRect = null;
-    if (this.tree != null)
+    if (this.tree != null) {
       visibleRect = this.tree.getVisibleRect();
+    }
 
     this.removeAll();
 
     this.actionsMenu = this.createPopupMenu(state);
 
     DefaultMutableTreeNode root = new DefaultMutableTreeNode("WORKFLOWS");
-    for (ModelGraph graph : state.getGraphs())
+    for (ModelGraph graph : state.getGraphs()) {
       root.add(this.buildTree(graph, state));
+    }
     tree = new JTree(root);
     tree.setShowsRootHandles(true);
     tree.setRootVisible(false);
@@ -165,9 +171,10 @@ public class DefaultTreeView extends View {
         }
       } else if (Boolean.parseBoolean(state
           .getFirstPropertyValue(EXPAND_PRECONDITIONS))) {
-        if (treePath == null)
+        if (treePath == null) {
           treePath = this.getTreePath(root, state.getSelected()
-              .getPreConditions());
+                                                 .getPreConditions());
+        }
         DefaultMutableTreeNode baseNode = (DefaultMutableTreeNode) treePath
             .getLastPathComponent();
         for (int i = 0; i < baseNode.getChildCount(); i++) {
@@ -180,9 +187,10 @@ public class DefaultTreeView extends View {
         }
       } else if (Boolean.parseBoolean(state
           .getFirstPropertyValue(EXPAND_POSTCONDITIONS))) {
-        if (treePath == null)
+        if (treePath == null) {
           treePath = this.getTreePath(root, state.getSelected()
-              .getPostConditions());
+                                                 .getPostConditions());
+        }
         DefaultMutableTreeNode baseNode = (DefaultMutableTreeNode) treePath
             .getLastPathComponent();
         for (int i = 0; i < baseNode.getChildCount(); i++) {
@@ -222,7 +230,7 @@ public class DefaultTreeView extends View {
             state.setProperty(EXPAND_POSTCONDITIONS, Boolean.toString(node
                 .getUserObject().equals("post-conditions")));
             DefaultTreeView.this.notifyListeners();
-          } else if (node.getUserObject() instanceof HashMap) {
+          } else if (node.getUserObject() instanceof ConcurrentHashMap) {
             DefaultMutableTreeNode metNode = null;
             String group = null;
             Object[] path = e.getPath().getPath();
@@ -230,15 +238,16 @@ public class DefaultTreeView extends View {
               if (((DefaultMutableTreeNode) path[i]).getUserObject() instanceof ModelGraph) {
                 metNode = (DefaultMutableTreeNode) path[i];
                 break;
-              } else if (((DefaultMutableTreeNode) path[i]).getUserObject() instanceof HashMap) {
-                if (group == null)
-                  group = (String) ((HashMap<String, String>) ((DefaultMutableTreeNode) path[i])
+              } else if (((DefaultMutableTreeNode) path[i]).getUserObject() instanceof ConcurrentHashMap) {
+                if (group == null) {
+                  group = (String) ((ConcurrentHashMap<String, String>) ((DefaultMutableTreeNode) path[i])
                       .getUserObject()).keySet().iterator().next();
-                else
-                  group = (String) ((HashMap<String, String>) ((DefaultMutableTreeNode) path[i])
+                } else {
+                  group = (String) ((ConcurrentHashMap<String, String>) ((DefaultMutableTreeNode) path[i])
                       .getUserObject()).keySet().iterator().next()
-                      + "/"
-                      + group;
+                          + "/"
+                          + group;
+                }
               }
             }
             ModelGraph graph = (ModelGraph) metNode.getUserObject();
@@ -282,15 +291,15 @@ public class DefaultTreeView extends View {
           panel.add(idLabel, BorderLayout.CENTER);
           panel.setBackground(selected ? Color.lightGray : Color.white);
           return panel;
-        } else if (node.getUserObject() instanceof HashMap) {
+        } else if (node.getUserObject() instanceof ConcurrentHashMap) {
           JPanel panel = new JPanel();
           panel.setLayout(new BorderLayout());
-          String group = (String) ((HashMap<String, String>) node
+          String group = (String) ((ConcurrentHashMap<String, String>) node
               .getUserObject()).keySet().iterator().next();
           JLabel nameLabel = new JLabel(group + " : ");
           nameLabel.setForeground(Color.blue);
           nameLabel.setBackground(Color.white);
-          JLabel valueLabel = new JLabel(((HashMap<String, String>) node
+          JLabel valueLabel = new JLabel(((ConcurrentHashMap<String, String>) node
               .getUserObject()).get(group));
           valueLabel.setForeground(Color.darkGray);
           valueLabel.setBackground(Color.white);
@@ -312,8 +321,9 @@ public class DefaultTreeView extends View {
               .getSelectionPath().getLastPathComponent();
           if (node.getUserObject() instanceof String
               && !(node.getUserObject().equals("pre-conditions") || node
-                  .getUserObject().equals("post-conditions")))
+                  .getUserObject().equals("post-conditions"))) {
             return;
+          }
           orderSubMenu.setEnabled(node.getUserObject() instanceof ModelGraph
               && !((ModelGraph) node.getUserObject()).isCondition()
               && ((ModelGraph) node.getUserObject()).getParent() != null);
@@ -338,8 +348,9 @@ public class DefaultTreeView extends View {
         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
         JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
     this.add(this.scrollPane, BorderLayout.CENTER);
-    if (visibleRect != null)
+    if (visibleRect != null) {
       this.tree.scrollRectToVisible(visibleRect);
+    }
 
     this.revalidate();
   }
@@ -349,13 +360,16 @@ public class DefaultTreeView extends View {
     DefaultMutableTreeNode metadataNode = new DefaultMutableTreeNode(
         "static-metadata");
     Metadata staticMetadata = new Metadata();
-    if (graph.getInheritedStaticMetadata(state) != null)
+    if (graph.getInheritedStaticMetadata(state) != null) {
       staticMetadata.replaceMetadata(graph.getInheritedStaticMetadata(state));
-    if (graph.getModel().getStaticMetadata() != null)
+    }
+    if (graph.getModel().getStaticMetadata() != null) {
       staticMetadata.replaceMetadata(graph.getModel().getStaticMetadata());
+    }
     this.addMetadataNodes(metadataNode, staticMetadata);
-    if (!metadataNode.isLeaf())
+    if (!metadataNode.isLeaf()) {
       node.add(metadataNode);
+    }
 
     if (graph.getPreConditions() != null) {
       DefaultMutableTreeNode preConditions = new DefaultMutableTreeNode(
@@ -377,23 +391,25 @@ public class DefaultTreeView extends View {
       }
       node.add(postConditions);
     }
-    for (ModelGraph child : graph.getChildren())
-      if (!GuiUtils.isDummyNode(child.getModel()))
+    for (ModelGraph child : graph.getChildren()) {
+      if (!GuiUtils.isDummyNode(child.getModel())) {
         node.add(this.buildTree(child, state));
+      }
+    }
     return node;
   }
 
   private void addMetadataNodes(DefaultMutableTreeNode metadataNode,
       Metadata staticMetadata) {
     for (String group : staticMetadata.getGroups()) {
-      Object userObj = null;
+      Object userObj;
       if (staticMetadata.getMetadata(group) != null) {
-        HashMap<String, String> map = new HashMap<String, String>();
+        ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
         map.put(group,
             StringUtils.join(staticMetadata.getAllMetadata(group), ","));
         userObj = map;
       } else {
-        HashMap<String, String> map = new HashMap<String, String>();
+        ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
         map.put(group, null);
         userObj = map;
       }
@@ -424,10 +440,11 @@ public class DefaultTreeView extends View {
             // node.getUserObject().equals("post-conditions"))) {
             ModelGraph graph = state.getSelected();
             if (Boolean.parseBoolean(state
-                .getFirstPropertyValue(EXPAND_PRECONDITIONS)))
+                .getFirstPropertyValue(EXPAND_PRECONDITIONS))) {
               graphToFocus = graph.getPreConditions();
-            else
+            } else {
               graphToFocus = graph.getPostConditions();
+            }
           } else if (node.getUserObject() instanceof ModelGraph) {
             graphToFocus = (ModelGraph) node.getUserObject();
           }
@@ -454,11 +471,13 @@ public class DefaultTreeView extends View {
         ModelGraph graph = state.getSelected();
         ModelGraph parent = graph.getParent();
         if (e.getActionCommand().equals(TO_FRONT_ITEM_NAME)) {
-          if (parent.getChildren().remove(graph))
+          if (parent.getChildren().remove(graph)) {
             parent.getChildren().add(0, graph);
+          }
         } else if (e.getActionCommand().equals(TO_BACK_ITEM_NAME)) {
-          if (parent.getChildren().remove(graph))
+          if (parent.getChildren().remove(graph)) {
             parent.getChildren().add(graph);
+          }
         } else if (e.getActionCommand().equals(FORWARD_ITEM_NAME)) {
           int index = parent.getChildren().indexOf(graph);
           if (index != -1) {

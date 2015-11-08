@@ -18,11 +18,6 @@
 package org.apache.oodt.cas.workflow.engine.runner;
 
 //JDK imports
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OODT imports
 import org.apache.oodt.cas.resource.structs.Job;
 import org.apache.oodt.cas.resource.structs.exceptions.JobExecutionException;
 import org.apache.oodt.cas.resource.system.XmlRpcResourceManagerClient;
@@ -32,6 +27,12 @@ import org.apache.oodt.cas.workflow.metadata.CoreMetKeys;
 import org.apache.oodt.cas.workflow.structs.TaskJobInput;
 import org.apache.oodt.cas.workflow.structs.WorkflowStatus;
 import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//OODT imports
 
 /**
  * 
@@ -62,7 +63,7 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
    * @see org.apache.oodt.cas.workflow.engine.runner.EngineRunner#execute(org.apache.oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public void execute(TaskProcessor taskProcessor) throws Exception {
+  public void execute(TaskProcessor taskProcessor) {
     Job workflowTaskJob = new Job();
     WorkflowTask workflowTask = getTaskFromProcessor(taskProcessor);
     workflowTaskJob.setName(workflowTask.getTaskId());
@@ -70,7 +71,7 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
         .setJobInstanceClassName("org.apache.oodt.cas.workflow.structs.TaskJob");
     workflowTaskJob
         .setJobInputClassName("org.apache.oodt.cas.workflow.structs.TaskJobInput");
-    workflowTaskJob.setLoadValue(new Integer(2));
+    workflowTaskJob.setLoadValue(2);
     workflowTaskJob.setQueueName(workflowTask.getTaskConfig().getProperty(
         QUEUE_NAME) != null ? workflowTask.getTaskConfig().getProperty(
         QUEUE_NAME) : DEFAULT_QUEUE_NAME);
@@ -101,7 +102,7 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
    * @see org.apache.oodt.cas.workflow.engine.EngineRunner#shutdown()
    */
   @Override
-  public void shutdown() throws Exception {
+  public void shutdown() {
     // TODO Auto-generated method stub
 
   }
@@ -111,7 +112,7 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
    * @see org.apache.oodt.cas.workflow.engine.runner.EngineRunner#hasOpenSlots(org.apache.oodt.cas.workflow.engine.processor.TaskProcessor)
    */
   @Override
-  public boolean hasOpenSlots(TaskProcessor taskProcessor) throws Exception {
+  public boolean hasOpenSlots(TaskProcessor taskProcessor) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -144,10 +145,12 @@ public class ResourceRunner extends AbstractEngineRunnerBase implements CoreMetK
         LOG.log(Level.WARNING, "Attempt to kill " + "current resmgr job: ["
             + this.currentJobId + "]: failed");
         return false;
-      } else
+      } else {
         return true;
-    } else
+      }
+    } else {
       return false;
+    }
   }
 
 

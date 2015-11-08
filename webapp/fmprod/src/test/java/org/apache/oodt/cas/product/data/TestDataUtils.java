@@ -62,7 +62,7 @@ public class TestDataUtils extends TestCase {
 
 		Metadata metadata = new Metadata();
 
-		String workingDirPath = null;
+		String workingDirPath;
 		workingDir = Files.createTempDir();
 		workingDirPath = workingDir.getAbsolutePath();
 		workingDir.deleteOnExit();

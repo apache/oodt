@@ -26,7 +26,7 @@ package org.apache.oodt.product.handlers.ofsn.metadata;
  */
 public interface XMLQueryMetKeys {
     
-    public static final String OFSN = "OFSN";
+    String OFSN = "OFSN";
     
-    public static final String RETURN_TYPE = "RT";
+    String RETURN_TYPE = "RT";
 }

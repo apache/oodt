@@ -26,6 +26,6 @@ import org.apache.oodt.cas.filemgr.structs.Product;
  */
 public interface ProductIdGenerator {
 	
-	public String generateId(Product product);
+	String generateId(Product product);
 
 }

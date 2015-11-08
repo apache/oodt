@@ -79,13 +79,15 @@ public class VirtualFile {
                 vf.addChild(this);
             } else if (st.countTokens() > 0) {
                 this.regExp = st.nextToken();
-                if (path.startsWith("/"))
+                if (path.startsWith("/")) {
                     VirtualFile.createRootDir().addChild(this);
+                }
             } else {
                 this.copy(VirtualFile.createRootDir());
             }
-        } else
+        } else {
             this.copy(VirtualFile.createRootDir());
+        }
     }
 
     public VirtualFile(VirtualFile root, String path, boolean isDir) {
@@ -106,10 +108,12 @@ public class VirtualFile {
                 }
                 this.regExp = curRegExp;
                 vf.addChild(this);
-            } else
+            } else {
                 this.copy(root);
-        } else
+            }
+        } else {
             this.copy(root);
+        }
     }
 
     public static VirtualFile createRootDir() {
@@ -120,19 +124,21 @@ public class VirtualFile {
 
     public VirtualFile getRootDir() {
         VirtualFile vf = this;
-        while (vf.getParentFile() != null)
+        while (vf.getParentFile() != null) {
             vf = vf.getParentFile();
+        }
         return vf;
     }
 
     public static VirtualFile mergeTwoFiles(VirtualFile vf1, VirtualFile vf2) {
-        if (vf1.isDir && vf1.isDir) {
+        if (vf1.isDir) {
             VirtualFile newFile = VirtualFile.createRootDir();
             newFile.children.addAll(vf1.children);
             newFile.children.addAll(vf2.children);
             return newFile;
-        } else
+        } else {
             return null;
+        }
     }
 
     public void addChild(VirtualFile vf) {
@@ -141,10 +147,11 @@ public class VirtualFile {
                     vf.isDir);
             if (existingChildWithSameName == null) {
                 children.add(vf);
-                if (vf.isDir())
+                if (vf.isDir()) {
                     allowNewDirs = false;
-                else
+                } else {
                     allowNewFiles = false;
+                }
                 vf.parent = this;
             } else {
                 vf.copy(existingChildWithSameName);
@@ -160,8 +167,9 @@ public class VirtualFile {
         for (VirtualFile vf : children) {
             // System.out.println("GETCHILD: " + regExp + " " + vf.regExp);
             if ((regExp.equals(vf.regExp) || Pattern.matches(vf.regExp, regExp))
-                    && vf.isDir == isDirectory)
+                    && vf.isDir == isDirectory) {
                 return vf;
+            }
         }
         return null;
     }
@@ -176,8 +184,9 @@ public class VirtualFile {
         while (st.hasMoreTokens()) {
             String curRegExp = st.nextToken();
             if (st.hasMoreTokens()) {
-                if ((vf = vf.getChild(curRegExp, true)) == null)
+                if ((vf = vf.getChild(curRegExp, true)) == null) {
                     return null;
+                }
             } else {
                 return vf.getChild(curRegExp, isDirectory);
             }
@@ -186,18 +195,17 @@ public class VirtualFile {
     }
 
     public boolean hasChild(VirtualFile vf) {
-        if (children.contains(vf))
-            return true;
-        return false;
+        return children.contains(vf);
     }
 
     public String getAbsolutePath() {
-        if (regExp == null)
+        if (regExp == null) {
             return null;
-        StringBuffer path = new StringBuffer(this.regExp);
+        }
+        StringBuilder path = new StringBuilder(this.regExp);
         VirtualFile parent = this.parent;
         while (parent != null) {
-            path.insert(0, (parent.regExp != "/" ? parent.regExp : "") + "/");
+            path.insert(0, (!parent.regExp.equals("/") ? parent.regExp : "") + "/");
             parent = parent.parent;
         }
         return path.toString();
@@ -213,16 +221,18 @@ public class VirtualFile {
 
     public void setNoDirs(boolean noDirs) {
         if (this.isDir) {
-            if (noDirs)
+            if (noDirs) {
                 allowNewDirs = false;
+            }
             this.noDirs = noDirs;
         }
     }
 
     public void setNoFiles(boolean noFiles) {
         if (this.isDir) {
-            if (noFiles)
+            if (noFiles) {
                 allowNewFiles = false;
+            }
             this.noFiles = noFiles;
         }
     }
@@ -263,14 +273,15 @@ public class VirtualFile {
         if (obj instanceof VirtualFile) {
             VirtualFile compareFile = (VirtualFile) obj;
             if (compareFile.getRegExp().equals(regExp)
-                    && compareFile.isDir() == this.isDir)
+                    && compareFile.isDir() == this.isDir) {
                 return true;
+            }
         }
         return false;
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer(
+        StringBuilder sb = new StringBuilder(
                 "-<VirtualFile>\t : allowNewDirs/noDirs\t : allowNewFiles/noFiles\n------------\n");
         LinkedList<VirtualFile> printFiles = new LinkedList<VirtualFile>();
         printFiles.add(this);
@@ -283,13 +294,24 @@ public class VirtualFile {
         StringBuffer output = new StringBuffer("");
         for (VirtualFile vf : list) {
             output.append(spacer);
-            output.append(vf.getRegExp()
-                    + (vf.isDir && !vf.regExp.equals("/") ? "/" : "") + "\t : "
-                    + vf.allowNewDirs + "/" + vf.noDirs + "\t\t : "
-                    + vf.allowNewFiles + "/" + vf.noFiles + "\n");
+            output.append(vf.getRegExp()).append(vf.isDir && !vf.regExp.equals("/") ? "/" : "").append("\t : ")
+                  .append(vf.allowNewDirs).append("/").append(vf.noDirs).append("\t\t : ").append(vf.allowNewFiles)
+                  .append("/").append(vf.noFiles).append("\n");
             output.append(printVirtualFiles(vf.getChildren(), " " + spacer));
         }
         return output;
     }
 
+    @Override
+    public int hashCode() {
+        int result = regExp != null ? regExp.hashCode() : 0;
+        result = 31 * result + (children != null ? children.hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        result = 31 * result + (noDirs ? 1 : 0);
+        result = 31 * result + (noFiles ? 1 : 0);
+        result = 31 * result + (isDir ? 1 : 0);
+        result = 31 * result + (allowNewFiles ? 1 : 0);
+        result = 31 * result + (allowNewDirs ? 1 : 0);
+        return result;
+    }
 }

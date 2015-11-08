@@ -46,7 +46,7 @@ public interface FilemgrMetExtractor {
      * @return Extracted {@link Metadata} derived from the existing
      *         {@link Metadata} and {@link Product} provided.
      */
-    public Metadata extractMetadata(Product product, Metadata met)
+    Metadata extractMetadata(Product product, Metadata met)
             throws MetExtractionException;
 
     /**
@@ -56,5 +56,5 @@ public interface FilemgrMetExtractor {
      *            The {@link Properties} object to configure this Metadata
      *            extractor with.
      */
-    public void configure(Properties props);
+    void configure(Properties props);
 }

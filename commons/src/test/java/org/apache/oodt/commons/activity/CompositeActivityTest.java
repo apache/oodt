@@ -40,11 +40,11 @@ public class CompositeActivityTest extends TestCase {
 		try {
 			new CompositeActivity(null);
 			fail("Can contruct CompositeActivity with null collection");
-		} catch (IllegalArgumentException good) {}
+		} catch (IllegalArgumentException ignored) {}
 		try {
 			new CompositeActivity(Collections.singleton("hello"));
 			fail("Can construct CompositeActivity with non-Activity in collection");
-		} catch (IllegalArgumentException good) {}
+		} catch (IllegalArgumentException ignored) {}
 		CompositeActivity ca = new CompositeActivity(Collections.singleton(new TestActivity()));
 		Incident i = new Incident();
 		ca.log(i);

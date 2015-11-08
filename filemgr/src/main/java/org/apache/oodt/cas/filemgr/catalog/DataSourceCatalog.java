@@ -17,7 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.catalog;
 
-//OODT imports
 import org.apache.oodt.cas.filemgr.structs.BooleanQueryCriteria;
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -47,7 +46,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -71,7 +69,8 @@ import javax.sql.DataSource;
  */
 public class DataSourceCatalog implements Catalog {
 
-    /* our sql data source */
+  public static final int INT = 60;
+  /* our sql data source */
     protected DataSource dataSource = null;
 
     /* our log stream */
@@ -123,11 +122,11 @@ public class DataSourceCatalog implements Catalog {
     /**
      * Constructor that assumes productIdString=false
      * to support current subclasses.
-     * @param ds
-     * @param valLayer
-     * @param fieldId
-     * @param pageSize
-     * @param cacheUpdateMin
+     * @param ds the datasource.
+     * @param valLayer the validation layer
+     * @param fieldId the feildid flag
+     * @param pageSize the page size
+     * @param cacheUpdateMin the min cache update.
      */
     public DataSourceCatalog(DataSource ds, ValidationLayer valLayer,
         boolean fieldId, int pageSize, long cacheUpdateMin) {
@@ -142,53 +141,50 @@ public class DataSourceCatalog implements Catalog {
      */
     public synchronized void addMetadata(Metadata m, Product product)
             throws CatalogException {
-        List<Element> metadataTypes = null;
+        List<Element> metadataTypes;
 
         try {
             metadataTypes = validationLayer.getElements(product
                     .getProductType());
         } catch (ValidationLayerException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
-                            + ": Message: " + e.getMessage());
+                            + ": Message: " + e.getMessage(), e);
         }
 
-        for (Iterator<Element> i = metadataTypes.iterator(); i.hasNext();) {
-            Element element = i.next();
-            List<String> values = m.getAllMetadata(element.getElementName());
+      for (Element element : metadataTypes) {
+        List<String> values = m.getAllMetadata(element.getElementName());
 
-            if (values == null) {
-                LOG.log(Level.WARNING, "No Metadata specified for product ["
-                        + product.getProductName() + "] for required field ["
-                        + element.getElementName()
-                        + "]: Attempting to continue processing metadata");
-                continue;
-            }
-
-            for (Iterator<String> j = values.iterator(); j.hasNext();) {
-                String value = j.next();
-
-                try {
-                    addMetadataValue(element, product, value);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    LOG
-                            .log(
-                                    Level.WARNING,
-                                    "Exception ingesting metadata. Error inserting field: ["
-                                            + element.getElementId()
-                                            + "=>"
-                                            + value
-                                            + "]: for product: ["
-                                            + product.getProductName()
-                                            + "]: Message: "
-                                            + e.getMessage()
-                                            + ": Attempting to continue processing metadata");
-                }
-            }
+        if (values == null) {
+          LOG.log(Level.WARNING, "No Metadata specified for product ["
+                                 + product.getProductName() + "] for required field ["
+                                 + element.getElementName()
+                                 + "]: Attempting to continue processing metadata");
+          continue;
         }
+
+        for (String value : values) {
+          try {
+            addMetadataValue(element, product, value);
+          } catch (Exception e) {
+            LOG.log(Level.SEVERE, e.getMessage());
+            LOG
+                .log(
+                    Level.WARNING,
+                    "Exception ingesting metadata. Error inserting field: ["
+                    + element.getElementId()
+                    + "=>"
+                    + value
+                    + "]: for product: ["
+                    + product.getProductName()
+                    + "]: Message: "
+                    + e.getMessage()
+                    + ": Attempting to continue processing metadata");
+          }
+        }
+      }
 
     }
 
@@ -200,47 +196,44 @@ public class DataSourceCatalog implements Catalog {
      */
     public synchronized void removeMetadata(Metadata m, Product product)
             throws CatalogException {
-        List<Element> metadataTypes = null;
+        List<Element> metadataTypes;
 
         try {
             metadataTypes = validationLayer.getElements(product
                     .getProductType());
         } catch (ValidationLayerException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new CatalogException(
                     "ValidationLayerException when trying to obtain element list for product type: "
                             + product.getProductType().getName()
-                            + ": Message: " + e.getMessage());
+                            + ": Message: " + e.getMessage(), e);
         }
 
-        for (Iterator<Element> i = metadataTypes.iterator(); i.hasNext();) {
-            Element element = i.next();
-            List<String> values = m.getAllMetadata(element.getElementName());
+      for (Element element : metadataTypes) {
+        List<String> values = m.getAllMetadata(element.getElementName());
 
-            if (values != null) {
-                for (Iterator<String> j = values.iterator(); j.hasNext();) {
-                    String value = j.next();
-
-                    try {
-                        removeMetadataValue(element, product, value);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        LOG
-                                .log(
-                                        Level.WARNING,
-                                        "Exception removing metadata. Error deleting field: ["
-                                                + element.getElementId()
-                                                + "=>"
-                                                + value
-                                                + "]: for product: ["
-                                                + product.getProductName()
-                                                + "]: Message: "
-                                                + e.getMessage()
-                                                + ": Attempting to continue processing metadata");
-                    }
-                }
+        if (values != null) {
+          for (String value : values) {
+            try {
+              removeMetadataValue(element, product, value);
+            } catch (Exception e) {
+              LOG.log(Level.SEVERE, e.getMessage());
+              LOG
+                  .log(
+                      Level.WARNING,
+                      "Exception removing metadata. Error deleting field: ["
+                      + element.getElementId()
+                      + "=>"
+                      + value
+                      + "]: for product: ["
+                      + product.getProductName()
+                      + "]: Message: "
+                      + e.getMessage()
+                      + ": Attempting to continue processing metadata");
             }
+          }
         }
+      }
     }
 
     /*
@@ -259,17 +252,14 @@ public class DataSourceCatalog implements Catalog {
             conn.setAutoCommit(false);
             statement = conn.createStatement();
 
-            String addProductSql = null;
-            String productTypeIdStr = null;
+            String addProductSql;
+            String productTypeIdStr;
 
-            if (fieldIdStringFlag) {
-                productTypeIdStr = "'"
-                        + product.getProductType().getProductTypeId() + "'";
-            } else {
-                productTypeIdStr = product.getProductType().getProductTypeId();
-            }
+          productTypeIdStr = fieldIdStringFlag ? "'"
+                                                 + product.getProductType().getProductTypeId() + "'"
+                                               : product.getProductType().getProductTypeId();
 
-						if (productIdString==false) {
+						if (!productIdString) {
 							
 	            addProductSql = "INSERT INTO products (product_name, product_structure, product_transfer_status, product_type_id) "
 	                + "VALUES ('"
@@ -286,7 +276,7 @@ public class DataSourceCatalog implements Catalog {
 				        statement.execute(addProductSql);
 				
 				        // read "product_id" value that was automatically assigned by the database
-				        String productId = new String();
+				        String productId = "";
 				
 				        String getProductIdSql = "SELECT MAX(product_id) AS max_id FROM products";
 				
@@ -303,7 +293,9 @@ public class DataSourceCatalog implements Catalog {
 							
 							// reuse the existing product id if possible, or generate a new UUID string
             	String productId = product.getProductId();
-            	if (!StringUtils.hasText(productId)) productId = UUID.randomUUID().toString();
+            	if (!StringUtils.hasText(productId)) {
+                  productId = UUID.randomUUID().toString();
+                }
             	// insert product in database
             	addProductSql = "INSERT INTO products (product_id, product_name, product_structure, product_transfer_status, product_type_id, product_datetime) "
                     + "VALUES ('"
@@ -329,17 +321,19 @@ public class DataSourceCatalog implements Catalog {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception adding product. Message: "
                     + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback addProduct transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -348,7 +342,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -357,7 +350,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -367,7 +359,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -395,9 +386,8 @@ public class DataSourceCatalog implements Catalog {
                     + product.getTransferStatus() + "' "
                     + "WHERE product_id = " + quoteIt(product.getProductId());
 
-            LOG
-                    .log(Level.FINE, "modifyProduct: Executing: "
-                            + modifyProductSql);
+            LOG.log(Level.FINE, "modifyProduct: Executing: "
+                                + modifyProductSql);
             statement.execute(modifyProductSql);
             conn.commit();
 
@@ -405,17 +395,17 @@ public class DataSourceCatalog implements Catalog {
             updateReferences(product);
 
         } catch (Exception e) {
-            e.printStackTrace();
             LOG.log(Level.WARNING, "Exception modifying product. Message: "
                     + e.getMessage());
             try {
-                conn.rollback();
+              assert conn != null;
+              conn.rollback();
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback modifyProduct transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (statement != null) {
@@ -424,7 +414,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -434,7 +423,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -479,17 +467,19 @@ public class DataSourceCatalog implements Catalog {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception removing product. Message: "
                     + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback removeProduct transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {
@@ -497,7 +487,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -507,7 +496,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -538,18 +526,20 @@ public class DataSourceCatalog implements Catalog {
             statement.execute(modifyProductSql);
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception setting transfer status for product. Message: "
                             + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback setProductTransferStatus transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (statement != null) {
@@ -558,7 +548,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -568,7 +557,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -583,7 +571,6 @@ public class DataSourceCatalog implements Catalog {
             throws CatalogException {
         Connection conn = null;
         Statement statement = null;
-        ResultSet rs = null;
 
         String productRefTable = product.getProductType().getName()
                 + "_reference";
@@ -593,56 +580,46 @@ public class DataSourceCatalog implements Catalog {
             conn.setAutoCommit(false);
             statement = conn.createStatement();
 
-            for (Iterator<Reference> i = product.getProductReferences().iterator(); i
-                    .hasNext();) {
-                Reference r = i.next();
+          for (Reference r : product.getProductReferences()) {
+            String addRefSql = "INSERT INTO "
+                               + productRefTable
+                               + " "
+                               + "(product_id, product_orig_reference, product_datastore_reference, product_reference_filesize, product_reference_mimetype) "
+                               + "VALUES ("
+                               + quoteIt(product.getProductId())
+                               + ", '"
+                               + r.getOrigReference()
+                               + "', '"
+                               + r.getDataStoreReference()
+                               + "', "
+                               + r.getFileSize()
+                               + ",'"
+                               + ((r.getMimeType() == null) ? "" : r.getMimeType()
+                                                                    .getName()) + "')";
 
-                String addRefSql = "INSERT INTO "
-                        + productRefTable
-                        + " "
-                        + "(product_id, product_orig_reference, product_datastore_reference, product_reference_filesize, product_reference_mimetype) "
-                        + "VALUES ("
-                        + quoteIt(product.getProductId())
-                        + ", '"
-                        + r.getOrigReference()
-                        + "', '"
-                        + r.getDataStoreReference()
-                        + "', "
-                        + r.getFileSize()
-                        + ",'"
-                        + ((r.getMimeType() == null) ? "" : r.getMimeType()
-                                .getName()) + "')";
-
-                LOG.log(Level.FINE, "addProductReferences: Executing: "
-                        + addRefSql);
-                statement.execute(addRefSql);
-            }
+            LOG.log(Level.FINE, "addProductReferences: Executing: "
+                                + addRefSql);
+            statement.execute(addRefSql);
+          }
 
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception adding product references. Message: "
                             + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback addProductReferences transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
-
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ignore) {
-                }
-
-                rs = null;
-            }
 
             if (statement != null) {
                 try {
@@ -650,7 +627,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -660,7 +636,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -693,17 +668,19 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting product. Message: "
                     + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback getProductById transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -712,7 +689,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -721,7 +697,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -731,7 +706,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -767,17 +741,19 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting product. Message: "
                     + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback getProductByName transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -786,7 +762,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -795,7 +770,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -805,7 +779,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -832,7 +805,9 @@ public class DataSourceCatalog implements Catalog {
                     + product.getProductType().getName() + "_reference"
 		+ " WHERE product_id = " + quoteIt(product.getProductId()));
 
-            if(this.orderedValues) getProductRefSql.append(" ORDER BY pkey");
+            if(this.orderedValues) {
+              getProductRefSql.append(" ORDER BY pkey");
+            }
 
             LOG.log(Level.FINE, "getProductReferences: Executing: "
                     + getProductRefSql);
@@ -845,17 +820,19 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting product type. Message: "
                     + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback getProductTypeById transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -864,7 +841,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -873,7 +849,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -883,7 +858,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -923,17 +897,19 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting products. Message: "
                     + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback getProductstransaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -942,7 +918,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -951,7 +926,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -961,7 +935,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -985,14 +958,10 @@ public class DataSourceCatalog implements Catalog {
             conn = dataSource.getConnection();
             statement = conn.createStatement();
 
-            String getProductSql = null;
-            String productTypeIdStr = null;
+            String getProductSql;
+            String productTypeIdStr;
 
-            if (fieldIdStringFlag) {
-                productTypeIdStr = "'" + type.getProductTypeId() + "'";
-            } else {
-                productTypeIdStr = type.getProductTypeId();
-            }
+          productTypeIdStr = fieldIdStringFlag ? "'" + type.getProductTypeId() + "'" : type.getProductTypeId();
 
             getProductSql = "SELECT products.* " + "FROM products "
                     + "WHERE products.product_type_id = " + productTypeIdStr;
@@ -1012,17 +981,19 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting products. Message: "
                     + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback getProductsByProductType transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -1031,7 +1002,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -1040,7 +1010,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -1050,7 +1019,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -1071,44 +1039,44 @@ public class DataSourceCatalog implements Catalog {
                     + product.getProductType().getName() + "_metadata"
 		+ " WHERE product_id = " + quoteIt(product.getProductId()));
  
-	    if(this.orderedValues) metadataSql.append(" ORDER BY pkey");
+	    if(this.orderedValues) {
+          metadataSql.append(" ORDER BY pkey");
+        }
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql.toString());
             
             m = new Metadata();
-            List<Element> elements = null;
+            List<Element> elements;
 
             try {
                 elements = validationLayer.getElements(product.getProductType());
             } catch (ValidationLayerException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new CatalogException(
                         "ValidationLayerException when trying to obtain element list for product type: "
                                 + product.getProductType().getName()
-                                + ": Message: " + e.getMessage());
+                                + ": Message: " + e.getMessage(), e);
             }
 
             while (rs.next()) {
-                for (Iterator<Element> i = elements.iterator(); i.hasNext();) {
-                    Element e = i.next();
+              for (Element e : elements) {
+                // right now, we just support STRING
+                String elemValue = rs.getString("metadata_value");
+                String elemId = rs.getString("element_id");
 
-                    // right now, we just support STRING
-                    String elemValue = rs.getString("metadata_value");
-                    String elemId = rs.getString("element_id");
-
-                    if (elemId.equals(e.getElementId())) {
-                        elemValue = (elemValue != null ? elemValue : "");
-                        m.addMetadata(e.getElementName(), elemValue);
-                    }
+                if (elemId.equals(e.getElementId())) {
+                  elemValue = (elemValue != null ? elemValue : "");
+                  m.addMetadata(e.getElementName(), elemValue);
                 }
+              }
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting metadata. Message: "
                     + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -1117,7 +1085,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -1126,7 +1093,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -1136,7 +1102,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -1158,52 +1123,53 @@ public class DataSourceCatalog implements Catalog {
                 elementIds.append(" AND (element_id = '")
                           .append(this.validationLayer.getElementByName(elems.get(0)).getElementId
                               ()).append("'");
-                for (int i = 1; i < elems.size(); i++) 
-                    elementIds.append(" OR element_id = '").append(this.validationLayer.getElementByName(elems.get(i))
-                                                                                       .getElementId()).append("'");
+                for (int i = 1; i < elems.size(); i++) {
+                  elementIds.append(" OR element_id = '").append(this.validationLayer.getElementByName(elems.get(i))
+                                                                                     .getElementId()).append("'");
+                }
                 elementIds.append(")");
             }
             StringBuilder metadataSql = new StringBuilder("SELECT element_id,metadata_value FROM "
                     + product.getProductType().getName() + "_metadata"
 		+ " WHERE product_id = " + quoteIt(product.getProductId()) + elementIds);
-            if(this.orderedValues) metadataSql.append(" ORDER BY pkey");
+            if(this.orderedValues) {
+              metadataSql.append(" ORDER BY pkey");
+            }
 
             LOG.log(Level.FINE, "getMetadata: Executing: " + metadataSql);
             rs = statement.executeQuery(metadataSql.toString());
 
             m = new Metadata();
-            List<Element> elements = null;
+            List<Element> elements;
 
             try {
                 elements = validationLayer.getElements(product.getProductType());
             } catch (ValidationLayerException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 throw new CatalogException(
                         "ValidationLayerException when trying to obtain element list for product type: "
                                 + product.getProductType().getName()
-                                + ": Message: " + e.getMessage());
+                                + ": Message: " + e.getMessage(), e);
             }
 
             while (rs.next()) {
-                for (Iterator<Element> i = elements.iterator(); i.hasNext();) {
-                    Element e = i.next();
+              for (Element e : elements) {
+                // right now, we just support STRING
+                String elemValue = rs.getString("metadata_value");
+                String elemId = rs.getString("element_id");
 
-                    // right now, we just support STRING
-                    String elemValue = rs.getString("metadata_value");
-                    String elemId = rs.getString("element_id");
-
-                    if (elemId.equals(e.getElementId())) {
-                        elemValue = (elemValue != null ? elemValue : "");
-                        m.addMetadata(e.getElementName(), elemValue);
-                    }
+                if (elemId.equals(e.getElementId())) {
+                  elemValue = (elemValue != null ? elemValue : "");
+                  m.addMetadata(e.getElementName(), elemValue);
                 }
+              }
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting metadata. Message: "
                     + e.getMessage());
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -1212,7 +1178,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -1221,7 +1186,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -1231,7 +1195,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -1307,18 +1270,20 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting top N products. Message: "
                             + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback get top N products. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(),e);
         } finally {
 
             if (rs != null) {
@@ -1327,7 +1292,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -1336,7 +1300,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -1346,7 +1309,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -1358,7 +1320,7 @@ public class DataSourceCatalog implements Catalog {
      * 
      * @see org.apache.oodt.cas.filemgr.catalog.Catalog#getValidationLayer()
      */
-    public ValidationLayer getValidationLayer() throws CatalogException {
+    public ValidationLayer getValidationLayer() {
     	// note that validationLayer may be null to allow for leniency in subclasses
     	return validationLayer;
     }
@@ -1399,17 +1361,19 @@ public class DataSourceCatalog implements Catalog {
             statement.execute(metaIngestSql);
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception adding metadata value. Message: "
                     + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback add metadata value. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {
@@ -1417,7 +1381,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -1427,7 +1390,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
     }
@@ -1462,18 +1424,20 @@ public class DataSourceCatalog implements Catalog {
             statement.execute(metRemoveSql.toString());
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception removing metadata value. Message: "
                             + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback remove metadata value. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {
@@ -1481,7 +1445,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -1491,7 +1454,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
     }
@@ -1531,17 +1493,19 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception getting num products. Message: "
                     + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback get num products. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -1550,7 +1514,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -1559,7 +1522,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -1569,7 +1531,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -1697,11 +1658,10 @@ public class DataSourceCatalog implements Catalog {
         if (productIds != null && productIds.size() > 0) {
             List<Product> products = new Vector<Product>(productIds.size());
 
-            for (Iterator<String> i = productIds.iterator(); i.hasNext();) {
-                String productId = i.next();
-                Product p = getProductById(productId);
-                products.add(p);
-            }
+          for (String productId : productIds) {
+            Product p = getProductById(productId);
+            products.add(p);
+          }
 
             retPage.setPageProducts(products);
         }
@@ -1725,9 +1685,7 @@ public class DataSourceCatalog implements Catalog {
             String tableName = type.getName() + "_metadata";
             String subSelectQueryBase = "SELECT product_id FROM " + tableName
                     + " ";
-            StringBuilder selectClause = new StringBuilder(
-                    "SELECT COUNT(DISTINCT p.product_id) AS numResults ");
-            StringBuilder fromClause = new StringBuilder("FROM " + tableName
+          StringBuilder fromClause = new StringBuilder("FROM " + tableName
                     + " p ");
             StringBuilder whereClause = new StringBuilder("WHERE ");
 
@@ -1735,110 +1693,111 @@ public class DataSourceCatalog implements Catalog {
             int clauseNum = 0;
 
             if (query.getCriteria() != null && query.getCriteria().size() > 0) {
-                for (Iterator<QueryCriteria> i = query.getCriteria().iterator(); i.hasNext();) {
-                    QueryCriteria criteria = i.next();
-                    clauseNum++;
+              for (QueryCriteria criteria : query.getCriteria()) {
+                clauseNum++;
 
-                    String elementIdStr = null;
+                String elementIdStr;
 
-                    if (fieldIdStringFlag) {
-                        elementIdStr = "'" + this.validationLayer.getElementByName(criteria.getElementName()).getElementId() + "'";
-                    } else {
-                        elementIdStr = this.validationLayer.getElementByName(criteria.getElementName()).getElementId();
+                elementIdStr =
+                    fieldIdStringFlag ? "'" + this.validationLayer.getElementByName(criteria.getElementName())
+                                                                  .getElementId() + "'"
+                                      : this.validationLayer.getElementByName(criteria.getElementName()).getElementId();
+
+                StringBuilder clause = new StringBuilder();
+
+                if (!gotFirstClause) {
+                  clause.append("(p.element_id = ").append(elementIdStr).append(" AND ");
+                  if (criteria instanceof TermQueryCriteria) {
+                    clause.append(" metadata_value LIKE '%").append(((TermQueryCriteria) criteria).getValue())
+                          .append("%') ");
+                  } else if (criteria instanceof RangeQueryCriteria) {
+                    String startVal = ((RangeQueryCriteria) criteria)
+                        .getStartValue();
+                    String endVal = ((RangeQueryCriteria) criteria)
+                        .getEndValue();
+                    boolean inclusive = ((RangeQueryCriteria) criteria)
+                        .getInclusive();
+
+                    if ((startVal != null && !startVal.equals(""))
+                        || (endVal != null && !endVal.equals(""))) {
+                      clause.append(" metadata_value ");
+
+                      boolean gotStart = false;
+
+                      if (startVal != null && !startVal.equals("")) {
+                        if (inclusive) {
+                          clause.append(">= '").append(startVal).append("'");
+                        } else {
+                          clause.append("> '").append(startVal).append("'");
+                        }
+                        gotStart = true;
+                      }
+
+                      if (endVal != null && !endVal.equals("")) {
+                        if (gotStart) {
+                          if (inclusive) {
+                            clause.append(" AND metadata_value <= '").append(endVal).append("'");
+                          } else {
+                            clause.append(" AND metadata_value < '").append(endVal).append("'");
+                          }
+                        } else if (inclusive) {
+                          clause.append("<= '").append(endVal).append("'");
+                        } else {
+                          clause.append("< '").append(endVal).append("'");
+                        }
+                      }
+
+                      clause.append(") ");
                     }
+                  }
+                  whereClause.append(clause);
+                  gotFirstClause = true;
+                } else {
+                  String subSelectTblName = "p" + clauseNum;
+                  StringBuilder subSelectQuery = new StringBuilder(subSelectQueryBase
+                                                                   + "WHERE (element_id = " + elementIdStr
+                                                                   + " AND ");
+                  if (criteria instanceof TermQueryCriteria) {
+                    subSelectQuery.append(" metadata_value LIKE '%")
+                                  .append(((TermQueryCriteria) criteria).getValue()).append("%')");
+                  } else if (criteria instanceof RangeQueryCriteria) {
+                    String startVal = ((RangeQueryCriteria) criteria)
+                        .getStartValue();
+                    String endVal = ((RangeQueryCriteria) criteria)
+                        .getEndValue();
 
-                    StringBuilder clause = new StringBuilder();
+                    if (startVal != null || endVal != null) {
+                      subSelectQuery.append(" metadata_value ");
 
-                    if (!gotFirstClause) {
-                        clause.append("(p.element_id = ").append(elementIdStr).append(" AND ");
-                        if (criteria instanceof TermQueryCriteria) {
-                            clause.append(" metadata_value LIKE '%").append(((TermQueryCriteria) criteria).getValue())
-                                  .append("%') ");
-                        } else if (criteria instanceof RangeQueryCriteria) {
-                            String startVal = ((RangeQueryCriteria) criteria)
-                                    .getStartValue();
-                            String endVal = ((RangeQueryCriteria) criteria)
-                                    .getEndValue();
-                            boolean inclusive = ((RangeQueryCriteria) criteria)
-                                    .getInclusive();
+                      boolean gotStart = false;
 
-                            if ((startVal != null && !startVal.equals(""))
-                                    || (endVal != null && !endVal.equals(""))) {
-                                clause.append(" metadata_value ");
+                      if (startVal != null && !startVal.equals("")) {
+                        subSelectQuery.append(">= '").append(startVal).append("'");
+                        gotStart = true;
+                      }
 
-                                boolean gotStart = false;
-
-                                if (startVal != null && !startVal.equals("")) {
-                                    if (inclusive)
-                                        clause.append(">= '" + startVal + "'");
-                                    else
-                                        clause.append("> '" + startVal + "'");
-                                    gotStart = true;
-                                }
-
-                                if (endVal != null && !endVal.equals("")) {
-                                    if (gotStart) {
-                                        if (inclusive)
-                                            clause.append(" AND metadata_value <= '").append(endVal).append("'");
-                                        else
-                                            clause.append(" AND metadata_value < '").append(endVal).append("'");
-                                    } else if (inclusive)
-                                        clause.append("<= '").append(endVal).append("'");
-                                    else
-                                        clause.append("< '").append(endVal).append("'");
-                                }
-
-                                clause.append(") ");
-                            }
+                      if (endVal != null && !endVal.equals("")) {
+                        if (gotStart) {
+                          subSelectQuery.append(" AND metadata_value <= '").append(endVal).append("'");
+                        } else {
+                          subSelectQuery.append("<= '").append(endVal).append("'");
                         }
-                        whereClause.append(clause);
-                        gotFirstClause = true;
-                    } else {
-                        String subSelectTblName = "p" + clauseNum;
-                        StringBuilder subSelectQuery = new StringBuilder(subSelectQueryBase
-                                + "WHERE (element_id = " + elementIdStr
-                                + " AND ");
-                        if (criteria instanceof TermQueryCriteria) {
-                            subSelectQuery.append(" metadata_value LIKE '%")
-                                          .append(((TermQueryCriteria) criteria).getValue()).append("%')");
-                        } else if (criteria instanceof RangeQueryCriteria) {
-                            String startVal = ((RangeQueryCriteria) criteria)
-                                    .getStartValue();
-                            String endVal = ((RangeQueryCriteria) criteria)
-                                    .getEndValue();
+                      }
 
-                            if (startVal != null || endVal != null) {
-                                subSelectQuery.append(" metadata_value ");
-
-                                boolean gotStart = false;
-
-                                if (startVal != null && !startVal.equals("")) {
-                                    subSelectQuery.append(">= '").append(startVal).append("'");
-                                    gotStart = true;
-                                }
-
-                                if (endVal != null && !endVal.equals("")) {
-                                    if (gotStart) {
-                                        subSelectQuery.append(" AND metadata_value <= '").append(endVal).append("'");
-                                    } else
-                                        subSelectQuery.append("<= '").append(endVal).append("'");
-                                }
-
-                                subSelectQuery.append(") ");
-
-                            }
-                        }
-
-                        fromClause.append("INNER JOIN (" + subSelectQuery.toString()
-                                + ") " + subSelectTblName + " ON "
-                                + subSelectTblName
-                                + ".product_id = p.product_id ");
+                      subSelectQuery.append(") ");
 
                     }
+                  }
+
+                  fromClause.append("INNER JOIN (").append(subSelectQuery.toString()).append(") ")
+                            .append(subSelectTblName).append(" ON ").append(subSelectTblName)
+                            .append(".product_id = p.product_id ");
+
                 }
+              }
             }
 
-            getProductSql.append(selectClause.toString() + fromClause.toString());
+            getProductSql.append("SELECT COUNT(DISTINCT p.product_id) AS numResults ").append(fromClause.toString());
             if (gotFirstClause) {
                 getProductSql.append(whereClause.toString());
             }
@@ -1854,18 +1813,20 @@ public class DataSourceCatalog implements Catalog {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception performing get num results. Message: "
                             + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback get num results transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -1874,7 +1835,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -1883,7 +1843,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -1893,7 +1852,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -1910,21 +1868,16 @@ public class DataSourceCatalog implements Catalog {
                     .get(productTypeId);
             String lastUpdateTime = (String) productListAndUpdateTime
                     .get("lastUpdateTime");
-            Date lastUpdateTimeDate = null;
 
             try {
-                lastUpdateTimeDate = DateConvert.isoParse(lastUpdateTime);
+                Date lastUpdateTimeDate = DateConvert.isoParse(lastUpdateTime);
 
                 long timeDifferenceMilis = currentTime.getTime()
                         - lastUpdateTimeDate.getTime();
                 long timeDifferenceSeconds = timeDifferenceMilis * 1000;
-                long timeDifferenceMinutes = timeDifferenceSeconds / 60;
+                long timeDifferenceMinutes = timeDifferenceSeconds / INT;
 
-                if (timeDifferenceMinutes >= cacheUpdateMinutes) {
-                    return false;
-                } else {
-                    return true;
-                }
+              return timeDifferenceMinutes < cacheUpdateMinutes;
             } catch (Exception e) {
                 LOG.log(Level.WARNING,
                         "Unable to parse last update time for product type: ["
@@ -1938,7 +1891,7 @@ public class DataSourceCatalog implements Catalog {
 
     @SuppressWarnings("unchecked")
 	private List<Product> getProductsFromCache(String productTypeId) {
-        List<Product> products = null;
+        List<Product> products;
 
         if (PRODUCT_CACHE.get(productTypeId) == null) {
             return null;
@@ -1962,7 +1915,7 @@ public class DataSourceCatalog implements Catalog {
 
     @SuppressWarnings("unused")
 	private List<Product> getProductsByProductTypeCached(ProductType type) {
-        List<Product> products = null;
+        List<Product> products;
         // check the product cache first
         if (stillFresh(type.getProductTypeId())) {
             products = getProductsFromCache(type.getProductTypeId());
@@ -1976,7 +1929,7 @@ public class DataSourceCatalog implements Catalog {
                         "CatalogException getting cached products for type: ["
                                 + type.getProductTypeId() + "]: Message: "
                                 + e.getMessage());
-                return products;
+                return null;
             }
         }
 
@@ -2009,7 +1962,7 @@ public class DataSourceCatalog implements Catalog {
             if (!productIdString) {
             	
 	            if (query.getCriteria().size() == 0) {
-	                getProductSql.append("SELECT DISTINCT product_id FROM " + type.getName() + "_metadata");
+	                getProductSql.append("SELECT DISTINCT product_id FROM ").append(type.getName()).append("_metadata");
 	            }else if (query.getCriteria().size() == 1) {
 	                getProductSql.append(this.getSqlQuery(query.getCriteria().get(0), type));
 	            }else {
@@ -2021,8 +1974,9 @@ public class DataSourceCatalog implements Catalog {
             } else {
             	
               if (query.getCriteria().size() == 0) {
-                getProductSql.append("SELECT DISTINCT products.product_id FROM products, " + type.getName() + "_metadata"
-                				      + " WHERE products.product_id="+type.getName() + "_metadata.product_id");
+                getProductSql.append("SELECT DISTINCT products.product_id FROM products, ").append(type.getName())
+                             .append("_metadata").append(" WHERE products.product_id=").append(type.getName())
+                             .append("_metadata.product_id");
               }	else if (query.getCriteria().size() == 1) {
                 getProductSql.append(this.getSqlQuery(query.getCriteria().get(0), type));
               }	else {
@@ -2048,7 +2002,7 @@ public class DataSourceCatalog implements Catalog {
                 // must call next first, or else no relative cursor
                 if (rs.next()) {
                     // grab the first one
-                    int numGrabbed = -1;
+                    int numGrabbed;
 
                     if (pageNum == 1) {
                         numGrabbed = 1;
@@ -2080,17 +2034,19 @@ public class DataSourceCatalog implements Catalog {
             return productIds;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception performing query. Message: "
                     + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback query transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
             if (rs != null) {
@@ -2099,7 +2055,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -2108,7 +2063,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -2118,7 +2072,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -2130,45 +2083,56 @@ public class DataSourceCatalog implements Catalog {
             BooleanQueryCriteria bqc = (BooleanQueryCriteria) queryCriteria;
             if (bqc.getOperator() == BooleanQueryCriteria.NOT) {            	
             		if (!this.productIdString) {
-            			sqlQuery.append("SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE product_id "
-                                 + "NOT IN (" + this.getSqlQuery(bqc.getTerms().get(0), type) + ")");
+            			sqlQuery.append("SELECT DISTINCT product_id FROM ").append(type.getName())
+                                .append("_metadata WHERE product_id ").append("NOT IN (")
+                                .append(this.getSqlQuery(bqc.getTerms().get(0), type)).append(")");
             		} else {
-            			sqlQuery.append("SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
-            							 + " WHERE products.product_id="+type.getName() + "_metadata.product_id" 
-            							 + " AND products.product_id NOT IN (" + this.getSqlQuery(bqc.getTerms().get
-                            (0), type) + ")");
+            			sqlQuery.append("SELECT DISTINCT products.product_id FROM products,").append(type.getName())
+                                .append("_metadata").append(" WHERE products.product_id=").append(type.getName())
+                                .append("_metadata.product_id").append(" AND products.product_id NOT IN (")
+                                .append(this.getSqlQuery(bqc.getTerms().get
+                                    (0), type)).append(")");
             		}
             }else {
-                sqlQuery.append("(" + this.getSqlQuery(bqc.getTerms().get(0), type));
+                sqlQuery.append("(").append(this.getSqlQuery(bqc.getTerms().get(0), type));
                 String op = bqc.getOperator() == BooleanQueryCriteria.AND ? "INTERSECT" : "UNION";
-                for (int i = 1; i < bqc.getTerms().size(); i++) 
-                    sqlQuery.append(") " + op + " (" + this.getSqlQuery(bqc.getTerms().get(i), type));
+                for (int i = 1; i < bqc.getTerms().size(); i++) {
+                  sqlQuery.append(") ").append(op).append(" (").append(this.getSqlQuery(bqc.getTerms().get(i), type));
+                }
                 sqlQuery.append(")");
             }
         }else {
         	  String elementIdStr = this.validationLayer.getElementByName(queryCriteria.getElementName()).getElementId();
-            if (fieldIdStringFlag) 
-                elementIdStr = "'" + elementIdStr + "'";
+            if (fieldIdStringFlag) {
+              elementIdStr = "'" + elementIdStr + "'";
+            }
             if (!this.productIdString) {
-            	sqlQuery.append("SELECT DISTINCT product_id FROM " + type.getName() + "_metadata WHERE element_id = " +
-                         elementIdStr + " AND ");
+            	sqlQuery.append("SELECT DISTINCT product_id FROM ").append(type.getName())
+                        .append("_metadata WHERE element_id = ").append(elementIdStr).append(" AND ");
             } else {
-            	sqlQuery.append("SELECT DISTINCT products.product_id FROM products," + type.getName() + "_metadata"
-            	         + " WHERE products.product_id="+type.getName() + "_metadata.product_id" 
-            			     + " AND element_id = " + elementIdStr + " AND ");
+            	sqlQuery.append("SELECT DISTINCT products.product_id FROM products,").append(type.getName())
+                        .append("_metadata").append(" WHERE products.product_id=").append(type.getName())
+                        .append("_metadata.product_id").append(" AND element_id = ").append(elementIdStr)
+                        .append(" AND ");
             }
             if (queryCriteria instanceof TermQueryCriteria) {
-                sqlQuery.append("metadata_value = '" + ((TermQueryCriteria) queryCriteria).getValue() + "'");
+                sqlQuery.append("metadata_value = '").append(((TermQueryCriteria) queryCriteria).getValue())
+                        .append("'");
             } else if (queryCriteria instanceof RangeQueryCriteria) {
                 RangeQueryCriteria rqc = (RangeQueryCriteria) queryCriteria;
                 String rangeSubQuery = null;
-                if (rqc.getStartValue() != null)
-                    rangeSubQuery = "metadata_value" + (rqc.getInclusive() ? " >= " : " > ") + "'" + rqc.getStartValue() + "'";
+                if (rqc.getStartValue() != null) {
+                  rangeSubQuery =
+                      "metadata_value" + (rqc.getInclusive() ? " >= " : " > ") + "'" + rqc.getStartValue() + "'";
+                }
                 if (rqc.getEndValue() != null) {
-                    if (rangeSubQuery == null)
-                        rangeSubQuery = "metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc.getEndValue() + "'";
-                    else
-                        rangeSubQuery = "(" + rangeSubQuery + " AND metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc.getEndValue() + "')";
+                  rangeSubQuery =
+                      rangeSubQuery == null ? "metadata_value" + (rqc.getInclusive() ? " <= " : " < ") + "'" + rqc
+                          .getEndValue() + "'"
+                                            : "(" + rangeSubQuery + " AND metadata_value" + (rqc.getInclusive() ? " <= "
+                                                                                                                : " < ")
+                                              + "'"
+                                              + rqc.getEndValue() + "')";
                 }
                 sqlQuery.append(rangeSubQuery);
             } else {
@@ -2183,7 +2147,6 @@ public class DataSourceCatalog implements Catalog {
             throws CatalogException {
         Connection conn = null;
         Statement statement = null;
-        ResultSet rs = null;
 
         String productRefTable = product.getProductType().getName()
                 + "_reference";
@@ -2202,59 +2165,48 @@ public class DataSourceCatalog implements Catalog {
             statement.execute(deleteProductSql);
 
             // now add the new ones back in
-            for (Iterator<Reference> i = product.getProductReferences().iterator(); i
-                    .hasNext();) {
-                Reference r = i.next();
+          for (Reference r : product.getProductReferences()) {
+            String addRefSql = "INSERT INTO "
+                               + productRefTable
+                               + " "
+                               + "(product_id, product_orig_reference, product_datastore_reference, product_reference_filesize,"
+                               + "product_reference_mimetype) " + "VALUES ("
+                               + product.getProductId() + ", '" + r.getOrigReference()
+                               + "', '" + r.getDataStoreReference() + "', "
+                               + r.getFileSize() + ",'" + r.getMimeType().getName()
+                               + "')";
 
-                String addRefSql = "INSERT INTO "
-                        + productRefTable
-                        + " "
-                        + "(product_id, product_orig_reference, product_datastore_reference, product_reference_filesize,"
-                        + "product_reference_mimetype) " + "VALUES ("
-                        + product.getProductId() + ", '" + r.getOrigReference()
-                        + "', '" + r.getDataStoreReference() + "', "
-                        + r.getFileSize() + ",'" + r.getMimeType().getName()
-                        + "')";
-
-                LOG.log(Level.FINE, "updateProductReferences: Executing: "
-                        + addRefSql);
-                statement.execute(addRefSql);
-            }
+            LOG.log(Level.FINE, "updateProductReferences: Executing: "
+                                + addRefSql);
+            statement.execute(addRefSql);
+          }
 
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception updating product references. Message: "
                             + e.getMessage());
             try {
+              if (conn != null) {
                 conn.rollback();
+              }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback updateProductReferences transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new CatalogException(e.getMessage());
+            throw new CatalogException(e.getMessage(), e);
         } finally {
 
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ignore) {
-                }
-
-                rs = null;
-            }
-
-            if (statement != null) {
+          if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
-            }
+          }
 
             if (conn != null) {
                 try {
@@ -2263,7 +2215,6 @@ public class DataSourceCatalog implements Catalog {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -2272,15 +2223,11 @@ public class DataSourceCatalog implements Catalog {
     /**
      * Utility method to quote the "productId" value 
      * if the column type is "string".
-     * @param productId
-     * @return
+     * @param productId the product id
+     * @return the quoted productId
      */
     protected String quoteIt(String productId) {
-    	if (this.productIdString) {
-    		return "'"+productId+"'";
-    	} else {
-    		return productId;
-    	}
+      return this.productIdString ? "'" + productId + "'" : productId;
     }
 
 }

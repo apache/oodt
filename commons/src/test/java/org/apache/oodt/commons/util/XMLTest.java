@@ -16,7 +16,7 @@
 package org.apache.oodt.commons.util;
 
 import java.io.*;
-import java.util.*;
+
 import junit.framework.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
@@ -44,7 +44,7 @@ public class XMLTest extends TestCase {
 	 */
 	public void testDocumentCreation() {
 		Document doc = XML.createDocument();
-		assertTrue(doc instanceof Document);
+		assertTrue(doc != null);
 	}
 
 	/** Test the {@link XML#createDOMParser} and {@link XML#serialize} methods.

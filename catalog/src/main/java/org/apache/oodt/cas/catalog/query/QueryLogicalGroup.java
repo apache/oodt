@@ -108,8 +108,9 @@ public class QueryLogicalGroup extends QueryExpression {
     	QueryLogicalGroup qlGroup = new QueryLogicalGroup();
     	qlGroup.setBucketNames(this.getBucketNames());
     	qlGroup.setOperator(this.operator);
-    	for (QueryExpression qe : this.queryExpressions)
-    		qlGroup.addExpression(qe.clone());
+    	for (QueryExpression qe : this.queryExpressions) {
+            qlGroup.addExpression(qe.clone());
+        }
     	return qlGroup;
     }
     

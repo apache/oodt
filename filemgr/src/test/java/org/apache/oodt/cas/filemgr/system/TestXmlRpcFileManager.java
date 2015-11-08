@@ -18,13 +18,7 @@
 package org.apache.oodt.cas.filemgr.system;
 
 //JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Properties;
-//OODT imports
+
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.metadata.ProductMetKeys;
@@ -33,8 +27,19 @@ import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.SerializableMetadata;
 
-//Junit imports
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import junit.framework.TestCase;
+
+//OODT imports
+//Junit imports
 
 /**
  * 
@@ -44,7 +49,7 @@ import junit.framework.TestCase;
  * 
  */
 public class TestXmlRpcFileManager extends TestCase {
-
+  private static Logger LOG = Logger.getLogger(TestXmlRpcFileManager.class.getName());
   private static final int FM_PORT = 50001;
 
   private XmlRpcFileManager fm;
@@ -72,7 +77,7 @@ public class TestXmlRpcFileManager extends TestCase {
     try {
       met = fmc.getMetadata(fmc.getProductByName("test.txt"));
     } catch (CatalogException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 
@@ -120,7 +125,7 @@ public class TestXmlRpcFileManager extends TestCase {
       met = fmc.getReducedMetadata(fmc.getProductByName("test.txt"),
           Collections.EMPTY_LIST);
     } catch (CatalogException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
 
@@ -198,8 +203,8 @@ public class TestXmlRpcFileManager extends TestCase {
     File[] delFiles = startDirFile.listFiles();
 
     if (delFiles != null && delFiles.length > 0) {
-      for (int i = 0; i < delFiles.length; i++) {
-        delFiles[i].delete();
+      for (File delFile : delFiles) {
+        delFile.delete();
       }
     }
 
@@ -208,7 +213,7 @@ public class TestXmlRpcFileManager extends TestCase {
   }
 
   private void ingestTestFile() {
-    Metadata prodMet = null;
+    Metadata prodMet;
     StdIngester ingester = new StdIngester(transferServiceFacClass);
 
     try {

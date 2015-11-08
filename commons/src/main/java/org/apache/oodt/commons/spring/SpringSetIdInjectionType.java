@@ -35,13 +35,13 @@ public interface SpringSetIdInjectionType {
      * @return Unique String id
      */
     @Required
-    public String getId();
+    String getId();
 
     /**
      * Set a unique id that represents this objects instance
      * @param id Unique String id
      */
     @Required
-    public void setId(String id);
+    void setId(String id);
 
 }

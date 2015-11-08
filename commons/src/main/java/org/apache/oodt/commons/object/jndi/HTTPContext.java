@@ -42,8 +42,9 @@ public class HTTPContext implements Context {
 	 * @param environment Its environment, currently unused.
 	 */
         public HTTPContext(Hashtable environment) {
-		if (environment == null)
-                        throw new IllegalArgumentException("Nonnull environment required; don't know why, but it is");
+		if (environment == null) {
+		  throw new IllegalArgumentException("Nonnull environment required; don't know why, but it is");
+		}
                 this.environment = (Hashtable) environment.clone();
 	}
 
@@ -97,8 +98,9 @@ public class HTTPContext implements Context {
 	}
 
 	public NamingEnumeration list(String name) throws NamingException {
-		if (name.length() > 0) 
-			throw new NotContextException("Subcontexts not supported");
+		if (name.length() > 0) {
+		  throw new NotContextException("Subcontexts not supported");
+		}
 				
 		return new NamingEnumeration() {
 			public void close() {}
@@ -122,8 +124,9 @@ public class HTTPContext implements Context {
 	}
 
 	public NamingEnumeration listBindings(String name) throws NamingException {
-		if (name.length() > 0) 
-			throw new NotContextException("Subcontexts not supported");
+		if (name.length() > 0) {
+		  throw new NotContextException("Subcontexts not supported");
+		}
 		return new NamingEnumeration() {
 			public void close() {}
 			public boolean hasMore() {
@@ -189,17 +192,23 @@ public class HTTPContext implements Context {
 	}
 
 	public Object addToEnvironment(String propName, Object propVal) throws NamingException {
-		if (environment == null) environment = new Hashtable();
+		if (environment == null) {
+		  environment = new Hashtable();
+		}
 		return environment.put(propName, propVal);
 	}
 
 	public Object removeFromEnvironment(String propName) throws NamingException {
-		if (environment == null) return null;
+		if (environment == null) {
+		  return null;
+		}
 		return environment.remove(propName);
 	}
 
 	public Hashtable getEnvironment() throws NamingException {
-		if (environment == null) return new Hashtable();
+		if (environment == null) {
+		  return new Hashtable();
+		}
 		return (Hashtable) environment.clone();
 	}
 
@@ -218,12 +227,15 @@ public class HTTPContext implements Context {
 	 * @throws InvalidNameException If <var>name</var>'s not an RMI object context name.
 	 */
 	protected void checkName(String name) throws InvalidNameException {
-		if (name == null)
-			throw new IllegalArgumentException("Can't check a null name");
-		if (name.length() == 0)
-			throw new InvalidNameException("Name's length is zero");
-		if (name.startsWith("http:") || name.startsWith("https:"))
-			return;
+		if (name == null) {
+		  throw new IllegalArgumentException("Can't check a null name");
+		}
+		if (name.length() == 0) {
+		  throw new InvalidNameException("Name's length is zero");
+		}
+		if (name.startsWith("http:") || name.startsWith("https:")) {
+		  return;
+		}
 		throw new InvalidNameException("Not an HTTP name; try http://some.host/some-context/...");
 	}
 

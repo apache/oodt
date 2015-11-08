@@ -29,9 +29,9 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -60,7 +60,7 @@ public class XMLRepositoryManager implements RepositoryManager {
     private List<String> productTypeHomeUris = null;
 
     /* our map of product types that the system knows about */
-    private HashMap<String, ProductType> productTypeMap = new HashMap<String, ProductType>();
+    private ConcurrentHashMap<String, ProductType> productTypeMap = new ConcurrentHashMap<String, ProductType>();
 
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(XMLRepositoryManager.class
@@ -131,13 +131,12 @@ public class XMLRepositoryManager implements RepositoryManager {
      */
     public ProductType getProductTypeByName(String productTypeName)
             throws RepositoryManagerException {
-        for (Iterator<String> i = productTypeMap.keySet().iterator(); i.hasNext();) {
-            String typeId = (String) i.next();
-            ProductType type = (ProductType) productTypeMap.get(typeId);
-            if (type.getName().equals(productTypeName)) {
-                return type;
-            }
+      for (Map.Entry<String, ProductType> typeId : productTypeMap.entrySet()) {
+        ProductType type = typeId.getValue();
+        if (type.getName().equals(productTypeName)) {
+          return type;
         }
+      }
 
         LOG.log(Level.WARNING,
                 "XMLRepositoryManager: Unable to find product type: ["
@@ -156,115 +155,112 @@ public class XMLRepositoryManager implements RepositoryManager {
     }
 
     private void saveProductTypes() {
-        for (Iterator<String> i = productTypeHomeUris.iterator(); i.hasNext();) {
-            String dirUri = i.next();
-            File productTypeDir = null;
+      for (String dirUri : productTypeHomeUris) {
+        File productTypeDir;
 
-            try {
-                productTypeDir = new File(new URI(dirUri));
+        try {
+          productTypeDir = new File(new URI(dirUri));
 
-                if (!productTypeDir.isDirectory()) {
-                    LOG
-                            .log(
-                                    Level.WARNING,
-                                    "Product type directory: "
-                                            + dirUri
-                                            + " is not "
-                                            + "a directory: skipping product type saving to it.");
-                    continue;
-                }
+          if (!productTypeDir.isDirectory()) {
+            LOG
+                .log(
+                    Level.WARNING,
+                    "Product type directory: "
+                    + dirUri
+                    + " is not "
+                    + "a directory: skipping product type saving to it.");
+            continue;
+          }
 
-                String productTypeDirStr = productTypeDir.getAbsolutePath();
-                if (!productTypeDirStr.endsWith("/")) {
-                    productTypeDirStr += "/";
-                }
+          String productTypeDirStr = productTypeDir.getAbsolutePath();
+          if (!productTypeDirStr.endsWith("/")) {
+            productTypeDirStr += "/";
+          }
 
-                String productTypeXmlFile = productTypeDirStr
-                        + "product-types.xml";
-                XmlStructFactory.writeProductTypeXmlDocument(Arrays
-                        .asList(productTypeMap.values().toArray(new ProductType[productTypeMap.values().size()])),
-                        productTypeXmlFile);
-            } catch (URISyntaxException e) {
-                LOG.log(Level.WARNING,
-                        "URISyntaxException when saving product "
-                                + "type directory URI: " + dirUri
-                                + ": Skipping Product Type saving"
-                                + "for it: Message: " + e.getMessage());
-                continue;
-            }
-
+          String productTypeXmlFile = productTypeDirStr
+                                      + "product-types.xml";
+          XmlStructFactory.writeProductTypeXmlDocument(Arrays
+                  .asList(productTypeMap.values().toArray(new ProductType[productTypeMap.values().size()])),
+              productTypeXmlFile);
+        } catch (URISyntaxException e) {
+          LOG.log(Level.WARNING,
+              "URISyntaxException when saving product "
+              + "type directory URI: " + dirUri
+              + ": Skipping Product Type saving"
+              + "for it: Message: " + e.getMessage());
         }
+
+      }
 
     }
 
     private void loadProductTypes(List<String> dirUris) {
-        for (Iterator<String> i = dirUris.iterator(); i.hasNext();) {
-            File productTypeDir = null;
-            String dirUri = i.next();
+      for (String dirUri1 : dirUris) {
+        File productTypeDir = null;
+        String dirUri = dirUri1;
 
-            try {
-                productTypeDir = new File(new URI(dirUri));
+        try {
+          productTypeDir = new File(new URI(dirUri));
 
-                if (!productTypeDir.isDirectory()) {
-                    LOG
-                            .log(
-                                    Level.WARNING,
-                                    "Product type directory: "
-                                            + dirUri
-                                            + " is not "
-                                            + "a directory: skipping product type loading from it.");
-                    continue;
-                }
+          if (!productTypeDir.isDirectory()) {
+            LOG
+                .log(
+                    Level.WARNING,
+                    "Product type directory: "
+                    + dirUri
+                    + " is not "
+                    + "a directory: skipping product type loading from it.");
+            continue;
+          }
 
-                String productTypeDirStr = productTypeDir.getAbsolutePath();
-                if (!productTypeDirStr.endsWith("/")) {
-                    productTypeDirStr += "/";
-                }
+          String productTypeDirStr = productTypeDir.getAbsolutePath();
+          if (!productTypeDirStr.endsWith("/")) {
+            productTypeDirStr += "/";
+          }
 
-                String productTypeXmlFile = productTypeDirStr
-                        + "product-types.xml";
-                Document productTypeDoc = getDocumentRoot(productTypeXmlFile);
+          String productTypeXmlFile = productTypeDirStr
+                                      + "product-types.xml";
+          Document productTypeDoc = getDocumentRoot(productTypeXmlFile);
 
-                // now load the product types from it
-                if (productTypeDoc != null) {
-                    Element productTypeRoot = productTypeDoc
-                            .getDocumentElement();
+          // now load the product types from it
+          if (productTypeDoc != null) {
+            Element productTypeRoot = productTypeDoc
+                .getDocumentElement();
 
-                    NodeList productTypeNodeList = productTypeRoot
-                            .getElementsByTagName("type");
+            NodeList productTypeNodeList = productTypeRoot
+                .getElementsByTagName("type");
 
-                    if (productTypeNodeList != null
-                            && productTypeNodeList.getLength() > 0) {
-                        for (int j = 0; j < productTypeNodeList.getLength(); j++) {
-                            Node productTypeNode = productTypeNodeList.item(j);
-                            ProductType type = XmlStructFactory
-                                    .getProductType(productTypeNode);
-                            LOG.log(Level.FINE,
-                                    "XMLRepositoryManager: found product type: ["
-                                            + type.getName() + "]");
-                            productTypeMap.put(type.getProductTypeId(), type);
-                        }
-                    }
-                }
-            } catch (URISyntaxException e) {
-                LOG.log(Level.WARNING,
-                        "URISyntaxException when loading product "
-                                + "type directory URI: " + dirUri
-                                + ": Skipping Product Type loading"
-                                + "for it: Message: " + e.getMessage());
-                continue;
+            if (productTypeNodeList != null
+                && productTypeNodeList.getLength() > 0) {
+              for (int j = 0; j < productTypeNodeList.getLength(); j++) {
+                Node productTypeNode = productTypeNodeList.item(j);
+                ProductType type = XmlStructFactory
+                    .getProductType(productTypeNode);
+                LOG.log(Level.FINE,
+                    "XMLRepositoryManager: found product type: ["
+                    + type.getName() + "]");
+                productTypeMap.put(type.getProductTypeId(), type);
+              }
             }
+          }
+        } catch (URISyntaxException e) {
+          LOG.log(Level.WARNING,
+              "URISyntaxException when loading product "
+              + "type directory URI: " + dirUri
+              + ": Skipping Product Type loading"
+              + "for it: Message: " + e.getMessage());
         }
+      }
     }
 
     private Document getDocumentRoot(String xmlFile) {
         // open up the XML file
-        DocumentBuilderFactory factory = null;
-        DocumentBuilder parser = null;
-        Document document = null;
-        InputSource inputSource = null;
+        DocumentBuilderFactory factory;
+        DocumentBuilder parser;
+        Document document;
+        InputSource inputSource;
 
-        InputStream xmlInputStream = null;
+        InputStream xmlInputStream;
 
         try {
             xmlInputStream = new File(xmlFile).toURI().toURL().openStream();

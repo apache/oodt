@@ -257,21 +257,25 @@ public class QueryBuilderPrompt extends JFrame {
     public void actionPerformed(ActionEvent arg0) {
       if (arg0.getActionCommand().equals("Add Term Criteria")) {
         TermQueryPanel tq = new TermQueryPanel(prompt);
-        if (this.getComponentCount() > 1)
+        if (this.getComponentCount() > 1) {
           tq.addOp();
+        }
         int insertOrder = this.getComponentCount() - 1;
-        if (insertOrder < 0)
+        if (insertOrder < 0) {
           insertOrder = 0;
+        }
         this.add(tq, insertOrder);
         this.validate();
         prompt.scrollPane.validate();
       } else if (arg0.getActionCommand().equals("Add Range Criteria")) {
         RangeQueryPanel rq = new RangeQueryPanel(prompt);
-        if (this.getComponentCount() > 1)
+        if (this.getComponentCount() > 1) {
           rq.addOp();
+        }
         int insertOrder = this.getComponentCount() - 1;
-        if (insertOrder < 0)
+        if (insertOrder < 0) {
           insertOrder = 0;
+        }
         this.add(rq, insertOrder);
         this.validate();
         prompt.scrollPane.validate();

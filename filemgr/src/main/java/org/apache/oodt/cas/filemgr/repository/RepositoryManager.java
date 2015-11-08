@@ -40,7 +40,7 @@ import java.util.List;
 public interface RepositoryManager {
 
     /* extension point ID */
-    public static String X_POINT_ID = RepositoryManager.class.getName();
+    String X_POINT_ID = RepositoryManager.class.getName();
 
     /**
      * <p>
@@ -51,7 +51,7 @@ public interface RepositoryManager {
      *            The {@link ProductType} to add.
      * @throws RepositoryManagerException
      */
-    public void addProductType(ProductType productType)
+    void addProductType(ProductType productType)
             throws RepositoryManagerException;
 
     /**
@@ -65,7 +65,7 @@ public interface RepositoryManager {
      * @throws RepositoryManagerException
      *             If any error occurs.
      */
-    public void modifyProductType(ProductType productType)
+    void modifyProductType(ProductType productType)
             throws RepositoryManagerException;
 
     /**
@@ -78,7 +78,7 @@ public interface RepositoryManager {
      * @throws RepositoryManagerException
      *             If any error occurs during the removal.
      */
-    public void removeProductType(ProductType productType)
+    void removeProductType(ProductType productType)
             throws RepositoryManagerException;
 
     /**
@@ -94,7 +94,7 @@ public interface RepositoryManager {
      * @throws RepositoryManagerException
      *             If any error occurs.
      */
-    public ProductType getProductTypeById(String productTypeId)
+    ProductType getProductTypeById(String productTypeId)
             throws RepositoryManagerException;
 
     /**
@@ -109,7 +109,7 @@ public interface RepositoryManager {
      * @throws RepositoryManagerException
      *             If any error occurs.
      */
-    public ProductType getProductTypeByName(String productTypeName)
+    ProductType getProductTypeByName(String productTypeName)
             throws RepositoryManagerException;
 
     /**
@@ -121,5 +121,5 @@ public interface RepositoryManager {
      * @throws RepositoryManagerException
      *             If any error occurs.
      */
-    public List<ProductType> getProductTypes() throws RepositoryManagerException;
+    List<ProductType> getProductTypes() throws RepositoryManagerException;
 }

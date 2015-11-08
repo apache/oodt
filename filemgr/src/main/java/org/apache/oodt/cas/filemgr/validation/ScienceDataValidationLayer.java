@@ -19,20 +19,24 @@ package org.apache.oodt.cas.filemgr.validation;
 
 
 //OODT imports
+
 import org.apache.oodt.cas.filemgr.structs.Element;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.util.DbStructFactory;
 
-//JDK imports
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
+
+//JDK imports
 
 
 /**
@@ -46,6 +50,7 @@ import javax.sql.DataSource;
  */
 public class ScienceDataValidationLayer implements ValidationLayer {
 
+  private static Logger LOG = Logger.getLogger(ScienceDataValidationLayer.class.getName());
   private DataSource ds;
 
   public ScienceDataValidationLayer(DataSource ds) {
@@ -73,14 +78,13 @@ public class ScienceDataValidationLayer implements ValidationLayer {
       statement = conn.createStatement();
       statement.execute(sql);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (statement != null) {
         try {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -88,7 +92,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -114,14 +117,13 @@ public class ScienceDataValidationLayer implements ValidationLayer {
       statement = conn.createStatement();
       statement.execute(sql);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (statement != null) {
         try {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -129,7 +131,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -159,14 +160,13 @@ public class ScienceDataValidationLayer implements ValidationLayer {
         element = DbStructFactory.toScienceDataElement(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -174,7 +174,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -182,7 +181,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -214,14 +212,13 @@ public class ScienceDataValidationLayer implements ValidationLayer {
         element = DbStructFactory.toScienceDataElement(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -229,7 +226,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -237,7 +233,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -265,14 +260,13 @@ public class ScienceDataValidationLayer implements ValidationLayer {
         elements.add(DbStructFactory.toScienceDataElement(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -280,7 +274,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -288,7 +281,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -319,14 +311,13 @@ public class ScienceDataValidationLayer implements ValidationLayer {
         elements.add(DbStructFactory.toScienceDataElement(rs));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (rs != null) {
         try {
           rs.close();
         } catch (Exception ignore) {
         }
-        rs = null;
       }
 
       if (statement != null) {
@@ -334,7 +325,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -342,7 +332,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -371,14 +360,13 @@ public class ScienceDataValidationLayer implements ValidationLayer {
       statement = conn.createStatement();
       statement.execute(sql);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (statement != null) {
         try {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -386,7 +374,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -412,14 +399,13 @@ public class ScienceDataValidationLayer implements ValidationLayer {
       statement = conn.createStatement();
       statement.execute(sql);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (statement != null) {
         try {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -427,7 +413,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }
@@ -456,14 +441,13 @@ public class ScienceDataValidationLayer implements ValidationLayer {
       statement = conn.createStatement();
       statement.execute(sql);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     } finally {
       if (statement != null) {
         try {
           statement.close();
         } catch (Exception ignore) {
         }
-        statement = null;
       }
 
       if (conn != null) {
@@ -471,7 +455,6 @@ public class ScienceDataValidationLayer implements ValidationLayer {
           conn.close();
         } catch (Exception ignore) {
         }
-        conn = null;
       }
 
     }

@@ -23,16 +23,18 @@ import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.structs.exceptions.ValidationLayerException;
 import org.apache.oodt.cas.filemgr.util.DbStructFactory;
 
-//JDK imports
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.sql.DataSource;
+
+//JDK imports
 
 /**
  * @author mattmann
@@ -92,7 +94,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
                     + addMetaElemSql);
             statement.execute(addMetaElemSql);
 
-            String elementId = new String();
+            String elementId = "";
 
             String getMetaIdSql = "SELECT MAX(element_id) AS max_id FROM elements";
             LOG.log(Level.FINE, "addElement: Executing: " + getMetaIdSql);
@@ -106,19 +108,21 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG
                     .log(Level.WARNING, "Exception adding element "
                             + element.getElementName() + ". Message: "
                             + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback addElement transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
 
             if (rs != null) {
@@ -127,7 +131,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -136,7 +139,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -146,7 +148,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -177,17 +178,19 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception modifying element. Message: "
                     + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback modifyElement transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
 
             if (statement != null) {
@@ -196,7 +199,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -206,7 +208,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -236,17 +237,19 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception removing element. Message: "
                     + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback removeElement transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
             if (statement != null) {
                 try {
@@ -254,7 +257,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -264,7 +266,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -301,18 +302,20 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception adding element "
                     + element.getElementName() + " to product type "
                     + type.getName() + " . Message: " + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback addElementToProductType transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
             if (statement != null) {
                 try {
@@ -320,7 +323,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -330,7 +332,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -368,18 +369,20 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception removing element "
                     + element.getElementName() + " from product type "
                     + type.getName() + ". Message: " + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback removeElementFromProductType transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
             if (statement != null) {
                 try {
@@ -387,7 +390,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -397,7 +399,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -427,18 +428,20 @@ public class DataSourceValidationLayer implements ValidationLayer {
             statement.execute(addParentInfoSql);
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception adding parent info to product type "
                             + type.getName() + " . Message: " + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback addParentToProductType transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
             if (statement != null) {
                 try {
@@ -446,7 +449,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -455,7 +457,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
     }
@@ -486,18 +487,20 @@ public class DataSourceValidationLayer implements ValidationLayer {
             conn.commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception removing parent from product type "
                             + type.getName() + ". Message: " + e.getMessage());
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (SQLException e2) {
                 LOG.log(Level.SEVERE,
                         "Unable to rollback removeParentFromProductType transaction. Message: "
                                 + e2.getMessage());
             }
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
             if (statement != null) {
                 try {
@@ -505,7 +508,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -514,7 +516,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
     }
@@ -529,7 +530,7 @@ public class DataSourceValidationLayer implements ValidationLayer {
         Connection conn = null;
         Statement statement = null;
         ResultSet rs = null;
-        List<Element> elements = null;
+        List<Element> elements;
 
         elements = new Vector<Element>();
 
@@ -559,10 +560,10 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING, "Exception reading elements. Message: "
                         + e.getMessage());
-                throw new ValidationLayerException(e.getMessage());
+                throw new ValidationLayerException(e);
             } finally {
 
                 if (rs != null) {
@@ -615,11 +616,11 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING,
                         "Exception reading product parent. Message: "
                                 + e.getMessage());
-                throw new ValidationLayerException(e.getMessage());
+                throw new ValidationLayerException(e);
             } finally {
                 if (rs != null) {
                     try {
@@ -679,10 +680,10 @@ public class DataSourceValidationLayer implements ValidationLayer {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception reading elements. Message: "
                     + e.getMessage());
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
 
             if (rs != null) {
@@ -691,7 +692,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -700,7 +700,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -710,7 +709,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -746,10 +744,10 @@ public class DataSourceValidationLayer implements ValidationLayer {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception reading element. Message: "
                     + e.getMessage());
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
 
             if (rs != null) {
@@ -758,7 +756,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -767,7 +764,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -777,7 +773,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 
@@ -813,10 +808,10 @@ public class DataSourceValidationLayer implements ValidationLayer {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING, "Exception reading element. Message: "
                     + e.getMessage());
-            throw new ValidationLayerException(e.getMessage());
+            throw new ValidationLayerException(e);
         } finally {
 
             if (rs != null) {
@@ -825,7 +820,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                rs = null;
             }
 
             if (statement != null) {
@@ -834,7 +828,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                statement = null;
             }
 
             if (conn != null) {
@@ -844,7 +837,6 @@ public class DataSourceValidationLayer implements ValidationLayer {
                 } catch (SQLException ignore) {
                 }
 
-                conn = null;
             }
         }
 

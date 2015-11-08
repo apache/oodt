@@ -61,9 +61,9 @@ public class HistoryTest extends TestCase implements Storage {
 	public void testIllegalIncidents() {
 		History.closeTime = 50;
 		Incident one = new Incident();
-		one.setActivityID(new String("a"));				       // Want unique objects
+		one.setActivityID("a");				       // Want unique objects
 		Incident two = new Incident();
-		two.setActivityID(new String("a"));				       // Want unique objects
+		two.setActivityID("a");				       // Want unique objects
 		Incident three = new Incident();
 		three.setActivityID("b");
 		History history = new History(one, this);
@@ -71,7 +71,7 @@ public class HistoryTest extends TestCase implements Storage {
 		try {
 			history.addIncident(three);
 			fail("Able to add Incidents with non-matching activity IDs");
-		} catch (IllegalArgumentException good) {}
+		} catch (IllegalArgumentException ignored) {}
 	}
 
 	/**

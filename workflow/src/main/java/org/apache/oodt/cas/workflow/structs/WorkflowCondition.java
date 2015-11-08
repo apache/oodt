@@ -94,8 +94,6 @@ public class WorkflowCondition {
   }
 
   /**
-   * @param taskConfig
-   *          The taskConfig to set.
    */
   public void setCondConfig(WorkflowConditionConfiguration condConfig) {
     this.condConfig = condConfig;

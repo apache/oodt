@@ -19,55 +19,11 @@
 package org.apache.oodt.cas.curation.service;
 
 //JDK imports
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-//JAX-RS imports
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
-
-
-//JSON imports
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
-
-
-//OODT imports
-import org.apache.oodt.cas.curation.service.CurationService;
 import org.apache.oodt.cas.curation.structs.ExtractorConfig;
 import org.apache.oodt.cas.curation.util.CurationXmlStructFactory;
 import org.apache.oodt.cas.curation.util.ExtractorConfigReader;
+import org.apache.oodt.cas.curation.util.exceptions.CurationException;
 import org.apache.oodt.cas.filemgr.catalog.Catalog;
 import org.apache.oodt.cas.filemgr.repository.XMLRepositoryManager;
 import org.apache.oodt.cas.filemgr.structs.Element;
@@ -86,8 +42,49 @@ import org.apache.oodt.cas.metadata.SerializableMetadata;
 import org.apache.oodt.cas.metadata.exceptions.MetExtractionException;
 import org.apache.oodt.cas.metadata.util.GenericMetadataObjectFactory;
 
-//SPRING imports
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+
 import org.springframework.util.StringUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 @Path("metadata")
 /**
@@ -116,7 +113,7 @@ public class MetadataResource extends CurationService {
   public static final String UPDATE = "update";
   
   public static final String DELETE = "delete";
-  
+  private static Logger LOG = Logger.getLogger(MetadataResource.class.getName());
   // single instance of CAS catalog shared among all requests
   private Catalog catalog = null;
     
@@ -139,7 +136,7 @@ public class MetadataResource extends CurationService {
     
       // this.sendRedirect("login.jsp", uriInfo, res);
 
-      Metadata metadata = null;
+      Metadata metadata;
       
       try {
         metadata = this.getStagingMetadata(id, configId, overwrite);
@@ -159,7 +156,7 @@ public class MetadataResource extends CurationService {
   public String getMetExtractorConfigList(
       @DefaultValue("") @QueryParam("current") String current,
       @DefaultValue(FORMAT_HTML) @QueryParam("format") String format) {
-    String[] configIds = this.getFilesInDirectory(this.config
+    String[] configIds = this.getFilesInDirectory(config
         .getMetExtrConfUploadPath(), false);
 
     if (FORMAT_HTML.equals(format)) {
@@ -170,16 +167,16 @@ public class MetadataResource extends CurationService {
 
   protected String getExtractorConfigIdsAsHTML(String[] configIds,
       String current) {
-    StringBuffer html = new StringBuffer();
-    for (int i = 0; i < configIds.length; i++) {
+    StringBuilder html = new StringBuilder();
+    for (String configId : configIds) {
       html.append("<option ");
-      if (configIds[i].equals(current)) {
+      if (configId.equals(current)) {
         html.append("selected ");
       }
       html.append("value=\"");
-      html.append(configIds[i]);
+      html.append(configId);
       html.append("\">");
-      html.append(configIds[i]);
+      html.append(configId);
       html.append("</option>\r\n");
     }
     return html.toString();
@@ -210,7 +207,7 @@ public class MetadataResource extends CurationService {
    * @throws MetExtractionException
    */
   protected Metadata getStagingMetadata(String id, String configId,
-      Boolean overwrite) throws FileNotFoundException, InstantiationException,
+      Boolean overwrite) throws InstantiationException,
       IOException, MetExtractionException {
     if (configId == null || configId.trim().length() == 0) {
       return this.readMetFile(id + CurationService.config.getMetExtension());
@@ -296,7 +293,7 @@ public class MetadataResource extends CurationService {
           productId);
       this.updateCatalogMetadata(prod, metadata);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return "<div class=\"error\">" + e.getMessage() + "</div>";
     }
 
@@ -371,7 +368,7 @@ public class MetadataResource extends CurationService {
   
 
   private JSONObject getMetadataAsJSON(Metadata metadata) {
-    return JSONObject.fromObject(metadata.getHashtable());
+    return JSONObject.fromObject(metadata.getMap());
   }
 
   private Metadata getMetadataFromJSON(String metadataJSON) {
@@ -390,10 +387,10 @@ public class MetadataResource extends CurationService {
   private Metadata getMetadataFromMap(MultivaluedMap<String, String> formParams) {
     Metadata metadata = new Metadata();
     
-    for (String key : formParams.keySet()) {
-      if (key.startsWith("metadata.")) {
-        String newKey = key.substring(key.indexOf('.') + 1);
-        for (String value : formParams.get(key)) {
+    for (Map.Entry<String, List<String>> entry : formParams.entrySet()) {
+      if (entry.getKey().startsWith("metadata.")) {
+        String newKey = entry.getKey().substring(entry.getKey().indexOf('.') + 1);
+        for (String value : entry.getValue()) {
           metadata.addMetadata(newKey, value);
         }
       }
@@ -407,10 +404,10 @@ public class MetadataResource extends CurationService {
       return "<table></table>";
     }
 
-    StringBuffer html = new StringBuffer();
+    StringBuilder html = new StringBuilder();
 
     html.append("<table>\r\n");
-    for (String key : (Set<String>) metadata.getHashtable().keySet()) {
+    for (String key : (Set<String>) metadata.getMap().keySet()) {
       html.append(" <tr>\r\n");
       html.append("  <th>").append(key).append("</th>\r\n");
       html.append("  <td class=\"").append(key).append("\">");
@@ -450,7 +447,7 @@ public class MetadataResource extends CurationService {
    *           If there is an IO problem opening the met file.
    */
   public Metadata readMetFile(String file) throws InstantiationException,
-      FileNotFoundException, IOException {
+      IOException {
     SerializableMetadata metadata = new SerializableMetadata("UTF-8", false);
     metadata.loadMetadataFromXmlStream(new FileInputStream(config
         .getMetAreaPath()
@@ -489,7 +486,7 @@ public class MetadataResource extends CurationService {
    *           If there is an IO exception writing the {@link File}.
    */
   public void writeMetFile(String id, Metadata metadata)
-      throws FileNotFoundException, IOException {
+      throws IOException {
     SerializableMetadata serMet = new SerializableMetadata(metadata, "UTF-8",
         false);
     serMet.writeMetadataToXmlStream(new FileOutputStream(new File(config
@@ -527,12 +524,12 @@ public class MetadataResource extends CurationService {
     XmlRpcFileManagerClient fmClient = CurationService.config.getFileManagerClient();
  
     // empty metadata
-    Metadata metadata = new Metadata();
+    Metadata metadata;
     
     try {
     
       // retrieve product from catalog
-      Product product = null;
+      Product product;
       if (StringUtils.hasText(id)) {
     	  id = id.substring(id.lastIndexOf("/") + 1);
     	  product = fmClient.getProductById(id);
@@ -576,7 +573,7 @@ public class MetadataResource extends CurationService {
           
     } catch (Exception e) {
     	
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       // return error message
       throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
 
@@ -590,17 +587,20 @@ public class MetadataResource extends CurationService {
    * 
    * @param product
    *          The {@link Product} to update {@link Metadata} for.
-   * @param metadata
-   *          The new {@link Metadata} to persist into the {@link Catalog}.
    * @throws CatalogException
    *           If any error occurs during the update.
    * @throws IOException
    * @throws FileNotFoundException
    */
   public void updateCatalogMetadata(Product product, Metadata newMetadata)
-      throws CatalogException, FileNotFoundException, IOException {
-    System.getProperties().load(
-        new FileInputStream(CurationService.config.getFileMgrProps()));
+      throws CatalogException, IOException {
+    InputStream is = new FileInputStream(CurationService.config.getFileMgrProps());
+    try {
+      System.getProperties().load(is);
+    }
+    finally{
+      is.close();
+    }
     Catalog catalog = this.getCatalog();
     
     Metadata oldMetadata = catalog.getMetadata(product);
@@ -638,7 +638,7 @@ public class MetadataResource extends CurationService {
 
 	  try {
 		  // retrieve product from catalog
-		  Product product = null;
+		  Product product;
 		  if (StringUtils.hasText(id)) {
 			  id = id.substring(id.lastIndexOf("/") + 1);
 			  product = CurationService.config.getFileManagerClient().getProductById(id);
@@ -656,7 +656,7 @@ public class MetadataResource extends CurationService {
 
 	  } catch (Exception e) {
 
-		  e.printStackTrace();
+		  LOG.log(Level.SEVERE, e.getMessage());
 		  // return error message
 		  throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
 
@@ -674,7 +674,7 @@ public class MetadataResource extends CurationService {
    *           If any error occurs during this delete operation.
    */
   public void deleteCatalogProduct(Product product) 
-  throws FileNotFoundException, IOException, CatalogException {
+  throws CatalogException {
 	  CurationService.config.getFileManagerClient().removeProduct(product);
   }  
 
@@ -694,7 +694,9 @@ public class MetadataResource extends CurationService {
   }
   
   private Metadata writeProductTypeMetadata(String policy,
-      String productTypeName, Metadata metadata) throws Exception {
+      String productTypeName, Metadata metadata)
+      throws MalformedURLException, InstantiationException, RepositoryManagerException, UnsupportedEncodingException,
+      CurationException {
     String rootPolicyPath = this.cleanse(CurationService.config
         .getPolicyUploadPath());
     String policyPath = new File(rootPolicyPath + policy).toURL()
@@ -729,8 +731,9 @@ public class MetadataResource extends CurationService {
   	if (catalog==null) {
   		String catalogFactoryClass = this.context.getInitParameter(CATALOG_FACTORY_CLASS);
   		// preserve backward compatibility
-  		if (!StringUtils.hasText(catalogFactoryClass))
-  			catalogFactoryClass = "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory";
+  		if (!StringUtils.hasText(catalogFactoryClass)) {
+          catalogFactoryClass = "org.apache.oodt.cas.filemgr.catalog.LuceneCatalogFactory";
+        }
   		catalog = GenericFileManagerObjectFactory.getCatalogServiceFromFactory(catalogFactoryClass);
   	}
   	
@@ -749,7 +752,7 @@ public class MetadataResource extends CurationService {
       xmlRepo.removeProductType(type);
       return true;
     } catch (RepositoryManagerException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return false;
     }
   }
@@ -777,9 +780,7 @@ public class MetadataResource extends CurationService {
       vLayer.addParentForProductType(type, parentId);
       return true;
     } catch (RepositoryManagerException e) {
-      e.printStackTrace();
-    } catch (ValidationLayerException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -798,7 +799,7 @@ public class MetadataResource extends CurationService {
       vLayer.removeParentForProductType(type);
       return true;
     } catch (RepositoryManagerException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -824,7 +825,7 @@ public class MetadataResource extends CurationService {
       }
       return true;
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -846,7 +847,7 @@ public class MetadataResource extends CurationService {
       }
       return JSONSerializer.toJSON(elementIds).toString();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return null;
   }
@@ -868,7 +869,7 @@ public class MetadataResource extends CurationService {
       this.removeUnusedElements(elementList, xmlRepo, vLayer);
       return true;
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -895,7 +896,7 @@ public class MetadataResource extends CurationService {
       this.removeUnusedElements(elements, xmlRepo, vLayer);
       return true;
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -912,12 +913,13 @@ public class MetadataResource extends CurationService {
       try {
     	  for(ProductType type : xmlRepo.getProductTypes()) {
     		  for(Element el : vLayer.getElements(type)) {
-    			  if(el.getElementId().equals(elementId))
-    				  typeids.add(type.getProductTypeId());
+    			  if(el.getElementId().equals(elementId)) {
+                    typeids.add(type.getProductTypeId());
+                  }
     		  }
     	  }
       } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
       }
       return JSONSerializer.toJSON(typeids).toString();
   }
@@ -931,7 +933,7 @@ public class MetadataResource extends CurationService {
 				  throws ValidationLayerException, RepositoryManagerException {
       // Remove Elements that aren't used in any product type
       List<ProductType> ptypelist = xmlRepo.getProductTypes();
-      HashMap<String, Boolean> usedElementIds = new HashMap<String, Boolean>();
+      ConcurrentHashMap<String, Boolean> usedElementIds = new ConcurrentHashMap<String, Boolean>();
       for(ProductType ptype: ptypelist) {
           List<Element> ptypeElements = 
               vLayer.getElements(ptype);
@@ -940,8 +942,9 @@ public class MetadataResource extends CurationService {
           }
       }
       for(Element el: elements) {
-          if(!usedElementIds.containsKey(el.getElementId()))
-             vLayer.removeElement(el);
+          if(!usedElementIds.containsKey(el.getElementId())) {
+            vLayer.removeElement(el);
+          }
       }
   }  
 
@@ -952,7 +955,7 @@ public class MetadataResource extends CurationService {
 		try {
 			xmlRepo = new XMLRepositoryManager(Collections.singletonList(url));
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 
 		return xmlRepo;
@@ -965,7 +968,7 @@ public class MetadataResource extends CurationService {
 		try {
 			vLayer = new XMLValidationLayer(Collections.singletonList(url));
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage());
 		}
 		return vLayer;
 	}

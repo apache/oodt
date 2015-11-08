@@ -37,7 +37,7 @@ import org.apache.oodt.cas.pushpull.exceptions.ParserException;
  */
 public interface Parser {
 
-    public VirtualFileStructure parse(FileInputStream inputFile, Metadata metadata)
+    VirtualFileStructure parse(FileInputStream inputFile, Metadata metadata)
             throws ParserException;
 
 }

@@ -18,6 +18,8 @@
 package org.apache.oodt.cas.filemgr.structs;
 
 //JDK imports
+
+import org.apache.oodt.cas.filemgr.exceptions.FileManagerException;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,7 +30,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -182,8 +183,9 @@ public class Product {
      */
     public void setProductStructure(String productStructure) {
         //Guard clause, according to a unit test null is a valid value
-        if (!java.util.Arrays.asList(VALID_STRUCTURES).contains(productStructure) && productStructure != null)
-            throw new IllegalArgumentException("Undefined product structure: "+productStructure);
+        if (!java.util.Arrays.asList(VALID_STRUCTURES).contains(productStructure) && productStructure != null) {
+            throw new IllegalArgumentException("Undefined product structure: " + productStructure);
+        }
         this.productStructure = productStructure;
     }
 
@@ -262,7 +264,7 @@ public class Product {
         this.rootRef = rootRef;
     }
 
-    public static final Product getDefaultFlatProduct(String name,
+    public static Product getDefaultFlatProduct(String name,
             String defaultProductTypeId) {
         Product defaultProduct = new Product();
         defaultProduct.setProductName(name);
@@ -275,10 +277,10 @@ public class Product {
         return defaultProduct;
     }
 
-    public Document toXML() throws Exception {
+    public Document toXML() throws UnsupportedEncodingException, FileManagerException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        Document doc = null;
+        Document doc;
 
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -300,17 +302,15 @@ public class Product {
             if (this.getProductReferences() != null
                     && this.getProductReferences().size() > 0) {
                 Element refsElem = XMLUtils.addNode(doc, root, "references");
-                for (Iterator<Reference> i = this.getProductReferences().iterator(); i
-                        .hasNext();) {
-                    Reference r = i.next();
+                for (Reference r : this.getProductReferences()) {
                     Element refElem = XMLUtils.addNode(doc, refsElem,
-                            "reference");
+                        "reference");
                     XMLUtils.addAttribute(doc, refElem, "orig", r
-                            .getOrigReference());
+                        .getOrigReference());
                     XMLUtils.addAttribute(doc, refElem, "dataStore", r
-                            .getDataStoreReference());
+                        .getDataStoreReference());
                     XMLUtils.addAttribute(doc, refElem, "size", String
-                            .valueOf(r.getFileSize()));
+                        .valueOf(r.getFileSize()));
 
                 }
             }
@@ -318,7 +318,7 @@ public class Product {
         } catch (ParserConfigurationException pce) {
             LOG.log(Level.WARNING, "Error generating product xml file!: "
                     + pce.getMessage());
-            throw new Exception("Error generating product xml file!: "
+            throw new FileManagerException("Error generating product xml file!: "
                     + pce.getMessage());
         }
 
@@ -355,8 +355,7 @@ public class Product {
                     Reference r = new Reference();
                     r.setOrigReference(refElem.getAttribute("orig"));
                     r.setDataStoreReference(refElem.getAttribute("dataStore"));
-                    r.setFileSize(Long.valueOf(refElem.getAttribute("size"))
-                            .longValue());
+                    r.setFileSize(Long.valueOf(refElem.getAttribute("size")));
                     this.references.add(r);
                 }
             }

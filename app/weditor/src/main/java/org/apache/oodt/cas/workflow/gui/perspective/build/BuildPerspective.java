@@ -18,25 +18,7 @@
 package org.apache.oodt.cas.workflow.gui.perspective.build;
 
 //JDK imports
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
-//OODT imports
 import org.apache.oodt.cas.workflow.gui.model.ModelGraph;
 import org.apache.oodt.cas.workflow.gui.perspective.MultiStatePerspective;
 import org.apache.oodt.cas.workflow.gui.perspective.view.MultiStateView;
@@ -50,6 +32,29 @@ import org.apache.oodt.cas.workflow.gui.perspective.view.impl.GlobalConfigView;
 import org.apache.oodt.cas.workflow.gui.perspective.view.impl.GraphView;
 import org.apache.oodt.cas.workflow.gui.perspective.view.impl.TreeProjectView;
 import org.apache.oodt.cas.workflow.gui.util.GuiUtils;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+//OODT imports
 
 /**
  * 
@@ -71,11 +76,11 @@ public class BuildPerspective extends MultiStatePerspective {
   private Class<? extends View> propViewClass;
   private Class<? extends View> globalViewClass;
 
-  private HashMap<ViewState, BuildPanel> stateViews;
+  private ConcurrentHashMap<ViewState, BuildPanel> stateViews;
   private ViewState activeState;
 
   public static final int MAIN_VIEW = 1;
-
+  private static Logger LOG = Logger.getLogger(BuildPerspective.class.getName());
   private static final int WIDTH = 1000;
   private static final int HEIGHT = 700;
 
@@ -83,23 +88,21 @@ public class BuildPerspective extends MultiStatePerspective {
 
   private boolean findSelectedInTab = false;
 
-  public BuildPerspective() throws InstantiationException,
-      IllegalAccessException {
+  public BuildPerspective() {
     this(TreeProjectView.class, GraphView.class, DefaultTreeView.class,
         DefaultPropView.class, GlobalConfigView.class);
   }
 
   public BuildPerspective(Class<? extends View> projectViewClass,
       Class<? extends View> mainViewClass, Class<? extends View> treeViewClass,
-      Class<? extends View> propViewClass, Class<? extends View> globalViewClass)
-      throws InstantiationException, IllegalAccessException {
+      Class<? extends View> propViewClass, Class<? extends View> globalViewClass) {
     super("Build");
     this.projectViewClass = projectViewClass;
     this.mainViewClass = mainViewClass;
     this.treeViewClass = treeViewClass;
     this.propViewClass = propViewClass;
     this.globalViewClass = globalViewClass;
-    this.stateViews = new HashMap<ViewState, BuildPanel>();
+    this.stateViews = new ConcurrentHashMap<ViewState, BuildPanel>();
     this.projectView = this.createProjectView();
     this.projectView.setPreferredSize(new Dimension(WIDTH / 10, HEIGHT / 2));
     this.globalConfigView = this.createGlobalConfigView();
@@ -122,7 +125,6 @@ public class BuildPerspective extends MultiStatePerspective {
     } else if (change instanceof ViewChange.REFRESH_VIEW) {
       this.refresh();
     } else if (change instanceof ViewChange.STATE_NAME_CHANGE) {
-      ViewState state = ((ViewChange.STATE_NAME_CHANGE) change).getObject();
       this.refresh();
     } else if (change instanceof ViewChange.VIEW_MODEL) {
       String modelId = ((ViewChange.VIEW_MODEL) change).getObject();
@@ -148,10 +150,11 @@ public class BuildPerspective extends MultiStatePerspective {
   }
 
   public View getActiveView() {
-    if (this.getActiveState() != null)
+    if (this.getActiveState() != null) {
       return this.stateViews.get(this.getActiveState()).getActiveView();
-    else
+    } else {
       return null;
+    }
   }
 
   @Override
@@ -165,10 +168,11 @@ public class BuildPerspective extends MultiStatePerspective {
   @Override
   public void handleRemoveState(ViewState state) {
     this.stateViews.remove(state);
-    if (this.stateViews.size() > 0)
+    if (this.stateViews.size() > 0) {
       this.activeState = this.stateViews.keySet().iterator().next();
-    else
+    } else {
       this.activeState = null;
+    }
     this.refresh();
   }
 
@@ -177,7 +181,7 @@ public class BuildPerspective extends MultiStatePerspective {
     this.save();
     this.removeAll();
     this.setLayout(new BorderLayout());
-    JPanel panel = null;
+    JPanel panel;
     if (this.activeState != null) {
       BuildPanel buildPanel = this.stateViews.get(this.activeState);
       buildPanel.refresh();
@@ -186,11 +190,12 @@ public class BuildPerspective extends MultiStatePerspective {
       panel = new JPanel();
     }
 
-    if (this.projectView instanceof MultiStateView)
+    if (this.projectView instanceof MultiStateView) {
       ((MultiStateView) this.projectView).refreshView(this.activeState,
           this.getStates());
-    else
+    } else {
       this.projectView.refreshView(this.activeState);
+    }
 
     this.globalConfigView.refreshView(this.activeState);
 
@@ -200,12 +205,14 @@ public class BuildPerspective extends MultiStatePerspective {
     globalPanel.add(this.globalConfigView, BorderLayout.SOUTH);
 
     int dividerLocation = -1;
-    if (projectSplitPane != null)
+    if (projectSplitPane != null) {
       dividerLocation = projectSplitPane.getDividerLocation();
+    }
     projectSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, globalPanel,
         panel);
-    if (dividerLocation != -1)
+    if (dividerLocation != -1) {
       projectSplitPane.setDividerLocation(dividerLocation);
+    }
     this.add(projectSplitPane, BorderLayout.CENTER);
 
     this.revalidate();
@@ -216,7 +223,7 @@ public class BuildPerspective extends MultiStatePerspective {
     try {
       return this.mainViewClass.getConstructor(String.class).newInstance(name);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -226,7 +233,7 @@ public class BuildPerspective extends MultiStatePerspective {
       return this.treeViewClass.getConstructor(String.class).newInstance(
           this.treeViewClass.getSimpleName());
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -236,7 +243,7 @@ public class BuildPerspective extends MultiStatePerspective {
       return this.globalViewClass.getConstructor(String.class).newInstance(
           this.globalViewClass.getSimpleName());
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -248,7 +255,7 @@ public class BuildPerspective extends MultiStatePerspective {
       view.registerListener(this);
       return view;
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -258,7 +265,7 @@ public class BuildPerspective extends MultiStatePerspective {
       return this.propViewClass.getConstructor(String.class).newInstance(
           this.propViewClass.getSimpleName());
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -281,13 +288,17 @@ public class BuildPerspective extends MultiStatePerspective {
     public BuildPanel(ViewState state) {
       this.state = state;
 
-      mainViews = new HashMap<View, ViewState>();
+      mainViews = new ConcurrentHashMap<View, ViewState>();
 
       propView = createPropView();
-      propView.registerListener(this);
+      if (propView != null) {
+        propView.registerListener(this);
+      }
 
       treeView = createTreeView();
-      treeView.registerListener(this);
+      if (treeView != null) {
+        treeView.registerListener(this);
+      }
 
       tabbedPane = new JTabbedPane();
 

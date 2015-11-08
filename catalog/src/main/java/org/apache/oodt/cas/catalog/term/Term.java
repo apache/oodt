@@ -81,9 +81,9 @@ public class Term implements Cloneable {
 		xml_NMTOKENS,
 		xml_anyType,
 		xml_anySimpleType
-	};
-	
-	public Term() {
+	}
+
+  public Term() {
 		this.type = Type.xml_string;
 		this.values = Collections.emptyList();
 	}
@@ -100,8 +100,9 @@ public class Term implements Cloneable {
 	
 	public Term(String name, List<String> values, Type type) {
 		this(name, values);
-		if (type != null)
-			this.type = type;
+		if (type != null) {
+		  this.type = type;
+		}
 	}
 
 	public String getName() {
@@ -122,8 +123,9 @@ public class Term implements Cloneable {
 	
 	public String getFirstValue() {
 		String firstValue = null;
-		if (this.values.size() > 0)
-			firstValue = this.values.get(0);
+		if (this.values.size() > 0) {
+		  firstValue = this.values.get(0);
+		}
 		return firstValue; 
 	}
 

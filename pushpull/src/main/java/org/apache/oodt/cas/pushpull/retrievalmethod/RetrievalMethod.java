@@ -38,8 +38,8 @@ import org.apache.oodt.cas.pushpull.retrievalsystem.FileRetrievalSystem;
  */
 public interface RetrievalMethod {
 
-    public void processPropFile(FileRetrievalSystem frs,
-            Parser propFileParser, File propFile, DataFilesInfo dfi,
-            DataFileToPropFileLinker linker) throws Exception;
+    void processPropFile(FileRetrievalSystem frs,
+                         Parser propFileParser, File propFile, DataFilesInfo dfi,
+                         DataFileToPropFileLinker linker) throws Exception;
 
 }

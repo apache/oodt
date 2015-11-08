@@ -15,7 +15,7 @@
 
 package org.apache.oodt.commons.object.jndi;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -194,7 +194,7 @@ public class TContext implements Context {
 	}
 
 	/** What holds the bindings.  Keys are {@link String}s, values are {@link Object}s. */
-	Map bindings = new HashMap();
+	Map bindings = new ConcurrentHashMap();
 
 	/** What every key must start with. */
 	private String prefix;

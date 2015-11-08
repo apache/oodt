@@ -36,14 +36,14 @@ import java.util.List;
  */
 public interface Cache {
 
-    public static final String DEFAULT_UNIQUE_MET_KEY = "CAS.ProductName";
+    String DEFAULT_UNIQUE_MET_KEY = "CAS.ProductName";
 
     /**
-     * Clears the current cache. This should be used before a re-{@link #sync(String, String))}
+     * Clears the current cache. This should be used before a re-
      * occurs.
      * 
      */
-    public void clear();
+    void clear();
 
     /**
      * Checks the cache to determine if a {@link Product} with the given
@@ -54,7 +54,7 @@ public interface Cache {
      * @return True if the {@link Product} is foudn in the Cache, False,
      *         otherwise.
      */
-    public boolean contains(String productName);
+    boolean contains(String productName);
 
     /**
      * Specifies the {@link URL} to the File Manager to connect this Cache to.
@@ -63,13 +63,13 @@ public interface Cache {
      *            The {@link URL} of the File Manager to cache {@link Product}s
      *            from.
      */
-    public void setFileManager(URL fmUrl);
+    void setFileManager(URL fmUrl);
 
     /**
      * 
      * @return The size of the current {@link Product} cache.
      */
-    public int size();
+    int size();
 
     /**
      * Synchronizes this Cache with the File Manager specified by the
@@ -81,7 +81,7 @@ public interface Cache {
      * @throws CacheException
      *             If there is any error.
      */
-    public void sync(List<String> uniqueElementProductTypeNames) throws CacheException;
+    void sync(List<String> uniqueElementProductTypeNames) throws CacheException;
 
     /**
      * Synchronizes this Cache with the File Manager specified by the
@@ -96,8 +96,8 @@ public interface Cache {
      * @throws CacheException
      *             If there is any error.
      */
-    public void sync(String uniqueElementName,
-            List<String> uniqueElementProductTypeNames) throws CacheException;
+    void sync(String uniqueElementName,
+              List<String> uniqueElementProductTypeNames) throws CacheException;
 
     /**
      * Synchronizes this Cache with the File Manager specified by the
@@ -109,7 +109,7 @@ public interface Cache {
      * @throws CacheException
      *             If any error occurs.
      */
-    public void sync() throws CacheException;
+    void sync() throws CacheException;
 
     /**
      * Sets the names of the {@link ProductType}s to cache.
@@ -118,8 +118,8 @@ public interface Cache {
      *            A {@link List} of java.util.String names of
      *            {@link ProductType}s.
      */
-    public void setUniqueElementProductTypeNames(
-            List<String> uniqueElementProductTypeNames);
+    void setUniqueElementProductTypeNames(
+        List<String> uniqueElementProductTypeNames);
 
     /**
      * Sets the name of the met element to use as the identifier of a
@@ -130,7 +130,7 @@ public interface Cache {
      *            The name of the met element used to uniquely identify
      *            {@link Product}s.
      */
-    public void setUniqueElementName(String uniqueElementName);
+    void setUniqueElementName(String uniqueElementName);
 
     /**
      * Gets the {@link URL} of the File Manager that this Cache communicates
@@ -139,5 +139,5 @@ public interface Cache {
      * @return The {@link URL} of the File Manager that this Cache communicates
      *         with.
      */
-    public URL getFileManagerUrl();
+    URL getFileManagerUrl();
 }

@@ -41,7 +41,7 @@ public class PGEConfigFileReaderTest extends TestCase {
       configFile = reader.read(this.getClass().getResource(
           "pge-config-example.xml"));
     } catch (PGEConfigFileException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       fail(e.getMessage());
     }
   }

@@ -18,11 +18,11 @@
 package org.apache.oodt.cas.metadata.preconditions;
 
 //JDK imports
+import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
+
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.oodt.cas.metadata.exceptions.PreconditionComparatorException;
 
 /**
  * A {@link PreConditionComparator} that checks for the existence of an arbitrary file (a "sub-product") 
@@ -58,9 +58,9 @@ public class SubProductExistenceCheckComparator extends
     	if (product.isDirectory() && filePath!=null) {
     		File file = new File(product.getAbsolutePath()+"/"+filePath);
     		LOG.log(Level.INFO, "Checking existence of file="+file.getAbsolutePath());
-    		return new Boolean(file.exists()).compareTo(compareItem);
+    		return Boolean.valueOf(file.exists()).compareTo(compareItem);
     	} else {
-    		return new Boolean(product.exists()).compareTo(compareItem);
+    		return Boolean.valueOf(product.exists()).compareTo(compareItem);
     	}
     }
 	

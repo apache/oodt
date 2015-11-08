@@ -60,21 +60,42 @@
 
 package org.apache.oodt.commons.util;
 
-import java.io.*;
-import java.util.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.OutputKeys;
 
 /** XML services.
  *
@@ -84,6 +105,7 @@ import javax.xml.transform.OutputKeys;
  * @author Kelly
  */
 public class XML {
+  private static Logger LOG = Logger.getLogger(XML.class.getName());
 	private static DocumentBuilder getStandardDocumentBuilder() {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -167,8 +189,7 @@ public class XML {
 					System.err.println("Fatal parse error: " + ex.getMessage());
 				}
 			});
-			SAXParser p = new SAXParser(saxParser);
-			return p;
+		  return new SAXParser(saxParser);
 		} catch (ParserConfigurationException ex) {
 			throw new IllegalStateException("Unexpected ParserConfigurationException: " + ex.getMessage());
 		} catch (SAXException ex) {
@@ -187,10 +208,8 @@ public class XML {
 	 */
 	public static String serialize(Document doc, boolean omitXMLDeclaration) {
 		StringWriter writer = new StringWriter();
-		try {
-			serialize(doc, writer, omitXMLDeclaration);
-		} catch (IOException cantHappen) {}
-		return writer.getBuffer().toString();
+	  serialize(doc, writer, omitXMLDeclaration);
+	  return writer.getBuffer().toString();
 	}
 
 	/** Serialize an XML DOM document into a String.
@@ -215,7 +234,7 @@ public class XML {
 	 * @param omitXMLDeclaration True if we should omit the XML declaration, false to keep the XML declaration.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public static void serialize(Document doc, Writer writer, boolean omitXMLDeclaration) throws IOException {
+	public static void serialize(Document doc, Writer writer, boolean omitXMLDeclaration) {
 		try {
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer transformer = factory.newTransformer();
@@ -256,7 +275,7 @@ public class XML {
 	 * @param writer Where to write it.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public static void serialize(Document doc, Writer writer) throws IOException {
+	public static void serialize(Document doc, Writer writer) {
 		serialize(doc, writer, /*omitXMLDeclaration*/false);
 	}
 
@@ -280,7 +299,7 @@ public class XML {
 	 * @throws SAXException If a parse error occurs.
 	 */
 	public static Document parse(String string) throws SAXException {
-		Document doc = null;
+		Document doc;
 		try {
 			DOMParser parser = XML.createDOMParser();
 			StringReader reader = new StringReader(string);
@@ -333,8 +352,9 @@ public class XML {
 	 * @throws DOMException If a DOM error occurs.
 	 */
 	public static void add(Node node, String name, Collection values) throws DOMException {
-		for (Iterator i = values.iterator(); i.hasNext();)
-			add(node, name, i.next());
+	  for (Object value : values) {
+		add(node, name, value);
+	  }
 	}
 
 	/** Add a child element with the given text to the given element.
@@ -359,7 +379,9 @@ public class XML {
 	 * @throws DOMException If a DOM error occurs.
 	 */
 	public static void addNonNull(Node node, String name, String text) throws DOMException {
-		if (text == null) return;
+		if (text == null) {
+		  return;
+		}
 		add(node, name, text);
 	}
 
@@ -384,11 +406,17 @@ public class XML {
 	 * @throws DOMException If a DOM error occurs.
 	 */
 	public static void add(Node node, String name, String text) throws DOMException {
-		if (name == null) return;
-		if (node == null) throw new IllegalArgumentException("Can't add to a null node");
+		if (name == null) {
+		  return;
+		}
+		if (node == null) {
+		  throw new IllegalArgumentException("Can't add to a null node");
+		}
 		Document doc = node.getOwnerDocument();
 		Element element = doc.createElement(name);
-		if (text != null) element.appendChild(doc.createTextNode(text));
+		if (text != null) {
+		  element.appendChild(doc.createTextNode(text));
+		}
 		node.appendChild(element);
 	}
 
@@ -438,12 +466,14 @@ public class XML {
 	 * @return The text in its children, unwrapped.
 	 */
 	public static String unwrappedText(Node node) {
-		if (node == null) return null;
+		if (node == null) {
+		  return null;
+		}
 		StringBuffer buffer = new StringBuffer();
-		StringBuffer wrapped = new StringBuffer(text1(node, buffer));
+		StringBuilder wrapped = new StringBuilder(text1(node, buffer));
 		boolean newline = false;
 		for (int i = 0; i < wrapped.length(); ++i) {
-			if (newline == false) {
+			if (!newline) {
 				if (wrapped.charAt(i) == '\n') {
 					newline = true;
 					wrapped.setCharAt(i, ' ');
@@ -452,8 +482,9 @@ public class XML {
 				if (Character.isWhitespace(wrapped.charAt(i))) {
 					wrapped.deleteCharAt(i);
 					--i;
-				} else
-					newline = false;
+				} else {
+				  newline = false;
+				}
 			}
 		}
 		return wrapped.toString().trim();
@@ -493,10 +524,10 @@ public class XML {
 	public static void removeComments(Node node) {
 		List commentNodes = new ArrayList();
 		findCommentNodes(commentNodes, node);
-		for (Iterator i = commentNodes.iterator(); i.hasNext();) {
-			Node commentNode = (Node) i.next();
-			commentNode.getParentNode().removeChild(commentNode);
-		}
+	  for (Object commentNode1 : commentNodes) {
+		Node commentNode = (Node) commentNode1;
+		commentNode.getParentNode().removeChild(commentNode);
+	  }
 	}
 
 	/** The resolver for entities for the JPL enterprise. */
@@ -542,16 +573,19 @@ public class XML {
 			// reference.  Non printables are below ASCII space but not tab or
 			// line terminator, ASCII delete, or above a certain Unicode
 			// threshold.
-			if ((ch < ' ' && ch != '\t' && ch != '\n' && ch != '\r') || ch > LAST_PRINTABLE || ch == 0xF7)
-				result.append("&#").append(Integer.toString(ch)).append(';');
-			else {
+			if ((ch < ' ' && ch != '\t' && ch != '\n' && ch != '\r') || ch > LAST_PRINTABLE || ch == 0xF7) {
+			  result.append("&#").append(Integer.toString(ch)).append(';');
+			} else {
 				// If there is a suitable entity reference for this
 				// character, print it. The list of available entity
 				// references is almost but not identical between XML and
 				// HTML.
 				charRef = getEntityRef(ch);
-				if (charRef == null) result.append(ch);
-				else                 result.append('&').append(charRef).append(';');
+				if (charRef == null) {
+				  result.append(ch);
+				} else {
+				  result.append('&').append(charRef).append(';');
+				}
 			}
 		}
 		return result.toString();
@@ -563,9 +597,9 @@ public class XML {
 	 * @param node Node to search.
 	 */
 	private static void findCommentNodes(List list, Node node) {
-		if (node.getNodeType() == Node.COMMENT_NODE)
-			list.add(node);
-		else {
+		if (node.getNodeType() == Node.COMMENT_NODE) {
+		  list.add(node);
+		} else {
 			NodeList children = node.getChildNodes();
 			for (int i = 0; i < children.getLength(); ++i) {
 				findCommentNodes(list, children.item(i));
@@ -598,10 +632,11 @@ public class XML {
 	 */
 	private static String text1(Node node, StringBuffer buffer) {
 		for (Node ch = node.getFirstChild(); ch != null; ch = ch.getNextSibling()) {
-			if (ch.getNodeType() == Node.ELEMENT_NODE || ch.getNodeType() == Node.ENTITY_REFERENCE_NODE)
-				buffer.append(text(ch));
-			else if (ch.getNodeType() == Node.TEXT_NODE)
-				buffer.append(ch.getNodeValue());
+			if (ch.getNodeType() == Node.ELEMENT_NODE || ch.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
+			  buffer.append(text(ch));
+			} else if (ch.getNodeType() == Node.TEXT_NODE) {
+			  buffer.append(ch.getNodeValue());
+			}
 		}
 		return buffer.toString();
 	}
@@ -615,12 +650,14 @@ public class XML {
 	 * @param node The tree to output.
 	 */
 	private static void dump(PrintWriter writer, Node node, int indentAmt) {
-		for (int i = 0; i < indentAmt; ++i)
-			writer.print(' ');
+		for (int i = 0; i < indentAmt; ++i) {
+		  writer.print(' ');
+		}
 		writer.println(typeOf(node) + "(" + node.getNodeName() + ", " + node.getNodeValue() + ")");
 		NodeList children = node.getChildNodes();
-		for (int i = 0; i < children.getLength(); ++i)
-			dump(writer, children.item(i), indentAmt + 2);
+		for (int i = 0; i < children.getLength(); ++i) {
+		  dump(writer, children.item(i), indentAmt + 2);
+		}
 	}
 
 	/** Return a human-readable representation of the type of the given node.

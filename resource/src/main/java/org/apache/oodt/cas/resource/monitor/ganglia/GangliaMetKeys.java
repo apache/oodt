@@ -24,46 +24,46 @@ package org.apache.oodt.cas.resource.monitor.ganglia;
 public interface GangliaMetKeys {
 
 	/* XML specific keys */
-    public static final String CLUSTER = "CLUSTER";
-    public static final String HOST = "HOST";
-    public static final String METRIC = "METRIC";
+    String CLUSTER = "CLUSTER";
+    String HOST = "HOST";
+    String METRIC = "METRIC";
 
-    public static final String NAME = "NAME";
-    public static final String VAL = "VAL";
-    public static final String TN = "TN";
-    public static final String TMAX = "TMAX";
-    public static final String DMAX = "DMAX";
+    String NAME = "NAME";
+    String VAL = "VAL";
+    String TN = "TN";
+    String TMAX = "TMAX";
+    String DMAX = "DMAX";
 
     /*Metric specific keys*/
-    public static final String TYPE = "TYPE";
-    public static final String UNITS = "UNITS";
-    public static final String SLOPE = "SLOPE";
-    public static final String SOURCE = "SOURCE";
-    public static final String EXTRA_ELEMENT = "EXTRA_ELEMENT";
-    public static final String GROUP = "GROUP";
-    public static final String DESC = "DESC";
-    public static final String TITLE = "TITLE";
+    String TYPE = "TYPE";
+    String UNITS = "UNITS";
+    String SLOPE = "SLOPE";
+    String SOURCE = "SOURCE";
+    String EXTRA_ELEMENT = "EXTRA_ELEMENT";
+    String GROUP = "GROUP";
+    String DESC = "DESC";
+    String TITLE = "TITLE";
 
     /*Host specific keys*/
-    public static final String IP = "IP";
-    public static final String REPORTED = "REPORTED";
-    public static final String LOCATION = "LOCATION";
-    public static final String GMOND_STARTED = "GMOND_STARTED";
+    String IP = "IP";
+    String REPORTED = "REPORTED";
+    String LOCATION = "LOCATION";
+    String GMOND_STARTED = "GMOND_STARTED";
 
     /*Cluster specific keys*/
-    public static final String LOCALTIME = "LOCALTIME";
-    public static final String OWNER = "OWNER";
-    public static final String LATLONG = "LATLONG";
-    public static final String URL = "URL";
+    String LOCALTIME = "LOCALTIME";
+    String OWNER = "OWNER";
+    String LATLONG = "LATLONG";
+    String URL = "URL";
     
     /*Ganglia metric keys*/
-    public static String LOAD_ONE = "load_one";
-    public static String LOAD_FIVE = "load_five";
-    public static String LOAD_FIFTEEN = "load_fifteen";
-    public static String CPU_NUM = "cpu_num";
+    String LOAD_ONE = "load_one";
+    String LOAD_FIVE = "load_five";
+    String LOAD_FIFTEEN = "load_fifteen";
+    String CPU_NUM = "cpu_num";
 
     /* Various needed keys */
-    public static int MAXIMUM_FRACTION_DIGITS = 3;
+    int MAXIMUM_FRACTION_DIGITS = 3;
 
 
 

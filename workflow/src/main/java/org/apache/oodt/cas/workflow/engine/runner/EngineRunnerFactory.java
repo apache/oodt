@@ -23,5 +23,5 @@ package org.apache.oodt.cas.workflow.engine.runner;
  */
 public interface EngineRunnerFactory {
 
-   public EngineRunner createEngineRunner();
+   EngineRunner createEngineRunner();
 }

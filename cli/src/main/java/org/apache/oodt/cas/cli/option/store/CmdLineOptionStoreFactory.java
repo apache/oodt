@@ -23,6 +23,6 @@ package org.apache.oodt.cas.cli.option.store;
  */
 public interface CmdLineOptionStoreFactory {
 
-   public CmdLineOptionStore createStore();
+   CmdLineOptionStore createStore();
 
 }

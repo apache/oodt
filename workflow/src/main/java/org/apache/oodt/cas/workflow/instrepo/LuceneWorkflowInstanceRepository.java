@@ -19,27 +19,6 @@
 package org.apache.oodt.cas.workflow.instrepo;
 
 //OODT imports
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleStage;
-import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
-import org.apache.oodt.cas.workflow.structs.Priority;
-import org.apache.oodt.cas.workflow.structs.Workflow;
-import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.WorkflowTask;
-import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
-import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
-
-//JDK imports
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//Lucene imports
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -53,10 +32,27 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowLifecycleStage;
+import org.apache.oodt.cas.workflow.lifecycle.WorkflowState;
+import org.apache.oodt.cas.workflow.structs.Priority;
+import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowCondition;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+import org.apache.oodt.cas.workflow.structs.WorkflowTaskConfiguration;
+import org.apache.oodt.cas.workflow.structs.exceptions.InstanceRepositoryException;
 
-//JUG imports
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * @author mattmann
@@ -70,6 +66,7 @@ import org.safehaus.uuid.UUIDGenerator;
 public class LuceneWorkflowInstanceRepository extends
         AbstractPaginatibleInstanceRepository {
 
+    public static final int MERGE_FACTOR = 20;
     /* path to lucene index directory to store wInst info */
     private String idxFilePath = null;
 
@@ -118,7 +115,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -156,7 +152,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -238,7 +233,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -283,7 +277,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -329,7 +322,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -400,7 +392,6 @@ public class LuceneWorkflowInstanceRepository extends
                     searcher.close();
                 } catch (Exception ignore) {
                 }
-                searcher = null;
             }
         }
 
@@ -418,7 +409,7 @@ public class LuceneWorkflowInstanceRepository extends
                             + inst.getId() + "]");
             reader.deleteDocuments(new Term("workflow_inst_id", inst.getId()));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG
                     .log(Level.WARNING,
                             "Exception removing workflow instance: ["
@@ -432,7 +423,6 @@ public class LuceneWorkflowInstanceRepository extends
                 } catch (Exception ignore) {
                 }
 
-                reader = null;
             }
 
         }
@@ -444,17 +434,14 @@ public class LuceneWorkflowInstanceRepository extends
 
         File indexDir = new File(idxFilePath);
 
-        boolean createIndex = false;
+        boolean createIndex;
 
-        if (indexDir.exists() && indexDir.isDirectory()) {
-            createIndex = false;
-        } else
-            createIndex = true;
+        createIndex = !(indexDir.exists() && indexDir.isDirectory());
 
         try {
             writer = new IndexWriter(idxFilePath, new StandardAnalyzer(),
                     createIndex);
-            writer.setMergeFactor(20);
+            writer.setMergeFactor(MERGE_FACTOR);
 
             Document doc = toDoc(wInst);
             writer.addDocument(doc);
@@ -469,7 +456,6 @@ public class LuceneWorkflowInstanceRepository extends
                 writer.close();
             } catch (Exception ignore) {
             }
-            writer = null;
         }
 
     }
@@ -565,23 +551,21 @@ public class LuceneWorkflowInstanceRepository extends
     }
 
     private void addInstanceMetadataToDoc(Document doc, Metadata met) {
-        if (met != null && met.getHashtable().keySet().size() > 0) {
-            for (Iterator i = met.getHashtable().keySet().iterator(); i
-                    .hasNext();) {
-                String metKey = (String) i.next();
+        if (met != null && met.getMap().keySet().size() > 0) {
+            for (String metKey : met.getMap().keySet()) {
                 List metVals = met.getAllMetadata(metKey);
                 if (metVals != null && metVals.size() > 0) {
-                    for (Iterator j = metVals.iterator(); j.hasNext();) {
-                        String metVal = (String) j.next();
+                    for (Object metVal1 : metVals) {
+                        String metVal = (String) metVal1;
                         doc.add(new Field(metKey, metVal, Field.Store.YES,
-                                Field.Index.UN_TOKENIZED));
+                            Field.Index.UN_TOKENIZED));
                     }
 
                     // now index the field name so that we can use it to
                     // look it up when converting from doc to
                     // WorkflowInstance
                     doc.add(new Field("workflow_inst_met_flds", metKey,
-                            Field.Store.YES, Field.Index.NO));
+                        Field.Store.YES, Field.Index.NO));
 
                 }
             }
@@ -590,18 +574,18 @@ public class LuceneWorkflowInstanceRepository extends
 
     private void addTasksToDoc(Document doc, List tasks) {
         if (tasks != null && tasks.size() > 0) {
-            for (Iterator i = tasks.iterator(); i.hasNext();) {
-                WorkflowTask task = (WorkflowTask) i.next();
+            for (Object task1 : tasks) {
+                WorkflowTask task = (WorkflowTask) task1;
                 doc.add(new Field("task_id", task.getTaskId(), Field.Store.YES,
-                        Field.Index.UN_TOKENIZED));
+                    Field.Index.UN_TOKENIZED));
                 doc.add(new Field("task_name", task.getTaskName(),
-                        Field.Store.YES, Field.Index.NO));
+                    Field.Store.YES, Field.Index.NO));
                 doc.add(new Field("task_order",
-                        String.valueOf(task.getOrder()), Field.Store.YES,
-                        Field.Index.NO));
+                    String.valueOf(task.getOrder()), Field.Store.YES,
+                    Field.Index.NO));
                 doc.add(new Field("task_class",
-                        task.getTaskInstanceClassName(), Field.Store.YES,
-                        Field.Index.NO));
+                    task.getTaskInstanceClassName(), Field.Store.YES,
+                    Field.Index.NO));
 
                 addConditionsToDoc(task.getTaskId(), task.getConditions(), doc);
                 addTaskConfigToDoc(task.getTaskId(), task.getTaskConfig(), doc);
@@ -612,15 +596,14 @@ public class LuceneWorkflowInstanceRepository extends
     private void addTaskConfigToDoc(String taskId,
             WorkflowTaskConfiguration config, Document doc) {
         if (config != null) {
-            for (Iterator i = config.getProperties().keySet().iterator(); i
-                    .hasNext();) {
-                String propName = (String) i.next();
+            for (Object o : config.getProperties().keySet()) {
+                String propName = (String) o;
                 String propValue = config.getProperty(propName);
 
                 doc.add(new Field(taskId + "_config_property_name", propName,
-                        Field.Store.YES, Field.Index.NO));
+                    Field.Store.YES, Field.Index.NO));
                 doc.add(new Field(taskId + "_config_property_value", propValue,
-                        Field.Store.YES, Field.Index.NO));
+                    Field.Store.YES, Field.Index.NO));
             }
         }
     }
@@ -628,21 +611,21 @@ public class LuceneWorkflowInstanceRepository extends
   private void addConditionsToDoc(String taskId, List conditionList,
       Document doc) {
     if (conditionList != null && conditionList.size() > 0) {
-      for (Iterator i = conditionList.iterator(); i.hasNext();) {
-        WorkflowCondition cond = (WorkflowCondition) i.next();
-        doc.add(new Field(taskId + "_condition_name", cond.getConditionName(),
-            Field.Store.YES, Field.Index.NO));
-        doc.add(new Field(taskId + "_condition_id", cond.getConditionId(),
-            Field.Store.YES, Field.Index.UN_TOKENIZED));
-        doc.add(new Field(taskId + "_condition_class", cond
-            .getConditionInstanceClassName(), Field.Store.YES, Field.Index.NO));
-        doc.add(new Field(taskId + "_condition_order", String.valueOf(cond
-            .getOrder()), Field.Store.YES, Field.Index.NO));
-        doc.add(new Field(taskId + "_condition_timeout", String.valueOf(cond
-            .getTimeoutSeconds()), Field.Store.YES, Field.Index.NO));
-        doc.add(new Field(taskId+"_condition_optional", String.valueOf(cond.isOptional()),
-            Field.Store.YES, Field.Index.NO));
-      }
+        for (Object aConditionList : conditionList) {
+            WorkflowCondition cond = (WorkflowCondition) aConditionList;
+            doc.add(new Field(taskId + "_condition_name", cond.getConditionName(),
+                Field.Store.YES, Field.Index.NO));
+            doc.add(new Field(taskId + "_condition_id", cond.getConditionId(),
+                Field.Store.YES, Field.Index.UN_TOKENIZED));
+            doc.add(new Field(taskId + "_condition_class", cond
+                .getConditionInstanceClassName(), Field.Store.YES, Field.Index.NO));
+            doc.add(new Field(taskId + "_condition_order", String.valueOf(cond
+                .getOrder()), Field.Store.YES, Field.Index.NO));
+            doc.add(new Field(taskId + "_condition_timeout", String.valueOf(cond
+                .getTimeoutSeconds()), Field.Store.YES, Field.Index.NO));
+            doc.add(new Field(taskId + "_condition_optional", String.valueOf(cond.isOptional()),
+                Field.Store.YES, Field.Index.NO));
+        }
     }
   }
 
@@ -686,12 +669,11 @@ public class LuceneWorkflowInstanceRepository extends
         Metadata sharedContext = new Metadata();
         String[] instMetFields = doc.getValues("workflow_inst_met_flds");
         if (instMetFields != null && instMetFields.length > 0) {
-            for (int i = 0; i < instMetFields.length; i++) {
-                String fldName = instMetFields[i];
+            for (String fldName : instMetFields) {
                 String[] vals = doc.getValues(fldName);
                 if (vals != null && vals.length > 0) {
-                    for (int j = 0; j < vals.length; j++) {
-                        sharedContext.addMetadata(fldName, vals[j]);
+                    for (String val : vals) {
+                        sharedContext.addMetadata(fldName, val);
                     }
                 }
             }

@@ -26,5 +26,5 @@ public interface LoadCalculatorFactory {
     /**
      * @return A new implementation of the {@link LoadCalculator} interface.
      */
-    public LoadCalculator createLoadCalculator();
+    LoadCalculator createLoadCalculator();
 }

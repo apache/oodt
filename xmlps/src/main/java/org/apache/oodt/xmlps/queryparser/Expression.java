@@ -29,6 +29,6 @@ public interface Expression {
      * 
      * @return A String-readable version of this Expression.
      */
-    public String evaluate();
+    String evaluate();
 
 }

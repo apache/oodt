@@ -65,8 +65,9 @@ public class ComplexQuery extends Query {
     public void setReducedMetadata(List<String> reducedMetadata) {
         this.reducedMetadata = reducedMetadata;
         if (this.sortByMetKey != null && this.reducedMetadata != null 
-                && !this.reducedMetadata.contains(this.sortByMetKey))
+                && !this.reducedMetadata.contains(this.sortByMetKey)) {
             this.reducedMetadata.add(this.sortByMetKey);
+        }
     }
 
     public QueryFilter getQueryFilter() {
@@ -84,8 +85,9 @@ public class ComplexQuery extends Query {
     public void setSortByMetKey(String sortByMetKey) {
         this.sortByMetKey = sortByMetKey;
         if (this.reducedMetadata != null && this.sortByMetKey != null 
-                && !this.reducedMetadata.contains(this.sortByMetKey))
+                && !this.reducedMetadata.contains(this.sortByMetKey)) {
             this.reducedMetadata.add(this.sortByMetKey);
+        }
     }
     
     public String getToStringResultFormat() {

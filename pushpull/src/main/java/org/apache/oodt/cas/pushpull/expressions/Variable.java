@@ -62,15 +62,11 @@ public class Variable implements ValidInput {
     }
 
     public boolean isString() {
-        if (value instanceof String)
-            return true;
-        return false;
+        return value instanceof String;
     }
 
     public boolean isInteger() {
-        if (value instanceof Integer)
-            return true;
-        return false;
+        return value instanceof Integer;
     }
 
     public void setValue(Object value) {

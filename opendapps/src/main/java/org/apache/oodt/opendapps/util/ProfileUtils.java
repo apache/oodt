@@ -17,33 +17,6 @@
 
 package org.apache.oodt.opendapps.util;
 
-import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.ENUM_ELEMENT_TYPE;
-import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.PROF_ATTR_SPEC_TYPE;
-import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.PROF_ELEM_SPEC_TYPE;
-import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.RANGED_ELEMENT_TYPE;
-import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.RES_ATTR_SPEC_TYPE;
-
-//JDK imports
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//OPENDAP imports
-import opendap.dap.BaseType;
-import opendap.dap.DArray;
-import opendap.dap.DConnect;
-import opendap.dap.DDS;
-import opendap.dap.DGrid;
-
-//OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.opendapps.OpendapProfileElementExtractor;
@@ -56,7 +29,32 @@ import org.apache.oodt.profile.Profile;
 import org.apache.oodt.profile.ProfileAttributes;
 import org.apache.oodt.profile.ProfileElement;
 import org.apache.oodt.profile.ResourceAttributes;
+
 import org.springframework.util.StringUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import opendap.dap.BaseType;
+import opendap.dap.DArray;
+import opendap.dap.DConnect;
+import opendap.dap.DDS;
+import opendap.dap.DGrid;
+
+import static org.apache.oodt.opendapps.config.OpendapConfigMetKeys.*;
+
+//JDK imports
+//OPENDAP imports
+//OODT imports
 
 /**
  * 
@@ -124,7 +122,7 @@ public class ProfileUtils {
         	}
  
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           LOG.log(Level.WARNING, "Error setting field: [" + spec.getName()
               + "] in resource attributes: Message: " + e.getMessage());
         }
@@ -190,7 +188,7 @@ public class ProfileUtils {
       OpendapConfig conf, DConnect dConn, Metadata datasetMet, Profile profile) throws Exception {
   	
     OpendapProfileElementExtractor pe = new OpendapProfileElementExtractor(conf);
-    Map<String, ProfileElement> profElements = new HashMap<String, ProfileElement>();
+    Map<String, ProfileElement> profElements = new ConcurrentHashMap<String, ProfileElement>();
 
     // extracts all variables defined in DDS
     try {
@@ -226,7 +224,7 @@ public class ProfileUtils {
       	}
       	
     } catch(Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage());
       LOG.log(Level.WARNING, "Error extracting metadata from DDS ("+dConn.URL()+") :"  +e.getMessage());
       // rethrow the exception so that this dataset is not harvested
       throw e;
@@ -277,7 +275,9 @@ public class ProfileUtils {
       }
   	}
     // only save profile elements with one or more values
-    if (epe.getValues().size()>0) profElements.put(name, epe);
+    if (epe.getValues().size()>0) {
+      profElements.put(name, epe);
+    }
   	
   }
 
@@ -352,7 +352,6 @@ public class ProfileUtils {
   
   /**
    * Utility method to discover the rewrite specification for a named variable, if available.
-   * @param name
    * @param conf
    */
   private static RewriteSpec getProfileElementSpec(String origName, OpendapConfig conf) {
@@ -384,7 +383,6 @@ public class ProfileUtils {
    * Method to add a (name,value) pair to the metadata container if the value is not null or empty,
    * and doesn't exist already.
    * @param met
-   * @param field
    * @param value
    */
   public static void addIfNotNull(Metadata met, String key, String value) {
@@ -399,10 +397,7 @@ public class ProfileUtils {
   
 	/**
 	 * Method to add multiple (key, value) pairs to the metadata container if not existing already.
-	 * @param met
-	 * @param field
-	 * @param value
-	 */
+     */
 	public static void addIfNotExisting(Metadata metadata, String key, Enumeration<String> values) {
 		if (StringUtils.hasText(key) && !metadata.containsKey(key)) {
 			while (values.hasMoreElements()) {
@@ -420,8 +415,7 @@ public class ProfileUtils {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     TimeZone tz = TimeZone.getTimeZone("UTC");
     df.setTimeZone(tz);
-    String output = df.format(date);
-    return output;
+    return df.format(date);
   }
 
 }

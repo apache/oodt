@@ -18,11 +18,11 @@
 package org.apache.oodt.cas.curation.service;
 
 //OODT imports
-import net.sf.json.JSONArray;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.oodt.cas.curation.metadata.CuratorConfMetKeys;
 import org.apache.oodt.security.sso.SingleSignOn;
+
+import net.sf.json.JSONArray;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -41,9 +41,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriInfo;
 
-//JDK imports
-//JAX-RS imports
-//APACHE imports
 
 /**
  * 
@@ -64,7 +61,7 @@ public class CurationService extends HttpServlet implements CuratorConfMetKeys {
   private static final Logger LOG = Logger.getLogger(CurationService.class
       .getName());
   
-  protected static CurationServiceConfig config = null;
+  public static CurationServiceConfig config = null;
   
   protected final static String FORMAT_JSON = "json";
   
@@ -83,7 +80,7 @@ public class CurationService extends HttpServlet implements CuratorConfMetKeys {
   @Override
   public void init(ServletConfig conf) throws ServletException {
     super.init(conf);
-    this.config = CurationServiceConfig.getInstance(conf);
+    config = CurationServiceConfig.getInstance(conf);
   }
 
   /**
@@ -106,15 +103,15 @@ public class CurationService extends HttpServlet implements CuratorConfMetKeys {
     String f[] = getFilesInDirectory(startingPath, showFiles);
 
     List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
-    for (int i = 0; i < f.length; i++) {
-      Map<String, Object> entry = new HashMap<String, Object>();
-      String children[] = getFilesInDirectory(startingPath + "/" + f[i],
+    for (String aF : f) {
+      Map<String, Object> entry = new ConcurrentHashMap<String, Object>();
+      String children[] = getFilesInDirectory(startingPath + "/" + aF,
           showFiles);
-      entry.put("text", f[i]);
-      entry.put("id", path + "/" + f[i]);
+      entry.put("text", aF);
+      entry.put("id", path + "/" + aF);
       entry.put("expanded", false);
       entry.put("hasChildren", children != null && (children.length > 0));
-      entry.put("isFile", new File(startingPath + "/" + f[i]).isFile());
+      entry.put("isFile", new File(startingPath + "/" + aF).isFile());
       items.add(entry);
     }
 

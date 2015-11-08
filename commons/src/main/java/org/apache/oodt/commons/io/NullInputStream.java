@@ -54,7 +54,9 @@ public final class NullInputStream extends InputStream {
          * @throws IOException If we're not open.
          */
         private void checkOpen() throws IOException {
-                if (!open) throw new IOException("Stream closed");
+                if (!open) {
+                        throw new IOException("Stream closed");
+                }
         }
 
         /** Is the stream open? */

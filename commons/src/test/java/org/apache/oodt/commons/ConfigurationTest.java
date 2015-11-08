@@ -16,10 +16,9 @@
 package org.apache.oodt.commons;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.util.*;
 import junit.framework.*;
-import org.w3c.dom.*;
+
 import org.xml.sax.*;
 
 /** Unit test the {@link Configuration} class.
@@ -53,7 +52,7 @@ public class ConfigurationTest extends TestCase {
 	}
 
 	/** Test the various property methods. */
-	public void testConfiguration() throws IOException, SAXException, MalformedURLException {
+	public void testConfiguration() throws IOException, SAXException {
 		Configuration c = new Configuration(tmpFile.toURL());
 		Properties props = new Properties();
 		props.setProperty("globalKey1", "preset-value");
@@ -71,26 +70,30 @@ public class ConfigurationTest extends TestCase {
 		assertEquals("/dir/1,/dir/2,/dir/one,/dir/two", System.getProperty(Configuration.ENTITY_DIRS_PROP));
 		Collection servers = c.getExecServerConfigs();
 		assertEquals(2, servers.size());
-		for (Iterator each = servers.iterator(); each.hasNext();) {
-			ExecServerConfig esc = (ExecServerConfig) each.next();
-			if (esc.getClassName().equals("test.Class1")) {
-				assertEquals("Name1", esc.getObjectKey());
-				assertEquals(1, esc.getProperties().size());
-			} else if (esc.getClassName().equals("test.Class2")) {
-				assertEquals("Name2", esc.getObjectKey());
-				assertEquals(3, esc.getProperties().size());
-				for (Iterator i = esc.getProperties().entrySet().iterator(); i.hasNext();) {
-					Map.Entry entry = (Map.Entry) i.next();
-					if (entry.getKey().equals("localKey1"))
-						assertEquals("localKey2", entry.getValue());
-					else if (entry.getKey().equals("globalKey2"))
-						assertEquals("local-override", entry.getValue());
-					else if (entry.getKey().equals("org.apache.oodt.commons.Configuration.url"))
-						; // This one's OK.
-					else fail("Unknown local property \"" + entry.getKey() + "\" in exec server");
-				}
-			} else fail("Unknown ExecServerConfig \"" + esc.getClassName() + "\" in servers from Configuration");
+	  for (Object server : servers) {
+		ExecServerConfig esc = (ExecServerConfig) server;
+		if (esc.getClassName().equals("test.Class1")) {
+		  assertEquals("Name1", esc.getObjectKey());
+		  assertEquals(1, esc.getProperties().size());
+		} else if (esc.getClassName().equals("test.Class2")) {
+		  assertEquals("Name2", esc.getObjectKey());
+		  assertEquals(3, esc.getProperties().size());
+		  for (Map.Entry<Object, Object> objectObjectEntry : esc.getProperties().entrySet()) {
+			Map.Entry entry = (Map.Entry) objectObjectEntry;
+			if (entry.getKey().equals("localKey1")) {
+			  assertEquals("localKey2", entry.getValue());
+			} else if (entry.getKey().equals("globalKey2")) {
+			  assertEquals("local-override", entry.getValue());
+			} else if (entry.getKey().equals("org.apache.oodt.commons.Configuration.url")) {
+			  ; // This one's OK.
+			} else {
+			  fail("Unknown local property \"" + entry.getKey() + "\" in exec server");
+			}
+		  }
+		} else {
+		  fail("Unknown ExecServerConfig \"" + esc.getClassName() + "\" in servers from Configuration");
 		}
+	  }
 	}
 
 	/** The temporary test configuration file. */

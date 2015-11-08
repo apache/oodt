@@ -21,6 +21,7 @@ package org.apache.oodt.cas.metadata.extractors;
 //JDK imports
 import java.io.File;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
@@ -52,7 +53,7 @@ import org.apache.oodt.cas.metadata.util.PathUtils;
  * </p>.
  */
 public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
-
+  private static Logger LOG = Logger.getLogger(CopyAndRewriteExtractor.class.getName());
   private final static String FILENAME = "Filename";
 
   private final static String FILE_LOCATION = "FileLocation";
@@ -78,7 +79,7 @@ public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
                   "No config file defined: unable to copy and rewrite metadata!");
       }
 
-      Metadata met = null;
+      Metadata met;
       
       try {
           met = new SerializableMetadata(new File(PathUtils
@@ -86,7 +87,7 @@ public class CopyAndRewriteExtractor extends CmdLineMetExtractor {
                           .getProperty("orig.met.file.path"))).toURL()
                   .openStream());
       } catch (Exception e) {
-          e.printStackTrace();
+          LOG.log(Level.SEVERE, e.getMessage());
           throw new MetExtractionException(
                   "error parsing original met file: ["
                           + ((CopyAndRewriteConfig) this.config)

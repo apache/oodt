@@ -49,7 +49,6 @@ import javax.xml.transform.stream.StreamResult;
  */
 
 public class XMLUtils {
-
     /* our log stream */
     private final static Logger LOG = Logger
             .getLogger(XMLUtils.class.getName());
@@ -86,7 +85,7 @@ public class XMLUtils {
             xformer.setOutputProperty(OutputKeys.INDENT, "yes");
             xformer.transform(source, result);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
         }
 
     }
@@ -108,7 +107,7 @@ public class XMLUtils {
                         DOMUtil.getSimpleElementText(valElem), encoding);
                 values.add(value);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, e.getMessage());
                 LOG.log(Level.WARNING, "Error decoding tag: [" + elt
                         + "]: val: [" + DOMUtil.getSimpleElementText(valElem)
                         + "] from metadata. Message: " + e.getMessage());
@@ -137,10 +136,11 @@ public class XMLUtils {
 
     public static Element getFirstElement(String name, Element root) {
         NodeList list = root.getElementsByTagName(name);
-        if (list != null) {
+        if (list.getLength()>0) {
             return (Element) list.item(0);
-        } else
+        } else {
             return null;
+        }
     }
 
     public static String getSimpleElementText(Element node, boolean trim) {
@@ -153,8 +153,9 @@ public class XMLUtils {
             }
 
             return elemTxt;
-        } else
+        } else {
             return null;
+        }
     }
 
     public static String getSimpleElementText(Element node) {
@@ -166,8 +167,9 @@ public class XMLUtils {
         Element elem = getFirstElement(elemName, root);
         if (elem != null) {
             return getSimpleElementText(elem, trim);
-        } else
+        } else {
             return null;
+        }
     }
 
     public static String getElementText(String elemName, Element root) {

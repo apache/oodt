@@ -46,8 +46,7 @@ public abstract class QueryCriteria implements Cloneable {
 
     /**
      * Abstract mutator method for the Elment name to search on.
-     * 
-     * @param Element Name
+     *
      */
     public abstract void setElementName(String elementName);
 

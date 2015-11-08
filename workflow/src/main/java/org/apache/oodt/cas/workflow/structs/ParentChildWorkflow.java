@@ -46,7 +46,7 @@ public class ParentChildWorkflow extends Workflow {
 
   @Override
   public String toString() {
-    StringBuffer buf = new StringBuffer("[workflow id=");
+    StringBuilder buf = new StringBuilder("[workflow id=");
     buf.append(this.getId());
     buf.append(",name=");
     buf.append(this.getName());

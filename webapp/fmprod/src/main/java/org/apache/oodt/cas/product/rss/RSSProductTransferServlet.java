@@ -18,12 +18,34 @@
 
 package org.apache.oodt.cas.product.rss;
 
-//JDK imports
+import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
+import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
+import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.Metadata;
+import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.commons.util.DateConvert;
+import org.apache.oodt.commons.xml.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -31,31 +53,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.util.List;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
 
-//OODT imports
 import static org.apache.oodt.cas.product.rss.RSSConfigMetKeys.RSS_TRANSFER_CONF_KEY;
-import org.apache.oodt.cas.filemgr.structs.exceptions.CatalogException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
-import org.apache.oodt.cas.filemgr.structs.exceptions.ConnectionException;
-import org.apache.oodt.cas.filemgr.structs.FileTransferStatus;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import org.apache.oodt.commons.xml.XMLUtils;
-import org.apache.oodt.cas.metadata.Metadata;
-import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.commons.util.DateConvert;
+
 
 /**
  * @author mattmann
@@ -74,7 +74,7 @@ public class RSSProductTransferServlet extends HttpServlet {
     private static final long serialVersionUID = -7983832512818339079L;
 
     /* our client to the file manager */
-    private static XmlRpcFileManagerClient fClient = null;
+    private XmlRpcFileManagerClient fClient = null;
 
     /* RSS config */
     private RSSConfig rssconf;
@@ -104,19 +104,15 @@ public class RSSProductTransferServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        String fileManagerUrl = null;
+        String fileManagerUrl;
         try {
           fileManagerUrl = PathUtils.replaceEnvVariables(config.getServletContext().getInitParameter(
               "filemgr.url") );
         } catch (Exception e) {
           throw new ServletException("Failed to get filemgr url : " + e.getMessage(), e);
-        }        
-        if (fileManagerUrl == null) {
-            // try the default port
-            fileManagerUrl = "http://localhost:9000";
         }
 
-        fClient = null;
+      fClient = null;
 
         try {
             fClient = new XmlRpcFileManagerClient(new URL(fileManagerUrl));
@@ -154,12 +150,12 @@ public class RSSProductTransferServlet extends HttpServlet {
 
     public void doIt(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, java.io.IOException {
-        List currentTransfers = null;
+        List currentTransfers;
 
         try {
             currentTransfers = fClient.getCurrentFileTransfers();
         } catch (DataTransferException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage());
             LOG.log(Level.WARNING,
                     "Exception getting current transfers from file manager: Message: "
                             + e.getMessage());
@@ -207,57 +203,57 @@ public class RSSProductTransferServlet extends HttpServlet {
                 XMLUtils.addNode(doc, channel, "generator", "CAS File Manager");
                 XMLUtils.addNode(doc, channel, "lastBuildDate", buildPubDate);
 
-                for (Iterator i = currentTransfers.iterator(); i.hasNext();) {
-                    FileTransferStatus status = (FileTransferStatus) i.next();
+              for (Object currentTransfer : currentTransfers) {
+                FileTransferStatus status = (FileTransferStatus) currentTransfer;
 
-                    Element item = XMLUtils.addNode(doc, channel, "item");
+                Element item = XMLUtils.addNode(doc, channel, "item");
 
-                    XMLUtils.addNode(doc, item, "title", status
-                            .getParentProduct().getProductName());
-                    XMLUtils.addNode(doc, item, "description", status
-                            .getParentProduct().getProductType().getName());
-                    XMLUtils.addNode(doc, item, "link", base
-                            + "/viewTransfer?ref="
-                            + status.getFileRef().getOrigReference() + "&size="
-                            + status.getFileRef().getFileSize());
+                XMLUtils.addNode(doc, item, "title", status
+                    .getParentProduct().getProductName());
+                XMLUtils.addNode(doc, item, "description", status
+                    .getParentProduct().getProductType().getName());
+                XMLUtils.addNode(doc, item, "link", base
+                                                    + "/viewTransfer?ref="
+                                                    + status.getFileRef().getOrigReference() + "&size="
+                                                    + status.getFileRef().getFileSize());
 
-                    Metadata m = null;
+                Metadata m = null;
 
-                    try {
-                        m = fClient.getMetadata(status.getParentProduct());
+                try {
+                  m = fClient.getMetadata(status.getParentProduct());
 
-                        String productReceivedTime = m
-                                .getMetadata("CAS.ProductReceivedTime");
-                        Date receivedTime = null;
+                  String productReceivedTime = m
+                      .getMetadata("CAS.ProductReceivedTime");
+                  Date receivedTime = null;
 
-                        try {
-                            receivedTime = DateConvert
-                                    .isoParse(productReceivedTime);
-                        } catch (ParseException ignore) {
-                        }
+                  try {
+                    receivedTime = DateConvert
+                        .isoParse(productReceivedTime);
+                  } catch (ParseException ignore) {
+                  }
 
-                        if (receivedTime != null) {
-                            XMLUtils.addNode(doc, item, "pubDate",
-                                    dateFormatter.format(receivedTime));
-                        }
+                  if (receivedTime != null) {
+                    XMLUtils.addNode(doc, item, "pubDate",
+                        dateFormatter.format(receivedTime));
+                  }
 
-                        // set product transfer metadata
-                        m.addMetadata("BytesTransferred",
-                          "" + status.getBytesTransferred());
-                        m.addMetadata("TotalBytes",
-                          "" + status.getFileRef().getFileSize());
-                        m.addMetadata("PercentComplete",
-                          "" + status.computePctTransferred());
+                  // set product transfer metadata
+                  m.addMetadata("BytesTransferred",
+                      "" + status.getBytesTransferred());
+                  m.addMetadata("TotalBytes",
+                      "" + status.getFileRef().getFileSize());
+                  m.addMetadata("PercentComplete",
+                      "" + status.computePctTransferred());
 
-                    } catch (CatalogException ignore) {
-                    }
-
-                    // add additional elements from the RSSConfig
-                    for (RSSTag tag : rssconf.getTags()) {
-                      item.appendChild(RSSUtils.emitRSSTag(tag, m, doc, item));
-                    }
-
+                } catch (CatalogException ignore) {
                 }
+
+                // add additional elements from the RSSConfig
+                for (RSSTag tag : rssconf.getTags()) {
+                  item.appendChild(RSSUtils.emitRSSTag(tag, m, doc, item));
+                }
+
+              }
 
                 DOMSource source = new DOMSource(doc);
                 TransformerFactory transFactory = TransformerFactory

@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 
 /**
@@ -140,7 +140,7 @@ public class TestGangliaXMLParser extends TestCase {
         assertEquals("gmond", metric.getSource());
 
         //extra data of the metric
-        HashMap<String, String> extraData = metric.getExtraData();
+        ConcurrentHashMap<String, String> extraData = metric.getExtraData();
         assertEquals("disk", extraData.get(GangliaMetKeys.GROUP));
         assertEquals("Total free disk space", extraData.get(GangliaMetKeys.DESC));
         assertEquals("Disk Space Available", extraData.get(GangliaMetKeys.TITLE));

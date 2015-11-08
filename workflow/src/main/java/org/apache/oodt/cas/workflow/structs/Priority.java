@@ -45,9 +45,10 @@ public abstract class Priority implements Comparable<Priority> {
       return "LOW";
     }
   };
+  public static final double DOUBLE = 2.5;
   public static final Priority MEDIUM_LOW = new Priority() {
     public double getValue() {
-      return 2.5;
+      return DOUBLE;
     }
 
     public String getName() {
@@ -63,9 +64,10 @@ public abstract class Priority implements Comparable<Priority> {
       return "MEDIUM";
     }
   };
+  public static final double DOUBLE1 = 7.5;
   public static final Priority MEDIUM_HIGH = new Priority() {
     public double getValue() {
-      return 7.5;
+      return DOUBLE1;
     }
 
     public String getName() {
@@ -87,17 +89,17 @@ public abstract class Priority implements Comparable<Priority> {
   }
 
   public static Priority getPriority(final double priority) {
-    if (priority == LOW.getValue())
+    if (priority == LOW.getValue()) {
       return LOW;
-    else if (priority == MEDIUM_LOW.getValue())
+    } else if (priority == MEDIUM_LOW.getValue()) {
       return MEDIUM_LOW;
-    else if (priority == MEDIUM.getValue())
+    } else if (priority == MEDIUM.getValue()) {
       return MEDIUM;
-    else if (priority == MEDIUM_HIGH.getValue())
+    } else if (priority == MEDIUM_HIGH.getValue()) {
       return MEDIUM_HIGH;
-    else if (priority == HIGH.getValue())
+    } else if (priority == HIGH.getValue()) {
       return HIGH;
-    else
+    } else {
       return new Priority() {
         public double getValue() {
           return priority;
@@ -107,6 +109,7 @@ public abstract class Priority implements Comparable<Priority> {
           return "CUSTOM";
         }
       };
+    }
   }
 
   @Override
@@ -116,10 +119,11 @@ public abstract class Priority implements Comparable<Priority> {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj instanceof Priority)
+    if (obj instanceof Priority) {
       return new Double(this.getValue()).equals(((Priority) obj).getValue());
-    else
+    } else {
       return false;
+    }
   }
 
   @Override

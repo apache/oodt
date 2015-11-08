@@ -17,6 +17,22 @@
 package org.apache.oodt.cas.filemgr.cli.action;
 
 //OODT static imports
+
+import org.apache.commons.lang.Validate;
+import org.apache.oodt.cas.cli.exception.CmdLineActionException;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.metadata.SerializableMetadata;
+
+import com.google.common.collect.Lists;
+
+import java.io.File;
+import java.net.URI;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static org.apache.oodt.cas.filemgr.structs.Product.STRUCTURE_HIERARCHICAL;
 import static org.apache.oodt.cas.filemgr.structs.Product.STRUCTURE_STREAM;
 import static org.apache.oodt.cas.filemgr.util.GenericFileManagerObjectFactory.getDataTransferServiceFromFactory;
@@ -24,22 +40,9 @@ import static org.apache.oodt.cas.filemgr.versioning.VersioningUtils.addRefsFrom
 import static org.apache.oodt.cas.filemgr.versioning.VersioningUtils.getURIsFromDir;
 
 //JDK imports
-import java.io.File;
-import java.net.URI;
-import java.util.List;
-
 //Apache imports
-import org.apache.commons.lang.Validate;
-
 //OODT imports
-import org.apache.oodt.cas.cli.exception.CmdLineActionException;
-import org.apache.oodt.cas.filemgr.structs.Product;
-import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
-import org.apache.oodt.cas.metadata.SerializableMetadata;
-
 //Google imports
-import com.google.common.collect.Lists;
 
 /**
  * A {@link CmdLineAction} which ingests a {@link Product}.
@@ -47,7 +50,7 @@ import com.google.common.collect.Lists;
  * @author bfoster (Brian Foster)
  */
 public class IngestProductCliAction extends FileManagerCliAction {
-
+   private static Logger LOG = Logger.getLogger(IngestProductCliAction.class.getName());
    private String productName;
    private String productStructure;
    private String productTypeName;
@@ -93,8 +96,9 @@ public class IngestProductCliAction extends FileManagerCliAction {
             List<String> uriRefs = Lists.newArrayList();
             for (String ref : references) {
                URI uri = URI.create(ref);
-               if (!uri.getScheme().equals("stream"))
-                  throw new IllegalArgumentException("Streaming data must use 'stream' scheme not "+uri.getScheme());
+               if (!uri.getScheme().equals("stream")) {
+                  throw new IllegalArgumentException("Streaming data must use 'stream' scheme not " + uri.getScheme());
+               }
                uriRefs.add(uri.toString());
             }
             references = uriRefs;
@@ -114,7 +118,7 @@ public class IngestProductCliAction extends FileManagerCliAction {
                      new SerializableMetadata(getUri(metadataFile).toURL()
                            .openStream()), dataTransferer != null));
       } catch (Exception e) {
-         e.printStackTrace();
+         LOG.log(Level.SEVERE, e.getMessage());
          throw new CmdLineActionException("Failed to ingest product '"
                + productName + "' : " + e.getMessage(), e);
       }

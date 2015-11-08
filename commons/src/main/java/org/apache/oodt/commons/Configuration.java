@@ -17,19 +17,38 @@
 
 package org.apache.oodt.commons;
 
-import java.io.*;
+import org.apache.oodt.commons.util.DOMParser;
+import org.apache.oodt.commons.util.XML;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-import org.apache.oodt.commons.util.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import java.rmi.registry.Registry;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.NoInitialContextException;
-import java.rmi.registry.Registry;
-import java.util.StringTokenizer;
 
 /** EDA Configuration.
  *
@@ -38,7 +57,9 @@ import java.util.StringTokenizer;
  * @author Kelly
  */
 public class Configuration {
-	/** The singleton configuration. */
+  public static final int INT = 7577;
+  public static final int INT1 = 6000000;
+  /** The singleton configuration. */
 	static Configuration configuration = null;
 
 	/** Name of property that specifies the direcotries that contains XML entities. */
@@ -72,9 +93,11 @@ public class Configuration {
 	  * @throws MalformedURLException If the URL specification is invalid.
 	  * @return An initialized configuration object.
 	  */
-	 public static Configuration getConfiguration() throws IOException, SAXException, MalformedURLException {
+	 public static Configuration getConfiguration() throws IOException, SAXException {
 		 // Got one?  Use it.
-		 if (configuration != null) return configuration;
+		 if (configuration != null) {
+		   return configuration;
+		 }
 
 		 URL url;
 
@@ -89,7 +112,9 @@ public class Configuration {
 			 String filename = System.getProperty("org.apache.oodt.commons.Configuration.file");
 			 if (filename != null) {
 				 file = new File(filename);
-				 if (!file.exists()) throw new IOException("File " + file + " not found");
+				 if (!file.exists()) {
+				   throw new IOException("File " + file + " not found");
+				 }
 			 } else {
 				 List candidates = new ArrayList();
 
@@ -118,16 +143,17 @@ public class Configuration {
 
 				 // Now find one.
 				 boolean found = false;
-				 for (Iterator i = candidates.iterator(); i.hasNext();) {
-					 file = (File) i.next();
-					 if (file.exists()) {
-						 found = true;
-						 break;
-					 }
+			   for (Object candidate : candidates) {
+				 file = (File) candidate;
+				 if (file.exists()) {
+				   found = true;
+				   break;
 				 }
-				 if (found && file == alt)
-					 System.err.println("WARNING: Using older config file " + alt + "; rename to "
-						 + homedirfile + " as soon as possible.");
+			   }
+				 if (found && file == alt) {
+				   System.err.println("WARNING: Using older config file " + alt + "; rename to "
+									  + homedirfile + " as soon as possible.");
+				 }
 				 if (!found) {
 					 return getEmptyConfiguration();
 				 }
@@ -150,16 +176,18 @@ public class Configuration {
 	 */
 	public static Configuration getConfiguration(URL configFileUrl) throws SAXException, IOException {
 		synchronized (Configuration.class) {
-			if (configuration == null)
-				configuration = new Configuration(configFileUrl);
+			if (configuration == null) {
+			  configuration = new Configuration(configFileUrl);
+			}
 		}
 		return configuration;
 	}
 
 	private static Configuration getEmptyConfiguration() {
 		synchronized (Configuration.class) {
-			if (configuration == null)
-				configuration = new Configuration();
+			if (configuration == null) {
+			  configuration = new Configuration();
+			}
 		}
 		return configuration;
 	}
@@ -174,7 +202,9 @@ public class Configuration {
 	 */
 	public static Configuration getConfigurationWithoutException() {
 		// Got one?  Use it.  Do this out of a try block for performance.
-		if (configuration != null) return configuration;
+		if (configuration != null) {
+		  return configuration;
+		}
 
 		// Try to get it.
 		try {
@@ -190,8 +220,8 @@ public class Configuration {
 	}
 
 	Configuration() {
-		serverMgrPort = 7577;
-		nameServerStateFrequency = 6000000;
+		serverMgrPort = INT;
+		nameServerStateFrequency = INT1;
 		nameServerObjectKey = "StandardNS%20POA";
 		nameServerPort = "10000";
 		nameServerHost = "localhost";
@@ -216,7 +246,9 @@ public class Configuration {
 
 	Configuration(InputSource inputSource) throws IOException, SAXException {
 		String systemID = inputSource.getSystemId();
-		if (systemID == null) inputSource.setSystemId("file:/unknown");
+		if (systemID == null) {
+		  inputSource.setSystemId("file:/unknown");
+		}
 
 		// Get the document
 		DOMParser parser = XML.createDOMParser();
@@ -239,8 +271,9 @@ public class Configuration {
 		document.normalize();
 		
 		// See if this really is a <configuration> document.
-		if (!document.getDocumentElement().getNodeName().equals("configuration"))
-			throw new SAXException("Configuration " + inputSource.getSystemId() + " is not a <configuration> document");
+		if (!document.getDocumentElement().getNodeName().equals("configuration")) {
+		  throw new SAXException("Configuration " + inputSource.getSystemId() + " is not a <configuration> document");
+		}
 
 		NodeList list = document.getDocumentElement().getChildNodes();
 		for (int eachChild = 0; eachChild < list.getLength(); ++eachChild) {
@@ -249,27 +282,31 @@ public class Configuration {
 				NodeList children = childNode.getChildNodes();
 				for (int i = 0; i < children.getLength(); ++i) {
 					Node node = children.item(i);
-					if ("host".equals(node.getNodeName()))
-						webHost = XML.unwrappedText(node);
-					else if ("port".equals(node.getNodeName()))
-						webPort = XML.unwrappedText(node);
-					else if ("dir".equals(node.getNodeName()))
-						webServerDocumentDirectory = new File(XML.unwrappedText(node));
+					if ("host".equals(node.getNodeName())) {
+					  webHost = XML.unwrappedText(node);
+					} else if ("port".equals(node.getNodeName())) {
+					  webPort = XML.unwrappedText(node);
+					} else if ("dir".equals(node.getNodeName())) {
+					  webServerDocumentDirectory = new File(XML.unwrappedText(node));
+					}
 				}					
 				properties.setProperty("org.apache.oodt.commons.Configuration.webServer.baseURL", getWebServerBaseURL());
-				if (webServerDocumentDirectory == null)
-					webServerDocumentDirectory = new File(System.getProperty("user.home", "/")
-						+ "/dev/htdocs");
+				if (webServerDocumentDirectory == null) {
+				  webServerDocumentDirectory = new File(System.getProperty("user.home", "/")
+														+ "/dev/htdocs");
+				}
 			} else if (childNode.getNodeName().equals("nameServer")) {
 				Element nameServerNode = (Element) childNode;
 				String nameServerStateFrequencyString = nameServerNode.getAttribute("stateFrequency");
-				if (nameServerStateFrequencyString == null || nameServerStateFrequencyString.length() == 0)
-					nameServerStateFrequency = 0;
-				else try {
+				if (nameServerStateFrequencyString == null || nameServerStateFrequencyString.length() == 0) {
+				  nameServerStateFrequency = 0;
+				} else {
+				  try {
 					nameServerStateFrequency = Integer.parseInt(nameServerStateFrequencyString);
-				} catch (NumberFormatException ex) {
+				  } catch (NumberFormatException ex) {
 					throw new SAXException("Illegal nun-numeric value \"" + nameServerStateFrequencyString
-						+ "\" for stateFrequency attribute");
+										   + "\" for stateFrequency attribute");
+				  }
 				}
 				if (childNode.getFirstChild().getNodeName().equals("rir")) {
 					nameServerUsingRIRProtocol = true;
@@ -284,14 +321,15 @@ public class Configuration {
 					NodeList children = childNode.getFirstChild().getChildNodes();
 					for (int i = 0; i < children.getLength(); ++i) {
 						Node node = children.item(i);
-						if (node.getNodeName().equals("version"))
-							nameServerVersion = XML.unwrappedText(node);
-						else if (node.getNodeName().equals("host"))
-							nameServerHost = XML.unwrappedText(node);
-						else if (node.getNodeName().equals("port"))
-							nameServerPort = XML.unwrappedText(node);
-						else if (node.getNodeName().equals("objectKey"))
-							nameServerObjectKey = XML.unwrappedText(node);
+						if (node.getNodeName().equals("version")) {
+						  nameServerVersion = XML.unwrappedText(node);
+						} else if (node.getNodeName().equals("host")) {
+						  nameServerHost = XML.unwrappedText(node);
+						} else if (node.getNodeName().equals("port")) {
+						  nameServerPort = XML.unwrappedText(node);
+						} else if (node.getNodeName().equals("objectKey")) {
+						  nameServerObjectKey = XML.unwrappedText(node);
+						}
 					}
 				}
 			} else if (childNode.getNodeName().equals("xml")) {
@@ -300,12 +338,14 @@ public class Configuration {
 					Node xmlNode = children.item(i);
 					if ("entityRef".equals(xmlNode.getNodeName())) {
 						NodeList dirNodes = xmlNode.getChildNodes();
-						StringBuffer refDirs = new StringBuffer(System.getProperty(ENTITY_DIRS_PROP, ""));
-						for (int j = 0; j < dirNodes.getLength(); ++j)
-							refDirs.append(',').append(XML.unwrappedText(dirNodes.item(j)));
-						if (refDirs.length() > 0)
-							System.setProperty(ENTITY_DIRS_PROP, refDirs.charAt(0) == ','?
-								refDirs.substring(1) : refDirs.toString());
+						StringBuilder refDirs = new StringBuilder(System.getProperty(ENTITY_DIRS_PROP, ""));
+						for (int j = 0; j < dirNodes.getLength(); ++j) {
+						  refDirs.append(',').append(XML.unwrappedText(dirNodes.item(j)));
+						}
+						if (refDirs.length() > 0) {
+						  System.setProperty(ENTITY_DIRS_PROP, refDirs.charAt(0) == ',' ?
+															   refDirs.substring(1) : refDirs.toString());
+						}
 					}
 				}
 			} else if ("serverMgr".equals(childNode.getNodeName())) {
@@ -331,7 +371,7 @@ public class Configuration {
 		String registryList = System.getProperty("org.apache.oodt.commons.rmiregistries", System.getProperty("rmiregistries"));
 		if (registryList == null) {
 			String host = System.getProperty("rmiregistry.host", "localhost");
-			int port = Integer.getInteger("rmiregistry.port", Registry.REGISTRY_PORT).intValue();
+			int port = Integer.getInteger("rmiregistry.port", Registry.REGISTRY_PORT);
 			registryList = "rmi://" + host + ":" + port;
 		}
 		contextEnvironment.put("rmiregistries", registryList);
@@ -378,18 +418,22 @@ public class Configuration {
 		if (nameServerUsingRIRProtocol) {
 			Element rirNode = document.createElement("rir");
 			nameServerNode.appendChild(rirNode);
-			if (nameServerObjectKey != null)
-				XML.add(rirNode, "objectKey", nameServerObjectKey);
+			if (nameServerObjectKey != null) {
+			  XML.add(rirNode, "objectKey", nameServerObjectKey);
+			}
 		} else {
 			Element iiopNode = document.createElement("iiop");
 			nameServerNode.appendChild(iiopNode);
-			if (nameServerVersion != null)
-				XML.add(iiopNode, "version", nameServerVersion);
+			if (nameServerVersion != null) {
+			  XML.add(iiopNode, "version", nameServerVersion);
+			}
 			XML.add(iiopNode, "host", nameServerHost);
-			if (nameServerPort != null)
-				XML.add(iiopNode, "port", nameServerPort);
-			if (nameServerObjectKey != null)
-				XML.add(iiopNode, "objectKey", nameServerObjectKey);
+			if (nameServerPort != null) {
+			  XML.add(iiopNode, "port", nameServerPort);
+			}
+			if (nameServerObjectKey != null) {
+			  XML.add(iiopNode, "objectKey", nameServerObjectKey);
+			}
 		}
 
 		// <xml><entityRef><dir>...
@@ -409,24 +453,26 @@ public class Configuration {
 		}
 
 		// Global <properties>...</properties>
-		if (properties.size() > 0)
-			dumpProperties(properties, configurationNode);
+		if (properties.size() > 0) {
+		  dumpProperties(properties, configurationNode);
+		}
 
 		// <programs>...
 		if (execServers.size() > 0) {
 			Element programsNode = document.createElement("programs");
 			configurationNode.appendChild(programsNode);
 
-			for (Iterator i = execServers.iterator(); i.hasNext();) {
-				ExecServerConfig esc = (ExecServerConfig) i.next();
-				Element execServerNode = document.createElement("execServer");
-				programsNode.appendChild(execServerNode);
-				XML.add(execServerNode, "class", esc.getClassName());
-				XML.add(execServerNode, "objectKey", esc.getObjectKey());
-				XML.add(execServerNode, "host", esc.getPreferredHost().toString());
-				if (esc.getProperties().size() > 0)
-					dumpProperties(esc.getProperties(), execServerNode);
+		  for (Object execServer : execServers) {
+			ExecServerConfig esc = (ExecServerConfig) execServer;
+			Element execServerNode = document.createElement("execServer");
+			programsNode.appendChild(execServerNode);
+			XML.add(execServerNode, "class", esc.getClassName());
+			XML.add(execServerNode, "objectKey", esc.getObjectKey());
+			XML.add(execServerNode, "host", esc.getPreferredHost().toString());
+			if (esc.getProperties().size() > 0) {
+			  dumpProperties(esc.getProperties(), execServerNode);
 			}
+		  }
 		}
 
 		return configurationNode;
@@ -440,11 +486,12 @@ public class Configuration {
 	 * @param targetProps The target properties.
 	 */
 	public void mergeProperties(Properties targetProps) {
-		for (Iterator i = properties.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
-			if (!targetProps.containsKey(entry.getKey()))
-				targetProps.put(entry.getKey(), entry.getValue());
+	  for (Map.Entry<Object, Object> objectObjectEntry : properties.entrySet()) {
+		Map.Entry entry = (Map.Entry) objectObjectEntry;
+		if (!targetProps.containsKey(entry.getKey())) {
+		  targetProps.put(entry.getKey(), entry.getValue());
 		}
+	  }
 	}
 
 	/** Get the exec-server configurations.
@@ -463,11 +510,12 @@ public class Configuration {
         public Collection getExecServerConfigs(Class clazz) {
                 String className = clazz.getName();
                 Collection execServerConfigs = new ArrayList();
-                for (Iterator i = execServers.iterator(); i.hasNext();) {
-                        ExecServerConfig exec = (ExecServerConfig) i.next();
-                        if (className.equals(exec.getClassName()))
-                                execServerConfigs.add(exec);
-                }
+		  for (Object execServer : execServers) {
+			ExecServerConfig exec = (ExecServerConfig) execServer;
+			if (className.equals(exec.getClassName())) {
+			  execServerConfigs.add(exec);
+			}
+		  }
                 return execServerConfigs;
         }
 
@@ -480,8 +528,9 @@ public class Configuration {
                 ExecServerConfig execServerConfig = null;
                 for (Iterator i = execServers.iterator(); i.hasNext() && execServerConfig == null;) {
                         ExecServerConfig exec = (ExecServerConfig) i.next();
-                        if (objectKey.equals(exec.getObjectKey()))
-                                execServerConfig = exec;
+                        if (objectKey.equals(exec.getObjectKey())) {
+						  execServerConfig = exec;
+						}
                 }
                 return execServerConfig;
         }
@@ -493,8 +542,11 @@ public class Configuration {
 	public String getWebServerBaseURL() {
 		String proto = System.getProperty(WEB_PROTOCOL_PROPERTY);
 		if (proto == null) {
-			if ("443".equals(webPort)) proto = "https";
-			else proto = "http";
+			if ("443".equals(webPort)) {
+			  proto = "https";
+			} else {
+			  proto = "http";
+			}
 		}
 		return proto + "://" + webHost + ":" + webPort;
 	}
@@ -537,11 +589,12 @@ public class Configuration {
 	 * @throws NamingException If the context can't be created.
 	 */
 	public Context getObjectContext() throws NamingException {
-		Context c = null;
+		Context c;
 		final String className = (String) contextEnvironment.get(javax.naming.Context.INITIAL_CONTEXT_FACTORY);
-		if (className == null)
-			c = new InitialContext(contextEnvironment);
-		else try {
+		if (className == null) {
+		  c = new InitialContext(contextEnvironment);
+		} else {
+		  try {
 			// Work around iPlanet bug.  JNDI uses the thread's context class
 			// loader to load the initial context factory class.  For some
 			// reason, that loader fails to find things in iPlanet's
@@ -555,15 +608,17 @@ public class Configuration {
 			InitialContextThread thread = new InitialContextThread(loader);
 			thread.start();
 			try {
-				thread.join();
+			  thread.join();
 			} catch (InterruptedException ex) {
-				throw new NoInitialContextException("Initial context thread interrupted: " + ex.getMessage());
+			  throw new NoInitialContextException("Initial context thread interrupted: " + ex.getMessage());
 			}
 			c = thread.getContext();
-			if (c == null)
-				throw thread.getException();
-		} catch (ClassNotFoundException ex) {
+			if (c == null) {
+			  throw thread.getException();
+			}
+		  } catch (ClassNotFoundException ex) {
 			throw new NoInitialContextException("Class " + className + " not found");
+		  }
 		}
 		return c;
 	}
@@ -574,8 +629,9 @@ public class Configuration {
 	 */
 	public List getEntityRefDirs() {
 		List dirs = new ArrayList();
-		for (StringTokenizer t = new StringTokenizer(System.getProperty(ENTITY_DIRS_PROP, ""), ",;|"); t.hasMoreTokens();)
-			dirs.add(t.nextToken());
+		for (StringTokenizer t = new StringTokenizer(System.getProperty(ENTITY_DIRS_PROP, ""), ",;|"); t.hasMoreTokens();) {
+		  dirs.add(t.nextToken());
+		}
 		return dirs;
 	}
 
@@ -612,23 +668,21 @@ public class Configuration {
 	static void dumpProperties(Properties props, Node node) {
 		Element propertiesElement = node.getOwnerDocument().createElement("properties");
 		node.appendChild(propertiesElement);
-		for (Iterator i = props.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
-			XML.add(propertiesElement, "key", (String) entry.getKey());
-			XML.add(propertiesElement, "value", (String) entry.getValue());
-		}
+	  for (Map.Entry<Object, Object> objectObjectEntry : props.entrySet()) {
+		Map.Entry entry = (Map.Entry) objectObjectEntry;
+		XML.add(propertiesElement, "key", (String) entry.getKey());
+		XML.add(propertiesElement, "value", (String) entry.getValue());
+	  }
 	}
 
 	/** Create a new XML document with the configuration DTD.
 	 *
-	 * @param name Name to give to the document element.
 	 * @returns An XML DOM document with the doctype and the root document empty element in place.
 	 * @throws DOMException If we can't create the document.
 	 */
 	static Document createDocument(String documentElementName) throws DOMException {
 		DocumentType docType = XML.getDOMImplementation().createDocumentType(documentElementName, DTD_FPI, DTD_URL);
-		Document doc = XML.getDOMImplementation().createDocument(/*namespaceURI*/null, documentElementName, docType);
-		return doc;
+	  return XML.getDOMImplementation().createDocument(/*namespaceURI*/null, documentElementName, docType);
 	}
 
 	/** The formal public identifier (FPI) of the configuration document type definition (DTD). */
@@ -700,7 +754,7 @@ public class Configuration {
 				context = new InitialContext(contextEnvironment);
 			} catch (NamingException ex) {
 				exception = ex;
-			} catch (Throwable t) {
+			} catch (Exception t) {
 				System.err.println("Unexpected throwable " + t.getClass().getName() + " getting initial context: "
 					+ t.getMessage());
 				t.printStackTrace();

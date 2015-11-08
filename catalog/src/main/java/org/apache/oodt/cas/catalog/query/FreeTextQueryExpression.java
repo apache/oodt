@@ -58,14 +58,15 @@ public class FreeTextQueryExpression extends TermQueryExpression {
 
         // tokenize string using default delimiters
         StringTokenizer tok = new StringTokenizer(text);
-        String token = null;
+        String token;
 
         // filter noise words and add to values vector
         List<String> values = new Vector<String>();
         while (tok.hasMoreElements()) {
             token = tok.nextToken();
-            if (!noiseWordHash.contains(token))
-                values.add(token);
+            if (!noiseWordHash.contains(token)) {
+              values.add(token);
+            }
         }
         if (values.size() > 0) {
         	values.addAll(this.term.getValues());
