@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 //OODT imports
 import org.apache.oodt.cas.metadata.Metadata;
@@ -41,9 +42,11 @@ import org.apache.oodt.cas.workflow.structs.WorkflowConditionInstance;
  * true.</p>
  *
  */
-public class PrerequisiteCondition implements WorkflowConditionInstance {
+public class ResmgrJobCondition implements WorkflowConditionInstance {
 
-	public PrerequisiteCondition() {
+	private static final Logger LOG = Logger.getLogger(ResmgrJobCondition.class.getName());
+	
+	public ResmgrJobCondition() {
 		super();
 	}
 	
@@ -78,8 +81,8 @@ public class PrerequisiteCondition implements WorkflowConditionInstance {
 		String resourceManagerUrl = config.getProperty("RESMGR_URL");
 		boolean flag = true;
 
-		System.out.println(new Date() + " PrerequisiteCondition: Jobs: "+ Arrays.toString(jobs));
-		System.out.println(new Date() + " PrerequisiteCondition: Resource Manager: "+ resourceManagerUrl);
+		LOG.info(new Date() + " PrerequisiteCondition: Jobs: "+ Arrays.toString(jobs));
+		LOG.info(new Date() + " PrerequisiteCondition: Resource Manager: "+ resourceManagerUrl);
 		
 		XmlRpcResourceManagerClient client = null;
 		try {
