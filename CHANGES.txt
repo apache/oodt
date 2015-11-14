@@ -2,6 +2,9 @@ Apache OODT Change Log
 ======================
 Release 0.11 - Current Development
 
+* OODT-918 - Created a prerequisite workflow condition for DRAT (Karanjeet
+  Singh via mattmann)
+
 * OODT-913 Multiple metadata values not written out into product-types.xml (luca)
 
 * ODT-862 Include the Workflow ID as part of the standard metadata (luca)
