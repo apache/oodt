@@ -16,6 +16,7 @@ public class Configuration {
     public static final String FILLER_METDATA_KEY = "fill";
     public static final String UPLOAD_AREA_CONFIG = "org.apache.oodt.cas.curator.upload.area";
     public static final String STAGING_AREA_CONFIG = "org.apache.oodt.cas.curator.staging.area";
+    public static final String ARCHIVE_AREA_CONFIG = "org.apache.oodt.cas.curator.archive.area";
     public static final String METADATA_AREA_CONFIG = "org.apache.oodt.cas.curator.metadata.area";
     public static final String EXTRACTOR_AREA_CONFIG = "org.apache.oodt.cas.curator.extractor.area";
     public static final String FILEMANAGER_URL_CONFIG = "org.apache.oodt.cas.curator.filemanager.url";

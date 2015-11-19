@@ -144,12 +144,13 @@ define(["jquery",
                     var selects = [];
                     _self.metadata.each(
                         function(elem) {
-                            selects.push(elem.get("id"));
+                            try {
+                            selects.push({"timestamp":new Date().getTime(),"file":elem.get("id"),"size":0,"pname":elem.get("root")["children"]["ProductName"]["values"][0]});
+                            } catch(err) {}
                         }
                     );
-                    console.log(">>>"+_self.ingest);
                     if (selects.length > 0)
-                        _self.ingest.save({"files":selects});
+                        _self.ingest.save({"entries":selects});
                 }
             );
         };
