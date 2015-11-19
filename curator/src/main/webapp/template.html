@@ -66,3 +66,27 @@
        recurseFn(object);%>
     <button id="ingest" class="btn btn-success">Ingest Current Selection</button>
 </script>
+<!-- Ingest file template -->
+<script type="text/template" id="template-ingesting">
+    <ul id="ingestable">
+    <%    if (statuses.length == 0) { %>
+              <h3>No ingesting products</h3>
+    <%    } else {
+              for (var i = 0; i < statuses.length; i++) {
+                  var model = statuses[i];
+                  var icon = "icons/error.jpg";
+                  var extra = "";
+                  if (model.status == "DONE") {
+                      icon = "icons/success.jpg";
+                      var location = "/opsui/product/"+statuses[i].product;
+                      extra = "<em>Metadata record:<a href='"+location+"'>"+statuses[i].product+"</a></em>";
+                  } else if (model.status == "IN PROGRESS") {
+                      icon = "icons/waiting.gif";
+                  } else {
+                      extra = "<em>"+model.status+"</em>";
+                  }%>
+                  <li><img src="<%= icon %>" height="20px" /><%= model.file %><br><%= extra %></li>
+    <%        }; 
+          }; %>
+    </ul>
+</script>
