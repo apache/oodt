@@ -14,6 +14,7 @@ define(["jquery"],
             "DIRECTORY_REST_SERVICE":"services/directory",
             "EXTRACTOR_REST_SERVICE":"services/metadata/extractors",
             "INGEST_REST_SERVICE":"services/ingest",
+            "VALIDATION_REST_SERVICE":"services/validation",
             //Dropzone requires full path
             "UPLOAD_REST_SERVICE":path.substr(0,path.lastIndexOf("/")+1)+"services/upload/file",
             "FILE_SYSTEM_REFRESH_INTERVAL":1000

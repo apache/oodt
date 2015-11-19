@@ -32,6 +32,39 @@ define(["jquery",
                 query += "?extractor="+extractor;
             return Config.METADATA_REST_SERVICE+"/"+this.get("id")+query;
         }
+        //Validation model
+        var Validation = new (Backbone.Model.extend({
+            "defaults":{"types":{}},
+            "url":Config.VALIDATION_REST_SERVICE,
+            "parse":function(res) {
+                return res;
+            }
+        }))();
+        Validation.fetch();
+        /**
+         * Validation function to validate Metadata Model attributes
+         * @param attrs - attributes to validate
+         * @param options - ??
+         * @returns validation successful true/false
+         */
+        function validate(attrs,options) {
+            var type = attrs["root"].children["ProductType"].values[0];
+            var useDefault = typeof(type) == "undefined" || !(type in Validation.attributes);
+            var valids = Validation.get(useDefault?"default":type);
+            //Check each key in the validation, and register errors
+            var errors = {};
+            for (var key in valids) {
+                if ("required" in valids[key] && valids[key].required == "true" && !(key in attrs)) {
+                    errors[key] = "Field required";
+                } else if ("values" in valids[key] && key in attrs && valids[key].values.indexOf(attrs[key]) == -1) {
+                    errors[key] = "Field must be one of: "+valids[key].values.join()
+                }
+            }
+            //Valid only returns something on error
+            if (!($.isEmptyObject(errors))) {
+                return errors;
+            }
+        };
         /**
          * Initialize the collection, with extractors
          * @param options - options defining extractors
@@ -41,13 +74,15 @@ define(["jquery",
             for (var key in options)
                 this[key] = options[key];
         };
+
         
         /**
          * Backbone metadata object
          */
         var Metadata = Backbone.Model.extend({
             "parse":parse,
-            "url":url
+            "url":url,
+            "validate":validate
         });
         
         /**

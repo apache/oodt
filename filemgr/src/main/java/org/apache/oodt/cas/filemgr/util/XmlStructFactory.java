@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -450,12 +451,20 @@ public final class XmlStructFactory {
             description = XMLUtils.getElementText("description", elementElem,
                     true);
         }
-
+        Map<String,String> attributes = new HashMap<String,String>();
+        Node child = elementNode.getFirstChild();
+        while (child != null) {
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                attributes.put(child.getNodeName(), child.getTextContent());
+            }
+            child = child.getNextSibling();
+        }
         org.apache.oodt.cas.filemgr.structs.Element element = new org.apache.oodt.cas.filemgr.structs.Element();
         element.setDCElement(dcElement);
         element.setDescription(description);
         element.setElementId(id);
         element.setElementName(name);
+        element.setAttachments(attributes);
         return element;
     }
 

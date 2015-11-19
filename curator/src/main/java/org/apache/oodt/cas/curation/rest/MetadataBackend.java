@@ -69,6 +69,7 @@ public class MetadataBackend {
      * @param extractor - if specified, this extractor will be run and replace existing metadata
      */
     public String getMetadata(@PathParam("file") String file,@QueryParam("extractor") String extractor) throws Exception {
+        LOG.info("File recieved:"+file);
         Metadata met = null;
         try {
             met = handler.get(file);
@@ -80,10 +81,12 @@ public class MetadataBackend {
         if (extractors.containsKey(extractor)) {
             Metadata extracted = this.runExtractor(file, extractor);
             met = this.merge(extracted, met, extractors.get(extractor).getFiller());
+            LOG.log(Level.INFO,"SAVING File: "+file+ " Metadata: "+met);
+            for (String key : met.getAllKeys()) {
+                LOG.log(Level.INFO, "Metadat KEY: "+key+" IS:"+met.getMetadata(key));
+            }
             handler.set(file, met);
-            //met.addMetadata(Configuration.FILLER_METDATA_KEY,extractors.get(extractor).getFiller());
         }
-        met.addMetadata(Configuration.FILLER_METDATA_KEY,"--FILL ME--");
         return gson.toJson(met);
     }
 
@@ -98,6 +101,8 @@ public class MetadataBackend {
      * @param json - new json for file
      */
     public String putMetadata(@PathParam("file") String file,@QueryParam("extractor") String extractor,String json) throws Exception {
+        System.out.println("File:"+ file);
+        LOG.info("File recieved:"+file);
         //TODO: Sanitize this input
         Metadata met = gson.fromJson(json, Metadata.class);
         met.removeMetadata(Configuration.FILLER_METDATA_KEY);
