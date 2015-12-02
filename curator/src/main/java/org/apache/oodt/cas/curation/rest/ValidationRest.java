@@ -41,23 +41,24 @@ public class ValidationRest {
      */
     public Response information() {
         try {
-            if (this.backend == null)
-                setup();
+            setup();
             return Response.ok().entity(gson.toJson(this.backend.getValidation())).build();
         } catch(Exception e) {
-            LOG.log(Level.SEVERE, "Validation exception occured calling validation/info REST endpoint", e);
-            return Response.serverError().entity(gson.toJson(e)).build();
+            LOG.log(Level.SEVERE,"Validation exception occured calling validation/info REST endpoint", e);
+            return ExceptionResponseHandler.BuildExceptionResponse(e);
         }
     }
     /**
      * Setup this service
      */
-    public void setup() throws ValidationException {
+    public synchronized void setup() throws ValidationException {
+        if (this.backend != null)
+            return;
         try {
             LOG.log(Level.INFO, "Setting up validation backend");
             this.backend = new ValidationBackend(Configuration.getWithReplacement(Configuration.FILEMANAGER_PROP_CONFIG));
         } catch(ValidationException ve) {
-            LOG.log(Level.SEVERE, "Validation exception occured setting up validation REST service", ve);
+            LOG.log(Level.SEVERE,"Validation exception occured setting up validation REST service", ve);
             throw ve;
         }
     }

@@ -68,26 +68,30 @@ public class MetadataBackend {
      * @param file - file to get metadata from
      * @param extractor - if specified, this extractor will be run and replace existing metadata
      */
-    public String getMetadata(@PathParam("file") String file,@QueryParam("extractor") String extractor) throws Exception {
-        LOG.info("File recieved:"+file);
-        Metadata met = null;
+    public Response getMetadata(@PathParam("file") String file,@QueryParam("extractor") String extractor) {
         try {
-            met = handler.get(file);
-            //TODO: don't catch all exceptions, make it a specific excpetion
-        } catch(Exception e) {
-            met = new Metadata();
-        }
-        //If extractor is specified, then its metadata is considered "correct" and previous metadata is used only to fill filler
-        if (extractors.containsKey(extractor)) {
-            Metadata extracted = this.runExtractor(file, extractor);
-            met = this.merge(extracted, met, extractors.get(extractor).getFiller());
-            LOG.log(Level.INFO,"SAVING File: "+file+ " Metadata: "+met);
-            for (String key : met.getAllKeys()) {
-                LOG.log(Level.INFO, "Metadat KEY: "+key+" IS:"+met.getMetadata(key));
+            LOG.info("File recieved:"+file);
+            Metadata met = null;
+            try {
+                met = handler.get(file);
+                //TODO: don't catch all exceptions, make it a specific excpetion
+            } catch(Exception e) {
+                met = new Metadata();
             }
-            handler.set(file, met);
+            //If extractor is specified, then its metadata is considered "correct" and previous metadata is used only to fill filler
+            if (extractors.containsKey(extractor)) {
+                Metadata extracted = this.runExtractor(file, extractor);
+                met = this.merge(extracted, met, extractors.get(extractor).getFiller());
+                LOG.log(Level.INFO,"SAVING File: "+file+ " Metadata: "+met);
+                for (String key : met.getAllKeys()) {
+                    LOG.log(Level.INFO, "Metadat KEY: "+key+" IS:"+met.getMetadata(key));
+                }
+                handler.set(file, met);
+            }
+            return Response.ok().entity(gson.toJson(met)).build();
+        } catch (Exception e) {
+            return ExceptionResponseHandler.BuildExceptionResponse(e);
         }
-        return gson.toJson(met);
     }
 
     @PUT
@@ -100,19 +104,24 @@ public class MetadataBackend {
      * @param extractor - optional extractor to run
      * @param json - new json for file
      */
-    public String putMetadata(@PathParam("file") String file,@QueryParam("extractor") String extractor,String json) throws Exception {
-        System.out.println("File:"+ file);
-        LOG.info("File recieved:"+file);
-        //TODO: Sanitize this input
-        Metadata met = gson.fromJson(json, Metadata.class);
-        met.removeMetadata(Configuration.FILLER_METDATA_KEY);
-        handler.set(file, met);
-        if (extractors.containsKey(extractor)) {
-            Metadata extracted = this.runExtractor(file, extractor);
-            met = this.merge(extracted, met, extractors.get(extractor).getFiller());
+    public Response putMetadata(@PathParam("file") String file,@QueryParam("extractor") String extractor,String json) {
+        try {
+            System.out.println("File:"+ file);
+            LOG.info("File recieved:"+file);
+            //TODO: Sanitize this input
+            Metadata met = gson.fromJson(json, Metadata.class);
+            met.removeMetadata(Configuration.FILLER_METDATA_KEY);
             handler.set(file, met);
+            if (extractors.containsKey(extractor)) {
+                Metadata extracted = this.runExtractor(file, extractor);
+                met = this.merge(extracted, met, extractors.get(extractor).getFiller());
+                handler.set(file, met);
+            }
+            return Response.ok().entity(gson.toJson(met)).build();
+        } catch(Exception e) {
+            return ExceptionResponseHandler.BuildExceptionResponse(e);
+        
         }
-        return gson.toJson(met);
     }
     @GET
     @Produces("application/json")
@@ -121,9 +130,13 @@ public class MetadataBackend {
      * Returns the list of extractors
      * @return - list of extractors
      */
-    public String getExtractors() {
-        loadMetadataExtractors();
-        return gson.toJson(MetadataBackend.this.extractors.keySet());
+    public Response getExtractors() {
+        try {
+            loadMetadataExtractors();
+            return Response.ok().entity(gson.toJson(MetadataBackend.this.extractors.keySet())).build();
+        } catch (Exception e) {
+            return ExceptionResponseHandler.BuildExceptionResponse(e);
+        }
     }
     /**
      * Loads the metadata extractors

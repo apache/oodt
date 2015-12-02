@@ -32,15 +32,6 @@ define(["jquery",
                 query += "?extractor="+extractor;
             return Config.METADATA_REST_SERVICE+"/"+this.get("id")+query;
         }
-        //Validation model
-        var Validation = new (Backbone.Model.extend({
-            "defaults":{"types":{}},
-            "url":Config.VALIDATION_REST_SERVICE,
-            "parse":function(res) {
-                return res;
-            }
-        }))();
-        Validation.fetch();
         /**
          * Validation function to validate Metadata Model attributes
          * @param attrs - attributes to validate
@@ -81,8 +72,8 @@ define(["jquery",
          */
         var Metadata = Backbone.Model.extend({
             "parse":parse,
-            "url":url,
-            "validate":validate
+            "url":url//,
+            //"validate":validate
         });
         
         /**

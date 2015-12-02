@@ -14,30 +14,33 @@ require(["lib/domReady!",
          "js-new/models/SetupModels",
          "js-new/views/TreeView",
          "js-new/views/UploadView",
-         "js-new/views/MetadataView",
+         "js-new/views/MetadataEntryView",
+         "js-new/views/ExtractorView",
          "js-new/views/IngestView",
+         "js-new/control/MetadataControl",
+         "js-new/control/ExtractorControl",
          "js-new/config/Configuration",
          "lib/text! template.html"
         ],
-    function(doc,$,Models,TreeView,UploadView,MetadataView,IngestView,Config,html) {
+    function(doc,$,Models,TreeView,UploadView,MetadataEntryView,ExtractorView,IngestView,MetadataControl,ExtractorControl,Config,html) {
         //Setup templates
         $("body").append(html);
         //Setup views
         var ingt = new IngestView({"el":$("#ingest"),"name":"ingest-view","ingest":Models.ingest});
-        var meta = new MetadataView({"el":$("#metadata"),"name":"metadata-view","metadata":Models.metadata,
-                                     "extractors":Models.extractor,"ingest":Models.ingest});
+        //var meta = new MetadataView({"el":$("#metadata"),"name":"metadata-view","metadata":Models.metadata,
+        //                             "extractors":Models.extractor,"ingest":Models.ingest});
+        var meta = new MetadataEntryView({"el":$("#metadata"),"name":"metadata-view","datamodel":Models.datamodel,"model":Models.metadata});
+        var extr = new ExtractorView({"el":$("#extractors"),"name":"extractor-view","extractors":Models.extractor});
         var upld = new UploadView({"el":$("#files"),"name":"upload-view","upload":Models.upload,"notify":Models.directory});
         var tree = new TreeView({"el":$("#files"),"name":"tree-view","directory":Models.directory,"selection":Models.metadata,"metview":meta});
-
+        new MetadataControl(meta,Models.metadata,Models.ingest);
+        new ExtractorControl(extr,Models.extractor,Models.metadata);
         /*Models.metadata.each(function(model) {
             model.fetch({"success":function() {
                 meta.render();
             }});
         });*/
-        Models.directory.fetch();
-        Models.extractor.fetch();
-        Models.ingest.fetch();
-        setInterval(function() {Models.directory.fetch();Models.extractor.fetch();Models.ingest.fetch();},Config.FILE_SYSTEM_REFRESH_INTERVAL);
+        setInterval(function() {Models.refresh();},Config.FILE_SYSTEM_REFRESH_INTERVAL);
     }
 );
 

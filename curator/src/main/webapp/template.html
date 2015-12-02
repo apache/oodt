@@ -1,4 +1,3 @@
-
 <!-- Tree view template -->
 <script type="text/template" id="template-jstree">
     <div id="<%= name %>" class="treeview">
@@ -22,16 +21,56 @@
            <input type="text" name="<%= record.name %>" value="<%= toDisp.join()%>" <%= disabled %> ></input>
     <% }; %>
 </script>
+
+<!-- An element -->
+<script type="text/template" id="template-table-element">
+    <% var disabled = locked ? "disabled" : "";
+       if (values != null) { %>
+           <select id="<%= name %>" name="<%= name %>" <%= disabled %>>
+    <%     for (var i = 0; i < values.length; i++) {
+               var selected = values[i] == value ? "selected" : ""; %>
+               <option value="<%= values[i]%>" <%= selected %>><%= values[i]%></option>
+    <%     }; %>
+           </select>
+    <% } else { %>
+           <input type="text" name="<%= name %>" value="<%= value %>" <%= disabled %> ></input>
+    <% }; %>
+</script>
 <!-- Extractors list template -->
 <script type="text/template" id="template-extractor-list">
     Extractor:
     <select id="extractors">
-        <option value="">No Extractor</option>
-    <% for (var i = 0; i < extractors.length; i++) {%>
-        <option value="<%= extractors[i] %>"><%= extractors[i] %></option>
+        <option name="No Extractor" value="No Extractor">No Extractor</option>
+    <% var extractors = model.get("extractors");
+       for (var i = 0; i < extractors.length; i++) { 
+           var selected = (model.get("selected") == extractors[i]) ? "selected" : ""; %>
+           <option name="<%= extractors[i] %>" value="<%= extractors[i] %>" <%= selected %>><%= extractors[i] %></option>
     <% }; %>
     </select>
 </script>
+
+<!-- Table Metadata -->
+<script type="text/template" id="template-elements-table">
+    <table class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Metadata Key</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+    <%      for (var i = 0; i < htmls.length; i++) { %>
+                <tr>
+                    <td><%= htmls[i].name %></td>
+                    <td><%= htmls[i].html  %></td>
+                </tr>
+    <!-- TODO: Insert recursion here, if needed -->
+    <%      }; %>
+        </tbody>
+        <button id="ingest" class="btn btn-success">Ingest Current Selection</button>
+    </table>
+</script>
+
 
 <!-- A table for metadata key/vals -->
 <script type="text/template" id="template-table">
