@@ -27,7 +27,7 @@ define(["js-new/models/DirectoryModel",
         models.datamodel.fetch();
         models.refresh();
         
-        models.metadata = new MetadataCollection([],{"id":"metadata","extractors":models.extractor});
+        models.metadata = new MetadataCollection([],{"id":"metadata","extractors":models.extractor,"datamodel":models.datamodel});
         return models;
     }
 );

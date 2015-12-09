@@ -71,8 +71,11 @@ public class IngestBackend {
         try {
             String parent = new File(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)).getParent();
             File full = new File(parent,file);
-            Metadata meta = new FlatDirMetadataHandler().get(file);
+            FlatDirMetadataHandler handler = new FlatDirMetadataHandler();
+            Metadata meta = handler.get(file);
             ingester.ingest(this.url, full.getAbsoluteFile(), meta);
+            //Remove metadata file after successful ingest
+            handler.remove(file);
         } catch(Exception e) {
             LOG.log(Level.WARNING,"Error: failed ingesting product: "+e);
             throw new IngestException("Error: problem while ingesting",e);
@@ -110,6 +113,19 @@ public class IngestBackend {
         } catch (Exception e) {
             LOG.log(Level.WARNING,"Error: failed checking status: "+e);
             throw new IngestException("Error: failed to check status",e);
+        }
+    }
+    /**
+     * Clears any errors registered in this system
+     */
+    public void clearErrors() {
+        List<InputStruct.InputEntry> torm = new LinkedList<InputStruct.InputEntry>();
+        for (InputStruct.InputEntry entry : this.current) {
+            if (entry.error != null)
+                torm.add(entry);
+        }
+        for (InputStruct.InputEntry entry : torm) {
+            this.current.remove(entry);
         }
     }
 }

@@ -39,21 +39,32 @@ define(["jquery",
          * @returns validation successful true/false
          */
         function validate(attrs,options) {
-            var type = attrs["root"].children["ProductType"].values[0];
-            var useDefault = typeof(type) == "undefined" || !(type in Validation.attributes);
-            var valids = Validation.get(useDefault?"default":type);
-            //Check each key in the validation, and register errors
-            var errors = {};
-            for (var key in valids) {
-                if ("required" in valids[key] && valids[key].required == "true" && !(key in attrs)) {
-                    errors[key] = "Field required";
-                } else if ("values" in valids[key] && key in attrs && valids[key].values.indexOf(attrs[key]) == -1) {
-                    errors[key] = "Field must be one of: "+valids[key].values.join()
+            //Get validation setup
+            var type = ("root" in attrs && "ProductType" in attrs["root"].children
+                        && attrs["root"].children["ProductType"].values.length >= 1) ?
+                        attrs["root"].children["ProductType"].values[0] : "GenericFile";
+            var dataModel = this.collection["datamodel"].get("types")[type];
+            //Check all the fields
+            error = {};
+            for (var i = 0; i < dataModel.length; i++) {
+                var attachments = dataModel[i].attachments;
+                var key = dataModel[i].elementName;
+                if ("required" in attachments && 
+                   (!(key in attrs["root"].children) || 
+                    (attrs["root"].children[key].values.length == 0) ||
+                    (attrs["root"].children[key].values[0] == ""))) {
+                    error[key] = key +" is required.";
+                } else if ("values" in attachments && 
+                       (!(key in attrs["root"].children) || 
+                        (attrs["root"].children[key].values.length == 0) ||
+                        (attachments.values.split(",").indexOf(attrs["root"].children[key].values[0]) == -1))) {
+                    var tmptmptmp = attachments.values.split(",");
+                    error[key] = key +" must be one of: "+attachments.values;
                 }
             }
             //Valid only returns something on error
-            if (!($.isEmptyObject(errors))) {
-                return errors;
+            if (!($.isEmptyObject(error))) {
+                return error;
             }
         };
         /**
@@ -72,8 +83,9 @@ define(["jquery",
          */
         var Metadata = Backbone.Model.extend({
             "parse":parse,
-            "url":url//,
-            //"validate":validate
+            "url":url,
+            "defaults":{"root":{"children":[]}},
+            "validate":validate
         });
         
         /**

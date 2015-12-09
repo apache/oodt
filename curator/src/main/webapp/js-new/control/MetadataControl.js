@@ -12,6 +12,7 @@ define(["jquery"],
             _self.view = view;
             _self.model = model;
             _self.model.on("change",_self.view.render,_self.view);
+            _self.model.on("invalid",_self.view.render,_self.view)
             _self.ingest = ingest;
             _self.dataEntry = 
                 /**
@@ -33,8 +34,6 @@ define(["jquery"],
                                 } else {
                                     root.children[name] = {"name":name,"values":[value],"children":{}} 
                                 }
-                                //TODO: Remember validation
-                                //TODO: Fix this to do a set and a save, not just a set
                                 elem.save(null,{success:
                                     function() {
                                         elem.fetch();
@@ -50,9 +49,14 @@ define(["jquery"],
                  */
                 function(e) {
                     var selects = [];
+                    var valid = true;
                     _self.model.each(
                         function(elem) {
                             try {
+                                valid = valid && elem.isValid();
+                                if (!valid) {
+                                    return;
+                                }
                                 var timestamp = new Date().getTime();
                                 var id = elem.get("id");
                                 var productName = elem.get("root")["children"]["ProductName"]["values"][0];
@@ -62,11 +66,44 @@ define(["jquery"],
                             }
                         }
                     );
+                    _self.view.render();
                     //Run ingest
-                    if (selects.length > 0)
+                    if (valid && selects.length > 0)
                         _self.ingest.save({"entries":selects});
                 };
+                _self.metaClear =
+                    /**
+                     * What to do on metadata clear
+                     * @param e - event (likely ignored)
+                     */
+                    function(e) {
+                        var destroy = [];
+                        var ids = [];
+                        _self.model.each(
+                            function(elem) {
+                                destroy.push(elem);
+                                ids.push(elem.get("id"));
+                            }
+                        );
+                        //Destroy first
+                        for (var i = 0; i < destroy.length; i++) {
+                            destroy[i].destroy();
+                        }
+                        //Then render
+                        _self.view.render();
+                        //Now add back, and refetch
+                        for (var i = 0; i < ids.length; i++) {
+                            _self.model.add({"id":ids[i]});
+                        }
+                        //Refresh and update view
+                        _self.model.each(
+                            function(elem) {
+                                elem.fetch({"success": function() {_self.view.render();}});
+                            });
+                    };                
+                
             _self.view.setOnEntryFunction(_self.dataEntry);
             _self.view.setIngestClick(_self.ingestClick);
+            _self.view.setMetadataClear(_self.metaClear);
         }
 });

@@ -24,3 +24,6 @@ div.treeview {
 div.intro {
     margin-bottom: 50px;
 }
+input[type="text"]:disabled {
+    background: #dddddd;
+} 

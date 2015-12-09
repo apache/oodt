@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -65,7 +66,6 @@ public class IngestRest {
     /**
      * Get ingest status
      * @return list of statuses
-     * @throws Exception - exception on problem
      */
     public Response status() {
         try {
@@ -76,6 +76,22 @@ public class IngestRest {
             LOG.log(Level.SEVERE,"Exception occured calling ingest REST endpoint", e);
             return ExceptionResponseHandler.BuildExceptionResponse(e);
         }
+    }
+    @DELETE
+    /**
+     * Delete errors
+     * @return response object
+     */
+    public Response remove() {
+        try {
+            setup();
+            LOG.log(Level.INFO, "Deleteing current errors");
+            this.backend.clearErrors();
+            return Response.ok().build();
+        } catch(Exception e) {
+            LOG.log(Level.SEVERE,"Exception occured calling ingest REST endpoint", e);
+            return ExceptionResponseHandler.BuildExceptionResponse(e);
+        }        
     }
     /**
      * Setup the backend

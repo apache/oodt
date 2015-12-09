@@ -62,7 +62,12 @@ define(["jquery",
          */
         function renderElementInput(element,merged) {
             var values = null;
-            var locked = "attachments" in element && "locked" in element.attachments;
+            //Flag attributes
+            var locked = "attachments" in element && "locked" in element.attachments || this.model.size() == 0;
+            var required = "attachments" in element && "required" in element.attachments;
+            var hidden = "attachments" in element && "hidden" in element.attachments && !required;
+            var error = (element.elementName in merged.errors) ? merged.errors[element.elementName]:"";
+            //Get values, (will create dropdown)
             if ("attachments" in element && "values" in element.attachments) {
                 values = element.attachments.values.split(",");
             }
@@ -82,7 +87,15 @@ define(["jquery",
             }
             //Grab the template and build it
             var tmp = _.template($("script#template-table-element").html());
-            return {"name": element.elementName, "html": tmp({"name":element.elementName,"locked":locked,"values":values,"value":(element.elementName == "ProductType")?this.type:value})};
+            return {"name": element.elementName,
+                    "html": tmp({"name":element.elementName,
+                                 "locked":locked,
+                                 "required":required,
+                                 "hidden":hidden,
+                                 "values":values,
+                                 "value":(element.elementName == "ProductType")?this.type:value,
+                                 "error":error}),
+                    "hidden":hidden};
         }
         /**
          * Render the extractors 
@@ -95,29 +108,42 @@ define(["jquery",
          * Render this view, based on the given data model
          */
         function render() {
+            var self = this;
             var items = (this.type in this.datamodel.get("types")) ? this.datamodel.get("types")[this.type] : [];
             var inputHtmls = [];
             //Merge metadata together for display
-            var merged = {"name":"root","values":[],"children":{}};
+            var merged = {"name":"root","values":[],"children":{},"errors":{}};
             //For each item in the collection, merge together
             this.model.each(
                 function(elem) {
                     if (typeof(elem.get("root")) === "undefined")
                         return;
+                    //Reset the model's type from selected type
+                    if (!("ProductType" in elem.get("root").children) || elem.get("root").children["ProductType"].values.length == 0) {
+                        elem.get("root").children["ProductType"] = {"name":"ProductType","values":[self.type],"children":{}}
+                    }
                     recurseMerge(merged,utils.deep(elem.get("root")));
+                    if (typeof(elem.validationError) === "undefined" || elem.validationError == null)
+                        return;
+                    //Update errors
+                    for (var key in elem.validationError) {
+                        merged.errors[key] = elem.validationError[key];
+                    }
+
                 });
             //Build this element
             for (var i = 0; i < items.length; i++) {
                 inputHtmls.push(this.renderElementInput(items[i],merged));
             }
             var tmp = _.template($("script#template-elements-table").html());
-            this.$el.html(tmp({"htmls":inputHtmls}));
+            this.$el.html(tmp({"htmls":inputHtmls,"disabled":this.model.size() == 0}));
             //DataTables JS registering
             var table = $(this.$el).find("table:first");
             table.DataTable({"paging": false});
             //Attach events to the controls bindings.
             $(this.$el).find("table:first").find("input,select").on("change",this.dataEntry);
             $(this.$el).find("button#ingest").on("click",this.ingestClick);
+            $(this.$el).find("button#clear-metadata").on("click",this.metaClear);
         };
         /**
          * A function to set the "on change" call-back for data inputs
@@ -134,6 +160,13 @@ define(["jquery",
             this.ingestClick = func;
         };
         /**
+         * A function to set the "on click" for metadata clear button
+         * @param func - function to call back (should come from controller)
+         */
+        function setMetadataClear(func) {
+            this.metaClear = func;
+        };
+        /**
          * Update the current product type from the controller
          */
         function setProductType(type) {
@@ -146,6 +179,7 @@ define(["jquery",
             setOnEntryFunction: setOnEntryFunction,
             setProductType: setProductType,
             setIngestClick: setIngestClick,
+            setMetadataClear: setMetadataClear,
             //Private functions needing correct "this"
             renderElementInput: renderElementInput
             

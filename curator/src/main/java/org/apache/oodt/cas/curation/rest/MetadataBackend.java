@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -118,6 +119,23 @@ public class MetadataBackend {
                 handler.set(file, met);
             }
             return Response.ok().entity(gson.toJson(met)).build();
+        } catch(Exception e) {
+            return ExceptionResponseHandler.BuildExceptionResponse(e);
+        
+        }
+    }
+    @DELETE
+    @Consumes("application/json")
+    @Path("{file:.+}")
+    /**
+     * Deletes the metadata for a given file
+     * @param file - file to specify metadata for
+     */
+    public Response deleteMetadata(@PathParam("file") String file) {
+        try {
+            LOG.info("File to delete recieved:"+file);
+            handler.remove(file);
+            return Response.ok().build();
         } catch(Exception e) {
             return ExceptionResponseHandler.BuildExceptionResponse(e);
         

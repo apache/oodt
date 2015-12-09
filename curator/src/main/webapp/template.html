@@ -21,21 +21,6 @@
            <input type="text" name="<%= record.name %>" value="<%= toDisp.join()%>" <%= disabled %> ></input>
     <% }; %>
 </script>
-
-<!-- An element -->
-<script type="text/template" id="template-table-element">
-    <% var disabled = locked ? "disabled" : "";
-       if (values != null) { %>
-           <select id="<%= name %>" name="<%= name %>" <%= disabled %>>
-    <%     for (var i = 0; i < values.length; i++) {
-               var selected = values[i] == value ? "selected" : ""; %>
-               <option value="<%= values[i]%>" <%= selected %>><%= values[i]%></option>
-    <%     }; %>
-           </select>
-    <% } else { %>
-           <input type="text" name="<%= name %>" value="<%= value %>" <%= disabled %> ></input>
-    <% }; %>
-</script>
 <!-- Extractors list template -->
 <script type="text/template" id="template-extractor-list">
     Extractor:
@@ -48,7 +33,23 @@
     <% }; %>
     </select>
 </script>
-
+<!-- An element -->
+<script type="text/template" id="template-table-element">
+    <% var disabled = locked ? "disabled" : "";
+       var invisible = hidden ? "hidden" : "";
+       var needed = (required && locked) ? "<em>**</em>" : (required) ? "<em>*</em>" : "";
+       if (values != null) { %>
+           <select id="<%= name %>" name="<%= name %>" <%= disabled %> <%= invisible %> >
+    <%     for (var i = 0; i < values.length; i++) {
+               var selected = values[i] == value ? "selected" : ""; %>
+               <option value="<%= values[i]%>" <%= selected %>><%= values[i]%></option>
+    <%     }; %>
+           </select>
+    <% } else { %>
+           <input type="text" name="<%= name %>" value="<%= value %>" <%= disabled %> <%= invisible %> ></input>
+    <% }; %>
+    <%= needed %> <%= error %>
+</script>
 <!-- Table Metadata -->
 <script type="text/template" id="template-elements-table">
     <table class="display" cellspacing="0" width="100%">
@@ -59,51 +60,20 @@
             </tr>
         </thead>
         <tbody>
-    <%      for (var i = 0; i < htmls.length; i++) { %>
-                <tr>
+    <%      for (var i = 0; i < htmls.length; i++) { 
+                var hidden = (htmls[i].hidden)? "hidden" : "";%>
+                <tr <%= hidden %> >
                     <td><%= htmls[i].name %></td>
                     <td><%= htmls[i].html  %></td>
                 </tr>
     <!-- TODO: Insert recursion here, if needed -->
     <%      }; %>
-        </tbody>
-        <button id="ingest" class="btn btn-success">Ingest Current Selection</button>
+        </tbody>    
     </table>
-</script>
-
-
-<!-- A table for metadata key/vals -->
-<script type="text/template" id="template-table">
-    <% var extractorSelectHtml = _.template($("script#template-extractor-list").html())({"extractors":extractors}); %>
-    <%= extractorSelectHtml %>
-    <% function recurseFn(sub) { %>
-           <table class="display" cellspacing="0" width="100%">
-               <thead>
-                   <tr>
-                       <th>Metadata Key</th>
-                       <th>Value</th>
-                   </tr>
-               </thead>
-               <tbody>
-    <%             for (var key in sub.children) { 
-                       var child = sub.children[key];
-                       var disabled = (typeof(child.locked) == "undefined" || !child.locked) ? "" : "disabled";
-                       var inputHtml = _.template($("script#template-input").html())({"record":child}); %>
-                       <tr>
-                           <td><%= child.name %></td>
-                           <td><%= inputHtml %></td>
-                       </tr>
-    <%                 if (Object.keys(child.children).length != 0) { %>
-                           <tr>
-                               <td><%recurseFn(child);%></td>
-                           </tr>
-    <%                 };
-                   }; %>
-               </tbody>
-           </table>
-    <% };
-       recurseFn(object);%>
+    <em>*</em> denotes required field
+    <em>**</em> denotes extracted field
     <button id="ingest" class="btn btn-success">Ingest Current Selection</button>
+    <button id="clear-metadata" class="btn btn-danger" <%= (disabled?"disabled":"") %> >Clear Selected Metadata</button>
 </script>
 <!-- Ingest file template -->
 <script type="text/template" id="template-ingesting">
@@ -128,4 +98,5 @@
     <%        }; 
           }; %>
     </ul>
+    <button id="ingest-clear-errors" class="btn btn-danger">Clear Ingest Status</button>
 </script>
