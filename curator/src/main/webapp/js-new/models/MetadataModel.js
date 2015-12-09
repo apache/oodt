@@ -33,6 +33,41 @@ define(["jquery",
             return Config.METADATA_REST_SERVICE+"/"+this.get("id")+query;
         }
         /**
+         * Validation function to validate Metadata Model attributes
+         * @param attrs - attributes to validate
+         * @param options - ??
+         * @returns validation successful true/false
+         */
+        function validate(attrs,options) {
+            //Get validation setup
+            var type = ("root" in attrs && "ProductType" in attrs["root"].children
+                        && attrs["root"].children["ProductType"].values.length >= 1) ?
+                        attrs["root"].children["ProductType"].values[0] : "GenericFile";
+            var dataModel = this.collection["datamodel"].get("types")[type];
+            //Check all the fields
+            error = {};
+            for (var i = 0; i < dataModel.length; i++) {
+                var attachments = dataModel[i].attachments;
+                var key = dataModel[i].elementName;
+                if ("required" in attachments && 
+                   (!(key in attrs["root"].children) || 
+                    (attrs["root"].children[key].values.length == 0) ||
+                    (attrs["root"].children[key].values[0] == ""))) {
+                    error[key] = key +" is required.";
+                } else if ("values" in attachments && 
+                       (!(key in attrs["root"].children) || 
+                        (attrs["root"].children[key].values.length == 0) ||
+                        (attachments.values.split(",").indexOf(attrs["root"].children[key].values[0]) == -1))) {
+                    var tmptmptmp = attachments.values.split(",");
+                    error[key] = key +" must be one of: "+attachments.values;
+                }
+            }
+            //Valid only returns something on error
+            if (!($.isEmptyObject(error))) {
+                return error;
+            }
+        };
+        /**
          * Initialize the collection, with extractors
          * @param options - options defining extractors
          */
@@ -41,13 +76,16 @@ define(["jquery",
             for (var key in options)
                 this[key] = options[key];
         };
+
         
         /**
          * Backbone metadata object
          */
         var Metadata = Backbone.Model.extend({
             "parse":parse,
-            "url":url
+            "url":url,
+            "defaults":{"root":{"children":[]}},
+            "validate":validate
         });
         
         /**

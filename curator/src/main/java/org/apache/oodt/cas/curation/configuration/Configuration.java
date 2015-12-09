@@ -20,6 +20,7 @@ public class Configuration {
     public static final String METADATA_AREA_CONFIG = "org.apache.oodt.cas.curator.metadata.area";
     public static final String EXTRACTOR_AREA_CONFIG = "org.apache.oodt.cas.curator.extractor.area";
     public static final String FILEMANAGER_URL_CONFIG = "org.apache.oodt.cas.curator.filemanager.url";
+    public static final String FILEMANAGER_PROP_CONFIG = "org.apache.oodt.cas.curator.filemanager.prop";
     //Stores the configuration object as a Properties object
     private static Properties config = new Properties();
     

@@ -22,7 +22,8 @@ define(["jquery",
          */
         return Backbone.Model.extend({
                 "url":Config.EXTRACTOR_REST_SERVICE,
-                "parse":parse
+                "parse":parse,
+                "defaults":{"extractors":[]}
             });
     }
 );

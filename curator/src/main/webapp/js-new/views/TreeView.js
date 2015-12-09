@@ -51,6 +51,7 @@ define(["jquery",
                         }
                     });
                 });
+                view.render();
             };
         };
         /**

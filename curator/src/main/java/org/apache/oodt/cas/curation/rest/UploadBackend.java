@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -54,22 +55,25 @@ public class UploadBackend {
      * Handles the uploading of the data, by copying all data out of the input stream.
      * @param mbody - body of the multipart post
      * @return - OK response on success
-     * @throws IOException - exception thrown on error
      */
-    public Response upload(MultipartBody mbody) throws IOException {
-    	List<Attachment> attachments = mbody.getAllAttachments();
-        for (Attachment attachment : attachments) {
-            String filename = attachment.getContentDisposition().getParameter("filename");    
-            try {
-                InputStream in = attachment.getDataHandler().getInputStream();
-                OutputStream os = new FileOutputStream(new File(Configuration.getWithReplacement(Configuration.UPLOAD_AREA_CONFIG),filename));
-                IOUtils.copy(in,os);
-                in.close();
-                os.close();
-            } catch(IOException e) {
-                throw new IOException("Failed uploading file:",e);
+    public Response upload(MultipartBody mbody) {
+        try {
+        	List<Attachment> attachments = mbody.getAllAttachments();
+            for (Attachment attachment : attachments) {
+                String filename = attachment.getContentDisposition().getParameter("filename");    
+                try {
+                    InputStream in = attachment.getDataHandler().getInputStream();
+                    OutputStream os = new FileOutputStream(new File(Configuration.getWithReplacement(Configuration.UPLOAD_AREA_CONFIG),filename));
+                    IOUtils.copy(in,os);
+                    in.close();
+                    os.close();
+                } catch(IOException e) {
+                    throw new IOException("Failed uploading file:",e);
+                }
             }
+            return Response.ok().build();
+        } catch(Exception e) {
+            return ExceptionResponseHandler.BuildExceptionResponse(e);
         }
-        return Response.ok().build();
     }
 }

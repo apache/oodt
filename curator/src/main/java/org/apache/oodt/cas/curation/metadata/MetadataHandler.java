@@ -22,4 +22,9 @@ public interface MetadataHandler {
      * @param metadata - metadata object to set
      */
     public void set(String file,Metadata metadata) throws Exception;
+    /**
+     * Remove metadata storage for file
+     * @param file - file the metadata describes
+     */
+    public void remove(String file) throws Exception;
 }
