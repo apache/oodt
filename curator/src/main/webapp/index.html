@@ -1,24 +1,48 @@
 <!doctype html>
 <html>
 	<head>
-	    <meta charset="utf-8">
+        <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>New Curator</title>
-		<script src="lib/require.js" data-main="js-new/main.js"></script>
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="css/style.css">
+        <title>Celgene Data Curator</title>
+        <script src="lib/require.js" data-main="js-new/main.js"></script>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="lib/themes/default/style.min.css" />
         <link rel="stylesheet" type="text/css" href="lib/css/jquery.dataTables_themeroller.css" />
         <link rel="stylesheet" type="text/css" href="lib/css/jquery.dataTables.css" />
         <link rel="stylesheet" type="text/css" href="lib/css/dropzone.css" />
-        
+        <!-- DA Generator stuff -->
+        <link rel="stylesheet" type="text/css" href="/da-generator/bootstrap/css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="/da-generator/bootstrap/css/bootstrap-theme.css">
+        <link rel="stylesheet" type="text/css" href="/da-generator/style.css">
+        <!-- DA Number generator -->
+        <!--script src="lib/jquery-2.1.3.js"></script-->
+        <script>
+            require.config({
+                baseUrl: "./",
+                paths: {
+                    jquery: "lib/jquery-2.1.3",
+                    underscore: "lib/underscore",
+                    datatables: "lib/jquery.dataTables"
+                }
+            });
+            var $=null;
+            require(["lib/domReady!","jquery"],
+                function(doc,JQ) {
+                    $=JQ;
+                    main();
+                }
+            );
+        </script>
+        <script src="action.js"></script>
+
 	</head>
 	<body>
         <div id="wrapper" class="content container-fluid">
             <div class="row intro">
                 <div class="col-md-offset-1 col-md-10">
-                    <h1>OODT CAS Curator</h1>
+                    <h1>Celgene Product Curation</h1>
                     <hr/>
                     <p>
                     The OODT CAS-Curator allows the user to ingest files from the given staging area. The user may also upload files into the staging area, and edit the metadata pertaining to these files before the ingestion takes place.
@@ -44,6 +68,11 @@
                 <div id="metadata" class="panel col-md-4"></div>
                 <div id="ingest" class="panel col-md-4"></div>
             </div>
-        </div>
+            <!-- DA Number generator -->
+            <h3 class="big">Celgene Data Asset Number Generator</h3>
+            <div id="danum" class="big">ungenerated</div>
+                <button id="gen" class="btn btn-danger big">Generate DA Number</button>
+                <div id="errors"></div>
+            </div>
 	</body>
 </html>
