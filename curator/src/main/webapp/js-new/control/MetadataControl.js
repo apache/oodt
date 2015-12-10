@@ -34,7 +34,10 @@ define(["jquery"],
                                 } else {
                                     root.children[name] = {"name":name,"values":[value],"children":{}} 
                                 }
-                                elem.save(null,{"success":function(){elem.fetch();},"validate": false});
+                                elem.save(null,{"success":
+                                    function(){
+                                        elem.fetch({"success":function(){_self.view.render();}});
+                                    },"validate": false});
                             }
                         );
                     //Render should be delayed, allowing focus to trigger

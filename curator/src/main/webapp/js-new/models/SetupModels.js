@@ -20,7 +20,11 @@ define(["js-new/models/DirectoryModel",
             "datamodel" : new MetadataDataModel({"id":"datamodel"}),
             "refresh" : function(exview,inview) {
                     models.directory.fetch();
-                    models.extractor.fetch({"success":function(){exview.render();}});
+                    if (exview != null) {
+                        models.extractor.fetch({"success":function(){exview.render();}});
+                    } else {
+                        models.extractor.fetch();
+                    }
                     models.ingest.fetch({"success":function(){inview.render();}});
                 }
         };

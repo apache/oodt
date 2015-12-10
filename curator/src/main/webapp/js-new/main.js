@@ -36,7 +36,7 @@ require(["lib/domReady!",
         new ExtractorControl(extr,Models.extractor,Models.metadata);
         new IngestControl(ingt,Models.ingest);
         Models.refresh(extr,ingt);
-        setInterval(function() {Models.refresh(function(){},ingt);},Config.FILE_SYSTEM_REFRESH_INTERVAL);
+        setInterval(function() {Models.refresh(null,ingt);},Config.FILE_SYSTEM_REFRESH_INTERVAL);
     }
 );
 
