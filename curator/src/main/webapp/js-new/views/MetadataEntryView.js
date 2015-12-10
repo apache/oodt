@@ -20,6 +20,7 @@ define(["jquery",
             //Set inital product type
             this.type = ("GenericFile" in this.datamodel.get("types") || Object.keys(this.datamodel.get("types")).length == 0)?"GenericFile":Object.keys(this.datamodel.get("types"))[0];
             this.datamodel.on("change:types",this.render,this);
+            this.focused = null;
         };
         /**
          * Returns delimited list
@@ -98,17 +99,26 @@ define(["jquery",
                     "hidden":hidden};
         }
         /**
-         * Render the extractors 
-         * @returns extractors drop-down html
+         * What to do on focus event
+         * @param e - event
          */
-        function renderExtractors() {
-            return "";
+        function onFocus(e) {
+            this.focused = e.target.id;
+        }
+        /**
+         * What to do on blur event
+         * @param e - event
+         */
+        function onBlur(e) {
+            this.focused = null;
         }
         /**
          * Render this view, based on the given data model
          */
         function render() {
             var self = this;
+            //Clear on blur for render updates
+            $(this.$el).find("table:first").find("input,select").on("blur",null);
             var items = (this.type in this.datamodel.get("types")) ? this.datamodel.get("types")[this.type] : [];
             var inputHtmls = [];
             //Merge metadata together for display
@@ -140,7 +150,13 @@ define(["jquery",
             //DataTables JS registering
             var table = $(this.$el).find("table:first");
             table.DataTable({"paging": false});
+            //Refocus event
+            if (this.focused != null && this.focused != "") {
+                $("#"+this.focused).focus();
+            }
             //Attach events to the controls bindings.
+            $(this.$el).find("table:first").find("input,select").on("focus",this.onFocus.bind(this));
+            $(this.$el).find("table:first").find("input,select").on("blur",this.onBlur.bind(this));
             $(this.$el).find("table:first").find("input,select").on("change",this.dataEntry);
             $(this.$el).find("button#ingest").on("click",this.ingestClick);
             $(this.$el).find("button#clear-metadata").on("click",this.metaClear);
@@ -181,6 +197,8 @@ define(["jquery",
             setIngestClick: setIngestClick,
             setMetadataClear: setMetadataClear,
             //Private functions needing correct "this"
+            onFocus:onFocus,
+            onBlur: onBlur,
             renderElementInput: renderElementInput
             
         });

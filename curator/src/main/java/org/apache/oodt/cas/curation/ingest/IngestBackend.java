@@ -76,6 +76,7 @@ public class IngestBackend {
             ingester.ingest(this.url, full.getAbsoluteFile(), meta);
             //Remove metadata file after successful ingest
             handler.remove(file);
+            org.apache.commons.io.FileUtils.deleteQuietly(full);
         } catch(Exception e) {
             LOG.log(Level.WARNING,"Error: failed ingesting product: "+e);
             throw new IngestException("Error: problem while ingesting",e);

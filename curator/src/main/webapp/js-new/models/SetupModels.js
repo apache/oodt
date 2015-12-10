@@ -18,14 +18,13 @@ define(["js-new/models/DirectoryModel",
             "upload": UploadModel,
             "ingest": new IngestModel({"id":"ingest"}),
             "datamodel" : new MetadataDataModel({"id":"datamodel"}),
-            "refresh" : function() {
+            "refresh" : function(exview,inview) {
                     models.directory.fetch();
-                    models.extractor.fetch();
-                    models.ingest.fetch();
+                    models.extractor.fetch({"success":function(){exview.render();}});
+                    models.ingest.fetch({"success":function(){inview.render();}});
                 }
         };
         models.datamodel.fetch();
-        models.refresh();
         
         models.metadata = new MetadataCollection([],{"id":"metadata","extractors":models.extractor,"datamodel":models.datamodel});
         return models;

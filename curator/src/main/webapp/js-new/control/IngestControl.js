@@ -18,8 +18,8 @@ define(["jquery"],
                  * @param e - item changed
                  */
                 function(e) {
-                    _self.model.destroy();
-                    _self.view.render();
+                    _self.model.sync("delete");
+                    _self.model.fetch({"success": function(){_self.view.render();}});
                 };
             _self.view.setIngestClear(_self.onclick);
         }

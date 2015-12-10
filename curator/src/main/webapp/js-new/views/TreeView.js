@@ -45,11 +45,7 @@ define(["jquery",
                     selection.trigger("change");
                 }
                 selection.each(function(elem) {
-                    elem.fetch({"success":
-                        function() {
-                            view.render();
-                        }
-                    });
+                    elem.fetch({"success":function(){view.render();}});
                 });
                 view.render();
             };

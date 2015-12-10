@@ -34,13 +34,11 @@ define(["jquery"],
                                 } else {
                                     root.children[name] = {"name":name,"values":[value],"children":{}} 
                                 }
-                                elem.save(null,{success:
-                                    function() {
-                                        elem.fetch();
-                                    }});
+                                elem.save(null,{"success":function(){elem.fetch();},"validate": false});
                             }
                         );
-                    _self.view.render();
+                    //Render should be delayed, allowing focus to trigger
+                    setTimeout(function(){_self.view.render();},1);
                 };
             _self.ingestClick =
                 /**
@@ -98,7 +96,7 @@ define(["jquery"],
                         //Refresh and update view
                         _self.model.each(
                             function(elem) {
-                                elem.fetch({"success": function() {_self.view.render();}});
+                                elem.fetch({"success":function(){_self.view.render();}});
                             });
                     };                
                 

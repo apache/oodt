@@ -7,20 +7,6 @@
 <script type="text/template" id="template-upload">
     <div id="<%= name %>" class="upload dropzone"></div>
 </script>
-<!-- An input record for use within the table -->
-<script type="text/template" id="template-input">
-    <% var disabled = ("locked" in record && record.locked) ? "disabled" : "";
-       var toDisp = "display" in record?record.display:record.values;
-       if ("choices" in record) { %>
-           <select name="<%= record.name %>" <%= disabled %>>
-    <%     for (var i = 0; i < record.choices.length; i++) { %>
-               <option value="<%= record.choices[i]%>"><%= record.choices[i]%></option>
-    <%     }; %>
-           </select>
-    <% } else { %>
-           <input type="text" name="<%= record.name %>" value="<%= toDisp.join()%>" <%= disabled %> ></input>
-    <% }; %>
-</script>
 <!-- Extractors list template -->
 <script type="text/template" id="template-extractor-list">
     Extractor:
@@ -39,16 +25,26 @@
        var invisible = hidden ? "hidden" : "";
        var needed = (required && locked) ? "<em>**</em>" : (required) ? "<em>*</em>" : "";
        if (values != null) { %>
-           <select id="<%= name %>" name="<%= name %>" <%= disabled %> <%= invisible %> >
+           <select id="input-<%= name %>" name="<%= name %>" <%= disabled %> <%= invisible %> >
     <%     for (var i = 0; i < values.length; i++) {
                var selected = values[i] == value ? "selected" : ""; %>
                <option value="<%= values[i]%>" <%= selected %>><%= values[i]%></option>
     <%     }; %>
            </select>
     <% } else { %>
-           <input type="text" name="<%= name %>" value="<%= value %>" <%= disabled %> <%= invisible %> ></input>
+           <input id="input-<%= name %>" type="text" name="<%= name %>" value="<%= value %>" <%= disabled %> <%= invisible %> ></input>
     <% }; %>
-    <%= needed %> <%= error %>
+    <%= needed %> 
+    <% if (error != null && error != "" ) { %>
+           <span class="alert alert-danger" role="alert" style="display: inline-block">
+               <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+               <span class="sr-only">Error:</span>
+               <%= error %>
+               <% if (locked) { %>
+               <%= " Did you run the extractor?" %>
+               <% }; %>
+           </span>
+    <% }; %>
 </script>
 <!-- Table Metadata -->
 <script type="text/template" id="template-elements-table">
