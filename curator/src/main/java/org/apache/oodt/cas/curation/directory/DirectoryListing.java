@@ -48,7 +48,7 @@ public class DirectoryListing {
         //Create a stack to hold directories (implementation details)
         LinkedList<DirectoryListing> stack = new LinkedList<DirectoryListing>();
         stack.addLast( (root != null && root.isDirectory()) ?
-                       new DirectoryListing(DirectoryListing.Type.DIRECTORY,root.getName(),root.getPath()) :
+                       new DirectoryListing(DirectoryListing.Type.DIRECTORY,root.getPath(),root.getPath()) :
                        new DirectoryListing(DirectoryListing.Type.DIRECTORY,ROOT_NAME,""));
         for (File file : paths) {
             if (file.equals(root))

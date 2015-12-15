@@ -84,7 +84,7 @@ define(["jquery",
         var Metadata = Backbone.Model.extend({
             "parse":parse,
             "url":url,
-            "defaults":{"root":{"children":[]}},
+            "defaults":{"root":{"children":[]},"treeId":""},
             "validate":validate
         });
         

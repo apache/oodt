@@ -32,7 +32,7 @@ require(["lib/domReady!",
         var extr = new ExtractorView({"el":$("#extractors"),"name":"extractor-view","extractors":Models.extractor});
         var upld = new UploadView({"el":$("#files"),"name":"upload-view","upload":Models.upload,"notify":Models.directory});
         var tree = new TreeView({"el":$("#files"),"name":"tree-view","directory":Models.directory,"selection":Models.metadata,"metview":meta});
-        new MetadataControl(meta,Models.metadata,Models.ingest);
+        new MetadataControl(meta,tree,Models.metadata,Models.ingest);
         new ExtractorControl(extr,Models.extractor,Models.metadata);
         new IngestControl(ingt,Models.ingest);
         Models.refresh(extr,ingt);

@@ -19,7 +19,7 @@ define(["jquery"],
                  */
                 function(e) {
                     _self.model.sync("delete",_self.model);
-                    _self.model.fetch({"success": function(){_self.view.render();}});
+                    _self.model.fetch();
                 };
             _self.view.setIngestClear(_self.onclick);
         }

@@ -2,8 +2,9 @@ define(["jquery",
         "underscore",
         "lib/backbone",
         "datatables",
+        "js-new/config/Configuration",
         "js-new/utils/utils"],
-    function($,_,Backbone,DataTable,utils) {
+    function($,_,Backbone,DataTable,Configuration,utils) {
         
         /**
          * Initialize this view
@@ -18,9 +19,11 @@ define(["jquery",
             this.datamodel = options["datamodel"];
             this.model = options["model"];
             //Set inital product type
-            this.type = ("GenericFile" in this.datamodel.get("types") || Object.keys(this.datamodel.get("types")).length == 0)?"GenericFile":Object.keys(this.datamodel.get("types"))[0];
+            this.type = (Configuration.DEFAULT_TYPE in this.datamodel.get("types") || Object.keys(this.datamodel.get("types")).length == 0)?Configuration.DEFAULT_TYPE:Object.keys(this.datamodel.get("types"))[0];
             this.datamodel.on("change:types",this.render,this);
             this.focused = null;
+            this._template = _.template($("script#template-elements-table").html());
+            this._entryTemplate = _.template($("script#template-table-element").html());
         };
         /**
          * Returns delimited list
@@ -65,7 +68,7 @@ define(["jquery",
             var values = null;
             //Flag attributes
             var locked = "attachments" in element && "locked" in element.attachments || this.model.size() == 0;
-            var required = "attachments" in element && "required" in element.attachments;
+            var required = "attachments" in element && "required" in element.attachments && this.model.size() != 0;
             var hidden = "attachments" in element && "hidden" in element.attachments && !required;
             var error = (element.elementName in merged.errors) ? merged.errors[element.elementName]:"";
             //Get values, (will create dropdown)
@@ -87,9 +90,8 @@ define(["jquery",
                 }
             }
             //Grab the template and build it
-            var tmp = _.template($("script#template-table-element").html());
             return {"name": element.elementName,
-                    "html": tmp({"name":element.elementName,
+                    "html": this._entryTemplate({"name":element.elementName,
                                  "locked":locked,
                                  "required":required,
                                  "hidden":hidden,
@@ -117,8 +119,13 @@ define(["jquery",
          */
         function render() {
             var self = this;
+            //Set the type by first element
+            if (this.model.size() > 0 && typeof(this.model.first().get("root")) !== "undefined" &&
+                    "ProductType" in this.model.first().get("root").children && this.model.first().get("root").children["ProductType"].values.length > 0) {
+                this.type =  this.model.first().get("root").children["ProductType"].values[0];
+            }
             //Clear on blur for render updates
-            $(this.$el).find("table:first").find("input,select").on("blur",null);
+            $(this.$el).find("table:first").find("input,select").off("blur");
             var items = (this.type in this.datamodel.get("types")) ? this.datamodel.get("types")[this.type] : [];
             var inputHtmls = [];
             //Merge metadata together for display
@@ -145,11 +152,10 @@ define(["jquery",
             for (var i = 0; i < items.length; i++) {
                 inputHtmls.push(this.renderElementInput(items[i],merged));
             }
-            var tmp = _.template($("script#template-elements-table").html());
-            this.$el.html(tmp({"htmls":inputHtmls,"disabled":this.model.size() == 0}));
+            this.$el.html(this._template({"htmls":inputHtmls,"disabled":this.model.size() == 0}));
             //DataTables JS registering
             var table = $(this.$el).find("table:first");
-            table.DataTable({"paging": false});
+            table.DataTable({"paging": false,"bFilter": false});
             //Refocus event
             if (this.focused != null && this.focused != "") {
                 $("#"+this.focused).focus();

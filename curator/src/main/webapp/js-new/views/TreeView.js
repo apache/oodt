@@ -39,9 +39,11 @@ define(["jquery",
                         continue;
                     while (node.parent != "#") {
                         node = data.instance.get_node(node.parent);
-                        path = node.text +path;
+                        var splits = node.text.split("/");
+                        var localName = (splits[splits.length -1] != "")?splits[splits.length -1]:splits[splits.length - 2]
+                        path = localName+"/"+path;
                     }
-                    selection.add({"id":path});
+                    selection.add({"id":path,"treeId":node.id});
                     selection.trigger("change");
                 }
                 selection.each(function(elem) {
@@ -63,16 +65,40 @@ define(["jquery",
             this.$el.append(tmp({"name":this.name}));
             //Setup inital jsTree
             var core = {"core":{"data":[]},
-                        "plugins" : ["checkbox"]};
-            $("#"+this.name).on("changed.jstree",getSelectionUpdater(this.selection,this.metview)).jstree(core);
+                        "plugins" : ["checkbox"]//,
+                        //"checkbox" :{"tie_selection":false}
+                       };
+            $("#"+this.name).jstree(core);
+            $("#"+this.name).on("refresh.jstree",this.gussy.bind(this));
+            this._updateSelection = getSelectionUpdater(this.selection,this.metview);
             //Register view update on directory change
             this.directory.on("change:files",this.render,this);
             this.render();
         };
         /**
+         * Gussie up the tree view
+         */
+        function gussy() {
+
+            $("#"+this.name).jstree(true).open_all();
+            $("#"+this.name).jstree(true).deselect_all();
+            this.selection.each(
+                function(elem) {
+                    $("#tree-view").jstree("select_node", elem.get("treeId"));
+                }
+            );
+            //Turn updates back on
+            $("#"+this.name).on("changed.jstree",this._updateSelection);
+            $("#"+this.name).on("changed.jstree",this._updateSelection);
+            this.metview.render();
+        };
+        /**
          * Render this view
          */
         function render() {
+            //Turn off updates
+            $("#"+this.name).off("changed.jstree");
+            $("#"+this.name).off("changed.jstree");
             var data = utils.deep(this.directory.get("files"),jsTreeAug);
             $("#"+this.name).jstree(true).settings.core.data = data;
             $("#"+this.name).jstree(true).refresh();
@@ -82,7 +108,9 @@ define(["jquery",
          */
         return Backbone.View.extend({
             initialize: init,
-            render: render
+            render: render,
+            //Private functions
+            gussy: gussy
         });
     }
 );

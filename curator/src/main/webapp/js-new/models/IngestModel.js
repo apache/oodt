@@ -15,11 +15,11 @@ define(["jquery",
             var map = {};
             if (typeof(this.get("status")) !== "undefined") {
                 var key = "";
-                for (var i = 0; i < this.get("status").length; i++) {
+                /*for (var i = 0; i < this.get("status").length; i++) {
                     key = this.get("status")[i]["timestamp"]+"-"+this.get("status")[i]["file"];
                     ret.push(this.get("status")[i]);
                     map[key] = i;
-                }
+                }*/
                 for (var i = 0; i < response["status"].length; i++) {
                     key = response["status"][i]["timestamp"]+"-"+response["status"][i]["file"];
                     if (key in map) {

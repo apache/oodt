@@ -7,9 +7,10 @@ define(["jquery"],
         /**
          * Controller for matching datamodel, metadata model to metadataview.
          */
-        return function(view,model,ingest) {
+        return function(view,tree,model,ingest) {
             var _self = this;
             _self.view = view;
+            _self.tree = tree;
             _self.model = model;
             _self.model.on("change",_self.view.render,_self.view);
             _self.model.on("invalid",_self.view.render,_self.view)
@@ -50,6 +51,7 @@ define(["jquery"],
                  */
                 function(e) {
                     var selects = [];
+                    var torm = [];
                     var valid = true;
                     _self.model.each(
                         function(elem) {
@@ -62,15 +64,21 @@ define(["jquery"],
                                 var id = elem.get("id");
                                 var productName = elem.get("root")["children"]["ProductName"]["values"][0];
                                 selects.push({"timestamp":timestamp,"file":id,"size":0,"pname":productName});
+                                torm.push(elem);
                             } catch(err) {
                                 Console.log("Error: Failed to parse ingestibles"+err);
                             }
                         }
                     );
                     _self.view.render();
-                    //Run ingest
-                    if (valid && selects.length > 0)
+                    //Run ingest, removing selected files from collection
+                    if (valid && selects.length > 0) {
                         _self.ingest.save({"entries":selects});
+                        for (var i = 0; i < torm.length; i++) {
+                            _self.model.remove(torm[i]);
+                        }
+                        _self.tree.render();
+                    }
                 };
                 _self.metaClear =
                     /**

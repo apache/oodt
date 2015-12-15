@@ -16,14 +16,15 @@ define(["jquery",
             for (var key in options)
                 this[key] = options[key];
             this.ingest.on("change:status",this.render,this);
+            this._template = _.template($("script#template-ingesting").html());
             //this.render();
         };
         /**
          * Render the view
          */
         function render() {
-            var tmp = _.template($("script#template-ingesting").html());
-            this.$el.html(tmp({"statuses":this.ingest.get("status")}));
+            
+            this.$el.html(this._template({"statuses":this.ingest.get("status")}));
             $(this.$el).find("button#ingest-clear-errors").on("click",this.ingestClear);
         };
         /**

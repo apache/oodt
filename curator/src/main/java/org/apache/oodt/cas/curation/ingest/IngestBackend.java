@@ -95,9 +95,10 @@ public class IngestBackend {
                 temp.file = entry.file;
                 temp.timestamp = entry.timestamp;
                 if (entry.error != null ) {
+                    //torm.add(entry);
                     temp.status = "Error: "+entry.error.getMessage();
                 } else if (client.hasProduct(entry.pname)) {
-                     torm.add(entry);
+                     //torm.add(entry);
                      temp.product = client.getProductByName(entry.pname).getProductId();
                      temp.status = DONE;
                 } else {
@@ -122,8 +123,7 @@ public class IngestBackend {
     public void clearErrors() {
         List<InputStruct.InputEntry> torm = new LinkedList<InputStruct.InputEntry>();
         for (InputStruct.InputEntry entry : this.current) {
-            if (entry.error != null)
-                torm.add(entry);
+            torm.add(entry);
         }
         for (InputStruct.InputEntry entry : torm) {
             this.current.remove(entry);

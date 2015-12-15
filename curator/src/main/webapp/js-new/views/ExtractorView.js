@@ -12,6 +12,7 @@ define(["jquery",
          *     }
          */
         function init(options) {
+            this._template = _.template($("script#template-extractor-list").html());
             this.extractors = options["extractors"];
         };
         /**
@@ -25,8 +26,8 @@ define(["jquery",
          * Render the extractor list
          */
         function render() {
-            var tmp = _.template($("script#template-extractor-list").html());
-            this.$el.html(tmp({"model":this.extractors}));
+            
+            this.$el.html(this._template({"model":this.extractors}));
             $(this.$el).find("select").on("change",this.onchange);
         };
         /**
