@@ -28,8 +28,11 @@ define(["jquery",
         function url() {
             var extractor = this.collection.extractors.get("selected");
             var query = "";
-            if (extractor != "" && extractor != null && typeof(extractor) != "undefined")
+            if (extractor != "" && extractor != null && typeof(extractor) !== "undefined")
                 query += "?extractor="+extractor;
+            if (GLOBAL_USER != "" && typeof(GLOBAL_USER) !== "undefined") {   
+                query += ((query == "")?"?":"&")+"user="+GLOBAL_USER;
+            }
             return Config.METADATA_REST_SERVICE+"/"+this.get("id")+query;
         }
         /**

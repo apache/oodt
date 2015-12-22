@@ -8,6 +8,16 @@ define(["jquery",
         "js-new/config/Configuration"],
     function($,_,Backbone,Config) {
         /**
+         * Generate an ingest URL
+         */
+        function url() {
+            var query = "";
+            if (GLOBAL_USER != "" && typeof(GLOBAL_USER) !== "undefined") {   
+                query += ((query == "")?"?":"&")+ "user="+GLOBAL_USER;
+            }
+            return Config.INGEST_REST_SERVICE + query;
+        }
+        /**
          * Parse a model
          */
         function parse(response) {
@@ -35,7 +45,7 @@ define(["jquery",
          * Backbone model for ingest
          */
         return Backbone.Model.extend({
-                "url":Config.INGEST_REST_SERVICE,
+                "url":url,
                 "defualts": {"status":[]},
                 "parse":parse
             });

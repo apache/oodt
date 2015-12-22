@@ -42,10 +42,11 @@ public class IngestRest {
     @Consumes("application/json")
     /**
      * Runs the ingest
+     * @param user - user to isolate requests
      * @param extractor - optional extractor to run
      * @param json - new json for file
      */
-    public Response ingest(@QueryParam("extractor") String extractor,String json) {
+    public Response ingest(@QueryParam("user") String user,@QueryParam("extractor") String extractor,String json) {
         try {
             setup();
             InputStruct input = gson.fromJson(json, InputStruct.class);
@@ -54,7 +55,7 @@ public class IngestRest {
                 files.add(entry.file);
             }
             LOG.log(Level.INFO, "Ingesting files: "+StringUtils.join(files,","));
-            this.backend.ingest(input);
+            this.backend.ingest(input,user);
             return Response.ok().build();
         } catch (Exception e) {
             LOG.log(Level.SEVERE,"Exception occured calling ingest REST endpoint", e);
@@ -98,9 +99,10 @@ public class IngestRest {
      * @throws IngestException
      */
     public synchronized void setup() throws IngestException {
+        if (this.backend != null)
+            return;
         LOG.log(Level.INFO, "Setting up ingest backend");
-        if (this.backend == null)
-            this.backend = new IngestBackend();
+        this.backend = new IngestBackend();
     }
 
 }

@@ -27,7 +27,7 @@ the License.
 	  <param-value>
 	    org.apache.oodt.cas.curation.rest.ValidationRest
 	    org.apache.oodt.cas.curation.rest.UploadBackend
-	    org.apache.oodt.cas.curation.rest.MetadataBackend
+	    org.apache.oodt.cas.curation.rest.MetadataRest
 	    org.apache.oodt.cas.curation.rest.DirectoryBackend
 	    org.apache.oodt.cas.curation.rest.IngestRest
 	  </param-value>

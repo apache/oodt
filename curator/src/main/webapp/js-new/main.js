@@ -24,6 +24,12 @@ require(["lib/domReady!",
          "lib/text! template.html"
         ],
     function(doc,$,Models,TreeView,UploadView,MetadataEntryView,ExtractorView,IngestView,MetadataControl,ExtractorControl,IngestControl,Config,html) {
+        //Load cookie, and set if nothing
+        GLOBAL_USER = document.cookie.replace(/(?:(?:^|.*;\s*)user\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        if (GLOBAL_USER == "") {
+            GLOBAL_USER = String(new Date().getTime());
+            document.cookie = "user="+GLOBAL_USER;
+        }
         //Setup templates
         $("body").append(html);
         //Setup views

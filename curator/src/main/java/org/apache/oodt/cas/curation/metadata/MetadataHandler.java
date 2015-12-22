@@ -12,19 +12,22 @@ public interface MetadataHandler {
     /**
      * Gets the metadata for a file or null if none exists
      * @param file - file the metadata describes
+     * @param user - user id to isolate work
      * @return OODT metadata object
      * @throws Exception 
      */
-    public Metadata get(String file) throws Exception;
+    public Metadata get(String file,String user) throws Exception;
     /**
      * Sets the metadata for a file
      * @param file - file the metadata describes
+     * @param user - user id to isolate work
      * @param metadata - metadata object to set
      */
-    public void set(String file,Metadata metadata) throws Exception;
+    public void set(String file,String user,Metadata metadata) throws Exception;
     /**
      * Remove metadata storage for file
      * @param file - file the metadata describes
+     * @param user - user id to isolate work
      */
-    public void remove(String file) throws Exception;
+    public void remove(String file,String user) throws Exception;
 }

@@ -49,14 +49,15 @@ public class IngestBackend {
     /**
      * Ingest based on input
      * @param input - input struct
+     * @param user - user to isolate requests
      */
-    public void ingest(InputStruct input) {
+    public void ingest(InputStruct input,String user) {
         for (InputStruct.InputEntry entry : input.entries) {
             current.add(entry);
         }
         for (InputStruct.InputEntry entry : input.entries) {
             try {
-                ingest(entry.file);
+                ingest(entry.file,user);
             } catch(IngestException e) {
                 entry.error = e;
             }
@@ -65,17 +66,18 @@ public class IngestBackend {
     /**
      * Ingests a single file
      * @param file - file to ingest
+     * @param user - user to isolate requests
      * @throws IngestException  - error on ingestion
      */
-    private void ingest(String file) throws IngestException {
+    private void ingest(String file, String user) throws IngestException {
         try {
             String parent = new File(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)).getParent();
             File full = new File(parent,file);
             FlatDirMetadataHandler handler = new FlatDirMetadataHandler();
-            Metadata meta = handler.get(file);
+            Metadata meta = handler.get(file,user);
             ingester.ingest(this.url, full.getAbsoluteFile(), meta);
             //Remove metadata file after successful ingest
-            handler.remove(file);
+            handler.remove(file,user);
             org.apache.commons.io.FileUtils.deleteQuietly(full);
         } catch(Exception e) {
             LOG.log(Level.WARNING,"Error: failed ingesting product: "+e);
