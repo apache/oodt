@@ -142,6 +142,32 @@ public class TestXmlRpcFileManagerClient extends TestCase {
         deleteAllFiles("/tmp/test-type");
     }
 
+    public void testRemoveFile() throws Exception {
+        URL ingestUrl = this.getClass().getResource("/ingest");
+        URL refUrl = this.getClass().getResource("/ingest/test.txt");
+
+        Metadata prodMet = new Metadata();
+        prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
+            ingestUrl.getFile()).getCanonicalPath());
+        prodMet.addMetadata(CoreMetKeys.FILENAME, "test.txt");
+        prodMet.addMetadata(CoreMetKeys.PRODUCT_NAME, "TestFile");
+        prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
+
+        StdIngester ingester = new StdIngester(transferServiceFacClass);
+        String productId = ingester.ingest(
+            new URL("http://localhost:" + FM_PORT),
+            new File(refUrl.getFile()), prodMet);
+        XmlRpcFileManagerClient fmc = new XmlRpcFileManagerClient(new URL(
+            "http://localhost:" + FM_PORT));
+        Metadata m = fmc.getMetadata(fmc.getProductById(productId));
+        assertEquals(m.getMetadata("Filename"), "test.txt");
+        String loc = m.getMetadata("FileLocation");
+        fmc.removeFile(loc+"/"+m.getMetadata("Filename"));
+
+        fmc.getProductById(productId);
+        deleteAllFiles("/tmp/test-type");
+    }
+
     /**
      * @since OODT-404
      *

@@ -17,8 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.system;
 
-//JDK imports
-
 import org.apache.oodt.cas.filemgr.ingest.StdIngester;
 import org.apache.oodt.cas.filemgr.metadata.CoreMetKeys;
 import org.apache.oodt.cas.filemgr.metadata.ProductMetKeys;
@@ -38,8 +36,6 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
-//OODT imports
-//Junit imports
 
 /**
  * 
