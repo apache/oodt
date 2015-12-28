@@ -144,12 +144,12 @@ public class TestXmlRpcFileManagerClient extends TestCase {
 
     public void testRemoveFile() throws Exception {
         URL ingestUrl = this.getClass().getResource("/ingest");
-        URL refUrl = this.getClass().getResource("/ingest/test.txt");
+        URL refUrl = this.getClass().getResource("/ingest/test-delete.txt");
 
         Metadata prodMet = new Metadata();
         prodMet.addMetadata(CoreMetKeys.FILE_LOCATION, new File(
             ingestUrl.getFile()).getCanonicalPath());
-        prodMet.addMetadata(CoreMetKeys.FILENAME, "test.txt");
+        prodMet.addMetadata(CoreMetKeys.FILENAME, "test-delete.txt");
         prodMet.addMetadata(CoreMetKeys.PRODUCT_NAME, "TestFile");
         prodMet.addMetadata(CoreMetKeys.PRODUCT_TYPE, "GenericFile");
 
@@ -160,7 +160,7 @@ public class TestXmlRpcFileManagerClient extends TestCase {
         XmlRpcFileManagerClient fmc = new XmlRpcFileManagerClient(new URL(
             "http://localhost:" + FM_PORT));
         Metadata m = fmc.getMetadata(fmc.getProductById(productId));
-        assertEquals(m.getMetadata("Filename"), "test.txt");
+        assertEquals(m.getMetadata("Filename"), "test-delete.txt");
         String loc = m.getMetadata("FileLocation");
         fmc.removeFile(loc+"/"+m.getMetadata("Filename"));
 
