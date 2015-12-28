@@ -106,7 +106,7 @@ Release 0.10 - 08/30/2015
 
 * OODT-854 Enable File Manager and Resource Manager to collect configuration files by parsing a directory tree recursively (luca)
 
-* OODT-781 Fix removal of files from the LocalDataTransferer
+* OODT-781 Fix removal of files from the LocalDataTransferer (magicaltrout)
 
 Release 0.9 - 05/31/2015
 
