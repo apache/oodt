@@ -71,7 +71,7 @@ the License.
 
   <scm>
     <connection>scm:git:https://git-wip-us.apache.org/repos/asf/oodt.git</connection>
-    <developerConnection>scm:svn:https://git-wip-us.apache.org/repos/asf/oodt.git</developerConnection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/oodt.git</developerConnection>
     <url>http://svn.apache.org/viewvc/oodt/trunk</url>
   </scm>
   <profiles>
