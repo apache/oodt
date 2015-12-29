@@ -21,11 +21,11 @@ the License.
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <version>16</version>
-    <relativePath></relativePath>
+    <relativePath />
   </parent>
   <groupId>org.apache.oodt</groupId>
   <artifactId>oodt-core</artifactId>
-  <version>0.11-SNAPSHOT</version>
+  <version>0.11</version>
   <packaging>pom</packaging>
   <name>OODT Core</name>
   <properties>
@@ -921,6 +921,7 @@ mm
     <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</developerConnection>
     <url>http://svn.apache.org/viewvc/oodt/trunk/core</url>
+    <tag>0.11</tag>
   </scm>
   <issueManagement>
     <system>JIRA</system>
@@ -950,7 +951,7 @@ mm
                   <goal>javadoc</goal>
                 </goals>
                 <phase>package</phase>
-                <configuration></configuration>
+                <configuration />
               </execution>
             </executions>
           </plugin>
