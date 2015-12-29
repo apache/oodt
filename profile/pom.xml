@@ -118,9 +118,9 @@
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</connection>
+   <!-- <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/profile</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/profile</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/profile</url>-->
   </scm>
   <profiles>
     <profile>

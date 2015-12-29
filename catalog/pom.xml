@@ -137,9 +137,9 @@
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</connection>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/catalog</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/catalog</url>-->
   </scm>
   <ciManagement>
     <notifiers>

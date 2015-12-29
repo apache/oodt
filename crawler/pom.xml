@@ -185,8 +185,8 @@ the License.
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/crawler</connection>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/crawler</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/crawler</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/crawler</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/crawler</url>-->
   </scm>
 </project>

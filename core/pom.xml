@@ -918,9 +918,9 @@ mm
     </mailingList>
   </mailingLists>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</connection>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/core</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/core</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/core</url>-->
   </scm>
   <issueManagement>
     <system>JIRA</system>

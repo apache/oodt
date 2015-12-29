@@ -171,8 +171,8 @@ the License.
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/resource</connection>
+   <!-- <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/resource</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/resource</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/resource</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/resource</url>-->
   </scm>
 </project>

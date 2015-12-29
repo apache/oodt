@@ -256,9 +256,9 @@
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/filemgr</connection>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/filemgr</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/filemgr</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/filemgr</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/filemgr</url>-->
   </scm>
   <repositories>
     <repository>

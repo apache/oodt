@@ -130,8 +130,8 @@ the License.
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</connection>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/grid</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/grid</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/grid</url>-->
   </scm>
 </project>

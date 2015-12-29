@@ -136,9 +136,9 @@
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</connection>
+  <!--  <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/commons</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/commons</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/commons</url>-->
   </scm>
   <profiles>
     <profile>

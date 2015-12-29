@@ -87,8 +87,8 @@
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/opendapps</connection>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/opendapps</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/opendapps</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/opendapps</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/opendapps</url>-->
   </scm>
 </project>

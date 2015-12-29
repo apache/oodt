@@ -141,8 +141,8 @@ the License.
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/webapp/fmbrowser</connection>
+   <!-- <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/webapp/fmbrowser</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/webapp/fmbrowser</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/webapp/fmbrowser</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/webapp/fmbrowser</url>-->
   </scm>
 </project>

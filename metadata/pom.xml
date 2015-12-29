@@ -157,9 +157,9 @@ the License.
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</connection>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/metadata</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/metadata</url>-->
   </scm>
   <profiles>
     <profile>

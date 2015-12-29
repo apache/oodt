@@ -91,9 +91,9 @@
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</connection>
+    <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/xmlquery</developerConnection>
-    <url>http://svn.apache.org/viewvc/oodt/trunk/xmlquery</url>
+    <url>http://svn.apache.org/viewvc/oodt/trunk/xmlquery</url>-->
   </scm>
   <profiles>
     <profile>
