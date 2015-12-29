@@ -20,7 +20,7 @@ the License.
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.12-SNAPSHOT</version>
+    <version>0.11-SNAPSHOT</version>
     <relativePath>../../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-fm-browser</artifactId>
@@ -69,12 +69,11 @@ the License.
 
   </dependencies>
   <build>
-    <plugins />
+    <plugins></plugins>
   </build>
   <scm>
     <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/app/fmbrowser</developerConnection>
     <url>http://svn.apache.org/viewvc/oodt/trunk/app/fmbrowser</url>
-    <tag>HEAD</tag>
   </scm>
 </project>
