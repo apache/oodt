@@ -1,6 +1,6 @@
 Apache OODT Change Log
 ======================
-Release 0.11 - Current Development
+Release 0.11 - 12/29/2015
 
 * OODT-918 - Created a prerequisite workflow condition for DRAT (Karanjeet
   Singh via mattmann)
