@@ -70,8 +70,8 @@ the License.
   </modules>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk</developerConnection>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/oodt.git</connection>
+    <developerConnection>scm:svn:https://git-wip-us.apache.org/repos/asf/oodt.git</developerConnection>
     <url>http://svn.apache.org/viewvc/oodt/trunk</url>
   </scm>
   <profiles>
