@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.11</version>
+    <version>0.12-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-pushpull</artifactId>
@@ -147,7 +147,7 @@
     <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/pushpull</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/pushpull</developerConnection>
     <url>http://svn.apache.org/viewvc/oodt/trunk/pushpull</url>-->
-    <tag>0.11</tag>
+    <tag>HEAD</tag>
   </scm>
   <profiles>
     <profile>
