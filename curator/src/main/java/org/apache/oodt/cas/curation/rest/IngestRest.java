@@ -68,11 +68,11 @@ public class IngestRest {
      * Get ingest status
      * @return list of statuses
      */
-    public Response status() {
+    public Response status(@QueryParam("user") String user) {
         try {
             setup();
             LOG.log(Level.INFO, "Reading current status");
-            return Response.ok().entity(gson.toJson(this.backend.status())).build();
+            return Response.ok().entity(gson.toJson(this.backend.status(user))).build();
         } catch(Exception e) {
             LOG.log(Level.SEVERE,"Exception occured calling ingest REST endpoint", e);
             return ExceptionResponseHandler.BuildExceptionResponse(e);
@@ -83,11 +83,11 @@ public class IngestRest {
      * Delete errors
      * @return response object
      */
-    public Response remove() {
+    public Response remove(@QueryParam("user") String user) {
         try {
             setup();
             LOG.log(Level.INFO, "Deleteing current errors");
-            this.backend.clearErrors();
+            this.backend.clearErrors(user);
             return Response.ok().build();
         } catch(Exception e) {
             LOG.log(Level.SEVERE,"Exception occured calling ingest REST endpoint", e);

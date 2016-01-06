@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,7 +27,8 @@ public class IngestBackend {
     private static final String DONE = "DONE";
     private static final Logger LOG = Logger.getLogger(IngestRest.class.getName());
 
-    private ConcurrentLinkedQueue<InputEntry> current = new ConcurrentLinkedQueue<InputStruct.InputEntry>();
+    private ConcurrentHashMap<String,List<InputEntry>> current = new ConcurrentHashMap<String,List<InputEntry>>();
+    
     private XmlRpcFileManagerClient client = null;
     private Ingester ingester = null;
     private URL url = null;
@@ -52,8 +53,11 @@ public class IngestBackend {
      * @param user - user to isolate requests
      */
     public void ingest(InputStruct input,String user) {
+        if (!current.containsKey(user)) {
+            current.put(user, new LinkedList<InputEntry>());
+        }
         for (InputStruct.InputEntry entry : input.entries) {
-            current.add(entry);
+            current.get(user).add(entry);
         }
         for (InputStruct.InputEntry entry : input.entries) {
             try {
@@ -88,29 +92,34 @@ public class IngestBackend {
      * Check the status of the currently ingested items
      * @return output struct
      */
-    public OutputStruct status() throws IngestException {
+    public OutputStruct status(String user) throws IngestException {
         try {
-            List<InputStruct.InputEntry> torm = new LinkedList<InputStruct.InputEntry>();
+            //List<InputStruct.InputEntry> torm = new LinkedList<InputStruct.InputEntry>();
             List<OutputStruct.OutputEntry> ret = new LinkedList<OutputStruct.OutputEntry>();
-            for (InputStruct.InputEntry entry : current) {
-                OutputStruct.OutputEntry temp = new OutputStruct.OutputEntry();
-                temp.file = entry.file;
-                temp.timestamp = entry.timestamp;
-                if (entry.error != null ) {
-                    //torm.add(entry);
-                    temp.status = "Error: "+entry.error.getMessage();
-                } else if (client.hasProduct(entry.pname)) {
-                     //torm.add(entry);
-                     temp.product = client.getProductByName(entry.pname).getProductId();
-                     temp.status = DONE;
-                } else {
-                    temp.status = IN_PROGRESS;
+            if (this.current.get(user) != null) {
+                for (InputStruct.InputEntry entry : current.get(user)) {
+                    OutputStruct.OutputEntry temp = new OutputStruct.OutputEntry();
+                    temp.file = entry.file;
+                    temp.timestamp = entry.timestamp;
+                    if (entry.error != null ) {
+                        //torm.add(entry);
+                        temp.status = "Error: "+entry.error.getMessage();
+                    } else if (client.hasProduct(entry.pname)) {
+                         //torm.add(entry);
+                         temp.product = client.getProductByName(entry.pname).getProductId();
+                         temp.status = DONE;
+                    } else {
+                        temp.status = IN_PROGRESS;
+                    }
+                    ret.add(temp);
                 }
-                ret.add(temp);
             }
-            for (InputStruct.InputEntry entry : torm) {
-                this.current.remove(entry);
-            }
+            //for (InputStruct.InputEntry entry : torm) {
+            //    this.current.get(user).remove(entry);
+            //}
+            //if (this.current.get(user).isEmpty()) {
+            //    this.current.remove(user);
+            //}
             OutputStruct out = new OutputStruct();
             out.status = ret;
             return out;
@@ -122,13 +131,19 @@ public class IngestBackend {
     /**
      * Clears any errors registered in this system
      */
-    public void clearErrors() {
+    public void clearErrors(String user) {
         List<InputStruct.InputEntry> torm = new LinkedList<InputStruct.InputEntry>();
-        for (InputStruct.InputEntry entry : this.current) {
+        if (this.current.get(user) == null) {
+            return;
+        }
+        for (InputStruct.InputEntry entry : this.current.get(user)) {
             torm.add(entry);
         }
         for (InputStruct.InputEntry entry : torm) {
-            this.current.remove(entry);
+            this.current.get(user).remove(entry);
+        }
+        if (this.current.get(user).isEmpty()) {
+            this.current.remove(user);
         }
     }
 }
