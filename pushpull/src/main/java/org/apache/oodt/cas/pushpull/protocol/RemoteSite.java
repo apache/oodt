@@ -123,7 +123,11 @@ public class RemoteSite {
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (cdTestDir != null ? cdTestDir.hashCode() : 0);
         result = 31 * result + maxConnections;
-        result = 31 * result + (url != null ? url.hashCode() : 0);
+        try {
+            result = 31 * result + (url != null ? url.toURI().hashCode() : 0);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 }
