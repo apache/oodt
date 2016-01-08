@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.oodt</groupId>
     <artifactId>oodt-core</artifactId>
-    <version>0.11-SNAPSHOT</version>
+    <version>0.12-SNAPSHOT</version>
     <relativePath>../core/pom.xml</relativePath>
   </parent>
   <artifactId>cas-catalog</artifactId>
@@ -123,7 +123,7 @@
           <descriptors>
             <descriptor>src/main/assembly/assembly.xml</descriptor>
           </descriptors>
-          <archive></archive>
+          <archive />
         </configuration>
         <executions>
           <execution>
@@ -140,6 +140,7 @@
     <!--<connection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/oodt/trunk/catalog</developerConnection>
     <url>http://svn.apache.org/viewvc/oodt/trunk/catalog</url>-->
+    <tag>HEAD</tag>
   </scm>
   <ciManagement>
     <notifiers>
