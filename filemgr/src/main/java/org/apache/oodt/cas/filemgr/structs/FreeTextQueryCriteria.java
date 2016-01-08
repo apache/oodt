@@ -158,12 +158,12 @@ public class FreeTextQueryCriteria extends QueryCriteria {
      * @return The query as a String.
      */
     public String toString() {
-        String serial = elementName + ":(";
+        StringBuilder serial = new StringBuilder(elementName + ":(");
         for (String value : values) {
-            serial += "+" + (String) value;
+            serial.append("+").append(value);
         }
-        serial += ")";
-        return serial;
+        serial.append(")");
+        return serial.toString();
     }
 
 }

@@ -18,11 +18,12 @@
 package org.apache.oodt.cas.filemgr.structs;
 
 //JDK imports
+import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
+
 import java.util.List;
 import java.util.Vector;
 
 //OODT imports
-import org.apache.oodt.cas.filemgr.structs.exceptions.QueryFormulationException;
 
 /**
  * @author woollard
@@ -159,22 +160,22 @@ public class BooleanQueryCriteria extends QueryCriteria {
      * @return string equivement of the query
      */
     public String toString() {
-        String query = "";
+        StringBuilder query = new StringBuilder();
         if (operator == AND) {
-            query += "AND(";
+            query.append("AND(");
         } else if (operator == OR) {
-            query += "OR(";
+            query.append("OR(");
         } else {
-            query += "NOT(";
+            query.append("NOT(");
         }
 
         for (int i = 0; i < terms.size(); i++) {
-            query += ((QueryCriteria) terms.get(i)).toString();
+            query.append(terms.get(i).toString());
             if (i < (terms.size() - 1)) {
-                query += ", ";
+                query.append(", ");
             }
         }
-        query += ")";
-        return query;
+        query.append(")");
+        return query.toString();
     }
 }

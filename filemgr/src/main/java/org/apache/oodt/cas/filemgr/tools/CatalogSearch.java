@@ -57,7 +57,6 @@ import java.util.logging.Logger;
  */
 public class CatalogSearch {
     private static Logger LOG = Logger.getLogger(CatalogSearch.class.getName());
-    private static QueryParser parser;
 
     private static XmlRpcFileManagerClient client;
 
@@ -227,7 +226,7 @@ public class CatalogSearch {
 
     public static Query ParseQuery(String query) {
         // note that "__FREE__" is a control work for free text searching
-        parser = new QueryParser(freeTextBlock, new CASAnalyzer());
+        QueryParser parser = new QueryParser(freeTextBlock, new CASAnalyzer());
         Query luceneQ = null;
         try {
             luceneQ = (Query) parser.parse(query);
@@ -317,12 +316,12 @@ public class CatalogSearch {
                 System.out.println("Exiting...");
                 System.exit(0);
             } else if (com.equalsIgnoreCase("query")) {
-                String query = "";
+                StringBuilder query = new StringBuilder();
                 while (tok.hasMoreTokens()) {
-                    query += tok.nextToken() + " ";
+                    query.append(tok.nextToken()).append(" ");
                 }
                 System.out.println("querying for: " + query);
-                Query parsedQuery = ParseQuery(query);
+                Query parsedQuery = ParseQuery(query.toString());
                 org.apache.oodt.cas.filemgr.structs.Query casQuery = new org.apache.oodt.cas.filemgr.structs.Query();
 
                 GenerateCASQuery(casQuery, parsedQuery);
