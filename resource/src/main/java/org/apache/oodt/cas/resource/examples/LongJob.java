@@ -55,7 +55,7 @@ public class LongJob implements JobInstance, JobMetadata {
         NameValueJobInput input = (NameValueJobInput) in;
 
         int waitTime;
-        waitTime = new Integer(input.getValue("wait"));
+        waitTime = Integer.valueOf(input.getValue("wait"));
 
         System.out.println("LongJob running for " + waitTime + " sec");
 

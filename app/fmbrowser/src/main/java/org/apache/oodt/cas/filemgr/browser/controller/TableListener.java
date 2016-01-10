@@ -145,7 +145,7 @@ public class TableListener implements MouseListener, ActionListener {
           HSSFRow row = sheet.createRow((short) k + 1);
           i = 0;
           for (int j = 0; j < table.getRow(0).getComponentCount(); j++) {
-            if (!table.hiddenCols.contains(new Integer(j))) {
+            if (!table.hiddenCols.contains(j)) {
               row.createCell((short) i).setCellValue(
                   (table.getRow(k)).getText(j));
               i++;

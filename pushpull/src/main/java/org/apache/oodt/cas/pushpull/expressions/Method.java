@@ -72,7 +72,7 @@ public class Method {
         if (nextLoc >= 0) {
             switch (argTypes.get(nextLoc)) {
             case INT:
-                addArg(new Variable(null, new Integer(value)));
+                addArg(new Variable(null, Integer.valueOf(value)));
                 break;
             case STRING:
                 addArg(new Variable(null, value));
@@ -151,7 +151,7 @@ public class Method {
                             break;
                         }
                     }
-                    output.addLast(new Variable(null, new Integer(
+                    output.addLast(new Variable(null, Integer.valueOf(
                             variableIntString.toString())));
                     i = k - 1;
                     break;
