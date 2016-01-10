@@ -704,8 +704,6 @@ public final class XmlRpcStructFactory {
       }
       criteriaHash.put("terms", termsHash);
 
-    } else {
-      //should not happen
     }
     return criteriaHash;
   }

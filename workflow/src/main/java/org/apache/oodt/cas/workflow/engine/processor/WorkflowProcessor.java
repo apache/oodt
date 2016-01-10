@@ -236,8 +236,6 @@ public abstract class WorkflowProcessor implements WorkflowProcessorListener,
         }
       }
 
-    } else if (this.isDone().getName().equals("ResultsFailure")) {
-      // do nothing -- this workflow failed!!!
     } else if (this.isDone().getName().equals("ResultsBail")) {
       for (WorkflowProcessor subProcessor : this.getRunnableSubProcessors()) {
         runnableTasks.addAll(subProcessor.getRunnableWorkflowProcessors());
