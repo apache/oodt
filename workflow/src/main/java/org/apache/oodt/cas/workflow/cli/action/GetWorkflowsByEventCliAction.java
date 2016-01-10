@@ -47,17 +47,17 @@ public class GetWorkflowsByEventCliAction extends WorkflowCliAction {
          
          for (Workflow workflow : workflows) {
         	 
-             String taskIds = "";
+             StringBuilder taskIds = new StringBuilder();
              for (WorkflowTask wt : workflow.getTasks()) {
             	 if (taskIds.length()>0) {
-                   taskIds += ", ";
+                   taskIds.append(", ");
                  }
-            	 taskIds += wt.getTaskId();
+            	 taskIds.append(wt.getTaskId());
              }
         	 
             printer.println("Workflow: [id=" + workflow.getId() + ", name="
                   + workflow.getName() + ", numTasks="
-                  + workflow.getTasks().size() + ", taskIds="+taskIds + "]");
+                  + workflow.getTasks().size() + ", taskIds="+taskIds.toString() + "]");
          }
          
       } catch (Exception e) {

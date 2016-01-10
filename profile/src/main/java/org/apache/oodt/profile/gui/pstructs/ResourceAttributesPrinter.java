@@ -50,69 +50,69 @@ public class ResourceAttributesPrinter {
 	public ResourceAttributes getResourceAttributes(){return resAttr;}
 	
 	public String toXMLString(){
-		String rStr="";
+		StringBuilder rStr=new StringBuilder();
 		
-		   rStr+="<resAttributes>\n";
+		   rStr.append("<resAttributes>\n");
 		   
-		   rStr+="\t<Identifier>"+resAttr.getIdentifier()+"</Identifier>\n";
-		   rStr+="\t<Title>"+resAttr.getTitle()+"</Title>\n";
-		   rStr+="\t<resClass>"+resAttr.getResClass()+"</resClass>\n";
-		   rStr+="\t<resAggregation>"+resAttr.getResAggregation()+"</resAggregation>\n";
+		   rStr.append("\t<Identifier>").append(resAttr.getIdentifier()).append("</Identifier>\n");
+		   rStr.append("\t<Title>").append(resAttr.getTitle()).append("</Title>\n");
+		   rStr.append("\t<resClass>").append(resAttr.getResClass()).append("</resClass>\n");
+		   rStr.append("\t<resAggregation>").append(resAttr.getResAggregation()).append("</resAggregation>\n");
 
 	  for (String theRight : resAttr.getRights()) {
-		rStr += "\t<Right>" + theRight + "</Right>\n";
+		rStr.append("\t<Right>").append(theRight).append("</Right>\n");
 	  }
 
 	  for (String theSource : resAttr.getSources()) {
-		rStr += "\t<Source>" + theSource + "</Source>\n";
+		rStr.append("\t<Source>").append(theSource).append("</Source>\n");
 	  }
 
 	  for (String theSubject : resAttr.getSubjects()) {
-		rStr += "\t<Subject>" + theSubject + "</Subject>\n";
+		rStr.append("\t<Subject>").append(theSubject).append("</Subject>\n");
 	  }
 
 	  for (String theFormat : resAttr.getFormats()) {
-		rStr += "\t<Format>" + theFormat + "</Format>\n";
+		rStr.append("\t<Format>").append(theFormat).append("</Format>\n");
 	  }
 
 	  for (String theCreator : resAttr.getCreators()) {
-		rStr += "\t<Creator>" + theCreator + "</Creator>\n";
+		rStr.append("\t<Creator>").append(theCreator).append("</Creator>\n");
 	  }
 
 	  for (String thePublisher : resAttr.getPublishers()) {
-		rStr += "\t<Publisher>" + thePublisher + "</Publisher>\n";
+		rStr.append("\t<Publisher>").append(thePublisher).append("</Publisher>\n");
 	  }
 
 	  for (String theType : resAttr.getTypes()) {
-		rStr += "\t<Type>" + theType + "</Type>\n";
+		rStr.append("\t<Type>").append(theType).append("</Type>\n");
 	  }
 
 	  for (String theContext : resAttr.getResContexts()) {
-		rStr += "\t<resContext>" + theContext + "</resContext>\n";
+		rStr.append("\t<resContext>").append(theContext).append("</resContext>\n");
 	  }
 
 	  for (String theLocation : resAttr.getResLocations()) {
-		rStr += "\t<resLocation>" + theLocation + "</resLocation>\n";
+		rStr.append("\t<resLocation>").append(theLocation).append("</resLocation>\n");
 	  }
 
 	  for (String theContributor : resAttr.getContributors()) {
-		rStr += "\t<Contributor>" + theContributor + "</Contributor>\n";
+		rStr.append("\t<Contributor>").append(theContributor).append("</Contributor>\n");
 	  }
 
 	  for (String theCoverage : resAttr.getCoverages()) {
-		rStr += "\t<Coverage>" + theCoverage + "</Coverage>\n";
+		rStr.append("\t<Coverage>").append(theCoverage).append("</Coverage>\n");
 	  }
 
 	  for (String theLang : resAttr.getLanguages()) {
-		rStr += "\t<Language>" + theLang + "</Language>\n";
+		rStr.append("\t<Language>").append(theLang).append("</Language>\n");
 	  }
 
 	  for (String theRelation : resAttr.getRelations()) {
-		rStr += "\t<Relation>" + theRelation + "</Relation>\n";
+		rStr.append("\t<Relation>").append(theRelation).append("</Relation>\n");
 	  }
 		   
-		   rStr+="</resAttributes>\n";
+		   rStr.append("</resAttributes>\n");
 		   
-		return rStr;
+		return rStr.toString();
 	}
 }
