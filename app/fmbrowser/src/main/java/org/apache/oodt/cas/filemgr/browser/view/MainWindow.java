@@ -39,7 +39,6 @@ public class MainWindow extends JFrame {
 
   public MainWindow() {
     wListener = new WindowListener(this);
-    // db = new CasDB();
     setName("CAS File Manager Browser");
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     qPane = new QueryPane(wListener);

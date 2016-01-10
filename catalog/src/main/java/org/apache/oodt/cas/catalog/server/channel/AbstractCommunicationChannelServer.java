@@ -94,11 +94,7 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 			throw e;
 		}
 	}
-//
-//	public void setRestrictQueryPermissions(boolean restrictQueryPermissions) throws CatalogServiceException {
-//		this.catalogService.setRestrictQueryPermissions(restrictQueryPermissions);
-//	}
-//
+
 	public boolean isRestrictIngestPermissions() throws CatalogServiceException {
 		try {
 			return this.catalogService.isRestrictIngestPermissions();
@@ -107,19 +103,6 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 			throw e;
 		}
 	}
-//
-//	public void setHasIngestPermissions(boolean restrictIngestPermissions) throws CatalogServiceException {
-//		this.catalogService.setHasIngestPermissions(restrictIngestPermissions);
-//	}
-
-//	public Class<? extends TransactionId<?>> getTransactionIdClass() throws CatalogServiceException {
-//		return this.catalogService.getTransactionIdClass();
-//	}
-//
-//	public void setTransactionIdClass(Class<? extends TransactionId<?>> transactionIdClass) throws CatalogServiceException {
-//		this.catalogService.setTransactionIdClass(transactionIdClass);
-//	}
-//
 	public void addCatalog(Catalog catalog) throws CatalogServiceException {
 		try {
 			this.catalogService.addCatalog(catalog);
@@ -213,15 +196,11 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 	public void removeCatalog(String catalogId) throws CatalogServiceException {
 		try {
 			this.catalogService.removeCatalog(catalogId);
-		}catch (CatalogServiceException e) {
+		} catch (CatalogServiceException e) {
 			LOG.log(Level.SEVERE, "Failed while removing catalog '" + catalogId + "' : " + e.getMessage(), e);
 			throw e;
 		}
 	}
-
-//	public void removeCatalog(String catalogUrn, boolean preserveMapping) throws CatalogServiceException {
-//		this.catalogService.removeCatalog(catalogUrn, preserveMapping);
-//	}
 
 	public List<PluginURL> getPluginUrls() throws CatalogServiceException {
 		try {
@@ -250,14 +229,6 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 			throw e;
 		}
 	}
-	
-//	public Set<Catalog> getCurrentCatalogList() throws CatalogServiceException {
-//		return this.catalogService.getCurrentCatalogList();
-//	}
-//	
-//	public Catalog getCatalog(String catalogUrn) throws CatalogServiceException {
-//		return this.catalogService.getCatalog(catalogUrn);
-//	}
 
 	public Set<String> getCurrentCatalogIds() throws CatalogServiceException {
 		try {
@@ -312,14 +283,6 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 			throw e;
 		}	
 	}
-
-//	public Page getFirstPage(QueryExpression queryExpression) throws Exception {
-//		return this.catalogService.getFirstPage(queryExpression);
-//	}
-//
-//	public Page getFirstPage(QueryExpression queryExpression, Set<String> catalogIds) throws Exception {
-//		return this.catalogService.getFirstPage(queryExpression, catalogIds);
-//	}
 	
 	public Page getNextPage(Page page) throws CatalogServiceException {
 		try {
@@ -348,14 +311,6 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 		}
 	}
 	
-//	public Page getLastPage(QueryExpression queryExpression) throws Exception {
-//		return this.catalogService.getLastPage(queryExpression);
-//	}
-//	
-//	public Page getLastPage(QueryExpression queryExpression, Set<String> catalogIds) throws Exception {
-//		return this.catalogService.getLastPage(queryExpression, catalogIds);
-//	}
-	
 	public List<TransactionalMetadata> getMetadata(Page page) throws CatalogServiceException {
 		try {
 			return this.catalogService.getMetadata(page);
@@ -382,10 +337,6 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 			throw e;
 		}
 	}
-	
-//	public QueryPager query(QueryExpression queryExpression, boolean sortResults) throws CatalogServiceException {
-//		return this.catalogService.query(queryExpression, sortResults);
-//	}
  
 	public List<TransactionalMetadata> getNextPage(QueryPager queryPager) throws CatalogServiceException {
 		try {
@@ -395,10 +346,6 @@ public abstract class AbstractCommunicationChannelServer implements Communicatio
 			throw e;
 		}	
 	}
-
-//	public List<TransactionId<?>> getTransactionIdsForAllPages(QueryPager queryPager) throws CatalogServiceException {
-//		return this.catalogService.getTransactionIdsForAllPages(queryPager);
-//	}
 	
 	public List<TransactionalMetadata> getAllPages(QueryPager queryPager) throws CatalogServiceException {
 		try {

@@ -91,11 +91,6 @@ public abstract class AbstractFilemgrMetExtractor implements
             throw new MetExtractionException("Product references undefined");
         }
 
-        /*
-         * if (met == null || (met != null && (met.getHashtable() == null ||
-         * (met .getHashtable() != null && met.getHashtable().keySet() .size() ==
-         * 0)))) { throw new MetExtractionException("Metadata undefined"); }
-         */
 
     }
 

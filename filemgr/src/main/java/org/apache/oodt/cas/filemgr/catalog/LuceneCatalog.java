@@ -985,9 +985,7 @@ public class LuceneCatalog implements Catalog {
 
             Document doc = toDoc(cp.getProduct(), cp.getMetadata());
             writer.addDocument(doc);
-            // take this out for now
             // TODO: determine a better way to optimize the index
-            // writer.optimize();
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Unable to index product: ["
                     + cp.getProduct().getProductName() + "]: Message: "

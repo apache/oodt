@@ -16,7 +16,6 @@
  */
 package org.apache.oodt.cas.filemgr.catalog;
 
-//JDK imports
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
@@ -44,8 +43,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
-
-//OODT imports
 
 /**
  * 
@@ -122,7 +119,6 @@ public class ScienceDataCatalog implements Catalog {
 
         // CGOODALE int to count how many times this thing loops
         int iterCount = 0;
-        // String loopCounterString = "";
 
         for (String dataPoint : dataPoints) {
 
@@ -158,8 +154,6 @@ public class ScienceDataCatalog implements Catalog {
           // no datasets contain seconds at this time
           // including this code would cause some datasets to
           // parse Z, into seconds
-          // queryBuffer.append(":");
-          // queryBuffer.append(components[3].substring(13, 15)); //ss
           queryBuffer.append('"'); // End time
           queryBuffer.append(" , ");
           queryBuffer.append(components[4]); // Value
@@ -329,7 +323,6 @@ public class ScienceDataCatalog implements Catalog {
 
     // Try to commit the query
     try {
-      // LOG.log(Level.INFO,"Query: " + query);
       conn = this.dataSource.getConnection();
       conn.setAutoCommit(false);
       statement = conn.createStatement();
@@ -391,8 +384,6 @@ public class ScienceDataCatalog implements Catalog {
 
   public Metadata getMetadata(Product product) throws CatalogException {
     Metadata met = new Metadata();
-    // met.addMetadata("StartDateTime", this.getStartDateTime(product));
-    // met.addMetadata("EndDateTime", this.getEndDateTime(product));
     met.addMetadata("Filename", product.getProductName());
     met.addMetadata("ProductType", product.getProductType().getName());
     met.addMetadata("FileLocation", "Unknown");

@@ -27,33 +27,25 @@ public class RightClickMenu extends JPopupMenu {
   private JMenuItem hideItem;
   private JMenuItem unhideItem;
 
-  // private JMenuItem resizeItem;
-
   public RightClickMenu(ActionListener listener) {
 
     hideItem = new JMenuItem("Hide");
     hideItem.addActionListener(listener);
     unhideItem = new JMenuItem("Unhide");
     unhideItem.addActionListener(listener);
-    // resizeItem = new JMenuItem("Resize");
-    // resizeItem.addActionListener(listener);
 
     this.add(hideItem);
     this.add(unhideItem);
-    // this.addSeparator();
-    // this.add(resizeItem);
   }
 
   public void setUnhideMode() {
     hideItem.setEnabled(false);
     unhideItem.setEnabled(true);
-    // resizeItem.setEnabled(false);
   }
 
   public void setHideMode() {
     hideItem.setEnabled(true);
     unhideItem.setEnabled(false);
-    // resizeItem.setEnabled(true);
   }
 
 }

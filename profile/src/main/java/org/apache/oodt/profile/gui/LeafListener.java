@@ -166,7 +166,6 @@ public class LeafListener extends MouseAdapter{
 	  }
 
 	  protected void menuItem2ActionPerformed(ActionEvent evt,DefaultMutableTreeNode theTreeNode,DefaultTreeModel theModel){
-	  	//System.out.println("Adding child");
 	  	
 	  	//only add child if it's one of the things that should have children
 	  	String treeNodeName = (String)theTreeNode.getUserObject();
@@ -185,7 +184,6 @@ public class LeafListener extends MouseAdapter{
 	  
 	  
 	  protected void menuItem1ActionPerformed(ActionEvent evt,DefaultMutableTreeNode theTreeNode,DefaultTreeModel theModel){
-	  	//System.out.println("Adding child");
 	  	
 	  	//only add child if it's one of the things that should have children
 	  	String treeNodeName = (String)theTreeNode.getUserObject();
@@ -215,20 +213,13 @@ public class LeafListener extends MouseAdapter{
 	  
 	  public void mousePressed(MouseEvent e) {
 
-	  	//System.out.println("In Mouse Pressed event ");
 	    int selectedRow = tree.getRowForLocation(e.getX(), e.getY());
 	    TreePath selectedPath = tree.getPathForLocation(e.getX(), e.getY());
 	    
 	    if(selectedRow != -1) {
 	       DefaultMutableTreeNode tn               //get end of current path
 	        = (DefaultMutableTreeNode)(selectedPath.getLastPathComponent());
-	      // if (tn.isLeaf()){ //we need leaf only
-	         //write your required process for tn here
-	         //for instance: popupMenu.show( ..... );
-	         //below is a dummy process
-	         //String str = (String)(tn.getUserObject());
-	        // System.out.println(str);
-	       	
+
 	       	JMenuItem menuItem1 = new JMenuItem("Add");
 	       	JMenuItem menuItem2 = new JMenuItem("Edit");
 	       	
@@ -247,21 +238,13 @@ public class LeafListener extends MouseAdapter{
 	  
 	  public void mouseReleased(MouseEvent e) {
 
-	  	//System.out.println("In Mouse Pressed event ");
 	    int selectedRow = tree.getRowForLocation(e.getX(), e.getY());
 	    TreePath selectedPath = tree.getPathForLocation(e.getX(), e.getY());
 	    
 	    if(selectedRow != -1) {
 	       DefaultMutableTreeNode tn               //get end of current path
 	        = (DefaultMutableTreeNode)(selectedPath.getLastPathComponent());
-	      // if (tn.isLeaf()){ //we need leaf only
-	         //write your required process for tn here
-	         //for instance: popupMenu.show( ..... );
-	         //below is a dummy process
-	         //String str = (String)(tn.getUserObject());
-	        // System.out.println(str);
-	       	
-	       	
+
 	       	JMenuItem menuItem1 = new JMenuItem("Add");
 	       	JMenuItem menuItem2 = new JMenuItem("Edit");
 	       	
@@ -292,7 +275,6 @@ public class LeafListener extends MouseAdapter{
 	  	  }
 	  	  
 			public void actionPerformed(ActionEvent evt) {
-				//System.out.println("Caught click");
 				if(type.equals("ADD")){
 					theLeafListener.menuItem1ActionPerformed(evt,myTreeNode,myTreeModel);				
 				}

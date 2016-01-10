@@ -16,7 +16,6 @@
  */
 package org.apache.oodt.cas.catalog.system.impl;
 
-//OODT imports
 import org.apache.oodt.cas.catalog.exception.CatalogException;
 import org.apache.oodt.cas.catalog.exception.CatalogServiceException;
 import org.apache.oodt.cas.catalog.mapping.IngestMapper;
@@ -858,13 +857,11 @@ public class CatalogServiceLocal implements CatalogService {
 		List<TransactionReceipt> indexedReceipts = new Vector<TransactionReceipt>();
 		for (TransactionReceipt transactionReceipt : transactionReceipts) {
 			try {
-//				for (CatalogReceipt catalogReceipt : transactionReceipt.getCatalogReceipts()) {
 					if (transactionReceipt.getTransactionId() == null) {
 					  transactionReceipt = new TransactionReceipt(
 						  this.getCatalogServiceTransactionId(transactionReceipt.getCatalogReceipts().get(0), true),
 						  transactionReceipt.getCatalogReceipts());
 					}
-//				}
 				indexedReceipts.add(transactionReceipt);
 			}catch(Exception e) {
 				throw new CatalogServiceException(e.getMessage(), e);
@@ -1092,8 +1089,7 @@ public class CatalogServiceLocal implements CatalogService {
 			for (QueryExpression subQueryExpression : ((QueryLogicalGroup) queryExpression).getExpressions()) {
 			  childrenQueryResults.add(queryRecur(subQueryExpression, restrictToCatalogIds));
 			}
-			
-			// if (QueryLogicalGroup's operator is AND and is unbalanced or a child contains query results)
+
 			if ((((QueryLogicalGroup) queryExpression).getOperator().equals(QueryLogicalGroup.Operator.AND) && containsUnbalancedCatalogInterest(childrenQueryResults)) || containsTranactionReceipts(childrenQueryResults)) {
 
 			  for (QueryResult childQueryResult : childrenQueryResults) {

@@ -71,7 +71,7 @@ public class CasDB {
         types = new String[v.size()];
 
       } catch (RepositoryManagerException e) {
-        // LOG.log(Level.SEVERE, e.getMessage());
+        LOG.log(Level.SEVERE, e.getMessage());
       }
 
     } else {
@@ -142,7 +142,6 @@ public class CasDB {
         type = client.getProductTypeByName(productType);
         Vector<Product> products = (Vector<Product>) client
             .getProductsByProductType(type);
-        // for(int i=0;i<products.size();i++){
         int maxVal = INT;
         if (products.size() < maxVal) {
           maxVal = products.size();

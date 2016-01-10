@@ -163,7 +163,6 @@ public class FileManagerUtils implements PCSConfigMetadata {
       for (Object productType : productTypes) {
         ProductType type = (ProductType) productType;
         if (excludeTypeList != null && excludeTypeList.contains(type.getName())) {
-          // System.out.println("Skipping: [" + type.getName() + "]");
           continue;
         }
 

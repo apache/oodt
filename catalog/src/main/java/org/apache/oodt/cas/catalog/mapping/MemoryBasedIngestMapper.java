@@ -67,7 +67,6 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 			throws CatalogRepositoryException {
 		LOG.log(Level.INFO, "Looking up CatalogService TransactionId for Catalog TransactionId '" + catalogTransactionId + "' and catalog '" + catalogId + "'");
 		String key = generateKey(catalogTransactionId.toString(), catalogId);
-//		System.out.println("LOOKING UP: " + key);
 		TransactionIdMapping mapping = this.catalogInfoKeyMapping.get(key);
 		if (mapping != null) {
 			return mapping.catalogServiceTransactionId;

@@ -16,8 +16,6 @@
  */
 package org.apache.oodt.cas.catalog.server.channel;
 
-//JDK imports
-
 import org.apache.oodt.cas.catalog.exception.CatalogException;
 import org.apache.oodt.cas.catalog.metadata.TransactionalMetadata;
 import org.apache.oodt.cas.catalog.page.CatalogReceipt;
@@ -38,8 +36,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-//OODT imports
-
 /**
  * @author bfoster
  * @version $Revision$
@@ -54,16 +50,7 @@ public interface CommunicationChannelClient {
 	
 	boolean isRestrictQueryPermissions() throws CatalogException;
 
-//	public void setRestrictQueryPermissions(boolean restrictQueryPermissions) throws Exception;
-
 	boolean isRestrictIngestPermissions() throws CatalogException;
-
-//	public void setHasIngestPermissions(boolean restrictIngestPermissions) throws Exception;
-
-//	public Class<? extends TransactionId<?>> getTransactionIdClass() throws Exception;
-//
-//	public void setTransactionIdClass(Class<? extends TransactionId<?>> transactionIdClass) throws Exception;
-//
 
 	void addCatalog(Catalog catalog) throws CatalogException;
 
@@ -88,8 +75,6 @@ public interface CommunicationChannelClient {
 	
 	void removeCatalog(String catalogUrn) throws CatalogException;
 
-//	public void removeCatalog(String catalogUrn, boolean preserveMapping) throws Exception;
-
 	List<PluginURL> getPluginUrls() throws CatalogException;
 
 	void addPluginUrls(List<PluginURL> pluginUrls) throws CatalogException;
@@ -97,10 +82,6 @@ public interface CommunicationChannelClient {
 	URL getPluginStorageDir() throws CatalogException;
 	
 	void transferUrl(URL fromUrl, URL toUrl) throws CatalogException;
-	
-//	public Set<Catalog> getCurrentCatalogList() throws Exception;
-//	
-//	public Catalog getCatalog(String catalogUrn) throws Exception;
 
 	Set<String> getCurrentCatalogIds() throws CatalogException;
 		
@@ -114,28 +95,18 @@ public interface CommunicationChannelClient {
 	
 	Properties getCalalogProperties(String catalogUrn) throws CatalogException;
 	
-//	public Page getFirstPage(QueryExpression queryExpression) throws Exception;
-//
-//	public Page getFirstPage(QueryExpression queryExpression, Set<String> catalogIds) throws Exception;
-	
 	Page getNextPage(Page page) throws CatalogException;
 	
 	Page getPage(PageInfo pageInfo, QueryExpression queryExpression) throws CatalogException;
 	
 	Page getPage(PageInfo pageInfo, QueryExpression queryExpression, Set<String> catalogIds) throws CatalogException;
 	
-//	public Page getLastPage(QueryExpression queryExpression) throws Exception;
-//
-//	public Page getLastPage(QueryExpression queryExpression, Set<String> catalogIds) throws Exception;
-	
 	List<TransactionalMetadata> getMetadata(Page page) throws CatalogException;
 
 	QueryPager query(QueryExpression queryExpression) throws CatalogException;
 
 	QueryPager query(QueryExpression queryExpression, Set<String> catalogIds) throws CatalogException;
-	
-//	public QueryPager query(QueryExpression queryExpression, boolean sortResults) throws Exception;
- 
+
 	List<TransactionalMetadata> getNextPage(QueryPager queryPager) throws CatalogException;
 
 	List<TransactionId<?>> getTransactionIdsForAllPages(QueryPager queryPager) throws CatalogException;

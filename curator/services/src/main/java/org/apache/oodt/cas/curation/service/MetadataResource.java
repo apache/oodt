@@ -133,8 +133,6 @@ public class MetadataResource extends CurationService {
       @QueryParam("configId") String configId,
       @DefaultValue("false") @QueryParam("overwrite") Boolean overwrite,
       @Context HttpServletRequest req, @Context HttpServletResponse res) {
-    
-      // this.sendRedirect("login.jsp", uriInfo, res);
 
       Metadata metadata;
       
@@ -256,7 +254,6 @@ public class MetadataResource extends CurationService {
       @DefaultValue(FORMAT_HTML) @QueryParam("format") String format,
       @Context HttpServletRequest req, @Context HttpServletResponse res) {
 
-      // this.sendRedirect("login.jsp", uriInfo, res);
       // Call file manager to get metadata
       Product prod;
       Metadata metadata;
@@ -307,7 +304,6 @@ public class MetadataResource extends CurationService {
       @DefaultValue(FORMAT_HTML) @QueryParam("format") String format,
       @Context HttpServletRequest req, @Context HttpServletResponse res) {
 
-    // this.sendRedirect("login.jsp", uriInfo, res);
 
     Metadata metadata;
     String[] idParts = id.split("/", 3);
