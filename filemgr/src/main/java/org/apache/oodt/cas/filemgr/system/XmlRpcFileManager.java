@@ -956,6 +956,15 @@ public class XmlRpcFileManager {
             + filePath + ": Message: " + e.getMessage());
         success = false;
       }
+      finally {
+        try {
+          if (fOut != null) {
+            fOut.close();
+          }
+        } catch (IOException e) {
+          LOG.log(Level.SEVERE, "Could not close file stream", e.getMessage());
+        }
+      }
     } else {
       // create the output directory
       String outFileDirPath = outFile.getAbsolutePath().substring(0,
