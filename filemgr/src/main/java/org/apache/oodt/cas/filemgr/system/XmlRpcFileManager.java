@@ -1106,6 +1106,20 @@ public class XmlRpcFileManager {
     return true;
   }
 
+  public boolean removeProduct(Hashtable table) throws CatalogException {
+    Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
+
+    try {
+      catalog.removeProduct(p);
+    } catch (CatalogException e) {
+      LOG.log(Level.WARNING, "Exception modifying product: ["
+                             + p.getProductId() + "]: Message: " + e.getMessage(), e);
+      throw e;
+    }
+
+    return true;
+  }
+  
   public boolean removeProduct(Map<String, Object> productHash) throws CatalogException {
     Product p = XmlRpcStructFactory.getProductFromXmlRpc(productHash);
 
