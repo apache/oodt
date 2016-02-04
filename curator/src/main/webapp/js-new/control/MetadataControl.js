@@ -83,10 +83,10 @@ define(["jquery"],
                             }
                         }
                     );
-                    _self.buttons.setIngesting(true);
-                    _self.buttons.render();
                     //Run ingest, removing selected files from collection
                     if (valid && selects.length > 0) {
+                        _self.buttons.setIngesting(true);
+                        _self.buttons.render();
                         _self.ingest.save({"entries":selects});
                         for (var i = 0; i < torm.length; i++) {
                             _self.model.remove(torm[i]);
