@@ -7,6 +7,14 @@ define(["jquery",
         "lib/backbone",
         "js-new/config/Configuration"],
     function($,_,Backbone,Config) {
+    
+        /**
+         * Initialize function
+         */
+        function init(options) {
+            for (var key in options)
+                this[key] = options[key];
+        };
         /**
          * Parse the REST-call for metadata
          * @param response - JSON metadata object
@@ -71,33 +79,15 @@ define(["jquery",
             }
         };
         /**
-         * Initialize the collection, with extractors
-         * @param options - options defining extractors
-         */
-        function init(dumby,options) {
-            //Replicate options locally
-            for (var key in options)
-                this[key] = options[key];
-        };
-
-        
-        /**
          * Backbone metadata object
          */
-        var Metadata = Backbone.Model.extend({
+         return Backbone.Model.extend({
+            "initialize":init,
             "parse":parse,
             "url":url,
-            "defaults":{"root":{"children":[]},"treeId":""},
+            "defaults":{"root":{"name":"root","values":[],"children":{}}},
             "validate":validate
         });
-        
-        /**
-         * Backbone Metadata collection
-         */
-        return Backbone.Collection.extend({
-            "initialize":init,
-            "model":Metadata,
-            "url":Config.METADATA_REST_SERVICE
-        });
+
     }
 );

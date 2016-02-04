@@ -16,6 +16,7 @@ require(["lib/domReady!",
          "js-new/views/UploadView",
          "js-new/views/MetadataEntryView",
          "js-new/views/ExtractorView",
+         "js-new/views/MetadataButtonsView",
          "js-new/views/IngestView",
          "js-new/control/MetadataControl",
          "js-new/control/ExtractorControl",
@@ -23,7 +24,7 @@ require(["lib/domReady!",
          "js-new/config/Configuration",
          "lib/text! template.html"
         ],
-    function(doc,$,Models,TreeView,UploadView,MetadataEntryView,ExtractorView,IngestView,MetadataControl,ExtractorControl,IngestControl,Config,html) {
+    function(doc,$,Models,TreeView,UploadView,MetadataEntryView,ExtractorView,MetadataButtonsView,IngestView,MetadataControl,ExtractorControl,IngestControl,Config,html) {
         //Load cookie, and set if nothing
         GLOBAL_USER = document.cookie.replace(/(?:(?:^|.*;\s*)user\s*\=\s*([^;]*).*$)|^.*$/, "$1");
         if (GLOBAL_USER == "") {
@@ -34,15 +35,18 @@ require(["lib/domReady!",
         $("body").append(html);
         //Setup views
         var ingt = new IngestView({"el":$("#ingest"),"name":"ingest-view","ingest":Models.ingest});
-        var meta = new MetadataEntryView({"el":$("#metadata"),"name":"metadata-view","datamodel":Models.datamodel,"model":Models.metadata});
+        var meta = new MetadataEntryView({"el":$("#metadata"),"name":"metadata-view","datamodel":Models.datamodel,"model":Models.metadata,"working-set":Models.working});
         var extr = new ExtractorView({"el":$("#extractors"),"name":"extractor-view","extractors":Models.extractor});
         var upld = new UploadView({"el":$("#files"),"name":"upload-view","upload":Models.upload,"notify":Models.directory});
         var tree = new TreeView({"el":$("#files"),"name":"tree-view","directory":Models.directory,"selection":Models.metadata,"metview":meta});
-        new MetadataControl(meta,tree,Models.metadata,Models.ingest);
+        var btns = new MetadataButtonsView({"el":$("#met-buttons"),"name":"btns-view"});
+        new MetadataControl(meta,tree,btns,Models.metadata,Models.ingest,Models.working);
         new ExtractorControl(extr,Models.extractor,Models.metadata);
-        new IngestControl(ingt,Models.ingest);
-        Models.refresh(extr,ingt);
-        setInterval(function() {Models.refresh(null,ingt);},Config.FILE_SYSTEM_REFRESH_INTERVAL);
+        new IngestControl(ingt,Models.ingest,btns);
+        Models.extractor.fetch({"success":extr.render.bind(extr)});
+        Models.refresh(ingt);
+        Models.datamodel.fetch({"success":meta.render.bind(meta,true)});
+        setInterval(Models.refresh.bind(Models,ingt),Config.FILE_SYSTEM_REFRESH_INTERVAL);
     }
 );
 

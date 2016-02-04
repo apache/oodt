@@ -13,8 +13,9 @@ define(["jquery",
          */
         function parse(result) {
             var tmp = this.get("extractors");
-            if (!_.isEqual(tmp,result))
-                return {"extractors":result};
+            if (!_.isEqual(tmp,result)) {
+                return {"extractors":result,"selected":result[result.length-1]};
+            }
             return {};
         }
         /**

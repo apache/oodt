@@ -44,12 +44,11 @@ define(["jquery",
                         path = localName+"/"+path;
                     }
                     selection.add({"id":path,"treeId":node.id});
-                    selection.trigger("change");
                 }
                 selection.each(function(elem) {
-                    elem.fetch({"success":function(){view.render();}});
+                    elem.fetch({"success":view.render.bind(view,false)});
                 });
-                view.render();
+                view.render(true);
             };
         };
         /**
@@ -79,7 +78,6 @@ define(["jquery",
          * Gussie up the tree view
          */
         function gussy() {
-
             $("#"+this.name).jstree(true).open_all();
             $("#"+this.name).jstree(true).deselect_all();
             this.selection.each(
@@ -87,17 +85,15 @@ define(["jquery",
                     $("#tree-view").jstree("select_node", elem.get("treeId"));
                 }
             );
-            //Turn updates back on
+            //Turn updates back on (clear first)
+            $("#"+this.name).off("changed.jstree");
             $("#"+this.name).on("changed.jstree",this._updateSelection);
-            $("#"+this.name).on("changed.jstree",this._updateSelection);
-            this.metview.render();
         };
         /**
          * Render this view
          */
         function render() {
             //Turn off updates
-            $("#"+this.name).off("changed.jstree");
             $("#"+this.name).off("changed.jstree");
             var data = utils.deep(this.directory.get("files"),jsTreeAug);
             $("#"+this.name).jstree(true).settings.core.data = data;

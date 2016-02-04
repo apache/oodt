@@ -6,15 +6,23 @@ define(["jquery"],
     function($) {
         /**
          * Controller for matching datamodel, metadata model to metadataview.
+         * @param view - metadat entry view
+         * @param tree - file tree view
+         * @param model - metadata model
+         * @param ingest - ingesting view
+         * @param buttons - metadata buttons view
+         * @param working - working set metadata (instance of metadata model)
          */
-        return function(view,tree,model,ingest) {
+        return function(view,tree,buttons,model,ingest,working) {
             var _self = this;
             _self.view = view;
             _self.tree = tree;
             _self.model = model;
-            _self.model.on("change",_self.view.render,_self.view);
-            _self.model.on("invalid",_self.view.render,_self.view)
+            _self.model.on("add remove reset",_self.view.render.bind(_self.view,false));
             _self.ingest = ingest;
+            _self.buttons = buttons;
+            _self.working = working;
+            
             _self.dataEntry = 
                 /**
                  * What the controller does upon data entry.
@@ -27,22 +35,27 @@ define(["jquery"],
                         _self.view.setProductType(value);
                     }
                     //Loop through all the selected files setting metadata
-                    _self.model.each(
-                            function(elem) {
-                                var root = elem.get("root");
-                                if (name in root.children) {
-                                    root.children[name].values[0] = value;
-                                } else {
-                                    root.children[name] = {"name":name,"values":[value],"children":{}} 
+                    var updateModel = function(elem) {
+                        var root = elem.get("root");
+                        if (name in root.children) {
+                            root.children[name].values[0] = value;
+                        } else {
+                            root.children[name] = {"name":name,"values":[value],"children":{}} 
+                        }
+                    };
+                    //Save real models
+                    _self.model.each(function(elem) {
+                        updateModel(elem);
+                        elem.save(null,{"success":
+                            function(){
+                                if ("collection" in elem) {
+                                    elem.fetch({"success":_self.view.render.bind(_self.view,false)});
                                 }
-                                elem.save(null,{"success":
-                                    function(){
-                                        elem.fetch({"success":function(){_self.view.render();}});
-                                    },"validate": false});
-                            }
-                        );
+                            },"validate": false});                        
+                        });
+                    updateModel(_self.working);
                     //Render should be delayed, allowing focus to trigger
-                    setTimeout(function(){_self.view.render();},1);
+                    setTimeout(_self.view.render.bind(_self.view,false),1);
                 };
             _self.ingestClick =
                 /**
@@ -70,7 +83,8 @@ define(["jquery"],
                             }
                         }
                     );
-                    _self.view.render();
+                    _self.buttons.setIngesting(true);
+                    _self.buttons.render();
                     //Run ingest, removing selected files from collection
                     if (valid && selects.length > 0) {
                         _self.ingest.save({"entries":selects});
@@ -79,6 +93,7 @@ define(["jquery"],
                         }
                         _self.tree.render();
                     }
+                    _self.view.render(true);
                 };
                 _self.metaClear =
                     /**
@@ -87,6 +102,8 @@ define(["jquery"],
                      */
                     function(e) {
                         var destroy = [];
+                        //Clear working set
+                        _self.working.get("root").children = {};
                         var ids = [];
                         _self.model.each(
                             function(elem) {
@@ -107,12 +124,12 @@ define(["jquery"],
                         //Refresh and update view
                         _self.model.each(
                             function(elem) {
-                                elem.fetch({"success":function(){_self.view.render();}});
+                                elem.fetch({"success":_self.view.render.bind(_self.view,false)});
                             });
                     };                
                 
             _self.view.setOnEntryFunction(_self.dataEntry);
-            _self.view.setIngestClick(_self.ingestClick);
-            _self.view.setMetadataClear(_self.metaClear);
+            _self.buttons.setIngestClick(_self.ingestClick);
+            _self.buttons.setMetadataClear(_self.metaClear);
         }
 });

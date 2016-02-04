@@ -21,20 +21,23 @@
 </script>
 <!-- An element -->
 <script type="text/template" id="template-table-element">
+    <td><%= displayName %></td>
+    <td>
     <% var disabled = locked ? "disabled" : "";
        var invisible = hidden ? "hidden" : "";
        var needed = (required && locked) ? "<em>**</em>" : (required) ? "<em>*</em>" : "";
        if (values != null) { %>
-           <select id="input-<%= name %>" name="<%= name %>" <%= disabled %> <%= invisible %> >
+           <select id="<%= id %>" name="<%= name %>" <%= disabled %> <%= invisible %> >
     <%     for (var i = 0; i < values.length; i++) {
                var selected = values[i] == value ? "selected" : ""; %>
                <option value="<%= values[i]%>" <%= selected %>><%= values[i]%></option>
     <%     }; %>
            </select>
     <% } else { %>
-           <input id="input-<%= name %>" type="text" name="<%= name %>" value="<%= value %>" <%= disabled %> <%= invisible %> ></input>
+           <input id="<%= id %>" type="text" name="<%= name %>" value="<%= value %>" <%= disabled %> <%= invisible %> ></input>
     <% }; %>
-    <%= needed %> 
+    </td>
+    <td>
     <% if (error != null && error != "" ) { %>
            <span class="alert alert-danger" role="alert" style="display: inline-block">
                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -44,7 +47,10 @@
                <%= " Did you run the extractor?" %>
                <% }; %>
            </span>
+    <% } else { %>
+           <%= description %> <%= needed %>
     <% }; %>
+    </td>
 </script>
 <!-- Table Metadata -->
 <script type="text/template" id="template-elements-table">
@@ -53,14 +59,14 @@
             <tr>
                 <th>Metadata Key</th>
                 <th>Value</th>
+                <th>Help</th>
             </tr>
         </thead>
         <tbody>
     <%      for (var i = 0; i < htmls.length; i++) { 
                 var hidden = (htmls[i].hidden)? "hidden" : "";%>
-                <tr <%= hidden %> >
-                    <td><%= htmls[i].name %></td>
-                    <td><%= htmls[i].html  %></td>
+                <tr <%= hidden %> id="<%= htmls[i].id %>">
+                    <%= htmls[i].html  %>
                 </tr>
     <!-- TODO: Insert recursion here, if needed -->
     <%      }; %>
@@ -68,8 +74,15 @@
     </table>
     <em>*</em> denotes required field
     <em>**</em> denotes extracted field
+</script>
+<!-- Template for metadata buttons and immediate feedback -->
+<script type="text/template" id="template-metadata-buttons">
+
     <button id="ingest" class="btn btn-success">Ingest Current Selection</button>
-    <button id="clear-metadata" class="btn btn-danger" <%= (disabled?"disabled":"") %> >Clear Selected Metadata</button>
+    <button id="clear-metadata" class="btn btn-danger">Clear Selected Metadata</button>
+    <% if (ingesting) { %>
+           <image src="icons/waiting.gif" height="30px" /> 
+    <% } %>
 </script>
 <!-- Ingest file template -->
 <script type="text/template" id="template-ingesting">
@@ -84,7 +97,7 @@
                   if (model.status == "DONE") {
                       icon = "icons/success.jpg";
                       var location = "/opsui/product/"+statuses[i].product;
-                      extra = "<em>Metadata record:<a href='"+location+"'>"+statuses[i].product+"</a></em>";
+                      extra = "<em>Metadata record:<a href='"+location+"' target='_blank'>"+statuses[i].product+"</a></em>";
                   } else if (model.status == "IN PROGRESS") {
                       icon = "icons/waiting.gif";
                   } else {

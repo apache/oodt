@@ -17,13 +17,14 @@ define(["jquery",
                 this[key] = options[key];
             this.ingest.on("change:status",this.render,this);
             this._template = _.template($("script#template-ingesting").html());
+            this.onRefresh = function(){};
             //this.render();
         };
         /**
          * Render the view
          */
         function render() {
-            
+            this.onRefresh();
             this.$el.html(this._template({"statuses":this.ingest.get("status")}));
             $(this.$el).find("button#ingest-clear-errors").on("click",this.ingestClear);
         };
@@ -35,12 +36,20 @@ define(["jquery",
             this.ingestClear = func;
         };
         /**
+         * A function to set "on refresh" function from controller
+         * @param func - function to call
+         */
+        function setOnRefresh(func) {
+            this.onRefresh = func;
+        }
+        /**
          * Return uploads views
          */
         return Backbone.View.extend({
             initialize: init,
             render: render,
-            setIngestClear: setIngestClear
+            setIngestClear: setIngestClear,
+            setOnRefresh: setOnRefresh
         });
     }
 );

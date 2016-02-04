@@ -3,6 +3,8 @@ package org.apache.oodt.cas.curation.validation;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,7 +73,9 @@ public class ValidationBackend {
             List<String> join = new LinkedList<String>();
             for (ProductType pt : prods) {
                 String name = pt.getName();
-                vi.put(name, vl.getElements(pt));
+                List<Element> elems = vl.getElements(pt);
+                Collections.sort(elems,new ElementOrderingComparator());
+                vi.put(name,elems);
                 join.add(name);
             }
             vl.getElementByName("ProductType").getAttachments().put("values",StringUtils.join(join, ","));
@@ -100,5 +104,25 @@ public class ValidationBackend {
         Properties props = new Properties();
         props.load(new FileInputStream(new File(file)));
         return props;
+    }
+    /**
+     * Allows sorting of elements based on "ordering" attachment
+     * 
+     * @author starchmd
+     */
+    class ElementOrderingComparator implements Comparator<Element> {
+        public static final String ORDERING = "ordering";
+        @Override
+        public int compare(Element elem1, Element elem2) {
+            if (elem1.getAttachments().containsKey(ORDERING) && elem2.getAttachments().containsKey(ORDERING)) {
+                return elem1.getAttachments().get(ORDERING).compareTo(elem2.getAttachments().get(ORDERING));
+            } else if (elem2.getAttachments().containsKey(ORDERING)) {
+                return 1;
+            } else if (elem1.getAttachments().containsKey(ORDERING)) {
+                return -1;
+            }
+            return 0;
+        }
+        
     }
 }
