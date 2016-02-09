@@ -4,6 +4,8 @@ Release 0.12 - Under development
 
 * OODT-781 Add missing XMLRPC endpoint for remove hashtable. (magicaltrout)
 
+* OODT-923 Fix start script for solr deployments (magicaltrout)
+
 Release 0.11 - 12/29/2015
 
 * OODT-918 - Created a prerequisite workflow condition for DRAT (Karanjeet

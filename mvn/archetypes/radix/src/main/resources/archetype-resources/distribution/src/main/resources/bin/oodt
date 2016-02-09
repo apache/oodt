@@ -98,8 +98,10 @@ fi
 if [ "$1" = "start" ]; then
   exec "$FILEMGR_HOME"/bin/"$FILEMGR_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &
   exec "$WORKFLOW_HOME"/bin/"$WORKFLOW_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &
-  exec "$RESMGR_HOME"/bin/"$RESMGR_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &  
+  exec "$RESMGR_HOME"/bin/"$RESMGR_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &
+  cd  "$OODT_BASE"/tomcat
   exec "$OODT_BASE"/tomcat/bin/"$TOMCAT_EXEC" start "$@" >> "$OODT_OUT" 2>&1 &
+  cd "$OODT_BASE"
   sleep 0.2s
 # Print confirmation messages to the end user
 # FileManager
