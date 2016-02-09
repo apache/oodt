@@ -77,9 +77,11 @@
 </script>
 <!-- Template for metadata buttons and immediate feedback -->
 <script type="text/template" id="template-metadata-buttons">
-
     <button id="ingest" class="btn btn-success">Ingest Current Selection</button>
     <button id="clear-metadata" class="btn btn-danger">Clear Selected Metadata</button>
+    <span id="ingest-status"></span>
+</script>
+<script type="text/template" id="template-ingest-status">
     <% if (ingesting) { %>
            <image src="icons/waiting.gif" height="30px" /> 
     <% } %>

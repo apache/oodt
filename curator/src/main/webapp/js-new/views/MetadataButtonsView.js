@@ -17,15 +17,21 @@ define(["jquery",
                 this[key] = options[key];
             this.ingesting = false;
             this._template = _.template($("script#template-metadata-buttons").html());
+            this._template_status = _.template($("script#template-ingest-status").html());
+            this.first = true;
         };
         /**
          * Render the view
          */
         function render() {
-            this.$el.html(this._template({"ingesting":this.ingesting}));
-            //Buttons
-            $(this.$el).find("button#ingest").on("click",this.ingestClick);
-            $(this.$el).find("button#clear-metadata").on("click",this.metaClear);
+            if (this.first) {
+                this.first = false;
+                this.$el.html(this._template());
+                //Buttons
+                $(this.$el).find("button#ingest").on("click",this.ingestClick);
+                $(this.$el).find("button#clear-metadata").on("click",this.metaClear);
+            }
+            this.$el.find("span#ingest-status").html(this._template_status({"ingesting":this.ingesting}));
         };
         /**
          * A function to set the "on click" for ingest button
