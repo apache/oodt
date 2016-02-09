@@ -45,10 +45,17 @@ define(["jquery",
                     }
                     selection.add({"id":path,"treeId":node.id});
                 }
+                var pending = 0;
+                function onFetched() {
+                    pending -= 1;
+                    if (pending <= 0) {
+                        view.render(true);
+                    }
+                };
                 selection.each(function(elem) {
-                    elem.fetch({"success":view.render.bind(view,false)});
+                    pending += 1;
+                    elem.fetch({"success":onFetched});
                 });
-                view.render(true);
             };
         };
         /**
