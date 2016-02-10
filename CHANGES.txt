@@ -1,6 +1,6 @@
 Apache OODT Change Log
 ======================
-Release 0.12 - Under development
+Release 0.12 - 02/10/2016
 
 * OODT-781 Add missing XMLRPC endpoint for remove hashtable. (magicaltrout)
 
