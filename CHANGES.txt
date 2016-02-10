@@ -6,6 +6,8 @@ Release 0.12 - Under development
 
 * OODT-923 Fix start script for solr deployments (magicaltrout)
 
+* OODT-924 Fix missing timestamp metadata field in returned data from solr (magicaltrout)
+
 Release 0.11 - 12/29/2015
 
 * OODT-918 - Created a prerequisite workflow condition for DRAT (Karanjeet

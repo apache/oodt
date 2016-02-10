@@ -17,8 +17,6 @@
 
 package org.apache.oodt.cas.filemgr.structs;
 
-//JDK imports
-
 import org.apache.oodt.cas.filemgr.exceptions.FileManagerException;
 import org.apache.oodt.commons.xml.XMLUtils;
 import org.w3c.dom.Document;
@@ -38,8 +36,6 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-//OODT imports
 
 /**
  * @author mattmann
@@ -98,6 +94,7 @@ public class Product {
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(Product.class.getName());
 
+    private String productReceivedTime;
     /**
      * <p>
      * Default Constructor
@@ -362,5 +359,15 @@ public class Product {
         }
 
     }
+    /**
+     * Set time product was ingested.
+     * @param productRecievedTime
+     */
+    public void setProductRecievedTime(String productReceivedTime) {
+        this.productReceivedTime = productReceivedTime;
+    }
 
+    public String getProductReceivedTime() {
+        return productReceivedTime;
+    }
 }
