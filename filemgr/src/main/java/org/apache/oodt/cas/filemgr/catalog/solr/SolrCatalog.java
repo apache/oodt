@@ -487,7 +487,7 @@ public class SolrCatalog implements Catalog {
 		
 		// build query parameters
 		Map<String, String[]> params = new ConcurrentHashMap<String, String[]>();
-		params.put("q", new String[] { "*:*" } );
+		params.put("q", new String[] { "CAS.ProductTypeName:"+type.getName() } );
 		params.put("rows", new String[] { "0" } ); // don't return any results
 		
 		// execute query
