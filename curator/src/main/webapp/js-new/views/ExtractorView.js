@@ -14,6 +14,7 @@ define(["jquery",
         function init(options) {
             this._template = _.template($("script#template-extractor-list").html());
             this.extractors = options["extractors"];
+            this.onchange = null;           
         };
         /**
          * Set the function to call "on-change"
@@ -26,9 +27,8 @@ define(["jquery",
          * Render the extractor list
          */
         function render() {
-            
             this.$el.html(this._template({"model":this.extractors}));
-            $(this.$el).find("select").on("change",this.onchange);
+            $(this.$el).find("select").on("change",utils.getMediator(this,"onchange"));
         };
         /**
          * Extractor view

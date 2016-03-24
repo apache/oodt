@@ -21,9 +21,10 @@ define(["jquery",
         /**
          * Get selection update function
          * @param selection - selection collection
+         * @param context - contect to look for updater
          * @return function to update collection with new selection
          */
-        function getSelectionUpdater(selection,view){
+        function getSelectionUpdater(selection,context){
             /**
              * Updates closed function to update given selection
              * @param e - event
@@ -46,15 +47,16 @@ define(["jquery",
                     selection.add({"id":path,"treeId":node.id});
                 }
                 var pending = 0;
-                function onFetched() {
+                function onFetched(elem) {
+                    utils.updateFromPresets(elem);
                     pending -= 1;
-                    if (pending <= 0) {
-                        view.render(true);
+                    if (pending <= 0 && context.updater != null) {
+                        context.updater();
                     }
                 };
                 selection.each(function(elem) {
                     pending += 1;
-                    elem.fetch({"success":onFetched});
+                    elem.fetch({"success":onFetched.bind(this,elem)});
                 });
             };
         };
@@ -74,12 +76,19 @@ define(["jquery",
                         "plugins" : ["checkbox"]//,
                         //"checkbox" :{"tie_selection":false}
                        };
+            this.updater = null;
             $("#"+this.name).jstree(core);
             $("#"+this.name).on("refresh.jstree",this.gussy.bind(this));
-            this._updateSelection = getSelectionUpdater(this.selection,this.metview);
+            this._updateSelection = getSelectionUpdater(this.selection,this);
             //Register view update on directory change
             this.directory.on("change:files",this.render,this);
             this.render();
+        };
+        /**
+         * Set a function for updating externally
+         */
+        function setUpdate(updater) {
+            this.updater = updater;
         };
         /**
          * Gussie up the tree view
@@ -112,6 +121,7 @@ define(["jquery",
         return Backbone.View.extend({
             initialize: init,
             render: render,
+            setUpdate: setUpdate,
             //Private functions
             gussy: gussy
         });

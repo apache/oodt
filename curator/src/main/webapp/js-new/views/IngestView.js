@@ -4,8 +4,8 @@
  */
 define(["jquery",
         "underscore",
-        "lib/backbone",],
-    function($,_,Backbone) {
+        "lib/backbone","js-new/utils/utils"],
+    function($,_,Backbone,utils) {
         /**
          * Initialize function
          * @param options - options for initialization
@@ -16,9 +16,10 @@ define(["jquery",
             for (var key in options)
                 this[key] = options[key];
             this.ingest.on("change:status",this.render,this);
-            this._template = _.template($("script#template-ingesting").html());
+            var htmlText = $("script#template-ingesting").html();
+            this._template = _.template(htmlText);
             this.onRefresh = function(){};
-            //this.render();
+            this._ingestClear = null;
         };
         /**
          * Render the view
@@ -26,14 +27,14 @@ define(["jquery",
         function render() {
             this.onRefresh();
             this.$el.html(this._template({"statuses":this.ingest.get("status")}));
-            $(this.$el).find("button#ingest-clear-errors").on("click",this.ingestClear);
+            $(this.$el).find("button#ingest-clear-errors").on("click",utils.getMediator(this,"_ingestClear"));
         };
         /**
          * A function to set the "on click" for ingest clear button
          * @param func - function to call back (should come from controller)
          */
         function setIngestClear(func) {
-            this.ingestClear = func;
+            this._ingestClear = func;
         };
         /**
          * A function to set "on refresh" function from controller

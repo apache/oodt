@@ -26,6 +26,7 @@ define(["jquery",
             this._template = _.template($("script#template-elements-table").html());
             this._entryTemplate = _.template($("script#template-table-element").html());
             this.working = options["working-set"];
+            this._dataEntry = null;
         };
         /**
          * Returns delimited list
@@ -72,7 +73,7 @@ define(["jquery",
             //Flag attributes
             var locked = "attachments" in element && "locked" in element.attachments || this.model.size() == 0;
             var required = "attachments" in element && "required" in element.attachments && this.model.size() != 0;
-            var hidden = "attachments" in element && "hidden" in element.attachments && !required;
+            var hidden = "attachments" in element && "hidden" in element.attachments && (!required || element.elementName in utils.getPresetConfigFields());
 
             var error = (element.elementName in merged.errors) ? merged.errors[element.elementName]:"";
             //Get values, (will create dropdown)
@@ -145,6 +146,7 @@ define(["jquery",
         function render(forceRefresh) {
             var self = this;
             var oldType = this.type;
+            //Update preset keys
             forceRefresh = (typeof(forceRefresh) === "undefined")?false:forceRefresh;
             //Set the type by first element
             if (this.model.size() > 0 && typeof(this.model.first().get("root")) !== "undefined" &&
@@ -203,10 +205,10 @@ define(["jquery",
                         "name":childEntry.name,
                         "value":childEntry.values[0]
                     };
-                    (this.dataEntry.bind(cntx))();
+                    (utils.getMediator(this,"_dataEntry").bind(cntx))();
                 }
                 //Attach events to the controls bindings.
-                $(this.$el).find("table:first").find("input,select").on("change",this.dataEntry);
+                $(this.$el).find("table:first").find("input,select").on("change",utils.getMediator(this,"_dataEntry"));
             } else {
                 $(this.$el).find("table:first").find("input,select").off("change");
                 //Check elements for updates
@@ -218,7 +220,7 @@ define(["jquery",
                     }
                     $("tr#"+cur.id).data(cur);
                 }
-                $(this.$el).find("table:first").find("input,select").on("change",this.dataEntry);
+                $(this.$el).find("table:first").find("input,select").on("change",utils.getMediator(this,"_dataEntry"));
             }
         };
         /**
@@ -226,7 +228,7 @@ define(["jquery",
          * @param func - function to call back (should come from controller)
          */
         function setOnEntryFunction(func) {
-            this.dataEntry = func;
+            this._dataEntry = func;
         }
         /**
          * Update the current product type from the controller
@@ -235,11 +237,18 @@ define(["jquery",
         function setProductType(type) {
             this.type = type;
         };
+        /**
+         * Return the current product type to the controller
+         */
+        function getProductType() {
+            return this.type;
+        };
         //Return backbone view
         return Backbone.View.extend({
             initialize: init,
             render: render,
             setOnEntryFunction: setOnEntryFunction,
+            getProductType: getProductType,
             setProductType: setProductType,
             //Private functions needing correct "this"
             renderElementInput: renderElementInput

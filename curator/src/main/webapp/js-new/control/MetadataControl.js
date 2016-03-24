@@ -2,8 +2,8 @@
  * A controller mechanism
  * @author starchmd
  */
-define(["jquery"],
-    function($) {
+define(["jquery","js-new/utils/utils"],
+    function($,utils) {
         /**
          * Controller for matching datamodel, metadata model to metadataview.
          * @param view - metadat entry view
@@ -22,6 +22,8 @@ define(["jquery"],
             _self.ingest = ingest;
             _self.buttons = buttons;
             _self.working = working;
+            _self.waitOnIngest = false;
+            _self.ingestCB = function(){};
             
             _self.dataEntry = 
                 /**
@@ -31,17 +33,21 @@ define(["jquery"],
                 function(e) {
                     var value = this.value;
                     var name = this.name;
-                    if (name == "ProductType") {
+                    var fullRefreshNeeded = false;
+                    if (name == "ProductType" && value != _self.view.getProductType()) {
                         _self.view.setProductType(value);
+                        fullRefreshNeeded = true;
                     }
                     //Loop through all the selected files setting metadata
                     var updateModel = function(elem) {
                         var root = elem.get("root");
-                        if (name in root.children) {
+                        if (typeof(name) != "undefined" && name in root.children) {
                             root.children[name].values[0] = value;
-                        } else {
+                        } else if (typeof(name) != "undefined") {
                             root.children[name] = {"name":name,"values":[value],"children":{}} 
                         }
+                        //Update from presets
+                        utils.updateFromPresets(elem);
                     };
                     //Save real models
                     _self.model.each(function(elem) {
@@ -55,7 +61,7 @@ define(["jquery"],
                         });
                     updateModel(_self.working);
                     //Render should be delayed, allowing focus to trigger
-                    setTimeout(_self.view.render.bind(_self.view,false),1);
+                    setTimeout(_self.view.render.bind(_self.view,fullRefreshNeeded),1);
                 };
             _self.ingestClick =
                 /**
@@ -77,7 +83,9 @@ define(["jquery"],
                                 var id = elem.get("id");
                                 var productName = elem.get("root")["children"]["ProductName"]["values"][0];
                                 selects.push({"timestamp":timestamp,"file":id,"size":0,"pname":productName});
-                                torm.push(elem);
+                                if (elem.id != "/dev/null") {
+                                    torm.push(elem);
+                                }
                             } catch(err) {
                                 Console.log("Error: Failed to parse ingestibles"+err);
                             }
@@ -85,13 +93,18 @@ define(["jquery"],
                     );
                     //Run ingest, removing selected files from collection
                     if (valid && selects.length > 0) {
-                        _self.buttons.setIngesting(true);
-                        _self.buttons.render();
+                        if (_self.waitOnIngest) {
+                            _self.buttons.setIngesting(true);
+                            _self.buttons.render();
+                        }
                         _self.ingest.save({"entries":selects});
+                        setTimeout(_self.ingestCB.bind(null,selects),50);
                         for (var i = 0; i < torm.length; i++) {
                             _self.model.remove(torm[i]);
                         }
-                        _self.tree.render();
+                        if (typeof(_self.tree) != "undefined") {
+                            _self.tree.render();
+                        }
                     }
                     _self.view.render(true);
                 };
@@ -126,7 +139,22 @@ define(["jquery"],
                             function(elem) {
                                 elem.fetch({"success":_self.view.render.bind(_self.view,false)});
                             });
-                    };                
+                    };
+             _self.enableIngestWait = 
+                 /**
+                  * Enables the ingesting wait
+                  */
+                 function() {
+                     _self.waitOnIngest = true;
+                 };
+             _self.setIngestCallback = 
+                 /**
+                  * Enables the ingesting wait
+                  * @param ingestCB - ingestCB
+                  */
+                 function(ingestCB) {
+                     _self.ingestCB = ingestCB;
+                 };
                 
             _self.view.setOnEntryFunction(_self.dataEntry);
             _self.buttons.setIngestClick(_self.ingestClick);

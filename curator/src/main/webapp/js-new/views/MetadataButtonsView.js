@@ -4,8 +4,8 @@
  */
 define(["jquery",
         "underscore",
-        "lib/backbone",],
-    function($,_,Backbone) {
+        "lib/backbone","js-new/utils/utils"],
+    function($,_,Backbone,utils) {
         /**
          * Initialize function
          * @param options - options for initialization
@@ -19,6 +19,7 @@ define(["jquery",
             this._template = _.template($("script#template-metadata-buttons").html());
             this._template_status = _.template($("script#template-ingest-status").html());
             this.first = true;
+            this.render();
         };
         /**
          * Render the view
@@ -27,9 +28,6 @@ define(["jquery",
             if (this.first) {
                 this.first = false;
                 this.$el.html(this._template());
-                //Buttons
-                $(this.$el).find("button#ingest").on("click",this.ingestClick);
-                $(this.$el).find("button#clear-metadata").on("click",this.metaClear);
             }
             this.$el.find("span#ingest-status").html(this._template_status({"ingesting":this.ingesting}));
         };
@@ -38,14 +36,20 @@ define(["jquery",
          * @param func - function to call back (should come from controller)
          */
         function setIngestClick(func) {
+            //Buttons
             this.ingestClick = func;
+            $(this.$el).find("button#ingest").off("click");
+            $(this.$el).find("button#ingest").on("click",this.ingestClick);
         };
         /**
          * A function to set the "on click" for metadata clear button
          * @param func - function to call back (should come from controller)
          */
         function setMetadataClear(func) {
+            //Buttons
             this.metaClear = func;
+            $(this.$el).find("button#clear-metadata").off("click");
+            $(this.$el).find("button#clear-metadata").on("click",this.metaClear);
         };
         /**
          * Set ingesting status

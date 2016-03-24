@@ -75,10 +75,16 @@ public class IngestBackend {
      */
     private void ingest(String file, String user) throws IngestException {
         try {
-            String parent = new File(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)).getParent();
-            File full = new File(parent,file);
+            File full = null;
+            if (!file.startsWith("/")) {
+                String parent = new File(Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)).getParent();
+                full = new File(parent,file);
+            } else {
+                full = new File(file);
+            }
             FlatDirMetadataHandler handler = new FlatDirMetadataHandler();
             Metadata meta = handler.get(file,user);
+            System.out.println("File: "+file+" URL: "+this.url+" Full: "+full.getAbsoluteFile()+" Metadata: "+meta);
             ingester.ingest(this.url, full.getAbsoluteFile(), meta);
             //Remove metadata file after successful ingest
             handler.remove(file,user);

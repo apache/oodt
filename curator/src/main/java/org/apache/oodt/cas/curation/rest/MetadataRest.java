@@ -55,6 +55,10 @@ public class MetadataRest {
      */
     public Response getMetadata(@PathParam("file") String file,@QueryParam("user") String user,@QueryParam("extractor") String extractor) {
         try {
+            if (file.equals("dev/null"))
+            {
+                file = "/dev/null";
+            }
             this.setup();
             Metadata met = this.backend.getMetadata(file,(user==null)?"":user, extractor);
             return Response.ok().entity(gson.toJson(met)).build();
@@ -75,8 +79,13 @@ public class MetadataRest {
      */
     public Response putMetadata(@PathParam("file") String file,@QueryParam("user") String user,@QueryParam("extractor") String extractor,String json) {
         try {
+            if (file.equals("dev/null"))
+            {
+                file = "/dev/null";
+            }
+            Metadata input = gson.fromJson(json, Metadata.class);
             this.setup();
-            Metadata met = this.backend.putMetadata(file,(user==null)?"":user, extractor, gson.fromJson(json, Metadata.class));
+            Metadata met = this.backend.putMetadata(file,(user==null)?"":user, extractor, input);
             return Response.ok().entity(gson.toJson(met)).build();
         } catch(Exception e) {
             return ExceptionResponseHandler.BuildExceptionResponse(e);
@@ -84,7 +93,6 @@ public class MetadataRest {
         }
     }
     @DELETE
-    @Consumes("application/json")
     @Path("{file:.+}")
     /**
      * Deletes the metadata for a given file
@@ -92,6 +100,10 @@ public class MetadataRest {
      */
     public Response deleteMetadata(@PathParam("file") String file,@QueryParam("user") String user) {
         try {
+            if (file.equals("dev/null"))
+            {
+                file = "/dev/null";
+            }
             this.setup();
             this.backend.deleteMetadata(file,(user==null)?"":user);
             return Response.ok().build();

@@ -8,8 +8,9 @@ define(["js-new/models/DirectoryModel",
         "js-new/models/ExtractorModel",
         "js-new/models/UploadModel",
         "js-new/models/IngestModel",
-        "js-new/models/MetadataDataModel"],
-    function(DirectoryModel,Metadata,MetadataCollection,ExtractorCollection,UploadModel,IngestModel,MetadataDataModel) {
+        "js-new/models/MetadataDataModel",
+        "js-new/utils/utils"],
+    function(DirectoryModel,Metadata,MetadataCollection,ExtractorCollection,UploadModel,IngestModel,MetadataDataModel,utils) {
         /**
          * Return a set of happy models
          */
@@ -26,7 +27,6 @@ define(["js-new/models/DirectoryModel",
             "working": new Metadata({"id":"working-set"})
         };
         //models.datamodel.fetch();
-        
         models.metadata = new MetadataCollection([],{"id":"metadata","extractors":models.extractor,"datamodel":models.datamodel});
         return models;
     }
