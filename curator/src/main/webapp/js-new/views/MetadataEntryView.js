@@ -51,7 +51,7 @@ define(["jquery",
             //Lock if values don't match (if ignore filled, don't do anything and default to mer)
             if (!ignoreFilled && !_.isEqual(mer.values,met.values)) {
                 mer.locked = true;
-                mer.display = "** Inconsistent Values **";//getDelimitedList(mer.values,met.values);
+                mer.display = "** Multiple Files Selected **";//getDelimitedList(mer.values,met.values);
             } else {
                 delete mer.display;
             }
@@ -72,8 +72,10 @@ define(["jquery",
             var values = null;
             //Flag attributes
             var locked = "attachments" in element && "locked" in element.attachments || this.model.size() == 0;
-            var required = "attachments" in element && "required" in element.attachments && this.model.size() != 0;
-            var hidden = "attachments" in element && "hidden" in element.attachments && (!required || element.elementName in utils.getPresetConfigFields());
+            var required = "attachments" in element && "required" in element.attachments && this.model.size() > 0;
+            //Hidden fields: Can be hidden via policy from Filemanager or via configuration passed into curator setup in main Javascript File
+            // If the field is required, errors will be reported as general error at the bottom of the entry table
+            var hidden = "attachments" in element && "hidden" in element.attachments || element.elementName in utils.getHiddenConfigFields();
 
             var error = (element.elementName in merged.errors) ? merged.errors[element.elementName]:"";
             //Get values, (will create dropdown)
@@ -108,7 +110,7 @@ define(["jquery",
                 "error":error
             };
             obj.html = this._entryTemplate(obj);     
-            return obj
+            return obj;
         }
         /**
          * Inspect the elements for equality and return true if "same"

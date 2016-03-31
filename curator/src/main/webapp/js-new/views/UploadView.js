@@ -19,15 +19,23 @@ define(["jquery",
             //Setup templates
             var tmp = _.template($("script#template-upload").html());
             this.$el.append(tmp({"name":this.name}));
-            //Configure dropzone
-            var dz = $("#"+this.name).dropzone(options.upload);
-            dz.on("success",function(){_self.notify.fetch();});
+
         };
+        /**
+         * Render this view.
+         */
+        function render() {
+            var _self = this;
+            //Configure dropzone
+            var dz = $("#"+_self.name).dropzone(_self.upload);
+            dz.on("success",function(){_self.notify.fetch();});
+        }
         /**
          * Return uploads views
          */
         return Backbone.View.extend({
-            initialize: init
+            initialize: init,
+            render: render
         });
     }
 );

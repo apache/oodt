@@ -61,7 +61,7 @@ define(["jquery",
                     },
                     {
                         "class" :   MetadataButtonsView,
-                        "params" :  {"name":"btns-view"},
+                        "params" :  {"name":"btns-view","buttonText":Config.INGEST_BUTTON_TEXT},
                         "element" : "met-buttons"
                     },
                     
@@ -129,6 +129,10 @@ define(["jquery",
             if (typeof(constructed["tree-view"]) == "undefined") {
                 Models.metadata.add({"id":"/dev/null"});
             }
+            //Render upload view
+            if (typeof(constructed["upload-view"]) != "undefined") {
+                constructed["upload-view"].render();
+            }            
             //Returns a function to allow external data entry
             return function(name,value) {
                 constructed["metadata-control"].dataEntry.call({"name":name,"value":value});

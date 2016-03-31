@@ -41,11 +41,12 @@
     <% if (error != null && error != "" ) { %>
            <span class="alert alert-danger" role="alert" style="display: inline-block">
                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-               <span class="sr-only">Error:</span>
-               <%= error %>
-               <% if (locked) { %>
-               <%= " Did you run the extractor?" %>
-               <% }; %>
+               <span>Error:
+                   <%= error %>
+                   <% if (locked) { %>
+                   <%= " Did you run the extractor?" %>
+                   <% }; %>
+               </span>
            </span>
     <% } else { %>
            <%= description %> <%= needed %>
@@ -54,6 +55,7 @@
 </script>
 <!-- Table Metadata -->
 <script type="text/template" id="template-elements-table">
+    <%       var hiddenErrors = []; %>
     <table class="display" cellspacing="0" width="100%">
         <thead>
             <tr>
@@ -68,17 +70,33 @@
                 <tr <%= hidden %> id="<%= htmls[i].id %>">
                     <%= htmls[i].html  %>
                 </tr>
+                <% if (htmls[i].hidden && htmls[i].error != "") {
+                    hiddenErrors.push(htmls[i].error);
+                }; %>
     <!-- TODO: Insert recursion here, if needed -->
     <%      }; %>
+        
         </tbody>    
     </table>
     <em>*</em> denotes required field
     <em>**</em> denotes extracted field
+    <% if (hiddenErrors.length > 0) { %>
+        <span class="alert alert-danger" role="alert" style="display: inline-block">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span>Error: Internal Fields not set, did you run appropriate extractors? <button id="button-errors" onclick='$(".hideableError").toggle("medium");'>Details</button></span>
+            <br class="hideableError" hidden />
+            <% for (var i = 0; i < hiddenErrors.length; i++) { %>
+                <span class="hideableError" hidden >Detailed Error: <%= hiddenErrors[i] %></span><br class="hideableError" hidden />
+            <% } %>
+            <button class="hideableError" onclick='$(".hideableError").hide("medium");' hidden >Hide</button>
+            </span>
+        </span>
+    <% }; %>
 </script>
 <!-- Template for metadata buttons and immediate feedback -->
 <script type="text/template" id="template-metadata-buttons">
-    <button id="ingest" class="btn btn-success">Ingest Current Selection</button>
-    <button id="clear-metadata" class="btn btn-danger">Clear Selected Metadata</button>
+    <button id="ingest" class="btn btn-success"><%= buttonText %></button>
+    <button id="clear-metadata" class="btn btn-danger">Clear Metadata Entry Form</button>
     <span id="ingest-status"></span>
 </script>
 <script type="text/template" id="template-ingest-status">

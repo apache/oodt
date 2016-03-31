@@ -27,7 +27,7 @@ define(["jquery",
         function render() {
             if (this.first) {
                 this.first = false;
-                this.$el.html(this._template());
+                this.$el.html(this._template({"buttonText":this.buttonText}));
             }
             this.$el.find("span#ingest-status").html(this._template_status({"ingesting":this.ingesting}));
         };
