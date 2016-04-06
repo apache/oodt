@@ -24,6 +24,7 @@ define(["jquery","js-new/utils/utils"],
             _self.working = working;
             _self.waitOnIngest = false;
             _self.ingestCB = function(){};
+            _self.entryCB = function(){};
             
             _self.dataEntry = 
                 /**
@@ -60,6 +61,10 @@ define(["jquery","js-new/utils/utils"],
                             },"validate": false});                        
                         });
                     updateModel(_self.working);
+                    if (typeof(value) != "undefined" && typeof(name) != "undefined" && value != null && name != null)
+                    {
+                        _self.entryCB(name,value);
+                    }
                     //Render should be delayed, allowing focus to trigger
                     setTimeout(_self.view.render.bind(_self.view,fullRefreshNeeded),1);
                 };
@@ -149,11 +154,19 @@ define(["jquery","js-new/utils/utils"],
                  };
              _self.setIngestCallback = 
                  /**
-                  * Enables the ingesting wait
+                  * Enables callbacks on ingest
                   * @param ingestCB - ingestCB
                   */
                  function(ingestCB) {
                      _self.ingestCB = ingestCB;
+                 };
+             _self.setEntryCallback = 
+                 /**
+                  * Enables callback on entry
+                  * @param entryCB - ingestCB
+                  */
+                 function(entryCB) {
+                     _self.entryCB = entryCB;
                  };
                 
             _self.view.setOnEntryFunction(_self.dataEntry);

@@ -23,7 +23,7 @@ define(["jquery",
         "js-new/config/Configuration",
         "lib/text! template.html"],
     function($,Models,TreeView,UploadView,MetadataEntryView,ExtractorView,MetadataButtonsView,IngestView,MetadataControl,ExtractorControl,IngestControl,TreeControl,utils,Config,html) {
-        return function(ingestCB) {
+        return function(entryCB,ingestCB) {
             //Load cookie, and set if nothing
             GLOBAL_USER = document.cookie.replace(/(?:(?:^|.*;\s*)user\s*\=\s*([^;]*).*$)|^.*$/, "$1");
             if (GLOBAL_USER == "") {
@@ -122,6 +122,7 @@ define(["jquery",
                 }
             }
             if (typeof(constructed["metadata-view"]) != "undefined") {
+                constructed["metadata-control"].setEntryCallback(entryCB);
                 constructed["metadata-control"].setIngestCallback(ingestCB);
                 Models.datamodel.fetch({"success":constructed["metadata-view"].render.bind(constructed["metadata-view"],true)});
             }

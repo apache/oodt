@@ -31,12 +31,12 @@ define(["jquery",
                     map[key] = i;
                 }*/
                 for (var i = 0; i < response["status"].length; i++) {
-                    key = response["status"][i]["timestamp"]+"-"+response["status"][i]["file"];
-                    if (key in map) {
-                        ret[map[key]] = response["status"][i];
-                    } else {
+                    //key = response["status"][i]["timestamp"]+"-"+response["status"][i]["file"];
+                    //if (key in map) {
+                    //    ret[map[key]] = response["status"][i];
+                    //} else {
                         ret.push(response["status"][i]);
-                    }
+                    //}
                 }
             }
             return {"status":ret};
