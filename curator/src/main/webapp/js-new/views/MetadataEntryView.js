@@ -66,9 +66,10 @@ define(["jquery",
          * Build an individual element entry
          * @param element - element to build
          * @param merged - merged metadata
+         * @param index - tabindex for item
          * @returns {name - name of element, html- html for this element's input}
          */
-        function renderElementInput(element,merged) {
+        function renderElementInput(element,merged,index) {
             var values = null;
             //Flag attributes
             var locked = "attachments" in element && "locked" in element.attachments || this.model.size() == 0;
@@ -107,7 +108,8 @@ define(["jquery",
                 "hidden":hidden,
                 "values":values,
                 "value":(element.elementName == "ProductType")?this.type:value,
-                "error":error
+                "error":error,
+                "index":index++
             };
             obj.html = this._entryTemplate(obj);     
             return obj;
@@ -184,12 +186,13 @@ define(["jquery",
             recurseMerge(merged,utils.deep(this.working.get("root")),true);
             
             //Build this element
+            var index = 1;
             for (var i = 0; i < items.length; i++) {
-                inputHtmls.push(this.renderElementInput(items[i],merged));
+                inputHtmls.push(this.renderElementInput(items[i],merged,index));
             }
             //Completely refresh or just update?
             if (completeRefresh) {
-                this.$el.html(this._template({"$":$,"htmls":inputHtmls,"disabled":this.model.size() == 0,"ingesting":this.ingesting}));
+                this.$el.html(this._template({"$":$,"htmls":inputHtmls,"disabled":this.model.size() == 0,"ingesting":this.ingesting,"index":index++}));
                 for (var i = 0; i < inputHtmls.length; i++) {
                     $("tr#"+inputHtmls[i].id).data(inputHtmls[i]);
                 }

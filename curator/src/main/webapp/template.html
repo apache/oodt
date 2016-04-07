@@ -34,7 +34,7 @@
     <%     }; %>
            </select>
     <% } else { %>
-           <input id="<%= id %>" type="text" name="<%= name %>" value="<%= value %>" <%= disabled %> <%= invisible %> ></input>
+           <input id="<%= id %>" type="text" tagindex="<%= index %>" name="<%= name %>" value="<%= value %>" class="text-input-box" <%= disabled %> <%= invisible %> ></input>
     <% }; %>
     </td>
     <td>
@@ -95,8 +95,8 @@
 </script>
 <!-- Template for metadata buttons and immediate feedback -->
 <script type="text/template" id="template-metadata-buttons">
-    <button id="ingest" class="btn btn-success"><%= buttonText %></button>
-    <button id="clear-metadata" class="btn btn-danger">Clear Metadata Entry Form</button>
+    <button id="ingest" class="btn btn-success" tagindex="500"><%= buttonText %></button>
+    <button id="clear-metadata" class="btn btn-danger" tagindex="501">Clear Metadata Entry Form</button>
     <span id="ingest-status"></span>
 </script>
 <script type="text/template" id="template-ingest-status">
