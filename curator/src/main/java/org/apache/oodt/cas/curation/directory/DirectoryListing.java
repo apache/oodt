@@ -1,7 +1,7 @@
 package org.apache.oodt.cas.curation.directory;
 
-import org.apache.oodt.cas.curation.directory.validation.DirectoryValidator;
-import org.apache.oodt.cas.curation.directory.validation.ValidationOutput;
+import org.apache.oodt.commons.validation.DirectoryValidator;
+import org.apache.oodt.commons.validation.ValidationOutput;
 
 import java.io.File;
 import java.util.Collection;

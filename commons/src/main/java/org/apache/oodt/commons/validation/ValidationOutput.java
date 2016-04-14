@@ -1,7 +1,9 @@
-package org.apache.oodt.cas.curation.directory.validation;
+package org.apache.oodt.commons.validation;
 
 /**
- * Created by bugg on 14/04/16.
+ * Validation Response for serialization back to UI.
+ *
+ * @author tbarber
  */
 public class ValidationOutput {
 

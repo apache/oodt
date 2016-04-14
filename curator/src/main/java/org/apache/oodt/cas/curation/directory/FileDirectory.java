@@ -6,7 +6,7 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.oodt.cas.curation.directory.validation.DirectoryValidator;
+import org.apache.oodt.commons.validation.DirectoryValidator;
 
 /**
  * A file-system based directory for listing into the curator.
