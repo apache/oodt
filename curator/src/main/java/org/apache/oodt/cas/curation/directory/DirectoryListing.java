@@ -1,5 +1,8 @@
 package org.apache.oodt.cas.curation.directory;
 
+import org.apache.oodt.cas.curation.directory.validation.DirectoryValidator;
+import org.apache.oodt.cas.curation.directory.validation.ValidationOutput;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +25,8 @@ public class DirectoryListing {
     DirectoryListing.Type type;
     String name;
     String path;
-    
+    ValidationOutput validation;
+
     //Children listings (only valid for directory types)
     List<DirectoryListing> children = new LinkedList<DirectoryListing>();
     /**
@@ -30,26 +34,30 @@ public class DirectoryListing {
      * @param type - type of listing
      * @param name - name of object
      */
-    public DirectoryListing(DirectoryListing.Type type,String name,String path) {
+    public DirectoryListing(DirectoryListing.Type type,String name,String path, ValidationOutput validation) {
         this.name = name;
         this.type = type;
         this.path = path;
         this.children = (type == DirectoryListing.Type.DIRECTORY) ? new LinkedList<DirectoryListing>() : null;
+        this.validation = validation;
     }
     /**
      * Create a directory listing 
      * @param paths - list of file paths
+     * @param validator
      * @return top-level directory listing object
      */
-    public static DirectoryListing lisingFromFileObjects(Collection<File> paths,File root) {
+    public static DirectoryListing lisingFromFileObjects(Collection<File> paths, File root,
+                                                         DirectoryValidator validator) {
         //Shallow copy and sort
         List<File> copy = new LinkedList<File>(paths);
         Collections.sort(copy);
         //Create a stack to hold directories (implementation details)
         LinkedList<DirectoryListing> stack = new LinkedList<DirectoryListing>();
         stack.addLast( (root != null && root.isDirectory()) ?
-                       new DirectoryListing(DirectoryListing.Type.DIRECTORY,root.getPath(),root.getPath()) :
-                       new DirectoryListing(DirectoryListing.Type.DIRECTORY,ROOT_NAME,""));
+                       new DirectoryListing(DirectoryListing.Type.DIRECTORY,root.getPath(),root.getPath(),
+                           validator != null ? validator.validate(root):null) :
+                       new DirectoryListing(DirectoryListing.Type.DIRECTORY,ROOT_NAME,"", null));
         for (File file : paths) {
             if (file.equals(root))
                 continue;
@@ -58,7 +66,8 @@ public class DirectoryListing {
                 stack.removeLast();
             //Get type and name of this file path and create dl object
             DirectoryListing.Type type =  file.isDirectory() ? DirectoryListing.Type.DIRECTORY : DirectoryListing.Type.OBJECT;
-            DirectoryListing dl = new DirectoryListing(type,file.getName(),file.getPath());
+            DirectoryListing dl = new DirectoryListing(type,file.getName(),file.getPath(),
+                validator != null?validator.validate(file):null);
             //Add to last's children
             stack.peekLast().children.add(dl);
             if (type == DirectoryListing.Type.DIRECTORY) {
