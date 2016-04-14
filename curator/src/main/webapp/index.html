@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Celgene Data Curator</title>
-        <script src="lib/require.js" data-main="js-new/main.js"></script>
+        <script src="lib/require.js" data-main="main.js"></script>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="lib/themes/default/style.min.css" />
@@ -16,26 +16,6 @@
         <link rel="stylesheet" type="text/css" href="/da-generator/bootstrap/css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="/da-generator/bootstrap/css/bootstrap-theme.css">
         <link rel="stylesheet" type="text/css" href="/da-generator/style.css">
-        <!-- DA Number generator -->
-        <!--script src="lib/jquery-2.1.3.js"></script-->
-        <script>
-            require.config({
-                baseUrl: "./",
-                paths: {
-                    jquery: "lib/jquery-2.1.3",
-                    underscore: "lib/underscore",
-                    datatables: "lib/jquery.dataTables"
-                }
-            });
-            var $=null;
-            require(["lib/domReady!","jquery"],
-                function(doc,JQ) {
-                    $=JQ;
-                    main();
-                }
-            );
-        </script>
-        <script src="action.js"></script>
 
 	</head>
 	<body>
