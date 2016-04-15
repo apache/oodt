@@ -21,8 +21,9 @@ public class FileDirectory implements Directory {
      * Build the object around a set directory
      * @param directory
      */
-    public FileDirectory(String directory) {
+    public FileDirectory(String directory, DirectoryValidator validator) {
         this.directory = directory;
+        this.validator = validator;
     }
     /* (non-Javadoc)
      * @see org.apache.oodt.cas.curation.directory.Directory#list()
