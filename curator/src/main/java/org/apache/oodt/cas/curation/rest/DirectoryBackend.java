@@ -5,14 +5,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.xml.ws.WebServiceContext;
 
 import org.apache.oodt.cas.curation.configuration.Configuration;
 import org.apache.oodt.cas.curation.directory.Directory;
@@ -75,26 +73,31 @@ public class DirectoryBackend {
         return gson.toJson(types.get(type).list());
     }
 
-    private void bootstrapValidator(){
-        String vclass = context.getInitParameter("directory.validation");
-        if(vclass!=null && !vclass.equals("")){
-            Class<?> clazz = null;
-            try {
-                clazz = Class.forName(vclass);
+  /**
+   * Initialise the validator engine as defined in web.xml.
+   */
+  private void bootstrapValidator(){
+        if(validator==null) {
+            String vclass = context.getInitParameter("directory.validation");
+            if (vclass != null && !vclass.equals("")) {
+                Class<?> clazz = null;
+                try {
+                    clazz = Class.forName(vclass);
 
-                Constructor<?> constructor = clazz.getConstructor();
-                this.validator = (DirectoryValidator) constructor.newInstance();
+                    Constructor<?> constructor = clazz.getConstructor();
+                    this.validator = (DirectoryValidator) constructor.newInstance();
 
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
