@@ -9,6 +9,6 @@ import java.io.File;
  */
 public interface DirectoryValidator {
 
-  ValidationOutput validate(File f);
+  ValidationOutput validate(File f, String stagingpath);
 
 }

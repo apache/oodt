@@ -28,18 +28,11 @@ import com.google.gson.Gson;
 @Path("directory")
 public class DirectoryBackend {
     private DirectoryValidator validator;
-    @Context
-    ServletContext context;
     Map<String,Directory> types = new HashMap<String,Directory>();
     Gson gson = new Gson();
-
-    @Context
-    public void setServletContext(ServletContext context) {
-        this.context = context;
-    }
-        /**
-         * Construct a directory backend with hard-coded directories
-         */
+    /**
+     * Construct a directory backend with hard-coded directories
+     */
     public DirectoryBackend() {
 
     }
@@ -78,7 +71,7 @@ public class DirectoryBackend {
    */
   private void bootstrapValidator(){
         if(validator==null) {
-            String vclass = context.getInitParameter("directory.validation");
+            String vclass = Configuration.getWithReplacement(Configuration.DIRECTORYBACKEND_VALIDATOR);
             if (vclass != null && !vclass.equals("")) {
                 Class<?> clazz = null;
                 try {

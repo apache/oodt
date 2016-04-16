@@ -21,4 +21,5 @@ the License.
     <Parameter name="org.apache.oodt.cas.curator.metadata.area" value="[OODT_HOME]/data/met" />;
     <Parameter name="org.apache.oodt.cas.curator.extractor.area" value="[OODT_HOME]/extractors/" />;
     <Parameter name="org.apache.oodt.cas.curator.filemanager.url" value="[FILEMANAGER_URL]" />;
+
 </Context>

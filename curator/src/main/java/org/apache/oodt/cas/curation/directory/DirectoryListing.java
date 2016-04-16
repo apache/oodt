@@ -1,5 +1,6 @@
 package org.apache.oodt.cas.curation.directory;
 
+import org.apache.oodt.cas.curation.configuration.Configuration;
 import org.apache.oodt.commons.validation.DirectoryValidator;
 import org.apache.oodt.commons.validation.ValidationOutput;
 
@@ -56,7 +57,8 @@ public class DirectoryListing {
         LinkedList<DirectoryListing> stack = new LinkedList<DirectoryListing>();
         stack.addLast( (root != null && root.isDirectory()) ?
                        new DirectoryListing(DirectoryListing.Type.DIRECTORY,root.getPath(),root.getPath(),
-                           validator != null ? validator.validate(root):null) :
+                           validator != null ? validator.validate(root, Configuration.getWithReplacement
+                               (Configuration.STAGING_AREA_CONFIG)):null) :
                        new DirectoryListing(DirectoryListing.Type.DIRECTORY,ROOT_NAME,"", null));
         for (File file : paths) {
             if (file.equals(root))
@@ -67,7 +69,8 @@ public class DirectoryListing {
             //Get type and name of this file path and create dl object
             DirectoryListing.Type type =  file.isDirectory() ? DirectoryListing.Type.DIRECTORY : DirectoryListing.Type.OBJECT;
             DirectoryListing dl = new DirectoryListing(type,file.getName(),file.getPath(),
-                validator != null?validator.validate(file):null);
+                validator != null ? validator.validate(file, Configuration.getWithReplacement(Configuration.STAGING_AREA_CONFIG)) :
+                null);
             //Add to last's children
             stack.peekLast().children.add(dl);
             if (type == DirectoryListing.Type.DIRECTORY) {

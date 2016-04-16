@@ -21,6 +21,7 @@ public class Configuration {
     public static final String EXTRACTOR_AREA_CONFIG = "org.apache.oodt.cas.curator.extractor.area";
     public static final String FILEMANAGER_URL_CONFIG = "org.apache.oodt.cas.curator.filemanager.url";
     public static final String FILEMANAGER_PROP_CONFIG = "org.apache.oodt.cas.curator.filemanager.prop";
+    public static final String DIRECTORYBACKEND_VALIDATOR = "org.apache.oodt.cas.curator.directory.validator";
     //Stores the configuration object as a Properties object
     private static Properties config = new Properties();
     
