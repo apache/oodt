@@ -1,6 +1,8 @@
 package org.apache.oodt.cas.curation.configuration;
 
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -22,6 +24,8 @@ public class Configuration {
     public static final String FILEMANAGER_URL_CONFIG = "org.apache.oodt.cas.curator.filemanager.url";
     public static final String FILEMANAGER_PROP_CONFIG = "org.apache.oodt.cas.curator.filemanager.prop";
     public static final String DIRECTORYBACKEND_VALIDATOR = "org.apache.oodt.cas.curator.directory.validator";
+    public static final String POLICY_UPLOAD_PATH = "org.apache.oodt.cas.curator.dataDefinition.uploadPath";
+
     //Stores the configuration object as a Properties object
     private static Properties config = new Properties();
     
@@ -63,6 +67,16 @@ public class Configuration {
      */
     private static void set(String key,String val) {
         config.setProperty(key, val);
+    }
+
+    public static Map<String,String> getAllProperties() {
+        Enumeration e = config.propertyNames();
+        Map<String,String> generatedproperties = new HashMap<String, String>();
+        while (e.hasMoreElements()) {
+            String key = (String) e.nextElement();
+            generatedproperties.put(key, getWithReplacement(key));
+        }
+        return generatedproperties;
     }
 
 }
