@@ -9,7 +9,7 @@ public class ValidationOutput {
 
   boolean valid;
   String message;
-  String path;
+  String validationpath;
 
   public ValidationOutput() {
   }
@@ -31,10 +31,10 @@ public class ValidationOutput {
   }
 
   public String getPath() {
-    return path;
+    return validationpath;
   }
 
   public void setPath(String path) {
-    this.path = path;
+    this.validationpath = path;
   }
 }

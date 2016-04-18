@@ -13,7 +13,7 @@ define(["jquery",
          * @param 
          */
         function jsTreeAug(object) {
-            if ("name" in object && "type" in object) {
+            if (typeof object === 'object' && "name" in object && "type" in object) {
                 object.text = object.name + (object.type == "DIRECTORY"?"/":"");
                 object.icon = (object.type == "DIRECTORY"?"icons/directory.png":"icons/file.png");
             }
