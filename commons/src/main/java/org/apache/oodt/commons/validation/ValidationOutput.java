@@ -16,6 +16,10 @@
  */
 package org.apache.oodt.commons.validation;
 
+import java.util.HashMap;
+import java.util.Map;
+
+
 /**
  * Validation Response for serialization back to UI.
  *
@@ -23,27 +27,10 @@ package org.apache.oodt.commons.validation;
  */
 public class ValidationOutput {
 
-  boolean valid;
-  String message;
   String validationpath;
+  Map<String, Map<Boolean, String>> validationmap = new HashMap<String, Map<Boolean, String>>();
 
   public ValidationOutput() {
-  }
-
-  public boolean isValid() {
-    return valid;
-  }
-
-  public void setValid(boolean valid) {
-    this.valid = valid;
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public void setMessage(String message) {
-    this.message = message;
   }
 
   public String getPath() {
@@ -52,5 +39,15 @@ public class ValidationOutput {
 
   public void setPath(String path) {
     this.validationpath = path;
+  }
+
+  public Map<String, Map<Boolean, String>> getValidationmap() {
+    return validationmap;
+  }
+
+  public void addValidationResult(String field, boolean valid, String message){
+    Map<Boolean, String> m = new HashMap<Boolean, String>();
+    m.put(valid, message);
+    validationmap.put(field, m);
   }
 }
