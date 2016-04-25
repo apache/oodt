@@ -208,7 +208,8 @@ define(["jquery",
                     var childEntry = this.working.get("root").children[key];
                     var cntx = {
                         "name":childEntry.name,
-                        "value":childEntry.values[0]
+                        "value":childEntry.values[0],
+                        "filler":true
                     };
                     (utils.getMediator(this,"_dataEntry").bind(cntx))();
                 }
