@@ -16,7 +16,9 @@
  */
 package org.apache.oodt.commons.validation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -28,7 +30,8 @@ import java.util.Map;
 public class ValidationOutput {
 
   String validationpath;
-  Map<String, Map<Boolean, String>> validationmap = new HashMap<String, Map<Boolean, String>>();
+  List<ValidationElement> validationelements = new ArrayList<ValidationElement>();
+  boolean valid = true;
 
   public ValidationOutput() {
   }
@@ -41,13 +44,19 @@ public class ValidationOutput {
     this.validationpath = path;
   }
 
-  public Map<String, Map<Boolean, String>> getValidationmap() {
-    return validationmap;
+  public List<ValidationElement> getValidationelements() {
+    return validationelements;
+  }
+
+  public String getValidationpath() {
+    return validationpath;
   }
 
   public void addValidationResult(String field, boolean valid, String message){
-    Map<Boolean, String> m = new HashMap<Boolean, String>();
-    m.put(valid, message);
-    validationmap.put(field, m);
+   ValidationElement validationElement = new ValidationElement(field, valid, message);
+    this.validationelements.add(validationElement);
+    if(!valid){
+      this.valid=false;
+    }
   }
 }

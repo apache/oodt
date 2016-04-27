@@ -26,4 +26,33 @@ div.intro {
 }
 input[type="text"]:disabled {
     background: #dddddd;
-} 
+}
+.invalid_node { color:red !important; }
+
+PHP
+
+.tooltip.top .tooltip-arrow {
+    bottom: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-top-color: #fff;
+    border-width: 5px 5px 0;
+}
+.tooltip-inner {
+    color: #000;
+    background: #fff;
+    border: solid 1px #fff;
+}
+
+.tooltip.top .tooltip-arrow {
+    bottom: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-top-color: #fff;
+    border-width: 5px 5px 0;
+}
+.tooltip-inner {
+    color: #000;
+    background: #fff;
+    border: solid 1px #fff;
+}
