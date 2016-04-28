@@ -92,6 +92,11 @@ the License.
   </repositories>
   
   <dependencies>
+      <dependency>
+          <groupId>org.apache.oodt</groupId>
+          <artifactId>oodt-commons</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
 	<dependency>
 		<groupId>commons-fileupload</groupId>
 		<artifactId>commons-fileupload</artifactId>
@@ -153,27 +158,22 @@ the License.
    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>2.6.0</version>
+      <version>3.1.6</version>
    </dependency>
    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http</artifactId>
-      <version>2.6.0</version>
-   </dependency>
-   <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-core</artifactId>
-      <version>2.6.0</version>
+      <version>3.1.6</version>
    </dependency>
    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http-jetty</artifactId>
-      <version>2.6.0</version>
+      <version>3.1.6</version>
    </dependency>
    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-management</artifactId>
-      <version>2.6.0</version>
+      <version>3.1.6</version>
    </dependency>
    <dependency>
       <groupId>com.google.code.gson</groupId>

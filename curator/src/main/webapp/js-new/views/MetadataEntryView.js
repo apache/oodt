@@ -3,7 +3,8 @@ define(["jquery",
         "lib/backbone",
         "datatables",
         "js-new/config/Configuration",
-        "js-new/utils/utils"],
+        "js-new/utils/utils",
+        "popover"],
     function($,_,Backbone,DataTable,Configuration,utils) {
         
         /**
@@ -215,6 +216,8 @@ define(["jquery",
                 }
                 //Attach events to the controls bindings.
                 $(this.$el).find("table:first").find("input,select").on("change",utils.getMediator(this,"_dataEntry"));
+                $('[data-toggle="popover"]').popover({trigger: 'hover','placement': 'top',delay: { "show": 500, "hide": 100 }});
+
             } else {
                 $(this.$el).find("table:first").find("input,select").off("change");
                 //Check elements for updates

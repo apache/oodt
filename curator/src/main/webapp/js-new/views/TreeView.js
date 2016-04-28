@@ -6,16 +6,46 @@ define(["jquery",
         "underscore",
         "lib/backbone",
         "lib/jstree",
-        "js-new/utils/utils"],
+        "js-new/utils/utils",
+        "popover"],
     function($,_,Backbone,jstree,utils) {
         /**
          * Augments a given object for use with JS tree
          * @param 
          */
         function jsTreeAug(object) {
-            if ("name" in object && "type" in object) {
+            if (typeof object === 'object' && "name" in object && "type" in object) {
                 object.text = object.name + (object.type == "DIRECTORY"?"/":"");
                 object.icon = (object.type == "DIRECTORY"?"icons/directory.png":"icons/file.png");
+                parseValidation(object)
+            }
+
+        }
+
+        /**
+         * Validates the object from the validation information returned alongside it.
+         * @param object
+         */
+        function parseValidation(object){
+            if(!object.validation.valid){
+                var errormessage="";
+                _.each(object.validation.validationelements, function(ele){
+                    if(!ele.valid){
+                        errormessage += "•"+ele.message+"<br/>";
+                    }
+                });
+                object.state={
+                    disabled:true
+                };
+                object.a_attr = {
+                    "valid":object.validation.valid,
+                    "class":"invalid_node",
+                    "title": "Validation Issues",
+                    "data-content": errormessage,
+                    "data-toggle":"popover",
+                    "data-html":"true"
+                };
+
             }
         }
         /**
@@ -79,6 +109,10 @@ define(["jquery",
             this.updater = null;
             $("#"+this.name).jstree(core);
             $("#"+this.name).on("refresh.jstree",this.gussy.bind(this));
+            $("#"+this.name).on("loaded.jstree open_node.jstree", function(event, data){
+                $('[data-toggle="popover"]').popover({trigger: 'hover','placement': 'top',delay: { "show": 500, "hide": 100 }});
+
+            })
             this._updateSelection = getSelectionUpdater(this.selection,this);
             //Register view update on directory change
             this.directory.on("change:files",this.render,this);

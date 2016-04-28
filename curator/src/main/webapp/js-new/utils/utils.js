@@ -12,7 +12,7 @@ define(["underscore","js-new/config/Configuration"],
          */     
         function deepHelper(stack,object,callback) {
             var tpe = typeof(object);
-            if (["string","number","undefined"].indexOf(tpe) != -1)
+            if (["string","number","undefined", "boolean"].indexOf(tpe) != -1)
                 return object;
             else if (stack.indexOf(object) != -1)
                 throw "Circular reference detected";
