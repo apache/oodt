@@ -21,20 +21,20 @@
 </script>
 <!-- An element -->
 <script type="text/template" id="template-table-element">
-    <td><%= displayName %></td>
+    <td ><span title="Help" data-content="<%= description %>" data-toggle="popover" data-html="true"><%= displayName %></span></td>
     <td>
     <% var disabled = locked ? "disabled" : "";
        var invisible = hidden ? "hidden" : "";
        var needed = (required && locked) ? "<em>**</em>" : (required) ? "<em>*</em>" : "";
        if (values != null) { %>
-           <select id="<%= id %>" name="<%= name %>" <%= disabled %> <%= invisible %> >
+           <select title="Help" data-content="<%= description %>" data-toggle="popover" data-html="true" id="<%= id %>" name="<%= name %>" <%= disabled %> <%= invisible %> >
     <%     for (var i = 0; i < values.length; i++) {
                var selected = values[i] == value ? "selected" : ""; %>
                <option value="<%= values[i]%>" <%= selected %>><%= values[i]%></option>
     <%     }; %>
            </select>
     <% } else { %>
-           <input id="<%= id %>" type="text" tagindex="<%= index %>" name="<%= name %>" value="<%= value %>" class="text-input-box" <%= disabled %> <%= invisible %> ></input>
+           <input title="Help" data-content="<%= description %>" data-toggle="popover" data-html="true" id="<%= id %>" type="text" tagindex="<%= index %>" name="<%= name %>" value="<%= value %>" class="text-input-box" <%= disabled %> <%= invisible %> ></input>
     <% }; %>
     </td>
     <td>
@@ -48,8 +48,11 @@
                    <% }; %>
                </span>
            </span>
-    <% } else { %>
-           <%= description %> <%= needed %>
+    <% } else {
+          if (values != null || (value!=null && value.length>0)){ %>
+             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+       <% } %>
+        <%= needed %>
     <% }; %>
     </td>
 </script>
@@ -61,7 +64,7 @@
             <tr>
                 <th>Metadata Key</th>
                 <th>Value</th>
-                <th>Help</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>

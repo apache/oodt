@@ -63,7 +63,7 @@ define(["jquery","js-new/utils/utils"],
                     updateModel(_self.working);
                     if (typeof(value) != "undefined" && typeof(name) != "undefined" && value != null && name != null)
                     {
-                        _self.entryCB(name,value);
+                      //  _self.entryCB(name,value);
                     }
                     //Render should be delayed, allowing focus to trigger
                     setTimeout(_self.view.render.bind(_self.view,fullRefreshNeeded),1);

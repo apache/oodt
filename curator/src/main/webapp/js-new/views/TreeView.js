@@ -39,9 +39,9 @@ define(["jquery",
                 };
                 object.a_attr = {
                     "valid":object.validation.valid,
+                    "class":"invalid_node",
                     "title": "Validation Issues",
                     "data-content": errormessage,
-                    "class":"invalid_node",
                     "data-toggle":"popover",
                     "data-html":"true"
                 };
