@@ -17,13 +17,18 @@ define(["jquery"],
          */
         function ConfigObject() {
             var _self = this;
-            
+
             var path = $(location).attr("pathname");
             //Basic metadata
             _self.SETUP_CONFIG = {
                 "hidden":[],
                 "presets":{}
             },
+            _self.METADATA_FILTERS = {
+                "urn:oodt:ProductType":["Experiment", "Supplementary"]
+            };
+
+
             _self.METADATA_REST_SERVICE = "services/metadata";
             _self.DIRECTORY_REST_SERVICE = "services/directory";
             _self.EXTRACTOR_REST_SERVICE = "services/metadata/extractors";

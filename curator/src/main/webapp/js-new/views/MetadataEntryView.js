@@ -80,9 +80,19 @@ define(["jquery",
             var hidden = "attachments" in element && "hidden" in element.attachments || element.elementName in utils.getHiddenConfigFields();
 
             var error = (element.elementName in merged.errors) ? merged.errors[element.elementName]:"";
+            var tmparray = [];
             //Get values, (will create dropdown)
             if ("attachments" in element && "values" in element.attachments) {
                 values = element.attachments.values.split(",");
+                if(Configuration.METADATA_FILTERS.hasOwnProperty(element.elementId)){
+                    var validels = Configuration.METADATA_FILTERS[element.elementId];
+                    for(var i = 0; i < values.length; i++){
+                        if(validels.indexOf(values[i]) !== -1){
+                            tmparray.push(values[i]);
+                        }
+                    }
+                    values = tmparray;
+                }
             }
             //Grab in the current metadata
             var value = "";
