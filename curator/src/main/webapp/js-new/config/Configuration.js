@@ -24,11 +24,6 @@ define(["jquery"],
                 "hidden":[],
                 "presets":{}
             },
-            _self.METADATA_FILTERS = {
-                "urn:oodt:ProductType":["RawData","Processed", "Supplementary", "Analysis", "Clinical"]
-            };
-
-
             _self.METADATA_REST_SERVICE = "services/metadata";
             _self.DIRECTORY_REST_SERVICE = "services/directory";
             _self.EXTRACTOR_REST_SERVICE = "services/metadata/extractors";
