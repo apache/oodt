@@ -25,7 +25,7 @@ define(["jquery"],
                 "presets":{}
             },
             _self.METADATA_FILTERS = {
-                "urn:oodt:ProductType":["Experiment", "Supplementary"]
+                "urn:oodt:ProductType":["RawData","Processed", "Supplementary", "Analysis", "Clinical"]
             };
 
 
