@@ -166,6 +166,7 @@ define(["jquery",
             //Set the type by first element
             if (this.model.size() > 0 && typeof(this.model.first().get("root")) !== "undefined" &&
                     "ProductType" in this.model.first().get("root").children && this.model.first().get("root").children["ProductType"].values.length > 0) {
+                var t = this.model.first();
                 this.type =  this.model.first().get("root").children["ProductType"].values[0];
             }
             var completeRefresh = (oldType != this.type || forceRefresh);

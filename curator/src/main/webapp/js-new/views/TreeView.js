@@ -35,7 +35,8 @@ define(["jquery",
                     }
                 });
                 object.state={
-                    disabled:true
+                    disabled:true,
+                    checkbox_disabled : true
                 };
                 object.a_attr = {
                     "valid":object.validation.valid,
