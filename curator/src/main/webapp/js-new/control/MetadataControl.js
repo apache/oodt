@@ -18,7 +18,7 @@ define(["jquery","js-new/utils/utils"],
             _self.view = view;
             _self.tree = tree;
             _self.model = model;
-            _self.model.on("add remove reset",_self.view.render.bind(_self.view,false));
+            _self.model.on("remove reset",_self.view.render.bind(_self.view,false));
             _self.ingest = ingest;
             _self.buttons = buttons;
             _self.working = working;
@@ -34,18 +34,23 @@ define(["jquery","js-new/utils/utils"],
                 function(e) {
                     var value = this.value;
                     var name = this.name;
+                    var filler = "filler" in this && this.filler;
                     var fullRefreshNeeded = false;
-                    if (name == "ProductType" && value != _self.view.getProductType()) {
-                        _self.view.setProductType(value);
-                        fullRefreshNeeded = true;
-                    }
                     //Loop through all the selected files setting metadata
                     var updateModel = function(elem) {
                         var root = elem.get("root");
-                        if (typeof(name) != "undefined" && name in root.children) {
+                        if (typeof(name) != "undefined" && name in root.children && (!filler || root.children[name].values[0]=="")) {
                             root.children[name].values[0] = value;
-                        } else if (typeof(name) != "undefined") {
-                            root.children[name] = {"name":name,"values":[value],"children":{}} 
+                            if (name == "ProductType" && value != _self.view.getProductType()) {
+                                _self.view.setProductType(value);
+                                fullRefreshNeeded = true;
+                            }
+                        } else if (typeof(name) != "undefined" && !(name in root.children)) {
+                            root.children[name] = {"name":name,"values":[value],"children":{}}
+                            if (name == "ProductType" && value != _self.view.getProductType()) {
+                                _self.view.setProductType(value);
+                                fullRefreshNeeded = true;
+                            }
                         }
                         //Update from presets
                         utils.updateFromPresets(elem);
