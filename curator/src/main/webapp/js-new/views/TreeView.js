@@ -113,7 +113,32 @@ define(["jquery",
             $("#"+this.name).on("loaded.jstree open_node.jstree", function(event, data){
                 $('[data-toggle="popover"]').popover({trigger: 'hover','placement': 'top',delay: { "show": 500, "hide": 100 }});
 
-            })
+            });
+            var that = this;
+            $("#"+this.name).on('select_node.jstree', function(e, data) {
+                console.log(e);
+                console.log(data);
+                console.log(data.instance._model.data);
+                var model = data.instance._model.data;
+                var targetID = data.node.id;
+                var children = data.node.children_d;
+                var childrenID;
+                for (var i = 0; i < children.length; i++) {
+                    if (model[children[i]].state.disabled) {
+                        childrenID = model[children[i]].id;
+                        $("#"+that.name).jstree(true).deselect_node(childrenID);
+                        model[children[i]].state.selected = false;
+                    }
+                    // else {
+                    //   childrenID = model[children[i]].id;
+                    //   $('#container').jstree(true).select_node(childrenID);
+                    //   model[children[i]].state.selected = true;
+                    // }
+                }
+                // $('#container').find("#root-2_anchor").addClass('jstree-clicked');
+                // $('#container').find("#root-2_anchor").closest('.jstree-node').attr('aria-selected', true);
+                // data.node.state.selected = true;
+            });
             this._updateSelection = getSelectionUpdater(this.selection,this);
             //Register view update on directory change
             this.directory.on("change:files",this.render,this);
