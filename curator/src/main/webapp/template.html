@@ -26,14 +26,27 @@
     <% var disabled = locked ? "disabled" : "";
        var invisible = hidden ? "hidden" : "";
        var needed = (required && locked) ? "<em>**</em>" : (required) ? "<em>*</em>" : "";
-       if (values != null) { %>
-           <select title="Help" data-content="<%= description %>" data-toggle="popover" data-html="true" id="<%= id %>" name="<%= name %>" <%= disabled %> <%= invisible %> >
+        var dc = description;
+        if(disabled && modelsize >0){
+            dc='<span data-content="Not all files selected have the same AssetType." data-toggle="popover" data-html="true" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>'
+         }
+        else if(disabled && modelsize ==0){
+            dc = "No item selected"
+        }
+       if (values != null) {
+        if(disabled){ %>
+            <span><%= dc %></span>
+        <% }
+        else{ %>
+        <div id="selectspan" data-content="<%= dc %>" data-toggle="popover" data-html="true" >
+           <select id="<%= id %>" name="<%= name %>" <%= disabled %> <%= invisible %> >
     <%     for (var i = 0; i < values.length; i++) {
                var selected = values[i] == value ? "selected" : ""; %>
                <option value="<%= values[i]%>" <%= selected %>><%= values[i]%></option>
     <%     }; %>
            </select>
-    <% } else { %>
+            </div>
+    <% } } else { %>
            <input title="Help" data-content="<%= description %>" data-toggle="popover" data-html="true" id="<%= id %>" type="text" tagindex="<%= index %>" name="<%= name %>" value="<%= value %>" class="text-input-box" <%= disabled %> <%= invisible %> ></input>
     <% }; %>
     </td>

@@ -74,6 +74,7 @@ define(["jquery",
             var values = null;
             //Flag attributes
             var locked = "attachments" in element && "locked" in element.attachments || this.model.size() == 0;
+            var modelsize = this.model.size();
             var required = "attachments" in element && "required" in element.attachments && this.model.size() > 0;
             //Hidden fields: Can be hidden via policy from Filemanager or via configuration passed into curator setup in main Javascript File
             // If the field is required, errors will be reported as general error at the bottom of the entry table
@@ -120,7 +121,8 @@ define(["jquery",
                 "values":values,
                 "value":(element.elementName == "ProductType")?this.type:value,
                 "error":error,
-                "index":index++
+                "index":index++,
+                "modelsize": modelsize
             };
             obj.html = this._entryTemplate(obj);     
             return obj;
