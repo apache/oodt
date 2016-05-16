@@ -28,7 +28,7 @@
        var needed = (required && locked) ? "<em>**</em>" : (required) ? "<em>*</em>" : "";
         var dc = description;
         if(disabled && modelsize >0){
-            dc='<span data-content="Not all files selected have the same AssetType." data-toggle="popover" data-html="true" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>'
+            dc='Multiple Asset Types selected'
          }
         else if(disabled && modelsize ==0){
             dc = "No item selected"
