@@ -97,7 +97,7 @@ define(["jquery","js-new/utils/utils"],
                                     torm.push(elem);
                                 }
                             } catch(err) {
-                                Console.log("Error: Failed to parse ingestibles"+err);
+                                console.log("Error: Failed to parse ingestibles"+err);
                             }
                         }
                     );
