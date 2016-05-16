@@ -178,6 +178,9 @@ define(["jquery",
             var inputHtmls = [];
             //Merge metadata together for display
             var merged = {"name":"root","values":[],"children":{},"errors":{}};
+            if(this.model.models.length == 0){
+                $('.metadata').find('input:text').val('');
+            }
             //For each item in the collection, merge together
             this.model.each(
                 function(elem) {
