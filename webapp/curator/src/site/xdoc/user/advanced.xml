@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<document>
+  <properties>
+    <title>Setting Up the CAS-Curator</title>
+    <author email="woollard@jpl.nasa.gov">David Woollard</author>
+  </properties>
+
+  <body>
+    <section name="Introduction">
+    
+    <p>This document serves as an advanced user's guide for the CAS-Curator
+      project. The goal of the document is to explore advanced topics such as 
+      security setup and changing the look and feel of the CAS-Curator
+      to match your project. For basic topics, such as checking out, 
+      building, and installing the base version of the CAS-Curator, as well 
+      as performing basic configuration tasks, please see our 
+      <a href="../user/basic.html">Basic Guide.</a></p>
+    
+    <p>The remainder of this guide is separated into the following 
+      sections:</p>
+      
+    <ul>
+      <li><a href="#section1">Security Setup</a></li>
+      <li><a href="#section2">Look and Feel</a></li>
+    </ul>
+    </section>
+    
+    
+    <a name="section1"/>
+    <section name="Security Setup">
+    <p>Coming Soon...</p>
+    </section>
+    
+    <a name="section2"/>
+    <section name="Look and Feel">
+    <p>Coming Soon...</p>
+    </section>
+   
+  </body>
+</document>  

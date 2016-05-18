@@ -1,0 +1,60 @@
+div.panel {
+    float:left;
+    background-color: #dddddd;
+    border-radius: 1em;
+    padding: 0.5em;
+    
+}
+div.content {
+    overflow:hidden;
+    clear: both;
+    height:100%;
+}
+div.upload {
+    border-radius: 1em;
+    background-color:#ffffff;
+    border: 0.2em dashed #0087f6;
+    padding: 0.5em;
+}
+div.treeview {
+    border-radius: 1em;
+    background-color:#ffffff;
+    padding: 0.5em;
+}
+div.intro {
+    margin-bottom: 50px;
+}
+input[type="text"]:disabled {
+    background: #dddddd;
+}
+.invalid_node { color:red !important; }
+
+.tooltip.top .tooltip-arrow {
+    bottom: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-top-color: #fff;
+    border-width: 5px 5px 0;
+}
+.tooltip-inner {
+    color: #000;
+    background: #fff;
+    border: solid 1px #fff;
+}
+
+.tooltip.top .tooltip-arrow {
+    bottom: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-top-color: #fff;
+    border-width: 5px 5px 0;
+}
+.tooltip-inner {
+    color: #000;
+    background: #fff;
+    border: solid 1px #fff;
+}
+
+.move_cell_icon {
+    width: 30px;
+}

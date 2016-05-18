@@ -1,0 +1,151 @@
+<!-- Tree view template -->
+<script type="text/template" id="template-jstree">
+    <div id="<%= name %>" class="treeview">
+    </div>
+</script>
+<!-- Upload template -->
+<script type="text/template" id="template-upload">
+    <div id="<%= name %>" class="upload dropzone"></div>
+</script>
+<!-- Extractors list template -->
+<script type="text/template" id="template-extractor-list">
+    Extractor:
+    <select id="extractors">
+        <option name="No Extractor" value="No Extractor">No Extractor</option>
+    <% var extractors = model.get("extractors");
+       for (var i = 0; i < extractors.length; i++) { 
+           var selected = (model.get("selected") == extractors[i]) ? "selected" : ""; %>
+           <option name="<%= extractors[i] %>" value="<%= extractors[i] %>" <%= selected %>><%= extractors[i] %></option>
+    <% }; %>
+    </select>
+</script>
+<!-- An element -->
+<script type="text/template" id="template-table-element">
+    <td ><span title="Help" data-content="<%= description %>" data-toggle="popover" data-html="true"><%= displayName %></span></td>
+    <td>
+    <% var disabled = locked ? "disabled" : "";
+       var invisible = hidden ? "hidden" : "";
+       var needed = (required && locked) ? "<em>**</em>" : (required) ? "<em>*</em>" : "";
+        var dc = description;
+        if(disabled && modelsize >0){
+            dc='Multiple Asset Types selected'
+         }
+        else if(disabled && modelsize ==0){
+            dc = "No item selected"
+        }
+       if (values != null) {
+        if(disabled){ %>
+            <span><%= dc %></span>
+        <% }
+        else{ %>
+        <div id="selectspan" data-content="<%= dc %>" data-toggle="popover" data-html="true" >
+           <select id="<%= id %>" name="<%= name %>" <%= disabled %> <%= invisible %> >
+    <%     for (var i = 0; i < values.length; i++) {
+               var selected = values[i] == value ? "selected" : ""; %>
+               <option value="<%= values[i]%>" <%= selected %>><%= values[i]%></option>
+    <%     }; %>
+           </select>
+            </div>
+    <% } } else { %>
+           <input title="Help" data-content="<%= description %>" data-toggle="popover" data-html="true" id="<%= id %>" type="text" tagindex="<%= index %>" name="<%= name %>" value="<%= value %>" class="text-input-box" <%= disabled %> <%= invisible %> ></input>
+    <% }; %>
+    </td>
+    <td>
+    <% if (error != null && error != "" ) { %>
+           <span class="alert alert-danger" role="alert" style="display: inline-block">
+               <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+               <span>Error:
+                   <%= error %>
+                   <% if (locked) { %>
+                   <%= " Did you run the extractor?" %>
+                   <% }; %>
+               </span>
+           </span>
+    <% } else {
+          if (values != null || (value!=null && value.length>0)){ %>
+             <img src="icons/icon_move_into_cell.png" class="move_cell_icon"/>
+       <% } %>
+        <%= needed %>
+    <% }; %>
+    </td>
+</script>
+<!-- Table Metadata -->
+<script type="text/template" id="template-elements-table">
+    <%       var hiddenErrors = []; %>
+    <table class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Metadata Key</th>
+                <th>Value</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    <%      for (var i = 0; i < htmls.length; i++) { 
+                var hidden = (htmls[i].hidden)? "hidden" : "";%>
+                <tr <%= hidden %> id="<%= htmls[i].id %>">
+                    <%= htmls[i].html  %>
+                </tr>
+                <% if (htmls[i].hidden && htmls[i].error != "") {
+                    hiddenErrors.push(htmls[i].error);
+                }; %>
+    <!-- TODO: Insert recursion here, if needed -->
+    <%      }; %>
+        
+        </tbody>    
+    </table>
+    <em>*</em> denotes required field
+    <em>**</em> denotes extracted field
+    <% if (hiddenErrors.length > 0) { %>
+        <span class="alert alert-danger" role="alert" style="display: inline-block">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span>Error: Internal Fields not set, did you run appropriate extractors? <button id="button-errors" onclick='$(".hideableError").toggle("medium");'>Details</button></span>
+            <br class="hideableError" hidden />
+            <% for (var i = 0; i < hiddenErrors.length; i++) { %>
+                <span class="hideableError" hidden >Detailed Error: <%= hiddenErrors[i] %></span><br class="hideableError" hidden />
+            <% } %>
+            <button class="hideableError" onclick='$(".hideableError").hide("medium");' hidden >Hide</button>
+            </span>
+        </span>
+    <% }; %>
+</script>
+<!-- Template for metadata buttons and immediate feedback -->
+<script type="text/template" id="template-metadata-buttons">
+    <button id="ingest" class="btn btn-success" tagindex="500"><%= buttonText %></button>
+    <button id="clear-metadata" class="btn btn-danger" tagindex="501">Clear Metadata Entry Form</button>
+    <span id="ingest-status"></span>
+</script>
+<script type="text/template" id="template-ingest-status">
+    <% if (ingesting) { %>
+           <image src="icons/waiting.gif" height="30px" /> 
+    <% } %>
+</script>
+<!-- Ingest file template -->
+<script type="text/template" id="template-ingesting">
+    <ul id="ingestable">
+    <%    if (statuses.length == 0) { %>
+              <h3>No ingesting products</h3>
+    <%    } else {
+              for (var i = 0; i < statuses.length; i++) {
+                  var model = statuses[i];
+                  var icon = "icons/error.jpg";
+                  var extra = "";
+                   var dispname = model.file;
+                  if(model.file==='/dev/null' && model.pname != ""){
+                      dispname = model.pname;
+                   }
+                  if (model.status == "DONE") {
+                      icon = "icons/success.jpg";
+                      var location = "/opsui/product/"+statuses[i].product;
+                      extra = "<em>Metadata record:<a href='"+location+"' target='_blank'>"+statuses[i].product+"</a></em>";
+                  } else if (model.status == "IN PROGRESS") {
+                      icon = "icons/waiting.gif";
+                  } else {
+                      extra = "<em>"+model.status+"</em>";
+                  }%>
+                  <li><img src="<%= icon %>" height="20px" /><%= dispname %><br><%= extra %></li>
+    <%        }; 
+          }; %>
+    </ul>
+    <button id="ingest-clear-errors" class="btn btn-danger">Clear Ingest Status</button>
+</script>

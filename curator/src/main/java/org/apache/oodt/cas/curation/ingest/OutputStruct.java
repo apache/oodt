@@ -11,6 +11,7 @@ public class OutputStruct {
     public static class OutputEntry {
         public String file;
         public String product;
+        public String pname;
         public String status;
         public long timestamp;
     }

@@ -106,6 +106,7 @@ public class IngestBackend {
                 for (InputStruct.InputEntry entry : current.get(user)) {
                     OutputStruct.OutputEntry temp = new OutputStruct.OutputEntry();
                     temp.file = entry.file;
+                    temp.pname = entry.pname;
                     temp.timestamp = entry.timestamp;
                     if (entry.error != null ) {
                         //torm.add(entry);

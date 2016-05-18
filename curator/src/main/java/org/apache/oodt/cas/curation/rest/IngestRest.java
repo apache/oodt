@@ -105,4 +105,7 @@ public class IngestRest {
         this.backend = new IngestBackend();
     }
 
+    public IngestBackend getBackend() {
+        return backend;
+    }
 }
