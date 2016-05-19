@@ -25,7 +25,7 @@
     <td>
     <% var disabled = locked ? "disabled" : "";
        var invisible = hidden ? "hidden" : "";
-       var needed = (required && locked) ? "<em>**</em>" : (required) ? "<em>*</em>" : "";
+       var needed = required ? "<em>*</em>" : "";
         var dc = description;
         if(disabled && modelsize >0){
             dc='Multiple Asset Types selected'
@@ -95,7 +95,6 @@
         </tbody>    
     </table>
     <em>*</em> denotes required field
-    <em>**</em> denotes extracted field
     <% if (hiddenErrors.length > 0) { %>
         <span class="alert alert-danger" role="alert" style="display: inline-block">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
