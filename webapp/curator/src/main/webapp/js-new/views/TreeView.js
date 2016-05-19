@@ -10,6 +10,9 @@ define(["jquery",
         "popover",
         "blockui"],
     function($,_,Backbone,jstree,utils) {
+
+        var opennodes = false;
+        var nodestates = [];
         /**
          * Augments a given object for use with JS tree
          * @param 
@@ -18,9 +21,44 @@ define(["jquery",
             if (typeof object === 'object' && "name" in object && "type" in object) {
                 object.text = object.name + (object.type == "DIRECTORY"?"/":"");
                 object.icon = (object.type == "DIRECTORY"?"icons/directory.png":"icons/file.png");
-                parseValidation(object)
+                parseValidation(object);
+                var override = false;
+                _.each(nodestates, function(node){
+                    if(node.path === object.path){
+                        object.state = node.state;
+                        override = true;
+                    }
+                });
+                if(!override && "children" in object && object.children.length>0){
+                    var hasfiles = traverse(object.children);
+                    if(hasfiles != undefined && !hasfiles) {
+                        object.state = {opened:false};
+                    }
+                    else{
+                        object.state = {opened:true};
+                    }
+                }
             }
 
+        }
+
+        
+        function traverse(o) {
+            var ret = false;
+            for (var i in o) {
+                //func.apply(this,[i,o[i]]);
+                if("type" in o[i] && o[i].type != "DIRECTORY"){
+                    return true;
+                }
+                if (o[i] !== null && typeof(o[i])=="object") {
+                    //going on step down in the object tree!!
+                    ret = traverse(o[i].children);
+                    if(ret == true){
+                        return true;
+                    }
+                }
+            }
+            return ret;
         }
 
         /**
@@ -127,7 +165,26 @@ define(["jquery",
             $("#"+this.name).on("refresh.jstree",this.gussy.bind(this));
             $("#"+this.name).on("loaded.jstree open_node.jstree", function(event, data){
                 $('[data-toggle="popover"]').popover({trigger: 'hover','placement': 'top',delay: { "show": 500, "hide": 100 }});
+                
+            });
+            $("#"+this.name).on("open_node.jstree close_node.jstree", function(event, data){
+                    console.log(data);
+                var nset = false;
+                for(var node in nodestates){
+                    if(nodestates[node].path === data.node.original.path){
+                        if(event.type === "open_node"){
+                            nodestates[node].state = "open";
+                        }
+                        else{
+                            nodestates[node].state = "closed";
+                        }
 
+                        nset = true;
+                    }
+                }
+                if(!nset) {
+                    nodestates.push({path: data.node.original.path, state: "open"})
+                }
             });
             var that = this;
             $("#"+this.name).on('select_node.jstree', function(e, data) {
@@ -160,7 +217,7 @@ define(["jquery",
          * Gussie up the tree view
          */
         function gussy() {
-            $("#"+this.name).jstree(true).open_all();
+           // $("#"+this.name).jstree(true).open_all();
             $("#"+this.name).jstree(true).deselect_all();
             this.selection.each(
                 function(elem) {
@@ -178,6 +235,9 @@ define(["jquery",
             //Turn off updates
             $("#"+this.name).off("changed.jstree");
             var data = utils.deep(this.directory.get("files"),jsTreeAug);
+            if(data.type=="DIRECTORY"){
+                opennodes = true;
+            }
             $("#"+this.name).jstree(true).settings.core.data = data;
             $("#"+this.name).jstree(true).refresh();
         };

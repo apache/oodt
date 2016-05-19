@@ -2,7 +2,7 @@
  * A controller mechanism
  * @author starchmd
  */
-define(["jquery","js-new/utils/utils"],
+define(["jquery","js-new/utils/utils", "blockui"],
     function($,utils) {
         /**
          * Controller for matching datamodel, metadata model to metadataview.
@@ -32,6 +32,19 @@ define(["jquery","js-new/utils/utils"],
                  * @param e
                  */
                 function(e) {
+                    if(e!=undefined) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff'
+                            }
+                        });
+                    }
                     var value = this.value;
                     var name = this.name;
                     var filler = "filler" in this && this.filler;
@@ -61,7 +74,11 @@ define(["jquery","js-new/utils/utils"],
                         elem.save(null,{"success":
                             function(){
                                 if ("collection" in elem) {
-                                    elem.fetch({"success":_self.view.render.bind(_self.view,false)});
+                                    elem.fetch({"success": function(){
+                                        _self.view.render.bind(_self.view,false);
+                                        $.unblockUI();
+                                    }
+                                    });
                                 }
                             },"validate": false});                        
                         });
