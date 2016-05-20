@@ -116,7 +116,7 @@ define(["jquery",
             }
             if (typeof(constructed["ingest-view"]) != "undefined") {
                 Models.refresh(constructed["ingest-view"]);
-                setInterval(Models.refresh.bind(Models,constructed["ingest-view"]),Config.FILE_SYSTEM_REFRESH_INTERVAL);
+                //setInterval(Models.refresh.bind(Models,constructed["ingest-view"]),Config.FILE_SYSTEM_REFRESH_INTERVAL);
                 if (typeof(constructed["metadata-control"]) != "undefined") {
                     constructed["metadata-control"].enableIngestWait();
                 }

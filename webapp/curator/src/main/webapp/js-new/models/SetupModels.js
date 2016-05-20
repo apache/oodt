@@ -24,6 +24,9 @@ define(["js-new/models/DirectoryModel",
                     models.directory.fetch();
                     models.ingest.fetch({"success":inview.render.bind(inview)});
                 },
+            "refreshTree": function(){
+                models.directory.fetch();
+            },
             "working": new Metadata({"id":"working-set"})
         };
         //models.datamodel.fetch();

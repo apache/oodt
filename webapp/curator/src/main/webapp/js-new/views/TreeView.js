@@ -7,12 +7,14 @@ define(["jquery",
         "lib/backbone",
         "lib/jstree",
         "js-new/utils/utils",
+        "js-new/models/SetupModels",
         "popover",
         "blockui"],
-    function($,_,Backbone,jstree,utils) {
+    function($,_,Backbone,jstree,utils, Models) {
 
         var opennodes = false;
         var nodestates = [];
+
         /**
          * Augments a given object for use with JS tree
          * @param 
@@ -241,6 +243,10 @@ define(["jquery",
             $("#"+this.name).jstree(true).settings.core.data = data;
             $("#"+this.name).jstree(true).refresh();
         };
+
+        function refresh_tree() {
+            Models.refreshTree();
+        };
         /**
          * Tree view object
          */
@@ -249,7 +255,12 @@ define(["jquery",
             render: render,
             setUpdate: setUpdate,
             //Private functions
-            gussy: gussy
+            gussy: gussy,
+            refresh_tree: refresh_tree,
+
+            events: {
+                'click .refresh-tree' : 'refresh_tree'
+            }
         });
     }
 );
