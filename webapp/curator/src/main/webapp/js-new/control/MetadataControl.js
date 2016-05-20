@@ -6,14 +6,15 @@ define(["jquery","js-new/utils/utils", "blockui"],
     function($,utils) {
         /**
          * Controller for matching datamodel, metadata model to metadataview.
-         * @param view - metadat entry view
+         * @param view - metadata entry view
          * @param tree - file tree view
          * @param model - metadata model
          * @param ingest - ingesting view
          * @param buttons - metadata buttons view
          * @param working - working set metadata (instance of metadata model)
+         * @param directory - directory model
          */
-        return function(view,tree,buttons,model,ingest,working) {
+        return function(view,tree,buttons,model,ingest,working,directory) {
             var _self = this;
             _self.view = view;
             _self.tree = tree;
@@ -22,6 +23,7 @@ define(["jquery","js-new/utils/utils", "blockui"],
             _self.ingest = ingest;
             _self.buttons = buttons;
             _self.working = working;
+            _self.directory = directory;
             _self.waitOnIngest = false;
             _self.ingestCB = function(){};
             _self.entryCB = function(){};
@@ -128,6 +130,7 @@ define(["jquery","js-new/utils/utils", "blockui"],
                         setTimeout(_self.ingestCB.bind(null,selects),50);
                         for (var i = 0; i < torm.length; i++) {
                             _self.model.remove(torm[i]);
+                            _self.directory.rmFile("/celgene/archive/"+torm[i].id)
                         }
                         if (typeof(_self.tree) != "undefined") {
                             _self.tree.render();

@@ -84,7 +84,7 @@ define(["jquery",
                     {
                         "name" :    "metadata-control",
                         "class" :   MetadataControl,
-                        "params" :  [constructed["metadata-view"],constructed["tree-view"],constructed["btns-view"],Models.metadata,Models.ingest,Models.working]
+                        "params" :  [constructed["metadata-view"],constructed["tree-view"],constructed["btns-view"],Models.metadata,Models.ingest,Models.working,Models.directory]
                     },
                     {
                         "name" :    "extractor-control",

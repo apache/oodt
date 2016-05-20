@@ -207,6 +207,8 @@ define(["jquery",
             this._updateSelection = getSelectionUpdater(this.selection,this);
             //Register view update on directory change
             this.directory.on("change:files",this.render,this);
+            this.directory.on('change', this.render, this);
+
             this.render();
         };
         /**
