@@ -129,7 +129,6 @@ define(["jquery","js-new/utils/utils", "js-new/config/Configuration", "js-new/ut
                         _self.ingest.save({"entries":selects}, {
                             dataType:'text',
                             success: function(){
-                                console.log("here");
                             EventBus.events.trigger('ingest:execute');
 
                         },

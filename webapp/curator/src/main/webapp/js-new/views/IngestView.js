@@ -4,8 +4,9 @@
  */
 define(["jquery",
         "underscore",
-        "lib/backbone","js-new/utils/utils"],
-    function($,_,Backbone,utils) {
+        "lib/backbone","js-new/utils/utils", "js-new/utils/EventBus"],
+    function($,_,Backbone,utils,EventBus) {
+        var initCall = false;
         /**
          * Initialize function
          * @param options - options for initialization
@@ -28,6 +29,10 @@ define(["jquery",
             this.onRefresh();
             this.$el.html(this._template({"statuses":this.ingest.get("status")}));
             $(this.$el).find("button#ingest-clear-errors").on("click",utils.getMediator(this,"_ingestClear"));
+            if(!initCall){
+                EventBus.events.trigger('ingest:execute');
+                initCall=true;
+            }
         };
         /**
          * A function to set the "on click" for ingest clear button
