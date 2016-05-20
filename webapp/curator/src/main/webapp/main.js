@@ -13,7 +13,8 @@ require.config({
         bootstrap: "lib/bootstrap.min",
         tooltip: "lib/tooltip",
         popover: "lib/popover",
-        blockui: "lib/jquery.blockUI"
+        blockui: "lib/jquery.blockUI",
+        typeahead: "lib/typeahead.jquery"
     }
 });
 require(["lib/domReady!","js-new/Startup"],

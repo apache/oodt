@@ -5,8 +5,9 @@ define(["jquery",
         "js-new/config/Configuration",
         "js-new/utils/utils",
         "popover",
-        "blockui"],
-    function($,_,Backbone,DataTable,Configuration,utils) {
+        "blockui",
+        "typeahead"],
+    function($,_,Backbone,DataTable,Configuration,utils, typeahead) {
         
         /**
          * Initialize this view
@@ -110,6 +111,10 @@ define(["jquery",
                     locked = locked | current["locked"];
                 }
             }
+            var typeahead = false;
+            if("input-"+element.elementName in Configuration.INPUT_SUGGESTIONS){
+                typeahead = true;
+            }
             //Grab the template and build it
             var obj = {
                 "id":"input-"+element.elementName,
@@ -123,9 +128,11 @@ define(["jquery",
                 "value":(element.elementName == "ProductType")?this.type:value,
                 "error":error,
                 "index":index++,
-                "modelsize": modelsize
+                "modelsize": modelsize,
+                "typeahead": typeahead
             };
-            obj.html = this._entryTemplate(obj);     
+            obj.html = this._entryTemplate(obj);
+
             return obj;
         }
         /**
@@ -251,6 +258,21 @@ define(["jquery",
             if(forceRefresh==true) {
                 $.unblockUI();
             }
+            var typeaheads = $(this.$el).find(".typeahead");
+            typeaheads.each(function(id, el){
+                var suggestions = Configuration.INPUT_SUGGESTIONS[el.id];
+                $(el).typeahead({
+                        hint: false,
+                        highlight: false,
+                        minLength: 1
+                    },
+                    {
+                        name: id,
+                        source: substringMatcher(suggestions)
+                    });
+            });
+
+
         };
         /**
          * A function to set the "on change" call-back for data inputs
@@ -259,6 +281,31 @@ define(["jquery",
         function setOnEntryFunction(func) {
             this._dataEntry = func;
         }
+
+        function substringMatcher(strs) {
+            return function findMatches(q, cb) {
+                var matches, substringRegex;
+
+                // an array that will be populated with substring matches
+                matches = [];
+
+                // regex used to determine if a string contains the substring `q`
+                substrRegex = new RegExp(q, 'i');
+
+                // iterate through the pool of strings and for any string that
+                // contains the substring `q`, add it to the `matches` array
+                $.each(strs, function(i, str) {
+                    if (substrRegex.test(str)) {
+                        matches.push(str);
+                    }
+                });
+
+                cb(matches);
+            };
+        };
+
+
+
         /**
          * Update the current product type from the controller
          * @param type - product type
