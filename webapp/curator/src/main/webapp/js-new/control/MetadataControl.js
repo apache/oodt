@@ -2,8 +2,8 @@
  * A controller mechanism
  * @author starchmd
  */
-define(["jquery","js-new/utils/utils", "blockui"],
-    function($,utils) {
+define(["jquery","js-new/utils/utils", "js-new/config/Configuration", "js-new/utils/EventBus", "blockui"],
+    function($,utils, Configuration, EventBus) {
         /**
          * Controller for matching datamodel, metadata model to metadataview.
          * @param view - metadata entry view
@@ -126,11 +126,20 @@ define(["jquery","js-new/utils/utils", "blockui"],
                             _self.buttons.setIngesting(true);
                             _self.buttons.render();
                         }
-                        _self.ingest.save({"entries":selects});
+                        _self.ingest.save({"entries":selects}, {
+                            dataType:'text',
+                            success: function(){
+                                console.log("here");
+                            EventBus.events.trigger('ingest:execute');
+
+                        },
+                        error: function(data, xhr){
+                            console.log(xhr);
+                        }});
                         setTimeout(_self.ingestCB.bind(null,selects),50);
                         for (var i = 0; i < torm.length; i++) {
                             _self.model.remove(torm[i]);
-                            _self.directory.rmFile("/celgene/archive/"+torm[i].id)
+                            _self.directory.rmFile(Configuration.STAGING_BASE+torm[i].id)
                         }
                         if (typeof(_self.tree) != "undefined") {
                             _self.tree.render();

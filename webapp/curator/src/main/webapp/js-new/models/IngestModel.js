@@ -30,13 +30,15 @@ define(["jquery",
                     ret.push(this.get("status")[i]);
                     map[key] = i;
                 }*/
-                for (var i = 0; i < response["status"].length; i++) {
-                    //key = response["status"][i]["timestamp"]+"-"+response["status"][i]["file"];
-                    //if (key in map) {
-                    //    ret[map[key]] = response["status"][i];
-                    //} else {
+                if(typeof response != "string") {
+                    for (var i = 0; i < response["status"].length; i++) {
+                        //key = response["status"][i]["timestamp"]+"-"+response["status"][i]["file"];
+                        //if (key in map) {
+                        //    ret[map[key]] = response["status"][i];
+                        //} else {
                         ret.push(response["status"][i]);
-                    //}
+                        //}
+                    }
                 }
             }
             return {"status":ret};

@@ -2,8 +2,8 @@
  * A controller mechanism
  * @author starchmd
  */
-define(["jquery"],
-    function($) {
+define(["jquery", "js-new/utils/EventBus"],
+    function($, EventBus) {
         /**
          * Controller for matching datamodel, metadata model to metadataview.
          */
@@ -32,5 +32,10 @@ define(["jquery"],
                 };
             _self.view.setOnRefresh(_self.onRefresh);
             _self.view.setIngestClear(_self.onclick);
+
+            EventBus.events.bind('ingest:execute', function(){
+                _self.model.fetch({"success":_self.view.render.bind(_self.view)});
+            });
+
         }
 });

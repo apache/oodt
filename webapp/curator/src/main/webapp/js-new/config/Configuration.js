@@ -33,6 +33,7 @@ define(["jquery"],
             _self.UPLOAD_REST_SERVICE = path.substr(0,path.lastIndexOf("/")+1)+"services/upload/file";
             _self.FILE_SYSTEM_REFRESH_INTERVAL = 1000;
             _self.DEFAULT_TYPE = "GenericFile";
+            _self.STAGING_BASE="/"
             
             _self.addConfig = 
                 /**
