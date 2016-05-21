@@ -114,7 +114,7 @@
 <!-- Template for metadata buttons and immediate feedback -->
 <script type="text/template" id="template-metadata-buttons">
     <button id="ingest" class="btn btn-success" tagindex="500"><%= buttonText %></button>
-    <button id="clear-metadata" class="btn btn-danger" tagindex="501">Clear Metadata Entry Form</button>
+    <button id="clear-metadata" class="btn btn-danger" tagindex="501">Clear</button>
     <span id="ingest-status"></span>
 </script>
 <script type="text/template" id="template-ingest-status">
@@ -139,13 +139,13 @@
                   if (model.status == "DONE") {
                       icon = "icons/success.jpg";
                       var location = "/opsui/product/"+statuses[i].product;
-                      extra = "<em>Metadata record:<a href='"+location+"' target='_blank'>"+statuses[i].product+"</a></em>";
+                      extra = "<em>Metadata record: <a href='"+location+"' target='_blank'>"+statuses[i].product+"</a></em>";
                   } else if (model.status == "IN PROGRESS") {
                       icon = "icons/waiting.gif";
                   } else {
                       extra = "<em>"+model.status+"</em>";
                   }%>
-                  <li><img src="<%= icon %>" height="20px" /><%= dispname %><br><%= extra %></li>
+                  <li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><%= dispname %><br><%= extra %></li>
     <%        }; 
           }; %>
     </ul>
