@@ -23,7 +23,9 @@ div.treeview {
     background-color: #ffffff;
     padding: 0.5em;
 }
-
+.tree-buttons {
+    margin-top: 10px;
+}
 div.intro {
     margin-bottom: 50px;
 }
