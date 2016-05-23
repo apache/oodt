@@ -49,9 +49,15 @@
     <%     }; %>
            </select>
             </div>
-    <% } } else { %>
-           <input title="Help" data-content="<%= description %>" data-toggle="popover" data-html="true" id="<%= id %>" type="text" tagindex="<%= index %>" name="<%= name %>" value="<%= value %>" class="text-input-box" <%= disabled %> <%= invisible %> ></input>
-    <% }; %>
+    <% } } else {
+        var c = "";
+        if(typeahead){
+            c = "typeahead";
+        }
+        %>
+
+           <input title="Help" data-content="<%= description %>" data-toggle="popover" data-html="true" id="<%= id %>" type="text" tagindex="<%= index %>" name="<%= name %>" value="<%= value %>" class="text-input-box <%= c %>" <%= disabled %> <%= invisible %> ></input>
+    <%  }; %>
     </td>
     <td>
     <% if (error != null && error != "" ) { %>
