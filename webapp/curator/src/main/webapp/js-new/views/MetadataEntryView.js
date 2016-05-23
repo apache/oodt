@@ -112,7 +112,7 @@ define(["jquery",
                 }
             }
             var typeahead = false;
-            if("input-"+element.elementName in Configuration.INPUT_SUGGESTIONS){
+            if(Configuration.INPUT_SUGGESTIONS != undefined && "input-"+element.elementName in Configuration.INPUT_SUGGESTIONS){
                 typeahead = true;
             }
             //Grab the template and build it
