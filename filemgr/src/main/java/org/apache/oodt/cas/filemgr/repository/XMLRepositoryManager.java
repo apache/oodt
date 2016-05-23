@@ -28,10 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -60,7 +57,7 @@ public class XMLRepositoryManager implements RepositoryManager {
     private List<String> productTypeHomeUris = null;
 
     /* our map of product types that the system knows about */
-    private HashMap<String, ProductType> productTypeMap = new HashMap<String, ProductType>();
+    private LinkedHashMap<String, ProductType> productTypeMap = new LinkedHashMap<String, ProductType>();
 
     /* our log stream */
     private static final Logger LOG = Logger.getLogger(XMLRepositoryManager.class
