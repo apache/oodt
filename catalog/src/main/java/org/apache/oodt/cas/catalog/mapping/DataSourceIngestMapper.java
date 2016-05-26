@@ -18,13 +18,15 @@ package org.apache.oodt.cas.catalog.mapping;
 
 //JDK imports
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 //SQL imports
 import javax.sql.DataSource;
 
@@ -50,299 +52,200 @@ public class DataSourceIngestMapper implements IngestMapper {
 
 	private DataSource dataSource;
 	
+	private static final String CATALOG_ID = "' AND CATALOG_ID = '";
+	
+	private static final String CAT_TRANS_FACTORY = "CAT_TRANS_FACTORY";
+	
+	private static final String CAT_TRANS_ID = "CAT_TRANS_ID";
+	
 	public DataSourceIngestMapper(String user, String pass, String driver,
 			String jdbcUrl) {
 		this.dataSource = DatabaseConnectionBuilder.buildDataSource(user, pass,
                 driver, jdbcUrl);
 	}
 	
+	@Override
 	public synchronized void deleteAllMappingsForCatalog(String catalogId)
-			throws CatalogRepositoryException {
-		Connection conn = null;
-		Statement stmt = null;
-		try {
-			conn = this.dataSource.getConnection();
-			stmt = conn.createStatement();
+			throws CatalogRepositoryException, SQLException {
+		try (Connection conn = this.dataSource.getConnection();
+		    Statement stmt = conn.createStatement()) {
 			stmt.execute("DELETE FROM CatalogServiceMapper WHERE CATALOG_ID = '" + catalogId + "'");
-		}catch (Exception e) {
-			throw new CatalogRepositoryException(e.getMessage(), e);
-		}finally {
-			try {
-				conn.close();
-			}catch(Exception ignored) {}
-			try {
-				stmt.close();
-			}catch(Exception ignored) {}
 		}
 	}
 
+	@Override
 	public synchronized void deleteAllMappingsForCatalogServiceTransactionId(
 			TransactionId<?> catalogServiceTransactionId)
-			throws CatalogRepositoryException {
-		Connection conn = null;
-		Statement stmt = null;
-		try {
-			conn = this.dataSource.getConnection();
-			stmt = conn.createStatement();
+			throws CatalogRepositoryException, SQLException {
+		try (Connection conn = this.dataSource.getConnection();
+		    Statement stmt = conn.createStatement()){
 			stmt.execute("DELETE FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '" + catalogServiceTransactionId + "'");
 			conn.commit();
-		}catch (Exception e) {
-			throw new CatalogRepositoryException(e.getMessage(), e);
-		}finally {
-			try {
-				conn.close();
-			}catch(Exception ignored) {}
-			try {
-				stmt.close();
-			}catch(Exception ignored) {}
 		}
 	}
 
+	@Override
 	public synchronized void deleteTransactionIdMapping(
 			TransactionId<?> catalogTransactionId, String catalogId)
-			throws CatalogRepositoryException {
-		Connection conn = null;
-		Statement stmt = null;
-		try {
-			conn = this.dataSource.getConnection();
-			stmt = conn.createStatement();
-			stmt.execute("DELETE FROM CatalogServiceMapper WHERE CAT_TRANS_ID = '" + catalogTransactionId + "' AND CATALOG_ID = '" + catalogId + "'");
+			throws CatalogRepositoryException, SQLException {
+		try (Connection conn = this.dataSource.getConnection();
+		    Statement stmt = conn.createStatement()){
+			stmt.execute("DELETE FROM CatalogServiceMapper WHERE CAT_TRANS_ID = '" + catalogTransactionId + CATALOG_ID + catalogId + "'");
 			conn.commit();
-		}catch (Exception e) {
-			throw new CatalogRepositoryException(e.getMessage(), e);
-		}finally {
-			try {
-				conn.close();
-			}catch(Exception ignored) {}
-			try {
-				stmt.close();
-			}catch(Exception ignored) {}
 		}
 	}
 
+	@Override
 	public synchronized TransactionId<?> getCatalogServiceTransactionId(
 			TransactionId<?> catalogTransactionId, String catalogId)
-			throws CatalogRepositoryException {
-		Connection conn = null;
-		Statement stmt = null;
+			throws CatalogRepositoryException, SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		ResultSet rs = null;
-		try {
-			conn = this.dataSource.getConnection();
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT CAT_SERV_TRANS_ID,CAT_SERV_TRANS_FACTORY FROM CatalogServiceMapper WHERE CAT_TRANS_ID = '"+ catalogTransactionId + "' AND CATALOG_ID = '" + catalogId + "'");
-			
+    String query = "SELECT CAT_SERV_TRANS_ID,CAT_SERV_TRANS_FACTORY FROM CatalogServiceMapper WHERE CAT_TRANS_ID = '"+ catalogTransactionId + CATALOG_ID + catalogId + "'";
+		try (Connection conn = this.dataSource.getConnection();
+		    PreparedStatement pstmt = conn.prepareStatement(query)){
+			rs = pstmt.executeQuery();
 			while(rs.next()) {
 			  return ((TransactionIdFactory) Class.forName(rs.getString("CAT_SERV_TRANS_FACTORY")).newInstance())
 				  .createTransactionId(rs.getString("CAT_SERV_TRANS_ID"));
 			}
-
 			return null;
-		}catch (Exception e) {
-			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
-			try {
-				conn.close();
-			}catch(Exception ignored) {}
-			try {
-				stmt.close();
-			}catch(Exception ignored) {}
-			try {
-				rs.close();
-			}catch(Exception ignored) {}
+      if (rs != null && !rs.isClosed()) {
+          rs.close();
+      }
 		}
 	}
 
+	@Override
 	public synchronized TransactionId<?> getCatalogTransactionId(
 			TransactionId<?> catalogServiceTransactionId, String catalogId)
-			throws CatalogRepositoryException {
-		Connection conn = null;
-		Statement stmt = null;
+			throws CatalogRepositoryException, SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		ResultSet rs = null;
-		try {
-			conn = this.dataSource.getConnection();
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT CAT_TRANS_ID,CAT_TRANS_FACTORY FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '"+ catalogServiceTransactionId + "' AND CATALOG_ID = '" + catalogId + "'");
-			
+    String query = "SELECT CAT_TRANS_ID,CAT_TRANS_FACTORY FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '"+ catalogServiceTransactionId + CATALOG_ID + catalogId + "'";
+		try (Connection conn = this.dataSource.getConnection();
+		    PreparedStatement pstmt = conn.prepareStatement(query)){
+			rs = pstmt.executeQuery();
 			while(rs.next()) {
-			  return ((TransactionIdFactory) Class.forName(rs.getString("CAT_TRANS_FACTORY")).newInstance())
-				  .createTransactionId(rs.getString("CAT_TRANS_ID"));
+			  return ((TransactionIdFactory) Class.forName(rs.getString(CAT_TRANS_FACTORY)).newInstance())
+				  .createTransactionId(rs.getString(CAT_TRANS_ID));
 			}
-
 			return null;
-		}catch (Exception e) {
-			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
-			try {
-				conn.close();
-			}catch(Exception ignored) {}
-			try {
-				stmt.close();
-			}catch(Exception ignored) {}
-			try {
-				rs.close();
-			}catch(Exception ignored) {}
+      if (rs != null && !rs.isClosed()) {
+        rs.close();
+      }
 		}
 	}
 
+	@Override
 	public synchronized Set<String> getCatalogIds(
 			TransactionId<?> catalogServiceTransactionId)
-			throws CatalogRepositoryException {
-		Connection conn = null;
-		Statement stmt = null;
+			throws CatalogRepositoryException, SQLException {
 		ResultSet rs = null;
-		try {
-			conn = this.dataSource.getConnection();
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT CATALOG_ID FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '"+ catalogServiceTransactionId + "'");
-			
-			Set<String> catalogIds = new HashSet<String>();
+    String query = "SELECT CATALOG_ID FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '"+ catalogServiceTransactionId + "'";
+		try (Connection conn = this.dataSource.getConnection();
+		    PreparedStatement pstmt = conn.prepareStatement(query)){
+			rs = pstmt.executeQuery();
+			Set<String> catalogIds = new HashSet<>();
 			while(rs.next()) {
 			  catalogIds.add(rs.getString("CATALOG_ID"));
 			}
-
 			return catalogIds;
-		}catch (Exception e) {
-			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
-			try {
-				conn.close();
-			}catch(Exception ignored) {}
-			try {
-				stmt.close();
-			}catch(Exception ignored) {}
-			try {
-				rs.close();
-			}catch(Exception ignored) {}
+      if (rs != null && !rs.isClosed()) {
+        rs.close();
+      }
 		}	
 	}
 
+	@Override
 	public synchronized Set<TransactionId<?>> getPageOfCatalogTransactionIds(
 			IndexPager indexPager, String catalogId)
-			throws CatalogRepositoryException {
-		Connection conn = null;
-		Statement stmt = null;
+			throws CatalogRepositoryException, SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		ResultSet rs = null;
-		try {
-			conn = this.dataSource.getConnection();
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(
-				"SELECT * FROM "
-					+"( SELECT a.*, ROWNUM r FROM " 
-						+ "( SELECT CAT_TRANS_FACTORY,CAT_TRANS_ID FROM CatalogServiceMapper WHERE CatalogServiceMapper.CATALOG_ID = '" + catalogId + "' ORDER BY CatalogServiceMapper.CAT_SERV_TRANS_ID DESC ) a "
-					+ "WHERE ROWNUM <= " + (indexPager.getPageSize() * (indexPager.getPageNum() + 1)) + " ) "
-				+ "WHERE r >= " + ((indexPager.getPageSize() * indexPager.getPageNum()) + 1));
-			
-			Set<TransactionId<?>> transactionIds = new HashSet<TransactionId<?>>();
+		String query = "SELECT * FROM "
+        +"( SELECT a.*, ROWNUM r FROM " 
+        + "( SELECT CAT_TRANS_FACTORY,CAT_TRANS_ID FROM CatalogServiceMapper WHERE CatalogServiceMapper.CATALOG_ID = '" 
+        + catalogId + "' ORDER BY CatalogServiceMapper.CAT_SERV_TRANS_ID DESC ) a "
+        + "WHERE ROWNUM <= " + (indexPager.getPageSize() * (indexPager.getPageNum() + 1)) + " ) "
+        + "WHERE r >= " + ((indexPager.getPageSize() * indexPager.getPageNum()) + 1);
+		try (Connection conn = this.dataSource.getConnection();
+		    PreparedStatement pstmt = conn.prepareStatement(query)){
+			rs = pstmt.executeQuery();
+			Set<TransactionId<?>> transactionIds = new HashSet<>();
 			while(rs.next()) {
-			  transactionIds.add(((TransactionIdFactory) Class.forName(rs.getString("CAT_TRANS_FACTORY")).newInstance())
-				  .createTransactionId(rs.getString("CAT_TRANS_ID")));
+			  transactionIds.add(((TransactionIdFactory) Class.forName(rs.getString(CAT_TRANS_FACTORY)).newInstance())
+				  .createTransactionId(rs.getString(CAT_TRANS_ID)));
 			}
-				
 			return transactionIds;
-		}catch (Exception e) {
-			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
-			try {
-				conn.close();
-			}catch(Exception ignored) {}
-			try {
-				stmt.close();
-			}catch(Exception ignored) {}
-			try {
-				rs.close();
-			}catch(Exception ignored) {}
+      if (rs != null && !rs.isClosed()) {
+        rs.close();
+      }
 		}
 	}
 
+	@Override
 	public synchronized boolean hasCatalogServiceTransactionId(
 			TransactionId<?> catalogServiceTransactionId)
-			throws CatalogRepositoryException {
-		Connection conn = null;
-		Statement stmt = null;
+			throws CatalogRepositoryException, SQLException {
 		ResultSet rs = null;
-		try {
-			conn = this.dataSource.getConnection();
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT CAT_SERV_TRANS_ID FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '"+ catalogServiceTransactionId + "'");
+		String query = "SELECT CAT_SERV_TRANS_ID FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '"+ catalogServiceTransactionId + "'";
+		try (Connection conn = this.dataSource.getConnection();
+		    PreparedStatement pstmt = conn.prepareStatement(query)){
+			rs = pstmt.executeQuery();
 			return rs.next();
-		}catch (Exception e) {
-			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
-			try {
-				conn.close();
-			}catch(Exception ignored) {}
-			try {
-				stmt.close();
-			}catch(Exception ignored) {}
-			try {
-				rs.close();
-			}catch(Exception ignored) {}
+      if (rs != null && !rs.isClosed()) {
+        rs.close();
+      }
 		}
 	}
 
+	@Override
 	public synchronized void storeTransactionIdMapping(
 			TransactionId<?> catalogServiceTransactionId,
 			TransactionIdFactory catalogServiceTransactionIdFactory,
 			CatalogReceipt catalogReceipt,
 			TransactionIdFactory catalogTransactionIdFactory)
-			throws CatalogRepositoryException { 
-		Connection conn = null;
-		Statement stmt = null;
-		try {
-			conn = this.dataSource.getConnection();
-			stmt = conn.createStatement();
-			Calendar calTime = DateUtils.getCurrentUtcTime();
-			calTime.setTime(catalogReceipt.getTransactionDate());
-			stmt.execute("INSERT INTO CatalogServiceMapper (CAT_SERV_TRANS_ID, CAT_SERV_TRANS_FACTORY, CAT_TRANS_ID, CAT_TRANS_FACTORY, CAT_TRANS_DATE, CATALOG_ID) VALUES ('" 
-					+ catalogServiceTransactionId + "', '" 
-					+ catalogServiceTransactionIdFactory.getClass().getName() + "', '" 
-					+ catalogReceipt.getTransactionId() + "', '" 
-					+ catalogTransactionIdFactory.getClass().getName() + "', '" 
-					+ DateUtils.toString(calTime) + "', '"
-					+ catalogReceipt.getCatalogId() + "')");
+			throws CatalogRepositoryException, SQLException {
+    Calendar calTime = DateUtils.getCurrentUtcTime();
+    calTime.setTime(catalogReceipt.getTransactionDate());
+	  String query = "INSERT INTO CatalogServiceMapper (CAT_SERV_TRANS_ID, CAT_SERV_TRANS_FACTORY, CAT_TRANS_ID, CAT_TRANS_FACTORY,"
+	      + " CAT_TRANS_DATE, CATALOG_ID) VALUES ('" 
+        + catalogServiceTransactionId + "', '" 
+        + catalogServiceTransactionIdFactory.getClass().getName() + "', '" 
+        + catalogReceipt.getTransactionId() + "', '" 
+        + catalogTransactionIdFactory.getClass().getName() + "', '" 
+        + DateUtils.toString(calTime) + "', '"
+        + catalogReceipt.getCatalogId() + "')";
+		try (Connection conn = this.dataSource.getConnection();
+		    PreparedStatement pstmt = conn.prepareStatement(query)){
+			pstmt.execute();
 			conn.commit();
-		}catch (Exception e) {
-			throw new CatalogRepositoryException(e.getMessage(), e);
-		}finally {
-			try {
-				conn.close();
-			}catch(Exception ignored) {}
-			try {
-				stmt.close();
-			}catch(Exception ignored) {}
 		}
 	}
 
+	@Override
 	public CatalogReceipt getCatalogReceipt(
 			TransactionId<?> catalogServiceTransactionId, String catalogId)
-			throws CatalogRepositoryException {
-		Connection conn = null;
-		Statement stmt = null;
+			throws CatalogRepositoryException, SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException, ParseException {
 		ResultSet rs = null;
-		try {
-			conn = this.dataSource.getConnection();
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT CAT_TRANS_ID, CAT_TRANS_FACTORY, CAT_TRANS_DATE FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '"+ catalogServiceTransactionId + "' AND CATALOG_ID = '" + catalogId + "'");
-			
+		String query = "SELECT CAT_TRANS_ID, CAT_TRANS_FACTORY, CAT_TRANS_DATE FROM CatalogServiceMapper WHERE CAT_SERV_TRANS_ID = '"+ catalogServiceTransactionId + CATALOG_ID + catalogId + "'";
+		try (Connection conn = this.dataSource.getConnection();
+		    PreparedStatement pstmt = conn.prepareStatement(query)){
+			rs = pstmt.executeQuery();
 			if(rs.next()) {
-				TransactionId<?> catalogTransactionId =  ((TransactionIdFactory) Class.forName(rs.getString("CAT_TRANS_FACTORY")).newInstance()).createTransactionId(rs.getString("CAT_TRANS_ID"));
+				TransactionId<?> catalogTransactionId =  ((TransactionIdFactory) Class.forName(rs.getString(CAT_TRANS_FACTORY)).newInstance()).createTransactionId(rs.getString(CAT_TRANS_ID));
 				Date transactionDate = DateUtils.toCalendar(rs.getString("CAT_TRANS_DATE"), DateUtils.FormatType.UTC_FORMAT).getTime();
 				return new CatalogReceipt(new IngestReceipt(catalogTransactionId, transactionDate), catalogId);
 			}else {
 				return null;
 			}
-		}catch (Exception e) {
-			throw new CatalogRepositoryException(e.getMessage(), e);
 		}finally {
-			try {
-				conn.close();
-			}catch(Exception ignored) {}
-			try {
-				stmt.close();
-			}catch(Exception ignored) {}
-			try {
-				rs.close();
-			}catch(Exception ignored) {}
+      if (rs != null && !rs.isClosed()) {
+        rs.close();
+      }
 		}
 	}
 

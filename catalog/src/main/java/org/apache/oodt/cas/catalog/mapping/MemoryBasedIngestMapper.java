@@ -50,9 +50,9 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 	protected ConcurrentHashMap<String, List<CatalogReceipt>> catalogIdToCatalogReceiptMapping;
 	
 	public MemoryBasedIngestMapper() {
-		this.catalogServiceTransactionIdKeyMapping = new ConcurrentHashMap<String, TransactionIdMapping>();
-		this.catalogInfoKeyMapping = new ConcurrentHashMap<String, TransactionIdMapping>();
-		this.catalogIdToCatalogReceiptMapping = new ConcurrentHashMap<String, List<CatalogReceipt>>();
+		this.catalogServiceTransactionIdKeyMapping = new ConcurrentHashMap<>();
+		this.catalogInfoKeyMapping = new ConcurrentHashMap<>();
+		this.catalogIdToCatalogReceiptMapping = new ConcurrentHashMap<>();
 	}
 	
 	/*
@@ -62,6 +62,7 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 	 * getCatalogServiceTransactionId
 	 * (org.apache.oodt.cas.catalog.struct.TransactionId, java.lang.String)
 	 */
+	@Override
 	public synchronized TransactionId<?> getCatalogServiceTransactionId(
 			TransactionId<?> catalogTransactionId, String catalogId)
 			throws CatalogRepositoryException {
@@ -82,6 +83,7 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 	 * getCatalogTransactionId
 	 * (org.apache.oodt.cas.catalog.struct.TransactionId, java.lang.String)
 	 */
+	@Override
 	public synchronized TransactionId<?> getCatalogTransactionId(
 			TransactionId<?> catalogServiceTransactionId, String catalogId)
 			throws CatalogRepositoryException {
@@ -104,9 +106,10 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 	 * org.apache.oodt.cas.catalog.mapping.IngestMapper#getPage(org.apache
 	 * .oodt.cas.catalog.page.IndexPager, java.lang.String)
 	 */
+	@Override
 	public synchronized Set<TransactionId<?>> getPageOfCatalogTransactionIds(IndexPager indexPager,
 			String catalogId) throws CatalogRepositoryException {
-		Set<TransactionId<?>> catalogTransactionIds = new HashSet<TransactionId<?>>();
+		Set<TransactionId<?>> catalogTransactionIds = new HashSet<>();
 		List<CatalogReceipt> catalogReceipts = this.catalogIdToCatalogReceiptMapping.get(catalogId);
 		if (catalogReceipts != null) {
 		  for (int i = indexPager.getPageNum() * indexPager.getPageSize();
@@ -121,6 +124,7 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 	 * (non-Javadoc)
 	 * @see org.apache.oodt.cas.catalog.mapping.IngestMapper#deleteAllMappingsForCatalog(java.lang.String)
 	 */
+	@Override
 	public synchronized void deleteAllMappingsForCatalog(String catalogId)
 			throws CatalogRepositoryException {
 		List<CatalogReceipt> catalogReceipts = this.catalogIdToCatalogReceiptMapping.remove(catalogId);
@@ -138,6 +142,7 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 	 * (non-Javadoc)
 	 * @see org.apache.oodt.cas.catalog.repository.CatalogRepository#deleteAllMappingsForCatalogServiceTransactionId(org.apache.oodt.cas.catalog.struct.TransactionId)
 	 */
+	@Override
 	public synchronized void deleteAllMappingsForCatalogServiceTransactionId(
 			TransactionId<?> catalogServiceTransactionId)
 			throws CatalogRepositoryException {
@@ -155,6 +160,7 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 	 * (non-Javadoc)
 	 * @see org.apache.oodt.cas.catalog.repository.CatalogRepository#deleteTransactionIdMapping(org.apache.oodt.cas.catalog.struct.TransactionId, org.apache.oodt.cas.catalog.struct.TransactionId, java.lang.String)
 	 */
+	@Override
 	public synchronized void deleteTransactionIdMapping(
 			TransactionId<?> catalogTransactionId, String catalogId)
 			throws CatalogRepositoryException {
@@ -173,6 +179,7 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 	 * (non-Javadoc)
 	 * @see org.apache.oodt.cas.catalog.repository.CatalogRepository#hasCatalogServiceTransactionId(org.apache.oodt.cas.catalog.struct.TransactionId)
 	 */
+	@Override
 	public synchronized boolean hasCatalogServiceTransactionId(
 			TransactionId<?> catalogServiceTransactionId)
 			throws CatalogRepositoryException {
@@ -187,6 +194,7 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 	 * org.apache.oodt.cas.catalog.struct.TransactionId,
 	 * org.apache.oodt.cas.catalog.struct.TransactionId)
 	 */
+	@Override
 	public synchronized void storeTransactionIdMapping(
 			TransactionId<?> catalogServiceTransactionId,
 			TransactionIdFactory catalogServiceTransactionIdFactory,
@@ -217,10 +225,11 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 	 * org.apache.oodt.cas.catalog.repository.CatalogRepository#getCatalogs
 	 * (org.apache.oodt.cas.catalog.struct.TransactionId)
 	 */
+	@Override
 	public synchronized Set<String> getCatalogIds(
 			TransactionId<?> catalogServiceTransactionId)
 			throws CatalogRepositoryException {
-		HashSet<String> catalogs = new HashSet<String>();
+		HashSet<String> catalogs = new HashSet<>();
 		TransactionIdMapping mapping = this.catalogServiceTransactionIdKeyMapping
 				.get(catalogServiceTransactionId.toString());
 		for (CatalogReceipt catalogReceipt : mapping.getCatalogReceipts()) {
@@ -229,6 +238,7 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 		return catalogs;
 	}
 
+	@Override
 	public CatalogReceipt getCatalogReceipt(
 			TransactionId<?> catalogServiceTransactionId, String catalogId)
 			throws CatalogRepositoryException {
@@ -252,7 +262,7 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 
 		public TransactionIdMapping(TransactionId<?> catalogServiceTransactionId) {
 			this.catalogServiceTransactionId = catalogServiceTransactionId;
-			this.catalogReceipts = new Vector<CatalogReceipt>();
+			this.catalogReceipts = new Vector<>();
 		}
 
 		public void addCatalogReceipt(CatalogReceipt catalogReceipt) {
@@ -266,10 +276,6 @@ public class MemoryBasedIngestMapper implements IngestMapper {
 		public TransactionId<?> getCatalogServiceTransactionId() {
 			return catalogServiceTransactionId;
 		}
-
-	  public void setCatalogReceipts(List<CatalogReceipt> catalogReceipts) {
-		this.catalogReceipts = catalogReceipts;
-	  }
 	}
 
 }

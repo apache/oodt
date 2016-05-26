@@ -26,6 +26,7 @@ package org.apache.oodt.cas.catalog.mapping;
  */
 public class MemoryBasedIngestMapperFactory implements IngestMapperFactory {
 
+  @Override
 	public IngestMapper createMapper() {
 		return new MemoryBasedIngestMapper();
 	}

@@ -36,76 +36,77 @@ import org.apache.oodt.cas.catalog.struct.TransactionIdFactory;
  */
 public class LuceneIngestMapper implements IngestMapper {
 
+  private static final String UNSUPPORTED = "This operation is currently unsupported. Please report to dev@oodt.apache.org";
+  @Override
 	public void deleteAllMappingsForCatalog(String catalogId)
 			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException(UNSUPPORTED);
 	}
 
+  @Override
 	public void deleteAllMappingsForCatalogServiceTransactionId(
 			TransactionId<?> catalogServiceTransactionId)
 			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		
+    throw new UnsupportedOperationException(UNSUPPORTED);
 	}
 
+  @Override
 	public void deleteTransactionIdMapping(
 			TransactionId<?> catalogTransactionId, String catalogId)
 			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		
+    throw new UnsupportedOperationException(UNSUPPORTED);
 	}
 
+  @Override
 	public CatalogReceipt getCatalogReceipt(
 			TransactionId<?> catalogServiceTransactionId, String catalogId)
 			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return null;
+    throw new UnsupportedOperationException(UNSUPPORTED);
 	}
 
+  @Override
 	public TransactionId<?> getCatalogServiceTransactionId(
 			TransactionId<?> catalogTransactionId, String catalogId)
 			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return null;
+    throw new UnsupportedOperationException(UNSUPPORTED);
 	}
 
+  @Override
 	public TransactionId<?> getCatalogTransactionId(
 			TransactionId<?> catalogServiceTransactionId, String catalogId)
 			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return null;
+    throw new UnsupportedOperationException(UNSUPPORTED);
 	}
 
+  @Override
 	public Set<String> getCatalogIds(
 			TransactionId<?> catalogServiceTransactionId)
 			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return null;
+    throw new UnsupportedOperationException(UNSUPPORTED);
 	}
 
+  @Override
 	public Set<TransactionId<?>> getPageOfCatalogTransactionIds(
 			IndexPager indexPager, String catalogId)
 			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return null;
+    throw new UnsupportedOperationException(UNSUPPORTED);
 	}
 
+  @Override
 	public boolean hasCatalogServiceTransactionId(
 			TransactionId<?> catalogServiceTransactionId)
 			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		return false;
+    throw new UnsupportedOperationException(UNSUPPORTED);
 	}
 
+  @Override
 	public void storeTransactionIdMapping(
 			TransactionId<?> catalogServiceTransactionId,
 			TransactionIdFactory catalogServiceTransactionIdFactory,
 			CatalogReceipt catalogReceipt,
 			TransactionIdFactory catalogTransactionIdFactory)
 			throws CatalogRepositoryException {
-		// TODO Auto-generated method stub
-		
+    throw new UnsupportedOperationException(UNSUPPORTED);
 	}
 
 
