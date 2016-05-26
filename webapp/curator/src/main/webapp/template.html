@@ -136,22 +136,22 @@
     <%    } else {
               for (var i = 0; i < statuses.length; i++) {
                   var model = statuses[i];
-                  var icon = "icons/error.jpg";
+                  var className = "glyphicon glyphicon-exclamation-sign";
                   var extra = "";
                    var dispname = model.file;
                   if(model.file==='/dev/null' && model.pname != ""){
                       dispname = model.pname;
                    }
                   if (model.status == "DONE") {
-                      icon = "icons/success.jpg";
+                      className = "glyphicon glyphicon-ok";
                       var location = "/opsui/product/"+statuses[i].product;
                       extra = "<em>Metadata record: <a href='"+location+"' target='_blank'>"+statuses[i].product+"</a></em>";
                   } else if (model.status == "IN PROGRESS") {
-                      icon = "icons/waiting.gif";
+                      className = "glyphicon glyphicon-refresh glyphicon-spin";
                   } else {
                       extra = "<em>"+model.status+"</em>";
                   }%>
-                  <li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><%= dispname %><br><%= extra %></li>
+                  <li><span class="<%= className %>" aria-hidden="true"></span><%= dispname %><br><%= extra %></li>
     <%        }; 
           }; %>
     </ul>
