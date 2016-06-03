@@ -110,7 +110,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 			}
 			return null;
 		}finally {
-      if (rs != null && !rs.isClosed()) {
+      if (rs != null) {
           rs.close();
       }
 		}
@@ -131,7 +131,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 			}
 			return null;
 		}finally {
-      if (rs != null && !rs.isClosed()) {
+      if (rs != null) {
         rs.close();
       }
 		}
@@ -152,7 +152,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 			}
 			return catalogIds;
 		}finally {
-      if (rs != null && !rs.isClosed()) {
+      if (rs != null) {
         rs.close();
       }
 		}	
@@ -179,7 +179,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 			}
 			return transactionIds;
 		}finally {
-      if (rs != null && !rs.isClosed()) {
+      if (rs != null) {
         rs.close();
       }
 		}
@@ -196,7 +196,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 			rs = pstmt.executeQuery();
 			return rs.next();
 		}finally {
-      if (rs != null && !rs.isClosed()) {
+      if (rs != null) {
         rs.close();
       }
 		}
@@ -243,7 +243,7 @@ public class DataSourceIngestMapper implements IngestMapper {
 				return null;
 			}
 		}finally {
-      if (rs != null && !rs.isClosed()) {
+      if (rs != null) {
         rs.close();
       }
 		}
